@@ -67,7 +67,7 @@ Before reading anything else in this file, check whether you loaded SKILL.md fro
 **Run this check:**
 
 ```bash
-CLAUDE_CACHE_LATEST=$(ls -d "$HOME/.claude/plugins/cache/last30days-skill/last30days"/*/ 2>/dev/null | sort -V | tail -1)
+CLAUDE_CACHE_LATEST=$(find "$HOME/.claude/plugins/cache/last30days-skill/last30days" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort -V | tail -1)
 CLAUDE_CACHE_LATEST="${CLAUDE_CACHE_LATEST%/}"
 echo "CLAUDE_CACHE_LATEST=$CLAUDE_CACHE_LATEST"
 ```
@@ -586,8 +586,7 @@ When the user asks "X vs Y" (or "X vs Y vs Z"), the engine fans out N full `pipe
 # Comparison mode skips Step 1, so resolve SKILL_ROOT inline here (same precedence
 # walk as Step 1 — keep the two in sync if you edit either).
 SKILL_ROOT=""
-CLAUDE_PLUGIN_ROOT="$(ls -d "$HOME/.claude/plugins/cache/last30days-skill/last30days/"*/ 2>/dev/null | sort -V | tail -1)"
-CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT%/}"
+CLAUDE_PLUGIN_ROOT="$(find "$HOME/.claude/plugins/cache/last30days-skill/last30days" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort -V | tail -1)"
 if [ -n "$CLAUDE_PLUGIN_ROOT" ]; then
   if [ -f "$CLAUDE_PLUGIN_ROOT/skills/last30days/scripts/last30days.py" ]; then
     SKILL_ROOT="$CLAUDE_PLUGIN_ROOT/skills/last30days"
@@ -900,8 +899,9 @@ SKILL_ROOT=""
 
 # 1. Claude Code plugin cache (versioned, sort -V picks freshest). Two cache layouts ship in the wild:
 #    nested ({cache}/{version}/skills/last30days/scripts/...) and flat ({cache}/{version}/scripts/...).
-CLAUDE_PLUGIN_ROOT="$(ls -d "$HOME/.claude/plugins/cache/last30days-skill/last30days/"*/ 2>/dev/null | sort -V | tail -1)"
-CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT%/}"
+# `find` (not `ls + glob`) because zsh errors on globs that match nothing, leaking
+# noisy "no matches found" stderr in Codex/zsh sessions even with 2>/dev/null.
+CLAUDE_PLUGIN_ROOT="$(find "$HOME/.claude/plugins/cache/last30days-skill/last30days" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort -V | tail -1)"
 if [ -n "$CLAUDE_PLUGIN_ROOT" ]; then
   if [ -f "$CLAUDE_PLUGIN_ROOT/skills/last30days/scripts/last30days.py" ]; then
     SKILL_ROOT="$CLAUDE_PLUGIN_ROOT/skills/last30days"
