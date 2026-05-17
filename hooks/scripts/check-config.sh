@@ -74,15 +74,16 @@ else
   LAST_RUN_FILE="$HOME/.config/last30days/last-run.json"
 fi
 LAST_RUN_LINE=""
-if [[ -n "$LAST_RUN_FILE" && -f "$LAST_RUN_FILE" ]]; then
-  LAST_RUN_LINE=$(LAST_RUN_FILE="$LAST_RUN_FILE" python3 - <<'PY' 2>/dev/null
+if [[ -n "$LAST_RUN_FILE" && -f "$LAST_RUN_FILE" ]] && command -v python3 &>/dev/null; then
+  LAST_RUN_LINE=$(LAST_RUN_FILE="$LAST_RUN_FILE" python3 - <<'PY' 2>/dev/null || true
 import datetime
 import json
 import os
 
 path = os.environ["LAST_RUN_FILE"]
 try:
-    d = json.load(open(path))
+    with open(path) as fh:
+        d = json.load(fh)
     topic = (d.get("topic") or "?")[:60]
     ts = d.get("timestamp", "")
     dt = datetime.datetime.fromisoformat(ts.replace("Z", "+00:00"))

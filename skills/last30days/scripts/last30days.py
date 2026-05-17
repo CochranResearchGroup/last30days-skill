@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import atexit
+import datetime
 import json
 import os
 import re
@@ -533,7 +534,6 @@ def _show_runtime_ui(
 
 def _write_last_run(topic: str, report: "schema.Report") -> None:
     try:
-        import datetime
         if env.CONFIG_DIR is None:
             return
         target = env.CONFIG_DIR
