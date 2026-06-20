@@ -30,7 +30,7 @@ jobs:
 
       - name: Build .skill artifact
         run: |
-          bash skills/last30days/scripts/build-skill.sh
+          bash dev/last30days/scripts/build-skill.sh
           test -f dist/last30days.skill
 
       - name: Attest .skill artifact provenance

@@ -13,21 +13,18 @@ def _skillignore_entries() -> set[str]:
     }
 
 
-def test_hermes_skillignore_excludes_non_runtime_scan_surface() -> None:
+def test_skill_dir_excludes_non_runtime_scan_surface() -> None:
     entries = _skillignore_entries()
 
-    expected = {
-        "assets/",
-        "agents/",
-        "scripts/build-skill.sh",
-        "scripts/compare.sh",
-        "scripts/evaluate_search_quality.py",
-        "scripts/test_device_auth.py",
-        "scripts/test-v1-vs-v2.sh",
-        "scripts/verify_v3.py",
-    }
-
-    assert expected <= entries
+    assert entries == set()
+    assert not (SKILL_ROOT / "assets").exists()
+    assert not (SKILL_ROOT / "agents").exists()
+    assert not (SKILL_ROOT / "scripts" / "build-skill.sh").exists()
+    assert not (SKILL_ROOT / "scripts" / "compare.sh").exists()
+    assert not (SKILL_ROOT / "scripts" / "evaluate_search_quality.py").exists()
+    assert not (SKILL_ROOT / "scripts" / "test_device_auth.py").exists()
+    assert not (SKILL_ROOT / "scripts" / "test-v1-vs-v2.sh").exists()
+    assert not (SKILL_ROOT / "scripts" / "verify_v3.py").exists()
 
 
 def test_hermes_skillignore_keeps_runtime_contract_scannable() -> None:

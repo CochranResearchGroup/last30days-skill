@@ -55,6 +55,7 @@ class TestPluginContract(unittest.TestCase):
         # the legitimate replacements.
         allowed_prefixes = (
             "skills/last30days/scripts/",
+            "dev/last30days/scripts/",
             "mcp/scripts/",
         )
         offenders = []

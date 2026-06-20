@@ -13,11 +13,12 @@ import time
 from pathlib import Path
 
 
-SKILL_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = Path(__file__).resolve().parents[3]
+SKILL_ROOT = REPO_ROOT / "skills" / "last30days"
+DEV_ROOT = REPO_ROOT / "dev" / "last30days"
 PYTHON = sys.executable
 ENGINE = SKILL_ROOT / "scripts" / "last30days.py"
-EVALUATOR = SKILL_ROOT / "scripts" / "evaluate_search_quality.py"
+EVALUATOR = DEV_ROOT / "scripts" / "evaluate_search_quality.py"
 
 SMOKE_TOPIC = "openclaw skills"
 SMOKE_CASES = [
@@ -52,7 +53,7 @@ def run_command(cmd: list[str], *, env: dict[str, str] | None = None, timeout: i
 
 
 def verify_unit() -> dict[str, str]:
-    run_command([PYTHON, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"], timeout=600)
+    run_command(["uv", "run", "pytest"], timeout=600)
     run_command(
         [
             PYTHON,
@@ -62,6 +63,7 @@ def verify_unit() -> dict[str, str]:
                 [
                     "rg",
                     "--files",
+                    "dev/last30days/scripts",
                     "skills/last30days/scripts",
                     "tests",
                     "-g",

@@ -7,10 +7,13 @@ Agent Skills package for researching any topic across Reddit, X, YouTube, and we
 - `skills/last30days/scripts/last30days.py` — main research engine
 - `skills/last30days/scripts/lib/` — search, enrichment, rendering modules
 - `skills/last30days/scripts/lib/vendor/bird-search/` — vendored X search client
+- `dev/last30days/scripts/` — repo-only release/eval/dev helpers that must not ship in Agent Skills installs
+- `assets/last30days/` — repo-only media assets that must not ship in Agent Skills installs
 - `docs/solutions/` — documented solutions to past problems (bugs, best practices, workflow patterns), organized by category with YAML frontmatter (`module`, `tags`, `problem_type`)
 - `CONCEPTS.md` — shared domain vocabulary (Skill, Engine, Harness, Beta channel) — relevant when orienting to the codebase or discussing project terminology
 - `CONFIGURATION.md` — user-facing knobs (env vars, flags, per-host install patterns); keep in sync per the rules below
 - `CHANGELOG.md` — structured release history (launch copy lives in GitHub Releases)
+- `docs/ONBOARDING.md` — contributor checklist for package boundary, validation, install, and dogfood smoke tests
 - `HERMES_SETUP.md` — install instructions for the Hermes harness specifically
 
 ## Orientation
@@ -26,6 +29,7 @@ Agent Skills package for researching any topic across Reddit, X, YouTube, and we
 # add --save-dir <path> for a one-off override. Mirrors LAST30DAYS_STORE convention.
 python3 skills/last30days/scripts/last30days.py "test query" --emit=compact
 npx skills add . -g -y   # copies skill into ~/.agents/skills/<name>/ (frozen at install time); re-run to sync working-tree edits — see Rules below
+bash dev/last30days/scripts/build-skill.sh  # builds dist/last30days.skill for claude.ai upload
 
 # Tests (pytest, ~89 files under tests/, configured in pyproject.toml)
 uv run pytest                              # full suite
@@ -38,6 +42,7 @@ Python 3.12+ required. Use `uv` for the env; the venv lives at `.venv/`.
 
 ## Rules
 - `lib/__init__.py` must be bare package marker (comment only, NO eager imports)
+- Keep repo-only release/eval/media files outside `skills/last30days/`; `npx skills add` copies that directory recursively and does not honor `.skillignore`.
 - One-time setup: `npx skills add . -g -y` copies the skill into `~/.agents/skills/<name>/` (real directory) and, for harnesses that support symlinked skill dirs, drops a per-host symlink pointing at that copy. **Working-tree edits do NOT propagate automatically** — the `~/.agents/skills/<name>/` copy is frozen at install time. To sync after edits, re-run `npx skills add . -g -y`. For live-edit on a dev machine, replace the install copy with a symlink to the working tree: `ln -sfn "$PWD/skills/last30days" ~/.agents/skills/last30days` (run from the repo root).
 - Git remote: origin = public (`mvanhorn/last30days-skill`)
 - Every `lib/*.py` call to `log.source_log(...)` must pass `tty_only=False`. The default is `True`, which silently drops every line when stderr isn't a TTY (Claude Code, Codex, CI, captured output) — turning source observability into invisible failure. Enforced by `tests/test_source_log_visibility.py`.

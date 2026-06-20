@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # build-skill.sh - package this repo as a claude.ai-upload-ready .skill file
-# Usage: bash skills/last30days/scripts/build-skill.sh  (run from repo root)
+# Usage: bash dev/last30days/scripts/build-skill.sh  (run from repo root)
 #
 # Produces dist/last30days.skill, a zip with a single top-level `last30days/`
 # directory containing SKILL.md and the scripts/ runtime from skills/last30days.
@@ -11,14 +11,37 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 cd "$REPO_ROOT"
 
-if ! git diff --quiet || ! git diff --cached --quiet; then
+if [ "${LAST30DAYS_BUILD_ALLOW_DIRTY:-}" != "1" ] && { ! git diff --quiet || ! git diff --cached --quiet; }; then
   echo "error: working tree is dirty; commit or stash before building" >&2
   exit 1
 fi
 
 mkdir -p dist
 OUT="dist/last30days.skill"
-git archive --format=zip --prefix=last30days/ --output="$OUT" HEAD:skills/last30days
+if [ "${LAST30DAYS_BUILD_ALLOW_DIRTY:-}" = "1" ]; then
+  rm -f "$OUT"
+  (
+    cd skills
+    zip -q -r "../$OUT" last30days \
+      -x '*/__pycache__/*' \
+      -x '*/node_modules/*' \
+      -x '*.pyc' \
+      -x '*/.DS_Store'
+  )
+else
+  git archive --format=zip --prefix=last30days/ --output="$OUT" HEAD:skills/last30days
+fi
+
+# Keep the uploaded .skill artifact aligned with the runtime scan boundary.
+# .skillignore is authored relative to skills/last30days/, while the archive
+# has a last30days/ prefix.
+while IFS= read -r line || [ -n "$line" ]; do
+  entry="${line%%#*}"
+  entry="${entry#"${entry%%[![:space:]]*}"}"
+  entry="${entry%"${entry##*[![:space:]]}"}"
+  [ -z "$entry" ] && continue
+  zip -q -d "$OUT" "last30days/$entry" "last30days/$entry*" 2>/dev/null || true
+done < skills/last30days/.skillignore
 
 COUNT=$(unzip -l "$OUT" | tail -1 | awk '{print $2}')
 SIZE=$(du -h "$OUT" | cut -f1)

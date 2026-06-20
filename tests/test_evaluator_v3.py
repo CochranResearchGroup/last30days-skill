@@ -1,11 +1,22 @@
 import json
 import os
+import importlib.util
 import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
 
-import evaluate_search_quality as evaluator
+
+def load_evaluator_module():
+    path = Path(__file__).resolve().parents[1] / "dev" / "last30days" / "scripts" / "evaluate_search_quality.py"
+    spec = importlib.util.spec_from_file_location("evaluate_search_quality", path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(module)
+    return module
+
+
+evaluator = load_evaluator_module()
 
 
 class EvaluatorV3Tests(unittest.TestCase):

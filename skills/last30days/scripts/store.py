@@ -367,7 +367,7 @@ def get_latest_completed_runs(topic_id: int, limit: int = 2) -> List[Dict[str, A
         rows = conn.execute(
             """SELECT * FROM research_runs
                WHERE topic_id = ? AND status = 'completed'
-               ORDER BY datetime(run_date) DESC, id DESC
+               ORDER BY id DESC
                LIMIT ?""",
             (topic_id, limit),
         ).fetchall()
