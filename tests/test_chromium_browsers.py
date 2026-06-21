@@ -15,7 +15,9 @@ from lib.env import extract_browser_credentials
 from lib.cookie_extract import extract_cookies
 from lib.chrome_cookies import (
     CHROMIUM_BROWSER_PROFILES,
+    CHROMIUM_LINUX_BROWSER_PROFILES,
     _find_chromium_cookies_db,
+    extract_chromium_browser_cookies_linux,
     extract_chromium_browser_cookies_macos,
 )
 
@@ -150,9 +152,21 @@ class TestCookieExtractRouting:
         assert mock_macos.call_args[0][0] == browser
 
     @pytest.mark.parametrize("browser", ["edge", "vivaldi", "opera", "arc", "chromium"])
-    def test_non_macos_returns_none(self, browser):
+    def test_linux_routes_supported_registry_browsers(self, browser):
+        if browser == "arc":
+            with patch("lib.cookie_extract.platform.system", return_value="Linux"):
+                assert extract_cookies(browser, ".x.com", ["auth_token"]) is None
+            return
+
         with patch("lib.cookie_extract.platform.system", return_value="Linux"):
-            assert extract_cookies(browser, ".x.com", ["auth_token"]) is None
+            with patch(
+                "lib.chrome_cookies.extract_chromium_browser_cookies_linux",
+                return_value={"auth_token": f"{browser}_tok"},
+            ) as mock_linux:
+                result = extract_cookies(browser, ".x.com", ["auth_token"])
+
+        assert result == {"auth_token": f"{browser}_tok"}
+        assert mock_linux.call_args[0][0] == browser
 
     def test_auto_macos_order_includes_chromium_family(self):
         """auto on macOS calls every Chromium-family extractor when all miss."""
@@ -187,8 +201,16 @@ class TestChromiumRegistry:
             assert service.endswith("Safe Storage")
             assert base_dir is not None
 
+    def test_linux_registry_has_expected_browsers(self):
+        assert set(CHROMIUM_LINUX_BROWSER_PROFILES) == {"edge", "vivaldi", "opera", "chromium"}
+        for base_dir, label, app_names in CHROMIUM_LINUX_BROWSER_PROFILES.values():
+            assert base_dir is not None
+            assert label
+            assert app_names
+
     def test_unknown_browser_returns_none(self):
         assert extract_chromium_browser_cookies_macos("netscape", ".x.com", ["auth_token"]) is None
+        assert extract_chromium_browser_cookies_linux("netscape", ".x.com", ["auth_token"]) is None
 
     def test_generic_extraction_plain_values(self, tmp_path):
         """A registry browser extracts unencrypted cookies via the shared core."""
@@ -223,6 +245,25 @@ class TestChromiumRegistry:
             {"vivaldi": (empty, "Vivaldi Safe Storage")},
         ):
             assert extract_chromium_browser_cookies_macos("vivaldi", ".x.com", ["auth_token"]) is None
+
+    def test_linux_generic_extraction_plain_values(self, tmp_path):
+        base = tmp_path / "Chromium"
+        (base / "Default").mkdir(parents=True)
+        _make_cookies_db(
+            base / "Default" / "Cookies",
+            [
+                (".x.com", "auth_token", "chromium_auth"),
+                (".x.com", "ct0", "chromium_ct0"),
+            ],
+        )
+
+        with patch.dict(
+            "lib.chrome_cookies.CHROMIUM_LINUX_BROWSER_PROFILES",
+            {"chromium": (base, "Chromium", ("chromium",))},
+        ):
+            result = extract_chromium_browser_cookies_linux("chromium", ".x.com", ["auth_token", "ct0"])
+
+        assert result == {"auth_token": "chromium_auth", "ct0": "chromium_ct0"}
 
 
 class TestFindChromiumCookiesDb:

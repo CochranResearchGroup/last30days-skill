@@ -17,10 +17,14 @@ from lib.chrome_cookies import (
     CHROME_COOKIES_DB,
     CHROME_IV_HEX,
     CHROME_KEY_LENGTH,
+    CHROME_LINUX_FALLBACK_PASSPHRASE,
+    CHROME_LINUX_PBKDF2_ITERATIONS,
     CHROME_PBKDF2_ITERATIONS,
     CHROME_SALT,
     _derive_aes_key,
+    _extract_chromium_cookies_linux,
     _get_chrome_encryption_key,
+    _get_chromium_linux_passphrase,
     _get_db_version,
     _remove_pkcs7_padding,
     _extract_chromium_cookies_macos,
@@ -160,6 +164,14 @@ class TestKeyDerivation:
         key2 = _derive_aes_key(b"passphrase_b")
         assert key1 != key2
 
+    def test_linux_key_derivation_uses_one_iteration(self):
+        key = _derive_aes_key(
+            CHROME_LINUX_FALLBACK_PASSPHRASE,
+            iterations=CHROME_LINUX_PBKDF2_ITERATIONS,
+        )
+        assert len(key) == 16
+        assert key != _derive_aes_key(CHROME_LINUX_FALLBACK_PASSPHRASE)
+
 # ---------------------------------------------------------------------------
 # Decryption test (real openssl, known key)
 # ---------------------------------------------------------------------------
@@ -230,6 +242,24 @@ class TestKeychainDenied:
         with mock.patch("lib.chrome_cookies.subprocess.run", side_effect=FileNotFoundError):
             result = _get_chrome_encryption_key()
             assert result is None
+
+
+class TestLinuxSecretTool:
+    def test_secret_tool_returns_first_matching_passphrase(self):
+        def fake_run(args, **_kwargs):
+            if args[-1] == "chrome":
+                return subprocess.CompletedProcess(args=args, returncode=1, stdout="", stderr="")
+            return subprocess.CompletedProcess(args=args, returncode=0, stdout="linux secret\n", stderr="")
+
+        with (
+            mock.patch("lib.chrome_cookies.shutil.which", return_value="/usr/bin/secret-tool"),
+            mock.patch("lib.chrome_cookies.subprocess.run", side_effect=fake_run),
+        ):
+            assert _get_chromium_linux_passphrase(("chrome", "google-chrome")) == b"linux secret"
+
+    def test_secret_tool_missing_returns_none(self):
+        with mock.patch("lib.chrome_cookies.shutil.which", return_value=None):
+            assert _get_chromium_linux_passphrase(("chrome",)) is None
 
 # ---------------------------------------------------------------------------
 # openssl not found → returns None
@@ -335,6 +365,56 @@ class TestFullExtraction:
                 result = extract_chrome_cookies_macos(".x.com", ["auth_token"])
 
         assert result is None
+
+    @pytest.mark.skipif(not OPENSSL_AVAILABLE, reason="openssl not installed")
+    def test_linux_fallback_key_decrypts_v10(self, tmp_path):
+        auth_val = "linux_auth_token_123"
+        linux_key = _derive_aes_key(
+            CHROME_LINUX_FALLBACK_PASSPHRASE,
+            iterations=CHROME_LINUX_PBKDF2_ITERATIONS,
+        )
+        encrypted_auth = _encrypt_value_v10(auth_val, linux_key)
+
+        db_path = tmp_path / "Cookies"
+        _create_chrome_cookies_db(str(db_path), [
+            (".x.com", "auth_token", "", encrypted_auth),
+        ])
+
+        with mock.patch("lib.chrome_cookies._get_chromium_linux_passphrase", return_value=None):
+            result = _extract_chromium_cookies_linux(
+                db_path,
+                "Chrome",
+                ("chrome",),
+                ".x.com",
+                ["auth_token"],
+            )
+
+        assert result == {"auth_token": auth_val}
+
+    @pytest.mark.skipif(not OPENSSL_AVAILABLE, reason="openssl not installed")
+    def test_linux_fallback_key_decrypts_v11(self, tmp_path):
+        auth_val = "linux_auth_token_v11"
+        linux_key = _derive_aes_key(
+            CHROME_LINUX_FALLBACK_PASSPHRASE,
+            iterations=CHROME_LINUX_PBKDF2_ITERATIONS,
+        )
+        encrypted_auth = b"v11" + _encrypt_value_v10(auth_val, linux_key)[3:]
+
+        db_path = tmp_path / "Cookies"
+        _create_chrome_cookies_db(str(db_path), [
+            (".x.com", "auth_token", "", encrypted_auth),
+        ])
+
+        with mock.patch("lib.chrome_cookies._get_chromium_linux_passphrase", return_value=None):
+            result = _extract_chromium_cookies_linux(
+                db_path,
+                "Chrome",
+                ("chrome",),
+                ".x.com",
+                ["auth_token"],
+            )
+
+        assert result == {"auth_token": auth_val}
 
     @pytest.mark.skipif(not OPENSSL_AVAILABLE, reason="openssl not installed")
     def test_chrome130_db_version_24(self, tmp_path):

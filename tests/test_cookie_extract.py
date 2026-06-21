@@ -359,12 +359,18 @@ class TestExtractCookiesAuto:
         assert result["auth_token"] == "tok_abc123"
         assert result["ct0"] == "ct0_xyz789"
 
-    def test_auto_linux_tries_firefox_only(self, mock_firefox_env):
-        """On Linux, auto only tries Firefox."""
+    def test_auto_linux_tries_chromium_family_then_firefox(self, mock_firefox_env):
+        """On Linux, explicit auto tries Chromium-family browsers before Firefox."""
         profiles_dir = mock_firefox_env()
 
         with (
             patch("lib.cookie_extract.platform.system", return_value="Linux"),
+            patch("lib.cookie_extract.extract_chrome_cookies", return_value=None),
+            patch("lib.cookie_extract.extract_brave_cookies", return_value=None),
+            patch("lib.cookie_extract.extract_edge_cookies", return_value=None),
+            patch("lib.cookie_extract.extract_vivaldi_cookies", return_value=None),
+            patch("lib.cookie_extract.extract_opera_cookies", return_value=None),
+            patch("lib.cookie_extract.extract_chromium_cookies", return_value=None),
             patch(
                 "lib.cookie_extract._get_firefox_profiles_dir",
                 return_value=profiles_dir,

@@ -1,9 +1,9 @@
 """Browser cookie extraction for last30days.
 
-Extracts cookies from local browser databases (Firefox, Chrome, Brave, Safari)
-to enable zero-config authentication for services like X/Twitter.
-Note: Chrome/Brave extraction is macOS-only; Windows Chrome/Edge use
-DPAPI-encrypted stores that are not yet supported.
+Extracts cookies from local browser databases (Firefox, Chrome, Brave, Safari,
+and other Chromium-family browsers) to enable zero-config authentication for
+services like X/Twitter. Note: Windows Chrome/Edge use DPAPI-encrypted stores
+that are not yet supported.
 
 Only uses Python stdlib — no external dependencies.
 """
@@ -273,18 +273,23 @@ def extract_chrome_cookies(
 ) -> Optional[Dict[str, str]]:
     """Extract cookies from Chrome for the given domain and cookie names.
 
-    macOS only — uses Keychain + system openssl for AES-128-CBC decryption.
-    Linux/Windows not supported (Chrome uses platform-specific encryption).
+    macOS uses Keychain + system openssl for AES-128-CBC decryption. Linux uses
+    libsecret via secret-tool when available, falling back to Chromium's local
+    default passphrase.
 
     Returns:
         Dict of {cookie_name: cookie_value} or None if extraction fails.
     """
-    if platform.system() != "Darwin":
-        logger.debug("Chrome cookie extraction only supported on macOS")
+    system = platform.system()
+    if system not in ("Darwin", "Linux"):
+        logger.debug("Chrome cookie extraction not supported on %s", system)
         return None
     try:
-        from .chrome_cookies import extract_chrome_cookies_macos
-        return extract_chrome_cookies_macos(domain, cookie_names)
+        if system == "Darwin":
+            from .chrome_cookies import extract_chrome_cookies_macos
+            return extract_chrome_cookies_macos(domain, cookie_names)
+        from .chrome_cookies import extract_chrome_cookies_linux
+        return extract_chrome_cookies_linux(domain, cookie_names)
     except Exception as exc:
         logger.debug("Chrome cookie extraction failed: %s", exc)
         return None
@@ -295,19 +300,23 @@ def extract_brave_cookies(
 ) -> Optional[Dict[str, str]]:
     """Extract cookies from Brave for the given domain and cookie names.
 
-    macOS only — Brave uses the same v10 AES-128-CBC encryption as Chrome,
-    with a different DB path and Keychain service name ("Brave Safe Storage").
-    Tries the Default profile first, then scans numbered Profile directories.
+    Brave uses the same v10 AES-128-CBC encryption as Chrome. macOS reads the
+    Keychain passphrase; Linux reads libsecret or falls back to Chromium's
+    local default passphrase.
 
     Returns:
         Dict of {cookie_name: cookie_value} or None if extraction fails.
     """
-    if platform.system() != "Darwin":
-        logger.debug("Brave cookie extraction only supported on macOS")
+    system = platform.system()
+    if system not in ("Darwin", "Linux"):
+        logger.debug("Brave cookie extraction not supported on %s", system)
         return None
     try:
-        from .chrome_cookies import extract_brave_cookies_macos
-        return extract_brave_cookies_macos(domain, cookie_names)
+        if system == "Darwin":
+            from .chrome_cookies import extract_brave_cookies_macos
+            return extract_brave_cookies_macos(domain, cookie_names)
+        from .chrome_cookies import extract_brave_cookies_linux
+        return extract_brave_cookies_linux(domain, cookie_names)
     except Exception as exc:
         logger.debug("Brave cookie extraction failed: %s", exc)
         return None
@@ -316,35 +325,39 @@ def extract_brave_cookies(
 def _extract_chromium_family_cookies(
     browser: str, domain: str, cookie_names: List[str]
 ) -> Optional[Dict[str, str]]:
-    """Extract cookies from a non-Chrome/Brave Chromium browser on macOS.
+    """Extract cookies from a non-Chrome/Brave Chromium browser.
 
-    macOS only — Edge, Vivaldi, Opera, Arc, and Chromium all reuse Chrome's
-    v10 AES-128-CBC encryption, with their own profile path and Keychain
-    service name (see chrome_cookies.CHROMIUM_BROWSER_PROFILES).
+    macOS supports Edge, Vivaldi, Opera, Arc, and Chromium through Keychain.
+    Linux supports Edge, Vivaldi, Opera, and Chromium through libsecret/local
+    fallback where their profile layouts are known.
     """
-    if platform.system() != "Darwin":
-        logger.debug("%s cookie extraction only supported on macOS", browser)
+    system = platform.system()
+    if system not in ("Darwin", "Linux"):
+        logger.debug("%s cookie extraction not supported on %s", browser, system)
         return None
     try:
-        from .chrome_cookies import extract_chromium_browser_cookies_macos
-        return extract_chromium_browser_cookies_macos(browser, domain, cookie_names)
+        if system == "Darwin":
+            from .chrome_cookies import extract_chromium_browser_cookies_macos
+            return extract_chromium_browser_cookies_macos(browser, domain, cookie_names)
+        from .chrome_cookies import extract_chromium_browser_cookies_linux
+        return extract_chromium_browser_cookies_linux(browser, domain, cookie_names)
     except Exception as exc:
         logger.debug("%s cookie extraction failed: %s", browser, exc)
         return None
 
 
 def extract_edge_cookies(domain: str, cookie_names: List[str]) -> Optional[Dict[str, str]]:
-    """Extract cookies from Microsoft Edge for the given domain (macOS only)."""
+    """Extract cookies from Microsoft Edge for the given domain."""
     return _extract_chromium_family_cookies("edge", domain, cookie_names)
 
 
 def extract_vivaldi_cookies(domain: str, cookie_names: List[str]) -> Optional[Dict[str, str]]:
-    """Extract cookies from Vivaldi for the given domain (macOS only)."""
+    """Extract cookies from Vivaldi for the given domain."""
     return _extract_chromium_family_cookies("vivaldi", domain, cookie_names)
 
 
 def extract_opera_cookies(domain: str, cookie_names: List[str]) -> Optional[Dict[str, str]]:
-    """Extract cookies from Opera for the given domain (macOS only)."""
+    """Extract cookies from Opera for the given domain."""
     return _extract_chromium_family_cookies("opera", domain, cookie_names)
 
 
@@ -354,7 +367,7 @@ def extract_arc_cookies(domain: str, cookie_names: List[str]) -> Optional[Dict[s
 
 
 def extract_chromium_cookies(domain: str, cookie_names: List[str]) -> Optional[Dict[str, str]]:
-    """Extract cookies from open-source Chromium for the given domain (macOS only)."""
+    """Extract cookies from open-source Chromium for the given domain."""
     return _extract_chromium_family_cookies("chromium", domain, cookie_names)
 
 
@@ -389,7 +402,7 @@ def extract_cookies(
             'opera', 'arc', 'chromium', 'safari', or 'auto'.
             'auto' tries browsers in platform-appropriate order:
             - macOS: Chrome -> Brave -> Edge -> Vivaldi -> Opera -> Arc -> Chromium -> Firefox -> Safari
-            - Linux: Firefox only
+            - Linux: Chrome -> Brave -> Edge -> Vivaldi -> Opera -> Chromium -> Firefox
         domain: The cookie domain to match (e.g. ".x.com").
         cookie_names: List of cookie names to extract.
 
@@ -477,7 +490,7 @@ def extract_cookies_with_source(
     if system == "Darwin":
         order = ["chrome", "brave", "edge", "vivaldi", "opera", "arc", "chromium", "firefox", "safari"]
     elif system == "Linux":
-        order = ["firefox"]
+        order = ["chrome", "brave", "edge", "vivaldi", "opera", "chromium", "firefox"]
     else:
         order = ["firefox"]
 

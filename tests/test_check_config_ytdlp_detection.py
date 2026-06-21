@@ -42,6 +42,10 @@ def _run_hook(env_overrides: dict[str, str], path_override: str | None = None) -
     ):
         env.pop(k, None)
     env.update(env_overrides)
+    if "HOME" not in env_overrides and env_overrides.get("LAST30DAYS_CONFIG_DIR"):
+        fake_home = Path(env_overrides["LAST30DAYS_CONFIG_DIR"]).parent / "home"
+        fake_home.mkdir(exist_ok=True)
+        env["HOME"] = str(fake_home)
     if path_override is not None:
         env["PATH"] = path_override
     return subprocess.run(

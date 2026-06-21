@@ -501,13 +501,15 @@ def cookie_extraction_browsers(config: dict[str, Any]) -> list[str]:
     Edge, Vivaldi, Opera, Arc, Chromium) is skipped because reading their
     cookies on macOS requires the browser's Safe Storage Keychain key, which
     triggers a system password prompt that cannot be reliably suppressed. On
+    Linux, Chromium-family extraction uses libsecret when available and falls
+    back to Chromium's local default passphrase, but still stays opt-in. On
     Windows only Firefox cookie extraction is supported; Chrome and Edge use
     DPAPI-encrypted cookie stores that are not yet supported.
 
     - ``FROM_BROWSER=<name>`` - a single browser (e.g. ``firefox``, ``brave``,
       ``edge``, ``arc``).
     - ``FROM_BROWSER=auto`` - also try every Chromium browser (user accepts the
-      Keychain dialog when needed).
+      Keychain dialog when needed on macOS).
     - ``FROM_BROWSER=off`` - returns [] (extraction disabled).
 
     Returning the browser list from one place keeps the setup wizard and the
