@@ -71,6 +71,74 @@ class FacebookCommandTests(unittest.TestCase):
         self.assertIn("agent-browser", result["error"])
         self.assertEqual([], result["items"])
 
+    def test_search_uses_route_bound_remote_view_open(self):
+        calls = []
+
+        def fake_run(cmd, *, timeout, input_text=None):
+            calls.append(cmd)
+            if cmd[:4] == ["agent-browser", "--json", "--session", "last30days-facebook"] and cmd[4:6] == ["remote-view", "open"]:
+                return {
+                    "status": "opened",
+                    "routeId": "route-a",
+                    "displayAllocationId": "display-a",
+                    "operatorVisible": {
+                        "state": "ready",
+                        "routeId": "route-a",
+                        "displayAllocationId": "display-a",
+                        "proof": {"displayContent": {"state": "browser_window_visible"}},
+                    },
+                }
+            if cmd[-3:] == ["scroll", "down", "1400"]:
+                return {}
+            if cmd[-2:] == ["eval", "--stdin"]:
+                return {"items": [{"text": "Facebook item about robotics grants", "url": "https://www.facebook.com/p/1"}]}
+            return {}
+
+        with mock.patch("lib.facebook.shutil.which", return_value="/usr/bin/agent-browser"), \
+             mock.patch("lib.facebook._run", side_effect=fake_run), \
+             mock.patch("lib.facebook.time.sleep"):
+            result = facebook.search_facebook(
+                "robotics grants",
+                "2026-01-01",
+                "2026-01-31",
+                config={"LAST30DAYS_FACEBOOK_SCROLLS": "0"},
+            )
+
+        self.assertEqual(1, len(result["items"]))
+        open_cmd = calls[0]
+        self.assertEqual("remote-view", open_cmd[4])
+        self.assertEqual("open", open_cmd[5])
+        self.assertIn("--runtime-profile", open_cmd)
+        self.assertIn("last30days-facebook", open_cmd)
+        self.assertIn("--browser-build", open_cmd)
+        self.assertIn("stealthcdp_chromium", open_cmd)
+        self.assertIn("--provider", open_cmd)
+        self.assertIn("rdp_gateway", open_cmd)
+        self.assertNotIn("--browser-host", open_cmd)
+        self.assertNotIn("open", open_cmd[:5])
+
+    def test_search_rejects_terminal_only_remote_view(self):
+        def fake_run(cmd, *, timeout, input_text=None):
+            return {
+                "status": "opened",
+                "routeId": "route-terminal",
+                "displayAllocationId": "display-terminal",
+                "operatorVisible": {
+                    "state": "terminal_only",
+                    "routeId": "route-terminal",
+                    "displayAllocationId": "display-terminal",
+                    "proof": {"displayContent": {"state": "terminal_only"}},
+                },
+            }
+
+        with mock.patch("lib.facebook.shutil.which", return_value="/usr/bin/agent-browser"), \
+             mock.patch("lib.facebook._run", side_effect=fake_run):
+            result = facebook.search_facebook("topic", "2026-01-01", "2026-01-31")
+
+        self.assertEqual([], result["items"])
+        self.assertIn("not operator-visible", result["error"])
+        self.assertIn("terminal_only", result["error"])
+
 
 if __name__ == "__main__":
     unittest.main()

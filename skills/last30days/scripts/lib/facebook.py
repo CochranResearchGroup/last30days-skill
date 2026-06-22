@@ -117,28 +117,29 @@ def search_facebook(
     timeout = int(config.get("LAST30DAYS_FACEBOOK_TIMEOUT") or settings["timeout"])
     profile = config.get("LAST30DAYS_FACEBOOK_PROFILE") or "last30days-facebook"
     session = config.get("LAST30DAYS_FACEBOOK_SESSION") or "last30days-facebook"
-    browser_host = config.get("LAST30DAYS_FACEBOOK_BROWSER_HOST") or "remote_headed"
+    browser_build = config.get("LAST30DAYS_FACEBOOK_BROWSER_BUILD") or "stealthcdp_chromium"
     view_provider = config.get("LAST30DAYS_FACEBOOK_VIEW_PROVIDER") or "rdp_gateway"
-    input_provider = config.get("LAST30DAYS_FACEBOOK_INPUT_PROVIDER") or "manual_attached_desktop"
-    display_isolation = config.get("LAST30DAYS_FACEBOOK_DISPLAY_ISOLATION") or "private_virtual_display"
 
     url = f"https://www.facebook.com/search/posts?q={quote_plus(topic)}"
-    _log(f"Opening Facebook search via agent-browser profile={profile!r} host={browser_host}")
+    _log(
+        "Opening Facebook search via route-bound agent-browser "
+        f"profile={profile!r} build={browser_build} provider={view_provider}"
+    )
     open_cmd = [
         "agent-browser",
         "--json",
         "--session", session,
+        "remote-view", "open", url,
         "--runtime-profile", profile,
-        "--browser-host", browser_host,
-        "--view-stream-provider", view_provider,
-        "--control-input-provider", input_provider,
-        "--display-isolation", display_isolation,
-        "--leave-open",
-        "open", url,
+        "--browser-build", browser_build,
+        "--provider", view_provider,
     ]
     open_result = _run(open_cmd, timeout=timeout)
     if open_result.get("error"):
         return {"items": [], "error": open_result["error"]}
+    visible_error = _operator_visible_error(open_result)
+    if visible_error:
+        return {"items": [], "error": visible_error, "url": url, "profile": profile, "session": session}
 
     time.sleep(float(config.get("LAST30DAYS_FACEBOOK_INITIAL_WAIT") or 4.0))
     extraction = _extract(session=session, timeout=min(timeout, 30))
@@ -173,6 +174,29 @@ def search_facebook(
 def _extract(*, session: str, timeout: int) -> dict[str, Any]:
     cmd = ["agent-browser", "--json", "--session", session, "eval", "--stdin"]
     return _run(cmd, timeout=timeout, input_text=EXTRACT_SCRIPT)
+
+
+def _operator_visible_error(payload: dict[str, Any]) -> str | None:
+    """Return a durable handoff error unless agent-browser proved browser visibility."""
+    operator_visible = payload.get("operatorVisible")
+    if not isinstance(operator_visible, dict):
+        return "agent-browser remote-view open did not return operatorVisible proof; refusing CDP-only Facebook success"
+    if operator_visible.get("state") == "ready":
+        return None
+    proof = operator_visible.get("proof")
+    display_content = proof.get("displayContent") if isinstance(proof, dict) else None
+    display_state = display_content.get("state") if isinstance(display_content, dict) else None
+    summary = {
+        "state": operator_visible.get("state") or "missing",
+        "routeId": operator_visible.get("routeId") or payload.get("routeId"),
+        "displayAllocationId": operator_visible.get("displayAllocationId") or payload.get("displayAllocationId"),
+        "displayName": operator_visible.get("displayName"),
+        "browserId": operator_visible.get("browserId") or payload.get("browserId"),
+        "sessionName": operator_visible.get("sessionName") or payload.get("sessionName"),
+        "proof": display_state or (proof.get("state") if isinstance(proof, dict) else None) or "missing",
+    }
+    compact = " ".join(f"{key}={value}" for key, value in summary.items() if value)
+    return f"Facebook remote browser is not operator-visible ({compact}); rerun agent-browser remote-view open and sign in through the Guacamole/RDP browser"
 
 
 def _run(cmd: list[str], *, timeout: int, input_text: str | None = None) -> dict[str, Any]:
