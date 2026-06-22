@@ -16,6 +16,7 @@ __pycache__/
 *.pyc
 mise.toml
 .memsearch/
+.codegraph/
 .venv/
 .coverage
 htmlcov/
