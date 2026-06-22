@@ -76,6 +76,7 @@ SOURCE_CAPABILITIES = {
     "hackernews": {"discussion", "link"},
     "bluesky": {"discussion", "social"},
     "truthsocial": {"discussion", "social"},
+    "facebook": {"discussion", "social"},
     "polymarket": {"market"},
     "digg": {"discussion", "social", "link"},
     "xiaohongshu": {"video", "video_shortform", "social"},

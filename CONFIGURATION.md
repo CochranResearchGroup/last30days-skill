@@ -75,6 +75,7 @@ The project-scoped file is the cleanest pattern for **per-client setups**: drop 
 | Instagram | `SCRAPECREATORS_API_KEY` + `INCLUDE_SOURCES` contains `instagram` | Instagram Reels | 10K free calls; raise `LAST30DAYS_TRANSCRIPT_TIMEOUT` (default 30s) if SC is slow on your network |
 | Threads | `SCRAPECREATORS_API_KEY` + `INCLUDE_SOURCES` contains `threads` | Threads items | 10K free calls |
 | Pinterest | `SCRAPECREATORS_API_KEY` + `INCLUDE_SOURCES` contains `pinterest` | Pinterest items | 10K free calls |
+| Facebook | `LAST30DAYS_FACEBOOK_BROWSER=1`, `agent-browser` on PATH, and explicit `--search=facebook` | Facebook posts visible to a signed-in remote browser profile | free; requires operator login in agent-browser/Guacamole/RDP |
 | Bluesky | `BSKY_HANDLE` + `BSKY_APP_PASSWORD` | Bluesky items | yes (app password at bsky.app) |
 | TruthSocial | `TRUTHSOCIAL_TOKEN` | TruthSocial items | yes |
 | Web search | one of: `BRAVE_API_KEY`, `EXA_API_KEY`, `SERPER_API_KEY`, `PARALLEL_API_KEY` | `--auto-resolve` and Step 2 supplements | Brave has a free tier; native WebSearch on Claude Code / Codex / Gemini works as a fallback |
@@ -95,6 +96,13 @@ BRAVE_API_KEY=<your-brave-key>
 # Optional sources
 SCRAPECREATORS_API_KEY=<your-scrapecreators-key>
 INCLUDE_SOURCES=tiktok,instagram
+
+# Facebook via agent-browser remote browser (opt-in; no cookies are stored here)
+LAST30DAYS_FACEBOOK_BROWSER=1
+# Optional overrides; defaults are shown here.
+# LAST30DAYS_FACEBOOK_PROFILE=last30days-facebook
+# LAST30DAYS_FACEBOOK_BROWSER_HOST=remote_headed
+# LAST30DAYS_FACEBOOK_VIEW_PROVIDER=rdp_gateway
 
 # X authentication (one option only)
 AUTH_TOKEN=<your-auth-token>

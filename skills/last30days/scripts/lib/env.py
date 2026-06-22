@@ -410,6 +410,16 @@ def get_config() -> dict[str, Any]:
         ('OPENROUTER_API_KEY', None),
         ('PARALLEL_API_KEY', None),
         ('XQUIK_API_KEY', None),
+        ('LAST30DAYS_FACEBOOK_BROWSER', None),
+        ('LAST30DAYS_FACEBOOK_PROFILE', None),
+        ('LAST30DAYS_FACEBOOK_SESSION', None),
+        ('LAST30DAYS_FACEBOOK_BROWSER_HOST', None),
+        ('LAST30DAYS_FACEBOOK_VIEW_PROVIDER', None),
+        ('LAST30DAYS_FACEBOOK_INPUT_PROVIDER', None),
+        ('LAST30DAYS_FACEBOOK_DISPLAY_ISOLATION', None),
+        ('LAST30DAYS_FACEBOOK_MAX_RESULTS', None),
+        ('LAST30DAYS_FACEBOOK_SCROLLS', None),
+        ('LAST30DAYS_FACEBOOK_TIMEOUT', None),
         # Host-native search signal: set by the SKILL.md agent-host path when the
         # invoking runtime has its own (better) web-search tool, so the engine's
         # keyless search floor stays off there. Defaults unset -> floor allowed.
@@ -905,6 +915,21 @@ def is_pinterest_available(config: dict[str, Any]) -> bool:
 def get_pinterest_token(config: dict[str, Any]) -> str:
     """Get Pinterest API token (same ScrapeCreators key as TikTok/Instagram)."""
     return config.get('SCRAPECREATORS_API_KEY') or ''
+
+
+# Facebook
+def is_facebook_browser_available(config: dict[str, Any]) -> bool:
+    """Check if Facebook browser scraping is explicitly enabled.
+
+    Facebook runs through a user-visible agent-browser session and a persistent
+    runtime profile. Keep it opt-in so normal skill runs never launch a browser
+    or touch a logged-in social account by surprise.
+    """
+    enabled = str(config.get('LAST30DAYS_FACEBOOK_BROWSER') or '').strip().lower()
+    if enabled not in {'1', 'true', 'yes', 'on'}:
+        return False
+    import shutil
+    return shutil.which('agent-browser') is not None
 
 
 # Xquik

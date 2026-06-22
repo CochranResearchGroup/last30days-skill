@@ -19,6 +19,7 @@ from . import (
     digg,
     entity_extract,
     env,
+    facebook,
     github,
     grounding,
     hackernews,
@@ -92,6 +93,7 @@ MOCK_AVAILABLE_SOURCES = [
     "perplexity",
     "threads",
     "pinterest",
+    "facebook",
     "xquik",
     "digg",
     "jobs",
@@ -151,6 +153,8 @@ def available_sources(config: dict[str, Any], requested_sources: list[str] | Non
         available.append("threads")
     if requested_sources and "pinterest" in requested_sources and env.is_pinterest_available(config):
         available.append("pinterest")
+    if requested_sources and "facebook" in requested_sources and env.is_facebook_browser_available(config):
+        available.append("facebook")
     if env.is_xquik_available(config):
         available.append("xquik")
     exclude = {s.strip().lower() for s in (config.get("EXCLUDE_SOURCES") or "").split(",") if s.strip()}
@@ -190,6 +194,7 @@ def diagnose(config: dict[str, Any], requested_sources: list[str] | None = None)
         "native_search": env.is_native_search(config),
         "has_scrapecreators": bool(config.get("SCRAPECREATORS_API_KEY")),
         "has_github": bool(config.get("GITHUB_TOKEN") or which("gh")),
+        "has_facebook_browser": env.is_facebook_browser_available(config),
         "available_sources": available_sources(config, requested_sources),
     }
 
@@ -1241,6 +1246,15 @@ def _retrieve_stream(
             token=env.get_pinterest_token(config),
         )
         return pinterest.parse_pinterest_response(result), {}
+    if source == "facebook":
+        result = facebook.search_facebook(
+            subquery.search_query, from_date, to_date,
+            depth=depth,
+            config=config,
+        )
+        if result.get("error"):
+            raise RuntimeError(str(result["error"]))
+        return facebook.parse_facebook_response(result), {}
     if source == "xiaohongshu":
         return xiaohongshu_api.search_feeds(
             subquery.search_query,

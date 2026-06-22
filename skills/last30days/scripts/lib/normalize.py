@@ -47,6 +47,7 @@ def normalize_source_items(
         "truthsocial": lambda s, i, idx, fd, td: _normalize_microblog(s, i, idx, fd, td, "TS", "Truth Social post"),
         "threads": lambda s, i, idx, fd, td: _normalize_microblog(s, i, idx, fd, td, "TH", "Threads post"),
         "xquik": _normalize_x,
+        "facebook": lambda s, i, idx, fd, td: _normalize_microblog(s, i, idx, fd, td, "FB", "Facebook post"),
         "pinterest": _normalize_pinterest,
         "polymarket": _normalize_polymarket,
         "digg": _normalize_digg,
@@ -445,13 +446,13 @@ def _normalize_microblog(
         title=text[:140] or f"{default_title} {index + 1}",
         body=text,
         url=str(item.get("url") or ""),
-        author=str(item.get("handle") or item.get("author_handle") or "").lstrip("@"),
+        author=str(item.get("handle") or item.get("author_handle") or item.get("author") or "").lstrip("@"),
         published_at=item.get("date"),
         date_confidence=_date_confidence(item, from_date, to_date, default="high"),
         engagement=item.get("engagement") or {},
         relevance_hint=item.get("relevance", 0.5),
         why_relevant=str(item.get("why_relevant") or ""),
-        metadata={"display_name": item.get("display_name")},
+        metadata={**(item.get("metadata") or {}), "display_name": item.get("display_name")},
     )
 
 
