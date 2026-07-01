@@ -104,6 +104,12 @@ LAST30DAYS_FACEBOOK_BROWSER=1
 # LAST30DAYS_FACEBOOK_SESSION=last30days-facebook
 # LAST30DAYS_FACEBOOK_BROWSER_BUILD=stealthcdp_chromium
 # LAST30DAYS_FACEBOOK_VIEW_PROVIDER=rdp_gateway
+# Reuse an already logged-in retained browser/route instead of relaunching a locked profile.
+# LAST30DAYS_FACEBOOK_BROWSER_ID=session:default
+# LAST30DAYS_FACEBOOK_DISPLAY_ALLOCATION_ID=remote-view-display:14
+# LAST30DAYS_FACEBOOK_ROUTE_ID=guacamole:4
+# LAST30DAYS_FACEBOOK_ROUTE_POOL_ENTRY_ID=guacamole-rdp-b
+# LAST30DAYS_FACEBOOK_DISPLAY=:14
 
 # Facebook extraction first runs agent-browser's route-bound remote view opener:
 # agent-browser --json remote-view open <facebook-search-url> --runtime-profile <profile> --browser-build stealthcdp_chromium --provider rdp_gateway

@@ -119,6 +119,11 @@ def search_facebook(
     session = config.get("LAST30DAYS_FACEBOOK_SESSION") or "last30days-facebook"
     browser_build = config.get("LAST30DAYS_FACEBOOK_BROWSER_BUILD") or "stealthcdp_chromium"
     view_provider = config.get("LAST30DAYS_FACEBOOK_VIEW_PROVIDER") or "rdp_gateway"
+    browser_id = str(config.get("LAST30DAYS_FACEBOOK_BROWSER_ID") or "").strip()
+    display_allocation_id = str(config.get("LAST30DAYS_FACEBOOK_DISPLAY_ALLOCATION_ID") or "").strip()
+    route_id = str(config.get("LAST30DAYS_FACEBOOK_ROUTE_ID") or "").strip()
+    route_pool_entry_id = str(config.get("LAST30DAYS_FACEBOOK_ROUTE_POOL_ENTRY_ID") or "").strip()
+    display = str(config.get("LAST30DAYS_FACEBOOK_DISPLAY") or "").strip()
 
     url = f"https://www.facebook.com/search/posts?q={quote_plus(topic)}"
     _log(
@@ -130,10 +135,21 @@ def search_facebook(
         "--json",
         "--session", session,
         "remote-view", "open", url,
-        "--runtime-profile", profile,
         "--browser-build", browser_build,
         "--provider", view_provider,
     ]
+    if browser_id:
+        open_cmd.extend(["--browser-id", browser_id])
+    else:
+        open_cmd.extend(["--runtime-profile", profile])
+    if display_allocation_id:
+        open_cmd.extend(["--display-allocation-id", display_allocation_id])
+    if route_id:
+        open_cmd.extend(["--route-id", route_id])
+    if route_pool_entry_id:
+        open_cmd.extend(["--route-pool-entry-id", route_pool_entry_id])
+    if display:
+        open_cmd.extend(["--display", display])
     open_result = _run(open_cmd, timeout=timeout)
     if open_result.get("error"):
         return {"items": [], "error": open_result["error"]}
