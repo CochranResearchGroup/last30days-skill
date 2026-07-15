@@ -1,0 +1,72 @@
+{
+  "page": {
+    "url": "https://www.facebook.com/search/top/?q=robotic+lawn+mower",
+    "title": "robotic lawn mower - Search Results | Facebook",
+    "heading": "Search results for robotic lawn mower",
+    "query_value": "robotic lawn mower",
+    "has_search_filters": true,
+    "no_results": false,
+    "login_page": false,
+    "checkpoint": false,
+    "error_page": false
+  },
+  "candidates": [
+    {
+      "text": "Facebook Facebook Garden Lab tested a robotic lawn mower across three acres and published the battery and navigation results.",
+      "url": "https://www.facebook.com/gardenlab/posts/123456789?__cft__[0]=tracking&__tn__=%2CO%2CP-R",
+      "author": "Garden Lab",
+      "timestamp": "2026-07-10T15:30:00Z",
+      "sponsored": false,
+      "engagement": {"likes": 42, "comments": 8, "shares": 3}
+    },
+    {
+      "text": "Garden Lab robotic lawn mower products and services",
+      "url": "https://www.facebook.com/gardenlab/",
+      "author": "Garden Lab",
+      "timestamp": "2026-07-10",
+      "sponsored": false,
+      "engagement": {}
+    },
+    {
+      "text": "Robotic Lawn Mower Owners Group discussions and membership",
+      "url": "https://www.facebook.com/groups/roboticmowers/",
+      "author": "Robotic Lawn Mower Owners",
+      "timestamp": "2026-07-10",
+      "sponsored": false,
+      "engagement": {}
+    },
+    {
+      "text": "Sponsored robotic lawn mower sale with limited-time pricing and free delivery.",
+      "url": "https://www.facebook.com/mowerstore/posts/998877",
+      "author": "Mower Store",
+      "timestamp": "2026-07-11",
+      "sponsored": true,
+      "engagement": {"likes": 5}
+    },
+    {
+      "text": "Robotic lawn mower story viewer recommendation",
+      "url": "https://www.facebook.com/stories/gardenlab/112233/",
+      "author": "Garden Lab",
+      "timestamp": "2026-07-11",
+      "sponsored": false,
+      "engagement": {}
+    },
+    {
+      "text": "Suggested for you robotic lawn mower pages and related searches",
+      "url": "https://www.facebook.com/search/pages/?q=robotic+lawn+mower",
+      "author": "Suggestions",
+      "timestamp": "2026-07-11",
+      "sponsored": false,
+      "engagement": {}
+    },
+    {
+      "text": "This robotic lawn mower comment is nested below a different result card and is not itself a post.",
+      "url": "https://www.facebook.com/gardenlab/posts/123456789?comment_id=44",
+      "author": "Fixture Commenter",
+      "timestamp": "2026-07-11",
+      "is_comment": true,
+      "sponsored": false,
+      "engagement": {}
+    }
+  ]
+}

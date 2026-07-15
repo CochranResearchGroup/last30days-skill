@@ -1,0 +1,31 @@
+{
+  "page": {
+    "url": "https://www.facebook.com/search/top/?q=AI+agents",
+    "title": "AI agents - Search Results | Facebook",
+    "heading": "Search results for AI agents",
+    "query_value": "AI agents",
+    "has_search_filters": true,
+    "no_results": false,
+    "login_page": false,
+    "checkpoint": false,
+    "error_page": false
+  },
+  "candidates": [
+    {
+      "text": "Research Systems published a detailed AI agents evaluation covering tool use, planning, and reliability benchmarks.",
+      "url": "https://www.facebook.com/researchsystems/posts/1001",
+      "author": "Research Systems",
+      "timestamp": "3 days ago",
+      "sponsored": false,
+      "engagement": {"likes": 25, "comments": 4, "shares": 2}
+    },
+    {
+      "text": "Agent Builders shared an AI agents deployment guide with concrete monitoring and incident response recommendations.",
+      "url": "https://www.facebook.com/agentbuilders/posts/1002",
+      "author": "Agent Builders",
+      "timestamp": "July 14 at 9:30 AM",
+      "sponsored": false,
+      "engagement": {"likes": 18, "comments": 3, "shares": 1}
+    }
+  ]
+}

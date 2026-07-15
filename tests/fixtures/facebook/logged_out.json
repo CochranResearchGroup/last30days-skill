@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "authenticated": false,
+    "login_form": true,
+    "checkpoint": false,
+    "has_c_user": false,
+    "has_xs": false,
+    "url": "https://www.facebook.com/"
+  }
+}

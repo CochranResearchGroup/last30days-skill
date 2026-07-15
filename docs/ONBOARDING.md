@@ -170,3 +170,22 @@ Use a live run only when you want to test current external source behavior.
 For install/readiness checks, `--diagnose` plus mock smoke tests are enough to
 prove the installed runtime can import, parse flags, execute the pipeline, and
 write output.
+
+## 7. Opt-in Facebook dogfood
+
+Facebook uses an operator-authenticated, retained agent-browser profile. Do not
+run this smoke in CI. First use the current `publicOperatorUrl` returned by
+agent-browser to sign in, then run:
+
+```bash
+LAST30DAYS_FACEBOOK_LIVE_SMOKE=1 \
+LAST30DAYS_FACEBOOK_PROFILE=last30days-facebook \
+LAST30DAYS_FACEBOOK_SESSION=last30days-facebook \
+uv run pytest tests/test_facebook.py -k live -vv
+```
+
+The smoke runs three low-volume queries in one retained browser. It requires
+query-specific search URLs and rejects every item without a canonical post
+permalink, author, and in-range publication date. `auth_required`,
+`checkpoint_required`, and `operator_ingress_unavailable` are operator actions;
+do not bypass them or fall back to broad home-feed extraction.

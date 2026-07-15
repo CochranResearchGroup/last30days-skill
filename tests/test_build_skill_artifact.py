@@ -27,6 +27,7 @@ def test_build_skill_excludes_skillignore_entries() -> None:
     assert "last30days/scripts/last30days.py" in names
     assert "last30days/scripts/store.py" in names
     assert "last30days/scripts/watchlist.py" in names
+    assert "last30days/scripts/lib/facebook.py" in names
     assert any(name.startswith("last30days/scripts/lib/") for name in names)
 
     excluded_prefixes = {
@@ -48,3 +49,4 @@ def test_build_skill_excludes_skillignore_entries() -> None:
         for prefix in excluded_prefixes
     )
     assert names.isdisjoint(excluded_files)
+    assert not any("fixtures/facebook" in name for name in names)

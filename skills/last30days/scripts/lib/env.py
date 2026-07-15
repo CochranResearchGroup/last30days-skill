@@ -426,6 +426,9 @@ def get_config() -> dict[str, Any]:
         ('LAST30DAYS_FACEBOOK_MAX_RESULTS', None),
         ('LAST30DAYS_FACEBOOK_SCROLLS', None),
         ('LAST30DAYS_FACEBOOK_TIMEOUT', None),
+        ('LAST30DAYS_FACEBOOK_INITIAL_WAIT', None),
+        ('LAST30DAYS_FACEBOOK_SCROLL_WAIT', None),
+        ('LAST30DAYS_FACEBOOK_DEBUG_DIR', None),
         # Host-native search signal: set by the SKILL.md agent-host path when the
         # invoking runtime has its own (better) web-search tool, so the engine's
         # keyless search floor stays off there. Defaults unset -> floor allowed.

@@ -104,17 +104,33 @@ LAST30DAYS_FACEBOOK_BROWSER=1
 # LAST30DAYS_FACEBOOK_SESSION=last30days-facebook
 # LAST30DAYS_FACEBOOK_BROWSER_BUILD=stealthcdp_chromium
 # LAST30DAYS_FACEBOOK_VIEW_PROVIDER=rdp_gateway
-# Reuse an already logged-in retained browser/route instead of relaunching a locked profile.
-# LAST30DAYS_FACEBOOK_BROWSER_ID=session:default
-# LAST30DAYS_FACEBOOK_DISPLAY_ALLOCATION_ID=remote-view-display:14
-# LAST30DAYS_FACEBOOK_ROUTE_ID=guacamole:4
-# LAST30DAYS_FACEBOOK_ROUTE_POOL_ENTRY_ID=guacamole-rdp-b
-# LAST30DAYS_FACEBOOK_DISPLAY=:14
+# LAST30DAYS_FACEBOOK_TIMEOUT=75
+# LAST30DAYS_FACEBOOK_MAX_RESULTS=16
+# LAST30DAYS_FACEBOOK_SCROLLS=2
+# LAST30DAYS_FACEBOOK_DEBUG_DIR=~/.local/state/last30days/facebook-debug
 
-# Facebook extraction first runs agent-browser's route-bound remote view opener:
-# agent-browser --json remote-view open <facebook-search-url> --runtime-profile <profile> --browser-build stealthcdp_chromium --provider rdp_gateway
-# A CDP URL, page title, or browser PID is not enough to declare Guacamole/RDP handoff success.
-# The adapter refuses to continue unless the response includes operatorVisible.state=ready.
+# The scraper resolves browser, tab, route, and display identity from current
+# agent-browser service state. Route IDs and display allocations are runtime
+# leases, not durable configuration. It opens the remote Facebook workspace only
+# when no matching retained operator-visible browser exists, then navigates each
+# query through Facebook's Search control or a verified service-owned tab.
+# A command is successful only when profile/auth/search readbacks pass and every
+# emitted item has a canonical post permalink, author, in-range date, and useful text.
+# Debug artifacts contain timings, assertions, counts, and item lengths only;
+# they exclude cookies, operator URLs, raw HTML, and private page text.
+
+Facebook failures are typed so operator action is unambiguous:
+
+| Error type | Meaning / action |
+|---|---|
+| `auth_required` | Open the returned current operator URL and sign in to the configured profile. |
+| `checkpoint_required` | Complete Facebook's checkpoint in the operator-visible browser. |
+| `operator_ingress_unavailable` | Repair public Guacamole/dashboard ingress before retrying authentication. |
+| `profile_mismatch` | The selected agent-browser session is attached to a different profile. |
+| `route_stale` | Refresh or repair current agent-browser route-display service state. |
+| `navigation_mismatch` | Facebook did not reach the exact requested query; no items are emitted. |
+| `extraction_empty` | A verified search page contained no candidate cards. |
+| `quality_gate_failed` | Candidates existed, but none were canonical, dated, relevant posts. |
 
 # X authentication (one option only)
 AUTH_TOKEN=<your-auth-token>

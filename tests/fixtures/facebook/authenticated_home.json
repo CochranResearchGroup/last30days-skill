@@ -1,0 +1,13 @@
+{
+  "page": {
+    "url": "https://www.facebook.com/",
+    "title": "Facebook",
+    "heading": "Home",
+    "query_value": "robotic lawn mower",
+    "has_search_filters": false,
+    "no_results": false,
+    "login_page": false,
+    "checkpoint": false,
+    "error_page": false
+  }
+}

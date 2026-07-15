@@ -960,7 +960,7 @@ Only show lines for platforms where something was resolved. Skip empty lines. On
 - For how_to: prioritize YouTube (tutorials) and Reddit (guides)
 - Primary subquery weight = 1.0, secondary = 0.6-0.8, peripheral = 0.3-0.5
 
-**Available sources (include ALL in primary subquery):** reddit, x, youtube, tiktok, instagram, hackernews, polymarket. Optional: bluesky, truthsocial, threads, pinterest, facebook (agent-browser route-bound remote browser; only when explicitly requested and enabled; requires `operatorVisible.state=ready`, not merely a CDP URL/title), grounding (web search - only if user has Brave/Exa/Serper key), digg (Digg clusters - only if `digg-pp-cli` is on PATH)
+**Available sources (include ALL in primary subquery):** reddit, x, youtube, tiktok, instagram, hackernews, polymarket. Optional: bluesky, truthsocial, threads, pinterest, facebook (agent-browser retained remote browser; only when explicitly requested and enabled; requires current profile/auth/search-state readback and emits only canonical, dated post permalinks), grounding (web search - only if user has Brave/Exa/Serper key), digg (Digg clusters - only if `digg-pp-cli` is on PATH)
 
 **Intent → freshness_mode mapping:**
 - breaking_news, prediction → `strict_recent`
