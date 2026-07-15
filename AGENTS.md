@@ -44,7 +44,7 @@ Python 3.12+ required. Use `uv` for the env; the venv lives at `.venv/`.
 - `lib/__init__.py` must be bare package marker (comment only, NO eager imports)
 - Keep repo-only release/eval/media files outside `skills/last30days/`; `npx skills add` copies that directory recursively and does not honor `.skillignore`.
 - One-time setup: `npx skills add . -g -y` copies the skill into `~/.agents/skills/<name>/` (real directory) and, for harnesses that support symlinked skill dirs, drops a per-host symlink pointing at that copy. **Working-tree edits do NOT propagate automatically** — the `~/.agents/skills/<name>/` copy is frozen at install time. To sync after edits, re-run `npx skills add . -g -y`. For live-edit on a dev machine, replace the install copy with a symlink to the working tree: `ln -sfn "$PWD/skills/last30days" ~/.agents/skills/last30days` (run from the repo root).
-- Git remote: origin = public (`mvanhorn/last30days-skill`)
+- Git remotes: `origin` = public fork (`CochranResearchGroup/last30days-skill`); `upstream` = source (`mvanhorn/last30days-skill`) with push disabled. Work lands on the public fork; do not open pull requests against upstream.
 - Every `lib/*.py` call to `log.source_log(...)` must pass `tty_only=False`. The default is `True`, which silently drops every line when stderr isn't a TTY (Claude Code, Codex, CI, captured output) — turning source observability into invisible failure. Enforced by `tests/test_source_log_visibility.py`.
 - **CLI-gated optional sources** (Digg via `digg-pp-cli`, YouTube via `yt-dlp`) activate only when `shutil.which` resolves the binary on the **agent subprocess PATH** — not merely when the file exists on disk. First-run setup installs Digg through `@mvanhorn/printing-press-library` (default `$HOME/.local/bin`); Hermes/OpenClaw gateways often need that directory on PATH. Setup must distinguish PATH-visible installs from off-PATH binaries and must not claim "now active" unless the engine gate would pass. See `docs/solutions/integration-issues/digg-cli-agent-path-setup-wizard.md`.
 
@@ -73,3 +73,42 @@ When a new config concept lands in `SKILL.md` or `AGENTS.md`, mirror the user-fa
 ## Beta channel
 
 Experimental changes get tested on `mvanhorn/last30days-skill-private`, which installs as a parallel `/last30days-beta` slash command. Beta-only changes never ship to public without a review PR here. Workflow guide lives at `BETA.md` in the private repo. Plan that established this setup: `docs/plans/2026-04-17-005-feat-beta-skill-from-private-repo-plan.md`.
+
+## Policy Loading Contract
+
+- `AGENTS.md` is a routing surface, not a one-time pointer.
+- Re-read the relevant policy files under `docs/dev/policies/` at the start of any non-trivial turn.
+- Re-read the relevant policy files when task scope changes mid-session.
+- When behavior is ambiguous, prefer re-reading policy over improvising from stale assumptions.
+
+## Policy Re-read Triggers
+
+- re-read planning-related policy before opening, revising, or closing a substantive plan
+- re-read documentation-related policy before changing docs, contracts, or canonical authorities
+- re-read validation and closeout policy before claiming work complete
+
+## Policy Entry
+
+This repo keeps its durable repo-local policy under `docs/dev/policies/`.
+
+Read and follow:
+- `docs/dev/policies/0001-planning-discipline.md`
+- `docs/dev/policies/0002-policy-management.md`
+- `docs/dev/policies/0003-policy-upgrade-management.md`
+- `docs/dev/policies/0004-policy-adoption-feedback-loop.md`
+- `docs/dev/policies/0005-graph-backed-memory-usage.md`
+- `docs/dev/policies/0006-codegraph-usage.md`
+- `docs/dev/policies/0007-git-worktree-hygiene.md`
+- `docs/dev/policies/0008-commit-history-discipline.md`
+- `docs/dev/policies/0009-branch-and-integration-strategy.md`
+- `docs/dev/policies/0010-commit-and-push-cadence.md`
+- `docs/dev/policies/0011-versioning-and-release.md`
+- `docs/dev/policies/0012-turn-closeout.md`
+- `docs/dev/policies/0013-validation-and-handoff.md`
+- `docs/dev/policies/0014-upstream-fork-maintenance.md`
+
+## Scope
+
+- `AGENTS.md` includes repo-local guidance plus the policy entry section.
+- The durable policy body lives under `docs/dev/policies/`.
+- Keep repo-specific commands, environment details, and operational caveats in this file or adjacent local docs.
