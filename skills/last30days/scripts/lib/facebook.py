@@ -18,7 +18,7 @@ import shutil
 import subprocess
 import time
 from typing import Any, Literal, Protocol
-from urllib.parse import parse_qs, quote_plus, unquote, urlencode, urlsplit, urlunsplit
+from urllib.parse import parse_qs, unquote, urlencode, urlsplit, urlunsplit
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -46,6 +46,10 @@ ERROR_TYPES = {
     "agent_browser_timeout",
     "agent_browser_error",
 }
+
+RECENT_POSTS_FILTER = (
+    "eyJyZWNlbnRfcG9zdHM6MCI6IntcIm5hbWVcIjpcInJlY2VudF9wb3N0c1wiLFwiYXJnc1wiOlwiXCJ9In0="
+)
 
 AUTH_SCRIPT = r"""
 (() => {
@@ -95,7 +99,26 @@ EXTRACT_SCRIPT = r"""
   const clean = (value) => String(value || "").replace(/[ \t]+/g, " ").trim();
   const main = document.querySelector('[role="main"]') || document.querySelector('main');
   if (!main) return {url: location.href, title: document.title, candidates: []};
-  const nodes = Array.from(main.querySelectorAll('[role="article"], div[aria-posinset]'));
+  const actionSelector = '[aria-label^="Actions for this post by "]';
+  const actionNodes = Array.from(main.querySelectorAll(actionSelector));
+  const rootForAction = (action) => {
+    let root = action;
+    let cursor = action;
+    while (cursor.parentElement && main.contains(cursor.parentElement)) {
+      const parent = cursor.parentElement;
+      if (parent.querySelectorAll(actionSelector).length !== 1) break;
+      root = parent;
+      cursor = parent;
+    }
+    return root;
+  };
+  const actionRoots = actionNodes.map((action) => ({action, node: rootForAction(action)}));
+  const fallbackNodes = Array.from(main.querySelectorAll('[role="article"], div[aria-posinset]'))
+    .filter((node) => !node.querySelector(actionSelector));
+  const nodes = [
+    ...actionRoots.map(({action, node}, index) => ({action, node, source: "action_card", index})),
+    ...fallbackNodes.map((node) => ({action: null, node, source: "semantic_fallback"})),
+  ];
   const candidates = [];
   const seen = new Set();
   const count = (text, label) => {
@@ -106,22 +129,34 @@ EXTRACT_SCRIPT = r"""
     if (!Number.isFinite(value)) return 0;
     return Math.round(value * (raw.endsWith("k") ? 1000 : raw.endsWith("m") ? 1000000 : 1));
   };
-  for (const node of nodes) {
+  for (const entry of nodes) {
+    const {action, node, source, index} = entry;
     const text = (node.innerText || node.textContent || "").trim();
     if (!text) continue;
     const anchors = Array.from(node.querySelectorAll('a[href]'));
     const permalink = anchors.find((a) => /\/posts\/|\/permalink(?:\.php|\/)|story_fbid=|\/groups\/[^/]+\/posts\//.test(a.href || ""));
     const timestamp = anchors.find((a) => a.querySelector('abbr, time') || a.getAttribute('aria-label') || a.getAttribute('data-utime'));
-    const authorNode = node.querySelector('h2 a, h3 a, strong a, a[role="link"]');
+    const actionLabel = action?.getAttribute("aria-label") || "";
+    const actionAuthor = actionLabel.match(/^Actions for this post by (.+)$/)?.[1] || "";
+    const authorNode = anchors.find((a) => clean(a.innerText || a.textContent) === clean(actionAuthor)) ||
+      node.querySelector('h2 a, h3 a, strong a, a[role="link"]');
     const timestampNode = timestamp?.querySelector('abbr, time') || timestamp;
     const url = permalink?.href || "";
-    const key = `${url}|${text.slice(0, 240)}`;
+    const key = source === "action_card"
+      ? `action-card:${index}`
+      : `${url}|${text.slice(0, 240)}`;
     if (seen.has(key)) continue;
     seen.add(key);
     candidates.push({
       text,
       url,
-      author: clean(authorNode?.innerText || authorNode?.textContent || ""),
+      author: clean(actionAuthor || authorNode?.innerText || authorNode?.textContent || ""),
+      author_url: authorNode?.href || "",
+      media_urls: anchors
+        .map((anchor) => anchor.href || "")
+        .filter((href) => /\/photo\/?\?|[?&](?:fbid|set)=/.test(href)),
+      action_label: actionLabel,
+      candidate_source: source,
       timestamp: clean(
         timestampNode?.getAttribute?.("datetime") ||
         timestampNode?.getAttribute?.("data-utime") ||
@@ -129,7 +164,7 @@ EXTRACT_SCRIPT = r"""
         timestampNode?.getAttribute?.("title") ||
         timestampNode?.innerText || timestampNode?.textContent || ""
       ),
-      is_comment: Boolean(node.parentElement?.closest?.('[role="article"]')),
+      is_comment: source === "semantic_fallback" && Boolean(node.parentElement?.closest?.('[role="article"]')),
       sponsored: /(^|\n)\s*(sponsored|paid partnership)\s*($|\n)/i.test(text),
       engagement: {
         likes: count(text, "likes?"),
@@ -381,14 +416,19 @@ class CliAgentBrowserClient:
 
     def act(self, workspace: BrowserWorkspace, action: BrowserAction) -> BrowserState:
         prefix = ["--session", workspace.session_name]
+        if action.operation == "wait":
+            try:
+                delay = max(0.0, float(action.value or "0") / 1000.0)
+            except ValueError:
+                delay = 0.0
+            time.sleep(min(delay, 10.0))
+            return BrowserState()
         if action.operation == "fill":
             args = ["fill", action.target, action.value]
         elif action.operation == "press":
             args = ["press", action.value]
         elif action.operation == "click":
             args = ["click", action.target]
-        elif action.operation == "wait":
-            args = ["wait", action.value]
         elif action.operation == "new_tab":
             args = ["tab", "new", action.value]
         elif action.operation == "scroll":
@@ -600,6 +640,7 @@ class FacebookScraper:
 
     def _navigate(self, workspace: BrowserWorkspace, topic: str) -> FacebookPageState:
         search_url = _search_url(topic)
+        recent_search_url = _search_url(topic, recent=True)
         snapshot = self.client.snapshot(workspace)
         search_ref = _find_ref(snapshot, role={"combobox", "textbox"}, name="Search Facebook")
         strategy = "search_control" if search_ref else "new_tab"
@@ -638,19 +679,51 @@ class FacebookScraper:
             )
 
         refreshed = self.client.snapshot(workspace)
-        recent_ref = _find_ref(refreshed, role={"button", "link", "tab"}, name="Recent posts")
-        if recent_ref:
+        recent_ref = _find_ref(
+            refreshed, role={"button", "link", "switch", "tab"}, name="Recent posts"
+        )
+        recent_active = bool(parse_qs(urlsplit(page.url).query).get("filters")) and bool(
+            recent_ref and _snapshot_ref_checked(refreshed, recent_ref)
+        )
+        if recent_ref and not recent_active:
             self.client.act(workspace, BrowserAction("click", target=recent_ref))
             self.client.act(workspace, BrowserAction("wait", value="1000"))
             filtered = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
-            if _page_matches_query(filtered, topic):
+            if _page_matches_query(filtered, topic) and _recent_filter_active(filtered.url):
                 page = filtered
+        if not _recent_filter_active(page.url):
+            _log("Recent-posts switch did not apply; retrying with verified filtered URL")
+            self.client.act(workspace, BrowserAction("new_tab", value=recent_search_url))
+            self.client.act(workspace, BrowserAction("wait", value="2000"))
+            filtered = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
+            if not _page_matches_query(filtered, topic) or not _recent_filter_active(filtered.url):
+                raise FacebookScraperFailure(
+                    "navigation_mismatch",
+                    f"Facebook Recent-posts filter did not apply for query {topic!r}: {filtered.url}",
+                )
+            page = filtered
         return page
 
     def _extract(self, workspace: BrowserWorkspace) -> list[dict[str, Any]]:
-        raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
-        candidates = raw.get("candidates") or []
-        return [candidate for candidate in candidates if isinstance(candidate, dict)]
+        extracted: list[dict[str, Any]] = []
+        for attempt in range(3):
+            snapshot = self.client.snapshot(workspace)
+            raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
+            candidates = raw.get("candidates") or []
+            extracted = [candidate for candidate in candidates if isinstance(candidate, dict)]
+            _merge_accessible_timestamps(extracted, snapshot.text, self.now)
+            action_cards = [
+                candidate for candidate in extracted
+                if candidate.get("candidate_source") == "action_card"
+            ]
+            if not action_cards or any(
+                _parse_facebook_date(str(candidate.get("timestamp") or ""), self.now)[0]
+                for candidate in action_cards
+            ):
+                return extracted
+            if attempt < 2:
+                time.sleep(1.0)
+        return extracted
 
     def _quality_gate(
         self,
@@ -831,8 +904,16 @@ def parse_facebook_response(response: dict[str, Any]) -> list[dict[str, Any]]:
     return [item for item in items if isinstance(item, dict)]
 
 
-def _search_url(topic: str) -> str:
-    return f"https://www.facebook.com/search/top/?q={quote_plus(topic)}"
+def _search_url(topic: str, *, recent: bool = False) -> str:
+    query = {"q": topic}
+    if recent:
+        query["filters"] = RECENT_POSTS_FILTER
+    return f"https://www.facebook.com/search/top/?{urlencode(query)}"
+
+
+def _recent_filter_active(value: str) -> bool:
+    filters = parse_qs(urlsplit(value).query).get("filters") or []
+    return RECENT_POSTS_FILTER in filters
 
 
 def _page_state(raw: dict[str, Any]) -> FacebookPageState:
@@ -870,11 +951,20 @@ def _find_ref(snapshot: BrowserSnapshot, *, role: set[str], name: str) -> str | 
     return None
 
 
+def _snapshot_ref_checked(snapshot: BrowserSnapshot, ref: str) -> bool:
+    ref_name = re.escape(ref.lstrip("@"))
+    for line in snapshot.text.splitlines():
+        if re.search(rf"\bref={ref_name}\]", line):
+            return "checked=true" in line.casefold()
+    return False
+
+
 def _candidate_from_raw(raw: dict[str, Any], now: datetime) -> FacebookCandidate:
     sponsored = bool(raw.get("sponsored"))
-    canonical_url = _canonical_post_url(str(raw.get("url") or ""))
+    source_url = str(raw.get("url") or "")
+    canonical_url = _canonical_post_url(source_url) or _recover_media_permalink(raw)
     kind = _classify_candidate(
-        str(raw.get("url") or ""), sponsored, canonical_url, is_comment=bool(raw.get("is_comment"))
+        source_url, sponsored, canonical_url, is_comment=bool(raw.get("is_comment"))
     )
     published_at, confidence = _parse_facebook_date(str(raw.get("timestamp") or ""), now)
     text = _clean_post_text(str(raw.get("text") or ""))
@@ -889,6 +979,86 @@ def _candidate_from_raw(raw: dict[str, Any], now: datetime) -> FacebookCandidate
         engagement=_clean_engagement(raw.get("engagement") or {}),
         sponsored=sponsored,
     )
+
+
+def _accessible_post_timestamps(
+    snapshot_text: str, now: datetime
+) -> list[tuple[str, str]]:
+    """Pair accessible timestamp names with post authors in snapshot order."""
+    recent_links: list[str] = []
+    results: list[tuple[str, str]] = []
+    for line in snapshot_text.splitlines():
+        link = re.search(r'^\s*-\s+link\s+"([^"]+)"', line)
+        if link:
+            label = link.group(1).strip()
+            if _parse_facebook_date(label, now)[0]:
+                recent_links.append(label)
+                recent_links = recent_links[-4:]
+        action = re.search(r'Actions for this post by ([^"]+)', line)
+        if action and recent_links:
+            results.append((action.group(1).strip(), recent_links.pop()))
+    return results
+
+
+def _merge_accessible_timestamps(
+    candidates: list[dict[str, Any]], snapshot_text: str, now: datetime
+) -> None:
+    timestamps_by_author: dict[str, list[str]] = {}
+    for author, timestamp in _accessible_post_timestamps(snapshot_text, now):
+        timestamps_by_author.setdefault(author.casefold(), []).append(timestamp)
+    for candidate in candidates:
+        if _parse_facebook_date(str(candidate.get("timestamp") or ""), now)[0]:
+            continue
+        author = str(candidate.get("author") or "").strip().casefold()
+        labels = timestamps_by_author.get(author) or []
+        if labels:
+            candidate["timestamp"] = labels.pop(0)
+
+
+def _recover_media_permalink(raw: dict[str, Any]) -> str | None:
+    """Recover a stable post URL from author and media links in Comet cards."""
+    author_url = str(raw.get("author_url") or "")
+    owner = _facebook_owner_from_profile_url(author_url)
+    if not owner:
+        return None
+    media_urls = raw.get("media_urls") or []
+    for value in media_urls:
+        parsed = urlsplit(str(value or ""))
+        if (parsed.hostname or "").lower() not in {"facebook.com", "www.facebook.com", "m.facebook.com"}:
+            continue
+        query = parse_qs(parsed.query)
+        post_id = ""
+        for set_value in query.get("set", []):
+            match = re.fullmatch(r"(?:pcb|gm)\.(\d+)", set_value)
+            if match:
+                post_id = match.group(1)
+                break
+        if not post_id:
+            post_id = next(iter(query.get("fbid", [])), "")
+        if not post_id or not post_id.isdigit():
+            continue
+        if owner.isdigit():
+            return _canonical_post_url(
+                f"https://www.facebook.com/permalink.php?story_fbid={post_id}&id={owner}"
+            )
+        return _canonical_post_url(f"https://www.facebook.com/{owner}/posts/{post_id}")
+    return None
+
+
+def _facebook_owner_from_profile_url(value: str) -> str:
+    parsed = urlsplit(value)
+    if (parsed.hostname or "").lower() not in {"facebook.com", "www.facebook.com", "m.facebook.com"}:
+        return ""
+    query = parse_qs(parsed.query)
+    if parsed.path.rstrip("/") == "/profile.php":
+        owner = next(iter(query.get("id", [])), "")
+        return owner if owner.isdigit() else ""
+    parts = [part for part in parsed.path.split("/") if part]
+    if not parts or parts[0].casefold() in {
+        "groups", "photo", "permalink.php", "search", "stories", "story.php", "watch"
+    }:
+        return ""
+    return parts[0]
 
 
 def _validate_candidate(
@@ -982,6 +1152,20 @@ def _parse_facebook_date(value: str, now: datetime) -> tuple[str | None, Literal
         return now.date().isoformat(), "med"
     if lowered == "yesterday":
         return (now - timedelta(days=1)).date().isoformat(), "med"
+    article_relative = re.fullmatch(
+        r"(?:about\s+)?an?\s+(minute|hour|day|week|month|year)\s+ago", lowered
+    )
+    if article_relative:
+        unit = article_relative.group(1)
+        delta = {
+            "minute": timedelta(minutes=1),
+            "hour": timedelta(hours=1),
+            "day": timedelta(days=1),
+            "week": timedelta(weeks=1),
+            "month": timedelta(days=30),
+            "year": timedelta(days=365),
+        }[unit]
+        return (now - delta).date().isoformat(), "med"
     relative = re.search(
         r"(?:about\s+)?(\d+)\s*(minute|min|hour|hr|day|week|month|year)s?\s+ago", lowered
     )
@@ -1001,7 +1185,10 @@ def _parse_facebook_date(value: str, now: datetime) -> tuple[str | None, Literal
         else:
             delta = timedelta(days=365 * amount)
         return (now - delta).date().isoformat(), "med"
-    for fmt in ("%B %d, %Y", "%b %d, %Y", "%B %d at %I:%M %p", "%b %d at %I:%M %p"):
+    for fmt in (
+        "%B %d, %Y", "%b %d, %Y", "%B %d", "%b %d",
+        "%B %d at %I:%M %p", "%b %d at %I:%M %p",
+    ):
         try:
             parsed_label = datetime.strptime(raw, fmt)
         except ValueError:
@@ -1020,12 +1207,29 @@ def _clean_post_text(value: str) -> str:
     noise = {
         "like", "comment", "share", "send", "see more", "all reactions", "follow",
         "suggested for you", "people you may know", "facebook",
+        "·",
     }
+    raw_lines = [re.sub(r"[ \t]+", " ", line).strip() for line in value.splitlines()]
     lines: list[str] = []
-    for line in value.splitlines():
-        cleaned = re.sub(r"[ \t]+", " ", line).strip()
-        if not cleaned or cleaned.casefold() in noise:
+    index = 0
+    while index < len(raw_lines):
+        if len(raw_lines[index]) <= 1:
+            end = index
+            while end < len(raw_lines) and len(raw_lines[end]) <= 1:
+                end += 1
+            if end - index >= 5:
+                index = end
+                continue
+        cleaned = raw_lines[index]
+        index += 1
+        normalized = cleaned.casefold().rstrip(":")
+        if not cleaned or normalized in noise or normalized.startswith("comment as "):
             continue
+        if re.fullmatch(r"\d+(?:[,.]\d+)?[KkMm]?", cleaned) or re.fullmatch(
+            r"\d+(?:[,.]\d+)?[KkMm]?\s+(?:comments?|reactions?|shares?)", cleaned, re.I
+        ):
+            continue
+        cleaned = re.sub(r"\s*(?:…|\.\.\.)?\s*See more\s*$", "", cleaned, flags=re.I)
         lines.append(cleaned)
     return "\n".join(lines).strip()
 

@@ -1,6 +1,6 @@
 # Plan 0001 | Agent-Browser Facebook Scraper
 
-State: OPEN
+State: COMPLETE
 Date: 2026-07-15
 
 ## Scope
@@ -18,8 +18,12 @@ Implemented and verified in the working tree:
 - retained browser reuse and profile mismatch rejection
 - accessible Search Facebook navigation with verified new-tab fallback
 - exact final URL and query readback before extraction
-- scoped candidate extraction and post-only classification
-- canonical permalink cleanup, timestamp parsing, date-window filtering, text cleanup, relevance gating, and rejection diagnostics
+- verified Recent Posts filtering with a deterministic filtered-URL fallback
+- action-card extraction with semantic-card fallback and post-only classification
+- canonical permalink recovery from direct and media URLs, including username and numeric-profile posts
+- accessibility timestamp merging with bounded retries for asynchronous Comet rendering
+- timestamp parsing, date-window filtering, text cleanup, relevance gating, and rejection diagnostics
+- bounded local waits while retaining agent-browser for every browser interaction
 - sanitized debug artifacts without cookies, operator URLs, raw HTML, or page text
 - logged-out, authenticated-home, checkpoint, no-results, mixed-card, and date fixtures
 - configuration, skill, onboarding, and installed artifact coverage
@@ -27,17 +31,22 @@ Implemented and verified in the working tree:
 Automated evidence:
 
 - focused Facebook/pipeline/security tests pass
-- full Python suite: `2035 passed, 5 skipped, 6 subtests passed`
+- full Python suite: `2045 passed, 5 skipped, 6 subtests passed`
 - skill artifact build and package-boundary test pass
+- installed `facebook.py` SHA-256 matches the working tree
+- installed-copy Facebook-only dogfood accepted two current posts
+- opt-in three-query `FacebookLiveSmokeTests` passes
 
-Still required:
+Live evidence:
 
-- restore live agent-browser RDP route desktops; current doctor reports missing
-  X11 sockets for both route users and the scraper correctly returns
-  `route_stale`
-- authenticate the retained Facebook profile after remote-view recovery
-- pass the three-query live smoke in one retained browser
-- reinstall the working tree and pass an installed-copy Facebook-only dogfood run
+- agent-browser doctor reports both RDP route desktops ready on displays `:10` and `:11`
+- retained profile/session `last30days-facebook` is authenticated and operator-visible
+- three unrelated queries reused browser `session:last30days-facebook`
+- `regenerative agriculture farming soil health`: two accepted posts, zero rejections
+- `AI agents`: one accepted post with a canonical numeric-profile permalink
+- `robotic lawn mower`: two accepted posts, zero rejections
+
+Still required: None.
 
 ## Non-Goals
 

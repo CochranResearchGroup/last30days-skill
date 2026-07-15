@@ -67,6 +67,10 @@ class FakeAgentBrowserClient:
 
     def act(self, workspace, action):
         self.actions.append(action)
+        if action.operation == "click" and "filters=" not in self.page["url"]:
+            self.page["url"] += f"&filters={facebook.RECENT_POSTS_FILTER}"
+        if action.operation == "new_tab" and action.value:
+            self.page["url"] = action.value
         return facebook.BrowserState()
 
     def evaluate(self, workspace, script):
@@ -102,6 +106,21 @@ class FacebookAvailabilityTests(unittest.TestCase):
 
 
 class FacebookCliAdapterTests(unittest.TestCase):
+    def test_wait_action_is_local_and_bounded(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="last30days-facebook",
+        )
+        with mock.patch("lib.facebook.time.sleep") as sleep, mock.patch.object(
+            client, "_invoke"
+        ) as invoke:
+            state = client.act(workspace, facebook.BrowserAction("wait", value="2000"))
+        sleep.assert_called_once_with(2.0)
+        invoke.assert_not_called()
+        self.assertEqual(facebook.BrowserState(), state)
+
     def test_malformed_json_is_typed(self):
         completed = subprocess.CompletedProcess([], 0, stdout="not json", stderr="")
         with mock.patch("subprocess.run", return_value=completed):
@@ -232,6 +251,34 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual(["fill", "press", "wait"], [action.operation for action in client.actions[:3]])
         self.assertEqual("robotic lawn mower", client.actions[0].value)
 
+    def test_recent_posts_switch_is_activated(self):
+        client = FakeAgentBrowserClient(snapshots=[
+            facebook.BrowserSnapshot(refs={"e1": {"role": "combobox", "name": "Search Facebook"}}),
+            facebook.BrowserSnapshot(refs={"e2": {"role": "switch", "name": "Recent posts"}}),
+        ])
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+        self.assertIsNone(result["error_type"])
+        clicks = [action for action in client.actions if action.operation == "click"]
+        self.assertEqual(["@e2"], [action.target for action in clicks])
+
+    def test_checked_recent_posts_switch_is_not_toggled_off(self):
+        page = dict(fixture("mixed_search.json")["page"])
+        page["url"] += "&filters=recent"
+        client = FakeAgentBrowserClient(page=page, snapshots=[
+            facebook.BrowserSnapshot(refs={"e1": {"role": "combobox", "name": "Search Facebook"}}),
+            facebook.BrowserSnapshot(
+                refs={"e2": {"role": "switch", "name": "Recent posts"}},
+                text='- switch "Recent posts" [checked=true, ref=e2]',
+            ),
+        ])
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+        self.assertIsNone(result["error_type"])
+        self.assertNotIn("click", [action.operation for action in client.actions])
+
     def test_explicit_no_results_is_a_valid_empty_result(self):
         state = fixture("no_results.json")
         client = FakeAgentBrowserClient(page=state["page"], candidates=[])
@@ -262,6 +309,149 @@ class FacebookCandidateQualityTests(unittest.TestCase):
         result = make_scraper(client).search("AI agents", "2026-06-15", "2026-07-15")
         self.assertIsNone(result["error_type"])
         self.assertEqual(["2026-07-12", "2026-07-14"], sorted(item["date"] for item in result["items"]))
+        self.assertEqual(
+            ("2026-07-15", "med"),
+            facebook._parse_facebook_date("about an hour ago", NOW),
+        )
+
+    def test_accessibility_snapshot_pairs_obfuscated_timestamp_with_author(self):
+        snapshot = '''
+- heading "Minnesota Soil Health Coalition  Follow" [level=3, ref=e26]
+  - link "Minnesota Soil Health Coalition" [ref=e31]
+- link "a day ago" [ref=e27]
+- button "Actions for this post by Minnesota Soil Health Coalition" [ref=e33]
+- heading "Regenerative Farming News  Follow" [level=3, ref=e28]
+  - link "Regenerative Farming News" [ref=e36]
+- link "November 17, 2025" [ref=e29]
+- button "Actions for this post by Regenerative Farming News" [ref=e38]
+'''
+        self.assertEqual(
+            [
+                ("Minnesota Soil Health Coalition", "a day ago"),
+                ("Regenerative Farming News", "November 17, 2025"),
+            ],
+            facebook._accessible_post_timestamps(snapshot, NOW),
+        )
+
+    def test_recovers_page_post_permalink_from_photo_set(self):
+        raw = {
+            "author_url": "https://www.facebook.com/mnsoilhealth?tracking=removed",
+            "media_urls": [
+                "https://www.facebook.com/photo/?fbid=1346265997684600&set=pcb.1346266024351264"
+            ],
+        }
+        self.assertEqual(
+            "https://www.facebook.com/mnsoilhealth/posts/1346266024351264",
+            facebook._recover_media_permalink(raw),
+        )
+
+    def test_recovers_numeric_profile_permalink_from_photo_id(self):
+        raw = {
+            "author_url": "https://www.facebook.com/profile.php?id=61578125507402",
+            "media_urls": ["https://www.facebook.com/photo/?fbid=122154486764937516"],
+        }
+        self.assertEqual(
+            "https://www.facebook.com/permalink.php?story_fbid=122154486764937516&id=61578125507402",
+            facebook._recover_media_permalink(raw),
+        )
+
+    def test_cleans_single_character_timestamp_obfuscation(self):
+        raw = """Minnesota Soil Health Coalition
+·
+1
+u
+4
+7
+t
+u
+0
+4
+a
+1
+:
+e
+0
+3
+l
+t
+s
+7
+h
+·
+Leading voices discuss regenerative agriculture and soil health.… See more
+All reactions:
+17
+6 shares
+Comment as Example User"""
+        self.assertEqual(
+            "Minnesota Soil Health Coalition\n"
+            "Leading voices discuss regenerative agriculture and soil health.",
+            facebook._clean_post_text(raw),
+        )
+
+    def test_scraper_merges_accessible_date_into_action_card(self):
+        candidate = {
+            "candidate_source": "action_card",
+            "action_label": "Actions for this post by Minnesota Soil Health Coalition",
+            "author": "Minnesota Soil Health Coalition",
+            "author_url": "https://www.facebook.com/mnsoilhealth",
+            "media_urls": [
+                "https://www.facebook.com/photo/?fbid=1346265997684600&set=pcb.1346266024351264"
+            ],
+            "timestamp": "Minnesota Soil Health Coalition, view story",
+            "text": "A robotic lawn mower demonstration covers regenerative agriculture and soil health.",
+            "engagement": {"likes": 17, "comments": 0, "shares": 6},
+        }
+        client = FakeAgentBrowserClient(
+            candidates=[candidate],
+            snapshots=[
+                facebook.BrowserSnapshot(refs={"e1": {"role": "combobox", "name": "Search Facebook"}}),
+                facebook.BrowserSnapshot(),
+                facebook.BrowserSnapshot(
+                    text='- link "a day ago" [ref=e27]\n'
+                    '- button "Actions for this post by Minnesota Soil Health Coalition" [ref=e33]'
+                ),
+            ],
+        )
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(1, len(result["items"]))
+        self.assertEqual("2026-07-14", result["items"][0]["date"])
+        self.assertEqual(
+            "https://www.facebook.com/mnsoilhealth/posts/1346266024351264",
+            result["items"][0]["url"],
+        )
+
+    def test_scraper_retries_until_action_card_timestamp_renders(self):
+        candidate = {
+            "candidate_source": "action_card",
+            "author": "Garden Lab",
+            "author_url": "https://www.facebook.com/gardenlab",
+            "media_urls": ["https://www.facebook.com/photo/?fbid=1&set=pcb.123456789"],
+            "timestamp": "Garden Lab, view story",
+            "text": "Garden Lab tested a robotic lawn mower with useful navigation and safety notes.",
+        }
+        client = FakeAgentBrowserClient(
+            candidates=[candidate],
+            snapshots=[
+                facebook.BrowserSnapshot(refs={"e1": {"role": "combobox", "name": "Search Facebook"}}),
+                facebook.BrowserSnapshot(),
+                facebook.BrowserSnapshot(),
+                facebook.BrowserSnapshot(
+                    text='- link "2 days ago" [ref=e7]\n'
+                    '- button "Actions for this post by Garden Lab" [ref=e8]'
+                ),
+            ],
+        )
+        with mock.patch("lib.facebook.time.sleep") as sleep:
+            result = make_scraper(client).search(
+                "robotic lawn mower", "2026-06-15", "2026-07-15"
+            )
+        self.assertIsNone(result["error_type"])
+        self.assertEqual("2026-07-13", result["items"][0]["date"])
+        sleep.assert_called_once_with(1.0)
 
     def test_all_rejected_returns_quality_summary(self):
         raw = fixture("mixed_search.json")["candidates"][1:]
@@ -316,7 +506,11 @@ class FacebookLiveSmokeTests(unittest.TestCase):
             "LAST30DAYS_FACEBOOK_INITIAL_WAIT": "1",
         }
         browser_ids = set()
-        for topic in ("AI agents", "robotic lawn mower", "open source robotics"):
+        for topic in (
+            "regenerative agriculture farming soil health",
+            "AI agents",
+            "robotic lawn mower",
+        ):
             result = facebook.search_facebook(topic, "2026-06-15", "2026-07-15", depth="quick", config=config)
             self.assertIsNone(result.get("error_type"), result)
             browser_ids.add(result["workspace"]["browser_id"])
