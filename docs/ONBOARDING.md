@@ -206,6 +206,10 @@ uv run pytest tests/test_linkedin.py -k live -vv
 ```
 
 The smoke runs three low-volume latest-content queries in one retained browser.
+LinkedIn user-like browser actions default to at least four seconds apart
+and no more than six per rolling minute. The scraper reuses one LinkedIn tab
+and stops without retrying when a search-limit, throttling, restriction, or
+unusual-activity warning appears.
 It rejects sponsored and non-post cards and requires canonical LinkedIn post or
 activity permalinks, authors, and in-range dates. Never automate or bypass a
 LinkedIn checkpoint.

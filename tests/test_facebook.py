@@ -69,7 +69,7 @@ class FakeAgentBrowserClient:
         self.actions.append(action)
         if action.operation == "click" and "filters=" not in self.page["url"]:
             self.page["url"] += f"&filters={facebook.RECENT_POSTS_FILTER}"
-        if action.operation == "new_tab" and action.value:
+        if action.operation in {"navigate", "new_tab"} and action.value:
             self.page["url"] = action.value
         return facebook.BrowserState()
 
@@ -106,6 +106,43 @@ class FacebookAvailabilityTests(unittest.TestCase):
 
 
 class FacebookCliAdapterTests(unittest.TestCase):
+    def test_prepare_site_tab_selects_one_and_closes_only_same_site_duplicates(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="shared-social",
+        )
+        tabs = {"tabs": [
+            {"index": 0, "active": False, "url": "https://www.facebook.com/search/top?q=one"},
+            {"index": 1, "active": False, "url": "https://www.facebook.com/search/top?q=two"},
+            {"index": 2, "active": False, "url": "https://www.facebook.com/search/top?q=three"},
+            {"index": 3, "active": True, "url": "https://www.linkedin.com/feed/"},
+        ]}
+        with mock.patch.object(client, "_invoke", side_effect=[tabs, {}, {}, {}]) as invoke:
+            self.assertTrue(client.prepare_site_tab(workspace, "facebook.com", consolidate=True))
+        self.assertEqual(
+            [
+                ["--session", "shared-social", "tab", "list"],
+                ["--session", "shared-social", "tab", "2"],
+                ["--session", "shared-social", "tab", "close", "1"],
+                ["--session", "shared-social", "tab", "close", "0"],
+            ],
+            [call.args[0] for call in invoke.call_args_list],
+        )
+
+    def test_navigate_action_reuses_current_tab(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook", browser_id="browser-1", session_name="shared-social"
+        )
+        with mock.patch.object(client, "_invoke", return_value={}) as invoke:
+            client.act(workspace, facebook.BrowserAction("navigate", value="https://www.facebook.com/"))
+        self.assertEqual(
+            ["--session", "shared-social", "open", "https://www.facebook.com/"],
+            invoke.call_args.args[0],
+        )
+
     def test_wait_action_is_local_and_bounded(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         workspace = facebook.BrowserWorkspace(
@@ -242,7 +279,7 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         result = make_scraper(client).search("robotic lawn mower", "2026-06-15", "2026-07-15")
         self.assertEqual("navigation_mismatch", result["error_type"])
         self.assertEqual([], result["items"])
-        self.assertIn("new_tab", [action.operation for action in client.actions])
+        self.assertIn("navigate", [action.operation for action in client.actions])
 
     def test_query_navigation_uses_accessible_search_control(self):
         client = FakeAgentBrowserClient()

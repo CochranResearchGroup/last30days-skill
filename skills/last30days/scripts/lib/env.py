@@ -442,6 +442,8 @@ def get_config() -> dict[str, Any]:
         ('LAST30DAYS_LINKEDIN_TIMEOUT', None),
         ('LAST30DAYS_LINKEDIN_INITIAL_WAIT', None),
         ('LAST30DAYS_LINKEDIN_SCROLL_WAIT', None),
+        ('LAST30DAYS_LINKEDIN_MIN_ACTION_DELAY', None),
+        ('LAST30DAYS_LINKEDIN_MAX_ACTIONS_PER_MINUTE', None),
         ('LAST30DAYS_LINKEDIN_DEBUG_DIR', None),
         # Host-native search signal: set by the SKILL.md agent-host path when the
         # invoking runtime has its own (better) web-search tool, so the engine's

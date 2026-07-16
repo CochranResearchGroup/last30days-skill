@@ -7,7 +7,7 @@ quality without reading or returning cookie values or raw page HTML.
 
 from __future__ import annotations
 
-from collections import Counter
+from collections import Counter, deque
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 import hashlib
@@ -24,10 +24,13 @@ from .relevance import token_overlap_relevance as _compute_relevance
 
 
 DEPTH_CONFIG = {
-    "quick": {"results": 8, "scrolls": 1, "timeout": 45},
-    "default": {"results": 16, "scrolls": 2, "timeout": 75},
-    "deep": {"results": 30, "scrolls": 4, "timeout": 120},
+    "quick": {"results": 8, "scrolls": 0, "timeout": 45},
+    "default": {"results": 16, "scrolls": 1, "timeout": 75},
+    "deep": {"results": 30, "scrolls": 2, "timeout": 120},
 }
+
+DEFAULT_MIN_ACTION_DELAY = 4.0
+DEFAULT_MAX_ACTIONS_PER_MINUTE = 6
 
 ERROR_TYPES = browser_runtime.ERROR_TYPES
 BrowserWorkspaceRequest = browser_runtime.BrowserWorkspaceRequest
@@ -45,9 +48,9 @@ AUTH_SCRIPT = r"""
   const loginForm = Boolean(document.querySelector(
     'input[name="session_key"], input[name="session_password"], form.login__form, a[href*="/uas/login"]'
   ));
-  const globalNav = document.querySelector(
-    '#global-nav, nav[aria-label="Primary Navigation"], input[placeholder="Search"]'
-  );
+  const globalNav = document.querySelector('#global-nav, nav[aria-label="Primary Navigation"]');
+  const authenticatedNav = Boolean(globalNav) || ["/mynetwork", "/messaging/", "/notifications/"]
+    .every((path) => document.querySelector(`nav a[href*="${path}"], a[href*="${path}"]`));
   const checkpoint = /checkpoint|security verification|enter the code|verify your identity|challenge\//i.test(
     `${location.href}\n${body}`
   );
@@ -56,7 +59,7 @@ AUTH_SCRIPT = r"""
     title: document.title,
     login_form: loginForm,
     checkpoint,
-    authenticated_dom: Boolean(globalNav) && !loginForm && !checkpoint,
+    authenticated_dom: authenticatedNav && !loginForm && !checkpoint,
     has_li_at: cookieNames.has("li_at")
   };
 })()
@@ -66,16 +69,29 @@ AUTH_SCRIPT = r"""
 PAGE_STATE_SCRIPT = r"""
 (() => {
   const clean = (value) => String(value || "").replace(/\s+/g, " ").trim();
-  const body = clean(document.body?.innerText || "").slice(0, 24000);
-  const search = document.querySelector('input[placeholder="Search"], input[aria-label="Search"]');
+  const fullBody = clean(document.body?.innerText || "");
+  const body = fullBody.slice(0, 24000);
+  const search = document.querySelector(
+    'input[placeholder="Search"], input[aria-label="Search"], input[placeholder*="looking for"]'
+  );
   const heading = Array.from(document.querySelectorAll('h1, h2, [role="heading"]'))
     .map((node) => clean(node.innerText || node.textContent))
     .find((text) => /search|results|posts/i.test(text)) || "";
   const filterText = Array.from(document.querySelectorAll('[role="tab"], [role="button"], a'))
     .map((node) => clean(node.innerText || node.textContent)).join(" ");
   const contentCards = document.querySelectorAll(
-    '[data-view-name="feed-full-update"], [data-urn^="urn:li:activity:"], .feed-shared-update-v2'
+    '[data-view-name="feed-full-update"], [data-urn^="urn:li:activity:"], .feed-shared-update-v2, main [role="listitem"]'
   );
+  const rateLimitReason =
+    /commercial use limit|you.?ve reached[^.]{0,80}search limit|out of searches|maximum number of searches/i.test(fullBody)
+      ? "search_limit"
+      : /too many requests|request limit reached/i.test(fullBody)
+        ? "too_many_requests"
+        : /account (?:has been|is) temporarily restricted|temporarily restricted your account/i.test(fullBody)
+          ? "temporary_restriction"
+          : /we.?ve detected unusual activity|automated activity (?:on|from) your account/i.test(fullBody)
+            ? "unusual_activity"
+            : "";
   return {
     url: location.href,
     title: document.title,
@@ -90,6 +106,8 @@ PAGE_STATE_SCRIPT = r"""
     checkpoint: /checkpoint|security verification|enter the code|verify your identity|challenge\//i.test(
       `${location.href} ${body}`
     ),
+    rate_limited: Boolean(rateLimitReason),
+    rate_limit_reason: rateLimitReason,
     error_page: /something went wrong|page not found|temporarily unavailable|service unavailable/i.test(body)
   };
 })()
@@ -99,13 +117,28 @@ PAGE_STATE_SCRIPT = r"""
 EXTRACT_SCRIPT = r"""
 (() => {
   const clean = (value) => String(value || "").replace(/[ \t]+/g, " ").trim();
+  const body = clean(document.body?.innerText || "");
+  const rateLimitReason =
+    /commercial use limit|you.?ve reached[^.]{0,80}search limit|out of searches|maximum number of searches/i.test(body)
+      ? "search_limit"
+      : /too many requests|request limit reached/i.test(body)
+        ? "too_many_requests"
+        : /account (?:has been|is) temporarily restricted|temporarily restricted your account/i.test(body)
+          ? "temporary_restriction"
+          : /we.?ve detected unusual activity|automated activity (?:on|from) your account/i.test(body)
+            ? "unusual_activity"
+            : "";
   const main = document.querySelector('main, [role="main"], .scaffold-layout__main');
-  if (!main) return {url: location.href, title: document.title, candidates: []};
+  if (!main) return {
+    url: location.href, title: document.title, candidates: [],
+    rate_limited: Boolean(rateLimitReason), rate_limit_reason: rateLimitReason
+  };
   const selectors = [
     '[data-view-name="feed-full-update"]',
     '[data-urn^="urn:li:activity:"]',
     '.feed-shared-update-v2',
-    'li.reusable-search__result-container'
+    'li.reusable-search__result-container',
+    'main [role="listitem"]'
   ];
   const nodes = [];
   const nodeSet = new Set();
@@ -144,6 +177,9 @@ EXTRACT_SCRIPT = r"""
     const timeNode = node.querySelector(
       'time, .update-components-actor__sub-description, .feed-shared-actor__sub-description'
     );
+    const timestampText = (text.split("\n").map(clean).find((line) =>
+      /^(?:\d+\s*(?:s|m|h|d|w|mo)|\d+\s+(?:second|minute|hour|day|week|month)s?)(?:\s*•.*)?$/i.test(line)
+    ) || "");
     const actionText = Array.from(node.querySelectorAll('button, [aria-label]'))
       .map((item) => `${item.getAttribute('aria-label') || ''} ${item.innerText || ''}`)
       .join(" ");
@@ -161,7 +197,7 @@ EXTRACT_SCRIPT = r"""
         timeNode?.getAttribute?.('datetime') ||
         timeNode?.getAttribute?.('aria-label') ||
         timeNode?.getAttribute?.('title') ||
-        timeNode?.innerText || timeNode?.textContent || ""
+        timeNode?.innerText || timeNode?.textContent || timestampText
       ),
       sponsored: /(^|\n)\s*(promoted|sponsored)\s*($|\n)/i.test(text),
       engagement: {
@@ -171,7 +207,10 @@ EXTRACT_SCRIPT = r"""
       }
     });
   }
-  return {url: location.href, title: document.title, candidates};
+  return {
+    url: location.href, title: document.title, candidates,
+    rate_limited: Boolean(rateLimitReason), rate_limit_reason: rateLimitReason
+  };
 })()
 """
 
@@ -196,6 +235,8 @@ class LinkedInPageState:
     no_results: bool = False
     login_page: bool = False
     checkpoint: bool = False
+    rate_limited: bool = False
+    rate_limit_reason: str = ""
     error_page: bool = False
 
 
@@ -226,6 +267,50 @@ class LinkedInRunDiagnostics:
             "accepted_count": self.accepted_count,
             "duration_ms": self.duration_ms,
         }
+
+
+class LinkedInInteractionLimiter:
+    """Bound user-like LinkedIn actions within one engine process."""
+
+    def __init__(self, *, min_delay: float, max_actions_per_minute: int) -> None:
+        self.min_delay = max(0.0, min_delay)
+        self.max_actions_per_minute = max(1, max_actions_per_minute)
+        self._events: deque[float] = deque()
+
+    def wait(self) -> None:
+        now = time.monotonic()
+        while self._events and now - self._events[0] >= 60.0:
+            self._events.popleft()
+        delay = 0.0
+        if self._events:
+            delay = max(delay, self.min_delay - (now - self._events[-1]))
+        if len(self._events) >= self.max_actions_per_minute:
+            delay = max(delay, 60.0 - (now - self._events[0]))
+        if delay > 0:
+            time.sleep(delay)
+            now = time.monotonic()
+            while self._events and now - self._events[0] >= 60.0:
+                self._events.popleft()
+        self._events.append(now)
+
+
+_INTERACTION_LIMITERS: dict[tuple[str, float, int], LinkedInInteractionLimiter] = {}
+
+
+def _interaction_limiter(
+    session_name: str,
+    min_delay: float,
+    max_actions_per_minute: int,
+) -> LinkedInInteractionLimiter:
+    key = (session_name, min_delay, max_actions_per_minute)
+    limiter = _INTERACTION_LIMITERS.get(key)
+    if limiter is None:
+        limiter = LinkedInInteractionLimiter(
+            min_delay=min_delay,
+            max_actions_per_minute=max_actions_per_minute,
+        )
+        _INTERACTION_LIMITERS[key] = limiter
+    return limiter
 
 
 class AgentBrowserClient(Protocol):
@@ -336,6 +421,7 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
         )
 
     def inspect_auth(self, workspace: BrowserWorkspace) -> LinkedInAuthState:
+        self.prepare_site_tab(workspace, "linkedin.com", consolidate=True)
         raw = self.evaluate(workspace, AUTH_SCRIPT)
         return LinkedInAuthState(
             authenticated=bool(raw.get("authenticated_dom")),
@@ -347,25 +433,14 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
 
     def _activate_linkedin_tab(self, session_name: str) -> None:
         """Select a retained LinkedIn tab before site-specific auth inspection."""
-        raw = self._invoke(
-            ["--session", session_name, "tab", "list"], timeout=min(self.timeout, 30)
-        )
-        tabs = raw.get("tabs") if isinstance(raw.get("tabs"), list) else []
-        matches = [
-            tab for tab in tabs
-            if isinstance(tab, dict) and "linkedin.com" in str(tab.get("url") or "")
-        ]
-        if not matches:
-            return
-        selected = next((tab for tab in matches if tab.get("active")), matches[-1])
-        if selected.get("active"):
-            return
-        try:
-            index = int(selected.get("index"))
-        except (TypeError, ValueError):
-            return
-        self._invoke(
-            ["--session", session_name, "tab", str(index)], timeout=min(self.timeout, 30)
+        self.prepare_site_tab(
+            BrowserWorkspace(
+                profile_id="",
+                browser_id="",
+                session_name=session_name,
+            ),
+            "linkedin.com",
+            consolidate=True,
         )
 
 
@@ -379,6 +454,7 @@ class LinkedInScraper:
         scrolls: int,
         initial_wait: float,
         scroll_wait: float,
+        interaction_limiter: LinkedInInteractionLimiter | None = None,
         now: datetime | None = None,
         debug_dir: str = "",
     ) -> None:
@@ -388,6 +464,7 @@ class LinkedInScraper:
         self.scrolls = scrolls
         self.initial_wait = initial_wait
         self.scroll_wait = scroll_wait
+        self.interaction_limiter = interaction_limiter
         self.now = now or datetime.now(timezone.utc)
         self.debug_dir = debug_dir
         self._topic = ""
@@ -439,7 +516,7 @@ class LinkedInScraper:
             for _ in range(max(0, self.scrolls)):
                 if len(raw_candidates) >= self.limit:
                     break
-                self.client.act(workspace, BrowserAction("scroll", value="1400"))
+                self._act(workspace, BrowserAction("scroll", value="1400"))
                 if self.scroll_wait:
                     time.sleep(self.scroll_wait)
                 raw_candidates.extend(self._extract(workspace))
@@ -476,11 +553,24 @@ class LinkedInScraper:
 
     def _navigate(self, workspace: BrowserWorkspace, topic: str) -> LinkedInPageState:
         search_url = _search_url(topic)
-        _log(f"Navigating query={topic!r} strategy=new_tab")
-        self.client.act(workspace, BrowserAction("new_tab", value=search_url))
+        prepare_site_tab = getattr(self.client, "prepare_site_tab", None)
+        retained_tab = bool(
+            callable(prepare_site_tab)
+            and prepare_site_tab(workspace, "linkedin.com", consolidate=True)
+        )
+        strategy = "reuse_tab" if retained_tab else "new_tab"
+        _log(f"Navigating query={topic!r} strategy={strategy}")
+        operation = "navigate" if retained_tab else "new_tab"
+        self._act(workspace, BrowserAction(operation, value=search_url))
         self.client.act(workspace, BrowserAction("wait", value="2500"))
         page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
         _log(f"Navigation readback requested={search_url!r} final={page.url!r}")
+        if page.rate_limited:
+            raise LinkedInScraperFailure(
+                "rate_limit_detected",
+                f"LinkedIn warning detected ({page.rate_limit_reason or 'unspecified'}); stopping",
+                operator_url=workspace.operator_url,
+            )
         if page.checkpoint:
             raise LinkedInScraperFailure(
                 "checkpoint_required", "LinkedIn checkpoint appeared during search navigation",
@@ -502,8 +592,21 @@ class LinkedInScraper:
 
     def _extract(self, workspace: BrowserWorkspace) -> list[dict[str, Any]]:
         raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
+        if raw.get("rate_limited"):
+            raise LinkedInScraperFailure(
+                "rate_limit_detected",
+                f"LinkedIn warning detected ({raw.get('rate_limit_reason') or 'unspecified'}); stopping",
+                operator_url=workspace.operator_url,
+            )
         candidates = raw.get("candidates") or []
         return [candidate for candidate in candidates if isinstance(candidate, dict)]
+
+    def _act(self, workspace: BrowserWorkspace, action: BrowserAction) -> BrowserState:
+        if self.interaction_limiter and action.operation in {
+            "navigate", "new_tab", "scroll", "click", "fill", "press"
+        }:
+            self.interaction_limiter.wait()
+        return self.client.act(workspace, action)
 
     def _quality_gate(
         self,
@@ -608,6 +711,8 @@ class LinkedInScraper:
                 "no_results": page.no_results,
                 "login_page": page.login_page,
                 "checkpoint": page.checkpoint,
+                "rate_limited": page.rate_limited,
+                "rate_limit_reason": page.rate_limit_reason,
                 "error_page": page.error_page,
             },
             "diagnostics": result.get("diagnostics") or {},
@@ -653,6 +758,13 @@ def search_linkedin(
         }
     settings = DEPTH_CONFIG.get(depth, DEPTH_CONFIG["default"])
     timeout = int(config.get("LAST30DAYS_LINKEDIN_TIMEOUT") or settings["timeout"])
+    min_action_delay = float(
+        config.get("LAST30DAYS_LINKEDIN_MIN_ACTION_DELAY") or DEFAULT_MIN_ACTION_DELAY
+    )
+    max_actions_per_minute = int(
+        config.get("LAST30DAYS_LINKEDIN_MAX_ACTIONS_PER_MINUTE")
+        or DEFAULT_MAX_ACTIONS_PER_MINUTE
+    )
     request = BrowserWorkspaceRequest(
         profile_id=str(config.get("LAST30DAYS_LINKEDIN_PROFILE") or "last30days-linkedin"),
         session_name=str(config.get("LAST30DAYS_LINKEDIN_SESSION") or "last30days-linkedin"),
@@ -672,6 +784,11 @@ def search_linkedin(
         scrolls=int(config.get("LAST30DAYS_LINKEDIN_SCROLLS") or settings["scrolls"]),
         initial_wait=float(config.get("LAST30DAYS_LINKEDIN_INITIAL_WAIT") or 4.0),
         scroll_wait=float(config.get("LAST30DAYS_LINKEDIN_SCROLL_WAIT") or 2.0),
+        interaction_limiter=_interaction_limiter(
+            request.session_name,
+            min_action_delay,
+            max_actions_per_minute,
+        ),
         debug_dir=str(config.get("LAST30DAYS_LINKEDIN_DEBUG_DIR") or "").strip(),
     )
     return scraper.search(topic, from_date, to_date)
@@ -697,11 +814,11 @@ def _search_url(topic: str) -> str:
 
 def _page_state(raw: dict[str, Any]) -> LinkedInPageState:
     fields = {key: raw.get(key) for key in LinkedInPageState.__dataclass_fields__}
-    for key in ("url", "title", "heading", "query_value"):
+    for key in ("url", "title", "heading", "query_value", "rate_limit_reason"):
         fields[key] = str(fields.get(key) or "")
     for key in (
         "has_content_filters", "has_content_cards", "no_results", "login_page",
-        "checkpoint", "error_page",
+        "checkpoint", "rate_limited", "error_page",
     ):
         fields[key] = bool(fields.get(key))
     return LinkedInPageState(**fields)

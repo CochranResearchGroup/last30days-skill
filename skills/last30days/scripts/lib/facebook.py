@@ -38,6 +38,7 @@ ERROR_TYPES = {
     "route_stale",
     "auth_required",
     "checkpoint_required",
+    "rate_limit_detected",
     "operator_ingress_unavailable",
     "navigation_mismatch",
     "search_unavailable",
@@ -220,7 +221,7 @@ class BrowserSnapshot:
 
 @dataclass(frozen=True)
 class BrowserAction:
-    operation: Literal["fill", "press", "click", "wait", "new_tab", "scroll"]
+    operation: Literal["fill", "press", "click", "wait", "navigate", "new_tab", "scroll"]
     target: str = ""
     value: str = ""
 
@@ -429,6 +430,8 @@ class CliAgentBrowserClient:
             args = ["press", action.value]
         elif action.operation == "click":
             args = ["click", action.target]
+        elif action.operation == "navigate":
+            args = ["open", action.value]
         elif action.operation == "new_tab":
             args = ["tab", "new", action.value]
         elif action.operation == "scroll":
@@ -437,6 +440,51 @@ class CliAgentBrowserClient:
             raise FacebookScraperFailure("agent_browser_error", f"unsupported browser action: {action.operation}")
         raw = self._invoke(prefix + args, timeout=min(self.timeout, 30))
         return BrowserState(url=str(raw.get("url") or ""), title=str(raw.get("title") or ""))
+
+    def prepare_site_tab(
+        self,
+        workspace: BrowserWorkspace,
+        hostname: str,
+        *,
+        consolidate: bool = False,
+    ) -> bool:
+        """Select a retained site tab and optionally close only same-site duplicates."""
+        raw = self._invoke(
+            ["--session", workspace.session_name, "tab", "list"],
+            timeout=min(self.timeout, 30),
+        )
+        tabs = raw.get("tabs") if isinstance(raw.get("tabs"), list) else []
+        matches = [
+            tab for tab in tabs
+            if isinstance(tab, dict) and _url_matches_hostname(str(tab.get("url") or ""), hostname)
+        ]
+        if not matches:
+            return False
+        selected = next((tab for tab in matches if tab.get("active")), matches[-1])
+        try:
+            selected_index = int(selected.get("index"))
+        except (TypeError, ValueError):
+            return False
+        if not selected.get("active"):
+            self._invoke(
+                ["--session", workspace.session_name, "tab", str(selected_index)],
+                timeout=min(self.timeout, 30),
+            )
+        if consolidate:
+            duplicate_indexes = []
+            for tab in matches:
+                try:
+                    index = int(tab.get("index"))
+                except (TypeError, ValueError):
+                    continue
+                if index != selected_index:
+                    duplicate_indexes.append(index)
+            for index in sorted(duplicate_indexes, reverse=True):
+                self._invoke(
+                    ["--session", workspace.session_name, "tab", "close", str(index)],
+                    timeout=min(self.timeout, 30),
+                )
+        return True
 
     def evaluate(self, workspace: BrowserWorkspace, script: str) -> dict[str, Any]:
         raw = self._invoke(
@@ -641,21 +689,27 @@ class FacebookScraper:
     def _navigate(self, workspace: BrowserWorkspace, topic: str) -> FacebookPageState:
         search_url = _search_url(topic)
         recent_search_url = _search_url(topic, recent=True)
+        prepare_site_tab = getattr(self.client, "prepare_site_tab", None)
+        retained_tab = bool(
+            callable(prepare_site_tab)
+            and prepare_site_tab(workspace, "facebook.com", consolidate=True)
+        )
         snapshot = self.client.snapshot(workspace)
         search_ref = _find_ref(snapshot, role={"combobox", "textbox"}, name="Search Facebook")
-        strategy = "search_control" if search_ref else "new_tab"
+        strategy = "search_control" if search_ref else "reuse_tab" if retained_tab else "new_tab"
         _log(f"Navigating query={topic!r} strategy={strategy}")
         if search_ref:
             self.client.act(workspace, BrowserAction("fill", target=search_ref, value=topic))
             self.client.act(workspace, BrowserAction("press", value="Enter"))
         else:
-            self.client.act(workspace, BrowserAction("new_tab", value=search_url))
+            operation = "navigate" if retained_tab else "new_tab"
+            self.client.act(workspace, BrowserAction(operation, value=search_url))
         self.client.act(workspace, BrowserAction("wait", value="2000"))
         page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
 
         if not _page_matches_query(page, topic) and search_ref:
-            _log(f"Search-control navigation mismatch final_url={page.url!r}; retrying with new tab")
-            self.client.act(workspace, BrowserAction("new_tab", value=search_url))
+            _log(f"Search-control navigation mismatch final_url={page.url!r}; retrying in site tab")
+            self.client.act(workspace, BrowserAction("navigate", value=search_url))
             self.client.act(workspace, BrowserAction("wait", value="2000"))
             page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
 
@@ -693,7 +747,7 @@ class FacebookScraper:
                 page = filtered
         if not _recent_filter_active(page.url):
             _log("Recent-posts switch did not apply; retrying with verified filtered URL")
-            self.client.act(workspace, BrowserAction("new_tab", value=recent_search_url))
+            self.client.act(workspace, BrowserAction("navigate", value=recent_search_url))
             self.client.act(workspace, BrowserAction("wait", value="2000"))
             filtered = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
             if not _page_matches_query(filtered, topic) or not _recent_filter_active(filtered.url):
@@ -1280,6 +1334,15 @@ def _select_target_id(session: dict[str, Any], tabs: Any) -> str:
     return ""
 
 
+def _url_matches_hostname(url: str, hostname: str) -> bool:
+    try:
+        observed = (urlsplit(url).hostname or "").lower()
+    except ValueError:
+        return False
+    expected = hostname.lower().lstrip(".")
+    return observed == expected or observed.endswith(f".{expected}")
+
+
 def _ready_operator_stream(browser: dict[str, Any], provider: str) -> dict[str, Any]:
     for stream in browser.get("viewStreams") or []:
         readiness = stream.get("readiness") if isinstance(stream, dict) else None
@@ -1359,7 +1422,7 @@ def _elapsed_ms(started: float) -> int:
 
 
 def _command_operation(args: list[str]) -> str:
-    for token in ("service", "remote-view", "snapshot", "eval", "fill", "press", "click", "wait", "tab", "scroll"):
+    for token in ("service", "remote-view", "snapshot", "eval", "open", "fill", "press", "click", "wait", "tab", "scroll"):
         if token in args:
             return token
     return "unknown"

@@ -175,6 +175,22 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
             client._activate_linkedin_tab("shared-social")
         self.assertEqual(1, invoke.call_count)
 
+    def test_retained_workspace_closes_duplicate_linkedin_tabs_only(self):
+        client = linkedin.CliAgentBrowserClient(timeout=5)
+        with mock.patch.object(client, "_invoke", side_effect=[
+            {"tabs": [
+                {"index": 0, "active": False, "url": "https://www.facebook.com/"},
+                {"index": 1, "active": True, "url": "https://www.linkedin.com/feed/"},
+                {"index": 2, "active": False, "url": "https://www.linkedin.com/search/results/content/"},
+            ]},
+            {},
+        ]) as invoke:
+            client._activate_linkedin_tab("shared-social")
+        self.assertEqual(
+            ["--session", "shared-social", "tab", "close", "2"],
+            invoke.call_args_list[1].args[0],
+        )
+
     def test_search_uses_exact_latest_content_url(self):
         client = FakeAgentBrowserClient()
         result = make_scraper(client).search("robotic lawn mower", "2026-06-15", "2026-07-15")
@@ -200,6 +216,23 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
         result = make_scraper(client).search("robotic lawn mower", "2026-06-15", "2026-07-15")
         self.assertEqual("checkpoint_required", result["error_type"])
         self.assertEqual("https://operator.example/opaque-token", result["operator_url"])
+
+    def test_rate_limit_warning_stops_before_extraction(self):
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({"rate_limited": True, "rate_limit_reason": "search_limit"})
+        client = FakeAgentBrowserClient(page=page)
+        result = make_scraper(client).search("robotic lawn mower", "2026-06-15", "2026-07-15")
+        self.assertEqual("rate_limit_detected", result["error_type"])
+        self.assertEqual([], result["items"])
+
+    def test_interaction_limiter_enforces_minimum_action_delay(self):
+        limiter = linkedin.LinkedInInteractionLimiter(min_delay=4, max_actions_per_minute=6)
+        with mock.patch("lib.linkedin.time.monotonic", side_effect=[100.0, 101.0, 104.0]), mock.patch(
+            "lib.linkedin.time.sleep"
+        ) as sleep:
+            limiter.wait()
+            limiter.wait()
+        sleep.assert_called_once_with(3.0)
 
     def test_logged_out_profile_requires_authentication(self):
         client = FakeAgentBrowserClient(

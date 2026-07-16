@@ -120,7 +120,9 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # LAST30DAYS_LINKEDIN_VIEW_PROVIDER=rdp_gateway
 # LAST30DAYS_LINKEDIN_TIMEOUT=75
 # LAST30DAYS_LINKEDIN_MAX_RESULTS=16
-# LAST30DAYS_LINKEDIN_SCROLLS=2
+# LAST30DAYS_LINKEDIN_SCROLLS=1
+# LAST30DAYS_LINKEDIN_MIN_ACTION_DELAY=4
+# LAST30DAYS_LINKEDIN_MAX_ACTIONS_PER_MINUTE=6
 # LAST30DAYS_LINKEDIN_DEBUG_DIR=~/.local/state/last30days/linkedin-debug
 
 # The scraper resolves browser, tab, route, and display identity from current
@@ -128,7 +130,10 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # leases, not durable configuration. It opens the remote Facebook workspace only
 # when no matching retained operator-visible browser exists, then navigates each
 # query through Facebook's Search control or a verified service-owned tab.
-# A command is successful only when profile/auth/search readbacks pass and every
+# LinkedIn reuses one retained site tab, spaces user-like browser actions by
+# at least four seconds, and stops immediately on search-limit, throttling,
+# temporary-restriction, or unusual-activity warnings. A command is successful
+# only when profile/auth/search readbacks pass and every
 # emitted item has a canonical post permalink, author, in-range date, and useful text.
 # Debug artifacts contain timings, assertions, counts, and item lengths only;
 # they exclude cookies, operator URLs, raw HTML, and private page text.

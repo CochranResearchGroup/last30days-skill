@@ -34,6 +34,10 @@ Implemented and verified:
 - exact latest-content search URL and query/sort readback
 - scoped activity/post extraction, canonical URL handling, relative dates,
   engagement parsing, and strict sponsored/non-post/date/relevance gates
+- retained source-tab reuse and same-site duplicate cleanup, preventing social
+  query tabs from accumulating or leaving the wrong site selected
+- conservative LinkedIn interaction pacing (four-second minimum, six actions
+  per rolling minute) with immediate stop on limit/restriction warnings
 - sanitized diagnostics and debug artifacts
 - planner, pipeline, normalization, ranking, rendering, README, configuration,
   runtime-spec, and onboarding integration
@@ -46,11 +50,19 @@ Live evidence:
   LinkedIn target
 - the real LinkedIn SMS verification page returns `checkpoint_required` and
   the current public operator URL without exposing checkpoint or cookie data
+- after operator login, the redesigned authenticated navigation cluster is
+  recognized and a one-query smoke reused the existing LinkedIn tab
+- the smoke found three semantic post cards and no rate-limit/restriction
+  warning; all three remained rejected because the current card DOM exposes no
+  canonical post permalink
+- same-site cleanup reduced the shared retained browser from five Facebook
+  tabs plus LinkedIn to one Facebook tab plus one selected LinkedIn tab
 
 Still required:
 
 - complete the operator-owned LinkedIn security verification
-- inspect authenticated result-card DOM and adjust selectors if needed
+- resolve canonical post permalinks from LinkedIn's current opaque search-card
+  DOM without clicking per-card controls or fabricating URLs
 - pass three-query live smoke and installed-copy LinkedIn-only dogfood
 
 ## Non-Goals
