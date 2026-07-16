@@ -76,6 +76,7 @@ The project-scoped file is the cleanest pattern for **per-client setups**: drop 
 | Threads | `SCRAPECREATORS_API_KEY` + `INCLUDE_SOURCES` contains `threads` | Threads items | 10K free calls |
 | Pinterest | `SCRAPECREATORS_API_KEY` + `INCLUDE_SOURCES` contains `pinterest` | Pinterest items | 10K free calls |
 | Facebook | `LAST30DAYS_FACEBOOK_BROWSER=1`, `agent-browser` on PATH, and explicit `--search=facebook` | Facebook posts visible to a signed-in route-bound remote browser profile | free; requires operator login in agent-browser/Guacamole/RDP and `operatorVisible.state=ready` proof |
+| LinkedIn | `LAST30DAYS_LINKEDIN_BROWSER=1`, `agent-browser` on PATH, and explicit `--search=linkedin` | LinkedIn content posts visible to a signed-in route-bound remote browser profile | free; requires operator login in agent-browser/Guacamole/RDP and `operatorVisible.state=ready` proof |
 | Bluesky | `BSKY_HANDLE` + `BSKY_APP_PASSWORD` | Bluesky items | yes (app password at bsky.app) |
 | TruthSocial | `TRUTHSOCIAL_TOKEN` | TruthSocial items | yes |
 | Web search | one of: `BRAVE_API_KEY`, `EXA_API_KEY`, `SERPER_API_KEY`, `PARALLEL_API_KEY` | `--auto-resolve` and Step 2 supplements | Brave has a free tier; native WebSearch on Claude Code / Codex / Gemini works as a fallback |
@@ -109,6 +110,19 @@ LAST30DAYS_FACEBOOK_BROWSER=1
 # LAST30DAYS_FACEBOOK_SCROLLS=2
 # LAST30DAYS_FACEBOOK_DEBUG_DIR=~/.local/state/last30days/facebook-debug
 
+# LinkedIn via agent-browser remote browser (opt-in; no cookies are stored here)
+LAST30DAYS_LINKEDIN_BROWSER=1
+# Optional overrides; defaults are shown here. Set these to an existing shared
+# profile/session only when that retained browser already owns the LinkedIn login.
+# LAST30DAYS_LINKEDIN_PROFILE=last30days-linkedin
+# LAST30DAYS_LINKEDIN_SESSION=last30days-linkedin
+# LAST30DAYS_LINKEDIN_BROWSER_BUILD=stealthcdp_chromium
+# LAST30DAYS_LINKEDIN_VIEW_PROVIDER=rdp_gateway
+# LAST30DAYS_LINKEDIN_TIMEOUT=75
+# LAST30DAYS_LINKEDIN_MAX_RESULTS=16
+# LAST30DAYS_LINKEDIN_SCROLLS=2
+# LAST30DAYS_LINKEDIN_DEBUG_DIR=~/.local/state/last30days/linkedin-debug
+
 # The scraper resolves browser, tab, route, and display identity from current
 # agent-browser service state. Route IDs and display allocations are runtime
 # leases, not durable configuration. It opens the remote Facebook workspace only
@@ -119,16 +133,16 @@ LAST30DAYS_FACEBOOK_BROWSER=1
 # Debug artifacts contain timings, assertions, counts, and item lengths only;
 # they exclude cookies, operator URLs, raw HTML, and private page text.
 
-Facebook failures are typed so operator action is unambiguous:
+Facebook and LinkedIn browser failures are typed so operator action is unambiguous:
 
 | Error type | Meaning / action |
 |---|---|
 | `auth_required` | Open the returned current operator URL and sign in to the configured profile. |
-| `checkpoint_required` | Complete Facebook's checkpoint in the operator-visible browser. |
+| `checkpoint_required` | Complete the site's security checkpoint in the operator-visible browser. |
 | `operator_ingress_unavailable` | Repair public Guacamole/dashboard ingress before retrying authentication. |
 | `profile_mismatch` | The selected agent-browser session is attached to a different profile. |
 | `route_stale` | Refresh or repair current agent-browser route-display service state. |
-| `navigation_mismatch` | Facebook did not reach the exact requested query; no items are emitted. |
+| `navigation_mismatch` | The site did not reach the exact requested query/filter state; no items are emitted. |
 | `extraction_empty` | A verified search page contained no candidate cards. |
 | `quality_gate_failed` | Candidates existed, but none were canonical, dated, relevant posts. |
 

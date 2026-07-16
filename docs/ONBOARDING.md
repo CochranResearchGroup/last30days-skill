@@ -189,3 +189,23 @@ query-specific search URLs and rejects every item without a canonical post
 permalink, author, and in-range publication date. `auth_required`,
 `checkpoint_required`, and `operator_ingress_unavailable` are operator actions;
 do not bypass them or fall back to broad home-feed extraction.
+
+## 8. Opt-in LinkedIn dogfood
+
+LinkedIn uses the same retained agent-browser contract but should normally use
+its own `last30days-linkedin` profile. A deliberately shared profile is allowed
+through the overrides below when the browser already owns both logins. Complete
+login or security verification manually through the returned operator URL,
+then run:
+
+```bash
+LAST30DAYS_LINKEDIN_LIVE_SMOKE=1 \
+LAST30DAYS_LINKEDIN_PROFILE=last30days-linkedin \
+LAST30DAYS_LINKEDIN_SESSION=last30days-linkedin \
+uv run pytest tests/test_linkedin.py -k live -vv
+```
+
+The smoke runs three low-volume latest-content queries in one retained browser.
+It rejects sponsored and non-post cards and requires canonical LinkedIn post or
+activity permalinks, authors, and in-range dates. Never automate or bypass a
+LinkedIn checkpoint.

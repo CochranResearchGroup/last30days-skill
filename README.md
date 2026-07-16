@@ -70,6 +70,8 @@ If you're meeting with a CEO, have you read all their tweets and YouTube transcr
 | **GitHub** | For people: PR velocity, top repos by stars, release notes. For topics: issues and discussions. |
 | **Digg** | Curated story clusters from Digg's AI 1000 leaderboard (~1000 high-signal AI accounts on X), with attributable inline quotes (no X auth required). Auto-enabled when `digg-pp-cli` is on PATH. |
 | **Threads** | The post-Twitter text layer. Conversations from creators and brands. |
+| **Facebook** | Authenticated post search through an explicitly enabled, operator-visible agent-browser profile. |
+| **LinkedIn** | Authenticated latest-content search for professional and company posts through an explicitly enabled agent-browser profile. |
 | **Pinterest** | Visual discovery. Pins, saves, and comments on products and ideas. |
 | **Bluesky** | The decentralized social layer. AT Protocol posts from the post-Twitter migration. |
 | **Perplexity** | Grounded web search with citations via Sonar Pro. |
@@ -289,6 +291,7 @@ These platforms don't have relationships with each other. X doesn't know what Re
 | YouTube | `brew install yt-dlp` | Free |
 | Bluesky | App password from bsky.app | Free |
 | TikTok + Instagram + Threads + Pinterest + YouTube comments | ScrapeCreators key | 100 free credits, then PAYG |
+| Facebook + LinkedIn | `agent-browser`, explicit source enablement, and operator login | Free; retained remote browser profile required |
 | Perplexity Sonar | OpenRouter key | Pay as you go |
 | Web search | Brave Search key | 2,000 free queries/month |
 

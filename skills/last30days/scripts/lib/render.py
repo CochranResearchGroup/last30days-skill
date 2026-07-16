@@ -72,6 +72,7 @@ SOURCE_LABELS = {
     "perplexity": "Perplexity",
     "jobs": "Jobs",
     "facebook": "Facebook",
+    "linkedin": "LinkedIn",
 }
 
 
@@ -889,7 +890,7 @@ def render_full(report: schema.Report) -> str:
     # ALL items by source (flat dump, v2-style)
     lines.append("## All Items by Source")
     lines.append("")
-    source_order = ["reddit", "x", "facebook", "youtube", "tiktok", "instagram", "threads", "pinterest",
+    source_order = ["reddit", "x", "facebook", "linkedin", "youtube", "tiktok", "instagram", "threads", "pinterest",
                     "hackernews", "bluesky", "truthsocial", "polymarket", "grounding", "xiaohongshu", "github", "digg", "perplexity", "jobs"]
     for source in source_order:
         items = report.items_by_source.get(source, [])
@@ -1467,6 +1468,7 @@ _FOOTER_SOURCES: list[tuple[str, str, str, str, list[tuple[str, str]]]] = [
     ("reddit",      "🟠", "Reddit",       "thread",   [("score", "upvotes"), ("num_comments", "comments")]),
     ("x",           "🔵", "X",            "post",     [("likes", "likes"), ("reposts", "reposts")]),
     ("facebook",    "🔷", "Facebook",     "post",     [("likes", "likes"), ("comments", "comments"), ("shares", "shares")]),
+    ("linkedin",    "💼", "LinkedIn",     "post",     [("likes", "reactions"), ("comments", "comments"), ("shares", "reposts")]),
     ("youtube",     "🔴", "YouTube",      "video",    [("views", "views")]),  # transcripts appended below in _build_source_footer_lines
     ("tiktok",      "🎵", "TikTok",       "video",    [("views", "views"), ("likes", "likes")]),
     ("instagram",   "📸", "Instagram",    "reel",     [("views", "views"), ("likes", "likes")]),
@@ -1734,6 +1736,7 @@ ENGAGEMENT_DISPLAY: dict[str, list[tuple[str, str]]] = {
     "reddit":       [("score", "pts"), ("num_comments", "cmt")],
     "x":            [("likes", "likes"), ("reposts", "rt"), ("replies", "re")],
     "facebook":     [("likes", "likes"), ("comments", "cmt"), ("shares", "sh")],
+    "linkedin":     [("likes", "react"), ("comments", "cmt"), ("shares", "repost")],
     "youtube":      [("views", "views"), ("likes", "likes"), ("comments", "cmt")],
     "tiktok":       [("views", "views"), ("likes", "likes"), ("comments", "cmt")],
     "instagram":    [("views", "views"), ("likes", "likes"), ("comments", "cmt")],
@@ -1899,6 +1902,7 @@ _HANDLE_PREFIX: dict[str, str] = {
     "x": "@",
     "threads": "@",
     "facebook": "",
+    "linkedin": "",
 }
 
 
@@ -2047,7 +2051,7 @@ def _render_best_takes(candidates, limit=5, threshold=70.0, vote_weight=_FUN_LEV
                     text = body
         source_label = _source_label(candidate.source)
         author = candidate.source_items[0].author if candidate.source_items else None
-        attribution = f"@{author} on {source_label}" if author and candidate.source in ("x", "tiktok", "instagram", "threads") else f"{author} on {source_label}" if author and candidate.source == "facebook" else f"{source_label}"
+        attribution = f"@{author} on {source_label}" if author and candidate.source in ("x", "tiktok", "instagram", "threads") else f"{author} on {source_label}" if author and candidate.source in ("facebook", "linkedin") else f"{source_label}"
         if author and candidate.source == "reddit":
             container = candidate.source_items[0].container if candidate.source_items else None
             attribution = f"r/{container} comment" if container else "Reddit"

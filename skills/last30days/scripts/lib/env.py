@@ -429,6 +429,20 @@ def get_config() -> dict[str, Any]:
         ('LAST30DAYS_FACEBOOK_INITIAL_WAIT', None),
         ('LAST30DAYS_FACEBOOK_SCROLL_WAIT', None),
         ('LAST30DAYS_FACEBOOK_DEBUG_DIR', None),
+        ('LAST30DAYS_LINKEDIN_BROWSER', None),
+        ('LAST30DAYS_LINKEDIN_PROFILE', None),
+        ('LAST30DAYS_LINKEDIN_SESSION', None),
+        ('LAST30DAYS_LINKEDIN_BROWSER_BUILD', None),
+        ('LAST30DAYS_LINKEDIN_VIEW_PROVIDER', None),
+        ('LAST30DAYS_LINKEDIN_BROWSER_ID', None),
+        ('LAST30DAYS_LINKEDIN_ROUTE_ID', None),
+        ('LAST30DAYS_LINKEDIN_ROUTE_POOL_ENTRY_ID', None),
+        ('LAST30DAYS_LINKEDIN_MAX_RESULTS', None),
+        ('LAST30DAYS_LINKEDIN_SCROLLS', None),
+        ('LAST30DAYS_LINKEDIN_TIMEOUT', None),
+        ('LAST30DAYS_LINKEDIN_INITIAL_WAIT', None),
+        ('LAST30DAYS_LINKEDIN_SCROLL_WAIT', None),
+        ('LAST30DAYS_LINKEDIN_DEBUG_DIR', None),
         # Host-native search signal: set by the SKILL.md agent-host path when the
         # invoking runtime has its own (better) web-search tool, so the engine's
         # keyless search floor stays off there. Defaults unset -> floor allowed.
@@ -935,6 +949,16 @@ def is_facebook_browser_available(config: dict[str, Any]) -> bool:
     or touch a logged-in social account by surprise.
     """
     enabled = str(config.get('LAST30DAYS_FACEBOOK_BROWSER') or '').strip().lower()
+    if enabled not in {'1', 'true', 'yes', 'on'}:
+        return False
+    import shutil
+    return shutil.which('agent-browser') is not None
+
+
+# LinkedIn
+def is_linkedin_browser_available(config: dict[str, Any]) -> bool:
+    """Check if explicitly requested LinkedIn browser scraping is enabled."""
+    enabled = str(config.get('LAST30DAYS_LINKEDIN_BROWSER') or '').strip().lower()
     if enabled not in {'1', 'true', 'yes', 'on'}:
         return False
     import shutil

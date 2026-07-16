@@ -157,6 +157,7 @@ def top_comment_vote_signal(candidate: schema.Candidate) -> float:
 ENGAGEMENT_WEIGHTS: dict[str, list[tuple[str, float]]] = {
     "x":            [("likes", 0.55), ("reposts", 0.25), ("replies", 0.15), ("quotes", 0.05)],
     "facebook":     [("likes", 0.40), ("comments", 0.35), ("shares", 0.25)],
+    "linkedin":     [("likes", 0.40), ("comments", 0.35), ("shares", 0.25)],
     "instagram":    [("views", 0.50), ("likes", 0.30), ("comments", 0.20)],
     "hackernews":   [("points", 0.55), ("comments", 0.45)],
     "bluesky":      [("likes", 0.40), ("reposts", 0.30), ("replies", 0.20), ("quotes", 0.10)],

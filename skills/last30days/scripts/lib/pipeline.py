@@ -26,6 +26,7 @@ from . import (
     hiring_signals,
     instagram,
     jobs,
+    linkedin,
     normalize,
     perplexity,
     pinterest,
@@ -67,7 +68,7 @@ SEARCH_ALIAS = {
     "xquik": "xquik",
 }
 
-MAX_SOURCE_FETCHES: dict[str, int] = {"x": 2, "jobs": 1}
+MAX_SOURCE_FETCHES: dict[str, int] = {"x": 2, "jobs": 1, "linkedin": 1}
 
 # Per-handle result caps for the X handle-search lanes. The FROM lane (the
 # subject's own timeline) is the single best source for a person topic, so it
@@ -94,6 +95,7 @@ MOCK_AVAILABLE_SOURCES = [
     "threads",
     "pinterest",
     "facebook",
+    "linkedin",
     "xquik",
     "digg",
     "jobs",
@@ -155,6 +157,8 @@ def available_sources(config: dict[str, Any], requested_sources: list[str] | Non
         available.append("pinterest")
     if requested_sources and "facebook" in requested_sources and env.is_facebook_browser_available(config):
         available.append("facebook")
+    if requested_sources and "linkedin" in requested_sources and env.is_linkedin_browser_available(config):
+        available.append("linkedin")
     if env.is_xquik_available(config):
         available.append("xquik")
     exclude = {s.strip().lower() for s in (config.get("EXCLUDE_SOURCES") or "").split(",") if s.strip()}
@@ -195,6 +199,7 @@ def diagnose(config: dict[str, Any], requested_sources: list[str] | None = None)
         "has_scrapecreators": bool(config.get("SCRAPECREATORS_API_KEY")),
         "has_github": bool(config.get("GITHUB_TOKEN") or which("gh")),
         "has_facebook_browser": env.is_facebook_browser_available(config),
+        "has_linkedin_browser": env.is_linkedin_browser_available(config),
         "available_sources": available_sources(config, requested_sources),
     }
 
@@ -1255,6 +1260,15 @@ def _retrieve_stream(
         if result.get("error"):
             raise RuntimeError(str(result["error"]))
         return facebook.parse_facebook_response(result), {}
+    if source == "linkedin":
+        result = linkedin.search_linkedin(
+            subquery.search_query, from_date, to_date,
+            depth=depth,
+            config=config,
+        )
+        if result.get("error"):
+            raise RuntimeError(str(result["error"]))
+        return linkedin.parse_linkedin_response(result), {}
     if source == "xiaohongshu":
         return xiaohongshu_api.search_feeds(
             subquery.search_query,
