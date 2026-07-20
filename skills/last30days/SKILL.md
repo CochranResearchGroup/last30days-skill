@@ -1795,6 +1795,7 @@ Want another prompt? Just tell me what you're creating next.
 - Sends search queries to Algolia HN Search API (`hn.algolia.com`) for Hacker News story and comment discovery (free, no auth)
 - Sends search queries to Polymarket Gamma API (`gamma-api.polymarket.com`) for prediction market discovery (free, no auth)
 - Runs `yt-dlp` locally for YouTube search and transcript extraction (no API key, public data)
+- After a classified YouTube transport, bot-check, timeout, or rate-limit failure, may use agent-browser's serialized headed `stealthcdp_chromium` fallback on a hidden private display exposed through the Guacamole/RDP operator route; caption requests stay inside the browser context and no cookies or caption URLs are exported
 - Sends search queries to ScrapeCreators API (`api.scrapecreators.com`) for TikTok and Instagram search, transcript/caption extraction (PAYG after 100 free credits)
 - Optionally sends search queries to Brave Search API, Parallel AI API, or OpenRouter API for web search
 - Fetches public Reddit thread data from `reddit.com` for engagement metrics
@@ -1804,7 +1805,7 @@ Want another prompt? Just tell me what you're creating next.
 
 **What this skill does NOT do:**
 - Does not post, like, or modify content on any platform
-- Does not access your Reddit or YouTube accounts; X, Facebook, and LinkedIn account access occurs only through an explicitly enabled operator-authenticated browser profile
+- Does not require or intentionally access your Reddit or YouTube accounts; the YouTube browser fallback uses its dedicated retained browser profile only for public watch pages and captions, while X, Facebook, and LinkedIn account access occurs only through an explicitly enabled operator-authenticated browser profile
 - Does not share API keys between providers (OpenAI key only goes to api.openai.com, etc.)
 - Does not log, cache, or write API keys to output files
 - Does not send data to any endpoint not listed above

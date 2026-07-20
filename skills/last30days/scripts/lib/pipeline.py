@@ -1170,7 +1170,9 @@ def _retrieve_stream(
         # Try yt-dlp first, fall back to SC YouTube if it fails or isn't installed
         if which("yt-dlp"):
             try:
-                result = youtube_yt.search_and_transcribe(yt_query, from_date, to_date, depth=depth)
+                result = youtube_yt.search_and_transcribe(
+                    yt_query, from_date, to_date, depth=depth, config=config
+                )
             except Exception:
                 result = None
         if (result is None or not result.get("items")) and env.is_youtube_sc_available(config):

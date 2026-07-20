@@ -465,6 +465,12 @@ def get_config() -> dict[str, Any]:
         ('EXCLUDE_SOURCES', ''),
         ('LAST30DAYS_DEFAULT_SEARCH', ''),
         ('LAST30DAYS_YOUTUBE_SSH_HOST', None),
+        ('LAST30DAYS_YOUTUBE_BROWSER_FALLBACK', 'auto'),
+        ('LAST30DAYS_YOUTUBE_BROWSER_PROFILE', 'stealthcdp-default'),
+        ('LAST30DAYS_YOUTUBE_BROWSER_SESSION', 'last30days-youtube-transcripts'),
+        ('LAST30DAYS_YOUTUBE_BROWSER_BUILD', 'stealthcdp_chromium'),
+        ('LAST30DAYS_YOUTUBE_BROWSER_VIEW_PROVIDER', 'rdp_gateway'),
+        ('LAST30DAYS_YOUTUBE_BROWSER_TIMEOUT', '75'),
         ('LAST30DAYS_TRANSCRIPT_TIMEOUT', None),
         # Whisper transcription provider for caption-free audio/video. Groq's
         # free tier is preferred; OPENAI_API_KEY is the paid backstop (already

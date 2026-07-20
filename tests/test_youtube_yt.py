@@ -3,6 +3,8 @@
 import json
 import os
 import tempfile
+import threading
+import time
 import unittest
 import urllib.error
 from datetime import datetime, timedelta, timezone
@@ -115,8 +117,8 @@ class TestYtDlpSubLangs(unittest.TestCase):
         with mock.patch.dict(os.environ, {"LAST30DAYS_YT_SUB_LANGS": "   "}):
             self.assertEqual(youtube_yt._ytdlp_sub_langs(), "en,es,pt")
 
-    def test_transcript_cmd_uses_default_sub_langs(self):
-        """Regression: the --sub-lang arg is en,es,pt by default (issue #469)."""
+    def test_transcript_cmd_starts_with_default_preferred_sub_lang(self):
+        """The default language preference starts with English (issue #469)."""
         with tempfile.TemporaryDirectory() as temp_dir, \
              mock.patch.dict(os.environ, {}, clear=False), \
              mock.patch.object(youtube_yt, "is_ytdlp_installed", return_value=True), \
@@ -126,7 +128,7 @@ class TestYtDlpSubLangs(unittest.TestCase):
 
         cmd = run_mock.call_args_list[0].args[0]
         idx = cmd.index("--sub-lang")
-        self.assertEqual(cmd[idx + 1], "en,es,pt")
+        self.assertEqual(cmd[idx + 1], "en")
 
     def test_transcript_cmd_respects_env_var_override(self):
         with tempfile.TemporaryDirectory() as temp_dir, \
@@ -137,7 +139,37 @@ class TestYtDlpSubLangs(unittest.TestCase):
 
         cmd = run_mock.call_args_list[0].args[0]
         idx = cmd.index("--sub-lang")
-        self.assertEqual(cmd[idx + 1], "fr,de,it")
+        self.assertEqual(cmd[idx + 1], "fr")
+
+    def test_available_preferred_caption_is_not_lost_to_lower_priority_rate_limit(self):
+        """A translated-track 429 must not discard an available English caption."""
+        from lib.subproc import SubprocResult
+
+        calls = []
+
+        def fake_run(cmd, timeout=None):
+            calls.append(cmd)
+            language = cmd[cmd.index("--sub-lang") + 1]
+            if language == "en":
+                (Path(temp_dir) / "abc123.en.vtt").write_text(
+                    "WEBVTT\n\n00:00:00.000 --> 00:00:02.000\nEnglish caption text.\n",
+                    encoding="utf-8",
+                )
+                return SubprocResult(returncode=0, stdout="", stderr="")
+            return SubprocResult(
+                returncode=1,
+                stdout="",
+                stderr="ERROR: HTTP Error 429: Too Many Requests",
+            )
+
+        with tempfile.TemporaryDirectory() as temp_dir, \
+             mock.patch.dict(os.environ, {"LAST30DAYS_YT_SUB_LANGS": "en,es,pt"}), \
+             mock.patch.object(youtube_yt, "is_ytdlp_installed", return_value=True), \
+             mock.patch.object(youtube_yt.subproc, "run_with_timeout", side_effect=fake_run):
+            transcript = youtube_yt.fetch_transcript("abc123", temp_dir)
+
+        self.assertEqual(transcript, "English caption text.")
+        self.assertEqual(len(calls), 1)
 
     def test_vtt_matching_picks_non_english_track(self):
         """When yt-dlp writes a Spanish track (no English available), we read it."""
@@ -344,7 +376,9 @@ class TestFetchTranscriptFallback(unittest.TestCase):
              mock.patch.object(youtube_yt, "_fetch_transcript_ytdlp", return_value="WEBVTT\n\nfake") as yt_mock, \
              mock.patch.object(youtube_yt, "_fetch_transcript_direct") as direct_mock:
             result = youtube_yt.fetch_transcript("vid1", "/tmp/test")
-        yt_mock.assert_called_once_with("vid1", "/tmp/test", status=None)
+        yt_mock.assert_called_once()
+        self.assertEqual(("vid1", "/tmp/test"), yt_mock.call_args.args)
+        self.assertIsInstance(yt_mock.call_args.kwargs["status"], dict)
         direct_mock.assert_not_called()
 
     def test_uses_direct_when_ytdlp_missing(self):
@@ -356,19 +390,235 @@ class TestFetchTranscriptFallback(unittest.TestCase):
         )
         with mock.patch.object(youtube_yt, "is_ytdlp_installed", return_value=False), \
              mock.patch.object(youtube_yt, "_fetch_transcript_ytdlp") as yt_mock, \
-             mock.patch.object(youtube_yt, "_fetch_transcript_direct", return_value=sample_vtt) as direct_mock:
+             mock.patch.object(youtube_yt, "_fetch_transcript_direct", return_value=sample_vtt) as direct_mock, \
+             mock.patch.object(youtube_yt, "_fetch_transcript_browser") as browser_mock:
             result = youtube_yt.fetch_transcript("vid2", "/tmp/test")
         yt_mock.assert_not_called()
-        direct_mock.assert_called_once_with("vid2", status=None)
+        direct_mock.assert_called_once()
+        browser_mock.assert_not_called()
         self.assertIsNotNone(result)
         self.assertIn("Direct transcript content", result)
 
     def test_returns_none_when_both_fail(self):
         """Returns None when the chosen path returns None."""
         with mock.patch.object(youtube_yt, "is_ytdlp_installed", return_value=False), \
-             mock.patch.object(youtube_yt, "_fetch_transcript_direct", return_value=None):
+             mock.patch.object(youtube_yt, "_fetch_transcript_direct", return_value=None), \
+             mock.patch.object(youtube_yt, "_fetch_transcript_browser", return_value=None):
             result = youtube_yt.fetch_transcript("novid", "/tmp/test")
         self.assertIsNone(result)
+
+    def test_hard_ytdlp_failure_uses_browser_before_direct_http(self):
+        status = {}
+
+        def hard_failure(_video_id, _temp_dir, status=None, config=None):
+            status["ytdlp_error"] = "ERROR: HTTP Error 429: Too Many Requests"
+            return None
+
+        with mock.patch.object(youtube_yt, "is_ytdlp_installed", return_value=True), \
+             mock.patch.object(youtube_yt, "_fetch_transcript_ytdlp", side_effect=hard_failure), \
+             mock.patch.object(youtube_yt, "_fetch_transcript_direct") as direct_mock, \
+             mock.patch.object(
+                 youtube_yt,
+                 "_fetch_transcript_browser",
+                 return_value="Browser native caption text.",
+             ) as browser_mock:
+            result = youtube_yt.fetch_transcript(
+                "blocked", "/tmp/test", status=status, config={}
+            )
+
+        self.assertEqual("Browser native caption text.", result)
+        browser_mock.assert_called_once_with("blocked", status=status, config={})
+        direct_mock.assert_not_called()
+
+    def test_confirmed_caption_absence_does_not_launch_browser(self):
+        def no_captions(_video_id, status=None):
+            status["no_caption_tracks"] = True
+            return None
+
+        with mock.patch.object(youtube_yt, "is_ytdlp_installed", return_value=False), \
+             mock.patch.object(youtube_yt, "_fetch_transcript_direct", side_effect=no_captions), \
+             mock.patch.object(youtube_yt, "_fetch_transcript_browser") as browser_mock:
+            result = youtube_yt.fetch_transcript("nocaps", "/tmp/test")
+
+        self.assertIsNone(result)
+        browser_mock.assert_not_called()
+
+
+class TestYouTubeBrowserTranscriptFallback(unittest.TestCase):
+    class FakeClient:
+        def __init__(self, result=None):
+            self.result = result or {
+                "state": "ok",
+                "language": "en",
+                "text": "Browser caption text from Chromium.",
+            }
+            self.requests = []
+            self.actions = []
+            self.script = ""
+
+        def acquire_workspace(self, request):
+            self.requests.append(request)
+            return youtube_yt.browser_runtime.BrowserWorkspace(
+                profile_id=request.profile_id,
+                browser_id="browser-youtube",
+                session_name=request.session_name,
+                target_id="target-youtube",
+                route_id="guacamole:youtube",
+                operator_url="https://operator.example/redacted",
+                operator_visible_state="ready",
+            )
+
+        def prepare_site_tab(self, workspace, hostname, consolidate=False):
+            self.hostname = hostname
+            self.consolidate = consolidate
+            return True
+
+        def act(self, workspace, action):
+            self.actions.append(action)
+            return youtube_yt.browser_runtime.BrowserState()
+
+        def evaluate(self, workspace, script):
+            self.script = script
+            return dict(self.result)
+
+    def test_browser_request_enforces_hidden_rdp_posture(self):
+        client = self.FakeClient()
+        status = {}
+        config = {
+            "LAST30DAYS_YOUTUBE_BROWSER_FALLBACK": "1",
+            "LAST30DAYS_YOUTUBE_BROWSER_PROFILE": "stealthcdp-default",
+            "LAST30DAYS_YOUTUBE_BROWSER_SESSION": "youtube-session",
+            "LAST30DAYS_YOUTUBE_BROWSER_BUILD": "stealthcdp_chromium",
+            "LAST30DAYS_YOUTUBE_BROWSER_VIEW_PROVIDER": "rdp_gateway",
+            "LAST30DAYS_YOUTUBE_BROWSER_TIMEOUT": "60",
+            "LAST30DAYS_YT_SUB_LANGS": "es,en",
+        }
+        with mock.patch.object(youtube_yt.shutil, "which", return_value="/usr/bin/agent-browser"):
+            result = youtube_yt._fetch_transcript_browser(
+                "abc123", status=status, config=config, client=client
+            )
+
+        self.assertEqual("Browser caption text from Chromium.", result)
+        request = client.requests[0]
+        self.assertEqual("stealthcdp_chromium", request.browser_build)
+        self.assertEqual("remote_headed", request.browser_host)
+        self.assertEqual("private_virtual_display", request.display_isolation)
+        self.assertEqual("rdp_gateway", request.view_provider)
+        self.assertEqual("manual_attached_desktop", request.control_input_provider)
+        self.assertEqual("last30days", request.service_name)
+        self.assertEqual("youtube-transcript-scraper", request.agent_name)
+        self.assertEqual("youtube-transcript-fallback", request.task_name)
+        self.assertEqual("ready", status["operator_visible_state"])
+        self.assertIn('["es", "en"]', client.script)
+        self.assertNotIn("cookie", result.lower())
+        self.assertEqual(["navigate", "wait"], [action.operation for action in client.actions])
+
+    def test_browser_fallback_can_be_disabled(self):
+        client = self.FakeClient()
+        status = {}
+        result = youtube_yt._fetch_transcript_browser(
+            "abc123",
+            status=status,
+            config={"LAST30DAYS_YOUTUBE_BROWSER_FALLBACK": "0"},
+            client=client,
+        )
+        self.assertIsNone(result)
+        self.assertEqual([], client.requests)
+        self.assertEqual("disabled_or_unavailable", status["browser_fallback"])
+
+    def test_browser_confirmed_absence_sets_caption_signal(self):
+        client = self.FakeClient({"state": "no_caption_tracks"})
+        status = {}
+        with mock.patch.object(youtube_yt.shutil, "which", return_value="/usr/bin/agent-browser"):
+            result = youtube_yt._fetch_transcript_browser(
+                "nocaps",
+                status=status,
+                config={"LAST30DAYS_YOUTUBE_BROWSER_FALLBACK": "auto"},
+                client=client,
+            )
+        self.assertIsNone(result)
+        self.assertTrue(status["no_caption_tracks"])
+
+    def test_broker_access_plan_requires_hidden_rdp_launch_posture(self):
+        client = youtube_yt._YouTubeBrowserClient(timeout=30)
+        request = youtube_yt.browser_runtime.BrowserWorkspaceRequest(
+            profile_id="stealthcdp-default",
+            session_name="youtube-session",
+            browser_build="stealthcdp_chromium",
+            view_provider="rdp_gateway",
+            timeout=30,
+            start_url="https://www.youtube.com/watch?v=abc123",
+            service_name="last30days",
+            agent_name="youtube-transcript-scraper",
+            task_name="youtube-transcript-fallback",
+        )
+        plan = {
+            "selectedProfile": {"id": "stealthcdp-default"},
+            "decision": {"launchPosture": {
+                "browserBuild": "stealthcdp_chromium",
+                "browserHost": "remote_headed",
+                "displayIsolation": "private_virtual_display",
+                "viewStreamProvider": "rdp_gateway",
+            }},
+        }
+        status = {"service_state": {"sessions": {}, "browsers": {}, "tabs": {}}}
+        opened = {
+            "profileId": "stealthcdp-default",
+            "browserId": "browser-youtube",
+            "sessionName": "youtube-session",
+            "operatorVisible": {"state": "ready"},
+        }
+        with mock.patch.object(client, "_invoke", side_effect=[plan, status, opened]) as invoke:
+            workspace = client.acquire_workspace(request)
+
+        access_command = invoke.call_args_list[0].args[0]
+        open_command = invoke.call_args_list[2].args[0]
+        self.assertIn("youtube", access_command)
+        self.assertIn("--browser-host", open_command)
+        self.assertEqual("remote_headed", open_command[open_command.index("--browser-host") + 1])
+        self.assertEqual(
+            "private_virtual_display",
+            open_command[open_command.index("--display-isolation") + 1],
+        )
+        self.assertEqual("rdp_gateway", open_command[open_command.index("--view-stream-provider") + 1])
+        self.assertEqual("ready", workspace.operator_visible_state)
+
+    def test_browser_fallback_is_serialized_across_transcript_workers(self):
+        state_lock = threading.Lock()
+        active = 0
+        max_active = 0
+
+        class SlowClient(self.FakeClient):
+            def evaluate(self, workspace, script):
+                nonlocal active, max_active
+                with state_lock:
+                    active += 1
+                    max_active = max(max_active, active)
+                try:
+                    time.sleep(0.05)
+                    return super().evaluate(workspace, script)
+                finally:
+                    with state_lock:
+                        active -= 1
+
+        config = {"LAST30DAYS_YOUTUBE_BROWSER_FALLBACK": "1"}
+        clients = [SlowClient(), SlowClient()]
+        results = []
+
+        def run(index):
+            results.append(youtube_yt._fetch_transcript_browser(
+                f"video-{index}", config=config, client=clients[index]
+            ))
+
+        with mock.patch.object(youtube_yt.shutil, "which", return_value="/usr/bin/agent-browser"):
+            workers = [threading.Thread(target=run, args=(index,)) for index in range(2)]
+            for worker in workers:
+                worker.start()
+            for worker in workers:
+                worker.join()
+
+        self.assertEqual(1, max_active)
+        self.assertEqual(2, len(results))
 
 
 class TestExpandYouTubeQueries(unittest.TestCase):

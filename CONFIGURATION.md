@@ -68,7 +68,7 @@ The project-scoped file is the cleanest pattern for **per-client setups**: drop 
 | Hacker News | none | always on | yes |
 | Polymarket | none | always on | yes |
 | GitHub | `gh` CLI installed (uses your GitHub auth) | always on if `gh` present | yes |
-| YouTube | `yt-dlp` CLI installed | always on if `yt-dlp` present | yes |
+| YouTube | `yt-dlp` CLI installed; optional `agent-browser` browser fallback is auto-detected | always on if `yt-dlp` present | yes |
 | Digg | `digg-pp-cli` on PATH (auto-installed during first-run setup via `npx -y @mvanhorn/printing-press-library@0.1.16 install digg --cli-only`; binary defaults to `$HOME/.local/bin` — Hermes/OpenClaw agent subprocesses must inherit that dir on PATH for Digg to activate; prior pp-digg installs use the same path) | always on if `digg-pp-cli` on PATH | yes (free, keyless, read-only) |
 | X / Twitter | one of: `LAST30DAYS_X_BROWSER=1` plus `agent-browser` and an authenticated profile, `AUTH_TOKEN` + `CT0` (Bird), `XAI_API_KEY`, `XQUIK_API_KEY`, `SCRAPECREATORS_API_KEY`, or `FROM_BROWSER` | X items in results | agent-browser / cookie auth / Bird = free; Xquik / xAI / ScrapeCreators = key-based |
 | TikTok | `SCRAPECREATORS_API_KEY` + `INCLUDE_SOURCES` contains `tiktok` | TikTok items | 10K free calls |
@@ -97,6 +97,15 @@ BRAVE_API_KEY=<your-brave-key>
 # Optional sources
 SCRAPECREATORS_API_KEY=<your-scrapecreators-key>
 INCLUDE_SOURCES=tiktok,instagram
+
+# YouTube keeps yt-dlp as its primary path. When a classified transport or
+# bot-check failure exhausts it, auto uses one hidden-RDP stealth Chromium lane.
+LAST30DAYS_YOUTUBE_BROWSER_FALLBACK=auto
+# LAST30DAYS_YOUTUBE_BROWSER_PROFILE=stealthcdp-default
+# LAST30DAYS_YOUTUBE_BROWSER_SESSION=last30days-youtube-transcripts
+# LAST30DAYS_YOUTUBE_BROWSER_BUILD=stealthcdp_chromium
+# LAST30DAYS_YOUTUBE_BROWSER_VIEW_PROVIDER=rdp_gateway
+# LAST30DAYS_YOUTUBE_BROWSER_TIMEOUT=75
 
 # X via an authenticated agent-browser profile (opt-in; preferred over API
 # backends while enabled). The default profile already used on this workstation
@@ -189,6 +198,36 @@ BSKY_APP_PASSWORD=<your-app-password>
 After editing: `chmod 600 ~/.config/last30days/.env` (or `chmod 600 .claude/last30days.env` if using the project-scoped variant).
 
 **Troubleshooting:** if a source you expected to see isn't appearing in results, run `python3 scripts/last30days.py --diagnose`. It prints a per-source availability report (which keys were detected, which CLIs are installed, which backends are reachable) without running a full search.
+
+### YouTube caption language and browser fallback
+
+`LAST30DAYS_YT_SUB_LANGS` is a comma-separated preference order for YouTube
+captions. The default is `en,es,pt`. Languages are attempted one at a time and
+the first available caption wins, so a rate limit or failure on a translated
+lower-priority track cannot discard a caption already obtained in a preferred
+language.
+
+```bash
+LAST30DAYS_YT_SUB_LANGS=en,es,pt
+```
+
+`LAST30DAYS_YOUTUBE_BROWSER_FALLBACK` controls the bounded fallback used after
+a classified `yt-dlp` or direct-HTTP transport failure:
+
+- `auto` (default) uses it only when `agent-browser` is on the engine
+  subprocess PATH.
+- `1` enables it when `agent-browser` is available.
+- `0` disables it.
+
+The fallback resolves `targetServiceId=youtube`, uses the retained profile and
+session knobs shown above, and requires `stealthcdp_chromium` in headed
+`remote_headed` mode on a `private_virtual_display` with an
+`rdp_gateway` operator view. Browser work is serialized even when normal
+caption fetches run concurrently. It reads caption metadata from the watch
+page and fetches timed text inside that page's Chromium context; browser
+cookies, storage, raw HTML, and caption URLs are never exported to Python.
+Confirmed caption absence does not launch the browser. Videos without captions
+remain candidates for the separate `../transcribe-audio` ASR workflow.
 
 ### Encrypted credential sources (Keychain / pass)
 

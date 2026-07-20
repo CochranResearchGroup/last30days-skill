@@ -14,6 +14,7 @@ import shlex
 import shutil
 import sys
 import tempfile
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -56,7 +57,7 @@ def reset_transcript_fetch_stats() -> None:
 # Max words to keep from each transcript
 TRANSCRIPT_MAX_WORDS = 5000
 
-from . import dates, http, log, subproc
+from . import dates, facebook as browser_runtime, http, log, subproc
 from .query import infer_query_intent
 
 from .relevance import token_overlap_relevance as _compute_relevance
@@ -81,6 +82,111 @@ _NO_CAPTION_RE = re.compile(
     r"no subtitles|requested (format|language)|there'?s no .*subtitles",
     re.IGNORECASE,
 )
+
+_YOUTUBE_BROWSER_LOCK = threading.Lock()
+
+_YOUTUBE_TRANSCRIPT_SCRIPT = r"""
+(async () => {
+  const languages = __LANGUAGES__;
+  const response =
+    window.ytInitialPlayerResponse ||
+    window.ytplayer?.config?.args?.raw_player_response ||
+    document.querySelector('ytd-watch-flexy')?.data?.playerResponse ||
+    document.querySelector('ytd-player')?.getPlayerResponse?.();
+  const tracks = response?.captions?.playerCaptionsTracklistRenderer?.captionTracks || [];
+  if (!tracks.length) {
+    return {state: "no_caption_tracks"};
+  }
+  const normalize = (value) => String(value || "").trim().toLowerCase();
+  let track = null;
+  for (const preferred of languages) {
+    track = tracks.find((candidate) => normalize(candidate.languageCode) === preferred) ||
+      tracks.find((candidate) => normalize(candidate.languageCode).startsWith(`${preferred}-`));
+    if (track) break;
+  }
+  track ||= tracks[0];
+  if (!track?.baseUrl) {
+    return {state: "caption_url_missing"};
+  }
+  const captionUrl = new URL(track.baseUrl, location.origin);
+  captionUrl.searchParams.set("fmt", "json3");
+  const captionResponse = await fetch(captionUrl.toString(), {
+    credentials: "include",
+    headers: {"Accept": "application/json,text/plain,*/*"}
+  });
+  if (!captionResponse.ok) {
+    return {state: "caption_fetch_failed", http_status: captionResponse.status};
+  }
+  const rawCaption = await captionResponse.text();
+  let text = "";
+  if (rawCaption.trim()) {
+    try {
+      const payload = JSON.parse(rawCaption);
+      text = (payload.events || [])
+        .flatMap((event) => event.segs || [])
+        .map((segment) => String(segment.utf8 || ""))
+        .join("")
+        .replace(/\s+/g, " ")
+        .trim();
+    } catch (_) {
+      text = "";
+    }
+  }
+  if (text) {
+    return {
+      state: "ok",
+      language: normalize(track.languageCode),
+      transport: "timed_text",
+      text
+    };
+  }
+
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const segmentText = () => {
+    const panels = Array.from(document.querySelectorAll("ytd-transcript-renderer"));
+    const panel = panels.find((node) => node.getClientRects().length) || panels[0] || document;
+    return Array.from(
+      panel.querySelectorAll("ytd-transcript-segment-renderer .segment-text")
+    ).map((node) => String(node.innerText || node.textContent || "").trim()).filter(Boolean);
+  };
+  if (!segmentText().length) {
+    const showTranscript = Array.from(document.querySelectorAll("button")).find((node) =>
+      normalize(node.getAttribute("aria-label")) === "show transcript"
+    );
+    showTranscript?.click();
+    for (let attempt = 0; attempt < 20 && !segmentText().length; attempt += 1) {
+      await sleep(250);
+    }
+  }
+
+  const trackName = normalize(
+    track.name?.simpleText ||
+    (track.name?.runs || []).map((run) => run.text || "").join("")
+  );
+  const dropdown = Array.from(document.querySelectorAll("tp-yt-paper-button.dropdown-trigger"))
+    .find((node) => node.getClientRects().length);
+  if (dropdown && trackName && normalize(dropdown.innerText || dropdown.textContent) !== trackName) {
+    const before = segmentText().slice(0, 3).join(" ");
+    dropdown.click();
+    await sleep(150);
+    const choice = Array.from(document.querySelectorAll("tp-yt-paper-item"))
+      .find((node) => normalize(node.innerText || node.textContent) === trackName);
+    choice?.click();
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      await sleep(250);
+      const after = segmentText().slice(0, 3).join(" ");
+      if (after && after !== before) break;
+    }
+  }
+  text = segmentText().join(" ").replace(/\s+/g, " ").trim();
+  return {
+    state: text ? "ok" : "caption_empty",
+    language: normalize(track.languageCode),
+    transport: "ui_transcript",
+    text
+  };
+})()
+"""
 
 
 def extract_transcript_highlights(transcript: str, topic: str, limit: int = 5) -> list[str]:
@@ -418,6 +524,174 @@ def _clean_vtt(vtt_text: str) -> str:
 _YT_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 
 
+def _youtube_browser_setting(
+    config: Optional[Dict[str, Any]],
+    name: str,
+    default: str,
+) -> str:
+    if config and config.get(name) not in (None, ""):
+        return str(config[name]).strip()
+    value = os.environ.get(name)
+    return value.strip() if value is not None and value.strip() else default
+
+
+def _youtube_browser_fallback_enabled(config: Optional[Dict[str, Any]] = None) -> bool:
+    setting = _youtube_browser_setting(
+        config, "LAST30DAYS_YOUTUBE_BROWSER_FALLBACK", "auto"
+    ).lower()
+    if setting in {"0", "false", "no", "off", "disabled"}:
+        return False
+    if setting in {"1", "true", "yes", "on", "enabled"}:
+        return shutil.which("agent-browser") is not None
+    return setting == "auto" and shutil.which("agent-browser") is not None
+
+
+class _YouTubeBrowserClient(browser_runtime.CliAgentBrowserClient):
+    """Broker-verified agent-browser adapter for public YouTube captions."""
+
+    def acquire_workspace(
+        self,
+        request: browser_runtime.BrowserWorkspaceRequest,
+    ) -> browser_runtime.BrowserWorkspace:
+        plan = self._invoke(
+            [
+                "service", "access-plan",
+                "--service-name", request.service_name,
+                "--agent-name", request.agent_name,
+                "--task-name", request.task_name,
+                "--target-service-id", "youtube",
+                "--url", request.start_url,
+                "--runtime-profile", request.profile_id,
+                "--browser-build", request.browser_build,
+                "--browser-host", request.browser_host,
+                "--view-stream-provider", request.view_provider,
+                "--control-input-provider", request.control_input_provider,
+                "--display-isolation", request.display_isolation,
+            ],
+            timeout=min(request.timeout, 30),
+        )
+        selected = plan.get("selectedProfile")
+        selected_profile = str(selected.get("id") or "") if isinstance(selected, dict) else ""
+        if selected_profile != request.profile_id:
+            raise browser_runtime.FacebookScraperFailure(
+                "profile_mismatch",
+                f"agent-browser selected profile {selected_profile!r}, not {request.profile_id!r}",
+            )
+        decision = plan.get("decision") if isinstance(plan.get("decision"), dict) else {}
+        launch = decision.get("launchPosture") if isinstance(decision.get("launchPosture"), dict) else {}
+        required = {
+            "browserBuild": request.browser_build,
+            "browserHost": "remote_headed",
+            "displayIsolation": "private_virtual_display",
+            "viewStreamProvider": "rdp_gateway",
+        }
+        mismatches = [
+            key for key, expected in required.items()
+            if str(launch.get(key) or "") != expected
+        ]
+        if mismatches:
+            raise browser_runtime.FacebookScraperFailure(
+                "agent_browser_error",
+                "agent-browser access plan did not preserve hidden-RDP posture: "
+                + ", ".join(mismatches),
+            )
+        return super().acquire_workspace(request)
+
+
+def _fetch_transcript_browser(
+    video_id: str,
+    status: Optional[Dict[str, Any]] = None,
+    config: Optional[Dict[str, Any]] = None,
+    client: Optional[_YouTubeBrowserClient] = None,
+) -> Optional[str]:
+    """Fetch captions inside a retained hidden-RDP stealth Chromium page."""
+    if not _youtube_browser_fallback_enabled(config):
+        if status is not None:
+            status["browser_fallback"] = "disabled_or_unavailable"
+        return None
+
+    watch_url = f"https://www.youtube.com/watch?v={video_id}"
+    timeout = int(_youtube_browser_setting(
+        config, "LAST30DAYS_YOUTUBE_BROWSER_TIMEOUT", "75"
+    ))
+    request = browser_runtime.BrowserWorkspaceRequest(
+        profile_id=_youtube_browser_setting(
+            config, "LAST30DAYS_YOUTUBE_BROWSER_PROFILE", "stealthcdp-default"
+        ),
+        session_name=_youtube_browser_setting(
+            config,
+            "LAST30DAYS_YOUTUBE_BROWSER_SESSION",
+            "last30days-youtube-transcripts",
+        ),
+        browser_build=_youtube_browser_setting(
+            config, "LAST30DAYS_YOUTUBE_BROWSER_BUILD", "stealthcdp_chromium"
+        ),
+        view_provider=_youtube_browser_setting(
+            config, "LAST30DAYS_YOUTUBE_BROWSER_VIEW_PROVIDER", "rdp_gateway"
+        ),
+        timeout=timeout,
+        start_url=watch_url,
+        service_name="last30days",
+        agent_name="youtube-transcript-scraper",
+        task_name="youtube-transcript-fallback",
+        browser_host="remote_headed",
+        display_isolation="private_virtual_display",
+        control_input_provider="manual_attached_desktop",
+    )
+    browser_client = client or _YouTubeBrowserClient(timeout=timeout)
+    languages = _ytdlp_sub_langs(config).split(",")
+    script = _YOUTUBE_TRANSCRIPT_SCRIPT.replace("__LANGUAGES__", json.dumps(languages))
+
+    try:
+        with _YOUTUBE_BROWSER_LOCK:
+            workspace = browser_client.acquire_workspace(request)
+            retained_tab = browser_client.prepare_site_tab(
+                workspace, "youtube.com", consolidate=True
+            )
+            operation = "navigate" if retained_tab else "new_tab"
+            browser_client.act(
+                workspace,
+                browser_runtime.BrowserAction(operation, value=watch_url),
+            )
+            browser_client.act(
+                workspace,
+                browser_runtime.BrowserAction("wait", value="2000"),
+            )
+            result = browser_client.evaluate(workspace, script)
+    except Exception as exc:
+        _log(
+            f"Browser transcript fallback failed for {video_id}: "
+            f"{type(exc).__name__}"
+        )
+        if status is not None:
+            status["browser_fallback"] = "failed"
+            status["browser_error_type"] = type(exc).__name__
+        return None
+
+    state = str(result.get("state") or "unknown")
+    if status is not None:
+        status["browser_fallback"] = state
+        status["browser_profile"] = workspace.profile_id
+        status["browser_id"] = workspace.browser_id
+        status["browser_view_provider"] = request.view_provider
+        status["operator_visible_state"] = workspace.operator_visible_state
+    if state == "no_caption_tracks":
+        if status is not None:
+            status["no_caption_tracks"] = True
+        return None
+    if state != "ok":
+        _log(f"Browser transcript fallback returned {state} for {video_id}")
+        return None
+    text = re.sub(r"\s+", " ", str(result.get("text") or "")).strip()
+    if not text:
+        return None
+    _log(
+        f"Browser transcript fallback succeeded for {video_id} "
+        f"language={result.get('language') or 'unknown'}"
+    )
+    return text
+
+
 def _fetch_transcript_direct(
     video_id: str,
     timeout: int = 30,
@@ -523,13 +797,17 @@ def _fetch_transcript_direct(
     return vtt_text
 
 
-def _fetch_transcript_ytdlp_via_ssh(video_id: str, ssh_host: str) -> Optional[str]:
+def _fetch_transcript_ytdlp_via_ssh(
+    video_id: str,
+    ssh_host: str,
+    config: Optional[Dict[str, Any]] = None,
+) -> Optional[str]:
     """Fetch transcript via yt-dlp on a remote SSH host (mktemp + cat pipeline)."""
     if not _SSH_HOST_ALIAS_RE.match(ssh_host):
         return None
     url = f"https://www.youtube.com/watch?v={video_id}"
     quoted_url = shlex.quote(url)
-    sub_langs = shlex.quote(_ytdlp_sub_langs())
+    sub_langs = shlex.quote(_ytdlp_sub_langs(config))
     remote_script = (
         "set -e; "
         "TMPD=$(mktemp -d); "
@@ -562,9 +840,9 @@ def _fetch_transcript_ytdlp_via_ssh(video_id: str, ssh_host: str) -> Optional[st
     return out
 
 
-def _ytdlp_sub_langs() -> str:
+def _ytdlp_sub_langs(config: Optional[Dict[str, Any]] = None) -> str:
     """Caption languages to try, from LAST30DAYS_YT_SUB_LANGS (default en,es,pt)."""
-    raw = os.environ.get("LAST30DAYS_YT_SUB_LANGS", "").strip()
+    raw = _youtube_browser_setting(config, "LAST30DAYS_YT_SUB_LANGS", "")
     if not raw:
         return "en,es,pt"
     return ",".join(code.strip().lower() for code in raw.split(",") if code.strip()) or "en,es,pt"
@@ -596,9 +874,15 @@ def _transcript_backoff(video_id: str, attempt: int) -> float:
     return _TRANSCRIPT_BACKOFF_BASE * (attempt + 1) + offset
 
 
-def _read_vtt(video_id: str, temp_dir: str) -> Optional[str]:
+def _read_vtt(
+    video_id: str,
+    temp_dir: str,
+    config: Optional[Dict[str, Any]] = None,
+) -> Optional[str]:
     """Return the VTT text yt-dlp wrote for ``video_id``, or None if absent."""
-    vtt_path = _pick_ytdlp_vtt(video_id, temp_dir, _ytdlp_sub_langs().split(","))
+    vtt_path = _pick_ytdlp_vtt(
+        video_id, temp_dir, _ytdlp_sub_langs(config).split(",")
+    )
     if vtt_path is None:
         return None
 
@@ -612,6 +896,7 @@ def _fetch_transcript_ytdlp(
     video_id: str,
     temp_dir: str,
     status: Optional[Dict[str, Any]] = None,
+    config: Optional[Dict[str, Any]] = None,
 ) -> Optional[str]:
     """Fetch transcript using yt-dlp (original implementation).
 
@@ -628,64 +913,66 @@ def _fetch_transcript_ytdlp(
         Raw VTT text, or None if no captions are available or the fetch failed.
         On a hard (non-no-caption) failure, sets ``status["ytdlp_error"]``.
     """
-    cmd = [
-        "yt-dlp",
-        "--ignore-config",
-        "--no-cookies-from-browser",
-        "--write-auto-subs",
-        "--sub-lang", _ytdlp_sub_langs(),
-        "--sub-format", "vtt",
-        "--skip-download",
-        "--no-warnings",
-        "-o", f"{temp_dir}/%(id)s",
-        f"https://www.youtube.com/watch?v={video_id}",
-    ]
-
     attempts = _TRANSCRIPT_MAX_RETRIES + 1
     last_reason: Optional[str] = None
-    for attempt in range(attempts):
-        try:
-            result = subproc.run_with_timeout(cmd, timeout=30)
-        except subproc.SubprocTimeout:
-            last_reason = "timed out after 30s"
-            _log(f"yt-dlp transcript timed out after 30s for {video_id} "
-                 f"(attempt {attempt + 1}/{attempts})")
-            if attempt < attempts - 1:
+    languages = _ytdlp_sub_langs(config).split(",")
+    for language in languages:
+        cmd = [
+            "yt-dlp",
+            "--ignore-config",
+            "--no-cookies-from-browser",
+            "--write-auto-subs",
+            "--sub-lang", language,
+            "--sub-format", "vtt",
+            "--skip-download",
+            "--no-warnings",
+            "-o", f"{temp_dir}/%(id)s",
+            f"https://www.youtube.com/watch?v={video_id}",
+        ]
+
+        for attempt in range(attempts):
+            try:
+                result = subproc.run_with_timeout(cmd, timeout=30)
+            except subproc.SubprocTimeout:
+                last_reason = "timed out after 30s"
+                _log(f"yt-dlp transcript timed out after 30s for {video_id} "
+                     f"language={language} (attempt {attempt + 1}/{attempts})")
+                if attempt < attempts - 1:
+                    time.sleep(_transcript_backoff(video_id, attempt))
+                    continue
+                break
+            except FileNotFoundError:
+                # yt-dlp binary missing — not transient, not retryable.
+                if status is not None:
+                    status["ytdlp_error"] = "yt-dlp not found"
+                return None
+
+            if result.returncode == 0:
+                vtt = _read_vtt(video_id, temp_dir, config)
+                if vtt is not None:
+                    return vtt
+                # Exit 0 with no file means this preferred language was absent.
+                # Continue through the configured fallback languages.
+                break
+
+            # Non-zero exit == a real error worth classifying & surfacing.
+            stderr = (result.stderr or "").strip()
+            snippet = (stderr.splitlines()[-1][:200] if stderr
+                       else f"exit {result.returncode}")
+            if _NO_CAPTION_RE.search(stderr):
+                # The requested language is absent; try the next preference.
+                break
+            last_reason = snippet
+            if _TRANSIENT_RE.search(stderr) and attempt < attempts - 1:
+                _log(f"yt-dlp transcript transient failure for {video_id} "
+                     f"language={language} (attempt {attempt + 1}/{attempts}): {snippet}")
                 time.sleep(_transcript_backoff(video_id, attempt))
                 continue
+            # Non-transient, or retries exhausted — continue to the next
+            # configured language before surfacing the final failure.
+            _log(f"yt-dlp transcript failed for {video_id} language={language} "
+                 f"(exit {result.returncode}): {snippet}")
             break
-        except FileNotFoundError:
-            # yt-dlp binary missing — not transient, not retryable.
-            if status is not None:
-                status["ytdlp_error"] = "yt-dlp not found"
-            return None
-
-        if result.returncode == 0:
-            vtt = _read_vtt(video_id, temp_dir)
-            if vtt is not None:
-                return vtt
-            # Exit 0 with no file == the uploader has no matching captions.
-            # Genuine no-captions: return quietly (caller may still try direct).
-            return None
-
-        # Non-zero exit == a real error worth classifying & surfacing.
-        stderr = (result.stderr or "").strip()
-        snippet = (stderr.splitlines()[-1][:200] if stderr
-                   else f"exit {result.returncode}")
-        if _NO_CAPTION_RE.search(stderr):
-            # yt-dlp can exit non-zero when the requested language is absent.
-            # Treat as genuine no-captions, not an error worth retrying.
-            return None
-        last_reason = snippet
-        if _TRANSIENT_RE.search(stderr) and attempt < attempts - 1:
-            _log(f"yt-dlp transcript transient failure for {video_id} "
-                 f"(attempt {attempt + 1}/{attempts}): {snippet}")
-            time.sleep(_transcript_backoff(video_id, attempt))
-            continue
-        # Non-transient, or retries exhausted — surface the real reason.
-        _log(f"yt-dlp transcript failed for {video_id} "
-             f"(exit {result.returncode}): {snippet}")
-        break
 
     if status is not None and last_reason is not None:
         status["ytdlp_error"] = last_reason
@@ -696,6 +983,7 @@ def fetch_transcript(
     video_id: str,
     temp_dir: str,
     status: Optional[Dict[str, Any]] = None,
+    config: Optional[Dict[str, Any]] = None,
 ) -> Optional[str]:
     """Fetch auto-generated transcript for a YouTube video.
 
@@ -713,31 +1001,63 @@ def fetch_transcript(
     Returns:
         Plaintext transcript string, or None if no captions available.
     """
+    fetch_status: Dict[str, Any] = status if status is not None else {}
     raw_vtt = None
+    browser_text = None
     ssh_host = _ytdlp_ssh_host()
     if ssh_host and is_ytdlp_installed():
-        raw_vtt = _fetch_transcript_ytdlp_via_ssh(video_id, ssh_host)
+        if config is None:
+            raw_vtt = _fetch_transcript_ytdlp_via_ssh(video_id, ssh_host)
+        else:
+            raw_vtt = _fetch_transcript_ytdlp_via_ssh(
+                video_id, ssh_host, config=config
+            )
         if not raw_vtt:
             _log(f"SSH yt-dlp transcript failed for {video_id}, trying direct HTTP fallback")
-            raw_vtt = _fetch_transcript_direct(video_id, status=status)
+            raw_vtt = _fetch_transcript_direct(video_id, status=fetch_status)
+            if not raw_vtt and not fetch_status.get("no_caption_tracks"):
+                browser_text = _fetch_transcript_browser(
+                    video_id, status=fetch_status, config=config
+                )
     elif is_ytdlp_installed():
-        raw_vtt = _fetch_transcript_ytdlp(video_id, temp_dir, status=status)
+        if config is None:
+            raw_vtt = _fetch_transcript_ytdlp(
+                video_id, temp_dir, status=fetch_status
+            )
+        else:
+            raw_vtt = _fetch_transcript_ytdlp(
+                video_id, temp_dir, status=fetch_status, config=config
+            )
         if not raw_vtt:
-            ytdlp_error = (status or {}).get("ytdlp_error")
+            ytdlp_error = fetch_status.get("ytdlp_error")
             if ytdlp_error:
-                _log(f"Transcript fetch failed for {video_id}: {ytdlp_error}")
-                return None
-            _log(f"yt-dlp found no captions for {video_id}, trying direct HTTP fallback")
-            raw_vtt = _fetch_transcript_direct(video_id, status=status)
+                _log(
+                    f"Transcript transport failed for {video_id}: {ytdlp_error}; "
+                    "trying hidden-RDP browser fallback"
+                )
+                browser_text = _fetch_transcript_browser(
+                    video_id, status=fetch_status, config=config
+                )
+            else:
+                _log(f"yt-dlp found no captions for {video_id}, trying direct HTTP fallback")
+                raw_vtt = _fetch_transcript_direct(video_id, status=fetch_status)
+                if not raw_vtt and not fetch_status.get("no_caption_tracks"):
+                    browser_text = _fetch_transcript_browser(
+                        video_id, status=fetch_status, config=config
+                    )
     else:
         _log("yt-dlp not installed, using direct HTTP transcript fetch")
-        raw_vtt = _fetch_transcript_direct(video_id, status=status)
+        raw_vtt = _fetch_transcript_direct(video_id, status=fetch_status)
+        if not raw_vtt and not fetch_status.get("no_caption_tracks"):
+            browser_text = _fetch_transcript_browser(
+                video_id, status=fetch_status, config=config
+            )
 
-    if not raw_vtt:
+    if not raw_vtt and not browser_text:
         _log(f"No transcript available for {video_id} (no captions found)")
         return None
 
-    transcript = _clean_vtt(raw_vtt)
+    transcript = browser_text or _clean_vtt(raw_vtt or "")
 
     # Truncate to max words
     words = transcript.split()
@@ -751,6 +1071,7 @@ def fetch_transcripts_parallel(
     video_ids: List[str],
     max_workers: int = 5,
     out_captions_disabled: Optional[Set[str]] = None,
+    config: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Optional[str]]:
     """Fetch transcripts for multiple videos in parallel.
 
@@ -774,7 +1095,9 @@ def fetch_transcripts_parallel(
     with tempfile.TemporaryDirectory() as temp_dir:
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = {
-                executor.submit(fetch_transcript, vid, temp_dir, statuses[vid]): vid
+                executor.submit(
+                    fetch_transcript, vid, temp_dir, statuses[vid], config
+                ): vid
                 for vid in video_ids
             }
             for future in as_completed(futures):
@@ -859,6 +1182,7 @@ def search_and_transcribe(
     from_date: str,
     to_date: str,
     depth: str = "default",
+    config: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Full YouTube search: find videos, then fetch transcripts for top results.
 
@@ -909,9 +1233,12 @@ def search_and_transcribe(
         )
         candidate_ids = [item["video_id"] for item in transcript_candidates[:attempt_count]]
         _log(f"Fetching transcripts for up to {attempt_count} videos (target: {transcript_limit}): {candidate_ids}")
-        transcripts = fetch_transcripts_parallel(
-            candidate_ids, out_captions_disabled=captions_disabled_ids,
-        )
+        fetch_kwargs: Dict[str, Any] = {
+            "out_captions_disabled": captions_disabled_ids,
+        }
+        if config is not None:
+            fetch_kwargs["config"] = config
+        transcripts = fetch_transcripts_parallel(candidate_ids, **fetch_kwargs)
         # Record fetch outcomes (captions-disabled videos can never succeed,
         # so they don't count as failures) for the stale-yt-dlp nudge.
         _TRANSCRIPT_FETCH_STATS["attempts"] += len(candidate_ids)

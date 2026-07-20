@@ -189,6 +189,13 @@ class BrowserWorkspaceRequest:
     browser_id_hint: str = ""
     route_id_hint: str = ""
     route_pool_entry_id_hint: str = ""
+    start_url: str = "https://www.facebook.com/"
+    service_name: str = "last30days"
+    agent_name: str = "facebook-scraper"
+    task_name: str = "facebook-search"
+    browser_host: str = "remote_headed"
+    display_isolation: str = "private_virtual_display"
+    control_input_provider: str = "manual_attached_desktop"
 
 
 @dataclass(frozen=True)
@@ -338,13 +345,16 @@ class CliAgentBrowserClient:
 
         cmd = [
             "--session", request.session_name,
-            "remote-view", "open", "https://www.facebook.com/",
+            "remote-view", "open", request.start_url,
             "--browser-build", request.browser_build,
+            "--browser-host", request.browser_host,
             "--view-stream-provider", request.view_provider,
+            "--control-input-provider", request.control_input_provider,
+            "--display-isolation", request.display_isolation,
             "--session-name", request.session_name,
-            "--service-name", "last30days",
-            "--agent-name", "facebook-scraper",
-            "--task-name", "facebook-search",
+            "--service-name", request.service_name,
+            "--agent-name", request.agent_name,
+            "--task-name", request.task_name,
         ]
         if browser:
             cmd.extend(["--browser-id", browser_id])
