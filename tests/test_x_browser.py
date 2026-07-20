@@ -80,7 +80,7 @@ class FakeAgentBrowserClient:
                         "engagement": {
                             "replies": 12,
                             "reposts": 34,
-                            "likes": 456,
+                            "likes": "1.2K Likes",
                             "bookmarks": 7,
                             "views": 8901,
                         },
@@ -122,7 +122,7 @@ class XBrowserSearchTests(TestCase):
         )
         self.assertEqual("OpenAI", result["items"][0]["author_handle"])
         self.assertEqual("2026-07-18", result["items"][0]["date"])
-        self.assertEqual(456, result["items"][0]["engagement"]["likes"])
+        self.assertEqual(1200, result["items"][0]["engagement"]["likes"])
 
     def test_checkpoint_stops_before_navigation_with_a_typed_failure(self):
         from lib import x_browser

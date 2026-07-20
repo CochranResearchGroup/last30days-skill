@@ -61,7 +61,7 @@ If you're meeting with a CEO, have you read all their tweets and YouTube transcr
 | Source | What the people tell you |
 |--------|--------------------------|
 | **Reddit** | The unfiltered take. Top comments with upvote counts, free via public JSON. The real opinions that Google buries. |
-| **X / Twitter** | The hot take, the expert thread, the breaking reaction. First to know, first to argue. |
+| **X / Twitter** | The hot take, expert thread, and breaking reaction through Bird/API backends or an explicitly enabled authenticated agent-browser profile. |
 | **YouTube** | The 45-minute deep dive. Full transcripts searched for the 5 quotable sentences that matter. |
 | **TikTok** | The creator reaching 3.6M people with a take you'll never find on Google. |
 | **Instagram Reels** | The influencer perspective with spoken-word transcripts. The visual culture signal. |
@@ -287,7 +287,7 @@ These platforms don't have relationships with each other. X doesn't know what Re
 | Sources | What you need | Cost |
 |---------|---------------|------|
 | Reddit (with comments) + HN + Polymarket + GitHub | Nothing | Free |
-| X / Twitter | Log into x.com in any browser, or set `XQUIK_API_KEY` / `XAI_API_KEY` | Browser cookies are free; keys are provider-specific |
+| X / Twitter | Enable an authenticated `agent-browser` profile, log into x.com for cookie auth, or set `XQUIK_API_KEY` / `XAI_API_KEY` | Browser routes are free; keys are provider-specific |
 | YouTube | `brew install yt-dlp` | Free |
 | Bluesky | App password from bsky.app | Free |
 | TikTok + Instagram + Threads + Pinterest + YouTube comments | ScrapeCreators key | 100 free credits, then PAYG |
@@ -347,7 +347,7 @@ Per-client wrapper scripts, custom category-peer subreddits, and the experimenta
 
 MIT license. No tracking. No analytics. Your research stays on your machine. 1,012 tests.
 
-Built with Python 3.12+, yt-dlp, Node.js (vendored Bird client for X search), and ScrapeCreators API. v3 engine architecture by [@j-sperling](https://github.com/j-sperling).
+Built with Python 3.12+, yt-dlp, agent-browser and a vendored Bird client for X search, and ScrapeCreators API. v3 engine architecture by [@j-sperling](https://github.com/j-sperling).
 
 See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full list of community contributors and [CHANGELOG.md](CHANGELOG.md) for version history.
 

@@ -517,7 +517,7 @@ def _quality_gate(
             "url": url,
             "author_handle": handle,
             "date": date,
-            "engagement": dict(raw.get("engagement") or {}),
+            "engagement": _normalize_engagement(raw.get("engagement")),
             "why_relevant": "Authenticated X search result",
             "relevance": _compute_relevance(topic, text),
             "metadata": {"extraction": "agent-browser-dom-v1", "date_confidence": "high"},
@@ -542,6 +542,27 @@ def _dedupe_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
         seen.add(url)
         deduped.append(item)
     return deduped
+
+
+def _normalize_engagement(value: Any) -> dict[str, int]:
+    raw = value if isinstance(value, dict) else {}
+    return {
+        key: _metric_count(raw.get(key))
+        for key in ("replies", "reposts", "likes", "bookmarks", "views")
+    }
+
+
+def _metric_count(value: Any) -> int:
+    if isinstance(value, (int, float)):
+        return max(0, round(value))
+    text = str(value or "").strip().upper().replace(",", "")
+    match = re.search(r"(\d+(?:\.\d+)?)\s*([KMB])?", text)
+    if not match:
+        return 0
+    multiplier = {"K": 1_000, "M": 1_000_000, "B": 1_000_000_000}.get(
+        match.group(2) or "", 1
+    )
+    return max(0, round(float(match.group(1)) * multiplier))
 
 
 def _iso_date(value: str) -> str | None:

@@ -171,7 +171,25 @@ For install/readiness checks, `--diagnose` plus mock smoke tests are enough to
 prove the installed runtime can import, parse flags, execute the pipeline, and
 write output.
 
-## 7. Opt-in Facebook dogfood
+## 7. Opt-in X agent-browser dogfood
+
+The X browser backend reuses an operator-authenticated retained profile and is
+never enabled implicitly. Do not run this smoke in CI. Confirm that the
+agent-browser access plan selects the intended X profile, then run:
+
+```bash
+LAST30DAYS_X_BROWSER_LIVE_SMOKE=1 \
+LAST30DAYS_X_BROWSER_PROFILE=last30days-facebook \
+LAST30DAYS_X_BROWSER_SESSION=last30days-facebook \
+uv run pytest tests/test_x_browser.py -k live -vv
+```
+
+The smoke runs three low-volume dated Latest searches through one retained
+session. It requires canonical numeric status permalinks, authors, meaningful
+text, and in-range dates, and stops on login, checkpoint, restriction, or
+search-state mismatch without exporting cookies.
+
+## 8. Opt-in Facebook dogfood
 
 Facebook uses an operator-authenticated, retained agent-browser profile. Do not
 run this smoke in CI. First use the current `publicOperatorUrl` returned by
@@ -190,7 +208,7 @@ permalink, author, and in-range publication date. `auth_required`,
 `checkpoint_required`, and `operator_ingress_unavailable` are operator actions;
 do not bypass them or fall back to broad home-feed extraction.
 
-## 8. Opt-in LinkedIn dogfood
+## 9. Opt-in LinkedIn dogfood
 
 LinkedIn uses the same retained agent-browser contract but should normally use
 its own `last30days-linkedin` profile. A deliberately shared profile is allowed
