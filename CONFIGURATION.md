@@ -81,7 +81,7 @@ The project-scoped file is the cleanest pattern for **per-client setups**: drop 
 | TruthSocial | `TRUTHSOCIAL_TOKEN` | TruthSocial items | yes |
 | Web search | one of: `BRAVE_API_KEY`, `EXA_API_KEY`, `SERPER_API_KEY`, `PARALLEL_API_KEY` | `--auto-resolve` and Step 2 supplements | Brave has a free tier; native WebSearch on Claude Code / Codex / Gemini works as a fallback |
 | Perplexity Deep Research | `OPENROUTER_API_KEY` | `--deep-research` flag (~$0.90/query) | no |
-| Caption-free transcription | `GROQ_API_KEY` (free tier, preferred) or `OPENAI_API_KEY` (paid backstop); requires `ffmpeg` | Whisper transcription for audio/video without captions (groundwork: module shipped, not yet auto-invoked by the engine) | Groq free tier is generous; needs ffmpeg installed |
+| Caption-free transcription | Local `transcribe-audio` checkout and `ffmpeg` | `scripts/youtube_media.py transcript` uses it only when captions are unavailable | Local GPU execution; no transcription API key required |
 | Jobs / careers pages | none for public ATS pages; web backend improves fallback discovery | `--hiring-signals` and strong Hiring Signals in standard company reports | yes |
 | Apify (alternate scraper) | `APIFY_API_TOKEN` | fallback for Reddit/TikTok/Instagram when ScrapeCreators is exhausted | yes (limited) |
 
@@ -199,6 +199,35 @@ After editing: `chmod 600 ~/.config/last30days/.env` (or `chmod 600 .claude/last
 
 **Troubleshooting:** if a source you expected to see isn't appearing in results, run `python3 scripts/last30days.py --diagnose`. It prints a per-source availability report (which keys were detected, which CLIs are installed, which backends are reachable) without running a full search.
 
+### YouTube media operations
+
+The companion runtime exposes bounded, single-video operations for agents. Run
+these commands from the installed `last30days` skill directory:
+
+```bash
+python3 scripts/youtube_media.py --json doctor
+python3 scripts/youtube_media.py --json subscriptions --limit 12
+python3 scripts/youtube_media.py --json transcript "YOUTUBE_URL" --output-dir /tmp/transcripts
+python3 scripts/youtube_media.py --json download "YOUTUBE_URL" --output-dir /tmp/videos --max-height 1080
+```
+
+`subscriptions` uses the retained `stealthcdp-default` hidden-RDP browser and
+requires that profile to be signed into YouTube. `transcript` tries the existing
+caption stack first and invokes local `transcribe-audio` only when captions are
+unavailable. `download` processes one video, disables playlist expansion, and
+caps resolution at the requested height.
+
+Set `LAST30DAYS_TRANSCRIBE_AUDIO_DIR` when the local checkout is not available
+as `../transcribe-audio` or `~/workspace.local/transcribe-audio`:
+
+```bash
+LAST30DAYS_TRANSCRIBE_AUDIO_DIR=/path/to/transcribe-audio
+```
+
+The `doctor` operation executes `yt-dlp --version` and reports Node/Deno,
+`ffmpeg`, agent-browser, and transcribe-audio readiness without downloading
+media.
+
 ### YouTube caption language and browser fallback
 
 `LAST30DAYS_YT_SUB_LANGS` is a comma-separated preference order for YouTube
@@ -228,8 +257,9 @@ route on its hidden XRDP desktop and records that bound display as
 caption fetches run concurrently. It reads caption metadata from the watch
 page and fetches timed text inside that page's Chromium context; browser
 cookies, storage, raw HTML, and caption URLs are never exported to Python.
-Confirmed caption absence does not launch the browser. Videos without captions
-remain candidates for the separate `../transcribe-audio` ASR workflow.
+Confirmed caption absence does not launch the browser. The companion
+`transcript` operation routes those videos to the local `transcribe-audio`
+workflow.
 
 ### Encrypted credential sources (Keychain / pass)
 

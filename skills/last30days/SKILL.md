@@ -259,6 +259,26 @@ If your Bash call to `last30days.py` does NOT include the FULL pre-flight checkl
 
 Research ANY topic across Reddit, X, YouTube, and other sources. Surface what people are actually discussing, recommending, betting on, and debating right now.
 
+## YouTube Media Requests
+
+When the user asks for their subscribed videos, a transcript from a subscribed
+channel, a YouTube runtime check, or a video download, use the bounded companion
+runtime instead of treating the request as topic research:
+
+```bash
+python3 scripts/youtube_media.py --json doctor
+python3 scripts/youtube_media.py --json subscriptions --limit 12
+python3 scripts/youtube_media.py --json transcript "YOUTUBE_URL" --output-dir /tmp/transcripts
+python3 scripts/youtube_media.py --json download "YOUTUBE_URL" --output-dir /tmp/videos --max-height 1080
+```
+
+For a subscribed-channel transcript, run `subscriptions`, select one standard
+video from the returned authenticated feed, then run `transcript` on its URL.
+The transcript operation uses captions first and calls the configured local
+`transcribe-audio` checkout only when captions are unavailable. Never claim a
+video came from the user's subscriptions unless the subscriptions operation
+returned it. Downloads are single-video and no-playlist by design.
+
 ## Runtime Preflight
 
 Before running any `last30days.py` command in this skill, resolve a Python 3.12+ interpreter once and keep it in `LAST30DAYS_PYTHON`:
@@ -1796,6 +1816,7 @@ Want another prompt? Just tell me what you're creating next.
 - Sends search queries to Polymarket Gamma API (`gamma-api.polymarket.com`) for prediction market discovery (free, no auth)
 - Runs `yt-dlp` locally for YouTube search and transcript extraction (no API key, public data)
 - After a classified YouTube transport, bot-check, timeout, or rate-limit failure, may use agent-browser's serialized headed `stealthcdp_chromium` fallback on a checked-out hidden XRDP display exposed through the Guacamole operator route; caption requests stay inside the browser context and no cookies or caption URLs are exported
+- For explicit YouTube media requests, can read the signed-in profile's visible subscriptions feed, save one bounded video download, or route a caption-free video to the configured local `transcribe-audio` checkout
 - Sends search queries to ScrapeCreators API (`api.scrapecreators.com`) for TikTok and Instagram search, transcript/caption extraction (PAYG after 100 free credits)
 - Optionally sends search queries to Brave Search API, Parallel AI API, or OpenRouter API for web search
 - Fetches public Reddit thread data from `reddit.com` for engagement metrics
@@ -1805,7 +1826,7 @@ Want another prompt? Just tell me what you're creating next.
 
 **What this skill does NOT do:**
 - Does not post, like, or modify content on any platform
-- Does not require or intentionally access your Reddit or YouTube accounts; the YouTube browser fallback uses its dedicated retained browser profile only for public watch pages and captions, while X, Facebook, and LinkedIn account access occurs only through an explicitly enabled operator-authenticated browser profile
+- Does not require Reddit authentication. It accesses a YouTube account only when the user explicitly asks for subscriptions; that operation reads the visible subscriptions feed through the retained hidden-RDP profile and does not export cookies or storage. X, Facebook, and LinkedIn account access likewise occurs only through explicitly requested retained-browser work.
 - Does not share API keys between providers (OpenAI key only goes to api.openai.com, etc.)
 - Does not log, cache, or write API keys to output files
 - Does not send data to any endpoint not listed above
@@ -1813,6 +1834,6 @@ Want another prompt? Just tell me what you're creating next.
 - TikTok and Instagram sources require SCRAPECREATORS_API_KEY (100 free credits one-time, then PAYG). Reddit uses ScrapeCreators only as a backup when public Reddit is unavailable.
 - Can be invoked autonomously by agents via the Skill tool (runs inline, not forked); pass `--agent` for non-interactive report output
 
-**Bundled scripts:** `scripts/last30days.py` (main research engine), `scripts/lib/` (search, enrichment, rendering modules), `scripts/lib/vendor/bird-search/` (vendored X search client, MIT licensed)
+**Bundled scripts:** `scripts/last30days.py` (main research engine), `scripts/youtube_media.py` (bounded YouTube media operations), `scripts/lib/` (search, enrichment, rendering modules), `scripts/lib/vendor/bird-search/` (vendored X search client, MIT licensed)
 
 Review scripts before first use to verify behavior.
