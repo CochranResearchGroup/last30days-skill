@@ -1,6 +1,6 @@
 # Plan 0005 | YouTube Media Capability Integration
 
-State: OPEN
+State: COMPLETE
 Date: 2026-07-20
 
 ## Objective
@@ -91,4 +91,29 @@ source-backed, automated, installed-copy, live-runtime, and remote-push evidence
 
 ## Completion Evidence
 
-Pending.
+- Implementation commit: `d50bf48` (`feat(youtube): add bounded media
+  operations`).
+- Focused YouTube, browser, and environment tests passed, including doctor
+  state transitions, authenticated/signed-out subscription behavior,
+  caption-to-ASR routing, download failure containment, and CLI JSON/exit
+  contracts.
+- Full validation: `2094 passed, 7 skipped, 6 subtests passed` in 55.20 seconds.
+- Distribution: `dist/last30days.skill` built with 102 files; SHA-256
+  `0d425d000f930c21f625807c47b9c6ffc71009d892f8920f98827290434350eb`.
+- Installed parity: `SKILL.md`, `scripts/youtube_media.py`,
+  `scripts/lib/youtube_media.py`, and `scripts/lib/env.py` matched the source
+  checkout byte-for-byte after `npx skills add . -g -y`.
+- Installed doctor: `yt-dlp 2026.07.04`, Deno, ffmpeg, agent-browser, and
+  `/home/ecochran76/workspace.local/transcribe-audio` all reported ready.
+- Authenticated browser smoke: the retained hidden-RDP profile returned current
+  subscribed videos with `operator_visible_state=ready`.
+- Transcript smokes: browser captions produced a 570-word artifact for
+  `dC5mZdinwfY`; direct local fallback through `transcribe-audio` produced a
+  separate 537-word artifact for the same subscribed-channel video.
+- Installed download smoke: `dC5mZdinwfY` downloaded as a single 144p MP4,
+  3,625,568 bytes, with playlist expansion disabled.
+- Agent Reach `check-update` reported v1.5.0 as current; its YouTube downloader
+  remains `yt-dlp`, so this fork now supplies the missing authenticated browser,
+  local-ASR, bounded-download, and runtime-doctor interfaces.
+- Remote closeout: `origin/main` contains this completion commit and all
+  predecessors, including the three Plan 0004 commits (verified after push).
