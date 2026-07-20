@@ -86,6 +86,7 @@ Experimental changes get tested on `mvanhorn/last30days-skill-private`, which in
 - re-read planning-related policy before opening, revising, or closing a substantive plan
 - re-read documentation-related policy before changing docs, contracts, or canonical authorities
 - re-read validation and closeout policy before claiming work complete
+- re-read branch, commit, and integration policy before starting a multi-file or multi-step implementation slice
 
 ## Policy Entry
 
@@ -106,6 +107,12 @@ Read and follow:
 - `docs/dev/policies/0012-turn-closeout.md`
 - `docs/dev/policies/0013-validation-and-handoff.md`
 - `docs/dev/policies/0014-upstream-fork-maintenance.md`
+- `docs/dev/policies/0015-goal-execution-governance.md`
+- `docs/dev/policies/0016-parallel-plan-design.md`
+- `docs/dev/policies/0018-architecture-guardrails.md`
+- `docs/dev/policies/0019-documentation-change-control.md`
+- `docs/dev/policies/0020-multi-agent-reconciliation.md`
+- `docs/dev/policies/0021-subagent-workflow-optimization.md`
 
 ## Scope
 
