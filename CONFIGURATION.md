@@ -220,9 +220,11 @@ a classified `yt-dlp` or direct-HTTP transport failure:
 - `0` disables it.
 
 The fallback resolves `targetServiceId=youtube`, uses the retained profile and
-session knobs shown above, and requires `stealthcdp_chromium` in headed
-`remote_headed` mode on a `private_virtual_display` with an
-`rdp_gateway` operator view. Browser work is serialized even when normal
+session knobs shown above, and requests `stealthcdp_chromium` in headed
+`remote_headed` mode with `private_virtual_display` isolation and an
+`rdp_gateway` operator view. Agent-browser currently realizes a checked-out RDP
+route on its hidden XRDP desktop and records that bound display as
+`shared_display`; it never uses the ambient visible desktop. Browser work is serialized even when normal
 caption fetches run concurrently. It reads caption metadata from the watch
 page and fetches timed text inside that page's Chromium context; browser
 cookies, storage, raw HTML, and caption URLs are never exported to Python.

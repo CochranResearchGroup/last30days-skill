@@ -1795,7 +1795,7 @@ Want another prompt? Just tell me what you're creating next.
 - Sends search queries to Algolia HN Search API (`hn.algolia.com`) for Hacker News story and comment discovery (free, no auth)
 - Sends search queries to Polymarket Gamma API (`gamma-api.polymarket.com`) for prediction market discovery (free, no auth)
 - Runs `yt-dlp` locally for YouTube search and transcript extraction (no API key, public data)
-- After a classified YouTube transport, bot-check, timeout, or rate-limit failure, may use agent-browser's serialized headed `stealthcdp_chromium` fallback on a hidden private display exposed through the Guacamole/RDP operator route; caption requests stay inside the browser context and no cookies or caption URLs are exported
+- After a classified YouTube transport, bot-check, timeout, or rate-limit failure, may use agent-browser's serialized headed `stealthcdp_chromium` fallback on a checked-out hidden XRDP display exposed through the Guacamole operator route; caption requests stay inside the browser context and no cookies or caption URLs are exported
 - Sends search queries to ScrapeCreators API (`api.scrapecreators.com`) for TikTok and Instagram search, transcript/caption extraction (PAYG after 100 free credits)
 - Optionally sends search queries to Brave Search API, Parallel AI API, or OpenRouter API for web search
 - Fetches public Reddit thread data from `reddit.com` for engagement metrics

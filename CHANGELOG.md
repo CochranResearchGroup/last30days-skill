@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Authenticated agent-browser X search.** Opt-in `LAST30DAYS_X_BROWSER=1` / `LAST30DAYS_X_BACKEND=browser` search now resolves target identity `x`, reuses the access-plan-selected retained profile (default `last30days-facebook`), verifies the exact dated Latest query, and emits only canonical, dated, relevant status posts without exporting cookies.
-- **Hidden-RDP YouTube transcript fallback.** Classified `yt-dlp` transport, bot-check, timeout, and rate-limit failures can now fall back to browser-native caption retrieval inside a serialized, headed `stealthcdp_chromium` session on a private virtual display exposed through agent-browser's Guacamole/RDP operator route. Cookies and caption URLs remain inside Chromium.
+- **Hidden-RDP YouTube transcript fallback.** Classified `yt-dlp` transport, bot-check, timeout, and rate-limit failures can now fall back to browser-native caption retrieval inside a serialized, headed `stealthcdp_chromium` session on a checked-out hidden XRDP display exposed through agent-browser's Guacamole operator route. Cookies and caption URLs remain inside Chromium.
 
 ### Fixed
 

@@ -1,14 +1,14 @@
 # Plan 0004 | YouTube Stealth Browser Transcript Fallback
 
-State: OPEN
+State: COMPLETE
 Date: 2026-07-20
 
 ## Objective
 
 Add a bounded YouTube transcript fallback that runs inside agent-browser's
 headed `stealthcdp_chromium` lane when `yt-dlp` or direct HTTP is blocked.
-The headed browser must run on a hidden private display and remain accessible
-through the retained Guacamole/RDP operator route.
+The headed browser must run on a hidden route-bound display and remain
+accessible through the retained Guacamole/RDP operator route.
 
 ## Current State
 
@@ -88,9 +88,10 @@ Bounds:
 - A successful `yt-dlp` caption never launches agent-browser.
 - Confirmed no-caption results do not launch agent-browser.
 - Classified hard `yt-dlp` failures try the browser fallback when enabled.
-- Browser acquisition uses `stealthcdp_chromium`, `remote_headed`,
+- Browser acquisition requests `stealthcdp_chromium`, `remote_headed`,
   `private_virtual_display`, and `rdp_gateway` with caller labels and
-  `targetServiceId=youtube` semantics.
+  `targetServiceId=youtube` semantics. The live route may realize the checked-out
+  hidden XRDP desktop as `shared_display`; ambient desktop use is forbidden.
 - The live runtime returns `operatorVisible.state=ready` and an RDP/Guacamole
   operator URL for the retained hidden display.
 - Caption selection follows `LAST30DAYS_YT_SUB_LANGS` order.
@@ -120,4 +121,32 @@ automated or live evidence recorded below and no required work remains.
 
 ## Completion Evidence
 
-Pending.
+Completed on 2026-07-20 by the primary agent:
+
+- Commit `f1147147` added classified hard-failure routing, a process-wide
+  browser lock, target-aware access planning, hidden-RDP posture enforcement,
+  browser-native timed-text retrieval, and a rendered transcript-panel fallback.
+- The rendered-panel extractor selects one visible responsive-layout panel, so
+  YouTube's hidden duplicate transcript renderer cannot double the result.
+- `uv run pytest tests/test_youtube_yt.py tests/test_facebook.py
+  tests/test_x_browser.py` passed, including browser posture, caption absence,
+  hard-failure routing, language-order, and concurrent serialization coverage.
+- `uv run pytest` passed: 2,084 tests, 7 skips, and 6 subtests in 64.35 seconds.
+- `bash dev/last30days/scripts/build-skill.sh` built a 100-file, 444K
+  `dist/last30days.skill` with SHA-256
+  `f82242ce70950dfe300b9e35badb16378b0c37649197ccd8dc1d94fbd0e3d2bc`.
+- `npx skills add . -g -y` refreshed the installed skill. Byte comparisons for
+  `youtube_yt.py`, `facebook.py`, `env.py`, `pipeline.py`, and `SKILL.md`
+  matched the working tree.
+- The first live smoke failed closed because retained RDP displays `:10` and
+  `:11` were absent. Agent-browser's route-display opener restored both XRDP
+  sessions; route readiness then reported both abstract X11 sockets ready.
+- Live video `aircAruvnKk` returned 4,717 transcript words through the browser
+  lane with profile `stealthcdp-default`, session
+  `last30days-youtube-transcripts`, browser build `stealthcdp_chromium`, and
+  `operator_visible_state=ready`.
+- Current service readback reports browser health `ready`, host
+  `remote_headed`, checked-out route `guacamole:4`, provider `rdp_gateway`,
+  display `:10`, display content `browser_window_visible`, and attachability
+  proof `ready`. Agent-browser records the realized XRDP route as
+  `shared_display`; it is a hidden route-bound desktop, not the ambient display.
