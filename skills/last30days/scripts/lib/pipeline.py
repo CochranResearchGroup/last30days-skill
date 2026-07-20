@@ -45,6 +45,7 @@ from . import (
     tiktok,
     truthsocial,
     xai_x,
+    x_browser,
     xiaohongshu_api,
     xquik,
     xurl_x,
@@ -194,6 +195,8 @@ def diagnose(config: dict[str, Any], requested_sources: list[str] | None = None)
         "bird_installed": x_status["bird_installed"],
         "bird_authenticated": x_status["bird_authenticated"],
         "bird_username": x_status["bird_username"],
+        "has_x_browser": x_status["browser_available"],
+        "x_browser_profile": x_status["browser_profile"],
         "native_web_backend": native_web_backend,
         "native_search": env.is_native_search(config),
         "has_scrapecreators": bool(config.get("SCRAPECREATORS_API_KEY")),
@@ -1134,6 +1137,13 @@ def _retrieve_stream(
         return [], {}
     if source == "x":
         backend = runtime.x_search_backend or env.get_x_source(config)
+        if backend == "browser":
+            result = x_browser.search_x_browser(
+                subquery.search_query, from_date, to_date, depth=depth, config=config,
+            )
+            if result.get("error"):
+                raise RuntimeError(str(result["error"]))
+            return x_browser.parse_x_browser_response(result), {}
         if backend == "bird":
             result = bird_x.search_x(subquery.search_query, from_date, to_date, depth=depth)
             return bird_x.parse_bird_response(result, query=subquery.search_query), {}

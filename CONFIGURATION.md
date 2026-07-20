@@ -70,7 +70,7 @@ The project-scoped file is the cleanest pattern for **per-client setups**: drop 
 | GitHub | `gh` CLI installed (uses your GitHub auth) | always on if `gh` present | yes |
 | YouTube | `yt-dlp` CLI installed | always on if `yt-dlp` present | yes |
 | Digg | `digg-pp-cli` on PATH (auto-installed during first-run setup via `npx -y @mvanhorn/printing-press-library@0.1.16 install digg --cli-only`; binary defaults to `$HOME/.local/bin` — Hermes/OpenClaw agent subprocesses must inherit that dir on PATH for Digg to activate; prior pp-digg installs use the same path) | always on if `digg-pp-cli` on PATH | yes (free, keyless, read-only) |
-| X / Twitter | one of: `AUTH_TOKEN` + `CT0` (browser cookies, Bird CLI), `XAI_API_KEY`, `XQUIK_API_KEY`, `SCRAPECREATORS_API_KEY`, or `FROM_BROWSER` (cookie-jar auth) | X items in results | cookie-jar / Bird = free; Xquik / xAI / ScrapeCreators = key-based |
+| X / Twitter | one of: `LAST30DAYS_X_BROWSER=1` plus `agent-browser` and an authenticated profile, `AUTH_TOKEN` + `CT0` (Bird), `XAI_API_KEY`, `XQUIK_API_KEY`, `SCRAPECREATORS_API_KEY`, or `FROM_BROWSER` | X items in results | agent-browser / cookie auth / Bird = free; Xquik / xAI / ScrapeCreators = key-based |
 | TikTok | `SCRAPECREATORS_API_KEY` + `INCLUDE_SOURCES` contains `tiktok` | TikTok items | 10K free calls |
 | Instagram | `SCRAPECREATORS_API_KEY` + `INCLUDE_SOURCES` contains `instagram` | Instagram Reels | 10K free calls; raise `LAST30DAYS_TRANSCRIPT_TIMEOUT` (default 30s) if SC is slow on your network |
 | Threads | `SCRAPECREATORS_API_KEY` + `INCLUDE_SOURCES` contains `threads` | Threads items | 10K free calls |
@@ -97,6 +97,19 @@ BRAVE_API_KEY=<your-brave-key>
 # Optional sources
 SCRAPECREATORS_API_KEY=<your-scrapecreators-key>
 INCLUDE_SOURCES=tiktok,instagram
+
+# X via an authenticated agent-browser profile (opt-in; preferred over API
+# backends while enabled). The default profile already used on this workstation
+# is shown; use a different registered X profile elsewhere.
+LAST30DAYS_X_BROWSER=1
+LAST30DAYS_X_BACKEND=browser
+# LAST30DAYS_X_BROWSER_PROFILE=last30days-facebook
+# LAST30DAYS_X_BROWSER_SESSION=last30days-facebook
+# LAST30DAYS_X_BROWSER_BUILD=stealthcdp_chromium
+# LAST30DAYS_X_BROWSER_VIEW_PROVIDER=cdp_screencast
+# LAST30DAYS_X_BROWSER_TIMEOUT=75
+# LAST30DAYS_X_BROWSER_INITIAL_WAIT=2
+# LAST30DAYS_X_BROWSER_SCROLL_WAIT=1
 
 # Facebook via agent-browser remote browser (opt-in; no cookies are stored here)
 LAST30DAYS_FACEBOOK_BROWSER=1
@@ -138,18 +151,20 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # Debug artifacts contain timings, assertions, counts, and item lengths only;
 # they exclude cookies, operator URLs, raw HTML, and private page text.
 
-Facebook and LinkedIn browser failures are typed so operator action is unambiguous:
+X, Facebook, and LinkedIn browser failures are typed so operator action is unambiguous:
 
 | Error type | Meaning / action |
 |---|---|
 | `auth_required` | Open the returned current operator URL and sign in to the configured profile. |
 | `checkpoint_required` | Complete the site's security checkpoint in the operator-visible browser. |
+| `rate_limited` | The X account or search lane is restricted; stop and retry after the platform cooldown. |
 | `operator_ingress_unavailable` | Repair public Guacamole/dashboard ingress before retrying authentication. |
 | `profile_mismatch` | The selected agent-browser session is attached to a different profile. |
 | `route_stale` | Refresh or repair current agent-browser route-display service state. |
 | `navigation_mismatch` | The site did not reach the exact requested query/filter state; no items are emitted. |
 | `extraction_empty` | A verified search page contained no candidate cards. |
 | `quality_gate_failed` | Candidates existed, but none were canonical, dated, relevant posts. |
+| `search_unavailable` | X rendered a temporary error page instead of results. |
 
 # X authentication (one option only)
 AUTH_TOKEN=<your-auth-token>

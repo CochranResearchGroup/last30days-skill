@@ -24,6 +24,9 @@ metadata:
         - APIFY_API_TOKEN
         - AUTH_TOKEN
         - CT0
+        - LAST30DAYS_X_BROWSER
+        - LAST30DAYS_X_BACKEND
+        - LAST30DAYS_X_BROWSER_PROFILE
         - BSKY_HANDLE
         - BSKY_APP_PASSWORD
         - TRUTHSOCIAL_TOKEN
@@ -960,7 +963,7 @@ Only show lines for platforms where something was resolved. Skip empty lines. On
 - For how_to: prioritize YouTube (tutorials) and Reddit (guides)
 - Primary subquery weight = 1.0, secondary = 0.6-0.8, peripheral = 0.3-0.5
 
-**Available sources (include ALL in primary subquery):** reddit, x, youtube, tiktok, instagram, hackernews, polymarket. Optional: bluesky, truthsocial, threads, pinterest, facebook and linkedin (agent-browser retained remote browsers; only when explicitly requested and enabled; require current profile/auth/search-state readback and emit only canonical, dated post permalinks), grounding (web search - only if user has Brave/Exa/Serper key), digg (Digg clusters - only if `digg-pp-cli` is on PATH)
+**Available sources (include ALL in primary subquery):** reddit, x, youtube, tiktok, instagram, hackernews, polymarket. X may use the opt-in agent-browser retained profile backend; it requires current profile/auth/exact Latest-search readback and emits only canonical, dated status permalinks. Optional: bluesky, truthsocial, threads, pinterest, facebook and linkedin (agent-browser retained remote browsers; only when explicitly requested and enabled; require current profile/auth/search-state readback and emit only canonical, dated post permalinks), grounding (web search - only if user has Brave/Exa/Serper key), digg (Digg clusters - only if `digg-pp-cli` is on PATH)
 
 **Intent → freshness_mode mapping:**
 - breaking_news, prediction → `strict_recent`
@@ -1545,11 +1548,12 @@ Headlines should be specific and newsy ("BULLY dropped and it's dominating", "Eu
 
 If the research output contains a `**🔍 Research Coverage:**` block, render it verbatim right before the stats block. This tells the user which core sources are missing and how to unlock them. Do NOT render this block if it is absent from the output (100% coverage = no nudge).
 
-**Just-in-time X unlock:** If X returned 0 results because no X auth is configured (no AUTH_TOKEN/CT0, no XAI_API_KEY, no FROM_BROWSER), offer to set it up right there:
+**Just-in-time X unlock:** If X returned 0 results because no X auth is configured (no enabled agent-browser X profile, no AUTH_TOKEN/CT0, no XAI_API_KEY, no FROM_BROWSER), offer to set it up right there:
 
 **Call AskUserQuestion:**
 Question: "X/Twitter wasn't searched. Want to unlock it?"
 Options:
+- "Use my agent-browser X profile (free)" - Confirm `agent-browser` is on PATH, set `LAST30DAYS_X_BROWSER=1` and `LAST30DAYS_X_BACKEND=browser`, and use `LAST30DAYS_X_BROWSER_PROFILE` when the registered X profile is not `last30days-facebook`. The engine resolves target identity `x`, reuses the retained browser selected by the access plan, verifies the exact dated Latest search, and never reads or exports cookies.
 - "Scan my browser cookies (free)" - Get consent, run cookie scan, write BROWSER_CONSENT=true + FROM_BROWSER=auto to .env
 - "I have AUTH_TOKEN and CT0 from my browser" - Ask them to paste each value, then write AUTH_TOKEN=<value>\nCT0=<value> to .env
 - "I have an xAI API key" - Ask them to paste it, write XAI_API_KEY to .env
@@ -1786,20 +1790,21 @@ Want another prompt? Just tell me what you're creating next.
 **What this skill does:**
 - Sends search queries to ScrapeCreators API (`api.scrapecreators.com`) for TikTok and Instagram search, and as a Reddit backup when public Reddit is unavailable (requires SCRAPECREATORS_API_KEY)
 - Legacy: Sends search queries to OpenAI's Responses API (`api.openai.com`) for Reddit discovery (fallback if no SCRAPECREATORS_API_KEY)
-- Sends search queries to Twitter's GraphQL API (via optional user-provided AUTH_TOKEN/CT0 env vars - no browser session access), xAI's API (`api.x.ai`), Xquik's API (`xquik.com`), or the official X API v2 via xurl CLI (OAuth2, auto-detected when installed and authenticated) for X search
+- When explicitly enabled, uses agent-browser with its access-plan-selected, operator-authenticated retained profile to search X's visible Latest results; it reads rendered post DOM only and does not export browser cookies
+- Sends search queries to Twitter's GraphQL API (via optional user-provided AUTH_TOKEN/CT0 env vars), xAI's API (`api.x.ai`), Xquik's API (`xquik.com`), or the official X API v2 via xurl CLI (OAuth2, auto-detected when installed and authenticated) for alternative X search backends
 - Sends search queries to Algolia HN Search API (`hn.algolia.com`) for Hacker News story and comment discovery (free, no auth)
 - Sends search queries to Polymarket Gamma API (`gamma-api.polymarket.com`) for prediction market discovery (free, no auth)
 - Runs `yt-dlp` locally for YouTube search and transcript extraction (no API key, public data)
 - Sends search queries to ScrapeCreators API (`api.scrapecreators.com`) for TikTok and Instagram search, transcript/caption extraction (PAYG after 100 free credits)
 - Optionally sends search queries to Brave Search API, Parallel AI API, or OpenRouter API for web search
 - Fetches public Reddit thread data from `reddit.com` for engagement metrics
-- When explicitly enabled and requested, uses agent-browser with an operator-authenticated retained profile to search visible Facebook or LinkedIn posts; credentials remain in the browser profile
+- When explicitly enabled and requested, uses agent-browser with an operator-authenticated retained profile to search visible X, Facebook, or LinkedIn posts; credentials remain in the browser profile
 - Stores research findings in local SQLite database (watchlist mode only)
 - Saves research briefings as .md files to `LAST30DAYS_MEMORY_DIR` (defaults to `~/Documents/Last30Days`)
 
 **What this skill does NOT do:**
 - Does not post, like, or modify content on any platform
-- Does not access your Reddit, X, or YouTube accounts; Facebook and LinkedIn account access occurs only through an explicitly enabled operator-authenticated browser profile
+- Does not access your Reddit or YouTube accounts; X, Facebook, and LinkedIn account access occurs only through an explicitly enabled operator-authenticated browser profile
 - Does not share API keys between providers (OpenAI key only goes to api.openai.com, etc.)
 - Does not log, cache, or write API keys to output files
 - Does not send data to any endpoint not listed above

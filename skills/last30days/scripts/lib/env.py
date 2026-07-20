@@ -390,6 +390,14 @@ def get_config() -> dict[str, Any]:
         ('LAST30DAYS_RERANK_MODEL', None),
         ('LAST30DAYS_X_MODEL', None),
         ('LAST30DAYS_X_BACKEND', None),
+        ('LAST30DAYS_X_BROWSER', None),
+        ('LAST30DAYS_X_BROWSER_PROFILE', None),
+        ('LAST30DAYS_X_BROWSER_SESSION', None),
+        ('LAST30DAYS_X_BROWSER_BUILD', None),
+        ('LAST30DAYS_X_BROWSER_VIEW_PROVIDER', None),
+        ('LAST30DAYS_X_BROWSER_TIMEOUT', None),
+        ('LAST30DAYS_X_BROWSER_INITIAL_WAIT', None),
+        ('LAST30DAYS_X_BROWSER_SCROLL_WAIT', None),
         ('LAST30DAYS_STORE', None),
         ('LAST30DAYS_MEMORY_DIR', None),
         ('OPENAI_MODEL_PIN', None),
@@ -654,11 +662,15 @@ def get_x_source(config: dict[str, Any]) -> str | None:
     if has_bird_creds:
         bird_x.set_credentials(config.get('AUTH_TOKEN'), config.get('CT0'))
 
+    if preferred == 'browser':
+        return 'browser' if is_x_browser_available(config) else None
     if preferred == 'xai':
         return 'xai' if config.get('XAI_API_KEY') else None
     if preferred == 'bird':
         return 'bird' if has_bird_creds and bird_x.is_bird_installed() else None
 
+    if is_x_browser_available(config):
+        return 'browser'
     if config.get('XAI_API_KEY'):
         return 'xai'
     if has_bird_creds and bird_x.is_bird_installed():
@@ -670,6 +682,15 @@ def get_x_source(config: dict[str, Any]) -> str | None:
         return 'xurl'
 
     return None
+
+
+def is_x_browser_available(config: dict[str, Any]) -> bool:
+    """Check whether authenticated agent-browser X search is explicitly enabled."""
+    enabled = str(config.get('LAST30DAYS_X_BROWSER') or '').strip().lower()
+    if enabled not in {'1', 'true', 'yes', 'on'}:
+        return False
+    import shutil
+    return shutil.which('agent-browser') is not None
 
 
 def is_ytdlp_available() -> bool:
@@ -890,6 +911,8 @@ def get_x_source_status(config: dict[str, Any], probe: bool = False) -> dict[str
         bird_x.set_credentials(config.get('AUTH_TOKEN'), config.get('CT0'))
     bird_status = bird_x.get_bird_status()
     xai_available = bool(config.get('XAI_API_KEY'))
+    browser_available = is_x_browser_available(config)
+    source = get_x_source(config)
 
     # Report the TRUE auth lane (browser / env / keychain) rather than the static
     # "env AUTH_TOKEN" label — tokens usually come from live browser cookies, and
@@ -899,24 +922,17 @@ def get_x_source_status(config: dict[str, Any], probe: bool = False) -> dict[str
         bird_status["username"] = f"{lane} AUTH_TOKEN"
 
     # Optional runtime probe: don't show X green when it's effectively dead.
-    if probe and bird_status["authenticated"]:
+    if probe and source == 'bird' and bird_status["authenticated"]:
         if bird_x.probe_works() is False:
             bird_status["authenticated"] = False
             bird_status["username"] = "probe failed (no working X auth)"
-
-    # Determine active source
-    if bird_status["authenticated"]:
-        source = 'bird'
-    elif xai_available:
-        source = 'xai'
-    else:
-        # Fall back to xurl CLI
-        from . import xurl_x as _xurl_check
-        source = 'xurl' if _xurl_check.is_available() else None
+            source = get_x_source({**config, 'AUTH_TOKEN': '', 'CT0': ''})
 
     from . import xurl_x as _xurl_x
     return {
         "source": source,
+        "browser_available": browser_available,
+        "browser_profile": str(config.get('LAST30DAYS_X_BROWSER_PROFILE') or 'last30days-facebook'),
         "bird_installed": bird_status["installed"],
         "bird_authenticated": bird_status["authenticated"],
         "bird_username": bird_status["username"],
