@@ -1,6 +1,6 @@
 # Plan 0003 | Agent-Browser X Scraper
 
-State: OPEN
+State: COMPLETE
 Date: 2026-07-19
 
 ## Scope
@@ -219,3 +219,38 @@ smoke all pass, and the final live evidence proves that agent-browser used the
 - exporting or persisting browser cookies
 - guaranteeing X will always return matching recent posts
 - removing the existing non-browser X backends in this slice
+
+## Completion Evidence
+
+Completed on 2026-07-19 by the primary agent:
+
+- Added `lib/x_browser.py` with target-identity access planning, retained
+  profile reuse, authenticated DOM and exact Latest-query readback, bounded
+  scrolling, canonical post extraction, normalized engagement, relevance/date
+  quality gates, and typed failures.
+- Wired the opt-in `browser` backend through configuration loading, provider
+  resolution, pipeline diagnosis, and X retrieval while retaining Bird, xAI,
+  and xurl alternatives.
+- Added public-interface, acquisition, failure, quality, backend-selection,
+  pipeline-dispatch, engagement-normalization, and opt-in live tests in
+  `tests/test_x_browser.py`.
+- `uv run pytest tests/test_x_browser.py tests/test_pipeline_v3.py
+  tests/test_env_v3.py tests/test_providers_v3.py
+  tests/test_runtime_preflight_contract.py -q` passed at 100 percent (one
+  opt-in live test skipped in the ordinary run).
+- `uv run pytest -q` passed at 100 percent with only expected opt-in skips.
+- `LAST30DAYS_X_BROWSER_LIVE_SMOKE=1 uv run pytest
+  tests/test_x_browser.py::XBrowserLiveSmokeTests -q -s` passed three
+  unrelated live searches (`OpenAI`, `regenerative agriculture`, and `robotic
+  lawn mower`) through the same `last30days-facebook` session.
+- `bash dev/last30days/scripts/build-skill.sh` built
+  `dist/last30days.skill` with 100 files at 440K.
+- `npx skills add . -g -y` refreshed `~/.agents/skills/last30days`; Codex and
+  the supported global hosts installed successfully. PromptScript reported its
+  existing lack of global-skill support and is not an install target for this
+  proof.
+- Byte comparisons passed for installed `SKILL.md` and `lib/x_browser.py`.
+- An installed-copy live run for `OpenAI` returned eight canonical posts with
+  normalized engagement, `error_type=null`, profile
+  `last30days-facebook`, and session `last30days-facebook`.
+- Implementation commits: `00b4848` and `92f4902`.
