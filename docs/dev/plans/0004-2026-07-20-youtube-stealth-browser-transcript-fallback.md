@@ -131,10 +131,11 @@ Completed on 2026-07-20 by the primary agent:
 - `uv run pytest tests/test_youtube_yt.py tests/test_facebook.py
   tests/test_x_browser.py` passed, including browser posture, caption absence,
   hard-failure routing, language-order, and concurrent serialization coverage.
-- `uv run pytest` passed: 2,084 tests, 7 skips, and 6 subtests in 64.35 seconds.
+- Final `uv run pytest` passed: 2,085 tests, 7 skips, and 6 subtests in
+  84.31 seconds.
 - `bash dev/last30days/scripts/build-skill.sh` built a 100-file, 444K
   `dist/last30days.skill` with SHA-256
-  `f82242ce70950dfe300b9e35badb16378b0c37649197ccd8dc1d94fbd0e3d2bc`.
+  `0413ad1a3d954476a15bd7ff374d08340e5e5055d67b7d2a16b775a732930a46`.
 - `npx skills add . -g -y` refreshed the installed skill. Byte comparisons for
   `youtube_yt.py`, `facebook.py`, `env.py`, `pipeline.py`, and `SKILL.md`
   matched the working tree.
