@@ -1,6 +1,6 @@
 # Plan 0006 | Agent-browser expert shared-profile routing
 
-State: OPEN
+State: CLOSED
 Date: 2026-07-23
 
 ## Scope
@@ -104,3 +104,40 @@ The plan closes when implementation, documentation, focused tests, package
 validation, installed-copy synchronization, and live X/Facebook smokes pass,
 and the recorded user-scoped configuration contains only the approved stable
 fields.
+
+## Completion Evidence
+
+Closed on 2026-07-23.
+
+- Implementation commit: `e4ffdb1 feat: share agent-browser profiles through
+  access plans`.
+- Focused agent-browser, Facebook, X, YouTube, environment, pipeline, security,
+  and source-log tests passed.
+- The full `uv run pytest -q` suite passed.
+- Python compilation and `git diff --check` passed. Ruff was not available in
+  the project environment.
+- `dev/last30days/scripts/build-skill.sh` built
+  `dist/last30days.skill` with 103 files at 452 KiB.
+- The installed `~/.agents/skills/last30days` copies of `SKILL.md`,
+  `agent_browser_config.py`, `facebook.py`, `x_browser.py`, and
+  `youtube_yt.py` are byte-for-byte identical to the repository copies.
+- An installed-copy X smoke completed in 78.4 seconds with six X posts and no
+  acquisition or profile-owner error.
+- A live Facebook smoke reused `session:last30days-facebook`, reported
+  authenticated, and navigated to the exact query URL. It produced no emitted
+  posts because all five candidates failed content quality gates
+  (`missing_permalink`, `off_topic`, or `missing_date`), not because browser
+  acquisition or authentication failed.
+- `~/.config/last30days/agent-browser.json` records X and Facebook against the
+  durable `last30days-facebook` profile with `shared_browser_tabs` and
+  `tab_new`; YouTube records its separate `stealthcdp-default` profile.
+- The user file is mode `0600`. A recursive key audit found no cookie, token,
+  secret, credential, user-data path, operator URL, browser ID, session name,
+  route ID, display ID, or tab ID fields.
+
+## Follow-up
+
+The engine's source-quality message can still say `Missing: X/Twitter` after a
+successful X result set. That reporting inconsistency is outside this
+shared-profile routing plan and should be handled as a separate quality-status
+fix.
