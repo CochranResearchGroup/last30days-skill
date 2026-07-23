@@ -249,20 +249,79 @@ class XBrowserAcquisitionTests(TestCase):
         ])
         recorder._client._invoke = recorder.invoke
 
-        workspace = recorder._client.acquire_workspace(
-            x_browser.BrowserWorkspaceRequest(
-                profile_id="last30days-facebook",
-                session_name="last30days-facebook",
-                browser_build="stealthcdp_chromium",
-                view_provider="rdp_gateway",
-                timeout=45,
+        with patch.object(x_browser.agent_browser_config, "record_access_plan"):
+            workspace = recorder._client.acquire_workspace(
+                x_browser.BrowserWorkspaceRequest(
+                    profile_id="last30days-facebook",
+                    session_name="last30days-facebook",
+                    browser_build="stealthcdp_chromium",
+                    view_provider="rdp_gateway",
+                    timeout=45,
+                )
             )
-        )
 
         self.assertEqual("last30days-facebook", workspace.profile_id)
         self.assertIn("--target-service-id", recorder.calls[0])
         target_index = recorder.calls[0].index("--target-service-id")
         self.assertEqual("x", recorder.calls[0][target_index + 1])
+
+    def test_acquisition_uses_broker_shared_owner_over_configured_session(self):
+        from lib import x_browser
+
+        plan = {
+            "selectedProfile": {"id": "last30days-facebook"},
+            "decision": {
+                "manualActionRequired": False,
+                "profileReuse": {
+                    "recommendedAction": "reuse_existing_browser",
+                    "sharedAcquisition": {
+                        "mode": "tab_new",
+                        "browserId": "session:last30days-facebook",
+                        "sessionName": "last30days-facebook",
+                    },
+                },
+            },
+        }
+        status = {
+            "service_state": {
+                "sessions": {
+                    "default": {"profileId": "qbo-soylei", "browserIds": ["session:default"]},
+                    "last30days-facebook": {
+                        "profileId": "last30days-facebook",
+                        "browserIds": ["session:last30days-facebook"],
+                        "tabIds": ["target:x"],
+                    },
+                },
+                "browsers": {
+                    "session:last30days-facebook": {
+                        "profileId": "last30days-facebook",
+                        "health": "ready",
+                    },
+                },
+                "tabs": {"target:x": {"targetId": "x", "url": "https://x.com/home"}},
+            },
+        }
+        recorder = RecordingCliClient([plan, status, {"tabs": [{"index": 0, "active": True, "url": "https://x.com/home"}]}])
+        recorder._client._invoke = recorder.invoke
+
+        with patch.object(x_browser.agent_browser_config, "record_access_plan"):
+            workspace = recorder._client.acquire_workspace(
+                x_browser.BrowserWorkspaceRequest(
+                    profile_id="last30days-facebook",
+                    session_name="default",
+                    browser_build="stealthcdp_chromium",
+                    view_provider="cdp_screencast",
+                    timeout=45,
+                )
+            )
+
+        self.assertEqual("session:last30days-facebook", workspace.browser_id)
+        self.assertEqual("last30days-facebook", workspace.session_name)
+        self.assertEqual("x", workspace.target_id)
+        self.assertEqual(
+            ["--session", "last30days-facebook", "tab", "list"],
+            recorder.calls[2],
+        )
 
 
 class XBrowserIntegrationTests(TestCase):

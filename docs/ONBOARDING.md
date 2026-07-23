@@ -175,7 +175,9 @@ write output.
 
 The X browser backend reuses an operator-authenticated retained profile and is
 never enabled implicitly. Do not run this smoke in CI. Confirm that the
-agent-browser access plan selects the intended X profile, then run:
+agent-browser access plan selects the intended X profile. The access plan's
+shared-acquisition browser and session hints are authoritative over the
+optional configured session name. Then run:
 
 ```bash
 LAST30DAYS_X_BROWSER_LIVE_SMOKE=1 \
@@ -193,7 +195,9 @@ search-state mismatch without exporting cookies.
 
 Facebook uses an operator-authenticated, retained agent-browser profile. Do not
 run this smoke in CI. First use the current `publicOperatorUrl` returned by
-agent-browser to sign in, then run:
+agent-browser to sign in. The scraper must reuse a compatible broker-selected
+profile owner even when the configured session name belongs to another client.
+Then run:
 
 ```bash
 LAST30DAYS_FACEBOOK_LIVE_SMOKE=1 \
@@ -207,6 +211,12 @@ query-specific search URLs and rejects every item without a canonical post
 permalink, author, and in-range publication date. `auth_required`,
 `checkpoint_required`, and `operator_ingress_unavailable` are operator actions;
 do not bypass them or fall back to broad home-feed extraction.
+
+After either browser smoke, inspect
+`~/.config/last30days/agent-browser.json`. It should contain stable target
+profile, browser-build, host, provider, and sharing-policy selections. It must
+not contain cookies, credentials, profile paths, operator URLs, browser or
+session IDs, route or display IDs, tabs, or page data.
 
 ## 9. Opt-in LinkedIn dogfood
 

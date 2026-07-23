@@ -30,6 +30,24 @@ def request(**overrides):
     return facebook.BrowserWorkspaceRequest(**values)
 
 
+def access_plan(*, profile_id="last30days-facebook", shared_owner=None):
+    reuse = {"recommendedAction": "launch_new_browser"}
+    if shared_owner:
+        browser_id, session_name = shared_owner
+        reuse = {
+            "recommendedAction": "reuse_existing_browser",
+            "sharedAcquisition": {
+                "mode": "tab_new",
+                "browserId": browser_id,
+                "sessionName": session_name,
+            },
+        }
+    return {
+        "selectedProfile": {"id": profile_id},
+        "decision": {"profileReuse": reuse},
+    }
+
+
 class FakeAgentBrowserClient:
     def __init__(self, *, page=None, candidates=None, auth=None, snapshots=None):
         self.workspace = facebook.BrowserWorkspace(
@@ -143,6 +161,30 @@ class FacebookCliAdapterTests(unittest.TestCase):
             invoke.call_args.args[0],
         )
 
+    def test_auth_inspection_opens_facebook_tab_when_shared_owner_has_none(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="shared-social",
+        )
+        with mock.patch.object(
+            client,
+            "_invoke",
+            side_effect=[
+                {"tabs": [{"index": 0, "active": True, "url": "https://x.com/home"}]},
+                {},
+                {"authenticated_dom": True, "has_c_user": True, "has_xs": True},
+            ],
+        ) as invoke:
+            auth = client.inspect_auth(workspace)
+
+        self.assertTrue(auth.authenticated)
+        self.assertEqual(
+            ["--session", "shared-social", "tab", "new", "https://www.facebook.com/"],
+            invoke.call_args_list[1].args[0],
+        )
+
     def test_wait_action_is_local_and_bounded(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         workspace = facebook.BrowserWorkspace(
@@ -191,14 +233,9 @@ class FacebookCliAdapterTests(unittest.TestCase):
 
     def test_profile_mismatch_is_rejected_before_remote_open(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
-        status = {
-            "service_state": {
-                "sessions": {"last30days-facebook": {"profileId": "default", "browserIds": ["browser-1"]}},
-                "browsers": {"browser-1": {"health": "ready"}},
-                "tabs": {},
-            }
-        }
-        with mock.patch.object(client, "_invoke", return_value=status) as invoke:
+        with mock.patch.object(
+            client, "_invoke", return_value=access_plan(profile_id="default")
+        ) as invoke:
             with self.assertRaises(facebook.FacebookScraperFailure) as raised:
                 client.acquire_workspace(request())
         self.assertEqual("profile_mismatch", raised.exception.error_type)
@@ -219,9 +256,11 @@ class FacebookCliAdapterTests(unittest.TestCase):
             "profileId": "last30days-facebook", "browserId": "browser-1", "targetId": "target-1",
             "routeId": "route:current", "operatorVisible": {"state": "ready"},
         }
-        with mock.patch.object(client, "_invoke", side_effect=[status, opened]) as invoke:
+        with mock.patch.object(
+            client, "_invoke", side_effect=[access_plan(), status, opened]
+        ) as invoke, mock.patch.object(facebook.agent_browser_config, "record_access_plan"):
             workspace = client.acquire_workspace(request(route_pool_entry_id_hint="route-stale"))
-        command = invoke.call_args_list[1].args[0]
+        command = invoke.call_args_list[2].args[0]
         self.assertIn("route-current", command)
         self.assertNotIn("route-stale", command)
         self.assertEqual("route:current", workspace.route_id)
@@ -230,10 +269,18 @@ class FacebookCliAdapterTests(unittest.TestCase):
         client = facebook.CliAgentBrowserClient(timeout=5)
         status = {
             "service_state": {
-                "sessions": {"last30days-facebook": {
-                    "profileId": "last30days-facebook", "browserIds": ["browser-1"], "tabIds": ["target:t1"]
-                }},
-                "browsers": {"browser-1": {
+                "sessions": {
+                    "default": {"profileId": "qbo-soylei", "browserIds": ["browser-qbo"]},
+                    "last30days-facebook": {
+                        "profileId": "last30days-facebook",
+                        "browserIds": ["browser-1"],
+                        "tabIds": ["target:t1"],
+                    },
+                },
+                "browsers": {
+                    "browser-qbo": {"profileId": "qbo-soylei", "health": "ready"},
+                    "browser-1": {
+                    "profileId": "last30days-facebook",
                     "health": "ready", "viewStreams": [{
                         "id": "route-1", "provider": "rdp_gateway", "externalUrl": "https://operator.example/token",
                         "readiness": {"state": "ready"},
@@ -242,12 +289,16 @@ class FacebookCliAdapterTests(unittest.TestCase):
                 "tabs": {"target:t1": {"targetId": "t1", "url": "https://www.facebook.com/"}},
             }
         }
-        with mock.patch.object(client, "_invoke", return_value=status) as invoke:
-            first = client.acquire_workspace(request())
-            second = client.acquire_workspace(request())
+        plan = access_plan(shared_owner=("browser-1", "last30days-facebook"))
+        with mock.patch.object(
+            client, "_invoke", side_effect=[plan, status, plan, status]
+        ) as invoke, mock.patch.object(facebook.agent_browser_config, "record_access_plan"):
+            first = client.acquire_workspace(request(session_name="default"))
+            second = client.acquire_workspace(request(session_name="default"))
         self.assertEqual(first.browser_id, second.browser_id)
+        self.assertEqual("last30days-facebook", first.session_name)
         self.assertEqual("t1", first.target_id)
-        self.assertEqual(2, invoke.call_count)
+        self.assertEqual(4, invoke.call_count)
 
 
 class FacebookNavigationAndAuthTests(unittest.TestCase):

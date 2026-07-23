@@ -1573,7 +1573,7 @@ If the research output contains a `**🔍 Research Coverage:**` block, render it
 **Call AskUserQuestion:**
 Question: "X/Twitter wasn't searched. Want to unlock it?"
 Options:
-- "Use my agent-browser X profile (free)" - Confirm `agent-browser` is on PATH, set `LAST30DAYS_X_BROWSER=1` and `LAST30DAYS_X_BACKEND=browser`, and use `LAST30DAYS_X_BROWSER_PROFILE` when the registered X profile is not `last30days-facebook`. The engine resolves target identity `x`, reuses the retained browser selected by the access plan, verifies the exact dated Latest search, and never reads or exports cookies.
+- "Use my agent-browser X profile (free)" - Confirm `agent-browser` is on PATH, set `LAST30DAYS_X_BROWSER=1` and `LAST30DAYS_X_BACKEND=browser`, and use `LAST30DAYS_X_BROWSER_PROFILE` when the registered X profile is not `last30days-facebook`. The engine resolves target identity `x`, follows the access plan's shared-tab acquisition and retained owner route hints, verifies the exact dated Latest search, and never reads or exports cookies. Stable profile/build/provider/sharing selections are recorded in user scope at `~/.config/last30days/agent-browser.json`; runtime browser, session, route, display, and tab leases are never persisted there.
 - "Scan my browser cookies (free)" - Get consent, run cookie scan, write BROWSER_CONSENT=true + FROM_BROWSER=auto to .env
 - "I have AUTH_TOKEN and CT0 from my browser" - Ask them to paste each value, then write AUTH_TOKEN=<value>\nCT0=<value> to .env
 - "I have an xAI API key" - Ask them to paste it, write XAI_API_KEY to .env
@@ -1810,7 +1810,7 @@ Want another prompt? Just tell me what you're creating next.
 **What this skill does:**
 - Sends search queries to ScrapeCreators API (`api.scrapecreators.com`) for TikTok and Instagram search, and as a Reddit backup when public Reddit is unavailable (requires SCRAPECREATORS_API_KEY)
 - Legacy: Sends search queries to OpenAI's Responses API (`api.openai.com`) for Reddit discovery (fallback if no SCRAPECREATORS_API_KEY)
-- When explicitly enabled, uses agent-browser with its access-plan-selected, operator-authenticated retained profile to search X's visible Latest results; it reads rendered post DOM only and does not export browser cookies
+- When explicitly enabled, uses agent-browser with its access-plan-selected, operator-authenticated retained profile to search X's visible Latest results; multiple clients share the retained profile through broker-selected service-owned tabs instead of launching duplicate profile processes, and the scraper reads rendered post DOM only without exporting browser cookies
 - Sends search queries to Twitter's GraphQL API (via optional user-provided AUTH_TOKEN/CT0 env vars), xAI's API (`api.x.ai`), Xquik's API (`xquik.com`), or the official X API v2 via xurl CLI (OAuth2, auto-detected when installed and authenticated) for alternative X search backends
 - Sends search queries to Algolia HN Search API (`hn.algolia.com`) for Hacker News story and comment discovery (free, no auth)
 - Sends search queries to Polymarket Gamma API (`gamma-api.polymarket.com`) for prediction market discovery (free, no auth)
@@ -1820,7 +1820,7 @@ Want another prompt? Just tell me what you're creating next.
 - Sends search queries to ScrapeCreators API (`api.scrapecreators.com`) for TikTok and Instagram search, transcript/caption extraction (PAYG after 100 free credits)
 - Optionally sends search queries to Brave Search API, Parallel AI API, or OpenRouter API for web search
 - Fetches public Reddit thread data from `reddit.com` for engagement metrics
-- When explicitly enabled and requested, uses agent-browser with an operator-authenticated retained profile to search visible X, Facebook, or LinkedIn posts; credentials remain in the browser profile
+- When explicitly enabled and requested, uses agent-browser with an operator-authenticated retained profile to search visible X, Facebook, or LinkedIn posts; access-plan target identity and shared-acquisition hints are authoritative over caller session names, stable non-secret routing configuration is recorded at user scope, and credentials remain in the browser profile
 - Stores research findings in local SQLite database (watchlist mode only)
 - Saves research briefings as .md files to `LAST30DAYS_MEMORY_DIR` (defaults to `~/Documents/Last30Days`)
 

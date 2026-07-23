@@ -1,0 +1,120 @@
+import json
+import stat
+import tempfile
+import unittest
+from datetime import datetime, timezone
+from pathlib import Path
+
+from lib import agent_browser_config
+
+
+def access_plan():
+    return {
+        "selectedProfile": {
+            "id": "last30days-facebook",
+            "profileClass": "durable_named",
+            "profileOrigin": "agent_browser_owned",
+            "userDataDir": "/private/profile/path",
+        },
+        "decision": {
+            "launchPosture": {
+                "browserBuild": "stealthcdp_chromium",
+                "browserHost": "local_headed",
+                "viewStreamProvider": "cdp_screencast",
+                "controlInputProvider": "cdp_input",
+            },
+            "profileReuse": {
+                "recommendedAction": "reuse_existing_browser",
+                "profileProcessPolicy": "exclusive_process",
+                "clientSharingPolicy": "shared_browser_tabs",
+                "defaultAcquisition": "tab_new",
+                "reusableBrowserId": "session:last30days-facebook",
+                "reusableSessionName": "last30days-facebook",
+                "sharedAcquisition": {
+                    "mode": "tab_new",
+                    "browserId": "session:last30days-facebook",
+                    "sessionName": "last30days-facebook",
+                },
+            },
+            "serviceRequest": {
+                "request": {
+                    "browserId": "session:last30days-facebook",
+                    "sessionName": "last30days-facebook",
+                    "profile": "/private/profile/path",
+                    "url": "https://x.com/search",
+                },
+            },
+        },
+    }
+
+
+class AgentBrowserConfigTests(unittest.TestCase):
+    def test_records_only_stable_user_scoped_target_configuration(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "agent-browser.json"
+            agent_browser_config.record_access_plan(
+                access_plan(),
+                "x",
+                path=path,
+                recorded_at=datetime(2026, 7, 23, 12, 0, tzinfo=timezone.utc),
+            )
+            payload = json.loads(path.read_text(encoding="utf-8"))
+
+        target = payload["targets"]["x"]
+        self.assertEqual("last30days-facebook", target["profile_id"])
+        self.assertEqual("shared_browser_tabs", target["client_sharing_policy"])
+        self.assertEqual("tab_new", target["default_acquisition"])
+        serialized = json.dumps(payload)
+        for forbidden in (
+            "browserId",
+            "sessionName",
+            "routeId",
+            "displayAllocationId",
+            "userDataDir",
+            "/private/profile/path",
+            "https://x.com/search",
+        ):
+            self.assertNotIn(forbidden, serialized)
+
+    def test_user_scoped_file_is_mode_0600_and_preserves_other_targets(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "agent-browser.json"
+            path.write_text(
+                json.dumps({"schema_version": "old", "targets": {"facebook": {"profile_id": "fb"}}}),
+                encoding="utf-8",
+            )
+            agent_browser_config.record_access_plan(access_plan(), "x", path=path)
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            mode = stat.S_IMODE(path.stat().st_mode)
+
+        self.assertEqual(0o600, mode)
+        self.assertEqual("fb", payload["targets"]["facebook"]["profile_id"])
+        self.assertEqual("last30days-facebook", payload["targets"]["x"]["profile_id"])
+
+    def test_shared_owner_uses_broker_hints_not_caller_session(self):
+        owner = agent_browser_config.shared_profile_owner(
+            access_plan(),
+            {
+                "sessions": {
+                    "default": {"profileId": "qbo-soylei", "browserIds": ["session:default"]},
+                    "last30days-facebook": {
+                        "profileId": "last30days-facebook",
+                        "browserIds": ["session:last30days-facebook"],
+                        "tabIds": ["target:x"],
+                    },
+                },
+                "browsers": {
+                    "session:default": {"profileId": "qbo-soylei", "health": "ready"},
+                    "session:last30days-facebook": {
+                        "profileId": "last30days-facebook",
+                        "health": "ready",
+                    },
+                },
+                "tabs": {"target:x": {"targetId": "x"}},
+            },
+            expected_profile_id="last30days-facebook",
+        )
+
+        self.assertEqual("session:last30days-facebook", owner["browser_id"])
+        self.assertEqual("last30days-facebook", owner["session_name"])
+        self.assertEqual("x", owner["target_id"])

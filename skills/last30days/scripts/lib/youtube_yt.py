@@ -595,7 +595,11 @@ class _YouTubeBrowserClient(browser_runtime.CliAgentBrowserClient):
                 "agent-browser access plan did not preserve hidden-RDP posture: "
                 + ", ".join(mismatches),
             )
-        return super().acquire_workspace(request)
+        return super().acquire_workspace(
+            request,
+            access_plan=plan,
+            target_service_id="youtube",
+        )
 
 
 def _fetch_transcript_browser(
@@ -634,6 +638,7 @@ def _fetch_transcript_browser(
         service_name="last30days",
         agent_name="youtube-transcript-scraper",
         task_name="youtube-transcript-fallback",
+        target_service_id="youtube",
         browser_host="remote_headed",
         display_isolation="private_virtual_display",
         control_input_provider="manual_attached_desktop",

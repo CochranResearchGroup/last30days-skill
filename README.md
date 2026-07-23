@@ -61,7 +61,7 @@ If you're meeting with a CEO, have you read all their tweets and YouTube transcr
 | Source | What the people tell you |
 |--------|--------------------------|
 | **Reddit** | The unfiltered take. Top comments with upvote counts, free via public JSON. The real opinions that Google buries. |
-| **X / Twitter** | The hot take, expert thread, and breaking reaction through Bird/API backends or an explicitly enabled authenticated agent-browser profile. |
+| **X / Twitter** | The hot take, expert thread, and breaking reaction through Bird/API backends or an explicitly enabled authenticated agent-browser profile shared through broker-selected service tabs. |
 | **YouTube** | The 45-minute deep dive. Full transcripts searched for the 5 quotable sentences that matter. |
 | **TikTok** | The creator reaching 3.6M people with a take you'll never find on Google. |
 | **Instagram Reels** | The influencer perspective with spoken-word transcripts. The visual culture signal. |
@@ -70,7 +70,7 @@ If you're meeting with a CEO, have you read all their tweets and YouTube transcr
 | **GitHub** | For people: PR velocity, top repos by stars, release notes. For topics: issues and discussions. |
 | **Digg** | Curated story clusters from Digg's AI 1000 leaderboard (~1000 high-signal AI accounts on X), with attributable inline quotes (no X auth required). Auto-enabled when `digg-pp-cli` is on PATH. |
 | **Threads** | The post-Twitter text layer. Conversations from creators and brands. |
-| **Facebook** | Authenticated post search through an explicitly enabled, operator-visible agent-browser profile. |
+| **Facebook** | Authenticated post search through an explicitly enabled agent-browser profile with access-plan-selected shared-tab reuse. |
 | **LinkedIn** | Authenticated latest-content search for professional and company posts through an explicitly enabled agent-browser profile. |
 | **Pinterest** | Visual discovery. Pins, saves, and comments on products and ideas. |
 | **Bluesky** | The decentralized social layer. AT Protocol posts from the post-Twitter migration. |

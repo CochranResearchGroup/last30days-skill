@@ -568,7 +568,12 @@ class TestYouTubeBrowserTranscriptFallback(unittest.TestCase):
             "sessionName": "youtube-session",
             "operatorVisible": {"state": "ready"},
         }
-        with mock.patch.object(client, "_invoke", side_effect=[plan, status, opened]) as invoke:
+        with mock.patch.object(
+            client, "_invoke", side_effect=[plan, status, opened]
+        ) as invoke, mock.patch.object(
+            youtube_yt.browser_runtime.agent_browser_config,
+            "record_access_plan",
+        ):
             workspace = client.acquire_workspace(request)
 
         access_command = invoke.call_args_list[0].args[0]

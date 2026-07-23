@@ -22,7 +22,7 @@ from urllib.parse import parse_qs, unquote, urlencode, urlsplit, urlunsplit
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-from . import dates, log
+from . import agent_browser_config, dates, log
 from .relevance import token_overlap_relevance as _compute_relevance
 
 
@@ -193,6 +193,7 @@ class BrowserWorkspaceRequest:
     service_name: str = "last30days"
     agent_name: str = "facebook-scraper"
     task_name: str = "facebook-search"
+    target_service_id: str = "facebook"
     browser_host: str = "remote_headed"
     display_isolation: str = "private_virtual_display"
     control_input_provider: str = "manual_attached_desktop"
@@ -305,12 +306,67 @@ class CliAgentBrowserClient:
         self.timeout = timeout
         self.command_timings: list[dict[str, Any]] = []
 
-    def acquire_workspace(self, request: BrowserWorkspaceRequest) -> BrowserWorkspace:
+    def acquire_workspace(
+        self,
+        request: BrowserWorkspaceRequest,
+        *,
+        access_plan: dict[str, Any] | None = None,
+        target_service_id: str | None = None,
+    ) -> BrowserWorkspace:
+        target_id = target_service_id or request.target_service_id
+        if access_plan is None:
+            access_plan = self._invoke(
+                [
+                    "service", "access-plan",
+                    "--service-name", request.service_name,
+                    "--agent-name", request.agent_name,
+                    "--task-name", request.task_name,
+                    "--target-service-id", target_id,
+                    "--url", request.start_url,
+                    "--browser-build", request.browser_build,
+                ],
+                timeout=min(request.timeout, 30),
+            )
+        selected_profile = agent_browser_config.selected_profile_id(access_plan)
+        if not selected_profile:
+            raise FacebookScraperFailure(
+                "auth_required",
+                f"agent-browser has no authenticated profile registered for {target_id}",
+            )
+        if selected_profile != request.profile_id:
+            raise FacebookScraperFailure(
+                "profile_mismatch",
+                f"agent-browser selected {target_id} profile "
+                f"{selected_profile!r}, not {request.profile_id!r}",
+            )
+        try:
+            agent_browser_config.record_access_plan(access_plan, target_id)
+        except OSError as exc:
+            _log(f"Could not record user-scoped agent-browser configuration: {_redact(str(exc))}")
+
         status = self._invoke(["service", "status"], timeout=min(request.timeout, 30))
         state = status.get("service_state") if isinstance(status.get("service_state"), dict) else status
         sessions = state.get("sessions") if isinstance(state, dict) else {}
         browsers = state.get("browsers") if isinstance(state, dict) else {}
         tabs = state.get("tabs") if isinstance(state, dict) else {}
+        shared_owner = agent_browser_config.shared_profile_owner(
+            access_plan,
+            state if isinstance(state, dict) else {},
+            expected_profile_id=selected_profile,
+        )
+        if shared_owner:
+            browser = shared_owner["browser"]
+            stream = _ready_operator_stream(browser, request.view_provider)
+            return BrowserWorkspace(
+                profile_id=selected_profile,
+                browser_id=shared_owner["browser_id"],
+                session_name=shared_owner["session_name"],
+                target_id=shared_owner["target_id"],
+                route_id=str(stream.get("id") or ""),
+                operator_url=str(stream.get("externalUrl") or stream.get("url") or ""),
+                operator_visible_state="ready" if stream else "not_required",
+            )
+
         session = sessions.get(request.session_name) if isinstance(sessions, dict) else None
         browser: dict[str, Any] | None = None
         browser_id = ""
@@ -318,18 +374,14 @@ class CliAgentBrowserClient:
 
         if isinstance(session, dict):
             observed_profile = str(session.get("profileId") or "")
-            if observed_profile and observed_profile != request.profile_id:
-                raise FacebookScraperFailure(
-                    "profile_mismatch",
-                    f"agent-browser session {request.session_name!r} uses profile {observed_profile!r}, not {request.profile_id!r}",
-                )
-            browser_ids = session.get("browserIds") or []
-            if browser_ids:
-                browser_id = str(browser_ids[0])
-                candidate = browsers.get(browser_id) if isinstance(browsers, dict) else None
-                if isinstance(candidate, dict) and candidate.get("health") == "ready":
-                    browser = candidate
-                    target_id = _select_target_id(session, tabs)
+            if not observed_profile or observed_profile == selected_profile:
+                browser_ids = session.get("browserIds") or []
+                if browser_ids:
+                    browser_id = str(browser_ids[0])
+                    candidate = browsers.get(browser_id) if isinstance(browsers, dict) else None
+                    if isinstance(candidate, dict) and candidate.get("health") == "ready":
+                        browser = candidate
+                        target_id = _select_target_id(session, tabs)
 
         if browser and _has_ready_operator_stream(browser, request.view_provider):
             stream = _ready_operator_stream(browser, request.view_provider)
@@ -359,9 +411,9 @@ class CliAgentBrowserClient:
         if browser:
             cmd.extend(["--browser-id", browser_id])
         else:
-            cmd.extend(["--runtime-profile", request.profile_id])
+            cmd.extend(["--runtime-profile", selected_profile])
 
-        route_entry = _select_live_route_entry(state, request)
+        route_entry = _select_live_route_entry(state, request) if not browser else ""
         if route_entry:
             cmd.extend(["--route-pool-entry-id", route_entry])
 
@@ -407,6 +459,8 @@ class CliAgentBrowserClient:
         )
 
     def inspect_auth(self, workspace: BrowserWorkspace) -> FacebookAuthState:
+        if not self.prepare_site_tab(workspace, "facebook.com", consolidate=True):
+            self.act(workspace, BrowserAction("new_tab", value="https://www.facebook.com/"))
         raw = self.evaluate(workspace, AUTH_SCRIPT)
         return FacebookAuthState(
             authenticated=bool(raw.get("authenticated_dom")),

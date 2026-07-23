@@ -10,7 +10,7 @@ import time
 from typing import Any
 from urllib.parse import parse_qs, quote, unquote, urlsplit
 
-from . import facebook as browser_runtime, log
+from . import agent_browser_config, facebook as browser_runtime, log
 from .relevance import token_overlap_relevance as _compute_relevance
 
 
@@ -192,6 +192,10 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
                 "profile_mismatch",
                 f"agent-browser selected X profile {selected_profile!r}, not {request.profile_id!r}",
             )
+        try:
+            agent_browser_config.record_access_plan(access_plan, "x")
+        except OSError as exc:
+            _log(f"Could not record user-scoped agent-browser configuration: {exc}")
         decision = access_plan.get("decision") if isinstance(access_plan.get("decision"), dict) else {}
         if decision.get("manualActionRequired") or decision.get("manualSeedingRequired"):
             raise XBrowserFailure(
@@ -204,25 +208,47 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
         sessions = state.get("sessions") if isinstance(state, dict) else {}
         browsers = state.get("browsers") if isinstance(state, dict) else {}
         tabs = state.get("tabs") if isinstance(state, dict) else {}
+        shared_owner = agent_browser_config.shared_profile_owner(
+            access_plan,
+            state if isinstance(state, dict) else {},
+            expected_profile_id=selected_profile,
+        )
+        if shared_owner:
+            browser = shared_owner["browser"]
+            self.prepare_site_tab(
+                BrowserWorkspace(
+                    selected_profile,
+                    shared_owner["browser_id"],
+                    shared_owner["session_name"],
+                ),
+                "x.com",
+                consolidate=True,
+            )
+            stream = browser_runtime._ready_operator_stream(browser, request.view_provider)
+            return BrowserWorkspace(
+                profile_id=selected_profile,
+                browser_id=shared_owner["browser_id"],
+                session_name=shared_owner["session_name"],
+                target_id=shared_owner["target_id"],
+                route_id=str(stream.get("id") or ""),
+                operator_url=str(stream.get("externalUrl") or stream.get("url") or ""),
+                operator_visible_state="ready" if stream else "not_required",
+            )
+
         session = sessions.get(request.session_name) if isinstance(sessions, dict) else None
         browser = None
         browser_id = ""
         target_id = ""
         if isinstance(session, dict):
             observed_profile = str(session.get("profileId") or "")
-            if observed_profile and observed_profile != selected_profile:
-                raise XBrowserFailure(
-                    "profile_mismatch",
-                    f"agent-browser session {request.session_name!r} uses profile "
-                    f"{observed_profile!r}, not {selected_profile!r}",
-                )
-            browser_ids = session.get("browserIds") or []
-            if browser_ids:
-                browser_id = str(browser_ids[0])
-                candidate = browsers.get(browser_id) if isinstance(browsers, dict) else None
-                if isinstance(candidate, dict) and candidate.get("health") == "ready":
-                    browser = candidate
-                    target_id = browser_runtime._select_target_id(session, tabs)
+            if not observed_profile or observed_profile == selected_profile:
+                browser_ids = session.get("browserIds") or []
+                if browser_ids:
+                    browser_id = str(browser_ids[0])
+                    candidate = browsers.get(browser_id) if isinstance(browsers, dict) else None
+                    if isinstance(candidate, dict) and candidate.get("health") == "ready":
+                        browser = candidate
+                        target_id = browser_runtime._select_target_id(session, tabs)
 
         if browser:
             self.prepare_site_tab(

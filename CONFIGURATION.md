@@ -147,11 +147,22 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # LAST30DAYS_LINKEDIN_MAX_ACTIONS_PER_MINUTE=6
 # LAST30DAYS_LINKEDIN_DEBUG_DIR=~/.local/state/last30days/linkedin-debug
 
-# The scraper resolves browser, tab, route, and display identity from current
-# agent-browser service state. Route IDs and display allocations are runtime
-# leases, not durable configuration. It opens the remote Facebook workspace only
-# when no matching retained operator-visible browser exists, then navigates each
-# query through Facebook's Search control or a verified service-owned tab.
+# The scraper asks agent-browser for an access plan by target identity on every
+# acquisition. The access plan's retained browserId and sessionName route hints
+# override the optional session values above when a compatible shared profile
+# owner is already live. Route IDs, browser IDs, session names, tabs, and display
+# allocations are runtime leases, not durable configuration.
+#
+# Stable, non-secret access-plan selections are recorded at:
+# ~/.config/last30days/agent-browser.json
+# Set LAST30DAYS_CONFIG_DIR to place this file with the rest of the user-scoped
+# last30days configuration. The file records profile/build/host/provider/sharing
+# policy only. It never records cookies, credentials, profile paths, operator
+# URLs, browser/session IDs, routes, displays, tabs, or page data. The live
+# access plan remains authoritative over the recorded file.
+#
+# Facebook navigates each query through its Search control or a verified
+# service-owned tab in the broker-selected retained profile.
 # LinkedIn reuses one retained site tab, spaces user-like browser actions by
 # at least four seconds, and stops immediately on search-limit, throttling,
 # temporary-restriction, or unusual-activity warnings. A command is successful
@@ -168,7 +179,7 @@ X, Facebook, and LinkedIn browser failures are typed so operator action is unamb
 | `checkpoint_required` | Complete the site's security checkpoint in the operator-visible browser. |
 | `rate_limited` | The X account or search lane is restricted; stop and retry after the platform cooldown. |
 | `operator_ingress_unavailable` | Repair public Guacamole/dashboard ingress before retrying authentication. |
-| `profile_mismatch` | The selected agent-browser session is attached to a different profile. |
+| `profile_mismatch` | The broker-selected target profile differs from the explicit configured profile constraint. |
 | `route_stale` | Refresh or repair current agent-browser route-display service state. |
 | `navigation_mismatch` | The site did not reach the exact requested query/filter state; no items are emitted. |
 | `extraction_empty` | A verified search page contained no candidate cards. |
