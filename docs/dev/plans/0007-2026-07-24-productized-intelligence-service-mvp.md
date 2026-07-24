@@ -353,6 +353,84 @@ Next action:
   background embeddings, entity extraction and resolution, accepted typed
   relationships with evidence, graph expansion, and lexical-only degradation.
 
+### Checkpoint P0007-C04 | 2026-07-24
+
+Plan version: 1
+
+State transition: `packet_4_active -> packet_4_complete`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- added schema version 5 with immutable embedding, entity-alias, entity-mention,
+  relationship, and evidence memberships for each published index;
+- added asynchronous, versioned embedding generation with a shared
+  dependency-free local provider, provider failure isolation, and truthful
+  health/capability readback;
+- added deterministic rule-based and generic entity extraction with exact
+  evidence offsets, stable resolution, proposal provenance, and idempotent
+  promotion;
+- added relationship proposal contracts with exact evidence spans and
+  deterministic promotion gates requiring both accepted endpoint mentions and
+  predicate tokens inside the evidence span;
+- added evidence records and snapshot-scoped relationship payloads so no
+  promoted or published edge lacks evidence and live graph mutations cannot
+  rewrite an older index;
+- added bounded one-hop graph expansion with at most four unambiguous seeds,
+  32 relationship candidates, stable ordering, and source filtering;
+- added snapshot vector storage so replacing a live vector cannot alter
+  retrieval under an already-published index version;
+- added a fixed, judged offline corpus through the real hybrid retriever with
+  enforced lexical, semantic, graph, precision, recall, latency, and zero-cost
+  gates;
+- commit `be8a356` records the Packet 4 implementation.
+
+Validation evidence:
+
+- `uv run pytest`: 2,197 passed, 7 skipped, and 6 subtests passed;
+- focused contract, migration, store, enrichment, retrieval, runtime,
+  application, process, evaluation, and artifact gate: 62 passed;
+- regression tests proved live vector replacement and post-publication
+  alias/confidence mutation do not change results under the same index;
+- unsupported relationship predicates and split-chunk endpoint evidence were
+  rejected before promotion;
+- a judged result with one true and four false hits failed the precision gate;
+- Python compilation, JSON catalog parsing, packaged-skill contents, and
+  `git diff --check` passed.
+
+Subagent status and reconciliation:
+
+- `/root/packet2_retrieval`: terminal success; its isolated enrichment module
+  and tests were integrated, evidence-hardened, and wired into the runtime;
+- `/root/packet3_pipeline_audit`: terminal success after the initial review and
+  one bounded re-review; it reproduced mutable vector/graph snapshots, weak
+  relationship evidence, false capability/health reporting, and the missing
+  substantive eval gate;
+- the single allowed Packet 4 review/rework cycle fixed all snapshot,
+  evidence, wiring, and health findings;
+- the remaining eval high finding was split, as required by the exhausted
+  review-loop bound, into bounded Packet 4B and closed with a real judged
+  corpus plus precision/graph-quality thresholds; no additional review cycle
+  was opened.
+
+Remaining acceptance state:
+
+- Packets 5 and 6 remain open;
+- the MCP server still launches request-scoped research rather than acting as
+  a thin service client;
+- skill/product documentation, installed-client discovery/query/refresh/poll
+  smokes, and bounded App Intelligence maintenance loops remain unclaimed;
+- live authenticated X/Facebook/LinkedIn and real YouTube/Reddit acquisition
+  smokes remain final runtime gates and may require operator-owned sessions.
+
+Next action:
+
+- execute Packet 5: replace request-scoped MCP acquisition with the thin
+  service client, expose discovery/query/refresh/poll surfaces, update the
+  skill and user documentation, preserve the direct operator fallback, then
+  validate installed clients.
+
 ## Objective
 
 Turn last30days from a request-scoped research engine into a local-first,
@@ -790,7 +868,7 @@ embeddings are unavailable.
 Exit gate: concurrent identical refreshes produce one acquisition job; a
 service restart resumes or safely expires leases without duplicate publication.
 
-### Packet 4 | Semantic and graph enrichment
+### Packet 4 | Semantic and graph enrichment | COMPLETE
 
 - generate versioned embeddings asynchronously;
 - add evidence-linked entity and relationship proposal schemas;
