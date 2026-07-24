@@ -92,6 +92,74 @@ Human, security, and runtime gates:
 - final publication requires repository validation, installed-client smokes,
   and a truthful push/readback.
 
+### Checkpoint P0007-C01 | 2026-07-24
+
+Plan version: 1
+
+State transition: `packet_1_active -> packet_1_complete`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- accepted ADR 0001 for the local service, package, transport, configuration,
+  credential, cache, MCP, persistence, and deterministic-supervisor seams;
+- added canonical v1 JSON Schemas and strict Python contracts for query,
+  evidence, acquisition, job, event, and decision envelopes;
+- added stable configuration profile IDs without placing credentials in
+  envelopes;
+- added retention/redaction classes and recursive rejection of credential,
+  browser lease, session, route, display, tab, and operator URL fields in
+  replay payloads;
+- added SQLite schema version 3 for service envelopes, jobs, events,
+  acquisitions, documents, FTS, chunks, embeddings, graph projections, index
+  versions, decisions, and eval results;
+- made migrations reject newer schemas, serialize concurrent upgrades, and
+  roll back a failed migration atomically;
+- added a deep `ServiceStore` interface with canonical JSON, SHA-256 integrity,
+  idempotent writes, immutable-ID conflict detection, and contract
+  revalidation on read;
+- commit `01a65b4` records the Packet 1 implementation.
+
+Validation evidence:
+
+- `uv run pytest`: 2,118 passed, 7 skipped, 6 subtests passed;
+- focused contract/store/migration suite: 42 passed;
+- fresh, legacy, concurrent, rollback, integrity, and foreign-key migration
+  cases passed;
+- all six v1 envelopes round-tripped through the durable store;
+- skill artifact test proved the contract, store, and schema files ship inside
+  the recursive Agent Skills boundary;
+- `go test ./...` passed for engine, manifest, and tools;
+- Python compilation, JSON catalog parsing, and `git diff --check` passed.
+
+Subagent status and reconciliation:
+
+- `/root/mcp_surface_audit`: terminal success, read-only; its current call flow,
+  package constraints, tool mapping, annotation conflict, and test
+  recommendations were reviewed by the primary agent;
+- `/root/runtime_validation_audit`: terminal success, read-only; its package
+  boundary, configuration authority, systemd PATH, migration, platform, and CI
+  findings were reviewed by the primary agent;
+- the primary agent independently ran the Go tests and reconciled both reports
+  into ADR 0001;
+- the MCP audit's annotation finding changed `query` to truthful
+  non-read-only/open-world semantics when `prefer_cache` schedules refresh;
+- the runtime audit's credential/config finding added named user-scoped
+  profiles and made packaged daemon bootstrap a release gate.
+
+Remaining acceptance state:
+
+- Packets 2 through 6 remain open;
+- no service process, socket query interface, retrieval index, acquisition
+  supervisor, thin MCP client, installed service, or maintenance loop is
+  claimed yet.
+
+Next action:
+
+- execute Packet 2 as a bounded cache-first query service slice, with a real
+  Unix-socket subprocess fixture and warm-query no-network proof.
+
 ## Objective
 
 Turn last30days from a request-scoped research engine into a local-first,
@@ -386,7 +454,8 @@ substantial context.
    - returns version, schema version, enabled capabilities, source readiness,
      cache/index status, supported freshness policies, and response limits.
 2. `query`
-   - read-only and cache-first;
+   - cache-first, non-destructive, and conservatively open-world because the
+     default `prefer_cache` policy may create or join a refresh job;
    - accepts query, optional topic/source/time filters, freshness policy,
      response mode, `top_k`, and response character budget;
    - returns an index version, freshness summary, compact results/citations,
@@ -493,7 +562,7 @@ source capability reporting must be exact and per-source.
 
 ## Implementation Packets
 
-### Packet 1 | Service contract and schema
+### Packet 1 | Service contract and schema | COMPLETE
 
 - write an architecture decision record for the service boundary;
 - define versioned query, evidence, acquisition, job, event, and decision
