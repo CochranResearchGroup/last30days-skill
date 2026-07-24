@@ -523,6 +523,99 @@ Next action:
   deterministic Codex app-server maintenance supervisor with hard attempt,
   branch, test, approval, publication, and replay bounds.
 
+### Checkpoint P0007-C06 | 2026-07-24
+
+Plan version: 1
+
+State transition: `packet_6_active -> packet_6_complete`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- added strict-schema App Intelligence workers for evidence-linked entity and
+  relationship proposals plus retrieval relevance judgments;
+- made normalized public inputs size- and shape-bounded, embedded them in the
+  model turn, rejected credential-like material, and grounded accepted output
+  evidence against supplied identifiers;
+- added a user-scoped immutable intelligence ledger for content-addressed
+  inputs, outputs, events, decisions, evals, approvals, and successful or
+  failed model-call receipts;
+- reserved model calls and estimated cost atomically before invocation so
+  concurrent or failed turns consume deterministic budgets;
+- added a Codex app-server stdio client with one total wall deadline,
+  read-only/never-approve execution, sanitized environment, strict result
+  validation, active-turn final-output selection, and supported strict-output
+  schema translation followed by canonical host validation;
+- added an immutable-policy repair supervisor with atomic investigation,
+  branch, and evaluation claims; fixed attempt, branch, rework, test,
+  write-root, wall-time, input, cost, and approver bounds; and no model-owned
+  publish, deploy, or live-source configuration operation;
+- bound approvals to the exact recommendation, branch, passing evaluation,
+  and evaluation artifact; an approval record authorizes only the named action
+  and does not execute it;
+- added packaged operator-only `service.py intelligence` and `service.py
+  repair` entry points, a fixed-namespace Git branch creator, and an
+  allowlisted argv test executor that uses temporary detached worktrees;
+- made the Linux installer restart an already-running frozen Skill service so
+  refreshed runtime code becomes live;
+- updated the Skill, concepts, configuration, onboarding, migrations, package
+  assertions, and operator guidance while keeping ordinary MCP research
+  isolated from maintenance mechanics;
+- commit `15fe535` records the Packet 6 implementation.
+
+Validation evidence:
+
+- `uv run pytest`: 2,223 passed, 7 skipped, and 6 subtests passed;
+- focused intelligence, migration, process, install, package, service,
+  and real Go-MCP/Python-service integration tests passed;
+- concurrency tests prove one call, branch, and evaluation claim wins while
+  competing requests fail closed;
+- a real temporary Git repository proved fixed-namespace branch creation,
+  detached-worktree test execution, and cleanup;
+- Python compilation and `git diff --check` passed;
+- `go test ./...`, `go vet ./...`, the CGO-free MCP build, and `go generate
+  ./...` passed (the first build attempt used the obsolete command path and
+  was rerun against `cmd/last30days-pp-mcp`);
+- real Codex app-server repair output passed with model `gpt-5.6-sol`, thread
+  `019f9625-2f88-7530-918c-39458d126096`, and turn
+  `019f9625-3860-7f21-9ba0-1b9620d1f170`;
+- after strict-subset translation and protocol hardening, a real non-mutating
+  enrichment output passed with model `gpt-5.6-sol`, thread
+  `019f9634-5f2a-7e90-a176-be78b1fea688`, and turn
+  `019f9634-66f5-7872-bca2-f310a542b494`.
+
+Independent review and bounded reconciliation:
+
+- `/root/packet3_pipeline_audit` initially failed the packet with two blockers
+  and four high findings despite its focused tests passing;
+- the single planned rework made the capability runnable, added atomic failed
+  call accounting, grounded inputs/evidence, immutable policy, artifact-bound
+  passing-eval approvals, and hardened the concrete protocol;
+- the bounded re-review cleared both blockers and most highs, then identified
+  three remaining highs: generated proposal IDs were over-grounded, branch
+  and evaluation claims were raceable, and repair lacked concrete packaged
+  branch/test operation;
+- rather than opening an unbounded evaluator loop, the primary agent split
+  those three findings into one finite closeout slice, corrected evidence-field
+  grounding, added atomic branch/evaluation claims, added concrete Git
+  branch/worktree implementations and repair commands, and reran the full
+  deterministic suite.
+
+Remaining acceptance state:
+
+- all six implementation packets meet their exit gates;
+- final plan closure still requires current installed-runtime refresh/restart
+  proof, warm/stale/cold/partial/auth-required/embedding-disabled scenarios,
+  live Reddit/YouTube and authenticated browser-source acquisition smokes,
+  one deterministic published-result replay fixture, fresh-harness MCP proof,
+  structured closeout commits, and public-fork push verification.
+
+Next action:
+
+- refresh the frozen installed Skill and live user service, execute the final
+  scenario/source/replay/MCP acceptance matrix, then close and push the plan.
+
 ## Objective
 
 Turn last30days from a request-scoped research engine into a local-first,
