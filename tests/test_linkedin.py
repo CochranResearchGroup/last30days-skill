@@ -153,6 +153,49 @@ class LinkedInAvailabilityTests(unittest.TestCase):
 
 
 class LinkedInNavigationAndAuthTests(unittest.TestCase):
+    def test_workspace_acquisition_uses_broker_for_linkedin_identity(self):
+        client = linkedin.CliAgentBrowserClient(timeout=5)
+        expected = linkedin.BrowserWorkspace(
+            profile_id="last30days-linkedin",
+            browser_id="browser-1",
+            session_name="last30days-linkedin",
+        )
+        with mock.patch.object(
+            linkedin.browser_runtime.CliAgentBrowserClient,
+            "acquire_workspace",
+            return_value=expected,
+        ) as acquire:
+            actual = client.acquire_workspace(request())
+
+        self.assertEqual(expected, actual)
+        acquire.assert_called_once_with(
+            mock.ANY,
+            target_service_id="linkedin",
+        )
+
+    def test_search_registers_linkedin_target_metadata_on_browser_request(self):
+        captured = {}
+
+        def scraper_factory(_client, workspace_request, **_kwargs):
+            captured["request"] = workspace_request
+            return mock.Mock(search=mock.Mock(return_value={"items": [], "error": None}))
+
+        with mock.patch.object(linkedin, "is_agent_browser_available", return_value=True), mock.patch.object(
+            linkedin, "LinkedInScraper", side_effect=scraper_factory
+        ):
+            linkedin.search_linkedin(
+                "robotic lawn mower",
+                "2026-06-15",
+                "2026-07-15",
+                depth="quick",
+            )
+
+        workspace_request = captured["request"]
+        self.assertEqual("linkedin", workspace_request.target_service_id)
+        self.assertEqual("linkedin-scraper", workspace_request.agent_name)
+        self.assertEqual("linkedin-content-search", workspace_request.task_name)
+        self.assertEqual("https://www.linkedin.com/feed/", workspace_request.start_url)
+
     def test_retained_workspace_reselects_inactive_linkedin_tab(self):
         client = linkedin.CliAgentBrowserClient(timeout=5)
         with mock.patch.object(client, "_invoke", side_effect=[

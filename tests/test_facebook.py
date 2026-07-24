@@ -30,7 +30,7 @@ def request(**overrides):
     return facebook.BrowserWorkspaceRequest(**values)
 
 
-def access_plan(*, profile_id="last30days-facebook", shared_owner=None):
+def access_plan(*, profile_id="last30days-facebook", shared_owner=None, remote_view=True):
     reuse = {"recommendedAction": "launch_new_browser"}
     if shared_owner:
         browser_id, session_name = shared_owner
@@ -44,7 +44,10 @@ def access_plan(*, profile_id="last30days-facebook", shared_owner=None):
         }
     return {
         "selectedProfile": {"id": profile_id},
-        "decision": {"profileReuse": reuse},
+        "decision": {
+            "profileReuse": reuse,
+            "launchPosture": {"remoteViewRecommended": remote_view},
+        },
     }
 
 
@@ -265,6 +268,18 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertNotIn("route-stale", command)
         self.assertEqual("route:current", workspace.route_id)
 
+    def test_checked_out_ready_route_is_not_reused_as_a_launch_hint(self):
+        state = {
+            "routePool": {
+                "route-busy": {
+                    "state": "checked_out",
+                    "routeId": "route:busy",
+                    "readiness": {"state": "ready"},
+                },
+            },
+        }
+        self.assertEqual("", facebook._select_live_route_entry(state, request()))
+
     def test_ready_retained_browser_is_reused_without_remote_open(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         status = {
@@ -299,6 +314,110 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual("last30days-facebook", first.session_name)
         self.assertEqual("t1", first.target_id)
         self.assertEqual(4, invoke.call_count)
+
+    def test_wrong_profile_on_requested_session_uses_profile_scoped_lane(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        status = {
+            "service_state": {
+                "sessions": {
+                    "last30days-facebook": {
+                        "profileId": "default",
+                        "browserIds": ["browser-default"],
+                    },
+                },
+                "browsers": {
+                    "browser-default": {"profileId": "default", "health": "ready"},
+                },
+                "tabs": {},
+                "routePool": {},
+            },
+        }
+        opened = {
+            "profileId": "last30days-facebook",
+            "browserId": "browser-facebook",
+            "sessionName": "last30days-facebook--last30days-facebook",
+            "targetId": "target-facebook",
+            "operatorVisible": {"state": "ready"},
+        }
+        with mock.patch.object(
+            client, "_invoke", side_effect=[access_plan(), status, opened]
+        ) as invoke, mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ), mock.patch("lib.facebook.time.sleep") as sleep:
+            workspace = client.acquire_workspace(request())
+
+        command = invoke.call_args_list[2].args[0]
+        self.assertEqual(
+            "last30days-facebook--last30days-facebook",
+            command[command.index("--session") + 1],
+        )
+        self.assertEqual(
+            "last30days-facebook--last30days-facebook",
+            command[command.index("--session-name") + 1],
+        )
+        self.assertEqual("last30days-facebook--last30days-facebook", workspace.session_name)
+
+    def test_profile_scoped_lane_skips_retained_wrong_profile_placeholder(self):
+        sessions = {
+            "last30days-facebook--last30days-facebook": {"profileId": ""},
+            "last30days-facebook--last30days-facebook--2": {"profileId": "default"},
+        }
+        self.assertEqual(
+            "last30days-facebook--last30days-facebook--3",
+            facebook._profile_scoped_session_name(
+                sessions, "last30days-facebook", "last30days-facebook"
+            ),
+        )
+
+    def test_access_plan_without_remote_view_uses_local_headed_profile_lane(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        status = {"service_state": {"sessions": {}, "browsers": {}, "tabs": {}}}
+        opened = {"url": "https://www.facebook.com/", "title": "Facebook"}
+        with mock.patch.object(
+            client,
+            "_invoke",
+            side_effect=[access_plan(remote_view=False), status, opened],
+        ) as invoke, mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ), mock.patch("lib.facebook.time.sleep") as sleep:
+            workspace = client.acquire_workspace(request())
+
+        command = invoke.call_args_list[2].args[0]
+        self.assertIn("open", command)
+        self.assertNotIn("remote-view", command)
+        self.assertIn("--headed", command)
+        self.assertEqual("not_required", workspace.operator_visible_state)
+
+    def test_new_local_lane_recovers_empty_daemon_profile_startup_race(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        status = {"service_state": {"sessions": {}, "browsers": {}, "tabs": {}}}
+        startup_error = facebook.FacebookScraperFailure(
+            "agent_browser_error",
+            "active session 'last30days-facebook' is using runtimeProfile=none profile=none",
+        )
+        opened = {"url": "https://www.facebook.com/", "title": "Facebook"}
+        with mock.patch.object(
+            client,
+            "_invoke",
+            side_effect=[
+                access_plan(remote_view=False),
+                status,
+                startup_error,
+                {},
+                opened,
+            ],
+        ) as invoke, mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ), mock.patch("lib.facebook.time.sleep") as sleep:
+            workspace = client.acquire_workspace(request())
+
+        self.assertEqual(
+            ["--session", "last30days-facebook", "close"],
+            invoke.call_args_list[3].args[0],
+        )
+        self.assertEqual(invoke.call_args_list[2].args[0], invoke.call_args_list[4].args[0])
+        sleep.assert_called_once_with(0.5)
+        self.assertEqual("not_required", workspace.operator_visible_state)
 
 
 class FacebookNavigationAndAuthTests(unittest.TestCase):

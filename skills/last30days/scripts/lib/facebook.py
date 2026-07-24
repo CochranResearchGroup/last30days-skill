@@ -371,6 +371,7 @@ class CliAgentBrowserClient:
         browser: dict[str, Any] | None = None
         browser_id = ""
         target_id = ""
+        launch_session_name = request.session_name
 
         if isinstance(session, dict):
             observed_profile = str(session.get("profileId") or "")
@@ -382,6 +383,13 @@ class CliAgentBrowserClient:
                     if isinstance(candidate, dict) and candidate.get("health") == "ready":
                         browser = candidate
                         target_id = _select_target_id(session, tabs)
+            else:
+                # A retained CLI session name is not a browser identity. Keep
+                # the unrelated browser alive and open the broker-selected
+                # profile on a deterministic, profile-scoped session lane.
+                launch_session_name = _profile_scoped_session_name(
+                    sessions, request.session_name, selected_profile
+                )
 
         if browser and _has_ready_operator_stream(browser, request.view_provider):
             stream = _ready_operator_stream(browser, request.view_provider)
@@ -395,40 +403,85 @@ class CliAgentBrowserClient:
                 operator_visible_state="ready",
             )
 
-        cmd = [
-            "--session", request.session_name,
-            "remote-view", "open", request.start_url,
-            "--browser-build", request.browser_build,
-            "--browser-host", request.browser_host,
-            "--view-stream-provider", request.view_provider,
-            "--control-input-provider", request.control_input_provider,
-            "--display-isolation", request.display_isolation,
-            "--session-name", request.session_name,
-            "--service-name", request.service_name,
-            "--agent-name", request.agent_name,
-            "--task-name", request.task_name,
-        ]
-        if browser:
-            cmd.extend(["--browser-id", browser_id])
-        else:
-            cmd.extend(["--runtime-profile", selected_profile])
+        decision = access_plan.get("decision") if isinstance(access_plan, dict) else {}
+        launch_posture = (
+            decision.get("launchPosture") if isinstance(decision, dict) else {}
+        )
+        remote_view_recommended = (
+            launch_posture.get("remoteViewRecommended", True)
+            if isinstance(launch_posture, dict)
+            else True
+        )
+        if remote_view_recommended:
+            cmd = [
+                "--session", launch_session_name,
+                "remote-view", "open", request.start_url,
+                "--browser-build", request.browser_build,
+                "--browser-host", request.browser_host,
+                "--view-stream-provider", request.view_provider,
+                "--control-input-provider", request.control_input_provider,
+                "--display-isolation", request.display_isolation,
+                "--session-name", launch_session_name,
+                "--service-name", request.service_name,
+                "--agent-name", request.agent_name,
+                "--task-name", request.task_name,
+            ]
+            if browser:
+                cmd.extend(["--browser-id", browser_id])
+            else:
+                cmd.extend(["--runtime-profile", selected_profile])
 
-        route_entry = _select_live_route_entry(state, request) if not browser else ""
-        if route_entry:
-            cmd.extend(["--route-pool-entry-id", route_entry])
+            route_entry = _select_live_route_entry(state, request) if not browser else ""
+            if route_entry:
+                cmd.extend(["--route-pool-entry-id", route_entry])
+        else:
+            cmd = [
+                "--runtime-profile", selected_profile,
+                "--session", launch_session_name,
+                "--headed",
+                "--browser-build", request.browser_build,
+                "open", request.start_url,
+                "--service-name", request.service_name,
+                "--agent-name", request.agent_name,
+                "--task-name", request.task_name,
+            ]
 
         try:
             opened = self._invoke(cmd, timeout=request.timeout)
         except FacebookScraperFailure as exc:
-            if exc.error_type == "agent_browser_error" and re.search(
+            newly_selected_lane = not isinstance(
+                sessions.get(launch_session_name) if isinstance(sessions, dict) else None,
+                dict,
+            )
+            startup_profile_race = (
+                not remote_view_recommended
+                and newly_selected_lane
+                and exc.error_type == "agent_browser_error"
+                and "runtimeProfile=none profile=none" in str(exc)
+            )
+            if startup_profile_race:
+                # Current agent-browser can leave a just-created empty daemon
+                # lane unprofiled before its first guarded open. Since this
+                # lane was absent from the pre-launch status, it owns no
+                # browser or user data and is safe to close and retry once.
+                self._invoke(
+                    ["--session", launch_session_name, "close"],
+                    timeout=min(request.timeout, 30),
+                )
+                time.sleep(0.5)
+                opened = self._invoke(cmd, timeout=request.timeout)
+            elif exc.error_type == "agent_browser_error" and re.search(
                 r"route_|display.*(?:stale|unavailable|mismatch)|no .*x11 socket", str(exc), re.I
             ):
                 raise FacebookScraperFailure("route_stale", str(exc)) from exc
-            raise
+            else:
+                raise
 
         visible = opened.get("operatorVisible") if isinstance(opened.get("operatorVisible"), dict) else {}
-        visible_state = str(visible.get("state") or "missing")
-        if visible_state != "ready":
+        visible_state = str(
+            visible.get("state") or ("not_required" if not remote_view_recommended else "missing")
+        )
+        if remote_view_recommended and visible_state != "ready":
             error_type = "navigation_mismatch" if visible_state == "wrong_tab" else "route_stale"
             raise FacebookScraperFailure(
                 error_type,
@@ -448,7 +501,7 @@ class CliAgentBrowserClient:
         return BrowserWorkspace(
             profile_id=observed_profile,
             browser_id=str(opened.get("browserId") or visible.get("browserId") or browser_id),
-            session_name=str(opened.get("sessionName") or visible.get("sessionName") or request.session_name),
+            session_name=str(opened.get("sessionName") or visible.get("sessionName") or launch_session_name),
             target_id=str(opened.get("targetId") or visible.get("targetId") or target_id),
             route_id=str(opened.get("routeId") or visible.get("routeId") or ""),
             display_allocation_id=str(
@@ -1444,7 +1497,32 @@ def _select_live_route_entry(state: Any, request: BrowserWorkspaceRequest) -> st
     for entry_id, entry in candidates:
         if entry.get("state") == "available":
             return entry_id
-    return candidates[0][0] if candidates else ""
+    # A ready route can still be checked out by another browser. Omitting the
+    # hint lets agent-browser allocate or report capacity truthfully; passing a
+    # checked-out route causes an owner-mismatch failure.
+    return ""
+
+
+def _profile_scoped_session_name(
+    sessions: Any,
+    requested_name: str,
+    selected_profile: str,
+) -> str:
+    """Choose a deterministic free session lane without closing another profile."""
+    existing = sessions if isinstance(sessions, dict) else {}
+    stem = f"{requested_name}--{selected_profile}"
+    for sequence in range(1, 101):
+        candidate = stem if sequence == 1 else f"{stem}--{sequence}"
+        session = existing.get(candidate)
+        if not isinstance(session, dict):
+            return candidate
+        observed_profile = str(session.get("profileId") or "")
+        if observed_profile == selected_profile:
+            return candidate
+    raise FacebookScraperFailure(
+        "agent_browser_error",
+        f"no free agent-browser session lane for profile {selected_profile!r}",
+    )
 
 
 def _operator_url(payload: dict[str, Any]) -> str:

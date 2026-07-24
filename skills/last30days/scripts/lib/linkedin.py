@@ -325,99 +325,9 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
     """LinkedIn-specific workspace acquisition over the shared JSON CLI adapter."""
 
     def acquire_workspace(self, request: BrowserWorkspaceRequest) -> BrowserWorkspace:
-        status = self._invoke(["service", "status"], timeout=min(request.timeout, 30))
-        state = status.get("service_state") if isinstance(status.get("service_state"), dict) else status
-        sessions = state.get("sessions") if isinstance(state, dict) else {}
-        browsers = state.get("browsers") if isinstance(state, dict) else {}
-        tabs = state.get("tabs") if isinstance(state, dict) else {}
-        session = sessions.get(request.session_name) if isinstance(sessions, dict) else None
-        browser: dict[str, Any] | None = None
-        browser_id = ""
-        target_id = ""
-
-        if isinstance(session, dict):
-            observed_profile = str(session.get("profileId") or "")
-            if observed_profile and observed_profile != request.profile_id:
-                raise LinkedInScraperFailure(
-                    "profile_mismatch",
-                    f"agent-browser session {request.session_name!r} uses profile "
-                    f"{observed_profile!r}, not {request.profile_id!r}",
-                )
-            browser_ids = session.get("browserIds") or []
-            if browser_ids:
-                browser_id = str(browser_ids[0])
-                candidate = browsers.get(browser_id) if isinstance(browsers, dict) else None
-                if isinstance(candidate, dict) and candidate.get("health") == "ready":
-                    browser = candidate
-                    target_id = _select_target_id(session, tabs)
-
-        if browser and browser_runtime._has_ready_operator_stream(browser, request.view_provider):
-            self._activate_linkedin_tab(request.session_name)
-            stream = browser_runtime._ready_operator_stream(browser, request.view_provider)
-            return BrowserWorkspace(
-                profile_id=request.profile_id,
-                browser_id=browser_id,
-                session_name=request.session_name,
-                target_id=target_id,
-                route_id=str(stream.get("id") or ""),
-                operator_url=str(stream.get("externalUrl") or stream.get("url") or ""),
-                operator_visible_state="ready",
-            )
-
-        command = [
-            "--session", request.session_name,
-            "remote-view", "open", "https://www.linkedin.com/feed/",
-            "--browser-build", request.browser_build,
-            "--view-stream-provider", request.view_provider,
-            "--session-name", request.session_name,
-            "--service-name", "last30days",
-            "--agent-name", "linkedin-scraper",
-            "--task-name", "linkedin-content-search",
-        ]
-        if browser:
-            command.extend(["--browser-id", browser_id])
-        else:
-            command.extend(["--runtime-profile", request.profile_id])
-        route_entry = browser_runtime._select_live_route_entry(state, request)
-        if route_entry:
-            command.extend(["--route-pool-entry-id", route_entry])
-
-        try:
-            opened = self._invoke(command, timeout=request.timeout)
-        except LinkedInScraperFailure as exc:
-            if exc.error_type == "agent_browser_error" and re.search(
-                r"route_|display.*(?:stale|unavailable|mismatch)|no .*x11 socket", str(exc), re.I
-            ):
-                raise LinkedInScraperFailure("route_stale", str(exc)) from exc
-            raise
-
-        visible = opened.get("operatorVisible") if isinstance(opened.get("operatorVisible"), dict) else {}
-        visible_state = str(visible.get("state") or "missing")
-        if visible_state != "ready":
-            error_type = "navigation_mismatch" if visible_state == "wrong_tab" else "route_stale"
-            raise LinkedInScraperFailure(
-                error_type,
-                f"agent-browser remote view is not ready (operatorVisible.state={visible_state})",
-                operator_url=browser_runtime._operator_url(opened),
-            )
-        observed_profile = str(opened.get("profileId") or visible.get("profileId") or request.profile_id)
-        if observed_profile != request.profile_id:
-            raise LinkedInScraperFailure(
-                "profile_mismatch",
-                f"agent-browser opened profile {observed_profile!r}, not {request.profile_id!r}",
-                operator_url=browser_runtime._operator_url(opened),
-            )
-        return BrowserWorkspace(
-            profile_id=observed_profile,
-            browser_id=str(opened.get("browserId") or visible.get("browserId") or browser_id),
-            session_name=str(opened.get("sessionName") or visible.get("sessionName") or request.session_name),
-            target_id=str(opened.get("targetId") or visible.get("targetId") or target_id),
-            route_id=str(opened.get("routeId") or visible.get("routeId") or ""),
-            display_allocation_id=str(
-                opened.get("displayAllocationId") or visible.get("displayAllocationId") or ""
-            ),
-            operator_url=browser_runtime._operator_url(opened),
-            operator_visible_state=visible_state,
+        return super().acquire_workspace(
+            request,
+            target_service_id="linkedin",
         )
 
     def inspect_auth(self, workspace: BrowserWorkspace) -> LinkedInAuthState:
@@ -776,6 +686,10 @@ def search_linkedin(
         route_pool_entry_id_hint=str(
             config.get("LAST30DAYS_LINKEDIN_ROUTE_POOL_ENTRY_ID") or ""
         ).strip(),
+        start_url="https://www.linkedin.com/feed/",
+        agent_name="linkedin-scraper",
+        task_name="linkedin-content-search",
+        target_service_id="linkedin",
     )
     scraper = LinkedInScraper(
         CliAgentBrowserClient(timeout=timeout),
