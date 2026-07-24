@@ -431,6 +431,98 @@ Next action:
   skill and user documentation, preserve the direct operator fallback, then
   validate installed clients.
 
+### Checkpoint P0007-C05 | 2026-07-24
+
+Plan version: 1
+
+State transition: `packet_5_active -> packet_5_complete`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- replaced the registered request-scoped Go research engine with a CGO-free
+  Unix-socket client over the shared Python service;
+- exposed exactly five primary MCP tools: `service_info`, `query`, `refresh`,
+  `job_status`, and `topic`;
+- made `prefer_cache` the query default, retained explicit `cache_only`, and
+  applied conservative non-read-only/open-world annotations to operations that
+  can enqueue durable work;
+- exposed capability, source, and topic resources without embedding source
+  diagnostics or acquisition mechanics in agent context;
+- added service-owned topic list/create/update/pause/resume/refresh actions;
+- generated Go schema compatibility facts from the canonical Python-owned JSON
+  Schema catalog and reject live services with a different catalog hash;
+- aligned Python and Go socket fallback behavior and preserved bounded,
+  owner-private Unix transport;
+- made the Linux v4 MCPB source-checkout-independent by staging the canonical
+  Skill runtime and allowing the adapter to bootstrap one shared daemon, never
+  one crawl subprocess per query;
+- sanitized the packaged service environment while preserving safe
+  user-scoped data/config overrides and the required CLI PATH;
+- added a hardened systemd user installer, Linux-only release matrix, package
+  assertions, and an automated real Python-service/Go-MCP integration smoke;
+- rewrote the Skill, concepts, configuration, README, onboarding, MCP docs,
+  manifest, and release workflow around the Intelligence Service as product
+  authority while preserving the direct CLI operator/debug fallback;
+- commit `a5e1cf9` records the Packet 5 implementation.
+
+Validation evidence:
+
+- `uv run pytest`: 2,205 passed, 7 skipped, and 6 subtests passed;
+- `go test ./...`, `go vet ./...`, generated-contract verification, CGO-free
+  build, and the registered binary's no-`internal/engine` dependency gate
+  passed;
+- the automated live integration test initialized the compiled MCP server,
+  discovered the exact five-tool surface, queried the real Python daemon,
+  created a durable refresh against a no-network fixture source, and polled
+  the resulting job;
+- a runtime compatibility test rejected a service with a mismatched schema
+  catalog hash;
+- `npx skills add . -g -y` refreshed the frozen
+  `~/.agents/skills/last30days` copy for supported global clients; PromptScript
+  alone reported that it does not support global Skill installation;
+- the installed Skill's installer created and enabled
+  `~/.config/systemd/user/last30days.service`; systemd reported the installed
+  Python runtime active;
+- installed CLI status reported schema 5, ready cache/query/refresh service
+  health, and separate source configuration versus acquisition readiness;
+- an installed `cache_only` query returned an explicit miss with no job, while
+  the compiled MCP adapter independently discovered all five tools and read
+  live service info from that installed daemon;
+- Python compilation, manifest/catalog parsing, package-boundary assertions,
+  and `git diff --check` passed.
+
+Subagent status and reconciliation:
+
+- `/root/packet2_retrieval`: terminal success for the initial thin Go MCP lane;
+  the primary agent independently built, tested, and live-smoked the result;
+- `/root/packet3_pipeline_audit`: terminal failed review with two blockers,
+  three high findings, and three medium findings;
+- the single permitted Packet 5 rework corrected the five-tool/annotation
+  contract, packaged daemon bootstrap, schema drift gate, complete query
+  filters, socket fallback, installed/live integration evidence, resource
+  discovery, product-authority prose, service PATH, and v4 version alignment;
+- no second review/rework cycle was opened; the primary agent ran the widened
+  deterministic and live gates after remediation.
+
+Remaining acceptance state:
+
+- Packet 6 remains open;
+- bounded, replayable App Intelligence enrichment/evaluation and
+  adapter-repair supervision are not yet implemented;
+- live authenticated X/Facebook/LinkedIn and real YouTube/Reddit acquisition
+  smokes, restart scenarios, and final replay/push proof remain final gates;
+- the installed service is healthy but its current user database has zero
+  indexed documents, so service health is not being presented as content
+  yield.
+
+Next action:
+
+- execute Packet 6: add schema-validated enrichment/evaluation workers and a
+  deterministic Codex app-server maintenance supervisor with hard attempt,
+  branch, test, approval, publication, and replay bounds.
+
 ## Objective
 
 Turn last30days from a request-scoped research engine into a local-first,
