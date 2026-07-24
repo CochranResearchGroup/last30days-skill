@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import sqlite3
 
 from lib import service_contracts
@@ -79,6 +80,54 @@ def test_indexes_legacy_findings_idempotently_and_returns_cited_fts_hits(tmp_pat
         service_contracts.EvidenceItem.from_dict(hits[0].to_dict()).to_dict()
         == hits[0].to_dict()
     )
+
+
+def test_replay_fixture_reconstructs_published_results_from_recorded_ranker(tmp_path):
+    db_path = tmp_path / "replay.db"
+    original = HybridRetriever(
+        db_path,
+        fusion=FusionConfig(
+            rank_constant=17,
+            lexical_weight=0.7,
+            semantic_weight=0.2,
+            graph_weight=0.1,
+            candidate_limit=32,
+            version="rrf-replay-fixture-v1",
+        ),
+    )
+    original.initialize()
+    _seed_legacy_finding(
+        db_path,
+        source="reddit",
+        url="https://reddit.example/replay-one",
+        title="Replay one",
+        content="deterministic replay evidence alpha",
+    )
+    _seed_legacy_finding(
+        db_path,
+        source="youtube",
+        url="https://youtube.example/replay-two",
+        title="Replay two",
+        content="deterministic replay evidence beta",
+    )
+    published = original.index_legacy_findings()
+    expected = original.search_snapshot("deterministic replay", top_k=2)
+
+    conn = sqlite3.connect(db_path)
+    row = conn.execute(
+        """SELECT ranking_config_json FROM index_versions
+           WHERE index_version = ? AND published_at IS NOT NULL""",
+        (published.index_version,),
+    ).fetchone()
+    conn.close()
+    recorded_config = json.loads(row[0])
+    replay = HybridRetriever(db_path, fusion=FusionConfig(**recorded_config))
+    reconstructed = replay.search_snapshot("deterministic replay", top_k=2)
+
+    assert reconstructed.index_version == published.index_version
+    assert [item.to_dict() for item in reconstructed.evidence] == [
+        item.to_dict() for item in expected.evidence
+    ]
 
 
 class _KeywordEmbedder:
