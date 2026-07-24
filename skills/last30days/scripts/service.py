@@ -17,6 +17,16 @@ from lib.service_app import initialize_application
 from lib.service_client import ServiceClient, ServiceClientError
 from lib.service_enrichment import EnrichmentService
 from lib.service_http import ServiceAlreadyRunningError, UnixServiceServer
+from lib.service_intelligence import (
+    AdapterFailure,
+    CodexAppServerClient,
+    GitBranchManager,
+    GitWorktreeTestExecutor,
+    IntelligenceLedger,
+    MaintenancePolicy,
+    RepairSupervisor,
+    StructuredIntelligenceWorkers,
+)
 from lib.service_retrieval import HybridRetriever, LocalHashEmbeddingProvider
 from lib.service_runtime import (
     AcquisitionLoop,
@@ -179,6 +189,138 @@ def _job(args: argparse.Namespace) -> int:
     return 0
 
 
+def _intelligence(args: argparse.Namespace) -> int:
+    db_path = Path(args.db) if args.db else _default_db_path()
+    input_path = Path(args.input).resolve()
+    if not input_path.is_file():
+        raise RuntimeError("intelligence input file does not exist")
+    try:
+        payload = json.loads(input_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError("intelligence input must be a readable JSON file") from exc
+    client = CodexAppServerClient(
+        codex_path=args.codex,
+        timeout_seconds=args.timeout,
+    )
+    workers = StructuredIntelligenceWorkers(
+        IntelligenceLedger(db_path),
+        client,
+        cwd=Path(args.cwd).resolve(),
+        model=args.model,
+        max_calls_per_job_loop=args.max_calls,
+        max_input_bytes=args.max_input_bytes,
+        reserved_cost_cents_per_call=args.reserved_cost_cents,
+        cost_budget_cents=args.cost_budget_cents,
+    )
+    decision = (
+        workers.enrich(job_id=args.job_id, input_payload=payload)
+        if args.mode == "enrich"
+        else workers.evaluate(job_id=args.job_id, input_payload=payload)
+    )
+    print(
+        json.dumps(
+            {
+                "decision_id": decision.decision_id,
+                "accepted": decision.accepted,
+                "validator_errors": list(decision.validator_errors),
+                "input_ref": decision.input_ref,
+                "output_ref": decision.output_ref,
+                "event_stream_ref": decision.event_stream_ref,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0 if decision.accepted else 4
+
+
+def _maintenance_policy(path: str) -> MaintenancePolicy:
+    try:
+        payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError("maintenance policy must be a readable JSON file") from exc
+    if not isinstance(payload, dict):
+        raise RuntimeError("maintenance policy must be an object")
+    expected = {
+        "repeated_failure_threshold",
+        "max_investigation_attempts",
+        "max_rework",
+        "max_branches",
+        "allowed_write_roots",
+        "allowed_tests",
+        "allowed_approvers",
+        "max_model_calls_per_job_loop",
+        "wall_timeout_seconds",
+        "max_input_bytes",
+        "reserved_cost_cents_per_call",
+        "cost_budget_cents",
+    }
+    if set(payload) != expected:
+        raise RuntimeError("maintenance policy fields are invalid")
+    for field in ("allowed_write_roots", "allowed_tests", "allowed_approvers"):
+        if not isinstance(payload[field], list):
+            raise RuntimeError("maintenance policy allowlists must be arrays")
+        payload[field] = tuple(payload[field])
+    return MaintenancePolicy(**payload)
+
+
+def _repair(args: argparse.Namespace) -> int:
+    db_path = Path(args.db) if args.db else _default_db_path()
+    cwd = Path(args.cwd).resolve()
+    policy = _maintenance_policy(args.policy)
+    supervisor = RepairSupervisor(
+        IntelligenceLedger(db_path),
+        CodexAppServerClient(
+            codex_path=args.codex,
+            timeout_seconds=min(args.timeout, policy.wall_timeout_seconds),
+        ),
+        policy,
+        cwd=cwd,
+        branch_manager=GitBranchManager(cwd=cwd),
+        test_executor=GitWorktreeTestExecutor(
+            timeout_seconds=args.test_timeout,
+        ),
+        model=args.model,
+    )
+    if args.repair_action == "investigate":
+        result = supervisor.investigate(
+            AdapterFailure(
+                job_id=args.job_id,
+                adapter=args.adapter,
+                failure_fingerprint=args.failure_fingerprint,
+                occurrences=args.occurrences,
+                evidence_ids=tuple(args.evidence_id),
+                diagnostic_refs=tuple(args.diagnostic_ref),
+            )
+        )
+        branch = None
+        if result.accepted and args.parent_branch:
+            branch = supervisor.prepare_branch(
+                result.run_id,
+                parent_branch=args.parent_branch,
+            )
+        payload = {
+            "run_id": result.run_id,
+            "decision_id": result.decision_id,
+            "accepted": result.accepted,
+            "validator_errors": list(result.validator_errors),
+            "recommendation_ref": result.recommendation_ref,
+            "branch": branch,
+        }
+        code = 0 if result.accepted else 4
+    else:
+        evaluation = supervisor.evaluate(args.run_id, commands=tuple(args.test))
+        payload = {
+            "run_id": args.run_id,
+            "eval_id": evaluation.eval_id,
+            "passed": evaluation.passed,
+            "artifact_ref": evaluation.artifact_ref,
+        }
+        code = 0 if evaluation.passed else 4
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return code
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Run or query the local last30days intelligence service"
@@ -225,6 +367,51 @@ def build_parser() -> argparse.ArgumentParser:
     job.add_argument("--socket")
     job.add_argument("--timeout", type=float, default=5.0)
     job.set_defaults(handler=_job)
+
+    intelligence = subparsers.add_parser(
+        "intelligence",
+        help="Run one operator-owned bounded enrichment or evaluation turn",
+    )
+    intelligence.add_argument("mode", choices=("enrich", "evaluate"))
+    intelligence.add_argument("--job-id", required=True)
+    intelligence.add_argument("--input", required=True)
+    intelligence.add_argument("--db")
+    intelligence.add_argument("--cwd", default=os.getcwd())
+    intelligence.add_argument("--codex", default="codex")
+    intelligence.add_argument("--model")
+    intelligence.add_argument("--timeout", type=float, default=300)
+    intelligence.add_argument("--max-calls", type=int, default=1)
+    intelligence.add_argument("--max-input-bytes", type=int, default=65_536)
+    intelligence.add_argument("--reserved-cost-cents", type=int, default=1)
+    intelligence.add_argument("--cost-budget-cents", type=int, default=1)
+    intelligence.set_defaults(handler=_intelligence)
+
+    repair = subparsers.add_parser(
+        "repair",
+        help="Run the operator-owned bounded adapter-repair supervisor",
+    )
+    repair_subparsers = repair.add_subparsers(dest="repair_action", required=True)
+    for action in ("investigate", "evaluate"):
+        command = repair_subparsers.add_parser(action)
+        command.add_argument("--policy", required=True)
+        command.add_argument("--db")
+        command.add_argument("--cwd", default=os.getcwd())
+        command.add_argument("--codex", default="codex")
+        command.add_argument("--model")
+        command.add_argument("--timeout", type=float, default=300)
+        command.add_argument("--test-timeout", type=int, default=600)
+        command.set_defaults(handler=_repair)
+    investigate = repair_subparsers.choices["investigate"]
+    investigate.add_argument("--job-id", required=True)
+    investigate.add_argument("--adapter", required=True)
+    investigate.add_argument("--failure-fingerprint", required=True)
+    investigate.add_argument("--occurrences", type=int, required=True)
+    investigate.add_argument("--evidence-id", action="append", default=[])
+    investigate.add_argument("--diagnostic-ref", action="append", default=[])
+    investigate.add_argument("--parent-branch")
+    evaluate = repair_subparsers.choices["evaluate"]
+    evaluate.add_argument("--run-id", required=True)
+    evaluate.add_argument("--test", action="append", required=True)
 
     return parser
 

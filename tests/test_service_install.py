@@ -28,3 +28,11 @@ def test_installer_renders_private_restartable_user_unit(tmp_path):
     assert "NoNewPrivileges=true" in result.stdout
     assert "Restart=on-failure" in result.stdout
     assert not (tmp_path / ".config" / "systemd").exists()
+
+
+def test_installer_restarts_an_already_running_service():
+    source = INSTALLER.read_text(encoding="utf-8")
+
+    assert 'systemctl --user enable "${UNIT_NAME}"' in source
+    assert 'systemctl --user restart "${UNIT_NAME}"' in source
+    assert "enable --now" not in source

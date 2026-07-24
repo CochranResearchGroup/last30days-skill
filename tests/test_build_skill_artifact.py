@@ -37,6 +37,7 @@ def test_build_skill_excludes_skillignore_entries() -> None:
     assert "last30days/scripts/lib/service_acquisition_worker.py" in names
     assert "last30days/scripts/lib/service_client.py" in names
     assert "last30days/scripts/lib/service_http.py" in names
+    assert "last30days/scripts/lib/service_intelligence.py" in names
     assert "last30days/scripts/lib/service_job_runner.py" in names
     assert "last30days/scripts/lib/service_publication.py" in names
     assert "last30days/scripts/lib/service_refresh.py" in names

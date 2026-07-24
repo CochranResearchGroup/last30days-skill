@@ -101,6 +101,38 @@ Then connect the MCP bundle and verify its listed surface is `service_info`,
 and topic resources. A query handler must not launch
 `last30days.py` or create a browser process.
 
+For App Intelligence maintenance-plane changes, also run:
+
+```bash
+uv run pytest \
+  tests/test_service_intelligence.py \
+  tests/test_service_migrations.py \
+  tests/test_service_install.py
+schema_dir="$(mktemp -d)"
+codex app-server generate-json-schema --out "$schema_dir"
+```
+
+Delete the temporary schema directory after inspection. Verify one real
+read-only structured turn against the installed app-server when its protocol
+or client changes, and retain the returned model, thread, and turn IDs in the
+validation receipt. The turn must use an output schema. Confirm that rejected
+output is still recorded, call/branch/test/rework bounds fail closed, artifacts
+reject credential or browser-session fields, and neither publication nor live
+source configuration changes can occur from a model decision or approval
+record alone.
+
+The packaged operator entry point is `service.py intelligence
+{enrich,evaluate} --job-id ... --input ...`. Its input must be normalized
+public evidence, never a browser page dump or session diagnostic. Normal MCP
+and Skill research flows must not invoke this command.
+
+The adapter-maintenance entry point is `service.py repair
+{investigate,evaluate} --policy ...`. Exercise it only in a disposable fixture
+repository during onboarding. Verify that concurrent branch/evaluation claims
+fail closed, the durable policy cannot change between commands, branch names
+stay under `last30days-repair/`, test commands must match the policy exactly,
+and the temporary detached worktree is removed after evaluation.
+
 ## 6. Dogfood the installed engine
 
 Use the installed copy, not the repo checkout:

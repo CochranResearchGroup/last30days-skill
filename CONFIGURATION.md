@@ -17,6 +17,91 @@ This is a focused **configuration reference** maintained alongside the engine. T
 
 ---
 
+## Service and App Intelligence boundaries
+
+The installed Linux service is the product authority for agents. Install or
+refresh it with:
+
+```bash
+bash ~/.agents/skills/last30days/scripts/install-service.sh
+python3 ~/.agents/skills/last30days/scripts/service.py status
+```
+
+The installer always restarts an existing user service so a refreshed frozen
+skill copy cannot leave old runtime code serving requests.
+
+App Intelligence is an operator-owned maintenance capability, not an
+environment-variable switch for ordinary queries. The deterministic host sets
+the repeated-failure threshold, model-call attempt limit, allowed write roots,
+allowed tests, branch count, rework count, and approver identities when it
+constructs a maintenance run. The Codex app-server worker receives a strict
+schema and read-only sandbox. It may return enrichment, evaluation, or repair
+proposals, but it has no publish, deploy, credential, browser-session, or
+live-source-configuration mutation tool.
+
+`publish` and `mutate_live_source_config` always require an explicit approval
+record from a configured operator. Approval authorizes only the named action;
+it does not execute it. Prompts, inputs, outputs, events, decisions, evals, and
+approvals are written to the user-scoped intelligence ledger as
+content-addressed, secret-free artifacts. Do not put cookies, tokens,
+credentials, browser/profile/session identifiers, operator URLs, raw private
+page data, or source configuration secrets in maintenance evidence.
+
+Before enabling an operator workflow, verify the installed app-server
+protocol:
+
+```bash
+codex app-server generate-json-schema --out /tmp/last30days-codex-schema
+```
+
+Run one bounded worker only against an existing durable service job and a
+reviewed, normalized public-evidence JSON file:
+
+```bash
+python3 ~/.agents/skills/last30days/scripts/service.py intelligence enrich \
+  --job-id JOB_ID --input /path/to/public-chunks.json
+python3 ~/.agents/skills/last30days/scripts/service.py intelligence evaluate \
+  --job-id JOB_ID --input /path/to/judged-cases.json
+```
+
+The command reserves its call and cost budget atomically before starting
+Codex, includes the bounded public input in the strict-schema turn, and records
+failed as well as successful calls. It rejects unknown input fields,
+credential-like values, oversized evidence, and output evidence IDs that were
+not supplied. Repeating the command after its call bound is consumed fails
+closed.
+
+Adapter repair is a separate explicit operator workflow:
+
+```bash
+python3 ~/.agents/skills/last30days/scripts/service.py repair investigate \
+  --policy /path/to/reviewed-policy.json \
+  --job-id JOB_ID --adapter reddit \
+  --failure-fingerprint parser-shape-v2 --occurrences 2 \
+  --evidence-id EVIDENCE_ID --diagnostic-ref ARTIFACT_REF \
+  --parent-branch main
+
+# After the proposed branch has been reviewed and repaired:
+python3 ~/.agents/skills/last30days/scripts/service.py repair evaluate \
+  --policy /path/to/the-same-reviewed-policy.json \
+  --run-id REPAIR_RUN_ID \
+  --test "uv run pytest tests/test_reddit.py"
+```
+
+The policy JSON must specify every attempt, call, cost, wall-time, input,
+branch, rework, write-root, test, and approver bound. It becomes immutable for
+the durable run. Branch creation uses a fixed `last30days-repair/` namespace
+without checking out the operator worktree. Each exact allowlisted test runs as
+argv, never through a shell, in a temporary detached Git worktree that is
+removed afterward. The model remains read-only and cannot apply, publish, or
+deploy the recommendation.
+
+Normal agent clients should use only the MCP service surface. They should not
+start App Intelligence turns, create repair branches, run scraper/browser
+commands, or poll maintenance internals.
+
+---
+
 ## Where output is saved
 
 | Platform | Default path | Override |

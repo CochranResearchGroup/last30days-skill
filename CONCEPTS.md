@@ -35,6 +35,33 @@ thin Unix-socket client: it contains no source acquisition logic. A packaged
 MCPB may start the one shared service daemon when absent, but query handlers
 never launch a request-scoped research subprocess.
 
+### Intelligence Ledger
+
+The user-scoped, append-only evidence surface for stochastic work. It stores
+content-addressed inputs and outputs, model-call receipts, strict decisions,
+evaluation results, approval records, and maintenance-run state. Browser
+cookies, credentials, sessions, raw private page data, and live route
+identifiers are forbidden. The ledger makes an enrichment or repair
+recommendation replayable without making the model an authority.
+
+### App Intelligence Worker
+
+A bounded stochastic worker invoked by a deterministic service supervisor for
+structured enrichment, retrieval evaluation, or repeated adapter-failure
+investigation. Every turn uses a strict output schema and a fixed call budget.
+The host owns state, tests, branch limits, validation, approval, and replay.
+Workers can propose and judge; they cannot publish an index, deploy code, or
+mutate live source configuration.
+
+### Maintenance Plane
+
+The operator-owned control plane for investigating repeated adapter failures.
+It is separate from normal query and refresh traffic: ordinary agents never
+operate it, and ordinary research requests never trigger an unbounded model
+loop. The plane can prepare one allowlisted repair branch and run allowlisted
+tests within configured attempt and rework limits. Publication and live-source
+configuration remain explicit human-gated actions.
+
 ### Harness
 
 The agent runtime that loads Skills and invokes them on the user's behalf. Claude Code is the most common Harness for this Skill but not the only one — Codex, Cursor, GitHub Copilot, Gemini CLI, and the rest of the Agent Skills ecosystem also count. "Multi-harness" describes a Skill that works correctly across every Harness it installs into; features written without multi-harness awareness (e.g., engine flags with no SKILL.md integration, or paths hardcoded to one Harness's install layout) regress on Harnesses other than the one they were tested against.

@@ -243,3 +243,37 @@ def test_cli_request_id_is_generated_unless_caller_supplies_idempotency_key():
         ).request_id
         == "caller-key"
     )
+
+
+def test_operator_intelligence_entrypoint_is_explicit_and_bounded():
+    args = build_parser().parse_args(
+        [
+            "intelligence",
+            "enrich",
+            "--job-id",
+            "job-001",
+            "--input",
+            "chunks.json",
+        ]
+    )
+
+    assert args.mode == "enrich"
+    assert args.job_id == "job-001"
+    assert args.max_calls == 1
+    assert args.max_input_bytes == 65_536
+    assert args.cost_budget_cents == 1
+
+    repair = build_parser().parse_args(
+        [
+            "repair",
+            "evaluate",
+            "--policy",
+            "policy.json",
+            "--run-id",
+            "repair-run-" + "a" * 24,
+            "--test",
+            "uv run pytest tests/test_reddit.py",
+        ]
+    )
+    assert repair.repair_action == "evaluate"
+    assert repair.test == ["uv run pytest tests/test_reddit.py"]

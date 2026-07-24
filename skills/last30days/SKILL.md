@@ -118,6 +118,13 @@ authentication state, retries, caching, indexing, and enrichment. The badge
 and voice laws still apply, but the engine-footer requirement does not: cite
 the evidence URLs returned by the service inline.
 
+The service's App Intelligence maintenance plane is operator-only. Never start
+a model maintenance turn, inspect its ledger, create a repair branch, run its
+tests, approve an action, publish an index, or change live source configuration
+while answering a research request. If a source reports
+`awaiting_operator`, return that bounded status and the safe operator action
+from the service; do not take over browser or repair mechanics.
+
 If these tools are absent or `service_info` says the service is unavailable,
 continue with the direct-engine fallback below. That fallback is an
 operator/debug compatibility path, not the normal service path.

@@ -538,6 +538,69 @@ CREATE TABLE IF NOT EXISTS index_relationships (
     PRIMARY KEY (index_version, relationship_id)
 );
 """,
+    6: """
+CREATE TABLE IF NOT EXISTS service_ai_artifacts (
+    artifact_ref TEXT PRIMARY KEY,
+    artifact_kind TEXT NOT NULL,
+    media_type TEXT NOT NULL,
+    payload_json TEXT NOT NULL,
+    payload_sha256 TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS service_model_calls (
+    call_id TEXT PRIMARY KEY,
+    job_id TEXT REFERENCES service_jobs(job_id) ON DELETE SET NULL,
+    loop_name TEXT NOT NULL,
+    model_ref TEXT NOT NULL,
+    input_ref TEXT NOT NULL REFERENCES service_ai_artifacts(artifact_ref),
+    output_ref TEXT REFERENCES service_ai_artifacts(artifact_ref),
+    event_stream_ref TEXT REFERENCES service_ai_artifacts(artifact_ref),
+    thread_id TEXT,
+    turn_id TEXT,
+    status TEXT NOT NULL,
+    error_code TEXT,
+    started_at TEXT NOT NULL,
+    completed_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS service_maintenance_runs (
+    run_id TEXT PRIMARY KEY,
+    job_id TEXT NOT NULL REFERENCES service_jobs(job_id) ON DELETE CASCADE,
+    adapter TEXT NOT NULL,
+    failure_fingerprint TEXT NOT NULL,
+    state TEXT NOT NULL,
+    attempt_count INTEGER NOT NULL DEFAULT 0,
+    rework_count INTEGER NOT NULL DEFAULT 0,
+    branch_count INTEGER NOT NULL DEFAULT 0,
+    current_branch TEXT,
+    thread_id TEXT,
+    policy_json TEXT NOT NULL,
+    recommendation_ref TEXT REFERENCES service_ai_artifacts(artifact_ref),
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE(job_id, adapter, failure_fingerprint)
+);
+
+CREATE TABLE IF NOT EXISTS service_approvals (
+    approval_id TEXT PRIMARY KEY,
+    run_id TEXT NOT NULL REFERENCES service_maintenance_runs(run_id) ON DELETE CASCADE,
+    action TEXT NOT NULL,
+    status TEXT NOT NULL,
+    requested_at TEXT NOT NULL,
+    decided_at TEXT,
+    decided_by TEXT,
+    evidence_ref TEXT NOT NULL REFERENCES service_ai_artifacts(artifact_ref),
+    UNIQUE(run_id, action)
+);
+
+CREATE INDEX IF NOT EXISTS idx_service_model_calls_job_loop
+    ON service_model_calls(job_id, loop_name, started_at);
+CREATE INDEX IF NOT EXISTS idx_service_maintenance_state
+    ON service_maintenance_runs(state, updated_at);
+CREATE INDEX IF NOT EXISTS idx_service_approvals_run
+    ON service_approvals(run_id, status);
+""",
 }
 
 

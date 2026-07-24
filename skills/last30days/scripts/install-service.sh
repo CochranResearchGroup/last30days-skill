@@ -56,5 +56,6 @@ mv -f -- "${tmp_unit}" "${UNIT_PATH}"
 trap - EXIT
 
 systemctl --user daemon-reload
-systemctl --user enable --now "${UNIT_NAME}"
+systemctl --user enable "${UNIT_NAME}"
+systemctl --user restart "${UNIT_NAME}"
 systemctl --user --no-pager --full status "${UNIT_NAME}"
