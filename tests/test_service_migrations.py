@@ -60,6 +60,7 @@ def test_v3_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
         "entities",
         "relationships",
         "index_versions",
+        "index_documents",
         "service_decisions",
         "service_eval_results",
     } <= tables

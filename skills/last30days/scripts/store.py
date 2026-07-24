@@ -412,6 +412,13 @@ CREATE TABLE IF NOT EXISTS index_versions (
     published_at TEXT
 );
 
+CREATE TABLE IF NOT EXISTS index_documents (
+    index_version TEXT NOT NULL REFERENCES index_versions(index_version) ON DELETE CASCADE,
+    document_id TEXT NOT NULL REFERENCES documents(document_id) ON DELETE CASCADE,
+    content_hash TEXT NOT NULL,
+    PRIMARY KEY (index_version, document_id)
+);
+
 CREATE TABLE IF NOT EXISTS service_decisions (
     decision_id TEXT PRIMARY KEY,
     job_id TEXT NOT NULL REFERENCES service_jobs(job_id) ON DELETE CASCADE,
@@ -445,12 +452,12 @@ CREATE TABLE IF NOT EXISTS service_eval_results (
 def _connect(db_path: Optional[Path] = None) -> sqlite3.Connection:
     """Open a connection with WAL mode and row factory."""
     path = db_path or _get_db_path()
-    conn = sqlite3.connect(str(path))
+    conn = sqlite3.connect(str(path), timeout=5)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA busy_timeout=5000")
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA synchronous=NORMAL")
     conn.execute("PRAGMA foreign_keys=ON")
-    conn.execute("PRAGMA busy_timeout=5000")
     return conn
 
 

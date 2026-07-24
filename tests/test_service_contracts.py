@@ -27,6 +27,24 @@ def test_query_request_round_trips_the_public_v1_contract():
     assert request.to_dict() == payload
 
 
+def test_query_request_rejects_unbounded_request_id():
+    payload = {
+        "schema_version": 1,
+        "request_id": "r" * 129,
+        "profile_id": "default",
+        "query": "bounded query",
+        "freshness_policy": "cache_only",
+        "response_mode": "evidence",
+        "filters": {},
+        "top_k": 8,
+        "max_chars": 8192,
+        "wait_ms": 0,
+    }
+
+    with pytest.raises(contracts.ContractValidationError, match="request_id"):
+        contracts.QueryRequest.from_dict(payload)
+
+
 def test_evidence_item_round_trips_citation_and_rank_provenance():
     payload = {
         "schema_version": 1,
@@ -160,6 +178,8 @@ def test_schema_catalog_is_the_golden_contract_for_every_v1_envelope():
     assert catalog["schema_version"] == 1
     assert set(catalog["contracts"]) == {
         "query_request",
+        "query_response",
+        "service_info",
         "evidence_item",
         "acquisition_envelope",
         "job_record",
@@ -215,3 +235,52 @@ def test_event_payload_rejects_secret_and_browser_lease_fields():
 
     with pytest.raises(contracts.ContractValidationError, match="forbidden field"):
         contracts.JobEvent.from_dict(payload)
+
+
+def test_query_response_round_trips_bounded_evidence_and_freshness():
+    payload = {
+        "schema_version": 1,
+        "request_id": "query-001",
+        "index_version": "index-001",
+        "cache_status": "fresh",
+        "generated_at": "2026-07-24T12:00:00Z",
+        "evidence": [],
+        "brief": None,
+        "job_id": None,
+        "diagnostics_available": False,
+        "truncated": False,
+        "next_cursor": None,
+    }
+
+    response = contracts.QueryResponse.from_dict(payload)
+
+    assert response.to_dict() == payload
+
+
+def test_service_info_round_trips_dynamic_runtime_capabilities():
+    payload = {
+        "schema_version": 1,
+        "service_version": "0.1.0",
+        "database_schema_version": 3,
+        "status": "ready",
+        "capabilities": ["cache_query", "lexical_search", "semantic_search"],
+        "sources": {"reddit": {"ready": True, "reason": None}},
+        "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh",
+        ],
+        "response_modes": ["evidence", "brief"],
+        "limits": {"default_top_k": 8, "max_top_k": 100, "max_chars": 65536},
+        "index": {
+            "version": "index-001",
+            "document_count": 4,
+            "embedding_model": None,
+        },
+        "transport": "unix",
+    }
+
+    info = contracts.ServiceInfo.from_dict(payload)
+
+    assert info.to_dict() == payload

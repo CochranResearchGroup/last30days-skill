@@ -1,0 +1,230 @@
+"""Subprocess lifecycle and no-network proof for the local service."""
+
+import os
+import stat
+import sqlite3
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+import store
+
+from lib import service_contracts as contracts
+from lib.service_client import ServiceClient, ServiceClientError
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SCRIPTS = ROOT / "skills" / "last30days" / "scripts"
+SERVICE = SCRIPTS / "service.py"
+
+
+def _wait_ready(client: ServiceClient, process: subprocess.Popen, timeout=8):
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if process.poll() is not None:
+            stdout, stderr = process.communicate()
+            raise AssertionError(
+                f"service exited before readiness: {process.returncode}\n"
+                f"stdout={stdout}\nstderr={stderr}"
+            )
+        try:
+            return client.service_info()
+        except ServiceClientError:
+            time.sleep(0.05)
+    raise AssertionError("service did not become ready")
+
+
+def test_service_subprocess_drains_cleanly_and_warm_path_has_no_network(tmp_path):
+    runtime_dir = tmp_path / "runtime"
+    data_dir = tmp_path / "data"
+    canary_dir = tmp_path / "canary"
+    canary_dir.mkdir()
+    violation_path = tmp_path / "network-violation"
+    (canary_dir / "sitecustomize.py").write_text(
+        """
+import os
+import importlib.abc
+import socket
+import subprocess
+
+_violation = os.environ["LAST30DAYS_TEST_NETWORK_VIOLATION"]
+_connect = socket.socket.connect
+def _guarded_connect(self, address):
+    if self.family in (socket.AF_INET, socket.AF_INET6):
+        open(_violation, "a", encoding="utf-8").write("network-connect\\n")
+        raise RuntimeError("network disabled by service test")
+    return _connect(self, address)
+socket.socket.connect = _guarded_connect
+
+def _blocked_popen(*args, **kwargs):
+    open(_violation, "a", encoding="utf-8").write("subprocess\\n")
+    raise RuntimeError("subprocess disabled by service test")
+subprocess.Popen = _blocked_popen
+
+class _BlockedAcquisitionImports(importlib.abc.MetaPathFinder):
+    blocked = {
+        "lib.pipeline",
+        "lib.facebook",
+        "lib.linkedin",
+        "lib.twitter",
+        "lib.youtube",
+        "lib.browser_service_client",
+    }
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname in self.blocked:
+            open(_violation, "a", encoding="utf-8").write(
+                "acquisition-import:" + fullname + "\\n"
+            )
+            raise RuntimeError("acquisition modules disabled by service test")
+        return None
+
+import sys
+sys.meta_path.insert(0, _BlockedAcquisitionImports())
+""",
+        encoding="utf-8",
+    )
+    socket_path = runtime_dir / "last30days" / "service.sock"
+    db_path = data_dir / "research.db"
+    store.init_db(db_path)
+    conn = sqlite3.connect(db_path)
+    topic_id = conn.execute(
+        "INSERT INTO topics(name) VALUES ('Browser research')"
+    ).lastrowid
+    run_id = conn.execute(
+        """INSERT INTO research_runs(topic_id, run_date, status)
+           VALUES (?, '2026-07-24T11:30:00Z', 'completed')""",
+        (topic_id,),
+    ).lastrowid
+    conn.execute(
+        """INSERT INTO findings
+           (run_id, topic_id, source, source_url, source_title, author,
+            content, summary, first_seen, last_seen)
+           VALUES (?, ?, 'reddit', 'https://reddit.example/cached-browser',
+                   'Cached browser research', 'researcher',
+                   'Cached browser research without any live acquisition.',
+                   'Cached browser research',
+                   '2026-07-24T11:30:00Z', '2026-07-24T11:30:00Z')""",
+        (run_id, topic_id),
+    )
+    conn.commit()
+    conn.close()
+    env = {
+        **os.environ,
+        "PYTHONPATH": os.pathsep.join([str(canary_dir), str(SCRIPTS)]),
+        "LAST30DAYS_TEST_NETWORK_VIOLATION": str(violation_path),
+    }
+    process = subprocess.Popen(
+        [
+            sys.executable,
+            str(SERVICE),
+            "serve",
+            "--socket",
+            str(socket_path),
+            "--db",
+            str(db_path),
+        ],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    client = ServiceClient(socket_path)
+    try:
+        info = _wait_ready(client, process)
+        assert info.status is contracts.ServiceStatus.READY
+        before = sqlite3.connect(db_path).execute(
+            """SELECT
+                 (SELECT COUNT(*) FROM service_jobs),
+                 (SELECT COUNT(*) FROM service_job_events),
+                 (SELECT COUNT(*) FROM acquisitions)"""
+        ).fetchone()
+        response = client.query(
+            contracts.QueryRequest.from_dict(
+                {
+                    "schema_version": 1,
+                    "request_id": "query-empty",
+                    "profile_id": "default",
+                    "query": "cached browser research",
+                    "freshness_policy": "cache_only",
+                    "response_mode": "evidence",
+                    "filters": {},
+                    "top_k": 8,
+                    "max_chars": 8192,
+                    "wait_ms": 0,
+                }
+            )
+        )
+        prefer_cache_response = client.query(
+            contracts.QueryRequest.from_dict(
+                {
+                    "schema_version": 1,
+                    "request_id": "query-prefer-cache",
+                    "profile_id": "default",
+                    "query": "cached browser research",
+                    "freshness_policy": "prefer_cache",
+                    "response_mode": "evidence",
+                    "filters": {},
+                    "top_k": 8,
+                    "max_chars": 8192,
+                    "wait_ms": 0,
+                }
+            )
+        )
+        after = sqlite3.connect(db_path).execute(
+            """SELECT
+                 (SELECT COUNT(*) FROM service_jobs),
+                 (SELECT COUNT(*) FROM service_job_events),
+                 (SELECT COUNT(*) FROM acquisitions)"""
+        ).fetchone()
+
+        assert response.cache_status is contracts.CacheStatus.FRESH
+        assert prefer_cache_response.cache_status is contracts.CacheStatus.FRESH
+        assert [item.url for item in response.evidence] == [
+            "https://reddit.example/cached-browser"
+        ]
+        index_version = sqlite3.connect(db_path).execute(
+            """SELECT index_version FROM index_versions
+               WHERE published_at IS NOT NULL
+               ORDER BY published_at DESC, rowid DESC LIMIT 1"""
+        ).fetchone()[0]
+        assert response.index_version == index_version
+        assert prefer_cache_response.index_version == index_version
+        assert response.job_id is None
+        assert prefer_cache_response.job_id is None
+        assert before == after
+        assert before[0] >= 1
+        assert before[2] >= 1
+        assert not violation_path.exists()
+    finally:
+        process.terminate()
+        stdout, stderr = process.communicate(timeout=8)
+
+    assert process.returncode == 0, stderr
+    assert stdout == ""
+    assert not socket_path.exists()
+    assert not violation_path.exists()
+    assert stat.S_IMODE(runtime_dir.joinpath("last30days").stat().st_mode) == 0o700
+    assert stat.S_IMODE(data_dir.stat().st_mode) == 0o700
+    assert stat.S_IMODE(db_path.stat().st_mode) == 0o600
+
+
+def test_service_help_does_not_require_runtime_environment():
+    env = {
+        key: value
+        for key, value in os.environ.items()
+        if key not in {"XDG_RUNTIME_DIR", "LAST30DAYS_SERVICE_SOCKET"}
+    }
+    result = subprocess.run(
+        [sys.executable, str(SERVICE), "--help"],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        timeout=8,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "Run or query the local last30days intelligence service" in result.stdout

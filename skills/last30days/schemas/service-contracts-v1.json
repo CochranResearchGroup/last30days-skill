@@ -20,7 +20,7 @@
       ],
       "properties": {
         "schema_version": {"const": 1},
-        "request_id": {"type": "string", "minLength": 1},
+        "request_id": {"type": "string", "minLength": 1, "maxLength": 128},
         "profile_id": {"type": "string", "minLength": 1},
         "query": {"type": "string", "minLength": 1},
         "freshness_policy": {
@@ -55,6 +55,96 @@
         "top_k": {"type": "integer", "minimum": 1, "maximum": 100},
         "max_chars": {"type": "integer", "minimum": 512, "maximum": 65536},
         "wait_ms": {"type": "integer", "minimum": 0, "maximum": 300000}
+      }
+    },
+    "query_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "request_id",
+        "index_version",
+        "cache_status",
+        "generated_at",
+        "evidence",
+        "brief",
+        "job_id",
+        "diagnostics_available",
+        "truncated",
+        "next_cursor"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "request_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "index_version": {"type": "string", "minLength": 1},
+        "cache_status": {
+          "type": "string",
+          "enum": ["fresh", "stale", "miss"]
+        },
+        "generated_at": {"type": "string", "minLength": 1},
+        "evidence": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {"$ref": "#/contracts/evidence_item"}
+        },
+        "brief": {"type": ["string", "null"]},
+        "job_id": {"type": ["string", "null"]},
+        "diagnostics_available": {"type": "boolean"},
+        "truncated": {"type": "boolean"},
+        "next_cursor": {"type": ["string", "null"]}
+      }
+    },
+    "service_info": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "service_version",
+        "database_schema_version",
+        "status",
+        "capabilities",
+        "sources",
+        "freshness_policies",
+        "response_modes",
+        "limits",
+        "index",
+        "transport"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "service_version": {"type": "string", "minLength": 1},
+        "database_schema_version": {"type": "integer", "minimum": 1},
+        "status": {
+          "type": "string",
+          "enum": ["starting", "ready", "degraded"]
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "sources": {"type": "object"},
+        "freshness_policies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "cache_only",
+              "prefer_cache",
+              "refresh_if_stale",
+              "force_refresh"
+            ]
+          }
+        },
+        "response_modes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["evidence", "brief"]
+          }
+        },
+        "limits": {"type": "object"},
+        "index": {"type": "object"},
+        "transport": {"const": "unix"}
       }
     },
     "evidence_item": {

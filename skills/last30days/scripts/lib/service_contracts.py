@@ -82,6 +82,18 @@ class ResponseMode(StrEnum):
     BRIEF = "brief"
 
 
+class CacheStatus(StrEnum):
+    FRESH = "fresh"
+    STALE = "stale"
+    MISS = "miss"
+
+
+class ServiceStatus(StrEnum):
+    STARTING = "starting"
+    READY = "ready"
+    DEGRADED = "degraded"
+
+
 class AcquisitionStatus(StrEnum):
     SUCCEEDED = "succeeded"
     PARTIAL = "partial"
@@ -138,6 +150,13 @@ def _require_exact_fields(
 def _require_non_empty_string(value: Any, field: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ContractValidationError(f"{field} must be a non-empty string")
+    return value
+
+
+def _require_bounded_string(value: Any, field: str, maximum: int) -> str:
+    value = _require_non_empty_string(value, field)
+    if len(value) > maximum:
+        raise ContractValidationError(f"{field} cannot exceed {maximum} characters")
     return value
 
 
@@ -259,8 +278,8 @@ class QueryRequest:
             raise ContractValidationError("invalid response_mode") from exc
         return cls(
             schema_version=_validate_schema_version(payload["schema_version"]),
-            request_id=_require_non_empty_string(
-                payload["request_id"], "request_id"
+            request_id=_require_bounded_string(
+                payload["request_id"], "request_id", 128
             ),
             profile_id=_require_non_empty_string(
                 payload["profile_id"], "profile_id"
@@ -411,6 +430,199 @@ class EvidenceItem:
             "acquisition_id": self.acquisition_id,
             "content_hash": self.content_hash,
             "scores": dict(self.scores),
+        }
+
+
+@dataclass(frozen=True)
+class QueryResponse:
+    """Bounded, citation-ready response from the cache query authority."""
+
+    schema_version: int
+    request_id: str
+    index_version: str
+    cache_status: CacheStatus
+    generated_at: str
+    evidence: list[EvidenceItem]
+    brief: str | None
+    job_id: str | None
+    diagnostics_available: bool
+    truncated: bool
+    next_cursor: str | None
+
+    CONTRACT_NAME: ClassVar[str] = "query_response"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> QueryResponse:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("query response must be an object")
+        fields = frozenset(
+            {
+                "schema_version",
+                "request_id",
+                "index_version",
+                "cache_status",
+                "generated_at",
+                "evidence",
+                "brief",
+                "job_id",
+                "diagnostics_available",
+                "truncated",
+                "next_cursor",
+            }
+        )
+        _require_exact_fields(payload, required=fields)
+        try:
+            cache_status = CacheStatus(payload["cache_status"])
+        except (TypeError, ValueError) as exc:
+            raise ContractValidationError("invalid cache_status") from exc
+        raw_evidence = payload["evidence"]
+        if not isinstance(raw_evidence, list):
+            raise ContractValidationError("evidence must be an array")
+        evidence = [EvidenceItem.from_dict(item) for item in raw_evidence]
+        if len(evidence) > 100:
+            raise ContractValidationError("evidence cannot exceed 100 items")
+        for field in ("diagnostics_available", "truncated"):
+            if not isinstance(payload[field], bool):
+                raise ContractValidationError(f"{field} must be a boolean")
+        return cls(
+            schema_version=_validate_schema_version(payload["schema_version"]),
+            request_id=_require_bounded_string(
+                payload["request_id"], "request_id", 128
+            ),
+            index_version=_require_non_empty_string(
+                payload["index_version"], "index_version"
+            ),
+            cache_status=cache_status,
+            generated_at=_require_non_empty_string(
+                payload["generated_at"], "generated_at"
+            ),
+            evidence=evidence,
+            brief=_require_optional_string(payload["brief"], "brief"),
+            job_id=_require_optional_string(payload["job_id"], "job_id"),
+            diagnostics_available=payload["diagnostics_available"],
+            truncated=payload["truncated"],
+            next_cursor=_require_optional_string(
+                payload["next_cursor"], "next_cursor"
+            ),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "request_id": self.request_id,
+            "index_version": self.index_version,
+            "cache_status": self.cache_status.value,
+            "generated_at": self.generated_at,
+            "evidence": [item.to_dict() for item in self.evidence],
+            "brief": self.brief,
+            "job_id": self.job_id,
+            "diagnostics_available": self.diagnostics_available,
+            "truncated": self.truncated,
+            "next_cursor": self.next_cursor,
+        }
+
+
+@dataclass(frozen=True)
+class ServiceInfo:
+    """Dynamic capability and readiness truth for clients."""
+
+    schema_version: int
+    service_version: str
+    database_schema_version: int
+    status: ServiceStatus
+    capabilities: list[str]
+    sources: dict[str, Any]
+    freshness_policies: list[str]
+    response_modes: list[str]
+    limits: dict[str, Any]
+    index: dict[str, Any]
+    transport: str
+
+    CONTRACT_NAME: ClassVar[str] = "service_info"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> ServiceInfo:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("service info must be an object")
+        fields = frozenset(
+            {
+                "schema_version",
+                "service_version",
+                "database_schema_version",
+                "status",
+                "capabilities",
+                "sources",
+                "freshness_policies",
+                "response_modes",
+                "limits",
+                "index",
+                "transport",
+            }
+        )
+        _require_exact_fields(payload, required=fields)
+        try:
+            status = ServiceStatus(payload["status"])
+        except (TypeError, ValueError) as exc:
+            raise ContractValidationError("invalid service status") from exc
+        freshness_policies = _require_string_list(
+            payload["freshness_policies"], "freshness_policies"
+        )
+        invalid_freshness = sorted(
+            set(freshness_policies) - {item.value for item in FreshnessPolicy}
+        )
+        if invalid_freshness:
+            raise ContractValidationError(
+                f"invalid freshness policies: {', '.join(invalid_freshness)}"
+            )
+        response_modes = _require_string_list(
+            payload["response_modes"], "response_modes"
+        )
+        invalid_modes = sorted(
+            set(response_modes) - {item.value for item in ResponseMode}
+        )
+        if invalid_modes:
+            raise ContractValidationError(
+                f"invalid response modes: {', '.join(invalid_modes)}"
+            )
+        transport = _require_non_empty_string(payload["transport"], "transport")
+        if transport != "unix":
+            raise ContractValidationError("transport must be unix")
+        return cls(
+            schema_version=_validate_schema_version(payload["schema_version"]),
+            service_version=_require_non_empty_string(
+                payload["service_version"], "service_version"
+            ),
+            database_schema_version=_require_integer_between(
+                payload["database_schema_version"],
+                "database_schema_version",
+                1,
+                2_147_483_647,
+            ),
+            status=status,
+            capabilities=_require_string_list(
+                payload["capabilities"], "capabilities"
+            ),
+            sources=_validate_json_object(payload["sources"], "sources"),
+            freshness_policies=freshness_policies,
+            response_modes=response_modes,
+            limits=_validate_json_object(payload["limits"], "limits"),
+            index=_validate_json_object(payload["index"], "index"),
+            transport=transport,
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "service_version": self.service_version,
+            "database_schema_version": self.database_schema_version,
+            "status": self.status.value,
+            "capabilities": list(self.capabilities),
+            "sources": dict(self.sources),
+            "freshness_policies": list(self.freshness_policies),
+            "response_modes": list(self.response_modes),
+            "limits": dict(self.limits),
+            "index": dict(self.index),
+            "transport": self.transport,
         }
 
 
@@ -840,6 +1052,8 @@ class DecisionRecord:
 
 ContractEnvelope = (
     QueryRequest
+    | QueryResponse
+    | ServiceInfo
     | EvidenceItem
     | AcquisitionEnvelope
     | JobRecord
@@ -849,6 +1063,8 @@ ContractEnvelope = (
 
 _CONTRACT_TYPES = {
     QueryRequest.CONTRACT_NAME: QueryRequest,
+    QueryResponse.CONTRACT_NAME: QueryResponse,
+    ServiceInfo.CONTRACT_NAME: ServiceInfo,
     EvidenceItem.CONTRACT_NAME: EvidenceItem,
     AcquisitionEnvelope.CONTRACT_NAME: AcquisitionEnvelope,
     JobRecord.CONTRACT_NAME: JobRecord,

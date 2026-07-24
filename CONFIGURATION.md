@@ -388,6 +388,27 @@ Adding `--store` to any run persists every finding to a SQLite database (default
 
 Relevant tables: `topics`, `research_runs`, `findings`, `settings`. Schema: [`scripts/store.py`](skills/last30days/scripts/store.py).
 
+### User-scoped intelligence service paths
+
+The local cache-query service keeps browser and scraper mechanics behind a
+private Unix socket. These optional host-level overrides are intended for
+service managers and development:
+
+```bash
+# Defaults to $XDG_RUNTIME_DIR/last30days/service.sock
+LAST30DAYS_SERVICE_SOCKET=/run/user/1000/last30days/service.sock
+
+# Defaults to $XDG_DATA_HOME/last30days/research.db, or
+# ~/.local/share/last30days/research.db when XDG_DATA_HOME is unset.
+LAST30DAYS_SERVICE_DB=~/.local/share/last30days/research.db
+```
+
+Explicit `service.py --socket` and `--db` flags win over these variables. The
+runtime directory is owner-only (`0700`), and the socket, lock, and database
+are owner-readable/writable only (`0600`). These paths contain no browser
+cookies or credentials; authenticated acquisition remains isolated in named
+user-scoped profiles.
+
 ### `watchlist.py` - recurring topics
 
 [`scripts/watchlist.py`](skills/last30days/scripts/watchlist.py) manages topics that should be researched on a schedule. Subcommands: `add`, `remove`, `list`, `run-one`, `run-all`, `config`. Built-in delivery to Slack incoming webhooks (`hooks.slack.com/...`) or any HTTPS endpoint, fired only when new findings appear.

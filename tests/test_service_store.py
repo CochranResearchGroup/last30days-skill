@@ -46,6 +46,51 @@ def _sample_envelopes():
                 "wait_ms": 0,
             },
         ),
+        "query_response": (
+            "query-001",
+            {
+                "schema_version": 1,
+                "request_id": "query-001",
+                "index_version": "index-001",
+                "cache_status": "fresh",
+                "generated_at": "2026-07-24T12:00:00Z",
+                "evidence": [],
+                "brief": None,
+                "job_id": None,
+                "diagnostics_available": False,
+                "truncated": False,
+                "next_cursor": None,
+            },
+        ),
+        "service_info": (
+            "current",
+            {
+                "schema_version": 1,
+                "service_version": "0.1.0",
+                "database_schema_version": 3,
+                "status": "ready",
+                "capabilities": ["cache_query"],
+                "sources": {},
+                "freshness_policies": [
+                    "cache_only",
+                    "prefer_cache",
+                    "refresh_if_stale",
+                    "force_refresh",
+                ],
+                "response_modes": ["evidence", "brief"],
+                "limits": {
+                    "default_top_k": 8,
+                    "max_top_k": 100,
+                    "max_chars": 65536,
+                },
+                "index": {
+                    "version": "index-001",
+                    "document_count": 0,
+                    "embedding_model": None,
+                },
+                "transport": "unix",
+            },
+        ),
         "evidence_item": (
             "ev-001",
             {
