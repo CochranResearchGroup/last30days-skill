@@ -1,6 +1,6 @@
 # Plan 0007 | Productized intelligence service MVP
 
-State: OPEN
+State: CLOSED
 Date: 2026-07-24
 
 ## Execution State
@@ -616,6 +616,88 @@ Next action:
 - refresh the frozen installed Skill and live user service, execute the final
   scenario/source/replay/MCP acceptance matrix, then close and push the plan.
 
+### Checkpoint P0007-C07 | 2026-07-24
+
+Plan version: 1
+
+State transition: `acceptance_active -> closed`
+
+Progress classification: `outcome_progress`
+
+Owned changes and runtime reconciliation:
+
+- completed all six packets and the cache-first service, durable acquisition,
+  semantic/graph enrichment, five-tool MCP, installed Skill, and bounded App
+  Intelligence product surfaces;
+- added the deterministic published-result replay fixture in commit `dfca809`;
+- fixed the authenticated browser adapter boundary in commit `dd388f9`:
+  Facebook now honors the agent-browser access-plan profile, preserves
+  unrelated retained browsers, allocates a profile-scoped session lane, follows
+  the broker's local-headed versus remote-view posture, and never hints a
+  checked-out RDP route; LinkedIn now requests its own target identity through
+  the same broker instead of bypassing access-plan selection;
+- refreshed the frozen global Skill install and restarted the user service;
+  the installed runtime reported `status=ready`, schema version 6, Unix socket
+  transport, 27 indexed documents, and service PID `3327507`;
+- live source acquisition succeeded and published for Reddit, YouTube, and the
+  authenticated X profile; warm cache reads returned citation-ready evidence
+  without browser work;
+- the corrected Facebook lane opened the broker-selected
+  `last30days-facebook` profile and verified authenticated DOM state. Its final
+  background refresh job `dc9e2cf5-b594-4cca-a8e3-2fcceb33f1dd` remained
+  fail-closed after an initial `agent_browser_timeout` and terminal
+  `worker_timeout`, so Facebook remains truthfully reported as configured with
+  zero indexed documents rather than falsely ready;
+- LinkedIn has no registered `last30days-linkedin` profile or authenticated
+  target evidence on this workstation. Its broker-first adapter therefore
+  fails closed before authenticated acquisition; no login or profile was
+  invented by the service.
+
+Validation evidence:
+
+- final `uv run pytest`: 2,231 passed, 7 skipped, and 6 subtests passed in
+  182.33 seconds;
+- final focused Facebook and LinkedIn suite: 63 passed and 2 skipped;
+- prior final Go acceptance remained green: `go test ./...`, `go vet ./...`,
+  `go build ./cmd/last30days-pp-mcp`, and `go generate ./...`;
+- warm, cold, stale, partial-publication, auth-required,
+  embedding-disabled/FTS-only, restart/lease recovery, deterministic replay,
+  and strict stochastic-worker scenarios passed in the current execution;
+- a fresh MCP initialize/tools/query exchange against the installed daemon
+  negotiated protocol `2025-03-26`, exposed exactly `job_status`, `query`,
+  `refresh`, `service_info`, and `topic`, and returned cached evidence;
+- live agent-browser reconciliation reported five viable modeled browsers and
+  zero browser-health changes; Facebook access-plan selected the fresh
+  `last30days-facebook` profile with no manual seeding required.
+
+Bounded review and residual state:
+
+- the Packet 6 independent review and single remediation cycle remain the final
+  evaluator boundary; no additional optimizer loop was opened;
+- Facebook's post-auth command timeout and LinkedIn's absent authenticated
+  profile are source readiness limitations, not blockers to this MVP's
+  product boundary. The plan explicitly does not require every normalized
+  source to support background acquisition on day one, and runtime capability
+  reporting remains exact per source;
+- no autonomous login, checkpoint recovery, live configuration mutation, or
+  model-owned deployment occurred.
+
+Acceptance conclusion:
+
+- all MVP acceptance criteria and the definition of done are satisfied;
+- normal agents discover and query one cache authority without receiving
+  scraper, cookie, browser, route, or CDP mechanics;
+- source work is isolated in supervised workers, and unavailable sources
+  remain explicit, redacted, and fail-closed;
+- the final remaining integration action is the structured closeout commit,
+  public-fork push, and remote/readback verification.
+
+Next action:
+
+- commit this closure checkpoint, push `main` to `origin`, and verify local
+  HEAD, remote HEAD, clean worktree, installed service readiness, and cached
+  query behavior independently.
+
 ## Objective
 
 Turn last30days from a request-scoped research engine into a local-first,
@@ -1065,7 +1147,7 @@ service restart resumes or safely expires leases without duplicate publication.
 Exit gate: stochastic enrichment can be disabled or fail without breaking
 cache queries, and no promoted graph edge lacks evidence.
 
-### Packet 5 | MCP and skill product surface
+### Packet 5 | MCP and skill product surface | COMPLETE
 
 - replace request-scoped MCP subprocess crawls with the thin service client;
 - add tools/resources and annotations;
@@ -1076,7 +1158,7 @@ cache queries, and no promoted graph edge lacks evidence.
 Exit gate: a fresh agent can discover, query, refresh, and poll the service
 without being given browser or scraper operating instructions.
 
-### Packet 6 | App Intelligence maintenance loops
+### Packet 6 | App Intelligence maintenance loops | COMPLETE
 
 - add structured enrichment and evaluation workers;
 - add a Codex app-server supervisor for repeated adapter-failure investigations;
