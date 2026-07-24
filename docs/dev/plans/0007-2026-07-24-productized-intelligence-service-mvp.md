@@ -1,7 +1,96 @@
 # Plan 0007 | Productized intelligence service MVP
 
-State: PLANNED
+State: OPEN
 Date: 2026-07-24
+
+## Execution State
+
+Plan version: 1
+Critical-path owner: primary agent
+Execution branch: `main`
+Optimization posture: balanced parallelism with disjoint write scopes
+
+Local goal bounds:
+
+- maximum work-unit attempts: 2;
+- maximum review/rework cycles per packet: 1;
+- maximum consecutive hardening-only checkpoints: 2;
+- checkpoint interval: after every validated implementation packet;
+- active subagent concurrency: at most 2 sidecar lanes plus the critical-path
+  owner;
+- retry and review loops must end in pass, split, reframe, operator gate, or
+  explicit failure after their bound.
+
+Required checkpoint fields:
+
+- checkpoint ID and plan version;
+- state transition;
+- progress classification;
+- owned changes;
+- validation evidence;
+- subagent status and reconciliation;
+- remaining acceptance criteria;
+- next action or stop reason.
+
+### Checkpoint P0007-C00 | 2026-07-24
+
+State transition: `planned -> active`
+
+Progress classification: `outcome_progress`
+
+Current authority and evidence:
+
+- this plan is the governing implementation authority;
+- commit `32e4209` records the researched MVP design;
+- the worktree was clean before execution and `main` was four commits ahead of
+  `origin/main`;
+- the existing Python pipeline, SQLite/FTS5 store, watchlists, browser-backed
+  source adapters, and one-tool Go MCP wrapper are the migration starting
+  point;
+- Codex CLI 0.145.0 passed the app-server readiness check with stdio, Unix
+  socket, schema-generation, and authenticated WebSocket capabilities.
+
+Unmet acceptance state:
+
+- all six implementation packets and every acceptance criterion remain open;
+- no new service runtime, cache-first query authority, durable acquisition
+  supervisor, semantic index, typed graph projection, thin MCP surface, or App
+  Intelligence maintenance loop has shipped yet.
+
+Ready work:
+
+- Packet 1 service contracts, schemas, migrations, ADR, and golden tests;
+- disjoint sidecar discovery of the Go MCP transport/package surface;
+- disjoint sidecar review of validation, packaging, and operator-runtime
+  requirements.
+
+Blocked work:
+
+- none;
+- live authenticated-source validation and final push remain later explicit
+  runtime/integration gates.
+
+Delegation decision:
+
+- `spawned` is required for bounded, disjoint sidecar discovery and later
+  independent review under Policies 0015 and 0021;
+- MCP transport/package audit handle: `/root/mcp_surface_audit`, read-only,
+  terminal status pending;
+- runtime/package/validation audit handle: `/root/runtime_validation_audit`,
+  read-only, terminal status pending;
+- delegated workers may not edit the Packet 1 schema/store critical path unless
+  ownership is explicitly reassigned;
+- the primary agent owns integration and independently verifies delegated
+  evidence.
+
+Human, security, and runtime gates:
+
+- no autonomous login, CAPTCHA, checkpoint, credential, or account recovery;
+- no remote WebSocket service surface without a separately approved auth and
+  network boundary;
+- no model-authored repair may self-deploy;
+- final publication requires repository validation, installed-client smokes,
+  and a truthful push/readback.
 
 ## Objective
 
@@ -569,4 +658,3 @@ The MVP plan may be closed when:
   and CLI as client surfaces;
 - changes are structured into reviewable commits and pushed to the public fork
   only after the repository's integration and closeout gates are satisfied.
-
