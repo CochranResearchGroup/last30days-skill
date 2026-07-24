@@ -251,6 +251,108 @@ Next action:
   policy, negative caching, stale-while-revalidate, partial publication, and
   explicit `awaiting_operator` mapping.
 
+### Checkpoint P0007-C03 | 2026-07-24
+
+Plan version: 1
+
+State transition: `packet_3_active -> packet_3_complete`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- added schema version 4 for durable refresh timing, spend, lease generation,
+  and per-profile/query/source coverage, including safe applied-v3 upgrades;
+- added a deterministic supervisor with normalized refresh coalescing, strict
+  state transitions, append-only sequenced events, lease renewal/recovery and
+  generation fencing, retry taxonomy, attempt/cost ceilings, negative caching,
+  operator waits, and explicit operator resume;
+- added versioned request/result worker contracts with safe codes, timezone
+  validation, status/retry invariants, recursive secret/browser-field
+  rejection, item/network/time/cost bounds, and immutable replay storage;
+- added a process-isolated source worker for Reddit, X, YouTube, Facebook, and
+  LinkedIn using named user-scoped profiles, public-first Reddit with the
+  supported ScrapeCreators fallback key, and typed auth/rate/config/content
+  outcomes;
+- added bounded stdout/stderr streaming, process-group timeout and shutdown
+  cancellation, adapter import isolation, and host-reserved adapter cost
+  ceilings;
+- added stale-while-revalidate scheduling, explicit successful empty-result
+  coverage, partial source publication, deterministic retry delays, and
+  background service execution;
+- made result acceptance, replay envelopes, acquisitions, document projection,
+  chunks, and sightings one live lease-fenced transaction so stale workers
+  cannot publish after reclaim;
+- made same-URL content refresh revision-aware: the current document and chunk
+  advance atomically while acquisition envelopes and sightings preserve the
+  prior observations;
+- made discovery distinguish configured from acquisition-ready sources and
+  report a degraded service when the acquisition loop fails while cached
+  queries remain available;
+- generated CLI request IDs by default instead of reusing one immutable ledger
+  key across unrelated queries;
+- documented service profile resolution, source behavior, readiness, and
+  resource-budget semantics;
+- commit `23d3540` records the Packet 3 implementation.
+
+Validation evidence:
+
+- `uv run pytest`: the complete 2,187-test collection passed;
+- focused post-review service contract, migration, store, supervisor, worker,
+  acquisition, refresh, publication, job-runner, runtime, application,
+  transport, subprocess, and artifact gate: 75 passed;
+- stale-generation publication was rejected before any envelope, acquisition,
+  or document write;
+- two acquisitions of the same URL with changed text advanced the searchable
+  current projection while retaining two acquisition and sighting records;
+- concurrent equivalent refreshes produced one durable job; expired leases
+  were reclaimed with generation fencing; multi-source work renewed its lease;
+- transient failures released leases into bounded backoff, authentication
+  mapped to `awaiting_operator`, zero-result success suppressed redundant
+  refresh, and a host budget of zero prevented the paid fallback from
+  launching;
+- warm cache-only and fresh prefer-cache service queries still triggered no
+  network, subprocess, or acquisition imports;
+- stdout and stderr overflow, wall timeout, stale worker results, invalid safe
+  codes/timestamps, cancellation, profile scope, and network-zero gates passed;
+- Python compilation, JSON catalog parsing, packaged-skill contents, and
+  `git diff --check` passed.
+
+Subagent status and reconciliation:
+
+- `/root/packet3_supervisor_store`: terminal success; its supervisor module and
+  focused tests were reviewed, integrated, and extended by the primary agent
+  with the shared WAL-lock fix and coverage readback;
+- `/root/packet3_pipeline_audit`: first terminal success as a read-only source
+  boundary audit, then terminal success as the independent Packet 3 evaluator;
+- the evaluator reported two blockers and eight high/medium findings; the
+  primary agent completed the packet's single allowed rework pass, including
+  lease-fenced publication, revision-aware refresh, renewed leases, bounded
+  streams, cancellation, Reddit routing, host cost reservation, collision-safe
+  CLI IDs, strict worker validation, and truthful readiness;
+- the evaluator's observation that publication, coverage, and terminal state
+  remain separate crash points is reconciled through fenced, content-addressed,
+  idempotent replay; a future transactional outbox is optional hardening, not
+  required for the Packet 3 exit gate;
+- external tools cannot expose each internal network attempt to the Python
+  counter, so they remain bounded by one isolated launch, wall time, output,
+  item, cost, and process-group limits.
+
+Remaining acceptance state:
+
+- Packets 4 through 6 remain open;
+- semantic background embeddings, deterministic entity extraction, typed graph
+  projection/expansion, MCP cutover, installed-client smokes, and App
+  Intelligence maintenance/evaluation loops remain unclaimed;
+- live authenticated X/Facebook/LinkedIn and real YouTube/Reddit acquisition
+  smokes remain final runtime gates and may require operator-owned sessions.
+
+Next action:
+
+- execute Packet 4 as a bounded deterministic enrichment slice: versioned
+  background embeddings, entity extraction and resolution, accepted typed
+  relationships with evidence, graph expansion, and lexical-only degradation.
+
 ## Objective
 
 Turn last30days from a request-scoped research engine into a local-first,
@@ -677,7 +779,7 @@ Exit gate: a warm query performs no network or browser work, returns cited
 evidence within the latency and response-size targets, and remains useful when
 embeddings are unavailable.
 
-### Packet 3 | Durable acquisition supervisor
+### Packet 3 | Durable acquisition supervisor | COMPLETE
 
 - add queue, leases, deduplication keys, retry taxonomy, budgets, negative
   cache, and event ledger;
