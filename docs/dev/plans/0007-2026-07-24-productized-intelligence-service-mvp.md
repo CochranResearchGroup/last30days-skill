@@ -160,6 +160,97 @@ Next action:
 - execute Packet 2 as a bounded cache-first query service slice, with a real
   Unix-socket subprocess fixture and warm-query no-network proof.
 
+Packet 2 delegation receipt:
+
+- `/root/packet2_retrieval`: spawned, owns only the new retrieval module and
+  its focused tests, terminal success;
+- `/root/packet2_socket_audit`: spawned read-only for adversarial socket
+  lifecycle and no-network proof design, terminal success;
+- the primary agent owns query/response contracts, service host, transport,
+  lifecycle, integration, and final verification.
+
+### Checkpoint P0007-C02 | 2026-07-24
+
+Plan version: 1
+
+State transition: `packet_2_active -> packet_2_complete`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- added a user-scoped Python service with private HTTP/JSON over a Unix socket,
+  singleton locking, stale-socket recovery, same-user peer checks, fixed error
+  envelopes, bounded request/response transport, and graceful signal cleanup;
+- chose HTTP/JSON over the socket-audit lane's NDJSON sketch because the
+  accepted boundary requires a thin multi-language client and the Go MCP can
+  use this request/response transport without embedding Python or learning the
+  storage schema;
+- indexed legacy findings into immutable acquisition, document, chunk, and
+  published index snapshots with stable IDs and content hashes;
+- added FTS5/BM25 retrieval, injected versioned embeddings, exact cosine
+  similarity, weighted reciprocal-rank fusion, deterministic ordering, source
+  filters, exact snapshot membership, and lexical-only degradation;
+- added transport-independent health, dynamic capability discovery, cache
+  freshness, bounded evidence, deterministic extractive briefs, and optional
+  refresh scheduling seams;
+- bounded request IDs and complete serialized responses, including the legal
+  512-character minimum;
+- moved SQLite busy-timeout setup ahead of WAL activation so concurrent
+  initializers wait instead of intermittently failing before migration locks;
+- documented the new user-scoped socket and database configuration overrides;
+- commit `0057c6e` records the Packet 2 implementation.
+
+Validation evidence:
+
+- `uv run pytest`: 2,137 passed, 7 skipped, 6 subtests passed;
+- post-review Packet 2 contract, application, transport, subprocess,
+  retrieval, store, migration, and artifact gate: 38 passed;
+- concurrent migration initialization passed ten consecutive stress runs;
+- a real subprocess canary rejected all Internet socket use, subprocess
+  acquisition, and source/browser module imports while `cache_only` and fresh
+  `prefer_cache` queries returned cited evidence without changing job, event,
+  or acquisition ledger counts;
+- 100 real Unix-socket warm queries measured 1.343 ms median, 1.846 ms p95,
+  and 2.183 ms maximum, with one cited result and an exact published index
+  version;
+- stale sockets were recovered; regular files, dangling symlinks, a second
+  service owner, malformed contracts, and attacker-controlled error text were
+  handled without unsafe deletion or reflection;
+- service shutdown returned zero, emitted no stdout, removed only its owned
+  socket inode, and left runtime/data directories at `0700` and socket, lock,
+  and database files at `0600`;
+- Python compilation, JSON catalog parsing, skill artifact coverage, and
+  `git diff --check` passed.
+
+Subagent status and reconciliation:
+
+- `/root/packet2_retrieval`: terminal success; the primary agent reviewed and
+  extended its retrieval module with content-addressed published index
+  manifests and exact `index_documents` membership before integration;
+- `/root/packet2_socket_audit`: terminal success, read-only; the primary agent
+  converted its lock, ownership, stale-path, peer, no-network, import-canary,
+  permission, and signal recommendations into implementation and adversarial
+  tests;
+- the proposed NDJSON wire format was deliberately not adopted; HTTP/JSON over
+  the same private Unix socket better preserves the thin Python/Go seam while
+  retaining the audit's local-only security boundary.
+
+Remaining acceptance state:
+
+- Packets 3 through 6 remain open;
+- refresh scheduling is still only an application seam: there is no durable
+  acquisition supervisor, lease recovery, retry/negative-cache policy,
+  source-worker execution, semantic background worker, graph expansion, thin
+  MCP cutover, installed service, or App Intelligence maintenance loop yet.
+
+Next action:
+
+- execute Packet 3 as a bounded deterministic-supervisor slice: durable
+  deduplicated refresh jobs, leases and recovery, event replay, retry/budget
+  policy, negative caching, stale-while-revalidate, partial publication, and
+  explicit `awaiting_operator` mapping.
+
 ## Objective
 
 Turn last30days from a request-scoped research engine into a local-first,
@@ -574,7 +665,7 @@ source capability reporting must be exact and per-source.
 Exit gate: the new store can coexist with the existing engine and round-trip
 all versioned envelopes.
 
-### Packet 2 | Cache-first query service
+### Packet 2 | Cache-first query service | COMPLETE
 
 - implement service lifecycle and local socket transport;
 - index existing stored findings as documents/chunks;
