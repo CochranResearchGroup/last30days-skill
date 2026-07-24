@@ -8,13 +8,16 @@ implementation details.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from enum import StrEnum
 from pathlib import Path
 from typing import Any, ClassVar, Mapping
 
 
 SCHEMA_VERSION = 1
+SAFE_ERROR_CODE = re.compile(r"^[a-z][a-z0-9_]{0,63}$")
 SCHEMA_CATALOG_PATH = (
     Path(__file__).resolve().parents[2]
     / "schemas"
@@ -99,6 +102,16 @@ class AcquisitionStatus(StrEnum):
     PARTIAL = "partial"
     FAILED = "failed"
     AWAITING_OPERATOR = "awaiting_operator"
+
+
+class RetryClass(StrEnum):
+    NONE = "none"
+    OPERATOR = "operator"
+    RATE_LIMIT = "rate_limit"
+    TRANSIENT = "transient"
+    CONFIGURATION = "configuration"
+    CONTENT = "content"
+    PERMANENT = "permanent"
 
 
 class RetentionClass(StrEnum):
@@ -318,6 +331,19 @@ def _require_optional_string(value: Any, field: str) -> str | None:
     if not isinstance(value, str):
         raise ContractValidationError(f"{field} must be a string or null")
     return value
+
+
+def _validate_timestamp(value: Any, field: str) -> datetime:
+    text = _require_non_empty_string(value, field)
+    try:
+        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ContractValidationError(
+            f"{field} must be an ISO-8601 timestamp"
+        ) from exc
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise ContractValidationError(f"{field} must include a timezone")
+    return parsed.astimezone(timezone.utc)
 
 
 def _validate_scores(value: Any) -> dict[str, float]:
@@ -627,6 +653,347 @@ class ServiceInfo:
 
 
 @dataclass(frozen=True)
+class AcquisitionWorkRequest:
+    """Bounded authority granted to one isolated source worker attempt."""
+
+    schema_version: int
+    work_id: str
+    job_id: str
+    lease_generation: int
+    attempt: int
+    profile_id: str
+    source: str
+    query: str
+    from_date: str
+    to_date: str
+    depth: str
+    adapter: str
+    adapter_version: str
+    wall_timeout_seconds: int
+    item_limit: int
+    network_request_limit: int
+    cost_budget_cents: int
+
+    CONTRACT_NAME: ClassVar[str] = "acquisition_work_request"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> AcquisitionWorkRequest:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("acquisition work request must be an object")
+        fields = frozenset(
+            {
+                "schema_version",
+                "work_id",
+                "job_id",
+                "lease_generation",
+                "attempt",
+                "profile_id",
+                "source",
+                "query",
+                "from_date",
+                "to_date",
+                "depth",
+                "adapter",
+                "adapter_version",
+                "wall_timeout_seconds",
+                "item_limit",
+                "network_request_limit",
+                "cost_budget_cents",
+            }
+        )
+        _require_exact_fields(payload, required=fields)
+        depth = _require_non_empty_string(payload["depth"], "depth")
+        if depth not in {"quick", "standard", "deep"}:
+            raise ContractValidationError("depth must be quick, standard, or deep")
+        return cls(
+            schema_version=_validate_schema_version(payload["schema_version"]),
+            work_id=_require_bounded_string(payload["work_id"], "work_id", 128),
+            job_id=_require_bounded_string(payload["job_id"], "job_id", 128),
+            lease_generation=_require_integer_between(
+                payload["lease_generation"], "lease_generation", 1, 2_147_483_647
+            ),
+            attempt=_require_integer_between(payload["attempt"], "attempt", 1, 100),
+            profile_id=_require_bounded_string(
+                payload["profile_id"], "profile_id", 128
+            ),
+            source=_require_bounded_string(payload["source"], "source", 64),
+            query=_require_bounded_string(payload["query"], "query", 8192),
+            from_date=_require_bounded_string(
+                payload["from_date"], "from_date", 64
+            ),
+            to_date=_require_bounded_string(payload["to_date"], "to_date", 64),
+            depth=depth,
+            adapter=_require_bounded_string(payload["adapter"], "adapter", 128),
+            adapter_version=_require_bounded_string(
+                payload["adapter_version"], "adapter_version", 64
+            ),
+            wall_timeout_seconds=_require_integer_between(
+                payload["wall_timeout_seconds"],
+                "wall_timeout_seconds",
+                1,
+                3600,
+            ),
+            item_limit=_require_integer_between(
+                payload["item_limit"], "item_limit", 1, 10_000
+            ),
+            network_request_limit=_require_integer_between(
+                payload["network_request_limit"],
+                "network_request_limit",
+                0,
+                100_000,
+            ),
+            cost_budget_cents=_require_integer_between(
+                payload["cost_budget_cents"],
+                "cost_budget_cents",
+                0,
+                10_000_000,
+            ),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "work_id": self.work_id,
+            "job_id": self.job_id,
+            "lease_generation": self.lease_generation,
+            "attempt": self.attempt,
+            "profile_id": self.profile_id,
+            "source": self.source,
+            "query": self.query,
+            "from_date": self.from_date,
+            "to_date": self.to_date,
+            "depth": self.depth,
+            "adapter": self.adapter,
+            "adapter_version": self.adapter_version,
+            "wall_timeout_seconds": self.wall_timeout_seconds,
+            "item_limit": self.item_limit,
+            "network_request_limit": self.network_request_limit,
+            "cost_budget_cents": self.cost_budget_cents,
+        }
+
+
+@dataclass(frozen=True)
+class AcquiredItem:
+    """One normalized, sanitized content item returned by a source worker."""
+
+    source_native_id: str
+    url: str
+    title: str
+    text: str
+    author: str | None
+    published_at: str | None
+    metadata: dict[str, Any]
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> AcquiredItem:
+        fields = frozenset(
+            {
+                "source_native_id",
+                "url",
+                "title",
+                "text",
+                "author",
+                "published_at",
+                "metadata",
+            }
+        )
+        _require_exact_fields(payload, required=fields)
+        return cls(
+            source_native_id=_require_bounded_string(
+                payload["source_native_id"], "source_native_id", 512
+            ),
+            url=_require_bounded_string(payload["url"], "url", 4096),
+            title=_require_bounded_string(payload["title"], "title", 2048),
+            text=_require_bounded_string(payload["text"], "text", 65_536),
+            author=_require_optional_string(payload["author"], "author"),
+            published_at=_require_optional_string(
+                payload["published_at"], "published_at"
+            ),
+            metadata=_validate_json_object(payload["metadata"], "metadata"),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "source_native_id": self.source_native_id,
+            "url": self.url,
+            "title": self.title,
+            "text": self.text,
+            "author": self.author,
+            "published_at": self.published_at,
+            "metadata": dict(self.metadata),
+        }
+
+
+@dataclass(frozen=True)
+class AcquisitionWorkResult:
+    """Schema-validated proposal from a worker; the host alone may publish it."""
+
+    schema_version: int
+    work_id: str
+    job_id: str
+    lease_generation: int
+    source: str
+    adapter: str
+    adapter_version: str
+    status: AcquisitionStatus
+    safe_error_code: str | None
+    retry_class: RetryClass
+    retry_after_seconds: int | None
+    observed_at: str
+    fetched_at: str
+    items: list[AcquiredItem]
+    item_count: int
+    cost_cents: int
+    diagnostics: dict[str, Any]
+
+    CONTRACT_NAME: ClassVar[str] = "acquisition_work_result"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> AcquisitionWorkResult:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("acquisition work result must be an object")
+        fields = frozenset(
+            {
+                "schema_version",
+                "work_id",
+                "job_id",
+                "lease_generation",
+                "source",
+                "adapter",
+                "adapter_version",
+                "status",
+                "safe_error_code",
+                "retry_class",
+                "retry_after_seconds",
+                "observed_at",
+                "fetched_at",
+                "items",
+                "item_count",
+                "cost_cents",
+                "diagnostics",
+            }
+        )
+        _require_exact_fields(payload, required=fields)
+        try:
+            status = AcquisitionStatus(payload["status"])
+            retry_class = RetryClass(payload["retry_class"])
+        except (TypeError, ValueError) as exc:
+            raise ContractValidationError(
+                "invalid acquisition status or retry class"
+            ) from exc
+        raw_items = payload["items"]
+        if not isinstance(raw_items, list) or len(raw_items) > 10_000:
+            raise ContractValidationError("items must be a bounded array")
+        items = [AcquiredItem.from_dict(item) for item in raw_items]
+        item_count = _require_integer_between(
+            payload["item_count"], "item_count", 0, 10_000
+        )
+        if item_count != len(items):
+            raise ContractValidationError("item_count must equal the items length")
+        retry_after = payload["retry_after_seconds"]
+        if retry_after is not None:
+            retry_after = _require_integer_between(
+                retry_after, "retry_after_seconds", 0, 86_400
+            )
+        if status is AcquisitionStatus.AWAITING_OPERATOR and (
+            retry_class is not RetryClass.OPERATOR
+        ):
+            raise ContractValidationError(
+                "awaiting_operator results require the operator retry class"
+            )
+        if status is AcquisitionStatus.SUCCEEDED and (
+            retry_class is not RetryClass.NONE
+        ):
+            raise ContractValidationError(
+                "succeeded results require the none retry class"
+            )
+        safe_error_code = _require_optional_string(
+            payload["safe_error_code"], "safe_error_code"
+        )
+        if safe_error_code is not None and not SAFE_ERROR_CODE.fullmatch(
+            safe_error_code
+        ):
+            raise ContractValidationError("safe_error_code is not a safe code")
+        if status is AcquisitionStatus.SUCCEEDED:
+            if safe_error_code is not None or retry_after is not None:
+                raise ContractValidationError(
+                    "succeeded results cannot carry failure metadata"
+                )
+        elif safe_error_code is None:
+            raise ContractValidationError(
+                "non-success results require a safe_error_code"
+            )
+        if status is not AcquisitionStatus.SUCCEEDED and (
+            retry_class is RetryClass.NONE
+        ):
+            raise ContractValidationError(
+                "non-success results require a retry classification"
+            )
+        if retry_after is not None and retry_class not in {
+            RetryClass.RATE_LIMIT,
+            RetryClass.TRANSIENT,
+            RetryClass.CONTENT,
+        }:
+            raise ContractValidationError(
+                "retry_after_seconds requires a retryable classification"
+            )
+        observed_at = _validate_timestamp(payload["observed_at"], "observed_at")
+        fetched_at = _validate_timestamp(payload["fetched_at"], "fetched_at")
+        if fetched_at < observed_at:
+            raise ContractValidationError(
+                "fetched_at cannot precede observed_at"
+            )
+        return cls(
+            schema_version=_validate_schema_version(payload["schema_version"]),
+            work_id=_require_bounded_string(payload["work_id"], "work_id", 128),
+            job_id=_require_bounded_string(payload["job_id"], "job_id", 128),
+            lease_generation=_require_integer_between(
+                payload["lease_generation"], "lease_generation", 1, 2_147_483_647
+            ),
+            source=_require_bounded_string(payload["source"], "source", 64),
+            adapter=_require_bounded_string(payload["adapter"], "adapter", 128),
+            adapter_version=_require_bounded_string(
+                payload["adapter_version"], "adapter_version", 64
+            ),
+            status=status,
+            safe_error_code=safe_error_code,
+            retry_class=retry_class,
+            retry_after_seconds=retry_after,
+            observed_at=payload["observed_at"],
+            fetched_at=payload["fetched_at"],
+            items=items,
+            item_count=item_count,
+            cost_cents=_require_integer_between(
+                payload["cost_cents"], "cost_cents", 0, 10_000_000
+            ),
+            diagnostics=_validate_json_object(
+                payload["diagnostics"], "diagnostics"
+            ),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "work_id": self.work_id,
+            "job_id": self.job_id,
+            "lease_generation": self.lease_generation,
+            "source": self.source,
+            "adapter": self.adapter,
+            "adapter_version": self.adapter_version,
+            "status": self.status.value,
+            "safe_error_code": self.safe_error_code,
+            "retry_class": self.retry_class.value,
+            "retry_after_seconds": self.retry_after_seconds,
+            "observed_at": self.observed_at,
+            "fetched_at": self.fetched_at,
+            "items": [item.to_dict() for item in self.items],
+            "item_count": self.item_count,
+            "cost_cents": self.cost_cents,
+            "diagnostics": dict(self.diagnostics),
+        }
+
+
+@dataclass(frozen=True)
 class AcquisitionEnvelope:
     """Redacted record of one bounded source acquisition attempt."""
 
@@ -757,8 +1124,11 @@ class JobRecord:
     attempts: int
     max_attempts: int
     budget_cents: int
+    spent_cents: int
+    lease_generation: int
     lease_owner: str | None
     lease_expires_at: str | None
+    not_before_at: str | None
     created_at: str
     updated_at: str
     published_index_version: str | None
@@ -781,8 +1151,11 @@ class JobRecord:
                 "attempts",
                 "max_attempts",
                 "budget_cents",
+                "spent_cents",
+                "lease_generation",
                 "lease_owner",
                 "lease_expires_at",
+                "not_before_at",
                 "created_at",
                 "updated_at",
                 "published_index_version",
@@ -803,6 +1176,14 @@ class JobRecord:
         )
         if attempts > max_attempts:
             raise ContractValidationError("attempts cannot exceed max_attempts")
+        budget_cents = _require_integer_between(
+            payload["budget_cents"], "budget_cents", 0, 10_000_000
+        )
+        spent_cents = _require_integer_between(
+            payload["spent_cents"], "spent_cents", 0, 10_000_000
+        )
+        if spent_cents > budget_cents:
+            raise ContractValidationError("spent_cents cannot exceed budget_cents")
         return cls(
             schema_version=_validate_schema_version(payload["schema_version"]),
             job_id=_require_non_empty_string(payload["job_id"], "job_id"),
@@ -816,14 +1197,19 @@ class JobRecord:
             ),
             attempts=attempts,
             max_attempts=max_attempts,
-            budget_cents=_require_integer_between(
-                payload["budget_cents"], "budget_cents", 0, 10_000_000
+            budget_cents=budget_cents,
+            spent_cents=spent_cents,
+            lease_generation=_require_integer_between(
+                payload["lease_generation"], "lease_generation", 0, 2_147_483_647
             ),
             lease_owner=_require_optional_string(
                 payload["lease_owner"], "lease_owner"
             ),
             lease_expires_at=_require_optional_string(
                 payload["lease_expires_at"], "lease_expires_at"
+            ),
+            not_before_at=_require_optional_string(
+                payload["not_before_at"], "not_before_at"
             ),
             created_at=_require_non_empty_string(
                 payload["created_at"], "created_at"
@@ -850,8 +1236,11 @@ class JobRecord:
             "attempts": self.attempts,
             "max_attempts": self.max_attempts,
             "budget_cents": self.budget_cents,
+            "spent_cents": self.spent_cents,
+            "lease_generation": self.lease_generation,
             "lease_owner": self.lease_owner,
             "lease_expires_at": self.lease_expires_at,
+            "not_before_at": self.not_before_at,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "published_index_version": self.published_index_version,
@@ -1055,6 +1444,8 @@ ContractEnvelope = (
     | QueryResponse
     | ServiceInfo
     | EvidenceItem
+    | AcquisitionWorkRequest
+    | AcquisitionWorkResult
     | AcquisitionEnvelope
     | JobRecord
     | JobEvent
@@ -1066,6 +1457,8 @@ _CONTRACT_TYPES = {
     QueryResponse.CONTRACT_NAME: QueryResponse,
     ServiceInfo.CONTRACT_NAME: ServiceInfo,
     EvidenceItem.CONTRACT_NAME: EvidenceItem,
+    AcquisitionWorkRequest.CONTRACT_NAME: AcquisitionWorkRequest,
+    AcquisitionWorkResult.CONTRACT_NAME: AcquisitionWorkResult,
     AcquisitionEnvelope.CONTRACT_NAME: AcquisitionEnvelope,
     JobRecord.CONTRACT_NAME: JobRecord,
     JobEvent.CONTRACT_NAME: JobEvent,

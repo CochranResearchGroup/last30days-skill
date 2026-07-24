@@ -31,10 +31,17 @@ def test_build_skill_excludes_skillignore_entries() -> None:
     assert "last30days/scripts/lib/facebook.py" in names
     assert "last30days/scripts/lib/service_contracts.py" in names
     assert "last30days/scripts/lib/service_app.py" in names
+    assert "last30days/scripts/lib/service_acquisition_worker.py" in names
     assert "last30days/scripts/lib/service_client.py" in names
     assert "last30days/scripts/lib/service_http.py" in names
+    assert "last30days/scripts/lib/service_job_runner.py" in names
+    assert "last30days/scripts/lib/service_publication.py" in names
+    assert "last30days/scripts/lib/service_refresh.py" in names
     assert "last30days/scripts/lib/service_retrieval.py" in names
+    assert "last30days/scripts/lib/service_runtime.py" in names
     assert "last30days/scripts/lib/service_store.py" in names
+    assert "last30days/scripts/lib/service_supervisor.py" in names
+    assert "last30days/scripts/lib/service_worker.py" in names
     assert "last30days/schemas/service-contracts-v1.json" in names
     assert any(name.startswith("last30days/scripts/lib/") for name in names)
 

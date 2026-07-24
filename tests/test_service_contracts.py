@@ -107,6 +107,126 @@ def test_acquisition_envelope_round_trips_without_browser_or_secret_state():
     } & envelope.to_dict().keys()
 
 
+def test_acquisition_work_request_round_trips_bounded_worker_authority():
+    payload = {
+        "schema_version": 1,
+        "work_id": "work-001",
+        "job_id": "job-001",
+        "lease_generation": 2,
+        "attempt": 1,
+        "profile_id": "default",
+        "source": "facebook",
+        "query": "browser service reliability",
+        "from_date": "2026-06-24",
+        "to_date": "2026-07-24",
+        "depth": "standard",
+        "adapter": "facebook_agent_browser",
+        "adapter_version": "1",
+        "wall_timeout_seconds": 90,
+        "item_limit": 20,
+        "network_request_limit": 50,
+        "cost_budget_cents": 25,
+    }
+
+    request = contracts.AcquisitionWorkRequest.from_dict(payload)
+
+    assert request.to_dict() == payload
+
+
+def test_acquisition_work_result_round_trips_sanitized_items_and_retry_state():
+    payload = {
+        "schema_version": 1,
+        "work_id": "work-001",
+        "job_id": "job-001",
+        "lease_generation": 2,
+        "source": "facebook",
+        "adapter": "facebook_agent_browser",
+        "adapter_version": "1",
+        "status": "partial",
+        "safe_error_code": "search_unavailable",
+        "retry_class": "transient",
+        "retry_after_seconds": 30,
+        "observed_at": "2026-07-24T12:00:00Z",
+        "fetched_at": "2026-07-24T12:00:10Z",
+        "items": [
+            {
+                "source_native_id": "post-001",
+                "url": "https://facebook.example/posts/1",
+                "title": "Cached service",
+                "text": "A useful sanitized post.",
+                "author": "Author",
+                "published_at": "2026-07-23T12:00:00Z",
+                "metadata": {"engagement": 4},
+            }
+        ],
+        "item_count": 1,
+        "cost_cents": 3,
+        "diagnostics": {"candidate_count": 2, "accepted_count": 1},
+    }
+
+    result = contracts.AcquisitionWorkResult.from_dict(payload)
+
+    assert result.to_dict() == payload
+
+
+def test_acquisition_work_result_rejects_browser_leases_in_diagnostics():
+    payload = {
+        "schema_version": 1,
+        "work_id": "work-unsafe",
+        "job_id": "job-001",
+        "lease_generation": 1,
+        "source": "x",
+        "adapter": "x_agent_browser",
+        "adapter_version": "1",
+        "status": "failed",
+        "safe_error_code": "route_stale",
+        "retry_class": "transient",
+        "retry_after_seconds": 5,
+        "observed_at": "2026-07-24T12:00:00Z",
+        "fetched_at": "2026-07-24T12:00:01Z",
+        "items": [],
+        "item_count": 0,
+        "cost_cents": 0,
+        "diagnostics": {"route_id": "must-not-persist"},
+    }
+
+    with pytest.raises(contracts.ContractValidationError, match="forbidden field"):
+        contracts.AcquisitionWorkResult.from_dict(payload)
+
+
+def test_acquisition_work_result_rejects_unsafe_codes_and_naive_timestamps():
+    payload = {
+        "schema_version": 1,
+        "work_id": "work-invalid",
+        "job_id": "job-invalid",
+        "lease_generation": 1,
+        "source": "x",
+        "adapter": "x_agent_browser",
+        "adapter_version": "1",
+        "status": "failed",
+        "safe_error_code": "private URL leaked",
+        "retry_class": "permanent",
+        "retry_after_seconds": None,
+        "observed_at": "2026-07-24T12:00:00",
+        "fetched_at": "2026-07-24T12:00:01Z",
+        "items": [],
+        "item_count": 0,
+        "cost_cents": 0,
+        "diagnostics": {},
+    }
+
+    with pytest.raises(contracts.ContractValidationError):
+        contracts.AcquisitionWorkResult.from_dict(payload)
+
+    with pytest.raises(contracts.ContractValidationError, match="timezone"):
+        contracts.AcquisitionWorkResult.from_dict(
+            {
+                **payload,
+                "safe_error_code": "validator_failed",
+            }
+        )
+
+
 def test_job_record_round_trips_supervisor_state_and_bounds():
     payload = {
         "schema_version": 1,
@@ -118,8 +238,11 @@ def test_job_record_round_trips_supervisor_state_and_bounds():
         "attempts": 1,
         "max_attempts": 2,
         "budget_cents": 100,
+        "spent_cents": 25,
+        "lease_generation": 1,
         "lease_owner": "worker-001",
         "lease_expires_at": "2026-07-24T12:05:00Z",
+        "not_before_at": None,
         "created_at": "2026-07-24T12:00:00Z",
         "updated_at": "2026-07-24T12:00:10Z",
         "published_index_version": None,
@@ -129,6 +252,32 @@ def test_job_record_round_trips_supervisor_state_and_bounds():
     job = contracts.JobRecord.from_dict(payload)
 
     assert job.to_dict() == payload
+
+
+def test_job_record_rejects_spend_above_its_budget():
+    payload = {
+        "schema_version": 1,
+        "job_id": "job-budget",
+        "job_type": "refresh",
+        "dedupe_key": "sha256:budget",
+        "state": "queued",
+        "query_request_id": "query-budget",
+        "attempts": 0,
+        "max_attempts": 2,
+        "budget_cents": 10,
+        "spent_cents": 11,
+        "lease_generation": 0,
+        "lease_owner": None,
+        "lease_expires_at": None,
+        "not_before_at": None,
+        "created_at": "2026-07-24T12:00:00Z",
+        "updated_at": "2026-07-24T12:00:00Z",
+        "published_index_version": None,
+        "error_code": None,
+    }
+
+    with pytest.raises(contracts.ContractValidationError, match="spent_cents"):
+        contracts.JobRecord.from_dict(payload)
 
 
 def test_job_event_round_trips_append_only_replay_data():
@@ -181,6 +330,8 @@ def test_schema_catalog_is_the_golden_contract_for_every_v1_envelope():
         "query_response",
         "service_info",
         "evidence_item",
+        "acquisition_work_request",
+        "acquisition_work_result",
         "acquisition_envelope",
         "job_record",
         "job_event",

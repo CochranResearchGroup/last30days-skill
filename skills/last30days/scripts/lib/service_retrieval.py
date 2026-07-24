@@ -404,6 +404,10 @@ class HybridRetriever:
         finally:
             conn.close()
 
+    def publish_index(self) -> str:
+        """Publish and return the content-addressed current corpus snapshot."""
+        return self._publish_index()
+
     def embed_pending_chunks(self) -> int:
         """Embed chunks missing the configured model, returning the insert count."""
 

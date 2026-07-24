@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Protocol
@@ -35,7 +35,13 @@ class RetrievalSnapshot(Protocol):
 
 
 class RefreshScheduler(Protocol):
-    def ensure_refresh(self, request: contracts.QueryRequest) -> str: ...
+    def ensure_refresh(self, request: contracts.QueryRequest) -> str | None: ...
+
+    def cache_status(
+        self,
+        request: contracts.QueryRequest,
+        fallback: contracts.CacheStatus,
+    ) -> contracts.CacheStatus: ...
 
 
 class CacheQueryApplication:
@@ -47,12 +53,18 @@ class CacheQueryApplication:
         retriever: RetrievalBackend,
         *,
         refresh_scheduler: RefreshScheduler | None = None,
+        acquisition_sources: Sequence[str] = (),
+        acquisition_readiness: Mapping[str, bool] | None = None,
+        runtime_error: Callable[[], str | None] | None = None,
         clock: Callable[[], datetime] | None = None,
         fresh_seconds: int = DEFAULT_FRESH_SECONDS,
     ):
         self.db_path = Path(db_path)
         self.retriever = retriever
         self.refresh_scheduler = refresh_scheduler
+        self.acquisition_sources = tuple(sorted(set(acquisition_sources)))
+        self.acquisition_readiness = dict(acquisition_readiness or {})
+        self.runtime_error = runtime_error or (lambda: None)
         self.clock = clock or (lambda: datetime.now(timezone.utc))
         self.fresh_seconds = fresh_seconds
 
@@ -116,19 +128,47 @@ class CacheQueryApplication:
             ).fetchall()
         finally:
             conn.close()
-        return {
+        sources = {
             row["source"]: {
                 "ready": True,
                 "indexed_documents": row["document_count"],
-                "acquisition_ready": False,
+                "configured": row["source"] in self.acquisition_sources,
+                "acquisition_ready": self.acquisition_readiness.get(
+                    row["source"], False
+                ),
+                "acquisition_status": (
+                    "cache_only"
+                    if row["source"] not in self.acquisition_sources
+                    else "ready"
+                    if self.acquisition_readiness.get(row["source"], False)
+                    else "configured"
+                ),
             }
             for row in rows
         }
+        for source in self.acquisition_sources:
+            sources.setdefault(
+                source,
+                {
+                    "ready": True,
+                    "indexed_documents": 0,
+                    "configured": True,
+                    "acquisition_ready": self.acquisition_readiness.get(
+                        source, False
+                    ),
+                    "acquisition_status": (
+                        "ready"
+                        if self.acquisition_readiness.get(source, False)
+                        else "configured"
+                    ),
+                },
+            )
+        return sources
 
     def health(self) -> dict[str, object]:
         schema_version = self._database_schema_version()
         return {
-            "status": "ready",
+            "status": "degraded" if self.runtime_error() else "ready",
             "service_version": SERVICE_VERSION,
             "schema_version": contracts.SCHEMA_VERSION,
             "database_schema_version": schema_version,
@@ -137,6 +177,8 @@ class CacheQueryApplication:
     def service_info(self) -> contracts.ServiceInfo:
         index = self._index_info()
         capabilities = ["cache_query", "lexical_search"]
+        if self.refresh_scheduler is not None and self.acquisition_sources:
+            capabilities.append("durable_refresh")
         if index["embedding_model"] is not None:
             capabilities.append("semantic_search")
         conn = self._connect()
@@ -154,7 +196,7 @@ class CacheQueryApplication:
                 "schema_version": contracts.SCHEMA_VERSION,
                 "service_version": SERVICE_VERSION,
                 "database_schema_version": self._database_schema_version(),
-                "status": "ready",
+                "status": "degraded" if self.runtime_error() else "ready",
                 "capabilities": capabilities,
                 "sources": self._source_info(),
                 "freshness_policies": [
@@ -300,6 +342,11 @@ class CacheQueryApplication:
         )
         evidence = snapshot.evidence
         cache_status = self._cache_status(evidence)
+        if self.refresh_scheduler is not None:
+            cache_status = self.refresh_scheduler.cache_status(
+                request,
+                cache_status,
+            )
         job_id = None
         if (
             self.refresh_scheduler is not None
@@ -364,6 +411,9 @@ def initialize_application(
     retriever: RetrievalBackend,
     *,
     refresh_scheduler: RefreshScheduler | None = None,
+    acquisition_sources: Sequence[str] = (),
+    acquisition_readiness: Mapping[str, bool] | None = None,
+    runtime_error: Callable[[], str | None] | None = None,
 ) -> CacheQueryApplication:
     """Initialize schema once and return the transport-independent application."""
     store.init_db(db_path)
@@ -371,4 +421,7 @@ def initialize_application(
         db_path,
         retriever,
         refresh_scheduler=refresh_scheduler,
+        acquisition_sources=acquisition_sources,
+        acquisition_readiness=acquisition_readiness,
+        runtime_error=runtime_error,
     )

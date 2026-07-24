@@ -39,6 +39,10 @@ class FakeRefreshScheduler:
         self.requests.append(request)
         return f"job-{request.request_id}"
 
+    def cache_status(self, request, fallback):
+        del request
+        return fallback
+
 
 def _request(**overrides):
     values = {
@@ -276,6 +280,41 @@ def test_cache_only_never_schedules_refresh(tmp_path):
     assert scheduler.requests == []
 
 
+def test_service_discovery_reports_durable_acquisition_sources(tmp_path):
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    app = CacheQueryApplication(
+        db_path,
+        FakeRetriever([]),
+        refresh_scheduler=FakeRefreshScheduler(),
+        acquisition_sources=("youtube", "x"),
+        acquisition_readiness={"x": True, "youtube": False},
+    )
+
+    info = app.service_info()
+
+    assert "durable_refresh" in info.capabilities
+    assert info.sources["x"]["acquisition_ready"] is True
+    assert info.sources["youtube"]["acquisition_ready"] is False
+    assert info.sources["youtube"]["acquisition_status"] == "configured"
+    assert info.sources["x"]["indexed_documents"] == 0
+
+
+def test_service_discovery_degrades_when_acquisition_loop_reports_failure(tmp_path):
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    app = CacheQueryApplication(
+        db_path,
+        FakeRetriever([]),
+        refresh_scheduler=FakeRefreshScheduler(),
+        acquisition_sources=("reddit",),
+        runtime_error=lambda: "acquisition_loop_failure",
+    )
+
+    assert app.health()["status"] == "degraded"
+    assert app.service_info().status is contracts.ServiceStatus.DEGRADED
+
+
 def test_minimum_response_budget_is_enforced_with_oversized_metadata(tmp_path):
     db_path = tmp_path / "research.db"
     ServiceStore(db_path).initialize()
@@ -319,3 +358,27 @@ def test_minimum_response_budget_is_enforced_with_oversized_metadata(tmp_path):
 
     assert len(serialized) <= 512
     assert response.truncated is True
+
+
+def test_fresh_empty_coverage_suppresses_refresh_on_a_valid_no_result(tmp_path):
+    class FreshEmptyCoverage(FakeRefreshScheduler):
+        def cache_status(self, request, fallback):
+            del request, fallback
+            return contracts.CacheStatus.FRESH
+
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    scheduler = FreshEmptyCoverage()
+    app = CacheQueryApplication(
+        db_path,
+        FakeRetriever([]),
+        refresh_scheduler=scheduler,
+        clock=lambda: datetime(2026, 7, 24, 12, 0, tzinfo=timezone.utc),
+    )
+
+    response = app.query(_request())
+
+    assert response.cache_status is contracts.CacheStatus.FRESH
+    assert response.evidence == []
+    assert response.job_id is None
+    assert scheduler.requests == []

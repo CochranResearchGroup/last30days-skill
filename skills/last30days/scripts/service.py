@@ -9,6 +9,7 @@ import os
 import signal
 import sys
 import threading
+import uuid
 from pathlib import Path
 
 from lib import service_contracts as contracts
@@ -16,6 +17,7 @@ from lib.service_app import initialize_application
 from lib.service_client import ServiceClient, ServiceClientError
 from lib.service_http import ServiceAlreadyRunningError, UnixServiceServer
 from lib.service_retrieval import HybridRetriever
+from lib.service_runtime import AcquisitionLoop, build_acquisition_runtime
 
 
 def _default_socket_path() -> Path:
@@ -58,7 +60,16 @@ def _serve(args: argparse.Namespace) -> int:
     retriever.initialize()
     retriever.index_legacy_findings()
     os.chmod(db_path, 0o600)
-    application = initialize_application(db_path, retriever)
+    acquisition = build_acquisition_runtime(db_path, retriever)
+    acquisition_loop = AcquisitionLoop(acquisition.runner)
+    application = initialize_application(
+        db_path,
+        retriever,
+        refresh_scheduler=acquisition.scheduler,
+        acquisition_sources=acquisition.sources,
+        acquisition_readiness=acquisition.source_readiness,
+        runtime_error=lambda: acquisition_loop.last_error_code,
+    )
     server = UnixServiceServer(socket_path, application)
     stop_event = threading.Event()
 
@@ -74,11 +85,13 @@ def _serve(args: argparse.Namespace) -> int:
         daemon=True,
     )
     thread.start()
+    acquisition_loop.start()
     try:
         while not stop_event.wait(0.2):
             if not thread.is_alive():
                 raise RuntimeError("service listener stopped unexpectedly")
     finally:
+        acquisition_loop.stop(timeout=5)
         server.shutdown()
         server.server_close()
         thread.join(timeout=5)
@@ -111,7 +124,7 @@ def _query(args: argparse.Namespace) -> int:
     request = contracts.QueryRequest.from_dict(
         {
             "schema_version": contracts.SCHEMA_VERSION,
-            "request_id": args.request_id,
+            "request_id": args.request_id or f"cli-{uuid.uuid4()}",
             "profile_id": args.profile,
             "query": args.query,
             "freshness_policy": args.freshness,
@@ -152,7 +165,10 @@ def build_parser() -> argparse.ArgumentParser:
     query = subparsers.add_parser("query", help="Query cached intelligence")
     query.add_argument("query")
     query.add_argument("--socket")
-    query.add_argument("--request-id", default="cli-query")
+    query.add_argument(
+        "--request-id",
+        help="Caller-supplied idempotency key; generated when omitted",
+    )
     query.add_argument("--profile", default="default")
     query.add_argument(
         "--freshness",

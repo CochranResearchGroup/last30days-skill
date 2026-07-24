@@ -14,6 +14,7 @@ import argparse
 import json
 import sqlite3
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -412,13 +413,6 @@ CREATE TABLE IF NOT EXISTS index_versions (
     published_at TEXT
 );
 
-CREATE TABLE IF NOT EXISTS index_documents (
-    index_version TEXT NOT NULL REFERENCES index_versions(index_version) ON DELETE CASCADE,
-    document_id TEXT NOT NULL REFERENCES documents(document_id) ON DELETE CASCADE,
-    content_hash TEXT NOT NULL,
-    PRIMARY KEY (index_version, document_id)
-);
-
 CREATE TABLE IF NOT EXISTS service_decisions (
     decision_id TEXT PRIMARY KEY,
     job_id TEXT NOT NULL REFERENCES service_jobs(job_id) ON DELETE CASCADE,
@@ -446,6 +440,39 @@ CREATE TABLE IF NOT EXISTS service_eval_results (
     created_at TEXT NOT NULL
 );
 """,
+    4: """
+CREATE TABLE IF NOT EXISTS index_documents (
+    index_version TEXT NOT NULL REFERENCES index_versions(index_version) ON DELETE CASCADE,
+    document_id TEXT NOT NULL REFERENCES documents(document_id) ON DELETE CASCADE,
+    content_hash TEXT NOT NULL,
+    PRIMARY KEY (index_version, document_id)
+);
+
+ALTER TABLE service_jobs ADD COLUMN not_before_at TEXT;
+ALTER TABLE service_jobs ADD COLUMN spent_cents INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE service_jobs ADD COLUMN lease_generation INTEGER NOT NULL DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS service_query_coverage (
+    profile_id TEXT NOT NULL,
+    normalized_query TEXT NOT NULL,
+    source TEXT NOT NULL,
+    status TEXT NOT NULL,
+    fetched_at TEXT NOT NULL,
+    fresh_until TEXT NOT NULL,
+    retry_after TEXT,
+    job_id TEXT REFERENCES service_jobs(job_id) ON DELETE SET NULL,
+    index_version TEXT REFERENCES index_versions(index_version) ON DELETE SET NULL,
+    error_code TEXT,
+    updated_at TEXT NOT NULL,
+    PRIMARY KEY (profile_id, normalized_query, source)
+);
+
+CREATE INDEX IF NOT EXISTS idx_service_query_coverage_freshness
+    ON service_query_coverage(profile_id, normalized_query, fresh_until);
+CREATE INDEX IF NOT EXISTS idx_service_query_coverage_retry
+    ON service_query_coverage(retry_after)
+    WHERE retry_after IS NOT NULL;
+""",
 }
 
 
@@ -455,7 +482,16 @@ def _connect(db_path: Optional[Path] = None) -> sqlite3.Connection:
     conn = sqlite3.connect(str(path), timeout=5)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA busy_timeout=5000")
-    conn.execute("PRAGMA journal_mode=WAL")
+    deadline = time.monotonic() + 5
+    while True:
+        try:
+            conn.execute("PRAGMA journal_mode=WAL")
+            break
+        except sqlite3.OperationalError as exc:
+            if "locked" not in str(exc).lower() or time.monotonic() >= deadline:
+                conn.close()
+                raise
+            time.sleep(0.01)
     conn.execute("PRAGMA synchronous=NORMAL")
     conn.execute("PRAGMA foreign_keys=ON")
     return conn

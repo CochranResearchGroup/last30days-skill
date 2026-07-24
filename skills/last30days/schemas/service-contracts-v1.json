@@ -194,6 +194,136 @@
         }
       }
     },
+    "acquisition_work_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "work_id",
+        "job_id",
+        "lease_generation",
+        "attempt",
+        "profile_id",
+        "source",
+        "query",
+        "from_date",
+        "to_date",
+        "depth",
+        "adapter",
+        "adapter_version",
+        "wall_timeout_seconds",
+        "item_limit",
+        "network_request_limit",
+        "cost_budget_cents"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "work_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "job_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "lease_generation": {"type": "integer", "minimum": 1, "maximum": 2147483647},
+        "attempt": {"type": "integer", "minimum": 1, "maximum": 100},
+        "profile_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "source": {"type": "string", "minLength": 1, "maxLength": 64},
+        "query": {"type": "string", "minLength": 1, "maxLength": 8192},
+        "from_date": {"type": "string", "minLength": 1, "maxLength": 64},
+        "to_date": {"type": "string", "minLength": 1, "maxLength": 64},
+        "depth": {"type": "string", "enum": ["quick", "standard", "deep"]},
+        "adapter": {"type": "string", "minLength": 1, "maxLength": 128},
+        "adapter_version": {"type": "string", "minLength": 1, "maxLength": 64},
+        "wall_timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 3600},
+        "item_limit": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "network_request_limit": {"type": "integer", "minimum": 0, "maximum": 100000},
+        "cost_budget_cents": {"type": "integer", "minimum": 0, "maximum": 10000000}
+      }
+    },
+    "acquisition_work_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "work_id",
+        "job_id",
+        "lease_generation",
+        "source",
+        "adapter",
+        "adapter_version",
+        "status",
+        "safe_error_code",
+        "retry_class",
+        "retry_after_seconds",
+        "observed_at",
+        "fetched_at",
+        "items",
+        "item_count",
+        "cost_cents",
+        "diagnostics"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "work_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "job_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "lease_generation": {"type": "integer", "minimum": 1, "maximum": 2147483647},
+        "source": {"type": "string", "minLength": 1, "maxLength": 64},
+        "adapter": {"type": "string", "minLength": 1, "maxLength": 128},
+        "adapter_version": {"type": "string", "minLength": 1, "maxLength": 64},
+        "status": {
+          "type": "string",
+          "enum": ["succeeded", "partial", "failed", "awaiting_operator"]
+        },
+        "safe_error_code": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "retry_class": {
+          "type": "string",
+          "enum": [
+            "none",
+            "operator",
+            "rate_limit",
+            "transient",
+            "configuration",
+            "content",
+            "permanent"
+          ]
+        },
+        "retry_after_seconds": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 86400
+        },
+        "observed_at": {"type": "string", "format": "date-time"},
+        "fetched_at": {"type": "string", "format": "date-time"},
+        "items": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source_native_id",
+              "url",
+              "title",
+              "text",
+              "author",
+              "published_at",
+              "metadata"
+            ],
+            "properties": {
+              "source_native_id": {"type": "string", "minLength": 1, "maxLength": 512},
+              "url": {"type": "string", "minLength": 1, "maxLength": 4096},
+              "title": {"type": "string", "minLength": 1, "maxLength": 2048},
+              "text": {"type": "string", "minLength": 1, "maxLength": 65536},
+              "author": {"type": ["string", "null"]},
+              "published_at": {"type": ["string", "null"]},
+              "metadata": {"type": "object"}
+            }
+          }
+        },
+        "item_count": {"type": "integer", "minimum": 0, "maximum": 10000},
+        "cost_cents": {"type": "integer", "minimum": 0, "maximum": 10000000},
+        "diagnostics": {"type": "object"}
+      }
+    },
     "acquisition_envelope": {
       "type": "object",
       "additionalProperties": false,
@@ -258,8 +388,11 @@
         "attempts",
         "max_attempts",
         "budget_cents",
+        "spent_cents",
+        "lease_generation",
         "lease_owner",
         "lease_expires_at",
+        "not_before_at",
         "created_at",
         "updated_at",
         "published_index_version",
@@ -297,8 +430,19 @@
           "minimum": 0,
           "maximum": 10000000
         },
+        "spent_cents": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000000
+        },
+        "lease_generation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
         "lease_owner": {"type": ["string", "null"]},
         "lease_expires_at": {"type": ["string", "null"]},
+        "not_before_at": {"type": ["string", "null"]},
         "created_at": {"type": "string", "minLength": 1},
         "updated_at": {"type": "string", "minLength": 1},
         "published_index_version": {"type": ["string", "null"]},

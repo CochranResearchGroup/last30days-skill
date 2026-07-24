@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import sqlite3
+import time
 from pathlib import Path
 
 import store
@@ -37,10 +38,22 @@ class ServiceStore:
     def _connect(self) -> sqlite3.Connection:
         conn = sqlite3.connect(str(self.db_path), timeout=5)
         conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA busy_timeout=5000")
+        deadline = time.monotonic() + 5
+        while True:
+            try:
+                conn.execute("PRAGMA journal_mode=WAL")
+                break
+            except sqlite3.OperationalError as exc:
+                if (
+                    "locked" not in str(exc).lower()
+                    or time.monotonic() >= deadline
+                ):
+                    conn.close()
+                    raise
+                time.sleep(0.01)
         conn.execute("PRAGMA synchronous=NORMAL")
         conn.execute("PRAGMA foreign_keys=ON")
-        conn.execute("PRAGMA busy_timeout=5000")
         return conn
 
     @staticmethod
@@ -144,4 +157,3 @@ class ServiceStore:
                 f"{contract_name}/{envelope_id}"
             )
         return contracts.parse_envelope(contract_name, payload)
-

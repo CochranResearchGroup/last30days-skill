@@ -409,6 +409,46 @@ are owner-readable/writable only (`0600`). These paths contain no browser
 cookies or credentials; authenticated acquisition remains isolated in named
 user-scoped profiles.
 
+The service never loads project-directory `.env` files. Its deterministic
+supervisor resolves acquisition settings at user scope:
+
+```text
+~/.config/last30days/.env
+~/.config/last30days/profiles/<profile-id>.env
+```
+
+The named profile overlays the user default, and process environment variables
+win over both files. Profile IDs may contain letters, digits, `.`, `_`, and
+`-`; they are carried in query contracts and never inferred from a client's
+working directory. Keep both files owner-only (`chmod 600`). The service stores
+only the profile ID, adapter name/version, safe outcome codes, and content
+provenance—not cookies, tokens, browser routes, or session payloads.
+
+The MVP acquisition registry supports `reddit`, `x`, `youtube`, `facebook`,
+and `linkedin`. Cache queries are served immediately. A stale or missing
+`prefer_cache`, `refresh_if_stale`, or `force_refresh` request creates or joins
+one durable refresh job; acquisition runs in a bounded subprocess and publishes
+successful sources even when another source needs operator authentication or a
+retry. `cache_only` never queues work.
+
+Service discovery distinguishes a registered source (`configured`) from one
+that passes a non-mutating local readiness probe (`acquisition_ready`). Reddit's
+keyless path is ready by construction; YouTube requires `yt-dlp` on the service
+PATH. Browser-backed sources remain `configured` until profile-specific work
+proves authentication, so discovery does not mistake an installed
+`agent-browser` binary for a usable signed-in session. A background acquisition
+loop failure changes service status to `degraded` while cached queries remain
+available.
+
+Each refresh has a host-owned attempt and cost ceiling. The host reserves the
+maximum configured adapter cost before launch (currently one cent for Reddit's
+optional ScrapeCreators fallback and zero for the other MVP adapters); workers
+cannot raise that ceiling with self-reported usage. The worker also enforces its
+request/item/time limits, caps stdout and stderr, and counts direct Python HTTP
+attempts against the issued network allowance. External tools remain bounded by
+one isolated worker subprocess, the wall timeout, output limits, and process
+group cancellation.
+
 ### `watchlist.py` - recurring topics
 
 [`scripts/watchlist.py`](skills/last30days/scripts/watchlist.py) manages topics that should be researched on a schedule. Subcommands: `add`, `remove`, `list`, `run-one`, `run-all`, `config`. Built-in delivery to Slack incoming webhooks (`hooks.slack.com/...`) or any HTTPS endpoint, fired only when new findings appear.

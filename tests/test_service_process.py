@@ -12,6 +12,7 @@ import store
 
 from lib import service_contracts as contracts
 from lib.service_client import ServiceClient, ServiceClientError
+from service import build_parser
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -228,3 +229,15 @@ def test_service_help_does_not_require_runtime_environment():
 
     assert result.returncode == 0, result.stderr
     assert "Run or query the local last30days intelligence service" in result.stdout
+
+
+def test_cli_request_id_is_generated_unless_caller_supplies_idempotency_key():
+    parser = build_parser()
+
+    assert parser.parse_args(["query", "first"]).request_id is None
+    assert (
+        parser.parse_args(
+            ["query", "second", "--request-id", "caller-key"]
+        ).request_id
+        == "caller-key"
+    )
