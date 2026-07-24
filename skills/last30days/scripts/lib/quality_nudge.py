@@ -21,14 +21,22 @@ SOURCE_LABELS = {
 
 
 def _is_x_active(config: dict, research_results: dict) -> bool:
-    """Check if X source is active (has credentials AND didn't error)."""
-    has_creds = _has_x_credentials(config)
-    if not has_creds:
-        return False
-    # If X errored this run, it's configured but broken
+    """Check whether X was successfully searched or has configured access."""
+    # A hard source error overrides both configuration and any stale result
+    # metadata. Partial failures with usable items are reclassified upstream as
+    # degraded and therefore do not appear in ``x_error``.
     if research_results.get("x_error"):
         return False
-    return True
+
+    # Actual run evidence is authoritative. Browser-backed X has no token in
+    # config, so credential-only detection used to print "Missing: X/Twitter"
+    # immediately after rendering real X posts. Presence in active_sources also
+    # covers a successful zero-result search without mislabelling it unavailable.
+    active_sources = research_results.get("active_sources") or []
+    if "x" in active_sources or int(research_results.get("x_items_count") or 0) > 0:
+        return True
+
+    return _has_x_credentials(config)
 
 
 def _has_x_credentials(config: dict) -> bool:
@@ -138,6 +146,9 @@ def compute_quality_score(config: dict, research_results: dict) -> dict:
         config: Configuration dict from env.get_config()
         research_results: Dict with keys like x_error, youtube_error,
             reddit_error reflecting what happened this run. Optional keys
+            ``active_sources`` and ``x_items_count`` allow successful X run
+            evidence to override credential-only capability detection.
+            Optional keys
             ``youtube_videos_count`` and ``youtube_transcripts_count`` enable
             degraded-YouTube detection (transcript-fetch ratio below threshold).
             Optional key ``instagram_items_count`` enables silent-failure

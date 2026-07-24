@@ -177,6 +177,15 @@ class CliV3Tests(unittest.TestCase):
             ),
         )
 
+    def test_missing_sources_for_promo_respects_successful_runtime_source(self):
+        self.assertEqual(
+            "web",
+            cli._missing_sources_for_promo(
+                {"available_sources": ["reddit", "youtube"]},
+                active_sources=["x"],
+            ),
+        )
+
     def test_slugify_and_emit_output_cover_supported_modes(self):
         report = self.make_report()
         self.assertEqual("openclaw-vs-nanoclaw", cli.slugify(report.topic))

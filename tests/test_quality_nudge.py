@@ -116,6 +116,34 @@ class TestXquikKey:
         assert "X/Twitter" not in q["nudge_text"]
 
 
+class TestXRunEvidence:
+    """A successful X stream is authoritative even without token credentials."""
+
+    def test_returned_x_items_count_as_active(self):
+        q = _compute(
+            result_overrides={
+                "active_sources": ["x"],
+                "x_items_count": 6,
+            },
+            ytdlp_installed=True,
+        )
+        assert q["score_pct"] == 100
+        assert "x" in q["core_active"]
+        assert "x" not in q["core_missing"]
+        assert q["nudge_text"] is None
+
+    def test_successful_zero_result_x_stream_still_counts_as_active(self):
+        q = _compute(
+            result_overrides={
+                "active_sources": ["x"],
+                "x_items_count": 0,
+            },
+            ytdlp_installed=True,
+        )
+        assert "x" in q["core_active"]
+        assert "X/Twitter" not in (q["nudge_text"] or "")
+
+
 class TestXPlusYtdlp:
     """+X + yt-dlp -> 100%. No SC needed for full core coverage."""
 

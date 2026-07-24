@@ -536,12 +536,19 @@ def resolve_competitors_args(args: argparse.Namespace) -> tuple[bool, int, list[
     return True, count, []
 
 
-def _missing_sources_for_promo(diag: dict[str, object]) -> str | None:
+def _missing_sources_for_promo(
+    diag: dict[str, object],
+    active_sources: list[str] | None = None,
+) -> str | None:
     available = set(diag.get("available_sources") or [])
+    runtime_active = set(active_sources or [])
     missing = []
     if "reddit" not in available:
         missing.append("reddit")
-    if "x" not in available:
+    # Runtime success is stronger evidence than the pre-run diagnostic. This
+    # matters for retained-browser X: credentials stay in the profile and may
+    # therefore be absent from the diagnostic's environment-derived inventory.
+    if "x" not in available and "x" not in runtime_active:
         missing.append("x")
     # The web promo nudges toward a paid backend for higher-quality web search.
     # Grounding is now available keyless on non-native hosts, so key the promo on
@@ -578,7 +585,10 @@ def _show_runtime_ui(
         source_counts=counts,
         display_sources=display_sources,
     )
-    promo = _missing_sources_for_promo(diag)
+    promo = _missing_sources_for_promo(
+        diag,
+        active_sources=list(report.items_by_source),
+    )
     # The `web` promo nudges users to set BRAVE_API_KEY / SERPER_API_KEY, which
     # is wrong advice when a hosting reasoning model (Claude Code, Codex,
     # Hermes, Gemini) is driving — those already have WebSearch and can
@@ -1042,9 +1052,17 @@ def main() -> int:
             # degraded-YouTube failure mode (videos returned but transcripts
             # silently failed - typically a stale yt-dlp binary).
             youtube_items = report.items_by_source.get("youtube") or []
+            x_items = report.items_by_source.get("x") or []
             _yt_fetch_stats = _youtube_yt.get_transcript_fetch_stats()
             instagram_items = report.items_by_source.get("instagram") or []
             research_results = {
+                # Source keys are retained even when a successful search yields
+                # zero post-pruning items. This is stronger evidence of an
+                # active backend than token-only configuration checks, and is
+                # required for agent-browser X where credentials remain inside
+                # the retained browser profile.
+                "active_sources": list(report.items_by_source),
+                "x_items_count": len(x_items),
                 "youtube_videos_count": len(youtube_items),
                 "youtube_transcripts_count": sum(
                     1 for it in youtube_items

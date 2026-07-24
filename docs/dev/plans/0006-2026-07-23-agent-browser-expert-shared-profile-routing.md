@@ -137,7 +137,8 @@ Closed on 2026-07-23.
 
 ## Follow-up
 
-The engine's source-quality message can still say `Missing: X/Twitter` after a
-successful X result set. That reporting inconsistency is outside this
-shared-profile routing plan and should be handled as a separate quality-status
-fix.
+Resolved on 2026-07-23: the runtime UI and quality nudge now treat the report's
+successful X source stream as authoritative over pre-run credential
+diagnostics. Browser-backed runs no longer say `Missing: X/Twitter` or
+`Unlock X` after returning X posts, including when the successful query yields
+zero post-pruning items.
