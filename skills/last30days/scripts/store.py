@@ -473,6 +473,71 @@ CREATE INDEX IF NOT EXISTS idx_service_query_coverage_retry
     ON service_query_coverage(retry_after)
     WHERE retry_after IS NOT NULL;
 """,
+    5: """
+ALTER TABLE index_versions ADD COLUMN embedding_manifest_hash TEXT;
+ALTER TABLE index_versions ADD COLUMN graph_manifest_hash TEXT;
+ALTER TABLE document_entities ADD COLUMN proposal_id TEXT;
+ALTER TABLE relationships ADD COLUMN proposal_id TEXT;
+ALTER TABLE relationships ADD COLUMN projection_version TEXT;
+
+CREATE TABLE IF NOT EXISTS relationship_evidence (
+    relationship_id TEXT NOT NULL REFERENCES relationships(relationship_id) ON DELETE CASCADE,
+    ordinal INTEGER NOT NULL,
+    evidence_chunk_id TEXT NOT NULL REFERENCES document_chunks(chunk_id) ON DELETE CASCADE,
+    evidence_start INTEGER NOT NULL CHECK (evidence_start >= 0),
+    evidence_end INTEGER NOT NULL CHECK (evidence_end > evidence_start),
+    span_hash TEXT NOT NULL,
+    PRIMARY KEY (relationship_id, ordinal)
+);
+
+CREATE TABLE IF NOT EXISTS index_chunk_embeddings (
+    index_version TEXT NOT NULL REFERENCES index_versions(index_version) ON DELETE CASCADE,
+    chunk_id TEXT NOT NULL,
+    model TEXT NOT NULL,
+    dimensions INTEGER NOT NULL,
+    vector BLOB NOT NULL,
+    vector_hash TEXT NOT NULL,
+    PRIMARY KEY (index_version, chunk_id, model),
+    FOREIGN KEY (chunk_id, model)
+        REFERENCES chunk_embeddings(chunk_id, model) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS index_entity_aliases (
+    index_version TEXT NOT NULL REFERENCES index_versions(index_version) ON DELETE CASCADE,
+    normalized_alias TEXT NOT NULL,
+    entity_id TEXT NOT NULL REFERENCES entities(entity_id) ON DELETE CASCADE,
+    PRIMARY KEY (index_version, normalized_alias, entity_id)
+);
+
+CREATE TABLE IF NOT EXISTS index_document_entities (
+    index_version TEXT NOT NULL REFERENCES index_versions(index_version) ON DELETE CASCADE,
+    document_id TEXT NOT NULL,
+    entity_id TEXT NOT NULL,
+    evidence_chunk_id TEXT NOT NULL,
+    evidence_start INTEGER NOT NULL,
+    PRIMARY KEY (
+        index_version, document_id, entity_id, evidence_chunk_id, evidence_start
+    ),
+    FOREIGN KEY (document_id, entity_id, evidence_chunk_id, evidence_start)
+        REFERENCES document_entities(
+            document_id, entity_id, evidence_chunk_id, evidence_start
+        ) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS index_relationships (
+    index_version TEXT NOT NULL REFERENCES index_versions(index_version) ON DELETE CASCADE,
+    relationship_id TEXT NOT NULL REFERENCES relationships(relationship_id) ON DELETE CASCADE,
+    subject_entity_id TEXT NOT NULL,
+    predicate TEXT NOT NULL,
+    object_entity_id TEXT NOT NULL,
+    evidence_chunk_id TEXT NOT NULL REFERENCES document_chunks(chunk_id) ON DELETE CASCADE,
+    evidence_start INTEGER NOT NULL,
+    evidence_end INTEGER NOT NULL,
+    span_hash TEXT NOT NULL,
+    confidence REAL NOT NULL,
+    PRIMARY KEY (index_version, relationship_id)
+);
+""",
 }
 
 

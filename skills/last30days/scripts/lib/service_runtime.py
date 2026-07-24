@@ -12,6 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Callable, Protocol, Sequence
 
+from .service_enrichment import EnrichmentService
 from .service_job_runner import AcquisitionJobRunner, AcquisitionRunner, JobRunnerPolicy
 from .service_publication import CorpusPublisher
 from .service_refresh import RefreshPolicy, ServiceRefreshScheduler
@@ -28,6 +29,16 @@ class JobRunner(Protocol):
     def run_once(self, *, worker_id: str): ...
 
     def cancel_active_work(self) -> None: ...
+
+
+class EnrichmentBackend(Protocol):
+    def embed_chunks(self): ...
+
+    def extract_and_promote_entities(self): ...
+
+
+class IndexPublisher(Protocol):
+    def publish_index(self) -> str: ...
 
 
 @dataclass(frozen=True)
@@ -95,6 +106,62 @@ class AcquisitionLoop:
         cancel = getattr(self.runner, "cancel_active_work", None)
         if callable(cancel):
             cancel()
+        if self._thread is not None:
+            self._thread.join(timeout=timeout)
+
+
+class EnrichmentLoop:
+    """Run optional enrichment independently from query and acquisition paths."""
+
+    def __init__(
+        self,
+        enrichment: EnrichmentBackend,
+        publisher: IndexPublisher,
+        *,
+        interval_seconds: float = 30.0,
+    ) -> None:
+        if interval_seconds <= 0:
+            raise ValueError("enrichment interval must be positive")
+        self.enrichment = enrichment
+        self.publisher = publisher
+        self.interval_seconds = interval_seconds
+        self.last_error_code: str | None = None
+        self._stop_event = threading.Event()
+        self._thread: threading.Thread | None = None
+
+    @property
+    def is_alive(self) -> bool:
+        return self._thread is not None and self._thread.is_alive()
+
+    def start(self) -> None:
+        if self.is_alive:
+            return
+        self._stop_event.clear()
+        self._thread = threading.Thread(
+            target=self._run,
+            name="last30days-enrichment",
+            daemon=True,
+        )
+        self._thread.start()
+
+    def _run(self) -> None:
+        while not self._stop_event.is_set():
+            try:
+                embeddings = self.enrichment.embed_chunks()
+                entities = self.enrichment.extract_and_promote_entities()
+                if embeddings.embeddings_written or entities.accepted_count:
+                    self.publisher.publish_index()
+                self.last_error_code = (
+                    embeddings.error_code
+                    if getattr(embeddings, "status", None) == "failed"
+                    else None
+                )
+            except Exception:
+                self.last_error_code = "enrichment_loop_failure"
+            self._stop_event.wait(self.interval_seconds)
+
+    def stop(self, *, timeout: float = 5.0) -> None:
+        self._stop_event.set()
         if self._thread is not None:
             self._thread.join(timeout=timeout)
 

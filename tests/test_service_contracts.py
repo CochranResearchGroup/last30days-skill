@@ -227,6 +227,74 @@ def test_acquisition_work_result_rejects_unsafe_codes_and_naive_timestamps():
         )
 
 
+def test_entity_and_relationship_proposals_round_trip_with_evidence():
+    entity_payload = {
+        "schema_version": 1,
+        "proposal_id": "entity-proposal-001",
+        "document_id": "doc-001",
+        "evidence_chunk_id": "chunk-001",
+        "canonical_name": "OpenAI",
+        "entity_type": "organization",
+        "evidence_start": 0,
+        "evidence_end": 6,
+        "extractor_version": "deterministic-entities-v1",
+        "confidence": 1.0,
+    }
+    relationship_payload = {
+        "schema_version": 1,
+        "proposal_id": "relationship-proposal-001",
+        "document_id": "doc-001",
+        "evidence_chunk_id": "chunk-001",
+        "evidence_start": 0,
+        "evidence_end": 24,
+        "subject_entity_id": "entity-openai",
+        "predicate": "created",
+        "object_entity_id": "entity-chatgpt",
+        "extractor_version": "deterministic-relations-v1",
+        "confidence": 0.9,
+    }
+
+    assert contracts.EntityProposal.from_dict(entity_payload).to_dict() == entity_payload
+    assert (
+        contracts.RelationshipProposal.from_dict(relationship_payload).to_dict()
+        == relationship_payload
+    )
+
+
+def test_graph_proposals_reject_invalid_offsets_and_self_edges():
+    with pytest.raises(contracts.ContractValidationError, match="evidence range"):
+        contracts.EntityProposal.from_dict(
+            {
+                "schema_version": 1,
+                "proposal_id": "entity-proposal-invalid",
+                "document_id": "doc-001",
+                "evidence_chunk_id": "chunk-001",
+                "canonical_name": "OpenAI",
+                "entity_type": "organization",
+                "evidence_start": 6,
+                "evidence_end": 6,
+                "extractor_version": "deterministic-entities-v1",
+                "confidence": 1.0,
+            }
+        )
+    with pytest.raises(contracts.ContractValidationError, match="self-edge"):
+        contracts.RelationshipProposal.from_dict(
+            {
+                "schema_version": 1,
+                "proposal_id": "relationship-proposal-invalid",
+                "document_id": "doc-001",
+                "evidence_chunk_id": "chunk-001",
+                "evidence_start": 0,
+                "evidence_end": 24,
+                "subject_entity_id": "entity-openai",
+                "predicate": "related_to",
+                "object_entity_id": "entity-openai",
+                "extractor_version": "deterministic-relations-v1",
+                "confidence": 0.8,
+            }
+        )
+
+
 def test_job_record_round_trips_supervisor_state_and_bounds():
     payload = {
         "schema_version": 1,
@@ -332,6 +400,8 @@ def test_schema_catalog_is_the_golden_contract_for_every_v1_envelope():
         "evidence_item",
         "acquisition_work_request",
         "acquisition_work_result",
+        "entity_proposal",
+        "relationship_proposal",
         "acquisition_envelope",
         "job_record",
         "job_event",

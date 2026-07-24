@@ -38,6 +38,41 @@ class EmbeddingProvider(Protocol):
 
 
 @dataclass(frozen=True)
+class LocalHashEmbeddingProvider:
+    """Dependency-free, deterministic local embedding baseline for the MVP."""
+
+    model: str = "local-hash-v1"
+    dimensions: int = 256
+    cost_cents_per_call: int = 0
+
+    def __post_init__(self) -> None:
+        if self.dimensions < 32:
+            raise ValueError("local embedding dimensions must be at least 32")
+
+    def embed(self, texts: Sequence[str]) -> Sequence[Sequence[float]]:
+        vectors: list[tuple[float, ...]] = []
+        for text in texts:
+            tokens = [token.casefold() for token in _TOKEN_RE.findall(text)]
+            features = list(tokens)
+            for token in tokens:
+                padded = f"^{token}$"
+                features.extend(
+                    padded[index : index + 3]
+                    for index in range(max(0, len(padded) - 2))
+                )
+            values = [0.0] * self.dimensions
+            for feature in features:
+                digest = hashlib.sha256(feature.encode("utf-8")).digest()
+                index = int.from_bytes(digest[:4], "big") % self.dimensions
+                values[index] += 1.0 if digest[4] & 1 else -1.0
+            magnitude = math.sqrt(sum(value * value for value in values))
+            if magnitude:
+                values = [value / magnitude for value in values]
+            vectors.append(tuple(values))
+        return vectors
+
+
+@dataclass(frozen=True)
 class FusionConfig:
     """Versioned deterministic reciprocal-rank-fusion configuration."""
 
@@ -45,6 +80,7 @@ class FusionConfig:
     rank_constant: int = 60
     lexical_weight: float = 1.0
     semantic_weight: float = 1.0
+    graph_weight: float = 0.75
     candidate_limit: int = 100
 
     def __post_init__(self) -> None:
@@ -52,9 +88,17 @@ class FusionConfig:
             raise ValueError("fusion version must be non-empty")
         if self.rank_constant < 0:
             raise ValueError("rank_constant must not be negative")
-        if self.lexical_weight < 0 or self.semantic_weight < 0:
+        if (
+            self.lexical_weight < 0
+            or self.semantic_weight < 0
+            or self.graph_weight < 0
+        ):
             raise ValueError("fusion weights must not be negative")
-        if self.lexical_weight == 0 and self.semantic_weight == 0:
+        if (
+            self.lexical_weight == 0
+            and self.semantic_weight == 0
+            and self.graph_weight == 0
+        ):
             raise ValueError("at least one fusion weight must be positive")
         if self.candidate_limit < 1:
             raise ValueError("candidate_limit must be positive")
@@ -163,6 +207,12 @@ class HybridRetriever:
         """Return the replay key for the active deterministic ranker."""
 
         return self.fusion.version
+
+    def set_embedding_provider(
+        self, provider: EmbeddingProvider | None
+    ) -> None:
+        """Configure the shared query provider after lexical startup indexing."""
+        self.embedding_provider = provider
 
     def current_index_version(self) -> str | None:
         """Return the latest published immutable corpus/ranker snapshot."""
@@ -341,19 +391,118 @@ class HybridRetriever:
                 if self.embedding_provider is not None
                 else None
             )
+            embedding_rows = (
+                conn.execute(
+                    """SELECT chunk_id, model, dimensions, vector
+                       FROM chunk_embeddings
+                       WHERE model = ?
+                       ORDER BY chunk_id, model""",
+                    (embedding_model,),
+                ).fetchall()
+                if embedding_model is not None
+                else []
+            )
+            entity_rows = conn.execute(
+                """SELECT document_id, entity_id, evidence_chunk_id, evidence_start
+                   FROM document_entities
+                   WHERE validation_state = 'accepted'
+                   ORDER BY document_id, entity_id, evidence_chunk_id,
+                            evidence_start"""
+            ).fetchall()
+            alias_rows = conn.execute(
+                """SELECT DISTINCT ea.normalized_alias, ea.entity_id
+                   FROM entity_aliases AS ea
+                   JOIN document_entities AS de ON de.entity_id = ea.entity_id
+                   WHERE de.validation_state = 'accepted'
+                   ORDER BY ea.normalized_alias, ea.entity_id"""
+            ).fetchall()
+            relationship_rows = conn.execute(
+                """SELECT r.relationship_id, r.subject_entity_id, r.predicate,
+                          r.object_entity_id, re.evidence_chunk_id,
+                          re.evidence_start, re.evidence_end, re.span_hash,
+                          r.confidence
+                   FROM relationships AS r
+                   JOIN relationship_evidence AS re
+                     ON re.relationship_id = r.relationship_id
+                    AND re.ordinal = 0
+                   WHERE r.validation_state = 'accepted'
+                   ORDER BY r.relationship_id"""
+            ).fetchall()
             ranking_config = {
                 "version": self.fusion.version,
                 "rank_constant": self.fusion.rank_constant,
                 "lexical_weight": self.fusion.lexical_weight,
                 "semantic_weight": self.fusion.semantic_weight,
+                "graph_weight": self.fusion.graph_weight,
                 "candidate_limit": self.fusion.candidate_limit,
             }
+            embedding_manifest = [
+                [
+                    row["chunk_id"],
+                    row["model"],
+                    row["dimensions"],
+                    row["vector"].hex(),
+                    hashlib.sha256(row["vector"]).hexdigest(),
+                ]
+                for row in embedding_rows
+            ]
+            graph_manifest = {
+                "entities": [
+                    [
+                        row["document_id"],
+                        row["entity_id"],
+                        row["evidence_chunk_id"],
+                        row["evidence_start"],
+                    ]
+                    for row in entity_rows
+                ],
+                "aliases": [
+                    [row["normalized_alias"], row["entity_id"]]
+                    for row in alias_rows
+                ],
+                "relationships": [
+                    [
+                        row["relationship_id"],
+                        row["subject_entity_id"],
+                        row["predicate"],
+                        row["object_entity_id"],
+                        row["evidence_chunk_id"],
+                        row["evidence_start"],
+                        row["evidence_end"],
+                        row["span_hash"],
+                        row["confidence"],
+                    ]
+                    for row in relationship_rows
+                ],
+            }
+            embedding_manifest_json = json.dumps(
+                embedding_manifest,
+                ensure_ascii=False,
+                separators=(",", ":"),
+                sort_keys=True,
+            )
+            graph_manifest_json = json.dumps(
+                graph_manifest,
+                ensure_ascii=False,
+                separators=(",", ":"),
+                sort_keys=True,
+            )
+            embedding_manifest_hash = (
+                _sha256(embedding_manifest_json) if embedding_manifest else None
+            )
+            graph_manifest_hash = (
+                _sha256(graph_manifest_json)
+                if entity_rows or alias_rows or relationship_rows
+                else None
+            )
             manifest = {
                 "documents": [
                     [row["document_id"], row["content_hash"]]
                     for row in documents
                 ],
                 "embedding_model": embedding_model,
+                "embeddings": embedding_manifest,
+                "graph": graph_manifest,
                 "ranking": ranking_config,
             }
             manifest_json = json.dumps(
@@ -370,8 +519,9 @@ class HybridRetriever:
                 """INSERT OR IGNORE INTO index_versions
                    (index_version, parent_version, ranking_config_json,
                     document_count, chunk_count, embedding_model,
-                    created_at, published_at)
-                   VALUES (?, NULL, ?, ?, ?, ?, ?, ?)""",
+                    created_at, published_at, embedding_manifest_hash,
+                    graph_manifest_hash)
+                   VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (
                     index_version,
                     json.dumps(
@@ -385,6 +535,8 @@ class HybridRetriever:
                     embedding_model,
                     now,
                     now,
+                    embedding_manifest_hash,
+                    graph_manifest_hash,
                 ),
             )
             conn.executemany(
@@ -394,6 +546,74 @@ class HybridRetriever:
                 [
                     (index_version, row["document_id"], row["content_hash"])
                     for row in documents
+                ],
+            )
+            conn.executemany(
+                """INSERT OR IGNORE INTO index_chunk_embeddings
+                   (index_version, chunk_id, model, dimensions, vector, vector_hash)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                [
+                    (
+                        index_version,
+                        chunk_id,
+                        model,
+                        dimensions,
+                        bytes.fromhex(vector_hex),
+                        vector_hash,
+                    )
+                    for chunk_id, model, dimensions, vector_hex, vector_hash
+                    in embedding_manifest
+                ],
+            )
+            conn.executemany(
+                """INSERT OR IGNORE INTO index_entity_aliases
+                   (index_version, normalized_alias, entity_id)
+                   VALUES (?, ?, ?)""",
+                [
+                    (
+                        index_version,
+                        row["normalized_alias"],
+                        row["entity_id"],
+                    )
+                    for row in alias_rows
+                ],
+            )
+            conn.executemany(
+                """INSERT OR IGNORE INTO index_document_entities
+                   (index_version, document_id, entity_id, evidence_chunk_id,
+                    evidence_start)
+                   VALUES (?, ?, ?, ?, ?)""",
+                [
+                    (
+                        index_version,
+                        row["document_id"],
+                        row["entity_id"],
+                        row["evidence_chunk_id"],
+                        row["evidence_start"],
+                    )
+                    for row in entity_rows
+                ],
+            )
+            conn.executemany(
+                """INSERT OR IGNORE INTO index_relationships
+                   (index_version, relationship_id, subject_entity_id, predicate,
+                    object_entity_id, evidence_chunk_id, evidence_start,
+                    evidence_end, span_hash, confidence)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                [
+                    (
+                        index_version,
+                        row["relationship_id"],
+                        row["subject_entity_id"],
+                        row["predicate"],
+                        row["object_entity_id"],
+                        row["evidence_chunk_id"],
+                        row["evidence_start"],
+                        row["evidence_end"],
+                        row["span_hash"],
+                        row["confidence"],
+                    )
+                    for row in relationship_rows
                 ],
             )
             conn.commit()
@@ -539,32 +759,116 @@ class HybridRetriever:
             semantic_rows: list[sqlite3.Row] = []
             query_vector: tuple[float, ...] | None = None
             if self.embedding_provider is not None:
-                query_vector = _validate_vectors(
-                    self.embedding_provider.embed([query]),
-                    expected_count=1,
-                )[0]
-                semantic_params: list[object] = [
-                    index_version,
-                    self.embedding_provider.model,
-                ]
-                semantic_source = ""
-                if source_values:
-                    placeholders = ",".join("?" for _ in source_values)
-                    semantic_source = f" AND d.source IN ({placeholders})"
-                    semantic_params.extend(source_values)
-                semantic_rows = conn.execute(
-                    f"""SELECT d.*, c.chunk_id, c.text AS chunk_text,
-                               e.dimensions, e.vector
-                        FROM chunk_embeddings AS e
-                        JOIN document_chunks AS c ON c.chunk_id = e.chunk_id
-                        JOIN documents AS d ON d.document_id = c.document_id
-                        JOIN index_documents AS ix
-                          ON ix.document_id = d.document_id
-                         AND ix.index_version = ?
-                        WHERE e.model = ?{semantic_source}
-                        ORDER BY d.document_id, c.ordinal""",
-                    semantic_params,
-                ).fetchall()
+                try:
+                    query_vector = _validate_vectors(
+                        self.embedding_provider.embed([query]),
+                        expected_count=1,
+                    )[0]
+                    semantic_params: list[object] = [
+                        index_version,
+                        self.embedding_provider.model,
+                    ]
+                    semantic_source = ""
+                    if source_values:
+                        placeholders = ",".join("?" for _ in source_values)
+                        semantic_source = f" AND d.source IN ({placeholders})"
+                        semantic_params.extend(source_values)
+                    semantic_rows = conn.execute(
+                        f"""SELECT d.*, c.chunk_id, c.text AS chunk_text,
+                                   ie.dimensions, ie.vector
+                            FROM index_chunk_embeddings AS ie
+                            JOIN document_chunks AS c ON c.chunk_id = ie.chunk_id
+                            JOIN documents AS d ON d.document_id = c.document_id
+                            JOIN index_documents AS ix
+                              ON ix.document_id = d.document_id
+                             AND ix.index_version = ie.index_version
+                            WHERE ie.index_version = ?
+                              AND ie.model = ?{semantic_source}
+                            ORDER BY d.document_id, c.ordinal""",
+                        semantic_params,
+                    ).fetchall()
+                except Exception:
+                    query_vector = None
+                    semantic_rows = []
+
+            graph_rows: list[sqlite3.Row] = []
+            graph_scores: dict[str, float] = {}
+            try:
+                normalized_values = tuple(
+                    dict.fromkeys(
+                        [
+                            " ".join(query.split()).casefold(),
+                            *(term.casefold() for term in terms),
+                        ]
+                    )
+                )[:4]
+                seed_ids: list[str] = []
+                for normalized in normalized_values:
+                    matches = conn.execute(
+                        """SELECT DISTINCT entity_id
+                           FROM index_entity_aliases
+                           WHERE index_version = ?
+                             AND normalized_alias = ?
+                           ORDER BY entity_id""",
+                        (index_version, normalized),
+                    ).fetchall()
+                    unique = tuple(
+                        dict.fromkeys(row["entity_id"] for row in matches)
+                    )
+                    if len(unique) == 1:
+                        seed_ids.append(unique[0])
+                seed_ids = list(dict.fromkeys(seed_ids))[:4]
+                if seed_ids:
+                    seed_placeholders = ",".join("?" for _ in seed_ids)
+                    graph_source = ""
+                    graph_params: list[object] = [
+                        index_version,
+                        index_version,
+                        *seed_ids,
+                        *seed_ids,
+                    ]
+                    if source_values:
+                        source_placeholders = ",".join(
+                            "?" for _ in source_values
+                        )
+                        graph_source = (
+                            f" AND d.source IN ({source_placeholders})"
+                        )
+                        graph_params.extend(source_values)
+                    graph_params.append(
+                        min(32, self.fusion.candidate_limit)
+                    )
+                    graph_rows = conn.execute(
+                        f"""SELECT d.*, c.chunk_id, c.text AS chunk_text,
+                                   ir.confidence AS graph_confidence,
+                                   ir.relationship_id
+                            FROM index_relationships AS ir
+                            JOIN document_chunks AS c
+                              ON c.chunk_id = ir.evidence_chunk_id
+                            JOIN documents AS d
+                              ON d.document_id = c.document_id
+                            JOIN index_documents AS ix
+                              ON ix.document_id = d.document_id
+                             AND ix.index_version = ?
+                            WHERE ir.index_version = ?
+                              AND (
+                                  ir.subject_entity_id IN ({seed_placeholders})
+                                  OR ir.object_entity_id IN ({seed_placeholders})
+                              ){graph_source}
+                            ORDER BY ir.confidence DESC, ir.relationship_id,
+                                     d.document_id
+                            LIMIT ?""",
+                        graph_params,
+                    ).fetchall()
+                    for row in graph_rows:
+                        document_id = row["document_id"]
+                        graph_scores[document_id] = max(
+                            graph_scores.get(document_id, 0.0),
+                            float(row["graph_confidence"]),
+                        )
+            except sqlite3.Error:
+                graph_rows = []
+                graph_scores = {}
         finally:
             conn.close()
 
@@ -603,11 +907,32 @@ class HybridRetriever:
         else:
             semantic_ranks = {}
 
-        maximum_fused = self.fusion.lexical_weight / (
-            self.fusion.rank_constant + 1
+        graph_ranks: dict[str, int] = {}
+        for row in graph_rows:
+            candidates.setdefault(row["document_id"], row)
+        graph_order = sorted(
+            graph_scores,
+            key=lambda document_id: (
+                -graph_scores[document_id],
+                document_id,
+            ),
         )
-        if self.embedding_provider is not None:
+        graph_ranks = {
+            document_id: rank
+            for rank, document_id in enumerate(graph_order, start=1)
+        }
+
+        maximum_fused = 0.0
+        if lexical_ranks:
+            maximum_fused += self.fusion.lexical_weight / (
+                self.fusion.rank_constant + 1
+            )
+        if semantic_ranks:
             maximum_fused += self.fusion.semantic_weight / (
+                self.fusion.rank_constant + 1
+            )
+        if graph_ranks:
+            maximum_fused += self.fusion.graph_weight / (
                 self.fusion.rank_constant + 1
             )
 
@@ -623,6 +948,11 @@ class HybridRetriever:
             if semantic_rank is not None:
                 fused_raw += self.fusion.semantic_weight / (
                     self.fusion.rank_constant + semantic_rank
+                )
+            graph_rank = graph_ranks.get(document_id)
+            if graph_rank is not None:
+                fused_raw += self.fusion.graph_weight / (
+                    self.fusion.rank_constant + graph_rank
                 )
             ranked.append(
                 (
@@ -660,7 +990,10 @@ class HybridRetriever:
                     scores={
                         "lexical": min(1.0, lexical),
                         "semantic": max(0.0, min(1.0, semantic)),
-                        "graph": 0.0,
+                        "graph": max(
+                            0.0,
+                            min(1.0, graph_scores.get(row["document_id"], 0.0)),
+                        ),
                         "recency": 0.0,
                         "fused": max(0.0, min(1.0, fused)),
                     },

@@ -182,6 +182,37 @@ def _sample_envelopes():
                 "diagnostics_ref": None,
             },
         ),
+        "entity_proposal": (
+            "entity-proposal-001",
+            {
+                "schema_version": 1,
+                "proposal_id": "entity-proposal-001",
+                "document_id": "doc-001",
+                "evidence_chunk_id": "chunk-001",
+                "canonical_name": "OpenAI",
+                "entity_type": "organization",
+                "evidence_start": 0,
+                "evidence_end": 6,
+                "extractor_version": "deterministic-entities-v1",
+                "confidence": 1.0,
+            },
+        ),
+        "relationship_proposal": (
+            "relationship-proposal-001",
+            {
+                "schema_version": 1,
+                "proposal_id": "relationship-proposal-001",
+                "document_id": "doc-001",
+                "evidence_chunk_id": "chunk-001",
+                "evidence_start": 0,
+                "evidence_end": 24,
+                "subject_entity_id": "entity-openai",
+                "predicate": "created",
+                "object_entity_id": "entity-chatgpt",
+                "extractor_version": "deterministic-relations-v1",
+                "confidence": 0.9,
+            },
+        ),
         "job_record": (
             "job-001",
             {

@@ -89,18 +89,25 @@ class CacheQueryApplication:
         conn = self._connect()
         try:
             latest = conn.execute(
-                """SELECT index_version, document_count, embedding_model
-                   FROM index_versions
-                   WHERE published_at IS NOT NULL
-                   ORDER BY published_at DESC, rowid DESC
+                """SELECT iv.index_version, iv.document_count, iv.embedding_model,
+                          (
+                              SELECT COUNT(*)
+                              FROM index_chunk_embeddings AS ice
+                              WHERE ice.index_version = iv.index_version
+                          ) AS embedding_count,
+                          (
+                              SELECT COUNT(*)
+                              FROM index_relationships AS ir
+                              WHERE ir.index_version = iv.index_version
+                          ) AS relationship_count
+                   FROM index_versions AS iv
+                   WHERE iv.published_at IS NOT NULL
+                   ORDER BY iv.published_at DESC, iv.rowid DESC
                    LIMIT 1"""
             ).fetchone()
             document_count = conn.execute(
                 "SELECT COUNT(*) FROM documents"
             ).fetchone()[0]
-            embedding_model = conn.execute(
-                "SELECT model FROM chunk_embeddings ORDER BY created_at DESC LIMIT 1"
-            ).fetchone()
         finally:
             conn.close()
         if latest is not None:
@@ -108,13 +115,15 @@ class CacheQueryApplication:
                 "version": latest["index_version"],
                 "document_count": latest["document_count"],
                 "embedding_model": latest["embedding_model"],
+                "embedding_count": latest["embedding_count"],
+                "relationship_count": latest["relationship_count"],
             }
         return {
             "version": "index-empty" if not document_count else "legacy-v3",
             "document_count": document_count,
-            "embedding_model": (
-                embedding_model["model"] if embedding_model is not None else None
-            ),
+            "embedding_model": None,
+            "embedding_count": 0,
+            "relationship_count": 0,
         }
 
     def _source_info(self) -> dict[str, object]:
@@ -179,17 +188,14 @@ class CacheQueryApplication:
         capabilities = ["cache_query", "lexical_search"]
         if self.refresh_scheduler is not None and self.acquisition_sources:
             capabilities.append("durable_refresh")
-        if index["embedding_model"] is not None:
+        semantic_provider = getattr(self.retriever, "embedding_provider", None)
+        if (
+            semantic_provider is not None
+            and index["embedding_model"] is not None
+            and index["embedding_count"]
+        ):
             capabilities.append("semantic_search")
-        conn = self._connect()
-        try:
-            relationship_count = conn.execute(
-                """SELECT COUNT(*) FROM relationships
-                   WHERE validation_state = 'accepted'"""
-            ).fetchone()[0]
-        finally:
-            conn.close()
-        if relationship_count:
+        if index["relationship_count"]:
             capabilities.append("graph_search")
         return contracts.ServiceInfo.from_dict(
             {

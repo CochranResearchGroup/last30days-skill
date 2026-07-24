@@ -15,9 +15,14 @@ from pathlib import Path
 from lib import service_contracts as contracts
 from lib.service_app import initialize_application
 from lib.service_client import ServiceClient, ServiceClientError
+from lib.service_enrichment import EnrichmentService
 from lib.service_http import ServiceAlreadyRunningError, UnixServiceServer
-from lib.service_retrieval import HybridRetriever
-from lib.service_runtime import AcquisitionLoop, build_acquisition_runtime
+from lib.service_retrieval import HybridRetriever, LocalHashEmbeddingProvider
+from lib.service_runtime import (
+    AcquisitionLoop,
+    EnrichmentLoop,
+    build_acquisition_runtime,
+)
 
 
 def _default_socket_path() -> Path:
@@ -59,16 +64,29 @@ def _serve(args: argparse.Namespace) -> int:
     retriever = HybridRetriever(db_path)
     retriever.initialize()
     retriever.index_legacy_findings()
+    embedding_provider = LocalHashEmbeddingProvider()
+    retriever.set_embedding_provider(embedding_provider)
     os.chmod(db_path, 0o600)
     acquisition = build_acquisition_runtime(db_path, retriever)
     acquisition_loop = AcquisitionLoop(acquisition.runner)
+    enrichment_loop = EnrichmentLoop(
+        EnrichmentService(
+            db_path,
+            embedding_provider=embedding_provider,
+            extractor_version="generic-entities-v1",
+            generic_entity_extraction=True,
+        ),
+        retriever,
+    )
     application = initialize_application(
         db_path,
         retriever,
         refresh_scheduler=acquisition.scheduler,
         acquisition_sources=acquisition.sources,
         acquisition_readiness=acquisition.source_readiness,
-        runtime_error=lambda: acquisition_loop.last_error_code,
+        runtime_error=lambda: (
+            acquisition_loop.last_error_code or enrichment_loop.last_error_code
+        ),
     )
     server = UnixServiceServer(socket_path, application)
     stop_event = threading.Event()
@@ -86,11 +104,13 @@ def _serve(args: argparse.Namespace) -> int:
     )
     thread.start()
     acquisition_loop.start()
+    enrichment_loop.start()
     try:
         while not stop_event.wait(0.2):
             if not thread.is_alive():
                 raise RuntimeError("service listener stopped unexpectedly")
     finally:
+        enrichment_loop.stop(timeout=5)
         acquisition_loop.stop(timeout=5)
         server.shutdown()
         server.server_close()

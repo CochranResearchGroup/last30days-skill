@@ -346,6 +346,15 @@ def _validate_timestamp(value: Any, field: str) -> datetime:
     return parsed.astimezone(timezone.utc)
 
 
+def _require_confidence(value: Any) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ContractValidationError("confidence must be numeric")
+    confidence = float(value)
+    if not 0 <= confidence <= 1:
+        raise ContractValidationError("confidence must be between 0 and 1")
+    return confidence
+
+
 def _validate_scores(value: Any) -> dict[str, float]:
     if not isinstance(value, Mapping):
         raise ContractValidationError("scores must be an object")
@@ -994,6 +1003,197 @@ class AcquisitionWorkResult:
 
 
 @dataclass(frozen=True)
+class EntityProposal:
+    """Evidence-bounded entity mention proposed for deterministic promotion."""
+
+    schema_version: int
+    proposal_id: str
+    document_id: str
+    evidence_chunk_id: str
+    canonical_name: str
+    entity_type: str
+    evidence_start: int
+    evidence_end: int
+    extractor_version: str
+    confidence: float
+
+    CONTRACT_NAME: ClassVar[str] = "entity_proposal"
+    ENTITY_TYPES: ClassVar[frozenset[str]] = frozenset(
+        {"organization", "person", "product", "project", "location", "topic"}
+    )
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> EntityProposal:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("entity proposal must be an object")
+        fields = frozenset(
+            {
+                "schema_version",
+                "proposal_id",
+                "document_id",
+                "evidence_chunk_id",
+                "canonical_name",
+                "entity_type",
+                "evidence_start",
+                "evidence_end",
+                "extractor_version",
+                "confidence",
+            }
+        )
+        _require_exact_fields(payload, required=fields)
+        entity_type = _require_bounded_string(
+            payload["entity_type"], "entity_type", 64
+        )
+        if entity_type not in cls.ENTITY_TYPES:
+            raise ContractValidationError("entity_type is not supported")
+        start = _require_integer_between(
+            payload["evidence_start"], "evidence_start", 0, 10_000_000
+        )
+        end = _require_integer_between(
+            payload["evidence_end"], "evidence_end", 1, 10_000_000
+        )
+        if end <= start:
+            raise ContractValidationError("entity evidence range must be non-empty")
+        return cls(
+            schema_version=_validate_schema_version(payload["schema_version"]),
+            proposal_id=_require_bounded_string(
+                payload["proposal_id"], "proposal_id", 128
+            ),
+            document_id=_require_bounded_string(
+                payload["document_id"], "document_id", 128
+            ),
+            evidence_chunk_id=_require_bounded_string(
+                payload["evidence_chunk_id"], "evidence_chunk_id", 128
+            ),
+            canonical_name=_require_bounded_string(
+                payload["canonical_name"], "canonical_name", 256
+            ),
+            entity_type=entity_type,
+            evidence_start=start,
+            evidence_end=end,
+            extractor_version=_require_bounded_string(
+                payload["extractor_version"], "extractor_version", 128
+            ),
+            confidence=_require_confidence(payload["confidence"]),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "proposal_id": self.proposal_id,
+            "document_id": self.document_id,
+            "evidence_chunk_id": self.evidence_chunk_id,
+            "canonical_name": self.canonical_name,
+            "entity_type": self.entity_type,
+            "evidence_start": self.evidence_start,
+            "evidence_end": self.evidence_end,
+            "extractor_version": self.extractor_version,
+            "confidence": self.confidence,
+        }
+
+
+@dataclass(frozen=True)
+class RelationshipProposal:
+    """Resolved edge proposal that must retain an existing evidence chunk."""
+
+    schema_version: int
+    proposal_id: str
+    document_id: str
+    evidence_chunk_id: str
+    evidence_start: int
+    evidence_end: int
+    subject_entity_id: str
+    predicate: str
+    object_entity_id: str
+    extractor_version: str
+    confidence: float
+
+    CONTRACT_NAME: ClassVar[str] = "relationship_proposal"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> RelationshipProposal:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError(
+                "relationship proposal must be an object"
+            )
+        fields = frozenset(
+            {
+                "schema_version",
+                "proposal_id",
+                "document_id",
+                "evidence_chunk_id",
+                "evidence_start",
+                "evidence_end",
+                "subject_entity_id",
+                "predicate",
+                "object_entity_id",
+                "extractor_version",
+                "confidence",
+            }
+        )
+        _require_exact_fields(payload, required=fields)
+        subject = _require_bounded_string(
+            payload["subject_entity_id"], "subject_entity_id", 128
+        )
+        object_id = _require_bounded_string(
+            payload["object_entity_id"], "object_entity_id", 128
+        )
+        if subject == object_id:
+            raise ContractValidationError(
+                "relationship proposal cannot be a self-edge"
+            )
+        predicate = _require_bounded_string(
+            payload["predicate"], "predicate", 64
+        )
+        if not SAFE_ERROR_CODE.fullmatch(predicate):
+            raise ContractValidationError("predicate must be a safe code")
+        start = _require_integer_between(
+            payload["evidence_start"], "evidence_start", 0, 2_147_483_647
+        )
+        end = _require_integer_between(
+            payload["evidence_end"], "evidence_end", 1, 2_147_483_647
+        )
+        if end <= start:
+            raise ContractValidationError("evidence_end must exceed evidence_start")
+        return cls(
+            schema_version=_validate_schema_version(payload["schema_version"]),
+            proposal_id=_require_bounded_string(
+                payload["proposal_id"], "proposal_id", 128
+            ),
+            document_id=_require_bounded_string(
+                payload["document_id"], "document_id", 128
+            ),
+            evidence_chunk_id=_require_bounded_string(
+                payload["evidence_chunk_id"], "evidence_chunk_id", 128
+            ),
+            evidence_start=start,
+            evidence_end=end,
+            subject_entity_id=subject,
+            predicate=predicate,
+            object_entity_id=object_id,
+            extractor_version=_require_bounded_string(
+                payload["extractor_version"], "extractor_version", 128
+            ),
+            confidence=_require_confidence(payload["confidence"]),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "proposal_id": self.proposal_id,
+            "document_id": self.document_id,
+            "evidence_chunk_id": self.evidence_chunk_id,
+            "evidence_start": self.evidence_start,
+            "evidence_end": self.evidence_end,
+            "subject_entity_id": self.subject_entity_id,
+            "predicate": self.predicate,
+            "object_entity_id": self.object_entity_id,
+            "extractor_version": self.extractor_version,
+            "confidence": self.confidence,
+        }
+
+
+@dataclass(frozen=True)
 class AcquisitionEnvelope:
     """Redacted record of one bounded source acquisition attempt."""
 
@@ -1446,6 +1646,8 @@ ContractEnvelope = (
     | EvidenceItem
     | AcquisitionWorkRequest
     | AcquisitionWorkResult
+    | EntityProposal
+    | RelationshipProposal
     | AcquisitionEnvelope
     | JobRecord
     | JobEvent
@@ -1459,6 +1661,8 @@ _CONTRACT_TYPES = {
     EvidenceItem.CONTRACT_NAME: EvidenceItem,
     AcquisitionWorkRequest.CONTRACT_NAME: AcquisitionWorkRequest,
     AcquisitionWorkResult.CONTRACT_NAME: AcquisitionWorkResult,
+    EntityProposal.CONTRACT_NAME: EntityProposal,
+    RelationshipProposal.CONTRACT_NAME: RelationshipProposal,
     AcquisitionEnvelope.CONTRACT_NAME: AcquisitionEnvelope,
     JobRecord.CONTRACT_NAME: JobRecord,
     JobEvent.CONTRACT_NAME: JobEvent,

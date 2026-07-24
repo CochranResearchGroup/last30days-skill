@@ -3,10 +3,15 @@
 import sys
 import threading
 from datetime import datetime, timezone
+from types import SimpleNamespace
 
 from lib import service_contracts as contracts
 from lib.service_retrieval import HybridRetriever
-from lib.service_runtime import AcquisitionLoop, build_acquisition_runtime
+from lib.service_runtime import (
+    AcquisitionLoop,
+    EnrichmentLoop,
+    build_acquisition_runtime,
+)
 
 
 NOW = datetime(2026, 7, 24, 12, 0, tzinfo=timezone.utc)
@@ -126,3 +131,91 @@ def test_acquisition_loop_cancels_active_work_before_join():
 
     assert runner.cancelled is True
     assert loop.is_alive is False
+
+
+def test_enrichment_loop_publishes_changed_projection_asynchronously():
+    class Enrichment:
+        def __init__(self):
+            self.called = threading.Event()
+
+        def embed_chunks(self):
+            self.called.set()
+            return SimpleNamespace(embeddings_written=2)
+
+        def extract_and_promote_entities(self):
+            return SimpleNamespace(accepted_count=1)
+
+    class Retriever:
+        def __init__(self):
+            self.published = 0
+
+        def publish_index(self):
+            self.published += 1
+
+    enrichment = Enrichment()
+    retriever = Retriever()
+    loop = EnrichmentLoop(enrichment, retriever, interval_seconds=0.01)
+
+    loop.start()
+    assert enrichment.called.wait(1)
+    loop.stop(timeout=1)
+
+    assert retriever.published >= 1
+    assert loop.last_error_code is None
+
+
+def test_enrichment_loop_failure_isolated_from_runtime():
+    class BrokenEnrichment:
+        def __init__(self):
+            self.called = threading.Event()
+
+        def embed_chunks(self):
+            self.called.set()
+            raise RuntimeError("provider details")
+
+        def extract_and_promote_entities(self):
+            raise AssertionError("cycle must stop after embedding failure")
+
+    class Retriever:
+        def publish_index(self):
+            raise AssertionError("failed enrichment must not publish")
+
+    enrichment = BrokenEnrichment()
+    loop = EnrichmentLoop(enrichment, Retriever(), interval_seconds=0.01)
+
+    loop.start()
+    assert enrichment.called.wait(1)
+    loop.stop(timeout=1)
+
+    assert loop.last_error_code == "enrichment_loop_failure"
+    assert loop.is_alive is False
+
+
+def test_enrichment_loop_reports_returned_provider_failure():
+    class FailedEnrichment:
+        def __init__(self):
+            self.called = threading.Event()
+
+        def embed_chunks(self):
+            self.called.set()
+            return SimpleNamespace(
+                status="failed",
+                error_code="embedding_provider_error",
+                embeddings_written=0,
+            )
+
+        def extract_and_promote_entities(self):
+            return SimpleNamespace(accepted_count=0)
+
+    class Retriever:
+        def publish_index(self):
+            raise AssertionError("failed enrichment must not publish")
+
+    enrichment = FailedEnrichment()
+    loop = EnrichmentLoop(enrichment, Retriever(), interval_seconds=60)
+
+    loop.start()
+    assert enrichment.called.wait(1)
+    loop.stop(timeout=1)
+
+    assert loop.last_error_code == "embedding_provider_error"

@@ -1,11 +1,13 @@
 """Behavioral tests for the cache-first intelligence application."""
 
 import json
+import sqlite3
 from datetime import datetime, timezone
 from types import SimpleNamespace
 
 from lib import service_contracts as contracts
 from lib.service_app import CacheQueryApplication
+from lib.service_retrieval import HybridRetriever
 from lib.service_store import ServiceStore
 
 
@@ -298,6 +300,45 @@ def test_service_discovery_reports_durable_acquisition_sources(tmp_path):
     assert info.sources["youtube"]["acquisition_ready"] is False
     assert info.sources["youtube"]["acquisition_status"] == "configured"
     assert info.sources["x"]["indexed_documents"] == 0
+
+
+def test_semantic_capability_requires_a_live_query_provider(tmp_path):
+    class Embedder:
+        model = "fixture-v1"
+
+        def embed(self, texts):
+            return [[1.0, 0.0] for _ in texts]
+
+    db_path = tmp_path / "semantic-capability.db"
+    retriever = HybridRetriever(db_path, embedding_provider=Embedder())
+    retriever.initialize()
+    conn = sqlite3.connect(db_path)
+    topic_id = conn.execute(
+        "INSERT INTO topics(name) VALUES ('semantic capability')"
+    ).lastrowid
+    run_id = conn.execute(
+        """INSERT INTO research_runs(topic_id, run_date, status)
+           VALUES (?, '2026-07-24T12:00:00Z', 'completed')""",
+        (topic_id,),
+    ).lastrowid
+    conn.execute(
+        """INSERT INTO findings
+           (run_id, topic_id, source, source_url, source_title, content,
+            first_seen, last_seen)
+           VALUES (?, ?, 'web', 'https://example.test/semantic', 'Semantic',
+                   'semantic evidence', '2026-07-24T12:00:00Z',
+                   '2026-07-24T12:00:00Z')""",
+        (run_id, topic_id),
+    )
+    conn.commit()
+    conn.close()
+    retriever.index_legacy_findings()
+
+    disconnected = CacheQueryApplication(db_path, FakeRetriever([]))
+    connected = CacheQueryApplication(db_path, retriever)
+
+    assert "semantic_search" not in disconnected.service_info().capabilities
+    assert "semantic_search" in connected.service_info().capabilities
 
 
 def test_service_discovery_degrades_when_acquisition_loop_reports_failure(tmp_path):
