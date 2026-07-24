@@ -12,7 +12,7 @@ that directory recursively, so only runtime files belong there:
 - `scripts/last30days.py`
 - `scripts/lib/`
 - runtime helpers such as `store.py`, `watchlist.py`, `briefing.py`,
-  `setup-keychain.sh`, and `setup-pass.sh`
+  `service.py`, `install-service.sh`, `setup-keychain.sh`, and `setup-pass.sh`
 - `references/`
 
 Repo-only files stay outside the installable skill:
@@ -86,6 +86,20 @@ PYTHONPATH="$HOME/.agents/skills/last30days/scripts" \
 The installed copy should not contain `assets/`, `agents/`,
 `scripts/build-skill.sh`, `scripts/evaluate_search_quality.py`,
 `scripts/test_device_auth.py`, or `scripts/verify_v3.py`.
+
+For a Linux service-backed dogfood run:
+
+```bash
+bash "$HOME/.agents/skills/last30days/scripts/install-service.sh"
+python3 "$HOME/.agents/skills/last30days/scripts/service.py" status
+python3 "$HOME/.agents/skills/last30days/scripts/service.py" \
+  query "last30days installed service smoke" --freshness cache_only
+```
+
+Then connect the MCP bundle and verify its listed surface is `service_info`,
+`query`, `refresh`, `job_status`, and `topic`. Verify the capability, source,
+and topic resources. A query handler must not launch
+`last30days.py` or create a browser process.
 
 ## 6. Dogfood the installed engine
 

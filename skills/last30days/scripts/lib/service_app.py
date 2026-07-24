@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import hashlib
+import re
 import sqlite3
 from collections.abc import Callable, Mapping, Sequence
 from datetime import datetime, timezone
@@ -44,6 +46,10 @@ class RefreshScheduler(Protocol):
     ) -> contracts.CacheStatus: ...
 
 
+class JobReader(Protocol):
+    def get_job(self, job_id: str) -> contracts.JobRecord: ...
+
+
 class CacheQueryApplication:
     """Deep application interface for health, discovery, and bounded queries."""
 
@@ -53,6 +59,7 @@ class CacheQueryApplication:
         retriever: RetrievalBackend,
         *,
         refresh_scheduler: RefreshScheduler | None = None,
+        job_reader: JobReader | None = None,
         acquisition_sources: Sequence[str] = (),
         acquisition_readiness: Mapping[str, bool] | None = None,
         runtime_error: Callable[[], str | None] | None = None,
@@ -62,6 +69,7 @@ class CacheQueryApplication:
         self.db_path = Path(db_path)
         self.retriever = retriever
         self.refresh_scheduler = refresh_scheduler
+        self.job_reader = job_reader
         self.acquisition_sources = tuple(sorted(set(acquisition_sources)))
         self.acquisition_readiness = dict(acquisition_readiness or {})
         self.runtime_error = runtime_error or (lambda: None)
@@ -218,6 +226,224 @@ class CacheQueryApplication:
                 "transport": "unix",
             }
         )
+
+    def job(self, job_id: str) -> contracts.JobRecord:
+        if (
+            self.job_reader is None
+            or not isinstance(job_id, str)
+            or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}", job_id) is None
+        ):
+            raise KeyError("job not found")
+        return self.job_reader.get_job(job_id)
+
+    @staticmethod
+    def _topic_row(row: sqlite3.Row) -> dict[str, object]:
+        try:
+            search_queries = json.loads(row["search_queries"] or "[]")
+        except json.JSONDecodeError:
+            search_queries = []
+        return {
+            "topic_id": str(row["id"]),
+            "name": row["name"],
+            "search_queries": search_queries,
+            "schedule": row["schedule"],
+            "enabled": bool(row["enabled"]),
+            "created_at": row["created_at"],
+            "updated_at": row["updated_at"],
+        }
+
+    def topic(self, payload: Mapping[str, object]) -> dict[str, object]:
+        """Apply one bounded operator topic action through the service authority."""
+        action = payload.get("action")
+        if action not in {
+            "list",
+            "create",
+            "update",
+            "pause",
+            "resume",
+            "request_refresh",
+        }:
+            raise contracts.ContractValidationError("invalid topic action")
+        conn = self._connect()
+        try:
+            if action == "list":
+                rows = conn.execute("SELECT * FROM topics ORDER BY name").fetchall()
+                return {
+                    "schema_version": contracts.SCHEMA_VERSION,
+                    "action": action,
+                    "topics": [self._topic_row(row) for row in rows],
+                    "job_id": None,
+                }
+
+            topic_id = payload.get("topic_id")
+            name = payload.get("name")
+            if action == "create":
+                if not isinstance(name, str) or not name.strip() or len(name) > 256:
+                    raise contracts.ContractValidationError(
+                        "topic create requires a bounded name"
+                    )
+                queries = payload.get("search_queries", [])
+                if (
+                    not isinstance(queries, list)
+                    or len(queries) > 32
+                    or any(
+                        not isinstance(item, str)
+                        or not item.strip()
+                        or len(item) > 4096
+                        for item in queries
+                    )
+                ):
+                    raise contracts.ContractValidationError(
+                        "search_queries must contain bounded strings"
+                    )
+                schedule = payload.get("schedule", "0 8 * * *")
+                if (
+                    not isinstance(schedule, str)
+                    or not schedule.strip()
+                    or len(schedule) > 128
+                ):
+                    raise contracts.ContractValidationError("invalid topic schedule")
+                conn.execute(
+                    """INSERT INTO topics (name, search_queries, schedule, enabled)
+                       VALUES (?, ?, ?, 1)""",
+                    (
+                        name.strip(),
+                        json.dumps(queries, separators=(",", ":"), ensure_ascii=False),
+                        schedule.strip(),
+                    ),
+                )
+                conn.commit()
+                topic_id = str(conn.execute("SELECT last_insert_rowid()").fetchone()[0])
+
+            if not isinstance(topic_id, str) or not topic_id.isdecimal():
+                raise contracts.ContractValidationError(
+                    "topic action requires a numeric topic_id"
+                )
+            row = conn.execute(
+                "SELECT * FROM topics WHERE id = ?", (int(topic_id),)
+            ).fetchone()
+            if row is None:
+                raise KeyError("topic not found")
+
+            if action == "update":
+                updates: list[str] = []
+                values: list[object] = []
+                if "name" in payload:
+                    if (
+                        not isinstance(name, str)
+                        or not name.strip()
+                        or len(name) > 256
+                    ):
+                        raise contracts.ContractValidationError("invalid topic name")
+                    updates.append("name = ?")
+                    values.append(name.strip())
+                if "search_queries" in payload:
+                    queries = payload["search_queries"]
+                    if (
+                        not isinstance(queries, list)
+                        or len(queries) > 32
+                        or any(
+                            not isinstance(item, str)
+                            or not item.strip()
+                            or len(item) > 4096
+                            for item in queries
+                        )
+                    ):
+                        raise contracts.ContractValidationError(
+                            "invalid topic search_queries"
+                        )
+                    updates.append("search_queries = ?")
+                    values.append(
+                        json.dumps(queries, separators=(",", ":"), ensure_ascii=False)
+                    )
+                if "schedule" in payload:
+                    schedule = payload["schedule"]
+                    if (
+                        not isinstance(schedule, str)
+                        or not schedule.strip()
+                        or len(schedule) > 128
+                    ):
+                        raise contracts.ContractValidationError(
+                            "invalid topic schedule"
+                        )
+                    updates.append("schedule = ?")
+                    values.append(schedule.strip())
+                if not updates:
+                    raise contracts.ContractValidationError(
+                        "topic update requires a mutable field"
+                    )
+                updates.append("updated_at = datetime('now')")
+                conn.execute(
+                    f"UPDATE topics SET {', '.join(updates)} WHERE id = ?",
+                    (*values, int(topic_id)),
+                )
+                conn.commit()
+            elif action in {"pause", "resume"}:
+                conn.execute(
+                    """UPDATE topics
+                       SET enabled = ?, updated_at = datetime('now')
+                       WHERE id = ?""",
+                    (1 if action == "resume" else 0, int(topic_id)),
+                )
+                conn.commit()
+
+            row = conn.execute(
+                "SELECT * FROM topics WHERE id = ?", (int(topic_id),)
+            ).fetchone()
+            assert row is not None
+            job_id = None
+            if action == "request_refresh":
+                if self.refresh_scheduler is None:
+                    raise RuntimeError("durable refresh is unavailable")
+                topic = self._topic_row(row)
+                queries = topic["search_queries"]
+                query = (
+                    queries[0]
+                    if isinstance(queries, list) and queries
+                    else str(topic["name"])
+                )
+                sources = payload.get("sources", [])
+                if not isinstance(sources, list):
+                    raise contracts.ContractValidationError(
+                        "sources must be an array"
+                    )
+                request_seed = json.dumps(
+                    {
+                        "topic_id": topic_id,
+                        "query": query,
+                        "sources": sources,
+                        "at": self.clock().isoformat(),
+                    },
+                    sort_keys=True,
+                    separators=(",", ":"),
+                )
+                request = contracts.QueryRequest.from_dict(
+                    {
+                        "schema_version": contracts.SCHEMA_VERSION,
+                        "request_id": "topic-"
+                        + hashlib.sha256(request_seed.encode()).hexdigest()[:24],
+                        "profile_id": "default",
+                        "query": query,
+                        "freshness_policy": "force_refresh",
+                        "response_mode": "evidence",
+                        "filters": {
+                            "topic_ids": [topic_id],
+                            **({"sources": sources} if sources else {}),
+                        },
+                        "top_k": 8,
+                        "max_chars": 8192,
+                        "wait_ms": 0,
+                    }
+                )
+                job_id = self.refresh_scheduler.ensure_refresh(request)
+            return {
+                "schema_version": contracts.SCHEMA_VERSION,
+                "action": action,
+                "topics": [self._topic_row(row)],
+                "job_id": job_id,
+            }
+        finally:
+            conn.close()
 
     @staticmethod
     def _parse_timestamp(value: str) -> datetime:
@@ -417,6 +643,7 @@ def initialize_application(
     retriever: RetrievalBackend,
     *,
     refresh_scheduler: RefreshScheduler | None = None,
+    job_reader: JobReader | None = None,
     acquisition_sources: Sequence[str] = (),
     acquisition_readiness: Mapping[str, bool] | None = None,
     runtime_error: Callable[[], str | None] | None = None,
@@ -427,6 +654,7 @@ def initialize_application(
         db_path,
         retriever,
         refresh_scheduler=refresh_scheduler,
+        job_reader=job_reader,
         acquisition_sources=acquisition_sources,
         acquisition_readiness=acquisition_readiness,
         runtime_error=runtime_error,

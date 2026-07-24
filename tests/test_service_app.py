@@ -5,6 +5,8 @@ import sqlite3
 from datetime import datetime, timezone
 from types import SimpleNamespace
 
+import pytest
+
 from lib import service_contracts as contracts
 from lib.service_app import CacheQueryApplication
 from lib.service_retrieval import HybridRetriever
@@ -44,6 +46,44 @@ class FakeRefreshScheduler:
     def cache_status(self, request, fallback):
         del request
         return fallback
+
+
+def test_topic_actions_are_service_owned_and_refresh_is_durable(tmp_path):
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    scheduler = FakeRefreshScheduler()
+    app = CacheQueryApplication(
+        db_path,
+        FakeRetriever([]),
+        refresh_scheduler=scheduler,
+        clock=lambda: datetime(2026, 7, 24, 12, 0, tzinfo=timezone.utc),
+    )
+
+    created = app.topic(
+        {
+            "action": "create",
+            "name": "Browser infrastructure",
+            "search_queries": ["agent browser service"],
+            "schedule": "0 8 * * *",
+        }
+    )
+    topic_id = created["topics"][0]["topic_id"]
+    paused = app.topic({"action": "pause", "topic_id": topic_id})
+    resumed = app.topic({"action": "resume", "topic_id": topic_id})
+    refreshed = app.topic(
+        {"action": "request_refresh", "topic_id": topic_id, "sources": ["reddit"]}
+    )
+
+    assert paused["topics"][0]["enabled"] is False
+    assert resumed["topics"][0]["enabled"] is True
+    assert refreshed["job_id"].startswith("job-topic-")
+    assert scheduler.requests[0].filters == {
+        "topic_ids": [topic_id],
+        "sources": ["reddit"],
+    }
+    assert app.topic({"action": "list"})["topics"][0]["name"] == (
+        "Browser infrastructure"
+    )
 
 
 def _request(**overrides):
@@ -354,6 +394,24 @@ def test_service_discovery_degrades_when_acquisition_loop_reports_failure(tmp_pa
 
     assert app.health()["status"] == "degraded"
     assert app.service_info().status is contracts.ServiceStatus.DEGRADED
+
+
+def test_job_poll_uses_typed_reader_and_rejects_unsafe_ids(tmp_path):
+    class Reader:
+        def get_job(self, job_id):
+            return SimpleNamespace(job_id=job_id)
+
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    app = CacheQueryApplication(
+        db_path,
+        FakeRetriever([]),
+        job_reader=Reader(),
+    )
+
+    assert app.job("job-001").job_id == "job-001"
+    with pytest.raises(KeyError):
+        app.job("../unsafe")
 
 
 def test_minimum_response_budget_is_enforced_with_oversized_metadata(tmp_path):

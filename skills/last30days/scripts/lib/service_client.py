@@ -5,6 +5,7 @@ from __future__ import annotations
 import http.client
 import json
 import socket
+import urllib.parse
 from pathlib import Path
 from typing import Any
 
@@ -88,3 +89,12 @@ class ServiceClient:
         return contracts.QueryResponse.from_dict(
             self._request("POST", "/v1/query", request.to_dict())
         )
+
+    def job(self, job_id: str) -> contracts.JobRecord:
+        encoded = urllib.parse.quote(job_id, safe="")
+        return contracts.JobRecord.from_dict(
+            self._request("GET", f"/v1/jobs/{encoded}")
+        )
+
+    def topic(self, payload: dict[str, object]) -> dict[str, Any]:
+        return self._request("POST", "/v1/topic", payload)

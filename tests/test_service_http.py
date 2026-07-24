@@ -8,7 +8,7 @@ import threading
 import pytest
 
 from lib import service_contracts as contracts
-from lib.service_client import ServiceClient
+from lib.service_client import ServiceClient, ServiceClientError
 from lib.service_http import ServiceAlreadyRunningError, UnixServiceServer
 
 
@@ -67,6 +67,40 @@ class StubApplication:
             }
         )
 
+    def job(self, job_id):
+        if job_id != "job-001":
+            raise KeyError(job_id)
+        return contracts.JobRecord.from_dict(
+            {
+                "schema_version": 1,
+                "job_id": job_id,
+                "job_type": "refresh",
+                "dedupe_key": "sha256:dedupe",
+                "state": "published",
+                "query_request_id": "query-001",
+                "attempts": 1,
+                "max_attempts": 2,
+                "budget_cents": 100,
+                "spent_cents": 0,
+                "lease_generation": 1,
+                "lease_owner": None,
+                "lease_expires_at": None,
+                "not_before_at": None,
+                "created_at": "2026-07-24T12:00:00Z",
+                "updated_at": "2026-07-24T12:00:01Z",
+                "published_index_version": "index-001",
+                "error_code": None,
+            }
+        )
+
+    def topic(self, payload):
+        return {
+            "schema_version": 1,
+            "action": payload["action"],
+            "topics": [],
+            "job_id": None,
+        }
+
 
 def test_unix_service_exposes_health_and_capabilities_with_private_socket(tmp_path):
     socket_path = tmp_path / "runtime" / "service.sock"
@@ -96,6 +130,8 @@ def test_unix_service_exposes_health_and_capabilities_with_private_socket(tmp_pa
             )
         )
         assert response.cache_status is contracts.CacheStatus.MISS
+        assert client.job("job-001").state is contracts.JobState.PUBLISHED
+        assert client.topic({"action": "list"})["action"] == "list"
         assert stat.S_IMODE(socket_path.stat().st_mode) == 0o600
         assert stat.S_IMODE((socket_path.parent / "service.lock").stat().st_mode) == 0o600
     finally:
@@ -104,6 +140,20 @@ def test_unix_service_exposes_health_and_capabilities_with_private_socket(tmp_pa
         thread.join(timeout=2)
 
     assert not socket_path.exists()
+
+
+def test_job_endpoint_returns_safe_not_found(tmp_path):
+    socket_path = tmp_path / "runtime" / "service.sock"
+    server = UnixServiceServer(socket_path, StubApplication())
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        with pytest.raises(ServiceClientError, match="job_not_found"):
+            ServiceClient(socket_path).job("missing")
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=2)
 
 
 def test_second_server_cannot_unlink_or_replace_the_live_socket(tmp_path):

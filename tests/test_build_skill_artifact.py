@@ -27,6 +27,7 @@ def test_build_skill_excludes_skillignore_entries() -> None:
     assert "last30days/scripts/last30days.py" in names
     assert "last30days/scripts/store.py" in names
     assert "last30days/scripts/service.py" in names
+    assert "last30days/scripts/install-service.sh" in names
     assert "last30days/scripts/watchlist.py" in names
     assert "last30days/scripts/lib/facebook.py" in names
     assert "last30days/scripts/lib/service_contracts.py" in names

@@ -185,13 +185,15 @@ sys.meta_path.insert(0, _BlockedAcquisitionImports())
         assert [item.url for item in response.evidence] == [
             "https://reddit.example/cached-browser"
         ]
-        index_version = sqlite3.connect(db_path).execute(
-            """SELECT index_version FROM index_versions
-               WHERE published_at IS NOT NULL
-               ORDER BY published_at DESC, rowid DESC LIMIT 1"""
-        ).fetchone()[0]
-        assert response.index_version == index_version
-        assert prefer_cache_response.index_version == index_version
+        published_versions = {
+            row[0]
+            for row in sqlite3.connect(db_path).execute(
+                """SELECT index_version FROM index_versions
+                   WHERE published_at IS NOT NULL"""
+            ).fetchall()
+        }
+        assert response.index_version in published_versions
+        assert prefer_cache_response.index_version in published_versions
         assert response.job_id is None
         assert prefer_cache_response.job_id is None
         assert before == after

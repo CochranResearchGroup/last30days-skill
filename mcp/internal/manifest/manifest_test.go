@@ -71,8 +71,8 @@ func TestManifestRequiredFields(t *testing.T) {
 	if m.Name != "last30days-pp-mcp" {
 		t.Errorf("name = %q, want last30days-pp-mcp", m.Name)
 	}
-	if m.Version == "" {
-		t.Error("version is empty")
+	if m.Version != "4.0.0" {
+		t.Errorf("version = %q, want 4.0.0", m.Version)
 	}
 	if m.Server.Type != "binary" {
 		t.Errorf("server.type = %q, want binary", m.Server.Type)
@@ -131,6 +131,9 @@ func TestEnvAndUserConfigCrossReference(t *testing.T) {
 
 func TestUserConfigShape(t *testing.T) {
 	m := loadManifest(t)
+	if len(m.UserConfig) != 1 {
+		t.Fatalf("user_config has %d entries, want only the service socket", len(m.UserConfig))
+	}
 	for key, slot := range m.UserConfig {
 		if slot.Type != "string" {
 			t.Errorf("user_config[%q].type = %q, want string", key, slot.Type)
@@ -141,29 +144,36 @@ func TestUserConfigShape(t *testing.T) {
 		if slot.Description == "" {
 			t.Errorf("user_config[%q].description is empty", key)
 		}
-		if !slot.Sensitive {
-			// API keys must be flagged sensitive so Claude Desktop masks
-			// the input and prefers OS-keychain storage.
-			t.Errorf("user_config[%q].sensitive = false; want true for API credentials", key)
+		if slot.Sensitive {
+			t.Errorf("user_config[%q].sensitive = true; a local socket path is not a credential", key)
 		}
 		if slot.Required {
-			// The engine degrades to web-only mode without keys, so no
-			// key is install-blocking.
-			t.Errorf("user_config[%q].required = true; engine degrades without keys, so all keys are optional", key)
+			t.Errorf("user_config[%q].required = true; runtime discovery can resolve the default socket", key)
+		}
+	}
+}
+
+func TestManifestDelegatesCredentialsToServiceBoundary(t *testing.T) {
+	m := loadManifest(t)
+	if len(m.Server.MCPConfig.Env) != 1 {
+		t.Fatalf("MCP env has %d entries, want only the service socket", len(m.Server.MCPConfig.Env))
+	}
+	if _, ok := m.Server.MCPConfig.Env["LAST30DAYS_SERVICE_SOCKET"]; !ok {
+		t.Fatal("LAST30DAYS_SERVICE_SOCKET is not wired")
+	}
+	for name := range m.Server.MCPConfig.Env {
+		if strings.Contains(name, "KEY") || strings.Contains(name, "TOKEN") ||
+			strings.Contains(name, "PASSWORD") {
+			t.Fatalf("thin MCP adapter must not receive acquisition credential %q", name)
 		}
 	}
 }
 
 func TestPlatformsMatchShippingMatrix(t *testing.T) {
-	// compatibility.platforms must list exactly what the release CI
-	// actually packages. Listing a platform we don't ship would let
-	// Claude Desktop start an install that has no matching binary inside
-	// the bundle, producing a silent failure. The CI matrix in
-	// .github/workflows/release.yml currently covers darwin (arm64 +
-	// amd64) and linux/amd64; Windows is deferred.
+	// The packaged daemon bootstrap is intentionally Linux-only for v4.
 	m := loadManifest(t)
-	required := map[string]bool{"darwin": false, "linux": false}
-	forbidden := map[string]bool{"win32": true}
+	required := map[string]bool{"linux": false}
+	forbidden := map[string]bool{"darwin": true, "win32": true}
 	for _, p := range m.Compatibility.Platforms {
 		if _, ok := required[p]; ok {
 			required[p] = true

@@ -409,6 +409,36 @@ are owner-readable/writable only (`0600`). These paths contain no browser
 cookies or credentials; authenticated acquisition remains isolated in named
 user-scoped profiles.
 
+Install and start the Linux user service from an installed Skill directory:
+
+```bash
+bash scripts/install-service.sh
+python3 scripts/service.py status
+python3 scripts/service.py query "agent browser reliability" --freshness prefer_cache
+python3 scripts/service.py job <job-id>
+```
+
+`install-service.sh --print-unit` renders the unit without writing or starting
+anything. The installer writes
+`~/.config/systemd/user/last30days.service`, reloads the user manager, and
+enables the service. Its unit uses an owner-private umask,
+restart-on-failure, `NoNewPrivileges`, and a stable PATH containing
+`~/.local/bin` and the reference Linuxbrew paths.
+
+Service-enabled MCP clients expose five small operations:
+
+- `service_info`: discover readiness, sources, capabilities, and index state;
+- `query`: read cached evidence or a compact brief under an explicit freshness
+  policy;
+- `refresh`: create or join a bounded `force_refresh` job;
+- `job_status`: poll the typed durable job record;
+- `topic`: list or manage service-owned topics and request scheduled refreshes.
+
+The MCP adapter connects to the same Unix socket. A standalone MCPB packages
+the canonical runtime and may bootstrap the single shared daemon if absent. A
+query handler never launches the request-scoped research engine or operates a
+browser.
+
 The service never loads project-directory `.env` files. Its deterministic
 supervisor resolves acquisition settings at user scope:
 
@@ -439,6 +469,13 @@ proves authentication, so discovery does not mistake an installed
 `agent-browser` binary for a usable signed-in session. A background acquisition
 loop failure changes service status to `degraded` while cached queries remain
 available.
+
+Semantic enrichment uses the dependency-free `local-hash-v1` provider by
+default and publishes embeddings asynchronously. Generic deterministic entity
+extraction is enabled in the service runtime. Either enrichment lane may
+degrade without blocking lexical cache queries; discovery advertises semantic
+or graph search only when the current published index and live query provider
+can serve it.
 
 Each refresh has a host-owned attempt and cost ceiling. The host reserves the
 maximum configured adapter cost before launch (currently one cent for Reddit's

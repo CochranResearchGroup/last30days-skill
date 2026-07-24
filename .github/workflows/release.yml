@@ -44,21 +44,13 @@ jobs:
           name: last30days-skill
           path: dist/last30days.skill
 
-  # Cross-compile the Go MCP server for each Claude Desktop platform and
-  # package each as a .mcpb. printing-press bundle handles the manifest +
-  # zip layout; we only supply the pre-built binary via --skip-build.
+  # Package the Linux Go adapter and canonical Python service runtime together.
   build-mcpb:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - goos: darwin
-            goarch: arm64
-            platform: darwin/arm64
-          - goos: darwin
-            goarch: amd64
-            platform: darwin/amd64
           - goos: linux
             goarch: amd64
             platform: linux/amd64
@@ -84,8 +76,10 @@ jobs:
           GOSUMDB: "off"
         run: go install github.com/mvanhorn/cli-printing-press/v4/cmd/printing-press@v4.8.0
 
-      - name: Sync engine into vendored/
-        run: bash mcp/scripts/sync-engine.sh
+      - name: Generate and stage canonical service contracts/runtime
+        run: |
+          go -C mcp generate ./internal/contracts
+          bash mcp/scripts/sync-service-runtime.sh
 
       - name: Build MCP binary
         env:
@@ -110,6 +104,16 @@ jobs:
             --binary mcp/build/last30days-pp-mcp \
             --platform ${{ matrix.platform }} \
             --output mcp/build/last30days-pp-mcp-${{ matrix.goos }}-${{ matrix.goarch }}.mcpb
+          (
+            cd mcp
+            zip -q -r \
+              build/last30days-pp-mcp-${{ matrix.goos }}-${{ matrix.goarch }}.mcpb \
+              runtime
+          )
+          unzip -l \
+            mcp/build/last30days-pp-mcp-${{ matrix.goos }}-${{ matrix.goarch }}.mcpb |
+            grep -F "runtime/last30days/" |
+            grep -F "/service.py"
 
       - name: Upload .mcpb artifact
         uses: actions/upload-artifact@v4

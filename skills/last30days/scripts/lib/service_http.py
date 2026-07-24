@@ -9,6 +9,7 @@ import socket
 import socketserver
 import stat
 import struct
+import urllib.parse
 from http.server import BaseHTTPRequestHandler
 from pathlib import Path
 from typing import Any, Protocol
@@ -29,7 +30,11 @@ class ServiceApplication(Protocol):
 
     def service_info(self) -> contracts.ServiceInfo: ...
 
+    def job(self, job_id: str) -> contracts.JobRecord: ...
+
     def query(self, request: contracts.QueryRequest) -> contracts.QueryResponse: ...
+
+    def topic(self, payload: dict[str, object]) -> dict[str, object]: ...
 
 
 class _RequestHandler(BaseHTTPRequestHandler):
@@ -73,6 +78,10 @@ class _RequestHandler(BaseHTTPRequestHandler):
             )
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
+        self.send_header(
+            "X-Last30days-Contract-SHA256",
+            contracts.SCHEMA_CATALOG_SHA256,
+        )
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Connection", "close")
         self.end_headers()
@@ -97,12 +106,32 @@ class _RequestHandler(BaseHTTPRequestHandler):
             if self.path == "/v1/service-info":
                 self._write_json(200, self.application.service_info().to_dict())
                 return
+            if self.path in {"/v1/capabilities", "/v1/sources"}:
+                info = self.application.service_info().to_dict()
+                field = self.path.removeprefix("/v1/")
+                self._write_json(
+                    200,
+                    {
+                        "schema_version": contracts.SCHEMA_VERSION,
+                        field: info[field],
+                    },
+                )
+                return
+            if self.path == "/v1/topics":
+                self._write_json(200, self.application.topic({"action": "list"}))
+                return
+            if self.path.startswith("/v1/jobs/"):
+                job_id = urllib.parse.unquote(self.path.removeprefix("/v1/jobs/"))
+                self._write_json(200, self.application.job(job_id).to_dict())
+                return
             self._error(404, "not_found", "unknown service endpoint")
+        except KeyError:
+            self._error(404, "job_not_found", "job was not found")
         except Exception:
             self._error(500, "internal_error", "service request failed")
 
     def do_POST(self) -> None:
-        if self.path != "/v1/query":
+        if self.path not in {"/v1/query", "/v1/topic"}:
             self._error(404, "not_found", "unknown service endpoint")
             return
         raw_length = self.headers.get("Content-Length")
@@ -116,8 +145,15 @@ class _RequestHandler(BaseHTTPRequestHandler):
             return
         try:
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
-            request = contracts.QueryRequest.from_dict(payload)
-            response = self.application.query(request)
+            if not isinstance(payload, dict):
+                raise contracts.ContractValidationError(
+                    "request body must be an object"
+                )
+            if self.path == "/v1/query":
+                request = contracts.QueryRequest.from_dict(payload)
+                response = self.application.query(request).to_dict()
+            else:
+                response = self.application.topic(payload)
         except (UnicodeDecodeError, json.JSONDecodeError):
             self._error(400, "invalid_json", "request body must be valid JSON")
             return
@@ -128,7 +164,7 @@ class _RequestHandler(BaseHTTPRequestHandler):
         except Exception:
             self._error(500, "internal_error", "service request failed")
             return
-        self._write_json(200, response.to_dict())
+        self._write_json(200, response)
 
 
 class UnixServiceServer(socketserver.ThreadingMixIn, socketserver.UnixStreamServer):

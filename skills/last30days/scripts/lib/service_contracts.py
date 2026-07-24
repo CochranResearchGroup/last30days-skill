@@ -7,6 +7,7 @@ implementation details.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from dataclasses import dataclass
@@ -23,6 +24,7 @@ SCHEMA_CATALOG_PATH = (
     / "schemas"
     / f"service-contracts-v{SCHEMA_VERSION}.json"
 )
+SCHEMA_CATALOG_SHA256 = hashlib.sha256(SCHEMA_CATALOG_PATH.read_bytes()).hexdigest()
 FORBIDDEN_LEDGER_FIELDS = frozenset(
     {
         "access_token",

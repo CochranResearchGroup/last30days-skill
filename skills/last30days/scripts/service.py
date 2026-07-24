@@ -82,6 +82,7 @@ def _serve(args: argparse.Namespace) -> int:
         db_path,
         retriever,
         refresh_scheduler=acquisition.scheduler,
+        job_reader=acquisition.supervisor,
         acquisition_sources=acquisition.sources,
         acquisition_readiness=acquisition.source_readiness,
         runtime_error=lambda: (
@@ -166,6 +167,18 @@ def _query(args: argparse.Namespace) -> int:
     return 0
 
 
+def _job(args: argparse.Namespace) -> int:
+    socket_path = Path(args.socket) if args.socket else _default_socket_path()
+    client = ServiceClient(socket_path, timeout=args.timeout)
+    try:
+        job = client.job(args.job_id)
+    except ServiceClientError as exc:
+        print(json.dumps({"status": "error", "message": str(exc)}, sort_keys=True))
+        return 1
+    print(json.dumps(job.to_dict(), indent=2, sort_keys=True))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Run or query the local last30days intelligence service"
@@ -206,6 +219,12 @@ def build_parser() -> argparse.ArgumentParser:
     query.add_argument("--wait-ms", type=int, default=0)
     query.add_argument("--timeout", type=float, default=5.0)
     query.set_defaults(handler=_query)
+
+    job = subparsers.add_parser("job", help="Poll a durable refresh job")
+    job.add_argument("job_id")
+    job.add_argument("--socket")
+    job.add_argument("--timeout", type=float, default=5.0)
+    job.set_defaults(handler=_job)
 
     return parser
 

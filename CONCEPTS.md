@@ -4,13 +4,36 @@ Shared vocabulary for `last30days-skill`. Terms here have a precise project-spec
 
 ## The package
 
+### Intelligence Service
+
+The user-scoped, cache-backed product authority. It owns durable acquisition
+jobs, source authentication boundaries, normalized content, immutable search
+indexes, semantic enrichment, evidence-linked graph projections, and compact
+query responses. Agents discover and query it; they do not operate browsers or
+scrapers on its behalf.
+
 ### Skill
 
-A self-contained agent-instructions package consisting of a `SKILL.md` prose contract plus a sibling `scripts/` directory containing the executable code the SKILL.md invokes. The package conforms to the [Agent Skills](https://agentskills.io) open format and installs across every major harness (Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, and 50+ others) via `npx skills add`, harness-native plugin installers, or per-harness skill directories. A Skill is the unit of distribution; the Skill is the product.
+A self-contained agent-instructions package consisting of a `SKILL.md` prose contract plus a sibling `scripts/` directory. The package conforms to the [Agent Skills](https://agentskills.io) open format and installs across every major harness. A Skill is a distribution and synthesis surface; the Intelligence Service is the product authority.
+
+For service-enabled hosts, the Skill is a client and synthesis surface over the
+Intelligence Service. Its direct Engine workflow remains the portable
+operator/debug fallback.
 
 ### Engine
 
 The Python script (`scripts/last30days.py`) the Skill's SKILL.md invokes to do the actual research work. The Engine and SKILL.md have a contract: SKILL.md tells the model which flags to pass (`--plan`, `--competitors-plan`, `--x-handle`, `--subreddits`, `--emit=compact`, etc.), and the Engine produces a specific output shape (badge line, ranked evidence clusters, emoji-tree footer) that the model is contractually required to pass through. The Engine is implementation; the SKILL.md prose is the agent-facing surface.
+
+The Engine is request-scoped compatibility infrastructure. Service-backed
+agents use the cache/query contract instead of invoking it per request.
+
+### MCP Adapter
+
+The CGO-free Go process that exposes service discovery, cached query, durable
+refresh, and job polling as compact MCP tools/resources. It is deliberately a
+thin Unix-socket client: it contains no source acquisition logic. A packaged
+MCPB may start the one shared service daemon when absent, but query handlers
+never launch a request-scoped research subprocess.
 
 ### Harness
 

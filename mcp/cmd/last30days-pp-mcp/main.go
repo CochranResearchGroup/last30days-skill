@@ -1,7 +1,4 @@
-// Package main is the entry point for the last30days MCP server bundled
-// as a .mcpb for Claude Desktop. The server registers a single research
-// tool (see internal/tools) and serves it over stdio. See mcp/README.md
-// for build and packaging instructions.
+// Package main is the stdio MCP adapter for the local last30days service.
 package main
 
 import (
@@ -14,8 +11,6 @@ import (
 )
 
 // Version is stamped at build time via -ldflags "-X main.Version=<tag>".
-// It namespaces the per-user cache directory in internal/engine so multiple
-// installed versions can coexist without clobbering each other.
 var Version = "dev"
 
 const (
@@ -28,9 +23,10 @@ func main() {
 		serverName,
 		serverVersion,
 		server.WithToolCapabilities(false),
+		server.WithResourceCapabilities(false, false),
 	)
 
-	tools.Register(s, tools.Config{Version: Version})
+	tools.Register(s, tools.Config{})
 
 	if err := server.ServeStdio(s); err != nil {
 		fmt.Fprintf(os.Stderr, "last30days-pp-mcp: %v\n", err)

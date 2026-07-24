@@ -93,6 +93,37 @@ If the SKILL.md path you just Read contains `/.claude/plugins/marketplaces/` AND
 
 ---
 
+# SERVICE-FIRST PATH — USE BEFORE RESEARCH MECHANICS
+
+When the `last30days` MCP exposes `service_info`, `query`, `refresh`,
+`job_status`, and `topic`, those tools are the primary product surface. This path
+supersedes the request-scoped engine and browser instructions below:
+
+1. Call `service_info` to discover current sources, capabilities, index
+   version, and readiness. Do not infer readiness from installed binaries.
+2. Call `query` with the user's topic. Prefer `response_mode=brief` and the
+   default `prefer_cache`. Select `cache_only` when external work is prohibited.
+3. If the cache is stale/missing or the user requests fresh results, use
+   `refresh`; it creates or joins one durable,
+   bounded job. Use `job_status` with the returned job ID to poll. Do not
+   operate source adapters, browser tabs, cookies, profiles, or scraper CLIs.
+4. Synthesize only from the returned brief and cited evidence. Report cache
+   status, degraded sources, or `awaiting_operator` truthfully.
+5. Use `topic` only for explicit operator requests to list, create/update,
+   pause/resume, or request a scheduled topic refresh.
+
+On this path, do not run `scripts/last30days.py`, WebSearch preflight, handle
+resolution, or browser/scraper commands. The service owns acquisition,
+authentication state, retries, caching, indexing, and enrichment. The badge
+and voice laws still apply, but the engine-footer requirement does not: cite
+the evidence URLs returned by the service inline.
+
+If these tools are absent or `service_info` says the service is unavailable,
+continue with the direct-engine fallback below. That fallback is an
+operator/debug compatibility path, not the normal service path.
+
+---
+
 # SKILL CONTRACT — READ BEFORE ANY TOOL CALL
 
 You are inside the `/last30days` SKILL. This is a specific research tool with a 1400+ line instruction contract (the rest of this file) that defines EXACTLY how to produce the research output. It is not a generic "last 30 days of X" research prompt. Do NOT treat `/last30days` as a search keyword you can improvise against.

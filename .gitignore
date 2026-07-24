@@ -35,6 +35,7 @@ htmlcov/
 /mcp/internal/engine/vendored/*
 !/mcp/internal/engine/vendored/.gitkeep
 /mcp/build/
+/mcp/runtime/
 
 # Internal planning docs (ce:plan output) — keep local, don't publish
 docs/plans/

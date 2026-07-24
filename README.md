@@ -10,9 +10,14 @@
   </a>
 </p>
 
-**An AI agent-led search engine scored by upvotes, likes, and real money - not editors.**
+**A cache-backed intelligence service scored by upvotes, likes, and real money
+- without making agents operate scrapers or browsers.**
 
-This README tracks the current v3 pipeline. The runtime skill spec lives in [skills/last30days/SKILL.md](skills/last30days/SKILL.md), which is the source of truth for the latest command and setup behavior.
+The user-scoped Intelligence Service is the product authority. It owns
+acquisition, authentication boundaries, durable jobs, indexed content,
+semantic/graph enrichment, and reproducible query results. The Skill, MCP
+adapter, and CLI are client surfaces. The direct v3 engine remains an
+operator/debug compatibility path.
 
 New contributors and release reviewers should start with [docs/ONBOARDING.md](docs/ONBOARDING.md), which covers the installable runtime boundary, validation gates, and a safe dogfood checklist.
 
@@ -30,7 +35,10 @@ npx skills add mvanhorn/last30days-skill -g
 
 More install options (claude.ai web, OpenClaw, manual) in the [Install](#install) section below.
 
-Zero config. Reddit, HN, Polymarket, and GitHub work immediately. Run it once and the setup wizard unlocks X, YouTube, TikTok, and more in 30 seconds.
+Install the service once; agents then discover live source readiness and query
+the shared cache. Optional sources still require their user-scoped
+configuration and must not be described as ready until service discovery says
+so.
 
 ---
 
@@ -241,21 +249,24 @@ Enable "Code execution and file creation" under Capabilities first — skills wo
 
 ### Claude Desktop
 
-Claude Desktop installs `/last30days` as an MCP server via a `.mcpb` bundle (a one-click Model Context Protocol package).
+Claude Desktop connects to the user-scoped last30days service through a thin
+MCP bundle. The MCP process does not crawl pages or launch the Python research
+engine.
 
-1. Go to the [latest release](https://github.com/mvanhorn/last30days-skill/releases/latest) and download the `.mcpb` for your platform:
-   - macOS Apple Silicon: `last30days-pp-mcp-darwin-arm64.mcpb`
-   - macOS Intel: `last30days-pp-mcp-darwin-amd64.mcpb`
-   - Linux x86_64: `last30days-pp-mcp-linux-amd64.mcpb`
-2. Open Claude Desktop, go to Settings > Extensions, and drag the file in.
-3. When prompted, paste API keys for the sources you want to enable. Every field is optional — the engine degrades to web-only mode if you skip them all. Keys are stored in your OS keychain.
-4. Restart Claude Desktop. Ask Claude to "research Peter Steinberger" or any topic and it will call the `research` tool.
+1. Install the Skill and start its Linux user service with
+   `bash scripts/install-service.sh`.
+2. Download `last30days-pp-mcp-linux-amd64.mcpb` from the
+   [latest release](https://github.com/mvanhorn/last30days-skill/releases/latest).
+3. Open Claude Desktop, go to Settings > Extensions, and drag the bundle in.
+4. Restart Claude Desktop. It can discover `service_info`, query cached
+   intelligence, request a bounded refresh, and poll the resulting job.
 
-**Host requirement:** Python 3.12+ on PATH. The bundle ships the engine source but uses your local Python interpreter. Install from [python.org](https://www.python.org/downloads/) on Windows; macOS and most Linux distros ship a compatible version.
+**Host requirement:** Linux with systemd user services and Python 3.12+.
+Source credentials remain in `~/.config/last30days/.env` or named profile
+files; they are never copied into the MCP bundle.
 
-**Keys don't sync with the Code skill.** Claude Desktop and Claude Code maintain separate credential stores by design. If you already configured `~/.config/last30days/.env` for the Code skill, you'll re-enter the same keys here once.
-
-Windows support is deferred until per-platform manifest entry points are sorted out; track in a follow-up issue.
+macOS and Windows MCP bundles are deferred until they have a managed,
+owner-private service bootstrap equivalent to the Linux user unit.
 
 ### OpenClaw
 
