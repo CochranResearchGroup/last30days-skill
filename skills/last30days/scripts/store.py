@@ -30,6 +30,10 @@ DB_PATH = DB_DIR / "research.db"
 _db_override = None
 
 
+class SchemaVersionError(RuntimeError):
+    """Raised when the on-disk database is incompatible with this runtime."""
+
+
 def _get_db_path() -> Path:
     return _db_override or DB_PATH
 
@@ -182,6 +186,259 @@ CREATE INDEX IF NOT EXISTS idx_finding_sightings_topic_seen
 CREATE INDEX IF NOT EXISTS idx_finding_sightings_url
     ON finding_sightings(source_url);
 """,
+    3: """
+CREATE TABLE IF NOT EXISTS service_envelopes (
+    envelope_type TEXT NOT NULL,
+    envelope_id TEXT NOT NULL,
+    schema_version INTEGER NOT NULL,
+    payload_json TEXT NOT NULL,
+    payload_sha256 TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    PRIMARY KEY (envelope_type, envelope_id)
+);
+
+CREATE TABLE IF NOT EXISTS service_jobs (
+    job_id TEXT PRIMARY KEY,
+    job_type TEXT NOT NULL,
+    dedupe_key TEXT NOT NULL,
+    state TEXT NOT NULL,
+    query_request_id TEXT NOT NULL,
+    attempts INTEGER NOT NULL DEFAULT 0,
+    max_attempts INTEGER NOT NULL,
+    budget_cents INTEGER NOT NULL DEFAULT 0,
+    lease_owner TEXT,
+    lease_expires_at TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    published_index_version TEXT,
+    error_code TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_service_jobs_state_created
+    ON service_jobs(state, created_at);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_service_jobs_active_dedupe
+    ON service_jobs(dedupe_key)
+    WHERE state IN (
+        'queued',
+        'planning',
+        'acquiring',
+        'normalizing',
+        'indexing',
+        'enriching',
+        'validating',
+        'awaiting_operator'
+    );
+CREATE INDEX IF NOT EXISTS idx_service_jobs_lease
+    ON service_jobs(lease_expires_at)
+    WHERE lease_owner IS NOT NULL;
+
+CREATE TABLE IF NOT EXISTS service_job_events (
+    event_id TEXT PRIMARY KEY,
+    job_id TEXT NOT NULL REFERENCES service_jobs(job_id) ON DELETE CASCADE,
+    sequence INTEGER NOT NULL,
+    event_type TEXT NOT NULL,
+    phase TEXT NOT NULL,
+    occurred_at TEXT NOT NULL,
+    payload_json TEXT NOT NULL,
+    redaction_class TEXT NOT NULL,
+    UNIQUE (job_id, sequence)
+);
+
+CREATE TABLE IF NOT EXISTS acquisitions (
+    acquisition_id TEXT PRIMARY KEY,
+    job_id TEXT NOT NULL REFERENCES service_jobs(job_id) ON DELETE CASCADE,
+    profile_id TEXT NOT NULL,
+    source TEXT NOT NULL,
+    adapter TEXT NOT NULL,
+    adapter_version TEXT NOT NULL,
+    query_text TEXT NOT NULL,
+    status TEXT NOT NULL,
+    observed_at TEXT NOT NULL,
+    fetched_at TEXT NOT NULL,
+    artifact_ref TEXT,
+    content_hash TEXT,
+    retention_class TEXT NOT NULL,
+    redaction_class TEXT NOT NULL,
+    item_count INTEGER NOT NULL DEFAULT 0,
+    diagnostics_ref TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_acquisitions_job_source
+    ON acquisitions(job_id, source);
+CREATE INDEX IF NOT EXISTS idx_acquisitions_content_hash
+    ON acquisitions(content_hash)
+    WHERE content_hash IS NOT NULL;
+
+CREATE TABLE IF NOT EXISTS documents (
+    document_id TEXT PRIMARY KEY,
+    acquisition_id TEXT NOT NULL REFERENCES acquisitions(acquisition_id),
+    source TEXT NOT NULL,
+    source_native_id TEXT NOT NULL,
+    canonical_url TEXT NOT NULL,
+    title TEXT NOT NULL,
+    author TEXT,
+    normalized_text TEXT NOT NULL,
+    content_hash TEXT NOT NULL,
+    published_at TEXT,
+    fetched_at TEXT NOT NULL,
+    retention_class TEXT NOT NULL,
+    redaction_class TEXT NOT NULL,
+    transformation_version TEXT NOT NULL,
+    UNIQUE (source, source_native_id),
+    UNIQUE (canonical_url)
+);
+
+CREATE INDEX IF NOT EXISTS idx_documents_source_published
+    ON documents(source, published_at);
+CREATE INDEX IF NOT EXISTS idx_documents_content_hash
+    ON documents(content_hash);
+
+CREATE VIRTUAL TABLE IF NOT EXISTS documents_fts USING fts5(
+    title,
+    author,
+    normalized_text,
+    tokenize='porter unicode61',
+    content='documents',
+    content_rowid='rowid'
+);
+
+CREATE TRIGGER IF NOT EXISTS documents_ai AFTER INSERT ON documents BEGIN
+    INSERT INTO documents_fts(rowid, title, author, normalized_text)
+    VALUES (new.rowid, new.title, new.author, new.normalized_text);
+END;
+
+CREATE TRIGGER IF NOT EXISTS documents_ad AFTER DELETE ON documents BEGIN
+    INSERT INTO documents_fts(
+        documents_fts, rowid, title, author, normalized_text
+    )
+    VALUES (
+        'delete', old.rowid, old.title, old.author, old.normalized_text
+    );
+END;
+
+CREATE TRIGGER IF NOT EXISTS documents_au AFTER UPDATE ON documents BEGIN
+    INSERT INTO documents_fts(
+        documents_fts, rowid, title, author, normalized_text
+    )
+    VALUES (
+        'delete', old.rowid, old.title, old.author, old.normalized_text
+    );
+    INSERT INTO documents_fts(rowid, title, author, normalized_text)
+    VALUES (new.rowid, new.title, new.author, new.normalized_text);
+END;
+
+CREATE TABLE IF NOT EXISTS document_sightings (
+    document_id TEXT NOT NULL REFERENCES documents(document_id) ON DELETE CASCADE,
+    acquisition_id TEXT NOT NULL REFERENCES acquisitions(acquisition_id) ON DELETE CASCADE,
+    topic_id INTEGER REFERENCES topics(id) ON DELETE SET NULL,
+    observed_at TEXT NOT NULL,
+    PRIMARY KEY (document_id, acquisition_id)
+);
+
+CREATE TABLE IF NOT EXISTS document_chunks (
+    chunk_id TEXT PRIMARY KEY,
+    document_id TEXT NOT NULL REFERENCES documents(document_id) ON DELETE CASCADE,
+    ordinal INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    content_hash TEXT NOT NULL,
+    chunker_version TEXT NOT NULL,
+    UNIQUE (document_id, ordinal)
+);
+
+CREATE TABLE IF NOT EXISTS chunk_embeddings (
+    chunk_id TEXT NOT NULL REFERENCES document_chunks(chunk_id) ON DELETE CASCADE,
+    model TEXT NOT NULL,
+    dimensions INTEGER NOT NULL,
+    vector BLOB NOT NULL,
+    created_at TEXT NOT NULL,
+    PRIMARY KEY (chunk_id, model)
+);
+
+CREATE TABLE IF NOT EXISTS entities (
+    entity_id TEXT PRIMARY KEY,
+    canonical_name TEXT NOT NULL,
+    entity_type TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS entity_aliases (
+    entity_id TEXT NOT NULL REFERENCES entities(entity_id) ON DELETE CASCADE,
+    alias TEXT NOT NULL,
+    normalized_alias TEXT NOT NULL,
+    PRIMARY KEY (entity_id, normalized_alias)
+);
+
+CREATE INDEX IF NOT EXISTS idx_entity_aliases_normalized
+    ON entity_aliases(normalized_alias);
+
+CREATE TABLE IF NOT EXISTS document_entities (
+    document_id TEXT NOT NULL REFERENCES documents(document_id) ON DELETE CASCADE,
+    entity_id TEXT NOT NULL REFERENCES entities(entity_id) ON DELETE CASCADE,
+    evidence_chunk_id TEXT NOT NULL REFERENCES document_chunks(chunk_id) ON DELETE CASCADE,
+    evidence_start INTEGER NOT NULL,
+    evidence_end INTEGER NOT NULL,
+    extractor_version TEXT NOT NULL,
+    confidence REAL NOT NULL,
+    validation_state TEXT NOT NULL,
+    PRIMARY KEY (document_id, entity_id, evidence_chunk_id, evidence_start)
+);
+
+CREATE TABLE IF NOT EXISTS relationships (
+    relationship_id TEXT PRIMARY KEY,
+    subject_entity_id TEXT NOT NULL REFERENCES entities(entity_id) ON DELETE CASCADE,
+    predicate TEXT NOT NULL,
+    object_entity_id TEXT NOT NULL REFERENCES entities(entity_id) ON DELETE CASCADE,
+    evidence_chunk_id TEXT NOT NULL REFERENCES document_chunks(chunk_id) ON DELETE CASCADE,
+    extractor_version TEXT NOT NULL,
+    confidence REAL NOT NULL,
+    validation_state TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_relationships_subject
+    ON relationships(subject_entity_id, predicate);
+CREATE INDEX IF NOT EXISTS idx_relationships_object
+    ON relationships(object_entity_id, predicate);
+
+CREATE TABLE IF NOT EXISTS index_versions (
+    index_version TEXT PRIMARY KEY,
+    parent_version TEXT REFERENCES index_versions(index_version),
+    ranking_config_json TEXT NOT NULL,
+    document_count INTEGER NOT NULL,
+    chunk_count INTEGER NOT NULL,
+    embedding_model TEXT,
+    created_at TEXT NOT NULL,
+    published_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS service_decisions (
+    decision_id TEXT PRIMARY KEY,
+    job_id TEXT NOT NULL REFERENCES service_jobs(job_id) ON DELETE CASCADE,
+    loop_name TEXT NOT NULL,
+    action TEXT NOT NULL,
+    confidence REAL NOT NULL,
+    evidence_ids_json TEXT NOT NULL,
+    rationale TEXT NOT NULL,
+    model_ref TEXT NOT NULL,
+    input_ref TEXT NOT NULL,
+    output_ref TEXT NOT NULL,
+    accepted INTEGER NOT NULL,
+    validator_errors_json TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS service_eval_results (
+    eval_id TEXT PRIMARY KEY,
+    job_id TEXT REFERENCES service_jobs(job_id) ON DELETE SET NULL,
+    index_version TEXT REFERENCES index_versions(index_version) ON DELETE SET NULL,
+    suite_name TEXT NOT NULL,
+    metrics_json TEXT NOT NULL,
+    passed INTEGER NOT NULL,
+    artifact_ref TEXT,
+    created_at TEXT NOT NULL
+);
+""",
 }
 
 
@@ -193,6 +450,7 @@ def _connect(db_path: Optional[Path] = None) -> sqlite3.Connection:
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA synchronous=NORMAL")
     conn.execute("PRAGMA foreign_keys=ON")
+    conn.execute("PRAGMA busy_timeout=5000")
     return conn
 
 
@@ -215,16 +473,54 @@ def init_db(db_path: Optional[Path] = None) -> Path:
 
 def _run_migrations(conn: sqlite3.Connection):
     """Apply pending schema migrations."""
+    latest = max(MIGRATIONS, default=1)
     current = conn.execute(
         "SELECT MAX(version) FROM schema_version"
     ).fetchone()[0] or 0
+    if current > latest:
+        raise SchemaVersionError(
+            f"database has newer schema version {current}; "
+            f"this runtime supports up to {latest}"
+        )
 
     for version in sorted(MIGRATIONS.keys()):
-        if version > current:
-            conn.executescript(MIGRATIONS[version])
+        try:
+            conn.execute("BEGIN IMMEDIATE")
+            current = conn.execute(
+                "SELECT MAX(version) FROM schema_version"
+            ).fetchone()[0] or 0
+            if current > latest:
+                raise SchemaVersionError(
+                    f"database has newer schema version {current}; "
+                    f"this runtime supports up to {latest}"
+                )
+            if version <= current:
+                conn.commit()
+                continue
+            _execute_script_transactionally(conn, MIGRATIONS[version])
             conn.execute(
                 "INSERT INTO schema_version (version) VALUES (?)", (version,)
             )
+            conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
+
+
+def _execute_script_transactionally(
+    conn: sqlite3.Connection, script: str
+) -> None:
+    """Execute a SQL script without sqlite3.executescript's implicit commit."""
+    statement = ""
+    for line in script.splitlines():
+        statement += line + "\n"
+        if sqlite3.complete_statement(statement):
+            sql = statement.strip()
+            if sql:
+                conn.execute(sql)
+            statement = ""
+    if statement.strip():
+        raise sqlite3.OperationalError("incomplete migration SQL statement")
 
 
 # --- Topics ---

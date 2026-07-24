@@ -1,0 +1,309 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "last30days intelligence service contract catalog",
+  "schema_version": 1,
+  "contracts": {
+    "query_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "request_id",
+        "profile_id",
+        "query",
+        "freshness_policy",
+        "response_mode",
+        "filters",
+        "top_k",
+        "max_chars",
+        "wait_ms"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "request_id": {"type": "string", "minLength": 1},
+        "profile_id": {"type": "string", "minLength": 1},
+        "query": {"type": "string", "minLength": 1},
+        "freshness_policy": {
+          "type": "string",
+          "enum": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ]
+        },
+        "response_mode": {
+          "type": "string",
+          "enum": ["evidence", "brief"]
+        },
+        "filters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sources": {
+              "type": "array",
+              "items": {"type": "string", "minLength": 1}
+            },
+            "topic_ids": {
+              "type": "array",
+              "items": {"type": "string", "minLength": 1}
+            },
+            "published_after": {"type": "string", "minLength": 1},
+            "published_before": {"type": "string", "minLength": 1}
+          }
+        },
+        "top_k": {"type": "integer", "minimum": 1, "maximum": 100},
+        "max_chars": {"type": "integer", "minimum": 512, "maximum": 65536},
+        "wait_ms": {"type": "integer", "minimum": 0, "maximum": 300000}
+      }
+    },
+    "evidence_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "evidence_id",
+        "document_id",
+        "source",
+        "source_native_id",
+        "url",
+        "title",
+        "snippet",
+        "author",
+        "published_at",
+        "fetched_at",
+        "acquisition_id",
+        "content_hash",
+        "scores"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "evidence_id": {"type": "string", "minLength": 1},
+        "document_id": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "source_native_id": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "snippet": {"type": "string", "minLength": 1},
+        "author": {"type": ["string", "null"]},
+        "published_at": {"type": ["string", "null"]},
+        "fetched_at": {"type": "string", "minLength": 1},
+        "acquisition_id": {"type": "string", "minLength": 1},
+        "content_hash": {"type": "string", "minLength": 1},
+        "scores": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["lexical", "semantic", "graph", "recency", "fused"],
+          "properties": {
+            "lexical": {"type": "number", "minimum": 0, "maximum": 1},
+            "semantic": {"type": "number", "minimum": 0, "maximum": 1},
+            "graph": {"type": "number", "minimum": 0, "maximum": 1},
+            "recency": {"type": "number", "minimum": 0, "maximum": 1},
+            "fused": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        }
+      }
+    },
+    "acquisition_envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "acquisition_id",
+        "job_id",
+        "profile_id",
+        "source",
+        "adapter",
+        "adapter_version",
+        "query",
+        "status",
+        "observed_at",
+        "fetched_at",
+        "artifact_ref",
+        "content_hash",
+        "retention_class",
+        "redaction_class",
+        "item_count",
+        "diagnostics_ref"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "acquisition_id": {"type": "string", "minLength": 1},
+        "job_id": {"type": "string", "minLength": 1},
+        "profile_id": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "adapter": {"type": "string", "minLength": 1},
+        "adapter_version": {"type": "string", "minLength": 1},
+        "query": {"type": "string", "minLength": 1},
+        "status": {
+          "type": "string",
+          "enum": ["succeeded", "partial", "failed", "awaiting_operator"]
+        },
+        "observed_at": {"type": "string", "minLength": 1},
+        "fetched_at": {"type": "string", "minLength": 1},
+        "artifact_ref": {"type": ["string", "null"]},
+        "content_hash": {"type": ["string", "null"]},
+        "retention_class": {
+          "type": "string",
+          "enum": ["ephemeral", "cache", "durable"]
+        },
+        "redaction_class": {
+          "type": "string",
+          "enum": ["public", "authenticated", "restricted"]
+        },
+        "item_count": {"type": "integer", "minimum": 0, "maximum": 1000000},
+        "diagnostics_ref": {"type": ["string", "null"]}
+      }
+    },
+    "job_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "job_id",
+        "job_type",
+        "dedupe_key",
+        "state",
+        "query_request_id",
+        "attempts",
+        "max_attempts",
+        "budget_cents",
+        "lease_owner",
+        "lease_expires_at",
+        "created_at",
+        "updated_at",
+        "published_index_version",
+        "error_code"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "job_id": {"type": "string", "minLength": 1},
+        "job_type": {
+          "type": "string",
+          "enum": ["refresh", "enrichment", "maintenance"]
+        },
+        "dedupe_key": {"type": "string", "minLength": 1},
+        "state": {
+          "type": "string",
+          "enum": [
+            "queued",
+            "planning",
+            "acquiring",
+            "normalizing",
+            "indexing",
+            "enriching",
+            "validating",
+            "published",
+            "partial",
+            "failed",
+            "awaiting_operator"
+          ]
+        },
+        "query_request_id": {"type": "string", "minLength": 1},
+        "attempts": {"type": "integer", "minimum": 0, "maximum": 100},
+        "max_attempts": {"type": "integer", "minimum": 1, "maximum": 100},
+        "budget_cents": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000000
+        },
+        "lease_owner": {"type": ["string", "null"]},
+        "lease_expires_at": {"type": ["string", "null"]},
+        "created_at": {"type": "string", "minLength": 1},
+        "updated_at": {"type": "string", "minLength": 1},
+        "published_index_version": {"type": ["string", "null"]},
+        "error_code": {"type": ["string", "null"]}
+      }
+    },
+    "job_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "event_id",
+        "job_id",
+        "sequence",
+        "event_type",
+        "phase",
+        "occurred_at",
+        "payload",
+        "redaction_class"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "event_id": {"type": "string", "minLength": 1},
+        "job_id": {"type": "string", "minLength": 1},
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "event_type": {"type": "string", "minLength": 1},
+        "phase": {
+          "type": "string",
+          "enum": [
+            "queued",
+            "planning",
+            "acquiring",
+            "normalizing",
+            "indexing",
+            "enriching",
+            "validating",
+            "published",
+            "partial",
+            "failed",
+            "awaiting_operator"
+          ]
+        },
+        "occurred_at": {"type": "string", "minLength": 1},
+        "payload": {"type": "object"},
+        "redaction_class": {
+          "type": "string",
+          "enum": ["public", "authenticated", "restricted"]
+        }
+      }
+    },
+    "decision_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "decision_id",
+        "job_id",
+        "loop_name",
+        "action",
+        "confidence",
+        "evidence_ids",
+        "rationale",
+        "model_ref",
+        "input_ref",
+        "output_ref",
+        "accepted",
+        "validator_errors",
+        "created_at"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "decision_id": {"type": "string", "minLength": 1},
+        "job_id": {"type": "string", "minLength": 1},
+        "loop_name": {"type": "string", "minLength": 1},
+        "action": {"type": "string", "minLength": 1},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "evidence_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "rationale": {"type": "string", "minLength": 1},
+        "model_ref": {"type": "string", "minLength": 1},
+        "input_ref": {"type": "string", "minLength": 1},
+        "output_ref": {"type": "string", "minLength": 1},
+        "accepted": {"type": "boolean"},
+        "validator_errors": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "created_at": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

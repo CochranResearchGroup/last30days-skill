@@ -28,6 +28,9 @@ def test_build_skill_excludes_skillignore_entries() -> None:
     assert "last30days/scripts/store.py" in names
     assert "last30days/scripts/watchlist.py" in names
     assert "last30days/scripts/lib/facebook.py" in names
+    assert "last30days/scripts/lib/service_contracts.py" in names
+    assert "last30days/scripts/lib/service_store.py" in names
+    assert "last30days/schemas/service-contracts-v1.json" in names
     assert any(name.startswith("last30days/scripts/lib/") for name in names)
 
     excluded_prefixes = {
