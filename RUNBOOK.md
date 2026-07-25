@@ -149,3 +149,73 @@ Next Bounded Action:
   authority consumed by assessment and identity proposals, then specify
   concrete loop schemas, budgets, promotion thresholds, evals, and stop rules
   before timers depend on stochastic processing.
+
+## Turn 3 | 2026-07-25
+
+Focus: versioned App Intelligence task contracts for deterministic host
+processing.
+
+Authority Consulted:
+
+- `$app-intelligence-automation`
+- App Intelligence supervisor, decision-schema, and adapter-composition
+  references
+- `ROADMAP.md`
+- `skills/last30days/schemas/service-contracts-v1.json`
+- `skills/last30days/scripts/lib/service_contracts.py`
+- `skills/last30days/scripts/lib/service_intelligence.py`
+- `skills/last30days/scripts/lib/service_enrichment.py`
+- planning, goal-execution, parallel-plan, documentation, validation,
+  closeout, commit/push, roadmap/runbook, and Graphiti policies
+
+Decisions And Changes:
+
+- Created
+  `docs/dev/plans/0010-2026-07-25-app-intelligence-task-contracts.md` as the
+  goal-compatible P06 contract execution authority.
+- Made the model explicitly stochastic while requiring deterministic host
+  validation, promotion, rejection, idempotency, and recorded-output replay.
+- Defined a common request/result kernel plus evidence, validation, promotion,
+  decision, and replay receipts.
+- Defined ordered schema, correlation, evidence, domain, policy, and promotion
+  validation stages with stable machine-readable error codes.
+- Cataloged bounded contracts for content assessment, profile changes,
+  entity/claim/event extraction, identity resolution, retrieval evaluation,
+  adapter failure triage, repair recommendation, and branch decisions.
+- Kept acquisition success independent from assessment and prohibited
+  model-directed identity merges, browsing, publication, main-worktree edits,
+  service restarts, and deployments.
+- Split implementation into a common critical-path packet, two separable
+  domain packets, supervisor/storage integration, and one bounded acceptance
+  packet.
+
+Validation Evidence:
+
+- CodeGraph confirmed strict existing structured-output schemas, durable
+  decision recording, bounded model calls, proposal rejection codes, repair
+  states, branch isolation, tests/evals, and approval gates.
+- The canonical schema catalog currently exposes acquisition, query, evidence,
+  entity, relationship, job, and decision contracts but not the proposed
+  shared intelligence task or receipt contracts.
+- Planning and goal-contract audits are required before this checkpoint is
+  committed.
+
+State Movement:
+
+- P00-P05: unchanged.
+- P06: remains `PLANNED`; Plan 0010 is the active execution authority but no
+  runtime contract implementation has started.
+
+Graphiti Write Status:
+
+- pending validation and source commit;
+- after commit, retry the exact Turn 2 pending P06 checkpoint and record this
+  task-contract checkpoint in `last30days_skill_main`, or preserve a bounded
+  `graphiti_write_pending` receipt if provider readiness is degraded.
+
+Next Bounded Action:
+
+- Execute Plan 0010 Packet 1: add the common task envelope, evidence and
+  receipt schemas, canonical digests, idempotency keys, stable validator codes,
+  and compatibility adapters before any domain worker or timer depends on
+  stochastic output.

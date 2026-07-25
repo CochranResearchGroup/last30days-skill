@@ -352,6 +352,19 @@ Dependencies: P06 reuses the P00 intelligence ledger and supervisor substrate.
 Its assessment and identity schemas must align with P01 temporal evidence
 authority before recurring P02/P03 hydration depends on them.
 
+Active Plan:
+
+- `docs/dev/plans/0010-2026-07-25-app-intelligence-task-contracts.md`
+  defines the shared task envelope, deterministic validation and promotion
+  pipeline, domain task catalog, replay contract, bounded implementation
+  packets, and timer-enablement gates.
+
+Next Bounded Action:
+
+- Execute Plan 0010 Packet 1 to establish the common versioned schema and
+  validator kernel before implementing domain workers or recurring assessment
+  timers.
+
 ## Goal-Compatible Plan Conversion
 
 Before moving a lane from `PLANNED` to `OPEN`, create or identify a plan that:
