@@ -4,6 +4,13 @@ State: PLANNED
 Roadmap: P06
 Date: 2026-07-25
 Predecessor: Plan 0007
+Integrated campaign authority: Plan 0011
+
+Plan 0010 is a component contract plan. Execute its packets only through the
+attachment gates in
+`0011-2026-07-25-integrated-temporal-intelligence-service.md`; it does not own
+the temporal corpus, recurring collection, profile history, GraphRAG
+authority, or complete agent-facing product.
 
 ## Execution State
 

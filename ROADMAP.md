@@ -63,11 +63,17 @@ Plans:
 
 ## P01 | Temporal Corpus Foundation
 
-State: PLANNED
+State: OPEN
 
 Objective: make the corpus safe for long-running hydration by separating stable
 content identity from immutable revisions and by preserving what happened,
 when it was true, when it was observed, and which collection caused it.
+
+Current State:
+
+- Plan 0011 is active at the temporal schema-and-migration packet.
+- Schema version 7 still uses mutable documents and document-scoped
+  chunks/evidence; broad recurring hydration remains gated.
 
 Goal Seeds:
 
@@ -87,8 +93,12 @@ Acceptance Seeds:
 - the service distinguishes unknown, not observed, and observed absent;
 - existing content remains queryable through a reversible migration.
 
-Next Plan: create a bounded schema-and-migration plan before enabling broad
-recurring hydration.
+Active Plan:
+
+- `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
+  is the integrated P01-P06 campaign authority. Its Packet 1 temporal schema
+  and reversible migration are the critical path before broad recurring
+  hydration.
 
 ## P02 | Recurring Acquisition And Coverage
 
@@ -355,15 +365,15 @@ authority before recurring P02/P03 hydration depends on them.
 Active Plan:
 
 - `docs/dev/plans/0010-2026-07-25-app-intelligence-task-contracts.md`
-  defines the shared task envelope, deterministic validation and promotion
-  pipeline, domain task catalog, replay contract, bounded implementation
-  packets, and timer-enablement gates.
+  remains the P06 component contract plan.
+- `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
+  owns when Plan 0010 attaches to timers, identity resolution, retrieval
+  evaluation, and adapter maintenance.
 
 Next Bounded Action:
 
-- Execute Plan 0010 Packet 1 to establish the common versioned schema and
-  validator kernel before implementing domain workers or recurring assessment
-  timers.
+- Execute Plan 0011 Packet 1. Do not implement Plan 0010 in isolation before
+  the immutable temporal evidence and access-partition authority it consumes.
 
 ## Goal-Compatible Plan Conversion
 

@@ -226,3 +226,69 @@ Next Bounded Action:
   receipt schemas, canonical digests, idempotency keys, stable validator codes,
   and compatibility adapters before any domain worker or timer depends on
   stochastic output.
+
+## Turn 4 | 2026-07-25
+
+Focus: correct execution authority from isolated P06 contracts to the complete
+P01-P06 temporal intelligence product.
+
+Authority Consulted:
+
+- user correction that App Intelligence is only one part of the service
+- `define-architecture`
+- `$app-intelligence-automation`
+- `ROADMAP.md`
+- Plan 0010
+- current schema, publisher, supervisor, enrichment, retrieval, application,
+  MCP, and migration seams through CodeGraph
+- planning, goal-execution, architecture, documentation, validation,
+  branch/commit, roadmap/runbook, and subagent policies
+
+Decisions And Changes:
+
+- Created
+  `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
+  as the integrated P01-P06 campaign and execution authority.
+- Moved P01 from `PLANNED` to `OPEN`; immutable temporal evidence is the
+  critical path.
+- Kept Plan 0010 as a P06 component and attached it only after immutable
+  publication, deterministic identity candidates, recorded retrieval cases,
+  and deterministic adapter failure grouping.
+- Defined seven bounded packets spanning temporal migration, immutable
+  publication, timers/coverage, profiles/identity, claims/events/GraphRAG,
+  MCP/maintenance/rollout, and integrated acceptance.
+- Preserved SQLite as authority and Graphiti/FalkorDB as a rebuildable,
+  access-partitioned outbox projection.
+
+Validation Evidence:
+
+- CodeGraph confirmed schema version 7 stores mutable current document content,
+  document-scoped chunks/evidence, and immutable index snapshots.
+- `CorpusPublisher.record_result()` currently updates document text, metadata,
+  media, and the ordinal-zero chunk when content changes, so current source
+  evidence is not yet immutable.
+- Existing acquisitions, envelopes, sightings, durable jobs, leases, budgets,
+  negative cache, enrichment loop, and index publication remain reusable
+  foundations.
+- Planning, goal, and diff validation remain required before checkpoint
+  commit.
+
+State Movement:
+
+- P01: `PLANNED -> OPEN`.
+- P02, P04, P05, and P06: remain `PLANNED`.
+- P03: remains `OPEN`.
+- Plan 0010: remains `PLANNED` and subordinate to Plan 0011 attachment gates.
+- Plan 0011: `OPEN`.
+
+Graphiti Write Status:
+
+- pending validation and source commit;
+- record the integrated authority and temporal critical-path decision in
+  `last30days_skill_main` after the checkpoint commit.
+
+Next Bounded Action:
+
+- Execute Plan 0011 Packet 1 with a test-first schema-7-to-temporal migration,
+  baseline version backfill, immutable evidence constraints, and idempotent
+  replay proof.
