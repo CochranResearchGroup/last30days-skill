@@ -113,6 +113,7 @@ Read and follow:
 - `docs/dev/policies/0019-documentation-change-control.md`
 - `docs/dev/policies/0020-multi-agent-reconciliation.md`
 - `docs/dev/policies/0021-subagent-workflow-optimization.md`
+- `docs/dev/policies/0022-roadmap-runbook-governance.md`
 
 ## Scope
 

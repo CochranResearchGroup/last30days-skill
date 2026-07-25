@@ -1,6 +1,7 @@
 # Plan 0003 | Agent-Browser X Scraper
 
-State: COMPLETE
+State: CLOSED
+Roadmap: P00
 Date: 2026-07-19
 
 ## Scope

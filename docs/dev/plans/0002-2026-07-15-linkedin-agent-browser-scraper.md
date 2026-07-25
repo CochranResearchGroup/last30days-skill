@@ -1,6 +1,7 @@
 # Plan 0002 | Agent-Browser LinkedIn Scraper
 
 State: OPEN
+Roadmap: P03
 Date: 2026-07-15
 
 ## Scope

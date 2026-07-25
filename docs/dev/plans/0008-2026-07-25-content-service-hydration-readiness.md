@@ -1,6 +1,7 @@
 # Plan 0008 | Content-service hydration readiness
 
 State: CLOSED
+Roadmap: P00
 Date: 2026-07-25
 Predecessor: Plan 0007
 

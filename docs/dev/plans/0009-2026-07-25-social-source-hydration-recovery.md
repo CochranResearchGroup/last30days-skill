@@ -1,6 +1,7 @@
 # Plan 0009 | Social-source hydration recovery
 
 State: CLOSED
+Roadmap: P00
 Date: 2026-07-25
 Predecessor: Plan 0008
 

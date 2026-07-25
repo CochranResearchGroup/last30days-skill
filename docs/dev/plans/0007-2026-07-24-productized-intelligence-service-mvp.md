@@ -1,6 +1,7 @@
 # Plan 0007 | Productized intelligence service MVP
 
 State: CLOSED
+Roadmap: P00
 Date: 2026-07-24
 
 ## Execution State

@@ -1,6 +1,7 @@
 # Plan 0005 | YouTube Media Capability Integration
 
-State: COMPLETE
+State: CLOSED
+Roadmap: P00
 Date: 2026-07-20
 
 ## Objective

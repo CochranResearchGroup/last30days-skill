@@ -1,6 +1,7 @@
 # Plan 0006 | Agent-browser expert shared-profile routing
 
 State: CLOSED
+Roadmap: P00
 Date: 2026-07-23
 
 ## Scope

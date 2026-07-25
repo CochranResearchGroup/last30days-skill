@@ -40,3 +40,33 @@ This module complements:
 Keep product-specific tool names, partition-key semantics, and runtime assumptions repo-local unless they clearly generalize across multiple graph-memory systems.
 
 Repo-local policy should name the primary memory group when one exists and should identify the memory-discovery skill, tool, or command agents are expected to use.
+
+## Repo-Local Graphiti Contract
+
+- The primary repository memory group is `last30days_skill_main`.
+- Use atlas-first discovery when a question crosses repositories. For work
+  confined to this repository, query `last30days_skill_main` before broader
+  memory groups.
+- A Graphiti write is required after every non-trivial validated implementation
+  slice, architecture or product decision, plan checkpoint, runtime incident
+  resolution, or durable blocker discovery.
+- Write at most one compact episode for one bounded slice unless distinct
+  security or audience boundaries require separation. Do not write routine
+  command transcripts, raw fetched content, browser state, credentials, or
+  speculative conclusions.
+- Each development-journey episode must identify:
+  - repository path;
+  - roadmap lane and plan/checkpoint when applicable;
+  - decision, shipped outcome, or verified blocker;
+  - source authority such as files, commit, test receipt, or live readback;
+  - current state and the next bounded action.
+- Verify Graphiti provider readiness before broad or repeated writes. When the
+  service is unavailable, record `graphiti_write_pending` in `RUNBOOK.md` with
+  the intended episode summary and retry it at the next non-trivial closeout.
+- Graphiti is a retrieval projection of durable development history. It does
+  not replace `ROADMAP.md`, `RUNBOOK.md`, plans, commits, or current runtime
+  evidence, and memory-derived claims remain advisory until verified against
+  those authorities.
+- When a durable fact changes, write the new source-backed state so temporal
+  invalidation can supersede the older fact; do not delete history merely
+  because the repository evolved.
