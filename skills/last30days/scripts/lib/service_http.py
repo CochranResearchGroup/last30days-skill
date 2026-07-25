@@ -36,6 +36,8 @@ class ServiceApplication(Protocol):
 
     def topic(self, payload: dict[str, object]) -> dict[str, object]: ...
 
+    def intelligence(self, payload: dict[str, object]) -> dict[str, object]: ...
+
 
 class _RequestHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
@@ -131,7 +133,7 @@ class _RequestHandler(BaseHTTPRequestHandler):
             self._error(500, "internal_error", "service request failed")
 
     def do_POST(self) -> None:
-        if self.path not in {"/v1/query", "/v1/topic"}:
+        if self.path not in {"/v1/query", "/v1/topic", "/v1/intelligence"}:
             self._error(404, "not_found", "unknown service endpoint")
             return
         raw_length = self.headers.get("Content-Length")
@@ -152,8 +154,10 @@ class _RequestHandler(BaseHTTPRequestHandler):
             if self.path == "/v1/query":
                 request = contracts.QueryRequest.from_dict(payload)
                 response = self.application.query(request).to_dict()
-            else:
+            elif self.path == "/v1/topic":
                 response = self.application.topic(payload)
+            else:
+                response = self.application.intelligence(payload)
         except (UnicodeDecodeError, json.JSONDecodeError):
             self._error(400, "invalid_json", "request body must be valid JSON")
             return

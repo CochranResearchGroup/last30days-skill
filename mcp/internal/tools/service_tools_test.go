@@ -67,10 +67,15 @@ func TestToolSurfaceNamesAndAnnotations(t *testing.T) {
 			t.Fatalf("%s is not idempotent", registration.tool.Name)
 		}
 		wantReadOnly := registration.tool.Name == "service_info" ||
-			registration.tool.Name == "job_status"
+			registration.tool.Name == "job_status" ||
+			registration.tool.Name == "temporal_query" ||
+			registration.tool.Name == "profile_history" ||
+			registration.tool.Name == "coverage" ||
+			registration.tool.Name == "maintenance_status"
 		wantOpenWorld := registration.tool.Name == "query" ||
 			registration.tool.Name == "refresh" ||
-			registration.tool.Name == "topic"
+			registration.tool.Name == "topic" ||
+			registration.tool.Name == "collection"
 		if *annotations.ReadOnlyHint != wantReadOnly {
 			t.Fatalf("%s readOnly = %v, want %v", registration.tool.Name, *annotations.ReadOnlyHint, wantReadOnly)
 		}
@@ -78,9 +83,76 @@ func TestToolSurfaceNamesAndAnnotations(t *testing.T) {
 			t.Fatalf("%s openWorld = %v, want %v", registration.tool.Name, *annotations.OpenWorldHint, wantOpenWorld)
 		}
 	}
-	wantNames := []string{"service_info", "query", "refresh", "job_status", "topic"}
+	wantNames := []string{
+		"service_info", "query", "refresh", "job_status", "topic",
+		"temporal_query", "profile_history", "coverage", "collection",
+		"maintenance_status",
+	}
 	if !reflect.DeepEqual(gotNames, wantNames) {
 		t.Fatalf("tool names = %v, want %v", gotNames, wantNames)
+	}
+}
+
+func TestTemporalAndProfileToolsUseCompactIntelligenceBoundary(t *testing.T) {
+	fake := &fakeService{response: json.RawMessage(`{"cache_only":true}`)}
+	temporal := makeIntelligenceHandler(fake, "temporal_query")
+	result, err := temporal(
+		context.Background(),
+		callRequest(map[string]any{
+			"query":         "Acme timeline",
+			"profile_id":    "linkedin-primary",
+			"response_mode": "timeline",
+			"as_of":         "2026-07-01T00:00:00Z",
+		}),
+	)
+	if err != nil || result.IsError || fake.postPath != "/v1/intelligence" {
+		t.Fatalf("temporal result = %+v, path = %q, err = %v", result, fake.postPath, err)
+	}
+	if fake.postBody["action"] != "temporal_query" ||
+		fake.postBody["profile_id"] != "linkedin-primary" ||
+		fake.postBody["response_mode"] != "timeline" {
+		t.Fatalf("temporal payload = %#v", fake.postBody)
+	}
+
+	profile := makeIntelligenceHandler(fake, "profile_history")
+	result, err = profile(
+		context.Background(),
+		callRequest(map[string]any{
+			"profile_id": "linkedin-primary",
+			"source":     "linkedin",
+			"handle":     "alice",
+			"limit":      float64(5),
+		}),
+	)
+	if err != nil || result.IsError ||
+		fake.postBody["action"] != "profile_history" ||
+		fake.postBody["limit"] != 5 {
+		t.Fatalf("profile result = %+v, payload = %#v, err = %v", result, fake.postBody, err)
+	}
+}
+
+func TestCoverageCollectionAndMaintenanceUseServiceAuthority(t *testing.T) {
+	fake := &fakeService{response: json.RawMessage(`{"status":"ready"}`)}
+	for _, action := range []string{"coverage", "maintenance_status"} {
+		handler := makeIntelligenceHandler(fake, action)
+		result, err := handler(context.Background(), callRequest(nil))
+		if err != nil || result.IsError || fake.postBody["action"] != action {
+			t.Fatalf("%s result = %+v, payload = %#v, err = %v", action, result, fake.postBody, err)
+		}
+	}
+
+	collection := makeIntelligenceHandler(fake, "collection")
+	result, err := collection(
+		context.Background(),
+		callRequest(map[string]any{
+			"operation":          "pause",
+			"collection_spec_id": "linkedin-profiles",
+		}),
+	)
+	if err != nil || result.IsError ||
+		fake.postBody["operation"] != "pause" ||
+		fake.postBody["collection_spec_id"] != "linkedin-profiles" {
+		t.Fatalf("collection result = %+v, payload = %#v, err = %v", result, fake.postBody, err)
 	}
 }
 

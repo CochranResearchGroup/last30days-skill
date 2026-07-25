@@ -230,6 +230,85 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 	}
 	topicOptions = append(topicOptions, commonAnnotations(false, true)...)
 
+	temporalOptions := []mcplib.ToolOption{
+		mcplib.WithDescription(
+			"Query cache-only temporal intelligence with explicit valid-time, knowledge-time, evidence, ambiguity, and projection receipts.",
+		),
+		mcplib.WithString(
+			"query",
+			mcplib.Required(),
+			mcplib.MinLength(1),
+			mcplib.MaxLength(4096),
+		),
+		mcplib.WithString(
+			"profile_id",
+			mcplib.Description("Authorized browser profile partition; default queries public evidence only."),
+			mcplib.MaxLength(128),
+			mcplib.DefaultString("default"),
+		),
+		mcplib.WithString(
+			"response_mode",
+			mcplib.Enum(
+				"evidence", "brief", "timeline", "entity_dossier",
+				"event_dossier", "trend", "comparison",
+			),
+			mcplib.DefaultString("evidence"),
+		),
+		mcplib.WithString("as_of", mcplib.MaxLength(64)),
+		mcplib.WithString("during_from", mcplib.MaxLength(64)),
+		mcplib.WithString("during_to", mcplib.MaxLength(64)),
+		mcplib.WithString("known_as_of", mcplib.MaxLength(64)),
+	}
+	temporalOptions = append(temporalOptions, commonAnnotations(true, false)...)
+
+	profileOptions := []mcplib.ToolOption{
+		mcplib.WithDescription(
+			"Read immutable source-profile history and section evidence without operating a browser.",
+		),
+		mcplib.WithString("profile_id", mcplib.MaxLength(128), mcplib.DefaultString("default")),
+		mcplib.WithString("source", mcplib.MaxLength(64)),
+		mcplib.WithString("handle", mcplib.MaxLength(256)),
+		mcplib.WithInteger("limit", mcplib.Min(1), mcplib.Max(100), mcplib.DefaultNumber(20)),
+	}
+	profileOptions = append(profileOptions, commonAnnotations(true, false)...)
+
+	coverageOptions := []mcplib.ToolOption{
+		mcplib.WithDescription(
+			"Read collection specs, attempted intervals, source yield, and unresolved gaps.",
+		),
+		mcplib.WithString("profile_id", mcplib.MaxLength(128), mcplib.DefaultString("default")),
+	}
+	coverageOptions = append(coverageOptions, commonAnnotations(true, false)...)
+
+	collectionOptions := []mcplib.ToolOption{
+		mcplib.WithDescription(
+			"List or govern typed recurring collection specs through the durable service authority.",
+		),
+		mcplib.WithString(
+			"operation",
+			mcplib.Required(),
+			mcplib.Enum("list", "put", "pause", "resume", "run"),
+		),
+		mcplib.WithString("profile_id", mcplib.MaxLength(128), mcplib.DefaultString("default")),
+		mcplib.WithObject(
+			"spec",
+			mcplib.Description("Complete versioned collection-spec contract for put."),
+			mcplib.AdditionalProperties(true),
+			mcplib.MaxProperties(32),
+		),
+		mcplib.WithString("collection_spec_id", mcplib.MaxLength(128)),
+		mcplib.WithString("scheduled_for", mcplib.MaxLength(64)),
+	}
+	collectionOptions = append(collectionOptions, commonAnnotations(false, true)...)
+
+	maintenanceOptions := []mcplib.ToolOption{
+		mcplib.WithDescription(
+			"Read bounded App Intelligence task receipts, graph projection state, and adapter-repair safety gates.",
+		),
+		mcplib.WithString("profile_id", mcplib.MaxLength(128), mcplib.DefaultString("default")),
+	}
+	maintenanceOptions = append(maintenanceOptions, commonAnnotations(true, false)...)
+
 	return []toolRegistration{
 		{
 			tool:    mcplib.NewTool("service_info", infoOptions...),
@@ -250,6 +329,26 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 		{
 			tool:    mcplib.NewTool("topic", topicOptions...),
 			handler: makeTopicHandler(client),
+		},
+		{
+			tool:    mcplib.NewTool("temporal_query", temporalOptions...),
+			handler: makeIntelligenceHandler(client, "temporal_query"),
+		},
+		{
+			tool:    mcplib.NewTool("profile_history", profileOptions...),
+			handler: makeIntelligenceHandler(client, "profile_history"),
+		},
+		{
+			tool:    mcplib.NewTool("coverage", coverageOptions...),
+			handler: makeIntelligenceHandler(client, "coverage"),
+		},
+		{
+			tool:    mcplib.NewTool("collection", collectionOptions...),
+			handler: makeIntelligenceHandler(client, "collection"),
+		},
+		{
+			tool:    mcplib.NewTool("maintenance_status", maintenanceOptions...),
+			handler: makeIntelligenceHandler(client, "maintenance_status"),
 		},
 	}
 }
@@ -302,6 +401,23 @@ func makeTopicHandler(client ServiceAPI) server.ToolHandlerFunc {
 			return mcplib.NewToolResultError(err.Error()), nil
 		}
 		response, err := client.Post(ctx, "/v1/topic", payload)
+		return toolResult(response, err)
+	}
+}
+
+func makeIntelligenceHandler(
+	client ServiceAPI,
+	action string,
+) server.ToolHandlerFunc {
+	return func(
+		ctx context.Context,
+		req mcplib.CallToolRequest,
+	) (*mcplib.CallToolResult, error) {
+		payload, err := intelligencePayload(req.GetArguments(), action)
+		if err != nil {
+			return mcplib.NewToolResultError(err.Error()), nil
+		}
+		response, err := client.Post(ctx, "/v1/intelligence", payload)
 		return toolResult(response, err)
 	}
 }
@@ -456,6 +572,107 @@ func topicPayload(args map[string]any) (map[string]any, error) {
 		if len(values) > 0 {
 			payload[item.name] = values
 		}
+	}
+	return payload, nil
+}
+
+func intelligencePayload(args map[string]any, action string) (map[string]any, error) {
+	payload := map[string]any{"action": action, "profile_id": "default"}
+	if profileID, ok, err := optionalString(args, "profile_id", 128); err != nil {
+		return nil, err
+	} else if ok {
+		payload["profile_id"] = profileID
+	}
+	switch action {
+	case "temporal_query":
+		query, err := requireString(args, "query", 4096)
+		if err != nil {
+			return nil, err
+		}
+		payload["query"] = query
+		mode, err := enumArgument(
+			args,
+			"response_mode",
+			"evidence",
+			"evidence",
+			"brief",
+			"timeline",
+			"entity_dossier",
+			"event_dossier",
+			"trend",
+			"comparison",
+		)
+		if err != nil {
+			return nil, err
+		}
+		payload["response_mode"] = mode
+		for _, name := range []string{
+			"as_of", "during_from", "during_to", "known_as_of",
+		} {
+			if value, ok, stringErr := optionalString(args, name, 64); stringErr != nil {
+				return nil, stringErr
+			} else if ok {
+				payload[name] = value
+			}
+		}
+		if _, fromOK := payload["during_from"]; fromOK {
+			if _, toOK := payload["during_to"]; !toOK {
+				return nil, errors.New("during_from and during_to must be supplied together")
+			}
+		} else if _, toOK := payload["during_to"]; toOK {
+			return nil, errors.New("during_from and during_to must be supplied together")
+		}
+	case "profile_history":
+		for _, item := range []struct {
+			name string
+			max  int
+		}{
+			{"source", 64},
+			{"handle", 256},
+		} {
+			if value, ok, err := optionalString(args, item.name, item.max); err != nil {
+				return nil, err
+			} else if ok {
+				payload[item.name] = value
+			}
+		}
+		limit, err := integerArgument(args, "limit", 20, 1, 100)
+		if err != nil {
+			return nil, err
+		}
+		payload["limit"] = limit
+	case "coverage", "maintenance_status":
+		return payload, nil
+	case "collection":
+		operation, err := enumArgument(
+			args, "operation", "", "list", "put", "pause", "resume", "run",
+		)
+		if err != nil || operation == "" {
+			return nil, errors.New("operation is required and must be supported")
+		}
+		payload["operation"] = operation
+		if spec, ok := args["spec"]; ok {
+			mapping, valid := spec.(map[string]any)
+			if !valid || len(mapping) > 32 {
+				return nil, errors.New("spec must be a bounded object")
+			}
+			payload["spec"] = mapping
+		}
+		for _, item := range []struct {
+			name string
+			max  int
+		}{
+			{"collection_spec_id", 128},
+			{"scheduled_for", 64},
+		} {
+			if value, ok, stringErr := optionalString(args, item.name, item.max); stringErr != nil {
+				return nil, stringErr
+			} else if ok {
+				payload[item.name] = value
+			}
+		}
+	default:
+		return nil, errors.New("unsupported intelligence action")
 	}
 	return payload, nil
 }

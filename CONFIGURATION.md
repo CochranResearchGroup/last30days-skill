@@ -486,6 +486,12 @@ LAST30DAYS_SERVICE_SOCKET=/run/user/1000/last30days/service.sock
 # Defaults to $XDG_DATA_HOME/last30days/research.db, or
 # ~/.local/share/last30days/research.db when XDG_DATA_HOME is unset.
 LAST30DAYS_SERVICE_DB=~/.local/share/last30days/research.db
+
+# Optional local Graphiti graph-service projection. Loopback HTTP only.
+LAST30DAYS_GRAPHITI_URL=http://127.0.0.1:8829
+LAST30DAYS_GRAPHITI_GROUP_PREFIX=last30days
+LAST30DAYS_GRAPHITI_TIMEOUT_SECONDS=10
+LAST30DAYS_GRAPHITI_INTERVAL_SECONDS=30
 ```
 
 Explicit `service.py --socket` and `--db` flags win over these variables. The
@@ -615,7 +621,7 @@ The installer builds the current checkout, atomically installs
 `~/.local/bin/last30days-pp-mcp`, and records the private service socket in the
 user-scoped Codex MCP configuration. Re-run it after MCP adapter changes.
 
-Service-enabled MCP clients expose five small operations:
+Service-enabled MCP clients expose ten compact operations:
 
 - `service_info`: discover readiness, sources, capabilities, and index state;
 - `query`: read cached evidence or a compact brief under an explicit freshness
@@ -623,11 +629,37 @@ Service-enabled MCP clients expose five small operations:
 - `refresh`: create or join a bounded `force_refresh` job;
 - `job_status`: poll the typed durable job record;
 - `topic`: list or manage service-owned topics and request scheduled refreshes.
+- `temporal_query`: read cache-only evidence, briefs, timelines, entity/event
+  dossiers, trends, or comparisons with independent `as_of`, `during`, and
+  `known_as_of` bounds;
+- `profile_history`: read immutable source-account/profile snapshots and exact
+  section evidence without operating a browser;
+- `coverage`: inspect authorized collection specs, attempted intervals, yield,
+  and unresolved gaps;
+- `collection`: list, put, pause, resume, or manually run typed recurring
+  collection specs through the durable supervisor;
+- `maintenance_status`: read graph delivery and bounded App Intelligence
+  receipts/safety gates without prompts, raw provider events, or repair
+  execution.
 
 The MCP adapter connects to the same Unix socket. A standalone MCPB packages
 the canonical runtime and may bootstrap the single shared daemon if absent. A
 query handler never launches the request-scoped research engine or operates a
 browser.
+
+`temporal_query`, `profile_history`, `coverage`, and `maintenance_status` are
+read-only and cache-only. The host derives authorized access partitions from
+`profile_id`; clients cannot submit an arbitrary partition list. `default`
+authorizes public evidence only, while a named profile authorizes public plus
+that exact `profile:<id>` partition.
+
+When `LAST30DAYS_GRAPHITI_URL` is set, a separate bounded loop sends accepted
+claim/event projections from the SQLite outbox to partition-specific Graphiti
+groups. The URL must be loopback HTTP. SQLite remains authoritative; Graphiti
+failures are retained in the outbox and surfaced as degraded status without
+blocking evidence retrieval. Projection receipts bind the stable graph node,
+payload digest, and partition-specific group. The remaining Graphiti variables
+set a safe group prefix, request timeout, and delivery cadence.
 
 The service never loads project-directory `.env` files. Its deterministic
 supervisor resolves acquisition settings at user scope:

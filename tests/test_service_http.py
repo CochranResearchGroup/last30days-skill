@@ -101,6 +101,14 @@ class StubApplication:
             "job_id": None,
         }
 
+    def intelligence(self, payload):
+        return {
+            "schema_version": 1,
+            "action": payload["action"],
+            "access_partitions": ["public"],
+            "coverage": [],
+        }
+
 
 def test_unix_service_exposes_health_and_capabilities_with_private_socket(tmp_path):
     socket_path = tmp_path / "runtime" / "service.sock"
@@ -132,6 +140,9 @@ def test_unix_service_exposes_health_and_capabilities_with_private_socket(tmp_pa
         assert response.cache_status is contracts.CacheStatus.MISS
         assert client.job("job-001").state is contracts.JobState.PUBLISHED
         assert client.topic({"action": "list"})["action"] == "list"
+        assert client.intelligence(
+            {"action": "coverage", "profile_id": "default"}
+        )["action"] == "coverage"
         assert stat.S_IMODE(socket_path.stat().st_mode) == 0o600
         assert stat.S_IMODE((socket_path.parent / "service.lock").stat().st_mode) == 0o600
     finally:

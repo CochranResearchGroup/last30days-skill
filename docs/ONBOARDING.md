@@ -97,8 +97,11 @@ python3 "$HOME/.agents/skills/last30days/scripts/service.py" \
 ```
 
 Then connect the MCP bundle and verify its listed surface is `service_info`,
-`query`, `refresh`, `job_status`, and `topic`. Verify the capability, source,
-and topic resources. A query handler must not launch
+`query`, `refresh`, `job_status`, `topic`, `temporal_query`,
+`profile_history`, `coverage`, `collection`, and `maintenance_status`. Verify
+the capability, source, and topic resources. Confirm that `temporal_query`
+with `profile_id=default` reports only the public partition and remains
+cache-only. A query handler must not launch
 `last30days.py` or create a browser process.
 
 For a local Codex checkout, install and verify the current adapter explicitly:
@@ -119,6 +122,8 @@ For App Intelligence maintenance-plane changes, also run:
 ```bash
 uv run pytest \
   tests/test_service_collection.py \
+  tests/test_service_product.py \
+  tests/test_service_graphiti.py \
   tests/test_service_intelligence_contracts.py \
   tests/test_service_intelligence.py \
   tests/test_service_migrations.py \

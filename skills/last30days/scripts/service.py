@@ -7,6 +7,7 @@ import argparse
 import json
 import os
 import signal
+import shutil
 import sys
 import threading
 import uuid
@@ -19,6 +20,7 @@ from lib.service_client import ServiceClient, ServiceClientError
 from lib.service_collection import CollectionSpec, CollectionSpecValidationError
 from lib.service_enrichment import EnrichmentService
 from lib.service_http import ServiceAlreadyRunningError, UnixServiceServer
+from lib.service_graphiti import GraphitiHTTPSink
 from lib.service_intelligence import (
     AdapterFailure,
     CodexAppServerClient,
@@ -31,10 +33,12 @@ from lib.service_intelligence import (
 )
 from lib.service_intelligence_contracts import ContentAssessmentWorker
 from lib.service_retrieval import HybridRetriever, LocalHashEmbeddingProvider
+from lib.service_knowledge import GraphProjectionWorker
 from lib.service_runtime import (
     AcquisitionLoop,
     AssessmentLoop,
     EnrichmentLoop,
+    GraphProjectionLoop,
     build_acquisition_runtime,
 )
 
@@ -134,6 +138,37 @@ def _serve(args: argparse.Namespace) -> int:
         ),
         retriever,
     )
+    graph_url = os.getenv("LAST30DAYS_GRAPHITI_URL", "").strip()
+    graph_loop = None
+    if graph_url:
+        graph_loop = GraphProjectionLoop(
+            GraphProjectionWorker(
+                db_path,
+                GraphitiHTTPSink(
+                    graph_url,
+                    group_prefix=os.getenv(
+                        "LAST30DAYS_GRAPHITI_GROUP_PREFIX", "last30days"
+                    ),
+                    timeout_seconds=min(
+                        60.0,
+                        float(
+                            os.getenv(
+                                "LAST30DAYS_GRAPHITI_TIMEOUT_SECONDS", "10"
+                            )
+                        ),
+                    ),
+                ),
+            ),
+            interval_seconds=max(
+                1.0,
+                float(
+                    os.getenv(
+                        "LAST30DAYS_GRAPHITI_INTERVAL_SECONDS", "30"
+                    )
+                ),
+            ),
+        )
+    codex_path = os.getenv("LAST30DAYS_CODEX_PATH", "codex")
     application = initialize_application(
         db_path,
         retriever,
@@ -143,10 +178,14 @@ def _serve(args: argparse.Namespace) -> int:
         acquisition_readiness=acquisition.source_readiness,
         recurring_collection=True,
         assessment_processing=assessment_enabled,
+        collection_coordinator=acquisition.collection_coordinator,
+        graph_projection_enabled=graph_loop is not None,
+        maintenance_enabled=bool(shutil.which(codex_path)),
         runtime_error=lambda: (
             acquisition_loop.last_error_code
             or enrichment_loop.last_error_code
             or (assessment_loop.last_error_code if assessment_loop else None)
+            or (graph_loop.last_error_code if graph_loop else None)
         ),
     )
     server = UnixServiceServer(socket_path, application)
@@ -168,11 +207,15 @@ def _serve(args: argparse.Namespace) -> int:
     enrichment_loop.start()
     if assessment_loop is not None:
         assessment_loop.start()
+    if graph_loop is not None:
+        graph_loop.start()
     try:
         while not stop_event.wait(0.2):
             if not thread.is_alive():
                 raise RuntimeError("service listener stopped unexpectedly")
     finally:
+        if graph_loop is not None:
+            graph_loop.stop(timeout=5)
         if assessment_loop is not None:
             assessment_loop.stop(timeout=5)
         enrichment_loop.stop(timeout=5)

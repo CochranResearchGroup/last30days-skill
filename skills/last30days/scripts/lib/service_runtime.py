@@ -43,6 +43,10 @@ class AssessmentBackend(Protocol):
     def run_once(self, *, worker_id: str): ...
 
 
+class ProjectionBackend(Protocol):
+    def deliver(self, *, limit: int = 100) -> dict[str, int]: ...
+
+
 class EnrichmentBackend(Protocol):
     def embed_chunks(self): ...
 
@@ -256,6 +260,57 @@ class AssessmentLoop:
                 continue
             if completed is None:
                 self._stop_event.wait(self.idle_seconds)
+
+    def stop(self, *, timeout: float = 5.0) -> None:
+        self._stop_event.set()
+        if self._thread is not None:
+            self._thread.join(timeout=timeout)
+
+
+class GraphProjectionLoop:
+    """Deliver derived graph records without coupling graph health to queries."""
+
+    def __init__(
+        self,
+        worker: ProjectionBackend,
+        *,
+        interval_seconds: float = 30.0,
+        batch_limit: int = 25,
+    ) -> None:
+        if interval_seconds <= 0 or not 1 <= batch_limit <= 100:
+            raise ValueError("graph projection loop bounds are invalid")
+        self.worker = worker
+        self.interval_seconds = interval_seconds
+        self.batch_limit = batch_limit
+        self.last_error_code: str | None = None
+        self._stop_event = threading.Event()
+        self._thread: threading.Thread | None = None
+
+    @property
+    def is_alive(self) -> bool:
+        return self._thread is not None and self._thread.is_alive()
+
+    def start(self) -> None:
+        if self.is_alive:
+            return
+        self._stop_event.clear()
+        self._thread = threading.Thread(
+            target=self._run,
+            name="last30days-graph-projection",
+            daemon=True,
+        )
+        self._thread.start()
+
+    def _run(self) -> None:
+        while not self._stop_event.is_set():
+            try:
+                outcome = self.worker.deliver(limit=self.batch_limit)
+                self.last_error_code = (
+                    "graph_projection_degraded" if outcome["failed"] else None
+                )
+            except Exception:
+                self.last_error_code = "graph_projection_failure"
+            self._stop_event.wait(self.interval_seconds)
 
     def stop(self, *, timeout: float = 5.0) -> None:
         self._stop_event.set()

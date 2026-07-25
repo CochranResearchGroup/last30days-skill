@@ -115,6 +115,55 @@
         "wait_ms": {"type": "integer", "minimum": 0, "maximum": 300000}
       }
     },
+    "intelligence_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "profile_id"],
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "temporal_query",
+            "profile_history",
+            "coverage",
+            "collection",
+            "maintenance_status"
+          ]
+        },
+        "profile_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "query": {"type": "string", "minLength": 1, "maxLength": 4096},
+        "response_mode": {
+          "type": "string",
+          "enum": [
+            "evidence",
+            "brief",
+            "timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend",
+            "comparison"
+          ]
+        },
+        "as_of": {"type": "string", "minLength": 1, "maxLength": 64},
+        "during_from": {"type": "string", "minLength": 1, "maxLength": 64},
+        "during_to": {"type": "string", "minLength": 1, "maxLength": 64},
+        "known_as_of": {"type": "string", "minLength": 1, "maxLength": 64},
+        "source": {"type": "string", "minLength": 1, "maxLength": 64},
+        "handle": {"type": "string", "minLength": 1, "maxLength": 256},
+        "limit": {"type": "integer", "minimum": 1, "maximum": 100},
+        "operation": {
+          "type": "string",
+          "enum": ["list", "put", "pause", "resume", "run"]
+        },
+        "spec": {"$ref": "#/contracts/collection_spec"},
+        "collection_spec_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "scheduled_for": {"type": "string", "minLength": 1, "maxLength": 64}
+      }
+    },
     "query_response": {
       "type": "object",
       "additionalProperties": false,

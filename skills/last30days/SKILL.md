@@ -96,8 +96,10 @@ If the SKILL.md path you just Read contains `/.claude/plugins/marketplaces/` AND
 # SERVICE-FIRST PATH — USE BEFORE RESEARCH MECHANICS
 
 When the `last30days` MCP exposes `service_info`, `query`, `refresh`,
-`job_status`, and `topic`, those tools are the primary product surface. This path
-supersedes the request-scoped engine and browser instructions below:
+`job_status`, `topic`, `temporal_query`, `profile_history`, `coverage`,
+`collection`, and `maintenance_status`, those tools are the primary product
+surface. This path supersedes the request-scoped engine and browser
+instructions below:
 
 1. Call `service_info` to discover current sources, capabilities, index
    version, and readiness. Do not infer readiness from installed binaries.
@@ -111,6 +113,12 @@ supersedes the request-scoped engine and browser instructions below:
    status, degraded sources, or `awaiting_operator` truthfully.
 5. Use `topic` only for explicit operator requests to list, create/update,
    pause/resume, or request a scheduled topic refresh.
+6. Use `temporal_query` for `as_of`, `during`, `known_as_of`, timeline,
+   entity/event dossier, trend, comparison, and evidence-backed brief requests.
+   This tool is cache-only and must not be replaced with browser work.
+7. Use `profile_history` for source-account and immutable profile-page history;
+   use `coverage` for attempted intervals, yield, and gaps. Use
+   `maintenance_status` only to report safe readiness/receipt state.
 
 If `service_info` advertises `recurring_collection`, interval timers, profile
 leases, coverage, cursors, and post-publication assessment are service-owned.

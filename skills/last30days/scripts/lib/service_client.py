@@ -98,3 +98,6 @@ class ServiceClient:
 
     def topic(self, payload: dict[str, object]) -> dict[str, Any]:
         return self._request("POST", "/v1/topic", payload)
+
+    def intelligence(self, payload: dict[str, object]) -> dict[str, Any]:
+        return self._request("POST", "/v1/intelligence", payload)

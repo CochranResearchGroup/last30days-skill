@@ -126,7 +126,18 @@ def test_real_service_mcp_discovery_query_refresh_and_poll(tmp_path):
             assert sorted(
                 tool["name"] for tool in listed["result"]["tools"]
             ) == sorted(
-                ["service_info", "query", "refresh", "job_status", "topic"]
+                [
+                    "service_info",
+                    "query",
+                    "refresh",
+                    "job_status",
+                    "topic",
+                    "temporal_query",
+                    "profile_history",
+                    "coverage",
+                    "collection",
+                    "maintenance_status",
+                ]
             )
             info = _call(
                 mcp,
@@ -154,6 +165,23 @@ def test_real_service_mcp_discovery_query_refresh_and_poll(tmp_path):
                 json.loads(query["result"]["content"][0]["text"])["cache_status"]
                 == "miss"
             )
+            temporal = _call(
+                mcp,
+                40,
+                "tools/call",
+                {
+                    "name": "temporal_query",
+                    "arguments": {
+                        "query": "integration fixture timeline",
+                        "response_mode": "timeline",
+                    },
+                },
+            )
+            temporal_payload = json.loads(
+                temporal["result"]["content"][0]["text"]
+            )
+            assert temporal_payload["cache_only"] is True
+            assert temporal_payload["access_partitions"] == ["public"]
             refresh = _call(
                 mcp,
                 5,

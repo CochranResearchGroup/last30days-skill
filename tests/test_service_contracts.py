@@ -423,6 +423,7 @@ def test_schema_catalog_is_the_golden_contract_for_every_v1_envelope():
     assert catalog["schema_version"] == 1
     assert set(catalog["contracts"]) == {
         "query_request",
+        "intelligence_request",
         "query_response",
         "service_info",
         "evidence_item",
