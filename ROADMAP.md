@@ -10,7 +10,10 @@ Build a user-scoped, continuously hydrated intelligence service that acquires
 posts and profile pages from authenticated and public sources, preserves their
 provenance and temporal history, resolves people, organizations, topics, and
 events, and answers coherent citation-ready questions without exposing browser
-or scraping mechanics to normal agents.
+or scraping mechanics to normal agents. Deterministic supervisors own
+collection, state, budgets, validation, and publication; bounded App
+Intelligence workers assess evidence, propose identity and claim associations,
+and diagnose or repair adapters.
 
 ## Priority And Dependency Order
 
@@ -20,6 +23,11 @@ P01 Temporal Corpus Foundation
  ├──> P03 Profile And Identity Acquisition
  └──> P04 Temporal Retrieval And GraphRAG
           └──> P05 Agent-Facing Intelligence Product
+P06 App Intelligence Control Plane
+ ├──> supports P02 intake assessment
+ ├──> supports P03 identity resolution
+ ├──> supports P04 enrichment and evaluation
+ └──> supports bounded adapter maintenance across all lanes
 ```
 
 P03 discovery and bounded source experiments may proceed alongside P01, but
@@ -100,6 +108,13 @@ Goal Seeds:
 - deduplicated timer and manual-refresh work through the existing supervisor;
 - source/profile leases for authenticated browser work;
 - retention, redaction, and collection pause/resume controls;
+- durable post-publication assessment batches that classify content type,
+  novelty, relevance, likely entities, claims, events, and profile changes;
+- deterministic cheap-path filtering before model work so every fetched item
+  is preserved, but only bounded uncertain or valuable batches consume App
+  Intelligence budgets;
+- schema-validated assessment proposals that cannot directly mutate collection
+  state, corpus authority, ranking weights, or index publication;
 - yield and coverage observability distinct from process health.
 
 Acceptance Seeds:
@@ -107,6 +122,8 @@ Acceptance Seeds:
 - each timer run proves which surface and interval it attempted to cover;
 - repeated runs are idempotent while edits and new observations remain
   historically visible;
+- acquisition success is independent of stochastic assessment success; failed
+  assessment remains replayable and retryable without refetching;
 - a normal query never operates a browser or waits on acquisition mechanics;
 - authenticated collection cannot cross its configured profile or data
   partition.
@@ -135,6 +152,14 @@ Goal Seeds:
 
 - a source-neutral `profile_snapshot` acquisition contract;
 - stable source-account and real-world-entity identity separation;
+- deterministic identity candidate generation from canonical profile URLs,
+  declared links, official domains, names, handles, and existing aliases;
+- a bounded App Intelligence `identity_resolution` proposal contract supporting
+  `same_entity`, `different_entity`, `ambiguous`, and `insufficient_evidence`
+  outcomes;
+- cross-service account-to-person and account-to-organization assertions that
+  retain all supporting and conflicting evidence instead of silently merging
+  records;
 - section-level evidence and change history for LinkedIn people and company
   profiles;
 - analogous channel/profile surfaces for YouTube, X, Facebook, Reddit, and
@@ -151,6 +176,7 @@ Acceptance Seeds:
   acquisition that produced them;
 - profile changes produce temporal claims without silently invalidating prior
   history;
+- ambiguous handle or profile associations remain separate and reviewable;
 - users can ask who a person was affiliated with at a given time and receive
   evidence plus uncertainty;
 - profile collection does not scrape messages, connections, invitations, or
@@ -218,9 +244,113 @@ Goal Seeds:
 - deterministic evaluation suites for temporal resolution, entity ambiguity,
   event reconstruction, graph contribution, and citation completeness;
 - bounded stochastic enrichment and maintenance loops with durable receipts.
+- MCP discovery and operator diagnostics expose assessment, identity,
+  evaluation, and repair readiness without returning prompts, raw model events,
+  or browser mechanics to ordinary query clients.
 
 Dependencies: grows incrementally with P01-P04 and must not bypass their
 authority or access-control contracts.
+
+## P06 | App Intelligence Control Plane
+
+State: PLANNED
+
+Objective: use App Intelligence as bounded stochastic labor behind the existing
+host-owned service supervisor for incoming-data assessment, cross-service
+identity resolution, retrieval evaluation, and adapter diagnosis and repair.
+
+Current Substrate:
+
+- `service_intelligence.py` already provides a durable intelligence ledger,
+  schema-gated structured workers, model-call and cost bounds, replay
+  artifacts, decisions, evaluations, approvals, Git worktree branches, and a
+  bounded repair supervisor.
+- Codex app-server readiness passed on 2026-07-25 with Codex CLI 0.145.0,
+  stdio, Unix-socket, generated JSON Schema/TypeScript, and authenticated
+  WebSocket capabilities. The first implementation remains local stdio JSONL.
+- Existing enrichment and retrieval-evaluation leaves demonstrate the
+  proposal-plus-validator pattern, but timer assessment and cross-service
+  identity resolution do not yet have dedicated schemas or promotion policy.
+
+Control-Plane Contract:
+
+- The deterministic host owns phase, job and run state, input selection,
+  evidence IDs, budgets, retries, allowed actions, branch policy, tests/evals,
+  approvals, promotion, rollback, publication, and stop rules.
+- App Intelligence workers return schema-valid proposals only. Model output
+  never directly merges identities, changes canonical claims, operates a
+  browser, publishes an index, edits the main worktree, restarts a service, or
+  deploys a repair.
+- Persist raw provider events separately from normalized supervisor events so
+  runs remain auditable and protocol changes can be replayed.
+- Every loop records input/output artifacts, provider and model configuration,
+  event streams, validator results, decisions, cost reservations, evals,
+  approvals, and terminal state.
+
+Loop Seeds:
+
+1. `content_assessment`
+   - runs after raw acquisition and immutable publication;
+   - accepts bounded document-version batches and exact evidence IDs;
+   - proposes content type, novelty, relevance, entity mentions, claims,
+     events, profile changes, and follow-up candidates;
+   - uses deterministic filters first and does not require one model call per
+     fetched item.
+2. `identity_resolution`
+   - receives deterministic candidate pairs or small candidate sets;
+   - proposes person, organization, and source-account associations across
+     services;
+   - must return supporting evidence, conflicts, confidence, temporal scope,
+     and an ambiguity-preserving action;
+   - promotion thresholds and human-review gates remain host policy.
+3. `adapter_diagnosis`
+   - starts only after deterministic health logic groups repeated failures by a
+     stable failure signature;
+   - classifies code defects separately from authentication checkpoints, rate
+     limits, access restrictions, site redesigns, and transient network faults;
+   - never treats an operator-authentication requirement as a repairable code
+     defect.
+4. `adapter_repair`
+   - uses persistent Codex app-server threads for bounded investigation,
+     optional forks, rollback, streamed events, and structured decisions;
+   - performs code changes only in isolated branches/worktrees and uses
+     `codex exec` only for stateless leaf review or CI-style jobs;
+   - selects a candidate through host-owned focused tests, contract tests,
+     replay fixtures, security checks, and an explicitly leased live smoke when
+     allowed;
+   - requires the configured approval gate before integration, installed-copy
+     replacement, service restart, or deployment.
+
+Integration-Surface Seeds:
+
+- Prefer direct structured API calls for high-volume non-repo classification
+  and extraction leaves when they meet cost, privacy, and schema requirements.
+- Prefer Codex app-server for persistent adapter maintenance requiring repo
+  context, file edits, branching, steering, approvals, or rollback.
+- Prefer `codex exec --json --output-schema` for isolated stateless leaf jobs
+  whose complete argv, events, outputs, and exit status fit one ledger entry.
+- Do not allow App Intelligence adapters to call one another directly; the
+  host validates one adapter result before invoking another.
+
+Acceptance Seeds:
+
+- timers can publish useful raw evidence when all stochastic workers are
+  disabled or degraded;
+- every promoted assessment, identity assertion, claim, or event is
+  evidence-linked, schema-valid, replayable, and attributable to a versioned
+  worker configuration;
+- ambiguous identities do not auto-merge and conflicting evidence remains
+  visible;
+- identical assessment inputs and host policy can replay the recorded decision
+  path even when stochastic output itself is not seed-reproducible;
+- adapter repair has explicit call, branch, rework, time, cost, write-scope,
+  browser, approval, and deployment bounds;
+- failed repair evaluation stops, rolls back, requests review, or records a
+  verified blocker rather than opening an unbounded repair loop.
+
+Dependencies: P06 reuses the P00 intelligence ledger and supervisor substrate.
+Its assessment and identity schemas must align with P01 temporal evidence
+authority before recurring P02/P03 hydration depends on them.
 
 ## Goal-Compatible Plan Conversion
 
