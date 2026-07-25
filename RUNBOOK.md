@@ -292,3 +292,78 @@ Next Bounded Action:
 - Execute Plan 0011 Packet 1 with a test-first schema-7-to-temporal migration,
   baseline version backfill, immutable evidence constraints, and idempotent
   replay proof.
+
+## Turn 5 | 2026-07-25
+
+Focus: Plan 0011 Packet 1 temporal schema and reversible migration.
+
+Authority Consulted:
+
+- Plan 0011 Packet 1 and checkpoint contract
+- `$tdd`
+- `store.py`, service contracts, schema catalog, and current publication seams
+  through CodeGraph
+- Graphiti, documentation, validation, goal-execution, worktree, commit, push,
+  and closeout policies
+
+Decisions And Changes:
+
+- Added additive database schema version 8 without migrating the installed
+  runtime.
+- Kept `documents` as the stable current projection while making
+  `document_versions`, version sightings, version-scoped chunks, and evidence
+  spans the immutable historical authority.
+- Added access-partition constraints so authenticated evidence and its derived
+  records cannot be linked through a public or different-profile partition.
+- Established schema authorities needed by later packets for source accounts,
+  profile snapshots, reversible identity assertions, bitemporal claims and
+  events, collection specs/runs/coverage/cursors, and Graphiti outbox delivery.
+- Added a strict `temporal_evidence_ref` public contract and regenerated the Go
+  catalog hash consumed by MCP.
+- Added canonical temporal identifiers and a deterministic schema-7
+  compatibility export/receipt instead of destructive down-migration SQL.
+- Corrected a process test whose fixed 2026-07-24 fixture had aged from fresh
+  to stale; it now asserts the intended behavior independently of wall time.
+
+Validation Evidence:
+
+- source commit: `f14b0fa`;
+- focused migration, contract, temporal-store, service-store, publication, and
+  retrieval suites passed;
+- full `uv run pytest -q` passed;
+- `go generate ./...`, `go test ./...`, and `go vet ./...` passed under
+  `mcp/`;
+- active planning and goal-only audits passed with no problems;
+- migration tests prove schema-7 baseline backfill, concurrent initialization,
+  transactional failure rollback, newer-schema refusal, integrity and foreign
+  keys, immutable version/chunk rejection, and cross-partition evidence
+  rejection.
+
+State Movement:
+
+- Plan 0011 Packet 1: `active -> complete`.
+- Plan 0011 Packet 2: `pending -> ready`.
+- P01: remains `OPEN`; installed runtime migration is deferred to Packet 6.
+- P02-P06: unchanged; broad hydration and isolated stochastic execution remain
+  gated.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Packet 1 was one coupled schema/contract boundary, and
+  CodeGraph provided the structural context without a duplicative exploration
+  lane.
+
+Graphiti Write Status:
+
+- the Turn 4 integrated-authority write completed as job
+  `951c2b7b-fbd5-46c5-acc0-dcba4470bd38`, episode
+  `35fa5b93-dbf9-442a-9b39-b4908717c4f4`;
+- Packet 1 checkpoint write queued as job
+  `2342cdaa-5068-4f1b-95e7-f487e59a5e78` in
+  `last30days_skill_main`; record its episode UUID after completion.
+
+Next Bounded Action:
+
+- Execute Plan 0011 Packet 2: change publication to append or reuse immutable
+  versions and sightings, create version-scoped chunks/evidence, maintain the
+  current projection, and prove replay plus changed-content history.

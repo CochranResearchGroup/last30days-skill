@@ -68,11 +68,13 @@ profile history, graph authority, or agent-facing query behavior.
 
 ## Current State
 
-- Plan 0011 is active at Packet 1; no temporal migration has been implemented.
-- Schema version 7 and the installed service remain the current runtime
-  authority.
+- Packet 1 is source-complete at commit `f14b0fa`; schema version 8 provides
+  the additive temporal authority and deterministic schema-7 replay export.
+- The installed service has not been migrated; schema version 7 remains the
+  installed runtime authority until the bounded rollout packet.
+- Packet 2 immutable publication and evidence projection is the next ready
+  critical-path unit.
 - Broad recurring hydration and isolated Plan 0010 execution remain gated.
-- The current worktree changes only planning, roadmap, and runbook authority.
 
 ## Context And Constraints
 
@@ -614,6 +616,58 @@ Next action:
 
 - implement Packet 1 temporal schema and reversible migration using
   test-first schema-7 backfill and replay fixtures.
+
+### Checkpoint P0011-C01 | 2026-07-25
+
+Plan version: 1
+
+State transition: `packet_1_active -> packet_1_complete`; `packet_2_ready`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- added additive schema version 8 with access partitions, immutable document
+  versions and sightings, version-scoped chunks/evidence, profile/account and
+  reversible identity authorities, bitemporal claims/events, collection
+  coverage/cursors, and a graph-projection outbox;
+- backfilled every schema-7 document into one immutable baseline version and
+  preserved the current document/chunk compatibility projections;
+- added a partition-safe temporal evidence contract plus generated Go catalog
+  compatibility;
+- added canonical temporal IDs and a deterministic schema-7 compatibility
+  export with a content-addressed receipt;
+- removed wall-clock drift from the process-level freshness fixture discovered
+  by full-suite validation.
+
+Validation evidence:
+
+- source commit: `f14b0fa`;
+- migration, contract, temporal-store, service-store, publication, and
+  retrieval focused suites passed;
+- the full Python suite passed;
+- `go generate ./...`, `go test ./...`, and `go vet ./...` passed;
+- active planning and goal-only audits passed with no problems;
+- `PRAGMA integrity_check`, `PRAGMA foreign_key_check`, concurrent
+  initialization, migration rollback, immutable-write rejection, and
+  cross-partition evidence rejection are covered and passed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Packet 1 owned one coupled migration/contract boundary and
+  CodeGraph supplied the required structural context without a parallel
+  exploration lane.
+
+Remaining acceptance criteria:
+
+- Packet 2 through Packet 7 and their integrated acceptance gates;
+- installed-runtime migration remains intentionally deferred to Packet 6.
+
+Next action:
+
+- execute Packet 2 by replacing mutable changed-content publication with
+  idempotent immutable version/sighting/chunk/evidence publication while
+  preserving current retrieval compatibility.
 
 ## Stop Rules
 

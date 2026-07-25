@@ -71,9 +71,12 @@ when it was true, when it was observed, and which collection caused it.
 
 Current State:
 
-- Plan 0011 is active at the temporal schema-and-migration packet.
-- Schema version 7 still uses mutable documents and document-scoped
-  chunks/evidence; broad recurring hydration remains gated.
+- Plan 0011 Packet 1 is source-complete at commit `f14b0fa`.
+- Additive schema version 8 now establishes immutable document versions,
+  version-scoped evidence, access partitions, temporal/profile/collection
+  authorities, and deterministic schema-7 replay.
+- Packet 2 immutable publication is the next critical-path unit; the installed
+  runtime remains on schema 7 and broad recurring hydration remains gated.
 
 Goal Seeds:
 
@@ -96,9 +99,8 @@ Acceptance Seeds:
 Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-  is the integrated P01-P06 campaign authority. Its Packet 1 temporal schema
-  and reversible migration are the critical path before broad recurring
-  hydration.
+  is the integrated P01-P06 campaign authority. Packet 1 is source-complete;
+  Packet 2 must make publication immutable before broad recurring hydration.
 
 ## P02 | Recurring Acquisition And Coverage
 
