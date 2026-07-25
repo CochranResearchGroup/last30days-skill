@@ -71,15 +71,16 @@ when it was true, when it was observed, and which collection caused it.
 
 Current State:
 
-- Plan 0011 Packets 1 and 2 are source-complete at commits `f14b0fa` and
-  `0454e5a`.
-- Additive schema version 9 now establishes immutable document versions,
+- Plan 0011 Packets 1 through 3 are source-complete at commits `f14b0fa`,
+  `0454e5a`, and `4ae5095`.
+- Additive schema version 10 now establishes immutable document versions,
   append-or-reuse publication, version-scoped evidence and enrichment,
-  access partitions, temporal/profile/collection authorities, authoritative
-  index snapshots, and deterministic schema-7 replay.
-- Packet 3 collection specifications and coverage is the next critical-path
-  unit; the installed runtime remains on schema 7 and broad recurring
-  hydration remains gated.
+  access partitions, governed recurring collection, post-publication
+  assessment, authoritative index snapshots, and deterministic schema-7
+  replay.
+- Packet 4 profile acquisition and identity is the next critical-path unit;
+  the installed runtime remains on schema 7 and broad recurring hydration
+  remains gated.
 
 Goal Seeds:
 
@@ -102,9 +103,9 @@ Acceptance Seeds:
 Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-  is the integrated P01-P06 campaign authority. Packets 1 and 2 are
-  source-complete; Packet 3 must make recurring collection governed and
-  observable before broad hydration.
+  is the integrated P01-P06 campaign authority. Packets 1 through 3 are
+  source-complete; Packet 4 must make profile history and identity evidence
+  first-class before claims and GraphRAG promotion.
 
 ## P02 | Recurring Acquisition And Coverage
 
@@ -116,11 +117,14 @@ coverage, budget, or source-health history.
 
 Current State:
 
-- Plan 0011 Packet 3 is ready now that immutable publication and
-  version-scoped evidence projections are source-complete.
-- Collection must publish raw evidence before the Plan 0010
-  `content_assessment` join runs, and assessment failure must remain
-  independent from acquisition success.
+- Plan 0011 Packet 3 is source-complete at commit `4ae5095`.
+- Schema version 10 now provides immutable collection-spec revisions, durable
+  schedules/runs/attempts/cursors/coverage/gaps, source health and yield,
+  authenticated profile leases, and raw-publication-first bounded
+  `content_assessment`.
+- Collection runs freeze their originating spec revision and enforce
+  per-spec item, time, network, budget, retention, redaction, and access
+  policy through the deterministic host.
 - Installed timers and broad hydration remain gated until the bounded runtime
   rollout packet.
 
@@ -159,8 +163,8 @@ Dependencies: P01 foundations must cover the records emitted by timers.
 Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-  Packet 3 owns the collection specification, timer, run, cursor, coverage,
-  gap, source-health, and post-publication assessment slice.
+  Packet 3 owns the source-complete collection and assessment slice; Packet 6
+  owns installed migration, timer enablement, and live canaries.
 
 ## P03 | Profile And Identity Acquisition
 

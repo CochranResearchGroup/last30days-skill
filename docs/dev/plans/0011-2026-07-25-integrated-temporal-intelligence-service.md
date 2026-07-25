@@ -68,15 +68,16 @@ profile history, graph authority, or agent-facing query behavior.
 
 ## Current State
 
-- Packets 1 and 2 are source-complete at commits `f14b0fa` and `0454e5a`;
-  schema version 9 provides the additive temporal authority, immutable
+- Packets 1 through 3 are source-complete at commits `f14b0fa`, `0454e5a`,
+  and `4ae5095`; schema version 10 adds governed recurring collection and
+  post-publication assessment to the additive temporal authority, immutable
   publication, version-scoped enrichment/index projections, and deterministic
   schema-7 replay export.
 - The installed service has not been migrated; schema version 7 remains the
   installed runtime authority until the bounded rollout packet.
-- Packet 3 collection specifications, timers, coverage, and post-publication
-  assessment is the next ready critical-path unit.
-- Broad recurring hydration remains gated until Packet 3 closes; isolated
+- Packet 4 source-neutral profile acquisition and reversible identity
+  resolution is the next ready critical-path unit.
+- Broad recurring hydration remains gated until Packet 6 rollout; isolated
   Plan 0010 execution remains prohibited outside the four integration joins.
 
 ## Context And Constraints
@@ -719,8 +720,8 @@ Durable memory:
   `2342cdaa-5068-4f1b-95e7-f487e59a5e78`, episode
   `15ffb6f1-6360-4895-a845-b6a3681f4d1e`;
 - Packet 2 was queued as job `b9f1c8a7-ce57-4258-9a40-197d6e844a99`
-  in `last30days_skill_main`; its final episode UUID will be recorded at the
-  next checkpoint if processing is not complete before this checkpoint lands.
+  in `last30days_skill_main` and completed as episode
+  `d1a64575-0ff2-4339-928b-235c8bdf7833`.
 
 Remaining acceptance criteria:
 
@@ -732,6 +733,72 @@ Next action:
 - execute Packet 3 by defining typed collection specifications and durable
   timer/run/coverage state, then attach Plan 0010 content assessment strictly
   after raw evidence publication.
+
+### Checkpoint P0011-C03 | 2026-07-25
+
+Plan version: 1
+
+State transition: `packet_3_active -> packet_3_complete`; `packet_4_ready`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- added strict immutable collection-spec revisions for feed, topic, poster,
+  channel, account, and profile surfaces with explicit selectors, schedules,
+  bounds, budgets, retention, redaction, assessment, and pause state;
+- added durable schedules, timer/manual claims, interval runs, attempts,
+  cursors, watermarks, coverage, gaps, source health, yield, backoff, and
+  authenticated profile leases;
+- froze every run to its originating spec revision and qualified supervisor
+  deduplication by collection spec and revision;
+- implemented the Plan 0010 common task kernel and bounded
+  `content_assessment` queue, worker, evidence closure, validation, promotion,
+  and replay receipts;
+- committed raw corpus evidence before assessment enqueue and isolated
+  assessment failure from acquisition state;
+- added service discovery and operator CLI surfaces for collection
+  put/list/run/pause/resume while leaving installed timers disabled.
+
+Validation evidence:
+
+- source commit: `4ae5095`;
+- focused collection, App Intelligence, publication, job-runner, migration,
+  contract, runtime, and service-app suites passed;
+- full `uv run pytest -q` passed;
+- `go generate ./...`, `go test ./...`, and `go vet ./...` passed;
+- regression fixtures prove timer/manual coalescing, distinct-spec job
+  isolation, frozen-revision policy, per-spec bounds and retention,
+  authenticated-profile lease exclusion, retry history, gap resolution,
+  raw-publication survival under assessment failure, and disabled-AI
+  operation.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Packet 3 shared the collection migration, supervisor,
+  publisher, and contract boundary, and CodeGraph supplied structural context.
+
+Durable memory:
+
+- Packet 2 completed as job `b9f1c8a7-ce57-4258-9a40-197d6e844a99`,
+  episode `d1a64575-0ff2-4339-928b-235c8bdf7833`;
+- Packet 3 was submitted as job
+  `63ca548a-3d24-4757-a3c0-1c3ccf5ba62a` in
+  `last30days_skill_main`; it remained in node resolution at checkpoint and
+  its final episode UUID must be recorded at the next checkpoint.
+
+Remaining acceptance criteria:
+
+- Packet 4 through Packet 7 and their integrated acceptance gates;
+- installed-runtime migration, timer enablement, and live canaries remain
+  intentionally deferred to Packet 6.
+
+Next action:
+
+- execute Packet 4 by publishing immutable source-neutral profile snapshots,
+  beginning with bounded LinkedIn people/company surfaces, then attach
+  deterministic identity candidates and conservative Plan 0010 identity
+  resolution.
 
 ## Stop Rules
 

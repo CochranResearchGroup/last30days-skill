@@ -431,3 +431,79 @@ Next Bounded Action:
 - Execute Plan 0011 Packet 3: add typed collection specifications, durable
   timer claims/runs/cursors/coverage/gaps, authenticated profile leases, and
   raw-publication-first Plan 0010 content assessment.
+
+## Turn 7 | 2026-07-25
+
+Focus: Plan 0011 Packet 3 governed recurring collection and post-publication
+assessment.
+
+Authority Consulted:
+
+- Plan 0011 Packet 3 and Plan 0010 common/content-assessment contracts
+- `$tdd`, `$app-intelligence-automation`, and `graphiti-discovery`
+- collection, supervisor, publisher, runtime, CLI, and contract seams through
+  CodeGraph
+- Graphiti, documentation, validation, goal-execution, worktree, commit, push,
+  and closeout policies
+
+Decisions And Changes:
+
+- Added immutable typed collection-spec revisions for feed, topic, poster,
+  channel, account, and profile surfaces.
+- Added durable schedules, timer/manual claims, interval runs and attempts,
+  cursors, watermarks, coverage, gaps, source health, yield, backoff, and
+  authenticated profile leases.
+- Froze each run to its originating spec revision and qualified refresh-job
+  deduplication by collection spec and revision.
+- Enforced per-spec item, wall-time, network, budget, retention, redaction,
+  and access-partition policy in the host-owned acquisition path.
+- Added the Plan 0010 common stochastic-task kernel plus bounded
+  `content_assessment` evidence, validation, promotion, replay, queue, and
+  worker contracts.
+- Kept raw corpus publication transactional and prior to assessment enqueue;
+  assessment failure or disablement cannot fail or roll back acquisition.
+- Added user-facing collection configuration, service discovery capabilities,
+  and CLI put/list/run/pause/resume surfaces, but did not install or enable
+  timers.
+
+Validation Evidence:
+
+- source commit: `4ae5095`;
+- focused collection, App Intelligence, publication, job-runner, migration,
+  contract, runtime, and service-app suites passed;
+- full `uv run pytest -q` passed;
+- `go generate ./...`, `go test ./...`, and `go vet ./...` passed under
+  `mcp/`;
+- regression fixtures prove coalescing, spec-qualified isolation,
+  frozen-revision execution, policy bounds, lease exclusion, coverage and
+  gap history, assessment-failure independence, and disabled-AI operation.
+
+State Movement:
+
+- Plan 0011 Packet 3: `active -> complete`.
+- Plan 0011 Packet 4: `pending -> ready`.
+- P02 remains `PLANNED`; its source implementation is complete but the lane
+  does not become operational until installed timer rollout in Packet 6.
+- P01 and P03 remain `OPEN`; P04-P06 remain at their roadmap states.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Packet 3 crossed one coupled migration, supervisor,
+  publication, and contract boundary, with CodeGraph used for structural
+  exploration.
+
+Graphiti Write Status:
+
+- Packet 2 completed as job `b9f1c8a7-ce57-4258-9a40-197d6e844a99`,
+  episode `d1a64575-0ff2-4339-928b-235c8bdf7833`;
+- Packet 3 checkpoint write is processing as job
+  `63ca548a-3d24-4757-a3c0-1c3ccf5ba62a` in
+  `last30days_skill_main`; it remained in node resolution at checkpoint and
+  its final episode UUID must be recorded at the next checkpoint.
+
+Next Bounded Action:
+
+- Execute Plan 0011 Packet 4: add immutable source-neutral profile snapshots,
+  start with bounded LinkedIn people/company acquisition, generate
+  deterministic identity candidates, and attach conservative Plan 0010
+  identity-resolution proposals without model-direct merges.
