@@ -367,3 +367,67 @@ Next Bounded Action:
 - Execute Plan 0011 Packet 2: change publication to append or reuse immutable
   versions and sightings, create version-scoped chunks/evidence, maintain the
   current projection, and prove replay plus changed-content history.
+
+## Turn 6 | 2026-07-25
+
+Focus: Plan 0011 Packet 2 immutable publication and evidence projection.
+
+Authority Consulted:
+
+- Plan 0011 Packet 2 and checkpoint contract
+- `$tdd`
+- publication, enrichment, retrieval, and migration seams through CodeGraph
+- Graphiti, documentation, validation, goal-execution, worktree, commit, push,
+  and closeout policies
+
+Decisions And Changes:
+
+- Replaced mutable changed-content publication with append-or-reuse immutable
+  document versions and per-acquisition sightings.
+- Kept the stable `documents` row as the schema-7 compatibility projection;
+  changed content advances its current pointer without altering prior
+  immutable text or metadata.
+- Added version-scoped embedding, entity, relationship, and relationship
+  evidence projections and preserved exact evidence spans.
+- Published authoritative index snapshots from current immutable versions
+  while retaining legacy current-document index tables for existing clients.
+- Left the installed service on schema 7; installed database migration remains
+  owned by Packet 6.
+
+Validation Evidence:
+
+- source commit: `0454e5a`;
+- focused migration, temporal-store, publication, enrichment, retrieval,
+  evaluation, store, and service-app suites passed;
+- full `uv run pytest -q` passed;
+- `go test ./...` and `go vet ./...` passed under `mcp/`;
+- identical replay, changed-content history, historical enrichment retention,
+  and authoritative index projection tests passed.
+
+State Movement:
+
+- Plan 0011 Packet 2: `active -> complete`.
+- Plan 0011 Packet 3: `pending -> ready`.
+- P01: remains `OPEN` through installed migration and integrated acceptance.
+- P02-P06: remain at their roadmap states; Packet 3 is ready under the
+  integrated Plan 0011 authority, while broad hydration and isolated
+  stochastic execution remain gated.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Packet 2 was one coupled publication/enrichment/index
+  boundary and CodeGraph supplied the structural context.
+
+Graphiti Write Status:
+
+- Packet 1 job `2342cdaa-5068-4f1b-95e7-f487e59a5e78` completed on its
+  bounded retry as episode `15ffb6f1-6360-4895-a845-b6a3681f4d1e`;
+- Packet 2 checkpoint write is queued as job
+  `b9f1c8a7-ce57-4258-9a40-197d6e844a99` in
+  `last30days_skill_main`; record its episode UUID after completion.
+
+Next Bounded Action:
+
+- Execute Plan 0011 Packet 3: add typed collection specifications, durable
+  timer claims/runs/cursors/coverage/gaps, authenticated profile leases, and
+  raw-publication-first Plan 0010 content assessment.

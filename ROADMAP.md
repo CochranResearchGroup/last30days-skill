@@ -71,12 +71,15 @@ when it was true, when it was observed, and which collection caused it.
 
 Current State:
 
-- Plan 0011 Packet 1 is source-complete at commit `f14b0fa`.
-- Additive schema version 8 now establishes immutable document versions,
-  version-scoped evidence, access partitions, temporal/profile/collection
-  authorities, and deterministic schema-7 replay.
-- Packet 2 immutable publication is the next critical-path unit; the installed
-  runtime remains on schema 7 and broad recurring hydration remains gated.
+- Plan 0011 Packets 1 and 2 are source-complete at commits `f14b0fa` and
+  `0454e5a`.
+- Additive schema version 9 now establishes immutable document versions,
+  append-or-reuse publication, version-scoped evidence and enrichment,
+  access partitions, temporal/profile/collection authorities, authoritative
+  index snapshots, and deterministic schema-7 replay.
+- Packet 3 collection specifications and coverage is the next critical-path
+  unit; the installed runtime remains on schema 7 and broad recurring
+  hydration remains gated.
 
 Goal Seeds:
 
@@ -99,8 +102,9 @@ Acceptance Seeds:
 Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-  is the integrated P01-P06 campaign authority. Packet 1 is source-complete;
-  Packet 2 must make publication immutable before broad recurring hydration.
+  is the integrated P01-P06 campaign authority. Packets 1 and 2 are
+  source-complete; Packet 3 must make recurring collection governed and
+  observable before broad hydration.
 
 ## P02 | Recurring Acquisition And Coverage
 
@@ -109,6 +113,16 @@ State: PLANNED
 Objective: run governed timers that collect bounded recent feed items and
 optional topic, poster, channel, or account targets without losing cursor,
 coverage, budget, or source-health history.
+
+Current State:
+
+- Plan 0011 Packet 3 is ready now that immutable publication and
+  version-scoped evidence projections are source-complete.
+- Collection must publish raw evidence before the Plan 0010
+  `content_assessment` join runs, and assessment failure must remain
+  independent from acquisition success.
+- Installed timers and broad hydration remain gated until the bounded runtime
+  rollout packet.
 
 Goal Seeds:
 
@@ -141,6 +155,12 @@ Acceptance Seeds:
   partition.
 
 Dependencies: P01 foundations must cover the records emitted by timers.
+
+Active Plan:
+
+- `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
+  Packet 3 owns the collection specification, timer, run, cursor, coverage,
+  gap, source-health, and post-publication assessment slice.
 
 ## P03 | Profile And Identity Acquisition
 

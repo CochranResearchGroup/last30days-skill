@@ -68,13 +68,16 @@ profile history, graph authority, or agent-facing query behavior.
 
 ## Current State
 
-- Packet 1 is source-complete at commit `f14b0fa`; schema version 8 provides
-  the additive temporal authority and deterministic schema-7 replay export.
+- Packets 1 and 2 are source-complete at commits `f14b0fa` and `0454e5a`;
+  schema version 9 provides the additive temporal authority, immutable
+  publication, version-scoped enrichment/index projections, and deterministic
+  schema-7 replay export.
 - The installed service has not been migrated; schema version 7 remains the
   installed runtime authority until the bounded rollout packet.
-- Packet 2 immutable publication and evidence projection is the next ready
-  critical-path unit.
-- Broad recurring hydration and isolated Plan 0010 execution remain gated.
+- Packet 3 collection specifications, timers, coverage, and post-publication
+  assessment is the next ready critical-path unit.
+- Broad recurring hydration remains gated until Packet 3 closes; isolated
+  Plan 0010 execution remains prohibited outside the four integration joins.
 
 ## Context And Constraints
 
@@ -668,6 +671,67 @@ Next action:
 - execute Packet 2 by replacing mutable changed-content publication with
   idempotent immutable version/sighting/chunk/evidence publication while
   preserving current retrieval compatibility.
+
+### Checkpoint P0011-C02 | 2026-07-25
+
+Plan version: 1
+
+State transition: `packet_2_active -> packet_2_complete`; `packet_3_ready`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- changed corpus publication from mutable overwrite to append-or-reuse
+  immutable document versions with a sighting for each acquisition;
+- made changed content advance only the current document pointer while prior
+  text, chunks, evidence, embeddings, entity links, and relationships remain
+  attached to their original immutable version;
+- added version-scoped embedding, entity, relationship, and relationship
+  evidence projections without removing schema-7 current-document
+  compatibility;
+- changed index publication to derive authoritative snapshots from immutable
+  current versions and their version-scoped enrichment;
+- preserved deterministic stable IDs and idempotent replay for identical
+  acquisitions.
+
+Validation evidence:
+
+- source commit: `0454e5a`;
+- focused migration, temporal-store, publication, enrichment, retrieval,
+  evaluation, store, and service-app suites passed;
+- the full Python suite passed;
+- `go test ./...` and `go vet ./...` passed;
+- changed-content tests prove two immutable versions while identical replay
+  retains one version and sighting;
+- retrieval and enrichment tests prove historical projections survive a
+  current-version change.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Packet 2 remained within the coupled publication,
+  enrichment, and index boundary established by Packet 1, with CodeGraph used
+  for structural context.
+
+Durable memory:
+
+- Packet 1 completed on retry as job
+  `2342cdaa-5068-4f1b-95e7-f487e59a5e78`, episode
+  `15ffb6f1-6360-4895-a845-b6a3681f4d1e`;
+- Packet 2 was queued as job `b9f1c8a7-ce57-4258-9a40-197d6e844a99`
+  in `last30days_skill_main`; its final episode UUID will be recorded at the
+  next checkpoint if processing is not complete before this checkpoint lands.
+
+Remaining acceptance criteria:
+
+- Packet 3 through Packet 7 and their integrated acceptance gates;
+- installed-runtime migration remains intentionally deferred to Packet 6.
+
+Next action:
+
+- execute Packet 3 by defining typed collection specifications and durable
+  timer/run/coverage state, then attach Plan 0010 content assessment strictly
+  after raw evidence publication.
 
 ## Stop Rules
 
