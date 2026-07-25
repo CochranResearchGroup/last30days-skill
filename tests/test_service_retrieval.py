@@ -210,6 +210,29 @@ def test_async_embedding_publish_creates_new_frozen_snapshot(tmp_path):
     conn.close()
 
 
+def test_republishing_existing_snapshot_moves_explicit_active_head(tmp_path):
+    db_path = tmp_path / "active-head.db"
+    semantic = HybridRetriever(db_path, embedding_provider=_KeywordEmbedder())
+    semantic.initialize()
+    _seed_legacy_finding(
+        db_path,
+        source="youtube",
+        url="https://youtube.example/apples",
+        title="Growing fruit",
+        content="Apple trees need patient seasonal pruning.",
+    )
+    semantic_version = semantic.index_legacy_findings().index_version
+    lexical = HybridRetriever(db_path)
+    lexical_version = lexical.publish_index()
+
+    assert lexical_version != semantic_version
+    assert lexical.current_index_version() == lexical_version
+
+    assert semantic.publish_index() == semantic_version
+    assert semantic.current_index_version() == semantic_version
+    assert semantic.search_snapshot("orchard harvest").index_version == semantic_version
+
+
 def test_published_embedding_snapshot_survives_live_vector_replacement(tmp_path):
     class ReplacementEmbedder(_KeywordEmbedder):
         def embed(self, texts):

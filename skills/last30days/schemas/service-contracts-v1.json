@@ -180,6 +180,34 @@
         "fetched_at": {"type": "string", "minLength": 1},
         "acquisition_id": {"type": "string", "minLength": 1},
         "content_hash": {"type": "string", "minLength": 1},
+        "media": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "url",
+              "preview_url",
+              "mime_type",
+              "width",
+              "height",
+              "duration_seconds",
+              "alt_text"
+            ],
+            "properties": {
+              "kind": {"enum": ["image", "video"]},
+              "url": {"type": "string", "minLength": 1, "maxLength": 4096},
+              "preview_url": {"type": ["string", "null"]},
+              "mime_type": {"type": ["string", "null"]},
+              "width": {"type": ["integer", "null"], "minimum": 0},
+              "height": {"type": ["integer", "null"], "minimum": 0},
+              "duration_seconds": {"type": ["integer", "null"], "minimum": 0},
+              "alt_text": {"type": ["string", "null"]}
+            }
+          }
+        },
         "scores": {
           "type": "object",
           "additionalProperties": false,

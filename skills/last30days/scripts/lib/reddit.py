@@ -277,6 +277,22 @@ def _normalize_post(post: Dict[str, Any], idx: int, source_label: str = "global"
     # Score the title first, then let the body provide limited support.
     # This keeps long selftexts from overpowering the visible topic signal.
     relevance = _compute_post_relevance(query, title, selftext) if query else 0.7
+    media_url = str(post.get("url_overridden_by_dest") or post.get("url") or "")
+    post_hint = str(post.get("post_hint") or "")
+    media = []
+    if media_url and "reddit.com" not in media_url:
+        media.append(
+            {
+                "kind": "video" if post_hint == "hosted:video" else "image",
+                "url": media_url,
+                "preview_url": None,
+                "mime_type": None,
+                "width": None,
+                "height": None,
+                "duration_seconds": None,
+                "alt_text": title or None,
+            }
+        )
 
     return {
         "id": f"R{idx}",
@@ -293,6 +309,7 @@ def _normalize_post(post: Dict[str, Any], idx: int, source_label: str = "global"
         "relevance": relevance,
         "why_relevant": f"Reddit {source_label} search",
         "selftext": str(post.get("selftext", ""))[:500],
+        "metadata": {"media": media} if media else {},
     }
 
 

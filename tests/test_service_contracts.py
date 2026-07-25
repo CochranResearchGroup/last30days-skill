@@ -60,6 +60,7 @@ def test_evidence_item_round_trips_citation_and_rank_provenance():
         "fetched_at": "2026-07-24T12:00:00Z",
         "acquisition_id": "acq-001",
         "content_hash": "sha256:abc123",
+        "media": [],
         "scores": {
             "lexical": 0.8,
             "semantic": 0.9,

@@ -76,6 +76,7 @@ class TestYtDlpFlags(unittest.TestCase):
         cmd = run_mock.call_args.args[0]
         self.assertIn("--ignore-config", cmd)
         self.assertIn("--no-cookies-from-browser", cmd)
+        self.assertIn("--flat-playlist", cmd)
 
     def test_transcript_fetch_ignores_global_config_and_browser_cookies(self):
         with tempfile.TemporaryDirectory() as temp_dir, \

@@ -166,6 +166,30 @@ def test_generic_entity_extraction_is_available_without_configured_rules(tmp_pat
     assert {mention.entity_type for mention in mentions} == {"topic"}
 
 
+def test_deterministic_relationship_extraction_requires_explicit_predicate(tmp_path):
+    db_path = tmp_path / "deterministic-relationships.db"
+    document_id, _ = _seed_chunk(
+        db_path,
+        text="OpenAI created ChatGPT. Anthropic and Claude are also mentioned.",
+    )
+    service = EnrichmentService(
+        db_path,
+        extractor_version="generic-entities-v1",
+        generic_entity_extraction=True,
+        relationship_predicates=("created",),
+    )
+
+    service.extract_and_promote_entities()
+    result = service.extract_and_promote_relationships()
+    relationships = service.relationships(document_id)
+
+    assert result.accepted_count == 1
+    assert result.rejected_count == 0
+    assert [(item.predicate, item.validation_state) for item in relationships] == [
+        ("created", "accepted")
+    ]
+
+
 def test_relationship_promotion_requires_evidence_and_accepted_mentions(tmp_path):
     db_path = tmp_path / "relationships.db"
     document_id, chunk_id = _seed_chunk(

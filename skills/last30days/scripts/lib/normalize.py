@@ -218,6 +218,7 @@ def _normalize_reddit(
         why_relevant=str(item.get("why_relevant") or ""),
         snippet=comment_text or str(item.get("selftext") or "")[:400],
         metadata={
+            **dict(item.get("metadata") or {}),
             "top_comments": top_comments,
             "comment_insights": item.get("comment_insights") or [],
         },
@@ -233,6 +234,9 @@ def _normalize_x(
 ) -> schema.SourceItem:
     text = str(item.get("text") or "").strip()
     mentioned = item.get("mentioned_handles") or []
+    metadata = dict(item.get("metadata") or {})
+    if mentioned:
+        metadata["mentioned_handles"] = list(mentioned)
     return _source_item(
         item_id=str(item.get("id") or f"X{index + 1}"),
         source=source,
@@ -245,7 +249,7 @@ def _normalize_x(
         engagement=item.get("engagement") or {},
         relevance_hint=item.get("relevance", 0.5),
         why_relevant=str(item.get("why_relevant") or ""),
-        metadata={"mentioned_handles": list(mentioned)} if mentioned else {},
+        metadata=metadata,
     )
 
 
@@ -313,6 +317,25 @@ def _normalize_youtube(
         score_keys=("score", "likes"),
         excerpt_keys=("excerpt", "text"),
     )
+    media = item.get("media")
+    if not isinstance(media, list):
+        media = [
+            {
+                "kind": "video",
+                "url": str(item.get("url") or ""),
+                "preview_url": str(item.get("thumbnail") or "") or None,
+                "mime_type": None,
+                "width": None,
+                "height": None,
+                "duration_seconds": int(item["duration"])
+                if isinstance(item.get("duration"), (int, float))
+                else None,
+                "alt_text": title or None,
+            }
+        ]
+    metadata["media"] = [
+        asset for asset in media[:16] if isinstance(asset, dict) and asset.get("url")
+    ]
     return _source_item(
         item_id=str(item.get("video_id") or item.get("id") or f"YT{index + 1}"),
         source=source,

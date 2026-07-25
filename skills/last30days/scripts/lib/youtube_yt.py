@@ -405,15 +405,16 @@ def search_youtube(
 
     _log(f"Searching YouTube for '{core_topic}' (since {from_date}, count={count})")
 
-    # yt-dlp search with full metadata (no --flat-playlist so dates are real).
-    # NOTE: --dateafter intentionally omitted — YouTube search returns
-    # relevance-sorted results and strict date filtering returns 0 for
-    # evergreen topics. Python soft filter (below) handles date filtering.
+    # Search extraction must remain comfortably inside the service worker's
+    # wall-clock budget. Flat playlist entries retain the title, channel,
+    # duration, views, and thumbnails needed for discovery without making a
+    # second watch-page request for every result.
     cmd = [
         "yt-dlp",
         "--ignore-config",
         "--no-cookies-from-browser",
         f"ytsearch{count}:{core_topic}",
+        "--flat-playlist",
         "--dump-json",
         "--no-warnings",
         "--no-download",
@@ -468,6 +469,13 @@ def search_youtube(
             date_str = f"{upload_date[:4]}-{upload_date[4:6]}-{upload_date[6:8]}"
 
         description = str(video.get("description", ""))[:500]
+        thumbnails = video.get("thumbnails")
+        thumbnail = video.get("thumbnail")
+        if not thumbnail and isinstance(thumbnails, list):
+            for candidate in reversed(thumbnails):
+                if isinstance(candidate, dict) and candidate.get("url"):
+                    thumbnail = candidate["url"]
+                    break
         items.append({
             "video_id": video_id,
             "title": video.get("title", ""),
@@ -480,6 +488,7 @@ def search_youtube(
                 "comments": comment_count,
             },
             "duration": video.get("duration"),
+            "thumbnail": thumbnail,
             "relevance": _compute_relevance(core_topic, f"{video.get('title', '')} {description}"),
             "why_relevant": f"YouTube: {video.get('title', core_topic)[:60]}",
             "description": description,

@@ -195,6 +195,7 @@ class EnrichmentService:
         extractor_version: str = "entity-rules-v1",
         minimum_confidence: float = 0.5,
         generic_entity_extraction: bool = False,
+        relationship_predicates: Sequence[str] = (),
     ) -> None:
         if not extractor_version.strip():
             raise ValueError("extractor_version must be non-empty")
@@ -206,6 +207,12 @@ class EnrichmentService:
         self.extractor_version = extractor_version
         self.minimum_confidence = minimum_confidence
         self.generic_entity_extraction = generic_entity_extraction
+        normalized_predicates = tuple(
+            dict.fromkeys(predicate.strip().casefold() for predicate in relationship_predicates)
+        )
+        if any(not predicate or not re.fullmatch(r"[\w -]+", predicate) for predicate in normalized_predicates):
+            raise ValueError("relationship predicates must be safe non-empty terms")
+        self.relationship_predicates = normalized_predicates
 
     def initialize(self) -> None:
         store.init_db(self.db_path)
@@ -487,6 +494,105 @@ class EnrichmentService:
 
     def extract_and_promote_entities(self) -> PromotionResult:
         return self.promote_entities(self.propose_entities())
+
+    def propose_relationships(self) -> tuple[contracts.RelationshipProposal, ...]:
+        """Propose same-sentence relationships only when explicit predicate text exists."""
+
+        if not self.relationship_predicates:
+            return ()
+        self.initialize()
+        conn = self._connect()
+        try:
+            rows = conn.execute(
+                """SELECT c.document_id, c.chunk_id, c.text,
+                          de.entity_id, de.evidence_start, de.evidence_end
+                   FROM document_chunks AS c
+                   JOIN document_entities AS de
+                     ON de.document_id = c.document_id
+                    AND de.evidence_chunk_id = c.chunk_id
+                   WHERE de.validation_state = 'accepted'
+                   ORDER BY c.document_id, c.ordinal, c.chunk_id,
+                            de.evidence_start, de.evidence_end, de.entity_id"""
+            ).fetchall()
+        finally:
+            conn.close()
+
+        grouped: dict[tuple[str, str, str], list[sqlite3.Row]] = {}
+        for row in rows:
+            grouped.setdefault(
+                (row["document_id"], row["chunk_id"], row["text"]), []
+            ).append(row)
+        proposals: list[contracts.RelationshipProposal] = []
+        seen: set[tuple[str, str, str, str, int, int]] = set()
+        for (document_id, chunk_id, text), mentions in grouped.items():
+            for left, right in zip(mentions, mentions[1:]):
+                if left["entity_id"] == right["entity_id"]:
+                    continue
+                sentence_start = max(
+                    text.rfind(".", 0, left["evidence_start"]),
+                    text.rfind("!", 0, left["evidence_start"]),
+                    text.rfind("?", 0, left["evidence_start"]),
+                ) + 1
+                sentence_ends = [
+                    position + 1
+                    for marker in (".", "!", "?")
+                    if (position := text.find(marker, right["evidence_end"])) >= 0
+                ]
+                sentence_end = min(sentence_ends) if sentence_ends else len(text)
+                span = text[sentence_start:sentence_end]
+                for predicate in self.relationship_predicates:
+                    if not re.search(
+                        rf"(?<!\w){re.escape(predicate)}(?!\w)",
+                        span,
+                        re.IGNORECASE | re.UNICODE,
+                    ):
+                        continue
+                    dedupe_key = (
+                        document_id,
+                        left["entity_id"],
+                        predicate,
+                        right["entity_id"],
+                        sentence_start,
+                        sentence_end,
+                    )
+                    if dedupe_key in seen:
+                        continue
+                    seen.add(dedupe_key)
+                    proposal_key = ":".join(
+                        (
+                            document_id,
+                            chunk_id,
+                            left["entity_id"],
+                            predicate,
+                            right["entity_id"],
+                            str(sentence_start),
+                            str(sentence_end),
+                            self.extractor_version,
+                        )
+                    )
+                    proposals.append(
+                        contracts.RelationshipProposal.from_dict(
+                            {
+                                "schema_version": contracts.SCHEMA_VERSION,
+                                "proposal_id": _stable_id(
+                                    "relationship-proposal", proposal_key
+                                ),
+                                "document_id": document_id,
+                                "evidence_chunk_id": chunk_id,
+                                "evidence_start": sentence_start,
+                                "evidence_end": sentence_end,
+                                "subject_entity_id": left["entity_id"],
+                                "predicate": predicate,
+                                "object_entity_id": right["entity_id"],
+                                "extractor_version": self.extractor_version,
+                                "confidence": 1.0,
+                            }
+                        )
+                    )
+        return tuple(proposals)
+
+    def extract_and_promote_relationships(self) -> PromotionResult:
+        return self.promote_relationships(self.propose_relationships())
 
     def promote_entities(
         self,

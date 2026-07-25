@@ -14,7 +14,7 @@ from lib.service_supervisor import RefreshSupervisor
 NOW = datetime(2026, 7, 24, 12, 0, tzinfo=timezone.utc)
 
 
-def _query(request_id, sources):
+def _query(request_id, sources, *, top_k=8):
     return contracts.QueryRequest.from_dict(
         {
             "schema_version": 1,
@@ -24,7 +24,7 @@ def _query(request_id, sources):
             "freshness_policy": "force_refresh",
             "response_mode": "evidence",
             "filters": {"sources": sources},
-            "top_k": 8,
+            "top_k": top_k,
             "max_chars": 8192,
             "wait_ms": 0,
         }
@@ -168,6 +168,16 @@ def test_auth_only_failure_waits_for_operator_without_retry(tmp_path):
     assert completed.state is contracts.JobState.AWAITING_OPERATOR
     assert completed.lease_owner is None
     assert supervisor.lease_next(worker_id="other", lease_seconds=60) is None
+
+
+def test_response_top_k_bounds_source_acquisition_item_limit(tmp_path):
+    worker = FakeWorker({"reddit": {"status": "succeeded"}})
+    scheduler, _supervisor, _retriever, runner = _runtime(tmp_path, worker)
+    scheduler.ensure_refresh(_query("query-one", ["reddit"], top_k=1))
+
+    runner.run_once(worker_id="service-worker")
+
+    assert worker.requests[0].item_limit == 1
 
 
 def test_explicit_empty_success_publishes_fresh_negative_coverage(tmp_path):

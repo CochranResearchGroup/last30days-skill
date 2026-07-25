@@ -601,6 +601,17 @@ CREATE INDEX IF NOT EXISTS idx_service_maintenance_state
 CREATE INDEX IF NOT EXISTS idx_service_approvals_run
     ON service_approvals(run_id, status);
 """,
+    7: """
+ALTER TABLE documents
+    ADD COLUMN source_metadata_json TEXT NOT NULL DEFAULT '{}';
+ALTER TABLE documents
+    ADD COLUMN media_json TEXT NOT NULL DEFAULT '[]';
+CREATE TABLE IF NOT EXISTS service_index_head (
+    singleton_id INTEGER PRIMARY KEY CHECK (singleton_id = 1),
+    index_version TEXT NOT NULL REFERENCES index_versions(index_version),
+    activated_at TEXT NOT NULL
+);
+""",
 }
 
 

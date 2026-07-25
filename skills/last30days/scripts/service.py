@@ -71,11 +71,10 @@ def _serve(args: argparse.Namespace) -> int:
     db_path = Path(args.db) if args.db else _default_db_path()
     os.umask(0o077)
     _prepare_private_data_path(db_path)
-    retriever = HybridRetriever(db_path)
+    embedding_provider = LocalHashEmbeddingProvider()
+    retriever = HybridRetriever(db_path, embedding_provider=embedding_provider)
     retriever.initialize()
     retriever.index_legacy_findings()
-    embedding_provider = LocalHashEmbeddingProvider()
-    retriever.set_embedding_provider(embedding_provider)
     os.chmod(db_path, 0o600)
     acquisition = build_acquisition_runtime(db_path, retriever)
     acquisition_loop = AcquisitionLoop(acquisition.runner)
@@ -85,6 +84,17 @@ def _serve(args: argparse.Namespace) -> int:
             embedding_provider=embedding_provider,
             extractor_version="generic-entities-v1",
             generic_entity_extraction=True,
+            relationship_predicates=(
+                "acquired",
+                "announced",
+                "built",
+                "created",
+                "integrates",
+                "maintains",
+                "released",
+                "supports",
+                "uses",
+            ),
         ),
         retriever,
     )

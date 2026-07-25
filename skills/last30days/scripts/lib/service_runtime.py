@@ -36,6 +36,8 @@ class EnrichmentBackend(Protocol):
 
     def extract_and_promote_entities(self): ...
 
+    def extract_and_promote_relationships(self): ...
+
 
 class IndexPublisher(Protocol):
     def publish_index(self) -> str: ...
@@ -147,18 +149,29 @@ class EnrichmentLoop:
     def _run(self) -> None:
         while not self._stop_event.is_set():
             try:
-                embeddings = self.enrichment.embed_chunks()
-                entities = self.enrichment.extract_and_promote_entities()
-                if embeddings.embeddings_written or entities.accepted_count:
-                    self.publisher.publish_index()
-                self.last_error_code = (
-                    embeddings.error_code
-                    if getattr(embeddings, "status", None) == "failed"
-                    else None
-                )
+                self.run_once()
             except Exception:
                 self.last_error_code = "enrichment_loop_failure"
             self._stop_event.wait(self.interval_seconds)
+
+    def run_once(self) -> bool:
+        """Run one bounded enrichment cycle and publish only changed projections."""
+        embeddings = self.enrichment.embed_chunks()
+        entities = self.enrichment.extract_and_promote_entities()
+        relationships = self.enrichment.extract_and_promote_relationships()
+        changed = bool(
+            embeddings.embeddings_written
+            or entities.accepted_count
+            or relationships.accepted_count
+        )
+        if changed:
+            self.publisher.publish_index()
+        self.last_error_code = (
+            embeddings.error_code
+            if getattr(embeddings, "status", None) == "failed"
+            else None
+        )
+        return changed
 
     def stop(self, *, timeout: float = 5.0) -> None:
         self._stop_event.set()
@@ -194,12 +207,20 @@ def build_acquisition_runtime(
 ) -> AcquisitionRuntime:
     """Build the host-owned policy objects; source code remains subprocess-only."""
     sources = tuple(sorted(set(default_sources)))
+    browser_available = bool(shutil.which("agent-browser"))
+    browser_enabled = {
+        source: os.getenv(f"LAST30DAYS_{source.upper()}_BROWSER", "").strip().casefold()
+        in {"1", "true", "yes", "on"}
+        for source in ("x", "facebook", "linkedin")
+    }
     source_readiness = {
         source: (
             True
             if source == "reddit"
             else bool(shutil.which("yt-dlp"))
             if source == "youtube"
+            else browser_available and browser_enabled[source]
+            if source in browser_enabled
             else False
         )
         for source in sources

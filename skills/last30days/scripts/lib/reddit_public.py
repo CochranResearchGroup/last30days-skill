@@ -174,7 +174,38 @@ def _parse_posts(data: Optional[Dict[str, Any]]) -> List[Dict[str, Any]]:
             },
             "relevance": _compute_relevance(score, num_comments),
             "why_relevant": "Reddit public search",
-            "metadata": {},
+            "metadata": {
+                "media": [
+                    {
+                        "kind": "video"
+                        if str(post.get("post_hint") or "") == "hosted:video"
+                        else "image",
+                        "url": str(
+                            post.get("url_overridden_by_dest")
+                            or post.get("url")
+                            or ""
+                        ),
+                        "preview_url": None,
+                        "mime_type": None,
+                        "width": None,
+                        "height": None,
+                        "duration_seconds": None,
+                        "alt_text": str(post.get("title") or "") or None,
+                    }
+                ]
+                if str(
+                    post.get("url_overridden_by_dest")
+                    or post.get("url")
+                    or ""
+                )
+                and "reddit.com"
+                not in str(
+                    post.get("url_overridden_by_dest")
+                    or post.get("url")
+                    or ""
+                )
+                else []
+            },
         })
 
     return posts

@@ -34,6 +34,13 @@ def _stable_id(namespace: str, value: str) -> str:
     return f"{namespace}-{digest[:32]}"
 
 
+def _media_from_metadata(metadata: dict[str, object]) -> list[dict[str, object]]:
+    raw = metadata.get("media")
+    if not isinstance(raw, list):
+        return []
+    return contracts._validate_media(raw)
+
+
 @dataclass(frozen=True)
 class PublicationStats:
     acquisition_inserted: bool
@@ -261,6 +268,20 @@ class CorpusPublisher:
                     "doc", f"{result.source}:{item.url}"
                 )
                 item_hash = _digest(item.to_dict())
+                metadata_json = json.dumps(
+                    item.metadata,
+                    ensure_ascii=False,
+                    allow_nan=False,
+                    separators=(",", ":"),
+                    sort_keys=True,
+                )
+                media_json = json.dumps(
+                    _media_from_metadata(item.metadata),
+                    ensure_ascii=False,
+                    allow_nan=False,
+                    separators=(",", ":"),
+                    sort_keys=True,
+                )
                 row = conn.execute(
                     """SELECT document_id, content_hash
                        FROM documents
@@ -282,8 +303,8 @@ class CorpusPublisher:
                        (document_id, acquisition_id, source, source_native_id,
                         canonical_url, title, author, normalized_text, content_hash,
                         published_at, fetched_at, retention_class, redaction_class,
-                        transformation_version)
-                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'cache', ?, ?)""",
+                        transformation_version, source_metadata_json, media_json)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'cache', ?, ?, ?, ?)""",
                     (
                         proposed_document_id,
                         acquisition.acquisition_id,
@@ -298,6 +319,8 @@ class CorpusPublisher:
                         result.fetched_at,
                         classification.value,
                         "service-worker-v1",
+                        metadata_json,
+                        media_json,
                     ),
                     ).rowcount
                 documents_inserted += inserted
@@ -328,7 +351,8 @@ class CorpusPublisher:
                                normalized_text = ?, content_hash = ?,
                                published_at = ?, fetched_at = ?,
                                redaction_class = ?,
-                               transformation_version = 'service-worker-v1'
+                               transformation_version = 'service-worker-v1',
+                               source_metadata_json = ?, media_json = ?
                            WHERE document_id = ?""",
                         (
                             acquisition.acquisition_id,
@@ -342,6 +366,8 @@ class CorpusPublisher:
                             item.published_at,
                             result.fetched_at,
                             classification.value,
+                            metadata_json,
+                            media_json,
                             document_id,
                         ),
                     )

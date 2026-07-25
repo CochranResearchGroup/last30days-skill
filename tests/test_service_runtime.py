@@ -84,6 +84,28 @@ def test_runtime_processes_durable_job_without_importing_worker_entrypoint(tmp_p
     assert "lib.service_acquisition_worker" not in sys.modules
 
 
+def test_runtime_readiness_uses_worker_visible_browser_enablement(tmp_path, monkeypatch):
+    monkeypatch.setenv("LAST30DAYS_X_BROWSER", "true")
+    monkeypatch.setenv("LAST30DAYS_FACEBOOK_BROWSER", "true")
+    monkeypatch.setenv("LAST30DAYS_LINKEDIN_BROWSER", "true")
+    monkeypatch.setattr("lib.service_runtime.shutil.which", lambda name: f"/bin/{name}")
+
+    runtime = build_acquisition_runtime(
+        tmp_path / "readiness.db",
+        HybridRetriever(tmp_path / "readiness.db"),
+        worker=EmptyWorker(),
+        default_sources=("facebook", "linkedin", "reddit", "x", "youtube"),
+    )
+
+    assert runtime.source_readiness == {
+        "facebook": True,
+        "linkedin": True,
+        "reddit": True,
+        "x": True,
+        "youtube": True,
+    }
+
+
 def test_acquisition_loop_starts_and_stops_cleanly():
     class IdleRunner:
         def __init__(self):
@@ -137,12 +159,17 @@ def test_enrichment_loop_publishes_changed_projection_asynchronously():
     class Enrichment:
         def __init__(self):
             self.called = threading.Event()
+            self.relationships_called = threading.Event()
 
         def embed_chunks(self):
             self.called.set()
             return SimpleNamespace(embeddings_written=2)
 
         def extract_and_promote_entities(self):
+            return SimpleNamespace(accepted_count=1)
+
+        def extract_and_promote_relationships(self):
+            self.relationships_called.set()
             return SimpleNamespace(accepted_count=1)
 
     class Retriever:
@@ -158,6 +185,7 @@ def test_enrichment_loop_publishes_changed_projection_asynchronously():
 
     loop.start()
     assert enrichment.called.wait(1)
+    assert enrichment.relationships_called.wait(1)
     loop.stop(timeout=1)
 
     assert retriever.published >= 1
@@ -205,6 +233,9 @@ def test_enrichment_loop_reports_returned_provider_failure():
             )
 
         def extract_and_promote_entities(self):
+            return SimpleNamespace(accepted_count=0)
+
+        def extract_and_promote_relationships(self):
             return SimpleNamespace(accepted_count=0)
 
     class Retriever:

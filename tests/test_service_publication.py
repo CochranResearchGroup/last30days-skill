@@ -57,7 +57,21 @@ def _work_result():
                     "text": "Agents query cited evidence without browser mechanics.",
                     "author": "researcher",
                     "published_at": "2026-07-23T12:00:00Z",
-                    "metadata": {"engagement": {"score": 5}},
+                    "metadata": {
+                        "engagement": {"score": 5},
+                        "media": [
+                            {
+                                "kind": "image",
+                                "url": "https://i.redd.it/cache-service.png",
+                                "preview_url": None,
+                                "mime_type": "image/png",
+                                "width": 1200,
+                                "height": 630,
+                                "duration_seconds": None,
+                                "alt_text": "Architecture diagram",
+                            }
+                        ],
+                    },
                 }
             ],
             "item_count": 1,
@@ -106,10 +120,25 @@ def test_publisher_validates_and_idempotently_projects_worker_content(tmp_path):
     assert [item.url for item in snapshot.evidence] == [
         "https://reddit.example/r/agents/1"
     ]
+    assert snapshot.evidence[0].media == [
+        {
+            "kind": "image",
+            "url": "https://i.redd.it/cache-service.png",
+            "preview_url": None,
+            "mime_type": "image/png",
+            "width": 1200,
+            "height": 630,
+            "duration_seconds": None,
+            "alt_text": "Architecture diagram",
+        }
+    ]
     conn = sqlite3.connect(db_path)
     assert conn.execute("SELECT COUNT(*) FROM acquisitions").fetchone()[0] == 1
     assert conn.execute("SELECT COUNT(*) FROM documents").fetchone()[0] == 1
     assert conn.execute("SELECT COUNT(*) FROM document_sightings").fetchone()[0] == 1
+    assert conn.execute(
+        "SELECT json_array_length(media_json) FROM documents"
+    ).fetchone()[0] == 1
     conn.close()
 
 

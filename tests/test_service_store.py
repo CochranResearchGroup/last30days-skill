@@ -107,6 +107,7 @@ def _sample_envelopes():
                 "fetched_at": "2026-07-24T12:00:00Z",
                 "acquisition_id": "acq-001",
                 "content_hash": "sha256:content",
+                "media": [],
                 "scores": {
                     "lexical": 0.8,
                     "semantic": 0.7,

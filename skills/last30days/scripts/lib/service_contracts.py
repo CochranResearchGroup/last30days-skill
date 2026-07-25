@@ -376,6 +376,55 @@ def _validate_scores(value: Any) -> dict[str, float]:
     return scores
 
 
+def _validate_media(value: Any) -> list[dict[str, Any]]:
+    if not isinstance(value, list) or len(value) > 16:
+        raise ContractValidationError("media must be a bounded array")
+    fields = frozenset(
+        {
+            "kind",
+            "url",
+            "preview_url",
+            "mime_type",
+            "width",
+            "height",
+            "duration_seconds",
+            "alt_text",
+        }
+    )
+    assets: list[dict[str, Any]] = []
+    for raw in value:
+        if not isinstance(raw, Mapping):
+            raise ContractValidationError("media items must be objects")
+        _require_exact_fields(raw, required=fields)
+        kind = raw["kind"]
+        if kind not in {"image", "video"}:
+            raise ContractValidationError("media.kind must be image or video")
+        asset: dict[str, Any] = {
+            "kind": kind,
+            "url": _require_bounded_string(raw["url"], "media.url", 4096),
+            "preview_url": _require_optional_string(
+                raw["preview_url"], "media.preview_url"
+            ),
+            "mime_type": _require_optional_string(
+                raw["mime_type"], "media.mime_type"
+            ),
+            "alt_text": _require_optional_string(raw["alt_text"], "media.alt_text"),
+        }
+        for name, maximum in (
+            ("width", 100_000),
+            ("height", 100_000),
+            ("duration_seconds", 86_400),
+        ):
+            numeric = raw[name]
+            asset[name] = (
+                None
+                if numeric is None
+                else _require_integer_between(numeric, f"media.{name}", 0, maximum)
+            )
+        assets.append(asset)
+    return assets
+
+
 @dataclass(frozen=True)
 class EvidenceItem:
     """One citation-ready retrieval result with replayable rank features."""
@@ -394,6 +443,7 @@ class EvidenceItem:
     acquisition_id: str
     content_hash: str
     scores: dict[str, float]
+    media: list[dict[str, Any]]
 
     CONTRACT_NAME: ClassVar[str] = "evidence_item"
 
@@ -417,9 +467,14 @@ class EvidenceItem:
                 "acquisition_id",
                 "content_hash",
                 "scores",
+                "media",
             }
         )
-        _require_exact_fields(payload, required=fields)
+        _require_exact_fields(
+            payload,
+            required=fields - {"media"},
+            optional=frozenset({"media"}),
+        )
         return cls(
             schema_version=_validate_schema_version(payload["schema_version"]),
             evidence_id=_require_non_empty_string(
@@ -449,6 +504,7 @@ class EvidenceItem:
                 payload["content_hash"], "content_hash"
             ),
             scores=_validate_scores(payload["scores"]),
+            media=_validate_media(payload.get("media", [])),
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -467,6 +523,7 @@ class EvidenceItem:
             "acquisition_id": self.acquisition_id,
             "content_hash": self.content_hash,
             "scores": dict(self.scores),
+            "media": [dict(asset) for asset in self.media],
         }
 
 

@@ -94,6 +94,12 @@ class FakeAgentBrowserClient:
 
 
 class XBrowserSearchTests(TestCase):
+    def test_checkpoint_detection_does_not_treat_generic_challenge_copy_as_auth(self):
+        from lib import x_browser
+
+        self.assertNotIn("/challenge|checkpoint|", x_browser.AUTH_SCRIPT)
+        self.assertIn("complete this challenge to continue", x_browser.AUTH_SCRIPT)
+
     def test_search_emits_a_canonical_dated_relevant_post(self):
         from lib import x_browser
 

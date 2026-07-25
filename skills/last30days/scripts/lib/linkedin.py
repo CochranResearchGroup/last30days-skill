@@ -204,7 +204,24 @@ EXTRACT_SCRIPT = r"""
         likes: count(`${actionText} ${text}`, ["reactions?", "likes?"]),
         comments: count(`${actionText} ${text}`, ["comments?"]),
         shares: count(`${actionText} ${text}`, ["reposts?", "shares?"])
-      }
+      },
+      media: [
+        ...Array.from(node.querySelectorAll(
+          '.update-components-image img, .feed-shared-image img, img[src*="media.licdn.com"]'
+        )).map((image) => ({
+          kind: "image", url: image.currentSrc || image.src || "",
+          preview_url: null, mime_type: null,
+          width: image.naturalWidth || null, height: image.naturalHeight || null,
+          duration_seconds: null, alt_text: image.alt || null
+        })),
+        ...Array.from(node.querySelectorAll("video")).map((video) => ({
+          kind: "video", url: permalink?.href || location.href,
+          preview_url: video.poster || null, mime_type: null,
+          width: video.videoWidth || null, height: video.videoHeight || null,
+          duration_seconds: Number.isFinite(video.duration) ? Math.round(video.duration) : null,
+          alt_text: null
+        }))
+      ].filter((asset) => asset.url)
     });
   }
   return {
@@ -250,6 +267,7 @@ class LinkedInCandidate:
     date_confidence: Literal["high", "med", "low"]
     engagement: dict[str, int]
     sponsored: bool
+    media: list[dict[str, Any]] = field(default_factory=list)
     rejection_reasons: list[str] = field(default_factory=list)
 
 
@@ -562,6 +580,7 @@ class LinkedInScraper:
                     "extraction": "agent-browser-dom-v1",
                     "remote_browser": True,
                     "date_confidence": candidate.date_confidence,
+                    "media": candidate.media[:16],
                 },
             })
             if len(items) >= self.limit:
@@ -783,6 +802,11 @@ def _candidate_from_raw(raw: dict[str, Any], now: datetime) -> LinkedInCandidate
         date_confidence=confidence,
         engagement=_clean_engagement(raw.get("engagement") or {}),
         sponsored=sponsored,
+        media=[
+            item
+            for item in list(raw.get("media") or [])[:16]
+            if isinstance(item, dict)
+        ],
     )
 
 

@@ -109,8 +109,9 @@ class CacheQueryApplication:
                               WHERE ir.index_version = iv.index_version
                           ) AS relationship_count
                    FROM index_versions AS iv
-                   WHERE iv.published_at IS NOT NULL
-                   ORDER BY iv.published_at DESC, iv.rowid DESC
+                   JOIN service_index_head AS ih
+                     ON ih.index_version = iv.index_version
+                    AND ih.singleton_id = 1
                    LIMIT 1"""
             ).fetchone()
             document_count = conn.execute(

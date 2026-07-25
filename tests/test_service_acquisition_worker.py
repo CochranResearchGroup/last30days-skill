@@ -74,7 +74,21 @@ def test_worker_normalizes_publishable_items_into_the_versioned_result():
                     "engagement": {"likes": 4},
                     "why_relevant": "Direct evidence",
                     "relevance": 1.0,
-                    "metadata": {"date_confidence": "high"},
+                    "metadata": {
+                        "date_confidence": "high",
+                        "media": [
+                            {
+                                "kind": "image",
+                                "url": "https://pbs.twimg.com/media/example.jpg",
+                                "preview_url": None,
+                                "mime_type": "image/jpeg",
+                                "width": None,
+                                "height": None,
+                                "duration_seconds": None,
+                                "alt_text": "Example",
+                            }
+                        ],
+                    },
                 }
             ],
             "diagnostics": {"accepted_count": 1},
@@ -91,6 +105,7 @@ def test_worker_normalizes_publishable_items_into_the_versioned_result():
     assert result.item_count == 1
     assert result.items[0].url == "https://x.com/example/status/1"
     assert "cache-backed" in result.items[0].text
+    assert result.items[0].metadata["media"][0]["kind"] == "image"
 
 
 def test_explicit_no_results_is_success_for_negative_caching():

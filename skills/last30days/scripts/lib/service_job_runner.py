@@ -301,7 +301,7 @@ class AcquisitionJobRunner:
                     "adapter": adapter,
                     "adapter_version": adapter_version,
                     "wall_timeout_seconds": self.policy.wall_timeout_seconds,
-                    "item_limit": self.policy.item_limit,
+                    "item_limit": min(self.policy.item_limit, query_request.top_k),
                     "network_request_limit": self.policy.network_request_limit,
                     "cost_budget_cents": reserved_cost,
                 }

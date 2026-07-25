@@ -220,10 +220,8 @@ class HybridRetriever:
         try:
             row = conn.execute(
                 """SELECT index_version
-                   FROM index_versions
-                   WHERE published_at IS NOT NULL
-                   ORDER BY published_at DESC, rowid DESC
-                   LIMIT 1"""
+                   FROM service_index_head
+                   WHERE singleton_id = 1"""
             ).fetchone()
             return row["index_version"] if row is not None else None
         finally:
@@ -616,6 +614,15 @@ class HybridRetriever:
                     for row in relationship_rows
                 ],
             )
+            conn.execute(
+                """INSERT INTO service_index_head
+                   (singleton_id, index_version, activated_at)
+                   VALUES (1, ?, ?)
+                   ON CONFLICT(singleton_id) DO UPDATE SET
+                       index_version = excluded.index_version,
+                       activated_at = excluded.activated_at""",
+                (index_version, now),
+            )
             conn.commit()
             return index_version
         except Exception:
@@ -731,10 +738,8 @@ class HybridRetriever:
             conn.execute("BEGIN")
             index_row = conn.execute(
                 """SELECT index_version
-                   FROM index_versions
-                   WHERE published_at IS NOT NULL
-                   ORDER BY published_at DESC, rowid DESC
-                   LIMIT 1"""
+                   FROM service_index_head
+                   WHERE singleton_id = 1"""
             ).fetchone()
             if index_row is None:
                 return RetrievalSnapshot("index-empty", [])
@@ -997,6 +1002,7 @@ class HybridRetriever:
                         "recency": 0.0,
                         "fused": max(0.0, min(1.0, fused)),
                     },
+                    media=json.loads(row["media_json"]),
                 )
             )
         return RetrievalSnapshot(index_version, hits)

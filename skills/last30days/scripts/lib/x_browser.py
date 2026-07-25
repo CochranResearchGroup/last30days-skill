@@ -50,20 +50,21 @@ class XBrowserFailure(RuntimeError):
 
 
 AUTH_SCRIPT = r"""
-(() => ({
-  url: location.href,
-  title: document.title,
-  login_form: Boolean(document.querySelector('a[href="/login"], input[autocomplete="username"]')),
-  checkpoint: /challenge|checkpoint|verify your identity|confirm your identity/i.test(
-    `${location.href}\n${(document.body?.innerText || "").slice(0, 12000)}`
-  ),
-  restricted: /account (?:is|has been) (?:locked|suspended)|unusual activity|rate limit exceeded/i.test(
-    (document.body?.innerText || "").slice(0, 12000)
-  ),
-  authenticated_dom: Boolean(
-    document.querySelector('[data-testid="SideNav_AccountSwitcher_Button"], nav[aria-label="Primary"]')
-  )
-}))()
+(() => {
+  const body = (document.body?.innerText || "").slice(0, 12000);
+  const checkpointUrl = /\/(?:i\/flow|account\/access|challenge)(?:\/|$|\?)/i.test(location.href);
+  const checkpointBody = /verify your identity|confirm your identity|security checkpoint|complete this challenge to continue/i.test(body);
+  return {
+    url: location.href,
+    title: document.title,
+    login_form: Boolean(document.querySelector('a[href="/login"], input[autocomplete="username"]')),
+    checkpoint: checkpointUrl || checkpointBody,
+    restricted: /account (?:is|has been) (?:locked|suspended)|unusual activity|rate limit exceeded/i.test(body),
+    authenticated_dom: Boolean(
+      document.querySelector('[data-testid="SideNav_AccountSwitcher_Button"], nav[aria-label="Primary"]')
+    )
+  };
+})()
 """
 
 
@@ -83,7 +84,8 @@ PAGE_STATE_SCRIPT = r"""
     article_count: document.querySelectorAll("article").length,
     no_results: /no results|try searching for something else/i.test(body),
     login_page: Boolean(document.querySelector('a[href="/login"], input[autocomplete="username"]')),
-    checkpoint: /challenge|checkpoint|verify your identity|confirm your identity/i.test(`${location.href}\n${body}`),
+    checkpoint: /\/(?:i\/flow|account\/access|challenge)(?:\/|$|\?)/i.test(location.href) ||
+      /verify your identity|confirm your identity|security checkpoint|complete this challenge to continue/i.test(body),
     restricted: /account (?:is|has been) (?:locked|suspended)|unusual activity|rate limit exceeded/i.test(body),
     error_page: /something went wrong|try reloading|temporarily unavailable/i.test(body)
   };
@@ -115,7 +117,24 @@ EXTRACT_SCRIPT = r"""
         likes: metric("like"),
         bookmarks: metric("bookmark"),
         views: String(article.querySelector('a[href$="/analytics"]')?.innerText || "").trim()
-      }
+      },
+      media: [
+        ...Array.from(article.querySelectorAll('[data-testid="tweetPhoto"] img, img[src*="pbs.twimg.com/media"]'))
+          .map((image) => ({
+            kind: "image", url: image.currentSrc || image.src || "",
+            preview_url: null, mime_type: null,
+            width: image.naturalWidth || null, height: image.naturalHeight || null,
+            duration_seconds: null, alt_text: image.alt || null
+          })),
+        ...Array.from(article.querySelectorAll("video"))
+          .map((video) => ({
+            kind: "video", url: status?.href || "",
+            preview_url: video.poster || null, mime_type: null,
+            width: video.videoWidth || null, height: video.videoHeight || null,
+            duration_seconds: Number.isFinite(video.duration) ? Math.round(video.duration) : null,
+            alt_text: null
+          }))
+      ].filter((asset) => asset.url)
     };
   })
 }))()
@@ -546,7 +565,11 @@ def _quality_gate(
             "engagement": _normalize_engagement(raw.get("engagement")),
             "why_relevant": "Authenticated X search result",
             "relevance": _compute_relevance(topic, text),
-            "metadata": {"extraction": "agent-browser-dom-v1", "date_confidence": "high"},
+            "metadata": {
+                "extraction": "agent-browser-dom-v1",
+                "date_confidence": "high",
+                "media": list(raw.get("media") or [])[:16],
+            },
         })
     return items
 
