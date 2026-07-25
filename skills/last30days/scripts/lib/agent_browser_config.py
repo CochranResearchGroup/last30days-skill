@@ -83,6 +83,28 @@ def record_access_plan(
     return destination
 
 
+def shared_acquisition_route(
+    access_plan: dict[str, Any],
+    *,
+    expected_profile_id: str,
+) -> dict[str, str] | None:
+    """Return broker-authoritative route hints for an already live shared browser."""
+    if selected_profile_id(access_plan) != expected_profile_id:
+        return None
+    decision = access_plan.get("decision")
+    reuse = decision.get("profileReuse") if isinstance(decision, dict) else {}
+    if not isinstance(reuse, dict) or reuse.get("recommendedAction") != "reuse_existing_browser":
+        return None
+    shared = reuse.get("sharedAcquisition")
+    if not isinstance(shared, dict) or shared.get("mode") != "tab_new":
+        return None
+    browser_id = str(shared.get("browserId") or reuse.get("reusableBrowserId") or "")
+    session_name = str(shared.get("sessionName") or reuse.get("reusableSessionName") or "")
+    if not browser_id or not session_name:
+        return None
+    return {"browser_id": browser_id, "session_name": session_name}
+
+
 def shared_profile_owner(
     access_plan: dict[str, Any],
     service_state: dict[str, Any],

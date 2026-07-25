@@ -203,6 +203,31 @@ class FacebookCliAdapterTests(unittest.TestCase):
         invoke.assert_not_called()
         self.assertEqual(facebook.BrowserState(), state)
 
+    def test_dependent_batch_combines_snapshot_and_evaluation(self):
+        client = facebook.CliAgentBrowserClient(timeout=30)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="shared-social",
+        )
+        batch_result = {
+            "results": [
+                {"success": True, "result": {"refs": {"e1": {}}, "snapshot": "visible text"}},
+                {"success": True, "result": {"result": {"candidates": [{"id": "one"}]}}},
+            ],
+        }
+        with mock.patch.object(client, "_invoke", return_value=batch_result) as invoke:
+            snapshot, evaluated = client.snapshot_and_evaluate(
+                workspace, facebook.EXTRACT_SCRIPT
+            )
+
+        self.assertEqual("visible text", snapshot.text)
+        self.assertEqual([{"id": "one"}], evaluated["candidates"])
+        self.assertIn("batch", invoke.call_args.args[0])
+        commands = json.loads(invoke.call_args.kwargs["input_text"])
+        self.assertEqual("snapshot", commands[0][0])
+        self.assertEqual("eval", commands[1][0])
+
     def test_malformed_json_is_typed(self):
         completed = subprocess.CompletedProcess([], 0, stdout="not json", stderr="")
         with mock.patch("subprocess.run", return_value=completed):
@@ -306,14 +331,30 @@ class FacebookCliAdapterTests(unittest.TestCase):
         }
         plan = access_plan(shared_owner=("browser-1", "last30days-facebook"))
         with mock.patch.object(
-            client, "_invoke", side_effect=[plan, status, plan, status]
+            client, "_invoke", side_effect=[plan, plan]
         ) as invoke, mock.patch.object(facebook.agent_browser_config, "record_access_plan"):
             first = client.acquire_workspace(request(session_name="default"))
             second = client.acquire_workspace(request(session_name="default"))
         self.assertEqual(first.browser_id, second.browser_id)
         self.assertEqual("last30days-facebook", first.session_name)
-        self.assertEqual("t1", first.target_id)
-        self.assertEqual(4, invoke.call_count)
+        self.assertEqual("", first.target_id)
+        self.assertEqual(2, invoke.call_count)
+
+    def test_access_plan_route_hints_reuse_shared_browser_without_status_roundtrip(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        plan = access_plan(shared_owner=("browser-1", "shared-social"))
+
+        with mock.patch.object(
+            client, "_invoke", return_value=plan
+        ) as invoke, mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ):
+            workspace = client.acquire_workspace(request(session_name="default"))
+
+        self.assertEqual("browser-1", workspace.browser_id)
+        self.assertEqual("shared-social", workspace.session_name)
+        self.assertEqual("not_required", workspace.operator_visible_state)
+        invoke.assert_called_once()
 
     def test_wrong_profile_on_requested_session_uses_profile_scoped_lane(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
@@ -449,16 +490,16 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         result = make_scraper(client).search("robotic lawn mower", "2026-06-15", "2026-07-15")
         self.assertEqual("navigation_mismatch", result["error_type"])
         self.assertEqual([], result["items"])
-        self.assertIn("navigate", [action.operation for action in client.actions])
+        self.assertIn("new_tab", [action.operation for action in client.actions])
 
-    def test_query_navigation_uses_accessible_search_control(self):
+    def test_query_navigation_opens_verified_recent_url_directly(self):
         client = FakeAgentBrowserClient()
         result = make_scraper(client).search("robotic lawn mower", "2026-06-15", "2026-07-15")
         self.assertIsNone(result["error_type"])
-        self.assertEqual(["fill", "press", "wait"], [action.operation for action in client.actions[:3]])
-        self.assertEqual("robotic lawn mower", client.actions[0].value)
+        self.assertEqual(["new_tab", "wait"], [action.operation for action in client.actions[:2]])
+        self.assertIn("filters=", client.actions[0].value)
 
-    def test_recent_posts_switch_is_activated(self):
+    def test_recent_posts_filter_does_not_require_switch_click(self):
         client = FakeAgentBrowserClient(snapshots=[
             facebook.BrowserSnapshot(refs={"e1": {"role": "combobox", "name": "Search Facebook"}}),
             facebook.BrowserSnapshot(refs={"e2": {"role": "switch", "name": "Recent posts"}}),
@@ -467,8 +508,8 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
             "robotic lawn mower", "2026-06-15", "2026-07-15"
         )
         self.assertIsNone(result["error_type"])
-        clicks = [action for action in client.actions if action.operation == "click"]
-        self.assertEqual(["@e2"], [action.target for action in clicks])
+        self.assertNotIn("click", [action.operation for action in client.actions])
+        self.assertIn("filters=", client.actions[0].value)
 
     def test_checked_recent_posts_switch_is_not_toggled_off(self):
         page = dict(fixture("mixed_search.json")["page"])
@@ -612,8 +653,6 @@ Comment as Example User"""
         client = FakeAgentBrowserClient(
             candidates=[candidate],
             snapshots=[
-                facebook.BrowserSnapshot(refs={"e1": {"role": "combobox", "name": "Search Facebook"}}),
-                facebook.BrowserSnapshot(),
                 facebook.BrowserSnapshot(
                     text='- link "a day ago" [ref=e27]\n'
                     '- button "Actions for this post by Minnesota Soil Health Coalition" [ref=e33]'
@@ -643,8 +682,6 @@ Comment as Example User"""
         client = FakeAgentBrowserClient(
             candidates=[candidate],
             snapshots=[
-                facebook.BrowserSnapshot(refs={"e1": {"role": "combobox", "name": "Search Facebook"}}),
-                facebook.BrowserSnapshot(),
                 facebook.BrowserSnapshot(),
                 facebook.BrowserSnapshot(
                     text='- link "2 days ago" [ref=e7]\n'

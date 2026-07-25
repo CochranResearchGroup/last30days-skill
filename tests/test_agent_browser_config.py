@@ -118,3 +118,17 @@ class AgentBrowserConfigTests(unittest.TestCase):
         self.assertEqual("session:last30days-facebook", owner["browser_id"])
         self.assertEqual("last30days-facebook", owner["session_name"])
         self.assertEqual("x", owner["target_id"])
+
+    def test_shared_acquisition_route_uses_authoritative_access_plan_hints(self):
+        route = agent_browser_config.shared_acquisition_route(
+            access_plan(),
+            expected_profile_id="last30days-facebook",
+        )
+
+        self.assertEqual(
+            {
+                "browser_id": "session:last30days-facebook",
+                "session_name": "last30days-facebook",
+            },
+            route,
+        )

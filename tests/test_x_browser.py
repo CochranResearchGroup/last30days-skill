@@ -99,6 +99,8 @@ class XBrowserSearchTests(TestCase):
 
         self.assertNotIn("/challenge|checkpoint|", x_browser.AUTH_SCRIPT)
         self.assertIn("complete this challenge to continue", x_browser.AUTH_SCRIPT)
+        self.assertIn("!authenticatedDom && checkpointBody", x_browser.AUTH_SCRIPT)
+        self.assertIn("!authenticatedDom && checkpointBody", x_browser.PAGE_STATE_SCRIPT)
 
     def test_search_emits_a_canonical_dated_relevant_post(self):
         from lib import x_browser
@@ -236,6 +238,29 @@ class RecordingCliClient:
 
 
 class XBrowserAcquisitionTests(TestCase):
+    def test_auth_probe_opens_x_tab_when_shared_profile_has_none(self):
+        from lib import x_browser
+
+        client = x_browser.CliAgentBrowserClient(timeout=45)
+        workspace = x_browser.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="session:last30days-facebook",
+            session_name="last30days-facebook",
+        )
+        responses = [
+            {"tabs": [{"index": 0, "active": True, "url": "https://www.linkedin.com/feed/"}]},
+            {},
+            {"authenticated_dom": True, "login_form": False, "checkpoint": False},
+        ]
+        with patch.object(client, "_invoke", side_effect=responses) as invoke:
+            auth = client.inspect_auth(workspace)
+
+        self.assertTrue(auth.authenticated)
+        self.assertEqual(
+            ["--session", "last30days-facebook", "tab", "new", "https://x.com/home"],
+            invoke.call_args_list[1].args[0],
+        )
+
     def test_acquisition_resolves_the_authenticated_x_profile_by_target_identity(self):
         from lib import x_browser
 
@@ -307,7 +332,7 @@ class XBrowserAcquisitionTests(TestCase):
                 "tabs": {"target:x": {"targetId": "x", "url": "https://x.com/home"}},
             },
         }
-        recorder = RecordingCliClient([plan, status, {"tabs": [{"index": 0, "active": True, "url": "https://x.com/home"}]}])
+        recorder = RecordingCliClient([plan])
         recorder._client._invoke = recorder.invoke
 
         with patch.object(x_browser.agent_browser_config, "record_access_plan"):
@@ -323,11 +348,8 @@ class XBrowserAcquisitionTests(TestCase):
 
         self.assertEqual("session:last30days-facebook", workspace.browser_id)
         self.assertEqual("last30days-facebook", workspace.session_name)
-        self.assertEqual("x", workspace.target_id)
-        self.assertEqual(
-            ["--session", "last30days-facebook", "tab", "list"],
-            recorder.calls[2],
-        )
+        self.assertEqual("", workspace.target_id)
+        self.assertEqual(1, len(recorder.calls))
 
 
 class XBrowserIntegrationTests(TestCase):

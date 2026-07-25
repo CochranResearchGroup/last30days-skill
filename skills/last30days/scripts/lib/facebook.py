@@ -323,6 +323,7 @@ class CliAgentBrowserClient:
     def __init__(self, *, timeout: int) -> None:
         self.timeout = timeout
         self.command_timings: list[dict[str, Any]] = []
+        self._prepared_sites: set[tuple[str, str]] = set()
 
     def acquire_workspace(
         self,
@@ -361,6 +362,18 @@ class CliAgentBrowserClient:
             agent_browser_config.record_access_plan(access_plan, target_id)
         except OSError as exc:
             _log(f"Could not record user-scoped agent-browser configuration: {_redact(str(exc))}")
+
+        shared_route = agent_browser_config.shared_acquisition_route(
+            access_plan,
+            expected_profile_id=selected_profile,
+        )
+        if shared_route:
+            return BrowserWorkspace(
+                profile_id=selected_profile,
+                browser_id=shared_route["browser_id"],
+                session_name=shared_route["session_name"],
+                operator_visible_state="not_required",
+            )
 
         status = self._invoke(["service", "status"], timeout=min(request.timeout, 30))
         state = status.get("service_state") if isinstance(status.get("service_state"), dict) else status
@@ -532,6 +545,7 @@ class CliAgentBrowserClient:
     def inspect_auth(self, workspace: BrowserWorkspace) -> FacebookAuthState:
         if not self.prepare_site_tab(workspace, "facebook.com", consolidate=True):
             self.act(workspace, BrowserAction("new_tab", value="https://www.facebook.com/"))
+            self._prepared_sites.add((workspace.session_name, "facebook.com"))
         raw = self.evaluate(workspace, AUTH_SCRIPT)
         return FacebookAuthState(
             authenticated=bool(raw.get("authenticated_dom")),
@@ -549,6 +563,44 @@ class CliAgentBrowserClient:
         )
         refs = raw.get("refs") if isinstance(raw.get("refs"), dict) else {}
         return BrowserSnapshot(refs=refs, text=str(raw.get("snapshot") or ""))
+
+    def snapshot_and_evaluate(
+        self,
+        workspace: BrowserWorkspace,
+        script: str,
+    ) -> tuple[BrowserSnapshot, dict[str, Any]]:
+        """Run dependent read-only page reads through one daemon queue job."""
+        raw = self._invoke(
+            [
+                "--session", workspace.session_name,
+                "batch", "--dependent", "--bail", "--json",
+            ],
+            timeout=min(self.timeout, 30),
+            input_text=json.dumps([
+                ["snapshot", "-i", "--compact"],
+                ["eval", script],
+            ]),
+        )
+        results = raw.get("results") if isinstance(raw.get("results"), list) else []
+        if len(results) != 2 or any(
+            not isinstance(entry, dict) or entry.get("success") is not True
+            for entry in results
+        ):
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "agent-browser dependent read batch returned an incomplete result",
+            )
+        snapshot_raw = results[0].get("result")
+        evaluation_raw = results[1].get("result")
+        snapshot_raw = snapshot_raw if isinstance(snapshot_raw, dict) else {}
+        evaluation_raw = evaluation_raw if isinstance(evaluation_raw, dict) else {}
+        evaluated = evaluation_raw.get("result")
+        evaluated = evaluated if isinstance(evaluated, dict) else evaluation_raw
+        refs = snapshot_raw.get("refs") if isinstance(snapshot_raw.get("refs"), dict) else {}
+        return (
+            BrowserSnapshot(refs=refs, text=str(snapshot_raw.get("snapshot") or "")),
+            evaluated,
+        )
 
     def act(self, workspace: BrowserWorkspace, action: BrowserAction) -> BrowserState:
         prefix = ["--session", workspace.session_name]
@@ -584,6 +636,9 @@ class CliAgentBrowserClient:
         consolidate: bool = False,
     ) -> bool:
         """Select a retained site tab and optionally close only same-site duplicates."""
+        cache_key = (workspace.session_name, hostname)
+        if cache_key in self._prepared_sites:
+            return True
         raw = self._invoke(
             ["--session", workspace.session_name, "tab", "list"],
             timeout=min(self.timeout, 30),
@@ -619,6 +674,7 @@ class CliAgentBrowserClient:
                     ["--session", workspace.session_name, "tab", "close", str(index)],
                     timeout=min(self.timeout, 30),
                 )
+        self._prepared_sites.add(cache_key)
         return True
 
     def evaluate(self, workspace: BrowserWorkspace, script: str) -> dict[str, Any]:
@@ -822,33 +878,20 @@ class FacebookScraper:
             )
 
     def _navigate(self, workspace: BrowserWorkspace, topic: str) -> FacebookPageState:
-        search_url = _search_url(topic)
         recent_search_url = _search_url(topic, recent=True)
         prepare_site_tab = getattr(self.client, "prepare_site_tab", None)
         retained_tab = bool(
             callable(prepare_site_tab)
             and prepare_site_tab(workspace, "facebook.com", consolidate=True)
         )
-        snapshot = self.client.snapshot(workspace)
-        search_ref = _find_ref(snapshot, role={"combobox", "textbox"}, name="Search Facebook")
-        strategy = "search_control" if search_ref else "reuse_tab" if retained_tab else "new_tab"
+        strategy = "reuse_tab" if retained_tab else "new_tab"
         _log(f"Navigating query={topic!r} strategy={strategy}")
-        if search_ref:
-            self.client.act(workspace, BrowserAction("fill", target=search_ref, value=topic))
-            self.client.act(workspace, BrowserAction("press", value="Enter"))
-        else:
-            operation = "navigate" if retained_tab else "new_tab"
-            self.client.act(workspace, BrowserAction(operation, value=search_url))
+        operation = "navigate" if retained_tab else "new_tab"
+        self.client.act(workspace, BrowserAction(operation, value=recent_search_url))
         self.client.act(workspace, BrowserAction("wait", value="2000"))
         page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
 
-        if not _page_matches_query(page, topic) and search_ref:
-            _log(f"Search-control navigation mismatch final_url={page.url!r}; retrying in site tab")
-            self.client.act(workspace, BrowserAction("navigate", value=search_url))
-            self.client.act(workspace, BrowserAction("wait", value="2000"))
-            page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
-
-        _log(f"Navigation readback requested={search_url!r} final={page.url!r}")
+        _log(f"Navigation readback requested={recent_search_url!r} final={page.url!r}")
         if page.checkpoint:
             raise FacebookScraperFailure(
                 "checkpoint_required", "Facebook checkpoint appeared during search navigation",
@@ -866,38 +909,22 @@ class FacebookScraper:
                 "navigation_mismatch",
                 f"Facebook final page does not match requested query {topic!r}: {page.url}",
             )
-
-        refreshed = self.client.snapshot(workspace)
-        recent_ref = _find_ref(
-            refreshed, role={"button", "link", "switch", "tab"}, name="Recent posts"
-        )
-        recent_active = bool(parse_qs(urlsplit(page.url).query).get("filters")) and bool(
-            recent_ref and _snapshot_ref_checked(refreshed, recent_ref)
-        )
-        if recent_ref and not recent_active:
-            self.client.act(workspace, BrowserAction("click", target=recent_ref))
-            self.client.act(workspace, BrowserAction("wait", value="1000"))
-            filtered = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
-            if _page_matches_query(filtered, topic) and _recent_filter_active(filtered.url):
-                page = filtered
         if not _recent_filter_active(page.url):
-            _log("Recent-posts switch did not apply; retrying with verified filtered URL")
-            self.client.act(workspace, BrowserAction("navigate", value=recent_search_url))
-            self.client.act(workspace, BrowserAction("wait", value="2000"))
-            filtered = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
-            if not _page_matches_query(filtered, topic) or not _recent_filter_active(filtered.url):
-                raise FacebookScraperFailure(
-                    "navigation_mismatch",
-                    f"Facebook Recent-posts filter did not apply for query {topic!r}: {filtered.url}",
-                )
-            page = filtered
+            raise FacebookScraperFailure(
+                "navigation_mismatch",
+                f"Facebook Recent-posts filter did not apply for query {topic!r}: {page.url}",
+            )
         return page
 
     def _extract(self, workspace: BrowserWorkspace) -> list[dict[str, Any]]:
         extracted: list[dict[str, Any]] = []
         for attempt in range(3):
-            snapshot = self.client.snapshot(workspace)
-            raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
+            paired_read = getattr(self.client, "snapshot_and_evaluate", None)
+            if callable(paired_read):
+                snapshot, raw = paired_read(workspace, EXTRACT_SCRIPT)
+            else:
+                snapshot = self.client.snapshot(workspace)
+                raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
             candidates = raw.get("candidates") or []
             extracted = [candidate for candidate in candidates if isinstance(candidate, dict)]
             _merge_accessible_timestamps(extracted, snapshot.text, self.now)

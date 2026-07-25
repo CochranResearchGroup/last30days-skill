@@ -54,15 +54,16 @@ AUTH_SCRIPT = r"""
   const body = (document.body?.innerText || "").slice(0, 12000);
   const checkpointUrl = /\/(?:i\/flow|account\/access|challenge)(?:\/|$|\?)/i.test(location.href);
   const checkpointBody = /verify your identity|confirm your identity|security checkpoint|complete this challenge to continue/i.test(body);
+  const authenticatedDom = Boolean(
+    document.querySelector('[data-testid="SideNav_AccountSwitcher_Button"], nav[aria-label="Primary"]')
+  );
   return {
     url: location.href,
     title: document.title,
     login_form: Boolean(document.querySelector('a[href="/login"], input[autocomplete="username"]')),
-    checkpoint: checkpointUrl || checkpointBody,
+    checkpoint: checkpointUrl || (!authenticatedDom && checkpointBody),
     restricted: /account (?:is|has been) (?:locked|suspended)|unusual activity|rate limit exceeded/i.test(body),
-    authenticated_dom: Boolean(
-      document.querySelector('[data-testid="SideNav_AccountSwitcher_Button"], nav[aria-label="Primary"]')
-    )
+    authenticated_dom: authenticatedDom
   };
 })()
 """
@@ -75,6 +76,10 @@ PAGE_STATE_SCRIPT = r"""
   const latest = Array.from(document.querySelectorAll('[role="tab"]')).find((node) =>
     /latest/i.test(node.innerText || node.textContent || "")
   );
+  const authenticatedDom = Boolean(
+    document.querySelector('[data-testid="SideNav_AccountSwitcher_Button"], nav[aria-label="Primary"]')
+  );
+  const checkpointBody = /verify your identity|confirm your identity|security checkpoint|complete this challenge to continue/i.test(body);
   return {
     url: location.href,
     title: document.title,
@@ -85,7 +90,7 @@ PAGE_STATE_SCRIPT = r"""
     no_results: /no results|try searching for something else/i.test(body),
     login_page: Boolean(document.querySelector('a[href="/login"], input[autocomplete="username"]')),
     checkpoint: /\/(?:i\/flow|account\/access|challenge)(?:\/|$|\?)/i.test(location.href) ||
-      /verify your identity|confirm your identity|security checkpoint|complete this challenge to continue/i.test(body),
+      (!authenticatedDom && checkpointBody),
     restricted: /account (?:is|has been) (?:locked|suspended)|unusual activity|rate limit exceeded/i.test(body),
     error_page: /something went wrong|try reloading|temporarily unavailable/i.test(body)
   };
@@ -222,6 +227,18 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
                 "agent-browser reports that the selected X profile requires operator authentication",
             )
 
+        shared_route = agent_browser_config.shared_acquisition_route(
+            access_plan,
+            expected_profile_id=selected_profile,
+        )
+        if shared_route:
+            return BrowserWorkspace(
+                profile_id=selected_profile,
+                browser_id=shared_route["browser_id"],
+                session_name=shared_route["session_name"],
+                operator_visible_state="not_required",
+            )
+
         status = self._invoke(["service", "status"], timeout=min(request.timeout, 30))
         state = status.get("service_state") if isinstance(status.get("service_state"), dict) else status
         sessions = state.get("sessions") if isinstance(state, dict) else {}
@@ -323,7 +340,10 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
         )
 
     def inspect_auth(self, workspace: BrowserWorkspace) -> XAuthState:
-        self.prepare_site_tab(workspace, "x.com", consolidate=True)
+        if not self.prepare_site_tab(workspace, "x.com", consolidate=True):
+            self.act(workspace, BrowserAction("new_tab", value="https://x.com/home"))
+            self.act(workspace, BrowserAction("wait", value="2500"))
+            self._prepared_sites.add((workspace.session_name, "x.com"))
         raw = self.evaluate(workspace, AUTH_SCRIPT)
         return XAuthState(
             authenticated=bool(raw.get("authenticated_dom")),

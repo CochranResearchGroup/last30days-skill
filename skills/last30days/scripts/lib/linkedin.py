@@ -162,6 +162,35 @@ EXTRACT_SCRIPT = r"""
     }
     return 0;
   };
+  const activityUrn = (node) => {
+    const queue = Object.keys(node)
+      .filter((key) => key.startsWith("__reactFiber") || key.startsWith("__reactProps"))
+      .map((key) => node[key]);
+    const seen = new WeakSet();
+    let cursor = 0;
+    let steps = 0;
+    while (cursor < queue.length && steps < 12000) {
+      const value = queue[cursor++];
+      steps += 1;
+      if (typeof value === "string") {
+        const match = value.match(/urn:li:activity:\d+/);
+        if (match) return match[0];
+        continue;
+      }
+      if ((!value || typeof value !== "object") && typeof value !== "function") continue;
+      if (seen.has(value)) continue;
+      seen.add(value);
+      for (const key of Object.keys(value).slice(0, 120)) {
+        if (key === "return" || key === "_owner") continue;
+        try {
+          queue.push(value[key]);
+        } catch {
+          // React runtime values may expose guarded accessors.
+        }
+      }
+    }
+    return "";
+  };
   const candidates = [];
   const seen = new Set();
   for (const node of nodes) {
@@ -183,7 +212,7 @@ EXTRACT_SCRIPT = r"""
     const actionText = Array.from(node.querySelectorAll('button, [aria-label]'))
       .map((item) => `${item.getAttribute('aria-label') || ''} ${item.innerText || ''}`)
       .join(" ");
-    const urn = node.getAttribute('data-urn') || node.dataset?.urn || "";
+    const urn = node.getAttribute('data-urn') || node.dataset?.urn || activityUrn(node);
     const key = `${permalink?.href || urn}|${text.slice(0, 240)}`;
     if (seen.has(key)) continue;
     seen.add(key);

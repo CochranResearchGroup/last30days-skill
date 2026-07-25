@@ -346,6 +346,11 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
             linkedin._canonical_post_url("", "urn:li:activity:7351200000000000000"),
         )
 
+    def test_extractor_has_bounded_runtime_activity_urn_fallback(self):
+        self.assertIn("activityUrn", linkedin.EXTRACT_SCRIPT)
+        self.assertIn("steps < 12000", linkedin.EXTRACT_SCRIPT)
+        self.assertIn("activityUrn(node)", linkedin.EXTRACT_SCRIPT)
+
     def test_canonicalizes_posts_url_and_drops_tracking(self):
         self.assertEqual(
             "https://www.linkedin.com/posts/example_activity-7351200000000000000-abcd/",
