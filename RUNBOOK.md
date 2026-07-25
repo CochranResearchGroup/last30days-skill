@@ -507,3 +507,69 @@ Next Bounded Action:
   start with bounded LinkedIn people/company acquisition, generate
   deterministic identity candidates, and attach conservative Plan 0010
   identity-resolution proposals without model-direct merges.
+
+## Turn 8 | 2026-07-25
+
+Focus: Plan 0011 Packet 4 immutable profiles and reversible cross-service
+identity.
+
+Authority Consulted:
+
+- Plan 0011 Packet 4 and Plan 0010 profile-change/identity joins
+- `$tdd`, `$app-intelligence-automation`, and `graphiti-discovery`
+- profile schema/publication, collection routing, acquisition worker,
+  LinkedIn retained-browser, and intelligence contract seams through CodeGraph
+- documentation, validation, Graphiti, commit, push, and closeout policies
+
+Decisions And Changes:
+
+- Added schema version 11 profile sightings, immutable section evidence,
+  visibility/presence semantics, deterministic identity candidates, and
+  terminal resolution outcomes.
+- Added source-neutral profile publication strictly after raw immutable corpus
+  publication, with exact section spans and conservative change comparison.
+- Added exact-URL LinkedIn people/company acquisition through the retained
+  authenticated agent-browser profile. Auth/checkpoint state stops before
+  navigation; messages, connections, invitations, and unrelated private
+  surfaces are excluded.
+- Added deterministic cross-service account candidates from canonical URLs,
+  declared links, normalized names/handles, and existing evidence.
+- Added Plan 0010 profile-change and identity validators. Model output can only
+  assess host-created candidates and cannot directly merge identities.
+- Updated Skill, configuration, onboarding, roadmap, and integrated plan
+  authorities; installed schema migration and live profile canary remain
+  deferred to Packet 6.
+
+Validation Evidence:
+
+- source commit `22c8db1` was pushed to `origin/main`;
+- focused Packet 4 suites passed;
+- full `uv run pytest -q` passed;
+- Python compilation passed;
+- `go generate ./...`, `go test ./...`, and `go vet ./...` passed under
+  `mcp/`;
+- `git diff --check` passed.
+
+State Movement:
+
+- Plan 0011 Packet 4: `active -> complete`.
+- Plan 0011 Packet 5: `pending -> ready`.
+- P03 remains `OPEN` until temporal affiliation promotion and installed/live
+  acceptance; P01 remains `OPEN`; P04-P06 remain at their roadmap states.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Packet 4 was a coupled authority boundary and CodeGraph
+  supplied the required structural context.
+
+Graphiti Write Status:
+
+- Packet 3 completed as job `63ca548a-3d24-4757-a3c0-1c3ccf5ba62a`,
+  episode `fbda0a6d-9a87-458b-8e50-fa769be670f8`;
+- Packet 4 is queued as job `9f721b66-5d0a-40cd-b3eb-36763315e307` in
+  `last30days_skill_main`; its final episode UUID remains pending.
+
+Next Bounded Action:
+
+- Execute Plan 0011 Packet 5 claims, events, temporal retrieval, and rebuildable
+  access-partitioned Graphiti projection.

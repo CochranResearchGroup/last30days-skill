@@ -68,15 +68,15 @@ profile history, graph authority, or agent-facing query behavior.
 
 ## Current State
 
-- Packets 1 through 3 are source-complete at commits `f14b0fa`, `0454e5a`,
-  and `4ae5095`; schema version 10 adds governed recurring collection and
+- Packets 1 through 4 are source-complete at commits `f14b0fa`, `0454e5a`,
+  `4ae5095`, and `22c8db1`. Schema version 11 adds governed recurring collection and
   post-publication assessment to the additive temporal authority, immutable
   publication, version-scoped enrichment/index projections, and deterministic
   schema-7 replay export.
 - The installed service has not been migrated; schema version 7 remains the
   installed runtime authority until the bounded rollout packet.
-- Packet 4 source-neutral profile acquisition and reversible identity
-  resolution is the next ready critical-path unit.
+- Packet 5 claims, events, temporal retrieval, and GraphRAG is the next ready
+  critical-path unit.
 - Broad recurring hydration remains gated until Packet 6 rollout; isolated
   Plan 0010 execution remains prohibited outside the four integration joins.
 
@@ -799,6 +799,71 @@ Next action:
   beginning with bounded LinkedIn people/company surfaces, then attach
   deterministic identity candidates and conservative Plan 0010 identity
   resolution.
+
+### Checkpoint P0011-C04 | 2026-07-25
+
+Plan version: 1
+
+State transition: `packet_4_active -> packet_4_complete`; `packet_5_ready`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- added schema version 11 immutable profile sightings and section evidence
+  with visibility, redaction, retention, and
+  `visible`/`not_observed`/`observed_absent` presence semantics;
+- added source-neutral profile publication after raw immutable evidence,
+  conservative comparable-section changes, and exact section-span closure;
+- routed exact LinkedIn people/company profile collection through the retained
+  authenticated agent-browser profile while excluding messages, connections,
+  invitations, and unrelated private surfaces;
+- added deterministic cross-service candidates from canonical URLs, declared
+  links, normalized names/handles, and recorded account evidence;
+- added durable terminal `same_entity`, `different_entity`, `ambiguous`, and
+  `insufficient_evidence` outcomes without destructive merges;
+- attached Plan 0010 profile-change and identity-resolution validators only to
+  host-created evidence and candidate IDs.
+
+Validation evidence:
+
+- source commit: `22c8db1`;
+- focused profile, LinkedIn profile, App Intelligence contract, acquisition
+  worker, job runner, collection, runtime, migration, and temporal suites
+  passed;
+- full `uv run pytest -q` passed;
+- Python compilation passed;
+- `go generate ./...`, `go test ./...`, and `go vet ./...` passed under
+  `mcp/`;
+- `git diff --check` passed;
+- regression fixtures prove immutable replay, missing-section non-change,
+  exact section evidence, deterministic candidates, terminal outcomes,
+  checkpoint-before-navigation, and prohibited-surface exclusion.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Packet 4 crossed one profile publication, adapter, identity,
+  and contract boundary, with CodeGraph supplying structural exploration.
+
+Durable memory:
+
+- Packet 3 completed as job `63ca548a-3d24-4757-a3c0-1c3ccf5ba62a`,
+  episode `fbda0a6d-9a87-458b-8e50-fa769be670f8`;
+- Packet 4 was queued as job `9f721b66-5d0a-40cd-b3eb-36763315e307`
+  in `last30days_skill_main`; record its episode UUID after completion.
+
+Remaining acceptance criteria:
+
+- Packet 5 through Packet 7 and their integrated acceptance gates;
+- profile-to-entity assertions and temporal affiliation claims remain Packet 5
+  promotion work;
+- installed-runtime migration, timer enablement, and live profile canary remain
+  intentionally deferred to Packet 6.
+
+Next action:
+
+- execute Packet 5 by promoting evidence-backed claims/events and implementing
+  temporal retrieval plus rebuildable access-partitioned Graphiti projection.
 
 ## Stop Rules
 

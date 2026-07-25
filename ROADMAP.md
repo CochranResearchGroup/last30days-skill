@@ -71,14 +71,15 @@ when it was true, when it was observed, and which collection caused it.
 
 Current State:
 
-- Plan 0011 Packets 1 through 3 are source-complete at commits `f14b0fa`,
-  `0454e5a`, and `4ae5095`.
-- Additive schema version 10 now establishes immutable document versions,
+- Plan 0011 Packets 1 through 4 are source-complete at commits `f14b0fa`,
+  `0454e5a`, `4ae5095`, and `22c8db1`.
+- Additive schema version 11 now establishes immutable document versions,
   append-or-reuse publication, version-scoped evidence and enrichment,
   access partitions, governed recurring collection, post-publication
   assessment, authoritative index snapshots, and deterministic schema-7
   replay.
-- Packet 4 profile acquisition and identity is the next critical-path unit;
+- Packet 5 claims, events, temporal retrieval, and GraphRAG is the next
+  critical-path unit;
   the installed runtime remains on schema 7 and broad recurring hydration
   remains gated.
 
@@ -104,8 +105,8 @@ Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the integrated P01-P06 campaign authority. Packets 1 through 3 are
-  source-complete; Packet 4 must make profile history and identity evidence
-  first-class before claims and GraphRAG promotion.
+  source-complete through Packet 4; Packet 5 may now join recurring collection
+  and first-class profile/identity evidence into claims and GraphRAG promotion.
 
 ## P02 | Recurring Acquisition And Coverage
 
@@ -176,13 +177,17 @@ metadata.
 
 Current State:
 
-- Plan 0002 provides an open LinkedIn post-search lane and authenticated
-  agent-browser substrate.
-- Current adapters normalize posts, authors, and URLs, but do not maintain a
-  durable profile snapshot/history model.
-- LinkedIn profile pages are a priority because they expose employment,
-  education, affiliation, headline, location, company, and identity evidence
-  that may change independently of posts.
+- Plan 0011 Packet 4 is source-complete at commit `22c8db1`.
+- Schema version 11 adds immutable profile sightings and sections with exact
+  evidence, visibility/presence state, conservative change detection,
+  deterministic cross-service candidates, and durable terminal identity
+  outcomes.
+- An exact-URL LinkedIn people/company adapter now uses the retained
+  authenticated agent-browser profile and stops on auth/checkpoint state
+  without touching messages, connections, invitations, or unrelated private
+  surfaces.
+- Plan 0010 profile-change and identity proposals are schema bounded and may
+  only act on host-created evidence and candidate IDs.
 
 Goal Seeds:
 
@@ -221,8 +226,10 @@ Acceptance Seeds:
 Active Plan:
 
 - `docs/dev/plans/0002-2026-07-15-linkedin-agent-browser-scraper.md`
-  remains the post-search precursor; a successor profile-acquisition plan is
-  required before profile implementation begins.
+  remains the post-search precursor.
+- `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
+  Packet 4 is the profile/identity implementation authority; Packet 5 owns
+  promotion into temporal affiliation claims and retrieval.
 
 Dependencies: share P01 identity and temporal evidence contracts.
 
