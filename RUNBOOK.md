@@ -131,7 +131,17 @@ State Movement:
 
 Graphiti Write Status:
 
-- pending documentation validation and a durable commit identifier.
+- `graphiti_write_pending`;
+- source commit: `35f49ce`;
+- target group: `last30days_skill_main`;
+- provider preflight returned `degraded` with a bounded Codex app-server
+  `TimeoutError`, so no ingestion job was queued;
+- intended episode: P06 establishes host-supervised content assessment,
+  evidence-gated cross-service identity resolution, and bounded adapter
+  diagnosis/repair using the existing intelligence ledger and app-server
+  substrate;
+- retry this exact development-journey write at the next non-trivial closeout
+  after provider readiness returns `ok`.
 
 Next Bounded Action:
 
