@@ -136,6 +136,21 @@ def test_publisher_validates_and_idempotently_projects_worker_content(tmp_path):
     assert conn.execute("SELECT COUNT(*) FROM acquisitions").fetchone()[0] == 1
     assert conn.execute("SELECT COUNT(*) FROM documents").fetchone()[0] == 1
     assert conn.execute("SELECT COUNT(*) FROM document_sightings").fetchone()[0] == 1
+    assert conn.execute("SELECT COUNT(*) FROM document_versions").fetchone()[0] == 1
+    assert conn.execute(
+        "SELECT COUNT(*) FROM document_version_sightings"
+    ).fetchone()[0] == 1
+    assert conn.execute(
+        "SELECT COUNT(*) FROM document_version_chunks"
+    ).fetchone()[0] == 1
+    assert conn.execute("SELECT COUNT(*) FROM evidence_spans").fetchone()[0] == 1
+    assert conn.execute(
+        """SELECT COUNT(*)
+           FROM documents AS d
+           JOIN document_versions AS v
+             ON v.version_id = d.current_version_id
+           WHERE d.content_hash = v.content_hash"""
+    ).fetchone()[0] == 1
     assert conn.execute(
         "SELECT json_array_length(media_json) FROM documents"
     ).fetchone()[0] == 1
@@ -219,7 +234,7 @@ def test_stale_generation_cannot_publish_after_lease_reclaim(tmp_path):
     conn.close()
 
 
-def test_changed_content_replaces_current_projection_and_preserves_history(tmp_path):
+def test_changed_content_advances_current_projection_and_preserves_versions(tmp_path):
     db_path = tmp_path / "research.db"
     RefreshSupervisor(db_path).initialize()
     conn = sqlite3.connect(db_path)
@@ -247,6 +262,57 @@ def test_changed_content_replaces_current_projection_and_preserves_history(tmp_p
     publisher.record_result(
         _work_request(), _work_result(), worker_id="publisher-test"
     )
+    conn = sqlite3.connect(db_path)
+    old_version_id, old_chunk_id, old_evidence_id = conn.execute(
+        """SELECT v.version_id, c.chunk_id, e.evidence_id
+           FROM document_versions AS v
+           JOIN document_version_chunks AS c ON c.version_id = v.version_id
+           JOIN evidence_spans AS e
+             ON e.version_id = v.version_id AND e.chunk_id = c.chunk_id"""
+    ).fetchone()
+    conn.execute(
+        """INSERT INTO document_version_embeddings
+           (chunk_id, model, dimensions, vector, vector_hash, created_at)
+           VALUES (?, 'fixture-v1', 1, X'00', 'sha256:vector',
+                   '2026-07-24T12:01:00Z')""",
+        (old_chunk_id,),
+    )
+    for entity_id, name in (
+        ("entity-old-subject", "Agents"),
+        ("entity-old-object", "Evidence"),
+    ):
+        conn.execute(
+            """INSERT INTO entities
+               (entity_id, canonical_name, entity_type, created_at, updated_at)
+               VALUES (?, ?, 'topic', '2026-07-24T12:01:00Z',
+                       '2026-07-24T12:01:00Z')""",
+            (entity_id, name),
+        )
+        conn.execute(
+            """INSERT INTO document_version_entities
+               (version_id, entity_id, evidence_id, extractor_version,
+                confidence, validation_state, access_partition_id)
+               VALUES (?, ?, ?, 'fixture-v1', 1.0, 'accepted', 'public')""",
+            (old_version_id, entity_id, old_evidence_id),
+        )
+    conn.execute(
+        """INSERT INTO document_version_relationships
+           (relationship_id, version_id, subject_entity_id, predicate,
+            object_entity_id, extractor_version, confidence, validation_state,
+            created_at, access_partition_id)
+           VALUES ('relationship-old', ?, 'entity-old-subject', 'query',
+                   'entity-old-object', 'fixture-v1', 1.0, 'accepted',
+                   '2026-07-24T12:01:00Z', 'public')""",
+        (old_version_id,),
+    )
+    conn.execute(
+        """INSERT INTO document_version_relationship_evidence
+           (relationship_id, evidence_id, ordinal, access_partition_id)
+           VALUES ('relationship-old', ?, 0, 'public')""",
+        (old_evidence_id,),
+    )
+    conn.commit()
+    conn.close()
     second_request = contracts.AcquisitionWorkRequest.from_dict(
         {
             **_work_request().to_dict(),
@@ -282,6 +348,46 @@ def test_changed_content_replaces_current_projection_and_preserves_history(tmp_p
     assert row == (new_text, "work-002")
     assert conn.execute("SELECT COUNT(*) FROM acquisitions").fetchone()[0] == 2
     assert conn.execute("SELECT COUNT(*) FROM document_sightings").fetchone()[0] == 2
+    assert conn.execute("SELECT COUNT(*) FROM document_versions").fetchone()[0] == 2
+    assert conn.execute(
+        "SELECT COUNT(*) FROM document_version_sightings"
+    ).fetchone()[0] == 2
+    assert conn.execute(
+        "SELECT COUNT(*) FROM document_version_chunks"
+    ).fetchone()[0] == 2
+    assert conn.execute("SELECT COUNT(*) FROM evidence_spans").fetchone()[0] == 2
+    assert conn.execute(
+        "SELECT COUNT(*) FROM document_version_embeddings"
+    ).fetchone()[0] == 1
+    assert conn.execute(
+        "SELECT COUNT(*) FROM document_version_entities"
+    ).fetchone()[0] == 2
+    assert conn.execute(
+        "SELECT COUNT(*) FROM document_version_relationships"
+    ).fetchone()[0] == 1
+    assert conn.execute(
+        """SELECT v.normalized_text
+           FROM document_version_relationships AS r
+           JOIN document_versions AS v ON v.version_id = r.version_id
+           WHERE r.relationship_id = 'relationship-old'"""
+    ).fetchone()[0] == "Agents query cited evidence without browser mechanics."
+    assert [
+        version[0]
+        for version in conn.execute(
+            """SELECT normalized_text
+               FROM document_versions
+               ORDER BY system_from"""
+        ).fetchall()
+    ] == [
+        "Agents query cited evidence without browser mechanics.",
+        new_text,
+    ]
+    assert conn.execute(
+        """SELECT v.normalized_text
+           FROM documents AS d
+           JOIN document_versions AS v
+             ON v.version_id = d.current_version_id"""
+    ).fetchone()[0] == new_text
     conn.close()
     assert [item.url for item in retriever.search("revised semantic")] == [
         "https://reddit.example/r/agents/1"

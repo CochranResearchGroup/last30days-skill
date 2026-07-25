@@ -40,7 +40,7 @@ def test_v8_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 8
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 9
     assert conn.execute("SELECT name FROM topics").fetchone()[0] == "Existing Topic"
     tables = {
         row[0]
@@ -78,6 +78,14 @@ def test_v8_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
         "document_versions",
         "document_version_sightings",
         "document_version_chunks",
+        "document_version_embeddings",
+        "document_version_entities",
+        "document_version_relationships",
+        "document_version_relationship_evidence",
+        "index_document_versions",
+        "index_document_version_embeddings",
+        "index_document_version_entities",
+        "index_document_version_relationships",
         "evidence_spans",
         "source_accounts",
         "profile_snapshots",
@@ -205,7 +213,7 @@ def test_v8_migration_backfills_an_immutable_current_document_version(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 8
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 9
     version = conn.execute(
         """SELECT v.document_id, v.content_hash, v.access_partition_id,
                   v.system_from, v.system_to
@@ -302,6 +310,7 @@ def test_concurrent_initializers_publish_each_schema_version_once(tmp_path):
         (6, 1),
         (7, 1),
         (8, 1),
+        (9, 1),
     ]
     conn.close()
 
@@ -311,7 +320,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     store.init_db(db_path)
     monkeypatch.setitem(
         store.MIGRATIONS,
-        9,
+        10,
         """
         CREATE TABLE should_be_rolled_back (id INTEGER PRIMARY KEY);
         THIS IS NOT VALID SQL;
@@ -325,7 +334,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'should_be_rolled_back'"
     ).fetchone() is None
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 8
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 9
     conn.close()
 
 
@@ -346,7 +355,7 @@ def test_applied_v3_database_receives_replay_and_supervisor_schema(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 8
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 9
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'index_documents'"
     ).fetchone()[0] == "index_documents"

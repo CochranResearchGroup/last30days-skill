@@ -280,6 +280,10 @@ class HybridRetriever:
                 document_id = _stable_id("doc", url)
                 chunk_id = _stable_id("chunk", f"{document_id}:0")
                 content_hash = f"sha256:{_sha256(text)}"
+                version_id = _stable_id(
+                    "version", f"{document_id}:{content_hash}"
+                )
+                version_chunk_id = _stable_id("vchunk", f"{version_id}:0")
 
                 conn.execute(
                     """INSERT OR IGNORE INTO service_jobs
@@ -335,17 +339,79 @@ class HybridRetriever:
                     ),
                 ).rowcount
                 documents_indexed += inserted
+                conn.execute(
+                    """INSERT OR IGNORE INTO document_versions
+                       (version_id, document_id, acquisition_id, content_hash,
+                        title, author, normalized_text, source_metadata_json,
+                        media_json, published_at, valid_from, observed_at,
+                        fetched_at, system_from, retention_class,
+                        redaction_class, access_partition_id,
+                        transformation_version)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, '{}', '[]', ?, ?, ?, ?, ?,
+                               'cache', 'public', 'public', ?)""",
+                    (
+                        version_id,
+                        document_id,
+                        acquisition_id,
+                        content_hash,
+                        title,
+                        row["author"],
+                        text,
+                        published_at,
+                        published_at,
+                        fetched_at,
+                        fetched_at,
+                        fetched_at,
+                        _TRANSFORMATION_VERSION,
+                    ),
+                )
+                conn.execute(
+                    """UPDATE documents
+                       SET current_version_id = ?, access_partition_id = 'public'
+                       WHERE document_id = ?""",
+                    (version_id, document_id),
+                )
+                conn.execute(
+                    """INSERT OR IGNORE INTO document_version_chunks
+                       (chunk_id, version_id, document_id, ordinal, text,
+                        content_hash, chunker_version, access_partition_id)
+                       VALUES (?, ?, ?, 0, ?, ?, ?, 'public')""",
+                    (
+                        version_chunk_id,
+                        version_id,
+                        document_id,
+                        text,
+                        content_hash,
+                        _CHUNKER_VERSION,
+                    ),
+                )
+                conn.execute(
+                    """INSERT OR IGNORE INTO evidence_spans
+                       (evidence_id, version_id, chunk_id, span_start, span_end,
+                        span_digest, redaction_class, access_partition_id,
+                        created_at)
+                       VALUES (?, ?, ?, 0, ?, ?, 'public', 'public', ?)""",
+                    (
+                        _stable_id("evidence", f"{version_chunk_id}:0:{len(text)}"),
+                        version_id,
+                        version_chunk_id,
+                        len(text),
+                        content_hash,
+                        fetched_at,
+                    ),
+                )
                 inserted_chunk = conn.execute(
                     """INSERT OR IGNORE INTO document_chunks
                        (chunk_id, document_id, ordinal, text, content_hash,
-                        chunker_version)
-                       VALUES (?, ?, 0, ?, ?, ?)""",
+                        chunker_version, document_version_id)
+                       VALUES (?, ?, 0, ?, ?, ?, ?)""",
                     (
                         chunk_id,
                         document_id,
                         text,
                         content_hash,
                         _CHUNKER_VERSION,
+                        version_id,
                     ),
                 ).rowcount
                 chunks_indexed += inserted_chunk
@@ -354,6 +420,13 @@ class HybridRetriever:
                        (document_id, acquisition_id, topic_id, observed_at)
                        VALUES (?, ?, ?, ?)""",
                     (document_id, acquisition_id, row["topic_id"], fetched_at),
+                )
+                conn.execute(
+                    """INSERT OR IGNORE INTO document_version_sightings
+                       (version_id, acquisition_id, topic_id, observed_at,
+                        access_partition_id)
+                       VALUES (?, ?, ?, ?, 'public')""",
+                    (version_id, acquisition_id, row["topic_id"], fetched_at),
                 )
             conn.commit()
         except Exception:
@@ -377,12 +450,18 @@ class HybridRetriever:
         conn = self._connect()
         try:
             documents = conn.execute(
-                """SELECT document_id, content_hash
-                   FROM documents
-                   ORDER BY document_id"""
+                """SELECT d.document_id, v.version_id, v.content_hash,
+                          v.access_partition_id
+                   FROM documents AS d
+                   JOIN document_versions AS v
+                     ON v.version_id = d.current_version_id
+                   ORDER BY d.document_id"""
             ).fetchall()
             chunk_count = conn.execute(
-                "SELECT COUNT(*) FROM document_chunks"
+                """SELECT COUNT(*)
+                   FROM documents AS d
+                   JOIN document_version_chunks AS c
+                     ON c.version_id = d.current_version_id"""
             ).fetchone()[0]
             embedding_model = (
                 self.embedding_provider.model
@@ -395,6 +474,22 @@ class HybridRetriever:
                        FROM chunk_embeddings
                        WHERE model = ?
                        ORDER BY chunk_id, model""",
+                    (embedding_model,),
+                ).fetchall()
+                if embedding_model is not None
+                else []
+            )
+            version_embedding_rows = (
+                conn.execute(
+                    """SELECT e.chunk_id, e.model, e.dimensions, e.vector,
+                              e.vector_hash
+                       FROM documents AS d
+                       JOIN document_version_chunks AS c
+                         ON c.version_id = d.current_version_id
+                       JOIN document_version_embeddings AS e
+                         ON e.chunk_id = c.chunk_id
+                       WHERE e.model = ?
+                       ORDER BY e.chunk_id, e.model""",
                     (embedding_model,),
                 ).fetchall()
                 if embedding_model is not None
@@ -426,6 +521,35 @@ class HybridRetriever:
                    WHERE r.validation_state = 'accepted'
                    ORDER BY r.relationship_id"""
             ).fetchall()
+            version_entity_rows = conn.execute(
+                """SELECT ve.version_id, ve.entity_id, ve.evidence_id
+                   FROM documents AS d
+                   JOIN document_version_entities AS ve
+                     ON ve.version_id = d.current_version_id
+                   WHERE ve.validation_state = 'accepted'
+                   ORDER BY ve.version_id, ve.entity_id, ve.evidence_id"""
+            ).fetchall()
+            version_alias_rows = conn.execute(
+                """SELECT DISTINCT ea.normalized_alias, ea.entity_id
+                   FROM documents AS d
+                   JOIN document_version_entities AS ve
+                     ON ve.version_id = d.current_version_id
+                   JOIN entity_aliases AS ea ON ea.entity_id = ve.entity_id
+                   WHERE ve.validation_state = 'accepted'
+                   ORDER BY ea.normalized_alias, ea.entity_id"""
+            ).fetchall()
+            version_relationship_rows = conn.execute(
+                """SELECT r.relationship_id, r.version_id,
+                          r.subject_entity_id, r.predicate, r.object_entity_id,
+                          re.evidence_id, r.confidence
+                   FROM documents AS d
+                   JOIN document_version_relationships AS r
+                     ON r.version_id = d.current_version_id
+                   JOIN document_version_relationship_evidence AS re
+                     ON re.relationship_id = r.relationship_id
+                   WHERE r.validation_state = 'accepted'
+                   ORDER BY r.relationship_id, re.ordinal"""
+            ).fetchall()
             ranking_config = {
                 "version": self.fusion.version,
                 "rank_constant": self.fusion.rank_constant,
@@ -442,35 +566,42 @@ class HybridRetriever:
                     row["vector"].hex(),
                     hashlib.sha256(row["vector"]).hexdigest(),
                 ]
+                for row in version_embedding_rows
+            ]
+            legacy_embedding_manifest = [
+                [
+                    row["chunk_id"],
+                    row["model"],
+                    row["dimensions"],
+                    row["vector"].hex(),
+                    hashlib.sha256(row["vector"]).hexdigest(),
+                ]
                 for row in embedding_rows
             ]
             graph_manifest = {
                 "entities": [
                     [
-                        row["document_id"],
+                        row["version_id"],
                         row["entity_id"],
-                        row["evidence_chunk_id"],
-                        row["evidence_start"],
+                        row["evidence_id"],
                     ]
-                    for row in entity_rows
+                    for row in version_entity_rows
                 ],
                 "aliases": [
                     [row["normalized_alias"], row["entity_id"]]
-                    for row in alias_rows
+                    for row in version_alias_rows
                 ],
                 "relationships": [
                     [
                         row["relationship_id"],
+                        row["version_id"],
                         row["subject_entity_id"],
                         row["predicate"],
                         row["object_entity_id"],
-                        row["evidence_chunk_id"],
-                        row["evidence_start"],
-                        row["evidence_end"],
-                        row["span_hash"],
+                        row["evidence_id"],
                         row["confidence"],
                     ]
-                    for row in relationship_rows
+                    for row in version_relationship_rows
                 ],
             }
             embedding_manifest_json = json.dumps(
@@ -490,12 +621,19 @@ class HybridRetriever:
             )
             graph_manifest_hash = (
                 _sha256(graph_manifest_json)
-                if entity_rows or alias_rows or relationship_rows
+                if version_entity_rows
+                or version_alias_rows
+                or version_relationship_rows
                 else None
             )
             manifest = {
                 "documents": [
-                    [row["document_id"], row["content_hash"]]
+                    [
+                        row["document_id"],
+                        row["version_id"],
+                        row["content_hash"],
+                        row["access_partition_id"],
+                    ]
                     for row in documents
                 ],
                 "embedding_model": embedding_model,
@@ -547,6 +685,22 @@ class HybridRetriever:
                 ],
             )
             conn.executemany(
+                """INSERT OR IGNORE INTO index_document_versions
+                   (index_version, document_id, version_id, content_hash,
+                    access_partition_id)
+                   VALUES (?, ?, ?, ?, ?)""",
+                [
+                    (
+                        index_version,
+                        row["document_id"],
+                        row["version_id"],
+                        row["content_hash"],
+                        row["access_partition_id"],
+                    )
+                    for row in documents
+                ],
+            )
+            conn.executemany(
                 """INSERT OR IGNORE INTO index_chunk_embeddings
                    (index_version, chunk_id, model, dimensions, vector, vector_hash)
                    VALUES (?, ?, ?, ?, ?, ?)""",
@@ -560,7 +714,52 @@ class HybridRetriever:
                         vector_hash,
                     )
                     for chunk_id, model, dimensions, vector_hex, vector_hash
+                    in legacy_embedding_manifest
+                ],
+            )
+            conn.executemany(
+                """INSERT OR IGNORE INTO index_document_version_embeddings
+                   (index_version, chunk_id, model, dimensions, vector,
+                    vector_hash)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                [
+                    (
+                        index_version,
+                        chunk_id,
+                        model,
+                        dimensions,
+                        bytes.fromhex(vector_hex),
+                        vector_hash,
+                    )
+                    for chunk_id, model, dimensions, vector_hex, vector_hash
                     in embedding_manifest
+                ],
+            )
+            conn.executemany(
+                """INSERT OR IGNORE INTO index_document_version_entities
+                   (index_version, version_id, entity_id, evidence_id)
+                   VALUES (?, ?, ?, ?)""",
+                [
+                    (
+                        index_version,
+                        row["version_id"],
+                        row["entity_id"],
+                        row["evidence_id"],
+                    )
+                    for row in version_entity_rows
+                ],
+            )
+            conn.executemany(
+                """INSERT OR IGNORE INTO index_document_version_relationships
+                   (index_version, relationship_id, evidence_id)
+                   VALUES (?, ?, ?)""",
+                [
+                    (
+                        index_version,
+                        row["relationship_id"],
+                        row["evidence_id"],
+                    )
+                    for row in version_relationship_rows
                 ],
             )
             conn.executemany(
@@ -648,8 +847,12 @@ class HybridRetriever:
         conn = self._connect()
         try:
             rows = conn.execute(
-                """SELECT c.chunk_id, c.text
+                """SELECT c.chunk_id, c.text,
+                          vc.chunk_id AS version_chunk_id
                    FROM document_chunks AS c
+                   LEFT JOIN document_version_chunks AS vc
+                     ON vc.version_id = c.document_version_id
+                    AND vc.ordinal = c.ordinal
                    LEFT JOIN chunk_embeddings AS e
                      ON e.chunk_id = c.chunk_id AND e.model = ?
                    WHERE e.chunk_id IS NULL
@@ -666,6 +869,7 @@ class HybridRetriever:
             conn.execute("BEGIN IMMEDIATE")
             inserted = 0
             for row, vector in zip(rows, vectors):
+                packed = _pack_vector(vector)
                 inserted += conn.execute(
                     """INSERT OR IGNORE INTO chunk_embeddings
                        (chunk_id, model, dimensions, vector, created_at)
@@ -674,10 +878,25 @@ class HybridRetriever:
                         row["chunk_id"],
                         model,
                         len(vector),
-                        _pack_vector(vector),
+                        packed,
                         created_at,
                     ),
                 ).rowcount
+                if row["version_chunk_id"] is not None:
+                    conn.execute(
+                        """INSERT OR IGNORE INTO document_version_embeddings
+                           (chunk_id, model, dimensions, vector, vector_hash,
+                            created_at)
+                           VALUES (?, ?, ?, ?, ?, ?)""",
+                        (
+                            row["version_chunk_id"],
+                            model,
+                            len(vector),
+                            packed,
+                            hashlib.sha256(packed).hexdigest(),
+                            created_at,
+                        ),
+                    )
             conn.commit()
             return inserted
         except Exception:

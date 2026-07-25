@@ -374,8 +374,17 @@ def test_unique_entity_seed_adds_bounded_evidence_linked_graph_candidate(tmp_pat
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     rows = conn.execute(
-        """SELECT d.document_id, d.canonical_url, c.chunk_id
-           FROM documents d JOIN document_chunks c ON c.document_id = d.document_id
+        """SELECT d.document_id, d.canonical_url, c.chunk_id,
+                  d.current_version_id AS version_id,
+                  vc.chunk_id AS version_chunk_id,
+                  e.evidence_id,
+                  d.access_partition_id
+           FROM documents d
+           JOIN document_chunks c ON c.document_id = d.document_id
+           JOIN document_version_chunks vc
+             ON vc.version_id = d.current_version_id AND vc.ordinal = c.ordinal
+           JOIN evidence_spans e
+             ON e.version_id = vc.version_id AND e.chunk_id = vc.chunk_id
            ORDER BY d.canonical_url"""
     ).fetchall()
     by_url = {row["canonical_url"]: row for row in rows}
@@ -407,6 +416,26 @@ def test_unique_entity_seed_adds_bounded_evidence_linked_graph_candidate(tmp_pat
             (target["document_id"], "entity-nova", target["chunk_id"], 29, 33),
         ],
     )
+    conn.executemany(
+        """INSERT INTO document_version_entities
+           (version_id, entity_id, evidence_id, extractor_version, confidence,
+            validation_state, access_partition_id)
+           VALUES (?, ?, ?, 'deterministic-v1', 1.0, 'accepted', ?)""",
+        [
+            (
+                target["version_id"],
+                "entity-acme",
+                target["evidence_id"],
+                target["access_partition_id"],
+            ),
+            (
+                target["version_id"],
+                "entity-nova",
+                target["evidence_id"],
+                target["access_partition_id"],
+            ),
+        ],
+    )
     conn.execute(
         """INSERT INTO relationships
            (relationship_id, subject_entity_id, predicate, object_entity_id,
@@ -423,6 +452,22 @@ def test_unique_entity_seed_adds_bounded_evidence_linked_graph_candidate(tmp_pat
             evidence_end, span_hash)
            VALUES ('relationship-001', 0, ?, 0, 54, 'sha256:fixture')""",
         (target["chunk_id"],),
+    )
+    conn.execute(
+        """INSERT INTO document_version_relationships
+           (relationship_id, version_id, subject_entity_id, predicate,
+            object_entity_id, extractor_version, confidence, validation_state,
+            created_at, access_partition_id)
+           VALUES ('relationship-001', ?, 'entity-acme', 'created',
+                   'entity-nova', 'deterministic-v1', 1.0, 'accepted',
+                   '2026-07-24T12:00:00Z', ?)""",
+        (target["version_id"], target["access_partition_id"]),
+    )
+    conn.execute(
+        """INSERT INTO document_version_relationship_evidence
+           (relationship_id, evidence_id, ordinal, access_partition_id)
+           VALUES ('relationship-001', ?, 0, ?)""",
+        (target["evidence_id"], target["access_partition_id"]),
     )
     conn.commit()
     conn.close()

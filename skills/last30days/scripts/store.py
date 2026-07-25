@@ -1159,6 +1159,118 @@ CREATE TABLE graph_projection_outbox (
 CREATE INDEX idx_graph_projection_outbox_ready
     ON graph_projection_outbox(state, not_before_at, created_at);
 """,
+    9: """
+CREATE TABLE document_version_embeddings (
+    chunk_id TEXT NOT NULL
+        REFERENCES document_version_chunks(chunk_id),
+    model TEXT NOT NULL,
+    dimensions INTEGER NOT NULL,
+    vector BLOB NOT NULL,
+    vector_hash TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    PRIMARY KEY (chunk_id, model)
+);
+
+CREATE TABLE document_version_entities (
+    version_id TEXT NOT NULL,
+    entity_id TEXT NOT NULL REFERENCES entities(entity_id),
+    evidence_id TEXT NOT NULL,
+    extractor_version TEXT NOT NULL,
+    confidence REAL NOT NULL CHECK (confidence >= 0 AND confidence <= 1),
+    validation_state TEXT NOT NULL,
+    proposal_id TEXT,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (version_id, access_partition_id)
+        REFERENCES document_versions(version_id, access_partition_id),
+    FOREIGN KEY (evidence_id, access_partition_id)
+        REFERENCES evidence_spans(evidence_id, access_partition_id),
+    PRIMARY KEY (version_id, entity_id, evidence_id)
+);
+
+CREATE INDEX idx_document_version_entities_entity
+    ON document_version_entities(entity_id, version_id);
+
+CREATE TABLE document_version_relationships (
+    relationship_id TEXT PRIMARY KEY,
+    version_id TEXT NOT NULL,
+    subject_entity_id TEXT NOT NULL REFERENCES entities(entity_id),
+    predicate TEXT NOT NULL,
+    object_entity_id TEXT NOT NULL REFERENCES entities(entity_id),
+    extractor_version TEXT NOT NULL,
+    confidence REAL NOT NULL CHECK (confidence >= 0 AND confidence <= 1),
+    validation_state TEXT NOT NULL,
+    proposal_id TEXT,
+    created_at TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (version_id, access_partition_id)
+        REFERENCES document_versions(version_id, access_partition_id),
+    UNIQUE (relationship_id, access_partition_id)
+);
+
+CREATE INDEX idx_document_version_relationships_subject
+    ON document_version_relationships(subject_entity_id, predicate, version_id);
+CREATE INDEX idx_document_version_relationships_object
+    ON document_version_relationships(object_entity_id, predicate, version_id);
+
+CREATE TABLE document_version_relationship_evidence (
+    relationship_id TEXT NOT NULL,
+    evidence_id TEXT NOT NULL,
+    ordinal INTEGER NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (relationship_id, access_partition_id)
+        REFERENCES document_version_relationships(
+            relationship_id, access_partition_id
+        ),
+    FOREIGN KEY (evidence_id, access_partition_id)
+        REFERENCES evidence_spans(evidence_id, access_partition_id),
+    PRIMARY KEY (relationship_id, ordinal),
+    UNIQUE (relationship_id, evidence_id)
+);
+
+CREATE TABLE index_document_versions (
+    index_version TEXT NOT NULL
+        REFERENCES index_versions(index_version) ON DELETE CASCADE,
+    document_id TEXT NOT NULL REFERENCES documents(document_id),
+    version_id TEXT NOT NULL REFERENCES document_versions(version_id),
+    content_hash TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL
+        REFERENCES access_partitions(partition_id),
+    PRIMARY KEY (index_version, document_id)
+);
+
+CREATE TABLE index_document_version_embeddings (
+    index_version TEXT NOT NULL
+        REFERENCES index_versions(index_version) ON DELETE CASCADE,
+    chunk_id TEXT NOT NULL,
+    model TEXT NOT NULL,
+    dimensions INTEGER NOT NULL,
+    vector BLOB NOT NULL,
+    vector_hash TEXT NOT NULL,
+    PRIMARY KEY (index_version, chunk_id, model),
+    FOREIGN KEY (chunk_id, model)
+        REFERENCES document_version_embeddings(chunk_id, model)
+);
+
+CREATE TABLE index_document_version_entities (
+    index_version TEXT NOT NULL
+        REFERENCES index_versions(index_version) ON DELETE CASCADE,
+    version_id TEXT NOT NULL,
+    entity_id TEXT NOT NULL,
+    evidence_id TEXT NOT NULL,
+    PRIMARY KEY (index_version, version_id, entity_id, evidence_id),
+    FOREIGN KEY (version_id, entity_id, evidence_id)
+        REFERENCES document_version_entities(version_id, entity_id, evidence_id)
+);
+
+CREATE TABLE index_document_version_relationships (
+    index_version TEXT NOT NULL
+        REFERENCES index_versions(index_version) ON DELETE CASCADE,
+    relationship_id TEXT NOT NULL
+        REFERENCES document_version_relationships(relationship_id),
+    evidence_id TEXT NOT NULL REFERENCES evidence_spans(evidence_id),
+    PRIMARY KEY (index_version, relationship_id, evidence_id)
+);
+""",
 }
 
 

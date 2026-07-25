@@ -7,6 +7,7 @@ import sqlite3
 import store
 from lib import service_contracts as contracts
 from lib.service_enrichment import EntityRule, EnrichmentService
+from lib.service_retrieval import HybridRetriever
 
 
 def _seed_chunk(db_path, *, text: str) -> tuple[str, str]:
@@ -41,10 +42,45 @@ def _seed_chunk(db_path, *, text: str) -> tuple[str, str]:
             (text,),
         )
         conn.execute(
+            """INSERT INTO document_versions
+               (version_id, document_id, acquisition_id, content_hash, title,
+                normalized_text, source_metadata_json, media_json, observed_at,
+                fetched_at, system_from, retention_class, redaction_class,
+                access_partition_id, transformation_version)
+               VALUES ('version-1', 'doc-1', 'acq-1', 'sha256:doc', 'Fixture',
+                       ?, '{}', '[]', '2026-07-24T12:00:00Z',
+                       '2026-07-24T12:00:00Z', '2026-07-24T12:00:00Z',
+                       'cache', 'public', 'public', 'fixture-v1')""",
+            (text,),
+        )
+        conn.execute(
+            """UPDATE documents
+               SET current_version_id = 'version-1'
+               WHERE document_id = 'doc-1'"""
+        )
+        conn.execute(
+            """INSERT INTO document_version_chunks
+               (chunk_id, version_id, document_id, ordinal, text, content_hash,
+                chunker_version, access_partition_id)
+               VALUES ('vchunk-1', 'version-1', 'doc-1', 0, ?,
+                       'sha256:chunk', 'fixture-v1', 'public')""",
+            (text,),
+        )
+        conn.execute(
+            """INSERT INTO evidence_spans
+               (evidence_id, version_id, chunk_id, span_start, span_end,
+                span_digest, redaction_class, access_partition_id, created_at)
+               VALUES ('evidence-full', 'version-1', 'vchunk-1', 0, ?,
+                       'sha256:chunk', 'public', 'public',
+                       '2026-07-24T12:00:00Z')""",
+            (len(text),),
+        )
+        conn.execute(
             """INSERT INTO document_chunks
                (chunk_id, document_id, ordinal, text, content_hash,
-                chunker_version)
-               VALUES ('chunk-1', 'doc-1', 0, ?, 'sha256:chunk', 'fixture-v1')""",
+                chunker_version, document_version_id)
+               VALUES ('chunk-1', 'doc-1', 0, ?, 'sha256:chunk', 'fixture-v1',
+                       'version-1')""",
             (text,),
         )
         conn.commit()
@@ -84,6 +120,9 @@ def test_versioned_embeddings_coexist_replace_and_remain_idempotent(tmp_path):
     ).embed_chunks()
 
     records = service.embedding_records(chunk_id)
+    index_version = HybridRetriever(
+        db_path, embedding_provider=provider_v1
+    ).publish_index()
     assert first.status == "succeeded" and first.embeddings_written == 1
     assert replay.status == "succeeded" and replay.embeddings_written == 0
     assert provider_v1.calls == 2
@@ -91,6 +130,17 @@ def test_versioned_embeddings_coexist_replace_and_remain_idempotent(tmp_path):
     assert second_version.embeddings_written == 1
     assert [record.model for record in records] == ["fixture-v1", "fixture-v2"]
     assert records[0].vector_digest != records[1].vector_digest
+    conn = sqlite3.connect(db_path)
+    assert conn.execute(
+        "SELECT COUNT(*) FROM document_version_embeddings"
+    ).fetchone()[0] == 2
+    assert conn.execute(
+        """SELECT COUNT(*)
+           FROM index_document_version_embeddings
+           WHERE index_version = ?""",
+        (index_version,),
+    ).fetchone()[0] == 1
+    conn.close()
 
 
 def test_embedding_provider_disabled_or_failed_is_non_destructive(tmp_path):
@@ -141,6 +191,11 @@ def test_deterministic_entity_extraction_has_offsets_and_is_idempotent(tmp_path)
         "OpenAI",
     ]
     assert {mention.extractor_version for mention in mentions} == {"rules-v7"}
+    conn = sqlite3.connect(db_path)
+    assert conn.execute(
+        "SELECT COUNT(*) FROM document_version_entities"
+    ).fetchone()[0] == 3
+    conn.close()
 
 
 def test_generic_entity_extraction_is_available_without_configured_rules(tmp_path):
@@ -246,6 +301,7 @@ def test_relationship_promotion_requires_evidence_and_accepted_mentions(tmp_path
         ]
     )
     relationships = service.relationships(document_id)
+    index_version = HybridRetriever(db_path).publish_index()
 
     assert accepted.accepted_count == 1
     assert replay.accepted_ids == accepted.accepted_ids
@@ -281,6 +337,26 @@ def test_relationship_promotion_requires_evidence_and_accepted_mentions(tmp_path
     assert relationship == ("rel-valid", "relationship-rules-v1")
     assert evidence[:3] == (chunk_id, 0, len("OpenAI created ChatGPT."))
     assert evidence[3].startswith("sha256:")
+    conn = sqlite3.connect(db_path)
+    assert conn.execute(
+        "SELECT COUNT(*) FROM document_version_relationships"
+    ).fetchone()[0] == 1
+    assert conn.execute(
+        "SELECT COUNT(*) FROM document_version_relationship_evidence"
+    ).fetchone()[0] == 1
+    assert conn.execute(
+        """SELECT COUNT(*)
+           FROM index_document_version_entities
+           WHERE index_version = ?""",
+        (index_version,),
+    ).fetchone()[0] == 2
+    assert conn.execute(
+        """SELECT COUNT(*)
+           FROM index_document_version_relationships
+           WHERE index_version = ?""",
+        (index_version,),
+    ).fetchone()[0] == 1
+    conn.close()
 
     conn = sqlite3.connect(db_path)
     try:

@@ -308,6 +308,7 @@ class EnrichmentService:
         try:
             conn.execute("BEGIN IMMEDIATE")
             for chunk_id, vector in pending:
+                packed = _pack_vector(vector)
                 conn.execute(
                     """INSERT INTO chunk_embeddings
                        (chunk_id, model, dimensions, vector, created_at)
@@ -320,10 +321,39 @@ class EnrichmentService:
                         chunk_id,
                         model,
                         len(vector),
-                        _pack_vector(vector),
+                        packed,
                         created_at,
                     ),
                 )
+                version_chunk = conn.execute(
+                    """SELECT vc.chunk_id
+                       FROM document_chunks AS c
+                       JOIN document_version_chunks AS vc
+                         ON vc.version_id = c.document_version_id
+                        AND vc.ordinal = c.ordinal
+                       WHERE c.chunk_id = ?""",
+                    (chunk_id,),
+                ).fetchone()
+                if version_chunk is not None:
+                    conn.execute(
+                        """INSERT INTO document_version_embeddings
+                           (chunk_id, model, dimensions, vector, vector_hash,
+                            created_at)
+                           VALUES (?, ?, ?, ?, ?, ?)
+                           ON CONFLICT(chunk_id, model) DO UPDATE SET
+                               dimensions = excluded.dimensions,
+                               vector = excluded.vector,
+                               vector_hash = excluded.vector_hash,
+                               created_at = excluded.created_at""",
+                        (
+                            version_chunk["chunk_id"],
+                            model,
+                            len(vector),
+                            packed,
+                            hashlib.sha256(packed).hexdigest(),
+                            created_at,
+                        ),
+                    )
             conn.commit()
         except Exception:
             conn.rollback()
@@ -715,6 +745,85 @@ class EnrichmentService:
                         proposal.proposal_id,
                     ),
                 )
+                temporal_chunk = conn.execute(
+                    """SELECT c.document_version_id AS version_id,
+                              vc.chunk_id AS version_chunk_id,
+                              vc.access_partition_id
+                       FROM document_chunks AS c
+                       JOIN document_version_chunks AS vc
+                         ON vc.version_id = c.document_version_id
+                        AND vc.ordinal = c.ordinal
+                       WHERE c.chunk_id = ?""",
+                    (proposal.evidence_chunk_id,),
+                ).fetchone()
+                if temporal_chunk is not None:
+                    span_hash = f"sha256:{_digest(evidence_text)}"
+                    evidence_id = _stable_id(
+                        "evidence",
+                        ":".join(
+                            (
+                                temporal_chunk["version_id"],
+                                temporal_chunk["version_chunk_id"],
+                                str(proposal.evidence_start),
+                                str(proposal.evidence_end),
+                                span_hash,
+                            )
+                        ),
+                    )
+                    conn.execute(
+                        """INSERT OR IGNORE INTO evidence_spans
+                           (evidence_id, version_id, chunk_id, span_start,
+                            span_end, span_digest, redaction_class,
+                            access_partition_id, created_at)
+                           SELECT ?, ?, ?, ?, ?, ?, v.redaction_class, ?, ?
+                           FROM document_versions AS v
+                           WHERE v.version_id = ?""",
+                        (
+                            evidence_id,
+                            temporal_chunk["version_id"],
+                            temporal_chunk["version_chunk_id"],
+                            proposal.evidence_start,
+                            proposal.evidence_end,
+                            span_hash,
+                            temporal_chunk["access_partition_id"],
+                            now,
+                            temporal_chunk["version_id"],
+                        ),
+                    )
+                    evidence_id = conn.execute(
+                        """SELECT evidence_id
+                           FROM evidence_spans
+                           WHERE version_id = ? AND chunk_id = ?
+                             AND span_start = ? AND span_end = ?""",
+                        (
+                            temporal_chunk["version_id"],
+                            temporal_chunk["version_chunk_id"],
+                            proposal.evidence_start,
+                            proposal.evidence_end,
+                        ),
+                    ).fetchone()["evidence_id"]
+                    conn.execute(
+                        """INSERT INTO document_version_entities
+                           (version_id, entity_id, evidence_id,
+                            extractor_version, confidence, validation_state,
+                            proposal_id, access_partition_id)
+                           VALUES (?, ?, ?, ?, ?, 'accepted', ?, ?)
+                           ON CONFLICT(version_id, entity_id, evidence_id)
+                           DO UPDATE SET
+                               extractor_version = excluded.extractor_version,
+                               confidence = excluded.confidence,
+                               validation_state = 'accepted',
+                               proposal_id = excluded.proposal_id""",
+                        (
+                            temporal_chunk["version_id"],
+                            entity_id,
+                            evidence_id,
+                            proposal.extractor_version,
+                            proposal.confidence,
+                            proposal.proposal_id,
+                            temporal_chunk["access_partition_id"],
+                        ),
+                    )
                 accepted.append(entity_id)
             conn.commit()
         except Exception:
@@ -890,6 +999,100 @@ class EnrichmentService:
                         f"sha256:{_digest(evidence_text)}",
                     ),
                 )
+                temporal_chunk = conn.execute(
+                    """SELECT c.document_version_id AS version_id,
+                              vc.chunk_id AS version_chunk_id,
+                              vc.access_partition_id
+                       FROM document_chunks AS c
+                       JOIN document_version_chunks AS vc
+                         ON vc.version_id = c.document_version_id
+                        AND vc.ordinal = c.ordinal
+                       WHERE c.chunk_id = ?""",
+                    (proposal.evidence_chunk_id,),
+                ).fetchone()
+                if temporal_chunk is not None:
+                    span_hash = f"sha256:{_digest(evidence_text)}"
+                    evidence_id = _stable_id(
+                        "evidence",
+                        ":".join(
+                            (
+                                temporal_chunk["version_id"],
+                                temporal_chunk["version_chunk_id"],
+                                str(proposal.evidence_start),
+                                str(proposal.evidence_end),
+                                span_hash,
+                            )
+                        ),
+                    )
+                    created_at = datetime.now(timezone.utc).isoformat()
+                    conn.execute(
+                        """INSERT OR IGNORE INTO evidence_spans
+                           (evidence_id, version_id, chunk_id, span_start,
+                            span_end, span_digest, redaction_class,
+                            access_partition_id, created_at)
+                           SELECT ?, ?, ?, ?, ?, ?, v.redaction_class, ?, ?
+                           FROM document_versions AS v
+                           WHERE v.version_id = ?""",
+                        (
+                            evidence_id,
+                            temporal_chunk["version_id"],
+                            temporal_chunk["version_chunk_id"],
+                            proposal.evidence_start,
+                            proposal.evidence_end,
+                            span_hash,
+                            temporal_chunk["access_partition_id"],
+                            created_at,
+                            temporal_chunk["version_id"],
+                        ),
+                    )
+                    evidence_id = conn.execute(
+                        """SELECT evidence_id
+                           FROM evidence_spans
+                           WHERE version_id = ? AND chunk_id = ?
+                             AND span_start = ? AND span_end = ?""",
+                        (
+                            temporal_chunk["version_id"],
+                            temporal_chunk["version_chunk_id"],
+                            proposal.evidence_start,
+                            proposal.evidence_end,
+                        ),
+                    ).fetchone()["evidence_id"]
+                    conn.execute(
+                        """INSERT INTO document_version_relationships
+                           (relationship_id, version_id, subject_entity_id,
+                            predicate, object_entity_id, extractor_version,
+                            confidence, validation_state, proposal_id,
+                            created_at, access_partition_id)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, 'accepted', ?, ?, ?)
+                           ON CONFLICT(relationship_id) DO UPDATE SET
+                               confidence = excluded.confidence,
+                               validation_state = 'accepted',
+                               proposal_id = excluded.proposal_id""",
+                        (
+                            relationship_id,
+                            temporal_chunk["version_id"],
+                            proposal.subject_entity_id,
+                            proposal.predicate,
+                            proposal.object_entity_id,
+                            proposal.extractor_version,
+                            proposal.confidence,
+                            proposal.proposal_id,
+                            created_at,
+                            temporal_chunk["access_partition_id"],
+                        ),
+                    )
+                    conn.execute(
+                        """INSERT OR IGNORE INTO
+                           document_version_relationship_evidence
+                           (relationship_id, evidence_id, ordinal,
+                            access_partition_id)
+                           VALUES (?, ?, 0, ?)""",
+                        (
+                            relationship_id,
+                            evidence_id,
+                            temporal_chunk["access_partition_id"],
+                        ),
+                    )
                 accepted.append(relationship_id)
             conn.commit()
         except Exception:

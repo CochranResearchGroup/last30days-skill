@@ -13,6 +13,7 @@ from typing import Callable
 from . import service_contracts as contracts
 from .service_retrieval import HybridRetriever
 from .service_store import EnvelopeConflictError, ServiceStore
+from .service_temporal import access_partition_id, stable_temporal_id
 
 
 _BROWSER_SOURCES = frozenset({"x", "facebook", "linkedin"})
@@ -263,6 +264,28 @@ class CorpusPublisher:
                     ),
                 ).rowcount
             )
+            partition_id = access_partition_id(
+                classification.value, acquisition.profile_id
+            )
+            conn.execute(
+                """INSERT OR IGNORE INTO access_partitions (
+                       partition_id, partition_kind, profile_id, created_at
+                   ) VALUES (?, ?, ?, ?)""",
+                (
+                    partition_id,
+                    (
+                        "public"
+                        if classification is contracts.RedactionClass.PUBLIC
+                        else "authenticated"
+                    ),
+                    (
+                        None
+                        if classification is contracts.RedactionClass.PUBLIC
+                        else acquisition.profile_id
+                    ),
+                    acquisition.fetched_at,
+                ),
+            )
             for item in result.items:
                 proposed_document_id = _stable_id(
                     "doc", f"{result.source}:{item.url}"
@@ -283,7 +306,7 @@ class CorpusPublisher:
                     sort_keys=True,
                 )
                 row = conn.execute(
-                    """SELECT document_id, content_hash
+                    """SELECT document_id, content_hash, current_version_id
                        FROM documents
                        WHERE canonical_url = ?
                           OR (source = ? AND source_native_id = ?)
@@ -303,8 +326,9 @@ class CorpusPublisher:
                        (document_id, acquisition_id, source, source_native_id,
                         canonical_url, title, author, normalized_text, content_hash,
                         published_at, fetched_at, retention_class, redaction_class,
-                        transformation_version, source_metadata_json, media_json)
-                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'cache', ?, ?, ?, ?)""",
+                        transformation_version, source_metadata_json, media_json,
+                        access_partition_id)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'cache', ?, ?, ?, ?, ?)""",
                     (
                         proposed_document_id,
                         acquisition.acquisition_id,
@@ -321,11 +345,12 @@ class CorpusPublisher:
                         "service-worker-v1",
                         metadata_json,
                         media_json,
+                        partition_id,
                     ),
                     ).rowcount
                 documents_inserted += inserted
                 row = conn.execute(
-                    """SELECT document_id, content_hash
+                    """SELECT document_id, content_hash, current_version_id
                        FROM documents
                        WHERE canonical_url = ?
                           OR (source = ? AND source_native_id = ?)
@@ -341,9 +366,127 @@ class CorpusPublisher:
                 if row is None:
                     raise RuntimeError("document projection was not persisted")
                 document_id = row["document_id"]
-                chunk_id = _stable_id("chunk", f"{document_id}:0")
+                proposed_version_id = stable_temporal_id(
+                    "version",
+                    {
+                        "document_id": document_id,
+                        "content_hash": item_hash,
+                    },
+                )
+                conn.execute(
+                    """INSERT OR IGNORE INTO document_versions (
+                           version_id, document_id, acquisition_id, content_hash,
+                           title, author, normalized_text, source_metadata_json,
+                           media_json, published_at, valid_from, valid_to,
+                           observed_at, fetched_at, system_from, system_to,
+                           retention_class, redaction_class, access_partition_id,
+                           transformation_version
+                       ) VALUES (
+                           ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL,
+                           ?, ?, ?, NULL, 'cache', ?, ?, 'service-worker-v1'
+                       )""",
+                    (
+                        proposed_version_id,
+                        document_id,
+                        acquisition.acquisition_id,
+                        item_hash,
+                        item.title,
+                        item.author,
+                        item.text,
+                        metadata_json,
+                        media_json,
+                        item.published_at,
+                        item.published_at,
+                        acquisition.observed_at,
+                        acquisition.fetched_at,
+                        acquisition.fetched_at,
+                        classification.value,
+                        partition_id,
+                    ),
+                )
+                version = conn.execute(
+                    """SELECT version_id, access_partition_id
+                       FROM document_versions
+                       WHERE document_id = ? AND content_hash = ?""",
+                    (document_id, item_hash),
+                ).fetchone()
+                if version is None:
+                    raise RuntimeError("document version was not persisted")
+                version_id = version["version_id"]
+                if version["access_partition_id"] != partition_id:
+                    raise RuntimeError("document version access partition conflict")
+
+                version_chunk = conn.execute(
+                    """SELECT chunk_id
+                       FROM document_version_chunks
+                       WHERE version_id = ? AND ordinal = 0""",
+                    (version_id,),
+                ).fetchone()
                 text_hash = _digest(item.text)
-                if row["content_hash"] != item_hash:
+                if version_chunk is None:
+                    version_chunk_id = stable_temporal_id(
+                        "vchunk",
+                        {"version_id": version_id, "ordinal": 0},
+                    )
+                    conn.execute(
+                        """INSERT INTO document_version_chunks (
+                               chunk_id, version_id, document_id, ordinal, text,
+                               content_hash, chunker_version, access_partition_id
+                           ) VALUES (?, ?, ?, 0, ?, ?, 'service-chunker-v1', ?)""",
+                        (
+                            version_chunk_id,
+                            version_id,
+                            document_id,
+                            item.text,
+                            text_hash,
+                            partition_id,
+                        ),
+                    )
+                else:
+                    version_chunk_id = version_chunk["chunk_id"]
+                evidence_id = stable_temporal_id(
+                    "evidence",
+                    {
+                        "version_id": version_id,
+                        "chunk_id": version_chunk_id,
+                        "span_start": 0,
+                        "span_end": len(item.text),
+                        "span_digest": text_hash,
+                    },
+                )
+                conn.execute(
+                    """INSERT OR IGNORE INTO evidence_spans (
+                           evidence_id, version_id, chunk_id, span_start,
+                           span_end, span_digest, redaction_class,
+                           access_partition_id, created_at
+                       ) VALUES (?, ?, ?, 0, ?, ?, ?, ?, ?)""",
+                    (
+                        evidence_id,
+                        version_id,
+                        version_chunk_id,
+                        len(item.text),
+                        text_hash,
+                        classification.value,
+                        partition_id,
+                        acquisition.fetched_at,
+                    ),
+                )
+                conn.execute(
+                    """INSERT OR IGNORE INTO document_version_sightings (
+                           version_id, acquisition_id, topic_id,
+                           collection_spec_id, collection_run_id, observed_at,
+                           access_partition_id
+                       ) VALUES (?, ?, NULL, NULL, NULL, ?, ?)""",
+                    (
+                        version_id,
+                        acquisition.acquisition_id,
+                        acquisition.observed_at,
+                        partition_id,
+                    ),
+                )
+
+                chunk_id = _stable_id("chunk", f"{document_id}:0")
+                if row["current_version_id"] != version_id:
                     conn.execute(
                         """UPDATE documents
                            SET acquisition_id = ?, source = ?, source_native_id = ?,
@@ -352,7 +495,8 @@ class CorpusPublisher:
                                published_at = ?, fetched_at = ?,
                                redaction_class = ?,
                                transformation_version = 'service-worker-v1',
-                               source_metadata_json = ?, media_json = ?
+                               source_metadata_json = ?, media_json = ?,
+                               current_version_id = ?, access_partition_id = ?
                            WHERE document_id = ?""",
                         (
                             acquisition.acquisition_id,
@@ -368,6 +512,8 @@ class CorpusPublisher:
                             classification.value,
                             metadata_json,
                             media_json,
+                            version_id,
+                            partition_id,
                             document_id,
                         ),
                     )
@@ -378,21 +524,23 @@ class CorpusPublisher:
                     conn.execute(
                         """INSERT INTO document_chunks
                            (chunk_id, document_id, ordinal, text, content_hash,
-                            chunker_version)
-                           VALUES (?, ?, 0, ?, ?, 'service-chunker-v1')
+                            chunker_version, document_version_id)
+                           VALUES (?, ?, 0, ?, ?, 'service-chunker-v1', ?)
                            ON CONFLICT(chunk_id) DO UPDATE SET
                                text = excluded.text,
                                content_hash = excluded.content_hash,
-                               chunker_version = excluded.chunker_version""",
-                        (chunk_id, document_id, item.text, text_hash),
+                               chunker_version = excluded.chunker_version,
+                               document_version_id =
+                                   excluded.document_version_id""",
+                        (chunk_id, document_id, item.text, text_hash, version_id),
                     )
                 else:
                     chunks_inserted += conn.execute(
                         """INSERT OR IGNORE INTO document_chunks
                            (chunk_id, document_id, ordinal, text, content_hash,
-                            chunker_version)
-                           VALUES (?, ?, 0, ?, ?, 'service-chunker-v1')""",
-                        (chunk_id, document_id, item.text, text_hash),
+                            chunker_version, document_version_id)
+                           VALUES (?, ?, 0, ?, ?, 'service-chunker-v1', ?)""",
+                        (chunk_id, document_id, item.text, text_hash, version_id),
                     ).rowcount
                 sightings_inserted += conn.execute(
                     """INSERT OR IGNORE INTO document_sightings
