@@ -197,8 +197,9 @@ Validation Evidence:
 - The canonical schema catalog currently exposes acquisition, query, evidence,
   entity, relationship, job, and decision contracts but not the proposed
   shared intelligence task or receipt contracts.
-- Planning and goal-contract audits are required before this checkpoint is
-  committed.
+- The full planning-contract audit and goal-only audit both passed with no
+  problems; Plan 0010 is valid and wired into both roadmap and runbook.
+- `git diff --check` passed before source commit `7e3daa6`.
 
 State Movement:
 
@@ -208,10 +209,16 @@ State Movement:
 
 Graphiti Write Status:
 
-- pending validation and source commit;
-- after commit, retry the exact Turn 2 pending P06 checkpoint and record this
-  task-contract checkpoint in `last30days_skill_main`, or preserve a bounded
-  `graphiti_write_pending` receipt if provider readiness is degraded.
+- completed in `last30days_skill_main`;
+- provider readiness passed through Codex app-server;
+- the exact Turn 2 pending P06 checkpoint completed as job
+  `35f37572-7aa9-4560-8edf-b55cd1a739ee`, episode
+  `19f4e81f-733a-4b7f-9bb1-d74c321e1fa7`; its first 120-second attempt timed
+  out and its one bounded 240-second retry completed;
+- the Plan 0010 checkpoint completed on its first attempt as job
+  `a0a1b824-2cf3-4667-84fb-eb683022dbaf`, episode
+  `10635374-5e39-4271-a468-1f521f23a344`;
+- both episodes passed Graphiti read-after-write visibility checks.
 
 Next Bounded Action:
 
