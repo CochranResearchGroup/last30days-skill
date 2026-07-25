@@ -904,7 +904,11 @@ class TaskContractRegistry:
     """Versioned contract registry and deterministic result validator."""
 
     def __init__(self) -> None:
-        self._requests = {("content_assessment", 1): IntelligenceTaskRequest}
+        self._requests = {
+            ("content_assessment", 1): IntelligenceTaskRequest,
+            ("profile_change_assessment", 1): IntelligenceTaskRequest,
+            ("identity_resolution", 1): IntelligenceTaskRequest,
+        }
 
     @classmethod
     def default(cls) -> TaskContractRegistry:
@@ -951,6 +955,16 @@ class TaskContractRegistry:
             codes.append(ValidatorCode.DUPLICATE_PROPOSAL.value)
         if request.task_type == "content_assessment" and any(
             not self._valid_content_assessment_proposal(proposal)
+            for proposal in result.proposals
+        ):
+            codes.append(ValidatorCode.SCHEMA_INVALID.value)
+        if request.task_type == "profile_change_assessment" and any(
+            not self._valid_profile_change_proposal(proposal)
+            for proposal in result.proposals
+        ):
+            codes.append(ValidatorCode.SCHEMA_INVALID.value)
+        if request.task_type == "identity_resolution" and any(
+            not self._valid_identity_resolution_proposal(proposal)
             for proposal in result.proposals
         ):
             codes.append(ValidatorCode.SCHEMA_INVALID.value)
@@ -1007,6 +1021,47 @@ class TaskContractRegistry:
             ):
                 return False
         return True
+
+    @staticmethod
+    def _valid_profile_change_proposal(proposal: IntelligenceProposal) -> bool:
+        return (
+            proposal.proposal_kind == "profile_change"
+            and set(proposal.payload)
+            == {
+                "prior_snapshot_id",
+                "current_snapshot_id",
+                "section_kind",
+                "change_state",
+            }
+            and proposal.payload["change_state"]
+            in {"changed", "unchanged", "uncertain"}
+            and all(
+                isinstance(proposal.payload[field], str)
+                and 0 < len(proposal.payload[field]) <= 256
+                for field in (
+                    "prior_snapshot_id",
+                    "current_snapshot_id",
+                    "section_kind",
+                )
+            )
+        )
+
+    @staticmethod
+    def _valid_identity_resolution_proposal(
+        proposal: IntelligenceProposal,
+    ) -> bool:
+        return (
+            proposal.proposal_kind == "identity_resolution"
+            and set(proposal.payload) == {"candidate_id", "outcome"}
+            and proposal.payload["candidate_id"] == proposal.proposal_key
+            and proposal.payload["outcome"]
+            in {
+                "same_entity",
+                "different_entity",
+                "ambiguous",
+                "insufficient_evidence",
+            }
+        )
 
 
 class ContentAssessmentQueue:

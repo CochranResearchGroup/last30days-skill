@@ -18,6 +18,7 @@ from .service_enrichment import EnrichmentService
 from .service_intelligence_contracts import ContentAssessmentQueue
 from .service_job_runner import AcquisitionJobRunner, AcquisitionRunner, JobRunnerPolicy
 from .service_publication import CorpusPublisher
+from .service_profiles import ProfilePublisher
 from .service_refresh import RefreshPolicy, ServiceRefreshScheduler
 from .service_retrieval import HybridRetriever
 from .service_store import ServiceStore
@@ -326,6 +327,7 @@ def build_acquisition_runtime(
         clock=clock,
     )
     publisher = CorpusPublisher(db_path, retriever, clock=clock)
+    profile_publisher = ProfilePublisher(db_path)
     collection_coordinator = CollectionCoordinator(
         db_path,
         scheduler,
@@ -343,6 +345,7 @@ def build_acquisition_runtime(
         clock=clock,
         collection_coordinator=collection_coordinator,
         assessment_queue=assessment_queue,
+        profile_publisher=profile_publisher,
     )
     return AcquisitionRuntime(
         supervisor=supervisor,

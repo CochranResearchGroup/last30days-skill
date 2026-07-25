@@ -40,7 +40,7 @@ def test_v8_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 10
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 11
     assert conn.execute("SELECT name FROM topics").fetchone()[0] == "Existing Topic"
     tables = {
         row[0]
@@ -89,7 +89,10 @@ def test_v8_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
         "evidence_spans",
         "source_accounts",
         "profile_snapshots",
+        "profile_snapshot_sightings",
         "identity_assertions",
+        "identity_candidates",
+        "identity_resolution_outcomes",
         "temporal_claims",
         "temporal_events",
         "collection_specs",
@@ -224,7 +227,7 @@ def test_v8_migration_backfills_an_immutable_current_document_version(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 10
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 11
     version = conn.execute(
         """SELECT v.document_id, v.content_hash, v.access_partition_id,
                   v.system_from, v.system_to
@@ -323,6 +326,7 @@ def test_concurrent_initializers_publish_each_schema_version_once(tmp_path):
         (8, 1),
         (9, 1),
         (10, 1),
+        (11, 1),
     ]
     conn.close()
 
@@ -332,7 +336,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     store.init_db(db_path)
     monkeypatch.setitem(
         store.MIGRATIONS,
-        11,
+        12,
         """
         CREATE TABLE should_be_rolled_back (id INTEGER PRIMARY KEY);
         THIS IS NOT VALID SQL;
@@ -346,7 +350,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'should_be_rolled_back'"
     ).fetchone() is None
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 10
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 11
     conn.close()
 
 
@@ -367,7 +371,7 @@ def test_applied_v3_database_receives_replay_and_supervisor_schema(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 10
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 11
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'index_documents'"
     ).fetchone()[0] == "index_documents"

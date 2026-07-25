@@ -9,10 +9,12 @@ from typing import Callable, Mapping, Protocol
 
 from . import service_contracts as contracts
 from .service_publication import CorpusPublisher
+from .service_profiles import ProfilePublisher
 from .service_refresh import ServiceRefreshScheduler
 from .service_store import ServiceStore
 from .service_supervisor import RefreshSupervisor
 from .service_worker import (
+    PROFILE_SOURCE_ADAPTERS,
     SOURCE_ADAPTERS,
     SOURCE_COST_RESERVATIONS_CENTS,
     WorkerExecutionError,
@@ -120,6 +122,7 @@ class AcquisitionJobRunner:
         clock: Clock | None = None,
         collection_coordinator: CollectionRecorder | None = None,
         assessment_queue: AssessmentQueue | None = None,
+        profile_publisher: ProfilePublisher | None = None,
     ) -> None:
         self.supervisor = supervisor
         self.ledger = ledger
@@ -130,6 +133,7 @@ class AcquisitionJobRunner:
         self._clock = clock or (lambda: datetime.now(timezone.utc))
         self.collection_coordinator = collection_coordinator
         self.assessment_queue = assessment_queue
+        self.profile_publisher = profile_publisher
 
     def _now(self) -> datetime:
         value = self._clock()
@@ -365,7 +369,13 @@ class AcquisitionJobRunner:
                 lease_generation=job.lease_generation,
                 lease_seconds=self.policy.lease_seconds,
             )
-            adapter, adapter_version = SOURCE_ADAPTERS.get(
+            adapter_registry = (
+                PROFILE_SOURCE_ADAPTERS
+                if collection_policy
+                and collection_policy.get("surface_kind") == "profile"
+                else SOURCE_ADAPTERS
+            )
+            adapter, adapter_version = adapter_registry.get(
                 source,
                 (f"{source}_unsupported", "1"),
             )
@@ -469,6 +479,17 @@ class AcquisitionJobRunner:
                     else None
                 ),
             )
+            if (
+                self.profile_publisher is not None
+                and collection_policy
+                and collection_policy.get("surface_kind") == "profile"
+                and result.status
+                in {
+                    contracts.AcquisitionStatus.SUCCEEDED,
+                    contracts.AcquisitionStatus.PARTIAL,
+                }
+            ):
+                self.profile_publisher.publish_acquisition(result.work_id)
             if (
                 self.collection_coordinator is not None
                 and self.assessment_queue is not None

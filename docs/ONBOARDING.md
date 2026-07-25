@@ -302,3 +302,18 @@ unusual-activity warning appears.
 It rejects sponsored and non-post cards and requires canonical LinkedIn post or
 activity permalinks, authors, and in-range dates. Never automate or bypass a
 LinkedIn checkpoint.
+
+Profile-adapter changes must also run:
+
+```bash
+uv run pytest \
+  tests/test_linkedin_profile.py \
+  tests/test_service_profiles.py \
+  tests/test_service_intelligence_contracts.py
+```
+
+Profile canaries use an exact `/in/<slug>/` or `/company/<slug>/` URL through a
+reviewed `surface_kind=profile` collection spec. Verify that auth/checkpoint
+failures stop before navigation, raw evidence exists before profile rows,
+section spans resolve to immutable evidence, and messages/connections/
+invitations are never touched.

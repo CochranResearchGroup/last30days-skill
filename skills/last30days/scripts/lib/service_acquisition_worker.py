@@ -20,7 +20,7 @@ from typing import Any
 from . import env as env_config
 from . import normalize
 from . import service_contracts as contracts
-from .service_worker import SOURCE_ADAPTERS
+from .service_worker import PROFILE_SOURCE_ADAPTERS, SOURCE_ADAPTERS
 
 
 Adapter = Callable[
@@ -137,6 +137,14 @@ def _linkedin_adapter(
     )
 
 
+def _linkedin_profile_adapter(
+    request: contracts.AcquisitionWorkRequest, config: Mapping[str, str]
+) -> dict[str, Any]:
+    from . import linkedin
+
+    return linkedin.acquire_linkedin_profile(request.query, config=dict(config))
+
+
 def _youtube_adapter(
     request: contracts.AcquisitionWorkRequest, config: Mapping[str, str]
 ) -> dict[str, Any]:
@@ -182,6 +190,7 @@ _DEFAULT_ADAPTERS: dict[str, Adapter] = {
     "x_agent_browser": _x_adapter,
     "facebook_agent_browser": _facebook_adapter,
     "linkedin_agent_browser": _linkedin_adapter,
+    "linkedin_profile_agent_browser": _linkedin_profile_adapter,
     "youtube_ytdlp": _youtube_adapter,
     "reddit_api": _reddit_adapter,
 }
@@ -231,6 +240,26 @@ def _safe_error_code(value: object) -> str | None:
 def _normalized_items(
     request: contracts.AcquisitionWorkRequest, raw_items: list[dict[str, Any]]
 ) -> list[contracts.AcquiredItem]:
+    if request.adapter == "linkedin_profile_agent_browser":
+        items: list[contracts.AcquiredItem] = []
+        for raw in raw_items[: request.item_limit]:
+            metadata = _sanitize(raw.get("metadata") or {})
+            if metadata.get("surface_kind") != "profile":
+                continue
+            items.append(
+                contracts.AcquiredItem.from_dict(
+                    {
+                        "source_native_id": str(raw.get("source_native_id") or ""),
+                        "url": str(raw.get("url") or ""),
+                        "title": str(raw.get("title") or ""),
+                        "text": str(raw.get("text") or ""),
+                        "author": raw.get("author"),
+                        "published_at": None,
+                        "metadata": metadata,
+                    }
+                )
+            )
+        return items
     normalized = normalize.normalize_source_items(
         request.source,
         raw_items,
@@ -407,8 +436,11 @@ def main() -> int:
     try:
         payload = json.load(sys.stdin)
         request = contracts.AcquisitionWorkRequest.from_dict(payload)
-        expected = SOURCE_ADAPTERS.get(request.source)
-        if expected != (request.adapter, request.adapter_version):
+        expected = {
+            SOURCE_ADAPTERS.get(request.source),
+            PROFILE_SOURCE_ADAPTERS.get(request.source),
+        }
+        if (request.adapter, request.adapter_version) not in expected:
             raise contracts.ContractValidationError("source adapter mismatch")
         config = load_profile_config(request.profile_id)
         result = execute_work(request, config)

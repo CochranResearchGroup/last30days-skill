@@ -260,6 +260,56 @@ EXTRACT_SCRIPT = r"""
 })()
 """
 
+PROFILE_STATE_SCRIPT = r"""
+(() => {
+  const body = String(document.body?.innerText || "").slice(0, 24000);
+  return {
+    url: location.href,
+    title: document.title,
+    login_page: Boolean(document.querySelector(
+      'input[name="session_key"], input[name="session_password"], form.login__form'
+    )) || /\/uas\/login/.test(location.pathname),
+    checkpoint: /checkpoint|security verification|enter the code|verify your identity|challenge\//i.test(
+      `${location.href} ${body}`
+    ),
+    error_page: /page not found|something went wrong|temporarily unavailable/i.test(body)
+  };
+})()
+"""
+
+PROFILE_EXTRACT_SCRIPT = r"""
+(() => {
+  const clean = (value) => String(value || "").replace(/\s+/g, " ").trim();
+  const main = document.querySelector('main, [role="main"], .scaffold-layout__main');
+  const section = (labels) => {
+    for (const node of Array.from(main?.querySelectorAll('section') || [])) {
+      const heading = clean(node.querySelector('h1,h2,h3,[role="heading"]')?.innerText);
+      if (labels.some((label) => heading.toLowerCase().includes(label))) {
+        return clean(node.innerText);
+      }
+    }
+    return "";
+  };
+  const name = clean(main?.querySelector('h1')?.innerText);
+  const headline = clean(main?.querySelector(
+    '.text-body-medium, [data-generated-suggestion-target]'
+  )?.innerText);
+  return {
+    url: location.href,
+    display_name: name,
+    headline,
+    about: section(['about']),
+    experience: section(['experience']),
+    education: section(['education']),
+    locations: clean(main?.querySelector('.text-body-small.inline')?.innerText),
+    declared_links: Array.from(main?.querySelectorAll('a[href^="http"]') || [])
+      .map((node) => node.href)
+      .filter((href) => !/linkedin\.com/.test(href))
+      .slice(0, 16)
+  };
+})()
+"""
+
 
 @dataclass(frozen=True)
 class LinkedInAuthState:
@@ -759,6 +809,168 @@ def search_linkedin(
         debug_dir=str(config.get("LAST30DAYS_LINKEDIN_DEBUG_DIR") or "").strip(),
     )
     return scraper.search(topic, from_date, to_date)
+
+
+def acquire_linkedin_profile(
+    canonical_url: str,
+    *,
+    config: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Acquire one exact people/company profile without adjacent private surfaces."""
+    config = config or {}
+    parsed = urlsplit(canonical_url.strip())
+    match = re.fullmatch(r"/(in|company)/([A-Za-z0-9_.%-]+)/?", parsed.path)
+    if (
+        parsed.scheme not in {"http", "https"}
+        or (parsed.hostname or "").casefold()
+        not in {"linkedin.com", "www.linkedin.com"}
+        or match is None
+        or parsed.query
+        or parsed.fragment
+    ):
+        return {
+            "items": [],
+            "error": "an exact LinkedIn people or company URL is required",
+            "error_type": "invalid_request",
+        }
+    if not is_agent_browser_available():
+        return {
+            "items": [],
+            "error": "agent-browser command is not on PATH",
+            "error_type": "agent_browser_missing",
+        }
+    canonical = urlunsplit(
+        ("https", "www.linkedin.com", f"/{match.group(1)}/{match.group(2)}/", "", "")
+    )
+    timeout = int(config.get("LAST30DAYS_LINKEDIN_TIMEOUT") or 75)
+    request = BrowserWorkspaceRequest(
+        profile_id=str(
+            config.get("LAST30DAYS_LINKEDIN_PROFILE") or "last30days-linkedin"
+        ),
+        session_name=str(
+            config.get("LAST30DAYS_LINKEDIN_SESSION") or "last30days-linkedin"
+        ),
+        browser_build=str(
+            config.get("LAST30DAYS_LINKEDIN_BROWSER_BUILD")
+            or "stealthcdp_chromium"
+        ),
+        view_provider=str(
+            config.get("LAST30DAYS_LINKEDIN_VIEW_PROVIDER") or "rdp_gateway"
+        ),
+        timeout=timeout,
+        browser_id_hint=str(
+            config.get("LAST30DAYS_LINKEDIN_BROWSER_ID") or ""
+        ).strip(),
+        route_id_hint=str(config.get("LAST30DAYS_LINKEDIN_ROUTE_ID") or "").strip(),
+        route_pool_entry_id_hint=str(
+            config.get("LAST30DAYS_LINKEDIN_ROUTE_POOL_ENTRY_ID") or ""
+        ).strip(),
+        start_url=canonical,
+        agent_name="linkedin-profile-scraper",
+        task_name="linkedin-profile-acquisition",
+        target_service_id="linkedin",
+    )
+    client = CliAgentBrowserClient(timeout=timeout)
+    try:
+        workspace = client.acquire_workspace(request)
+        auth = client.inspect_auth(workspace)
+        if auth.checkpoint:
+            raise LinkedInScraperFailure(
+                "checkpoint_required",
+                "LinkedIn requires an operator security-verification checkpoint",
+                operator_url=workspace.operator_url,
+            )
+        if not auth.authenticated:
+            raise LinkedInScraperFailure(
+                "auth_required",
+                "LinkedIn authentication is required in the retained profile",
+                operator_url=workspace.operator_url,
+            )
+        prepare = getattr(client, "prepare_site_tab", None)
+        retained = bool(
+            callable(prepare) and prepare(workspace, "linkedin.com", consolidate=True)
+        )
+        client.act(
+            workspace,
+            BrowserAction("navigate" if retained else "new_tab", value=canonical),
+        )
+        client.act(workspace, BrowserAction("wait", value="2000"))
+        state = client.evaluate(workspace, PROFILE_STATE_SCRIPT)
+        if state.get("checkpoint"):
+            raise LinkedInScraperFailure(
+                "checkpoint_required",
+                "LinkedIn checkpoint appeared during profile acquisition",
+                operator_url=workspace.operator_url,
+            )
+        if state.get("login_page"):
+            raise LinkedInScraperFailure(
+                "auth_required",
+                "LinkedIn session became logged out",
+                operator_url=workspace.operator_url,
+            )
+        if state.get("error_page"):
+            raise LinkedInScraperFailure("profile_unavailable", "Profile is unavailable")
+        final = urlsplit(str(state.get("url") or ""))
+        if final.path.rstrip("/") != urlsplit(canonical).path.rstrip("/"):
+            raise LinkedInScraperFailure(
+                "navigation_mismatch", "LinkedIn final page does not match the profile"
+            )
+        extracted = client.evaluate(workspace, PROFILE_EXTRACT_SCRIPT)
+        display_name = re.sub(
+            r"\s+", " ", str(extracted.get("display_name") or "")
+        ).strip()
+        sections = []
+        text_parts = [display_name]
+        for kind in ("headline", "about", "experience", "education", "locations"):
+            text = re.sub(r"\s+", " ", str(extracted.get(kind) or "")).strip()
+            sections.append(
+                {
+                    "section_kind": kind,
+                    "ordinal": 0,
+                    "text": text,
+                    "presence_state": "visible" if text else "not_observed",
+                    "visibility": "visible" if text else "unknown",
+                }
+            )
+            if text:
+                text_parts.append(text)
+        if not display_name or len(" ".join(text_parts)) < 10:
+            raise LinkedInScraperFailure(
+                "extraction_empty", "LinkedIn profile contained no usable evidence"
+            )
+        return {
+            "items": [
+                {
+                    "source_native_id": match.group(2),
+                    "url": canonical,
+                    "title": display_name,
+                    "text": "\n".join(text_parts),
+                    "author": display_name,
+                    "metadata": {
+                        "surface_kind": "profile",
+                        "account_kind": (
+                            "person" if match.group(1) == "in" else "organization"
+                        ),
+                        "handle": match.group(2),
+                        "sections": sections,
+                        "declared_links": [
+                            str(item)
+                            for item in extracted.get("declared_links", [])
+                            if isinstance(item, str)
+                        ][:16],
+                    },
+                }
+            ],
+            "error": None,
+            "diagnostics": {"surface_kind": "profile", "section_count": len(sections)},
+        }
+    except LinkedInScraperFailure as exc:
+        return {
+            "items": [],
+            "error": str(exc),
+            "error_type": exc.error_type,
+            "operator_url": exc.operator_url,
+        }
 
 
 def parse_linkedin_response(response: dict[str, Any]) -> list[dict[str, Any]]:

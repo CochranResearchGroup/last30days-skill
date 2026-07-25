@@ -119,6 +119,13 @@ tool only when it is exposed and the user explicitly asks to inspect or change
 a recurring feed/topic/poster/channel/account/profile specification; ordinary
 research queries only read the resulting cache.
 
+If profile-history or identity capabilities are advertised, query those
+service records rather than opening a social profile page. Profile snapshots
+are immutable, section-evidence-linked observations; `not_observed` is not a
+confirmed profile change. Cross-service account associations remain reversible
+and may be `ambiguous` or `insufficient_evidence`; never collapse them in the
+answer merely because names or handles resemble one another.
+
 On this path, do not run `scripts/last30days.py`, WebSearch preflight, handle
 resolution, or browser/scraper commands. The service owns acquisition,
 authentication state, retries, caching, indexing, and enrichment. The badge

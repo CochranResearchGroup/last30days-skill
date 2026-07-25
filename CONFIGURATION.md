@@ -554,6 +554,16 @@ must use `redaction_class=authenticated`; their named profile is leased so two
 collection runs cannot operate the same retained browser profile
 concurrently.
 
+For LinkedIn profile collection, `selector.profile_url` must be an exact
+canonical `https://www.linkedin.com/in/<slug>/` or
+`https://www.linkedin.com/company/<slug>/` URL. The adapter reads only that
+people/company page and never messages, connections, invitations, or adjacent
+private surfaces. Raw page evidence is committed before immutable
+section-level profile projection. Missing or hidden sections are recorded as
+`not_observed`, not as real-world removals. App Intelligence may assess a
+host-created change or identity candidate, but it cannot invent a candidate or
+merge accounts directly.
+
 Every run records its attempted interval, selector digest, attempted/observed/
 stored counts, cursor and watermark movement, source process health, yield,
 backoff, and any uncovered gap. Service health and content yield are separate:

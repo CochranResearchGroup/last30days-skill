@@ -1453,6 +1453,93 @@ CREATE TABLE service_intelligence_replay_receipts (
     UNIQUE (task_id, validation_receipt_id)
 );
 """,
+    11: """
+ALTER TABLE source_accounts ADD COLUMN display_name TEXT;
+ALTER TABLE source_accounts
+    ADD COLUMN declared_links_json TEXT NOT NULL DEFAULT '[]';
+ALTER TABLE source_accounts
+    ADD COLUMN evidence_ids_json TEXT NOT NULL DEFAULT '[]';
+
+ALTER TABLE profile_snapshot_sections ADD COLUMN evidence_id TEXT;
+ALTER TABLE profile_snapshot_sections
+    ADD COLUMN visibility TEXT NOT NULL DEFAULT 'visible'
+        CHECK (visibility IN ('visible', 'restricted', 'unknown'));
+ALTER TABLE profile_snapshot_sections
+    ADD COLUMN presence_state TEXT NOT NULL DEFAULT 'visible'
+        CHECK (presence_state IN ('visible', 'not_observed', 'observed_absent'));
+ALTER TABLE profile_snapshot_sections
+    ADD COLUMN redaction_class TEXT NOT NULL DEFAULT 'public';
+ALTER TABLE profile_snapshot_sections
+    ADD COLUMN retention_class TEXT NOT NULL DEFAULT 'cache';
+
+CREATE TABLE profile_snapshot_sightings (
+    snapshot_id TEXT NOT NULL,
+    acquisition_id TEXT NOT NULL REFERENCES acquisitions(acquisition_id),
+    observed_at TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (snapshot_id, access_partition_id)
+        REFERENCES profile_snapshots(snapshot_id, access_partition_id),
+    PRIMARY KEY (snapshot_id, acquisition_id)
+);
+
+CREATE TRIGGER profile_snapshots_no_update
+BEFORE UPDATE ON profile_snapshots
+BEGIN
+    SELECT RAISE(ABORT, 'profile_snapshots are immutable');
+END;
+
+CREATE TRIGGER profile_snapshots_no_delete
+BEFORE DELETE ON profile_snapshots
+BEGIN
+    SELECT RAISE(ABORT, 'profile_snapshots are immutable');
+END;
+
+CREATE TRIGGER profile_snapshot_sections_no_update
+BEFORE UPDATE ON profile_snapshot_sections
+BEGIN
+    SELECT RAISE(ABORT, 'profile_snapshot_sections are immutable');
+END;
+
+CREATE TRIGGER profile_snapshot_sections_no_delete
+BEFORE DELETE ON profile_snapshot_sections
+BEGIN
+    SELECT RAISE(ABORT, 'profile_snapshot_sections are immutable');
+END;
+
+CREATE TABLE identity_candidates (
+    candidate_id TEXT PRIMARY KEY,
+    left_account_id TEXT NOT NULL,
+    right_account_id TEXT NOT NULL,
+    reason_codes_json TEXT NOT NULL,
+    evidence_ids_json TEXT NOT NULL,
+    state TEXT NOT NULL DEFAULT 'pending',
+    access_partition_id TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (left_account_id, access_partition_id)
+        REFERENCES source_accounts(source_account_id, access_partition_id),
+    FOREIGN KEY (right_account_id, access_partition_id)
+        REFERENCES source_accounts(source_account_id, access_partition_id),
+    UNIQUE (left_account_id, right_account_id),
+    CHECK (left_account_id < right_account_id)
+);
+
+CREATE TABLE identity_resolution_outcomes (
+    candidate_id TEXT PRIMARY KEY REFERENCES identity_candidates(candidate_id),
+    outcome TEXT NOT NULL CHECK (
+        outcome IN (
+            'same_entity', 'different_entity', 'ambiguous',
+            'insufficient_evidence'
+        )
+    ),
+    confidence REAL NOT NULL CHECK (confidence >= 0 AND confidence <= 1),
+    evidence_ids_json TEXT NOT NULL,
+    rationale TEXT NOT NULL,
+    resolver TEXT NOT NULL,
+    task_id TEXT,
+    resolved_at TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL
+);
+""",
 }
 
 

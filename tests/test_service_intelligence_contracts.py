@@ -118,6 +118,69 @@ def test_result_correlation_and_evidence_closure_use_stable_codes():
     assert receipt.validator_codes == (ValidatorCode.UNKNOWN_EVIDENCE.value,)
 
 
+def test_profile_change_and_identity_contracts_only_accept_host_candidates():
+    registry = TaskContractRegistry.default()
+    assert registry.request("profile_change_assessment", 1) is IntelligenceTaskRequest
+    assert registry.request("identity_resolution", 1) is IntelligenceTaskRequest
+
+    request = _request(
+        task_type="identity_resolution",
+        policy_version="identity-resolution-v1",
+        allowed_actions=["record_identity_resolution"],
+    )
+    valid = IntelligenceTaskResult.from_worker_dict(
+        {
+            "schema_version": 1,
+            "contract_name": "intelligence_task_result",
+            "contract_version": 1,
+            "task_type": "identity_resolution",
+            "task_id": request.task_id,
+            "run_id": request.run_id,
+            "input_digest": request.input_digest,
+            "policy_version": request.policy_version,
+            "action": "record_identity_resolution",
+            "proposals": [
+                {
+                    "proposal_kind": "identity_resolution",
+                    "proposal_key": "identity-candidate-001",
+                    "confidence": 0.45,
+                    "evidence_ids": ["evidence-001"],
+                    "payload": {
+                        "candidate_id": "identity-candidate-001",
+                        "outcome": "ambiguous",
+                    },
+                }
+            ],
+            "uncertainty_codes": ["shared_evidence"],
+            "rationale": "The bounded evidence does not distinguish the accounts.",
+            "worker_ref": "openai-codex:gpt-5.5",
+        }
+    )
+    assert registry.validate_result(request, valid).accepted is True
+
+    invalid = IntelligenceTaskResult.from_worker_dict(
+        {
+            **{
+                key: value
+                for key, value in valid.to_dict().items()
+                if key != "output_digest"
+            },
+            "proposals": [
+                {
+                    **valid.proposals[0].to_dict(),
+                    "payload": {
+                        "candidate_id": "model-invented-candidate",
+                        "outcome": "same_entity",
+                    },
+                }
+            ],
+        }
+    )
+    receipt = registry.validate_result(request, invalid)
+    assert receipt.accepted is False
+    assert ValidatorCode.SCHEMA_INVALID.value in receipt.validator_codes
+
+
 def test_content_assessment_queue_is_idempotent_and_replayable(tmp_path):
     db_path = tmp_path / "research.db"
     ServiceStore(db_path).initialize()

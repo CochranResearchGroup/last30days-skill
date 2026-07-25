@@ -26,6 +26,9 @@ SOURCE_ADAPTERS = {
     "youtube": ("youtube_ytdlp", "1"),
     "reddit": ("reddit_api", "1"),
 }
+PROFILE_SOURCE_ADAPTERS = {
+    "linkedin": ("linkedin_profile_agent_browser", "1"),
+}
 SOURCE_COST_RESERVATIONS_CENTS = {
     "reddit": 1,
     "x": 0,
