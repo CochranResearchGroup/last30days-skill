@@ -68,15 +68,16 @@ profile history, graph authority, or agent-facing query behavior.
 
 ## Current State
 
-- Packets 1 through 4 are source-complete at commits `f14b0fa`, `0454e5a`,
-  `4ae5095`, and `22c8db1`. Schema version 11 adds governed recurring collection and
-  post-publication assessment to the additive temporal authority, immutable
-  publication, version-scoped enrichment/index projections, and deterministic
-  schema-7 replay export.
+- Packets 1 through 5 are source-complete at commits `f14b0fa`, `0454e5a`,
+  `4ae5095`, `22c8db1`, and `6c6e751`. Schema version 12 adds governed
+  recurring collection, profile/identity evidence, bitemporal claims/events,
+  recorded retrieval evaluation, and durable graph projection receipts to the
+  additive temporal authority, immutable publication, version-scoped
+  enrichment/index projections, and deterministic schema-7 replay export.
 - The installed service has not been migrated; schema version 7 remains the
   installed runtime authority until the bounded rollout packet.
-- Packet 5 claims, events, temporal retrieval, and GraphRAG is the next ready
-  critical-path unit.
+- Packet 6 compact MCP, concrete Graphiti delivery, bounded adapter
+  maintenance, and installed rollout is the next ready critical-path unit.
 - Broad recurring hydration remains gated until Packet 6 rollout; isolated
   Plan 0010 execution remains prohibited outside the four integration joins.
 
@@ -864,6 +865,74 @@ Next action:
 
 - execute Packet 5 by promoting evidence-backed claims/events and implementing
   temporal retrieval plus rebuildable access-partitioned Graphiti projection.
+
+### Checkpoint P0011-C05 | 2026-07-25
+
+Plan version: 1
+
+State transition: `packet_5_active -> packet_5_complete`; `packet_6_ready`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- added schema version 12 graph projection receipts plus recorded temporal
+  retrieval cases and deterministic evaluation receipts;
+- added evidence-backed entity, bitemporal claim, conflict, and event
+  promotion with same-partition evidence closure;
+- added deterministic entity, event, timeline, trend, comparison, `as_of`,
+  `during`, and `known_as_of` classification and independently filtered valid
+  and knowledge time;
+- fused access-partitioned lexical, semantic, and graph candidates while
+  returning exact evidence records, source URLs, and temporal dimensions;
+- added an idempotent graph outbox worker with delivery receipts, retained
+  failures, and authoritative replay/rebuild behavior;
+- attached bounded Plan 0010 knowledge-extraction and retrieval-evaluation
+  proposals to host-created evidence and recorded cases;
+- promoted validated same-entity outcomes into reversible, evidence-linked
+  identity assertions.
+
+Validation evidence:
+
+- source commit: `6c6e751`;
+- focused temporal knowledge, retrieval, App Intelligence, identity, graph
+  degradation, retry, and rebuild suites passed;
+- full `uv run pytest -q` passed;
+- Python compilation passed;
+- `go generate ./...`, `go test ./...`, and `go vet ./...` passed under
+  `mcp/`;
+- `git diff --check` passed;
+- regression fixtures prove late-evidence `as_of`/`known_as_of` divergence,
+  exact evidence URLs, conflict visibility, access-partition filtering,
+  deterministic evaluation codes, and SQLite-only operation during graph
+  failure.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Packet 5 crossed one temporal authority, retrieval, identity,
+  and projection boundary, with CodeGraph supplying structural exploration.
+
+Durable memory:
+
+- Packet 4 job `9f721b66-5d0a-40cd-b3eb-36763315e307` timed out after
+  180 seconds while persisting graph records and produced no episode UUID;
+  repository commits and validation remain the checkpoint authority.
+- Packet 5 was queued as job `52525186-f6ba-4e7e-ac1d-8076318740e5` in
+  `last30days_skill_main`; record its terminal result at the next checkpoint.
+
+Remaining acceptance criteria:
+
+- Packet 6 and Packet 7 plus their integrated acceptance gates;
+- concrete local Graphiti sink wiring and read-after-write canary remain
+  Packet 6 rollout work;
+- installed-runtime migration, timer enablement, MCP discovery, and bounded
+  live source canaries remain intentionally deferred to Packet 6.
+
+Next action:
+
+- execute Packet 6 compact service/MCP operations, concrete graph delivery,
+  bounded adapter-maintenance discovery, installed migration, and one
+  read-only canary per configured post/profile surface.
 
 ## Stop Rules
 

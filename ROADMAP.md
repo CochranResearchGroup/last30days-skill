@@ -71,17 +71,17 @@ when it was true, when it was observed, and which collection caused it.
 
 Current State:
 
-- Plan 0011 Packets 1 through 4 are source-complete at commits `f14b0fa`,
-  `0454e5a`, `4ae5095`, and `22c8db1`.
-- Additive schema version 11 now establishes immutable document versions,
+- Plan 0011 Packets 1 through 5 are source-complete at commits `f14b0fa`,
+  `0454e5a`, `4ae5095`, `22c8db1`, and `6c6e751`.
+- Additive schema version 12 now establishes immutable document versions,
   append-or-reuse publication, version-scoped evidence and enrichment,
   access partitions, governed recurring collection, post-publication
-  assessment, authoritative index snapshots, and deterministic schema-7
-  replay.
-- Packet 5 claims, events, temporal retrieval, and GraphRAG is the next
-  critical-path unit;
-  the installed runtime remains on schema 7 and broad recurring hydration
-  remains gated.
+  assessment, authoritative index snapshots, evidence-backed temporal
+  claims/events, recorded retrieval evaluations, and durable graph projection
+  receipts.
+- Packet 6 agent-facing MCP, concrete Graphiti delivery, maintenance, and
+  bounded rollout is the next critical-path unit; the installed runtime
+  remains on schema 7 and broad recurring hydration remains gated.
 
 Goal Seeds:
 
@@ -104,9 +104,10 @@ Acceptance Seeds:
 Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-  is the integrated P01-P06 campaign authority. Packets 1 through 3 are
-  source-complete through Packet 4; Packet 5 may now join recurring collection
-  and first-class profile/identity evidence into claims and GraphRAG promotion.
+  is the integrated P01-P06 campaign authority. Packets 1 through 5 are
+  source-complete; Packet 6 now owns the compact service surface, concrete
+  Graphiti delivery, adapter maintenance, installed migration, and bounded
+  rollout.
 
 ## P02 | Recurring Acquisition And Coverage
 
@@ -188,6 +189,9 @@ Current State:
   surfaces.
 - Plan 0010 profile-change and identity proposals are schema bounded and may
   only act on host-created evidence and candidate IDs.
+- A validated `same_entity` outcome now promotes a reversible,
+  evidence-linked identity assertion; claim/event promotion and temporal
+  retrieval preserve ambiguity and access partitions.
 
 Goal Seeds:
 
@@ -235,11 +239,24 @@ Dependencies: share P01 identity and temporal evidence contracts.
 
 ## P04 | Temporal Retrieval And GraphRAG
 
-State: PLANNED
+State: OPEN
 
 Objective: answer topic-, person-, organization-, and event-centered questions
 over a growing corpus with explicit temporal semantics and citation-ready
 evidence.
+
+Current State:
+
+- Plan 0011 Packet 5 is source-complete at commit `6c6e751`.
+- Schema version 12 adds evidence-backed bitemporal claim/event promotion,
+  conflict retention, deterministic temporal query classification, independent
+  valid-time and knowledge-time filtering, exact evidence closure, recorded
+  retrieval cases/evaluations, and durable graph projection receipts.
+- Lexical, semantic, and graph candidate selection is access-partitioned.
+  SQLite-only evidence retrieval remains operational when graph delivery
+  fails, and the projection can be rebuilt by replaying authoritative records.
+- The concrete local Graphiti sink, MCP product contracts, installed migration,
+  and live projection canary remain Packet 6 work.
 
 Goal Seeds:
 

@@ -573,3 +573,70 @@ Next Bounded Action:
 
 - Execute Plan 0011 Packet 5 claims, events, temporal retrieval, and rebuildable
   access-partitioned Graphiti projection.
+
+## Turn 9 | 2026-07-25
+
+Focus: Plan 0011 Packet 5 temporal claims, events, retrieval, and rebuildable
+GraphRAG projection.
+
+Authority Consulted:
+
+- Plan 0011 Packet 5 and Plan 0010 extraction/evaluation joins
+- `$tdd`, `$app-intelligence-automation`, and `graphiti-discovery`
+- temporal store, retrieval, identity promotion, graph outbox, and
+  intelligence contract seams through CodeGraph
+- documentation, validation, Graphiti, commit, push, and closeout policies
+
+Decisions And Changes:
+
+- Added schema version 12 graph projection receipts and recorded temporal
+  retrieval cases/evaluations.
+- Added evidence-backed entity, bitemporal claim/conflict, and event promotion
+  constrained to the evidence access partition.
+- Added deterministic temporal query classification and independent valid-time
+  and knowledge-time filters with exact evidence and source URLs.
+- Applied access-partition filtering to lexical, semantic, and graph candidate
+  generation.
+- Added durable idempotent graph delivery, failure retention, retry receipts,
+  and full authoritative replay/rebuild.
+- Added bounded knowledge-extraction and retrieval-evaluation validators.
+- Promoted validated same-entity outcomes to reversible evidence-linked
+  identity assertions.
+
+Validation Evidence:
+
+- source commit `6c6e751` was pushed to `origin/main`;
+- focused Packet 5 suites passed;
+- full `uv run pytest -q` passed;
+- Python compilation passed;
+- `go generate ./...`, `go test ./...`, and `go vet ./...` passed under
+  `mcp/`;
+- `git diff --check` passed.
+
+State Movement:
+
+- Plan 0011 Packet 5: `active -> complete`.
+- Plan 0011 Packet 6: `pending -> ready`.
+- P04: `PLANNED -> OPEN`.
+- P01 and P03 remain `OPEN`; P02, P05, and P06 remain at their roadmap states
+  until installed/runtime acceptance.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Packet 5 remained one coupled temporal authority and
+  projection boundary, with CodeGraph used for structural exploration.
+
+Graphiti Write Status:
+
+- Packet 4 job `9f721b66-5d0a-40cd-b3eb-36763315e307` timed out after
+  180 seconds during graph-record persistence and returned no episode UUID.
+- Packet 5 repository evidence is durable; its compact Graphiti checkpoint
+  passed provider readiness and is queued as job
+  `52525186-f6ba-4e7e-ac1d-8076318740e5` in `last30days_skill_main`.
+
+Next Bounded Action:
+
+- Execute Plan 0011 Packet 6: expose compact temporal/profile/event MCP
+  operations, wire concrete local Graphiti delivery, surface bounded adapter
+  maintenance, dry-run and install schema 12, then run bounded read-only
+  source/profile canaries.
