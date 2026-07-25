@@ -390,6 +390,33 @@ def test_decision_record_round_trips_model_proposal_and_host_validation():
     assert decision.to_dict() == payload
 
 
+def test_temporal_evidence_ref_round_trips_partition_and_four_time_axes():
+    payload = {
+        "schema_version": 1,
+        "evidence_id": "evidence-001",
+        "document_id": "document-001",
+        "version_id": "version-001",
+        "chunk_id": "chunk-001",
+        "access_partition_id": "profile:linkedin-primary",
+        "span_start": 12,
+        "span_end": 42,
+        "span_digest": "sha256:span",
+        "observed_at": "2026-07-24T12:00:00Z",
+        "published_at": "2026-07-24T11:00:00Z",
+        "valid_from": "2026-07-24T11:00:00Z",
+        "valid_to": None,
+        "system_from": "2026-07-24T12:01:00Z",
+        "system_to": None,
+    }
+
+    evidence = contracts.TemporalEvidenceRef.from_dict(payload)
+
+    assert evidence.to_dict() == payload
+    assert contracts.parse_envelope("temporal_evidence_ref", payload) == evidence
+    with pytest.raises(contracts.ContractValidationError, match="span_end"):
+        contracts.TemporalEvidenceRef.from_dict({**payload, "span_end": 12})
+
+
 def test_schema_catalog_is_the_golden_contract_for_every_v1_envelope():
     catalog = contracts.load_schema_catalog()
 
@@ -407,6 +434,7 @@ def test_schema_catalog_is_the_golden_contract_for_every_v1_envelope():
         "job_record",
         "job_event",
         "decision_record",
+        "temporal_evidence_ref",
     }
     assert catalog["contracts"]["query_request"]["properties"][
         "freshness_policy"

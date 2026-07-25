@@ -25,7 +25,7 @@ def test_init_db_refuses_a_database_from_a_newer_service_schema(tmp_path):
         store.init_db(db_path)
 
 
-def test_v7_migration_preserves_legacy_data_and_creates_service_authority(tmp_path):
+def test_v8_migration_preserves_legacy_data_and_creates_service_authority(tmp_path):
     db_path = tmp_path / "legacy.db"
     conn = sqlite3.connect(db_path)
     conn.executescript(store.SCHEMA_V1)
@@ -40,7 +40,7 @@ def test_v7_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 7
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 8
     assert conn.execute("SELECT name FROM topics").fetchone()[0] == "Existing Topic"
     tables = {
         row[0]
@@ -74,6 +74,22 @@ def test_v7_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
         "service_maintenance_runs",
         "service_approvals",
         "service_index_head",
+        "access_partitions",
+        "document_versions",
+        "document_version_sightings",
+        "document_version_chunks",
+        "evidence_spans",
+        "source_accounts",
+        "profile_snapshots",
+        "identity_assertions",
+        "temporal_claims",
+        "temporal_events",
+        "collection_specs",
+        "collection_runs",
+        "collection_coverage_intervals",
+        "collection_gaps",
+        "collection_cursors",
+        "graph_projection_outbox",
     } <= tables
     job_columns = {
         row[1] for row in conn.execute("PRAGMA table_info(service_jobs)")
@@ -83,6 +99,185 @@ def test_v7_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
         row[1] for row in conn.execute("PRAGMA table_info(documents)")
     }
     assert {"source_metadata_json", "media_json"} <= document_columns
+    assert conn.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+    assert conn.execute("PRAGMA foreign_key_check").fetchall() == []
+    conn.close()
+
+
+def test_v8_migration_backfills_an_immutable_current_document_version(tmp_path):
+    db_path = tmp_path / "temporal-v7.db"
+    conn = sqlite3.connect(db_path)
+    conn.executescript(store.SCHEMA_V1)
+    conn.executescript(store.SCHEMA_V1_DEFAULTS)
+    for version in range(2, 8):
+        conn.executescript(store.MIGRATIONS[version])
+        conn.execute("INSERT INTO schema_version(version) VALUES (?)", (version,))
+    conn.execute(
+        """INSERT INTO service_jobs (
+               job_id, job_type, dedupe_key, state, query_request_id,
+               max_attempts, created_at, updated_at
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            "job-existing",
+            "refresh",
+            "existing",
+            "complete",
+            "request-existing",
+            3,
+            "2026-07-24T10:00:00+00:00",
+            "2026-07-24T10:00:00+00:00",
+        ),
+    )
+    conn.execute(
+        """INSERT INTO acquisitions (
+               acquisition_id, job_id, profile_id, source, adapter,
+               adapter_version, query_text, status, observed_at, fetched_at,
+               retention_class, redaction_class
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            "acq-existing",
+            "job-existing",
+            "profile-linkedin",
+            "linkedin",
+            "agent-browser",
+            "1",
+            "existing feed",
+            "success",
+            "2026-07-24T10:00:00+00:00",
+            "2026-07-24T10:01:00+00:00",
+            "standard",
+            "authenticated",
+        ),
+    )
+    conn.execute(
+        """INSERT INTO documents (
+               document_id, acquisition_id, source, source_native_id,
+               canonical_url, title, author, normalized_text, content_hash,
+               published_at, fetched_at, retention_class, redaction_class,
+               transformation_version, source_metadata_json, media_json
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            "doc-existing",
+            "acq-existing",
+            "linkedin",
+            "post-1",
+            "https://www.linkedin.com/posts/1",
+            "Existing post",
+            "Ada Example",
+            "A durable historical observation.",
+            "sha256-existing",
+            "2026-07-24T09:00:00+00:00",
+            "2026-07-24T10:01:00+00:00",
+            "standard",
+            "authenticated",
+            "normalize-v1",
+            '{"handle":"ada"}',
+            "[]",
+        ),
+    )
+    conn.execute(
+        """INSERT INTO document_chunks (
+               chunk_id, document_id, ordinal, text, content_hash,
+               chunker_version
+           ) VALUES (?, ?, ?, ?, ?, ?)""",
+        (
+            "chunk-existing",
+            "doc-existing",
+            0,
+            "A durable historical observation.",
+            "sha256-existing",
+            "chunk-v1",
+        ),
+    )
+    conn.execute(
+        """INSERT INTO document_sightings (
+               document_id, acquisition_id, observed_at
+           ) VALUES (?, ?, ?)""",
+        (
+            "doc-existing",
+            "acq-existing",
+            "2026-07-24T10:00:00+00:00",
+        ),
+    )
+    conn.commit()
+    conn.close()
+
+    store.init_db(db_path)
+
+    conn = sqlite3.connect(db_path)
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 8
+    version = conn.execute(
+        """SELECT v.document_id, v.content_hash, v.access_partition_id,
+                  v.system_from, v.system_to
+           FROM document_versions AS v
+           JOIN documents AS d ON d.current_version_id = v.version_id
+           WHERE d.document_id = ?""",
+        ("doc-existing",),
+    ).fetchone()
+    assert version == (
+        "doc-existing",
+        "sha256-existing",
+        "profile:profile-linkedin",
+        "2026-07-24T10:01:00+00:00",
+        None,
+    )
+    assert conn.execute(
+        """SELECT document_version_id
+           FROM document_chunks
+           WHERE chunk_id = 'chunk-existing'"""
+    ).fetchone()[0] == conn.execute(
+        "SELECT current_version_id FROM documents WHERE document_id = 'doc-existing'"
+    ).fetchone()[0]
+    assert conn.execute(
+        """SELECT version_id, acquisition_id, observed_at
+           FROM document_version_sightings"""
+    ).fetchone() == (
+        conn.execute(
+            "SELECT current_version_id FROM documents WHERE document_id = 'doc-existing'"
+        ).fetchone()[0],
+        "acq-existing",
+        "2026-07-24T10:00:00+00:00",
+    )
+    version_id = conn.execute(
+        "SELECT current_version_id FROM documents WHERE document_id = 'doc-existing'"
+    ).fetchone()[0]
+    version_chunk_id = conn.execute(
+        "SELECT chunk_id FROM document_version_chunks WHERE version_id = ?",
+        (version_id,),
+    ).fetchone()[0]
+    with pytest.raises(sqlite3.IntegrityError, match="immutable"):
+        conn.execute(
+            "UPDATE document_versions SET title = 'rewritten' WHERE version_id = ?",
+            (version_id,),
+        )
+    with pytest.raises(sqlite3.IntegrityError, match="immutable"):
+        conn.execute(
+            """UPDATE document_version_chunks
+               SET text = 'rewritten'
+               WHERE chunk_id = ?""",
+            (version_chunk_id,),
+        )
+    conn.rollback()
+    conn.execute("PRAGMA foreign_keys=ON")
+    with pytest.raises(sqlite3.IntegrityError, match="FOREIGN KEY"):
+        conn.execute(
+            """INSERT INTO evidence_spans (
+                   evidence_id, version_id, chunk_id, span_start, span_end,
+                   span_digest, redaction_class, access_partition_id,
+                   created_at
+               ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                "evidence-wrong-partition",
+                version_id,
+                version_chunk_id,
+                0,
+                1,
+                "sha256-span",
+                "public",
+                "public",
+                "2026-07-24T10:02:00+00:00",
+            ),
+        )
     assert conn.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
     assert conn.execute("PRAGMA foreign_key_check").fetchall() == []
     conn.close()
@@ -106,6 +301,7 @@ def test_concurrent_initializers_publish_each_schema_version_once(tmp_path):
         (5, 1),
         (6, 1),
         (7, 1),
+        (8, 1),
     ]
     conn.close()
 
@@ -115,7 +311,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     store.init_db(db_path)
     monkeypatch.setitem(
         store.MIGRATIONS,
-        8,
+        9,
         """
         CREATE TABLE should_be_rolled_back (id INTEGER PRIMARY KEY);
         THIS IS NOT VALID SQL;
@@ -129,7 +325,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'should_be_rolled_back'"
     ).fetchone() is None
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 7
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 8
     conn.close()
 
 
@@ -150,7 +346,7 @@ def test_applied_v3_database_receives_replay_and_supervisor_schema(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 7
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 8
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'index_documents'"
     ).fetchone()[0] == "index_documents"

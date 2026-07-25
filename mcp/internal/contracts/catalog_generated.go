@@ -3,7 +3,7 @@ package contracts
 
 const (
 	SchemaVersion = 1
-	CatalogSHA256 = "a4856c10e9b4f7db4d2f750e16268b328c89d4dbb7160885fab2d9f30dbdee0c"
+	CatalogSHA256 = "cf4e68e2b37c12be751c4bb644ea882b5439e839eaab4f1f193562ed0e294db0"
 )
 
 var QueryRequestFields = []string{"filters", "freshness_policy", "max_chars", "profile_id", "query", "request_id", "response_mode", "schema_version", "top_k", "wait_ms"}

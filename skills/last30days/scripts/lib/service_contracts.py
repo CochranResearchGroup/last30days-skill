@@ -425,6 +425,130 @@ def _validate_media(value: Any) -> list[dict[str, Any]]:
     return assets
 
 
+def _require_timestamp_text(value: Any, field: str) -> str:
+    text = _require_non_empty_string(value, field)
+    _validate_timestamp(text, field)
+    return text
+
+
+def _require_optional_timestamp_text(value: Any, field: str) -> str | None:
+    if value is None:
+        return None
+    return _require_timestamp_text(value, field)
+
+
+@dataclass(frozen=True)
+class TemporalEvidenceRef:
+    """Partition-safe evidence coordinates with explicit temporal semantics."""
+
+    schema_version: int
+    evidence_id: str
+    document_id: str
+    version_id: str
+    chunk_id: str
+    access_partition_id: str
+    span_start: int
+    span_end: int
+    span_digest: str
+    observed_at: str
+    published_at: str | None
+    valid_from: str | None
+    valid_to: str | None
+    system_from: str
+    system_to: str | None
+
+    CONTRACT_NAME: ClassVar[str] = "temporal_evidence_ref"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> TemporalEvidenceRef:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("temporal evidence ref must be an object")
+        fields = frozenset(
+            {
+                "schema_version",
+                "evidence_id",
+                "document_id",
+                "version_id",
+                "chunk_id",
+                "access_partition_id",
+                "span_start",
+                "span_end",
+                "span_digest",
+                "observed_at",
+                "published_at",
+                "valid_from",
+                "valid_to",
+                "system_from",
+                "system_to",
+            }
+        )
+        _require_exact_fields(payload, required=fields)
+        span_start = _require_integer_between(
+            payload["span_start"], "span_start", 0, 10_000_000
+        )
+        span_end = _require_integer_between(
+            payload["span_end"], "span_end", 1, 10_000_000
+        )
+        if span_end <= span_start:
+            raise ContractValidationError("span_end must be greater than span_start")
+        return cls(
+            schema_version=_validate_schema_version(payload["schema_version"]),
+            evidence_id=_require_non_empty_string(
+                payload["evidence_id"], "evidence_id"
+            ),
+            document_id=_require_non_empty_string(
+                payload["document_id"], "document_id"
+            ),
+            version_id=_require_non_empty_string(payload["version_id"], "version_id"),
+            chunk_id=_require_non_empty_string(payload["chunk_id"], "chunk_id"),
+            access_partition_id=_require_non_empty_string(
+                payload["access_partition_id"], "access_partition_id"
+            ),
+            span_start=span_start,
+            span_end=span_end,
+            span_digest=_require_non_empty_string(
+                payload["span_digest"], "span_digest"
+            ),
+            observed_at=_require_timestamp_text(
+                payload["observed_at"], "observed_at"
+            ),
+            published_at=_require_optional_timestamp_text(
+                payload["published_at"], "published_at"
+            ),
+            valid_from=_require_optional_timestamp_text(
+                payload["valid_from"], "valid_from"
+            ),
+            valid_to=_require_optional_timestamp_text(
+                payload["valid_to"], "valid_to"
+            ),
+            system_from=_require_timestamp_text(
+                payload["system_from"], "system_from"
+            ),
+            system_to=_require_optional_timestamp_text(
+                payload["system_to"], "system_to"
+            ),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "evidence_id": self.evidence_id,
+            "document_id": self.document_id,
+            "version_id": self.version_id,
+            "chunk_id": self.chunk_id,
+            "access_partition_id": self.access_partition_id,
+            "span_start": self.span_start,
+            "span_end": self.span_end,
+            "span_digest": self.span_digest,
+            "observed_at": self.observed_at,
+            "published_at": self.published_at,
+            "valid_from": self.valid_from,
+            "valid_to": self.valid_to,
+            "system_from": self.system_from,
+            "system_to": self.system_to,
+        }
+
+
 @dataclass(frozen=True)
 class EvidenceItem:
     """One citation-ready retrieval result with replayable rank features."""
@@ -1703,6 +1827,7 @@ ContractEnvelope = (
     | QueryResponse
     | ServiceInfo
     | EvidenceItem
+    | TemporalEvidenceRef
     | AcquisitionWorkRequest
     | AcquisitionWorkResult
     | EntityProposal
@@ -1718,6 +1843,7 @@ _CONTRACT_TYPES = {
     QueryResponse.CONTRACT_NAME: QueryResponse,
     ServiceInfo.CONTRACT_NAME: ServiceInfo,
     EvidenceItem.CONTRACT_NAME: EvidenceItem,
+    TemporalEvidenceRef.CONTRACT_NAME: TemporalEvidenceRef,
     AcquisitionWorkRequest.CONTRACT_NAME: AcquisitionWorkRequest,
     AcquisitionWorkResult.CONTRACT_NAME: AcquisitionWorkResult,
     EntityProposal.CONTRACT_NAME: EntityProposal,

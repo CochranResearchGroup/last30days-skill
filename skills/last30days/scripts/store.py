@@ -612,6 +612,553 @@ CREATE TABLE IF NOT EXISTS service_index_head (
     activated_at TEXT NOT NULL
 );
 """,
+    8: """
+CREATE TABLE access_partitions (
+    partition_id TEXT PRIMARY KEY,
+    partition_kind TEXT NOT NULL
+        CHECK (partition_kind IN ('public', 'authenticated')),
+    profile_id TEXT,
+    created_at TEXT NOT NULL,
+    CHECK (
+        (partition_kind = 'public' AND profile_id IS NULL)
+        OR (partition_kind = 'authenticated' AND profile_id IS NOT NULL)
+    )
+);
+
+INSERT INTO access_partitions (
+    partition_id, partition_kind, profile_id, created_at
+) VALUES ('public', 'public', NULL, datetime('now'));
+
+INSERT OR IGNORE INTO access_partitions (
+    partition_id, partition_kind, profile_id, created_at
+)
+SELECT DISTINCT
+    'profile:' || profile_id,
+    'authenticated',
+    profile_id,
+    datetime('now')
+FROM acquisitions
+WHERE redaction_class = 'authenticated';
+
+ALTER TABLE documents ADD COLUMN current_version_id TEXT;
+ALTER TABLE documents
+    ADD COLUMN access_partition_id TEXT NOT NULL DEFAULT 'public';
+
+CREATE TABLE document_versions (
+    version_id TEXT PRIMARY KEY,
+    document_id TEXT NOT NULL REFERENCES documents(document_id),
+    acquisition_id TEXT NOT NULL REFERENCES acquisitions(acquisition_id),
+    content_hash TEXT NOT NULL,
+    title TEXT NOT NULL,
+    author TEXT,
+    normalized_text TEXT NOT NULL,
+    source_metadata_json TEXT NOT NULL,
+    media_json TEXT NOT NULL,
+    published_at TEXT,
+    valid_from TEXT,
+    valid_to TEXT,
+    observed_at TEXT NOT NULL,
+    fetched_at TEXT NOT NULL,
+    system_from TEXT NOT NULL,
+    system_to TEXT,
+    retention_class TEXT NOT NULL,
+    redaction_class TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL
+        REFERENCES access_partitions(partition_id),
+    transformation_version TEXT NOT NULL,
+    UNIQUE (document_id, content_hash),
+    UNIQUE (version_id, access_partition_id),
+    CHECK (valid_to IS NULL OR valid_from IS NULL OR valid_to >= valid_from),
+    CHECK (system_to IS NULL OR system_to >= system_from)
+);
+
+CREATE INDEX idx_document_versions_document_system
+    ON document_versions(document_id, system_from);
+CREATE INDEX idx_document_versions_published
+    ON document_versions(published_at);
+CREATE INDEX idx_document_versions_partition
+    ON document_versions(access_partition_id, document_id);
+
+INSERT INTO document_versions (
+    version_id, document_id, acquisition_id, content_hash, title, author,
+    normalized_text, source_metadata_json, media_json, published_at,
+    valid_from, valid_to, observed_at, fetched_at, system_from, system_to,
+    retention_class, redaction_class, access_partition_id,
+    transformation_version
+)
+SELECT
+    'ver-baseline-' || d.document_id,
+    d.document_id,
+    d.acquisition_id,
+    d.content_hash,
+    d.title,
+    d.author,
+    d.normalized_text,
+    d.source_metadata_json,
+    d.media_json,
+    d.published_at,
+    d.published_at,
+    NULL,
+    COALESCE(
+        (
+            SELECT MIN(ds.observed_at)
+            FROM document_sightings AS ds
+            WHERE ds.document_id = d.document_id
+        ),
+        d.fetched_at
+    ),
+    d.fetched_at,
+    d.fetched_at,
+    NULL,
+    d.retention_class,
+    d.redaction_class,
+    CASE
+        WHEN d.redaction_class = 'authenticated'
+        THEN 'profile:' || a.profile_id
+        ELSE 'public'
+    END,
+    d.transformation_version
+FROM documents AS d
+JOIN acquisitions AS a ON a.acquisition_id = d.acquisition_id;
+
+UPDATE documents
+SET current_version_id = 'ver-baseline-' || document_id,
+    access_partition_id = CASE
+        WHEN redaction_class = 'authenticated'
+        THEN 'profile:' || (
+            SELECT a.profile_id
+            FROM acquisitions AS a
+            WHERE a.acquisition_id = documents.acquisition_id
+        )
+        ELSE 'public'
+    END;
+
+CREATE TRIGGER document_versions_no_update
+BEFORE UPDATE ON document_versions
+BEGIN
+    SELECT RAISE(ABORT, 'document_versions are immutable');
+END;
+
+CREATE TRIGGER document_versions_no_delete
+BEFORE DELETE ON document_versions
+BEGIN
+    SELECT RAISE(ABORT, 'document_versions are immutable');
+END;
+
+CREATE TABLE document_version_sightings (
+    version_id TEXT NOT NULL,
+    acquisition_id TEXT NOT NULL
+        REFERENCES acquisitions(acquisition_id),
+    topic_id INTEGER REFERENCES topics(id) ON DELETE SET NULL,
+    collection_spec_id TEXT,
+    collection_run_id TEXT,
+    observed_at TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (version_id, access_partition_id)
+        REFERENCES document_versions(version_id, access_partition_id),
+    PRIMARY KEY (version_id, acquisition_id)
+);
+
+INSERT INTO document_version_sightings (
+    version_id, acquisition_id, topic_id, observed_at, access_partition_id
+)
+SELECT
+    'ver-baseline-' || ds.document_id,
+    ds.acquisition_id,
+    ds.topic_id,
+    ds.observed_at,
+    d.access_partition_id
+FROM document_sightings AS ds
+JOIN documents AS d ON d.document_id = ds.document_id;
+
+CREATE TABLE document_version_chunks (
+    chunk_id TEXT PRIMARY KEY,
+    version_id TEXT NOT NULL,
+    document_id TEXT NOT NULL REFERENCES documents(document_id),
+    ordinal INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    content_hash TEXT NOT NULL,
+    chunker_version TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (version_id, access_partition_id)
+        REFERENCES document_versions(version_id, access_partition_id),
+    UNIQUE (version_id, ordinal),
+    UNIQUE (version_id, chunk_id, access_partition_id)
+);
+
+INSERT INTO document_version_chunks (
+    chunk_id, version_id, document_id, ordinal, text, content_hash,
+    chunker_version, access_partition_id
+)
+SELECT
+    'vchunk-baseline-' || c.chunk_id,
+    d.current_version_id,
+    c.document_id,
+    c.ordinal,
+    c.text,
+    c.content_hash,
+    c.chunker_version,
+    d.access_partition_id
+FROM document_chunks AS c
+JOIN documents AS d ON d.document_id = c.document_id;
+
+CREATE TRIGGER document_version_chunks_no_update
+BEFORE UPDATE ON document_version_chunks
+BEGIN
+    SELECT RAISE(ABORT, 'document_version_chunks are immutable');
+END;
+
+CREATE TRIGGER document_version_chunks_no_delete
+BEFORE DELETE ON document_version_chunks
+BEGIN
+    SELECT RAISE(ABORT, 'document_version_chunks are immutable');
+END;
+
+ALTER TABLE document_chunks ADD COLUMN document_version_id TEXT;
+
+UPDATE document_chunks
+SET document_version_id = (
+    SELECT d.current_version_id
+    FROM documents AS d
+    WHERE d.document_id = document_chunks.document_id
+);
+
+CREATE TABLE evidence_spans (
+    evidence_id TEXT PRIMARY KEY,
+    version_id TEXT NOT NULL,
+    chunk_id TEXT NOT NULL,
+    span_start INTEGER NOT NULL CHECK (span_start >= 0),
+    span_end INTEGER NOT NULL CHECK (span_end > span_start),
+    span_digest TEXT NOT NULL,
+    redaction_class TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (version_id, chunk_id, access_partition_id)
+        REFERENCES document_version_chunks(
+            version_id, chunk_id, access_partition_id
+        ),
+    UNIQUE (evidence_id, access_partition_id),
+    UNIQUE (version_id, chunk_id, span_start, span_end)
+);
+
+CREATE TRIGGER evidence_spans_no_update
+BEFORE UPDATE ON evidence_spans
+BEGIN
+    SELECT RAISE(ABORT, 'evidence_spans are immutable');
+END;
+
+CREATE TRIGGER evidence_spans_no_delete
+BEFORE DELETE ON evidence_spans
+BEGIN
+    SELECT RAISE(ABORT, 'evidence_spans are immutable');
+END;
+
+CREATE TABLE source_accounts (
+    source_account_id TEXT PRIMARY KEY,
+    source TEXT NOT NULL,
+    native_account_id TEXT NOT NULL,
+    handle TEXT,
+    canonical_url TEXT,
+    account_kind TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL
+        REFERENCES access_partitions(partition_id),
+    first_observed_at TEXT NOT NULL,
+    last_observed_at TEXT NOT NULL,
+    UNIQUE (source, native_account_id),
+    UNIQUE (source_account_id, access_partition_id)
+);
+
+CREATE TABLE profile_snapshots (
+    snapshot_id TEXT PRIMARY KEY,
+    source_account_id TEXT NOT NULL,
+    acquisition_id TEXT NOT NULL REFERENCES acquisitions(acquisition_id),
+    content_hash TEXT NOT NULL,
+    display_name TEXT,
+    headline TEXT,
+    about_text TEXT,
+    metadata_json TEXT NOT NULL,
+    observed_at TEXT NOT NULL,
+    valid_from TEXT,
+    valid_to TEXT,
+    system_from TEXT NOT NULL,
+    system_to TEXT,
+    access_partition_id TEXT NOT NULL
+        REFERENCES access_partitions(partition_id),
+    FOREIGN KEY (source_account_id, access_partition_id)
+        REFERENCES source_accounts(
+            source_account_id, access_partition_id
+        ),
+    UNIQUE (source_account_id, content_hash),
+    UNIQUE (snapshot_id, access_partition_id)
+);
+
+CREATE TABLE profile_snapshot_sections (
+    section_id TEXT PRIMARY KEY,
+    snapshot_id TEXT NOT NULL,
+    section_kind TEXT NOT NULL,
+    ordinal INTEGER NOT NULL,
+    normalized_text TEXT NOT NULL,
+    content_hash TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (snapshot_id, access_partition_id)
+        REFERENCES profile_snapshots(snapshot_id, access_partition_id),
+    UNIQUE (snapshot_id, section_kind, ordinal)
+);
+
+CREATE TABLE identity_assertions (
+    assertion_id TEXT PRIMARY KEY,
+    subject_account_id TEXT NOT NULL,
+    object_entity_id TEXT NOT NULL REFERENCES entities(entity_id),
+    assertion_kind TEXT NOT NULL,
+    confidence REAL NOT NULL CHECK (confidence >= 0 AND confidence <= 1),
+    validation_state TEXT NOT NULL,
+    valid_from TEXT,
+    valid_to TEXT,
+    system_from TEXT NOT NULL,
+    system_to TEXT,
+    supersedes_assertion_id TEXT
+        REFERENCES identity_assertions(assertion_id),
+    access_partition_id TEXT NOT NULL
+        REFERENCES access_partitions(partition_id),
+    contract_version TEXT NOT NULL,
+    FOREIGN KEY (subject_account_id, access_partition_id)
+        REFERENCES source_accounts(
+            source_account_id, access_partition_id
+        ),
+    UNIQUE (assertion_id, access_partition_id)
+);
+
+CREATE TABLE identity_assertion_evidence (
+    assertion_id TEXT NOT NULL,
+    evidence_id TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (assertion_id, access_partition_id)
+        REFERENCES identity_assertions(assertion_id, access_partition_id),
+    FOREIGN KEY (evidence_id, access_partition_id)
+        REFERENCES evidence_spans(evidence_id, access_partition_id),
+    PRIMARY KEY (assertion_id, evidence_id)
+);
+
+CREATE TABLE temporal_claims (
+    claim_id TEXT PRIMARY KEY,
+    subject_entity_id TEXT NOT NULL REFERENCES entities(entity_id),
+    predicate TEXT NOT NULL,
+    object_entity_id TEXT REFERENCES entities(entity_id),
+    object_value_json TEXT,
+    confidence REAL NOT NULL CHECK (confidence >= 0 AND confidence <= 1),
+    validation_state TEXT NOT NULL,
+    valid_from TEXT,
+    valid_to TEXT,
+    observed_at TEXT NOT NULL,
+    system_from TEXT NOT NULL,
+    system_to TEXT,
+    access_partition_id TEXT NOT NULL
+        REFERENCES access_partitions(partition_id),
+    extractor_version TEXT NOT NULL,
+    CHECK (
+        (object_entity_id IS NOT NULL AND object_value_json IS NULL)
+        OR (object_entity_id IS NULL AND object_value_json IS NOT NULL)
+    ),
+    UNIQUE (claim_id, access_partition_id)
+);
+
+CREATE TABLE temporal_claim_evidence (
+    claim_id TEXT NOT NULL,
+    evidence_id TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (claim_id, access_partition_id)
+        REFERENCES temporal_claims(claim_id, access_partition_id),
+    FOREIGN KEY (evidence_id, access_partition_id)
+        REFERENCES evidence_spans(evidence_id, access_partition_id),
+    PRIMARY KEY (claim_id, evidence_id)
+);
+
+CREATE TABLE claim_conflicts (
+    conflict_id TEXT PRIMARY KEY,
+    left_claim_id TEXT NOT NULL,
+    right_claim_id TEXT NOT NULL,
+    conflict_kind TEXT NOT NULL,
+    detected_at TEXT NOT NULL,
+    resolution_state TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (left_claim_id, access_partition_id)
+        REFERENCES temporal_claims(claim_id, access_partition_id),
+    FOREIGN KEY (right_claim_id, access_partition_id)
+        REFERENCES temporal_claims(claim_id, access_partition_id),
+    CHECK (left_claim_id <> right_claim_id),
+    UNIQUE (left_claim_id, right_claim_id, conflict_kind)
+);
+
+CREATE TABLE claim_supersessions (
+    prior_claim_id TEXT NOT NULL,
+    successor_claim_id TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (prior_claim_id, access_partition_id)
+        REFERENCES temporal_claims(claim_id, access_partition_id),
+    FOREIGN KEY (successor_claim_id, access_partition_id)
+        REFERENCES temporal_claims(claim_id, access_partition_id),
+    PRIMARY KEY (prior_claim_id, successor_claim_id),
+    CHECK (prior_claim_id <> successor_claim_id)
+);
+
+CREATE TABLE temporal_events (
+    event_id TEXT PRIMARY KEY,
+    event_type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
+    event_time_from TEXT,
+    event_time_to TEXT,
+    observed_at TEXT NOT NULL,
+    system_from TEXT NOT NULL,
+    system_to TEXT,
+    access_partition_id TEXT NOT NULL
+        REFERENCES access_partitions(partition_id),
+    extractor_version TEXT NOT NULL,
+    UNIQUE (event_id, access_partition_id)
+);
+
+CREATE TABLE temporal_event_entities (
+    event_id TEXT NOT NULL REFERENCES temporal_events(event_id),
+    entity_id TEXT NOT NULL REFERENCES entities(entity_id),
+    role TEXT NOT NULL,
+    PRIMARY KEY (event_id, entity_id, role)
+);
+
+CREATE TABLE temporal_event_evidence (
+    event_id TEXT NOT NULL,
+    evidence_id TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (event_id, access_partition_id)
+        REFERENCES temporal_events(event_id, access_partition_id),
+    FOREIGN KEY (evidence_id, access_partition_id)
+        REFERENCES evidence_spans(evidence_id, access_partition_id),
+    PRIMARY KEY (event_id, evidence_id)
+);
+
+CREATE TABLE collection_specs (
+    collection_spec_id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    source TEXT NOT NULL,
+    surface_kind TEXT NOT NULL,
+    selector_json TEXT NOT NULL,
+    profile_id TEXT NOT NULL,
+    schedule TEXT NOT NULL,
+    item_limit INTEGER NOT NULL CHECK (item_limit > 0),
+    enabled INTEGER NOT NULL CHECK (enabled IN (0, 1)),
+    spec_version INTEGER NOT NULL,
+    access_partition_id TEXT NOT NULL
+        REFERENCES access_partitions(partition_id),
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE (name, spec_version),
+    UNIQUE (collection_spec_id, access_partition_id)
+);
+
+CREATE TABLE collection_runs (
+    collection_run_id TEXT PRIMARY KEY,
+    collection_spec_id TEXT NOT NULL,
+    job_id TEXT REFERENCES service_jobs(job_id),
+    state TEXT NOT NULL,
+    claimed_by TEXT,
+    lease_generation INTEGER NOT NULL DEFAULT 0,
+    scheduled_for TEXT NOT NULL,
+    started_at TEXT,
+    completed_at TEXT,
+    cursor_before TEXT,
+    cursor_after TEXT,
+    watermark_before TEXT,
+    watermark_after TEXT,
+    attempted_count INTEGER NOT NULL DEFAULT 0,
+    observed_count INTEGER NOT NULL DEFAULT 0,
+    stored_count INTEGER NOT NULL DEFAULT 0,
+    error_code TEXT,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (collection_spec_id, access_partition_id)
+        REFERENCES collection_specs(
+            collection_spec_id, access_partition_id
+        ),
+    UNIQUE (collection_run_id, access_partition_id)
+);
+
+CREATE INDEX idx_collection_runs_due
+    ON collection_runs(state, scheduled_for);
+
+CREATE TABLE collection_coverage_intervals (
+    coverage_id TEXT PRIMARY KEY,
+    collection_run_id TEXT NOT NULL,
+    collection_spec_id TEXT NOT NULL,
+    interval_from TEXT,
+    interval_to TEXT,
+    coverage_state TEXT NOT NULL,
+    selector_digest TEXT NOT NULL,
+    attempted_count INTEGER NOT NULL,
+    observed_count INTEGER NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    recorded_at TEXT NOT NULL,
+    FOREIGN KEY (collection_run_id, access_partition_id)
+        REFERENCES collection_runs(collection_run_id, access_partition_id),
+    FOREIGN KEY (collection_spec_id, access_partition_id)
+        REFERENCES collection_specs(
+            collection_spec_id, access_partition_id
+        )
+);
+
+CREATE TABLE collection_gaps (
+    gap_id TEXT PRIMARY KEY,
+    collection_spec_id TEXT NOT NULL,
+    collection_run_id TEXT,
+    gap_kind TEXT NOT NULL,
+    interval_from TEXT,
+    interval_to TEXT,
+    detail_json TEXT NOT NULL,
+    status TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    detected_at TEXT NOT NULL,
+    resolved_at TEXT,
+    FOREIGN KEY (collection_spec_id, access_partition_id)
+        REFERENCES collection_specs(
+            collection_spec_id, access_partition_id
+        ),
+    FOREIGN KEY (collection_run_id, access_partition_id)
+        REFERENCES collection_runs(collection_run_id, access_partition_id)
+);
+
+CREATE TABLE collection_cursors (
+    collection_spec_id TEXT PRIMARY KEY,
+    cursor_value TEXT,
+    watermark_value TEXT,
+    lease_generation INTEGER NOT NULL DEFAULT 0,
+    updated_at TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (collection_spec_id, access_partition_id)
+        REFERENCES collection_specs(
+            collection_spec_id, access_partition_id
+        )
+);
+
+CREATE TABLE graph_projection_outbox (
+    outbox_id TEXT PRIMARY KEY,
+    aggregate_kind TEXT NOT NULL,
+    aggregate_id TEXT NOT NULL,
+    operation TEXT NOT NULL,
+    payload_json TEXT NOT NULL,
+    payload_sha256 TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL
+        REFERENCES access_partitions(partition_id),
+    state TEXT NOT NULL,
+    attempt_count INTEGER NOT NULL DEFAULT 0,
+    not_before_at TEXT,
+    created_at TEXT NOT NULL,
+    published_at TEXT,
+    error_code TEXT,
+    UNIQUE (aggregate_kind, aggregate_id, operation, payload_sha256)
+);
+
+CREATE INDEX idx_graph_projection_outbox_ready
+    ON graph_projection_outbox(state, not_before_at, created_at);
+""",
 }
 
 

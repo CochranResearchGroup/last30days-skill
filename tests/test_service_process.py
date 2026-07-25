@@ -6,6 +6,7 @@ import sqlite3
 import subprocess
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 import store
@@ -89,13 +90,14 @@ sys.meta_path.insert(0, _BlockedAcquisitionImports())
     db_path = data_dir / "research.db"
     store.init_db(db_path)
     conn = sqlite3.connect(db_path)
+    observed_at = datetime.now(timezone.utc).isoformat()
     topic_id = conn.execute(
         "INSERT INTO topics(name) VALUES ('Browser research')"
     ).lastrowid
     run_id = conn.execute(
         """INSERT INTO research_runs(topic_id, run_date, status)
-           VALUES (?, '2026-07-24T11:30:00Z', 'completed')""",
-        (topic_id,),
+           VALUES (?, ?, 'completed')""",
+        (topic_id, observed_at),
     ).lastrowid
     conn.execute(
         """INSERT INTO findings
@@ -104,9 +106,8 @@ sys.meta_path.insert(0, _BlockedAcquisitionImports())
            VALUES (?, ?, 'reddit', 'https://reddit.example/cached-browser',
                    'Cached browser research', 'researcher',
                    'Cached browser research without any live acquisition.',
-                   'Cached browser research',
-                   '2026-07-24T11:30:00Z', '2026-07-24T11:30:00Z')""",
-        (run_id, topic_id),
+                   'Cached browser research', ?, ?)""",
+        (run_id, topic_id, observed_at, observed_at),
     )
     conn.commit()
     conn.close()
