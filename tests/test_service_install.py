@@ -27,6 +27,7 @@ def test_installer_renders_private_restartable_user_unit(tmp_path):
     assert "UMask=0077" in result.stdout
     assert "NoNewPrivileges=true" in result.stdout
     assert "Restart=on-failure" in result.stdout
+    assert "EnvironmentFile=-%h/.config/last30days/.env" in result.stdout
     assert not (tmp_path / ".config" / "systemd").exists()
 
 

@@ -509,6 +509,20 @@ anything. The installer writes
 enables the service. Its unit uses an owner-private umask,
 restart-on-failure, `NoNewPrivileges`, and a stable PATH containing
 `~/.local/bin` and the reference Linuxbrew paths.
+It also loads the optional owner-scoped
+`~/.config/last30days/.env`, so the daemon and its acquisition subprocesses
+see the same explicit source enablement and profile routing as direct runs.
+
+Register the thin MCP adapter with Codex from a source checkout:
+
+```bash
+bash mcp/scripts/install-codex.sh
+codex mcp get last30days
+```
+
+The installer builds the current checkout, atomically installs
+`~/.local/bin/last30days-pp-mcp`, and records the private service socket in the
+user-scoped Codex MCP configuration. Re-run it after MCP adapter changes.
 
 Service-enabled MCP clients expose five small operations:
 

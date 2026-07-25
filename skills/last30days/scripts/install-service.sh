@@ -19,6 +19,7 @@ Type=simple
 ExecStart="${PYTHON_BIN}" "${SERVICE_SCRIPT}" serve
 Restart=on-failure
 RestartSec=2
+EnvironmentFile=-%h/.config/last30days/.env
 Environment=PATH=%h/.local/bin:%h/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin
 UMask=0077
 NoNewPrivileges=true

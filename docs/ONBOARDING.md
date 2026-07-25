@@ -101,6 +101,19 @@ Then connect the MCP bundle and verify its listed surface is `service_info`,
 and topic resources. A query handler must not launch
 `last30days.py` or create a browser process.
 
+For a local Codex checkout, install and verify the current adapter explicitly:
+
+```bash
+bash mcp/scripts/install-codex.sh
+codex mcp get last30days
+go version -m "$HOME/.local/bin/last30days-pp-mcp"
+```
+
+The binary must be enabled at user scope, point at the owner-private service
+socket, report the current repository revision with `modified=false` when the
+checkout is clean, and return cached evidence without creating a refresh job
+when `freshness_policy=cache_only`.
+
 For App Intelligence maintenance-plane changes, also run:
 
 ```bash
