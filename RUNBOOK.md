@@ -69,8 +69,12 @@ State Movement:
 
 Graphiti Write Status:
 
-- pending until documentation validation and commit provide a durable source
-  identifier.
+- completed in `last30days_skill_main`;
+- source commit: `d5ae26c`;
+- job: `771c5a21-315b-4a65-b4e5-5382edf8fa6d`;
+- episode: `0d4a49b4-1751-4f20-a2f8-1412ceef1645`;
+- the first 120-second attempt timed out during edge resolution; the same
+  durable job completed on its one bounded retry with a 240-second limit.
 
 Next Bounded Action:
 
