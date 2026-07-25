@@ -147,6 +147,13 @@ while answering a research request. If a source reports
 `awaiting_operator`, return that bounded status and the safe operator action
 from the service; do not take over browser or repair mechanics.
 
+For an explicit operator workflow, after the required human action is complete,
+the operator may run `python3 scripts/service.py job <job-id> --resume`. This
+returns only that `awaiting_operator` job to the bounded queue and preserves
+its attempt limit and event history. It does not perform login, browser, or
+repair work. Ordinary research requests must report the gate rather than
+invoking this operator command.
+
 If these tools are absent or `service_info` says the service is unavailable,
 continue with the direct-engine fallback below. That fallback is an
 operator/debug compatibility path, not the normal service path.

@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Awaiting-operator refresh jobs can resume after the human gate clears.**
+  Operators can use `service.py job <job-id> --resume` to return the same
+  bounded job to the queue without losing its attempt count or event history.
+  The local HTTP service exposes the same guarded transition and rejects jobs
+  in any other state.
 - **YouTube discovery stays inside worker budgets.** Search now uses yt-dlp's
   flat metadata projection, retaining video URLs, channel, duration, views, and
   thumbnails without expanding every result into a slow watch-page request.

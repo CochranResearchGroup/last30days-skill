@@ -96,6 +96,12 @@ class ServiceClient:
             self._request("GET", f"/v1/jobs/{encoded}")
         )
 
+    def resume_job(self, job_id: str) -> contracts.JobRecord:
+        encoded = urllib.parse.quote(job_id, safe="")
+        return contracts.JobRecord.from_dict(
+            self._request("POST", f"/v1/jobs/{encoded}/resume", {})
+        )
+
     def topic(self, payload: dict[str, object]) -> dict[str, Any]:
         return self._request("POST", "/v1/topic", payload)
 

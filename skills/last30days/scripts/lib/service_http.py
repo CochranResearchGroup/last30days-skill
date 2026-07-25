@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from . import service_contracts as contracts
+from .service_app import JobResumeConflictError
 
 
 MAX_REQUEST_BYTES = 131_072
@@ -31,6 +32,8 @@ class ServiceApplication(Protocol):
     def service_info(self) -> contracts.ServiceInfo: ...
 
     def job(self, job_id: str) -> contracts.JobRecord: ...
+
+    def resume_job(self, job_id: str) -> contracts.JobRecord: ...
 
     def query(self, request: contracts.QueryRequest) -> contracts.QueryResponse: ...
 
@@ -133,7 +136,19 @@ class _RequestHandler(BaseHTTPRequestHandler):
             self._error(500, "internal_error", "service request failed")
 
     def do_POST(self) -> None:
-        if self.path not in {"/v1/query", "/v1/topic", "/v1/intelligence"}:
+        resume_prefix = "/v1/jobs/"
+        resume_suffix = "/resume"
+        resume_job_id = None
+        if self.path.startswith(resume_prefix) and self.path.endswith(resume_suffix):
+            encoded_job_id = self.path[
+                len(resume_prefix) : -len(resume_suffix)
+            ]
+            if encoded_job_id and "/" not in encoded_job_id:
+                resume_job_id = urllib.parse.unquote(encoded_job_id)
+        if (
+            self.path not in {"/v1/query", "/v1/topic", "/v1/intelligence"}
+            and resume_job_id is None
+        ):
             self._error(404, "not_found", "unknown service endpoint")
             return
         raw_length = self.headers.get("Content-Length")
@@ -151,7 +166,13 @@ class _RequestHandler(BaseHTTPRequestHandler):
                 raise contracts.ContractValidationError(
                     "request body must be an object"
                 )
-            if self.path == "/v1/query":
+            if resume_job_id is not None:
+                if payload:
+                    raise contracts.ContractValidationError(
+                        "resume request body must be empty"
+                    )
+                response = self.application.resume_job(resume_job_id).to_dict()
+            elif self.path == "/v1/query":
                 request = contracts.QueryRequest.from_dict(payload)
                 response = self.application.query(request).to_dict()
             elif self.path == "/v1/topic":
@@ -164,6 +185,16 @@ class _RequestHandler(BaseHTTPRequestHandler):
         except contracts.ContractValidationError as exc:
             del exc
             self._error(400, "invalid_contract", "request contract is invalid")
+            return
+        except KeyError:
+            self._error(404, "job_not_found", "job was not found")
+            return
+        except JobResumeConflictError:
+            self._error(
+                409,
+                "job_not_awaiting_operator",
+                "only an awaiting-operator job with attempts remaining can be resumed",
+            )
             return
         except Exception:
             self._error(500, "internal_error", "service request failed")

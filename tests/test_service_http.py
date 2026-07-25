@@ -8,6 +8,7 @@ import threading
 import pytest
 
 from lib import service_contracts as contracts
+from lib.service_app import JobResumeConflictError
 from lib.service_client import ServiceClient, ServiceClientError
 from lib.service_http import ServiceAlreadyRunningError, UnixServiceServer
 
@@ -93,6 +94,23 @@ class StubApplication:
             }
         )
 
+    def resume_job(self, job_id):
+        if job_id == "job-published":
+            raise JobResumeConflictError(
+                "only awaiting_operator jobs can be resumed"
+            )
+        if job_id != "job-001":
+            raise KeyError(job_id)
+        payload = self.job(job_id).to_dict()
+        payload.update(
+            {
+                "state": "queued",
+                "attempts": 1,
+                "published_index_version": None,
+            }
+        )
+        return contracts.JobRecord.from_dict(payload)
+
     def topic(self, payload):
         return {
             "schema_version": 1,
@@ -161,6 +179,39 @@ def test_job_endpoint_returns_safe_not_found(tmp_path):
     try:
         with pytest.raises(ServiceClientError, match="job_not_found"):
             ServiceClient(socket_path).job("missing")
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=2)
+
+
+def test_operator_can_resume_an_awaiting_job_through_the_public_client(tmp_path):
+    socket_path = tmp_path / "runtime" / "service.sock"
+    server = UnixServiceServer(socket_path, StubApplication())
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        resumed = ServiceClient(socket_path).resume_job("job-001")
+
+        assert resumed.state is contracts.JobState.QUEUED
+        assert resumed.attempts == 1
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=2)
+
+
+def test_job_resume_conflict_is_safe_and_non_retryable(tmp_path):
+    socket_path = tmp_path / "runtime" / "service.sock"
+    server = UnixServiceServer(socket_path, StubApplication())
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        with pytest.raises(
+            ServiceClientError,
+            match="job_not_awaiting_operator",
+        ):
+            ServiceClient(socket_path).resume_job("job-published")
     finally:
         server.shutdown()
         server.server_close()

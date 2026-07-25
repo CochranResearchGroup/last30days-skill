@@ -507,7 +507,15 @@ bash scripts/install-service.sh
 python3 scripts/service.py status
 python3 scripts/service.py query "agent browser reliability" --freshness prefer_cache
 python3 scripts/service.py job <job-id>
+python3 scripts/service.py job <job-id> --resume
 ```
+
+Use `job <job-id> --resume` only after the human action recorded by an
+`awaiting_operator` job is complete. The service returns that same bounded job
+to `queued`, preserves its attempt count and event history, and rejects resume
+when the job is in another state or has exhausted its configured attempts. The
+resume command does not open a browser, authenticate, or bypass the original
+human gate.
 
 ### Recurring collection specifications
 

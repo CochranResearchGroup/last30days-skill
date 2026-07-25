@@ -278,7 +278,11 @@ def _job(args: argparse.Namespace) -> int:
     socket_path = Path(args.socket) if args.socket else _default_socket_path()
     client = ServiceClient(socket_path, timeout=args.timeout)
     try:
-        job = client.job(args.job_id)
+        job = (
+            client.resume_job(args.job_id)
+            if args.resume
+            else client.job(args.job_id)
+        )
     except ServiceClientError as exc:
         print(json.dumps({"status": "error", "message": str(exc)}, sort_keys=True))
         return 1
@@ -504,6 +508,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     job = subparsers.add_parser("job", help="Poll a durable refresh job")
     job.add_argument("job_id")
+    job.add_argument(
+        "--resume",
+        action="store_true",
+        help="Resume one awaiting-operator job after the human gate clears",
+    )
     job.add_argument("--socket")
     job.add_argument("--timeout", type=float, default=5.0)
     job.set_defaults(handler=_job)

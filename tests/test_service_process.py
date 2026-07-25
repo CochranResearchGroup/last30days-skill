@@ -246,6 +246,13 @@ def test_cli_request_id_is_generated_unless_caller_supplies_idempotency_key():
     )
 
 
+def test_job_cli_exposes_explicit_operator_resume():
+    args = build_parser().parse_args(["job", "job-001", "--resume"])
+
+    assert args.job_id == "job-001"
+    assert args.resume is True
+
+
 def test_operator_intelligence_entrypoint_is_explicit_and_bounded():
     args = build_parser().parse_args(
         [

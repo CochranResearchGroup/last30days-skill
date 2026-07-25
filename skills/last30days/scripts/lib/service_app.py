@@ -16,10 +16,15 @@ import store
 from . import service_contracts as contracts
 from .service_collection import CollectionCoordinator, CollectionSpec
 from .service_knowledge import TemporalKnowledgeQuery
+from .service_supervisor import InvalidTransitionError
 
 
-SERVICE_VERSION = "0.2.0"
+SERVICE_VERSION = "0.2.1"
 DEFAULT_FRESH_SECONDS = 24 * 60 * 60
+
+
+class JobResumeConflictError(RuntimeError):
+    """Raised when an operator resume does not apply to the current job state."""
 
 
 class RetrievalBackend(Protocol):
@@ -50,6 +55,8 @@ class RefreshScheduler(Protocol):
 
 class JobReader(Protocol):
     def get_job(self, job_id: str) -> contracts.JobRecord: ...
+
+    def resume_after_operator(self, job_id: str) -> contracts.JobRecord: ...
 
 
 class CacheQueryApplication:
@@ -642,6 +649,18 @@ class CacheQueryApplication:
         ):
             raise KeyError("job not found")
         return self.job_reader.get_job(job_id)
+
+    def resume_job(self, job_id: str) -> contracts.JobRecord:
+        if (
+            self.job_reader is None
+            or not isinstance(job_id, str)
+            or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}", job_id) is None
+        ):
+            raise KeyError("job not found")
+        try:
+            return self.job_reader.resume_after_operator(job_id)
+        except InvalidTransitionError as exc:
+            raise JobResumeConflictError(str(exc)) from exc
 
     @staticmethod
     def _topic_row(row: sqlite3.Row) -> dict[str, object]:

@@ -701,3 +701,65 @@ Next Bounded Action:
 - After operator X reauthentication, rerun X and complete bounded Facebook and
   LinkedIn post/profile canaries, prove timer restart recovery, then execute
   Packet 7 independent acceptance and closeout.
+
+## Turn 11 | 2026-07-25
+
+Focus: Plan 0011 Packet 6 X authentication recovery and guarded job resume.
+
+Authority Consulted:
+
+- Plan 0011 Packet 6, checkpoint P0011-C06A, and the authenticated-browser stop
+  rule
+- current installed service, profile runtime state, durable job events, and
+  agent-browser service evidence
+- CodeGraph supervisor, application, HTTP, client, and CLI seams
+- TDD, codebase-design, documentation, validation, Graphiti, goal-execution,
+  worktree, commit, push, and closeout policies
+
+Decisions And Changes:
+
+- Accepted the operator's confirmation that X was authenticated after a page
+  refresh, then closed the detached browser cleanly to flush and unlock the
+  profile.
+- Proved that `force_refresh` joined the old `awaiting_operator` job and did
+  not perform a new acquisition.
+- Added one public, bounded operator-resume path over the existing supervisor
+  transition through the application, HTTP service, Python client, and CLI.
+- Kept resume operator-only. It does not open a browser, authenticate, repair
+  code, reset attempt counts, or discard the append-only job history.
+- Updated the Skill, configuration reference, changelog, roadmap, and Plan 0011
+  checkpoint before installed-runtime mutation.
+
+Validation Evidence:
+
+- focused supervisor, refresh, application, HTTP, process, and CLI tests
+  passed;
+- Python compilation passed;
+- `git diff --check` passed;
+- installed service remains unchanged at version 0.2.0 pending the next
+  candidate commit and install.
+
+State Movement:
+
+- Plan 0011 Packet 6:
+  `awaiting_human_gate -> resume_control_ready`.
+- X authentication gate: `required -> completed`.
+- X live acquisition proof remains pending until the new public transition is
+  installed and the retained job performs attempt two.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this repair was one coupled
+  supervisor-to-operator interface seam.
+
+Graphiti Write Status:
+
+- checkpoint write required after the candidate commit so the source authority
+  can include its immutable commit ID.
+
+Next Bounded Action:
+
+- Commit and push the guarded resume candidate, install service version 0.2.1,
+  resume retained X job `3a0a59a7-5729-4547-8702-22f02b3579aa`, and require a
+  new acquisition attempt before proceeding to Facebook and LinkedIn canaries.

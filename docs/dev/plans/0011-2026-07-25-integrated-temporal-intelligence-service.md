@@ -1011,6 +1011,63 @@ Next action:
 - after the operator restores X authentication, rerun the X canary, continue
   with Facebook and LinkedIn post/profile canaries, then execute Packet 7.
 
+### Checkpoint P0011-C06B | 2026-07-25
+
+Plan version: 1
+
+State transition: `packet_6_awaiting_human_gate -> packet_6_resume_control_ready`
+
+Progress classification: `blocker_reduction`
+
+Owned changes:
+
+- confirmed the configured `last30days-facebook` profile was authenticated for
+  X after the operator refreshed the stalled page;
+- closed the detached no-CDP browser cleanly so Chromium could flush the
+  profile and release its process lock;
+- proved the first `force_refresh` retry coalesced onto the retained
+  `awaiting_operator` job and returned cached evidence without performing a
+  new acquisition;
+- exposed the supervisor's existing bounded `resume_after_operator`
+  transition through the application, Unix-socket HTTP service, Python client,
+  and `service.py job <job-id> --resume`;
+- preserved the original job ID, attempts, event history, and configured
+  attempt ceiling while rejecting missing, non-awaiting, and exhausted jobs;
+- documented the operator-only resume workflow in the Skill, configuration
+  reference, and changelog.
+
+Validation evidence:
+
+- the X profile's manual browser PID `592914` exited cleanly and runtime status
+  reported `browser_alive=false`;
+- the initial retry returned retained job
+  `3a0a59a7-5729-4547-8702-22f02b3579aa`, confirming the missing public resume
+  transition rather than a new authentication result;
+- focused supervisor, refresh, application, HTTP, process, and CLI tests
+  passed;
+- Python compilation and `git diff --check` passed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the active runtime instruction prohibits delegation unless
+  the user explicitly requests it, and this repair was one coupled
+  supervisor-to-operator interface seam.
+
+Remaining acceptance criteria:
+
+- install service version 0.2.1 from the candidate commit and resume the
+  retained X job through the public CLI;
+- prove the resumed X acquisition against the authenticated profile;
+- complete bounded Facebook post plus LinkedIn post/profile canaries;
+- prove recurring collection restart recovery and complete the Packet 6 exit
+  gate;
+- execute Packet 7 independent integrated acceptance and closeout.
+
+Next action:
+
+- commit and install the guarded resume candidate, resume the retained X job,
+  and require a new acquisition attempt before counting the canary.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,

@@ -407,6 +407,9 @@ def test_job_poll_uses_typed_reader_and_rejects_unsafe_ids(tmp_path):
         def get_job(self, job_id):
             return SimpleNamespace(job_id=job_id)
 
+        def resume_after_operator(self, job_id):
+            return SimpleNamespace(job_id=job_id, state="queued")
+
     db_path = tmp_path / "research.db"
     ServiceStore(db_path).initialize()
     app = CacheQueryApplication(
@@ -416,8 +419,11 @@ def test_job_poll_uses_typed_reader_and_rejects_unsafe_ids(tmp_path):
     )
 
     assert app.job("job-001").job_id == "job-001"
+    assert app.resume_job("job-001").state == "queued"
     with pytest.raises(KeyError):
         app.job("../unsafe")
+    with pytest.raises(KeyError):
+        app.resume_job("../unsafe")
 
 
 def test_minimum_response_budget_is_enforced_with_oversized_metadata(tmp_path):

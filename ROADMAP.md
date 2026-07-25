@@ -82,9 +82,12 @@ Current State:
   receipts.
 - The installed service runs version 0.2.0 on schema 12, a fresh MCP client
   discovers ten compact tools, and concrete Graphiti outbox delivery passed.
-- Packet 6 is awaiting X profile reauthentication after a bounded canary
-  returned `awaiting_operator/auth_required`; authenticated Facebook and
-  LinkedIn canaries and broad recurring hydration remain gated.
+- X profile authentication is restored. The first canary retry exposed that
+  `force_refresh` coalesced onto the retained `awaiting_operator` job without a
+  public resume path. The source candidate now exposes a guarded operator
+  resume through the service, HTTP client, and CLI; installed validation,
+  authenticated Facebook and LinkedIn canaries, and broad recurring hydration
+  remain gated.
 
 Goal Seeds:
 
@@ -446,9 +449,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- Restore the configured X profile authentication, complete the remaining
-  bounded authenticated-source canaries, and finish Plan 0011 Packet 7
-  acceptance. Do not execute Plan 0010 outside its four host-owned joins.
+- Install and validate the guarded X job-resume candidate, complete the
+  remaining bounded authenticated-source canaries, and finish Plan 0011 Packet
+  7 acceptance. Do not execute Plan 0010 outside its four host-owned joins.
 
 ## Goal-Compatible Plan Conversion
 
