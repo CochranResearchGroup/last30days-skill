@@ -640,3 +640,64 @@ Next Bounded Action:
   operations, wire concrete local Graphiti delivery, surface bounded adapter
   maintenance, dry-run and install schema 12, then run bounded read-only
   source/profile canaries.
+
+## Turn 10 | 2026-07-25
+
+Focus: Plan 0011 Packet 6 service product, installed rollout, and bounded live
+canaries.
+
+Authority Consulted:
+
+- Plan 0011 Packet 6 and its authenticated-browser stop rule
+- Plan 0010 adapter diagnosis and repair exclusions
+- CodeGraph service, MCP, runtime, retrieval, and graph projection context
+- documentation, validation, Graphiti, commit, push, and closeout policies
+
+Decisions And Changes:
+
+- Added compact cache-only temporal, profile, coverage, collection, and
+  maintenance operations with host-derived access partitions.
+- Expanded the installed MCP to ten tools while excluding browser, cookie,
+  prompt, credential, and raw provider-event mechanics from agent context.
+- Added a loopback-only Graphiti sink and independent durable outbox delivery.
+- Installed service version 0.2.0 from commit `0e7938a`, migrated the live
+  corpus from schema 7 to schema 12, and retained a checksummed schema-7
+  backup.
+- Ran bounded source canaries until X returned the configured human
+  authentication gate, then stopped without browser operation or repair.
+
+Validation Evidence:
+
+- source and installed commit `0e7938a`;
+- backup
+  `/home/ecochran76/.local/share/last30days/backups/research-schema7-20260725T202700Z.db`,
+  SHA-256
+  `d28f7dfe74a2d14c68777ba3a4bc0bfe822893ea81e904e6f37b84e6f7b41cea`;
+- installed service 0.2.0, schema 12, 31 documents, 31 versions, zero missing
+  current versions, clean integrity and foreign-key checks;
+- a fresh installed MCP client discovered ten tools and representative
+  public/profile-scoped calls passed;
+- Graphiti outbox canary published in one attempt with receipt
+  `graphiti-http-v1:72def667-2ed5-526f-b313-00cba738f400:db720d2a17f1c3fcc9513d953a34d6d6a5237d8ac1a6a5dc686121b41a6330bb`;
+- Reddit job `0c62b06f-7c9f-4ae1-a830-5dfb52b32776` published one item;
+- YouTube job `055c04ff-df5d-472a-9ef8-91a9dccd1130` completed successfully
+  with zero yield;
+- X job `3a0a59a7-5729-4547-8702-22f02b3579aa` stopped as
+  `awaiting_operator/auth_required`.
+
+State Movement:
+
+- Plan 0011 Packet 6: `active -> awaiting_human_gate`.
+- P05 and P06: `PLANNED -> OPEN`.
+- P01, P03, and P04 remain `OPEN`; broad hydration remains gated.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the service and installed rollout remained one coupled
+  boundary and the human gate prohibited further autonomous canaries.
+
+Next Bounded Action:
+
+- After operator X reauthentication, rerun X and complete bounded Facebook and
+  LinkedIn post/profile canaries, prove timer restart recovery, then execute
+  Packet 7 independent acceptance and closeout.

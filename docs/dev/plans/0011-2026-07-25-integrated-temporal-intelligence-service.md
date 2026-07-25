@@ -68,18 +68,23 @@ profile history, graph authority, or agent-facing query behavior.
 
 ## Current State
 
-- Packets 1 through 5 are source-complete at commits `f14b0fa`, `0454e5a`,
-  `4ae5095`, `22c8db1`, and `6c6e751`. Schema version 12 adds governed
+- Packets 1 through 5 are complete at commits `f14b0fa`, `0454e5a`,
+  `4ae5095`, `22c8db1`, and `6c6e751`. Packet 6 source is complete at
+  `0e7938a`. Schema version 12 adds governed
   recurring collection, profile/identity evidence, bitemporal claims/events,
   recorded retrieval evaluation, and durable graph projection receipts to the
   additive temporal authority, immutable publication, version-scoped
   enrichment/index projections, and deterministic schema-7 replay export.
-- The installed service has not been migrated; schema version 7 remains the
-  installed runtime authority until the bounded rollout packet.
-- Packet 6 compact MCP, concrete Graphiti delivery, bounded adapter
-  maintenance, and installed rollout is the next ready critical-path unit.
-- Broad recurring hydration remains gated until Packet 6 rollout; isolated
-  Plan 0010 execution remains prohibited outside the four integration joins.
+- The installed user service now runs version 0.2.0 from commit `0e7938a`
+  against schema 12. Its fresh MCP client discovers ten compact tools, and its
+  concrete loopback Graphiti sink published a durable outbox canary.
+- Packet 6 is awaiting an authenticated-browser human gate: Reddit yielded one
+  item, YouTube completed successfully with zero yield, and X stopped as
+  `awaiting_operator` with `auth_required`. Facebook and LinkedIn post/profile
+  canaries remain intentionally unattempted.
+- Broad recurring hydration remains gated until the authenticated canaries and
+  Packet 7 acceptance complete; isolated Plan 0010 execution remains
+  prohibited outside the four integration joins.
 
 ## Context And Constraints
 
@@ -933,6 +938,78 @@ Next action:
 - execute Packet 6 compact service/MCP operations, concrete graph delivery,
   bounded adapter-maintenance discovery, installed migration, and one
   read-only canary per configured post/profile surface.
+
+### Checkpoint P0011-C06A | 2026-07-25
+
+Plan version: 1
+
+State transition: `packet_6_active -> packet_6_awaiting_human_gate`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- added compact cache-only evidence, brief, timeline, entity dossier, event
+  dossier, trend, comparison, profile-history, coverage, collection, and
+  maintenance operations under `/v1/intelligence`;
+- derived access partitions from the caller profile and rejected arbitrary
+  partition widening;
+- expanded the Go MCP from five to ten tools while keeping browser, prompt,
+  provider-event, cookie, and credential mechanics outside ordinary clients;
+- added a loopback-only concrete Graphiti HTTP sink, deterministic
+  partition-scoped node identity, durable outbox delivery, and receipts;
+- exposed safe maintenance readiness and repair-policy gates without allowing
+  authentication, access, rate-limit, checkpoint, or transient failures to
+  become repair candidates;
+- installed service version 0.2.0 from commit `0e7938a`, migrated the live
+  database from schema 7 to schema 12 after a successful dry run, and enabled
+  the user-scoped Graphiti projection loop.
+
+Validation evidence:
+
+- source and installed commit: `0e7938a`;
+- pre-migration backup:
+  `/home/ecochran76/.local/share/last30days/backups/research-schema7-20260725T202700Z.db`,
+  SHA-256
+  `d28f7dfe74a2d14c68777ba3a4bc0bfe822893ea81e904e6f37b84e6f7b41cea`;
+- installed database reports schema 12, 31 documents, 31 document versions,
+  zero missing current versions, `integrity_check=ok`, and no foreign-key
+  violations;
+- a fresh installed MCP client discovered all ten tools and successfully
+  called service info, temporal query, coverage, named-profile history, and
+  maintenance status;
+- installed Graphiti outbox canary `canary-plan0011-p6` published in one
+  attempt with receipt
+  `graphiti-http-v1:72def667-2ed5-526f-b313-00cba738f400:db720d2a17f1c3fcc9513d953a34d6d6a5237d8ac1a6a5dc686121b41a6330bb`;
+- Reddit job `0c62b06f-7c9f-4ae1-a830-5dfb52b32776` published one item;
+- YouTube job `055c04ff-df5d-472a-9ef8-91a9dccd1130` published successfully
+  with zero yield, preserving the distinction between health and yield;
+- X job `3a0a59a7-5729-4547-8702-22f02b3579aa` stopped after one attempt as
+  `awaiting_operator` with `auth_required` and no repair or browser action.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Packet 6 remained a coupled service, installed-runtime, and
+  rollout boundary, with CodeGraph used for structural exploration.
+
+Durable memory:
+
+- provider readiness passed and checkpoint P0011-C06A was queued as job
+  `e1a2d508-e2f2-4efb-9a6f-b28049750e34` in
+  `last30days_skill_main`; record its terminal result at the next checkpoint.
+
+Remaining acceptance criteria:
+
+- operator reauthentication of the configured X agent-browser profile,
+  followed by one bounded X canary;
+- bounded Facebook post plus LinkedIn post/profile canaries;
+- timer restart/recovery proof and the complete Packet 6 exit gate;
+- Packet 7 independent integrated acceptance and closeout.
+
+Next action:
+
+- after the operator restores X authentication, rerun the X canary, continue
+  with Facebook and LinkedIn post/profile canaries, then execute Packet 7.
 
 ## Stop Rules
 

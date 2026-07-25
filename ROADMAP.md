@@ -71,17 +71,20 @@ when it was true, when it was observed, and which collection caused it.
 
 Current State:
 
-- Plan 0011 Packets 1 through 5 are source-complete at commits `f14b0fa`,
-  `0454e5a`, `4ae5095`, `22c8db1`, and `6c6e751`.
+- Plan 0011 Packets 1 through 5 are complete at commits `f14b0fa`,
+  `0454e5a`, `4ae5095`, `22c8db1`, and `6c6e751`; Packet 6 source is complete
+  at `0e7938a`.
 - Additive schema version 12 now establishes immutable document versions,
   append-or-reuse publication, version-scoped evidence and enrichment,
   access partitions, governed recurring collection, post-publication
   assessment, authoritative index snapshots, evidence-backed temporal
   claims/events, recorded retrieval evaluations, and durable graph projection
   receipts.
-- Packet 6 agent-facing MCP, concrete Graphiti delivery, maintenance, and
-  bounded rollout is the next critical-path unit; the installed runtime
-  remains on schema 7 and broad recurring hydration remains gated.
+- The installed service runs version 0.2.0 on schema 12, a fresh MCP client
+  discovers ten compact tools, and concrete Graphiti outbox delivery passed.
+- Packet 6 is awaiting X profile reauthentication after a bounded canary
+  returned `awaiting_operator/auth_required`; authenticated Facebook and
+  LinkedIn canaries and broad recurring hydration remain gated.
 
 Goal Seeds:
 
@@ -105,9 +108,8 @@ Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the integrated P01-P06 campaign authority. Packets 1 through 5 are
-  source-complete; Packet 6 now owns the compact service surface, concrete
-  Graphiti delivery, adapter maintenance, installed migration, and bounded
-  rollout.
+  complete; Packet 6 source and installed migration are complete, but its
+  authenticated canaries await the recorded human authentication gate.
 
 ## P02 | Recurring Acquisition And Coverage
 
@@ -255,8 +257,9 @@ Current State:
 - Lexical, semantic, and graph candidate selection is access-partitioned.
   SQLite-only evidence retrieval remains operational when graph delivery
   fails, and the projection can be rebuilt by replaying authoritative records.
-- The concrete local Graphiti sink, MCP product contracts, installed migration,
-  and live projection canary remain Packet 6 work.
+- The concrete local Graphiti sink, compact MCP product contracts, installed
+  schema-12 migration, and durable live projection canary passed at commit
+  `0e7938a`; authenticated-source rollout acceptance remains Packet 6 work.
 
 Goal Seeds:
 
@@ -287,11 +290,23 @@ identity quality.
 
 ## P05 | Agent-Facing Intelligence Product
 
-State: PLANNED
+State: OPEN
 
 Objective: let agents discover, query, monitor, and evaluate the intelligence
 service through compact MCP and skill contracts without browser or scraper
 mechanics entering ordinary context.
+
+Current State:
+
+- Commit `0e7938a` exposes cache-only temporal queries, dossiers, timeline,
+  trend, profile history, coverage, collection control, and maintenance status
+  through a ten-tool MCP surface.
+- The installed version 0.2.0 service derives authorized partitions from the
+  caller profile and keeps prompts, raw model/provider events, browser
+  mechanics, cookies, and credentials out of normal responses.
+- Fresh installed-client discovery and representative public and
+  profile-scoped calls passed; final authenticated-source and integrated
+  acceptance remain open.
 
 Goal Seeds:
 
@@ -313,11 +328,20 @@ authority or access-control contracts.
 
 ## P06 | App Intelligence Control Plane
 
-State: PLANNED
+State: OPEN
 
 Objective: use App Intelligence as bounded stochastic labor behind the existing
 host-owned service supervisor for incoming-data assessment, cross-service
 identity resolution, retrieval evaluation, and adapter diagnosis and repair.
+
+Current State:
+
+- The four Plan 0010 joins are now attached behind deterministic corpus,
+  collection, identity, retrieval-evaluation, and maintenance authority.
+- Maintenance discovery exposes task state and safe repair-policy gates
+  without exposing prompts or provider events.
+- The X canary was correctly classified as an operator authentication gate and
+  did not trigger adapter diagnosis, repair, browser operation, or code change.
 
 Current Substrate:
 
@@ -422,8 +446,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- Execute Plan 0011 Packet 1. Do not implement Plan 0010 in isolation before
-  the immutable temporal evidence and access-partition authority it consumes.
+- Restore the configured X profile authentication, complete the remaining
+  bounded authenticated-source canaries, and finish Plan 0011 Packet 7
+  acceptance. Do not execute Plan 0010 outside its four host-owned joins.
 
 ## Goal-Compatible Plan Conversion
 
