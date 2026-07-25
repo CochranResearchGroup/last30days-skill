@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Authenticated X sessions recover from a stalled retained tab.** The X auth
+  probe now reloads `x.com/home` once when the DOM is ambiguous, then checks
+  again before requesting operator authentication. Explicit login,
+  checkpoint, and restriction states remain terminal and are never reloaded.
 - **Awaiting-operator refresh jobs can resume after the human gate clears.**
   Operators can use `service.py job <job-id> --resume` to return the same
   bounded job to the queue without losing its attempt count or event history.

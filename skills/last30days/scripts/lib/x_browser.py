@@ -345,13 +345,31 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
             self.act(workspace, BrowserAction("wait", value="2500"))
             self._prepared_sites.add((workspace.session_name, "x.com"))
         raw = self.evaluate(workspace, AUTH_SCRIPT)
-        return XAuthState(
-            authenticated=bool(raw.get("authenticated_dom")),
-            login_form=bool(raw.get("login_form")),
-            checkpoint=bool(raw.get("checkpoint")),
-            restricted=bool(raw.get("restricted")),
-            url=str(raw.get("url") or ""),
-        )
+        auth = _auth_state(raw)
+        if not (
+            auth.authenticated
+            or auth.login_form
+            or auth.checkpoint
+            or auth.restricted
+        ):
+            # X can retain an authenticated tab on a non-terminal loading
+            # screen after profile startup. Reload once before treating that
+            # ambiguous DOM as proof that operator authentication is required.
+            self.act(workspace, BrowserAction("navigate", value="https://x.com/home"))
+            self.act(workspace, BrowserAction("wait", value="2500"))
+            raw = self.evaluate(workspace, AUTH_SCRIPT)
+            auth = _auth_state(raw)
+        return auth
+
+
+def _auth_state(raw: dict[str, Any]) -> XAuthState:
+    return XAuthState(
+        authenticated=bool(raw.get("authenticated_dom")),
+        login_form=bool(raw.get("login_form")),
+        checkpoint=bool(raw.get("checkpoint")),
+        restricted=bool(raw.get("restricted")),
+        url=str(raw.get("url") or ""),
+    )
 
 
 class XBrowserScraper:

@@ -1068,6 +1068,67 @@ Next action:
 - commit and install the guarded resume candidate, resume the retained X job,
   and require a new acquisition attempt before counting the canary.
 
+### Checkpoint P0011-C06C | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_resume_control_ready -> packet_6_stalled_loader_recovery_ready`
+
+Progress classification: `blocker_reduction`
+
+Owned changes:
+
+- installed service version 0.2.1 and resumed retained X job
+  `3a0a59a7-5729-4547-8702-22f02b3579aa` through the public CLI;
+- preserved its append-only history while attempt count advanced from one to
+  two;
+- recorded attempt two returning `awaiting_operator/auth_required`;
+- confirmed the agent-browser broker still selected
+  `last30days-facebook`, required no manual action, and reported no compatible
+  live browser after the failed attempt;
+- traced the X adapter and proved its retained-tab auth probe evaluated the DOM
+  once, with no recovery for a non-terminal loading screen;
+- added a single reload-and-recheck for only an ambiguous X auth DOM;
+- preserved immediate terminal handling for explicit login, checkpoint, and
+  restricted-account evidence;
+- bumped the candidate service version to 0.2.2 and documented the behavior.
+
+Validation evidence:
+
+- job events 7 through 12 prove the public resume, lease generation two,
+  attempt two, acquisition, and typed operator stop;
+- agent-browser access-plan selected `last30days-facebook` and reported
+  `manualActionRequired=false`;
+- focused X auth-probe and acquisition-worker tests passed;
+- the full Python suite, Python compilation, and `git diff --check` passed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the active runtime instruction prohibits delegation unless
+  the user explicitly requests it, and the repair remained one bounded
+  adapter seam.
+
+Remaining acceptance criteria:
+
+- install service version 0.2.2 and perform one final bounded X canary;
+- on successful X publication, complete bounded Facebook post plus LinkedIn
+  post/profile canaries;
+- prove recurring collection restart recovery and complete the Packet 6 exit
+  gate;
+- execute Packet 7 independent integrated acceptance and closeout.
+
+Stop rule:
+
+- the next X result is the final Packet 6 adapter retry. If it returns another
+  terminal failure, checkpoint the typed evidence and stop rather than
+  widening repair scope.
+
+Next action:
+
+- commit and install version 0.2.2, resume the retained job, and inspect the
+  resulting acquisition and publication receipts.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,

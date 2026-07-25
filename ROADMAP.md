@@ -80,14 +80,16 @@ Current State:
   assessment, authoritative index snapshots, evidence-backed temporal
   claims/events, recorded retrieval evaluations, and durable graph projection
   receipts.
-- The installed service runs version 0.2.0 on schema 12, a fresh MCP client
+- The installed service runs version 0.2.1 on schema 12, a fresh MCP client
   discovers ten compact tools, and concrete Graphiti outbox delivery passed.
 - X profile authentication is restored. The first canary retry exposed that
   `force_refresh` coalesced onto the retained `awaiting_operator` job without a
-  public resume path. The source candidate now exposes a guarded operator
-  resume through the service, HTTP client, and CLI; installed validation,
-  authenticated Facebook and LinkedIn canaries, and broad recurring hydration
-  remain gated.
+  public resume path. Version 0.2.1 installed that guarded transition and
+  performed attempt two, which exposed a second deterministic defect: the X
+  auth probe classified an authenticated retained tab's stalled loading DOM as
+  `auth_required` without reloading it. The version 0.2.2 candidate now performs
+  one bounded reload only for an ambiguous DOM. Live X validation, authenticated
+  Facebook and LinkedIn canaries, and broad recurring hydration remain gated.
 
 Goal Seeds:
 
@@ -343,8 +345,11 @@ Current State:
   collection, identity, retrieval-evaluation, and maintenance authority.
 - Maintenance discovery exposes task state and safe repair-policy gates
   without exposing prompts or provider events.
-- The X canary was correctly classified as an operator authentication gate and
-  did not trigger adapter diagnosis, repair, browser operation, or code change.
+- The first X canary was correctly classified as an operator authentication
+  gate and did not trigger automated repair. After the operator authenticated,
+  attempt two exposed an adapter defect that deterministically confused X's
+  stalled loading DOM with a signed-out state; the bounded maintenance response
+  is a tested single reload-and-recheck, not an App Intelligence repair loop.
 
 Current Substrate:
 

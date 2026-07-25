@@ -763,3 +763,61 @@ Next Bounded Action:
 - Commit and push the guarded resume candidate, install service version 0.2.1,
   resume retained X job `3a0a59a7-5729-4547-8702-22f02b3579aa`, and require a
   new acquisition attempt before proceeding to Facebook and LinkedIn canaries.
+
+## Turn 12 | 2026-07-25
+
+Focus: Plan 0011 Packet 6 bounded X stalled-loader recovery.
+
+Authority Consulted:
+
+- Plan 0011 checkpoints P0011-C06A and P0011-C06B
+- installed service version 0.2.1, durable job events and acquisition envelopes
+- agent-browser access-plan evidence for target `x`
+- CodeGraph X acquisition and authentication-probe flow
+- TDD, validation, documentation, Graphiti, worktree, commit, push, and
+  closeout policies
+
+Decisions And Changes:
+
+- Proved the public resume transition queued the retained X job and advanced it
+  from attempt one to attempt two without resetting history.
+- Recorded attempt-two events: `operator_resumed`, `lease_acquired`,
+  `acquiring`, and a terminal `awaiting_operator/auth_required`.
+- Confirmed agent-browser still selects `last30days-facebook`, reports no
+  manual action required, and recommends a normal service request.
+- Located the deterministic adapter defect: an existing X tab was evaluated
+  once and any DOM lacking both authenticated and explicit failure markers was
+  treated as signed out.
+- Added one reload of `https://x.com/home` plus one recheck for only that
+  ambiguous state. Explicit login, checkpoint, and restricted states remain
+  terminal and do not reload.
+- Bumped the source candidate to service version 0.2.2.
+
+Validation Evidence:
+
+- regression tests cover ambiguous retained-tab recovery and no-reload behavior
+  for explicit login and checkpoint states;
+- focused X and acquisition-worker tests passed;
+- the full Python suite, Python compilation, and `git diff --check` passed.
+
+State Movement:
+
+- Plan 0011 Packet 6:
+  `resume_control_ready -> stalled_loader_recovery_ready`.
+- X job attempt: `1 -> 2`; live successful-yield proof remains pending.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this was one bounded adapter seam.
+
+Graphiti Write Status:
+
+- checkpoint write required after the candidate commit so the durable memory
+  can cite the immutable source state.
+
+Next Bounded Action:
+
+- Commit and push version 0.2.2, install and restart it, resume the retained X
+  job for the final bounded live canary, then stop on either successful X
+  publication or the next typed terminal result.

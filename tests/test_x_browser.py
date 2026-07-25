@@ -238,6 +238,98 @@ class RecordingCliClient:
 
 
 class XBrowserAcquisitionTests(TestCase):
+    def test_auth_probe_reloads_once_when_retained_x_tab_is_ambiguous(self):
+        from lib import x_browser
+
+        client = x_browser.CliAgentBrowserClient(timeout=45)
+        workspace = x_browser.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="session:last30days-facebook",
+            session_name="last30days-facebook",
+        )
+        responses = [
+            {"tabs": [{"index": 0, "active": True, "url": "https://x.com/home"}]},
+            {
+                "url": "https://x.com/home",
+                "authenticated_dom": False,
+                "login_form": False,
+                "checkpoint": False,
+                "restricted": False,
+            },
+            {"url": "https://x.com/home", "title": "Home / X"},
+            {
+                "url": "https://x.com/home",
+                "authenticated_dom": True,
+                "login_form": False,
+                "checkpoint": False,
+                "restricted": False,
+            },
+        ]
+        with (
+            patch.object(client, "_invoke", side_effect=responses) as invoke,
+            patch.object(x_browser.time, "sleep"),
+        ):
+            auth = client.inspect_auth(workspace)
+
+        self.assertTrue(auth.authenticated)
+        self.assertEqual(
+            ["--session", "last30days-facebook", "open", "https://x.com/home"],
+            invoke.call_args_list[2].args[0],
+        )
+        self.assertEqual(4, invoke.call_count)
+
+    def test_auth_probe_does_not_reload_an_explicit_login_page(self):
+        from lib import x_browser
+
+        client = x_browser.CliAgentBrowserClient(timeout=45)
+        workspace = x_browser.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="session:last30days-facebook",
+            session_name="last30days-facebook",
+        )
+        responses = [
+            {"tabs": [{"index": 0, "active": True, "url": "https://x.com/i/flow/login"}]},
+            {
+                "url": "https://x.com/i/flow/login",
+                "authenticated_dom": False,
+                "login_form": True,
+                "checkpoint": False,
+                "restricted": False,
+            },
+        ]
+        with patch.object(client, "_invoke", side_effect=responses) as invoke:
+            auth = client.inspect_auth(workspace)
+
+        self.assertFalse(auth.authenticated)
+        self.assertTrue(auth.login_form)
+        self.assertEqual(2, invoke.call_count)
+
+    def test_auth_probe_does_not_reload_an_explicit_checkpoint(self):
+        from lib import x_browser
+
+        client = x_browser.CliAgentBrowserClient(timeout=45)
+        workspace = x_browser.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="session:last30days-facebook",
+            session_name="last30days-facebook",
+        )
+        responses = [
+            {"tabs": [{"index": 0, "active": True, "url": "https://x.com/account/access"}]},
+            {
+                "url": "https://x.com/account/access",
+                "authenticated_dom": False,
+                "login_form": False,
+                "checkpoint": True,
+                "restricted": False,
+            },
+        ]
+        with patch.object(client, "_invoke", side_effect=responses) as invoke:
+            auth = client.inspect_auth(workspace)
+
+        self.assertFalse(auth.authenticated)
+        self.assertTrue(auth.checkpoint)
+        self.assertEqual(2, invoke.call_count)
+
     def test_auth_probe_opens_x_tab_when_shared_profile_has_none(self):
         from lib import x_browser
 
