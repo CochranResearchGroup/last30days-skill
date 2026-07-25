@@ -218,6 +218,37 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
             client._activate_linkedin_tab("shared-social")
         self.assertEqual(1, invoke.call_count)
 
+    def test_auth_inspection_opens_linkedin_when_recovered_browser_has_no_site_tab(self):
+        client = linkedin.CliAgentBrowserClient(timeout=5)
+        workspace = linkedin.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="session:shared-social",
+            session_name="shared-social",
+        )
+        authenticated = {
+            "authenticated_dom": True,
+            "login_form": False,
+            "checkpoint": False,
+            "has_li_at": True,
+            "url": "https://www.linkedin.com/feed/",
+        }
+        with mock.patch.object(client, "prepare_site_tab", return_value=False), mock.patch.object(
+            client, "act", return_value=linkedin.BrowserState()
+        ) as act, mock.patch.object(client, "evaluate", return_value=authenticated):
+            auth = client.inspect_auth(workspace)
+
+        self.assertEqual(
+            [
+                mock.call(
+                    workspace,
+                    linkedin.BrowserAction("new_tab", value="https://www.linkedin.com/feed/"),
+                ),
+                mock.call(workspace, linkedin.BrowserAction("wait", value="2500")),
+            ],
+            act.call_args_list,
+        )
+        self.assertTrue(auth.authenticated)
+
     def test_retained_workspace_closes_duplicate_linkedin_tabs_only(self):
         client = linkedin.CliAgentBrowserClient(timeout=5)
         with mock.patch.object(client, "_invoke", side_effect=[

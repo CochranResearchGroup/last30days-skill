@@ -331,7 +331,12 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
         )
 
     def inspect_auth(self, workspace: BrowserWorkspace) -> LinkedInAuthState:
-        self.prepare_site_tab(workspace, "linkedin.com", consolidate=True)
+        if not self.prepare_site_tab(workspace, "linkedin.com", consolidate=True):
+            self.act(
+                workspace,
+                BrowserAction("new_tab", value="https://www.linkedin.com/feed/"),
+            )
+            self.act(workspace, BrowserAction("wait", value="2500"))
         raw = self.evaluate(workspace, AUTH_SCRIPT)
         return LinkedInAuthState(
             authenticated=bool(raw.get("authenticated_dom")),
