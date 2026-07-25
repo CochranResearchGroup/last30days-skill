@@ -101,6 +101,14 @@ def _seed_evidence(db_path):
                    'profile-v1', 'profile:linkedin-primary')"""
     )
     conn.execute(
+        """INSERT INTO document_chunks
+           (chunk_id, document_id, ordinal, text, content_hash,
+            chunker_version, document_version_id)
+           VALUES ('current-chunk-profile', 'doc-profile', 0,
+                   'Ada Lovelace Analytical Engines', 'chunk-hash',
+                   'profile-v1', 'version-profile')"""
+    )
+    conn.execute(
         """INSERT INTO evidence_spans
            (evidence_id, version_id, chunk_id, span_start, span_end,
             span_digest, redaction_class, access_partition_id, created_at)
@@ -222,3 +230,61 @@ def test_identity_candidates_are_deterministic_and_resolution_is_terminal(tmp_pa
     )
     assert resolution.outcome == "ambiguous"
     assert publisher.record_identity_resolution(resolution) == resolution
+
+
+def test_same_entity_resolution_promotes_reversible_evidence_linked_assertions(tmp_path):
+    db_path = tmp_path / "identity-promotion.db"
+    _seed_evidence(db_path)
+    publisher = ProfilePublisher(db_path)
+    publisher.publish(_snapshot())
+    publisher.ensure_source_account(
+        source="x",
+        native_account_id="ada-x",
+        canonical_url="https://x.com/ada",
+        account_kind="person",
+        handle="ada",
+        display_name="Ada Lovelace",
+        declared_links=("https://www.linkedin.com/in/ada",),
+        evidence_ids=("evidence-profile",),
+        observed_at="2026-07-25T12:00:00Z",
+        access_partition_id="profile:linkedin-primary",
+    )
+    candidate = deterministic_identity_candidates(db_path)[0]
+    publisher.record_identity_resolution(
+        IdentityResolution(
+            candidate_id=candidate.candidate_id,
+            outcome="same_entity",
+            confidence=0.95,
+            evidence_ids=("evidence-profile",),
+            rationale="The declared link and account names agree.",
+            resolver="operator_review",
+        )
+    )
+    conn = sqlite3.connect(db_path)
+    conn.execute(
+        """INSERT INTO entities
+           (entity_id, canonical_name, entity_type, created_at, updated_at)
+           VALUES ('entity-ada', 'Ada Lovelace', 'person',
+                   '2026-07-25T12:00:00Z', '2026-07-25T12:00:00Z')"""
+    )
+    conn.commit()
+    conn.close()
+
+    assertion_ids = publisher.promote_identity_assertions(
+        candidate.candidate_id,
+        entity_id="entity-ada",
+        system_from="2026-07-25T12:00:01Z",
+    )
+    assert len(assertion_ids) == 2
+    publisher.close_identity_assertion(
+        assertion_ids[0], system_to="2026-07-26T00:00:00Z"
+    )
+    conn = sqlite3.connect(db_path)
+    assert conn.execute(
+        "SELECT COUNT(*) FROM identity_assertion_evidence"
+    ).fetchone()[0] == 2
+    assert conn.execute(
+        "SELECT system_to FROM identity_assertions WHERE assertion_id = ?",
+        (assertion_ids[0],),
+    ).fetchone()[0] == "2026-07-26T00:00:00Z"
+    conn.close()

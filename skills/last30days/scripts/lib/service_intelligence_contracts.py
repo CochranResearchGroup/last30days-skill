@@ -908,6 +908,8 @@ class TaskContractRegistry:
             ("content_assessment", 1): IntelligenceTaskRequest,
             ("profile_change_assessment", 1): IntelligenceTaskRequest,
             ("identity_resolution", 1): IntelligenceTaskRequest,
+            ("knowledge_extraction", 1): IntelligenceTaskRequest,
+            ("retrieval_evaluation", 1): IntelligenceTaskRequest,
         }
 
     @classmethod
@@ -965,6 +967,16 @@ class TaskContractRegistry:
             codes.append(ValidatorCode.SCHEMA_INVALID.value)
         if request.task_type == "identity_resolution" and any(
             not self._valid_identity_resolution_proposal(proposal)
+            for proposal in result.proposals
+        ):
+            codes.append(ValidatorCode.SCHEMA_INVALID.value)
+        if request.task_type == "knowledge_extraction" and any(
+            not self._valid_knowledge_proposal(proposal)
+            for proposal in result.proposals
+        ):
+            codes.append(ValidatorCode.SCHEMA_INVALID.value)
+        if request.task_type == "retrieval_evaluation" and any(
+            not self._valid_retrieval_evaluation_proposal(proposal)
             for proposal in result.proposals
         ):
             codes.append(ValidatorCode.SCHEMA_INVALID.value)
@@ -1061,6 +1073,53 @@ class TaskContractRegistry:
                 "ambiguous",
                 "insufficient_evidence",
             }
+        )
+
+    @staticmethod
+    def _valid_knowledge_proposal(proposal: IntelligenceProposal) -> bool:
+        if proposal.proposal_kind == "temporal_claim":
+            required = {
+                "subject_entity_id",
+                "predicate",
+                "object",
+                "valid_from",
+                "valid_to",
+            }
+        elif proposal.proposal_kind == "temporal_event":
+            required = {
+                "event_type",
+                "title",
+                "event_time_from",
+                "event_time_to",
+                "entity_roles",
+            }
+        else:
+            return False
+        return set(proposal.payload) == required
+
+    @staticmethod
+    def _valid_retrieval_evaluation_proposal(
+        proposal: IntelligenceProposal,
+    ) -> bool:
+        payload = proposal.payload
+        recall = payload.get("evidence_recall")
+        return (
+            proposal.proposal_kind == "retrieval_evaluation"
+            and set(payload)
+            == {
+                "case_id",
+                "verdict",
+                "evidence_recall",
+                "temporal_correct",
+                "access_safe",
+            }
+            and payload["case_id"] == proposal.proposal_key
+            and payload["verdict"] in {"pass", "fail", "review"}
+            and isinstance(recall, (int, float))
+            and not isinstance(recall, bool)
+            and 0 <= float(recall) <= 1
+            and isinstance(payload["temporal_correct"], bool)
+            and isinstance(payload["access_safe"], bool)
         )
 
 

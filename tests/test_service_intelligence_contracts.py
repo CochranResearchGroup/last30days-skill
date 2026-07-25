@@ -181,6 +181,50 @@ def test_profile_change_and_identity_contracts_only_accept_host_candidates():
     assert ValidatorCode.SCHEMA_INVALID.value in receipt.validator_codes
 
 
+def test_knowledge_extraction_and_retrieval_evaluation_are_bounded_proposals():
+    registry = TaskContractRegistry.default()
+    assert registry.request("knowledge_extraction", 1) is IntelligenceTaskRequest
+    assert registry.request("retrieval_evaluation", 1) is IntelligenceTaskRequest
+
+    request = _request(
+        task_type="retrieval_evaluation",
+        policy_version="retrieval-evaluation-v1",
+        allowed_actions=["record_retrieval_evaluation"],
+    )
+    result = IntelligenceTaskResult.from_worker_dict(
+        {
+            "schema_version": 1,
+            "contract_name": "intelligence_task_result",
+            "contract_version": 1,
+            "task_type": request.task_type,
+            "task_id": request.task_id,
+            "run_id": request.run_id,
+            "input_digest": request.input_digest,
+            "policy_version": request.policy_version,
+            "action": "record_retrieval_evaluation",
+            "proposals": [
+                {
+                    "proposal_kind": "retrieval_evaluation",
+                    "proposal_key": "case-001",
+                    "confidence": 0.9,
+                    "evidence_ids": ["evidence-001"],
+                    "payload": {
+                        "case_id": "case-001",
+                        "verdict": "pass",
+                        "evidence_recall": 1.0,
+                        "temporal_correct": True,
+                        "access_safe": True,
+                    },
+                }
+            ],
+            "uncertainty_codes": [],
+            "rationale": "All expected evidence was returned in the right interval.",
+            "worker_ref": "openai-codex:gpt-5.5",
+        }
+    )
+    assert registry.validate_result(request, result).accepted is True
+
+
 def test_content_assessment_queue_is_idempotent_and_replayable(tmp_path):
     db_path = tmp_path / "research.db"
     ServiceStore(db_path).initialize()

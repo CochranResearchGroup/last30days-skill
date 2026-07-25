@@ -926,6 +926,7 @@ class HybridRetriever:
         query: str,
         *,
         sources: Sequence[str] | None = None,
+        access_partitions: Sequence[str] | None = None,
         top_k: int = 8,
         snippet_chars: int = 320,
     ) -> RetrievalSnapshot:
@@ -944,12 +945,17 @@ class HybridRetriever:
         match_query = " OR ".join(f'"{term.replace(chr(34), chr(34) * 2)}"' for term in terms)
         source_values = tuple(dict.fromkeys(sources or ()))
 
-        where_source = ""
+        where_filters = ""
         params: list[object] = [match_query]
         if source_values:
             placeholders = ",".join("?" for _ in source_values)
-            where_source = f" AND d.source IN ({placeholders})"
+            where_filters += f" AND d.source IN ({placeholders})"
             params.extend(source_values)
+        partition_values = tuple(dict.fromkeys(access_partitions or ()))
+        if partition_values:
+            placeholders = ",".join("?" for _ in partition_values)
+            where_filters += f" AND d.access_partition_id IN ({placeholders})"
+            params.extend(partition_values)
         params.append(min(self.fusion.candidate_limit, max(top_k, 1) * 10))
 
         conn = self._connect()
@@ -974,7 +980,7 @@ class HybridRetriever:
                      AND ix.index_version = ?
                     JOIN document_chunks AS c
                       ON c.document_id = d.document_id AND c.ordinal = 0
-                    WHERE documents_fts MATCH ?{where_source}
+                    WHERE documents_fts MATCH ?{where_filters}
                     ORDER BY lexical_bm25, d.document_id
                     LIMIT ?""",
                 params,
@@ -992,11 +998,17 @@ class HybridRetriever:
                         index_version,
                         self.embedding_provider.model,
                     ]
-                    semantic_source = ""
+                    semantic_filters = ""
                     if source_values:
                         placeholders = ",".join("?" for _ in source_values)
-                        semantic_source = f" AND d.source IN ({placeholders})"
+                        semantic_filters += f" AND d.source IN ({placeholders})"
                         semantic_params.extend(source_values)
+                    if partition_values:
+                        placeholders = ",".join("?" for _ in partition_values)
+                        semantic_filters += (
+                            f" AND d.access_partition_id IN ({placeholders})"
+                        )
+                        semantic_params.extend(partition_values)
                     semantic_rows = conn.execute(
                         f"""SELECT d.*, c.chunk_id, c.text AS chunk_text,
                                    ie.dimensions, ie.vector
@@ -1007,7 +1019,7 @@ class HybridRetriever:
                               ON ix.document_id = d.document_id
                              AND ix.index_version = ie.index_version
                             WHERE ie.index_version = ?
-                              AND ie.model = ?{semantic_source}
+                              AND ie.model = ?{semantic_filters}
                             ORDER BY d.document_id, c.ordinal""",
                         semantic_params,
                     ).fetchall()
@@ -1044,7 +1056,7 @@ class HybridRetriever:
                 seed_ids = list(dict.fromkeys(seed_ids))[:4]
                 if seed_ids:
                     seed_placeholders = ",".join("?" for _ in seed_ids)
-                    graph_source = ""
+                    graph_filters = ""
                     graph_params: list[object] = [
                         index_version,
                         index_version,
@@ -1055,10 +1067,19 @@ class HybridRetriever:
                         source_placeholders = ",".join(
                             "?" for _ in source_values
                         )
-                        graph_source = (
+                        graph_filters += (
                             f" AND d.source IN ({source_placeholders})"
                         )
                         graph_params.extend(source_values)
+                    if partition_values:
+                        partition_placeholders = ",".join(
+                            "?" for _ in partition_values
+                        )
+                        graph_filters += (
+                            " AND d.access_partition_id IN "
+                            f"({partition_placeholders})"
+                        )
+                        graph_params.extend(partition_values)
                     graph_params.append(
                         min(32, self.fusion.candidate_limit)
                     )
@@ -1078,7 +1099,7 @@ class HybridRetriever:
                               AND (
                                   ir.subject_entity_id IN ({seed_placeholders})
                                   OR ir.object_entity_id IN ({seed_placeholders})
-                              ){graph_source}
+                              ){graph_filters}
                             ORDER BY ir.confidence DESC, ir.relationship_id,
                                      d.document_id
                             LIMIT ?""",

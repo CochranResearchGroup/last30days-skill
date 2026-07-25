@@ -1540,6 +1540,41 @@ CREATE TABLE identity_resolution_outcomes (
     access_partition_id TEXT NOT NULL
 );
 """,
+    12: """
+CREATE TABLE graph_projection_receipts (
+    outbox_id TEXT PRIMARY KEY REFERENCES graph_projection_outbox(outbox_id),
+    projection_receipt TEXT NOT NULL,
+    aggregate_kind TEXT NOT NULL,
+    aggregate_id TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    published_at TEXT NOT NULL
+);
+
+CREATE TABLE temporal_retrieval_cases (
+    case_id TEXT PRIMARY KEY,
+    query_text TEXT NOT NULL,
+    query_kind TEXT NOT NULL,
+    as_of TEXT,
+    during_from TEXT,
+    during_to TEXT,
+    known_as_of TEXT,
+    access_partitions_json TEXT NOT NULL,
+    expected_evidence_ids_json TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE temporal_retrieval_evaluations (
+    evaluation_id TEXT PRIMARY KEY,
+    case_id TEXT NOT NULL REFERENCES temporal_retrieval_cases(case_id),
+    policy_version TEXT NOT NULL,
+    result_digest TEXT NOT NULL,
+    metrics_json TEXT NOT NULL,
+    accepted INTEGER NOT NULL CHECK (accepted IN (0, 1)),
+    validation_codes_json TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (case_id, policy_version, result_digest)
+);
+""",
 }
 
 

@@ -547,6 +547,92 @@ class ProfilePublisher:
         finally:
             conn.close()
 
+    def promote_identity_assertions(
+        self,
+        candidate_id: str,
+        *,
+        entity_id: str,
+        system_from: str,
+    ) -> tuple[str, ...]:
+        """Promote only an accepted same-entity outcome; retain reversible rows."""
+        conn = self._connect()
+        try:
+            conn.execute("BEGIN IMMEDIATE")
+            row = conn.execute(
+                """SELECT c.*, r.outcome, r.confidence, r.evidence_ids_json
+                   FROM identity_candidates AS c
+                   JOIN identity_resolution_outcomes AS r
+                     ON r.candidate_id = c.candidate_id
+                   WHERE c.candidate_id = ?""",
+                (candidate_id,),
+            ).fetchone()
+            if row is None or row["outcome"] != "same_entity":
+                raise ValueError("only same_entity outcomes may be promoted")
+            if conn.execute(
+                "SELECT 1 FROM entities WHERE entity_id = ?", (entity_id,)
+            ).fetchone() is None:
+                raise ValueError("identity assertion entity does not exist")
+            evidence_ids = tuple(json.loads(row["evidence_ids_json"]))
+            self._assert_evidence(
+                conn, evidence_ids, row["access_partition_id"]
+            )
+            assertion_ids: list[str] = []
+            for account_id in (row["left_account_id"], row["right_account_id"]):
+                assertion_id = stable_temporal_id(
+                    "identity_assertion",
+                    {
+                        "candidate_id": candidate_id,
+                        "subject_account_id": account_id,
+                        "object_entity_id": entity_id,
+                    },
+                )
+                conn.execute(
+                    """INSERT OR IGNORE INTO identity_assertions
+                       (assertion_id, subject_account_id, object_entity_id,
+                        assertion_kind, confidence, validation_state,
+                        system_from, system_to, access_partition_id,
+                        contract_version)
+                       VALUES (?, ?, ?, 'account_represents_entity', ?,
+                               'accepted', ?, NULL, ?, 'identity-resolution-v1')""",
+                    (
+                        assertion_id,
+                        account_id,
+                        entity_id,
+                        row["confidence"],
+                        system_from,
+                        row["access_partition_id"],
+                    ),
+                )
+                for evidence_id in evidence_ids:
+                    conn.execute(
+                        """INSERT OR IGNORE INTO identity_assertion_evidence
+                           (assertion_id, evidence_id, access_partition_id)
+                           VALUES (?, ?, ?)""",
+                        (assertion_id, evidence_id, row["access_partition_id"]),
+                    )
+                assertion_ids.append(assertion_id)
+            conn.commit()
+            return tuple(assertion_ids)
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            conn.close()
+
+    def close_identity_assertion(self, assertion_id: str, *, system_to: str) -> None:
+        conn = self._connect()
+        try:
+            updated = conn.execute(
+                """UPDATE identity_assertions SET system_to = ?
+                   WHERE assertion_id = ? AND system_to IS NULL""",
+                (system_to, assertion_id),
+            ).rowcount
+            if updated != 1:
+                raise ValueError("identity assertion is missing or already closed")
+            conn.commit()
+        finally:
+            conn.close()
+
 
 def deterministic_identity_candidates(db_path: Path) -> tuple[IdentityCandidate, ...]:
     """Persist bounded candidates from declared, deterministic account signals."""
