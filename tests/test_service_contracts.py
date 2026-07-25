@@ -435,6 +435,13 @@ def test_schema_catalog_is_the_golden_contract_for_every_v1_envelope():
         "job_event",
         "decision_record",
         "temporal_evidence_ref",
+        "collection_spec",
+        "intelligence_evidence_ref",
+        "intelligence_task_request",
+        "intelligence_task_result",
+        "validation_receipt",
+        "promotion_receipt",
+        "replay_receipt",
     }
     assert catalog["contracts"]["query_request"]["properties"][
         "freshness_policy"

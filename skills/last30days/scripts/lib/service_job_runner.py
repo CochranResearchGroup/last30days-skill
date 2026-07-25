@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from typing import Callable, Protocol
+from typing import Callable, Mapping, Protocol
 
 from . import service_contracts as contracts
 from .service_publication import CorpusPublisher
@@ -26,6 +26,45 @@ class AcquisitionRunner(Protocol):
     def run(
         self, request: contracts.AcquisitionWorkRequest
     ) -> contracts.AcquisitionWorkResult: ...
+
+
+class CollectionRecorder(Protocol):
+    def policy_for_job(self, job_id: str) -> Mapping[str, object] | None: ...
+
+    def record_started(
+        self, *, job_id: str, worker_id: str, lease_generation: int
+    ) -> None: ...
+
+    def record_assessment(
+        self,
+        *,
+        job_id: str,
+        acquisition_id: str,
+        state: str,
+        item_count: int,
+        task_id: str | None = None,
+        error_code: str | None = None,
+    ) -> None: ...
+
+    def record_completion(
+        self,
+        *,
+        job_id: str,
+        state: str,
+        outcomes: tuple[Mapping[str, object], ...],
+        completed_at: datetime,
+    ) -> None: ...
+
+
+class AssessmentQueue(Protocol):
+    def enqueue_for_acquisition(
+        self,
+        *,
+        job_id: str,
+        acquisition_id: str,
+        item_limit: int = 20,
+        max_cost_cents: int = 5,
+    ): ...
 
 
 @dataclass(frozen=True)
@@ -79,6 +118,8 @@ class AcquisitionJobRunner:
         policy: JobRunnerPolicy = JobRunnerPolicy(),
         *,
         clock: Clock | None = None,
+        collection_coordinator: CollectionRecorder | None = None,
+        assessment_queue: AssessmentQueue | None = None,
     ) -> None:
         self.supervisor = supervisor
         self.ledger = ledger
@@ -87,6 +128,8 @@ class AcquisitionJobRunner:
         self.scheduler = scheduler
         self.policy = policy
         self._clock = clock or (lambda: datetime.now(timezone.utc))
+        self.collection_coordinator = collection_coordinator
+        self.assessment_queue = assessment_queue
 
     def _now(self) -> datetime:
         value = self._clock()
@@ -246,6 +289,40 @@ class AcquisitionJobRunner:
             error_code=outcome.result.safe_error_code,
         )
 
+    @staticmethod
+    def _collection_outcome(outcome: _Outcome) -> dict[str, object]:
+        diagnostics = outcome.result.diagnostics
+        attempted = diagnostics.get("attempted_count", outcome.result.item_count)
+        return {
+            "source": outcome.result.source,
+            "status": outcome.result.status.value,
+            "attempted_count": (
+                attempted
+                if isinstance(attempted, int) and not isinstance(attempted, bool)
+                else outcome.result.item_count
+            ),
+            "observed_count": outcome.result.item_count,
+            "stored_count": outcome.result.item_count,
+            "cursor_after": diagnostics.get("cursor_after"),
+            "watermark_after": diagnostics.get("watermark_after"),
+            "retry_after": outcome.retry_after,
+            "error_code": outcome.result.safe_error_code,
+        }
+
+    def _record_collection_completion(
+        self,
+        job: contracts.JobRecord,
+        outcomes: list[_Outcome],
+    ) -> None:
+        if self.collection_coordinator is None:
+            return
+        self.collection_coordinator.record_completion(
+            job_id=job.job_id,
+            state=job.state.value,
+            outcomes=tuple(self._collection_outcome(item) for item in outcomes),
+            completed_at=self._now(),
+        )
+
     def run_once(self, *, worker_id: str) -> contracts.JobRecord | None:
         job = self.supervisor.lease_next(
             worker_id=worker_id,
@@ -253,6 +330,12 @@ class AcquisitionJobRunner:
         )
         if job is None:
             return None
+        if self.collection_coordinator is not None:
+            self.collection_coordinator.record_started(
+                job_id=job.job_id,
+                worker_id=worker_id,
+                lease_generation=job.lease_generation,
+            )
         snapshot = self.supervisor.get_snapshot(job.job_id)
         sources = self._job_sources(job.job_id, snapshot.events)
         envelope = self.ledger.get_envelope(
@@ -262,6 +345,11 @@ class AcquisitionJobRunner:
         if not isinstance(envelope, contracts.QueryRequest):
             raise RuntimeError("refresh job does not reference a query request")
         query_request = envelope
+        collection_policy = (
+            self.collection_coordinator.policy_for_job(job.job_id)
+            if self.collection_coordinator is not None
+            else None
+        )
         job = self.supervisor.transition(
             job.job_id,
             to_state=contracts.JobState.ACQUIRING,
@@ -300,9 +388,39 @@ class AcquisitionJobRunner:
                     "depth": self.policy.depth,
                     "adapter": adapter,
                     "adapter_version": adapter_version,
-                    "wall_timeout_seconds": self.policy.wall_timeout_seconds,
-                    "item_limit": min(self.policy.item_limit, query_request.top_k),
-                    "network_request_limit": self.policy.network_request_limit,
+                    "wall_timeout_seconds": min(
+                        self.policy.wall_timeout_seconds,
+                        int(
+                            collection_policy.get(
+                                "wall_timeout_seconds",
+                                self.policy.wall_timeout_seconds,
+                            )
+                        )
+                        if collection_policy
+                        else self.policy.wall_timeout_seconds,
+                    ),
+                    "item_limit": min(
+                        self.policy.item_limit,
+                        query_request.top_k,
+                        int(
+                            collection_policy.get(
+                                "item_limit", self.policy.item_limit
+                            )
+                        )
+                        if collection_policy
+                        else self.policy.item_limit,
+                    ),
+                    "network_request_limit": min(
+                        self.policy.network_request_limit,
+                        int(
+                            collection_policy.get(
+                                "network_request_limit",
+                                self.policy.network_request_limit,
+                            )
+                        )
+                        if collection_policy
+                        else self.policy.network_request_limit,
+                    ),
                     "cost_budget_cents": reserved_cost,
                 }
             )
@@ -336,7 +454,51 @@ class AcquisitionJobRunner:
                         contracts.RetryClass.PERMANENT,
                     ),
                 )
-            self.publisher.record_result(work, result, worker_id=worker_id)
+            self.publisher.record_result(
+                work,
+                result,
+                worker_id=worker_id,
+                retention_class=(
+                    str(collection_policy["retention_class"])
+                    if collection_policy
+                    else None
+                ),
+                redaction_class=(
+                    str(collection_policy["redaction_class"])
+                    if collection_policy
+                    else None
+                ),
+            )
+            if (
+                self.collection_coordinator is not None
+                and self.assessment_queue is not None
+                and result.status
+                in {
+                    contracts.AcquisitionStatus.SUCCEEDED,
+                    contracts.AcquisitionStatus.PARTIAL,
+                }
+            ):
+                try:
+                    task = self.assessment_queue.enqueue_for_acquisition(
+                        job_id=job.job_id,
+                        acquisition_id=result.work_id,
+                        item_limit=min(result.item_count, self.policy.item_limit),
+                    )
+                    self.collection_coordinator.record_assessment(
+                        job_id=job.job_id,
+                        acquisition_id=result.work_id,
+                        state="queued" if task is not None else "skipped",
+                        item_count=result.item_count,
+                        task_id=getattr(task, "task_id", None),
+                    )
+                except Exception as exc:
+                    self.collection_coordinator.record_assessment(
+                        job_id=job.job_id,
+                        acquisition_id=result.work_id,
+                        state="failed",
+                        item_count=result.item_count,
+                        error_code=type(exc).__name__.casefold(),
+                    )
             delay = self._retry_delay(job, source, result)
             retry_after = (
                 self._format_time(self._now() + timedelta(seconds=delay))
@@ -378,7 +540,7 @@ class AcquisitionJobRunner:
                 contracts.RetryClass.TRANSIENT,
                 contracts.RetryClass.CONTENT,
             }
-            return self.supervisor.handle_failure(
+            terminal_job = self.supervisor.handle_failure(
                 job.job_id,
                 error_code=failure.result.safe_error_code or "acquisition_failed",
                 retryable=retryable,
@@ -387,6 +549,8 @@ class AcquisitionJobRunner:
                 worker_id=worker_id,
                 lease_generation=job.lease_generation,
             )
+            self._record_collection_completion(terminal_job, outcomes)
+            return terminal_job
 
         job = self.supervisor.transition(
             job.job_id,
@@ -432,7 +596,7 @@ class AcquisitionJobRunner:
             ),
             None,
         )
-        return self.supervisor.transition(
+        terminal_job = self.supervisor.transition(
             job.job_id,
             to_state=terminal,
             worker_id=worker_id,
@@ -444,3 +608,5 @@ class AcquisitionJobRunner:
                 "successful_source_count": len(completed),
             },
         )
+        self._record_collection_completion(terminal_job, outcomes)
+        return terminal_job

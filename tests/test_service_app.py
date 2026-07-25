@@ -331,11 +331,17 @@ def test_service_discovery_reports_durable_acquisition_sources(tmp_path):
         refresh_scheduler=FakeRefreshScheduler(),
         acquisition_sources=("youtube", "x"),
         acquisition_readiness={"x": True, "youtube": False},
+        recurring_collection=True,
+        assessment_processing=True,
     )
 
     info = app.service_info()
 
     assert "durable_refresh" in info.capabilities
+    assert "recurring_collection" in info.capabilities
+    assert "interval_coverage" in info.capabilities
+    assert "assessment_queue" in info.capabilities
+    assert "content_assessment" in info.capabilities
     assert info.sources["x"]["acquisition_ready"] is True
     assert info.sources["youtube"]["acquisition_ready"] is False
     assert info.sources["youtube"]["acquisition_status"] == "configured"

@@ -10,11 +10,13 @@ import signal
 import sys
 import threading
 import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 from lib import service_contracts as contracts
 from lib.service_app import initialize_application
 from lib.service_client import ServiceClient, ServiceClientError
+from lib.service_collection import CollectionSpec, CollectionSpecValidationError
 from lib.service_enrichment import EnrichmentService
 from lib.service_http import ServiceAlreadyRunningError, UnixServiceServer
 from lib.service_intelligence import (
@@ -27,9 +29,11 @@ from lib.service_intelligence import (
     RepairSupervisor,
     StructuredIntelligenceWorkers,
 )
+from lib.service_intelligence_contracts import ContentAssessmentWorker
 from lib.service_retrieval import HybridRetriever, LocalHashEmbeddingProvider
 from lib.service_runtime import (
     AcquisitionLoop,
+    AssessmentLoop,
     EnrichmentLoop,
     build_acquisition_runtime,
 )
@@ -77,7 +81,39 @@ def _serve(args: argparse.Namespace) -> int:
     retriever.index_legacy_findings()
     os.chmod(db_path, 0o600)
     acquisition = build_acquisition_runtime(db_path, retriever)
-    acquisition_loop = AcquisitionLoop(acquisition.runner)
+    acquisition_loop = AcquisitionLoop(
+        acquisition.runner,
+        due_scheduler=acquisition.collection_coordinator,
+    )
+    assessment_loop = None
+    assessment_enabled = os.getenv(
+        "LAST30DAYS_APP_INTELLIGENCE_ASSESSMENT", ""
+    ).strip().casefold() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+    if assessment_enabled:
+        assessment_loop = AssessmentLoop(
+            ContentAssessmentWorker(
+                acquisition.assessment_queue,
+                CodexAppServerClient(
+                    codex_path=os.getenv("LAST30DAYS_CODEX_PATH", "codex"),
+                    timeout_seconds=min(
+                        60.0,
+                        float(
+                            os.getenv(
+                                "LAST30DAYS_APP_INTELLIGENCE_TIMEOUT",
+                                "60",
+                            )
+                        ),
+                    ),
+                ),
+                cwd=Path(__file__).resolve().parent,
+                model=os.getenv("LAST30DAYS_APP_INTELLIGENCE_MODEL") or None,
+            )
+        )
     enrichment_loop = EnrichmentLoop(
         EnrichmentService(
             db_path,
@@ -105,8 +141,12 @@ def _serve(args: argparse.Namespace) -> int:
         job_reader=acquisition.supervisor,
         acquisition_sources=acquisition.sources,
         acquisition_readiness=acquisition.source_readiness,
+        recurring_collection=True,
+        assessment_processing=assessment_enabled,
         runtime_error=lambda: (
-            acquisition_loop.last_error_code or enrichment_loop.last_error_code
+            acquisition_loop.last_error_code
+            or enrichment_loop.last_error_code
+            or (assessment_loop.last_error_code if assessment_loop else None)
         ),
     )
     server = UnixServiceServer(socket_path, application)
@@ -126,11 +166,15 @@ def _serve(args: argparse.Namespace) -> int:
     thread.start()
     acquisition_loop.start()
     enrichment_loop.start()
+    if assessment_loop is not None:
+        assessment_loop.start()
     try:
         while not stop_event.wait(0.2):
             if not thread.is_alive():
                 raise RuntimeError("service listener stopped unexpectedly")
     finally:
+        if assessment_loop is not None:
+            assessment_loop.stop(timeout=5)
         enrichment_loop.stop(timeout=5)
         acquisition_loop.stop(timeout=5)
         server.shutdown()
@@ -196,6 +240,49 @@ def _job(args: argparse.Namespace) -> int:
         print(json.dumps({"status": "error", "message": str(exc)}, sort_keys=True))
         return 1
     print(json.dumps(job.to_dict(), indent=2, sort_keys=True))
+    return 0
+
+
+def _collection_coordinator(args: argparse.Namespace):
+    db_path = Path(args.db) if args.db else _default_db_path()
+    _prepare_private_data_path(db_path)
+    retriever = HybridRetriever(db_path)
+    return build_acquisition_runtime(db_path, retriever).collection_coordinator
+
+
+def _collection(args: argparse.Namespace) -> int:
+    coordinator = _collection_coordinator(args)
+    if args.collection_action == "put":
+        try:
+            payload = json.loads(Path(args.input).read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise RuntimeError(
+                "collection spec must be a readable JSON file"
+            ) from exc
+        if not isinstance(payload, dict):
+            raise RuntimeError("collection spec must be a JSON object")
+        spec = CollectionSpec.from_dict(payload)
+        response: object = coordinator.put_spec(spec).to_dict()
+    elif args.collection_action == "list":
+        response = {
+            "schema_version": contracts.SCHEMA_VERSION,
+            "collections": coordinator.list_specs(),
+        }
+    elif args.collection_action in {"pause", "resume"}:
+        response = coordinator.set_enabled(
+            args.collection_spec_id,
+            enabled=args.collection_action == "resume",
+        ).to_dict()
+    else:
+        scheduled_for = args.scheduled_for or datetime.now(
+            timezone.utc
+        ).isoformat().replace("+00:00", "Z")
+        response = coordinator.enqueue_interval(
+            args.collection_spec_id,
+            scheduled_for=scheduled_for,
+            trigger="manual",
+        ).to_dict()
+    print(json.dumps(response, indent=2, sort_keys=True))
     return 0
 
 
@@ -378,6 +465,37 @@ def build_parser() -> argparse.ArgumentParser:
     job.add_argument("--timeout", type=float, default=5.0)
     job.set_defaults(handler=_job)
 
+    collection = subparsers.add_parser(
+        "collection",
+        help="Configure or inspect governed recurring collection",
+    )
+    collection_subparsers = collection.add_subparsers(
+        dest="collection_action", required=True
+    )
+    collection_put = collection_subparsers.add_parser(
+        "put", help="Create or revise a collection spec from strict JSON"
+    )
+    collection_put.add_argument("--input", required=True)
+    collection_put.add_argument("--db")
+    collection_put.set_defaults(handler=_collection)
+    collection_list = collection_subparsers.add_parser(
+        "list", help="List collection specs and timer status"
+    )
+    collection_list.add_argument("--db")
+    collection_list.set_defaults(handler=_collection)
+    for action in ("pause", "resume"):
+        command = collection_subparsers.add_parser(action)
+        command.add_argument("collection_spec_id")
+        command.add_argument("--db")
+        command.set_defaults(handler=_collection)
+    collection_run = collection_subparsers.add_parser(
+        "run", help="Enqueue one manual interval through timer deduplication"
+    )
+    collection_run.add_argument("collection_spec_id")
+    collection_run.add_argument("--scheduled-for")
+    collection_run.add_argument("--db")
+    collection_run.set_defaults(handler=_collection)
+
     intelligence = subparsers.add_parser(
         "intelligence",
         help="Run one operator-owned bounded enrichment or evaluation turn",
@@ -433,7 +551,11 @@ def main() -> int:
     except ServiceAlreadyRunningError:
         print("last30days service is already running", file=sys.stderr)
         return 3
-    except (contracts.ContractValidationError, RuntimeError) as exc:
+    except (
+        contracts.ContractValidationError,
+        CollectionSpecValidationError,
+        RuntimeError,
+    ) as exc:
         print(f"last30days service error: {exc}", file=sys.stderr)
         return 2
 

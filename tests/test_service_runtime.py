@@ -9,6 +9,7 @@ from lib import service_contracts as contracts
 from lib.service_retrieval import HybridRetriever
 from lib.service_runtime import (
     AcquisitionLoop,
+    AssessmentLoop,
     EnrichmentLoop,
     build_acquisition_runtime,
 )
@@ -153,6 +154,27 @@ def test_acquisition_loop_cancels_active_work_before_join():
 
     assert runner.cancelled is True
     assert loop.is_alive is False
+
+
+def test_assessment_loop_is_independent_and_stoppable():
+    class Assessment:
+        def __init__(self):
+            self.called = threading.Event()
+
+        def run_once(self, *, worker_id):
+            assert worker_id
+            self.called.set()
+            return None
+
+    assessment = Assessment()
+    loop = AssessmentLoop(assessment, idle_seconds=0.01, error_seconds=0.01)
+
+    loop.start()
+    assert assessment.called.wait(1)
+    loop.stop(timeout=1)
+
+    assert loop.is_alive is False
+    assert loop.last_error_code is None
 
 
 def test_enrichment_loop_publishes_changed_projection_asynchronously():

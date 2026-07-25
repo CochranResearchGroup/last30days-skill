@@ -503,6 +503,87 @@ python3 scripts/service.py query "agent browser reliability" --freshness prefer_
 python3 scripts/service.py job <job-id>
 ```
 
+### Recurring collection specifications
+
+The same long-running user service owns recurring collection; no separate
+per-topic cron process or browser-launching systemd timer is required. The
+service polls durable due state every 30 seconds, creates one interval run, and
+coalesces a manual request for the same spec and interval onto that run and its
+existing refresh job.
+
+Create or revise a specification from a reviewed strict JSON file:
+
+```bash
+python3 scripts/service.py collection put --input /path/to/collection.json
+python3 scripts/service.py collection list
+python3 scripts/service.py collection run spec-reddit-ai
+python3 scripts/service.py collection pause spec-reddit-ai
+python3 scripts/service.py collection resume spec-reddit-ai
+```
+
+Example:
+
+```json
+{
+  "schema_version": 1,
+  "collection_spec_id": "spec-reddit-ai",
+  "name": "Reddit agent intelligence",
+  "source": "reddit",
+  "surface_kind": "topic",
+  "selector": {"topic": "agent intelligence"},
+  "profile_id": "default",
+  "interval_seconds": 3600,
+  "lookback_seconds": 7200,
+  "item_limit": 20,
+  "wall_timeout_seconds": 90,
+  "network_request_limit": 50,
+  "budget_cents": 25,
+  "retention_class": "cache",
+  "redaction_class": "public",
+  "assessment_enabled": true,
+  "enabled": true,
+  "spec_version": 1
+}
+```
+
+`surface_kind` accepts `feed`, `topic`, `poster`, `channel`, `account`, or
+`profile`. Its selector must contain exactly the matching key (`feed`, `topic`,
+`poster`, `channel`, `account`, or `profile_url`). Item, network, time, cost,
+lookback, and cadence bounds are mandatory. X, Facebook, and LinkedIn specs
+must use `redaction_class=authenticated`; their named profile is leased so two
+collection runs cannot operate the same retained browser profile
+concurrently.
+
+Every run records its attempted interval, selector digest, attempted/observed/
+stored counts, cursor and watermark movement, source process health, yield,
+backoff, and any uncovered gap. Service health and content yield are separate:
+a healthy zero-result run is `observed_empty`, not a process failure.
+
+Raw immutable document versions and evidence are committed before an optional
+`content_assessment` task is queued. The task carries only bounded evidence
+references and host-assigned digests; it never receives cookies or browser
+mechanics. Assessment failure is recorded independently and cannot roll back,
+hide, or fail the acquisition. Turning assessment off leaves recurring
+collection and cached queries fully operational.
+
+Stochastic assessment processing is opt-in at user scope:
+
+```bash
+LAST30DAYS_APP_INTELLIGENCE_ASSESSMENT=true
+LAST30DAYS_CODEX_PATH=codex
+LAST30DAYS_APP_INTELLIGENCE_MODEL=
+LAST30DAYS_APP_INTELLIGENCE_TIMEOUT=60
+```
+
+When disabled, strict assessment tasks remain queued and replayable while
+acquisition continues. When enabled, a separate bounded loop claims one task,
+materializes only its authorized immutable evidence spans, invokes Codex
+app-server with a strict `content_assessment` output schema, and applies the
+deterministic evidence/domain/policy validators before recording validation,
+promotion, and replay receipts. `LAST30DAYS_APP_INTELLIGENCE_MODEL` is optional
+and uses the app-server default when empty. The timeout is seconds and must be
+positive; the service caps it at the task contract's 60-second wall-time limit.
+
 `install-service.sh --print-unit` renders the unit without writing or starting
 anything. The installer writes
 `~/.config/systemd/user/last30days.service`, reloads the user manager, and

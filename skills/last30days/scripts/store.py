@@ -1271,6 +1271,188 @@ CREATE TABLE index_document_version_relationships (
     PRIMARY KEY (index_version, relationship_id, evidence_id)
 );
 """,
+    10: """
+ALTER TABLE collection_runs ADD COLUMN interval_from TEXT;
+ALTER TABLE collection_runs ADD COLUMN interval_to TEXT;
+ALTER TABLE collection_runs ADD COLUMN trigger_kind TEXT;
+ALTER TABLE collection_runs ADD COLUMN spec_version INTEGER;
+
+CREATE UNIQUE INDEX idx_collection_runs_spec_interval
+    ON collection_runs(collection_spec_id, interval_from, interval_to);
+
+CREATE TABLE collection_spec_revisions (
+    collection_spec_id TEXT NOT NULL,
+    spec_version INTEGER NOT NULL CHECK (spec_version > 0),
+    spec_json TEXT NOT NULL,
+    spec_digest TEXT NOT NULL,
+    selector_digest TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (collection_spec_id, access_partition_id)
+        REFERENCES collection_specs(collection_spec_id, access_partition_id),
+    PRIMARY KEY (collection_spec_id, spec_version),
+    UNIQUE (spec_digest)
+);
+
+CREATE TABLE collection_schedule_state (
+    collection_spec_id TEXT PRIMARY KEY,
+    next_due_at TEXT NOT NULL,
+    last_scheduled_at TEXT,
+    consecutive_failures INTEGER NOT NULL DEFAULT 0,
+    retry_after TEXT,
+    lease_owner TEXT,
+    lease_generation INTEGER NOT NULL DEFAULT 0,
+    lease_expires_at TEXT,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (collection_spec_id, access_partition_id)
+        REFERENCES collection_specs(collection_spec_id, access_partition_id)
+);
+
+CREATE INDEX idx_collection_schedule_due
+    ON collection_schedule_state(next_due_at, retry_after);
+
+CREATE TABLE collection_run_triggers (
+    collection_run_id TEXT NOT NULL,
+    trigger_kind TEXT NOT NULL CHECK (trigger_kind IN ('timer', 'manual')),
+    requested_at TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (collection_run_id, access_partition_id)
+        REFERENCES collection_runs(collection_run_id, access_partition_id),
+    PRIMARY KEY (collection_run_id, trigger_kind)
+);
+
+CREATE TABLE collection_run_attempts (
+    collection_run_id TEXT NOT NULL,
+    attempt INTEGER NOT NULL CHECK (attempt > 0),
+    job_id TEXT REFERENCES service_jobs(job_id),
+    state TEXT NOT NULL,
+    started_at TEXT NOT NULL,
+    completed_at TEXT,
+    error_code TEXT,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (collection_run_id, access_partition_id)
+        REFERENCES collection_runs(collection_run_id, access_partition_id),
+    PRIMARY KEY (collection_run_id, attempt)
+);
+
+CREATE TABLE collection_profile_leases (
+    profile_id TEXT PRIMARY KEY,
+    collection_run_id TEXT NOT NULL,
+    lease_owner TEXT NOT NULL,
+    lease_generation INTEGER NOT NULL,
+    lease_expires_at TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (collection_run_id, access_partition_id)
+        REFERENCES collection_runs(collection_run_id, access_partition_id)
+);
+
+CREATE INDEX idx_collection_profile_leases_expiry
+    ON collection_profile_leases(lease_expires_at);
+
+CREATE TABLE collection_source_health (
+    collection_spec_id TEXT NOT NULL,
+    source TEXT NOT NULL,
+    process_state TEXT NOT NULL,
+    yield_state TEXT NOT NULL,
+    last_status TEXT NOT NULL,
+    last_attempted_count INTEGER NOT NULL DEFAULT 0,
+    last_observed_count INTEGER NOT NULL DEFAULT 0,
+    consecutive_failures INTEGER NOT NULL DEFAULT 0,
+    retry_after TEXT,
+    error_code TEXT,
+    updated_at TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (collection_spec_id, access_partition_id)
+        REFERENCES collection_specs(collection_spec_id, access_partition_id),
+    PRIMARY KEY (collection_spec_id, source)
+);
+
+CREATE TABLE collection_assessment_batches (
+    assessment_batch_id TEXT PRIMARY KEY,
+    collection_run_id TEXT NOT NULL,
+    collection_spec_id TEXT NOT NULL,
+    acquisition_id TEXT,
+    task_id TEXT,
+    state TEXT NOT NULL,
+    item_count INTEGER NOT NULL DEFAULT 0,
+    error_code TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    FOREIGN KEY (collection_run_id, access_partition_id)
+        REFERENCES collection_runs(collection_run_id, access_partition_id),
+    FOREIGN KEY (collection_spec_id, access_partition_id)
+        REFERENCES collection_specs(collection_spec_id, access_partition_id),
+    UNIQUE (collection_run_id, acquisition_id)
+);
+
+CREATE TABLE service_intelligence_tasks (
+    task_id TEXT PRIMARY KEY,
+    task_type TEXT NOT NULL,
+    contract_version INTEGER NOT NULL,
+    idempotency_key TEXT NOT NULL UNIQUE,
+    job_id TEXT REFERENCES service_jobs(job_id),
+    run_id TEXT,
+    input_digest TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL
+        REFERENCES access_partitions(partition_id),
+    request_json TEXT NOT NULL,
+    request_digest TEXT NOT NULL,
+    state TEXT NOT NULL,
+    attempt_count INTEGER NOT NULL DEFAULT 0,
+    lease_owner TEXT,
+    lease_generation INTEGER NOT NULL DEFAULT 0,
+    lease_expires_at TEXT,
+    result_json TEXT,
+    output_digest TEXT,
+    error_code TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_service_intelligence_tasks_ready
+    ON service_intelligence_tasks(state, task_type, created_at);
+
+CREATE TABLE service_intelligence_validation_receipts (
+    validation_receipt_id TEXT PRIMARY KEY,
+    task_id TEXT NOT NULL REFERENCES service_intelligence_tasks(task_id),
+    accepted INTEGER NOT NULL CHECK (accepted IN (0, 1)),
+    validator_codes_json TEXT NOT NULL,
+    input_digest TEXT NOT NULL,
+    output_digest TEXT NOT NULL,
+    policy_version TEXT NOT NULL,
+    validator_version TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (task_id, output_digest, validator_version)
+);
+
+CREATE TABLE service_intelligence_promotion_receipts (
+    promotion_receipt_id TEXT PRIMARY KEY,
+    task_id TEXT NOT NULL REFERENCES service_intelligence_tasks(task_id),
+    validation_receipt_id TEXT NOT NULL
+        REFERENCES service_intelligence_validation_receipts(validation_receipt_id),
+    accepted_ids_json TEXT NOT NULL,
+    rejection_codes_json TEXT NOT NULL,
+    prior_authority_version TEXT,
+    resulting_authority_version TEXT,
+    idempotency_outcome TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (task_id, validation_receipt_id)
+);
+
+CREATE TABLE service_intelligence_replay_receipts (
+    replay_receipt_id TEXT PRIMARY KEY,
+    task_id TEXT NOT NULL REFERENCES service_intelligence_tasks(task_id),
+    validation_receipt_id TEXT NOT NULL
+        REFERENCES service_intelligence_validation_receipts(validation_receipt_id),
+    request_digest TEXT NOT NULL,
+    output_digest TEXT NOT NULL,
+    policy_version TEXT NOT NULL,
+    replay_state TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (task_id, validation_receipt_id)
+);
+""",
 }
 
 

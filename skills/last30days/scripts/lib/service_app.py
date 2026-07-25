@@ -62,6 +62,8 @@ class CacheQueryApplication:
         job_reader: JobReader | None = None,
         acquisition_sources: Sequence[str] = (),
         acquisition_readiness: Mapping[str, bool] | None = None,
+        recurring_collection: bool = False,
+        assessment_processing: bool = False,
         runtime_error: Callable[[], str | None] | None = None,
         clock: Callable[[], datetime] | None = None,
         fresh_seconds: int = DEFAULT_FRESH_SECONDS,
@@ -72,6 +74,8 @@ class CacheQueryApplication:
         self.job_reader = job_reader
         self.acquisition_sources = tuple(sorted(set(acquisition_sources)))
         self.acquisition_readiness = dict(acquisition_readiness or {})
+        self.recurring_collection = recurring_collection
+        self.assessment_processing = assessment_processing
         self.runtime_error = runtime_error or (lambda: None)
         self.clock = clock or (lambda: datetime.now(timezone.utc))
         self.fresh_seconds = fresh_seconds
@@ -197,6 +201,12 @@ class CacheQueryApplication:
         capabilities = ["cache_query", "lexical_search"]
         if self.refresh_scheduler is not None and self.acquisition_sources:
             capabilities.append("durable_refresh")
+        if self.recurring_collection:
+            capabilities.extend(
+                ("recurring_collection", "interval_coverage", "assessment_queue")
+            )
+        if self.assessment_processing:
+            capabilities.append("content_assessment")
         semantic_provider = getattr(self.retriever, "embedding_provider", None)
         if (
             semantic_provider is not None
@@ -647,6 +657,8 @@ def initialize_application(
     job_reader: JobReader | None = None,
     acquisition_sources: Sequence[str] = (),
     acquisition_readiness: Mapping[str, bool] | None = None,
+    recurring_collection: bool = False,
+    assessment_processing: bool = False,
     runtime_error: Callable[[], str | None] | None = None,
 ) -> CacheQueryApplication:
     """Initialize schema once and return the transport-independent application."""
@@ -658,5 +670,7 @@ def initialize_application(
         job_reader=job_reader,
         acquisition_sources=acquisition_sources,
         acquisition_readiness=acquisition_readiness,
+        recurring_collection=recurring_collection,
+        assessment_processing=assessment_processing,
         runtime_error=runtime_error,
     )

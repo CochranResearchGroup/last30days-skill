@@ -178,14 +178,22 @@ class CorpusPublisher:
         result: contracts.AcquisitionWorkResult,
         *,
         worker_id: str,
+        retention_class: str | None = None,
+        redaction_class: str | None = None,
     ) -> PublicationStats:
         """Ledger one result and idempotently project its validated content."""
         self._assert_matching(request, result)
         content_hash = _digest([item.to_dict() for item in result.items])
-        classification = (
-            contracts.RedactionClass.AUTHENTICATED
-            if result.source in _BROWSER_SOURCES
-            else contracts.RedactionClass.PUBLIC
+        classification = contracts.RedactionClass(
+            redaction_class
+            or (
+                contracts.RedactionClass.AUTHENTICATED.value
+                if result.source in _BROWSER_SOURCES
+                else contracts.RedactionClass.PUBLIC.value
+            )
+        )
+        retention = contracts.RetentionClass(
+            retention_class or contracts.RetentionClass.CACHE.value
         )
         acquisition = contracts.AcquisitionEnvelope.from_dict(
             {
@@ -204,7 +212,7 @@ class CorpusPublisher:
                     f"service-envelope:{result.CONTRACT_NAME}/{result.work_id}"
                 ),
                 "content_hash": content_hash,
-                "retention_class": contracts.RetentionClass.CACHE.value,
+                "retention_class": retention.value,
                 "redaction_class": classification.value,
                 "item_count": result.item_count,
                 "diagnostics_ref": (
@@ -286,6 +294,20 @@ class CorpusPublisher:
                     acquisition.fetched_at,
                 ),
             )
+            collection = conn.execute(
+                """SELECT collection_spec_id, collection_run_id,
+                          access_partition_id
+                   FROM collection_runs
+                   WHERE job_id = ?
+                   ORDER BY scheduled_for, collection_run_id
+                   LIMIT 1""",
+                (result.job_id,),
+            ).fetchone()
+            if (
+                collection is not None
+                and collection["access_partition_id"] != partition_id
+            ):
+                raise RuntimeError("collection run access partition conflict")
             for item in result.items:
                 proposed_document_id = _stable_id(
                     "doc", f"{result.source}:{item.url}"
@@ -328,7 +350,7 @@ class CorpusPublisher:
                         published_at, fetched_at, retention_class, redaction_class,
                         transformation_version, source_metadata_json, media_json,
                         access_partition_id)
-                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'cache', ?, ?, ?, ?, ?)""",
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                     (
                         proposed_document_id,
                         acquisition.acquisition_id,
@@ -341,6 +363,7 @@ class CorpusPublisher:
                         item_hash,
                         item.published_at,
                         result.fetched_at,
+                        retention.value,
                         classification.value,
                         "service-worker-v1",
                         metadata_json,
@@ -383,7 +406,7 @@ class CorpusPublisher:
                            transformation_version
                        ) VALUES (
                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL,
-                           ?, ?, ?, NULL, 'cache', ?, ?, 'service-worker-v1'
+                           ?, ?, ?, NULL, ?, ?, ?, 'service-worker-v1'
                        )""",
                     (
                         proposed_version_id,
@@ -400,6 +423,7 @@ class CorpusPublisher:
                         acquisition.observed_at,
                         acquisition.fetched_at,
                         acquisition.fetched_at,
+                        retention.value,
                         classification.value,
                         partition_id,
                     ),
@@ -476,10 +500,20 @@ class CorpusPublisher:
                            version_id, acquisition_id, topic_id,
                            collection_spec_id, collection_run_id, observed_at,
                            access_partition_id
-                       ) VALUES (?, ?, NULL, NULL, NULL, ?, ?)""",
+                       ) VALUES (?, ?, NULL, ?, ?, ?, ?)""",
                     (
                         version_id,
                         acquisition.acquisition_id,
+                        (
+                            collection["collection_spec_id"]
+                            if collection is not None
+                            else None
+                        ),
+                        (
+                            collection["collection_run_id"]
+                            if collection is not None
+                            else None
+                        ),
                         acquisition.observed_at,
                         partition_id,
                     ),
@@ -493,7 +527,7 @@ class CorpusPublisher:
                                canonical_url = ?, title = ?, author = ?,
                                normalized_text = ?, content_hash = ?,
                                published_at = ?, fetched_at = ?,
-                               redaction_class = ?,
+                               retention_class = ?, redaction_class = ?,
                                transformation_version = 'service-worker-v1',
                                source_metadata_json = ?, media_json = ?,
                                current_version_id = ?, access_partition_id = ?
@@ -509,6 +543,7 @@ class CorpusPublisher:
                             item_hash,
                             item.published_at,
                             result.fetched_at,
+                            retention.value,
                             classification.value,
                             metadata_json,
                             media_json,

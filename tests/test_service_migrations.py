@@ -40,7 +40,7 @@ def test_v8_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 9
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 10
     assert conn.execute("SELECT name FROM topics").fetchone()[0] == "Existing Topic"
     tables = {
         row[0]
@@ -97,6 +97,17 @@ def test_v8_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
         "collection_coverage_intervals",
         "collection_gaps",
         "collection_cursors",
+        "collection_spec_revisions",
+        "collection_schedule_state",
+        "collection_run_triggers",
+        "collection_run_attempts",
+        "collection_profile_leases",
+        "collection_source_health",
+        "collection_assessment_batches",
+        "service_intelligence_tasks",
+        "service_intelligence_validation_receipts",
+        "service_intelligence_promotion_receipts",
+        "service_intelligence_replay_receipts",
         "graph_projection_outbox",
     } <= tables
     job_columns = {
@@ -213,7 +224,7 @@ def test_v8_migration_backfills_an_immutable_current_document_version(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 9
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 10
     version = conn.execute(
         """SELECT v.document_id, v.content_hash, v.access_partition_id,
                   v.system_from, v.system_to
@@ -311,6 +322,7 @@ def test_concurrent_initializers_publish_each_schema_version_once(tmp_path):
         (7, 1),
         (8, 1),
         (9, 1),
+        (10, 1),
     ]
     conn.close()
 
@@ -320,7 +332,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     store.init_db(db_path)
     monkeypatch.setitem(
         store.MIGRATIONS,
-        10,
+        11,
         """
         CREATE TABLE should_be_rolled_back (id INTEGER PRIMARY KEY);
         THIS IS NOT VALID SQL;
@@ -334,7 +346,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'should_be_rolled_back'"
     ).fetchone() is None
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 9
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 10
     conn.close()
 
 
@@ -355,7 +367,7 @@ def test_applied_v3_database_receives_replay_and_supervisor_schema(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 9
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 10
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'index_documents'"
     ).fetchone()[0] == "index_documents"

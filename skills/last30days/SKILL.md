@@ -112,6 +112,13 @@ supersedes the request-scoped engine and browser instructions below:
 5. Use `topic` only for explicit operator requests to list, create/update,
    pause/resume, or request a scheduled topic refresh.
 
+If `service_info` advertises `recurring_collection`, interval timers, profile
+leases, coverage, cursors, and post-publication assessment are service-owned.
+Do not reproduce those mechanics in the conversation. Use a `collection` MCP
+tool only when it is exposed and the user explicitly asks to inspect or change
+a recurring feed/topic/poster/channel/account/profile specification; ordinary
+research queries only read the resulting cache.
+
 On this path, do not run `scripts/last30days.py`, WebSearch preflight, handle
 resolution, or browser/scraper commands. The service owns acquisition,
 authentication state, retries, caching, indexing, and enrichment. The badge

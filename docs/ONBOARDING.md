@@ -118,6 +118,8 @@ For App Intelligence maintenance-plane changes, also run:
 
 ```bash
 uv run pytest \
+  tests/test_service_collection.py \
+  tests/test_service_intelligence_contracts.py \
   tests/test_service_intelligence.py \
   tests/test_service_migrations.py \
   tests/test_service_install.py

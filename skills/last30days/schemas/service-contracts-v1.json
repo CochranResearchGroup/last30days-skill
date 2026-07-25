@@ -688,6 +688,349 @@
         },
         "created_at": {"type": "string", "minLength": 1}
       }
+    },
+    "collection_spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "collection_spec_id",
+        "name",
+        "source",
+        "surface_kind",
+        "selector",
+        "profile_id",
+        "interval_seconds",
+        "lookback_seconds",
+        "item_limit",
+        "wall_timeout_seconds",
+        "network_request_limit",
+        "budget_cents",
+        "retention_class",
+        "redaction_class",
+        "assessment_enabled",
+        "enabled",
+        "spec_version"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "collection_spec_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "name": {"type": "string", "minLength": 1, "maxLength": 256},
+        "source": {"type": "string", "minLength": 1, "maxLength": 64},
+        "surface_kind": {
+          "type": "string",
+          "enum": ["feed", "topic", "poster", "channel", "account", "profile"]
+        },
+        "selector": {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 1,
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        },
+        "profile_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "interval_seconds": {"type": "integer", "minimum": 60, "maximum": 31536000},
+        "lookback_seconds": {"type": "integer", "minimum": 60, "maximum": 31536000},
+        "item_limit": {"type": "integer", "minimum": 1, "maximum": 100},
+        "wall_timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 3600},
+        "network_request_limit": {"type": "integer", "minimum": 0, "maximum": 100000},
+        "budget_cents": {"type": "integer", "minimum": 0, "maximum": 10000000},
+        "retention_class": {
+          "type": "string",
+          "enum": ["cache", "durable", "ephemeral"]
+        },
+        "redaction_class": {
+          "type": "string",
+          "enum": ["public", "authenticated", "restricted"]
+        },
+        "assessment_enabled": {"type": "boolean"},
+        "enabled": {"type": "boolean"},
+        "spec_version": {"type": "integer", "minimum": 1, "maximum": 1000000}
+      }
+    },
+    "intelligence_evidence_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "version_id",
+        "chunk_id",
+        "content_digest",
+        "observed_at",
+        "valid_from",
+        "valid_to",
+        "access_partition_id"
+      ],
+      "properties": {
+        "evidence_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "version_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "chunk_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "content_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "observed_at": {"type": "string", "minLength": 1, "maxLength": 64},
+        "valid_from": {"type": ["string", "null"]},
+        "valid_to": {"type": ["string", "null"]},
+        "access_partition_id": {"type": "string", "minLength": 1, "maxLength": 256}
+      }
+    },
+    "intelligence_task_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "contract_name",
+        "contract_version",
+        "task_type",
+        "task_id",
+        "job_id",
+        "run_id",
+        "idempotency_key",
+        "input_artifact_ref",
+        "input_digest",
+        "evidence_refs",
+        "source_version_ids",
+        "corpus_version",
+        "policy_version",
+        "worker_config_ref",
+        "access_partition_id",
+        "redaction_class",
+        "requested_at",
+        "allowed_actions",
+        "limits"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "contract_name": {"const": "intelligence_task_request"},
+        "contract_version": {"const": 1},
+        "task_type": {
+          "type": "string",
+          "enum": [
+            "content_assessment",
+            "profile_change_assessment",
+            "entity_claim_event_extraction",
+            "identity_resolution",
+            "retrieval_evaluation",
+            "adapter_failure_triage",
+            "adapter_repair_recommendation",
+            "branch_decision"
+          ]
+        },
+        "task_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "job_id": {"type": ["string", "null"]},
+        "run_id": {"type": ["string", "null"]},
+        "idempotency_key": {"type": "string", "minLength": 1, "maxLength": 256},
+        "input_artifact_ref": {"type": "string", "minLength": 1, "maxLength": 512},
+        "input_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {"$ref": "#/contracts/intelligence_evidence_ref"}
+        },
+        "source_version_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 128}
+        },
+        "corpus_version": {"type": ["string", "null"]},
+        "policy_version": {"type": "string", "minLength": 1, "maxLength": 128},
+        "worker_config_ref": {"type": "string", "minLength": 1, "maxLength": 256},
+        "access_partition_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "redaction_class": {
+          "type": "string",
+          "enum": ["public", "authenticated", "restricted"]
+        },
+        "requested_at": {"type": "string", "minLength": 1, "maxLength": 64},
+        "allowed_actions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 64}
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "max_items",
+            "max_bytes",
+            "max_calls",
+            "max_cost_cents",
+            "wall_timeout_seconds"
+          ],
+          "properties": {
+            "max_items": {"type": "integer", "minimum": 1, "maximum": 100},
+            "max_bytes": {"type": "integer", "minimum": 1024, "maximum": 1048576},
+            "max_calls": {"type": "integer", "minimum": 0, "maximum": 5},
+            "max_cost_cents": {"type": "integer", "minimum": 0, "maximum": 10000},
+            "wall_timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 3600}
+          }
+        }
+      }
+    },
+    "intelligence_task_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "contract_name",
+        "contract_version",
+        "task_type",
+        "task_id",
+        "run_id",
+        "input_digest",
+        "policy_version",
+        "action",
+        "proposals",
+        "uncertainty_codes",
+        "rationale",
+        "worker_ref",
+        "output_digest"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "contract_name": {"const": "intelligence_task_result"},
+        "contract_version": {"const": 1},
+        "task_type": {"type": "string", "minLength": 1, "maxLength": 64},
+        "task_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "run_id": {"type": ["string", "null"]},
+        "input_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "policy_version": {"type": "string", "minLength": 1, "maxLength": 128},
+        "action": {"type": "string", "minLength": 1, "maxLength": 64},
+        "proposals": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "proposal_kind",
+              "proposal_key",
+              "confidence",
+              "evidence_ids",
+              "payload"
+            ],
+            "properties": {
+              "proposal_kind": {"type": "string", "minLength": 1, "maxLength": 64},
+              "proposal_key": {"type": "string", "minLength": 1, "maxLength": 256},
+              "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+              "evidence_ids": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 20,
+                "items": {"type": "string", "minLength": 1, "maxLength": 128}
+              },
+              "payload": {"type": "object"}
+            }
+          }
+        },
+        "uncertainty_codes": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {"type": "string", "minLength": 1, "maxLength": 64}
+        },
+        "rationale": {"type": "string", "minLength": 1, "maxLength": 4096},
+        "worker_ref": {"type": "string", "minLength": 1, "maxLength": 256},
+        "output_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "validation_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "validation_receipt_id",
+        "task_id",
+        "accepted",
+        "validator_codes",
+        "input_digest",
+        "output_digest",
+        "policy_version",
+        "validator_version",
+        "created_at"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "validation_receipt_id": {"type": "string", "minLength": 1},
+        "task_id": {"type": "string", "minLength": 1},
+        "accepted": {"type": "boolean"},
+        "validator_codes": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "input_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "output_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "policy_version": {"type": "string", "minLength": 1},
+        "validator_version": {"type": "string", "minLength": 1},
+        "created_at": {"type": "string", "minLength": 1}
+      }
+    },
+    "promotion_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "promotion_receipt_id",
+        "task_id",
+        "validation_receipt_id",
+        "accepted_ids",
+        "rejection_codes",
+        "prior_authority_version",
+        "resulting_authority_version",
+        "idempotency_outcome",
+        "created_at"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "promotion_receipt_id": {"type": "string", "minLength": 1},
+        "task_id": {"type": "string", "minLength": 1},
+        "validation_receipt_id": {"type": "string", "minLength": 1},
+        "accepted_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "rejection_codes": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "prior_authority_version": {"type": ["string", "null"]},
+        "resulting_authority_version": {"type": ["string", "null"]},
+        "idempotency_outcome": {
+          "type": "string",
+          "enum": ["created", "reused", "no_op", "rejected"]
+        },
+        "created_at": {"type": "string", "minLength": 1}
+      }
+    },
+    "replay_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "replay_receipt_id",
+        "task_id",
+        "validation_receipt_id",
+        "request_digest",
+        "output_digest",
+        "policy_version",
+        "replay_state",
+        "created_at"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "replay_receipt_id": {"type": "string", "minLength": 1},
+        "task_id": {"type": "string", "minLength": 1},
+        "validation_receipt_id": {"type": "string", "minLength": 1},
+        "request_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "output_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "policy_version": {"type": "string", "minLength": 1},
+        "replay_state": {"type": "string", "enum": ["replayable", "not_replayable"]},
+        "created_at": {"type": "string", "minLength": 1}
+      }
     }
   }
 }

@@ -1857,9 +1857,43 @@ _CONTRACT_TYPES = {
 
 def parse_envelope(
     contract_name: str, payload: Mapping[str, Any]
-) -> ContractEnvelope:
+) -> Any:
     """Validate one external envelope through the named public contract."""
     contract_type = _CONTRACT_TYPES.get(contract_name)
+    if contract_type is None and contract_name == "collection_spec":
+        from .service_collection import CollectionSpec
+
+        contract_type = CollectionSpec
+    if contract_type is None and contract_name in {
+        "intelligence_evidence_ref",
+        "intelligence_task_request",
+        "intelligence_task_result",
+        "validation_receipt",
+        "promotion_receipt",
+        "replay_receipt",
+    }:
+        from .service_intelligence_contracts import (
+            IntelligenceEvidenceRef,
+            IntelligenceTaskRequest,
+            IntelligenceTaskResult,
+            PromotionReceipt,
+            ReplayReceipt,
+            ValidationReceiptEnvelope,
+        )
+
+        contract_type = {
+            "intelligence_evidence_ref": IntelligenceEvidenceRef,
+            "intelligence_task_request": IntelligenceTaskRequest,
+            "intelligence_task_result": IntelligenceTaskResult,
+            "validation_receipt": ValidationReceiptEnvelope,
+            "promotion_receipt": PromotionReceipt,
+            "replay_receipt": ReplayReceipt,
+        }[contract_name]
     if contract_type is None:
         raise ContractValidationError(f"unknown contract: {contract_name}")
-    return contract_type.from_dict(payload)
+    try:
+        return contract_type.from_dict(payload)
+    except ContractValidationError:
+        raise
+    except (TypeError, ValueError) as exc:
+        raise ContractValidationError(str(exc)) from exc
