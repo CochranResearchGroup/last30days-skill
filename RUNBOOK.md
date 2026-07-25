@@ -799,6 +799,8 @@ Validation Evidence:
   for explicit login and checkpoint states;
 - focused X and acquisition-worker tests passed;
 - the full Python suite, Python compilation, and `git diff --check` passed.
+- commit `fbe7460` is pushed to `origin/main`, the installed copy matches it,
+  and service version 0.2.2 is active on schema 12.
 
 State Movement:
 
@@ -813,11 +815,26 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- checkpoint write required after the candidate commit so the durable memory
-  can cite the immutable source state.
+- checkpoint write required after the final stop-state documentation commit so
+  durable memory can cite both immutable source states.
+
+Live Outcome And Stop:
+
+- The retained job could not be resumed again because its truthful
+  `max_attempts=2` ceiling was exhausted; it was not reset or widened.
+- New final canary job `e6888bd5-37ea-4210-9816-3b6d1e04da6f` acquired once
+  under installed version 0.2.2 and ended
+  `awaiting_operator/auth_required` at `2026-07-25T22:02:55.354610Z`.
+- Its acquisition `work-71ef1fe8d002811c7f10aed4de92f90d` yielded zero items.
+- Agent-browser retained one active tab at `https://x.com/` with title
+  `x.com/home`.
+- The Packet 6 adapter retry ceiling is reached. Do not perform another X
+  adapter repair or live attempt without a new plan decision or renewed
+  operator-auth evidence.
 
 Next Bounded Action:
 
-- Commit and push version 0.2.2, install and restart it, resume the retained X
-  job for the final bounded live canary, then stop on either successful X
-  publication or the next typed terminal result.
+- Resume Packet 6 only after the operator confirms the service-owned
+  `last30days-facebook` browser—not merely the detached seeding browser—renders
+  authenticated X DOM, or after a new plan explicitly authorizes a broader
+  agent-browser/profile persistence investigation.

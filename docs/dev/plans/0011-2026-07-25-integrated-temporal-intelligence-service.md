@@ -1111,8 +1111,9 @@ Subagent status and reconciliation:
 
 Remaining acceptance criteria:
 
-- install service version 0.2.2 and perform one final bounded X canary;
-- on successful X publication, complete bounded Facebook post plus LinkedIn
+- resolve the recorded X authenticated-browser gate under a newly authorized
+  plan slice;
+- after successful X publication, complete bounded Facebook post plus LinkedIn
   post/profile canaries;
 - prove recurring collection restart recovery and complete the Packet 6 exit
   gate;
@@ -1126,8 +1127,25 @@ Stop rule:
 
 Next action:
 
-- commit and install version 0.2.2, resume the retained job, and inspect the
-  resulting acquisition and publication receipts.
+- install version 0.2.2, run one newly keyed final X canary because the retained
+  job has truthfully exhausted its attempt ceiling, and inspect the resulting
+  acquisition and publication receipts.
+
+Live outcome:
+
+- commit `fbe7460` was pushed to `origin/main`, copied into the global install,
+  and activated as service version 0.2.2 on schema 12;
+- retained job `3a0a59a7-5729-4547-8702-22f02b3579aa` remained preserved at
+  `attempts=2`, `max_attempts=2` and was not reset;
+- final canary job `e6888bd5-37ea-4210-9816-3b6d1e04da6f` acquired once and
+  ended `awaiting_operator/auth_required` at
+  `2026-07-25T22:02:55.354610Z`;
+- acquisition `work-71ef1fe8d002811c7f10aed4de92f90d` recorded zero items;
+- the service-owned agent-browser session retained one active tab at
+  `https://x.com/` with title `x.com/home`;
+- the checkpoint stop rule is now active. Packet 6 must not widen adapter work
+  or run another X canary without a new plan decision or renewed evidence that
+  the service-owned browser renders authenticated X DOM.
 
 ## Stop Rules
 

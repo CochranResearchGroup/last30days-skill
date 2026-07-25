@@ -87,9 +87,12 @@ Current State:
   public resume path. Version 0.2.1 installed that guarded transition and
   performed attempt two, which exposed a second deterministic defect: the X
   auth probe classified an authenticated retained tab's stalled loading DOM as
-  `auth_required` without reloading it. The version 0.2.2 candidate now performs
-  one bounded reload only for an ambiguous DOM. Live X validation, authenticated
-  Facebook and LinkedIn canaries, and broad recurring hydration remain gated.
+  `auth_required` without reloading it. Version 0.2.2 installed one bounded
+  reload for only an ambiguous DOM, but the final bounded X canary still ended
+  `awaiting_operator/auth_required`; its retained tab read back as
+  `https://x.com/` with title `x.com/home`. Per the Packet 6 stop rule, further
+  adapter repair, authenticated Facebook and LinkedIn canaries, and broad
+  recurring hydration remain gated.
 
 Goal Seeds:
 
@@ -113,8 +116,9 @@ Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the integrated P01-P06 campaign authority. Packets 1 through 5 are
-  complete; Packet 6 source and installed migration are complete, but its
-  authenticated canaries await the recorded human authentication gate.
+  complete; Packet 6 source and installed migration are complete, but its X
+  canary remains at the recorded authenticated-browser stop gate after the
+  bounded adapter retry.
 
 ## P02 | Recurring Acquisition And Coverage
 
