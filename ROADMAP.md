@@ -34,6 +34,20 @@ P03 discovery and bounded source experiments may proceed alongside P01, but
 large recurring hydration must not outrun immutable revision, provenance,
 coverage, and access-control foundations.
 
+## Integrated Foundation Milestone | 2026-07-25
+
+Plans 0010 and 0011 are closed. The installed service is ready at version
+0.2.7/schema 12 with immutable temporal evidence, governed collection,
+source-neutral profiles, bitemporal retrieval, durable Graphiti projection,
+ten compact MCP tools, and discoverable bounded App Intelligence contracts.
+Bounded Facebook, X, LinkedIn post, and LinkedIn company-profile canaries
+published through retained authenticated Guacamole/RDP browsers.
+
+This milestone closes the integrated implementation plan, not the product
+roadmap. P01-P06 remain roadmap lanes; only P03 currently has an actionable
+open plan, while the other successor lanes are planned. No recurring
+authenticated timer was enabled by closeout.
+
 ## P00 | Productized Content Service MVP
 
 State: CLOSED
@@ -63,7 +77,7 @@ Plans:
 
 ## P01 | Temporal Corpus Foundation
 
-State: OPEN
+State: PLANNED
 
 Objective: make the corpus safe for long-running hydration by separating stable
 content identity from immutable revisions and by preserving what happened,
@@ -192,14 +206,8 @@ Acceptance Seeds:
 Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-  is the integrated P01-P06 campaign authority. Packets 1 through 5 are
-  complete; Packet 6 source, installed migration, recurring interval, and
-  restart-recovery proof are complete. Its authenticated X post, LinkedIn post,
-  and LinkedIn company-profile canaries now pass through the retained shared
-  Guacamole/RDP browser. Packet 7 source/live validation passes except for one
-  bounded App Intelligence discovery gap: the MCP maintenance response must
-  expose canonical task contract versions and safe-limit ranges before
-  integrated closeout.
+  is the closed integrated P01-P06 foundation campaign. Future P01 work needs
+  a successor bounded plan rather than reopening Plan 0011.
 
 ## P02 | Recurring Acquisition And Coverage
 
@@ -211,7 +219,8 @@ coverage, budget, or source-health history.
 
 Current State:
 
-- Plan 0011 Packet 3 is source-complete at commit `4ae5095`.
+- Plan 0011 Packet 3 is complete at commit `4ae5095`, and installed Packet 6
+  acceptance proved timer yield, interval deduplication, and restart recovery.
 - Schema version 10 now provides immutable collection-spec revisions, durable
   schedules/runs/attempts/cursors/coverage/gaps, source health and yield,
   authenticated profile leases, and raw-publication-first bounded
@@ -219,12 +228,10 @@ Current State:
 - Collection runs freeze their originating spec revision and enforce
   per-spec item, time, network, budget, retention, redaction, and access
   policy through the deterministic host.
-- Installed timers and broad hydration remain gated until the bounded runtime
-  rollout packet.
-- One public Reddit topic spec now proves immutable spec revisions, durable
-  scheduling state, typed budget failures, and pause control in the live
-  schema-12 database. It has not yet proved successful timer yield or restart
-  recovery and remains paused after the packet's two-attempt bound.
+- The bounded public acceptance timer remains paused after its proof.
+  Recurring authenticated timers were not enabled; broad hydration is the
+  next operational expansion and must proceed spec-by-spec under explicit
+  budgets and source/profile leases.
 
 Goal Seeds:
 
@@ -261,8 +268,8 @@ Dependencies: P01 foundations must cover the records emitted by timers.
 Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-  Packet 3 owns the source-complete collection and assessment slice; Packet 6
-  owns installed migration, timer enablement, and live canaries.
+  is the closed foundation authority. A successor plan must own broad
+  hydration enablement and its coverage/yield acceptance.
 
 ## P03 | Profile And Identity Acquisition
 
@@ -288,6 +295,9 @@ Current State:
 - A validated `same_entity` outcome now promotes a reversible,
   evidence-linked identity assertion; claim/event promotion and temporal
   retrieval preserve ambiguity and access partitions.
+- The exact OpenAI LinkedIn company-profile canary published one immutable
+  organization snapshot with one evidenced visible section and four
+  conservative `not_observed` sections. Its collection spec remains disabled.
 
 Goal Seeds:
 
@@ -328,14 +338,14 @@ Active Plan:
 - `docs/dev/plans/0002-2026-07-15-linkedin-agent-browser-scraper.md`
   remains the post-search precursor.
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-  Packet 4 is the profile/identity implementation authority; Packet 5 owns
-  promotion into temporal affiliation claims and retrieval.
+  is the closed profile/identity foundation authority. Additional profile
+  surfaces and identity-review operations require successor plans.
 
 Dependencies: share P01 identity and temporal evidence contracts.
 
 ## P04 | Temporal Retrieval And GraphRAG
 
-State: OPEN
+State: PLANNED
 
 Objective: answer topic-, person-, organization-, and event-centered questions
 over a growing corpus with explicit temporal semantics and citation-ready
@@ -353,7 +363,8 @@ Current State:
   fails, and the projection can be rebuilt by replaying authoritative records.
 - The concrete local Graphiti sink, compact MCP product contracts, installed
   schema-12 migration, and durable live projection canary passed at commit
-  `0e7938a`; authenticated-source rollout acceptance remains Packet 6 work.
+  `0e7938a`; the current projection reports one published receipt with zero
+  pending or failed records.
 
 Goal Seeds:
 
@@ -385,12 +396,11 @@ identity quality.
 Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-  Packet 5 owns temporal retrieval and GraphRAG authority; Packet 7 owns its
-  integrated acceptance audit.
+  is the closed temporal retrieval and GraphRAG foundation authority.
 
 ## P05 | Agent-Facing Intelligence Product
 
-State: OPEN
+State: PLANNED
 
 Objective: let agents discover, query, monitor, and evaluate the intelligence
 service through compact MCP and skill contracts without browser or scraper
@@ -401,12 +411,12 @@ Current State:
 - Commit `0e7938a` exposes cache-only temporal queries, dossiers, timeline,
   trend, profile history, coverage, collection control, and maintenance status
   through a ten-tool MCP surface.
-- The installed version 0.2.3 service derives authorized partitions from the
+- The installed version 0.2.7 service derives authorized partitions from the
   caller profile and keeps prompts, raw model/provider events, browser
   mechanics, cookies, and credentials out of normal responses.
-- Fresh installed-client discovery and representative public and
-  profile-scoped calls passed; final authenticated-source and integrated
-  acceptance remain open.
+- Fresh installed-client discovery, representative public/profile calls,
+  cache-only no-enqueue behavior, authenticated-source canaries, and integrated
+  acceptance pass.
 
 Goal Seeds:
 
@@ -429,11 +439,11 @@ authority or access-control contracts.
 Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-  Packet 6 owns installed MCP rollout and Packet 7 owns product acceptance.
+  is the closed installed-MCP foundation and acceptance authority.
 
 ## P06 | App Intelligence Control Plane
 
-State: OPEN
+State: PLANNED
 
 Objective: use App Intelligence as bounded stochastic labor behind the existing
 host-owned service supervisor for incoming-data assessment, cross-service
@@ -443,8 +453,9 @@ Current State:
 
 - The four Plan 0010 joins are now attached behind deterministic corpus,
   collection, identity, retrieval-evaluation, and maintenance authority.
-- Maintenance discovery exposes task state and safe repair-policy gates
-  without exposing prompts or provider events.
+- Installed version 0.2.7 maintenance discovery exposes the canonical
+  version-1 task registry, validator-enforced finite ranges, task state, and
+  safe repair-policy gates without exposing prompts or provider events.
 - The first X canary was correctly classified as an operator authentication
   gate and did not trigger automated repair. After the operator authenticated,
   attempt two exposed an adapter defect that deterministically confused X's
@@ -547,18 +558,16 @@ authority before recurring P02/P03 hydration depends on them.
 Active Plan:
 
 - `docs/dev/plans/0010-2026-07-25-app-intelligence-task-contracts.md`
-  remains the P06 component contract plan.
+  is the closed P06 component contract plan.
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-  owns when Plan 0010 attaches to timers, identity resolution, retrieval
-  evaluation, and adapter maintenance.
+  is the closed integration authority for its four deterministic joins.
 
 Next Bounded Action:
 
-- Diagnose the preserved LinkedIn post failure without another live canary,
-  repair only its source-specific adapter seam under a new bounded plan
-  decision, and keep the LinkedIn profile canary withheld until that repair is
-  validated. Keep X behind same-browser authenticated-DOM proof. Do not execute
-  Plan 0010 outside its four host-owned joins.
+- Create a successor plan only when enabling a concrete recurring collection
+  set, expanding a profile surface, evaluating retrieval quality, or operating
+  a bounded adapter-maintenance case. Preserve the deterministic joins and do
+  not reopen Plans 0010 or 0011.
 
 ## Goal-Compatible Plan Conversion
 

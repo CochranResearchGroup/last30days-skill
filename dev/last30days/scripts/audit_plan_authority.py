@@ -229,9 +229,10 @@ def audit_repository(root: Path) -> dict[str, Any]:
             runbook_text,
             issues,
         )
-    if campaign_plan_count != 1:
+    if campaign_plan_count > 1:
         issues.append(
-            f"expected exactly one integrated campaign authority, found {campaign_plan_count}"
+            "expected at most one integrated campaign authority, "
+            f"found {campaign_plan_count}"
         )
     return {
         "schema_version": 1,

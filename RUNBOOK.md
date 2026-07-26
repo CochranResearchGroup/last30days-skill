@@ -1849,3 +1849,71 @@ Next Bounded Action:
 
 - commit and push C07A, add canonical App Intelligence discovery metadata
   test-first, validate/install it, and perform one final review.
+
+## Turn 28 | 2026-07-25
+
+Focus: close the integrated temporal intelligence service after the single
+bounded Packet 7 remediation.
+
+Authority Consulted:
+
+- Plans 0010 and 0011 acceptance and closeout gates
+- current repository, installed source, systemd service, SQLite, MCP, Graphiti
+  projection, and authenticated canary receipts
+- roadmap/runbook, documentation, validation, commit/push, and Graphiti-memory
+  policies
+
+Decisions And Changes:
+
+- Added App Intelligence contract names, versions, and validator-enforced
+  finite ranges to read-only maintenance discovery, derived from the canonical
+  registry and limits class.
+- Bumped and installed service version 0.2.7.
+- Repeated the full validation and current-state audit once.
+- Accepted every Plan 0010 and Plan 0011 criterion and closed both plans.
+- Kept ongoing P01-P06 product lanes open for hydration breadth, source
+  operations, identity review, and retrieval quality.
+- Performed no additional acquisition, timer, browser, or stochastic work.
+
+Validation Evidence:
+
+- remediation commit `06d577f` is pushed on `origin/main`;
+- focused TDD first failed on missing `contract_catalog`, then passed;
+- full Python, compilation, Go generation/tests/vet, and plan/goal audits pass;
+- installed source hash matches the repository and the enabled, active service
+  reports version 0.2.7/schema 12 ready;
+- fresh MCP maintenance readback exposes eight task types, version-1
+  request/result contracts, and finite item/byte/call/cost/time ranges;
+- a fresh client discovers ten compact tools, and cache-only retrieval left
+  durable jobs unchanged;
+- live corpus counts are 43 documents, 45 immutable versions, 65 sightings,
+  one source account/snapshot, and five profile section-state records;
+- Graphiti projection reports one published receipt and zero pending/failed;
+- agent-browser Graphiti episode
+  `f0e2ccb4-ba46-4242-a74e-2903a992ccea` is visible in
+  `agent_browser_main`.
+
+State Movement:
+
+- Plan 0010: `installed_discovery_gap -> closed`.
+- Plan 0011:
+  `packet_7_discovery_remediation_authorized -> packet_7_complete -> closed`.
+- Roadmap: integrated foundation milestone complete; ongoing product lanes
+  retain their independent OPEN states.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it. Independent review was a separate audit phase.
+
+Graphiti Write Status:
+
+- last30days closeout write is pending the durable closure-candidate commit;
+  the exact job and episode receipts will be appended without reopening the
+  closed plan.
+
+Next Bounded Action:
+
+- commit and push this closure candidate, write and verify the compact
+  source-backed Graphiti closeout memory, append its receipt, then verify a
+  clean synchronized repository and live installed state.

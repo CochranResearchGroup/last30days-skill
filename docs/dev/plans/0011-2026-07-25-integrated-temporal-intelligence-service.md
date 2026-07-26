@@ -1,6 +1,6 @@
 # Plan 0011 | Integrated temporal intelligence service
 
-State: OPEN
+State: CLOSED
 Roadmap: P01
 Date: 2026-07-25
 Predecessors: Plans 0007 and 0010
@@ -68,34 +68,26 @@ profile history, graph authority, or agent-facing query behavior.
 
 ## Current State
 
-- Packets 1 through 5 are complete at commits `f14b0fa`, `0454e5a`,
-  `4ae5095`, `22c8db1`, and `6c6e751`. Packet 6 source is complete at
-  `0e7938a`. Schema version 12 adds governed
-  recurring collection, profile/identity evidence, bitemporal claims/events,
-  recorded retrieval evaluation, and durable graph projection receipts to the
-  additive temporal authority, immutable publication, version-scoped
-  enrichment/index projections, and deterministic schema-7 replay export.
-- The installed user service runs version 0.2.6 with schema 12. Its fresh MCP
-  client discovers ten compact tools, and its concrete loopback Graphiti sink
-  previously published a durable outbox canary.
-- Packet 6 has published the bounded Facebook post canary and proved recurring
-  timer yield, interval deduplication, and restart recovery. The acceptance
-  timer is paused at immutable revision 5.
-- X authentication is now independently fresh in agent-browser's exact
-  `last30days-facebook` profile, and a bounded retained-browser probe accepted
-  four posts. Its content-service canary remains unattempted.
-- Two bounded LinkedIn version 0.2.6 post jobs failed before authentication at
-  `workspace_acquisition` with one stable `agent_browser_error` signature.
-  Agent-browser's route repair was live, but the user-scoped last30days
-  service still overrode LinkedIn to `cdp_screencast`, forcing
-  `launch_new_browser`. The override is now `rdp_gateway`, the service has
-  restarted with that value, and an installed no-navigation acquisition
-  returns `session:last30days-facebook` after one service read with no
-  `remote-view` call. The LinkedIn lane is stopped under the repeated-failure
-  rule pending a new plan decision.
-- Broad recurring hydration remains gated until the authenticated canaries and
-  Packet 7 acceptance complete; isolated Plan 0010 execution remains
-  prohibited outside the four integration joins.
+- Packets 1 through 7 are complete. Additive schema version 12 is the
+  authoritative temporal corpus, collection, profile/identity, claim/event,
+  retrieval-evaluation, and graph-projection schema.
+- The installed user service is ready at version 0.2.7/schema 12. A fresh MCP
+  client discovers ten compact tools, cache-only queries do not enqueue work,
+  and maintenance discovery exposes the canonical App Intelligence contract
+  catalog and validator-enforced safe-limit ranges.
+- The bounded Facebook, X, LinkedIn post, and LinkedIn company-profile
+  canaries published through the retained authenticated Guacamole/RDP browser.
+  The acceptance timer and exact profile spec remain disabled after their
+  proofs; no recurring authenticated timer was enabled by closeout.
+- SQLite remains the corpus and decision authority. The current Graphiti
+  projection has one published receipt with zero pending or failed records,
+  and provider readiness passes.
+- The independent Packet 7 audit found one discovery-only defect, repaired it
+  test-first in `06d577f`, reran the full Python and Go gates, installed the
+  candidate, and accepted Plans 0010 and 0011 without a second rework cycle.
+- Future recurring hydration, profile breadth, identity review, retrieval
+  quality, and source operations continue under the open P01-P06 roadmap
+  lanes; they are not unfinished work in this bounded integrated plan.
 
 ## Context And Constraints
 
@@ -2378,3 +2370,93 @@ gate, Graphiti write approval gate, unowned dirty worktree, repeated failure
 of the same packet after two attempts, failed bounded review after one rework,
 or two consecutive hardening-only checkpoints. Split or reframe oversized work
 instead of weakening an acceptance criterion.
+
+### Checkpoint P0011-C07B | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_7_discovery_remediation_authorized -> packet_7_complete`;
+`plan_0010_open -> closed`; `plan_0011_open -> closed`
+
+Progress classification: `goal_complete`
+
+Owned changes:
+
+- added the canonical App Intelligence contract catalog and enforced safety
+  ranges to the existing read-only maintenance response;
+- derived supported task types from `TaskContractRegistry` and limit ranges
+  from `IntelligenceLimits`, avoiding a second service-layer authority;
+- bumped the installed service to 0.2.7 and synchronized the frozen Skill
+  install;
+- performed the one allowed final independent review and accepted every
+  integrated criterion;
+- kept the acceptance collection timer and LinkedIn company-profile spec
+  disabled and performed no acquisition, browser, timer, or stochastic work.
+
+Criterion-by-criterion acceptance:
+
+- P01: schema 12 migrations, immutable versions and sightings, evidence
+  closure, access partitions, bitemporal fields, absence semantics, and
+  schema-7 replay pass the full suite; the live database holds 43 documents,
+  45 immutable versions, and 65 sightings;
+- P02: typed collection specs, immutable revisions, intervals, cursor,
+  coverage, lease, retry, budget, deduplication, and restart behavior pass;
+  the bounded live timer proof remains paused after successful restart yield;
+- P03: source-neutral people/organization/account contracts and conservative
+  section states pass; the live OpenAI LinkedIn organization snapshot has one
+  sighting, one evidenced visible section, and four `not_observed` sections;
+- P04: temporal query modes, partitioned lexical/semantic/entity/event
+  evidence, conflict/ambiguity behavior, SQLite-only fallback, and rebuildable
+  Graphiti outbox pass; the live projection reports one published receipt and
+  zero pending or failed records;
+- P05: a fresh MCP client discovers ten compact tools; representative
+  temporal, profile, coverage, maintenance, and cache-only query calls return
+  provenance and projection metadata, and the cache-only call left the durable
+  job count unchanged at 39 with `job_id=null`;
+- P06: strict versioned contracts, finite limits, evidence closure, stable
+  validator codes, ambiguity preservation, replay/idempotency, disabled-worker
+  behavior, and repair isolation pass; live 0.2.7 maintenance discovery now
+  reports the canonical contracts and safe ranges;
+- repository/runtime: full `uv run pytest -q`, Python compilation,
+  `go generate ./...`, `go test ./...`, `go vet ./...`, and authority audits
+  pass; installed source matches the repository excluding bytecode, the
+  service is enabled/active/ready at 0.2.7/schema 12, and the candidate commit
+  is pushed.
+
+Independent-review result:
+
+- C07A found exactly one acceptance gap, limited to discovery metadata;
+- remediation commit `06d577f` closed it without changing control semantics or
+  exposing sensitive data;
+- the second and final review found no remaining required defect, so the
+  one-rework bound stops further implementation.
+
+Source yield and service health:
+
+- service health and all deterministic product contracts pass;
+- current corpus yield is 43 documents and one profile snapshot, not a claim
+  that future recurring hydration or identity enrichment is complete;
+- the ongoing P01-P06 roadmap lanes own expansion of corpus breadth, source
+  operations, identity review, and retrieval quality.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it. The audit was performed as a separate
+  criterion-by-criterion phase.
+
+Graphiti write status:
+
+- agent-browser episode `f0e2ccb4-ba46-4242-a74e-2903a992ccea` is visible in
+  `agent_browser_main` and records the registered-session retained-browser
+  reconnect used by the successful X and LinkedIn canaries;
+- the last30days closeout episode is written after this closure candidate is
+  committed so its source description can bind to a durable commit; its exact
+  receipt is recorded in the final runbook checkpoint.
+
+Stop rule:
+
+- Plans 0010 and 0011 are closed; do not continue implementation under them;
+- recurring authenticated hydration remains opt-in and requires a successor
+  bounded plan or explicit operator enablement.

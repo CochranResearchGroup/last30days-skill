@@ -174,8 +174,29 @@ def test_current_repository_authority_passes() -> None:
 
     assert report["status"] == "passed", report
     assert report["issues"] == []
-    assert report["active_plan_count"] == 2
-    assert report["campaign_plan_count"] == 1
+    assert report["active_plan_count"] == 1
+    assert report["campaign_plan_count"] == 0
+
+
+def test_closed_campaign_allows_zero_active_campaigns(tmp_path: Path) -> None:
+    auditor = _load_auditor()
+    _write_minimal_authority(tmp_path)
+    roadmap = tmp_path / "ROADMAP.md"
+    roadmap.write_text(
+        roadmap.read_text(encoding="utf-8").replace("State: OPEN", "State: PLANNED"),
+        encoding="utf-8",
+    )
+    plan = next((tmp_path / "docs" / "dev" / "plans").glob("0011-*.md"))
+    plan.write_text(
+        plan.read_text(encoding="utf-8").replace("State: OPEN", "State: CLOSED"),
+        encoding="utf-8",
+    )
+
+    report = auditor.audit_repository(tmp_path)
+
+    assert report["status"] == "passed", report
+    assert report["active_plan_count"] == 0
+    assert report["campaign_plan_count"] == 0
 
 
 def test_open_lane_requires_current_state_and_plan(tmp_path: Path) -> None:

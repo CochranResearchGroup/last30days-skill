@@ -1,6 +1,6 @@
 # Plan 0010 | App Intelligence task contracts
 
-State: PLANNED
+State: CLOSED
 Roadmap: P06
 Date: 2026-07-25
 Predecessor: Plan 0007
@@ -317,3 +317,33 @@ requires operator action, or when remaining work is unbounded quality polish.
 Do not broaden the task catalog, add model-driven control actions, or continue
 hardening after two consecutive checkpoints without outcome progress; split a
 successor plan instead.
+
+## Closeout | 2026-07-25
+
+Plan 0010 was executed only through Plan 0011's four deterministic attachment
+gates and is closed with the integrated campaign.
+
+Acceptance evidence:
+
+- strict version-1 request/result contracts cover content and profile
+  assessment, knowledge extraction, identity resolution, retrieval
+  evaluation, failure triage, repair recommendation, and branch decision;
+- the host enforces evidence closure, access partitions, stable validation
+  codes, finite item/byte/call/cost/time limits, idempotent promotion, and
+  recorded replay outcomes;
+- disabled-worker, ambiguity, authorization, auth/rate-limit/access/transient
+  repair-routing, restart, duplicate-delivery, and replay behavior pass in the
+  full deterministic suite;
+- installed service version 0.2.7 exposes contract names and versions plus
+  validator-enforced min/max ranges through read-only MCP maintenance
+  discovery without exposing prompts, provider events, browser mechanics,
+  credentials, or evidence bodies;
+- `CONFIGURATION.md`, Skill guidance, `CHANGELOG.md`, the service schema,
+  roadmap, runbook, installed source, and MCP readback agree;
+- the final Packet 7 audit required one bounded discovery remediation,
+  completed test-first at commit `06d577f`, followed by passing full Python and
+  Go validation.
+
+No stochastic worker gained authority to browse, merge identities, mutate
+canonical evidence, change collection state, integrate a branch, restart a
+service, or deploy autonomously.
