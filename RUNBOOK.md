@@ -1898,8 +1898,8 @@ State Movement:
 - Plan 0010: `installed_discovery_gap -> closed`.
 - Plan 0011:
   `packet_7_discovery_remediation_authorized -> packet_7_complete -> closed`.
-- Roadmap: integrated foundation milestone complete; ongoing product lanes
-  retain their independent OPEN states.
+- Roadmap: integrated foundation milestone complete; P03 remains OPEN under
+  Plan 0002 and successor lanes without actionable plans are PLANNED.
 
 Subagent Status And Reconciliation:
 
@@ -1908,12 +1908,16 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- last30days closeout write is pending the durable closure-candidate commit;
-  the exact job and episode receipts will be appended without reopening the
-  closed plan.
+- provider preflight passed and exact duplicate detection found no prior
+  closeout episode;
+- job `6bcf1bfd-31e2-406b-a469-13ac8b6ecfa5` completed on attempt 1;
+- episode `3b68fd75-5a06-49b2-99f2-2039e1b00715` is visible and readable in
+  `last30days_skill_main`, sourced to closure-candidate commit `0d41534`;
+- grouped fact search succeeds; the episode remains the exact source-backed
+  closeout authority even when older related facts rank first.
 
-Next Bounded Action:
+Stop Reason:
 
-- commit and push this closure candidate, write and verify the compact
-  source-backed Graphiti closeout memory, append its receipt, then verify a
-  clean synchronized repository and live installed state.
+- all Plans 0010/0011 acceptance criteria and closeout requirements are
+  satisfied; commit and push this receipt-only checkpoint, then stop the goal
+  after clean repository and live installed-state verification.
