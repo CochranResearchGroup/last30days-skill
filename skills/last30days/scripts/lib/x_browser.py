@@ -201,6 +201,11 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
                 "--task-name", "x-search",
                 "--target-service-id", "x",
                 "--url", "https://x.com/search",
+                "--browser-build", request.browser_build,
+                "--browser-host", request.browser_host,
+                "--view-stream-provider", request.view_provider,
+                "--control-input-provider", request.control_input_provider,
+                "--display-isolation", request.display_isolation,
             ],
             timeout=min(request.timeout, 30),
         )
@@ -375,6 +380,7 @@ def search_x_browser(
         agent_name="x-scraper",
         task_name="x-search",
         target_service_id="x",
+        display_isolation="shared_display",
     )
     client = CliAgentBrowserClient(timeout=request.timeout)
     scraper = XBrowserScraper(

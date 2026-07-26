@@ -127,6 +127,26 @@ class FacebookAvailabilityTests(unittest.TestCase):
 
 
 class FacebookCliAdapterTests(unittest.TestCase):
+    def test_access_plan_receives_the_requested_remote_view_transport(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        plan = access_plan(shared_owner=("browser-1", "shared-social"))
+
+        with mock.patch.object(
+            client, "_invoke", return_value=plan
+        ) as invoke, mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ):
+            client.acquire_workspace(request(display_isolation="shared_display"))
+
+        command = invoke.call_args.args[0]
+        self.assertEqual("shared_display", command[command.index("--display-isolation") + 1])
+        self.assertEqual("remote_headed", command[command.index("--browser-host") + 1])
+        self.assertEqual("rdp_gateway", command[command.index("--view-stream-provider") + 1])
+        self.assertEqual(
+            "manual_attached_desktop",
+            command[command.index("--control-input-provider") + 1],
+        )
+
     def test_prepare_site_tab_selects_one_and_closes_only_same_site_duplicates(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         workspace = facebook.BrowserWorkspace(

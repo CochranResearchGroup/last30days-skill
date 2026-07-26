@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Shared social profiles reuse the Guacamole/RDP browser.** X, Facebook, and
+  LinkedIn post/profile adapters now pass the complete remote-view posture into
+  agent-browser access planning and request the retained social profile's
+  `shared_display`. This prevents a false private-display lease conflict from
+  blocking a healthy route-bound authenticated browser.
 - **X browser workspaces use Guacamole/RDP instead of CDP screencasts.** X now
   delegates acquisition to agent-browser's route-bound remote-view path with
   an `rdp_gateway` default and requires an operator-ready workspace. This keeps

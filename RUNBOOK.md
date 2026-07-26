@@ -1017,3 +1017,95 @@ Next Bounded Action:
   when Graphiti is healthy;
 - then perform an integrated requirement-by-requirement audit and select the
   next unblocked bounded unit without bypassing either stop gate.
+
+## Turn 15 | 2026-07-25
+
+Focus: Plan 0011 Packet 6 shared social-profile acquisition repair.
+
+Authority Consulted:
+
+- Plan 0011 Packet 6 canary gates, local attempt bounds, and adapter-repair
+  stop rules
+- ROADMAP P01 and P06 current state
+- live agent-browser access plan, service state, Guacamole route, browser,
+  session, and display readbacks
+- durable last30days job, acquisition, work-result, and event records
+- TDD, validation, documentation, Graphiti, worktree, commit, push, and
+  closeout policies
+- CodeGraph shared adapter acquisition, access-plan, and request-construction
+  paths
+
+Decisions And Changes:
+
+- Treated fresh Facebook and LinkedIn authenticated DOM as source-specific
+  evidence and kept X behind its independent gate.
+- Preserved failed Facebook job `74ce82f7-191c-4a41-94e6-1ef7afd18ab9`
+  after its two internal attempts rather than submitting another canary.
+- Attributed the failure to a deterministic request mismatch: the adapters
+  asked the broker for `private_virtual_display` while the retained
+  authenticated Guacamole browser is intentionally on `shared_display`.
+- Passed the complete remote-view transport contract into access planning and
+  selected `shared_display` for X, Facebook, and LinkedIn post/profile
+  acquisition.
+- Bumped the user-visible service to version 0.2.4, synced the repaired tree
+  into the frozen user-scoped install, and restarted the service.
+
+Validation Evidence:
+
+- Live X/Facebook/LinkedIn owner:
+  `session:last30days-facebook`, `remote_headed`, display `:10`, provider
+  `rdp_gateway`, route `guacamole:4`, health and operator visibility ready.
+- Before repair, access planning reported `wait_for_profile_lease`,
+  `active_profile_lease_conflict`, and `no_compatible_live_browser`.
+- With `shared_display`, the same live plan reports
+  `reuse_existing_browser`, shared acquisition mode `tab_new`, and route hints
+  for `session:last30days-facebook`.
+- The no-navigation adapter acquisition probe reused that exact browser and
+  session.
+- 88 focused tests pass with 3 skips; the full suite passes with 2,289 tests,
+  7 skips, and 6 passing subtests.
+- Installed adapter files byte-match the working tree; the restarted service
+  reports ready, version 0.2.4, schema 12.
+- Facebook job `ecea393f-c445-461d-9528-99c2107190f1` published in one
+  attempt with three items from
+  `work-d211f861234870f78e05fd069274d3c1`.
+- LinkedIn post job `91b55c9f-3827-4046-9c87-0df99ec54f40` failed after two
+  internal attempts with `agent_browser_error`; both durable acquisition
+  envelopes contain zero items.
+
+State Movement:
+
+- Shared social-profile acquisition:
+  `display_constraint_mismatch -> retained_browser_reuse_ready`.
+- Facebook live acceptance:
+  `terminal_adapter_failure_preserved -> published_three_items`.
+- LinkedIn live acceptance:
+  `auth_proven_canary_withheld -> post_adapter_failure_preserved`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this work is one serialized shared-profile
+  routing seam.
+
+Graphiti Write Status:
+
+- deferred after a second provider-readiness timeout from the Codex app-server;
+  no write was queued while provider readiness was degraded.
+
+Live Outcome And Stop:
+
+- No second pre-repair Facebook job was run. The one post-repair Facebook
+  verification succeeded, and no further Facebook job is authorized.
+- The one LinkedIn post canary exhausted its two internal attempts. Do not
+  submit another LinkedIn post job or run the LinkedIn profile canary without a
+  new bounded repair decision.
+- X remains gated on authenticated DOM in the same service-owned Guacamole/RDP
+  browser.
+
+Next Bounded Action:
+
+- diagnose the preserved LinkedIn post failure without another live canary;
+- define a bounded source-specific repair decision before changing code or
+  authorizing another LinkedIn attempt;
+- keep the LinkedIn profile canary withheld until the post adapter clears.

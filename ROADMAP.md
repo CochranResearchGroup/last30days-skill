@@ -80,7 +80,7 @@ Current State:
   assessment, authoritative index snapshots, evidence-backed temporal
   claims/events, recorded retrieval evaluations, and durable graph projection
   receipts.
-- The installed service runs version 0.2.3 on schema 12, a fresh MCP client
+- The installed service runs version 0.2.4 on schema 12, a fresh MCP client
   discovers ten compact tools, and concrete Graphiti outbox delivery passed.
 - X profile authentication is restored. The first canary retry exposed that
   `force_refresh` coalesced onto the retained `awaiting_operator` job without a
@@ -100,12 +100,26 @@ Current State:
   Guacamole route `guacamole:4`. Its refreshed DOM is the signed-out X landing
   page, so the next gate is operator authentication in that visible RDP
   browser; no additional content canary should run before it is authenticated.
-- Service version 0.2.3 is now installed from pushed commit `b76bb28`; the
-  canonical plan/runbook checkpoint is pushed at `e685844`.
+- Service version 0.2.4 contains the shared social-display repair; the prior
+  route-bound X repair is pushed at `b76bb28` and its canonical checkpoint at
+  `e685844`.
 - The first bounded live recurring-collection acceptance spec preserved two
   typed fail-closed outcomes (`budget_exhausted`, then
   `network_budget_exhausted`) and was paused at immutable spec revision 3 after
   reaching the two-attempt plan bound.
+- Fresh retained-browser DOM probes independently proved Facebook and LinkedIn
+  authentication is usable. The first Facebook canary then failed twice with
+  `agent_browser_error` before acquisition because the adapter requested a
+  private virtual display while the authenticated retained Guacamole browser
+  intentionally uses `shared_display`. The adapter now passes the complete
+  Guacamole/RDP posture into access planning and requests `shared_display` for
+  X, Facebook, and LinkedIn post/profile work. A no-navigation live acquisition
+  probe reused `session:last30days-facebook`, and the repaired source is synced
+  into the active user-scoped install. The single post-repair Facebook job
+  `ecea393f-c445-461d-9528-99c2107190f1` then published three items in one
+  attempt. The serialized LinkedIn post canary
+  `91b55c9f-3827-4046-9c87-0df99ec54f40` failed after its two internal attempts
+  with `agent_browser_error`, so the LinkedIn profile canary remains withheld.
 
 Goal Seeds:
 
@@ -486,9 +500,10 @@ Active Plan:
 
 Next Bounded Action:
 
-- Authenticate X in the visible `last30days-facebook` Guacamole/RDP workspace,
-  verify the service-owned browser renders authenticated DOM, then run exactly
-  one X content canary under installed service version 0.2.3. Do not execute
+- Diagnose the preserved LinkedIn post failure without another live canary,
+  repair only its source-specific adapter seam under a new bounded plan
+  decision, and keep the LinkedIn profile canary withheld until that repair is
+  validated. Keep X behind same-browser authenticated-DOM proof. Do not execute
   Plan 0010 outside its four host-owned joins.
 
 ## Goal-Compatible Plan Conversion

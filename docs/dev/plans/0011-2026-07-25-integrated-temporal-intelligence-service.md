@@ -1307,6 +1307,95 @@ Next action:
   and push the reconciled checkpoint, then select the next unblocked bounded
   acceptance unit.
 
+### Checkpoint P0011-C06F | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_authority_audit_ready -> packet_6_shared_social_route_repaired`
+
+Progress classification: `blocker_reduction`
+
+Owned changes:
+
+- independently verified authenticated Facebook and LinkedIn DOM in the
+  retained `last30days-facebook` browser without treating X state as evidence
+  for either source;
+- preserved Facebook job `74ce82f7-191c-4a41-94e6-1ef7afd18ab9` and its two
+  failed acquisition envelopes instead of retrying past the source canary
+  boundary;
+- proved the failure was a deterministic transport-constraint mismatch:
+  access planning requested `private_virtual_display` while the healthy
+  route-bound browser on Guacamole route `guacamole:4` uses
+  `shared_display`;
+- changed the shared social adapters to pass browser host, stream provider,
+  input provider, and display isolation into access planning and to request
+  `shared_display` for X, Facebook, and LinkedIn post/profile work;
+- synced the repaired source into the user-scoped skill install and restarted
+  the ready version 0.2.4 service.
+
+Validation evidence:
+
+- Facebook canary acquisitions
+  `work-79f5d13ac6f0776e7ed99b1ee2a67548` and
+  `work-e7c7248c0ce5bf78469b9897955dca04` both failed with
+  `agent_browser_error` before producing items;
+- the live access plan changed from `wait_for_profile_lease` with
+  `no_compatible_live_browser` under `private_virtual_display` to
+  `reuse_existing_browser` with `tab_new` under `shared_display`;
+- a no-navigation acquisition probe returned profile
+  `last30days-facebook`, browser `session:last30days-facebook`, and session
+  `last30days-facebook`;
+- 88 focused social-adapter tests pass with 3 skips;
+- the full Python suite passes with 2,289 tests, 7 skips, and 6 passing
+  subtests;
+- the installed Facebook, LinkedIn, and X adapter sources byte-match the
+  working tree and `last30days.service` is active and ready on schema 12;
+- post-repair Facebook job `ecea393f-c445-461d-9528-99c2107190f1`
+  succeeded in one attempt, published three items from acquisition
+  `work-d211f861234870f78e05fd069274d3c1`, and advanced the index to
+  `index-d0a49fe879e63367952ba219`;
+- serialized LinkedIn post job `91b55c9f-3827-4046-9c87-0df99ec54f40`
+  failed after two internal attempts with `agent_browser_error`; acquisitions
+  `work-3422d06582f77b811ff0cd2dafd30a87` and
+  `work-925085bcda3576aea42397e369a20307` produced zero items.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized shared-profile
+  routing seam.
+
+Remaining acceptance criteria:
+
+- diagnose and repair the preserved LinkedIn post failure before authorizing
+  another LinkedIn live attempt;
+- keep the LinkedIn profile canary withheld until the post adapter clears;
+- prove one successful recurring collection interval and restart recovery
+  through a bounded successor unit;
+- restore and prove X authentication in the same Guacamole/RDP browser before
+  any X canary;
+- execute Packet 7 independent integrated acceptance and closeout.
+
+Graphiti write status:
+
+- deferred after a second provider-readiness timeout from the Codex app-server;
+  no write was queued while the provider was degraded.
+
+Stop rule:
+
+- do not submit another Facebook job; the one post-repair verification
+  succeeded;
+- do not submit another LinkedIn post job or run the LinkedIn profile canary
+  without a new bounded repair decision;
+- do not run an X canary until authenticated DOM is verified in the same
+  service-owned browser.
+
+Next action:
+
+- diagnose the preserved LinkedIn failure from deterministic artifacts and
+  code, then record a new bounded repair decision or stop at the typed blocker.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,

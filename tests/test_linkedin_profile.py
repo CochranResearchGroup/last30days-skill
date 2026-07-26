@@ -67,6 +67,7 @@ def test_exact_linkedin_profile_is_normalized_without_private_surface_actions():
     assert result["items"][0]["metadata"]["account_kind"] == "person"
     assert {action.operation for action in client.actions} <= {"navigate", "wait"}
     assert client.request.task_name == "linkedin-profile-acquisition"
+    assert client.request.display_isolation == "shared_display"
 
 
 def test_invalid_or_checkpointed_profile_never_navigates():

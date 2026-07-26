@@ -19,7 +19,7 @@ from .service_knowledge import TemporalKnowledgeQuery
 from .service_supervisor import InvalidTransitionError
 
 
-SERVICE_VERSION = "0.2.3"
+SERVICE_VERSION = "0.2.4"
 DEFAULT_FRESH_SECONDS = 24 * 60 * 60
 
 

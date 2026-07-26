@@ -343,6 +343,10 @@ class CliAgentBrowserClient:
                     "--target-service-id", target_id,
                     "--url", request.start_url,
                     "--browser-build", request.browser_build,
+                    "--browser-host", request.browser_host,
+                    "--view-stream-provider", request.view_provider,
+                    "--control-input-provider", request.control_input_provider,
+                    "--display-isolation", request.display_isolation,
                 ],
                 timeout=min(request.timeout, 30),
             )
@@ -1098,6 +1102,7 @@ def search_facebook(
         browser_id_hint=str(config.get("LAST30DAYS_FACEBOOK_BROWSER_ID") or "").strip(),
         route_id_hint=str(config.get("LAST30DAYS_FACEBOOK_ROUTE_ID") or "").strip(),
         route_pool_entry_id_hint=str(config.get("LAST30DAYS_FACEBOOK_ROUTE_POOL_ENTRY_ID") or "").strip(),
+        display_isolation="shared_display",
     )
     scraper = FacebookScraper(
         CliAgentBrowserClient(timeout=timeout),

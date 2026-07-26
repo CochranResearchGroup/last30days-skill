@@ -134,6 +134,7 @@ class XBrowserSearchTests(TestCase):
         self.assertEqual("2026-07-18", result["items"][0]["date"])
         self.assertEqual(1200, result["items"][0]["engagement"]["likes"])
         self.assertEqual("rdp_gateway", client.requests[0].view_provider)
+        self.assertEqual("shared_display", client.requests[0].display_isolation)
         self.assertEqual("https://x.com/home", client.requests[0].start_url)
         self.assertEqual("x", client.requests[0].target_service_id)
 
@@ -385,6 +386,7 @@ class XBrowserAcquisitionTests(TestCase):
                     browser_build="stealthcdp_chromium",
                     view_provider="rdp_gateway",
                     timeout=45,
+                    display_isolation="shared_display",
                 )
             )
 
@@ -392,6 +394,8 @@ class XBrowserAcquisitionTests(TestCase):
         self.assertIn("--target-service-id", recorder.calls[0])
         target_index = recorder.calls[0].index("--target-service-id")
         self.assertEqual("x", recorder.calls[0][target_index + 1])
+        display_index = recorder.calls[0].index("--display-isolation")
+        self.assertEqual("shared_display", recorder.calls[0][display_index + 1])
         self.assertEqual("remote-view", recorder.calls[2][2])
         self.assertEqual("open", recorder.calls[2][3])
         self.assertIn("--view-stream-provider", recorder.calls[2])

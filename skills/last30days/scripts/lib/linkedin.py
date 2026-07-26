@@ -793,6 +793,7 @@ def search_linkedin(
         agent_name="linkedin-scraper",
         task_name="linkedin-content-search",
         target_service_id="linkedin",
+        display_isolation="shared_display",
     )
     scraper = LinkedInScraper(
         CliAgentBrowserClient(timeout=timeout),
@@ -869,6 +870,7 @@ def acquire_linkedin_profile(
         agent_name="linkedin-profile-scraper",
         task_name="linkedin-profile-acquisition",
         target_service_id="linkedin",
+        display_isolation="shared_display",
     )
     client = CliAgentBrowserClient(timeout=timeout)
     try:

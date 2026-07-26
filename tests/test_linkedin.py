@@ -195,6 +195,7 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual("linkedin-scraper", workspace_request.agent_name)
         self.assertEqual("linkedin-content-search", workspace_request.task_name)
         self.assertEqual("https://www.linkedin.com/feed/", workspace_request.start_url)
+        self.assertEqual("shared_display", workspace_request.display_isolation)
 
     def test_retained_workspace_reselects_inactive_linkedin_tab(self):
         client = linkedin.CliAgentBrowserClient(timeout=5)
