@@ -155,9 +155,12 @@ Current State:
   proved acquisition selects the healthy retained RDP browser, but the next
   registered-session client command is not attached to it and incorrectly
   attempts to auto-launch the unrelated default profile. Explicit attachment
-  to the retained CDP endpoint lists the authenticated X tab. Packet 6 is now
-  bounded on an agent-browser registered-session reconnection repair and one
-  no-navigation auth readback; no further social content job is authorized.
+  to the retained CDP endpoint lists the authenticated X tab. Agent-browser
+  commit `68bd8173` now reconnects ordinary registered-session commands to
+  their live retained browser, and installed no-navigation validation reports
+  X authenticated at `https://x.com/home` while preserving the Guacamole/RDP
+  browser. Packet 6 now authorizes exactly one successor X content canary;
+  LinkedIn remains stopped and no second X job is authorized.
 
 Goal Seeds:
 

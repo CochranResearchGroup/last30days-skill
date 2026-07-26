@@ -1557,3 +1557,68 @@ Next Bounded Action:
 
 - commit and push C06M, repair agent-browser test-first, install it, and run
   only the authorized no-navigation X authentication readback.
+
+## Turn 23 | 2026-07-25
+
+Focus: close the registered-session control-plane repair and authorize one X
+content-service acceptance canary.
+
+Authority Consulted:
+
+- Plan 0011 checkpoint C06M
+- agent-browser registered-session repair and closeout note
+- installed agent-browser convergence and no-navigation X auth readback
+- current Graphiti provider readiness
+
+Decisions And Changes:
+
+- Agent-browser now reconnects an ordinary registered-session command to the
+  live retained browser owned by that session.
+- The repair is pushed at `68bd8173`; the source-backed operational note is
+  pushed at `d9cee573`.
+- The installed runtime converged without replacing the retained social
+  browser.
+- The authorized readback proved X authenticated on the existing home tab,
+  with no login form, checkpoint, or restriction.
+- Authorized exactly one X content-service canary with caller key
+  `p0011-c06n-x-post-registered-session-reconnect`. LinkedIn remains stopped.
+
+Validation Evidence:
+
+- selected agent-browser unit, regression, format, lint, route-confusion, CDP
+  stream, and live tab-streaming gates passed;
+- installed executable SHA matches the build, and install doctor reports no
+  issues or stale runtimes;
+- retained X PID `1669680`, RDP provider, shared display, and Guacamole route
+  `guacamole:4` remained unchanged;
+- installed acquisition returned `session:last30days-facebook`;
+- no-navigation auth evaluation returned `authenticated=true` at
+  `https://x.com/home`;
+- a supplemental full Rust run was stopped after unrelated tests remained
+  nonterminal beyond six minutes, with no observed failures;
+- Graphiti duplicate detection was clean, but provider readiness timed out, so
+  no closeout write was queued.
+
+State Movement:
+
+- Shared browser repair:
+  `registered_session_not_attached -> installed_reconnect_verified`.
+- X acceptance:
+  `stable_client_attachment_failure -> one_successor_canary_authorized`.
+- LinkedIn acceptance:
+  `repeated_failure_stop -> repeated_failure_stop`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it.
+
+Graphiti Write Status:
+
+- deferred after a degraded provider preflight; the pushed agent-browser note
+  remains source authority.
+
+Next Bounded Action:
+
+- commit and push C06N, run the one keyed X content canary, and follow only its
+  terminal decision branch.

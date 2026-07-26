@@ -1932,6 +1932,95 @@ Next action:
   registered-session reconnection repair test-first, install it, and run the
   one authorized no-navigation X auth readback.
 
+### Checkpoint P0011-C06N | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_shared_browser_control_repair_authorized -> packet_6_x_content_canary_reauthorized`
+
+Progress classification: `blocker_repaired`
+
+Owned changes:
+
+- repaired agent-browser registered-session reconnection so an ordinary
+  command resumes the live browser already owned by that service session;
+- preserved acquisition actions on the existing fresh-tab path and rejected
+  cross-session route hints;
+- installed and converged the repaired agent-browser runtime without
+  replacing, closing, navigating, or relaunching the retained social browser;
+- ran the one authorized no-navigation X authentication readback successfully;
+- authorized exactly one successor X content-service canary with caller key
+  `p0011-c06n-x-post-registered-session-reconnect`; LinkedIn remains stopped.
+
+Validation evidence:
+
+- agent-browser source repair commit `68bd8173` and closeout note commit
+  `d9cee573` are pushed to the public fork;
+- focused retained-session tests, existing shared-profile regression tests,
+  Rust format, Rust clippy, CDP stream tests, route-confusion gates, and the
+  live CDP tab-streaming smoke passed;
+- a supplemental 1,778-test Rust run produced no observed failures but was
+  stopped after unrelated integration tests remained nonterminal for more than
+  six minutes; it was not part of the selected change gate;
+- installed and built agent-browser executable SHA
+  `dce721157bf414189587785b8bede7e2630fc979630a9299e7c88d39c1eb2a23`
+  matches, and `install doctor` reports no issues or stale runtimes;
+- the retained X browser stayed on PID `1669680`, profile
+  `last30days-facebook`, provider `rdp_gateway`, shared display, and Guacamole
+  route `guacamole:4`;
+- the repaired installed session acquired
+  `session:last30days-facebook` and evaluated the existing X tab without
+  navigation;
+- the X readback returned `authenticated=true`, `login_form=false`,
+  `checkpoint=false`, and `restricted=false` at `https://x.com/home`;
+- agent-browser's local publisher reported a separate missing handoff file for
+  `auracall-corel` after installing the new executable; subsequent doctor
+  passed, and the duplicate `auracall-corel` listener inventory remains an
+  out-of-scope operational follow-up.
+
+Decision branches:
+
+- X `published`: preserve job, acquisition, and item evidence and advance the
+  X source gate;
+- X `failed`: preserve stage, operation, and stable-signature evidence and
+  stop without another content job;
+- X `awaiting_operator`: preserve the exact browser gate and stop;
+- no branch authorizes LinkedIn work or a second X content job.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized shared-browser
+  acceptance lane.
+
+Remaining acceptance criteria:
+
+- execute the one keyed C06N X content-service canary and follow only its
+  matching branch;
+- retain the LinkedIn repeated-failure stop until a separately approved
+  successor packet;
+- execute Packet 7 independent integrated acceptance and closeout only after
+  remaining source gates are resolved or explicitly deferred.
+
+Graphiti write status:
+
+- duplicate preflight found no matching agent-browser closeout episode, but
+  provider readiness degraded on a Codex app-server timeout; no write was
+  queued, and the pushed note remains the source authority.
+
+Stop rule:
+
+- do not submit more than the one C06N X job;
+- do not submit another LinkedIn post or profile job;
+- do not launch, replace, close, navigate, or reauthenticate the shared social
+  browser outside the service-owned canary.
+
+Next action:
+
+- commit and push this checkpoint, submit the one keyed X content-service
+  canary, and preserve its terminal evidence.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,
