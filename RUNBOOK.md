@@ -1143,10 +1143,16 @@ Decisions And Changes:
 Validation Evidence:
 
 - 41 focused tests pass with 1 skip.
+- The full suite passes with 2,293 tests, 7 skips, and 6 passing subtests.
 - Stable-signature tests vary attempt and job identifiers while retaining the
   same signature.
 - Contract tests reject auth-to-code-repair routing, parent-directory target
   paths, and branch selection without a branch identifier.
+- The authority audit passes with 2 active plans, 1 campaign plan, Turn 16
+  current, and zero issues.
+- Commit `c52918e` is pushed to `origin/main`; the installed service source
+  byte-matches it and the restarted service reports ready, version 0.2.5,
+  schema 12.
 
 State Movement:
 
@@ -1169,9 +1175,10 @@ Live Outcome And Stop:
 
 Graphiti Write Status:
 
-- deferred until provider readiness is healthy; no write was queued.
+- provider readiness remains degraded with a Codex app-server timeout; no
+  write was queued.
 
 Next Bounded Action:
 
-- run the full validation and authority audit, install and activate version
-  0.2.5, then resume Packet 6 under a newly bounded live decision.
+- resume Packet 6 under a newly bounded live decision that uses version
+  0.2.5 failure evidence.

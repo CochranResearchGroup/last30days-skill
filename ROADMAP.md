@@ -80,7 +80,7 @@ Current State:
   assessment, authoritative index snapshots, evidence-backed temporal
   claims/events, recorded retrieval evaluations, and durable graph projection
   receipts.
-- The installed service runs version 0.2.4 on schema 12, a fresh MCP client
+- The installed service runs version 0.2.5 on schema 12, a fresh MCP client
   discovers ten compact tools, and concrete Graphiti outbox delivery passed.
 - X profile authentication is restored. The first canary retry exposed that
   `force_refresh` coalesced onto the retained `awaiting_operator` job without a
@@ -100,9 +100,10 @@ Current State:
   Guacamole route `guacamole:4`. Its refreshed DOM is the signed-out X landing
   page, so the next gate is operator authentication in that visible RDP
   browser; no additional content canary should run before it is authenticated.
-- Service version 0.2.4 contains the shared social-display repair; the prior
-  route-bound X repair is pushed at `b76bb28` and its canonical checkpoint at
-  `e685844`.
+- Service version 0.2.5 contains the shared social-display repair plus stable
+  acquisition failure evidence and typed adapter-repair gating; the repair
+  contract commit is pushed at `c52918e`. The prior route-bound X repair is
+  pushed at `b76bb28` and its canonical checkpoint at `e685844`.
 - The first bounded live recurring-collection acceptance spec preserved two
   typed fail-closed outcomes (`budget_exhausted`, then
   `network_budget_exhausted`) and was paused at immutable spec revision 3 after

@@ -1432,10 +1432,17 @@ Validation evidence:
 
 - focused acquisition-worker, LinkedIn, and App Intelligence contract suite:
   41 passed, 1 skipped;
+- the full Python suite passes with 2,293 tests, 7 skips, and 6 passing
+  subtests;
 - failure-signature tests prove stability across distinct attempts and job
   identifiers;
 - contract tests reject auth-to-code-repair routing, unsafe repository paths,
-  and incoherent branch selections.
+  and incoherent branch selections;
+- authority audit passes with 2 active plans, 1 campaign plan, Turn 16 current,
+  and zero issues;
+- commit `c52918e` is pushed to `origin/main`, its skill copy is installed
+  user-wide, and `last30days.service` is active and ready at version 0.2.5 on
+  schema 12.
 
 Subagent status and reconciliation:
 
@@ -1452,7 +1459,6 @@ Live canary decision:
 
 Remaining acceptance criteria:
 
-- install and activate version 0.2.5 from a pushed commit;
 - prove one successful recurring collection interval and restart recovery;
 - verify X authenticated DOM before its bounded canary;
 - clear LinkedIn post and profile acceptance under a newly bounded live
@@ -1461,12 +1467,11 @@ Remaining acceptance criteria:
 
 Graphiti write status:
 
-- remains deferred until provider readiness is healthy; no write is queued
-  against a degraded provider.
+- provider readiness remains degraded with a Codex app-server timeout; no
+  write is queued against a degraded provider.
 
 Next action:
 
-- validate, install, and activate version 0.2.5;
 - resume Packet 6 only with a newly bounded live decision that uses the new
   failure evidence, then complete recurring timer/restart proof and Packet 7.
 
