@@ -118,7 +118,9 @@ instructions below:
    This tool is cache-only and must not be replaced with browser work.
 7. Use `profile_history` for source-account and immutable profile-page history;
    use `coverage` for attempted intervals, yield, and gaps. Use
-   `maintenance_status` only to report safe readiness/receipt state.
+   `maintenance_status` only to report safe readiness/receipt state. Its
+   App Intelligence catalog exposes supported task names, contract versions,
+   and validator-enforced safe-limit ranges, never prompts or provider events.
 
 If `service_info` advertises `recurring_collection`, interval timers, profile
 leases, coverage, cursors, and post-publication assessment are service-owned.

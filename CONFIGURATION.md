@@ -651,8 +651,9 @@ Service-enabled MCP clients expose ten compact operations:
 - `collection`: list, put, pause, resume, or manually run typed recurring
   collection specs through the durable supervisor;
 - `maintenance_status`: read graph delivery and bounded App Intelligence
-  receipts/safety gates without prompts, raw provider events, or repair
-  execution.
+  receipts/safety gates plus canonical task contract names, versions, and
+  validator-enforced limit ranges without prompts, raw provider events, or
+  repair execution.
 
 The MCP adapter connects to the same Unix socket. A standalone MCPB packages
 the canonical runtime and may bootstrap the single shared daemon if absent. A

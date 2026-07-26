@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Discoverable App Intelligence contracts.** `maintenance_status` now reports
+  the canonical task registry, request/result contract versions, and finite
+  validator-enforced limit ranges without exposing prompts, provider events,
+  evidence bodies, or repair controls.
 - **Deterministic adapter-failure automation contracts.** App Intelligence
   workers can now propose bounded failure triage, repair recommendations, and
   branch decisions through strict host-validated schemas. Authentication,

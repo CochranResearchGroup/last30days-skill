@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from enum import StrEnum
 from pathlib import Path
-from typing import Callable, Mapping, Protocol
+from typing import Callable, ClassVar, Mapping, Protocol
 
 import store
 
@@ -295,6 +295,14 @@ class IntelligenceLimits:
     max_cost_cents: int
     wall_timeout_seconds: int
 
+    BOUNDS: ClassVar[dict[str, tuple[int, int]]] = {
+        "max_items": (1, 100),
+        "max_bytes": (1024, 1_048_576),
+        "max_calls": (0, 5),
+        "max_cost_cents": (0, 10_000),
+        "wall_timeout_seconds": (1, 3600),
+    }
+
     @classmethod
     def from_dict(cls, payload: Mapping[str, object]) -> IntelligenceLimits:
         fields = frozenset(
@@ -308,14 +316,7 @@ class IntelligenceLimits:
         )
         _exact(payload, required=fields)
         values: dict[str, int] = {}
-        bounds = {
-            "max_items": (1, 100),
-            "max_bytes": (1024, 1_048_576),
-            "max_calls": (0, 5),
-            "max_cost_cents": (0, 10_000),
-            "wall_timeout_seconds": (1, 3600),
-        }
-        for field, (minimum, maximum) in bounds.items():
+        for field, (minimum, maximum) in cls.BOUNDS.items():
             value = payload[field]
             if isinstance(value, bool) or not isinstance(value, int):
                 raise ValueError(f"{field} must be an integer")
@@ -331,6 +332,13 @@ class IntelligenceLimits:
             "max_calls": self.max_calls,
             "max_cost_cents": self.max_cost_cents,
             "wall_timeout_seconds": self.wall_timeout_seconds,
+        }
+
+    @classmethod
+    def range_catalog(cls) -> dict[str, dict[str, int]]:
+        return {
+            field: {"minimum": minimum, "maximum": maximum}
+            for field, (minimum, maximum) in cls.BOUNDS.items()
         }
 
 
@@ -926,6 +934,23 @@ class TaskContractRegistry:
             raise KeyError(
                 f"unsupported task contract: {task_type}@{contract_version}"
             ) from exc
+
+    def catalog(self) -> dict[str, object]:
+        return {
+            "request_contract": {
+                "name": "intelligence_task_request",
+                "version": 1,
+            },
+            "result_contract": {
+                "name": "intelligence_task_result",
+                "version": 1,
+            },
+            "task_contracts": [
+                {"task_type": task_type, "version": contract_version}
+                for task_type, contract_version in sorted(self._requests)
+            ],
+            "limit_ranges": IntelligenceLimits.range_catalog(),
+        }
 
     def validate_result(
         self,

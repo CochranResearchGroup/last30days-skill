@@ -168,6 +168,33 @@ def test_coverage_and_operational_status_are_compact_and_read_only(tmp_path):
     }
     assert status["action"] == "maintenance_status"
     assert status["app_intelligence"]["enabled"] is True
+    assert status["app_intelligence"]["contract_catalog"] == {
+        "request_contract": {
+            "name": "intelligence_task_request",
+            "version": 1,
+        },
+        "result_contract": {
+            "name": "intelligence_task_result",
+            "version": 1,
+        },
+        "task_contracts": [
+            {"task_type": "adapter_failure_triage", "version": 1},
+            {"task_type": "adapter_repair_recommendation", "version": 1},
+            {"task_type": "branch_decision", "version": 1},
+            {"task_type": "content_assessment", "version": 1},
+            {"task_type": "identity_resolution", "version": 1},
+            {"task_type": "knowledge_extraction", "version": 1},
+            {"task_type": "profile_change_assessment", "version": 1},
+            {"task_type": "retrieval_evaluation", "version": 1},
+        ],
+        "limit_ranges": {
+            "max_items": {"minimum": 1, "maximum": 100},
+            "max_bytes": {"minimum": 1024, "maximum": 1_048_576},
+            "max_calls": {"minimum": 0, "maximum": 5},
+            "max_cost_cents": {"minimum": 0, "maximum": 10_000},
+            "wall_timeout_seconds": {"minimum": 1, "maximum": 3600},
+        },
+    }
     assert status["graph_projection"]["enabled"] is True
     assert status["graph_projection"]["pending"] == 0
     assert "prompts" not in json.dumps(status).casefold()

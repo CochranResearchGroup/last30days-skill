@@ -15,11 +15,12 @@ import store
 
 from . import service_contracts as contracts
 from .service_collection import CollectionCoordinator, CollectionSpec
+from .service_intelligence_contracts import TaskContractRegistry
 from .service_knowledge import TemporalKnowledgeQuery
 from .service_supervisor import InvalidTransitionError
 
 
-SERVICE_VERSION = "0.2.6"
+SERVICE_VERSION = "0.2.7"
 DEFAULT_FRESH_SECONDS = 24 * 60 * 60
 
 
@@ -329,6 +330,7 @@ class CacheQueryApplication:
         counts = {str(row["state"]): int(row["count"]) for row in rows}
         return {
             "enabled": self.maintenance_enabled,
+            "contract_catalog": TaskContractRegistry.default().catalog(),
             "task_states": counts,
             "validation_receipts": int(
                 conn.execute(
