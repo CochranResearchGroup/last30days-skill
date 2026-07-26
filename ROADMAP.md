@@ -144,6 +144,12 @@ Current State:
   browser. Agent-browser commit `3c08b9b0` repaired daemon-session workspace
   selection and restored the Guacamole route; the same current no-launch
   LinkedIn plan now returns `tab_new` on `session:last30days-facebook`.
+- A post-repair retry exposed the remaining user-scoped override:
+  `LAST30DAYS_LINKEDIN_VIEW_PROVIDER=cdp_screencast`. It is now
+  `rdp_gateway`, loaded by the restarted service, and installed
+  no-navigation acquisition proves one-read retained-browser reuse. The
+  LinkedIn lane is stopped after the repeated stable failure pending a new
+  plan decision.
 
 Goal Seeds:
 

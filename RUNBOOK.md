@@ -1435,3 +1435,65 @@ Next Bounded Action:
 
 - commit and push this corrected authority, run the one C06K LinkedIn post
   canary, and follow only its recorded terminal branch.
+
+## Turn 21 | 2026-07-25
+
+Focus: repair the stale user-scoped LinkedIn provider override and stop the
+repeated-failure lane.
+
+Authority Consulted:
+
+- Plan 0011 checkpoint C06K
+- C06K durable job and acquisition envelopes
+- user-scoped last30days environment and active service process environment
+- installed adapter defaults and no-navigation workspace acquisition
+- current agent-browser LinkedIn access plan and retained RDP browser
+
+Decisions And Changes:
+
+- The one authorized C06K job failed with the same stable signature as C06J.
+- The remaining cause was not LinkedIn authentication: the user-scoped service
+  still overrode the repo's RDP default with `cdp_screencast`.
+- Updated the user-scoped override to `rdp_gateway` and restarted the service.
+- Proved the installed adapter now returns the retained browser after one
+  service read without calling `remote-view`.
+- Activated the repeated-failure stop rule for LinkedIn and authorized one
+  independent X content-service canary against its fresh authenticated
+  retained profile.
+
+Validation Evidence:
+
+- C06K job `19a5860d-eea1-4552-993f-65f563041756` is terminal failed after two
+  internal attempts;
+- both new envelopes retain stage `workspace_acquisition` and signature
+  `sha256:c1c6d0ff8a494273a826a1aa7bd837ac915fb7e8af0f35670cf007510b365376`;
+- the active service process reports
+  `LAST30DAYS_LINKEDIN_VIEW_PROVIDER=rdp_gateway`;
+- v0.2.6/schema 12 returned ready after restart;
+- installed no-navigation acquisition selected
+  `session:last30days-facebook` with one successful service operation and no
+  remote-view operation.
+
+State Movement:
+
+- LinkedIn route attribution:
+  `external_route_failure -> stale_user_provider_override`.
+- LinkedIn acceptance:
+  `post_repair_retry_failed -> repeated_failure_stop`.
+- X acceptance:
+  `authenticated_probe_fresh -> one_service_canary_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized shared-browser
+  lane.
+
+Graphiti Write Status:
+
+- deferred; provider readiness remains degraded and no write was queued.
+
+Next Bounded Action:
+
+- commit and push this checkpoint, run the one C06L X canary, and follow only
+  its terminal branch.

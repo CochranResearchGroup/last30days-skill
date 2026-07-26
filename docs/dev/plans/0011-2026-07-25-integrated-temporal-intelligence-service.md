@@ -84,14 +84,15 @@ profile history, graph authority, or agent-facing query behavior.
 - X authentication is now independently fresh in agent-browser's exact
   `last30days-facebook` profile, and a bounded retained-browser probe accepted
   four posts. Its content-service canary remains unattempted.
-- The authorized LinkedIn version 0.2.6 post canary failed twice before
-  authentication at `workspace_acquisition` with one stable
-  `agent_browser_error` signature. Its contemporaneous broker configuration
-  planned `launch_new_browser` plus `cdp_screencast`. After agent-browser
-  commit `3c08b9b0` repaired daemon-session workspace selection and restored
-  the retained Guacamole route, the same no-launch LinkedIn request now
-  resolves to `session:last30days-facebook`, `tab_new`, `rdp_gateway`, and
-  `shared_display`.
+- Two bounded LinkedIn version 0.2.6 post jobs failed before authentication at
+  `workspace_acquisition` with one stable `agent_browser_error` signature.
+  Agent-browser's route repair was live, but the user-scoped last30days
+  service still overrode LinkedIn to `cdp_screencast`, forcing
+  `launch_new_browser`. The override is now `rdp_gateway`, the service has
+  restarted with that value, and an installed no-navigation acquisition
+  returns `session:last30days-facebook` after one service read with no
+  `remote-view` call. The LinkedIn lane is stopped under the repeated-failure
+  rule pending a new plan decision.
 - Broad recurring hydration remains gated until the authenticated canaries and
   Packet 7 acceptance complete; isolated Plan 0010 execution remains
   prohibited outside the four integration joins.
@@ -1766,6 +1767,85 @@ Next action:
 
 - commit this corrected authority, submit the one keyed C06K LinkedIn post
   query, and preserve its terminal evidence.
+
+### Checkpoint P0011-C06L | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_linkedin_route_repair_proven -> packet_6_linkedin_config_repaired_x_canary_authorized`
+
+Progress classification: `blocker_attribution`
+
+Owned changes:
+
+- executed the one authorized C06K LinkedIn post job and preserved its terminal
+  failure;
+- identified the remaining deterministic cause as the user-scoped
+  `LAST30DAYS_LINKEDIN_VIEW_PROVIDER=cdp_screencast` override;
+- changed that user-scoped value to `rdp_gateway`, restarted the service, and
+  validated retained-browser acquisition without navigation;
+- stopped the LinkedIn lane after the repeated stable failure;
+- authorized exactly one independent X content-service canary with caller key
+  `p0011-c06l-x-post-rdp-auth-fresh`, query `OpenAI`, profile
+  `last30days-facebook`, and source `x`.
+
+Validation evidence:
+
+- C06K job `19a5860d-eea1-4552-993f-65f563041756` failed after its two
+  internal attempts with the same C06J stage and signature;
+- both attempts again report two successful service operations followed by a
+  failed `remote-view` operation;
+- the failure-time user-scoped broker record again reports
+  `default_acquisition=launch_new_browser` and
+  `view_stream_provider=cdp_screencast`;
+- the active service process now reads
+  `LAST30DAYS_LINKEDIN_VIEW_PROVIDER=rdp_gateway`;
+- installed no-navigation workspace acquisition returns
+  `browser_id=session:last30days-facebook`,
+  `session_name=last30days-facebook`, and one successful service timing;
+- service v0.2.6/schema 12 is ready after restart;
+- X target readiness is fresh from a bounded authenticated retained-browser
+  probe that accepted four posts, and its adapter defaults to
+  `rdp_gateway` plus `shared_display`.
+
+Decision branches:
+
+- X `published`: record the durable acquisition and retain LinkedIn as the
+  only social-source acceptance blocker;
+- X `failed`: preserve the stage/signature evidence and stop;
+- X `awaiting_operator`: preserve the exact browser gate and stop;
+- no outcome authorizes another X job.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized shared-browser
+  acceptance lane.
+
+Remaining acceptance criteria:
+
+- execute the one X content-service canary and follow only its matching branch;
+- LinkedIn post/profile acceptance requires a newly approved successor packet
+  because the repeated-failure stop rule is active;
+- execute Packet 7 independent integrated acceptance and closeout only after
+  the remaining source gate is resolved or explicitly deferred.
+
+Graphiti write status:
+
+- deferred; provider readiness remains degraded and no write is queued.
+
+Stop rule:
+
+- do not submit another LinkedIn post or profile job;
+- do not submit more than the one C06L X job;
+- do not mutate or relaunch the shared social browser outside the service-owned
+  canary.
+
+Next action:
+
+- commit and push this checkpoint, submit the one keyed X service canary, and
+  preserve its terminal evidence.
 
 ## Stop Rules
 
