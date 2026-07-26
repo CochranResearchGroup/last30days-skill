@@ -1921,3 +1921,64 @@ Stop Reason:
 - all Plans 0010/0011 acceptance criteria and closeout requirements are
   satisfied; commit and push this receipt-only checkpoint, then stop the goal
   after clean repository and live installed-state verification.
+
+## Turn 29 | 2026-07-26
+
+Focus: establish a fresh-session handoff from post-reboot runtime truth.
+
+Authority Consulted:
+
+- `AGENTS.md`, roadmap/runbook, handoff, documentation, validation, and
+  commit/push policies
+- current repository and installed last30days service
+- agent-browser install, profile-discovery, service, route, and remote-view
+  readbacks
+- current Graphiti MCP status and queue readbacks
+
+Decisions And Changes:
+
+- Added `docs/dev/notes/2026-07-26-post-reboot-fresh-session-handoff.md`.
+- Kept closed Plans 0010 and 0011 closed; broad follow-on implementation
+  requires a successor plan.
+- Prioritized one serialized social-source reboot canary before additional
+  hydration or authenticated timers.
+- Distinguished persisted authentication evidence from live post-reboot
+  authentication proof.
+
+Validation Evidence:
+
+- `last30days.service` is enabled and active; installed service version 0.2.7,
+  schema 12 reports ready with 43 documents and five acquisition-ready sources;
+- Graphiti MCP is connected to FalkorDB and its in-process queue is idle;
+- identity-specific X, Facebook, and LinkedIn lookups all select the canonical
+  `last30days-facebook` profile by `authenticatedServiceIds`;
+- no live last30days browser exists after reboot and retained route
+  `guacamole:4` is unavailable with a missing display socket;
+- remote control and many-to-many readiness remain blocked despite healthy
+  Guacamole/XRDP infrastructure;
+- install doctor reports duplicate-profile pressure with no
+  readiness-impacting cleanup candidate.
+
+State Movement:
+
+- fresh-session authority:
+  `pre-reboot closeout -> post-reboot service-ready/browser-route-unproven`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it.
+
+Graphiti Write Status:
+
+- no write was required for the handoff;
+- current MCP and database status pass, and the memory queue has no active or
+  queued job;
+- the next session should write compact durable memory only if its canary
+  establishes a new decision or reusable runtime lesson.
+
+Next Bounded Action:
+
+- restore and prove the canonical profile's Guacamole/RDP route, then run one
+  serialized X/Facebook/LinkedIn auth and acquisition canary packet under the
+  handoff's stop conditions.
