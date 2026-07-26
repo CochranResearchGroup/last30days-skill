@@ -216,127 +216,16 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
                 "profile_mismatch",
                 f"agent-browser selected X profile {selected_profile!r}, not {request.profile_id!r}",
             )
-        try:
-            agent_browser_config.record_access_plan(access_plan, "x")
-        except OSError as exc:
-            _log(f"Could not record user-scoped agent-browser configuration: {exc}")
         decision = access_plan.get("decision") if isinstance(access_plan.get("decision"), dict) else {}
         if decision.get("manualActionRequired") or decision.get("manualSeedingRequired"):
             raise XBrowserFailure(
                 "auth_required",
                 "agent-browser reports that the selected X profile requires operator authentication",
             )
-
-        shared_route = agent_browser_config.shared_acquisition_route(
-            access_plan,
-            expected_profile_id=selected_profile,
-        )
-        if shared_route:
-            return BrowserWorkspace(
-                profile_id=selected_profile,
-                browser_id=shared_route["browser_id"],
-                session_name=shared_route["session_name"],
-                operator_visible_state="not_required",
-            )
-
-        status = self._invoke(["service", "status"], timeout=min(request.timeout, 30))
-        state = status.get("service_state") if isinstance(status.get("service_state"), dict) else status
-        sessions = state.get("sessions") if isinstance(state, dict) else {}
-        browsers = state.get("browsers") if isinstance(state, dict) else {}
-        tabs = state.get("tabs") if isinstance(state, dict) else {}
-        shared_owner = agent_browser_config.shared_profile_owner(
-            access_plan,
-            state if isinstance(state, dict) else {},
-            expected_profile_id=selected_profile,
-        )
-        if shared_owner:
-            browser = shared_owner["browser"]
-            self.prepare_site_tab(
-                BrowserWorkspace(
-                    selected_profile,
-                    shared_owner["browser_id"],
-                    shared_owner["session_name"],
-                ),
-                "x.com",
-                consolidate=True,
-            )
-            stream = browser_runtime._ready_operator_stream(browser, request.view_provider)
-            return BrowserWorkspace(
-                profile_id=selected_profile,
-                browser_id=shared_owner["browser_id"],
-                session_name=shared_owner["session_name"],
-                target_id=shared_owner["target_id"],
-                route_id=str(stream.get("id") or ""),
-                operator_url=str(stream.get("externalUrl") or stream.get("url") or ""),
-                operator_visible_state="ready" if stream else "not_required",
-            )
-
-        session = sessions.get(request.session_name) if isinstance(sessions, dict) else None
-        browser = None
-        browser_id = ""
-        target_id = ""
-        if isinstance(session, dict):
-            observed_profile = str(session.get("profileId") or "")
-            if not observed_profile or observed_profile == selected_profile:
-                browser_ids = session.get("browserIds") or []
-                if browser_ids:
-                    browser_id = str(browser_ids[0])
-                    candidate = browsers.get(browser_id) if isinstance(browsers, dict) else None
-                    if isinstance(candidate, dict) and candidate.get("health") == "ready":
-                        browser = candidate
-                        target_id = browser_runtime._select_target_id(session, tabs)
-
-        if browser:
-            self.prepare_site_tab(
-                BrowserWorkspace(selected_profile, browser_id, request.session_name),
-                "x.com",
-                consolidate=True,
-            )
-            stream = browser_runtime._ready_operator_stream(browser, request.view_provider)
-            return BrowserWorkspace(
-                profile_id=selected_profile,
-                browser_id=browser_id,
-                session_name=request.session_name,
-                target_id=target_id,
-                route_id=str(stream.get("id") or ""),
-                operator_url=str(stream.get("externalUrl") or stream.get("url") or ""),
-                operator_visible_state="ready" if stream else "not_required",
-            )
-
-        profile = selected.get("userDataDir") if isinstance(selected, dict) else ""
-        launch = decision.get("launchPosture") if isinstance(decision.get("launchPosture"), dict) else {}
-        command = [
-            "--session", request.session_name,
-            "--runtime-profile", selected_profile,
-            "--browser-build", request.browser_build,
-            "--browser-host", str(launch.get("browserHost") or "local_headed"),
-            "--view-stream-provider", request.view_provider,
-            "--leave-open",
-        ]
-        if profile:
-            command.extend(["--profile", str(profile)])
-        command.extend(["open", "https://x.com/home"])
-        opened = self._invoke(command, timeout=request.timeout)
-        visible = opened.get("operatorVisible") if isinstance(opened.get("operatorVisible"), dict) else {}
-        visible_state = str(visible.get("state") or "not_required")
-        observed_profile = str(opened.get("profileId") or visible.get("profileId") or selected_profile)
-        if observed_profile != selected_profile:
-            raise XBrowserFailure(
-                "profile_mismatch",
-                f"agent-browser opened profile {observed_profile!r}, not {selected_profile!r}",
-                operator_url=browser_runtime._operator_url(opened),
-            )
-        return BrowserWorkspace(
-            profile_id=observed_profile,
-            browser_id=str(opened.get("browserId") or visible.get("browserId") or browser_id),
-            session_name=str(opened.get("sessionName") or visible.get("sessionName") or request.session_name),
-            target_id=str(opened.get("targetId") or visible.get("targetId") or target_id),
-            route_id=str(opened.get("routeId") or visible.get("routeId") or ""),
-            display_allocation_id=str(
-                opened.get("displayAllocationId") or visible.get("displayAllocationId") or ""
-            ),
-            operator_url=browser_runtime._operator_url(opened),
-            operator_visible_state=visible_state,
+        return super().acquire_workspace(
+            request,
+            access_plan=access_plan,
+            target_service_id="x",
         )
 
     def inspect_auth(self, workspace: BrowserWorkspace) -> XAuthState:
@@ -479,8 +368,13 @@ def search_x_browser(
         profile_id=str(config.get("LAST30DAYS_X_BROWSER_PROFILE") or "last30days-facebook"),
         session_name=str(config.get("LAST30DAYS_X_BROWSER_SESSION") or "last30days-facebook"),
         browser_build=str(config.get("LAST30DAYS_X_BROWSER_BUILD") or "stealthcdp_chromium"),
-        view_provider=str(config.get("LAST30DAYS_X_BROWSER_VIEW_PROVIDER") or "cdp_screencast"),
+        view_provider=str(config.get("LAST30DAYS_X_BROWSER_VIEW_PROVIDER") or "rdp_gateway"),
         timeout=int(config.get("LAST30DAYS_X_BROWSER_TIMEOUT") or settings["timeout"]),
+        start_url="https://x.com/home",
+        service_name="last30days",
+        agent_name="x-scraper",
+        task_name="x-search",
+        target_service_id="x",
     )
     client = CliAgentBrowserClient(timeout=request.timeout)
     scraper = XBrowserScraper(

@@ -200,10 +200,14 @@ LAST30DAYS_X_BACKEND=browser
 # LAST30DAYS_X_BROWSER_PROFILE=last30days-facebook
 # LAST30DAYS_X_BROWSER_SESSION=last30days-facebook
 # LAST30DAYS_X_BROWSER_BUILD=stealthcdp_chromium
-# LAST30DAYS_X_BROWSER_VIEW_PROVIDER=cdp_screencast
+# LAST30DAYS_X_BROWSER_VIEW_PROVIDER=rdp_gateway
 # LAST30DAYS_X_BROWSER_TIMEOUT=75
 # LAST30DAYS_X_BROWSER_INITIAL_WAIT=2
 # LAST30DAYS_X_BROWSER_SCROLL_WAIT=1
+
+# X acquisition is route-bound through agent-browser remote-view so the
+# retained browser is visible and controllable through Guacamole/RDP. It fails
+# closed when an operator-ready route is unavailable.
 
 # Facebook via agent-browser remote browser (opt-in; no cookies are stored here)
 LAST30DAYS_FACEBOOK_BROWSER=1

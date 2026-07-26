@@ -12,10 +12,12 @@ class FakeAgentBrowserClient:
     def __init__(self, *, auth=None, candidates=None):
         self.url = "https://x.com/home"
         self.actions = []
+        self.requests = []
         self.auth = auth
         self.candidates = candidates
 
     def acquire_workspace(self, request):
+        self.requests.append(request)
         return SimpleNamespace(
             profile_id="last30days-facebook",
             browser_id="browser:x",
@@ -131,6 +133,9 @@ class XBrowserSearchTests(TestCase):
         self.assertEqual("OpenAI", result["items"][0]["author_handle"])
         self.assertEqual("2026-07-18", result["items"][0]["date"])
         self.assertEqual(1200, result["items"][0]["engagement"]["likes"])
+        self.assertEqual("rdp_gateway", client.requests[0].view_provider)
+        self.assertEqual("https://x.com/home", client.requests[0].start_url)
+        self.assertEqual("x", client.requests[0].target_service_id)
 
     def test_checkpoint_stops_before_navigation_with_a_typed_failure(self):
         from lib import x_browser
@@ -387,6 +392,11 @@ class XBrowserAcquisitionTests(TestCase):
         self.assertIn("--target-service-id", recorder.calls[0])
         target_index = recorder.calls[0].index("--target-service-id")
         self.assertEqual("x", recorder.calls[0][target_index + 1])
+        self.assertEqual("remote-view", recorder.calls[2][2])
+        self.assertEqual("open", recorder.calls[2][3])
+        self.assertIn("--view-stream-provider", recorder.calls[2])
+        provider_index = recorder.calls[2].index("--view-stream-provider")
+        self.assertEqual("rdp_gateway", recorder.calls[2][provider_index + 1])
 
     def test_acquisition_uses_broker_shared_owner_over_configured_session(self):
         from lib import x_browser

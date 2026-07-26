@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **X browser workspaces use Guacamole/RDP instead of CDP screencasts.** X now
+  delegates acquisition to agent-browser's route-bound remote-view path with
+  an `rdp_gateway` default and requires an operator-ready workspace. This keeps
+  authentication and recovery attached to a visible, controllable browser.
 - **Authenticated X sessions recover from a stalled retained tab.** The X auth
   probe now reloads `x.com/home` once when the DOM is ambiguous, then checks
   again before requesting operator authentication. Explicit login,

@@ -838,3 +838,64 @@ Next Bounded Action:
   `last30days-facebook` browser—not merely the detached seeding browser—renders
   authenticated X DOM, or after a new plan explicitly authorizes a broader
   agent-browser/profile persistence investigation.
+
+## Turn 13 | 2026-07-25
+
+Focus: Plan 0011 Packet 6 X remote-view routing correction.
+
+Authority Consulted:
+
+- operator evidence that the X tile exposed a broken CDP connection rather
+  than Guacamole/RDP
+- Plan 0011 checkpoint P0011-C06C and its authenticated-browser stop rule
+- agent-browser remote-view acquisition contract and live service state
+- CodeGraph X and shared browser-runtime acquisition paths
+- TDD, validation, documentation, Graphiti, worktree, commit, push, and
+  closeout policies
+
+Decisions And Changes:
+
+- Treated the operator's precise transport observation as renewed evidence
+  authorizing one bounded deterministic routing correction.
+- Proved the X adapter defaulted to `cdp_screencast` and directly opened a
+  headed browser instead of using agent-browser's route-bound remote-view
+  acquisition.
+- Delegated X acquisition to the shared brokered browser-runtime client,
+  carrying target identity `x`, the X start URL, and service/task attribution.
+- Changed the X default to `rdp_gateway`. The shared path requests remote
+  headed execution, private display isolation, control input, and requires
+  `operatorVisible.state=ready`.
+- Bumped the source candidate to service version 0.2.3.
+
+Validation Evidence:
+
+- regression coverage requires `remote-view open`, `rdp_gateway`, the X start
+  URL, and target identity `x`;
+- focused X acquisition and acquisition-worker tests passed;
+- the full Python suite, Python compilation, and `git diff --check` passed;
+- install, runtime, and live route evidence remain to be recorded at closeout.
+
+Live Route Evidence:
+
+- the broken service-owned browser retained `cdp_screencast` and no
+  `remoteViewRouteId`;
+- agent-browser reports both Guacamole routes checked out: one by the healthy
+  YouTube workspace and one by an orphaned former X reauthentication route;
+- `service reconcile` classified that former X route and display allocation as
+  orphaned but did not release the pool checkout;
+- the installed CLI recommends `service route-pool repair --dry-run` but does
+  not expose a `route-pool` subcommand.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one bounded adapter seam.
+
+Next Bounded Action:
+
+- commit and push version 0.2.3, synchronize the installed skill, and restart
+  the user service;
+- repair the orphaned Guacamole route through an agent-browser-supported
+  control plane before replacing the broken CDP workspace;
+- require a visible, controllable X browser with
+  `operatorVisible.state=ready` before another content canary.

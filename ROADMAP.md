@@ -90,9 +90,14 @@ Current State:
   `auth_required` without reloading it. Version 0.2.2 installed one bounded
   reload for only an ambiguous DOM, but the final bounded X canary still ended
   `awaiting_operator/auth_required`; its retained tab read back as
-  `https://x.com/` with title `x.com/home`. Per the Packet 6 stop rule, further
-  adapter repair, authenticated Facebook and LinkedIn canaries, and broad
-  recurring hydration remain gated.
+  `https://x.com/` with title `x.com/home`.
+- New operator evidence proved that the service-owned X tile was a broken CDP
+  screencast rather than a Guacamole/RDP browser. Version 0.2.3 corrects the
+  deterministic acquisition contract: X uses agent-browser's route-bound
+  remote-view path, defaults to `rdp_gateway`, and requires operator-visible
+  readiness. Live replacement remains gated by agent-browser's stale
+  Guacamole route checkout; no additional content canary should run until the
+  route is repaired and the correct service-owned browser is visible.
 
 Goal Seeds:
 
@@ -458,9 +463,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- Install and validate the guarded X job-resume candidate, complete the
-  remaining bounded authenticated-source canaries, and finish Plan 0011 Packet
-  7 acceptance. Do not execute Plan 0010 outside its four host-owned joins.
+- Commit, push, and install service version 0.2.3; repair or release the stale
+  agent-browser Guacamole route through its supported control plane; then open
+  exactly one route-bound X workspace and verify `operatorVisible.state=ready`
+  before any X content canary. Do not execute Plan 0010 outside its four
+  host-owned joins.
 
 ## Goal-Compatible Plan Conversion
 

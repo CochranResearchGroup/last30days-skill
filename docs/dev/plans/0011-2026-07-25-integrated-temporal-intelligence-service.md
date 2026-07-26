@@ -1147,6 +1147,70 @@ Live outcome:
   or run another X canary without a new plan decision or renewed evidence that
   the service-owned browser renders authenticated X DOM.
 
+### Checkpoint P0011-C06D | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_stalled_loader_recovery_ready -> packet_6_remote_view_routing_ready`
+
+Progress classification: `blocker_reduction`
+
+Renewed evidence:
+
+- the operator inspected the service-owned X tile and identified its transport
+  as a broken CDP connection rather than the required Guacamole/RDP workspace;
+- live agent-browser state confirmed `viewStream.provider=cdp_screencast`, no
+  `remoteViewRouteId`, and no operator-ready RDP attachment;
+- this deterministic transport mismatch, rather than a new content attempt,
+  authorizes one bounded routing correction under the prior stop rule.
+
+Owned changes:
+
+- changed X's default view provider from `cdp_screencast` to `rdp_gateway`;
+- replaced X's direct headed-browser launch and partial reuse logic with the
+  shared brokered remote-view acquisition path;
+- supplied target identity `x`, `https://x.com/home`, and service, agent, and
+  task attribution to the shared request;
+- inherited route-bound `remote-view open`, remote-headed execution, private
+  display isolation, control input, safe shared-owner handling, and
+  operator-visible readiness validation;
+- bumped the candidate service version to 0.2.3 and updated the user-facing
+  configuration contract.
+
+Validation evidence:
+
+- regression tests require the X request to carry `rdp_gateway`, its canonical
+  start URL, and target identity;
+- acquisition regression tests require a route-bound `remote-view open`
+  command and reject regression to the direct CDP launch;
+- focused X and acquisition-worker tests, the full Python suite, compilation,
+  and `git diff --check` passed; installed-runtime and live remote-view proof
+  remain pending at this checkpoint.
+
+Live control-plane blocker:
+
+- agent-browser reports one healthy Guacamole route occupied by YouTube and
+  one stale former-X route whose route and display allocation are orphaned
+  while its pool entry remains checked out;
+- `service reconcile` did not release that checkout;
+- the installed CLI recommends `service route-pool repair --dry-run` but
+  rejects `route-pool` as an unknown subcommand.
+
+Stop rule:
+
+- do not start another X content canary or create a duplicate browser against
+  the retained profile while the stale route checkout persists;
+- after source installation, resume live work only through a supported
+  agent-browser route repair/release path, then require
+  `operatorVisible.state=ready` on the route-bound X workspace.
+
+Next action:
+
+- commit and push version 0.2.3, synchronize and restart the installed service,
+  then resolve the stale Guacamole checkout without disturbing the healthy
+  YouTube route.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,
