@@ -1314,3 +1314,55 @@ Next Bounded Action:
 
 - advance the independent LinkedIn evidence lane while X waits at the
   operator gate.
+
+## Turn 19 | 2026-07-25
+
+Focus: Plan 0011 Packet 6 bounded LinkedIn version 0.2.6 post canary decision.
+
+Authority Consulted:
+
+- Plan 0011 checkpoints C06G through C06I
+- installed service version 0.2.6 and retained LinkedIn/X tab evidence
+- version 0.2.5+ stable failure diagnostics and typed adapter triage contracts
+- validation, Graphiti, worktree, commit, push, and closeout policies
+
+Decisions And Changes:
+
+- Authorized one LinkedIn post canary with caller key
+  `p0011-c06j-linkedin-post-v026`, topic `OpenAI`, and the retained
+  `last30days-facebook` browser.
+- Preserved the service's two-attempt ceiling and prohibited another job,
+  duplicate browser lane, or profile canary unless the post job publishes.
+
+Validation Evidence:
+
+- The prior read-only LinkedIn auth probe succeeded on the retained feed tab.
+- Service version 0.2.6 is active and ready on schema 12.
+- X is independently stopped at its operator-auth gate.
+
+State Movement:
+
+- LinkedIn post acceptance:
+  `insufficient_failure_evidence -> one_diagnostic_canary_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized shared-browser
+  canary.
+
+Graphiti Write Status:
+
+- deferred; provider readiness remains degraded with a Codex app-server
+  timeout, so no write was queued.
+
+Live Outcome And Stop:
+
+- No canary has run at this checkpoint.
+- Published, failed, and awaiting-operator outcomes have explicit stop
+  branches in Plan 0011 C06J.
+
+Next Bounded Action:
+
+- commit the decision, submit the one keyed LinkedIn post query, and preserve
+  its durable terminal evidence.

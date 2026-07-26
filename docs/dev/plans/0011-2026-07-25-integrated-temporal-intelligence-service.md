@@ -1617,6 +1617,71 @@ Next action:
 - hold X at the operator-auth gate while advancing the independent LinkedIn
   evidence lane.
 
+### Checkpoint P0011-C06J | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_linkedin_insufficient_evidence -> packet_6_linkedin_v026_canary_authorized`
+
+Progress classification: `bounded_execution_decision`
+
+Owned changes:
+
+- authorize exactly one LinkedIn post canary using installed service version
+  0.2.6, profile `last30days-facebook`, topic `OpenAI`, and caller idempotency
+  key `p0011-c06j-linkedin-post-v026`;
+- retain the service's two-attempt ceiling and existing cost, time, item, and
+  browser-sharing limits;
+- require the existing `session:last30days-facebook` browser and prohibit a
+  duplicate profile or browser lane.
+
+Decision branches:
+
+- `published`: record the durable acquisition and authorize a separately
+  bounded LinkedIn profile canary;
+- `failed`: inspect version 0.2.6 failure stage, safe browser operations, and
+  stable signature, classify through `adapter_failure_triage`, and stop;
+- `awaiting_operator`: preserve the exact browser gate and stop;
+- no outcome authorizes an automatic second job.
+
+Validation evidence:
+
+- the retained LinkedIn feed tab remains present and the prior read-only
+  authentication probe succeeded;
+- version 0.2.6 is active and ready on schema 12;
+- the X operator gate is independent and does not block the retained browser's
+  separate LinkedIn tab.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized shared-browser
+  canary.
+
+Remaining acceptance criteria:
+
+- execute the one authorized LinkedIn post canary and follow only its matching
+  decision branch;
+- restore and prove X auth before its content canary;
+- execute Packet 7 independent integrated acceptance and closeout.
+
+Graphiti write status:
+
+- deferred; provider readiness remains degraded with a Codex app-server
+  timeout, so no write is queued.
+
+Stop rule:
+
+- do not submit another LinkedIn post job after this one;
+- do not run the LinkedIn profile canary unless this post job publishes;
+- do not alter the X tab while it waits for operator authentication.
+
+Next action:
+
+- commit this bounded decision, submit the one keyed LinkedIn post query, and
+  preserve its durable terminal evidence.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,
