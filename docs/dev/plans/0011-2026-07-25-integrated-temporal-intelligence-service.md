@@ -2021,6 +2021,83 @@ Next action:
 - commit and push this checkpoint, submit the one keyed X content-service
   canary, and preserve its terminal evidence.
 
+### Checkpoint P0011-C06O | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_x_content_canary_reauthorized -> packet_6_x_accepted_linkedin_canary_reauthorized`
+
+Progress classification: `acceptance_gate_passed`
+
+Owned changes:
+
+- executed the one C06N X content-service canary and preserved its complete
+  durable job, acquisition, event, and index receipts;
+- accepted X post acquisition through the installed registered-session repair;
+- retained the LinkedIn repeated-failure history while recognizing that its
+  attributed registered-session control defect was repaired generically and
+  independently proven by the X publication;
+- authorized exactly one successor LinkedIn post canary with caller key
+  `p0011-c06o-linkedin-post-registered-session-reconnect`, query `OpenAI`, and
+  profile `last30days-facebook`; no LinkedIn profile job is authorized.
+
+Validation evidence:
+
+- job `b079e12b-0212-4848-8daf-ac9e55fd201a` used request ID
+  `p0011-c06n-x-post-registered-session-reconnect` and did not coalesce with
+  prior work;
+- the job published on attempt 1 with index version
+  `index-8cb5caaeda1a625d09ad6bbc`;
+- X acquisition `work-387f90eb5f74a6d7c7f1c9fe471f9916` used adapter
+  `x_agent_browser` version 1, succeeded, and published seven items;
+- the durable event sequence reached acquiring, normalizing, indexing,
+  validating, and published with one successful source and no retry gate;
+- the installed service remains version 0.2.6 on schema 12 with X and LinkedIn
+  acquisition readiness reported ready;
+- the prior LinkedIn no-navigation probe proved its retained feed tab
+  authenticated, and the generic registered-session repair now has a real X
+  acquisition publication receipt.
+
+Decision branches:
+
+- LinkedIn `published`: preserve receipts and advance the remaining social post
+  gate;
+- LinkedIn `failed`: preserve stage, operation, and stable-signature evidence
+  and stop without another LinkedIn content job;
+- LinkedIn `awaiting_operator`: preserve the exact browser gate and stop;
+- no branch authorizes a LinkedIn profile job or a second LinkedIn post job.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized shared-browser
+  acceptance lane.
+
+Remaining acceptance criteria:
+
+- execute the one keyed C06O LinkedIn post canary and follow only its matching
+  branch;
+- require a successor checkpoint before any LinkedIn profile acquisition;
+- execute Packet 7 independent integrated acceptance and closeout after the
+  remaining source gate is resolved or explicitly deferred.
+
+Graphiti write status:
+
+- deferred after the degraded provider preflight; no write is queued.
+
+Stop rule:
+
+- do not submit more than the one C06O LinkedIn post job;
+- do not submit another X content job;
+- do not launch, replace, close, navigate, or reauthenticate the shared social
+  browser outside the service-owned canary.
+
+Next action:
+
+- commit and push this checkpoint, submit the one keyed LinkedIn post canary,
+  and preserve its terminal evidence.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,
