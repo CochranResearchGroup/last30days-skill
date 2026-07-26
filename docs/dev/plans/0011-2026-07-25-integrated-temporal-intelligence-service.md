@@ -2098,6 +2098,99 @@ Next action:
 - commit and push this checkpoint, submit the one keyed LinkedIn post canary,
   and preserve its terminal evidence.
 
+### Checkpoint P0011-C06P | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_x_accepted_linkedin_canary_reauthorized -> packet_6_social_posts_accepted_profile_canary_authorized`
+
+Progress classification: `acceptance_gate_passed`
+
+Owned changes:
+
+- executed the one C06O LinkedIn post job and preserved both internal-attempt
+  acquisition envelopes plus the terminal publication receipt;
+- accepted LinkedIn post acquisition through the repaired registered session;
+- classified attempt 1 as a content quality-gate miss rather than browser,
+  route, or authentication failure; attempt 2 published normally;
+- authorized one disabled-by-default collection spec and exactly one manual
+  LinkedIn company-profile canary for
+  `https://www.linkedin.com/company/openai/`;
+- required the existing `last30days-facebook` profile, authenticated
+  partition, durable retention, one-item limit, and immediate pause
+  confirmation after the terminal run.
+
+Validation evidence:
+
+- job `53623222-316f-404c-886a-959a9abef8fb` used request ID
+  `p0011-c06o-linkedin-post-registered-session-reconnect` and published index
+  `index-bfeffe5f55326cae8fd40f01` after two internal attempts;
+- attempt 1 acquisition `work-a3fedd429f2da6be6326a0f449e077f0`
+  reached the LinkedIn feed, found four post candidates, and failed only
+  `quality_gate` with signature
+  `sha256:32f5496b941e3681fd2b8e664498d6c1a17f9ab51cc9b5f458b5d35d777157df`;
+- attempt 2 acquisition `work-c7a019c4e5ce9669ea77bfdf02d3e3dc`
+  succeeded and published two items;
+- the durable event sequence reached published with one successful source;
+- the profile adapter accepts exact LinkedIn people/company URLs, prohibits
+  messaging and other private surfaces, and routes only collection specs whose
+  `surface_kind` is `profile`;
+- manual collection execution is deduplicated by stable spec interval even
+  while the spec remains disabled for timers.
+
+Authorized collection contract:
+
+- spec ID: `p0011-linkedin-openai-profile-canary`;
+- source/surface: `linkedin` / `profile`;
+- selector:
+  `{"profile_url":"https://www.linkedin.com/company/openai/"}`;
+- profile: `last30days-facebook`;
+- item limit: 1;
+- wall timeout: 120 seconds;
+- network request limit: 20;
+- retention/redaction: `durable` / `authenticated`;
+- assessment: disabled;
+- timer state: disabled;
+- manual runs authorized: exactly one.
+
+Decision branches:
+
+- profile job `published`: verify the immutable snapshot, section evidence,
+  source account, access partition, and collection-run receipt;
+- profile job `failed`: preserve stage and safe diagnostics and stop;
+- profile job `awaiting_operator`: preserve the exact browser gate and stop;
+- no branch authorizes a second manual profile run or enables the timer.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized shared-browser
+  acceptance lane.
+
+Remaining acceptance criteria:
+
+- create the exact disabled spec, execute its one manual run, and follow only
+  the matching branch;
+- execute Packet 7 independent integrated acceptance and closeout after the
+  profile gate is resolved or explicitly deferred.
+
+Graphiti write status:
+
+- deferred after the degraded provider preflight; no write is queued.
+
+Stop rule:
+
+- do not submit another X or LinkedIn post job;
+- do not run the profile spec more than once or enable its timer;
+- do not navigate to any LinkedIn surface other than the exact authorized
+  company profile through the service-owned collection run.
+
+Next action:
+
+- commit and push this checkpoint, put the disabled exact-profile spec, execute
+  its one manual run, and preserve the terminal profile receipts.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,

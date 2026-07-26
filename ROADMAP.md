@@ -162,9 +162,12 @@ Current State:
   browser. The successor X job
   `b079e12b-0212-4848-8daf-ac9e55fd201a` then published seven items on attempt
   1 through acquisition `work-387f90eb5f74a6d7c7f1c9fe471f9916`. X post
-  acceptance now passes. Packet 6 authorizes exactly one LinkedIn post canary
-  through the same generic repair; no LinkedIn profile or second post job is
-  authorized.
+  acceptance now passes. The successor LinkedIn job
+  `53623222-316f-404c-886a-959a9abef8fb` then published two items on its second
+  internal attempt; the first attempt reached content and missed only its
+  quality gate. LinkedIn post acceptance now passes. Packet 6 authorizes one
+  exact OpenAI company-profile canary through a timer-disabled collection
+  spec; no additional post job or recurring profile timer is authorized.
 
 Goal Seeds:
 

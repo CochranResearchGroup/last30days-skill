@@ -1675,3 +1675,57 @@ Next Bounded Action:
 
 - commit and push C06O, run the one keyed LinkedIn post canary, and follow only
   its terminal decision branch.
+
+## Turn 25 | 2026-07-25
+
+Focus: accept LinkedIn post acquisition and authorize one exact company-profile
+canary.
+
+Authority Consulted:
+
+- Plan 0011 checkpoint C06O
+- durable LinkedIn job, acquisition, diagnostic, and event envelopes
+- installed collection/profile routing and publication contracts
+
+Decisions And Changes:
+
+- The one LinkedIn post job published after two internal attempts.
+- Attempt 1 reached content and failed only the quality gate; attempt 2
+  published two posts.
+- Accepted LinkedIn post acquisition through the generic registered-session
+  repair.
+- Authorized one disabled collection spec and one manual acquisition of the
+  exact OpenAI LinkedIn company profile. The spec must remain timer-disabled.
+
+Validation Evidence:
+
+- job `53623222-316f-404c-886a-959a9abef8fb` published index
+  `index-bfeffe5f55326cae8fd40f01`;
+- attempt 1 acquisition `work-a3fedd429f2da6be6326a0f449e077f0`
+  recorded a quality-gate-only failure;
+- attempt 2 acquisition `work-c7a019c4e5ce9669ea77bfdf02d3e3dc`
+  succeeded with two items;
+- profile collection dispatch is limited to exact profile specs and publishes
+  source-neutral immutable snapshots after successful raw acquisition;
+- manual interval execution remains available while timer state is disabled.
+
+State Movement:
+
+- LinkedIn post acceptance:
+  `one_successor_post_canary_authorized -> post_acquisition_accepted`.
+- LinkedIn profile acceptance:
+  `withheld -> one_exact_company_profile_canary_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it.
+
+Graphiti Write Status:
+
+- deferred after the degraded provider preflight; no write was queued.
+
+Next Bounded Action:
+
+- commit and push C06P, put the disabled exact-profile spec, run it once
+  manually, and preserve the terminal profile receipts.
