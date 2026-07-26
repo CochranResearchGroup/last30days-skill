@@ -1182,3 +1182,63 @@ Next Bounded Action:
 
 - resume Packet 6 under a newly bounded live decision that uses version
   0.2.5 failure evidence.
+
+## Turn 17 | 2026-07-25
+
+Focus: Plan 0011 Packet 6 recurring collection and restart recovery.
+
+Authority Consulted:
+
+- Plan 0011 Packet 6 timer acceptance gates and two-attempt stop rule
+- live collection specification, schedule, job, service, and index readbacks
+- validation, Graphiti, worktree, commit, push, and closeout policies
+
+Decisions And Changes:
+
+- Preserved exhausted collection revision 3 and created successor revision 4
+  with the same interval, lookback, item, cost, and wall-time limits.
+- Raised only the network-request limit from 10 to 50 based on the prior typed
+  budget failure.
+- Restarted the service only after the first successor job reached published.
+- Paused the one-minute cadence as immutable revision 5 immediately after the
+  post-restart scheduled interval published.
+
+Validation Evidence:
+
+- Job `f36014c9-8749-41af-b483-a950099b3db7` published in one attempt for one
+  cent before restart.
+- The restarted version 0.2.5 service returned active, ready, schema 12.
+- Timer job `15719900-3b9d-46ec-a8f7-6ef9cf68fecb` published in one attempt
+  for one cent at the next scheduled minute.
+- Re-resolving that boundary returned the same collection run/job, proving
+  durable interval deduplication.
+- The schedule reports zero consecutive failures; revision 5 is disabled.
+
+State Movement:
+
+- Recurring timer acceptance:
+  `typed_budget_failure -> consecutive_published_intervals`.
+- Restart recovery:
+  `unproven -> scheduled_interval_published_after_restart`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this work is one serialized timer/restart
+  seam.
+
+Graphiti Write Status:
+
+- deferred; provider readiness remains degraded with a Codex app-server
+  timeout, so no write was queued.
+
+Live Outcome And Stop:
+
+- Timer/restart acceptance is complete.
+- The acceptance collection is paused and must not be resumed.
+- X and LinkedIn retain their independent browser/canary gates.
+
+Next Bounded Action:
+
+- verify X authenticated DOM in the exact service-owned Guacamole/RDP browser,
+  then choose one bounded X canary or record the typed blocker.

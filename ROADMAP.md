@@ -107,7 +107,13 @@ Current State:
 - The first bounded live recurring-collection acceptance spec preserved two
   typed fail-closed outcomes (`budget_exhausted`, then
   `network_budget_exhausted`) and was paused at immutable spec revision 3 after
-  reaching the two-attempt plan bound.
+  reaching the two-attempt plan bound. Successor revision 4 raised only the
+  measured network-request cap and published interval jobs
+  `f36014c9-8749-41af-b483-a950099b3db7` and
+  `15719900-3b9d-46ec-a8f7-6ef9cf68fecb` on consecutive minute boundaries,
+  with a service restart between them. Revision 5 is paused after the proof,
+  establishing timer execution, durable deduplication, and restart recovery
+  without leaving the acceptance cadence active.
 - Fresh retained-browser DOM probes independently proved Facebook and LinkedIn
   authentication is usable. The first Facebook canary then failed twice with
   `agent_browser_error` before acquisition because the adapter requested a
@@ -150,9 +156,9 @@ Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the integrated P01-P06 campaign authority. Packets 1 through 5 are
-  complete; Packet 6 source and installed migration are complete. Its X canary
-  remains at the authenticated-browser stop gate, and the first bounded timer
-  acceptance unit stopped after two typed budget failures.
+  complete; Packet 6 source, installed migration, recurring interval, and
+  restart-recovery proof are complete. Its X canary remains at the
+  authenticated-browser stop gate.
 
 ## P02 | Recurring Acquisition And Coverage
 

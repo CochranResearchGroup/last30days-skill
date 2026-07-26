@@ -1475,6 +1475,70 @@ Next action:
 - resume Packet 6 only with a newly bounded live decision that uses the new
   failure evidence, then complete recurring timer/restart proof and Packet 7.
 
+### Checkpoint P0011-C06H | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_timer_budget_blocked -> packet_6_timer_restart_proven`
+
+Progress classification: `acceptance_evidence`
+
+Owned changes:
+
+- preserved exhausted Reddit collection revision 3 and created immutable
+  successor revision 4;
+- retained the one-minute interval, 24-hour lookback, three-item cap,
+  100-cent budget, and 120-second wall timeout;
+- raised only the measured network-request cap from 10 to 50;
+- stopped the unit on any typed failure and paused the cadence immediately
+  after restart recovery was proven.
+
+Validation evidence:
+
+- manual interval job `f36014c9-8749-41af-b483-a950099b3db7` published in one
+  attempt for one cent;
+- the service restarted active and ready at version 0.2.5 before the next due
+  boundary;
+- timer-created successor job `15719900-3b9d-46ec-a8f7-6ef9cf68fecb`
+  published in one attempt for one cent at scheduled boundary
+  `2026-07-26T02:38:00Z`;
+- resolving that boundary again through `collection run --scheduled-for`
+  returned the same durable collection run and job, proving interval
+  deduplication;
+- the schedule reports zero consecutive failures and advanced its due time;
+- revision 5 records `enabled=false`, so the one-minute acceptance cadence is
+  no longer collecting.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized timer/restart seam.
+
+Remaining acceptance criteria:
+
+- verify X authenticated DOM in the service-owned Guacamole/RDP browser and
+  complete its bounded canary;
+- clear LinkedIn post and profile acceptance under a newly bounded live
+  decision using version 0.2.5 diagnostics;
+- execute Packet 7 independent integrated acceptance and closeout.
+
+Graphiti write status:
+
+- deferred; the most recent provider-readiness probe remains degraded with a
+  Codex app-server timeout, so no write is queued.
+
+Stop rule:
+
+- do not resume the acceptance timer; its proof is complete;
+- do not run X or LinkedIn content canaries until their independent browser
+  gates and bounded decisions are recorded.
+
+Next action:
+
+- verify X authenticated DOM through the exact service-owned browser, then
+  choose one bounded X canary or record the typed blocker.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,
