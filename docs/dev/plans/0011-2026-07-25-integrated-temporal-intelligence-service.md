@@ -2191,6 +2191,89 @@ Next action:
 - commit and push this checkpoint, put the disabled exact-profile spec, execute
   its one manual run, and preserve the terminal profile receipts.
 
+### Checkpoint P0011-C06Q | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_social_posts_accepted_profile_canary_authorized -> packet_6_complete`;
+`packet_7_pending -> packet_7_ready`
+
+Progress classification: `packet_complete`
+
+Owned changes:
+
+- created the exact LinkedIn company-profile collection spec with timer state
+  disabled and immutable revision 1;
+- executed exactly one manual profile interval and preserved its job,
+  acquisition, collection, source-account, snapshot, section, and sighting
+  receipts;
+- accepted LinkedIn company-profile acquisition and source-neutral immutable
+  publication in the authenticated partition;
+- completed Packet 6 authenticated post/profile rollout without enabling a
+  recurring authenticated timer;
+- opened Packet 7 integrated acceptance and closeout.
+
+Validation evidence:
+
+- disabled spec `p0011-linkedin-openai-profile-canary` remains at revision 1
+  with exact selector `https://www.linkedin.com/company/openai/`, item limit 1,
+  authenticated redaction, and durable retention;
+- manual run `collection-run-8b4ff51fb0ccabd7b5819dd9e22f4e1f`
+  published job `352d513a-c8b5-4f76-a62f-6a1a97b2278e` on attempt 1;
+- acquisition `work-ea6280d8da5a7201306c8457a1634981` succeeded through
+  `linkedin_profile_agent_browser` with one item;
+- collection accounting reports one attempted, one observed, and one stored
+  item with no error in partition `profile:last30days-facebook`;
+- source account `account-ae69240337ee188437479306b1a04fe2` is an organization
+  at canonical URL `https://www.linkedin.com/company/openai`;
+- immutable snapshot `profile_snapshot-80790c5b8e4643165bebeb4fa8c6fc15`
+  has one sighting and five section-state records;
+- the visible headline section closes to evidence, while absent about,
+  education, experience, and location sections are conservatively
+  `not_observed`, not treated as real-world absence;
+- the spec is still disabled, so no recurring profile timer was activated.
+
+Packet 6 exit-gate status:
+
+- fresh MCP discovery, compact temporal/profile/event tools, installed schema
+  12, service version 0.2.6, recurring interval/restart proof, bounded adapter
+  safety, X post, LinkedIn post, and LinkedIn profile canaries now have direct
+  current evidence;
+- Graphiti projection previously published through the durable outbox; current
+  provider readiness is degraded, so Packet 7 must preserve SQLite authority
+  and report the live projection limitation truthfully.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it.
+
+Remaining acceptance criteria:
+
+- execute Packet 7 full deterministic validation and independent
+  criterion-by-criterion repository/runtime/database/MCP audit;
+- reconcile the current Graphiti provider limitation without weakening
+  SQLite-only retrieval acceptance;
+- close Plans 0010 and 0011 only if every required criterion has direct proof.
+
+Graphiti write status:
+
+- deferred after the degraded provider preflight; no write is queued.
+
+Stop rule:
+
+- keep the authenticated profile spec disabled;
+- do not submit further X, LinkedIn post, or LinkedIn profile jobs during
+  Packet 7;
+- stop closeout on any required suite failure, authority mismatch, dirty
+  integration state, or unproven required criterion.
+
+Next action:
+
+- commit and push this checkpoint, execute Packet 7 validation and independent
+  acceptance audit, and preserve exact closeout evidence.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,

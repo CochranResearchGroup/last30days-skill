@@ -1729,3 +1729,61 @@ Next Bounded Action:
 
 - commit and push C06P, put the disabled exact-profile spec, run it once
   manually, and preserve the terminal profile receipts.
+
+## Turn 26 | 2026-07-25
+
+Focus: accept the LinkedIn company-profile canary, complete Packet 6, and open
+Packet 7 integrated acceptance.
+
+Authority Consulted:
+
+- Plan 0011 checkpoint C06P
+- live collection spec/run and durable service job ledgers
+- acquisition, source-account, profile-snapshot, section, and sighting tables
+- Packet 6 and Packet 7 exit gates
+
+Decisions And Changes:
+
+- Put the exact OpenAI company-profile spec at revision 1 with timer state
+  disabled.
+- Executed its one authorized manual interval.
+- Accepted the one-item profile acquisition and immutable organization
+  snapshot.
+- Confirmed the profile spec remains disabled.
+- Marked Packet 6 complete and Packet 7 ready.
+
+Validation Evidence:
+
+- collection run `collection-run-8b4ff51fb0ccabd7b5819dd9e22f4e1f`
+  published job `352d513a-c8b5-4f76-a62f-6a1a97b2278e` on attempt 1;
+- acquisition `work-ea6280d8da5a7201306c8457a1634981` succeeded with one
+  authenticated, durable item;
+- run accounting is attempted 1, observed 1, stored 1, error null;
+- organization account canonical URL is
+  `https://www.linkedin.com/company/openai`;
+- snapshot `profile_snapshot-80790c5b8e4643165bebeb4fa8c6fc15` has one
+  sighting, one visible evidenced section, and four conservative
+  `not_observed` sections;
+- the timer remains disabled.
+
+State Movement:
+
+- LinkedIn profile acceptance:
+  `one_exact_company_profile_canary_authorized -> accepted`.
+- Plan 0011:
+  `packet_6_active -> packet_6_complete`;
+  `packet_7_pending -> packet_7_ready`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it.
+
+Graphiti Write Status:
+
+- deferred after the degraded provider preflight; no write was queued.
+
+Next Bounded Action:
+
+- commit and push C06Q, run Packet 7 full validation and the independent
+  acceptance audit, and stop on any required failure.

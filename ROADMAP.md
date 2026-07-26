@@ -165,9 +165,11 @@ Current State:
   acceptance now passes. The successor LinkedIn job
   `53623222-316f-404c-886a-959a9abef8fb` then published two items on its second
   internal attempt; the first attempt reached content and missed only its
-  quality gate. LinkedIn post acceptance now passes. Packet 6 authorizes one
-  exact OpenAI company-profile canary through a timer-disabled collection
-  spec; no additional post job or recurring profile timer is authorized.
+  quality gate. LinkedIn post acceptance now passes. The exact OpenAI company
+  profile run `collection-run-8b4ff51fb0ccabd7b5819dd9e22f4e1f` then
+  published one immutable organization snapshot on attempt 1 with conservative
+  section-presence semantics. Its collection spec remains timer-disabled.
+  Packet 6 is complete; Packet 7 integrated validation and closeout is ready.
 
 Goal Seeds:
 
@@ -192,8 +194,9 @@ Active Plan:
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the integrated P01-P06 campaign authority. Packets 1 through 5 are
   complete; Packet 6 source, installed migration, recurring interval, and
-  restart-recovery proof are complete. Its authenticated social rollout is
-  stopped at the shared-browser registered-session attachment repair.
+  restart-recovery proof are complete. Its authenticated X post, LinkedIn post,
+  and LinkedIn company-profile canaries now pass through the retained shared
+  Guacamole/RDP browser. Packet 7 integrated acceptance is ready.
 
 ## P02 | Recurring Acquisition And Coverage
 
