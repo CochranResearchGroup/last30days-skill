@@ -119,7 +119,13 @@ Current State:
   `ecea393f-c445-461d-9528-99c2107190f1` then published three items in one
   attempt. The serialized LinkedIn post canary
   `91b55c9f-3827-4046-9c87-0df99ec54f40` failed after its two internal attempts
-  with `agent_browser_error`, so the LinkedIn profile canary remains withheld.
+  with `agent_browser_error`. A subsequent read-only auth probe succeeded on
+  the retained feed tab, but the preserved failure envelopes lack the stage
+  evidence needed to attribute a code defect. Version 0.2.5 therefore adds
+  stable failure signatures, bounded stage/operation evidence, and
+  deterministic App Intelligence triage contracts; the preserved outcome is
+  classified `insufficient_evidence -> observe`, and the LinkedIn profile
+  canary remains withheld.
 
 Goal Seeds:
 

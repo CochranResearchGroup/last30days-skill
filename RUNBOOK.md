@@ -1109,3 +1109,69 @@ Next Bounded Action:
 - define a bounded source-specific repair decision before changing code or
   authorizing another LinkedIn attempt;
 - keep the LinkedIn profile canary withheld until the post adapter clears.
+
+## Turn 16 | 2026-07-25
+
+Focus: Plan 0011 Packet 6 deterministic adapter-failure evidence and App
+Intelligence repair gating.
+
+Authority Consulted:
+
+- Plan 0011 Packet 6 canary gates and Plan 0010 Packet 3 adapter-repair
+  contracts
+- app-intelligence-automation decision schemas and adapter composition
+  guidance
+- live retained LinkedIn browser/auth readbacks
+- TDD, validation, documentation, Graphiti, worktree, commit, push, and
+  closeout policies
+- CodeGraph task-contract registry and result-validation paths
+
+Decisions And Changes:
+
+- A no-navigation LinkedIn probe succeeded through tab discovery, tab
+  selection, authentication inspection, and DOM evaluation on the retained
+  feed.
+- The preserved failed canary contains no stage or operation evidence, so it
+  does not justify a code-defect or site-change classification.
+- Acquisition failures now receive a stable host-computed signature from safe
+  error dimensions and retain a bounded stage plus sanitized browser operation
+  timings when available.
+- Added strict contracts for adapter failure triage, repair recommendation, and
+  branch decision. Host validation permits only `site_change` and
+  `code_defect` to route into code repair.
+
+Validation Evidence:
+
+- 41 focused tests pass with 1 skip.
+- Stable-signature tests vary attempt and job identifiers while retaining the
+  same signature.
+- Contract tests reject auth-to-code-repair routing, parent-directory target
+  paths, and branch selection without a branch identifier.
+
+State Movement:
+
+- LinkedIn failure attribution:
+  `untyped_agent_browser_error -> insufficient_evidence_observe`.
+- Adapter repair governance:
+  `caller_supplied_failure_fingerprint -> host_computed_typed_triage`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this work is one coupled
+  diagnostics/contract seam.
+
+Live Outcome And Stop:
+
+- No LinkedIn post or profile canary was run.
+- The profile canary remains withheld. A future version 0.2.5 failure can be
+  correlated and classified before any repair automation is authorized.
+
+Graphiti Write Status:
+
+- deferred until provider readiness is healthy; no write was queued.
+
+Next Bounded Action:
+
+- run the full validation and authority audit, install and activate version
+  0.2.5, then resume Packet 6 under a newly bounded live decision.

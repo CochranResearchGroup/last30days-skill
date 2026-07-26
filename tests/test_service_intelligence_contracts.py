@@ -225,6 +225,139 @@ def test_knowledge_extraction_and_retrieval_evaluation_are_bounded_proposals():
     assert registry.validate_result(request, result).accepted is True
 
 
+def _result_for(
+    request: IntelligenceTaskRequest,
+    *,
+    proposal_kind: str,
+    proposal_key: str,
+    payload: dict[str, object],
+) -> IntelligenceTaskResult:
+    return IntelligenceTaskResult.from_worker_dict(
+        {
+            "schema_version": 1,
+            "contract_name": "intelligence_task_result",
+            "contract_version": 1,
+            "task_type": request.task_type,
+            "task_id": request.task_id,
+            "run_id": request.run_id,
+            "input_digest": request.input_digest,
+            "policy_version": request.policy_version,
+            "action": request.allowed_actions[0],
+            "proposals": [
+                {
+                    "proposal_kind": proposal_kind,
+                    "proposal_key": proposal_key,
+                    "confidence": 0.9,
+                    "evidence_ids": ["evidence-001"],
+                    "payload": payload,
+                }
+            ],
+            "uncertainty_codes": [],
+            "rationale": "The bounded evidence supports this proposal.",
+            "worker_ref": "openai-codex:gpt-5.5",
+        }
+    )
+
+
+def test_adapter_failure_triage_blocks_non_code_failures_from_repair():
+    registry = TaskContractRegistry.default()
+    assert registry.request("adapter_failure_triage", 1) is IntelligenceTaskRequest
+    request = _request(
+        task_type="adapter_failure_triage",
+        policy_version="adapter-failure-triage-v1",
+        allowed_actions=["record_adapter_failure_triage"],
+    )
+    valid = _result_for(
+        request,
+        proposal_kind="adapter_failure_triage",
+        proposal_key="sha256:" + "c" * 64,
+        payload={
+            "failure_signature": "sha256:" + "c" * 64,
+            "failure_class": "transient",
+            "repair_eligible": False,
+            "safe_error_code": "agent_browser_error",
+            "retry_class": "transient",
+            "failure_stage": "navigation",
+            "occurrence_count": 2,
+            "recommended_route": "backoff",
+        },
+    )
+    assert registry.validate_result(request, valid).accepted is True
+
+    invalid = _result_for(
+        request,
+        proposal_kind="adapter_failure_triage",
+        proposal_key="sha256:" + "d" * 64,
+        payload={
+            "failure_signature": "sha256:" + "d" * 64,
+            "failure_class": "auth",
+            "repair_eligible": True,
+            "safe_error_code": "authentication_required",
+            "retry_class": "operator",
+            "failure_stage": "authentication",
+            "occurrence_count": 3,
+            "recommended_route": "code_repair",
+        },
+    )
+    receipt = registry.validate_result(request, invalid)
+    assert receipt.accepted is False
+    assert ValidatorCode.SCHEMA_INVALID.value in receipt.validator_codes
+
+
+def test_adapter_repair_and_branch_contracts_reject_unsafe_or_incoherent_output():
+    registry = TaskContractRegistry.default()
+    assert registry.request("adapter_repair_recommendation", 1) is IntelligenceTaskRequest
+    assert registry.request("branch_decision", 1) is IntelligenceTaskRequest
+
+    repair_request = _request(
+        task_type="adapter_repair_recommendation",
+        policy_version="adapter-repair-recommendation-v1",
+        allowed_actions=["record_adapter_repair_recommendation"],
+    )
+    valid_repair = _result_for(
+        repair_request,
+        proposal_kind="adapter_repair_recommendation",
+        proposal_key="repair:linkedin:001",
+        payload={
+            "action": "run_tests",
+            "target_files": ["skills/last30days/scripts/lib/linkedin.py"],
+            "risk": "low",
+            "next_prompt": "Run the bounded LinkedIn adapter tests.",
+        },
+    )
+    assert registry.validate_result(repair_request, valid_repair).accepted is True
+
+    unsafe_repair = _result_for(
+        repair_request,
+        proposal_kind="adapter_repair_recommendation",
+        proposal_key="repair:linkedin:002",
+        payload={
+            "action": "apply_patch",
+            "target_files": ["../outside-repo.py"],
+            "risk": "high",
+            "next_prompt": "Patch the file.",
+        },
+    )
+    assert registry.validate_result(repair_request, unsafe_repair).accepted is False
+
+    branch_request = _request(
+        task_type="branch_decision",
+        policy_version="branch-decision-v1",
+        allowed_actions=["record_branch_decision"],
+    )
+    incoherent_branch = _result_for(
+        branch_request,
+        proposal_kind="branch_decision",
+        proposal_key="branch:001",
+        payload={
+            "action": "select",
+            "branch_id": None,
+            "rework_prompt": None,
+        },
+    )
+    assert registry.validate_result(branch_request, incoherent_branch).accepted is False
+
+
 def test_content_assessment_queue_is_idempotent_and_replayable(tmp_path):
     db_path = tmp_path / "research.db"
     ServiceStore(db_path).initialize()

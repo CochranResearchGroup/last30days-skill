@@ -153,6 +153,28 @@ class LinkedInAvailabilityTests(unittest.TestCase):
 
 
 class LinkedInNavigationAndAuthTests(unittest.TestCase):
+    def test_browser_failure_records_stage_and_bounded_operation_evidence(self):
+        client = FakeAgentBrowserClient()
+        client.command_timings = [
+            {"operation": "tab", "duration_ms": 41, "status": "failed"}
+        ]
+        client.inspect_auth = mock.Mock(
+            side_effect=linkedin.LinkedInScraperFailure(
+                "agent_browser_error", "browser command failed"
+            )
+        )
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual("agent_browser_error", result["error_type"])
+        self.assertEqual("authentication", result["diagnostics"]["failure_stage"])
+        self.assertEqual(
+            [{"operation": "tab", "duration_ms": 41, "status": "failed"}],
+            result["diagnostics"]["browser_operations"],
+        )
+
     def test_workspace_acquisition_uses_broker_for_linkedin_identity(self):
         client = linkedin.CliAgentBrowserClient(timeout=5)
         expected = linkedin.BrowserWorkspace(

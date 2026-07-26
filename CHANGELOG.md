@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Deterministic adapter-failure automation contracts.** App Intelligence
+  workers can now propose bounded failure triage, repair recommendations, and
+  branch decisions through strict host-validated schemas. Authentication,
+  checkpoint, rate-limit, access, transient, configuration, and
+  insufficient-evidence classes cannot be routed into code repair.
 - **Local cached intelligence service.** The user-scoped service now preserves
   bounded image/video descriptors and source provenance, publishes deterministic
   local embeddings plus evidence-backed entity relationships behind an explicit
@@ -20,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Acquisition failures carry stable repair evidence.** Failed work results
+  now preserve a bounded failure stage, safe browser-operation timings where
+  the adapter provides them, and a host-computed signature that is stable
+  across job and attempt IDs without exposing raw browser state.
 - **Shared social profiles reuse the Guacamole/RDP browser.** X, Facebook, and
   LinkedIn post/profile adapters now pass the complete remote-view posture into
   agent-browser access planning and request the retained social profile's

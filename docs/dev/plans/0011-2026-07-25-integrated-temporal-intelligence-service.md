@@ -1396,6 +1396,80 @@ Next action:
 - diagnose the preserved LinkedIn failure from deterministic artifacts and
   code, then record a new bounded repair decision or stop at the typed blocker.
 
+### Checkpoint P0011-C06G | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_linkedin_failure_preserved -> packet_6_failure_triage_bounded`
+
+Progress classification: `blocker_reduction`
+
+Owned changes:
+
+- ran a read-only LinkedIn auth probe against the retained browser; tab
+  discovery, selection, authentication inspection, and DOM evaluation all
+  succeeded on the authenticated feed without navigation;
+- determined that the two preserved LinkedIn acquisition envelopes do not
+  contain enough stage or operation evidence to attribute a site change or
+  code defect;
+- added host-computed acquisition failure signatures that remain stable across
+  job and attempt identifiers and preserve only bounded safe diagnostics;
+- added LinkedIn failure-stage and browser-operation evidence without
+  retaining DOM, cookies, tokens, or raw exception text;
+- added strict App Intelligence contracts for `adapter_failure_triage`,
+  `adapter_repair_recommendation`, and `branch_decision`.
+
+Deterministic routing decision:
+
+- the preserved LinkedIn failure is
+  `insufficient_evidence -> repair_eligible=false -> observe`;
+- only `site_change` and `code_defect` may route to `code_repair`;
+- authentication, checkpoint, rate-limit, access restriction, transient,
+  configuration, and insufficient-evidence outcomes cannot enter code repair.
+
+Validation evidence:
+
+- focused acquisition-worker, LinkedIn, and App Intelligence contract suite:
+  41 passed, 1 skipped;
+- failure-signature tests prove stability across distinct attempts and job
+  identifiers;
+- contract tests reject auth-to-code-repair routing, unsafe repository paths,
+  and incoherent branch selections.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one coupled diagnostics/contract
+  seam.
+
+Live canary decision:
+
+- no new LinkedIn post job was submitted;
+- the LinkedIn profile canary remains withheld;
+- a future failure produced by version 0.2.5 can be compared by stable
+  signature and deterministically classified before repair automation runs.
+
+Remaining acceptance criteria:
+
+- install and activate version 0.2.5 from a pushed commit;
+- prove one successful recurring collection interval and restart recovery;
+- verify X authenticated DOM before its bounded canary;
+- clear LinkedIn post and profile acceptance under a newly bounded live
+  decision;
+- execute Packet 7 independent integrated acceptance and closeout.
+
+Graphiti write status:
+
+- remains deferred until provider readiness is healthy; no write is queued
+  against a degraded provider.
+
+Next action:
+
+- validate, install, and activate version 0.2.5;
+- resume Packet 6 only with a newly bounded live decision that uses the new
+  failure evidence, then complete recurring timer/restart proof and Packet 7.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,

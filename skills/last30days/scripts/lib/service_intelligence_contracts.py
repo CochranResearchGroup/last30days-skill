@@ -910,6 +910,9 @@ class TaskContractRegistry:
             ("identity_resolution", 1): IntelligenceTaskRequest,
             ("knowledge_extraction", 1): IntelligenceTaskRequest,
             ("retrieval_evaluation", 1): IntelligenceTaskRequest,
+            ("adapter_failure_triage", 1): IntelligenceTaskRequest,
+            ("adapter_repair_recommendation", 1): IntelligenceTaskRequest,
+            ("branch_decision", 1): IntelligenceTaskRequest,
         }
 
     @classmethod
@@ -977,6 +980,21 @@ class TaskContractRegistry:
             codes.append(ValidatorCode.SCHEMA_INVALID.value)
         if request.task_type == "retrieval_evaluation" and any(
             not self._valid_retrieval_evaluation_proposal(proposal)
+            for proposal in result.proposals
+        ):
+            codes.append(ValidatorCode.SCHEMA_INVALID.value)
+        if request.task_type == "adapter_failure_triage" and any(
+            not self._valid_adapter_failure_triage_proposal(proposal)
+            for proposal in result.proposals
+        ):
+            codes.append(ValidatorCode.SCHEMA_INVALID.value)
+        if request.task_type == "adapter_repair_recommendation" and any(
+            not self._valid_adapter_repair_recommendation_proposal(proposal)
+            for proposal in result.proposals
+        ):
+            codes.append(ValidatorCode.SCHEMA_INVALID.value)
+        if request.task_type == "branch_decision" and any(
+            not self._valid_branch_decision_proposal(proposal)
             for proposal in result.proposals
         ):
             codes.append(ValidatorCode.SCHEMA_INVALID.value)
@@ -1121,6 +1139,127 @@ class TaskContractRegistry:
             and isinstance(payload["temporal_correct"], bool)
             and isinstance(payload["access_safe"], bool)
         )
+
+    @staticmethod
+    def _valid_adapter_failure_triage_proposal(
+        proposal: IntelligenceProposal,
+    ) -> bool:
+        payload = proposal.payload
+        required = {
+            "failure_signature",
+            "failure_class",
+            "repair_eligible",
+            "safe_error_code",
+            "retry_class",
+            "failure_stage",
+            "occurrence_count",
+            "recommended_route",
+        }
+        if (
+            proposal.proposal_kind != "adapter_failure_triage"
+            or set(payload) != required
+            or payload["failure_signature"] != proposal.proposal_key
+            or not isinstance(payload["repair_eligible"], bool)
+            or not isinstance(payload["occurrence_count"], int)
+            or isinstance(payload["occurrence_count"], bool)
+            or not 1 <= payload["occurrence_count"] <= 1_000_000
+        ):
+            return False
+        for field, limit in (
+            ("failure_signature", 80),
+            ("safe_error_code", 128),
+            ("retry_class", 64),
+            ("failure_stage", 64),
+        ):
+            value = payload[field]
+            if not isinstance(value, str) or not 0 < len(value) <= limit:
+                return False
+        failure_class = payload["failure_class"]
+        route = payload["recommended_route"]
+        classes = {
+            "auth",
+            "checkpoint",
+            "rate_limit",
+            "access_restriction",
+            "transient",
+            "configuration",
+            "site_change",
+            "code_defect",
+            "insufficient_evidence",
+        }
+        if failure_class not in classes:
+            return False
+        expected = {
+            "auth": (False, "operator"),
+            "checkpoint": (False, "operator"),
+            "rate_limit": (False, "backoff"),
+            "access_restriction": (False, "operator"),
+            "transient": (False, "backoff"),
+            "configuration": (False, "configuration"),
+            "site_change": (True, "code_repair"),
+            "code_defect": (True, "code_repair"),
+            "insufficient_evidence": (False, "observe"),
+        }
+        return (payload["repair_eligible"], route) == expected[failure_class]
+
+    @staticmethod
+    def _valid_adapter_repair_recommendation_proposal(
+        proposal: IntelligenceProposal,
+    ) -> bool:
+        payload = proposal.payload
+        if (
+            proposal.proposal_kind != "adapter_repair_recommendation"
+            or set(payload) != {"action", "target_files", "risk", "next_prompt"}
+            or payload["action"]
+            not in {"apply_patch", "run_tests", "request_context", "stop_no_fix"}
+            or payload["risk"] not in {"low", "medium", "high"}
+            or not isinstance(payload["next_prompt"], str)
+            or not 0 < len(payload["next_prompt"]) <= 2048
+        ):
+            return False
+        targets = payload["target_files"]
+        if (
+            not isinstance(targets, list)
+            or len(targets) > 20
+            or not all(
+                isinstance(path, str)
+                and 0 < len(path) <= 512
+                and not path.startswith(("/", "~"))
+                and ".." not in path.split("/")
+                for path in targets
+            )
+        ):
+            return False
+        if payload["action"] in {"apply_patch", "run_tests"} and not targets:
+            return False
+        return True
+
+    @staticmethod
+    def _valid_branch_decision_proposal(proposal: IntelligenceProposal) -> bool:
+        payload = proposal.payload
+        if (
+            proposal.proposal_kind != "branch_decision"
+            or set(payload) != {"action", "branch_id", "rework_prompt"}
+        ):
+            return False
+        action = payload["action"]
+        branch_id = payload["branch_id"]
+        rework_prompt = payload["rework_prompt"]
+        if action not in {"select", "reject", "request_rework", "stop"}:
+            return False
+        if branch_id is not None and (
+            not isinstance(branch_id, str) or not 0 < len(branch_id) <= 256
+        ):
+            return False
+        if rework_prompt is not None and (
+            not isinstance(rework_prompt, str) or not 0 < len(rework_prompt) <= 2048
+        ):
+            return False
+        if action == "select":
+            return branch_id is not None and rework_prompt is None
+        if action == "request_rework":
+            return branch_id is not None and rework_prompt is not None
+        return branch_id is None and rework_prompt is None
 
 
 class ContentAssessmentQueue:

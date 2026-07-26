@@ -356,6 +356,7 @@ class LinkedInRunDiagnostics:
     rejection_counts: Counter[str] = field(default_factory=Counter)
     accepted_count: int = 0
     duration_ms: int = 0
+    failure_stage: str = "workspace_acquisition"
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -495,6 +496,7 @@ class LinkedInScraper:
                 f"profile={workspace.profile_id!r} browser={workspace.browser_id!r} "
                 f"operator_visible={workspace.operator_visible_state}"
             )
+            diagnostics.failure_stage = "authentication"
             auth = self.client.inspect_auth(workspace)
             _log(
                 "Authentication inspected "
@@ -518,12 +520,14 @@ class LinkedInScraper:
                     operator_url=workspace.operator_url,
                 )
 
+            diagnostics.failure_stage = "navigation"
             page = self._navigate(workspace, topic)
             if page.no_results:
                 diagnostics.duration_ms = _elapsed_ms(started)
                 return self._result([], None, None, workspace, page, diagnostics, from_date, to_date)
             if self.initial_wait:
                 time.sleep(self.initial_wait)
+            diagnostics.failure_stage = "extraction"
             raw_candidates = self._extract(workspace)
             for _ in range(max(0, self.scrolls)):
                 if len(raw_candidates) >= self.limit:
@@ -536,6 +540,7 @@ class LinkedInScraper:
                 raise LinkedInScraperFailure(
                     "extraction_empty", "Verified LinkedIn content search contained no candidate cards"
                 )
+            diagnostics.failure_stage = "quality_gate"
             items = self._quality_gate(raw_candidates, topic, from_date, to_date, diagnostics)
             diagnostics.duration_ms = _elapsed_ms(started)
             _log(
@@ -687,6 +692,12 @@ class LinkedInScraper:
                 "target_id": workspace.target_id,
                 "route_id": workspace.route_id,
             }
+        diagnostics_data = diagnostics.as_dict()
+        if error_type:
+            diagnostics_data["failure_stage"] = diagnostics.failure_stage
+            diagnostics_data["browser_operations"] = _bounded_browser_operations(
+                getattr(self.client, "command_timings", [])
+            )
         result: dict[str, Any] = {
             "items": items,
             "error": error,
@@ -696,7 +707,7 @@ class LinkedInScraper:
             "profile": self.request.profile_id,
             "session": self.request.session_name,
             "workspace": workspace_data,
-            "diagnostics": diagnostics.as_dict(),
+            "diagnostics": diagnostics_data,
             "from_date": from_date,
             "to_date": to_date,
         }
@@ -1198,6 +1209,34 @@ def _select_target_id(session: dict[str, Any], tabs: Any) -> str:
         if isinstance(tab, dict):
             return str(tab.get("targetId") or str(tab_ids[0]).removeprefix("target:"))
     return ""
+
+
+def _bounded_browser_operations(value: Any) -> list[dict[str, Any]]:
+    if not isinstance(value, list):
+        return []
+    operations: list[dict[str, Any]] = []
+    for item in value[-20:]:
+        if not isinstance(item, dict):
+            continue
+        operation = str(item.get("operation") or "").strip()[:64]
+        status = str(item.get("status") or "").strip()[:32]
+        duration = item.get("duration_ms")
+        if (
+            not operation
+            or not status
+            or isinstance(duration, bool)
+            or not isinstance(duration, int)
+            or duration < 0
+        ):
+            continue
+        operations.append(
+            {
+                "operation": operation,
+                "duration_ms": duration,
+                "status": status,
+            }
+        )
+    return operations
 
 
 def _elapsed_ms(started: float) -> int:

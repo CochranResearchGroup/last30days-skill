@@ -41,6 +41,7 @@ def test_worker_preserves_operator_failure_type_without_browser_leases():
             "session": "secret-session",
             "diagnostics": {
                 "accepted_count": 0,
+                "failure_stage": "authentication",
                 "route_id": "secret-route",
             },
         }
@@ -54,11 +55,42 @@ def test_worker_preserves_operator_failure_type_without_browser_leases():
     assert result.status is contracts.AcquisitionStatus.AWAITING_OPERATOR
     assert result.retry_class is contracts.RetryClass.OPERATOR
     assert result.safe_error_code == "auth_required"
-    assert result.diagnostics == {"accepted_count": 0}
+    assert result.diagnostics["accepted_count"] == 0
+    assert result.diagnostics["failure_stage"] == "authentication"
+    assert result.diagnostics["failure_signature"].startswith("sha256:")
     serialized = result.to_dict()
     assert "operator.example" not in str(serialized)
     assert "secret-session" not in str(serialized)
     assert "secret-route" not in str(serialized)
+
+
+def test_worker_failure_signature_is_stable_across_attempts_and_job_ids():
+    def fake_adapter(_request, _config):
+        return {
+            "items": [],
+            "error_type": "agent_browser_error",
+            "diagnostics": {
+                "failure_stage": "authentication",
+                "browser_operations": [
+                    {"operation": "tab", "status": "failed", "duration_ms": 41}
+                ],
+            },
+        }
+
+    first = execute_work(
+        _request(),
+        {},
+        adapters={"x_agent_browser": fake_adapter},
+    )
+    second = execute_work(
+        _request(work_id="work-x-002", job_id="job-002", attempt=2),
+        {},
+        adapters={"x_agent_browser": fake_adapter},
+    )
+
+    assert first.diagnostics["failure_signature"] == second.diagnostics["failure_signature"]
+    assert first.diagnostics["failure_stage"] == "authentication"
+    assert first.diagnostics["browser_operations"][0]["operation"] == "tab"
 
 
 def test_worker_normalizes_publishable_items_into_the_versioned_result():

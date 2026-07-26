@@ -6,6 +6,7 @@ and deterministic supervisor never import browser or source adapters.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -237,6 +238,37 @@ def _safe_error_code(value: object) -> str | None:
     return normalized
 
 
+def _safe_failure_stage(value: object) -> str:
+    text = str(value or "").strip().casefold()
+    normalized = re.sub(r"[^a-z0-9_]+", "_", text).strip("_")[:64]
+    return normalized or "adapter_result"
+
+
+def _failure_signature(
+    request: contracts.AcquisitionWorkRequest,
+    *,
+    error_code: str,
+    retry_class: contracts.RetryClass,
+    failure_stage: str,
+) -> str:
+    payload = {
+        "adapter": request.adapter,
+        "adapter_version": request.adapter_version,
+        "error_code": error_code,
+        "failure_stage": failure_stage,
+        "retry_class": retry_class.value,
+        "source": request.source,
+    }
+    encoded = json.dumps(
+        payload,
+        ensure_ascii=False,
+        allow_nan=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+    return "sha256:" + hashlib.sha256(encoded).hexdigest()
+
+
 def _normalized_items(
     request: contracts.AcquisitionWorkRequest, raw_items: list[dict[str, Any]]
 ) -> list[contracts.AcquiredItem]:
@@ -314,13 +346,13 @@ def execute_work(
         raw: dict[str, Any] = {
             "items": [],
             "error_type": "unsupported_source",
-            "diagnostics": {},
+            "diagnostics": {"failure_stage": "adapter_selection"},
         }
     elif request.network_request_limit == 0:
         raw = {
             "items": [],
             "error_type": "network_budget_exhausted",
-            "diagnostics": {},
+            "diagnostics": {"failure_stage": "budget_guard"},
         }
     else:
         original_urlopen = urllib.request.urlopen
@@ -344,7 +376,7 @@ def execute_work(
             raw = {
                 "items": [],
                 "error_type": "adapter_exception",
-                "diagnostics": {},
+                "diagnostics": {"failure_stage": "adapter_execution"},
             }
         finally:
             urllib.request.urlopen = original_urlopen
@@ -352,7 +384,10 @@ def execute_work(
             raw = {
                 "items": [],
                 "error_type": "network_budget_exhausted",
-                "diagnostics": {"network_requests": network_count},
+                "diagnostics": {
+                    "failure_stage": "budget_guard",
+                    "network_requests": network_count,
+                },
             }
     raw_items = raw.get("items")
     if not isinstance(raw_items, list):
@@ -364,7 +399,7 @@ def execute_work(
         raw = {
             "items": [],
             "error_type": "validator_failed",
-            "diagnostics": {},
+            "diagnostics": {"failure_stage": "normalization"},
         }
     error_code = _safe_error_code(raw.get("error_type"))
     if error_code is None and raw.get("error"):
@@ -387,6 +422,8 @@ def execute_work(
         retry_after = None
     fetched_at = now().astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
     diagnostics = _sanitize(raw.get("diagnostics") or {})
+    if not isinstance(diagnostics, dict):
+        diagnostics = {}
     cost_cents = raw.get("_cost_cents", 0)
     if (
         isinstance(cost_cents, bool)
@@ -399,7 +436,11 @@ def execute_work(
         status = contracts.AcquisitionStatus.FAILED
         retry_after = None
         cost_cents = 0
-        diagnostics = {}
+        diagnostics = {"failure_stage": "cost_validation"}
+    failure_stage = ""
+    if error_code is not None:
+        failure_stage = _safe_failure_stage(diagnostics.get("failure_stage"))
+        diagnostics["failure_stage"] = failure_stage
     encoded_diagnostics = json.dumps(
         diagnostics,
         ensure_ascii=False,
@@ -408,7 +449,17 @@ def execute_work(
         sort_keys=True,
     )
     if len(encoded_diagnostics) > 16_384:
-        diagnostics = {"truncated": True}
+        diagnostics = {
+            "truncated": True,
+            **({"failure_stage": failure_stage} if failure_stage else {}),
+        }
+    if error_code is not None:
+        diagnostics["failure_signature"] = _failure_signature(
+            request,
+            error_code=error_code,
+            retry_class=retry_class,
+            failure_stage=failure_stage,
+        )
     return contracts.AcquisitionWorkResult.from_dict(
         {
             "schema_version": contracts.SCHEMA_VERSION,
