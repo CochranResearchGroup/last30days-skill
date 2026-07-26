@@ -1197,19 +1197,38 @@ Live control-plane blocker:
 - the installed CLI recommends `service route-pool repair --dry-run` but
   rejects `route-pool` as an unknown subcommand.
 
+Live outcome:
+
+- commit `b76bb28` was pushed to `origin/main`, copied into the global skill
+  installation, and activated as service version 0.2.3 on schema 12;
+- the installed adapter and service module exactly match the committed source;
+- agent-browser's MCP `service_request` dry run classified
+  `guacamole:4` as a stale former-X route;
+- the narrower `service_remote_view_route_release` action released only
+  `guacamole:4`, preserving route B;
+- route-bound `remote-view open` created
+  `session:last30days-facebook` on display `:10`, route `guacamole:4`, and
+  provider `rdp_gateway`;
+- browser, display, route, Guacamole access, and operator visibility all read
+  back `ready`, with attachability `attached_ready`;
+- after one reload, the X tab resolved to the signed-out landing DOM with zero
+  authenticated home/navigation markers and one username input.
+- the Graphiti provider-readiness probe returned `degraded` after a Codex
+  app-server timeout, so no memory write was queued; this checkpoint remains
+  the durable source for later projection.
+
 Stop rule:
 
 - do not start another X content canary or create a duplicate browser against
-  the retained profile while the stale route checkout persists;
-- after source installation, resume live work only through a supported
-  agent-browser route repair/release path, then require
-  `operatorVisible.state=ready` on the route-bound X workspace.
+  the retained profile;
+- require the operator to authenticate in the now-visible Guacamole/RDP
+  workspace, then verify authenticated DOM in that same service-owned browser
+  before exactly one canary.
 
 Next action:
 
-- commit and push version 0.2.3, synchronize and restart the installed service,
-  then resolve the stale Guacamole checkout without disturbing the healthy
-  YouTube route.
+- await operator authentication in the visible X Guacamole/RDP workspace,
+  verify the same service-owned browser, then execute one bounded X canary.
 
 ## Stop Rules
 

@@ -873,7 +873,9 @@ Validation Evidence:
   URL, and target identity `x`;
 - focused X acquisition and acquisition-worker tests passed;
 - the full Python suite, Python compilation, and `git diff --check` passed;
-- install, runtime, and live route evidence remain to be recorded at closeout.
+- commit `b76bb28` is pushed to `origin/main`;
+- the global installed copy exactly matches the committed X adapter and service
+  module, and live service version 0.2.3 is ready on schema 12.
 
 Live Route Evidence:
 
@@ -886,6 +888,13 @@ Live Route Evidence:
 - the installed CLI recommends `service route-pool repair --dry-run` but does
   not expose a `route-pool` subcommand.
 
+State Movement:
+
+- Plan 0011 Packet 6:
+  `stalled_loader_recovery_ready -> remote_view_routing_ready`.
+- X operator transport:
+  `broken_cdp_screencast -> route_bound_guacamole_ready`.
+
 Subagent Status And Reconciliation:
 
 - `not_spawned`; current runtime instructions prohibit delegation unless the
@@ -893,9 +902,30 @@ Subagent Status And Reconciliation:
 
 Next Bounded Action:
 
-- commit and push version 0.2.3, synchronize the installed skill, and restart
-  the user service;
-- repair the orphaned Guacamole route through an agent-browser-supported
-  control plane before replacing the broken CDP workspace;
-- require a visible, controllable X browser with
-  `operatorVisible.state=ready` before another content canary.
+- authenticate X in the visible Guacamole/RDP browser;
+- verify authenticated DOM in the service-owned `last30days-facebook` session;
+- run exactly one X content canary only after that human gate clears.
+
+Graphiti Write Status:
+
+- deferred without queueing because the bounded provider-readiness probe
+  returned `degraded` with a Codex app-server timeout; the compact checkpoint
+  remains in this append-only runbook and should be projected after provider
+  recovery.
+
+Live Outcome And Stop:
+
+- agent-browser's MCP `service_request` dry run identified `guacamole:4` as a
+  stale former-X route; the narrower
+  `service_remote_view_route_release` action released only that route and left
+  route B untouched.
+- A route-bound `remote-view open` created browser
+  `session:last30days-facebook` on display `:10`, route `guacamole:4`, and
+  provider `rdp_gateway`.
+- The final readback reports browser health `ready`, route state `ready`,
+  attachability `attached_ready`, and `operatorVisible.state=ready`.
+- After one reload, the tab resolved to `https://x.com/` with the signed-out
+  landing DOM: zero authenticated home/navigation markers and one username
+  input.
+- Stop at the human authentication gate. Do not run an X content canary until
+  the operator completes login in this Guacamole/RDP workspace.

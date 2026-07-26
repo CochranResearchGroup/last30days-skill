@@ -95,9 +95,11 @@ Current State:
   screencast rather than a Guacamole/RDP browser. Version 0.2.3 corrects the
   deterministic acquisition contract: X uses agent-browser's route-bound
   remote-view path, defaults to `rdp_gateway`, and requires operator-visible
-  readiness. Live replacement remains gated by agent-browser's stale
-  Guacamole route checkout; no additional content canary should run until the
-  route is repaired and the correct service-owned browser is visible.
+  readiness. The stale route was released through the supported MCP control
+  plane and the X workspace now has route/browser/display agreement on
+  Guacamole route `guacamole:4`. Its refreshed DOM is the signed-out X landing
+  page, so the next gate is operator authentication in that visible RDP
+  browser; no additional content canary should run before it is authenticated.
 
 Goal Seeds:
 
@@ -463,11 +465,10 @@ Active Plan:
 
 Next Bounded Action:
 
-- Commit, push, and install service version 0.2.3; repair or release the stale
-  agent-browser Guacamole route through its supported control plane; then open
-  exactly one route-bound X workspace and verify `operatorVisible.state=ready`
-  before any X content canary. Do not execute Plan 0010 outside its four
-  host-owned joins.
+- Authenticate X in the visible `last30days-facebook` Guacamole/RDP workspace,
+  verify the service-owned browser renders authenticated DOM, then run exactly
+  one X content canary under installed service version 0.2.3. Do not execute
+  Plan 0010 outside its four host-owned joins.
 
 ## Goal-Compatible Plan Conversion
 
