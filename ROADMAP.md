@@ -80,7 +80,7 @@ Current State:
   assessment, authoritative index snapshots, evidence-backed temporal
   claims/events, recorded retrieval evaluations, and durable graph projection
   receipts.
-- The installed service runs version 0.2.5 on schema 12, a fresh MCP client
+- The installed service runs version 0.2.6 on schema 12, a fresh MCP client
   discovers ten compact tools, and concrete Graphiti outbox delivery passed.
 - X profile authentication is restored. The first canary retry exposed that
   `force_refresh` coalesced onto the retained `awaiting_operator` job without a
@@ -100,10 +100,11 @@ Current State:
   Guacamole route `guacamole:4`. Its refreshed DOM is the signed-out X landing
   page, so the next gate is operator authentication in that visible RDP
   browser; no additional content canary should run before it is authenticated.
-- Service version 0.2.5 contains the shared social-display repair plus stable
+- Service version 0.2.6 contains the shared social-display repair plus stable
   acquisition failure evidence and typed adapter-repair gating; the repair
-  contract commit is pushed at `c52918e`. The prior route-bound X repair is
-  pushed at `b76bb28` and its canonical checkpoint at `e685844`.
+  contract commit is pushed at `c52918e`, and the current X login detector is
+  pushed at `ad1abd4`. The prior route-bound X repair is pushed at `b76bb28`
+  and its canonical checkpoint at `e685844`.
 - A fresh live X probe on the exact retained Guacamole/RDP browser now renders
   the current X root sign-in surface (“Happening now”, provider continuations,
   and “Email or username”). This is genuine current operator-auth evidence,

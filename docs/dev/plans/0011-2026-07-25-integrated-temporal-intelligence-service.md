@@ -1573,6 +1573,12 @@ Validation evidence:
   current auth conclusion;
 - focused X and acquisition-worker tests pass with 22 tests and 1 skip,
   including a red-then-green regression for the modern login surface;
+- the full Python suite passes with 2,294 tests, 7 skips, and 6 passing
+  subtests;
+- commit `ad1abd4` is pushed to `origin/main`, installed user-wide, and the
+  restarted service is active and ready at version 0.2.6 on schema 12;
+- the installed post-fix auth probe returns `login_form=true` in one evaluation
+  with no fallback navigation;
 - no X content canary was submitted.
 
 App Intelligence decision:
@@ -1590,7 +1596,6 @@ Subagent status and reconciliation:
 
 Remaining acceptance criteria:
 
-- install and activate version 0.2.6;
 - operator restores X authentication in the existing Guacamole/RDP browser,
   followed by one bounded auth probe and content canary;
 - clear LinkedIn post and profile acceptance using version 0.2.5+ diagnostics;
@@ -1609,8 +1614,8 @@ Stop rule:
 
 Next action:
 
-- validate, push, install, and activate version 0.2.6, then hold X at the
-  operator-auth gate while advancing the independent LinkedIn evidence lane.
+- hold X at the operator-auth gate while advancing the independent LinkedIn
+  evidence lane.
 
 ## Stop Rules
 

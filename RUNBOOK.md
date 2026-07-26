@@ -1277,6 +1277,12 @@ Validation Evidence:
   refresh, reproducing the classification defect.
 - The targeted regression failed before implementation, then the X and
   acquisition-worker suite passed 22 tests with 1 skip.
+- The full suite passes with 2,294 tests, 7 skips, and 6 passing subtests.
+- Commit `ad1abd4` is pushed to `origin/main`, the installed X adapter
+  byte-matches it, and the restarted service reports ready, version 0.2.6,
+  schema 12.
+- The installed post-fix probe returns `login_form=true` in one evaluation
+  without fallback navigation.
 - No X content canary ran.
 
 State Movement:
@@ -1306,5 +1312,5 @@ Live Outcome And Stop:
 
 Next Bounded Action:
 
-- validate, push, install, and activate version 0.2.6, then advance the
-  independent LinkedIn evidence lane while X waits at the operator gate.
+- advance the independent LinkedIn evidence lane while X waits at the
+  operator gate.
