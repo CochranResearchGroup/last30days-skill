@@ -1539,6 +1539,79 @@ Next action:
 - verify X authenticated DOM through the exact service-owned browser, then
   choose one bounded X canary or record the typed blocker.
 
+### Checkpoint P0011-C06I | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_x_auth_assumed -> packet_6_x_operator_gate_proven`
+
+Progress classification: `blocker_attribution`
+
+Owned changes:
+
+- resolved target identity `x` through agent-browser access planning to
+  profile `last30days-facebook` and retained browser/session
+  `session:last30days-facebook`;
+- independently verified the browser is ready on display `:10`, Guacamole
+  route `guacamole:4`, `rdp_gateway`, manual attached input, and
+  `shared_display`;
+- ran the installed adapter's bounded auth probe and a safe current-page
+  landmark probe;
+- added a root-route plus multi-signal detector for X's current “Happening
+  now / Email or username” login surface.
+
+Validation evidence:
+
+- the live page is `https://x.com/`, title
+  `X. It’s what’s happening / X`, ready state complete;
+- the page contains provider continuation buttons and “Email or username” but
+  no authenticated primary navigation, checkpoint, restriction, or transient
+  error copy;
+- the pre-fix adapter returned an ambiguous state and performed its one
+  fallback refresh; this proves the selector defect without changing the
+  current auth conclusion;
+- focused X and acquisition-worker tests pass with 22 tests and 1 skip,
+  including a red-then-green regression for the modern login surface;
+- no X content canary was submitted.
+
+App Intelligence decision:
+
+- failure class: `auth`;
+- repair eligibility: `false` for the auth condition;
+- route: `operator`;
+- bounded code repair: separately allowed for the deterministic login-form
+  classification defect and limited to the detector plus regression test.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized auth/detector seam.
+
+Remaining acceptance criteria:
+
+- install and activate version 0.2.6;
+- operator restores X authentication in the existing Guacamole/RDP browser,
+  followed by one bounded auth probe and content canary;
+- clear LinkedIn post and profile acceptance using version 0.2.5+ diagnostics;
+- execute Packet 7 independent integrated acceptance and closeout.
+
+Graphiti write status:
+
+- deferred; provider readiness remains degraded with a Codex app-server
+  timeout, so no write is queued.
+
+Stop rule:
+
+- do not run an X content canary while the live page is the typed sign-in
+  surface;
+- do not create or launch another X profile or browser process.
+
+Next action:
+
+- validate, push, install, and activate version 0.2.6, then hold X at the
+  operator-auth gate while advancing the independent LinkedIn evidence lane.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,

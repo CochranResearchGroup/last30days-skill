@@ -57,10 +57,14 @@ AUTH_SCRIPT = r"""
   const authenticatedDom = Boolean(
     document.querySelector('[data-testid="SideNav_AccountSwitcher_Button"], nav[aria-label="Primary"]')
   );
+  const rootSignedOut = /^\/?$/.test(location.pathname) &&
+    /happening now/i.test(body) &&
+    /continue with (?:google|apple)|email or username/i.test(body);
   return {
     url: location.href,
     title: document.title,
-    login_form: Boolean(document.querySelector('a[href="/login"], input[autocomplete="username"]')),
+    login_form: Boolean(document.querySelector('a[href="/login"], input[autocomplete="username"]')) ||
+      rootSignedOut,
     checkpoint: checkpointUrl || (!authenticatedDom && checkpointBody),
     restricted: /account (?:is|has been) (?:locked|suspended)|unusual activity|rate limit exceeded/i.test(body),
     authenticated_dom: authenticatedDom
@@ -80,6 +84,9 @@ PAGE_STATE_SCRIPT = r"""
     document.querySelector('[data-testid="SideNav_AccountSwitcher_Button"], nav[aria-label="Primary"]')
   );
   const checkpointBody = /verify your identity|confirm your identity|security checkpoint|complete this challenge to continue/i.test(body);
+  const rootSignedOut = /^\/?$/.test(location.pathname) &&
+    /happening now/i.test(body) &&
+    /continue with (?:google|apple)|email or username/i.test(body);
   return {
     url: location.href,
     title: document.title,
@@ -88,7 +95,8 @@ PAGE_STATE_SCRIPT = r"""
       new URL(location.href).searchParams.get("f") === "live",
     article_count: document.querySelectorAll("article").length,
     no_results: /no results|try searching for something else/i.test(body),
-    login_page: Boolean(document.querySelector('a[href="/login"], input[autocomplete="username"]')),
+    login_page: Boolean(document.querySelector('a[href="/login"], input[autocomplete="username"]')) ||
+      rootSignedOut,
     checkpoint: /\/(?:i\/flow|account\/access|challenge)(?:\/|$|\?)/i.test(location.href) ||
       (!authenticatedDom && checkpointBody),
     restricted: /account (?:is|has been) (?:locked|suspended)|unusual activity|rate limit exceeded/i.test(body),

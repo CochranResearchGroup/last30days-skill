@@ -104,6 +104,12 @@ Current State:
   acquisition failure evidence and typed adapter-repair gating; the repair
   contract commit is pushed at `c52918e`. The prior route-bound X repair is
   pushed at `b76bb28` and its canonical checkpoint at `e685844`.
+- A fresh live X probe on the exact retained Guacamole/RDP browser now renders
+  the current X root sign-in surface (“Happening now”, provider continuations,
+  and “Email or username”). This is genuine current operator-auth evidence,
+  while also exposing an adapter defect: the modern form did not match the
+  legacy login selectors and was reported as ambiguous. Version 0.2.6 adds a
+  root-route plus multi-signal signed-out detector; no X content canary ran.
 - The first bounded live recurring-collection acceptance spec preserved two
   typed fail-closed outcomes (`budget_exhausted`, then
   `network_budget_exhausted`) and was paused at immutable spec revision 3 after

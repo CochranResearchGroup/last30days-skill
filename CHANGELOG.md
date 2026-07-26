@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Current X sign-in pages are typed as login gates.** The X adapter now
+  recognizes the modern root-page “Happening now / Email or username” surface
+  as signed out. It no longer treats that page as ambiguous, reloads it, and
+  obscures the operator-auth requirement.
 - **Acquisition failures carry stable repair evidence.** Failed work results
   now preserve a bounded failure stage, safe browser-operation timings where
   the adapter provides them, and a host-computed signature that is stable

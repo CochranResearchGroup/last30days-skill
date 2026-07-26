@@ -104,6 +104,15 @@ class XBrowserSearchTests(TestCase):
         self.assertIn("!authenticatedDom && checkpointBody", x_browser.AUTH_SCRIPT)
         self.assertIn("!authenticatedDom && checkpointBody", x_browser.PAGE_STATE_SCRIPT)
 
+    def test_current_root_login_surface_is_classified_without_ambiguous_reload(self):
+        from lib import x_browser
+
+        for script in (x_browser.AUTH_SCRIPT, x_browser.PAGE_STATE_SCRIPT):
+            self.assertIn("rootSignedOut", script)
+            self.assertIn("happening now", script.casefold())
+            self.assertIn("email or username", script.casefold())
+            self.assertIn("rootSignedOut", script[script.index("login_"):])
+
     def test_search_emits_a_canonical_dated_relevant_post(self):
         from lib import x_browser
 

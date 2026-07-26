@@ -1242,3 +1242,69 @@ Next Bounded Action:
 
 - verify X authenticated DOM in the exact service-owned Guacamole/RDP browser,
   then choose one bounded X canary or record the typed blocker.
+
+## Turn 18 | 2026-07-25
+
+Focus: Plan 0011 Packet 6 X auth attribution and modern login detector.
+
+Authority Consulted:
+
+- Plan 0011 X browser gate and one-canary stop rule
+- agent-browser profile lookup, access plan, browser, tab, route, and operator
+  visibility readbacks
+- installed X adapter auth contract and live safe DOM landmarks
+- TDD, validation, Graphiti, worktree, commit, push, and closeout policies
+- CodeGraph X auth detector, workspace acquisition, and search paths
+
+Decisions And Changes:
+
+- Agent-browser selected `last30days-facebook` by X target identity and reused
+  `session:last30days-facebook` on display `:10`, Guacamole route 4,
+  `rdp_gateway`, and `shared_display`.
+- The current page is conclusively X's signed-out root surface, not a
+  checkpoint, restriction, or transient load failure.
+- The adapter also had a deterministic defect: its legacy selectors did not
+  type the modern root login form, so it performed an unnecessary ambiguous
+  refresh.
+- Added a root-route plus multi-signal modern sign-in detector to both auth and
+  search-page state scripts.
+
+Validation Evidence:
+
+- Live page evidence includes “Happening now”, provider continuation buttons,
+  and “Email or username”, with no authenticated primary navigation.
+- The pre-fix adapter returned all terminal flags false after its bounded
+  refresh, reproducing the classification defect.
+- The targeted regression failed before implementation, then the X and
+  acquisition-worker suite passed 22 tests with 1 skip.
+- No X content canary ran.
+
+State Movement:
+
+- X auth attribution:
+  `ambiguous_adapter_result -> genuine_operator_auth_gate`.
+- X login classification:
+  `modern_root_form_unrecognized -> typed_login_form`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this work is one serialized auth/detector
+  seam.
+
+Graphiti Write Status:
+
+- deferred; provider readiness remains degraded with a Codex app-server
+  timeout, so no write was queued.
+
+Live Outcome And Stop:
+
+- The existing Guacamole/RDP browser remains visible and controllable.
+- X content acquisition is stopped until the operator restores auth in that
+  exact browser.
+- No duplicate profile or browser lane is authorized.
+
+Next Bounded Action:
+
+- validate, push, install, and activate version 0.2.6, then advance the
+  independent LinkedIn evidence lane while X waits at the operator gate.
