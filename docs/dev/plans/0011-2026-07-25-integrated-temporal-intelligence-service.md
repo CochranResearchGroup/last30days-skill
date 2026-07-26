@@ -75,13 +75,20 @@ profile history, graph authority, or agent-facing query behavior.
   recorded retrieval evaluation, and durable graph projection receipts to the
   additive temporal authority, immutable publication, version-scoped
   enrichment/index projections, and deterministic schema-7 replay export.
-- The installed user service now runs version 0.2.0 from commit `0e7938a`
-  against schema 12. Its fresh MCP client discovers ten compact tools, and its
-  concrete loopback Graphiti sink published a durable outbox canary.
+- The installed user service now runs version 0.2.3 with exact source/install
+  parity for pushed commit `b76bb28` against schema 12. Its fresh MCP client
+  discovers ten compact tools, and its concrete loopback Graphiti sink
+  previously published a durable outbox canary.
 - Packet 6 is awaiting an authenticated-browser human gate: Reddit yielded one
-  item, YouTube completed successfully with zero yield, and X stopped as
-  `awaiting_operator` with `auth_required`. Facebook and LinkedIn post/profile
-  canaries remain intentionally unattempted.
+  item, YouTube completed successfully with zero yield, and the X browser is
+  now correctly route-bound to Guacamole/RDP but its refreshed service-owned
+  DOM is signed out. Facebook and LinkedIn post/profile canaries remain
+  intentionally unattempted.
+- The first live recurring-collection acceptance unit preserved
+  `budget_exhausted` and `network_budget_exhausted` terminal receipts, then
+  paused its public Reddit spec at immutable revision 3 when the two-attempt
+  packet bound was reached. Successful timer yield and restart recovery remain
+  unproven.
 - Broad recurring hydration remains gated until the authenticated canaries and
   Packet 7 acceptance complete; isolated Plan 0010 execution remains
   prohibited outside the four integration joins.
@@ -1229,6 +1236,76 @@ Next action:
 
 - await operator authentication in the visible X Guacamole/RDP workspace,
   verify the same service-owned browser, then execute one bounded X canary.
+
+### Checkpoint P0011-C06E | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_remote_view_routing_ready -> packet_6_authority_audit_ready`
+
+Progress classification: `blocker_reduction`
+
+Owned changes:
+
+- added a deterministic repo-only roadmap, runbook, and active-goal authority
+  audit with TDD coverage;
+- required every open roadmap lane to resolve to a current actionable plan and
+  exactly one plan to own integrated campaign execution;
+- required the latest integrated checkpoint and runbook turn to carry the
+  governance fields needed for durable `/goal` continuation;
+- wired Plan 0011 explicitly into P04 and P05 and reconciled stale installed
+  version summaries to live service version 0.2.3;
+- created one bounded public Reddit topic collection spec, preserved immutable
+  revisions and two typed terminal budget failures, then paused it at revision
+  3 after the work-unit attempt ceiling.
+
+Validation evidence:
+
+- the TDD red phase failed because the audit helper did not exist;
+- after implementation, the audit found four real authority defects rather
+  than passing on document presence alone;
+- live job `a0d14a71-5383-402d-8092-69fcf581df14` terminated
+  `budget_exhausted`;
+- live job `989b4b90-eff5-4419-848f-5c5b99759325` terminated
+  `network_budget_exhausted`;
+- the reconciled authority audit passes with two legitimate open plans,
+  exactly one integrated campaign authority, latest runbook Turn 14, and zero
+  issues;
+- all three focused authority-audit tests, the full Python suite, the full Go
+  suite, script compilation, and `git diff --check` pass.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized authority seam.
+
+Remaining acceptance criteria:
+
+- prove one successful recurring collection interval and restart recovery
+  through a bounded successor unit rather than widening the exhausted unit;
+- authenticate X in the visible service-owned Guacamole/RDP browser and run
+  one bounded canary;
+- complete bounded Facebook post plus LinkedIn post/profile canaries;
+- execute Packet 7 independent integrated acceptance and closeout.
+
+Graphiti write status:
+
+- provider readiness and compact checkpoint projection remain pending until a
+  validated commit exists.
+
+Stop rule:
+
+- do not run a third interval or widen the paused acceptance spec in this work
+  unit;
+- do not run an X canary until authenticated DOM is verified in the same
+  service-owned browser.
+
+Next action:
+
+- make the new authority audit pass, run focused and broad validation, commit
+  and push the reconciled checkpoint, then select the next unblocked bounded
+  acceptance unit.
 
 ## Stop Rules
 

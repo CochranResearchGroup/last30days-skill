@@ -80,7 +80,7 @@ Current State:
   assessment, authoritative index snapshots, evidence-backed temporal
   claims/events, recorded retrieval evaluations, and durable graph projection
   receipts.
-- The installed service runs version 0.2.1 on schema 12, a fresh MCP client
+- The installed service runs version 0.2.3 on schema 12, a fresh MCP client
   discovers ten compact tools, and concrete Graphiti outbox delivery passed.
 - X profile authentication is restored. The first canary retry exposed that
   `force_refresh` coalesced onto the retained `awaiting_operator` job without a
@@ -100,6 +100,12 @@ Current State:
   Guacamole route `guacamole:4`. Its refreshed DOM is the signed-out X landing
   page, so the next gate is operator authentication in that visible RDP
   browser; no additional content canary should run before it is authenticated.
+- Service version 0.2.3 is now installed from pushed commit `b76bb28`; the
+  canonical plan/runbook checkpoint is pushed at `e685844`.
+- The first bounded live recurring-collection acceptance spec preserved two
+  typed fail-closed outcomes (`budget_exhausted`, then
+  `network_budget_exhausted`) and was paused at immutable spec revision 3 after
+  reaching the two-attempt plan bound.
 
 Goal Seeds:
 
@@ -123,9 +129,9 @@ Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the integrated P01-P06 campaign authority. Packets 1 through 5 are
-  complete; Packet 6 source and installed migration are complete, but its X
-  canary remains at the recorded authenticated-browser stop gate after the
-  bounded adapter retry.
+  complete; Packet 6 source and installed migration are complete. Its X canary
+  remains at the authenticated-browser stop gate, and the first bounded timer
+  acceptance unit stopped after two typed budget failures.
 
 ## P02 | Recurring Acquisition And Coverage
 
@@ -147,6 +153,10 @@ Current State:
   policy through the deterministic host.
 - Installed timers and broad hydration remain gated until the bounded runtime
   rollout packet.
+- One public Reddit topic spec now proves immutable spec revisions, durable
+  scheduling state, typed budget failures, and pause control in the live
+  schema-12 database. It has not yet proved successful timer yield or restart
+  recovery and remains paused after the packet's two-attempt bound.
 
 Goal Seeds:
 
@@ -304,6 +314,12 @@ Acceptance Seeds:
 Dependencies: P01 is required; P02 and P03 progressively improve coverage and
 identity quality.
 
+Active Plan:
+
+- `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
+  Packet 5 owns temporal retrieval and GraphRAG authority; Packet 7 owns its
+  integrated acceptance audit.
+
 ## P05 | Agent-Facing Intelligence Product
 
 State: OPEN
@@ -317,7 +333,7 @@ Current State:
 - Commit `0e7938a` exposes cache-only temporal queries, dossiers, timeline,
   trend, profile history, coverage, collection control, and maintenance status
   through a ten-tool MCP surface.
-- The installed version 0.2.0 service derives authorized partitions from the
+- The installed version 0.2.3 service derives authorized partitions from the
   caller profile and keeps prompts, raw model/provider events, browser
   mechanics, cookies, and credentials out of normal responses.
 - Fresh installed-client discovery and representative public and
@@ -341,6 +357,11 @@ Goal Seeds:
 
 Dependencies: grows incrementally with P01-P04 and must not bypass their
 authority or access-control contracts.
+
+Active Plan:
+
+- `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
+  Packet 6 owns installed MCP rollout and Packet 7 owns product acceptance.
 
 ## P06 | App Intelligence Control Plane
 

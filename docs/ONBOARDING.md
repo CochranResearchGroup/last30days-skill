@@ -56,9 +56,15 @@ present and repo-only files absent.
 ## 4. Run the full gates before installation
 
 ```bash
+python3 dev/last30days/scripts/audit_plan_authority.py
 uv run pytest
 go test ./...
 ```
+
+The authority audit must report exactly one integrated campaign authority and
+verify that every open roadmap lane has a current actionable plan, the latest
+goal checkpoint carries all required governance fields, and the latest
+runbook turn has complete closeout evidence.
 
 Run the Go command from `mcp/`:
 

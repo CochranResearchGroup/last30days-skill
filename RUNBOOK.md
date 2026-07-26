@@ -929,3 +929,91 @@ Live Outcome And Stop:
   input.
 - Stop at the human authentication gate. Do not run an X content canary until
   the operator completes login in this Guacamole/RDP workspace.
+
+## Turn 14 | 2026-07-25
+
+Focus: Plan 0011 Packet 6 recurring-collection acceptance and Packet 7
+authority-audit gate.
+
+Authority Consulted:
+
+- Plan 0011 current state, Packet 6 and Packet 7 exit gates, integrated
+  acceptance criteria, local attempt bounds, and stop rules
+- ROADMAP P01-P06 lane state and RUNBOOK Turn 13
+- live service version 0.2.3, schema 12, collection catalog, and durable jobs
+- planning, goal execution, roadmap/runbook, validation, Graphiti, worktree,
+  commit, push, and closeout policies
+- CodeGraph collection specification, due-scheduler, acquisition-loop, and
+  persistence paths
+
+Decisions And Changes:
+
+- Identified canonical authority drift: Plan 0011 and roadmap summaries still
+  named older installed versions, P04/P05 lacked explicit actionable-plan
+  wiring, and no deterministic planning/goal audit existed.
+- Added a repo-only authority audit with TDD coverage for open-lane plan
+  requirements, exactly one integrated campaign authority, latest checkpoint
+  fields, and latest runbook closeout fields.
+- Wired Plan 0011 explicitly into P04 and P05 and reconciled current
+  source/install/runtime summaries to version 0.2.3.
+- Created one bounded public Reddit topic collection spec with assessment
+  disabled, immutable spec revisions, a three-item limit, and explicit
+  time/network/cost bounds.
+- Preserved its first `budget_exhausted` result, revised only its cost ceiling,
+  preserved its second `network_budget_exhausted` result, and paused the spec
+  at revision 3 when the two-attempt work-unit bound was reached.
+
+Validation Evidence:
+
+- TDD red phase: all three authority-audit tests failed because the audit
+  helper did not exist.
+- The implemented audit then found four real authority defects: missing P04
+  and P05 actionable-plan wiring plus missing subagent and Graphiti fields in
+  the latest goal checkpoint.
+- The live collection receipts are jobs
+  `a0d14a71-5383-402d-8092-69fcf581df14` (`budget_exhausted`) and
+  `989b4b90-eff5-4419-848f-5c5b99759325`
+  (`network_budget_exhausted`).
+- the reconciled authority audit passes with two legitimate open plans,
+  exactly one integrated campaign authority, latest runbook Turn 14, and zero
+  issues;
+- all three focused authority-audit tests, the full Python suite, the full Go
+  suite, script compilation, and `git diff --check` pass.
+
+State Movement:
+
+- Plan 0011 Packet 6 timer acceptance:
+  `not_configured -> bounded_failure_evidence_preserved_and_paused`.
+- Plan 0011 Packet 7 authority acceptance:
+  `missing_audit -> deterministic_audit_implemented`.
+- Integrated execution authority:
+  `summary_drift -> reconciliation_candidate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and the work is a serialized authority and
+  timer-control seam.
+
+Graphiti Write Status:
+
+- provider-readiness and compact checkpoint projection remain pending until
+  the validated commit exists.
+
+Live Outcome And Stop:
+
+- The public collection spec is disabled and cannot schedule another automatic
+  attempt.
+- Do not widen its network budget or run a third interval inside this work
+  unit. Successful yield and restart recovery require a bounded successor
+  decision after the recorded failure evidence is reviewed.
+- X remains a separate human-authentication gate in the ready Guacamole/RDP
+  workspace.
+
+Next Bounded Action:
+
+- make the authority audit pass against the reconciled repo;
+- run focused and broad validation, commit, push, and project the checkpoint
+  when Graphiti is healthy;
+- then perform an integrated requirement-by-requirement audit and select the
+  next unblocked bounded unit without bypassing either stop gate.
