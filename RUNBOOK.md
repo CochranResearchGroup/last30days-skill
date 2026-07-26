@@ -1497,3 +1497,63 @@ Next Bounded Action:
 
 - commit and push this checkpoint, run the one C06L X canary, and follow only
   its terminal branch.
+
+## Turn 22 | 2026-07-25
+
+Focus: attribute the failed X service canary and authorize a registered-session
+control-plane repair.
+
+Authority Consulted:
+
+- Plan 0011 checkpoint C06L
+- C06L durable job and acquisition envelopes
+- installed X adapter and shared browser runtime
+- current agent-browser X access plan, service state, and CLI control paths
+
+Decisions And Changes:
+
+- The one authorized C06L X job failed after two internal attempts with one
+  stable `adapter_result` signature.
+- Workspace acquisition itself selects the correct healthy retained browser.
+- The next registered-session client command is not attached to that browser;
+  it attempts to launch the unrelated default profile and collides with
+  `auracall-corel`.
+- A distinct diagnostic client attached explicitly to the retained CDP
+  endpoint can list the authenticated X tab, proving this is neither an X auth
+  failure nor a Guacamole/RDP failure.
+- Authorized a bounded agent-browser registered-session reconnection repair,
+  its install verification, and one no-navigation X auth readback. No further
+  social content job is authorized.
+
+Validation Evidence:
+
+- C06L job `1bcc32c3-9fd4-480f-a8ef-aaac25a5354a` is terminal failed with
+  signature
+  `sha256:d540fd31eda485872f608d59bcf715cadfd4ae0f60cd53962c7321a7687ed3c7`;
+- acquisition returns `session:last30days-facebook`;
+- registered-session tab selection fails on default-profile auto-launch;
+- explicit retained-CDP attachment lists `https://x.com/home`;
+- service state retains a viable RDP browser on Guacamole route `guacamole:4`.
+
+State Movement:
+
+- X acceptance:
+  `one_service_canary_authorized -> stable_client_attachment_failure`.
+- Shared browser attribution:
+  `possible_adapter_result_bug -> registered_session_not_attached`.
+- Repair authority:
+  `diagnosis_only -> bounded_agent_browser_repair_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it.
+
+Graphiti Write Status:
+
+- deferred; provider readiness remains degraded and no write was queued.
+
+Next Bounded Action:
+
+- commit and push C06M, repair agent-browser test-first, install it, and run
+  only the authorized no-navigation X authentication readback.

@@ -150,6 +150,14 @@ Current State:
   no-navigation acquisition proves one-read retained-browser reuse. The
   LinkedIn lane is stopped after the repeated stable failure pending a new
   plan decision.
+- The single authorized X content-service canary then failed twice at
+  `adapter_result` with one stable signature. A bounded lower-level probe
+  proved acquisition selects the healthy retained RDP browser, but the next
+  registered-session client command is not attached to it and incorrectly
+  attempts to auto-launch the unrelated default profile. Explicit attachment
+  to the retained CDP endpoint lists the authenticated X tab. Packet 6 is now
+  bounded on an agent-browser registered-session reconnection repair and one
+  no-navigation auth readback; no further social content job is authorized.
 
 Goal Seeds:
 
@@ -174,8 +182,8 @@ Active Plan:
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the integrated P01-P06 campaign authority. Packets 1 through 5 are
   complete; Packet 6 source, installed migration, recurring interval, and
-  restart-recovery proof are complete. Its X canary remains at the
-  authenticated-browser stop gate.
+  restart-recovery proof are complete. Its authenticated social rollout is
+  stopped at the shared-browser registered-session attachment repair.
 
 ## P02 | Recurring Acquisition And Coverage
 

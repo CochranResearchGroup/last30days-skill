@@ -1847,6 +1847,91 @@ Next action:
 - commit and push this checkpoint, submit the one keyed X service canary, and
   preserve its terminal evidence.
 
+### Checkpoint P0011-C06M | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_linkedin_config_repaired_x_canary_authorized -> packet_6_shared_browser_control_repair_authorized`
+
+Progress classification: `blocker_attribution`
+
+Owned changes:
+
+- executed the one authorized C06L X content-service job and preserved its
+  terminal failure;
+- reproduced the failure below the content-service worker with acquisition
+  and authentication-only probes;
+- attributed the stable X and LinkedIn failures to the shared agent-browser
+  client-control attachment path, not authentication or Guacamole/RDP;
+- authorized one bounded agent-browser repair so a registered service session
+  can reconnect to its already healthy retained browser instead of
+  auto-launching an unrelated default profile;
+- authorized unit/integration validation plus one post-install
+  no-navigation X authentication readback; no new X or LinkedIn content job is
+  authorized by this checkpoint.
+
+Validation evidence:
+
+- C06L job `1bcc32c3-9fd4-480f-a8ef-aaac25a5354a` failed after two internal
+  attempts with stage `adapter_result`, stable signature
+  `sha256:d540fd31eda485872f608d59bcf715cadfd4ae0f60cd53962c7321a7687ed3c7`,
+  and no published fresh acquisition;
+- installed X workspace acquisition succeeds and returns
+  `browser_id=session:last30days-facebook`,
+  `session_name=last30days-facebook`, and `operator_visible_state=not_required`;
+- the immediately following read-only tab selection fails because the
+  `last30days-facebook` client daemon attempts to auto-launch the unrelated
+  default runtime profile, which is already owned by `auracall-corel`;
+- a distinct diagnostic client explicitly attached to the retained browser's
+  CDP endpoint lists the authenticated `https://x.com/home` tab successfully;
+- agent-browser service status reports
+  `session:last30days-facebook` healthy and viable on profile
+  `last30days-facebook`, Guacamole route `guacamole:4`, provider
+  `rdp_gateway`, and `displayIsolation=shared_display`;
+- the access plan explicitly requires `shared_browser_tabs`,
+  `controlSerialization=service_queue`, and route hints for
+  `session:last30days-facebook`.
+
+Decision branches:
+
+- repaired no-navigation auth readback `authenticated`: preserve the installed
+  control-plane proof and open a successor checkpoint before any content job;
+- repaired readback `failed`: preserve the exact client-control stage and stop;
+- any profile relaunch, operator-auth state, or route mutation: stop without
+  changing the shared browser.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and the repair has one serialized
+  control-plane owner.
+
+Remaining acceptance criteria:
+
+- repair and validate registered-session reconnection in agent-browser;
+- sync and verify the installed agent-browser runtime;
+- run one no-navigation X authentication readback through the repaired
+  registered session;
+- require a new checkpoint before another X or LinkedIn content-service job.
+
+Graphiti write status:
+
+- deferred; provider readiness remains degraded and no write is queued.
+
+Stop rule:
+
+- do not submit another X or LinkedIn content job;
+- do not launch, replace, close, or reauthenticate the shared social browser;
+- stop after one bounded implementation/review cycle if the registered-session
+  readback still fails.
+
+Next action:
+
+- commit and push this authority correction, implement the agent-browser
+  registered-session reconnection repair test-first, install it, and run the
+  one authorized no-navigation X auth readback.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,
