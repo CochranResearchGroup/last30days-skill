@@ -1787,3 +1787,65 @@ Next Bounded Action:
 
 - commit and push C06Q, run Packet 7 full validation and the independent
   acceptance audit, and stop on any required failure.
+
+## Turn 27 | 2026-07-25
+
+Focus: Packet 7 source/live audit and one bounded App Intelligence discovery
+remediation.
+
+Authority Consulted:
+
+- Plan 0011 Packet 7 and integrated acceptance criteria
+- Plan 0010 acceptance criteria
+- current source tests and installed runtime
+- live MCP, service, database, collection, profile, and projection readbacks
+- validation, goal-governance, documentation, and closeout policies
+
+Decisions And Changes:
+
+- Completed the first full source and current-state audit.
+- Confirmed source tests, installed service, compact MCP product, cache-only
+  behavior, temporal/profile retrieval, collection state, social canaries, and
+  graph projection.
+- Found that App Intelligence maintenance discovery omits the supported
+  contract registry and finite safe-limit ranges required by Plan 0010.
+- Authorized exactly one read-only discovery remediation and one final review.
+- No additional browser, acquisition, timer, or stochastic work is authorized.
+
+Validation Evidence:
+
+- full Python, Python compilation, Go generation/tests/vet, and plan/goal audit
+  passed;
+- installed Skill source matches the worktree and the service is enabled,
+  active, and ready on version 0.2.6/schema 12;
+- ten compact MCP tools are discoverable;
+- cache-only query left durable job count 39 unchanged;
+- temporal/profile tools returned partitioned evidence and projection receipt;
+- Graphiti projection is published with zero pending/failed;
+- Graphiti service and provider readiness now pass;
+- App Intelligence status exposes enablement and repair policy but not
+  contract names, versions, or finite limit ranges.
+
+State Movement:
+
+- Plan 0011:
+  `packet_7_ready -> packet_7_discovery_remediation_authorized`.
+- Plan 0010:
+  `source_contracts_proven -> installed_discovery_gap`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it. Independent judgment was performed as a
+  separate current-state audit phase.
+
+Graphiti Write Status:
+
+- agent-browser closeout job
+  `5840dd68-0131-4d28-b15e-811450b5f1dc` is pending final verification;
+- last30days closeout write remains gated on its final durable commit.
+
+Next Bounded Action:
+
+- commit and push C07A, add canonical App Intelligence discovery metadata
+  test-first, validate/install it, and perform one final review.

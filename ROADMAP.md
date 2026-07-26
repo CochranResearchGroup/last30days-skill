@@ -196,7 +196,10 @@ Active Plan:
   complete; Packet 6 source, installed migration, recurring interval, and
   restart-recovery proof are complete. Its authenticated X post, LinkedIn post,
   and LinkedIn company-profile canaries now pass through the retained shared
-  Guacamole/RDP browser. Packet 7 integrated acceptance is ready.
+  Guacamole/RDP browser. Packet 7 source/live validation passes except for one
+  bounded App Intelligence discovery gap: the MCP maintenance response must
+  expose canonical task contract versions and safe-limit ranges before
+  integrated closeout.
 
 ## P02 | Recurring Acquisition And Coverage
 

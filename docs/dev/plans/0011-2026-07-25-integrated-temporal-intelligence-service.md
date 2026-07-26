@@ -2274,6 +2274,102 @@ Next action:
 - commit and push this checkpoint, execute Packet 7 validation and independent
   acceptance audit, and preserve exact closeout evidence.
 
+### Checkpoint P0011-C07A | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_7_ready -> packet_7_discovery_remediation_authorized`
+
+Progress classification: `blocker_attribution`
+
+Owned changes:
+
+- completed the first Packet 7 source and live agent-boundary validation pass;
+- audited current repository, installed runtime, database, service, MCP,
+  collection, profile, App Intelligence, and graph-projection evidence against
+  Plans 0010 and 0011;
+- identified one required discovery gap: `maintenance_status` reports
+  App Intelligence enablement, receipt counts, and repair policy, but omits
+  supported task contract names, contract versions, and finite safe-limit
+  ranges required by Plan 0010;
+- authorized one bounded remediation in the existing read-only
+  `maintenance_status` response plus focused/full validation and installed
+  readback;
+- did not authorize any new acquisition, stochastic task, timer, or browser
+  work.
+
+Validation evidence:
+
+- full `uv run pytest -q` passed;
+- Python compilation passed;
+- `go generate ./...`, `go test ./...`, and `go vet ./...` passed;
+- planning/goal authority audit passed with zero issues;
+- installed source matches the working-tree Skill excluding bytecode, and
+  `last30days.service` is enabled and active;
+- fresh MCP discovery exposes ten compact tools;
+- service version 0.2.6/schema 12 is ready with 43 indexed documents and all
+  five configured acquisition sources ready;
+- cache-only MCP query returned evidence with `job_id=null` and left the
+  durable job count unchanged at 39;
+- temporal and profile-history MCP tools returned exact evidence, partition,
+  time, index, and projection metadata without browser work;
+- graph projection reports one published receipt with zero pending or failed
+  records;
+- Graphiti MCP/database and provider readiness now pass;
+- profile collection remains disabled and its one run is fully accounted;
+- the App Intelligence discovery response does not yet expose its registry or
+  limit bounds, so Plan 0010 and Plan 0011 cannot close in this checkpoint.
+
+Remediation contract:
+
+- expose only deterministic, non-sensitive metadata:
+  request/result contract names and versions, supported task types and
+  versions, and validator-enforced min/max limit ranges;
+- derive task types from the canonical `TaskContractRegistry`, not a duplicate
+  service-app list;
+- expose no prompts, provider events, evidence bodies, browser mechanics,
+  credentials, mutable controls, or model-selected actions;
+- add a focused product test and rerun the full Python and Go gates;
+- sync and restart the installed service, then verify the MCP
+  `maintenance_status` readback.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it. Packet 7 judgment is separated from
+  implementation as a criterion-by-criterion primary-agent audit backed by
+  current deterministic and live readbacks.
+
+Remaining acceptance criteria:
+
+- close the App Intelligence discovery gap and verify it in the installed MCP;
+- rerun the affected and full validation gates;
+- repeat the acceptance audit once, then close or stop under the one-rework
+  bound.
+
+Graphiti write status:
+
+- agent-browser repair closeout was queued as Graphiti job
+  `5840dd68-0131-4d28-b15e-811450b5f1dc`; final episode verification is
+  pending;
+- last30days final closeout memory remains gated on a durable final commit.
+
+Stop rule:
+
+- allow only this one discovery remediation and one final review;
+- do not enqueue acquisitions, App Intelligence tasks, collection runs, or
+  browser operations;
+- stop if the remediation changes control semantics, exposes sensitive
+  material, fails full validation, or leaves another required criterion
+  unproven.
+
+Next action:
+
+- commit and push this audit checkpoint, implement the discovery response
+  test-first, validate and install it, then perform the one final acceptance
+  review.
+
 ## Stop Rules
 
 Stop autonomous execution at an unresolved migration-integrity failure,
