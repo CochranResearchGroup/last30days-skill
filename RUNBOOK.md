@@ -1366,3 +1366,72 @@ Next Bounded Action:
 
 - commit the decision, submit the one keyed LinkedIn post query, and preserve
   its durable terminal evidence.
+
+## Turn 20 | 2026-07-25
+
+Focus: reconcile the executed LinkedIn canary and repaired agent-browser route
+authority.
+
+Authority Consulted:
+
+- Plan 0011 checkpoint C06J and current durable service jobs/acquisition
+  envelopes
+- installed agent-browser access planning, retained browser, profile
+  readiness, and rendered Guacamole proof
+- agent-browser commits `3c08b9b0` and `047f0c7d`
+- planning, validation, documentation, Graphiti, worktree, commit, push, and
+  closeout policies
+
+Decisions And Changes:
+
+- The C06J job had already executed before the current CLI replay; its caller
+  key is terminal and must not be reused.
+- Both attempts failed at workspace acquisition with the same stable
+  signature before any LinkedIn auth or page evaluation.
+- The failure-time broker record selected a new CDP lane. The repaired current
+  broker plan instead selects the retained shared browser, Guacamole/RDP, and
+  `tab_new`.
+- Authorized one newly keyed post-repair LinkedIn post canary. The profile
+  canary remains gated on successful post publication.
+- Corrected stale X authority: fresh agent-browser readiness records an
+  authenticated retained-browser probe with four accepted posts, while the
+  content-service X canary remains pending.
+
+Validation Evidence:
+
+- job `c2efdf4b-193a-403e-93bf-8cae4ec3ef72` is terminal failed after two
+  internal attempts with `agent_browser_error`;
+- both acquisition envelopes use signature
+  `sha256:c1c6d0ff8a494273a826a1aa7bd837ac915fb7e8af0f35670cf007510b365376`
+  and stage `workspace_acquisition`;
+- current LinkedIn access planning returns
+  `session:last30days-facebook`, `tab_new`, `rdp_gateway`,
+  `manual_attached_desktop`, and `shared_display`;
+- installed `shared_acquisition_route()` returns the exact retained browser
+  and session hints;
+- last30days service v0.2.6/schema 12 and its ten-tool MCP surface are ready.
+
+State Movement:
+
+- LinkedIn post acceptance:
+  `diagnostic_canary_authorized -> external_route_failure_attributed`.
+- Shared-browser dependency:
+  `new_cdp_lane_planned -> retained_rdp_tab_reuse_proven`.
+- X browser gate:
+  `operator_auth_pending -> authenticated_probe_fresh`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized shared-browser
+  lane.
+
+Graphiti Write Status:
+
+- deferred; the latest provider readiness check timed out, so no write was
+  queued.
+
+Next Bounded Action:
+
+- commit and push this corrected authority, run the one C06K LinkedIn post
+  canary, and follow only its recorded terminal branch.

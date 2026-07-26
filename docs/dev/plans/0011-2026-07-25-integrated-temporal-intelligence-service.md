@@ -75,20 +75,23 @@ profile history, graph authority, or agent-facing query behavior.
   recorded retrieval evaluation, and durable graph projection receipts to the
   additive temporal authority, immutable publication, version-scoped
   enrichment/index projections, and deterministic schema-7 replay export.
-- The installed user service now runs version 0.2.3 with exact source/install
-  parity for pushed commit `b76bb28` against schema 12. Its fresh MCP client
-  discovers ten compact tools, and its concrete loopback Graphiti sink
+- The installed user service runs version 0.2.6 with schema 12. Its fresh MCP
+  client discovers ten compact tools, and its concrete loopback Graphiti sink
   previously published a durable outbox canary.
-- Packet 6 is awaiting an authenticated-browser human gate: Reddit yielded one
-  item, YouTube completed successfully with zero yield, and the X browser is
-  now correctly route-bound to Guacamole/RDP but its refreshed service-owned
-  DOM is signed out. Facebook and LinkedIn post/profile canaries remain
-  intentionally unattempted.
-- The first live recurring-collection acceptance unit preserved
-  `budget_exhausted` and `network_budget_exhausted` terminal receipts, then
-  paused its public Reddit spec at immutable revision 3 when the two-attempt
-  packet bound was reached. Successful timer yield and restart recovery remain
-  unproven.
+- Packet 6 has published the bounded Facebook post canary and proved recurring
+  timer yield, interval deduplication, and restart recovery. The acceptance
+  timer is paused at immutable revision 5.
+- X authentication is now independently fresh in agent-browser's exact
+  `last30days-facebook` profile, and a bounded retained-browser probe accepted
+  four posts. Its content-service canary remains unattempted.
+- The authorized LinkedIn version 0.2.6 post canary failed twice before
+  authentication at `workspace_acquisition` with one stable
+  `agent_browser_error` signature. Its contemporaneous broker configuration
+  planned `launch_new_browser` plus `cdp_screencast`. After agent-browser
+  commit `3c08b9b0` repaired daemon-session workspace selection and restored
+  the retained Guacamole route, the same no-launch LinkedIn request now
+  resolves to `session:last30days-facebook`, `tab_new`, `rdp_gateway`, and
+  `shared_display`.
 - Broad recurring hydration remains gated until the authenticated canaries and
   Packet 7 acceptance complete; isolated Plan 0010 execution remains
   prohibited outside the four integration joins.
@@ -1681,6 +1684,88 @@ Next action:
 
 - commit this bounded decision, submit the one keyed LinkedIn post query, and
   preserve its durable terminal evidence.
+
+### Checkpoint P0011-C06K | 2026-07-25
+
+Plan version: 1
+
+State transition:
+`packet_6_linkedin_v026_canary_authorized -> packet_6_linkedin_route_repair_proven`
+
+Progress classification: `blocker_attribution`
+
+Owned changes:
+
+- reconciled the already-executed durable LinkedIn canary
+  `c2efdf4b-193a-403e-93bf-8cae4ec3ef72` with the stale plan checkpoint;
+- preserved its two internal attempts and prohibited reuse of caller key
+  `p0011-c06j-linkedin-post-v026`;
+- classified the failure as pre-authentication workspace routing, not LinkedIn
+  authentication, content extraction, rate limiting, or profile mismatch;
+- linked the failure to the repaired agent-browser route-selection dependency
+  without changing last30days adapter code;
+- authorized exactly one post-repair LinkedIn post canary with caller key
+  `p0011-c06k-linkedin-post-rdp-repair`.
+
+Validation evidence:
+
+- both failed acquisition envelopes report
+  `failure_stage=workspace_acquisition`, identical signature
+  `sha256:c1c6d0ff8a494273a826a1aa7bd837ac915fb7e8af0f35670cf007510b365376`,
+  two successful service reads, and a failed `remote-view` operation;
+- the contemporaneous user-scoped broker record reports
+  `default_acquisition=launch_new_browser` and
+  `view_stream_provider=cdp_screencast`;
+- agent-browser commit `3c08b9b0` is pushed and its installed rendered-page
+  smoke proves the X/shared-social tile selects the Guacamole iframe with no
+  CDP canvas;
+- the current no-launch LinkedIn access plan selects profile
+  `last30days-facebook`, retained browser/session
+  `session:last30days-facebook`, `tab_new`, `rdp_gateway`,
+  `manual_attached_desktop`, and `shared_display`;
+- the installed `shared_acquisition_route()` parser returns those exact
+  browser/session hints from the current plan;
+- agent-browser target readiness now records fresh X authentication and a
+  bounded four-post retained-browser probe.
+
+Decision branches:
+
+- `published`: authorize one separately bounded LinkedIn profile canary;
+- `failed`: preserve the new stable signature and stage evidence, then stop;
+- `awaiting_operator`: preserve the exact browser gate and stop;
+- no outcome authorizes another LinkedIn post job.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it, and this is one serialized shared-browser
+  acceptance lane.
+
+Remaining acceptance criteria:
+
+- execute the one post-repair LinkedIn post canary and follow only its matching
+  branch;
+- execute one independently bounded X content-service canary against the now
+  fresh retained profile;
+- run any LinkedIn profile canary only after post publication;
+- execute Packet 7 independent integrated acceptance and closeout.
+
+Graphiti write status:
+
+- deferred; the latest provider-readiness probe in the adjacent agent-browser
+  slice timed out, so no write is queued against a degraded provider.
+
+Stop rule:
+
+- do not reuse the C06J caller key or submit more than the one C06K LinkedIn
+  post job;
+- do not run LinkedIn post and X canaries concurrently on the shared browser;
+- do not run the LinkedIn profile canary unless the C06K post job publishes.
+
+Next action:
+
+- commit this corrected authority, submit the one keyed C06K LinkedIn post
+  query, and preserve its terminal evidence.
 
 ## Stop Rules
 

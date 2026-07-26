@@ -97,20 +97,18 @@ Current State:
   remote-view path, defaults to `rdp_gateway`, and requires operator-visible
   readiness. The stale route was released through the supported MCP control
   plane and the X workspace now has route/browser/display agreement on
-  Guacamole route `guacamole:4`. Its refreshed DOM is the signed-out X landing
-  page, so the next gate is operator authentication in that visible RDP
-  browser; no additional content canary should run before it is authenticated.
+  Guacamole route `guacamole:4`.
 - Service version 0.2.6 contains the shared social-display repair plus stable
   acquisition failure evidence and typed adapter-repair gating; the repair
   contract commit is pushed at `c52918e`, and the current X login detector is
   pushed at `ad1abd4`. The prior route-bound X repair is pushed at `b76bb28`
   and its canonical checkpoint at `e685844`.
-- A fresh live X probe on the exact retained Guacamole/RDP browser now renders
-  the current X root sign-in surface (“Happening now”, provider continuations,
-  and “Email or username”). This is genuine current operator-auth evidence,
-  while also exposing an adapter defect: the modern form did not match the
-  legacy login selectors and was reported as ambiguous. Version 0.2.6 adds a
-  root-route plus multi-signal signed-out detector; no X content canary ran.
+- A prior live X probe on the exact retained Guacamole/RDP browser rendered
+  the current root sign-in surface and exposed a legacy-selector defect.
+  Version 0.2.6 added a root-route plus multi-signal signed-out detector.
+  After operator recovery and refresh, agent-browser target readiness now
+  records a fresh authenticated retained-browser probe with four
+  quality-gated posts. The content-service X canary remains pending.
 - The first bounded live recurring-collection acceptance spec preserved two
   typed fail-closed outcomes (`budget_exhausted`, then
   `network_budget_exhausted`) and was paused at immutable spec revision 3 after
@@ -140,6 +138,12 @@ Current State:
   deterministic App Intelligence triage contracts; the preserved outcome is
   classified `insufficient_evidence -> observe`, and the LinkedIn profile
   canary remains withheld.
+- The authorized LinkedIn version 0.2.6 post canary later failed twice at
+  `workspace_acquisition` with one stable signature. Its contemporaneous
+  broker record planned a new CDP browser rather than the retained shared RDP
+  browser. Agent-browser commit `3c08b9b0` repaired daemon-session workspace
+  selection and restored the Guacamole route; the same current no-launch
+  LinkedIn plan now returns `tab_new` on `session:last30days-facebook`.
 
 Goal Seeds:
 
