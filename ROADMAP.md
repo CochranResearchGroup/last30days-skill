@@ -54,9 +54,10 @@ The roadmap review converts the post-reboot handoff priorities into bounded
 successor plans without reopening Plans 0010 or 0011:
 
 1. `docs/dev/plans/0012-2026-07-26-post-reboot-social-route-canary.md`
-   is the `OPEN` critical path. It proves the canonical shared route and runs
-   serialized X, Facebook, and LinkedIn canaries only after a separate explicit
-   operator gate.
+   is the `OPEN` critical path. Its authorized 2026-07-27 execution stopped
+   fail-closed at the first route preflight because no display allocation or
+   available route-pool entry could be selected. No browser or canary was
+   created; route recovery remains the next bounded work.
 2. `docs/dev/plans/0013-2026-07-26-youtube-transcript-media-acceptance.md`
    is the planned YouTube transcript, bounded media, downstream handoff, and
    cleanup acceptance packet.
@@ -334,6 +335,12 @@ Current State:
 - The exact OpenAI LinkedIn company-profile canary published one immutable
   organization snapshot with one evidenced visible section and four
   conservative `not_observed` sections. Its collection spec remains disabled.
+- Plan 0012 received explicit execution authorization on 2026-07-27. Read-only
+  preflight reconfirmed the canonical `last30days-facebook` profile for X,
+  Facebook, and LinkedIn, while the single permitted route open failed at
+  `service_remote_view_route_preflight` because no display allocation or
+  available route-pool entry existed. No browser, DOM probe, acquisition job,
+  or authenticated timer was created.
 
 Goal Seeds:
 
@@ -376,7 +383,8 @@ Active Plan:
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the closed profile/identity foundation authority.
 - `docs/dev/plans/0012-2026-07-26-post-reboot-social-route-canary.md`
-  is the open serialized route/auth/acquisition acceptance plan.
+  is the open serialized route/auth/acquisition acceptance plan, currently
+  blocked at its route-recovery gate.
 - `docs/dev/plans/0017-2026-07-26-canonical-profile-selection-regression.md`
   is the planned identity-first selection and ambiguity regression packet.
 

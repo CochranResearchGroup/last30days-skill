@@ -2248,3 +2248,82 @@ Stop Reason:
   validated, committed, and pushed;
 - Plan 0012 execution remains intentionally stopped at its explicit operator
   authorization gate.
+
+## Turn 34 | 2026-07-27
+
+Focus: execute the authorized Plan 0012 post-reboot social route and canary
+packet through its first typed terminal gate.
+
+Authority Consulted:
+
+- `AGENTS.md`, Plan 0012, the post-reboot fresh-session handoff, and current
+  roadmap/runbook authority
+- agent-browser and last30days runtime contracts
+- goal-execution, validation/handoff, Git, commit/push, Graphiti-memory, and
+  roadmap/runbook policy
+- current Git, systemd, installed-service, profile-selection, remote-view, and
+  route-open readbacks
+
+Decisions And Changes:
+
+- Accepted the operator's explicit current-session authorization for Plan
+  0012.
+- Ran the exact read-only preflight and confirmed that persisted profile
+  identity remained intact while the live route/display remained absent.
+- Used the plan's single permitted service reconciliation and single canonical
+  route-open attempt.
+- Stopped immediately when route preflight could not select a display
+  allocation, a browser-bound display allocation, or an available route-pool
+  entry.
+- Did not launch a second route or browser, inspect DOM, diagnose account
+  authentication, submit an acquisition job, touch login state, or enable a
+  timer.
+
+Validation Evidence:
+
+- planning authority audit: passed with exactly Plan 0012 open and zero
+  issues;
+- pre-runtime Git parity: local and tracking refs at `d63e7c5`, clean
+  worktree;
+- installed service: enabled, active, ready, version 0.2.7/schema 12, 43
+  documents;
+- profile discovery: X, Facebook, and LinkedIn each selected
+  `last30days-facebook` with `authenticated_target`;
+- remote-view preflight: Guacamole/XRDP backend and public ingress reachable,
+  but zero live RDP connections, zero accessible displays, and blocked remote
+  control;
+- reconciliation: completed once; retained route `guacamole:4` remained
+  orphaned because display `:10` had no X11 socket;
+- route-open terminal error:
+  `service_remote_view_route_preflight requires displayAllocationId, a browser
+  with displayAllocationId, or an available route pool entry`;
+- post-failure profile allocation: zero browser IDs, zero session holders,
+  `routeAvailable: false`;
+- authenticated timer: `last30days-social.timer` not installed and inactive.
+
+State Movement:
+
+- Plan 0012:
+  `planning_committed_awaiting_operator_authorization ->
+  authorized_blocked_route_preflight`;
+- P03 remains `OPEN`; Plan 0012 remains its sole actionable plan;
+- X, Facebook, and LinkedIn canaries remain `not_started`;
+- failure class is `route_recovery`, not authentication.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the authorized packet is a serialized shared-profile critical
+  path and no delegation was requested.
+
+Graphiti Write Status:
+
+- required after the checkpoint commit;
+- intended group: `last30days_skill_main`;
+- intended episode: authorized Plan 0012 stopped fail-closed at route
+  preflight before browser, DOM, or acquisition mutation.
+
+Stop Reason:
+
+- Plan 0012 allows one route attempt and requires stopping at the first typed
+  failure. The route-pool/display allocator must be diagnosed under a new
+  bounded repair packet before another live attempt is authorized.

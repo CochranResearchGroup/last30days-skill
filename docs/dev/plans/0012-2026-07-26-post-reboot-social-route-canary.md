@@ -238,3 +238,83 @@ Next action:
 
 - wait for explicit current-session operator authorization before executing
   Plan 0012 preflight and route work.
+
+### Checkpoint P0012-C02 | 2026-07-27
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `planning_committed_awaiting_operator_authorization ->
+  authorized_blocked_route_preflight`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Owned changes:
+
+- one read-only runtime preflight;
+- one authorized service reconciliation;
+- one authorized canonical route-open attempt;
+- roadmap, plan, and runbook checkpoint receipts only.
+
+Validation evidence:
+
+- the planning authority audit passed with exactly Plan 0012 open and zero
+  issues;
+- local `main`, tracking `origin/main`, and the remote-tracking ref agreed at
+  `d63e7c5` before runtime work;
+- `last30days.service` was enabled, active, and ready at version 0.2.7/schema
+  12 with 43 documents;
+- identity-specific X, Facebook, and LinkedIn lookups each selected
+  `last30days-facebook` with `authenticated_target`;
+- the read-only remote-view doctor proved zero live RDP connections and zero
+  accessible route displays while the Guacamole/XRDP backend and public
+  ingress remained reachable;
+- the single authorized `agent-browser service reconcile --json` completed
+  and retained `guacamole:4` as orphaned because display `:10` had no socket;
+- the single authorized route-open attempt failed before browser creation with
+  `service_remote_view_route_preflight requires displayAllocationId, a browser
+  with displayAllocationId, or an available route pool entry`;
+- the post-failure profile readback still had zero browser IDs, zero session
+  holders, `routeAvailable: false`, and recommendation `launch`;
+- `last30days-social.timer` was not installed and was inactive.
+
+Failure classification:
+
+- `route_recovery`;
+- this is not evidence of X, Facebook, or LinkedIn authentication failure.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Plan 0012 declares one serialized shared-browser critical
+  path, and the operator did not request delegation.
+
+Graphiti write status:
+
+- required after this checkpoint has a durable commit;
+- intended group: `last30days_skill_main`;
+- intended episode: Plan 0012 stopped fail-closed at the post-reboot route
+  preflight before browser or acquisition work.
+
+Remaining acceptance criteria:
+
+- prove one canonical live display, route, and operator-visible remote view;
+- run signal-only X, Facebook, and LinkedIn authentication probes;
+- run one terminal serialized canary for each source and preserve publication
+  receipts.
+
+Stop reason:
+
+- the plan permits one route attempt and requires stopping at the first typed
+  failure. No second route, browser, DOM probe, login action, or acquisition
+  request is authorized in this packet.
+
+Next action:
+
+- diagnose and repair the missing route-pool/display allocation under a
+  separately reviewed bounded packet, then resume Plan 0012 with new explicit
+  authorization rather than retrying this attempt in place.
