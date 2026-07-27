@@ -340,3 +340,19 @@ Record:
 - current commit, push, installed-service, and runtime state separately;
 - a compact Graphiti memory if a durable decision or runtime lesson was
   established.
+
+## Review Repair Receipt
+
+- Documentation repair commit: `7eca842`.
+- Push: `7eca842` was pushed to `origin/main`.
+- Validation: planning authority audit passed with one active plan and zero
+  issues; `tests/test_plan_authority_audit.py` passed all four tests; `git
+  diff --check` passed.
+- Live scope: no browser, route, authentication, acquisition, timer, or login
+  mutation was executed.
+- Graphiti: provider readiness passed and job
+  `5af9c28e-6b6f-4b18-bab8-118f6de9fe69` was queued in
+  `last30days_skill_main`, but remained nonterminal in
+  `graphiti_extracting_edges` beyond its nominal timeout during closeout.
+  Treat the write as `graphiti_write_pending`; verify that exact job before
+  retrying, and do not enqueue a duplicate episode while it remains active.

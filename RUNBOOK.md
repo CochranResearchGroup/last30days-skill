@@ -2048,3 +2048,61 @@ Next Bounded Action:
 - validate and commit this documentation repair, write and verify the compact
   Graphiti episode, then append one receipt-only entry with exact commit/push
   evidence and stop without executing the live canary.
+
+## Turn 31 | 2026-07-26
+
+Focus: bind the handoff repair to durable commit, push, validation, and
+Graphiti queue receipts.
+
+Authority Consulted:
+
+- repaired handoff and Turn 30
+- commit/push, validation/handoff, graph-memory, and roadmap/runbook policy
+- current git refs and Graphiti provider, job, and queue readbacks
+
+Decisions And Changes:
+
+- Preserved repair commit `7eca842` as the reviewable content change.
+- Added a receipt-only handoff and runbook update instead of rewriting the
+  repair commit.
+- Did not execute any live browser, route, authentication, acquisition, timer,
+  or login mutation.
+
+Validation Evidence:
+
+- repair commit `7eca842` is pushed to `origin/main`;
+- planning authority audit passed with one active plan and zero issues;
+- `tests/test_plan_authority_audit.py` passed all four tests;
+- `git diff --check` passed for the repair;
+- the installed service and post-reboot blocker evidence remain as recorded in
+  Turn 30.
+
+State Movement:
+
+- handoff authority:
+  `repaired_awaiting_commit_receipt -> repaired_and_pushed`;
+- live canary:
+  `recommended -> awaiting_explicit_operator_authorization`;
+- roadmap and plan states are unchanged.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it.
+
+Graphiti Write Status:
+
+- provider readiness passed;
+- job `5af9c28e-6b6f-4b18-bab8-118f6de9fe69` was queued in
+  `last30days_skill_main`;
+- at closeout it remained active in `graphiti_extracting_edges` beyond its
+  nominal timeout with no episode UUID, so status is
+  `graphiti_write_pending`;
+- verify that exact job before retrying and do not enqueue a duplicate while
+  it remains active.
+
+Stop Reason:
+
+- the reviewed handoff defects are repaired, validated, committed, and pushed;
+  the live packet remains intentionally inert until explicit operator
+  authorization.
