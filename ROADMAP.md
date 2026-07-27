@@ -56,8 +56,11 @@ successor plans without reopening Plans 0010 or 0011:
 1. `docs/dev/plans/0012-2026-07-26-post-reboot-social-route-canary.md`
    is the `OPEN` critical path. Its authorized 2026-07-27 execution stopped
    fail-closed at the first route preflight because no display allocation or
-   available route-pool entry could be selected. No browser or canary was
-   created; route recovery remains the next bounded work.
+   available route-pool entry could be selected. Follow-up diagnosis proved
+   that Guacamole PostgreSQL reinitialized with zero connection fixtures and
+   that the recurring agent-browser interlock has no remedy for the resulting
+   provisioning action. Agent-browser P78/Plan 0078 is the separately
+   authorization-gated repair packet. No browser or canary was created.
 2. `docs/dev/plans/0013-2026-07-26-youtube-transcript-media-acceptance.md`
    is the planned YouTube transcript, bounded media, downstream handoff, and
    cleanup acceptance packet.

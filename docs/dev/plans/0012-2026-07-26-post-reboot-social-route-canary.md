@@ -369,3 +369,84 @@ Stop reason:
 - the route packet is truthfully blocked and durably backed up; the next
   authorized work must be a bounded route-pool/display allocation repair, not
   a repeat of the failed route-open attempt.
+
+### Checkpoint P0012-C04 | 2026-07-27
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `blocked_route_preflight_committed_pushed ->
+  route_recovery_diagnosed_awaiting_repair_authorization`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Owned changes:
+
+- read-only diagnosis of the live Guacamole route substrate and the
+  agent-browser convergence controller;
+- agent-browser P78/Plan 0078 repair planning;
+- last30days plan, roadmap, and runbook checkpoint receipts only.
+
+Validation evidence:
+
+- report-only route-pool readiness proved zero live Guacamole RDP connections,
+  zero permissions, and next action
+  `provision_second_guacamole_rdp_connection`;
+- route-display inspection proved no live route displays or X11 sockets;
+- PostgreSQL logs and filesystem timestamps bind a fresh `initdb` to
+  2026-07-27 11:46:23 UTC; the reason the persistent bind directory was empty
+  remains unresolved;
+- the recurring agent-browser runtime interlock is enabled but its latest
+  receipt is unsuccessful and selected no remedy;
+- CodeGraph source tracing proved the convergence controller ensures schema
+  readiness but does not handle the fixture-provisioning next action before
+  its display-restoration branch;
+- the remote-view preflight correctly failed closed before browser creation.
+
+Failure classification:
+
+- `route_fixture_recovery`;
+- the stronger current evidence supersedes the narrower missing-display
+  hypothesis while preserving the conclusion that this is not source
+  authentication failure.
+
+Successor repair authority:
+
+- agent-browser
+  `docs/dev/plans/0078-2026-07-27-guacamole-route-fixture-recovery-interlock-plan.md`;
+- the packet is planned and requires explicit execution authorization before
+  source, installed-runtime, or live route mutation.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; diagnosis used CodeGraph and one serialized live route
+  substrate, and no delegation was requested.
+
+Graphiti write status:
+
+- agent-browser Graphiti discovery was advisory and current repo/runtime
+  evidence remained authoritative;
+- closeout memory writes, if provider-ready, occur only after the planning
+  commits are durable and must not duplicate the non-retryable Plan 0012
+  blocker episode.
+
+Remaining acceptance criteria:
+
+- unchanged from checkpoint P0012-C02.
+
+Stop reason:
+
+- Plan 0012 prohibits source-code repair and another route attempt in this
+  packet. P78/Plan 0078 must be separately authorized, implemented, and prove
+  ready remote control before Plan 0012 can request a new route-open
+  authorization.
+
+Next action:
+
+- review and explicitly authorize agent-browser Plan 0078 Packet A; do not
+  provision routes, open displays, launch a browser, or run canaries yet.

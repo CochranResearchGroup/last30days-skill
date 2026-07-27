@@ -2386,3 +2386,80 @@ Stop Reason:
   action is a separately reviewed bounded repair of route-pool/display
   allocation, followed by new explicit authorization before another live
   route attempt.
+
+## Turn 36 | 2026-07-27
+
+Focus: diagnose the Plan 0012 route blocker and create its separately reviewed
+agent-browser repair packet without mutating the live route substrate.
+
+Authority Consulted:
+
+- `ROADMAP.md`, Plan 0012 checkpoints P0012-C02/C03, `RUNBOOK.md`, and the
+  post-reboot handoff
+- last30days planning, goal, documentation, validation, Git, and
+  roadmap/runbook policies
+- agent-browser repo policy, agent-browser and diagnosing-bugs skills, P03/P77
+  route/interlock authority, and current convergence source
+- advisory Graphiti route-recovery history plus current Git, systemd,
+  Guacamole database, Docker log, doctor, and retained receipt readbacks
+
+Decisions And Changes:
+
+- Refined the blocker from a generic missing display allocation to missing
+  Guacamole route fixtures after a fresh PostgreSQL initialization.
+- Proved the acquisition preflight is correctly fail-closed and did not
+  classify the condition as an application-browser or authentication defect.
+- Traced the recurring convergence controller and identified the uncovered
+  `provision_second_guacamole_rdp_connection` action.
+- Created agent-browser P78/Plan 0078 with a typed idempotent fixture-recovery
+  remedy, deterministic regression, ordered doctor/display/access checks, one
+  bounded live recovery gate, and installed interlock proof.
+- Kept Plan 0012 open and blocked at route recovery. P78 remains planned and
+  requires explicit execution authorization.
+- Did not provision routes, open displays, retry remote-view acquisition,
+  launch a browser, inspect DOM/authentication, submit an acquisition, or
+  enable a timer.
+
+Validation Evidence:
+
+- report-only route-pool readiness: zero RDP connections, empty route pool,
+  provisioning next action;
+- route-display inspection: zero route displays and zero candidate X11
+  sockets;
+- direct read-only database counts: zero Guacamole connections and zero
+  connection permissions;
+- PostgreSQL runtime evidence: fresh `initdb` at 2026-07-27 11:46:23 UTC;
+- retained convergence receipt: `success: false`, provisioning next action,
+  and no selected remedy;
+- CodeGraph source trace: schema ensure is unconditional, while
+  `routeDisplayRecoveryRequired()` recognizes only three later
+  display-session actions;
+- both affected repos began this planning slice clean and synchronized with
+  `origin/main`.
+
+State Movement:
+
+- Plan 0012:
+  `blocked_route_preflight_committed_pushed ->
+  route_recovery_diagnosed_awaiting_repair_authorization`;
+- agent-browser P78/Plan 0078: `unplanned -> PLANNED`;
+- P03 remains `OPEN`; X, Facebook, and LinkedIn canaries remain `not_started`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the work followed one shared route substrate and no
+  delegation was requested.
+
+Graphiti Write Status:
+
+- agent-browser discovery returned prior post-reboot reconciliation and
+  two-route proof as advisory context;
+- current repo/runtime evidence overrode older memory;
+- closeout writes are deferred until the planning commits are durable and
+  must not duplicate the existing non-retryable Plan 0012 blocker episode.
+
+Stop Reason:
+
+- Plan 0012 does not authorize source repair or a second live attempt.
+- The next bounded action is explicit review/authorization of agent-browser
+  Plan 0078 Packet A.
