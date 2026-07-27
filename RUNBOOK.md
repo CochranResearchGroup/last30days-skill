@@ -2463,3 +2463,60 @@ Stop Reason:
 - Plan 0012 does not authorize source repair or a second live attempt.
 - The next bounded action is explicit review/authorization of agent-browser
   Plan 0078 Packet A.
+
+## Turn 37 | 2026-07-27
+
+Focus: bind the cross-repo route-recovery planning slice to commit, push,
+validation, and Graphiti receipts.
+
+Authority Consulted:
+
+- Plan 0012 checkpoint P0012-C04 and agent-browser Plan 0078
+- current Git refs, repo-native planning audit, focused validation, Graphiti
+  provider readiness, and exact memory-job status
+
+Decisions And Changes:
+
+- Preserved agent-browser commit `6d5cc908` as the coherent P78 planning
+  commit and last30days commit `e7c2368` as the coordinating Plan 0012
+  diagnosis checkpoint.
+- Verified both commits are pushed to their respective `origin/main`.
+- Wrote one new diagnosis/repair-plan episode to `agent_browser_main`.
+- Did not duplicate the earlier Plan 0012 blocker episode.
+- Did not mutate source code, Guacamole route fixtures, displays, service
+  route state, browsers, authentication, acquisitions, or timers.
+
+Validation Evidence:
+
+- both repositories are clean and have local/tracking/remote main parity;
+- last30days planning authority audit: one active plan, zero issues, latest
+  Turn 36 before this receipt;
+- `uv run pytest tests/test_plan_authority_audit.py`: four passed;
+- agent-browser convergence contract and Guacamole PostgreSQL hardening
+  guards passed;
+- `git diff --check` passed in both repositories.
+
+State Movement:
+
+- Plan 0012:
+  `route_recovery_diagnosed_awaiting_repair_authorization ->
+  repair_plan_committed_pushed_awaiting_authorization`;
+- P78 remains `PLANNED`; no execution authorization was inferred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; receipt reconciliation remained one coupled authority
+  surface.
+
+Graphiti Write Status:
+
+- provider readiness passed;
+- job `6022b120-eb35-4bd9-8a50-0079a40b3782` completed in one attempt;
+- episode `2e3a6d86-3d53-40b0-b4c9-0db6398d9264` is visible in
+  `agent_browser_main` and source-bound to Plan 0078 commit `6d5cc908`;
+- no new `last30days_skill_main` episode was submitted.
+
+Stop Reason:
+
+- Plan 0078 Packet A requires explicit authorization. Plan 0012 remains
+  blocked before any route retry or canary.

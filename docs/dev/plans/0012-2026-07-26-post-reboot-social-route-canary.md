@@ -450,3 +450,64 @@ Next action:
 
 - review and explicitly authorize agent-browser Plan 0078 Packet A; do not
   provision routes, open displays, launch a browser, or run canaries yet.
+
+### Checkpoint P0012-C05 | 2026-07-27
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `route_recovery_diagnosed_awaiting_repair_authorization ->
+  repair_plan_committed_pushed_awaiting_authorization`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- receipt-only closeout for the cross-repo planning commits, push parity,
+  focused validation, and Graphiti terminal result.
+
+Validation evidence:
+
+- agent-browser P78/Plan 0078 is committed and pushed at `6d5cc908`;
+- this Plan 0012 diagnosis checkpoint is committed and pushed at `e7c2368`;
+- both repositories were clean and local, tracking, and remote main refs
+  agreed after push;
+- the last30days planning authority audit passed with exactly Plan 0012 open
+  and zero issues;
+- all four `tests/test_plan_authority_audit.py` tests passed;
+- agent-browser local-runtime convergence and Guacamole PostgreSQL hardening
+  guards passed;
+- `git diff --check` passed in both repositories.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the receipt closeout remained one cross-repo authority
+  reconciliation surface.
+
+Graphiti write status:
+
+- provider readiness passed;
+- job `6022b120-eb35-4bd9-8a50-0079a40b3782` completed in one attempt;
+- episode `2e3a6d86-3d53-40b0-b4c9-0db6398d9264` is read-after-write visible in
+  `agent_browser_main` and bound to Plan 0078 commit `6d5cc908`;
+- no duplicate Plan 0012 blocker episode was queued in
+  `last30days_skill_main`.
+
+Remaining acceptance criteria:
+
+- unchanged from checkpoint P0012-C02.
+
+Stop reason:
+
+- diagnosis and successor repair planning are durable, but Plan 0078 execution
+  and all live repair remain explicitly unauthorized.
+
+Next action:
+
+- explicitly authorize agent-browser Plan 0078 Packet A, then implement its
+  deterministic controller regression before any live fixture recovery.
