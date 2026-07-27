@@ -2327,3 +2327,62 @@ Stop Reason:
 - Plan 0012 allows one route attempt and requires stopping at the first typed
   failure. The route-pool/display allocator must be diagnosed under a new
   bounded repair packet before another live attempt is authorized.
+
+## Turn 35 | 2026-07-27
+
+Focus: bind the Plan 0012 route-blocker checkpoint to commit, push, validation,
+and durable-memory terminal receipts.
+
+Authority Consulted:
+
+- Plan 0012 checkpoint P0012-C02 and Turn 34
+- validation/handoff, commit/push, Graphiti-memory, and roadmap/runbook policy
+- current Git refs, planning audit, focused tests, provider preflight, and the
+  exact memory-job status
+
+Decisions And Changes:
+
+- Preserved `2b26e23` as the coherent route-blocker checkpoint commit.
+- Added a receipt-only plan/runbook closeout instead of rewriting that commit.
+- Did not retry the live route, start a browser, probe DOM, submit a canary, or
+  enable a timer.
+- Did not enqueue a duplicate Graphiti episode after the bounded job reported
+  a non-retryable timeout.
+
+Validation Evidence:
+
+- checkpoint commit `2b26e23` is pushed to `origin/main`;
+- planning authority audit passed with exactly Plan 0012 open and zero issues;
+- `tests/test_plan_authority_audit.py` passed all four tests;
+- `git diff --check` passed.
+
+State Movement:
+
+- Plan 0012:
+  `authorized_blocked_route_preflight ->
+  blocked_route_preflight_committed_pushed`;
+- P03 remains `OPEN`; X, Facebook, and LinkedIn canaries remain
+  `not_started`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; checkpoint reconciliation remained one coupled authority
+  surface.
+
+Graphiti Write Status:
+
+- provider readiness passed;
+- job `a1362f2a-c444-4b0e-abdf-5ba1ee97de71` was queued in
+  `last30days_skill_main`;
+- it reached `graphiti_extracting_edges` and timed out after the bounded
+  180-second attempt with no episode UUID;
+- terminal metadata reports `retryable: false`; verify or explicitly recover
+  that exact dead-letter job before any future attempt and do not enqueue a
+  duplicate.
+
+Stop Reason:
+
+- Plan 0012 is durably checkpointed at the route-recovery gate. The next best
+  action is a separately reviewed bounded repair of route-pool/display
+  allocation, followed by new explicit authorization before another live
+  route attempt.

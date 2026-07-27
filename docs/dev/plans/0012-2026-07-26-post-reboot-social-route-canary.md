@@ -318,3 +318,54 @@ Next action:
 - diagnose and repair the missing route-pool/display allocation under a
   separately reviewed bounded packet, then resume Plan 0012 with new explicit
   authorization rather than retrying this attempt in place.
+
+### Checkpoint P0012-C03 | 2026-07-27
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `authorized_blocked_route_preflight ->
+  blocked_route_preflight_committed_pushed`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- receipt-only closeout for checkpoint commit, push, validation, and Graphiti
+  terminal state.
+
+Validation evidence:
+
+- route-blocker checkpoint commit `2b26e23` is pushed to `origin/main`;
+- planning authority audit passed with exactly Plan 0012 open and zero issues;
+- `tests/test_plan_authority_audit.py` passed all four tests;
+- `git diff --check` passed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the checkpoint remained one coupled authority surface.
+
+Graphiti write status:
+
+- provider readiness passed;
+- job `a1362f2a-c444-4b0e-abdf-5ba1ee97de71` was queued in
+  `last30days_skill_main`;
+- it reached `graphiti_extracting_edges` but timed out after its bounded
+  180-second attempt with no episode UUID;
+- the terminal job reports `retryable: false`. Do not enqueue a duplicate
+  episode; inspect or explicitly recover this exact dead-letter job first.
+
+Remaining acceptance criteria:
+
+- unchanged from checkpoint P0012-C02.
+
+Stop reason:
+
+- the route packet is truthfully blocked and durably backed up; the next
+  authorized work must be a bounded route-pool/display allocation repair, not
+  a repeat of the failed route-open attempt.
