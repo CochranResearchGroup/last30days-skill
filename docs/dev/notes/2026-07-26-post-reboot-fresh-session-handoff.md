@@ -6,18 +6,22 @@ Date: 2026-07-26
 
 Resume the last30days productization work from current installed and runtime
 truth after the workstation reboot. Do not reopen Plans 0010 or 0011: both are
-closed. Use this handoff to decide and authorize the next bounded validation or
-successor implementation plan.
+closed. This handoff recommends the next bounded validation packet; it does not
+authorize its live browser, route, authentication, or acquisition mutations.
+Obtain a separate explicit operator authorization before executing the
+mutation-gated commands below or open a successor implementation plan when the
+scope expands beyond validation.
 
 ## Read First
 
 1. `AGENTS.md`
-2. this handoff
+2. the relevant policies under `docs/dev/policies/`
 3. `ROADMAP.md`
-4. `RUNBOOK.md`, especially Turns 28 and 29
-5. `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-6. `docs/dev/plans/0002-2026-07-15-linkedin-agent-browser-scraper.md`
-7. the relevant policies under `docs/dev/policies/`
+4. `RUNBOOK.md`, especially Turns 28 through 30
+5. `docs/dev/plans/0002-2026-07-15-linkedin-agent-browser-scraper.md`
+6. this handoff
+7. `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
+   as historical foundation evidence only
 
 Suggested skills:
 
@@ -32,6 +36,10 @@ Suggested skills:
 
 - Branch `main` was clean and matched `origin/main` at `3ed6cb0` before this
   handoff was written.
+- The original handoff commit is `a718930`, independently verified on local
+  `main`, tracking `origin/main`, and the remote `refs/heads/main` before the
+  review repair. Turn 30 records the repair validation; a subsequent
+  receipt-only runbook entry must bind the repair commit and push state.
 - The integrated foundation milestone is closed. The installed user-scoped
   service is version `0.2.7`, database schema `12`.
 - The corpus currently reports 43 documents, 43 embeddings, and 6
@@ -116,6 +124,35 @@ current blocker is route/display recovery, not evidence that any account is
 logged out. Do not request reauthentication until a live route has been
 restored and a bounded DOM probe actually shows a login or challenge surface.
 
+## Authorization Gate
+
+Current authorization covers this documentation repair only. It does not cover
+launching or reconciling the retained browser, restoring an RDP desktop,
+opening a Guacamole route, probing authenticated DOM, submitting acquisition
+jobs, or changing login state. A fresh session may run the read-only preflight
+below, but must stop for explicit operator authorization before the
+mutation-gated packet.
+
+Read-only preflight:
+
+```bash
+python3 dev/last30days/scripts/audit_plan_authority.py
+systemctl --user is-enabled last30days.service
+systemctl --user is-active last30days.service
+/home/ecochran76/.local/bin/python3 \
+  /home/ecochran76/.agents/skills/last30days/scripts/service.py status
+agent-browser doctor remote-view --json
+agent-browser service profiles lookup \
+  --service-name last30days --target-service-id x --json
+agent-browser service profiles lookup \
+  --service-name last30days --target-service-id facebook --json
+agent-browser service profiles lookup \
+  --service-name last30days --target-service-id linkedin --json
+```
+
+Stop after this preflight unless the operator explicitly authorizes the live
+packet in the current session.
+
 ## Best Next Test
 
 Run one serialized post-reboot social canary packet before hydrating more data
@@ -139,6 +176,116 @@ or enabling timers:
 This packet has the highest information value because it separates reboot
 recovery defects from adapter/auth defects and tests the shared-profile
 contract the timers will depend on.
+
+### Mutation-gated command packet
+
+Run this section only after explicit operator authorization. Do not reuse any
+historical caller request ID from Plan 0011.
+
+First reconcile retained state against live display sockets, then open exactly
+one route-bound browser for the canonical profile:
+
+```bash
+agent-browser service reconcile --json
+agent-browser --json remote-view open https://x.com/home \
+  --runtime-profile last30days-facebook \
+  --browser-build stealthcdp_chromium \
+  --view-stream-provider rdp_gateway
+```
+
+Require all of the following from the returned evidence before continuing:
+
+- the selected profile is `last30days-facebook`;
+- the display has a live X11 socket;
+- `routeAvailable` is true;
+- `operatorVisible.state` is `ready`;
+- the returned public operator URL renders and accepts operator input.
+
+If any condition fails, preserve the response and stop. Do not launch a second
+profile or browser. If the route is ready, enumerate the restored tabs without
+navigating them:
+
+```bash
+agent-browser --json --session last30days-facebook tab list --verbose
+```
+
+For each existing X, Facebook, and LinkedIn tab, replace `<tab-index>` with its
+index from the preceding response, switch to it, and run the bounded
+signal-only probe below. If a required site tab was not restored, stop rather
+than navigating or creating a replacement during the auth-probe stage.
+
+```bash
+agent-browser --json --session last30days-facebook tab <tab-index>
+agent-browser --json --session last30days-facebook eval --stdin <<'PROBE'
+(() => {
+  const host = location.hostname.replace(/^www\./, "");
+  const q = (selector) => Boolean(document.querySelector(selector));
+  const body = document.body?.innerText || "";
+  const result = {
+    host,
+    url: location.href,
+    readyState: document.readyState,
+    authenticated: false,
+    loginForm: q('input[type="password"]'),
+    checkpoint: /checkpoint|challenge|verify your identity/i.test(body),
+  };
+  if (host === "x.com") {
+    result.authenticated = q('[data-testid="AppTabBar_Home_Link"]');
+    result.loginForm ||= q('input[autocomplete="username"]');
+  } else if (host === "facebook.com") {
+    result.authenticated =
+      q('[aria-label="Facebook"]') && !q('form[action*="login"]');
+    result.loginForm ||= q('form[action*="login"]');
+  } else if (host === "linkedin.com") {
+    result.authenticated =
+      q('.global-nav__me, a[href*="/feed/"]') &&
+      !q('input#username, input#password');
+    result.loginForm ||= q('input#username, input#password');
+  }
+  return result;
+})()
+PROBE
+```
+
+Continue only when each source reports the expected hostname,
+`readyState=complete`, `authenticated=true`, `loginForm=false`, and
+`checkpoint=false`. Do not record page text, cookies, tokens, or credentials.
+
+Then submit one source at a time through the installed service. Use these new
+caller IDs exactly once, wait for the returned job to become terminal with
+`service.py job <job-id>`, and do not start the next source unless the prior
+job publishes successfully:
+
+```bash
+/home/ecochran76/.local/bin/python3 \
+  /home/ecochran76/.agents/skills/last30days/scripts/service.py query \
+  "OpenAI" --source x --profile last30days-facebook \
+  --freshness force_refresh \
+  --request-id post-reboot-20260726-x-01 --wait-ms 0
+
+/home/ecochran76/.local/bin/python3 \
+  /home/ecochran76/.agents/skills/last30days/scripts/service.py query \
+  "OpenAI" --source facebook --profile last30days-facebook \
+  --freshness force_refresh \
+  --request-id post-reboot-20260726-facebook-01 --wait-ms 0
+
+/home/ecochran76/.local/bin/python3 \
+  /home/ecochran76/.agents/skills/last30days/scripts/service.py query \
+  "OpenAI" --source linkedin --profile last30days-facebook \
+  --freshness force_refresh \
+  --request-id post-reboot-20260726-linkedin-01 --wait-ms 0
+```
+
+For each returned job:
+
+```bash
+/home/ecochran76/.local/bin/python3 \
+  /home/ecochran76/.agents/skills/last30days/scripts/service.py job <job-id>
+```
+
+On `failed` or `awaiting_operator`, preserve the job, acquisition, stage,
+operation, and stable-signature evidence and stop. Never reuse the caller ID to
+force another attempt.
 
 ## Tests After The Social Canary
 
@@ -193,4 +340,3 @@ Record:
 - current commit, push, installed-service, and runtime state separately;
 - a compact Graphiti memory if a durable decision or runtime lesson was
   established.
-

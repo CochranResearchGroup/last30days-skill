@@ -1982,3 +1982,69 @@ Next Bounded Action:
 - restore and prove the canonical profile's Guacamole/RDP route, then run one
   serialized X/Facebook/LinkedIn auth and acquisition canary packet under the
   handoff's stop conditions.
+
+## Turn 30 | 2026-07-26
+
+Focus: repair the post-reboot handoff after an independent read-only review.
+
+Authority Consulted:
+
+- `AGENTS.md`, `ROADMAP.md`, Turns 28 and 29, active Plan 0002, historical
+  Plan 0011, and current handoff state
+- handoff, agent-browser, last30days, graph-memory, documentation, validation,
+  commit, push, and roadmap/runbook policy
+- current local, tracking, remote, installed-service, profile-selection, and
+  remote-view readbacks
+
+Decisions And Changes:
+
+- Clarified that the handoff recommends but does not itself authorize live
+  browser, route, authentication, or acquisition mutation.
+- Corrected startup order so policies, roadmap, runbook, and the active plan
+  precede the narrative handoff and historical closed plan.
+- Added exact read-only preflight and mutation-gated route, auth-probe,
+  acquisition, job-poll, serialization, and stop commands.
+- Bound the original handoff to pushed commit `a718930`; a receipt-only
+  successor entry will bind this repair commit and its remote state.
+- Reclassified the post-reboot route/display state as a durable blocker that
+  requires one compact `last30days_skill_main` Graphiti episode after the
+  repair commit exists.
+
+Validation Evidence:
+
+- primary-agent review independently verified clean local and remote parity at
+  original handoff commit `a718930`;
+- planning authority audit passes with one active plan and zero issues;
+- `tests/test_plan_authority_audit.py` passes all four tests;
+- installed `last30days.service` remains enabled, active, and ready at version
+  0.2.7/schema 12 with 43 documents;
+- identity-specific X, Facebook, and LinkedIn lookups select
+  `last30days-facebook` with `authenticated_target`;
+- current remote-view evidence still reports no live RDP Guacamole connection
+  or route display, so no live canary was executed;
+- shell help verified every documented command and option surface; the future
+  request IDs are new and are explicitly single-use.
+
+State Movement:
+
+- handoff authority:
+  `review_findings_open -> repaired_awaiting_commit_receipt`;
+- roadmap and plan states are unchanged.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current runtime instructions prohibit delegation unless the
+  user explicitly requests it.
+
+Graphiti Write Status:
+
+- required after the repair commit provides a durable source authority;
+- intended group: `last30days_skill_main`;
+- intended episode: post-reboot handoff repaired to fail closed on explicit
+  operator authorization, exact serialized commands, and live route proof.
+
+Next Bounded Action:
+
+- validate and commit this documentation repair, write and verify the compact
+  Graphiti episode, then append one receipt-only entry with exact commit/push
+  evidence and stop without executing the live canary.
