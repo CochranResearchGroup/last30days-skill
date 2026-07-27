@@ -186,3 +186,55 @@ Next action:
 
 - obtain explicit operator authorization, then execute S01-S03 and stop at the
   first gate.
+
+### Checkpoint P0012-C01 | 2026-07-26
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `ready_awaiting_operator_authorization ->
+  planning_committed_awaiting_operator_authorization`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- Plan 0002 closure, Plans 0012-0017, roadmap successor queue, and runbook
+  planning/receipt entries.
+
+Validation evidence:
+
+- planning commit `d8e17a5` is pushed to `origin/main`;
+- planning authority audit passed with exactly Plan 0012 open and zero issues;
+- `tests/test_plan_authority_audit.py` passed all four tests;
+- `git diff --check` passed;
+- no live Plan 0012 runtime mutation was executed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the planning authority stayed on one coupled documentation
+  surface.
+
+Graphiti write status:
+
+- `graphiti_write_pending`;
+- provider preflight passed, but job
+  `b7148b8a-9777-4074-b550-5fac0a0538bd` timed out on its first bounded attempt
+  and failed after one exact-job requeue because the Codex app-server exited
+  without a response;
+- no episode UUID was created. Verify that exact dead-letter state before any
+  future retry and do not enqueue another write in this closeout.
+
+Remaining acceptance criteria:
+
+- all S01-S07 criteria above.
+
+Next action:
+
+- wait for explicit current-session operator authorization before executing
+  Plan 0012 preflight and route work.
