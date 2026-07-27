@@ -1,6 +1,6 @@
 # Plan 0002 | Agent-Browser LinkedIn Scraper
 
-State: OPEN
+State: CLOSED
 Roadmap: P03
 Date: 2026-07-15
 
@@ -59,12 +59,17 @@ Live evidence:
 - same-site cleanup reduced the shared retained browser from five Facebook
   tabs plus LinkedIn to one Facebook tab plus one selected LinkedIn tab
 
-Still required:
+Historical remaining items at the original checkpoint:
 
 - complete the operator-owned LinkedIn security verification
 - resolve canonical post permalinks from LinkedIn's current opaque search-card
   DOM without clicking per-card controls or fabricating URLs
 - pass three-query live smoke and installed-copy LinkedIn-only dogfood
+
+These items were superseded and accepted through the governed content-service
+path in Plans 0009 and 0011. The retained authenticated browser later produced
+canonical LinkedIn post items and an exact company-profile snapshot with
+immutable publication receipts. They are not current open work in this plan.
 
 ## Non-Goals
 
@@ -83,3 +88,11 @@ Still required:
 - non-post cards and sponsored content emit zero items
 - full suite, package build, installed-copy dogfood, commit, and public-fork
   push pass
+
+## Closeout
+
+- Closed on 2026-07-26 during successor-roadmap reconciliation.
+- The standalone adapter implementation remains durable history.
+- Plan 0011 provides the accepted LinkedIn post/profile runtime evidence.
+- Plan 0012 owns the post-reboot shared-route and serialized social canary
+  check; Plan 0017 owns future identity-first profile-selection regression.

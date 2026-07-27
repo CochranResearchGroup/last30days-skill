@@ -2106,3 +2106,77 @@ Stop Reason:
 - the reviewed handoff defects are repaired, validated, committed, and pushed;
   the live packet remains intentionally inert until explicit operator
   authorization.
+
+## Turn 32 | 2026-07-26
+
+Focus: review the canonical roadmap and create bounded successor implementation
+plans.
+
+Authority Consulted:
+
+- `AGENTS.md` and planning, graph-memory, goal-governance, parallel-plan,
+  architecture, documentation, validation, Git, and roadmap/runbook policies
+- `ROADMAP.md`, active Plan 0002, closed Plans 0010 and 0011, Turns 28-31,
+  current post-reboot handoff, Git state, and the deterministic planning audit
+- current installed-service and canonical-profile evidence as already bound in
+  Turns 30 and 31; no new live browser evidence was collected
+
+Decisions And Changes:
+
+- Reviewed all P01-P06 lanes against the integrated-foundation closeout and the
+  post-reboot validation queue.
+- Closed stale Plan 0002 as a historical LinkedIn precursor because Plans 0009
+  and 0011 already accepted the governed LinkedIn post/profile path.
+- Opened Plan 0012 as the single critical-path successor for canonical
+  Guacamole/RDP route proof and serialized X, Facebook, and LinkedIn canaries.
+- Created planned successor Plans 0013-0017 for YouTube transcript/media
+  acceptance, public timer durability, cache-only temporal/GraphRAG
+  resilience, App Intelligence contract acceptance, and canonical
+  profile-selection regression.
+- Kept Plans 0013-0017 non-actionable and ordered. The review does not authorize
+  live route, browser, authentication, acquisition, timer, service-restart,
+  provider-outage, or stochastic task mutation.
+- Created no new P01 implementation plan because the bounded acceptance gaps
+  exercise its existing immutable-evidence substrate rather than identify a
+  current foundation defect.
+
+Validation Evidence:
+
+- the pre-edit planning authority audit passed with one active plan, zero
+  issues, and latest Turn 31;
+- current Git state was clean and synchronized with `origin/main` at
+  `bab7271` before planning edits;
+- each successor plan records objective, current evidence, non-goals,
+  dependencies, owned write surfaces, deterministic/stochastic boundaries,
+  execution packets, hard bounds, gates, acceptance criteria, validation, and
+  definition of done;
+- Plan 0012 records an initial checkpoint and retains the explicit
+  current-session operator gate from the reviewed handoff.
+
+State Movement:
+
+- Plan 0002: `OPEN -> CLOSED`;
+- Plan 0012: `unplanned -> OPEN/ready_awaiting_operator_authorization`;
+- Plans 0013-0017: `unplanned -> PLANNED`;
+- P03 remains `OPEN` with one actionable plan; P01, P02, P04, P05, and P06
+  remain `PLANNED`;
+- live social canary remains `awaiting_explicit_operator_authorization`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; repo policy and current runtime instructions keep the coupled
+  roadmap/plan/runbook authority on one critical path.
+
+Graphiti Write Status:
+
+- required after the planning slice has a durable commit;
+- intended group: `last30days_skill_main`;
+- intended episode: roadmap review closed stale Plan 0002, opened
+  authorization-gated Plan 0012, and ordered planned Plans 0013-0017 without
+  authorizing runtime mutation.
+
+Next Bounded Action:
+
+- validate plan authority and documentation consistency, commit and push the
+  planning slice, write and verify one compact Graphiti episode, then append a
+  receipt-only closeout without executing Plan 0012.

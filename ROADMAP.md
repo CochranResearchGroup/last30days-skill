@@ -48,6 +48,37 @@ roadmap. P01-P06 remain roadmap lanes; only P03 currently has an actionable
 open plan, while the other successor lanes are planned. No recurring
 authenticated timer was enabled by closeout.
 
+## Successor Implementation Queue | 2026-07-26 Review
+
+The roadmap review converts the post-reboot handoff priorities into bounded
+successor plans without reopening Plans 0010 or 0011:
+
+1. `docs/dev/plans/0012-2026-07-26-post-reboot-social-route-canary.md`
+   is the `OPEN` critical path. It proves the canonical shared route and runs
+   serialized X, Facebook, and LinkedIn canaries only after a separate explicit
+   operator gate.
+2. `docs/dev/plans/0013-2026-07-26-youtube-transcript-media-acceptance.md`
+   is the planned YouTube transcript, bounded media, downstream handoff, and
+   cleanup acceptance packet.
+3. `docs/dev/plans/0014-2026-07-26-recurring-collection-timer-durability.md`
+   is the planned two-interval public-source timer/restart/pause proof.
+4. `docs/dev/plans/0015-2026-07-26-temporal-retrieval-graphrag-resilience.md`
+   is the planned cache-only temporal/profile and GraphRAG degradation packet,
+   supporting both P04 and P05.
+5. `docs/dev/plans/0016-2026-07-26-app-intelligence-contract-acceptance.md`
+   is the planned accepted/rejected envelope and deterministic replay packet.
+6. `docs/dev/plans/0017-2026-07-26-canonical-profile-selection-regression.md`
+   is the planned identity-first, ambiguity-safe profile-selection regression
+   packet.
+
+The plans are ordered, not jointly authorized. Only Plan 0012 is actionable,
+and its live runtime mutation remains separately operator-gated. Plans
+0013-0017 stay `PLANNED` until the preceding critical-path result is reconciled
+and the next packet is explicitly opened. P01 receives no new implementation
+packet in this review because the current acceptance gaps exercise its existing
+immutable evidence authority rather than establish a verified new foundation
+defect.
+
 ## P00 | Productized Content Service MVP
 
 State: CLOSED
@@ -94,7 +125,7 @@ Current State:
   assessment, authoritative index snapshots, evidence-backed temporal
   claims/events, recorded retrieval evaluations, and durable graph projection
   receipts.
-- The installed service runs version 0.2.6 on schema 12, a fresh MCP client
+- The installed service runs version 0.2.7 on schema 12, a fresh MCP client
   discovers ten compact tools, and concrete Graphiti outbox delivery passed.
 - X profile authentication is restored. The first canary retry exposed that
   `force_refresh` coalesced onto the retained `awaiting_operator` job without a
@@ -183,7 +214,7 @@ Current State:
   profile run `collection-run-8b4ff51fb0ccabd7b5819dd9e22f4e1f` then
   published one immutable organization snapshot on attempt 1 with conservative
   section-presence semantics. Its collection spec remains timer-disabled.
-  Packet 6 is complete; Packet 7 integrated validation and closeout is ready.
+  Packets 6 and 7 are complete, and Plan 0011 is closed.
 
 Goal Seeds:
 
@@ -270,6 +301,11 @@ Active Plan:
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the closed foundation authority. A successor plan must own broad
   hydration enablement and its coverage/yield acceptance.
+- `docs/dev/plans/0013-2026-07-26-youtube-transcript-media-acceptance.md`
+  is the planned current-yield acceptance packet for YouTube transcript and
+  bounded media handling.
+- `docs/dev/plans/0014-2026-07-26-recurring-collection-timer-durability.md`
+  is the planned public-source two-interval restart and pause proof.
 
 ## P03 | Profile And Identity Acquisition
 
@@ -336,10 +372,13 @@ Acceptance Seeds:
 Active Plan:
 
 - `docs/dev/plans/0002-2026-07-15-linkedin-agent-browser-scraper.md`
-  remains the post-search precursor.
+  is closed as the historical post-search precursor.
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
-  is the closed profile/identity foundation authority. Additional profile
-  surfaces and identity-review operations require successor plans.
+  is the closed profile/identity foundation authority.
+- `docs/dev/plans/0012-2026-07-26-post-reboot-social-route-canary.md`
+  is the open serialized route/auth/acquisition acceptance plan.
+- `docs/dev/plans/0017-2026-07-26-canonical-profile-selection-regression.md`
+  is the planned identity-first selection and ambiguity regression packet.
 
 Dependencies: share P01 identity and temporal evidence contracts.
 
@@ -397,6 +436,9 @@ Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the closed temporal retrieval and GraphRAG foundation authority.
+- `docs/dev/plans/0015-2026-07-26-temporal-retrieval-graphrag-resilience.md`
+  is the planned cache-only retrieval, projection replay, and local-evidence
+  fallback acceptance packet.
 
 ## P05 | Agent-Facing Intelligence Product
 
@@ -440,6 +482,8 @@ Active Plan:
 
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the closed installed-MCP foundation and acceptance authority.
+- `docs/dev/plans/0015-2026-07-26-temporal-retrieval-graphrag-resilience.md`
+  also owns the planned fresh-client cache-only product acceptance proof.
 
 ## P06 | App Intelligence Control Plane
 
@@ -561,13 +605,13 @@ Active Plan:
   is the closed P06 component contract plan.
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the closed integration authority for its four deterministic joins.
+- `docs/dev/plans/0016-2026-07-26-app-intelligence-contract-acceptance.md`
+  is the planned accepted/rejected envelope and deterministic replay proof.
 
 Next Bounded Action:
 
-- Create a successor plan only when enabling a concrete recurring collection
-  set, expanding a profile surface, evaluating retrieval quality, or operating
-  a bounded adapter-maintenance case. Preserve the deterministic joins and do
-  not reopen Plans 0010 or 0011.
+- Complete or truthfully block Plan 0012 before opening Plan 0013. Preserve the
+  deterministic joins and do not reopen Plans 0010 or 0011.
 
 ## Goal-Compatible Plan Conversion
 
