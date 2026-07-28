@@ -572,12 +572,14 @@ Subagent status and reconciliation:
 
 Graphiti write status:
 
-- required after the checkpoint commit is durable;
-- intended group: `last30days_skill_main`;
-- intended episode: repaired Guacamole fixtures and displays pass doctors, but
-  the authorized Plan 0012 retry failed closed because route-open selected a
-  legacy `guacamole:4`/`:10` mapping instead of the doctor-proven
-  `guacamole:1`/`:11` route.
+- provider readiness passed after checkpoint commit `51291e4` was pushed;
+- job `35f288b7-7bc6-4419-816e-1f5f00692b47` was queued in
+  `last30days_skill_main`;
+- it timed out after its bounded 180-second attempt during
+  `graphiti_resolving_nodes`, returned no episode UUID, and reports
+  `retryable: false`;
+- do not enqueue a duplicate; inspect or explicitly recover this exact
+  dead-letter job first.
 
 Remaining acceptance criteria:
 

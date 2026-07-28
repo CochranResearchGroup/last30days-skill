@@ -2588,9 +2588,14 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending the durable checkpoint commit;
-- one compact `last30days_skill_main` episode is required after push and must
-  bind the repaired substrate plus the current route-selection blocker.
+- provider readiness passed after checkpoint commit `51291e4` was pushed;
+- job `35f288b7-7bc6-4419-816e-1f5f00692b47` was queued in
+  `last30days_skill_main`;
+- it timed out after its bounded 180-second attempt during
+  `graphiti_resolving_nodes`, returned no episode UUID, and reports
+  `retryable: false`;
+- no duplicate was queued; inspect or explicitly recover this exact
+  dead-letter job first.
 
 Stop Reason:
 
