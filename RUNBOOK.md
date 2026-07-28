@@ -2520,3 +2520,82 @@ Stop Reason:
 
 - Plan 0078 Packet A requires explicit authorization. Plan 0012 remains
   blocked before any route retry or canary.
+
+## Turn 38 | 2026-07-28
+
+Focus: retry Plan 0012 after the agent-browser route-fixture and durability
+repair, then stop at the first typed terminal gate.
+
+Authority Consulted:
+
+- Plan 0012 and the 2026-07-26 fresh-session handoff
+- current roadmap and prior runbook checkpoints
+- current Git refs in last30days and agent-browser
+- installed agent-browser and last30days service status
+- agent-browser install doctor, remote-view doctor, route-pool readiness,
+  route-display inspection, retained service state, and canonical profile
+- the live last30days `service_jobs` ledger for reserved request-ID freshness
+
+Decisions And Changes:
+
+- Accepted the user's explicit retry authorization as one new reconciliation
+  and one new route-open attempt under Plan 0012's existing bounds.
+- Verified the repaired substrate before mutation: agent-browser `0.27.0`,
+  seven converged runtimes, successful recurring interlock, two live and
+  accessible route displays, and a ready remote-view doctor.
+- Verified the canonical `last30days-facebook` service profile still binds the
+  durable runtime directory and X, Facebook, and LinkedIn readiness.
+- Verified installed last30days `0.2.7`/schema 12 remains ready and that all
+  three reserved canary request IDs are unused.
+- Ran one service reconciliation successfully.
+- Ran one route-open to `https://x.com/home`. It failed before browser launch
+  because normal selection mapped `guacamole-rdp-a` to legacy route
+  `guacamole:4`/display `:10`, while the doctor-proven current route is
+  `guacamole:1`/`:11`.
+- Preserved the typed failure boundary. Did not retry, launch a browser,
+  inspect DOM/authentication, submit an acquisition, or mutate a timer.
+
+Validation Evidence:
+
+- last30days source/tracking/remote `main` began clean at `e61863f`;
+- agent-browser source/tracking/remote `main` agree at `76d30999`;
+- `agent-browser install doctor --json`: success, installed version `0.27.0`,
+  zero issues, seven converged runtimes;
+- `agent-browser doctor remote-view --json`: `status: ready`,
+  `guacamole:1`, `guacamole-rdp-a`, display `:11`;
+- route-display inspection: route A `:11`, route B `:12`, both accessible;
+- latest `agent-browser-runtime-interlock.service` exit:
+  `status=0/SUCCESS`;
+- last30days service: `status: ready`, version `0.2.7`, database schema 12;
+- reserved X, Facebook, and LinkedIn request-ID query returned zero rows;
+- route-open terminal error:
+  `display_access_grant_failed` for route `guacamole:4`, display `:10`;
+  cleanup skipped before browser launch and the route/display lease rolled
+  back.
+
+State Movement:
+
+- Plan 0012:
+  `repair_plan_committed_pushed_awaiting_authorization ->
+  repaired_substrate_verified_route_selection_drift`;
+- route substrate: `missing_fixture -> ready`;
+- operator-visible route, auth probes, and all canaries remain `not_started`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the operator authorized one serialized retry and no
+  delegation.
+
+Graphiti Write Status:
+
+- pending the durable checkpoint commit;
+- one compact `last30days_skill_main` episode is required after push and must
+  bind the repaired substrate plus the current route-selection blocker.
+
+Stop Reason:
+
+- Plan 0012 allows one route attempt and requires stopping at the first typed
+  failure. The next bounded action is to repair or explicitly reconcile the
+  normal route-open selector from legacy `guacamole:4`/`:10` to current
+  `guacamole:1`/`:11`, validate that path, and obtain authorization for one
+  new route attempt.

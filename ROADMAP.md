@@ -54,13 +54,14 @@ The roadmap review converts the post-reboot handoff priorities into bounded
 successor plans without reopening Plans 0010 or 0011:
 
 1. `docs/dev/plans/0012-2026-07-26-post-reboot-social-route-canary.md`
-   is the `OPEN` critical path. Its authorized 2026-07-27 execution stopped
-   fail-closed at the first route preflight because no display allocation or
-   available route-pool entry could be selected. Follow-up diagnosis proved
-   that Guacamole PostgreSQL reinitialized with zero connection fixtures and
-   that the recurring agent-browser interlock has no remedy for the resulting
-   provisioning action. Agent-browser P78/Plan 0078 is the separately
-   authorization-gated repair packet. No browser or canary was created.
+   is the `OPEN` critical path. Agent-browser P78/Plan 0078 restored durable
+   Guacamole fixtures, two accessible route displays, and a successful
+   recurring interlock. The explicitly authorized 2026-07-28 retry nevertheless
+   stopped fail-closed before browser launch: the doctor selected current
+   route `guacamole:1` on `:11`, while route-open selected legacy
+   `guacamole:4` on missing display `:10`. The remaining blocker is retained
+   route-selection state drift. No browser or canary was created, and all three
+   reserved request IDs remain unused.
 2. `docs/dev/plans/0013-2026-07-26-youtube-transcript-media-acceptance.md`
    is the planned YouTube transcript, bounded media, downstream handoff, and
    cleanup acceptance packet.
@@ -344,6 +345,12 @@ Current State:
   `service_remote_view_route_preflight` because no display allocation or
   available route-pool entry existed. No browser, DOM probe, acquisition job,
   or authenticated timer was created.
+- Agent-browser P78/Plan 0078 subsequently restored and hardened the route
+  substrate. A new explicitly authorized Plan 0012 attempt on 2026-07-28
+  proved both route displays accessible and the doctor ready at
+  `guacamole:1`/`:11`, but normal route-open selected retained legacy
+  `guacamole:4`/`:10` and failed display access before browser launch. Lease
+  rollback completed; no DOM probe, acquisition job, or timer mutation ran.
 
 Goal Seeds:
 
@@ -387,7 +394,8 @@ Active Plan:
   is the closed profile/identity foundation authority.
 - `docs/dev/plans/0012-2026-07-26-post-reboot-social-route-canary.md`
   is the open serialized route/auth/acquisition acceptance plan, currently
-  blocked at its route-recovery gate.
+  blocked at retained route-selection reconciliation after the route substrate
+  itself was repaired.
 - `docs/dev/plans/0017-2026-07-26-canonical-profile-selection-regression.md`
   is the planned identity-first selection and ambiguity regression packet.
 

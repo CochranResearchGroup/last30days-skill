@@ -511,3 +511,90 @@ Next action:
 
 - explicitly authorize agent-browser Plan 0078 Packet A, then implement its
   deterministic controller regression before any live fixture recovery.
+
+### Checkpoint P0012-C06 | 2026-07-28
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `repair_plan_committed_pushed_awaiting_authorization ->
+  repaired_substrate_verified_route_selection_drift`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Owned changes:
+
+- read-only verification of the repaired agent-browser install, recurring
+  interlock, Guacamole route fixtures, route displays, canonical profile, and
+  last30days service;
+- one explicitly authorized service reconciliation and one explicitly
+  authorized route-open attempt;
+- Plan 0012, roadmap, and runbook checkpoint receipts only.
+
+Validation evidence:
+
+- agent-browser source, tracking, and remote `main` agree at `76d30999`;
+- installed agent-browser reports version `0.27.0`, all seven discovered
+  runtimes are converged on the installed executable, and the latest recurring
+  interlock completed successfully;
+- report-only route readiness is `ready`; route A is live as
+  `agent-browser-rdp-a` on `:11`, route B is live as
+  `agent-browser-rdp-b` on `:12`, and both displays pass `xdpyinfo`;
+- the remote-view doctor reports `status: ready`, `routeId: guacamole:1`,
+  `routePoolEntryId: guacamole-rdp-a`, and `displayName: :11`;
+- the canonical service profile ID `last30days-facebook` still selects
+  `/home/ecochran76/.agent-browser/runtime-profiles/last30days-facebook/user-data`,
+  `stealthcdp_chromium`, and X, Facebook, and LinkedIn target readiness;
+- installed last30days remains ready at version `0.2.7`, database schema 12;
+- the three reserved request IDs remain absent from `service_jobs`;
+- the one route-open attempt failed before browser launch because the retained
+  selector chose legacy `guacamole:4` with
+  `remote-view-display:10`; the display-access helper exited 1 and the lease
+  rollback completed;
+- the post-failure doctor still selects the live doctor-proven
+  `guacamole:1`/`:11` route, while retained service history maps
+  `guacamole-rdp-a` to multiple route IDs including `guacamole:4`.
+
+Failure classification:
+
+- `route_selection_state_drift`;
+- this is not evidence of X, Facebook, or LinkedIn authentication failure.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the user requested one serialized retry and Plan 0012 keeps
+  one shared-browser critical path.
+
+Graphiti write status:
+
+- required after the checkpoint commit is durable;
+- intended group: `last30days_skill_main`;
+- intended episode: repaired Guacamole fixtures and displays pass doctors, but
+  the authorized Plan 0012 retry failed closed because route-open selected a
+  legacy `guacamole:4`/`:10` mapping instead of the doctor-proven
+  `guacamole:1`/`:11` route.
+
+Remaining acceptance criteria:
+
+- prove one canonical live display, route, and operator-visible remote view;
+- run signal-only X, Facebook, and LinkedIn authentication probes;
+- run one terminal serialized canary for each source and preserve publication
+  receipts.
+
+Stop reason:
+
+- Plan 0012 permits one route attempt and requires stopping at the first typed
+  failure. No second route open, browser, DOM probe, login action, acquisition
+  request, or timer mutation is authorized in this packet.
+
+Next action:
+
+- repair or explicitly override the route-open selector so
+  `guacamole-rdp-a` resolves to the current doctor-proven
+  `guacamole:1`/`:11` fixture, validate that normal selection path, then
+  authorize one new Plan 0012 route attempt.
