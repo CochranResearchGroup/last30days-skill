@@ -600,3 +600,92 @@ Next action:
   `guacamole-rdp-a` resolves to the current doctor-proven
   `guacamole:1`/`:11` fixture, validate that normal selection path, then
   authorize one new Plan 0012 route attempt.
+
+### Checkpoint P0012-C07 | 2026-07-28
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `repaired_substrate_verified_route_selection_drift ->
+  route_selection_repaired_awaiting_fresh_attempt_authorization`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Owned changes:
+
+- read-only review of the failed route-selection receipt and live retained
+  route state;
+- bounded agent-browser P81 source, installed-runtime, and retained-state
+  repair;
+- no-launch stable-entry route selection proof;
+- Plan 0012, roadmap, and runbook checkpoint receipts only.
+
+Validation evidence:
+
+- agent-browser source, tracking, and remote `main` agree at `ffda60dd`;
+- installed agent-browser remains version `0.27.0`, uses executable SHA-256
+  `f016e7579b9e8b9a5f10548e683e3cbf4192b1a6344ddd97311622b1d3835f18`,
+  and install doctor reports six converged runtimes with zero stale runtimes;
+- route readiness remains ready at route A `guacamole:1`/`:11` and route B
+  `guacamole:2`/`:12`;
+- normal convergence now passes successful readiness JSON into guarded
+  service reconciliation;
+- retained stable route A is `guacamole:1`, connection `1`, display `:11`;
+  retained stable route B is `guacamole:2`, connection `2`, display `:12`;
+  both are `available` with no current allocation;
+- the strengthened installed reconcile returned both stable entries in
+  `unchangedEntryIds` with no active conflict;
+- the no-launch `last30days-facebook` route-open dry run selected
+  `guacamole-rdp-a`, route `guacamole:1`, connection `1`, display `:11`, and
+  reported browser launch, route checkout, and tab opening as false;
+- one applied convergence and the next scheduled interlock pass both
+  completed successfully;
+- agent-browser focused tests, local convergence fixtures, Rust format and
+  clippy, route-confusion gates, service API/MCP parity, service-client suite,
+  and docs build passed;
+- no Plan 0012 route attempt, authentication probe, canary, or reserved
+  request ID ran.
+
+Failure classification:
+
+- the prior `route_selection_state_drift` blocker is repaired;
+- no new authentication or source-acquisition evidence was generated.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the active execution mode required one primary-agent critical
+  path and no delegation was authorized.
+
+Graphiti write status:
+
+- provider readiness passed;
+- new source-backed agent-browser P81 job
+  `59039dd1-a8bf-4f28-8c6a-6d020edf6a24` was queued in
+  `agent_browser_main`;
+- no duplicate of failed last30days job
+  `35f288b7-7bc6-4419-816e-1f5f00692b47` was submitted.
+
+Remaining acceptance criteria:
+
+- prove one canonical live display, route, and operator-visible remote view;
+- run signal-only X, Facebook, and LinkedIn authentication probes;
+- run one terminal serialized canary for each source and preserve publication
+  receipts.
+
+Stop reason:
+
+- P81 repaired and validated normal route selection without consuming a Plan
+  0012 attempt. Browser launch, authentication probes, and source canaries
+  remain consequential live work behind a fresh explicit authorization.
+
+Next action:
+
+- explicitly authorize one fresh Plan 0012 attempt. On authorization, rerun
+  the normal route-open once, stop at the first typed failure, and continue to
+  signal-only authentication probes and serialized canaries only if the
+  operator-visible route gate succeeds.

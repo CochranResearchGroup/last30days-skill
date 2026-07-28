@@ -56,12 +56,12 @@ successor plans without reopening Plans 0010 or 0011:
 1. `docs/dev/plans/0012-2026-07-26-post-reboot-social-route-canary.md`
    is the `OPEN` critical path. Agent-browser P78/Plan 0078 restored durable
    Guacamole fixtures, two accessible route displays, and a successful
-   recurring interlock. The explicitly authorized 2026-07-28 retry nevertheless
-   stopped fail-closed before browser launch: the doctor selected current
-   route `guacamole:1` on `:11`, while route-open selected legacy
-   `guacamole:4` on missing display `:10`. The remaining blocker is retained
-   route-selection state drift. No browser or canary was created, and all three
-   reserved request IDs remain unused.
+   recurring interlock. Agent-browser P81 then repaired retained route-state
+   projection at commit `ffda60dd`: stable route A now resolves to
+   `guacamole:1` on `:11`, and a no-launch normal route-open proof selects that
+   canonical binding. No new Plan 0012 route attempt, browser,
+   authentication probe, canary, or reserved request ID was consumed. The next
+   live attempt remains separately operator-gated.
 2. `docs/dev/plans/0013-2026-07-26-youtube-transcript-media-acceptance.md`
    is the planned YouTube transcript, bounded media, downstream handoff, and
    cleanup acceptance packet.

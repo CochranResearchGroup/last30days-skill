@@ -2604,3 +2604,81 @@ Stop Reason:
   normal route-open selector from legacy `guacamole:4`/`:10` to current
   `guacamole:1`/`:11`, validate that path, and obtain authorization for one
   new route attempt.
+
+## Turn 39 | 2026-07-28
+
+Focus: repair the Plan 0012 route-selection blocker without launching a
+browser or consuming a new attempt.
+
+Authority Consulted:
+
+- Plan 0012 checkpoint P0012-C06
+- current roadmap and Turn 38
+- agent-browser Plans 0081, roadmap, runbook, and validation note
+- current route readiness, retained service state, install doctor,
+  remote-view doctor, and runtime interlock
+- agent-browser source, tracking, remote, and installed executable readbacks
+
+Decisions And Changes:
+
+- Classified the incident as missing readiness-to-retained-state projection,
+  not selector ranking or source authentication failure.
+- Implemented agent-browser P81 so `service reconcile` accepts a
+  readiness-verified authoritative route pool and local convergence supplies
+  successful readiness JSON.
+- Preserved active conflicts and any route lease changed concurrently while
+  reconciliation probes.
+- Installed the strengthened `0.27.0` candidate through guarded daemon
+  handoff.
+- Reconciled retained route A to `guacamole:1`/`:11` and route B to
+  `guacamole:2`/`:12`.
+- Ran a no-launch normal stable-entry route-open proof for
+  `last30days-facebook`.
+- Committed and pushed agent-browser P81 as `ffda60dd`.
+
+Validation Evidence:
+
+- agent-browser source, tracking, and remote `main`: `ffda60dd`;
+- installed executable SHA-256:
+  `f016e7579b9e8b9a5f10548e683e3cbf4192b1a6344ddd97311622b1d3835f18`;
+- install doctor: success, six converged runtimes, zero stale runtimes;
+- retained route A: `guacamole:1`, connection `1`, display `:11`,
+  `available`, no allocation;
+- retained route B: `guacamole:2`, connection `2`, display `:12`,
+  `available`, no allocation;
+- installed authoritative reconcile: both entries unchanged, no skipped
+  active conflict;
+- dry-run selection: `guacamole-rdp-a`, `guacamole:1`, connection `1`,
+  display `:11`, with no browser launch, checkout, or tab open;
+- applied convergence and the next scheduled interlock pass: success;
+- focused Rust tests, local convergence fixtures, Rust format and clippy,
+  route-confusion gates, service API/MCP parity, service-client suite, docs
+  build, and patch hygiene: pass.
+
+State Movement:
+
+- Plan 0012:
+  `repaired_substrate_verified_route_selection_drift ->
+  route_selection_repaired_awaiting_fresh_attempt_authorization`;
+- route selection: `legacy_state_drift -> canonical_no_launch_proof`;
+- operator-visible route, source authentication probes, and canaries remain
+  `not_started`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the active execution mode kept this on one serialized
+  primary-agent critical path.
+
+Graphiti Write Status:
+
+- provider readiness passed;
+- job `59039dd1-a8bf-4f28-8c6a-6d020edf6a24` was queued in
+  `agent_browser_main` from source commit `ffda60dd`;
+- failed last30days job `35f288b7-7bc6-4419-816e-1f5f00692b47` was not
+  duplicated or retried.
+
+Stop Reason:
+
+- Normal route selection is repaired and proven without browser launch. A
+  fresh explicit authorization is still required before one new Plan 0012
+  route-open attempt, authentication probes, or source canaries.
