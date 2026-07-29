@@ -689,3 +689,86 @@ Next action:
   the normal route-open once, stop at the first typed failure, and continue to
   signal-only authentication probes and serialized canaries only if the
   operator-visible route gate succeeds.
+
+### Checkpoint P0012-C08 | 2026-07-29
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `route_selection_repaired_awaiting_fresh_attempt_authorization ->
+  authorized_route_ready_blocked_missing_restored_tabs`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Owned changes:
+
+- current authority, Git, installed-service, route, profile, timer, and
+  request-ID preflight;
+- one explicitly authorized service reconciliation and one normal route-open;
+- one read-only post-open tab inventory;
+- Plan 0012, roadmap, and runbook checkpoint receipts only.
+
+Validation evidence:
+
+- the planning authority audit passed with exactly Plan 0012 open and zero
+  issues;
+- last30days source, tracking, and remote `main` agreed at `28b05a5a`;
+- installed last30days remained ready at version `0.2.7`, database schema 12;
+- `last30days-social.timer` remained absent and inactive;
+- all three reserved request IDs remained absent from `service_jobs`;
+- installed agent-browser remained version `0.27.0`;
+- the remote-view doctor reported ready route A
+  `guacamole-rdp-a`/`guacamole:1`/connection `1`/display `:11`;
+- the one normal route-open selected the same route, connection, and display,
+  launched the canonical `last30days-facebook` profile, and returned
+  `operatorVisible`, public operator access, controllable RDP stream, visible
+  browser window, route, display, browser, and target proof as ready;
+- the returned browser ID was `session:default`, target ID
+  `F8761CB8629F82EA11985A75FCA3964C`, and URL `https://x.com/home`;
+- the post-open tab inventory contained exactly one tab, X at index 0. No
+  Facebook or LinkedIn tab was restored.
+
+Failure classification:
+
+- `browser_tab_restoration`;
+- this is not evidence of X, Facebook, or LinkedIn authentication failure.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Plan 0012 declares one serialized shared-browser critical
+  path and delegation was not authorized.
+
+Graphiti write status:
+
+- agent-browser P81 job `59039dd1-a8bf-4f28-8c6a-6d020edf6a24` is now
+  completed with episode `03721958-771d-4699-826a-adb666078eaa` and
+  read-after-write proof;
+- one compact last30days checkpoint write is required after this receipt is
+  committed and pushed;
+- failed last30days job `35f288b7-7bc6-4419-816e-1f5f00692b47` was not
+  duplicated or retried.
+
+Remaining acceptance criteria:
+
+- restore or explicitly authorize creation of the required Facebook and
+  LinkedIn tabs on the same canonical route-bound browser;
+- run signal-only X, Facebook, and LinkedIn authentication probes;
+- run one terminal serialized canary for each source and preserve publication
+  receipts.
+
+Stop reason:
+
+- the handoff requires all three existing source tabs and explicitly says to
+  stop rather than navigate or create a replacement when one is missing. The
+  fresh attempt therefore stopped before every DOM probe and canary.
+
+Next action:
+
+- diagnose and repair browser tab restoration under a separately reviewed
+  bounded packet, or revise Plan 0012 to explicitly authorize creating the
+  missing Facebook and LinkedIn tabs before authorizing another single attempt.

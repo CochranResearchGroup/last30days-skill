@@ -59,9 +59,13 @@ successor plans without reopening Plans 0010 or 0011:
    recurring interlock. Agent-browser P81 then repaired retained route-state
    projection at commit `ffda60dd`: stable route A now resolves to
    `guacamole:1` on `:11`, and a no-launch normal route-open proof selects that
-   canonical binding. No new Plan 0012 route attempt, browser,
-   authentication probe, canary, or reserved request ID was consumed. The next
-   live attempt remains separately operator-gated.
+   canonical binding. The authorized fresh Plan 0012 attempt then proved an
+   operator-visible browser on `guacamole:1`/`:11`, but the post-open inventory
+   contained only the X tab. The packet stopped before DOM probes because the
+   required Facebook and LinkedIn tabs were not restored, and no canary or
+   reserved request ID was consumed. The next bounded action is a separately
+   reviewed tab-restoration repair or a plan revision that explicitly
+   authorizes creating the missing tabs before a new attempt.
 2. `docs/dev/plans/0013-2026-07-26-youtube-transcript-media-acceptance.md`
    is the planned YouTube transcript, bounded media, downstream handoff, and
    cleanup acceptance packet.

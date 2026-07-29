@@ -2682,3 +2682,87 @@ Stop Reason:
 - Normal route selection is repaired and proven without browser launch. A
   fresh explicit authorization is still required before one new Plan 0012
   route-open attempt, authentication probes, or source canaries.
+
+## Turn 40 | 2026-07-29
+
+Focus: execute one freshly authorized Plan 0012 attempt through its first
+typed terminal gate.
+
+Authority Consulted:
+
+- Plan 0012 checkpoint P0012-C07
+- current roadmap, Turn 39, and the post-reboot fresh-session handoff
+- planning, Graphiti, Git, goal, documentation, validation, and closeout
+  policies
+- installed agent-browser and last30days skills
+- current Git, installed-service, timer, route, profile, request ledger, and
+  Graphiti readbacks
+
+Decisions And Changes:
+
+- Treated the goal request as explicit current-session authorization for one
+  bounded route reconcile/open, signal-only probes, and serialized canaries,
+  subject to Plan 0012's fail-closed gates.
+- Verified all three reserved request IDs were unused and authenticated timers
+  were absent/inactive.
+- Reconciled service state once and opened one normal route-bound browser at
+  `https://x.com/home`.
+- Proved the canonical profile, browser, route, connection, display, visible
+  window, operator URL, and control stream agree.
+- Enumerated restored tabs without navigation.
+- Stopped because only X was present; Facebook and LinkedIn tabs were absent.
+  Did not create replacement tabs, inspect any DOM/authentication state,
+  submit any acquisition, reuse any request ID, or mutate a timer.
+
+Validation Evidence:
+
+- planning authority audit: one open Plan 0012, zero issues;
+- last30days source/tracking/remote `main`: `28b05a5a`;
+- installed last30days: ready, version `0.2.7`, schema 12;
+- installed agent-browser: version `0.27.0`;
+- remote-view doctor: ready route A `guacamole-rdp-a`, route
+  `guacamole:1`, connection `1`, display `:11`;
+- route-open: success with `last30days-facebook`,
+  `session:default`, target `F8761CB8629F82EA11985A75FCA3964C`,
+  visible Chromium window, `operatorVisible.state=ready`, public operator
+  access ready, and manual attached desktop control;
+- post-open tab inventory: one X tab at `https://x.com/home`; no Facebook or
+  LinkedIn tab;
+- reserved request-ID query: zero rows;
+- `last30days-social.timer`: absent and inactive.
+
+State Movement:
+
+- Plan 0012:
+  `route_selection_repaired_awaiting_fresh_attempt_authorization ->
+  authorized_route_ready_blocked_missing_restored_tabs`;
+- canonical operator-visible route: `not_started -> ready`;
+- authentication probes and all three canaries remain `not_started`.
+
+Failure Classification:
+
+- `browser_tab_restoration`;
+- no authentication conclusion is supported.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the plan requires one serialized shared-browser critical
+  path.
+
+Graphiti Write Status:
+
+- prior agent-browser P81 job
+  `59039dd1-a8bf-4f28-8c6a-6d020edf6a24` completed with episode
+  `03721958-771d-4699-826a-adb666078eaa` and read-after-write proof;
+- the current last30days checkpoint write is pending the durable checkpoint
+  commit;
+- failed last30days job
+  `35f288b7-7bc6-4419-816e-1f5f00692b47` was not duplicated or retried.
+
+Stop Reason:
+
+- Plan 0012 explicitly requires stopping rather than navigating or creating a
+  replacement when a required source tab was not restored. The next bounded
+  action is a separately reviewed tab-restoration repair or a plan revision
+  that explicitly authorizes creating the missing tabs before another
+  single-use attempt.
