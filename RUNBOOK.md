@@ -2941,3 +2941,49 @@ Next Bounded Action:
 - validate, commit, and push the terminal checkpoint, perform one Graphiti
   closeout write with read-after-write verification, record the receipt, and
   verify local, tracking, and remote parity.
+
+## Turn 44 | 2026-07-29
+
+Focus: record the final Plan 0012 Graphiti and Git closeout receipts.
+
+Authority Consulted:
+
+- closed Plan 0012 checkpoint P0012-C11
+- pushed terminal commit `4b5bcf3`
+- Graphiti provider, job, and read-after-write receipts
+- current closeout and Git policies
+
+Decisions And Changes:
+
+- Submitted exactly one compact source-backed Graphiti closeout episode.
+- Did not duplicate the write while ingestion exceeded its nominal 180-second
+  budget.
+- Recorded the eventual completed job and visible episode UUID.
+
+Validation Evidence:
+
+- Graphiti provider readiness passed;
+- job `005e4805-e1fc-4b77-942e-0403f1469ffc` completed on job attempt 1;
+- episode `17c68600-c7be-4a1d-8234-fa97b9156b5b` is visible in
+  `last30days_skill_main`;
+- Graphiti reports `read_after_write_ready: true`;
+- the terminal Plan 0012 commit `4b5bcf3` is pushed to `origin/main`.
+
+State Movement:
+
+- Graphiti closeout:
+  `pending -> completed_read_after_write_ready`;
+- Plan 0012 remains `CLOSED`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; closeout was deterministic and serialized.
+
+Graphiti Write Status:
+
+- complete; no duplicate or retry was submitted.
+
+Next Bounded Action:
+
+- run the final authority audit and focused tests, commit and push this
+  receipt-only checkpoint, and verify local, tracking, and remote parity.

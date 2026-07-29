@@ -1050,8 +1050,11 @@ Subagent status and reconciliation:
 
 Graphiti write status:
 
-- final closeout memory is pending the durable closeout commit and will be
-  attempted exactly once.
+- provider readiness passed;
+- the exactly-once closeout job
+  `005e4805-e1fc-4b77-942e-0403f1469ffc` completed on its first job attempt;
+- episode `17c68600-c7be-4a1d-8234-fa97b9156b5b` is visible in
+  `last30days_skill_main` with read-after-write readiness.
 
 Remaining acceptance criteria:
 
@@ -1060,5 +1063,5 @@ Remaining acceptance criteria:
 
 Next action:
 
-- validate, commit, and push the terminal checkpoint, write one compact
-  source-backed Graphiti episode, record its receipt, and verify final parity.
+- commit and push the Graphiti receipt-only closeout, then verify local,
+  tracking, and remote parity.
