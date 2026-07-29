@@ -4,6 +4,7 @@ State: PLANNED
 Roadmap: P06
 Date: 2026-07-26
 Predecessors: Plans 0010 and 0011
+Transition authority: Plan 0018
 
 ## Objective
 
@@ -11,6 +12,11 @@ Exercise one accepted and one rejected App Intelligence task envelope through
 the installed deterministic supervisor, prove replay behavior and finite
 limits, and confirm that stochastic output cannot bypass host-owned evidence,
 browser, publication, or repair authority.
+
+This is a software control-plane acceptance packet under Plan 0018. It proves
+bounded stochastic assistance behind service-owned authority; it is not a
+Skill feature and does not make a querying agent the App Intelligence
+supervisor.
 
 ## Current State
 
@@ -44,6 +50,8 @@ browser, publication, or repair authority.
 
 - Depends on P01 evidence authority and the closed Plan 0010/0011 host
   contracts.
+- Opens only after Plan 0018 freezes the independent service lifecycle and MCP
+  client/service compatibility boundary.
 - Expected writes are focused contract/supervisor/replay tests, bounded
   intelligence-ledger receipts, and closeout docs.
 

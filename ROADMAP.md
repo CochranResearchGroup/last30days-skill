@@ -6,14 +6,45 @@ decisions live in `RUNBOOK.md`.
 
 ## Product Objective
 
-Build a user-scoped, continuously hydrated intelligence service that acquires
-posts and profile pages from authenticated and public sources, preserves their
-provenance and temporal history, resolves people, organizations, topics, and
-events, and answers coherent citation-ready questions without exposing browser
-or scraping mechanics to normal agents. Deterministic supervisors own
-collection, state, budgets, validation, and publication; bounded App
-Intelligence workers assess evidence, propose identity and claim associations,
-and diagnose or repair adapters.
+Build `last30days` as a user-scoped, independently installed intelligence
+software product. Its durable service, corpus, schedulers, acquisition
+adapters, App Intelligence supervisor, and MCP server are the product. Agent
+Skills are optional clients that help agents discover, query, monitor, and
+administer the service; they are not the workflow authority or primary
+runtime.
+
+The service continuously acquires posts and profile pages from authenticated
+and public sources, preserves provenance and temporal history, resolves people,
+organizations, topics, and events, and answers citation-ready questions
+without exposing browser or scraping mechanics to ordinary agents.
+Deterministic supervisors own collection, state, budgets, validation,
+publication, and replay. Bounded App Intelligence workers assess evidence,
+propose identity and claim associations, evaluate retrieval, and diagnose or
+repair adapters.
+
+## Product Boundary Decision | 2026-07-29
+
+The repository began as an installable Skill with supporting scripts. That
+packaging is now a compatibility surface around an emerging software product,
+not the target architecture.
+
+- **Product:** the independently versioned last30 Intelligence Service and its
+  first-class MCP contract.
+- **Deterministic authority:** service lifecycle, source configuration,
+  schedules, jobs, leases, cursors, budgets, retries, access partitions,
+  immutable evidence, indexes, validation, publication, and replay.
+- **Stochastic assistance:** bounded schema-validated App Intelligence
+  assessment, identity proposals, retrieval evaluation, and adapter
+  diagnosis/repair under host policy.
+- **Agent clients:** optional Skills for query/synthesis, monitoring,
+  administration, and bounded maintenance.
+- **Compatibility path:** the request-scoped Engine and current Skill package
+  remain portable operator/debug fallbacks during migration.
+
+Ordinary querying agents should ask what the service knows, what changed, how
+fresh and complete coverage is, and which capabilities are degraded. They
+should not choose scraper backends, manage browser sessions, locate cookies or
+tabs, coordinate retries, or rebuild indexes.
 
 ## Priority And Dependency Order
 
@@ -28,6 +59,12 @@ P06 App Intelligence Control Plane
  ├──> supports P03 identity resolution
  ├──> supports P04 enrichment and evaluation
  └──> supports bounded adapter maintenance across all lanes
+
+P07 Service-First Software Productization
+  ├──> establishes independent service package and lifecycle
+  ├──> makes MCP the primary agent/application contract
+  ├──> composes P01-P06 behind deterministic software authority
+  └──> reduces Skills to optional least-privilege clients
 ```
 
 P03 discovery and bounded source experiments may proceed alongside P01, but
@@ -87,14 +124,18 @@ successor plans without reopening Plans 0010 or 0011:
 6. `docs/dev/plans/0017-2026-07-26-canonical-profile-selection-regression.md`
    is the planned identity-first, ambiguity-safe profile-selection regression
    packet.
+7. `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
+   is the planned product transition from Skill-first packaging to independent
+   intelligence software with a first-class MCP contract and optional client
+   Skills.
 
-The 2026-07-29 resumed-development priority is Plan 0014, then Plan 0015, then
-Plan 0016. Plan 0014 is `OPEN` and blocked awaiting a newly authorized live
-retry after its stale-due replay repair. Plans 0015 and 0016 remain `PLANNED`
-until that critical-path result is reconciled. Plans 0013 and 0017 remain
-planned and out of this requested slice. P01 receives no new implementation
-packet because the current acceptance gaps exercise its existing immutable
-evidence authority rather than establish a verified new foundation defect.
+The 2026-07-29 architecture direction makes Plan 0018 the governing successor
+after Plan 0014 reaches a terminal timer result. Plan 0014 remains `OPEN` and
+blocked awaiting a newly authorized live retry after its stale-due replay
+repair. Before Plans 0015 and 0016 open, Plan 0018 must derive the bounded
+service-package/lifecycle and MCP-boundary packet that makes those plans
+service-product acceptance rather than Skill features. Plans 0013 and 0017
+remain planned and outside this transition critical path.
 
 ## P00 | Productized Content Service MVP
 
@@ -649,12 +690,68 @@ Active Plan:
 - `docs/dev/plans/0016-2026-07-26-app-intelligence-contract-acceptance.md`
   is the planned accepted/rejected envelope and deterministic replay proof.
 
+## P07 | Service-First Software Productization
+
+State: PLANNED
+
+Objective: complete the transition from a Skill package with supporting
+scripts to independently installed intelligence software whose durable service
+and first-class MCP contract are the primary product, with optional Skills as
+least-privilege agent clients.
+
+Current State:
+
+- The installed v0.2.7/schema-12 daemon, Unix-socket MCP adapter, durable
+  collection supervisor, temporal corpus, semantic index, Graphiti projection,
+  and App Intelligence contracts already demonstrate most runtime seams.
+- Source and distribution are still conceptually anchored under
+  `skills/last30days/`, and the successor queue tests features without first
+  establishing an explicit independent software lifecycle and client/service
+  compatibility contract.
+- `CONCEPTS.md`, `README.md`, and the Skill's service-first path already
+  describe the service as authority, but that product decision was not
+  previously represented as an implementation transition.
+
+Goal Seeds:
+
+- independently versioned install, upgrade, migration, lifecycle, readiness,
+  diagnostics, and rollback;
+- stable MCP capability and version handshake for agents and applications;
+- service-owned acquisition and timed work with no agent orchestration;
+- authoritative temporal evidence plus rebuildable semantic/GraphRAG
+  projections;
+- bounded App Intelligence behind deterministic host policy and replay;
+- query/synthesis, monitoring, admin, and maintenance Skills that consume MCP
+  without depending on internal adapters or browser mechanics;
+- state-preserving migration from current Skill-first installations.
+
+Acceptance Seeds:
+
+- service operation does not depend on a loaded Skill or connected agent;
+- fresh MCP clients query and govern durable jobs without scraper knowledge;
+- acquisition and evidence retrieval continue when App Intelligence is
+  disabled;
+- ordinary Skill instructions require no browser, cookie, tab, route, display,
+  or scraper coordination;
+- client/service upgrades and rollback preserve corpus, profiles, schedules,
+  ledgers, and indexes.
+
+Dependencies: consumes the proven P01-P06 seams without making their derived
+indexes or stochastic workers authoritative.
+
+Active Plan:
+
+- `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
+  is the planned transition authority. It becomes actionable after Plan 0014
+  reaches a terminal outcome and derives a bounded S01/S02 architecture packet.
+
 Next Bounded Action:
 
-- Commit and push the Plan 0014 stale-due repair, then await explicit authority
-  for a fresh live two-interval install/restart retry. Do not open Plan 0015
-  until Plan 0014 is closed or explicitly superseded. Preserve the
-  deterministic joins and do not reopen Plans 0010, 0011, or 0012.
+- Await explicit authority for the fresh Plan 0014 two-interval
+  install/restart retry. After its terminal result, derive Plan 0018's bounded
+  service-package/lifecycle and MCP-boundary packet before opening Plans 0015
+  or 0016. Preserve the deterministic joins and do not reopen Plans 0010,
+  0011, or 0012.
 
 ## Goal-Compatible Plan Conversion
 

@@ -3163,3 +3163,69 @@ Next Bounded Action:
 
 - await explicit authority for a fresh Plan 0014 live retry before installing
   the repaired skill, restarting the service, or enabling revision 8.
+
+## Turn 48 | 2026-07-29
+
+Focus: make the service-first software transition explicit in product and
+implementation planning.
+
+Authority Consulted:
+
+- user direction that `last30days` become software with App Intelligence and a
+  first-class MCP service rather than remain a Skill with supporting scripts
+- current roadmap, concepts, README, Skill service-first path, and Plans
+  0014-0016
+- planning, architecture, documentation, and roadmap/runbook policies
+- App Intelligence deterministic-supervisor, adapter-composition, structured
+  decision, and dependency contracts
+
+Decisions And Changes:
+
+- Defined the durable service, corpus, schedulers, adapters, App Intelligence
+  supervisor, and MCP server as the product.
+- Defined Agent Skills as optional least-privilege clients for query/synthesis,
+  monitoring, administration, and bounded maintenance.
+- Preserved the direct Engine and current Skill package as compatibility and
+  operator/debug surfaces during migration.
+- Added P07 and planned Plan 0018 as the service-first software transition
+  authority.
+- Required Plan 0018 to establish the independent service lifecycle,
+  package/version boundary, and MCP client contract before Plans 0015 and 0016
+  open.
+- Recast Plans 0015 and 0016 as service-product acceptance packets rather than
+  Skill features.
+- Kept active Plan 0014 unchanged and blocked pending its separately bounded
+  live retry.
+
+Validation Evidence:
+
+- current concepts, README, and Skill already name the Intelligence Service as
+  authority, confirming this is an execution-planning correction rather than a
+  new incompatible runtime premise;
+- Plan 0018 now specifies product boundaries, invariants, seven migration
+  workstreams, sequencing, non-goals, acceptance criteria, and its conversion
+  gate;
+- no source, installed service, collection spec, or external system changed.
+
+State Movement:
+
+- P07 added as `PLANNED`;
+- Plan 0018 added as `PLANNED`;
+- Plan 0014 remains the sole `OPEN` plan;
+- Plans 0015 and 0016 remain `PLANNED` beneath the transition authority.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this authority correction required one coherent product
+  boundary.
+
+Graphiti Write Status:
+
+- pending planning validation and source commit.
+
+Next Bounded Action:
+
+- validate and commit the planning correction. Then await authority for the
+  Plan 0014 live retry; after its terminal result, derive Plan 0018's bounded
+  S01/S02 architecture packet before opening RAG or App Intelligence
+  acceptance.

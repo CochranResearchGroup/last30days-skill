@@ -5,6 +5,7 @@ Roadmap: P04
 Supports: P05
 Date: 2026-07-26
 Predecessor: Plan 0011
+Transition authority: Plan 0018
 
 ## Objective
 
@@ -12,6 +13,10 @@ Prove from a fresh MCP client that cache-only temporal/profile retrieval does
 not enqueue acquisition and that Graphiti projection replay is idempotent while
 SQLite-only evidence retrieval remains usable during projection-provider
 unavailability.
+
+This is a service-product acceptance packet under Plan 0018. It does not add a
+Skill feature or permit an agent to operate retrieval providers, graph
+maintenance, or acquisition mechanics.
 
 ## Current State
 
@@ -46,6 +51,8 @@ unavailability.
 
 - Depends on P01 immutable evidence and P04 temporal/query/projection contracts.
 - Supports P05 product acceptance through the existing compact MCP surface.
+- Opens only after Plan 0018 freezes the independent service lifecycle and MCP
+  client/service compatibility boundary.
 - Expected writes are focused retrieval/projection tests, a bounded existing
   projection replay receipt, and closeout docs.
 
