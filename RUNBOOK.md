@@ -2987,3 +2987,65 @@ Next Bounded Action:
 
 - run the final authority audit and focused tests, commit and push this
   receipt-only checkpoint, and verify local, tracking, and remote parity.
+
+## Turn 45 | 2026-07-29
+
+Focus: resume timed collection, temporal/GraphRAG, and App Intelligence
+development by opening the next bounded implementation packet.
+
+Authority Consulted:
+
+- current roadmap, closed Plan 0012, and planned Plans 0013-0017
+- current planning, goal, Git, validation, documentation, and roadmap/runbook
+  policies
+- App Intelligence deterministic-supervisor and adapter-composition contracts
+- CodeGraph collection coordinator and strict collection-spec validation
+- installed service status, collection ledger, coverage ledger, and systemd
+  unit inventory
+
+Decisions And Changes:
+
+- Interpreted the user's resumed-development direction as priority authority
+  for Plan 0014 timed collection, then Plan 0015 temporal/GraphRAG resilience,
+  then Plan 0016 App Intelligence acceptance.
+- Kept YouTube Plan 0013 and profile-selection Plan 0017 planned and outside
+  this requested slice.
+- Opened Plan 0014 and P02.
+- Selected the existing paused public Reddit acceptance spec for revision-6
+  reuse rather than creating a second collection identity.
+- Froze the prior safe bounds: 60-second interval, 24-hour lookback, 3 items,
+  120-second wall timeout, 50 network requests, $1 budget, durable/public
+  retention, and assessment disabled.
+- Made no runtime mutation in this planning checkpoint.
+
+Validation Evidence:
+
+- last30days source, tracking, and remote `main` agree at `029eaf7`;
+- worktree began clean;
+- installed service is active and ready at version 0.2.7/schema 12;
+- no collection spec is currently enabled;
+- `acceptance-reddit-temporal-graph` revision 5 is durably disabled;
+- no user-scoped `last30days-social.timer` exists;
+- CodeGraph binds `CollectionSpec.from_dict()` to strict field, source,
+  redaction, interval, lookback, item, time, request, and cost bounds.
+
+State Movement:
+
+- Plan 0014: `PLANNED -> OPEN`;
+- P02: `PLANNED -> OPEN`;
+- Plans 0015 and 0016 remain `PLANNED` in the resumed critical path.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; one public spec and one planned service restart require a
+  serialized controller.
+
+Graphiti Write Status:
+
+- deferred until the first terminal implementation checkpoint.
+
+Next Bounded Action:
+
+- validate and commit the activation checkpoint, then create revision 6, run
+  interval one, restart the service, run interval two, pause the spec, and
+  prove quiescence.

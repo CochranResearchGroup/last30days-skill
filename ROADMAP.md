@@ -44,9 +44,10 @@ Bounded Facebook, X, LinkedIn post, and LinkedIn company-profile canaries
 published through retained authenticated Guacamole/RDP browsers.
 
 This milestone closes the integrated implementation plan, not the product
-roadmap. P01-P06 remain roadmap lanes; no lane currently has an actionable
-open plan, while the successor lanes are planned. No recurring
-authenticated timer was enabled by closeout.
+roadmap. P01-P06 remain roadmap lanes. Plan 0014 is now the actionable open
+packet for public-source timer durability; Plans 0015 and 0016 follow for
+temporal/GraphRAG resilience and App Intelligence contract acceptance. No
+recurring authenticated timer was enabled by closeout.
 
 ## Successor Implementation Queue | 2026-07-26 Review
 
@@ -87,13 +88,12 @@ successor plans without reopening Plans 0010 or 0011:
    is the planned identity-first, ambiguity-safe profile-selection regression
    packet.
 
-The plans are ordered, not jointly authorized. Only Plan 0012 is actionable,
-and its live runtime mutation remains separately operator-gated. Plans
-0013-0017 stay `PLANNED` until the preceding critical-path result is reconciled
-and the next packet is explicitly opened. P01 receives no new implementation
-packet in this review because the current acceptance gaps exercise its existing
-immutable evidence authority rather than establish a verified new foundation
-defect.
+The 2026-07-29 resumed-development priority is Plan 0014, then Plan 0015, then
+Plan 0016. Plan 0014 is `OPEN`; Plans 0015 and 0016 remain `PLANNED` until the
+preceding critical-path result is reconciled. Plans 0013 and 0017 remain
+planned and out of this requested slice. P01 receives no new implementation
+packet because the current acceptance gaps exercise its existing immutable
+evidence authority rather than establish a verified new foundation defect.
 
 ## P00 | Productized Content Service MVP
 
@@ -258,7 +258,7 @@ Active Plan:
 
 ## P02 | Recurring Acquisition And Coverage
 
-State: PLANNED
+State: OPEN
 
 Objective: run governed timers that collect bounded recent feed items and
 optional topic, poster, channel, or account targets without losing cursor,
@@ -321,7 +321,7 @@ Active Plan:
   is the planned current-yield acceptance packet for YouTube transcript and
   bounded media handling.
 - `docs/dev/plans/0014-2026-07-26-recurring-collection-timer-durability.md`
-  is the planned public-source two-interval restart and pause proof.
+  is the open public-source two-interval restart and pause proof.
 
 ## P03 | Profile And Identity Acquisition
 
@@ -645,8 +645,8 @@ Active Plan:
 
 Next Bounded Action:
 
-- Complete or truthfully block Plan 0012 before opening Plan 0013. Preserve the
-  deterministic joins and do not reopen Plans 0010 or 0011.
+- Complete or truthfully block Plan 0014 before opening Plan 0015. Preserve the
+  deterministic joins and do not reopen Plans 0010, 0011, or 0012.
 
 ## Goal-Compatible Plan Conversion
 

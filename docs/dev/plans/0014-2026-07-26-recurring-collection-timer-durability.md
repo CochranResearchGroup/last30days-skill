@@ -1,6 +1,6 @@
 # Plan 0014 | Recurring collection timer durability
 
-State: PLANNED
+State: OPEN
 Roadmap: P02
 Date: 2026-07-26
 Predecessor: Plan 0011
@@ -17,8 +17,15 @@ state.
 - Plan 0011 proved a bounded timer and restart path, then paused the acceptance
   spec.
 - No recurring authenticated timer is enabled.
-- A successor proof is needed before expanding recurring hydration beyond the
-  original acceptance fixture.
+- Installed service version 0.2.7/schema 12 is active and ready.
+- No collection spec is currently enabled.
+- The existing public Reddit spec
+  `acceptance-reddit-temporal-graph` is durably paused at revision 5 with a
+  60-second interval, 24-hour lookback, 3-item limit, 120-second wall timeout,
+  50-request network limit, $1 budget, durable retention, public redaction,
+  and assessment disabled.
+- A successor revision-6 proof is needed before expanding recurring hydration
+  beyond this original acceptance fixture.
 
 ## Scope
 
@@ -83,3 +90,56 @@ state.
 The two-interval restart proof passes and the acceptance spec is durably paused,
 or the packet stops at the first typed safety failure with no authenticated
 timer enabled.
+
+### Checkpoint P0014-C01 | 2026-07-29
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `PLANNED -> OPEN`
+
+Progress classification:
+
+- `outcome_progress`
+
+Authority and scope:
+
+- the user explicitly resumed last30days timed service scraping, RAG, and App
+  Intelligence development;
+- Plan 0014 is the first serialized packet, followed by Plans 0015 and 0016;
+- Plans 0013 and 0017 remain planned and out of this requested slice.
+
+Owned work:
+
+- reuse only the existing public Reddit acceptance spec as revision 6;
+- execute exactly two distinct 60-second due boundaries with one planned
+  `last30days.service` restart between them;
+- pause the spec and prove quiescence;
+- repair source or tests only if a typed defect is proved within this plan's
+  bounded scheduler/supervisor surface.
+
+Current evidence:
+
+- installed service is ready at version 0.2.7/schema 12;
+- no collection spec is enabled;
+- historical revision 5 is disabled and remains the durable baseline;
+- no user-scoped `last30days-social.timer` exists;
+- service-owned collection scheduling, rather than an authenticated external
+  timer, is the authority for this public-source proof.
+
+Subagent status:
+
+- `not_spawned`; one collection spec and one service restart form a serialized
+  critical path.
+
+Graphiti write status:
+
+- deferred until the first terminal implementation checkpoint.
+
+Next action:
+
+- create revision 6 with the frozen public bounds, run interval one, preserve
+  its terminal receipts, restart the service, and then run interval two.
