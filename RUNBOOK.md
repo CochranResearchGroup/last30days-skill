@@ -2769,3 +2769,63 @@ Stop Reason:
   action is a separately reviewed tab-restoration repair or a plan revision
   that explicitly authorizes creating the missing tabs before another
   single-use attempt.
+
+## Turn 41 | 2026-07-29
+
+Focus: plan and authorize a bounded same-browser workaround for the trivial
+Plan 0012 missing-tab blocker.
+
+Authority Consulted:
+
+- current goal authorization
+- Plan 0012 checkpoint P0012-C08
+- current roadmap and Turn 40
+- repo-policy selector and current planning, goal, Git, documentation,
+  validation, and runtime policies
+- Graphiti discovery and current agent-browser profile/tab readbacks
+
+Decisions And Changes:
+
+- Classified the repository as an already governed product-engineering repo;
+  no policy adoption or replacement is needed for this workaround.
+- Added Plan 0012 Revision 2.
+- Authorized exactly one Facebook tab and one LinkedIn tab on the existing
+  canonical `session:default` browser.
+- Prohibited another browser, profile, route-open, login action, challenge
+  action, timer, or retry loop.
+- Preserved the existing X, Facebook, LinkedIn probe and reserved-request
+  ordering.
+
+Validation Evidence:
+
+- local, tracking, and remote `main`: `a39ce15`;
+- live `session:default`: healthy, CDP-ready, profile
+  `last30days-facebook`;
+- profile allocation: one exclusive holder, no conflicts or waiting jobs;
+- profile lookup: `routeAvailable: true`;
+- tab inventory: one X tab and no Facebook or LinkedIn tab.
+
+State Movement:
+
+- Plan 0012 version: `1 -> 2`;
+- Plan 0012:
+  `authorized_route_ready_blocked_missing_restored_tabs ->
+  workaround_planned_authorized_ready`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the workaround is a serialized mutation of one shared
+  browser.
+
+Graphiti Write Status:
+
+- discovery remained advisory and current repo/live evidence was
+  authoritative;
+- memory write is deferred until the resumed packet reaches its terminal
+  outcome.
+
+Next Action:
+
+- commit and push the revision, create the two missing tabs once on the
+  existing browser, verify one expected tab per hostname, then continue through
+  the existing fail-closed probes and canaries.

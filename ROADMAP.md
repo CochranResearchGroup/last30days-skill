@@ -63,9 +63,11 @@ successor plans without reopening Plans 0010 or 0011:
    operator-visible browser on `guacamole:1`/`:11`, but the post-open inventory
    contained only the X tab. The packet stopped before DOM probes because the
    required Facebook and LinkedIn tabs were not restored, and no canary or
-   reserved request ID was consumed. The next bounded action is a separately
-   reviewed tab-restoration repair or a plan revision that explicitly
-   authorizes creating the missing tabs before a new attempt.
+   reserved request ID was consumed. Plan Revision 2 now authorizes the bounded
+   workaround: create exactly one missing Facebook tab and one missing
+   LinkedIn tab on the still-ready canonical browser, then continue the
+   signal-only probes and serialized canaries without another browser, profile,
+   or route launch.
 2. `docs/dev/plans/0013-2026-07-26-youtube-transcript-media-acceptance.md`
    is the planned YouTube transcript, bounded media, downstream handoff, and
    cleanup acceptance packet.

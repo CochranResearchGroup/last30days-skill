@@ -775,3 +775,103 @@ Next action:
 - diagnose and repair browser tab restoration under a separately reviewed
   bounded packet, or revise Plan 0012 to explicitly authorize creating the
   missing Facebook and LinkedIn tabs before authorizing another single attempt.
+
+## Plan Revision 2 | Bounded Same-Browser Missing-Tab Workaround
+
+Authorization:
+
+- the current goal explicitly authorizes planning and implementing a practical
+  workaround for the missing-tab blocker;
+- this revision resumes after checkpoint P0012-C08 and does not reinterpret
+  that completed attempt as still running.
+
+Objective:
+
+- reuse the already proven `last30days-facebook` browser on
+  `session:default`, route `guacamole:1`, connection `1`, and display `:11`;
+- create exactly one missing Facebook tab and one missing LinkedIn tab on that
+  browser;
+- continue the existing signal-only authentication probes and serialized
+  canaries without launching another browser or profile.
+
+Owned write surface:
+
+- two browser tabs on the existing canonical browser;
+- signal-only DOM probe results;
+- the three reserved single-use acquisition requests and their durable
+  publication receipts;
+- Plan 0012, roadmap, runbook, and Graphiti closeout receipts.
+
+Non-goals:
+
+- another route-open, another browser process, another runtime profile, login,
+  challenge handling, credentials, cookies, messages, reactions, invitations,
+  account settings, recurring timers, or source-code repair.
+
+Execution packet:
+
+1. Reconfirm `session:default` is healthy, uses profile
+   `last30days-facebook`, remains attached to `guacamole:1`/`:11`, and contains
+   only the expected X tab.
+2. Open `https://www.facebook.com/` once in a new tab on `session:default`.
+3. Open `https://www.linkedin.com/feed/` once in a new tab on
+   `session:default`.
+4. Re-enumerate tabs. Require exactly one tab for each expected X, Facebook,
+   and LinkedIn hostname.
+5. Run the existing signal-only probe in X, Facebook, LinkedIn order.
+6. Only if all probes are authenticated, submit the existing reserved request
+   IDs in X, Facebook, LinkedIn order, waiting for each terminal publication
+   outcome before starting the next.
+
+Hard bounds and fail-closed gates:
+
+- maximum missing-tab creation attempts: one per missing source;
+- maximum browser, profile, or route launches: zero;
+- maximum authentication probe attempts: one per source;
+- maximum acquisition attempts: one reserved request ID per source;
+- stop at the first tab creation, inventory, authentication, challenge,
+  acquisition, or publication failure;
+- do not create another tab when the expected hostname is already present;
+- keep authenticated timers disabled.
+
+Acceptance:
+
+- the same canonical browser and operator-visible route remain ready;
+- one X, one Facebook, and one LinkedIn tab are present without duplicate
+  browser processes;
+- all three signal-only probes pass without returning private page text;
+- all three reserved canaries reach terminal success with durable publication
+  receipts, or the revision is checkpointed at its first typed terminal gate.
+
+### Checkpoint P0012-C09 | 2026-07-29
+
+Plan version:
+
+- 2
+
+State transition:
+
+- `authorized_route_ready_blocked_missing_restored_tabs ->
+  workaround_planned_authorized_ready`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Current evidence:
+
+- local, tracking, and remote `main` agree at `a39ce15`;
+- `session:default` is healthy and has a CDP endpoint;
+- its retained profile is `last30days-facebook`;
+- profile lookup reports `routeAvailable: true` and recommends inspecting the
+  existing holder;
+- its tab inventory contains only `https://x.com/home`.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; this remains one serialized shared-browser critical path.
+
+Next action:
+
+- commit and push this bounded revision, then create the two missing tabs once
+  on `session:default` and continue only if the three-tab inventory agrees.
