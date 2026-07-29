@@ -875,3 +875,116 @@ Next action:
 
 - commit and push this bounded revision, then create the two missing tabs once
   on `session:default` and continue only if the three-tab inventory agrees.
+
+## Plan Revision 3 | Structural Authentication And Checkpoint Signals
+
+Authorization:
+
+- the current goal authorizes implementing practical workarounds for trivial
+  packet defects and continuing the bounded Plan 0012 attempt;
+- Revision 2 created the missing tabs successfully, but its first X probe
+  returned the contradictory result `authenticated: true` and
+  `checkpoint: true`.
+
+Defect:
+
+- the old checkpoint classifier searched all rendered timeline text for the
+  words `checkpoint`, `challenge`, or `verify your identity`;
+- ordinary user-generated feed text can contain those words, so that classifier
+  is not a valid authentication or checkpoint signal.
+
+Corrected signal contract:
+
+- retain the expected-host, complete-document, authenticated-navigation, and
+  login-control checks;
+- classify a checkpoint only from a source-specific login or checkpoint URL,
+  login form, checkpoint form, or checkpoint input;
+- do not read or return page text, post text, messages, account content, or
+  credentials;
+- permit one corrected structural probe per source in X, Facebook, LinkedIn
+  order;
+- preserve every existing canary bound and reserved request ID.
+
+X structural signals:
+
+- authenticated: `[data-testid="AppTabBar_Home_Link"]` exists;
+- login: `input[autocomplete="username"]` or
+  `input[autocomplete="current-password"]` exists;
+- checkpoint: the path begins `/account/access`, `/i/flow/login`, or
+  `/i/flow/signup`, or a form targets `/account/access`.
+
+Facebook structural signals:
+
+- authenticated: `[aria-label="Facebook"]` exists and no login form exists;
+- login: a form targets `login` or a password input exists;
+- checkpoint: the path begins `/checkpoint/` or `/login/`, the path is
+  `/login.php`, or a form targets `/checkpoint/`.
+
+LinkedIn structural signals:
+
+- authenticated: `.global-nav__me` or an `/feed/` navigation link exists and
+  no username or password control exists;
+- login: `input#username` or `input#password` exists;
+- checkpoint: the path begins `/checkpoint/`, `/login`, or `/uas/login`, or a
+  form targets `/checkpoint`.
+
+Hard stop:
+
+- the old X result is classified as `probe_classifier_false_positive`, not an
+  authentication or challenge failure;
+- no Facebook probe, LinkedIn probe, or canary may run until this revision is
+  validated, committed, and pushed;
+- stop at the first failure under the corrected structural contract.
+
+### Checkpoint P0012-C10 | 2026-07-29
+
+Plan version:
+
+- 3
+
+State transition:
+
+- `workaround_planned_authorized_ready ->
+  missing_tabs_repaired_probe_classifier_false_positive`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Owned changes:
+
+- created exactly one Facebook tab and one LinkedIn tab on the existing
+  `session:default` browser;
+- proposed a structural replacement for the invalid full-page-text checkpoint
+  classifier;
+- made no acquisition request and consumed no reserved request ID.
+
+Validation evidence:
+
+- tab inventory contains exactly one X, one Facebook, and one LinkedIn page;
+- both new tabs report browser `session:default` and profile
+  `last30days-facebook`;
+- X returned host `x.com`, URL `https://x.com/home`, document state
+  `complete`, authenticated navigation present, and no login form;
+- the same result also returned `checkpoint: true` solely through the
+  full-page-text regular expression, proving the classifier is contradictory.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the shared-browser operation remains serialized.
+
+Graphiti write status:
+
+- deferred until the resumed packet reaches a terminal outcome.
+
+Remaining acceptance criteria:
+
+- validate and push Revision 3;
+- run one corrected structural probe for X, Facebook, and LinkedIn;
+- if all pass, run the three reserved canaries serially and preserve durable
+  publication receipts.
+
+Next action:
+
+- validate and push Revision 3, then resume at the corrected X structural
+  probe without creating another tab, browser, profile, or route.

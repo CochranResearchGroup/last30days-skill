@@ -2829,3 +2829,57 @@ Next Bounded Action:
 - commit and push the revision, create the two missing tabs once on the
   existing browser, verify one expected tab per hostname, then continue through
   the existing fail-closed probes and canaries.
+
+## Turn 42 | 2026-07-29
+
+Focus: repair the Plan 0012 authentication probe classifier after the
+same-browser missing-tab workaround succeeded.
+
+Authority Consulted:
+
+- current goal authorization
+- Plan 0012 Revision 2 and checkpoint P0012-C09
+- live `session:default` tab-creation and X probe receipts
+- current planning, validation, runtime, and Git policies
+
+Decisions And Changes:
+
+- Created exactly one Facebook tab and one LinkedIn tab in the existing
+  route-bound browser.
+- Verified exactly one expected tab for X, Facebook, and LinkedIn.
+- Stopped after the X probe returned both authenticated and checkpoint.
+- Classified the contradiction as a classifier false positive because the old
+  probe searched arbitrary feed text.
+- Added Revision 3, which uses only source-specific URL and DOM control
+  signals for login and checkpoint detection.
+
+Validation Evidence:
+
+- X tab: `https://x.com/home`;
+- Facebook tab: `https://www.facebook.com/`;
+- LinkedIn tab: `https://www.linkedin.com/feed/`;
+- both created tabs report `session:default` and profile
+  `last30days-facebook`;
+- X structural authentication navigation was present, the document was
+  complete, and no login control was present;
+- no Facebook probe, LinkedIn probe, or canary ran.
+
+State Movement:
+
+- Plan 0012 version: `2 -> 3`;
+- Plan 0012:
+  `workaround_planned_authorized_ready ->
+  missing_tabs_repaired_probe_classifier_false_positive`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this is one serialized shared-browser critical path.
+
+Graphiti Write Status:
+
+- deferred until the resumed packet reaches a terminal outcome.
+
+Next Bounded Action:
+
+- validate, commit, and push Revision 3, then run one corrected structural
+  probe per source and continue to canaries only if all three pass.

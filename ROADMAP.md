@@ -67,7 +67,10 @@ successor plans without reopening Plans 0010 or 0011:
    workaround: create exactly one missing Facebook tab and one missing
    LinkedIn tab on the still-ready canonical browser, then continue the
    signal-only probes and serialized canaries without another browser, profile,
-   or route launch.
+   or route launch. That tab repair succeeded. Revision 3 replaces the
+   full-page-text checkpoint classifier after it returned the contradictory X
+   result `authenticated: true` and `checkpoint: true`; resumed probes now use
+   only source-specific URL and DOM-control signals.
 2. `docs/dev/plans/0013-2026-07-26-youtube-transcript-media-acceptance.md`
    is the planned YouTube transcript, bounded media, downstream handoff, and
    cleanup acceptance packet.
