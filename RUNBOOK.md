@@ -2883,3 +2883,61 @@ Next Bounded Action:
 
 - validate, commit, and push Revision 3, then run one corrected structural
   probe per source and continue to canaries only if all three pass.
+
+## Turn 43 | 2026-07-29
+
+Focus: complete the corrected probes, serialized canaries, and terminal Plan
+0012 closeout.
+
+Authority Consulted:
+
+- Plan 0012 Revision 3 and checkpoint P0012-C10
+- live structural browser probe receipts
+- durable service jobs, events, acquisitions, versions, sightings, and index
+  versions in the installed research database
+- current validation, closeout, Graphiti, and Git policies
+
+Decisions And Changes:
+
+- Accepted all three structural authentication probes.
+- Submitted the three reserved request IDs once each and in order.
+- Waited for each terminal publication before submitting the next source.
+- Closed Plan 0012 after all three jobs published durable items and index
+  versions.
+- Recorded the LinkedIn job's internal second attempt as an execution
+  deviation; no caller retry or second request occurred.
+
+Validation Evidence:
+
+- X published 2 items, 2 immutable versions, and 2 sightings at
+  `index-11f0efbdd02b658783a69f1a`;
+- Facebook published 3 items, 3 immutable versions, and 3 sightings at
+  `index-a21da3120f28aaf26a754e37`;
+- LinkedIn published 3 items, 3 immutable versions, and 3 sightings at
+  `index-d2352bdab8ae460d7431b189`;
+- the three terminal job IDs are
+  `f123f896-13f8-49ad-b0b2-8a2676d9ecf8`,
+  `9670e507-af2f-4a73-934d-7935cc56a136`, and
+  `bc36a5ee-c819-40e8-bd68-4cffbea49a72`;
+- authenticated timers remain disabled.
+
+State Movement:
+
+- Plan 0012:
+  `missing_tabs_repaired_probe_classifier_false_positive ->
+  three_source_canaries_published_plan_closed`;
+- P03: `OPEN -> PLANNED`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the live packet remained a serialized critical path.
+
+Graphiti Write Status:
+
+- one final closeout write is pending the durable terminal commit.
+
+Next Bounded Action:
+
+- validate, commit, and push the terminal checkpoint, perform one Graphiti
+  closeout write with read-after-write verification, record the receipt, and
+  verify local, tracking, and remote parity.

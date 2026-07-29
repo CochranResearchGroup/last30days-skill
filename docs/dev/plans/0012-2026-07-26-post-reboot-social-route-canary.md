@@ -1,6 +1,6 @@
 # Plan 0012 | Post-reboot social route and canary acceptance
 
-State: OPEN
+State: CLOSED
 Roadmap: P03
 Date: 2026-07-26
 Predecessors: Plans 0002, 0009, and 0011
@@ -988,3 +988,77 @@ Next action:
 
 - validate and push Revision 3, then resume at the corrected X structural
   probe without creating another tab, browser, profile, or route.
+
+### Checkpoint P0012-C11 | 2026-07-29
+
+Plan version:
+
+- 3
+
+State transition:
+
+- `missing_tabs_repaired_probe_classifier_false_positive ->
+  three_source_canaries_published_plan_closed`
+
+Progress classification:
+
+- `goal_complete`
+
+Owned changes:
+
+- reused the existing canonical browser and route without another browser,
+  profile, route-open, display, or lease;
+- ran one corrected structural authentication probe for X, Facebook, and
+  LinkedIn;
+- submitted each reserved request ID exactly once in serialized order;
+- left authenticated recurring timers disabled.
+
+Validation evidence:
+
+- X, Facebook, and LinkedIn each returned the expected host, a complete
+  document, authenticated navigation, no login control, and no structural
+  checkpoint signal;
+- X request `post-reboot-20260726-x-01`, job
+  `f123f896-13f8-49ad-b0b2-8a2676d9ecf8`, published on attempt 1 as
+  `index-11f0efbdd02b658783a69f1a`;
+- Facebook request `post-reboot-20260726-facebook-01`, job
+  `9670e507-af2f-4a73-934d-7935cc56a136`, published on attempt 1 as
+  `index-a21da3120f28aaf26a754e37`;
+- LinkedIn request `post-reboot-20260726-linkedin-01`, job
+  `bc36a5ee-c819-40e8-bd68-4cffbea49a72`, published as
+  `index-d2352bdab8ae460d7431b189`;
+- durable acquisition evidence binds X to 2 items, 2 immutable versions, and
+  2 version sightings; Facebook to 3, 3, and 3; and LinkedIn to 3, 3, and 3;
+- all three index versions have non-null publication timestamps and increasing
+  corpus counts of 44, 47, and 50 documents.
+
+Execution deviation:
+
+- the LinkedIn job's first internal acquisition produced zero items and
+  `quality_gate_failed`;
+- the already submitted service job automatically scheduled its configured
+  second internal attempt and then published three items;
+- no second caller request, request-ID reuse, browser retry, route retry, or
+  manual job retry occurred;
+- this preserves one uniquely keyed terminal canary but exposes that the
+  service's configured `max_attempts: 2` is broader than Plan 0012's intended
+  no-automatic-retry language.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; all shared-browser and source operations remained serialized.
+
+Graphiti write status:
+
+- final closeout memory is pending the durable closeout commit and will be
+  attempted exactly once.
+
+Remaining acceptance criteria:
+
+- none for Plan 0012; the Graphiti receipt and final Git parity are closeout
+  bookkeeping.
+
+Next action:
+
+- validate, commit, and push the terminal checkpoint, write one compact
+  source-backed Graphiti episode, record its receipt, and verify final parity.

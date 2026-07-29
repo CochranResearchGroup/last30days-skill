@@ -44,8 +44,8 @@ Bounded Facebook, X, LinkedIn post, and LinkedIn company-profile canaries
 published through retained authenticated Guacamole/RDP browsers.
 
 This milestone closes the integrated implementation plan, not the product
-roadmap. P01-P06 remain roadmap lanes; only P03 currently has an actionable
-open plan, while the other successor lanes are planned. No recurring
+roadmap. P01-P06 remain roadmap lanes; no lane currently has an actionable
+open plan, while the successor lanes are planned. No recurring
 authenticated timer was enabled by closeout.
 
 ## Successor Implementation Queue | 2026-07-26 Review
@@ -54,7 +54,7 @@ The roadmap review converts the post-reboot handoff priorities into bounded
 successor plans without reopening Plans 0010 or 0011:
 
 1. `docs/dev/plans/0012-2026-07-26-post-reboot-social-route-canary.md`
-   is the `OPEN` critical path. Agent-browser P78/Plan 0078 restored durable
+   is now closed successfully. Agent-browser P78/Plan 0078 restored durable
    Guacamole fixtures, two accessible route displays, and a successful
    recurring interlock. Agent-browser P81 then repaired retained route-state
    projection at commit `ffda60dd`: stable route A now resolves to
@@ -70,7 +70,9 @@ successor plans without reopening Plans 0010 or 0011:
    or route launch. That tab repair succeeded. Revision 3 replaces the
    full-page-text checkpoint classifier after it returned the contradictory X
    result `authenticated: true` and `checkpoint: true`; resumed probes now use
-   only source-specific URL and DOM-control signals.
+   only source-specific URL and DOM-control signals. All three corrected probes
+   passed, and the serialized X, Facebook, and LinkedIn canaries published 2,
+   3, and 3 durable items.
 2. `docs/dev/plans/0013-2026-07-26-youtube-transcript-media-acceptance.md`
    is the planned YouTube transcript, bounded media, downstream handoff, and
    cleanup acceptance packet.
@@ -323,7 +325,7 @@ Active Plan:
 
 ## P03 | Profile And Identity Acquisition
 
-State: OPEN
+State: PLANNED
 
 Objective: treat user, creator, company, channel, and organization profile
 pages as first-class temporal evidence surfaces rather than incidental post
@@ -360,6 +362,12 @@ Current State:
   `guacamole:1`/`:11`, but normal route-open selected retained legacy
   `guacamole:4`/`:10` and failed display access before browser launch. Lease
   rollback completed; no DOM probe, acquisition job, or timer mutation ran.
+- Agent-browser P81 repaired retained route selection so the canonical browser
+  opened on `guacamole:1`/`:11`. Plan 0012 then restored the missing Facebook
+  and LinkedIn tabs in that same browser, replaced a full-page-text checkpoint
+  false positive with structural URL and DOM signals, and published serialized
+  X, Facebook, and LinkedIn canaries with 2, 3, and 3 durable items. The
+  authenticated timer remains disabled.
 
 Goal Seeds:
 
@@ -402,9 +410,8 @@ Active Plan:
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the closed profile/identity foundation authority.
 - `docs/dev/plans/0012-2026-07-26-post-reboot-social-route-canary.md`
-  is the open serialized route/auth/acquisition acceptance plan, currently
-  blocked at retained route-selection reconciliation after the route substrate
-  itself was repaired.
+  is the closed serialized route/auth/acquisition acceptance plan with all
+  three source canaries published.
 - `docs/dev/plans/0017-2026-07-26-canonical-profile-selection-regression.md`
   is the planned identity-first selection and ambiguity regression packet.
 

@@ -174,7 +174,7 @@ def test_current_repository_authority_passes() -> None:
 
     assert report["status"] == "passed", report
     assert report["issues"] == []
-    assert report["active_plan_count"] == 1
+    assert report["active_plan_count"] == 0
     assert report["campaign_plan_count"] == 0
 
 
