@@ -3049,3 +3049,72 @@ Next Bounded Action:
 - validate and commit the activation checkpoint, then create revision 6, run
   interval one, restart the service, run interval two, pause the spec, and
   prove quiescence.
+
+## Turn 46 | 2026-07-29
+
+Focus: execute the Plan 0014 timer proof, stop on its bound violation, and
+repair the stale-due resume defect without another live attempt.
+
+Authority Consulted:
+
+- open Plan 0014 and its exact-two-interval, one-restart bounds
+- installed collection spec, run, job, coverage, and schedule ledgers
+- current collection coordinator source and focused tests
+- current validation, closeout, documentation, and Git policies
+
+Decisions And Changes:
+
+- Enabled the existing public acceptance spec as revision 6 with its frozen
+  60-second cadence, 24-hour lookback, three-item, 120-second, 50-request, and
+  one-dollar bounds.
+- Stopped the live packet when revision 6 created four runs instead of two:
+  one stale catch-up boundary from July 26, the requested 12:36 manual
+  boundary, and timer boundaries at 12:37 and 12:38.
+- Paused the spec as revision 7 and did not install, restart, or retry again.
+- Added a regression proving that a paused spec resumed after three days
+  starts at the current floored interval and does not replay disabled time.
+- Changed `CollectionCoordinator.put_spec()` to reset schedule due state only
+  for disabled-to-enabled transitions. Already-enabled revisions preserve
+  their existing due boundary.
+- Documented the pause/resume scheduling contract in `CONFIGURATION.md`.
+
+Validation Evidence:
+
+- revision-6 run receipts remained public and published; per-run spend was at
+  most one cent;
+- the stale catch-up run attempted/stored one item, the 12:36 manual run
+  attempted/stored three, the 12:37 timer run observed empty, and the 12:38
+  timer run attempted/stored three;
+- revision 7 paused at `2026-07-29T12:38:43.505007Z`;
+- after more than one interval, at `2026-07-29T12:40:15Z`, the durable run
+  count was unchanged and no later timer boundary existed;
+- SQLite integrity returned `ok`;
+- the focused collection and service-product suites pass 17 tests.
+
+State Movement:
+
+- Plan 0014:
+  `open_ready -> blocked_stale_due_replay_fixed_awaiting_live_retry_authorization`;
+- P02 remains `OPEN`;
+- Plans 0015 and 0016 remain `PLANNED`.
+
+Installed Versus Source State:
+
+- the installed v0.2.7/schema-12 service remains paused on revision 7 and
+  predates the repair;
+- the reviewed repair exists only in source until a later authorized retry
+  synchronizes the skill and performs its one planned restart.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the scheduler defect and repair formed one serialized path.
+
+Graphiti Write Status:
+
+- pending source commit and push.
+
+Next Bounded Action:
+
+- run the complete focused validation set, commit and push the repair
+  checkpoint, and record durable memory; then await explicit authority for a
+  fresh Plan 0014 live retry before installing or restarting.

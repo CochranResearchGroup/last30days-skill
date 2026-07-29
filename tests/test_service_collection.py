@@ -217,6 +217,42 @@ def test_due_tick_respects_pause_and_advances_next_due_deterministically(tmp_pat
     assert next_due == "2026-07-25T13:00:00Z"
 
 
+def test_resume_resets_stale_due_boundary_without_replaying_paused_intervals(
+    tmp_path,
+):
+    current = [NOW]
+    db_path = tmp_path / "research.db"
+    supervisor = RefreshSupervisor(db_path, clock=lambda: current[0])
+    supervisor.initialize()
+    ledger = ServiceStore(db_path)
+    scheduler = ServiceRefreshScheduler(
+        supervisor,
+        ledger,
+        RefreshPolicy(
+            default_sources=("reddit",),
+            freshness_seconds=3600,
+            max_attempts=2,
+            budget_cents=100,
+        ),
+        clock=lambda: current[0],
+    )
+    coordinator = CollectionCoordinator(
+        db_path,
+        scheduler,
+        clock=lambda: current[0],
+    )
+    coordinator.put_spec(_spec(enabled=False))
+
+    current[0] = NOW + timedelta(days=3, minutes=17)
+    resumed = coordinator.set_enabled("spec-reddit-ai", enabled=True)
+
+    assert resumed.spec_version == 2
+    created = coordinator.enqueue_due(limit=10)
+    assert len(created) == 1
+    assert created[0].interval_to == "2026-07-28T12:00:00Z"
+    assert coordinator.enqueue_due(limit=10) == ()
+
+
 def test_named_profile_lease_prevents_overlapping_collection_runs(tmp_path):
     _db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
     first = _spec(

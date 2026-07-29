@@ -89,8 +89,9 @@ successor plans without reopening Plans 0010 or 0011:
    packet.
 
 The 2026-07-29 resumed-development priority is Plan 0014, then Plan 0015, then
-Plan 0016. Plan 0014 is `OPEN`; Plans 0015 and 0016 remain `PLANNED` until the
-preceding critical-path result is reconciled. Plans 0013 and 0017 remain
+Plan 0016. Plan 0014 is `OPEN` and blocked awaiting a newly authorized live
+retry after its stale-due replay repair. Plans 0015 and 0016 remain `PLANNED`
+until that critical-path result is reconciled. Plans 0013 and 0017 remain
 planned and out of this requested slice. P01 receives no new implementation
 packet because the current acceptance gaps exercise its existing immutable
 evidence authority rather than establish a verified new foundation defect.
@@ -279,6 +280,11 @@ Current State:
   Recurring authenticated timers were not enabled; broad hydration is the
   next operational expansion and must proceed spec-by-spec under explicit
   budgets and source/profile leases.
+- The 2026-07-29 Plan 0014 attempt proved that resuming a long-paused spec
+  replayed its stale due boundary. Revision 7 is disabled and quiescent. The
+  working tree now resets only disabled-to-enabled transitions to the current
+  interval, with focused regression coverage, but the installed service has
+  not been synchronized or restarted for a second live attempt.
 
 Goal Seeds:
 
@@ -645,7 +651,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- Complete or truthfully block Plan 0014 before opening Plan 0015. Preserve the
+- Commit and push the Plan 0014 stale-due repair, then await explicit authority
+  for a fresh live two-interval install/restart retry. Do not open Plan 0015
+  until Plan 0014 is closed or explicitly superseded. Preserve the
   deterministic joins and do not reopen Plans 0010, 0011, or 0012.
 
 ## Goal-Compatible Plan Conversion

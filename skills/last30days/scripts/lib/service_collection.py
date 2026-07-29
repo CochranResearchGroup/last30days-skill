@@ -333,7 +333,7 @@ class CollectionCoordinator:
         try:
             conn.execute("BEGIN IMMEDIATE")
             current = conn.execute(
-                """SELECT s.spec_version, r.spec_digest
+                """SELECT s.spec_version, s.enabled, r.spec_digest
                    FROM collection_specs AS s
                    JOIN collection_spec_revisions AS r
                      ON r.collection_spec_id = s.collection_spec_id
@@ -352,6 +352,11 @@ class CollectionCoordinator:
                     raise CollectionSpecValidationError(
                         "spec_version must increment exactly once"
                     )
+            resuming = (
+                current is not None
+                and not bool(current["enabled"])
+                and spec.enabled
+            )
             conn.execute(
                 """INSERT OR IGNORE INTO access_partitions
                    (partition_id, partition_kind, profile_id, created_at)
@@ -420,8 +425,17 @@ class CollectionCoordinator:
                    (collection_spec_id, next_due_at, access_partition_id)
                    VALUES (?, ?, ?)
                    ON CONFLICT(collection_spec_id) DO UPDATE SET
-                     access_partition_id = excluded.access_partition_id""",
-                (spec.collection_spec_id, first_due, spec.access_partition_id),
+                     access_partition_id = excluded.access_partition_id,
+                     next_due_at = CASE
+                       WHEN ? THEN excluded.next_due_at
+                       ELSE collection_schedule_state.next_due_at
+                     END""",
+                (
+                    spec.collection_spec_id,
+                    first_due,
+                    spec.access_partition_id,
+                    int(resuming),
+                ),
             )
             conn.execute(
                 """INSERT INTO collection_cursors

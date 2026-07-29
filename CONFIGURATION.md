@@ -539,6 +539,11 @@ python3 scripts/service.py collection pause spec-reddit-ai
 python3 scripts/service.py collection resume spec-reddit-ai
 ```
 
+Resuming a paused specification resets its due boundary to the current
+interval. Intervals that elapsed while the specification was disabled are not
+replayed as catch-up work. Revising an already enabled specification preserves
+its existing due boundary.
+
 Example:
 
 ```json

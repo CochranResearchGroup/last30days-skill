@@ -143,3 +143,78 @@ Next action:
 
 - create revision 6 with the frozen public bounds, run interval one, preserve
   its terminal receipts, restart the service, and then run interval two.
+
+### Checkpoint P0014-C02 | 2026-07-29
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `open_ready -> blocked_stale_due_replay_fixed_awaiting_live_retry_authorization`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Runtime evidence:
+
+- enabling revision 6 preserved a stale `2026-07-26T02:39:00Z` schedule
+  boundary from the previously paused specification;
+- the scheduler therefore created four revision-6 runs rather than the
+  authorized two: one stale catch-up boundary, the manual
+  `2026-07-29T12:36:00Z` boundary, and timer boundaries at 12:37 and 12:38;
+- all four runs published, spent no more than one cent each, and stayed in the
+  public partition, but the stale catch-up and extra timer boundary violated
+  this packet's exact-two-run bound;
+- revision 7 paused the specification at
+  `2026-07-29T12:38:43.505007Z`;
+- at `2026-07-29T12:40:15Z`, more than one interval later, the durable run
+  count remained unchanged, the latest scheduled boundary remained 12:38,
+  and revision 7 remained disabled;
+- the database integrity check returned `ok`.
+
+Defect and repair:
+
+- `CollectionCoordinator.put_spec()` preserved
+  `collection_schedule_state.next_due_at` for every spec revision, including a
+  disabled-to-enabled transition;
+- the source now resets `next_due_at` to the current floored boundary only when
+  resuming a paused specification;
+- ordinary edits to an already enabled specification continue to preserve the
+  existing due boundary;
+- a regression test advances a paused specification by three days and proves
+  that resume creates only the current interval rather than replaying paused
+  boundaries;
+- the focused collection and product suites pass 17 tests.
+
+Stop reason:
+
+- the live packet stopped at its first hard-bound failure;
+- no additional live retry, install synchronization, or service restart is
+  authorized by this exact-two-interval packet;
+- the installed v0.2.7 service therefore remains paused on revision 7 and does
+  not yet contain the working-tree repair.
+
+Remaining acceptance:
+
+- synchronize the reviewed repair into the installed skill;
+- execute a newly authorized two-interval proof with the single restart placed
+  between the two boundaries;
+- pause and re-prove quiescence before closing Plan 0014.
+
+Subagent status:
+
+- `not_spawned`; diagnosis, repair, and validation remained one serialized
+  scheduler path.
+
+Graphiti write status:
+
+- pending source commit and push.
+
+Next action:
+
+- validate, commit, and push the repair checkpoint; then await explicit
+  authority for a fresh live retry packet before installing or restarting the
+  service.
