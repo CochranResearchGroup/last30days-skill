@@ -2824,7 +2824,7 @@ Graphiti Write Status:
 - memory write is deferred until the resumed packet reaches its terminal
   outcome.
 
-Next Action:
+Next Bounded Action:
 
 - commit and push the revision, create the two missing tabs once on the
   existing browser, verify one expected tab per hostname, then continue through
