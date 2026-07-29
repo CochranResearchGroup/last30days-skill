@@ -2754,8 +2754,11 @@ Graphiti Write Status:
 - prior agent-browser P81 job
   `59039dd1-a8bf-4f28-8c6a-6d020edf6a24` completed with episode
   `03721958-771d-4699-826a-adb666078eaa` and read-after-write proof;
-- the current last30days checkpoint write is pending the durable checkpoint
-  commit;
+- provider readiness passed after checkpoint commit `9350f40` was pushed;
+- current last30days job `05f61632-0521-4d20-86e0-90a549a714e9` timed out
+  non-retryably during `graphiti_extracting_edges` after its one bounded
+  180-second attempt and returned no episode UUID;
+- no duplicate of the current checkpoint write was submitted;
 - failed last30days job
   `35f288b7-7bc6-4419-816e-1f5f00692b47` was not duplicated or retried.
 
