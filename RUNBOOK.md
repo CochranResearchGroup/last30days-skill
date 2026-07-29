@@ -3118,3 +3118,48 @@ Next Bounded Action:
 - run the complete focused validation set, commit and push the repair
   checkpoint, and record durable memory; then await explicit authority for a
   fresh Plan 0014 live retry before installing or restarting.
+
+## Turn 47 | 2026-07-29
+
+Focus: record the pushed Plan 0014 repair and durable-memory receipt.
+
+Authority Consulted:
+
+- Plan 0014 Checkpoint P0014-C02
+- current closeout, validation, and Git policies
+- Graphiti provider, job, and episode readbacks
+
+Decisions And Changes:
+
+- Recorded the source-repair commit and durable-memory receipt.
+- Made no source, installed-runtime, or collection-spec mutation.
+
+Validation Evidence:
+
+- repair commit `d190696` is pushed to `origin/main`;
+- local `HEAD`, tracking `main`, and remote `main` agree;
+- Graphiti provider readiness passed;
+- job `cd855bca-36c4-4b79-acdc-43abb47262f1` completed on attempt 1;
+- episode `99aa1e6c-14c9-41fc-9976-1fd92294d4c2` is visible in
+  `last30days_skill_main`;
+- Graphiti reports `read_after_write_ready: true`.
+
+State Movement:
+
+- Plan 0014 remains
+  `blocked_stale_due_replay_fixed_awaiting_live_retry_authorization`;
+- the source repair and durable memory checkpoint are complete;
+- the installed service remains paused and unsynchronized.
+
+Graphiti Write Status:
+
+- complete; no duplicate or retry was submitted.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this was a deterministic receipt-only closeout.
+
+Next Bounded Action:
+
+- await explicit authority for a fresh Plan 0014 live retry before installing
+  the repaired skill, restarting the service, or enabling revision 8.

@@ -218,3 +218,31 @@ Next action:
 - validate, commit, and push the repair checkpoint; then await explicit
   authority for a fresh live retry packet before installing or restarting the
   service.
+
+### Checkpoint P0014-C03 | 2026-07-29
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `blocked_stale_due_replay_fixed_awaiting_live_retry_authorization ->
+  blocked_stale_due_replay_fixed_awaiting_live_retry_authorization`
+
+Progress classification:
+
+- `closeout`
+
+Closeout evidence:
+
+- repair commit `d190696` is pushed to `origin/main`;
+- local `HEAD`, tracking `main`, and remote `main` agree;
+- Graphiti job `cd855bca-36c4-4b79-acdc-43abb47262f1` completed on attempt 1;
+- episode `99aa1e6c-14c9-41fc-9976-1fd92294d4c2` is visible in
+  `last30days_skill_main` with read-after-write ready.
+
+Next action:
+
+- await explicit authority for the fresh live install/restart retry described
+  in Checkpoint P0014-C02.
