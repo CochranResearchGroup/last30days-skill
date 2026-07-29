@@ -3229,3 +3229,49 @@ Next Bounded Action:
   Plan 0014 live retry; after its terminal result, derive Plan 0018's bounded
   S01/S02 architecture packet before opening RAG or App Intelligence
   acceptance.
+
+## Turn 49 | 2026-07-29
+
+Focus: record the pushed service-first product decision and durable-memory
+receipt.
+
+Authority Consulted:
+
+- Plan 0018 planning receipt
+- commit `8b32a0f`
+- Graphiti provider, job, and episode readbacks
+- current closeout and validation policies
+
+Decisions And Changes:
+
+- Recorded the pushed planning authority and read-after-write receipt.
+- Made no source, installed-runtime, collection, or external-system mutation.
+
+Validation Evidence:
+
+- commit `8b32a0f` is pushed to `origin/main`;
+- the planning audit passed with Plan 0014 as the sole active plan;
+- Graphiti provider readiness passed;
+- job `54a5ab14-06a4-4384-8dac-fa0f52b39c5b` completed on attempt 1;
+- episode `d1da4f3e-a09f-4265-805f-b638103f5951` is visible in
+  `last30days_skill_main`;
+- Graphiti reports `read_after_write_ready: true`.
+
+State Movement:
+
+- Plan 0018 remains `PLANNED`;
+- Plan 0014 remains the sole `OPEN` plan;
+- the service-first product decision is now durable in Git and Graphiti.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this was a deterministic receipt-only closeout.
+
+Graphiti Write Status:
+
+- complete; no duplicate or retry was submitted.
+
+Next Bounded Action:
+
+- finish or terminally block the Plan 0014 live retry, then derive Plan 0018's
+  S01/S02 architecture packet before opening Plans 0015 or 0016.

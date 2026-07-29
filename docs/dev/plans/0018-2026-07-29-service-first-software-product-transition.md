@@ -231,3 +231,12 @@ This is a stable transition plan, not yet an implementation packet. To open it:
 service and MCP interface are the primary product. Skills are optional,
 least-privilege agent clients, and direct scraping mechanics are absent from
 ordinary agent work.
+
+## Planning Receipt | 2026-07-29
+
+- product-boundary commit `8b32a0f` is pushed to `origin/main`;
+- the planning audit passed with Plan 0014 as the sole active plan;
+- Graphiti job `54a5ab14-06a4-4384-8dac-fa0f52b39c5b` completed on attempt 1;
+- episode `d1da4f3e-a09f-4265-805f-b638103f5951` is visible in
+  `last30days_skill_main` with read-after-write ready;
+- no installed runtime or collection state changed.
