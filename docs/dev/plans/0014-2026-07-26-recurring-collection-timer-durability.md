@@ -246,3 +246,72 @@ Next action:
 
 - await explicit authority for the fresh live install/restart retry described
   in Checkpoint P0014-C02.
+
+### Checkpoint P0014-C04 | 2026-07-29
+
+Plan version:
+
+- 2
+
+State transition:
+
+- `blocked_stale_due_replay_fixed_awaiting_live_retry_authorization ->
+  open_retry_authorized`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority:
+
+- the user explicitly directed completion of the narrow Plan 0014 timer retry
+  before opening Plan 0018's first implementation packet.
+
+Current installed evidence:
+
+- the active systemd unit imports
+  `~/.agents/skills/last30days/scripts/service.py`;
+- the installed skill is a frozen directory, not a working-tree symlink;
+- the installed and repaired `service_collection.py` SHA-256 digests differ;
+- installed service v0.2.7/schema 12 is ready;
+- revision 7 remains disabled and no collection is enabled.
+
+Revision-2 execution bounds:
+
+- synchronize the reviewed source at commit `d190696` or later into the
+  installed skill while revision 7 remains disabled;
+- perform one pre-proof activation restart so the daemon loads the repaired
+  scheduler;
+- enable only `acceptance-reddit-temporal-graph` as revision 8 with the frozen
+  public bounds;
+- measure exactly two distinct 60-second due boundaries;
+- perform exactly one durability restart after interval one is terminal and
+  before interval two is claimed;
+- pause immediately after interval two reaches a terminal state and prove more
+  than one interval of quiescence;
+- maximum service lifecycle restarts in Revision 2: 2 total, consisting of one
+  pre-proof activation restart and one restart inside the measured
+  two-interval proof;
+- no authenticated source, browser, profile, App Intelligence assessment, or
+  second collection spec may be enabled.
+
+Hard stops:
+
+- stop on a stale catch-up boundary, more than two revision-8 runs, duplicate
+  interval identity, non-public partition, budget escape, restart recovery
+  failure, database-integrity failure, or inability to pause.
+
+Subagent status:
+
+- `not_spawned`; installation, two due boundaries, and the intervening restart
+  are one serialized critical path.
+
+Graphiti write status:
+
+- deferred to the terminal Plan 0014 checkpoint.
+
+Next action:
+
+- validate and commit this Revision-2 activation, synchronize the installed
+  skill, perform the pre-proof restart, and verify scheduler digest and service
+  readiness before enabling revision 8.

@@ -130,12 +130,12 @@ successor plans without reopening Plans 0010 or 0011:
    Skills.
 
 The 2026-07-29 architecture direction makes Plan 0018 the governing successor
-after Plan 0014 reaches a terminal timer result. Plan 0014 remains `OPEN` and
-blocked awaiting a newly authorized live retry after its stale-due replay
-repair. Before Plans 0015 and 0016 open, Plan 0018 must derive the bounded
-service-package/lifecycle and MCP-boundary packet that makes those plans
-service-product acceptance rather than Skill features. Plans 0013 and 0017
-remain planned and outside this transition critical path.
+after Plan 0014 reaches a terminal timer result. Plan 0014 Revision 2 is `OPEN`
+with an explicitly authorized repaired timer retry. Before Plans 0015 and 0016
+open, Plan 0018 must derive the bounded service-package/lifecycle and
+MCP-boundary packet that makes those plans service-product acceptance rather
+than Skill features. Plans 0013 and 0017 remain planned and outside this
+transition critical path.
 
 ## P00 | Productized Content Service MVP
 
@@ -747,8 +747,8 @@ Active Plan:
 
 Next Bounded Action:
 
-- Await explicit authority for the fresh Plan 0014 two-interval
-  install/restart retry. After its terminal result, derive Plan 0018's bounded
+- Execute the authorized Plan 0014 Revision-2 two-interval retry and reconcile
+  its terminal result. Then derive Plan 0018's bounded
   service-package/lifecycle and MCP-boundary packet before opening Plans 0015
   or 0016. Preserve the deterministic joins and do not reopen Plans 0010,
   0011, or 0012.

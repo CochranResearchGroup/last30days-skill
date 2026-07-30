@@ -3275,3 +3275,62 @@ Next Bounded Action:
 
 - finish or terminally block the Plan 0014 live retry, then derive Plan 0018's
   S01/S02 architecture packet before opening Plans 0015 or 0016.
+
+## Turn 50 | 2026-07-29
+
+Focus: authorize Plan 0014 Revision 2 from current installed topology.
+
+Authority Consulted:
+
+- the user's active goal to finish Plan 0014 and immediately open Plan 0018's
+  first implementation packet
+- Plan 0014 Checkpoints P0014-C02 and P0014-C03
+- current systemd unit, installed-skill path and scheduler digest
+- live service discovery, collection list, and coverage readbacks
+- current planning, goal, Git, validation, and closeout policies
+
+Decisions And Changes:
+
+- Confirmed the active daemon imports the frozen installed Skill rather than
+  the repaired working tree.
+- Authorized Plan 0014 Revision 2 with two total lifecycle restarts: one
+  pre-proof activation restart and exactly one durability restart between the
+  two measured intervals.
+- Preserved the acceptance window at exactly one public spec, two revision-8
+  runs, two distinct boundaries, one intervening restart, and a final
+  quiescence proof.
+- Made no installed-runtime or collection mutation in this activation
+  checkpoint.
+
+Validation Evidence:
+
+- source, tracking, and remote `main` began at `11b3dad`;
+- worktree began clean;
+- installed service reports ready at v0.2.7/schema 12 with 50 documents;
+- no collection spec is enabled;
+- revision 7 is disabled;
+- installed scheduler digest
+  `07fcd9651b3e64572ba28a88fe50c293d645d2c902d3e951a2247fc8086298c7`
+  differs from repaired source digest
+  `12dfe20a4d94e199e82b5cf299f541c852a9e2c5fde5899adbde9be49a268f32`.
+
+State Movement:
+
+- Plan 0014:
+  `blocked_stale_due_replay_fixed_awaiting_live_retry_authorization ->
+  open_retry_authorized`;
+- Plan 0018 remains `PLANNED`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this is a serialized live-service proof.
+
+Graphiti Write Status:
+
+- deferred to the terminal Plan 0014 checkpoint.
+
+Next Bounded Action:
+
+- validate and push this activation checkpoint, synchronize the installed
+  skill, perform the pre-proof activation restart, and verify the repaired
+  digest and service readiness before enabling revision 8.
