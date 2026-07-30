@@ -1,0 +1,87 @@
+{
+  "baseline": {
+    "acquisitions": 65,
+    "collection_run_attempts": 13,
+    "collection_runs": 12,
+    "collection_specs": 2,
+    "coverage_intervals": 9,
+    "document_versions": 57,
+    "documents": 50,
+    "evidence_spans": 419,
+    "index_version": "index-4f096317e15c57da386466f2",
+    "index_versions": 44,
+    "intelligence_tasks": 2,
+    "model_calls": 0,
+    "service_job_events": 478,
+    "service_jobs": 49
+  },
+  "collection_spec": {
+    "assessment_enabled": false,
+    "budget_cents": 100,
+    "collection_spec_id": "p0018-final-public-collection",
+    "enabled_revision": 1,
+    "final_enabled": false,
+    "final_revision": 2,
+    "interval_seconds": 3600,
+    "item_limit": 3,
+    "lookback_seconds": 86400,
+    "network_request_limit": 50,
+    "profile_id": "default",
+    "redaction_class": "public",
+    "selector": {
+      "topic": "OpenClaw"
+    },
+    "source": "reddit",
+    "wall_timeout_seconds": 120
+  },
+  "final_state": {
+    "acquisitions": 66,
+    "collection_run_attempts": 14,
+    "collection_runs": 13,
+    "collection_specs": 3,
+    "coverage_intervals": 10,
+    "database_integrity": "ok",
+    "document_versions": 57,
+    "documents": 50,
+    "evidence_spans": 419,
+    "index_version": "index-4f096317e15c57da386466f2",
+    "index_versions": 44,
+    "intelligence_tasks": 2,
+    "model_calls": 0,
+    "service_job_events": 488,
+    "service_jobs": 50
+  },
+  "hard_stop": {
+    "code": "zero_yield_no_index_change",
+    "release_gate_allowed": false,
+    "retry_allowed_under_packet": false
+  },
+  "post_pause": {
+    "observed_at": "2026-07-30T05:02:31Z",
+    "run_count": 1,
+    "spec_enabled": false,
+    "spec_version": 2
+  },
+  "plan": "0018",
+  "result": "failed_acceptance",
+  "run": {
+    "access_partition_id": "public",
+    "attempted_count": 0,
+    "collection_run_id": "collection-run-9b89ae5e489d3e473a7a4d1794701c7b",
+    "completed_at": "2026-07-30T05:01:33.384772Z",
+    "error_code": null,
+    "job_attempts": 1,
+    "job_id": "dead4b4c-5478-48f0-921e-a51844546125",
+    "job_state": "published",
+    "observed_count": 0,
+    "published_index_version": "index-4f096317e15c57da386466f2",
+    "scheduled_for": "2026-07-30T05:00:00Z",
+    "spec_version": 1,
+    "started_at": "2026-07-30T05:01:29.377119Z",
+    "stored_count": 0,
+    "trigger_kind": "timer"
+  },
+  "schema_version": 1,
+  "service_version": "0.2.9",
+  "summary": "The resident service autonomously scheduled and completed exactly one public, assessment-disabled Reddit interval after the initiating client disconnected. It created acquisition, coverage, run, attempt, job, and event receipts with zero model calls, but the frozen selector yielded no items and produced no document, evidence, or index change. The required indexing-yield criterion therefore remains unproved and the release gate stays closed."
+}

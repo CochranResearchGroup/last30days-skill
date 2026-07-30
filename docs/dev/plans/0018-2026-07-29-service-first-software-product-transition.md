@@ -1529,3 +1529,66 @@ Next action:
 
 - execute the one-spec/one-interval autonomous public collection proof; stop
   fail-closed on its first typed failure.
+
+### Checkpoint P0018-C13 | 2026-07-30
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `final review remediation ready -> terminal zero-yield blocker`
+
+Progress classification:
+
+- `terminal_blocker`
+
+Live outcome:
+
+- service 0.2.9 autonomously scheduled the exact
+  `p0018-final-public-collection` 05:00Z boundary after the initiating client
+  disconnected;
+- the public Reddit run completed `published` in one job attempt with
+  `assessment_enabled=false`, no model calls, no error code, and public access;
+- acquisition, coverage, run, attempt, job, and event receipts advanced
+  exactly once;
+- the frozen `OpenClaw` selector returned zero attempted, observed, and stored
+  items, so document/version/evidence/index counts did not change;
+- revision 2 paused the specification immediately; the observed run count
+  remained one and database integrity remained `ok`.
+
+Hard-stop result:
+
+- `zero_yield_no_index_change`;
+- autonomous deterministic scheduling/acquisition authority is evidenced, but
+  continued indexing with stochastic workers disabled remains unproved;
+- the packet forbids a second source, selector, or retry, so the release gate
+  remains closed and no second independent review or tag action ran.
+
+Durable evidence:
+
+- `docs/dev/notes/0018-final-autonomous-yield-proof.json`;
+- baseline/final counts show acquisitions `65 -> 66`, service jobs `49 -> 50`,
+  runs `12 -> 13`, attempts `13 -> 14`, coverage intervals `9 -> 10`, and
+  model calls `0 -> 0`, while documents remain 50, versions 57, evidence spans
+  419, and index versions 44.
+
+Remaining acceptance criterion:
+
+- obtain explicit authority for a new bounded selector/source attempt, because
+  the approved one-attempt remediation cannot prove indexing yield.
+
+Subagent status and reconciliation:
+
+- no new evaluator was spawned after the hard stop;
+- the first independent evaluator's release rejection remains authoritative.
+
+Graphiti write status:
+
+- pending one bounded failure-memory attempt after the terminal receipt commit.
+
+Next action:
+
+- stop and request explicit user authority for one new public selector/source
+  attempt; do not publish `v4.0.0` or reinterpret zero yield as acceptance.

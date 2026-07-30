@@ -742,6 +742,9 @@ Current State:
 - S07 installed the corrected service 0.2.9/MCP 4.0.1 pair and proved
   migration plus rollback, but final release review remains rejected pending
   one autonomous deterministic-yield proof.
+- The one authorized public Reddit remediation interval ran autonomously with
+  assessment disabled but yielded zero items and no index change. Its spec is
+  paused, and a second selector/source attempt requires explicit new authority.
 
 Goal Seeds:
 
@@ -780,10 +783,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- Execute Plan 0018's final-review remediation: one public Reddit
-  service-scheduled interval with assessment/App Intelligence disabled,
-  followed by durable pause, quiescence, authority reconciliation, and the
-  second independent review.
+- Stop at Plan 0018's `zero_yield_no_index_change` hard bound. With explicit
+  user authority, derive one new bounded public selector/source attempt;
+  otherwise keep P07 open and the `v4.0.0` release gate closed.
 
 ## Goal-Compatible Plan Conversion
 

@@ -4242,3 +4242,61 @@ Next Bounded Action:
 - execute collection `p0018-final-public-collection` for one 3,600-second
   public Reddit interval with assessment/App Intelligence disabled, pause it,
   prove quiescence and cache yield, then request the second final review.
+
+## Turn 64 | 2026-07-30
+
+Focus: execute the one-attempt autonomous deterministic-yield remediation and
+stop truthfully at its zero-yield hard bound.
+
+Authority Consulted:
+
+- Plan 0018 final-review remediation exact collection, bounds, hard stops, and
+  acceptance
+- live service 0.2.9 collection/scheduler/job/index/database authority
+- first independent review rejection and current planning, validation,
+  documentation, Graphiti, Git, and closeout policies
+
+Decisions And Changes:
+
+- Created enabled revision 1 of `p0018-final-public-collection` for public
+  Reddit topic `OpenClaw`, one 3,600-second due boundary, three items, 24-hour
+  lookback, 50 requests, one dollar, 120 seconds, durable retention, and
+  assessment disabled.
+- Disconnected after the put; the resident service scheduled and owned the
+  05:00Z interval through one terminal published job.
+- Paused the spec immediately as revision 2 and did not change selector,
+  source, limits, or retry.
+- Preserved the sanitized machine-readable result in
+  `docs/dev/notes/0018-final-autonomous-yield-proof.json`.
+
+Validation Evidence:
+
+- exactly one timer-triggered public run, one job attempt, no error code;
+- acquisitions `65 -> 66`, service jobs `49 -> 50`, job events `478 -> 488`,
+  runs `12 -> 13`, attempts `13 -> 14`, and coverage `9 -> 10`;
+- intelligence tasks stayed 2 and model calls stayed 0;
+- the run returned attempted/observed/stored `0/0/0`; documents stayed 50,
+  versions 57, evidence spans 419, index versions 44, and active index remained
+  `index-4f096317e15c57da386466f2`;
+- revision 2 is disabled, the run count remained one at the post-pause
+  readback, and database integrity is `ok`.
+
+State Movement:
+
+- remediation: `ready -> terminal zero_yield_no_index_change`;
+- Plan 0018 and P07 remain `OPEN`;
+- independent review and `v4.0.0` release gates remain closed.
+
+Subagent Status And Reconciliation:
+
+- no second evaluator ran because the live acceptance hard stop fired;
+- the first independent rejection remains authoritative.
+
+Graphiti Write Status:
+
+- pending one bounded terminal-failure memory attempt after commit.
+
+Next Bounded Action:
+
+- request explicit user authority for one new bounded public selector/source
+  attempt; without it, stop and keep the release unpublished.
