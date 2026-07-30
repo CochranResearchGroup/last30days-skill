@@ -247,12 +247,27 @@ def test_due_tick_waits_for_prior_spec_run_to_finish(tmp_path):
     current[0] = NOW + timedelta(hours=3, minutes=5)
     assert coordinator.enqueue_due(limit=10) == ()
 
-    coordinator.record_completion(
-        job_id=first[0].job_id,
-        state="published",
-        outcomes=(),
-        completed_at=current[0],
-    )
+    conn = sqlite3.connect(db_path)
+    try:
+        conn.execute(
+            """UPDATE service_jobs
+               SET state = 'failed', updated_at = ?, error_code = 'retry_exhausted'
+               WHERE job_id = ?""",
+            (
+                current[0].isoformat().replace("+00:00", "Z"),
+                first[0].job_id,
+            ),
+        )
+        conn.commit()
+        stale_collection_state = conn.execute(
+            """SELECT state FROM collection_runs
+               WHERE collection_run_id = ?""",
+            (first[0].collection_run_id,),
+        ).fetchone()[0]
+    finally:
+        conn.close()
+    assert stale_collection_state == "queued"
+
     second = coordinator.enqueue_due(limit=10)
     assert len(second) == 1
 

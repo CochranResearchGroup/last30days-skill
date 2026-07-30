@@ -350,12 +350,14 @@ Root cause and repair:
 - `CollectionCoordinator.enqueue_due()` considered only the due time and retry
   delay; it did not suppress a due interval while the same spec already had a
   non-terminal collection run;
-- add deterministic per-spec backpressure by excluding specs with collection
-  runs outside terminal states `published`, `partial`, and `failed`;
+- add deterministic per-spec backpressure by excluding specs whose collection
+  run and authoritative service job are both non-terminal;
+- treat terminal service-job state as authoritative when lease recovery has
+  not yet updated the collection-run mirror;
 - focused regression coverage advances the clock across multiple overdue
-  boundaries, proves no second run appears while the first is active, marks
-  the first terminal, admits exactly one successor, and again suppresses
-  overlap.
+  boundaries, proves no second run appears while the first is active, simulates
+  a terminal job with a stale collection mirror, admits exactly one successor,
+  and again suppresses overlap.
 
 Revision-3 execution bounds:
 

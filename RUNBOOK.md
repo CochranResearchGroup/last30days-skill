@@ -3356,9 +3356,11 @@ Decisions And Changes:
   and paused the spec as revision 9.
 - Identified missing per-spec scheduler backpressure: due admission ignored a
   prior non-terminal run for the same collection spec.
-- Added a deterministic `NOT EXISTS` gate for non-terminal collection runs and
-  a clock-driven regression test covering suppression, terminal release, and
-  renewed suppression.
+- Added a deterministic `NOT EXISTS` gate that joins collection runs to the
+  authoritative service-job ledger, including terminal jobs whose collection
+  mirror remains stale after lease recovery.
+- Added a clock-driven regression test covering suppression, authoritative
+  terminal release with a stale collection mirror, and renewed suppression.
 - Opened Revision 3 as the second and final implementation attempt. Its
   durability restart occurs after interval one is claimed and before interval
   two is admitted.

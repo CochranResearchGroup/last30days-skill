@@ -728,8 +728,15 @@ class CollectionCoordinator:
                      AND NOT EXISTS (
                          SELECT 1
                          FROM collection_runs AS active
+                         LEFT JOIN service_jobs AS job
+                           ON job.job_id = active.job_id
                          WHERE active.collection_spec_id = s.collection_spec_id
                            AND active.state NOT IN ('published', 'partial', 'failed')
+                           AND (
+                               active.job_id IS NULL
+                               OR job.job_id IS NULL
+                               OR job.state NOT IN ('published', 'partial', 'failed')
+                           )
                      )
                    ORDER BY q.next_due_at, s.collection_spec_id
                    LIMIT ?""",
