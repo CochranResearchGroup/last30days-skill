@@ -1004,3 +1004,158 @@ Next action:
   ordinary Skill a concise MCP discovery/query/synthesis client, separate
   privileged guidance, and retain the direct Engine only as an explicit
   compatibility/debug path.
+
+## S06 Implementation Packet | Least-privilege Agent Client
+
+Outcome:
+
+- the ordinary `/last30days` Skill loads a concise MCP
+  discovery/query/synthesis contract and does not teach an ordinary querying
+  agent source, credential, browser, retry, or scraper orchestration;
+- monitoring, administration, maintenance, and direct-Engine compatibility
+  guidance remain available only through explicit capability-gated reference
+  files.
+
+### Frozen ownership and write surfaces
+
+- `skills/last30days/SKILL.md` owns the ordinary agent path and must remain
+  self-contained for the ten MCP operations;
+- `skills/last30days/references/monitoring.md`,
+  `administration.md`, and `maintenance.md` own privileged progressive
+  disclosure;
+- `skills/last30days/references/direct-engine-compatibility.md` preserves the
+  existing request-scoped Engine contract without making it the default;
+- `README.md`, `CONFIGURATION.md`, and `docs/ONBOARDING.md` describe the same
+  service-first/default and explicit-fallback boundary;
+- one focused policy test owns the installed Skill-content boundary and the
+  existing artifact test proves all required references plus the Engine remain
+  packaged.
+
+No Python, Go, schema, service, MCP handler, or database module moves belong to
+this packet.
+
+### Ordinary query contract
+
+1. Discover `service_info` before any other product call.
+2. Use `query` for current evidence-backed research and `temporal_query` for
+   time-scoped/dossier/trend/comparison work.
+3. Use `refresh` only when the user requests fresh work or accepted cache
+   policy requires it; poll only the returned durable job with `job_status`.
+4. Use `profile_history` and `coverage` as read-only evidence/coverage
+   surfaces.
+5. Synthesize only returned brief/evidence, cite returned URLs inline, and
+   report freshness, uncertainty, degradation, access partition, and terminal
+   job state truthfully.
+6. Never operate browsers, credentials, adapters, retries, schedules,
+   databases, indexes, App Intelligence turns, or service processes in the
+   ordinary path.
+
+### Capability gates
+
+- load `monitoring.md` only for an explicit request to inspect health,
+  freshness, coverage, topic/feed status, or durable job state;
+- load `administration.md` only for an explicit request to mutate a governed
+  topic/collection or request/resume bounded service work;
+- load `maintenance.md` only for an explicit maintenance/repair-readiness
+  request and preserve all human approval, branch, evaluation, restart, and
+  deployment gates;
+- load `direct-engine-compatibility.md` only when the MCP product surface is
+  unavailable and the user explicitly requests the compatibility/debug path.
+  Unavailability alone returns a safe diagnostic and fallback offer; it does
+  not authorize live acquisition.
+
+### Execution slices
+
+1. S06-A: relocate the legacy Engine instruction contract behind the explicit
+   compatibility gate; replace the ordinary Skill with the concise MCP client;
+   add monitoring, administration, maintenance, and content-boundary tests.
+2. S06-B: align README, configuration, onboarding, and installable artifact
+   expectations; build the Skill artifact and run a fresh-client MCP smoke.
+
+### Bounds and hard stops
+
+- maximum implementation attempts per slice: 2;
+- maximum review/rework cycles per slice: 1;
+- maximum consecutive hardening-only checkpoints: 1;
+- active-agent concurrency: 1;
+- stop if the ordinary Skill requires Bash, WebSearch, browser, cookie,
+  credential, scraper, direct database, or internal Python orchestration;
+- stop if privileged mutation becomes reachable without explicit user intent;
+- stop if the direct Engine or its packaged scripts are removed before S07
+  compatibility and rollback acceptance;
+- stop if any live service, timer, collection, browser, credential, or
+  installed configuration changes.
+
+### Validation and acceptance
+
+- the ordinary Skill is no more than 300 lines and names all ten MCP
+  operations with `service_info` as the first call;
+- it contains no credential variable names, browser/profile route mechanics,
+  scraper CLI instructions, or executable direct-Engine/service command;
+- progressive references carry explicit read/mutation/approval boundaries and
+  are present in the built `.skill` artifact;
+- the direct Engine and scripts remain packaged and documented as
+  compatibility/debug only;
+- focused Skill policy, artifact, metadata, service-product, and MCP
+  integration tests pass;
+- a fresh MCP client lists all ten operations and completes a cache-only query
+  without reading the compatibility or privileged references;
+- planning audit, `git diff --check`, package-boundary audit, and current
+  branch/tracking equality pass.
+
+### Checkpoint P0018-C09 | 2026-07-30
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `S06 unpacketized -> S06 packet ready`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- inventoried the 1,908-line Skill, its service-first preface, legacy
+  request-scoped Engine contract, browser/credential mechanics, runtime
+  preflight tests, artifact boundary, README, configuration, and onboarding;
+- froze the ordinary MCP client, progressive disclosure, explicit fallback
+  gate, write surfaces, two execution slices, acceptance tests, and hard
+  stops above.
+
+Validation evidence:
+
+- the current Skill already names all ten MCP operations but then makes the
+  Engine mandatory and exposes source/browser/credential mechanics in the same
+  ordinary context;
+- the independent service artifact remains separate from the Skill and the
+  installable Skill still packages the compatibility Engine;
+- the plan-authority audit must pass with Plan 0018 as the sole active plan
+  before this checkpoint is committed.
+
+Remaining acceptance criteria:
+
+- execute S06-A and S06-B without changing live runtime state;
+- execute S07 compatibility/release transition;
+- run independent final outcome review before Plan 0018/P07 closeout.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Plan 0018 keeps active-agent concurrency at one and the
+  canonical Skill plus its progressive references share one instruction
+  boundary.
+
+Graphiti write status:
+
+- `not_attempted_for_planning_only_checkpoint`;
+- the prior Plan 0016 memory attempt is already recorded as pending and this
+  checkpoint adds no runtime fact beyond the repo plan.
+
+Next action:
+
+- execute S06-A: move the legacy instruction contract behind the explicit
+  compatibility gate, author the concise ordinary Skill and privileged
+  references, and add the focused content-boundary test.

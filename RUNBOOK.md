@@ -3977,3 +3977,63 @@ Next Bounded Action:
 - derive and execute Plan 0018 S06: freeze the ordinary Skill's concise MCP
   discovery/query/synthesis path, separate privileged guidance, and retain the
   direct Engine only as a clearly labeled compatibility/debug path.
+
+## Turn 60 | 2026-07-30
+
+Focus: convert Plan 0018 S06 into a bounded least-privilege Agent client
+implementation packet.
+
+Authority Consulted:
+
+- Plan 0018's S06 objective, Skill/MCP architectural invariant, sequencing,
+  acceptance, and definition of done
+- the current 1,908-line `skills/last30days/SKILL.md`, installable artifact
+  boundary, README, configuration, onboarding, and Skill-content tests
+- current planning, documentation, architecture, CodeGraph, Git, validation,
+  and closeout policies
+
+Decisions And Changes:
+
+- Froze the ordinary Skill as a self-contained ten-operation MCP
+  discovery/query/synthesis client capped at 300 lines.
+- Assigned monitoring, administration, maintenance, and direct-Engine
+  compatibility guidance to explicit progressive-disclosure references.
+- Required explicit user intent before any privileged mutation or compatibility
+  acquisition path; service unavailability alone only authorizes a diagnostic
+  and fallback offer.
+- Preserved the packaged direct Engine and scripts until S07 compatibility and
+  rollback acceptance.
+- Split execution into S06-A instruction/content boundaries plus S06-B docs,
+  artifact, and fresh-client MCP proof.
+
+Validation Evidence:
+
+- current ordinary context contains the ten-tool service-first preface but then
+  requires direct Engine execution and includes credential/browser/scraper
+  mechanics;
+- the service artifact contains no Skill prose, while the Skill artifact still
+  packages the compatibility Engine;
+- no code, installed runtime, service, timer, browser, credential, collection,
+  or database state changed during planning.
+
+State Movement:
+
+- Plan 0018 S06: `unpacketized -> packet ready`;
+- Plan 0018 and P07 remain `OPEN`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one and the
+  instruction boundary is one coupled write surface.
+
+Graphiti Write Status:
+
+- `not_attempted_for_planning_only_checkpoint`;
+- the preceding Plan 0016 checkpoint already records its bounded memory
+  attempt, and this turn adds no new runtime fact.
+
+Next Bounded Action:
+
+- execute S06-A: relocate the legacy Engine contract behind its explicit gate,
+  author the concise ordinary MCP Skill and three privileged references, and
+  add the focused content-boundary test.
