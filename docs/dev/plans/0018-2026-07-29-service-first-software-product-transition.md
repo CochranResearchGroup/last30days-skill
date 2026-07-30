@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 2
+Plan version: 3
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -88,10 +88,11 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C15 is the current authority for the remaining collection
-successor. Earlier packet-level `no retry` and explicit-approval statements are
-historical constraints on those packet instances and are superseded for the
-current successor.
+Checkpoint P0018-C19 is the current authority for the remaining collection
+proof. Earlier packet-level `no retry` and explicit-approval statements remain
+historical constraints on those packet instances. Repeated live wall-bound
+failure now places any further installed transition or live interval behind
+the explicit version-3 human gate.
 
 ## User Experience Contract
 
@@ -1946,3 +1947,145 @@ Next action:
 
 - commit and push the deterministic 0.2.10 repair and reviewed transition
   packet, then stop at the explicit installed-runtime/live-attempt gate.
+
+### Checkpoint P0018-C18 | 2026-07-30
+
+Plan version:
+
+- 2
+
+State transition:
+
+- `deterministic repair validated -> installed repair rejected by live proof`
+
+Progress classification:
+
+- `regression`
+
+Authority classification:
+
+- `explicit_human_gate_satisfied`;
+- the user authorized
+  `docs/dev/notes/0018-service-0.2.10-reviewed-transition-packet.json` with
+  `ok go`;
+- the packet authorized one managed upgrade, one service-owned public
+  interval, immediate pause, bounded containment, and rollback on transition
+  or readiness failure;
+- no evaluator, tag, or release action was authorized or executed.
+
+Installed transition and reconciliation:
+
+- source commit `fc118de` and artifact digest
+  `b73aaa774f8a580ac2d375a36f0a5405f6f0967639a8a9a9b6b1c17393cafd98`
+  matched the pushed packet;
+- the managed service upgraded from 0.2.9 to ready 0.2.10 with 0.2.9 as the
+  rollback target, schema 12, integrity `ok`, and unchanged corpus/index/model
+  state;
+- startup reconciliation closed the target failed run and its two attempts,
+  plus three older stranded failed acceptance runs, without acquisition,
+  document, evidence, job, model, task, or index growth.
+
+Live outcome and containment:
+
+- the resume client exited and the resident timer created exactly one 20:00Z
+  public Reddit run, `collection-run-f37f713ff12daa427393a42314e8dc2b`,
+  with job `06b8025c-5ade-4c25-9029-68f382257fd4`;
+- revision 4 paused the spec immediately after the run appeared;
+- attempt 1 crossed the 120-second worker wall bound with no acquisition
+  receipt while the job remained `acquiring`;
+- the service was stopped before lease expiry, preventing automatic attempt 2;
+- the exact live lease was terminalized through the supervisor's fenced
+  failure API as `worker_wall_timeout_unenforced`, not by direct SQL;
+- service 0.2.10 was restored ready; the job, run, and sole attempt are failed,
+  the spec remains paused, integrity is `ok`, and model calls remain zero.
+
+Durable evidence:
+
+- `docs/dev/notes/0018-service-0.2.10-live-timeout-proof.json`.
+
+Acceptance result:
+
+- `REJECT`;
+- autonomous timer ownership and one-run containment passed;
+- public acquisition receipt, document/version advancement, and index
+  advancement failed;
+- independent final review, `v4.0.0`, and release remain closed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active-agent concurrency remained one.
+
+Next action:
+
+- diagnose and repair the remaining deterministic wall-bound cleanup defect;
+  do not install another runtime or initiate another live interval under plan
+  version 2.
+
+### Checkpoint P0018-C19 | 2026-07-30
+
+Plan version:
+
+- 3
+
+State transition:
+
+- `installed repair rejected by live proof -> bounded reaping repair ready`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority` covered deterministic diagnosis, source repair,
+  tests, service 0.2.11 packaging, and a reviewed successor packet;
+- `human_gate` applies to installing/restarting service 0.2.11 or initiating
+  any further live interval because repeated live failure exhausted the prior
+  plan-version bound;
+- the proposed packet does not alter source, profile, public-data, model,
+  budget, request, item, or release boundaries.
+
+Changed assumption and repair:
+
+- SIGKILL does not guarantee prompt child reaping;
+- `_read_bounded()` killed the worker at its deadline and then called
+  `process.wait()` without a timeout, so a delayed reap could defeat the host
+  wall bound and prevent the typed timeout receipt;
+- service 0.2.11 bounds post-kill wait to one second, delegates delayed reaping
+  to a daemon cleanup thread, and returns the existing safe transient
+  `worker_timeout`;
+- a non-reaping-child regression test proves the synchronous cleanup path
+  cannot wait indefinitely.
+
+Reviewed successor:
+
+- `docs/dev/notes/0018-service-0.2.11-reviewed-transition-packet.json`;
+- one upgrade from installed 0.2.10 to 0.2.11 and one new timer run only after
+  explicit approval;
+- at most one started job attempt, a typed receipt by 121 seconds, immediate
+  pause, and rollback to 0.2.10 on transition/readiness failure;
+- independent final review and immutable release gates remain unchanged.
+
+Validation evidence:
+
+- 47 focused worker, job-runner, collection, runtime, package, lifecycle, and
+  release-version tests passed;
+- the complete suite passed:
+  `2319 passed, 7 skipped, 6 subtests passed`;
+- reproducible artifact:
+  `dist/service/last30days-service-0.2.11.tar.gz`;
+- SHA-256:
+  `2b6facb0a31136d8e9a60df4c71705b33224a858ba3510db6cfc3d520e9d91ff`.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active-agent concurrency remained one.
+
+Graphiti write status:
+
+- `pending_after_checkpoint_commit`.
+
+Next action:
+
+- complete broad validation, commit and push plan version 3 plus service
+  0.2.11, then stop at the explicit repeated-live-failure gate.

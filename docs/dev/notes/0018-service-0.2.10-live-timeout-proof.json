@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "plan_id": "0018",
+  "checkpoint_id": "P0018-C18",
+  "executed_at": "2026-07-30",
+  "authority": {
+    "classification": "explicit_human_gate_satisfied",
+    "user_authorization": "ok go",
+    "packet": "docs/dev/notes/0018-service-0.2.10-reviewed-transition-packet.json"
+  },
+  "source": {
+    "commit": "fc118de50b1dbe72c7879a9d3777526ac724ee95",
+    "origin_main": "fc118de50b1dbe72c7879a9d3777526ac724ee95",
+    "artifact": "dist/service/last30days-service-0.2.10.tar.gz",
+    "artifact_sha256": "b73aaa774f8a580ac2d375a36f0a5405f6f0967639a8a9a9b6b1c17393cafd98"
+  },
+  "installed_transition": {
+    "from_version": "0.2.9",
+    "to_version": "0.2.10",
+    "current_release": "releases/0.2.10",
+    "rollback_release": "releases/0.2.9",
+    "service_status": "ready",
+    "database_schema_version": 12,
+    "database_integrity": "ok",
+    "runtime_manifest_sha256": "eef72f1c797ea8febefe687a0a9e93cd25f6f6272e995fb325328648e2adbc16",
+    "active_index_before": "index-4f096317e15c57da386466f2"
+  },
+  "startup_reconciliation": {
+    "target_run_id": "collection-run-765dce990e42275c8b949a861b08000d",
+    "target_job_id": "5a67717d-9fd0-4d8f-845a-6f37fb6fe813",
+    "target_run_state": "failed",
+    "target_attempt_states": [
+      "failed",
+      "failed"
+    ],
+    "target_error_code": "retry_exhausted",
+    "additional_stale_runs_reconciled": 3,
+    "collection_coverage_interval_delta": 4,
+    "corpus_or_index_delta": 0
+  },
+  "live_interval": {
+    "collection_spec_id": "p0018-final-public-collection-v2",
+    "selector": {
+      "topic": "temporal knowledge graphs"
+    },
+    "source": "reddit",
+    "profile_id": "default",
+    "redaction_class": "public",
+    "assessment_enabled": false,
+    "enabled_revision": 3,
+    "paused_revision": 4,
+    "scheduled_for": "2026-07-30T20:00:00Z",
+    "started_at": "2026-07-30T20:02:20.608084Z",
+    "collection_run_id": "collection-run-f37f713ff12daa427393a42314e8dc2b",
+    "job_id": "06b8025c-5ade-4c25-9029-68f382257fd4",
+    "job_attempts_started": 1,
+    "maximum_job_attempts": 2,
+    "acquisition_receipts": 0,
+    "wall_timeout_seconds": 120,
+    "hard_stop_observed": "worker wall bound exceeded while job remained acquiring",
+    "service_stopped_at": "2026-07-30T20:04:54Z",
+    "containment": {
+      "method": "fenced supervisor failure API",
+      "error_code": "worker_wall_timeout_unenforced",
+      "retryable": false,
+      "attempt_2_prevented": true,
+      "job_state": "failed",
+      "run_state": "failed",
+      "attempt_state": "failed"
+    }
+  },
+  "counts": {
+    "before_upgrade": {
+      "acquisitions": 66,
+      "collection_run_attempts": 16,
+      "collection_runs": 14,
+      "collection_coverage_intervals": 10,
+      "document_versions": 57,
+      "documents": 50,
+      "evidence_spans": 419,
+      "index_versions": 44,
+      "service_intelligence_tasks": 2,
+      "service_model_calls": 0,
+      "service_job_events": 499,
+      "service_jobs": 51
+    },
+    "final": {
+      "acquisitions": 66,
+      "collection_run_attempts": 17,
+      "collection_runs": 15,
+      "collection_coverage_intervals": 15,
+      "document_versions": 57,
+      "documents": 50,
+      "evidence_spans": 419,
+      "index_versions": 44,
+      "service_intelligence_tasks": 2,
+      "service_model_calls": 0,
+      "service_job_events": 505,
+      "service_jobs": 52
+    }
+  },
+  "final_runtime": {
+    "service_version": "0.2.10",
+    "service_status": "ready",
+    "database_schema_version": 12,
+    "database_integrity": "ok",
+    "collection_enabled": false,
+    "collection_run_count": 2,
+    "active_index": "index-4f096317e15c57da386466f2",
+    "v4_tag_present": false
+  },
+  "acceptance": {
+    "autonomous_timer_run": true,
+    "single_new_run": true,
+    "public_acquisition_receipt": false,
+    "document_version_advance": false,
+    "index_advance": false,
+    "assessment_disabled": true,
+    "model_calls_unchanged": true,
+    "verdict": "rejected"
+  },
+  "summary": "The approved service 0.2.10 transition was ready and preserved schema, integrity, corpus, and index state. Startup reconciliation closed the target stranded run plus three older failed acceptance runs. The resident scheduler created exactly one new public timer run after the resume client exited, and the spec was paused immediately. Attempt 1 again exceeded the 120-second worker wall bound without an acquisition receipt because post-kill child reaping remained unbounded. The service was stopped before lease expiry, the exact live lease was terminalized through the fenced supervisor API, attempt 2 was prevented, and service 0.2.10 was restored ready. Indexed-yield acceptance remains rejected."
+}

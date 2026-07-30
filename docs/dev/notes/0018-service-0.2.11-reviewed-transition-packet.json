@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "packet_id": "p0018-service-0.2.11-transition",
+  "authority_classification": "human_gate",
+  "prepared_at": "2026-07-30",
+  "source_version": "0.2.11",
+  "installed_baseline_version": "0.2.10",
+  "artifact": {
+    "path": "dist/service/last30days-service-0.2.11.tar.gz",
+    "sha256": "2b6facb0a31136d8e9a60df4c71705b33224a858ba3510db6cfc3d520e9d91ff"
+  },
+  "changed_assumption": "SIGKILL does not guarantee prompt child reaping; an unbounded process.wait() can defeat the worker wall deadline.",
+  "repair": [
+    "bound post-kill process.wait() to one second",
+    "hand delayed reaping to a daemon cleanup thread",
+    "raise the existing typed worker_timeout without waiting indefinitely"
+  ],
+  "approval_scope_if_granted": [
+    "upgrade the managed user service once from 0.2.10 to 0.2.11",
+    "resume p0018-final-public-collection-v2 for exactly one service-owned interval",
+    "pause the collection immediately after that interval is observed",
+    "rollback to 0.2.10 on transition or readiness failure"
+  ],
+  "preconditions": [
+    "source commit containing this packet is pushed",
+    "artifact digest matches this packet",
+    "v4.0.0 is absent",
+    "p0018-final-public-collection-v2 is disabled at revision 4",
+    "service 0.2.10 is ready and database integrity is ok",
+    "job 06b8025c-5ade-4c25-9029-68f382257fd4 remains terminal failed with exactly one attempt"
+  ],
+  "live_interval_bounds": {
+    "maximum_new_runs": 1,
+    "maximum_job_attempts_started": 1,
+    "wall_timeout_seconds": 120,
+    "kill_reap_grace_seconds": 1,
+    "source": "reddit",
+    "profile_id": "default",
+    "access_class": "public",
+    "item_limit": 3,
+    "network_request_limit": 50,
+    "budget_cents": 100,
+    "assessment_enabled": false
+  },
+  "hard_stops": [
+    "artifact or installed readiness mismatch",
+    "database integrity failure or schema change",
+    "more than one new collection run or one started job attempt",
+    "non-public evidence or source/profile drift",
+    "model-call or intelligence-task growth",
+    "inability to pause the collection",
+    "no durable typed acquisition receipt by 121 seconds after budget_spent"
+  ],
+  "success_criteria": [
+    "one timer-owned run occurs after the initiating client disconnects",
+    "a durable public acquisition receipt is recorded within 121 seconds",
+    "public document and document-version counts advance",
+    "a new active index version contains the acquired public evidence",
+    "assessment and model execution remain disabled",
+    "the collection is paused and no second run appears"
+  ],
+  "release_gate": "Independent final ACCEPT remains mandatory; this packet never creates a tag or release."
+}

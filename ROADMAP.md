@@ -747,8 +747,11 @@ Current State:
   paused.
 - The bounded successor exhausted both live leases and exposed worker-failure
   persistence plus collection reconciliation defects. Service 0.2.10 repairs
-  both paths and passes the complete deterministic suite; the installed
-  0.2.9 daemon remains unchanged pending the real runtime gate.
+  both paths and passed the complete deterministic suite.
+- The approved 0.2.10 upgrade reconciled stranded state and remained ready,
+  but its one new timer attempt again exceeded the worker wall bound without a
+  receipt. Bounded containment prevented attempt 2. The installed daemon is
+  0.2.10; service 0.2.11 now bounds post-kill child reaping in source only.
 
 Goal Seeds:
 
@@ -787,13 +790,12 @@ Active Plan:
 
 Next Bounded Action:
 
-- Checkpoint P0018-C16 records that the bounded successor exhausted both
-  internal leases without an acquisition receipt and left its failed job's
-  collection run incorrectly `acquiring`. Checkpoint P0018-C17 records the
-  validated service 0.2.10 repair and exact reviewed transition packet. Stop
-  for explicit approval before installing/restarting 0.2.10 or running the
-  single third live interval. Keep independent review and `v4.0.0` closed
-  until indexed yield is proven.
+- Checkpoint P0018-C18 records the approved 0.2.10 upgrade, successful
+  reconciliation, repeated live wall-bound failure, and bounded containment.
+  Checkpoint P0018-C19 opens plan version 3 with the deterministic 0.2.11
+  reaping fix and reviewed packet. Stop for explicit approval before
+  installing/restarting 0.2.11 or running another live interval. Keep
+  independent review and `v4.0.0` closed until indexed yield is proven.
 
 ## Goal-Compatible Plan Conversion
 

@@ -4582,3 +4582,76 @@ Next Bounded Action:
   `docs/dev/notes/0018-service-0.2.10-reviewed-transition-packet.json`, then
   stop for explicit approval before the managed upgrade and one third live
   interval.
+
+## Turn 69 | 2026-07-30
+
+Focus: execute the approved service 0.2.10 transition and one live acceptance
+interval, contain its repeated wall-bound failure, and prepare a deterministic
+version-3 successor.
+
+Authority Consulted:
+
+- Plan 0018 checkpoints P0018-C17 through P0018-C19
+- explicit user authorization `ok go`
+- `docs/dev/notes/0018-service-0.2.10-reviewed-transition-packet.json`
+- live installed release, readiness, systemd, scheduler, supervisor, corpus,
+  index, database, validation, versioning, and closeout authorities
+
+Decisions And Changes:
+
+- Upgraded the managed service from 0.2.9 to 0.2.10 and retained 0.2.9 as
+  rollback.
+- Allowed startup reconciliation to close the target stranded run plus three
+  older failed acceptance runs.
+- Resumed the paused successor, disconnected the client, observed exactly one
+  resident-timer run, and paused immediately.
+- Stopped the service when attempt 1 exceeded 120 seconds without a receipt,
+  then used the supervisor's fenced failure API to prevent attempt 2 and
+  restored 0.2.10 ready.
+- Diagnosed unbounded post-SIGKILL `process.wait()` as the remaining host-wall
+  defect.
+- Added a one-second reap bound plus asynchronous delayed reaping, reserved
+  service 0.2.11, and prepared a version-3 reviewed successor packet.
+- Did not run an evaluator, create `v4.0.0`, or publish a release.
+
+Validation Evidence:
+
+- installed 0.2.10 readiness, schema 12, integrity `ok`, exact manifest, and
+  0.2.9 rollback target;
+- target prior run and both attempts reconciled `failed/retry_exhausted`;
+- new run `collection-run-f37f713ff12daa427393a42314e8dc2b` and job
+  `06b8025c-5ade-4c25-9029-68f382257fd4`;
+- one started attempt, zero acquisition receipts, no document/version/index or
+  model/task growth, and terminal
+  `failed/worker_wall_timeout_unenforced` containment;
+- service 0.2.10 restored ready, collection disabled at revision 4, exactly
+  two total successor runs, database integrity `ok`;
+- 47 focused service 0.2.11 tests passed;
+- full suite passed: `2319 passed, 7 skipped, 6 subtests passed`;
+- service 0.2.11 artifact SHA-256:
+  `2b6facb0a31136d8e9a60df4c71705b33224a858ba3510db6cfc3d520e9d91ff`.
+
+State Movement:
+
+- Plan 0018 version 2:
+  `deterministic repair validated -> installed repair rejected by live proof`;
+- Plan 0018 version 3:
+  `installed repair rejected by live proof -> bounded reaping repair ready`;
+- progress classification: `regression`, then `blocker_reduction`;
+- installed/restart/further-live work is a real `human_gate` after repeated
+  live failure;
+- independent review and immutable release gates remain closed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one.
+
+Graphiti Write Status:
+
+- `pending_after_checkpoint_commit`.
+
+Next Bounded Action:
+
+- complete full validation, commit and push service 0.2.11 plus the live proof
+  and reviewed packet, then stop for explicit approval before another installed
+  transition or live interval.

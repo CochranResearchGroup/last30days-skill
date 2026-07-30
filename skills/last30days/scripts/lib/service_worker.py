@@ -18,6 +18,7 @@ from . import service_contracts as contracts
 MAX_WORK_REQUEST_BYTES = 131_072
 DEFAULT_MAX_WORK_RESULT_BYTES = 1_048_576
 DEFAULT_MAX_STDERR_BYTES = 65_536
+WORKER_REAP_TIMEOUT_SECONDS = 1.0
 
 SOURCE_ADAPTERS = {
     "x": ("x_agent_browser", "1"),
@@ -92,6 +93,19 @@ class SubprocessAcquisitionRunner:
         else:
             process.kill()
 
+    @classmethod
+    def _kill_and_reap(cls, process: subprocess.Popen[bytes]) -> None:
+        """Kill immediately without letting child reaping defeat a wall bound."""
+        cls._kill_process_group(process)
+        try:
+            process.wait(timeout=WORKER_REAP_TIMEOUT_SECONDS)
+        except subprocess.TimeoutExpired:
+            threading.Thread(
+                target=process.wait,
+                name=f"last30days-worker-reaper-{process.pid}",
+                daemon=True,
+            ).start()
+
     def cancel_all(self) -> None:
         """Terminate every worker owned by this runner during service shutdown."""
         with self._process_lock:
@@ -123,8 +137,7 @@ class SubprocessAcquisitionRunner:
             while selector.get_map():
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
-                    self._kill_process_group(process)
-                    process.wait()
+                    self._kill_and_reap(process)
                     raise WorkerExecutionError(
                         "worker_timeout",
                         contracts.RetryClass.TRANSIENT,
@@ -138,8 +151,7 @@ class SubprocessAcquisitionRunner:
                         continue
                     name = key.data
                     if len(buffers[name]) + len(chunk) > limits[name]:
-                        self._kill_process_group(process)
-                        process.wait()
+                        self._kill_and_reap(process)
                         raise WorkerExecutionError(
                             (
                                 "worker_output_too_large"
@@ -154,8 +166,7 @@ class SubprocessAcquisitionRunner:
                 raise subprocess.TimeoutExpired(process.args, timeout_seconds)
             process.wait(timeout=remaining)
         except subprocess.TimeoutExpired as exc:
-            self._kill_process_group(process)
-            process.wait()
+            self._kill_and_reap(process)
             raise WorkerExecutionError(
                 "worker_timeout",
                 contracts.RetryClass.TRANSIENT,

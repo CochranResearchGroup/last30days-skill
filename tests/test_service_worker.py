@@ -1,11 +1,13 @@
 """Process-isolation tests for bounded acquisition workers."""
 
 import json
+import subprocess
 import sys
 
 import pytest
 
 from lib import service_contracts as contracts
+from lib import service_worker
 from lib.service_worker import SubprocessAcquisitionRunner, WorkerExecutionError
 
 
@@ -88,6 +90,46 @@ def test_runner_times_out_and_returns_only_a_safe_typed_failure():
     assert caught.value.code == "worker_timeout"
     assert caught.value.retry_class is contracts.RetryClass.TRANSIENT
     assert "time.sleep" not in str(caught.value)
+
+
+def test_timeout_cleanup_never_waits_unbounded_for_child_reaping(monkeypatch):
+    waits = []
+    threads = []
+
+    class StuckProcess:
+        pid = 12345
+
+        def wait(self, timeout=None):
+            waits.append(timeout)
+            raise subprocess.TimeoutExpired("worker", timeout)
+
+    class ReaperThread:
+        def __init__(self, *, target, name, daemon):
+            threads.append((target, name, daemon))
+
+        def start(self):
+            return None
+
+    killed = []
+    monkeypatch.setattr(
+        SubprocessAcquisitionRunner,
+        "_kill_process_group",
+        lambda process: killed.append(process.pid),
+    )
+    monkeypatch.setattr(service_worker.threading, "Thread", ReaperThread)
+    process = StuckProcess()
+
+    SubprocessAcquisitionRunner._kill_and_reap(process)
+
+    assert killed == [process.pid]
+    assert waits == [service_worker.WORKER_REAP_TIMEOUT_SECONDS]
+    assert threads == [
+        (
+            process.wait,
+            f"last30days-worker-reaper-{process.pid}",
+            True,
+        )
+    ]
 
 
 def test_runner_rejects_a_stale_worker_lease_generation():
