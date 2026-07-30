@@ -4106,3 +4106,64 @@ Next Bounded Action:
 - derive Plan 0018 S07 from the current versioning, release, install, migration,
   cross-harness acceptance, and rollback authorities before any live runtime
   change.
+
+## Turn 62 | 2026-07-30
+
+Focus: convert Plan 0018 S07 into a bounded compatibility, installed
+transition, rollback, final-review, and release packet.
+
+Authority Consulted:
+
+- Plan 0018 S07, full-plan acceptance, definition of done, compatibility, and
+  rollback constraints
+- live independent service selectors/readiness, installed MCP binary metadata,
+  canonical contracts/runtime manifest, service installer, MCP installer and
+  release workflow
+- current versioning/release, branch/integration, planning, validation,
+  documentation, roadmap/runbook, Git, and closeout policies
+
+Decisions And Changes:
+
+- Identified the installed incompatibility as a stale MCP binary from commit
+  `0e7938a8`; the live service and canonical source share the exact current
+  contract digest.
+- Reserved service 0.2.9 because immutable proof release 0.2.8 already exists.
+- Froze independent Skill 4.0.0, MCP 4.0.1, and service 0.2.9 identities and
+  required MCP builds to stamp the manifest version instead of the Git tag.
+- Bounded execution to source/release preparation, package validation, one
+  upgrade, one rollback and forward-restoring swap, one MCP install,
+  independent final review, then one immutable tag/release operation.
+- Preserved schema 12, the exact-digest policy, user state, direct-Engine
+  compatibility, and all no-acquisition/no-live-source gates.
+
+Validation Evidence:
+
+- live service is ready 0.2.7/API 1/schema 12 from the independent current
+  selector and reports canonical contract digest
+  `f011c45999769f2c93b9044917179a0c683b3a43b35ec316f973bf91a2e76e34`;
+- selectors are `current -> releases/0.2.7` and
+  `previous -> releases/0.2.8`;
+- installed MCP build metadata reports repository revision `0e7938a8`;
+- source and live contract files have identical SHA-256;
+- remote `v4.0.0` is absent; no live state changed.
+
+State Movement:
+
+- Plan 0018 S07: `unpacketized -> packet ready`;
+- Plan 0018 and P07 remain `OPEN`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one and installed
+  transition/rollback has one critical path.
+
+Graphiti Write Status:
+
+- `not_attempted_for_planning_only_checkpoint`;
+- S06's single rejected attempt is already recorded and this turn adds no
+  completed runtime outcome.
+
+Next Bounded Action:
+
+- execute S07-A: apply Skill 4.0.0, MCP 4.0.1, service 0.2.9, deterministic
+  client stamping, version drift tests, and migration/release documentation.

@@ -780,10 +780,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- Derive and execute Plan 0018 S07: publish and install a compatible
-  independently versioned service/MCP pair, preserve user state, prove
-  cache-only cross-harness acceptance, and prove rollback before deprecating
-  request-scoped primary operation.
+- Execute Plan 0018 S07-A using the frozen Skill 4.0.0, MCP 4.0.1, and service
+  0.2.9 versions; then validate packages before the bounded installed
+  upgrade/MCP/rollback acceptance.
 
 ## Goal-Compatible Plan Conversion
 

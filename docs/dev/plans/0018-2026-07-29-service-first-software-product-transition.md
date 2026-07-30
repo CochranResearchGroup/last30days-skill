@@ -1239,3 +1239,174 @@ Next action:
 - derive the bounded S07 release packet from current service, MCP, versioning,
   release, install, migration, and rollback authorities before changing live
   runtime state.
+
+## S07 Implementation Packet | Compatibility And Release Transition
+
+Outcome:
+
+- cut one service-first release whose independently versioned service, MCP
+  adapter, and optional Skill install together without version ambiguity;
+- upgrade the installed user service and MCP adapter, prove cache-only
+  compatibility and state preservation, prove rollback, and restore the new
+  compatible release before deprecating request-scoped primary operation.
+
+### Frozen versions and release identity
+
+- Skill/plugin release: `4.0.0`, reflecting the intentional change from
+  request-scoped Engine orchestration to an MCP-first ordinary client;
+- MCP adapter/MCPB release: `4.0.1`, a compatible patch release that stamps its
+  own manifest version rather than inheriting the repository tag;
+- service release: `0.2.9`, because immutable proof release `0.2.8` already
+  exists in the installed release root and must not be overwritten;
+- repository tag: `v4.0.0`, naming the public Skill release while release
+  notes list all three independently versioned artifacts.
+
+The database remains schema 12 and service API remains version 1. Exact
+contract-digest matching remains fail closed.
+
+### Owned write surfaces
+
+- Skill/plugin versions: `skills/last30days/SKILL.md`,
+  `.claude-plugin/plugin.json`, and `.claude-plugin/marketplace.json`;
+- MCP version/stamping: `mcp/manifest.json`,
+  `mcp/internal/manifest/manifest_test.go`, `mcp/scripts/install-codex.sh`, and
+  `.github/workflows/release.yml`;
+- service release: `service/VERSION`, `service/runtime-manifest.json`, and
+  exact version assertions;
+- release/migration contract: `CHANGELOG.md`, `README.md`,
+  `CONFIGURATION.md`, and `docs/ONBOARDING.md`;
+- focused release-version tests and one sanitized installed-transition proof
+  under `docs/dev/notes/`.
+
+No schema migration, state-root change, adapter behavior change, source
+acquisition, timer enablement, direct-Engine removal, repository split, or
+contract compatibility relaxation belongs to this packet.
+
+### Execution slices
+
+1. S07-A: apply the three frozen versions, stamp local and CI MCP builds from
+   `mcp/manifest.json`, regenerate the service runtime manifest, add
+   independent-version drift tests, and document migration, diagnostics,
+   deprecation, rollback, and release contents.
+2. S07-B: validate and commit release source; build the service, Skill, MCP,
+   and MCPB-equivalent staged payloads; inspect their package boundaries.
+3. S07-C: snapshot installed schema-12 state; upgrade once to service 0.2.9;
+   install MCP 4.0.1; prove ten-tool and cache-only compatibility; roll back
+   once to 0.2.7; restore 0.2.9 through one deliberate second rollback; prove
+   state and evidence-query equivalence.
+4. S07-D: run the independent final Plan 0018 outcome review. Only after it
+   accepts the complete objective may `v4.0.0` be created and pushed once;
+   monitor the release workflow to a terminal result and record the published
+   artifact/version readback.
+
+### Bounds and gates
+
+- maximum implementation attempts per slice: 2;
+- maximum review/rework cycles per slice: 1;
+- maximum consecutive hardening-only checkpoints: 1;
+- active-agent concurrency: 1;
+- one service upgrade, one rollback to 0.2.7, one rollback swap restoring
+  0.2.9, one MCP installation, and at most three service restarts;
+- one annotated tag creation/push, only after independent final acceptance;
+- no authenticated acquisition, refresh, timer, browser, credential, source
+  configuration, collection, App Intelligence, or database mutation action;
+- the direct Engine remains packaged but is documented as deprecated for
+  ordinary primary operation, not removed.
+
+### Hard stops
+
+- stop if the candidate artifact changes database schema, state path, socket,
+  product identity, service API, or exact contract policy;
+- stop on immutable release collision, failed readiness, more than one daemon,
+  missing MCP operation, non-diagnostic request accepted under incompatibility,
+  cache-only work creating a job, database integrity failure, or any
+  before/after state-count or evidence-query drift;
+- stop if rollback fails to restore 0.2.7 readiness or the second swap fails to
+  restore 0.2.9;
+- stop before tag creation if the independent review finds an unmet Plan 0018
+  criterion or remote `v4.0.0` already exists;
+- if the release workflow fails, preserve the immutable tag and report the
+  failed release rather than rewriting it.
+
+### Validation and acceptance
+
+- independent version tests prove Skill/plugin `4.0.0`, MCP manifest/build
+  stamp `4.0.1`, and service/runtime manifest `0.2.9`;
+- full Python suite, `go test ./...`, `go vet ./...`, generated-contract drift,
+  planning audit, package-boundary tests, and `git diff --check` pass;
+- `.skill` includes the concise client, gated references, and compatibility
+  Engine; service artifact contains no Skill; MCP staged runtime contains only
+  the independent service artifact and lifecycle controls;
+- fresh stdio MCP and configured Codex MCP both list the exact ten operations,
+  report `compatibility_state=compatible`, and complete the same
+  `cache_only` evidence query without a new job;
+- installed 0.2.9 readiness binds service version, schema 12, exact contract
+  digest, and runtime-manifest digest; current/previous remain immutable
+  release selectors;
+- upgrade, rollback, and restored-forward state preserve integrity, table
+  counts, selected configuration hashes, index identity, evidence query
+  citations, and disabled timer state;
+- README, configuration, onboarding, and changelog clearly distinguish the
+  optional Skill, MCP adapter, service artifact, migration steps, local
+  incompatibility diagnostics, deprecation, and rollback;
+- after independent acceptance, remote tag and GitHub release expose the
+  Skill and Linux MCPB artifacts and identify service 0.2.9 plus MCP 4.0.1.
+
+### Checkpoint P0018-C11 | 2026-07-30
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `S07 unpacketized -> S07 packet ready`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- traced the live compatibility failure to the stale installed MCP binary
+  (`vcs.revision=0e7938a8`) rather than the current service contract;
+- confirmed current service 0.2.7 is ready on the independent release selector
+  with schema 12 and canonical contract digest, while immutable temporary
+  release 0.2.8 already occupies the rollback selector;
+- froze Skill 4.0.0, MCP 4.0.1, service 0.2.9, the four execution slices,
+  state-preserving live bounds, final review gate, and release-tag behavior.
+
+Validation evidence:
+
+- installed `current -> releases/0.2.7` and
+  `previous -> releases/0.2.8`;
+- direct service-info reports ready 0.2.7, API 1, schema 12, contract
+  `f011c45999769f2c93b9044917179a0c683b3a43b35ec316f973bf91a2e76e34`;
+- the installed MCP binary is from pre-handshake commit `0e7938a8`, while
+  current source and service contract digests match;
+- no remote `v4.0.0` tag exists and the downstream fork has no current GitHub
+  release listing;
+- no live state changed during packet derivation.
+
+Remaining acceptance criteria:
+
+- execute S07-A through S07-C;
+- run S07-D independent final outcome review;
+- publish and verify the accepted immutable release before closing Plan
+  0018/P07.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one and the
+  release/install/rollback sequence requires one critical-path owner.
+
+Graphiti write status:
+
+- `not_attempted_for_planning_only_checkpoint`;
+- S06's single rejected memory attempt is already recorded and this checkpoint
+  adds no new completed runtime outcome.
+
+Next action:
+
+- execute S07-A: apply the frozen independent versions, deterministic MCP
+  stamping, runtime manifest, drift tests, and migration/release documentation.
