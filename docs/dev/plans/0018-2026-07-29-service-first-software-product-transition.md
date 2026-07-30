@@ -1938,9 +1938,9 @@ Subagent status and reconciliation:
 
 Graphiti write status:
 
-- `graphiti_write_queued`;
-- provider readiness passed and the compact source-backed repair memory queued
-  as job `4d252dc0-1bd7-4d22-9d28-912a26f11c1d` in
+- `graphiti_write_completed`;
+- provider readiness passed and the compact source-backed repair memory job
+  `4d252dc0-1bd7-4d22-9d28-912a26f11c1d` completed in
   `last30days_skill_main`.
 
 Next action:
@@ -2083,7 +2083,10 @@ Subagent status and reconciliation:
 
 Graphiti write status:
 
-- `pending_after_checkpoint_commit`.
+- `graphiti_write_queued`;
+- provider readiness passed and the compact C18/C19 outcome memory queued as
+  job `5628c80e-9cab-4baf-b20e-e1d846d280cb` in
+  `last30days_skill_main`.
 
 Next action:
 
