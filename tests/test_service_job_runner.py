@@ -63,6 +63,11 @@ class FakeWorker:
         )
 
 
+class BrokenWorker:
+    def run(self, request):
+        raise RuntimeError(f"private worker detail for {request.source}")
+
+
 def _runtime(tmp_path, worker, *, budget_cents=50):
     db_path = tmp_path / "research.db"
     supervisor = RefreshSupervisor(db_path, clock=lambda: NOW)
@@ -218,6 +223,21 @@ def test_all_transient_failures_release_lease_into_bounded_retry(tmp_path):
     assert completed.not_before_at is not None
     assert completed.lease_owner is None
     assert supervisor.lease_next(worker_id="early-worker", lease_seconds=60) is None
+
+
+def test_unexpected_worker_exception_becomes_safe_bounded_retry(tmp_path):
+    scheduler, supervisor, _retriever, runner = _runtime(tmp_path, BrokenWorker())
+    job_id = scheduler.ensure_refresh(_query("query-worker-crash", ["reddit"]))
+
+    completed = runner.run_once(worker_id="service-worker")
+
+    assert completed is not None and completed.job_id == job_id
+    assert completed.state is contracts.JobState.QUEUED
+    assert completed.error_code == "worker_internal_error"
+    assert completed.lease_owner is None
+    events = supervisor.get_events(job_id)
+    assert events[-1].payload["error_code"] == "worker_internal_error"
+    assert "private worker detail" not in str(events[-1].payload)
 
 
 def test_host_budget_reservation_prevents_paid_backup_launch(tmp_path):

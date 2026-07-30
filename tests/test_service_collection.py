@@ -270,6 +270,22 @@ def test_due_tick_waits_for_prior_spec_run_to_finish(tmp_path):
 
     second = coordinator.enqueue_due(limit=10)
     assert len(second) == 1
+    conn = sqlite3.connect(db_path)
+    try:
+        reconciled = conn.execute(
+            """SELECT state, error_code FROM collection_runs
+               WHERE collection_run_id = ?""",
+            (first[0].collection_run_id,),
+        ).fetchone()
+        attempt = conn.execute(
+            """SELECT state, error_code FROM collection_run_attempts
+               WHERE collection_run_id = ?""",
+            (first[0].collection_run_id,),
+        ).fetchone()
+    finally:
+        conn.close()
+    assert reconciled == ("failed", "retry_exhausted")
+    assert attempt == ("failed", "retry_exhausted")
 
     current[0] += timedelta(hours=1)
     assert coordinator.enqueue_due(limit=10) == ()
@@ -282,6 +298,76 @@ def test_due_tick_waits_for_prior_spec_run_to_finish(tmp_path):
     finally:
         conn.close()
     assert run_count == 2
+
+
+def test_paused_tick_reconciles_all_attempts_after_lease_retry_exhaustion(tmp_path):
+    current = [NOW]
+    db_path = tmp_path / "research.db"
+    supervisor = RefreshSupervisor(db_path, clock=lambda: current[0])
+    supervisor.initialize()
+    ledger = ServiceStore(db_path)
+    scheduler = ServiceRefreshScheduler(
+        supervisor,
+        ledger,
+        RefreshPolicy(
+            default_sources=("reddit",),
+            freshness_seconds=3600,
+            max_attempts=2,
+            budget_cents=100,
+        ),
+        clock=lambda: current[0],
+    )
+    coordinator = CollectionCoordinator(
+        db_path,
+        scheduler,
+        clock=lambda: current[0],
+    )
+    coordinator.put_spec(_spec())
+    run = coordinator.enqueue_interval(
+        "spec-reddit-ai",
+        scheduled_for="2026-07-25T12:00:00Z",
+        trigger="timer",
+    )
+
+    first = supervisor.lease_next(worker_id="worker-one", lease_seconds=60)
+    coordinator.record_started(
+        job_id=first.job_id,
+        worker_id="worker-one",
+        lease_generation=first.lease_generation,
+    )
+    current[0] += timedelta(seconds=61)
+    second = supervisor.lease_next(worker_id="worker-two", lease_seconds=60)
+    coordinator.record_started(
+        job_id=second.job_id,
+        worker_id="worker-two",
+        lease_generation=second.lease_generation,
+    )
+    current[0] += timedelta(seconds=61)
+    assert supervisor.lease_next(worker_id="worker-three", lease_seconds=60) is None
+    coordinator.put_spec(_spec(enabled=False, spec_version=2))
+
+    assert coordinator.enqueue_due() == ()
+
+    conn = sqlite3.connect(db_path)
+    try:
+        run_state = conn.execute(
+            """SELECT state, error_code FROM collection_runs
+               WHERE collection_run_id = ?""",
+            (run.collection_run_id,),
+        ).fetchone()
+        attempts = conn.execute(
+            """SELECT attempt, state, error_code
+               FROM collection_run_attempts
+               WHERE collection_run_id = ? ORDER BY attempt""",
+            (run.collection_run_id,),
+        ).fetchall()
+    finally:
+        conn.close()
+    assert run_state == ("failed", "retry_exhausted")
+    assert attempts == [
+        (1, "failed", "retry_exhausted"),
+        (2, "failed", "retry_exhausted"),
+    ]
 
 
 def test_resume_resets_stale_due_boundary_without_replaying_paused_intervals(

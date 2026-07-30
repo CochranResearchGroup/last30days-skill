@@ -454,6 +454,14 @@ class AcquisitionJobRunner:
                     result = self.worker.run(work)
                 except WorkerExecutionError as failure:
                     result = self._failure_result(work, failure)
+                except Exception:
+                    result = self._failure_result(
+                        work,
+                        WorkerExecutionError(
+                            "worker_internal_error",
+                            contracts.RetryClass.TRANSIENT,
+                        ),
+                    )
             if self._parse_time(result.fetched_at) > self._now() + timedelta(
                 minutes=5
             ):

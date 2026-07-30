@@ -52,7 +52,7 @@ instead build and install the user service explicitly:
 ```bash
 bash ../service/scripts/build-runtime.sh
 bash ../service/scripts/install.sh install \
-  --artifact ../dist/service/last30days-service-0.2.9.tar.gz
+  --artifact ../dist/service/last30days-service-0.2.10.tar.gz
 bash ../service/scripts/install.sh status
 ```
 

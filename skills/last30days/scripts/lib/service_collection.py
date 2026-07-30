@@ -710,6 +710,7 @@ class CollectionCoordinator:
     def enqueue_due(self, *, limit: int = 10) -> tuple[CollectionRun, ...]:
         if not 1 <= limit <= 1000:
             raise ValueError("limit must be between 1 and 1000")
+        self.reconcile_terminal_jobs()
         now = self._now()
         now_text = _timestamp(now)
         conn = self._connect()
@@ -768,6 +769,64 @@ class CollectionCoordinator:
             finally:
                 conn.close()
         return tuple(created)
+
+    def reconcile_terminal_jobs(self) -> int:
+        """Close collection state when supervisor recovery terminalized a job."""
+        conn = self._connect()
+        try:
+            rows = conn.execute(
+                """SELECT DISTINCT j.job_id, j.state, j.error_code, s.source
+                   FROM service_jobs AS j
+                   JOIN collection_runs AS r ON r.job_id = j.job_id
+                   JOIN collection_specs AS s
+                     ON s.collection_spec_id = r.collection_spec_id
+                   WHERE j.state IN ('published', 'partial', 'failed')
+                     AND r.state NOT IN ('published', 'partial', 'failed')
+                   ORDER BY j.job_id"""
+            ).fetchall()
+        finally:
+            conn.close()
+        for row in rows:
+            completed_at = self._now()
+            conn = self._connect()
+            try:
+                conn.execute(
+                    """UPDATE collection_run_attempts
+                       SET state = ?, completed_at = COALESCE(completed_at, ?),
+                           error_code = COALESCE(error_code, ?)
+                       WHERE job_id = ?
+                         AND state NOT IN ('published', 'partial', 'failed')""",
+                    (
+                        row["state"],
+                        _timestamp(completed_at),
+                        row["error_code"],
+                        row["job_id"],
+                    ),
+                )
+                conn.commit()
+            finally:
+                conn.close()
+            self.record_completion(
+                job_id=row["job_id"],
+                state=row["state"],
+                outcomes=(
+                    {
+                        "attempted_count": 0,
+                        "observed_count": 0,
+                        "stored_count": 0,
+                        "error_code": row["error_code"],
+                        "source": row["source"],
+                        "status": (
+                            "succeeded"
+                            if row["state"] == "published"
+                            else row["state"]
+                        ),
+                        "retry_after": None,
+                    },
+                ),
+                completed_at=completed_at,
+            )
+        return len(rows)
 
     def record_started(
         self,

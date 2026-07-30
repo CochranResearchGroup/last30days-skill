@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "2f2b333be8858cb384114251b668bb1c9e45a0bb8393600b7ad4093d0e8e72f6",
+      "sha256": "011cfdb24c667a75861adfffaabe68e66358d982f437b47270ef09d86c6c6cd7",
       "source": "service/VERSION"
     },
     {
@@ -277,7 +277,7 @@
     },
     {
       "path": "scripts/lib/service_app.py",
-      "sha256": "d7d665df46a3acf362e1e5b317efb7a10c9581e8cba83ce2a8740c0b366e750d",
+      "sha256": "c74132b57ab5f2011888d374e70e130a264eab3d7c6e7e9dffa830e4b3172043",
       "source": "skills/last30days/scripts/lib/service_app.py"
     },
     {
@@ -287,7 +287,7 @@
     },
     {
       "path": "scripts/lib/service_collection.py",
-      "sha256": "bde2fc70404c90df81c7643f2a2c5df3b1b45def2313e38cb6c645acf1a461e9",
+      "sha256": "4ec8a95160f74e89551c5d0adc01beeed79495fd1e00cb6f634f6036cbe73c26",
       "source": "skills/last30days/scripts/lib/service_collection.py"
     },
     {
@@ -327,7 +327,7 @@
     },
     {
       "path": "scripts/lib/service_job_runner.py",
-      "sha256": "9906b69a6d924a2f8728cb5c0a95ffda54289af43f958def2152b6c37b28f687",
+      "sha256": "2423954e628941acce65b9cb09a1914fa201e008606460653deebeb3559bb14c",
       "source": "skills/last30days/scripts/lib/service_job_runner.py"
     },
     {
@@ -563,5 +563,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.2.9"
+  "service_version": "0.2.10"
 }

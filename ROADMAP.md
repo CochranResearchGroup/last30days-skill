@@ -744,7 +744,11 @@ Current State:
   one autonomous deterministic-yield proof.
 - The one authorized public Reddit remediation interval ran autonomously with
   assessment disabled but yielded zero items and no index change. Its spec is
-  paused, and a second selector/source attempt requires explicit new authority.
+  paused.
+- The bounded successor exhausted both live leases and exposed worker-failure
+  persistence plus collection reconciliation defects. Service 0.2.10 repairs
+  both paths and passes the complete deterministic suite; the installed
+  0.2.9 daemon remains unchanged pending the real runtime gate.
 
 Goal Seeds:
 
@@ -785,11 +789,11 @@ Next Bounded Action:
 
 - Checkpoint P0018-C16 records that the bounded successor exhausted both
   internal leases without an acquisition receipt and left its failed job's
-  collection run incorrectly `acquiring`. Deterministic source diagnosis,
-  repair, tests, and a reviewable transition packet remain under standing
-  authority. Stop before installing/restarting the repaired daemon or running
-  a third live interval; those actions cross the exhausted live-attempt gate.
-  Keep independent review and `v4.0.0` closed until indexed yield is proven.
+  collection run incorrectly `acquiring`. Checkpoint P0018-C17 records the
+  validated service 0.2.10 repair and exact reviewed transition packet. Stop
+  for explicit approval before installing/restarting 0.2.10 or running the
+  single third live interval. Keep independent review and `v4.0.0` closed
+  until indexed yield is proven.
 
 ## Goal-Compatible Plan Conversion
 

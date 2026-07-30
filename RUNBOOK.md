@@ -4511,3 +4511,69 @@ Next Bounded Action:
 - checkpoint and push the failed live proof, then diagnose and repair the
   deterministic timeout/terminal-state defects without mutating the installed
   runtime.
+
+## Turn 68 | 2026-07-30
+
+Focus: repair Plan 0018's worker-failure persistence and collection terminal
+reconciliation defects without crossing the installed-runtime gate.
+
+Authority Consulted:
+
+- Plan 0018 version 2 checkpoint P0018-C16
+- planning, validation, documentation, versioning, commit/push, and closeout
+  policies
+- current source/runtime manifest, worker/job-runner/supervisor/collection
+  paths, deterministic tests, and installed 0.2.9 baseline
+
+Decisions And Changes:
+
+- Converted unexpected subprocess worker-boundary exceptions into a safe
+  transient `worker_internal_error` acquisition result so the normal bounded
+  retry path releases the lease.
+- Added idempotent scheduler reconciliation for terminal supervisor jobs and
+  all linked nonterminal collection attempts, including paused collections.
+- Reserved service 0.2.10 for the repair and regenerated the independent
+  runtime manifest hashes without touching the installed 0.2.9 daemon.
+- Built the reproducible 0.2.10 artifact and recorded an exact,
+  approval-bounded upgrade/live-proof/rollback packet.
+- Did not install, restart, resume a collection, enqueue a job, invoke a
+  model, run an evaluator, create a tag, or publish a release.
+
+Validation Evidence:
+
+- deterministic unexpected-worker-exception test proves safe error
+  persistence, bounded retry, lease release, and no private-detail leakage;
+- deterministic two-expired-lease test proves the paused collection run and
+  both attempts become `failed/retry_exhausted`;
+- focused repair/package/lifecycle/process suites passed;
+- full suite passed: `2318 passed, 7 skipped, 6 subtests passed`;
+- artifact:
+  `dist/service/last30days-service-0.2.10.tar.gz`;
+- SHA-256:
+  `b73aaa774f8a580ac2d375a36f0a5405f6f0967639a8a9a9b6b1c17393cafd98`;
+- `git diff --check` passed.
+
+State Movement:
+
+- Plan 0018:
+  `terminal runtime-bound failure -> deterministic repair validated`;
+- progress classification: `blocker_reduction`;
+- authority classification: `human_gate` only for installed/restart/third-live
+  actions; source repair and packet preparation used inherited authority;
+- Plan 0018 and P07 remain `OPEN`; independent review and release gates remain
+  closed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one.
+
+Graphiti Write Status:
+
+- `pending_after_checkpoint_commit`.
+
+Next Bounded Action:
+
+- commit and push service 0.2.10 plus
+  `docs/dev/notes/0018-service-0.2.10-reviewed-transition-packet.json`, then
+  stop for explicit approval before the managed upgrade and one third live
+  interval.

@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "packet_id": "p0018-service-0.2.10-transition",
+  "authority_classification": "human_gate",
+  "prepared_at": "2026-07-30",
+  "source_version": "0.2.10",
+  "installed_baseline_version": "0.2.9",
+  "artifact": {
+    "path": "dist/service/last30days-service-0.2.10.tar.gz",
+    "sha256": "b73aaa774f8a580ac2d375a36f0a5405f6f0967639a8a9a9b6b1c17393cafd98"
+  },
+  "approval_scope": [
+    "upgrade the managed user service once from 0.2.9 to 0.2.10",
+    "allow the repaired scheduler to reconcile the already-terminal failed collection job",
+    "resume p0018-final-public-collection-v2 for exactly one service-owned interval",
+    "pause the collection immediately after that interval is observed",
+    "rollback to 0.2.9 on any transition or readiness failure"
+  ],
+  "preconditions": [
+    "git worktree commit containing this packet is pushed",
+    "artifact digest matches this packet",
+    "v4.0.0 is absent",
+    "p0018-final-public-collection-v2 is disabled",
+    "service 0.2.9 is ready and database integrity is ok",
+    "baseline corpus, acquisition, job, collection, model-call, task, and index counts are captured"
+  ],
+  "commands_after_approval": {
+    "upgrade": [
+      "bash service/scripts/install.sh upgrade --artifact dist/service/last30days-service-0.2.10.tar.gz",
+      "bash service/scripts/install.sh status"
+    ],
+    "resume_one_interval": [
+      "python skills/last30days/scripts/service.py collection resume p0018-final-public-collection-v2",
+      "disconnect the initiating client and observe the resident timer until exactly one new run is present",
+      "python skills/last30days/scripts/service.py collection pause p0018-final-public-collection-v2"
+    ],
+    "rollback_on_failure": [
+      "bash service/scripts/install.sh rollback",
+      "bash service/scripts/install.sh status"
+    ]
+  },
+  "required_post_upgrade_proof": [
+    "service version is 0.2.10 and readiness is ready",
+    "database schema remains 12 and integrity remains ok",
+    "the prior retry_exhausted collection run and both attempt rows are terminal failed",
+    "the active index and all baseline corpus counts are preserved before the new interval"
+  ],
+  "live_interval_bounds": {
+    "collection_spec_id": "p0018-final-public-collection-v2",
+    "source": "reddit",
+    "profile_id": "default",
+    "access_class": "public",
+    "item_limit": 3,
+    "lookback_seconds": 86400,
+    "network_request_limit": 50,
+    "budget_cents": 100,
+    "wall_timeout_seconds": 120,
+    "assessment_enabled": false,
+    "maximum_new_runs": 1,
+    "maximum_job_attempts": 2
+  },
+  "hard_stops": [
+    "artifact or installed readiness mismatch",
+    "database integrity failure or schema change",
+    "prior terminal collection state does not reconcile",
+    "more than one new collection run",
+    "non-public evidence or source/profile drift",
+    "budget, request, item, timeout, or attempt bound escape",
+    "model-call or intelligence-task growth",
+    "inability to pause the collection",
+    "no durable acquisition receipt before lease expiry"
+  ],
+  "success_criteria": [
+    "one timer-owned run occurs after the initiating client disconnects",
+    "a durable public acquisition receipt is recorded within the worker wall bound",
+    "public document and document-version counts advance",
+    "a new active index version contains the acquired public evidence",
+    "assessment and model execution remain disabled",
+    "the collection is paused and no second run appears"
+  ],
+  "release_gate": "Independent final ACCEPT remains mandatory; this packet never creates a tag or release."
+}

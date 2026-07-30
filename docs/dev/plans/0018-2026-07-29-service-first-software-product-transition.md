@@ -1849,10 +1849,96 @@ Subagent status and reconciliation:
 
 Graphiti write status:
 
-- `pending_after_checkpoint_commit`.
+- `graphiti_write_queued`;
+- provider readiness passed and the compact C16 failure memory queued as job
+  `24763c2a-74f4-44e6-a15f-01550c2460f4` in
+  `last30days_skill_main`.
 
 Next action:
 
 - checkpoint this failed live packet, then derive and execute one bounded
   deterministic source-repair packet; stop before installed-runtime mutation
   or a third live interval.
+
+### Checkpoint P0018-C17 | 2026-07-30
+
+Plan version:
+
+- 2
+
+State transition:
+
+- `terminal runtime-bound failure -> deterministic repair validated`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `human_gate` for installing/restarting service 0.2.10 or initiating a third
+  live interval;
+- `inherited_authority` covered the source repair, versioned runtime artifact,
+  deterministic validation, and reviewed transition packet;
+- no installed service, collection specification, live job, tag, or release
+  was mutated by this checkpoint.
+
+Deterministic diagnosis and repair:
+
+- the subprocess worker boundary could raise an ordinary exception that the
+  job runner did not convert into a typed acquisition result;
+- the resident acquisition loop isolated that exception, leaving the service
+  job leased until supervisor recovery;
+- terminal lease recovery updated `service_jobs` but did not reconcile the
+  linked collection run or attempt rows;
+- service 0.2.10 now converts unexpected worker-boundary exceptions into the
+  safe transient code `worker_internal_error`;
+- the collection scheduler now idempotently reconciles terminal supervisor
+  jobs before due-work selection, including all stranded nonterminal attempt
+  rows while a collection is paused.
+
+Validation evidence:
+
+- focused worker, runner, supervisor, collection, package, lifecycle, and
+  process suites passed;
+- a new deterministic two-lease exhaustion test proves that a paused
+  collection closes both attempt rows and the run as
+  `failed/retry_exhausted`;
+- a new worker-exception test proves bounded retry, lease release, safe error
+  persistence, and suppression of private exception detail;
+- the complete suite passed: `2318 passed, 7 skipped, 6 subtests passed`;
+- the reproducible service 0.2.10 artifact digest is
+  `b73aaa774f8a580ac2d375a36f0a5405f6f0967639a8a9a9b6b1c17393cafd98`.
+
+Reviewed transition packet:
+
+- `docs/dev/notes/0018-service-0.2.10-reviewed-transition-packet.json`;
+- one upgrade from installed 0.2.9 to 0.2.10;
+- readiness, schema-12, integrity, state-preservation, and prior-run
+  reconciliation checks;
+- exactly one resumed service-owned public interval, immediate pause, and the
+  existing acquisition/model/budget/source bounds;
+- automatic rollback to 0.2.9 on transition or readiness failure;
+- no evaluator, tag, or release action.
+
+Remaining acceptance criteria:
+
+- obtain explicit approval for the reviewed runtime packet;
+- prove one durable public acquisition receipt plus document/version/index
+  advancement with assessment and model execution disabled;
+- obtain independent final `ACCEPT`;
+- only then perform the already-authorized one-time immutable `v4.0.0`
+  tag/release action.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active-agent concurrency remained one.
+
+Graphiti write status:
+
+- `pending_after_checkpoint_commit`.
+
+Next action:
+
+- commit and push the deterministic 0.2.10 repair and reviewed transition
+  packet, then stop at the explicit installed-runtime/live-attempt gate.
