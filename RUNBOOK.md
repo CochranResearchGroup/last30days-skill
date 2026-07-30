@@ -3452,7 +3452,9 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending after validation and push.
+- job `5dcdf153-0bd7-401a-9368-5c16a19d5b2c` completed on attempt 1;
+- episode `80733eb7-85e5-4cd0-810b-4364868d59f9` is visible in
+  `last30days_skill_main` with read-after-write ready.
 
 Next Bounded Action:
 
