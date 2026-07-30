@@ -3600,3 +3600,69 @@ Next Bounded Action:
 - execute Plan 0018 S02-A: add the explicit service/MCP version handshake,
   generated Go compatibility facts, and compatible plus typed-incompatible
   client matrices.
+
+## Turn 55 | 2026-07-29
+
+Focus: complete Plan 0018 S02-A's explicit service/MCP compatibility
+handshake.
+
+Authority Consulted:
+
+- Plan 0018's service-info contract, generated-client parity, compatibility
+  matrix, diagnostics, hard stops, validation, and packet acceptance
+- ROADMAP P07 and the current service HTTP, contract schema, generator, Go
+  client, and process-integration surfaces
+- current planning, CodeGraph, Git, versioning, validation, documentation,
+  Graphiti, and closeout policies
+
+Decisions And Changes:
+
+- Made service-info declare the product, service and API versions, contract
+  schema and digest, database schema, runtime-manifest digest, adapter version
+  and ranges, and typed compatibility state.
+- Made the Go MCP adapter send bounded declarations and complete the handshake
+  before any ordinary service endpoint request.
+- Blocked ordinary requests before their target call for every typed mismatch
+  while retaining diagnostic service-info.
+- Prevented malformed or undeclared private response fields from entering the
+  mismatch diagnostic.
+- Updated generated constants, runtime and configuration documentation, the
+  complete compatibility matrix, and process-level MCP proof.
+- Moved no Python module and changed no installed runtime, live daemon,
+  database, timer, browser, or acquisition state.
+
+Validation Evidence:
+
+- commit `f261d9c` contains the S02-A implementation, docs, and tests and is
+  pushed to `origin/main`;
+- 176 service tests, all Go tests, `go vet ./...`, the process-level MCP
+  integration test, and 14 focused contract/product-surface tests passed;
+- Python compilation, `git diff --check`, the plan-authority audit, and
+  CodeGraph sync passed;
+- rebuilt artifact SHA-256:
+  `ca2106f38493fb341e757b10aed34693f74d8dfe904600200f7aff93bbaf88df`.
+
+State Movement:
+
+- Plan 0018 S02-A: `ready -> complete`;
+- Plan 0018 and P07 remain `OPEN`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one and S02-A's
+  contract, generated Go, request gate, and matrix surfaces were tightly
+  coupled;
+- independent final outcome review remains required before packet closeout.
+
+Graphiti Write Status:
+
+- `graphiti_write_complete`;
+- job `78868888-2c74-47e2-b164-1640473250ce` completed on its first attempt;
+- episode `74112175-999e-4fe3-af63-bd3fe9d9d690` records commit `f261d9c`,
+  the verified handshake, and S02-B as the next bounded action.
+
+Next Bounded Action:
+
+- execute Plan 0018 S02-B: package the independent artifact and lifecycle
+  controls with the MCP release and route bootstrap through the managed
+  service path rather than a detached raw Python child.

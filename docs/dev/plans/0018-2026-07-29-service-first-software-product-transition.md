@@ -617,3 +617,76 @@ Next action:
 - execute S02-A: extend service-info and generated Go contract facts with the
   explicit product/API/contract/database/runtime/MCP compatibility handshake
   and add compatible plus typed-incompatible client matrices.
+
+### Checkpoint P0018-C04 | 2026-07-29
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `S02-A ready -> S02-A complete`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- commit `f261d9c` makes `/v1/service-info` the explicit compatibility
+  handshake for the independent service product and generated Go MCP client;
+- the handshake now declares product, semantic service version, service API
+  version, contract schema version and digest, database schema version,
+  runtime-manifest digest, MCP adapter version and supported API/database
+  ranges, plus a typed compatibility state;
+- the Go adapter performs the handshake before ordinary endpoint calls and
+  fails closed before the target request on product, API, contract, database,
+  runtime-manifest, or malformed-handshake incompatibility;
+- diagnostic service-info remains available for typed incompatibility while
+  undeclared private fields are excluded from the exposed mismatch receipt;
+- raw non-MCP HTTP clients receive the typed `mcp_client_not_declared` state.
+
+Validation evidence:
+
+- 176 `tests/test_service_*.py` tests passed;
+- all Go tests and `go vet ./...` passed, including the compatible and complete
+  typed-incompatible matrix;
+- the process-level MCP integration test passed and proved declared product,
+  API, adapter, database range, compatibility state, and runtime digest;
+- 14 focused contract and product-surface tests passed;
+- Python compilation, `git diff --check`, the plan-authority audit, and
+  CodeGraph sync passed;
+- the rebuilt independent artifact SHA-256 is
+  `ca2106f38493fb341e757b10aed34693f74d8dfe904600200f7aff93bbaf88df`;
+- commit `f261d9c` is pushed to `origin/main`.
+
+Remaining acceptance criteria:
+
+- execute S02-B and the installed migration/rollback proof;
+- then execute the remaining Plan 0018 workstreams and acceptance packets
+  without treating the compatibility handshake as the complete product
+  transition.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; packet concurrency remains fixed at one and the generated
+  contracts, service handshake, Go client gate, and compatibility matrices
+  shared one coupled write surface;
+- the primary agent performed the bounded implementation and validation
+  review; independent final outcome review remains required before packet
+  closeout.
+
+Graphiti write status:
+
+- `graphiti_write_complete`;
+- provider readiness passed and job
+  `78868888-2c74-47e2-b164-1640473250ce` completed on its first attempt;
+- episode `74112175-999e-4fe3-af63-bd3fe9d9d690` records commit `f261d9c`,
+  the verified compatibility handshake, and S02-B as the next bounded action.
+
+Next action:
+
+- execute S02-B: package only the independent service artifact and lifecycle
+  controls with the MCP release, and replace raw detached Python bootstrap
+  ownership with the managed service install/start path.
