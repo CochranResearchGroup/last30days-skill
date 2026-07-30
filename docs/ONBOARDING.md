@@ -10,6 +10,8 @@ that directory recursively, so only Skill compatibility and client files
 belong there:
 
 - `SKILL.md`
+- `references/monitoring.md`, `administration.md`, and `maintenance.md`
+- `references/direct-engine-compatibility.md`
 - `scripts/last30days.py`
 - `scripts/lib/`
 - runtime helpers such as `store.py`, `watchlist.py`, `briefing.py`,
@@ -22,6 +24,11 @@ transactional installer, and systemd template stay outside the Skill payload.
 The manifest explicitly selects the still-canonical Python runtime sources
 during this migration packet; service artifacts contain no `SKILL.md`, Skill
 docs, setup scripts, or Skill lifecycle authority.
+
+`SKILL.md` is the concise ordinary MCP client and should remain no more than
+300 lines. Privileged and compatibility mechanics belong in the gated
+references above; adding them back to the ordinary Skill is a product-boundary
+regression.
 
 Repo-only files stay outside the installable skill:
 
@@ -50,6 +57,7 @@ Python 3.12+ is required. The repo uses `uv`; the local virtualenv lives in
 ```bash
 uv run pytest \
   tests/test_build_skill_artifact.py \
+  tests/test_skill_service_first_contract.py \
   tests/test_hermes_skillignore.py \
   tests/test_plugin_contract.py \
   tests/test_service_runtime_package.py \
@@ -131,6 +139,11 @@ with `profile_id=default` reports only the public partition and remains
 cache-only. A query handler must not launch
 `last30days.py` or create a browser process.
 
+Dogfood the installed Skill with a fresh agent context. It should read only
+`SKILL.md`, call `service_info` first, and complete one cache-only query without
+loading any file under `references/`. Then ask for read-only coverage
+monitoring and verify only `references/monitoring.md` is needed.
+
 For a local Codex checkout, install and verify the current adapter explicitly:
 
 ```bash
@@ -180,7 +193,11 @@ fail closed, the durable policy cannot change between commands, branch names
 stay under `last30days-repair/`, test commands must match the policy exactly,
 and the temporary detached worktree is removed after evaluation.
 
-## 6. Dogfood the installed engine
+## 6. Dogfood the compatibility Engine explicitly
+
+The Engine is no longer the ordinary Skill path. Run this section only as an
+operator/developer after explicitly selecting the compatibility/debug path.
+The installed MCP/service smoke above is the primary product acceptance.
 
 Use the installed copy, not the repo checkout:
 

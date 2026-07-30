@@ -42,13 +42,41 @@ so.
 
 ---
 
-Reddit upvotes. X likes. YouTube transcripts. TikTok engagement. Polymarket odds backed by real money and insider information. That's millions of people voting with their attention and their wallets every day. /last30days searches all of it in parallel, scores it by what real people actually engage with, and an AI agent judge synthesizes it into one brief.
+Reddit upvotes. X likes. YouTube transcripts. TikTok engagement. Polymarket
+odds backed by real money and insider information. That's millions of people
+voting with their attention and their wallets every day. The service collects,
+normalizes, scores, and indexes those signals; `/last30days` queries that
+shared evidence and synthesizes one cited brief.
 
 Google aggregates editors. /last30days searches people.
 
-You can't get this search anywhere else because no single AI has access to all of it. Google search doesn't touch Reddit comments or X posts. ChatGPT has a deal with Reddit but can't search X or TikTok. Gemini has YouTube but not Reddit. Claude has none of them natively. Each platform is a walled garden with its own API, its own tokens, its own auth. But you can bring your own keys and browser sessions, and suddenly an AI agent can search all of them at once, score them against each other, and tell you what actually matters.
+You can't get this search anywhere else because no single AI has access to all
+of it. Each platform is a walled garden with its own access boundary. An
+operator configures those sources once for the user-scoped service; ordinary
+agents discover current readiness through MCP and never handle the underlying
+access mechanics.
 
-That's the unlock. Not one better search engine. A dozen disconnected platforms, bridged by an agent.
+That's the unlock. Not one better search engine. A dozen disconnected
+platforms behind one durable evidence service.
+
+## How the Skill operates
+
+The primary Skill is a concise, least-privilege MCP client:
+
+1. It calls `service_info` first and requires a compatible client/service
+   handshake.
+2. It uses `query`, `temporal_query`, `profile_history`, and `coverage` for
+   evidence-backed reads.
+3. It requests one durable `refresh` only when fresh work is needed, then polls
+   the returned job with `job_status`.
+4. It cites returned evidence inline and reports cache status, degradation,
+   uncertainty, and terminal state truthfully.
+
+Monitoring, administration, and maintenance instructions use separate
+capability-gated references and load only for explicit user intent. If MCP is
+unavailable, the Skill reports that diagnostic and offers the request-scoped
+Engine as a compatibility/debug path; it does not enter that path without
+explicit approval.
 
 ```
 /last30days Peter Steinberger
@@ -95,7 +123,7 @@ The synthesis ranks by what real people actually engaged with. Social relevancy,
 
 **Before a meeting.** `/last30days Peter Steinberger` - joined OpenAI's Codex team, fighting Anthropic's ban on third-party agents, 23 PRs merged at 85% merge rate on GitHub, building LobsterOS for cross-device agent control. r/ClaudeCode: "Ever since OpenClaw released, it was widely known that if you run it through anything other than the API, you were gonna get banned eventually" (227 upvotes). That's not on LinkedIn.
 
-**To read hiring signals.** `/last30days Listen Labs --hiring-signals` - current jobs and careers pages become cited evidence for focus shifts: hiring into enterprise security, customer success, infrastructure, or product expansion. The report says what the hiring appears to signal, not what the roadmap will ship.
+**To read hiring signals.** `/last30days Listen Labs hiring signals` - current jobs and careers pages become cited evidence for focus shifts: hiring into enterprise security, customer success, infrastructure, or product expansion. The report says what the hiring appears to signal, not what the roadmap will ship.
 
 **When something drops.** `/last30days Kanye West` - UK blocked his visa, Wireless Festival canceled, sponsors fled. But BULLY debuted #2 on Billboard. Fantano came back from his "Yay sabbatical" to review it (653K views). SoFi Homecoming brought out Lauryn Hill and Travis Scott for 44 songs. Polymarket: "Will Kanye tweet again?" 86% Yes. 23 Reddit threads, 17 YouTube videos, 86K upvotes.
 
@@ -112,12 +140,6 @@ The synthesis ranks by what real people actually engaged with. Social relevancy,
 ### Shareable HTML briefs
 
 Ask for an HTML brief and the skill saves a self-contained, dark-mode, print-friendly file you can drop into Slack, email, or Notion. No raw markdown leaks. Inline CSS, system-font fallbacks behind Inter and JetBrains Mono. No JavaScript. Works offline.
-
-```
-/last30days OpenClaw --emit=html
-```
-
-or just ask in plain language:
 
 ```
 /last30days OpenClaw, give me a shareable HTML brief
@@ -157,7 +179,9 @@ When the same story appears on Reddit, X, and YouTube, v3 merges them into one c
 
 When the topic is a person, the engine switches from keyword search to author-scoped queries. Instead of "who mentioned this name in an issue body," it answers: what are they shipping and where is it landing?
 
-`/last30days Peter Steinberger --github-user=steipete` shows 22 PRs merged across 3 repos at 85% merge rate. Own projects with README summaries, star counts, and top feature requests. Release notes for what shipped this month. The synthesizer weaves it into the narrative alongside X posts and Reddit threads.
+`/last30days Peter Steinberger` can show PR activity, projects, release notes,
+and cited community discussion when those sources are ready in service
+discovery.
 
 ### ELI5 mode
 
@@ -296,11 +320,16 @@ ln -s "$(pwd)/last30days-skill/skills/last30days" ~/.claude/skills/last30days
 
 The symlink keeps the install in sync with your working tree as you edit — no re-copy needed. For `claude.ai`, build the `.skill` file from source: `bash dev/last30days/scripts/build-skill.sh` produces `dist/last30days.skill`.
 
-Reddit (with comments), Hacker News, Polymarket, and GitHub work immediately. Zero configuration. Run `/last30days` once and the setup wizard unlocks more sources in 30 seconds.
+Run `/last30days` after the MCP bundle is connected. It discovers the installed
+service's actual source readiness; setup and source enablement are operator
+workflows, not steps performed by an ordinary research agent.
 
-## Bring your own keys
+## Operator source configuration
 
-These platforms don't have relationships with each other. X doesn't know what Reddit thinks. YouTube doesn't see TikTok. But you can bring your own API keys and browser tokens, and suddenly you have access to all of them at once.
+These settings belong to the user-scoped service or the explicit direct-Engine
+compatibility path. The ordinary `/last30days` Skill never asks for, reads, or
+stores them. Configure a source as an operator, then confirm readiness through
+`service_info`.
 
 | Sources | What you need | Cost |
 |---------|---------------|------|
@@ -345,13 +374,17 @@ Per-client wrapper scripts, custom category-peer subreddits, and the experimenta
 
 ## How it works
 
-1. **You type a topic.** Person, company, product, technology, "X vs Y." Anything.
-2. **The agent resolves who matters.** Finds X handles (including founders), GitHub repos, subreddits, TikTok hashtags, YouTube channels. For "Kanye West" it knows r/hiphopheads, @kanyewest, and "bully review" on YouTube. For "OpenClaw" it resolves openclaw/openclaw on GitHub and fetches live star counts.
-3. **All sources searched in parallel.** Multi-query expansion. Results scored by engagement, relevance, freshness.
-4. **The depth nobody else has.** Full YouTube transcripts from reaction videos. Top Reddit comments with upvote counts. TikTok captions. Polymarket odds. Not just titles and links.
-5. **Same story, merged.** Wireless Festival announced on Reddit, discussed on X, ticket prices on TikTok = one cluster, not three separate items.
-6. **Synthesized into one brief.** Grounded in specific data. Cited by source. Ranked by what people actually engage with. Not "here's what I found." It's "here's what matters."
-7. **Then it becomes your expert.** After one run, your Claude session knows everything the community knows. Ask follow-up questions. Have it write prompts, draft emails, plan trips, architect systems - all grounded in what's real right now.
+1. **You type a topic.** Person, company, product, technology, "X vs Y."
+2. **The Skill discovers the service.** Compatibility, source readiness,
+   freshness, coverage, and index version come from live MCP readback.
+3. **The service retrieves durable evidence.** It owns source selection,
+   acquisition jobs, retries, normalization, clustering, and indexes.
+4. **The Skill synthesizes the result.** Claims carry returned evidence URLs,
+   while uncertainty and degradation remain visible.
+5. **Fresh work stays durable.** When requested, `refresh` creates or joins one
+   bounded job that can be polled without agent-side orchestration.
+6. **Follow-ups reuse the same authority.** Temporal questions, dossiers,
+   comparisons, profiles, and coverage use their dedicated MCP operations.
 
 ## What people are saying
 

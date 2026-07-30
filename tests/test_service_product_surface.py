@@ -7,15 +7,19 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_skill_routes_service_tools_before_engine_mechanics():
-    text = (ROOT / "skills" / "last30days" / "SKILL.md").read_text()
-    service = text.index("# SERVICE-FIRST PATH")
-    engine = text.index("# SKILL CONTRACT")
+    skill_root = ROOT / "skills" / "last30days"
+    text = (skill_root / "SKILL.md").read_text()
+    compatibility = (
+        skill_root / "references" / "direct-engine-compatibility.md"
+    ).read_text()
 
-    assert service < engine
     for tool in ("service_info", "query", "refresh", "job_status", "topic"):
-        assert f"`{tool}`" in text[service:engine]
-    assert "do not run `scripts/last30days.py`" in text[service:engine]
-    assert "browser/scraper commands" in text[service:engine]
+        assert f"`{tool}`" in text
+    assert "scripts/last30days.py" not in text
+    assert "browser/scraper commands" not in text
+    assert "explicitly approves this compatibility path" in compatibility
+    assert "perform live external acquisition" in compatibility
+    assert "scripts/last30days.py" in compatibility
 
 
 def test_operator_docs_name_the_same_thin_service_surface():

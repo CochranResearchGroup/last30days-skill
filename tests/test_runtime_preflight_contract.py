@@ -1,15 +1,21 @@
-"""Contract tests for the SKILL.md runtime preflight snippet."""
+"""Contract tests for the compatibility Engine runtime preflight snippet."""
 
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL_MD = ROOT / "skills" / "last30days" / "SKILL.md"
+ENGINE_REFERENCE = (
+    ROOT
+    / "skills"
+    / "last30days"
+    / "references"
+    / "direct-engine-compatibility.md"
+)
 
 
 class RuntimePreflightContractTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.skill_md = SKILL_MD.read_text(encoding="utf-8")
+        self.skill_md = ENGINE_REFERENCE.read_text(encoding="utf-8")
 
     def test_windows_localappdata_python_install_dir_is_scanned_first(self) -> None:
         scan_command = 'find "$windows_python_root" -maxdepth 2 -type f -iname python.exe'

@@ -72,18 +72,12 @@ class TestRunOpenclawSetup:
         assert result["keys"]["brave"] is True
         assert result["keys"]["scrapecreators"] is False
 
-    def test_openclaw_metadata_keeps_scrapecreators_optional(self):
-        """OpenClaw metadata should not hard-require the ScrapeCreators key."""
+    def test_openclaw_metadata_requires_no_source_credentials(self):
+        """The service-client Skill must not request source credentials."""
         skill_md = Path(__file__).parent.parent / "skills" / "last30days" / "SKILL.md"
         text = skill_md.read_text(encoding="utf-8")
-        assert "SCRAPECREATORS_API_KEY" in text
-        expected = (
-            "requires:\n"
-            "      env: []\n"
-            "      optionalEnv:\n"
-            "        - SCRAPECREATORS_API_KEY"
-        )
-        assert expected in text
+        assert "SCRAPECREATORS_API_KEY" not in text
+        assert "optionalEnv" not in text
 
     @_patch_digg_noop
     @patch("shutil.which")

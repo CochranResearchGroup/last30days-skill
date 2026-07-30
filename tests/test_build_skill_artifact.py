@@ -24,6 +24,10 @@ def test_build_skill_excludes_skillignore_entries() -> None:
         names = set(archive.namelist())
 
     assert "last30days/SKILL.md" in names
+    assert "last30days/references/monitoring.md" in names
+    assert "last30days/references/administration.md" in names
+    assert "last30days/references/maintenance.md" in names
+    assert "last30days/references/direct-engine-compatibility.md" in names
     assert "last30days/scripts/last30days.py" in names
     assert "last30days/scripts/store.py" in names
     assert "last30days/scripts/service.py" in names

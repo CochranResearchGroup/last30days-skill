@@ -36,14 +36,18 @@ class TestVersionConsistency(unittest.TestCase):
         self.assertIn(f"# last30days v{version}:", text)
 
     def test_memory_save_dir_uses_single_env_variable(self) -> None:
-        skill_text = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
+        compatibility_text = (
+            SKILL_ROOT / "references" / "direct-engine-compatibility.md"
+        ).read_text(encoding="utf-8")
         compare_text = (DEV_SCRIPTS / "compare.sh").read_text(encoding="utf-8")
         default_assignment = 'LAST30DAYS_MEMORY_DIR="${LAST30DAYS_MEMORY_DIR:-$HOME/Documents/Last30Days}"'
 
-        self.assertIn(default_assignment, skill_text)
+        self.assertIn(default_assignment, compatibility_text)
         self.assertIn(default_assignment, compare_text)
-        self.assertNotIn("--save-dir=~/Documents/Last30Days", skill_text)
-        self.assertIn('--save-dir="${LAST30DAYS_MEMORY_DIR}"', skill_text)
+        self.assertNotIn("--save-dir=~/Documents/Last30Days", compatibility_text)
+        self.assertIn(
+            '--save-dir="${LAST30DAYS_MEMORY_DIR}"', compatibility_text
+        )
 
     def test_no_stray_hardcoded_memory_dir_paths(self) -> None:
         allowed_suffixes = {".md", ".py", ".sh", ".txt", ".yml", ".yaml", ".json"}

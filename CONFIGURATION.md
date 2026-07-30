@@ -1,7 +1,11 @@
 # Configuration
 
-Everything you can tune in `/last30days` without editing the engine source.
-Three layers, in order of how often you'll touch them:
+Operator configuration for the user-scoped service and the explicitly gated
+direct-Engine compatibility path. Ordinary `/last30days` requests use MCP
+discovery and do not read these settings.
+
+The compatibility Engine has three configuration layers, in order of how
+often an operator touches them:
 
 1. **Per-run flags** - what you pass on the command line.
 2. **Environment variables and `.env`** - what's enabled across all runs.
@@ -13,7 +17,13 @@ Per-client patterns and the experimental beta channel are at the bottom.
 
 ## Why this document exists
 
-This is a focused **configuration reference** maintained alongside the engine. The runtime contract (the voice rules, the planner protocol, the LAWs the synthesizing model follows) lives in [`skills/last30days/SKILL.md`](skills/last30days/SKILL.md) - that file is authoritative when the two ever differ. This file's job is narrower: surface every knob a user or operator can turn, in one place, kept current with the code so client-facing setups stay reliable. New configuration knobs added to the engine should be reflected here in the same PR.
+This is a focused **operator configuration reference** maintained alongside
+the service and compatibility Engine. The ordinary agent contract lives in
+[`skills/last30days/SKILL.md`](skills/last30days/SKILL.md). Its gated
+monitoring, administration, maintenance, and direct-Engine references live
+under `skills/last30days/references/`. This file surfaces the knobs an operator
+can turn; ordinary research agents discover readiness through `service_info`
+and do not inspect these settings.
 
 ---
 
@@ -114,6 +124,27 @@ deploy the recommendation.
 Normal agent clients should use only the MCP service surface. They should not
 start App Intelligence turns, create repair branches, run scraper/browser
 commands, or poll maintenance internals.
+
+### Agent-facing versus operator-facing configuration
+
+The primary `/last30days` Skill has no per-run source flags and does not read
+source secrets. It calls `service_info`, then uses the ten MCP operations
+advertised by the compatible service. Source availability, cache freshness,
+coverage, and degradation come from that live response.
+
+The remaining sections are operator-facing:
+
+- service installation, upgrade, rollback, source enablement, and scheduled
+  work configure durable software;
+- direct CLI flags and Engine environment variables apply only to scripting,
+  cron, development, or the explicitly approved compatibility/debug path;
+- App Intelligence and repair commands remain privileged maintenance
+  operations with their own evidence, budget, branch, evaluation, approval,
+  restart, and deployment gates.
+
+An unavailable MCP service is not permission to invoke the Engine. The
+ordinary Skill reports the diagnostic and offers the compatibility path; the
+user must explicitly choose it before its reference is loaded.
 
 ---
 

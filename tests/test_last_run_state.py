@@ -246,10 +246,12 @@ class TestSkillMdFirstRunReference(unittest.TestCase):
         )
 
     def test_skill_md_references_setup_command(self):
-        content = SKILL_MD.read_text(encoding="utf-8")
+        content = (
+            SKILL_MD.parent / "references" / "direct-engine-compatibility.md"
+        ).read_text(encoding="utf-8")
         self.assertIn(
             "last30days.py setup", content,
-            "SKILL.md should reference the Python setup subcommand",
+            "the gated compatibility reference should preserve the Python setup subcommand",
         )
 
     def test_setup_subcommand_dispatches(self):
