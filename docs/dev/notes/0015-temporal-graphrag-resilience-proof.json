@@ -1,0 +1,110 @@
+{
+  "baseline": {
+    "acquisition_count": 65,
+    "evidence_span_count": 419,
+    "graphiti_provider_status": "healthy",
+    "index_version": "index-4f096317e15c57da386466f2",
+    "projection_attempt_count": 1,
+    "projection_outbox_count": 1,
+    "projection_receipt": "graphiti-http-v1:72def667-2ed5-526f-b313-00cba738f400:db720d2a17f1c3fcc9513d953a34d6d6a5237d8ac1a6a5dc686121b41a6330bb",
+    "projection_receipt_count": 1,
+    "service_job_count": 49
+  },
+  "cache_only_case": {
+    "access_partitions": [
+      "public",
+      "profile:last30days-facebook"
+    ],
+    "acquisition_count_after": 65,
+    "as_of": "2026-07-27T00:00:00Z",
+    "cache_only": true,
+    "corpus_content_hashes": [
+      "sha256:6f25d42fcff9de212b1fe7ecf2d12f0cb3024ed2799faf8182ac37accea9f0e1",
+      "sha256:d895149d9f4e7711ad6fb61ce864314cb040bd136d82d097c206215c4f24297e",
+      "sha256:c2e5ed6a6fb2de27e2d7df3068e23a8e5b6fb976495638f81eaea4a007841764",
+      "sha256:2167746f70c131349b77eed7f4880db1298d02433c6193983a23fbbdae51e175",
+      "sha256:ba63511f3a0bebcbedd2c8e0fbfeee5d4166b279118bc5d17a1f4e98e9528176",
+      "sha256:b8835f3e2d0aa698fcf03ed32cce822632a176607efaa444797babcc936655c1",
+      "sha256:55fb393677d138e33cb2e0fe813275b098bc1c17facd71a82a5ee3c256ea675e",
+      "sha256:a5d4198c1576cf236d72407271ebd27280f1afad5db1a993b1c2fd9357f08240"
+    ],
+    "corpus_evidence_ids": [
+      "evidence-41a23df76ff6a48d2568dd1c",
+      "evidence-50c1ca390c9415af1750bb58",
+      "evidence-fcf645b19406ee3cc5c79243",
+      "evidence-de3bc40950eb879f7ba01a30",
+      "evidence-be76651e3788c058255e56d5",
+      "evidence-d7f28c4c2b11c5907958b880",
+      "evidence-0d664a2045f5c6799b441df6",
+      "evidence-0bc362070ccd83d2618bd277"
+    ],
+    "index_version": "index-4f096317e15c57da386466f2",
+    "known_as_of": "2026-07-27T00:00:00Z",
+    "profile_evidence": [
+      {
+        "chunk_id": "vchunk-05aa50bedfb9b40754569898c6b9a446",
+        "evidence_id": "evidence-37fc0df40b8c43d300bdc8ff9c99411e",
+        "span_digest": "39a09309c876cfcd8a824f9b14960caee1add6d5184ee1b72a6b940adfde5cdf",
+        "version_id": "version-eabcb2cb3ed9972a213023d300fef762"
+      },
+      {
+        "chunk_id": "vchunk-05aa50bedfb9b40754569898c6b9a446",
+        "evidence_id": "evidence-71a76e02de0a05ad6aca9618a03b024f",
+        "span_digest": "sha256:a08ce490a9ab8a3f620e85e55b6ba5066570d04108a415762832b53b746d711b",
+        "version_id": "version-eabcb2cb3ed9972a213023d300fef762"
+      }
+    ],
+    "profile_snapshot_count": 1,
+    "query": "OpenAI",
+    "service_job_count_after": 49
+  },
+  "final_live_state": {
+    "acquisition_count": 65,
+    "graphiti_provider_status": "healthy",
+    "index_version": "index-4f096317e15c57da386466f2",
+    "projection_failed": 0,
+    "projection_outbox_count": 1,
+    "projection_pending": 0,
+    "projection_receipt_count": 1,
+    "service_job_count": 49,
+    "service_status": "ready",
+    "service_version": "0.2.7"
+  },
+  "hard_stops": [],
+  "provider_unavailable_case": {
+    "access_partitions": [
+      "public",
+      "profile:last30days-facebook"
+    ],
+    "acquisition_count_after": 65,
+    "acquisition_count_before": 65,
+    "cache_only": true,
+    "corpus_evidence_count": 8,
+    "graph_projection_error_code": "projection_unavailable",
+    "graph_projection_failed": 1,
+    "graph_projection_state": "failed",
+    "index_version": "index-4f096317e15c57da386466f2",
+    "isolated_database_copy": true,
+    "real_provider_changed": false,
+    "real_provider_status_after": "healthy",
+    "service_job_count_after": 49,
+    "service_job_count_before": 49,
+    "service_status": "degraded"
+  },
+  "projection_replay": {
+    "attempt_count_after": 2,
+    "attempt_count_before": 1,
+    "outbox_count_after": 1,
+    "outbox_count_before": 1,
+    "payload_sha256": "db720d2a17f1c3fcc9513d953a34d6d6a5237d8ac1a6a5dc686121b41a6330bb",
+    "published": 1,
+    "receipt_after": "graphiti-http-v1:72def667-2ed5-526f-b313-00cba738f400:db720d2a17f1c3fcc9513d953a34d6d6a5237d8ac1a6a5dc686121b41a6330bb",
+    "receipt_before": "graphiti-http-v1:72def667-2ed5-526f-b313-00cba738f400:db720d2a17f1c3fcc9513d953a34d6d6a5237d8ac1a6a5dc686121b41a6330bb",
+    "receipt_count_after": 1,
+    "receipt_count_before": 1
+  },
+  "schema_version": 1,
+  "status": "passed",
+  "transition_authority": "Plan 0018",
+  "verified_at": "2026-07-29T22:56:36-05:00"
+}
