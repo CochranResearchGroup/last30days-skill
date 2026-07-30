@@ -690,3 +690,83 @@ Next action:
 - execute S02-B: package only the independent service artifact and lifecycle
   controls with the MCP release, and replace raw detached Python bootstrap
   ownership with the managed service install/start path.
+
+### Checkpoint P0018-C05 | 2026-07-29
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `S02-B ready -> S02-B complete`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- commit `ae79e56` replaces the MCPB's copied Agent Skill tree with an exact
+  four-file independent service payload: semantic version, reproducible
+  artifact, managed installer, and stable user-unit template;
+- the release workflow verifies the compressed artifact contains the service
+  entry point and no `SKILL.md`, then verifies the MCPB contains the installer
+  and independently versioned artifact;
+- Go bootstrap resolves exactly one packaged artifact and synchronously invokes
+  the managed installer transaction with the requested owner-private socket;
+- bootstrap no longer starts, detaches, or releases a raw Python child and the
+  MCP adapter does not become daemon owner;
+- the installer records the exact socket in the stable unit and uses the same
+  path for readiness, while its sanitized MCP environment preserves only the
+  bounded lifecycle and state-path controls it requires;
+- all ten MCP operations remain present and the adapter still has no dependency
+  on the legacy engine package.
+
+Validation evidence:
+
+- the full repository suite passed with 2,306 tests, 7 skips, and 6 subtests;
+- all Go tests and `go vet ./...` passed;
+- the real Python-service/Go-MCP process integration passed with the complete
+  ten-tool surface;
+- isolated packaging proved that no Skill prose or tree enters the MCP runtime
+  or independent artifact;
+- fake-manager lifecycle tests proved the stable managed unit, exact socket,
+  readiness, install, upgrade, failure restoration, and rollback behavior;
+- `bash -n`, `git diff --check`, the plan-authority audit, and CodeGraph sync
+  passed;
+- the MCP binary dependency graph contains no `internal/engine`;
+- the independent artifact SHA-256 remains
+  `ca2106f38493fb341e757b10aed34693f74d8dfe904600200f7aff93bbaf88df`;
+- commit `ae79e56` is pushed to `origin/main`.
+
+Remaining acceptance criteria:
+
+- execute the installed schema-12 migration/restart/MCP/rollback proof while
+  preserving corpus, job, schedule, timer, and database state;
+- then execute the remaining Plan 0018 workstreams and acceptance packets.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; packet concurrency remains fixed at one and the packaging,
+  bootstrap, installer socket, workflow, tests, and docs shared one coupled
+  product boundary;
+- the primary agent performed the bounded implementation and validation
+  review; independent final outcome review remains required before packet
+  closeout.
+
+Graphiti write status:
+
+- `graphiti_write_pending`;
+- the required provider preflight returned `degraded` with a bounded app-server
+  `TimeoutError`, so policy prohibited queueing a memory write;
+- intended episode: commit `ae79e56` completed S02-B with an independent
+  MCP-packaged artifact and managed bootstrap; installed migration proof is
+  next.
+
+Next action:
+
+- execute the migration proof against the current user-scoped schema-12 state:
+  snapshot durable and service state, install the independent release through
+  the managed path, prove unit/socket/version and all ten MCP operations,
+  restart, roll back once, and prove state invariants unchanged.

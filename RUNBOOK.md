@@ -3666,3 +3666,77 @@ Next Bounded Action:
 - execute Plan 0018 S02-B: package the independent artifact and lifecycle
   controls with the MCP release and route bootstrap through the managed
   service path rather than a detached raw Python child.
+
+## Turn 56 | 2026-07-29
+
+Focus: complete Plan 0018 S02-B's independent MCP packaging and managed
+bootstrap transition.
+
+Authority Consulted:
+
+- Plan 0018's frozen package ownership, install topology, compatibility and
+  rollback constraints, S02-B acceptance, hard stops, and validation
+- ROADMAP P07 and the current MCP sync, release workflow, Go bootstrap,
+  independent installer/unit, and ten-tool process-integration surfaces
+- current planning, CodeGraph, Git, versioning, validation, documentation,
+  Graphiti, and closeout policies
+
+Decisions And Changes:
+
+- Replaced the MCP runtime's copied Agent Skill tree with the independent
+  artifact, version, installer, and stable unit template only.
+- Made release construction verify the compressed service entry point, absence
+  of Skill prose, and presence of the independent artifact and installer in
+  the MCPB.
+- Replaced detached raw-Python bootstrap with a synchronous managed installer
+  invocation and post-transaction Unix-socket proof.
+- Preserved only bounded XDG, database, socket, manager, and Python lifecycle
+  controls across the sanitized installer boundary.
+- Added explicit custom-socket installation so readiness and the stable unit
+  use the same owner-private path.
+- Preserved the ten MCP operations, contract handshake, and absence of an
+  adapter dependency on the legacy engine.
+- Moved no Python module and changed no installed runtime, live daemon,
+  database, timer, browser, or acquisition state.
+
+Validation Evidence:
+
+- commit `ae79e56` contains the S02-B implementation, docs, and tests and is
+  pushed to `origin/main`;
+- 2,306 repository tests passed with 7 skips and 6 subtests;
+- all Go tests and `go vet ./...` passed;
+- the real service/MCP process integration passed with all ten operations;
+- independent packaging, fake-manager lifecycle, exact socket, and no-Skill
+  boundary proofs passed;
+- `bash -n`, `git diff --check`, the plan-authority audit, CodeGraph sync, and
+  the no-legacy-engine dependency check passed;
+- rebuilt artifact SHA-256:
+  `ca2106f38493fb341e757b10aed34693f74d8dfe904600200f7aff93bbaf88df`.
+
+State Movement:
+
+- Plan 0018 S02-B: `ready -> complete`;
+- Plan 0018 and P07 remain `OPEN`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one and S02-B's
+  packaging, managed bootstrap, unit, workflow, test, and documentation
+  surfaces were tightly coupled;
+- independent final outcome review remains required before packet closeout.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`;
+- the provider preflight returned `degraded` with a bounded app-server
+  `TimeoutError`, so no write was queued;
+- intended compact receipt: commit `ae79e56` completes S02-B's independent
+  MCP artifact and managed lifecycle bootstrap; installed migration proof is
+  next.
+
+Next Bounded Action:
+
+- execute Plan 0018's installed migration proof: snapshot the current
+  schema-12 service and durable state, install and restart the independent
+  release, query through all ten MCP operations, roll back once, and prove the
+  required state invariants unchanged.
