@@ -4294,7 +4294,11 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending one bounded terminal-failure memory attempt after commit.
+- `graphiti_write_queued`;
+- provider readiness passed and the single terminal-failure write attempt
+  queued job `c19fda55-810a-4f57-a96b-016a97a61267` in
+  `last30days_skill_main`;
+- no retry or success claim was made while processing remained asynchronous.
 
 Next Bounded Action:
 
