@@ -282,7 +282,7 @@ engine.
    service from a source checkout with `bash service/scripts/build-runtime.sh`,
    then
    `bash service/scripts/install.sh install --artifact
-   dist/service/last30days-service-0.2.7.tar.gz`. The Agent Skill is optional
+   dist/service/last30days-service-0.2.9.tar.gz`. The Agent Skill is optional
    for service lifecycle. The MCP adapter proves product, API, contract,
    database-schema, and loaded-runtime compatibility before serving any
    non-diagnostic operation.
@@ -298,6 +298,24 @@ files; they are never copied into the MCP bundle.
 
 macOS and Windows MCP bundles are deferred until they have a managed,
 owner-private service bootstrap equivalent to the Linux user unit.
+
+### Migrating to v4
+
+v4 separates the three product versions: Skill/plugin `4.0.0`, MCP adapter
+`4.0.1`, and service `0.2.9`. Existing schema-12 state stays in place.
+
+1. Build and upgrade the service 0.2.9 artifact.
+2. Install MCP 4.0.1 and require `service_info` to report
+   `compatibility_state=compatible`.
+3. Update the optional Skill only after the service and MCP pair are healthy.
+
+If the handshake reports a typed incompatibility, use local diagnostics and
+upgrade the stale side. Do not work around it by handing an ordinary agent
+cookies, browser state, source credentials, or scraper commands. The direct
+Engine remains packaged for an explicitly approved compatibility/debug
+request, but request-scoped operation is deprecated as the ordinary primary
+path. The service installer retains one verified rollback target and preserves
+the database, profiles, schedules, ledgers, corpus, and indexes.
 
 ### OpenClaw
 

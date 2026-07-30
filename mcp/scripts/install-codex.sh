@@ -11,17 +11,29 @@ if ! command -v go >/dev/null 2>&1; then
   echo "go is required to build the last30days MCP adapter" >&2
   exit 2
 fi
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "python3 is required to read the MCP adapter version" >&2
+  exit 2
+fi
 if ! command -v codex >/dev/null 2>&1; then
   echo "codex is required to register the MCP adapter" >&2
   exit 2
 fi
+
+MCP_VERSION="$(
+  python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["version"])' \
+    "${MCP_ROOT}/manifest.json"
+)"
 
 mkdir -p "${INSTALL_ROOT}"
 tmp_binary="$(mktemp "${INSTALL_ROOT}/.last30days-pp-mcp.XXXXXX")"
 trap 'rm -f -- "${tmp_binary}"' EXIT
 (
   cd "${MCP_ROOT}"
-  go build -trimpath -o "${tmp_binary}" ./cmd/last30days-pp-mcp
+  go build -trimpath \
+    -ldflags "-X main.Version=${MCP_VERSION}" \
+    -o "${tmp_binary}" \
+    ./cmd/last30days-pp-mcp
 )
 chmod 755 "${tmp_binary}"
 mv -f -- "${tmp_binary}" "${DESTINATION}"

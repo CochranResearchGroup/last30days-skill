@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-07-30
+
+This release makes the independently installed intelligence service and its
+MCP adapter the primary product. Artifact versions are intentionally
+independent: Skill/plugin `4.0.0`, MCP/MCPB `4.0.1`, and service `0.2.9`.
+Existing schema-12 databases require no migration.
+
+### Migration
+
+- Install or upgrade the service 0.2.9 artifact before replacing the MCP
+  adapter, then install MCP 4.0.1 and require
+  `compatibility_state=compatible`.
+- A stale client/service pair fails closed through `service_info`; it does not
+  authorize direct Engine acquisition.
+- The request-scoped Engine remains packaged as an explicitly approved
+  compatibility/debug path, but is deprecated as the ordinary primary path.
+- The managed installer preserves the existing database, profiles, schedules,
+  ledgers, corpus, and indexes. `service/scripts/install.sh rollback` swaps to
+  the one retained previous verified release.
+
 ### Added
 
 - **Discoverable App Intelligence contracts.** `maintenance_status` now reports

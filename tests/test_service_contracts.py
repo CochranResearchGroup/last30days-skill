@@ -530,7 +530,7 @@ def test_service_info_round_trips_dynamic_runtime_capabilities():
         "contract_sha256": contracts.SCHEMA_CATALOG_SHA256,
         "database_schema_version": 3,
         "runtime_manifest_sha256": "a" * 64,
-        "mcp_adapter_version": "4.0.0",
+        "mcp_adapter_version": "4.0.1",
         "mcp_supported_service_api_min": 1,
         "mcp_supported_service_api_max": 1,
         "mcp_supported_database_schema_min": 12,

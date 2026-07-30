@@ -95,9 +95,12 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: "0"
         run: |
+          MCP_VERSION="$(
+            python3 -c 'import json; print(json.load(open("mcp/manifest.json", encoding="utf-8"))["version"])'
+          )"
           mkdir -p mcp/build
           go -C mcp build \
-            -ldflags "-X main.Version=${{ github.ref_name }}" \
+            -ldflags "-X main.Version=${MCP_VERSION}" \
             -o build/last30days-pp-mcp \
             ./cmd/last30days-pp-mcp
 

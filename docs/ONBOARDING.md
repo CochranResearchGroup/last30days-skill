@@ -118,7 +118,7 @@ artifact rather than making the copied Skill its lifecycle authority:
 ```bash
 bash service/scripts/build-runtime.sh
 bash service/scripts/install.sh install \
-  --artifact dist/service/last30days-service-0.2.7.tar.gz
+  --artifact dist/service/last30days-service-0.2.9.tar.gz
 bash service/scripts/install.sh diagnose
 service_launcher="${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service"
 "$service_launcher" \
@@ -130,6 +130,11 @@ reviewed, version-distinct artifacts. Confirm that `current` and `previous`
 resolve under `releases/`, the readiness receipt matches the live version,
 contract digest, schema 12, and manifest digest, and the managed unit contains
 no `.agents/skills` path.
+
+For v4 release review, verify the three independent identities explicitly:
+Skill/plugin `4.0.0`, MCP manifest and binary stamp `4.0.1`, and service plus
+runtime manifest `0.2.9`. The repository tag names the Skill release and must
+not be reused as the MCP binary version.
 
 Then connect the MCP bundle and verify its listed surface is `service_info`,
 `query`, `refresh`, `job_status`, `topic`, `temporal_query`,

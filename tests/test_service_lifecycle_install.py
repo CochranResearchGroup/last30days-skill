@@ -14,6 +14,7 @@ import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+CURRENT_VERSION = (ROOT / "service" / "VERSION").read_text(encoding="utf-8").strip()
 BUILDER = ROOT / "service" / "scripts" / "build-runtime.sh"
 INSTALLER = ROOT / "service" / "scripts" / "install.sh"
 
@@ -117,7 +118,7 @@ def _copy_runtime_sources(target: Path) -> None:
 def _artifact(
     tmp_path: Path, version: str, *, source_root: Path = ROOT
 ) -> Path:
-    if version != "0.2.7":
+    if version != CURRENT_VERSION:
         source_root = tmp_path / f"source-{version}"
         _copy_runtime_sources(source_root)
         (source_root / "service" / "VERSION").write_text(
@@ -185,7 +186,7 @@ def _stop(env: dict[str, str]) -> None:
 
 def test_clean_install_uses_independent_current_release_and_receipt(tmp_path):
     env = _environment(tmp_path)
-    artifact = _artifact(tmp_path, "0.2.7")
+    artifact = _artifact(tmp_path, CURRENT_VERSION)
     try:
         result = _run(env, "install", artifact=artifact)
         receipt = json.loads(result.stdout)
@@ -196,9 +197,11 @@ def test_clean_install_uses_independent_current_release_and_receipt(tmp_path):
             / "systemd/user/last30days.service"
         ).read_text()
 
-        assert (service_root / "current").readlink() == Path("releases/0.2.7")
+        assert (service_root / "current").readlink() == Path(
+            f"releases/{CURRENT_VERSION}"
+        )
         assert not (service_root / "previous").exists()
-        assert receipt["service_version"] == "0.2.7"
+        assert receipt["service_version"] == CURRENT_VERSION
         assert receipt["database_schema_version"] == 12
         assert receipt["service_status"] == "ready"
         assert receipt == json.loads(
@@ -216,8 +219,12 @@ def test_clean_install_uses_independent_current_release_and_receipt(tmp_path):
         assert env_file.stat().st_mode & 0o777 == 0o600
         assert "UMask=0077" in unit
         assert "NoNewPrivileges=true" in unit
-        assert (service_root / "releases/0.2.7/scripts/service.py").is_file()
-        assert not (service_root / "releases/0.2.7/SKILL.md").exists()
+        assert (
+            service_root / f"releases/{CURRENT_VERSION}/scripts/service.py"
+        ).is_file()
+        assert not (
+            service_root / f"releases/{CURRENT_VERSION}/SKILL.md"
+        ).exists()
         assert (
             sqlite3.connect(
                 Path(env["XDG_DATA_HOME"]) / "last30days/research.db"
@@ -227,11 +234,11 @@ def test_clean_install_uses_independent_current_release_and_receipt(tmp_path):
             == 12
         )
         diagnosed = json.loads(_run(env, "diagnose").stdout)
-        assert diagnosed["service_version"] == "0.2.7"
+        assert diagnosed["service_version"] == CURRENT_VERSION
         _run(env, "stop")
         assert not Path(env["FAKE_MANAGER_PID"]).exists()
         restarted = json.loads(_run(env, "start").stdout)
-        assert restarted["service_version"] == "0.2.7"
+        assert restarted["service_version"] == CURRENT_VERSION
         status = _run(env, "status")
         assert "active (running)" in status.stdout
     finally:

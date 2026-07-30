@@ -1,6 +1,6 @@
 ---
 name: last30days
-version: "3.6.0"
+version: "4.0.0"
 description: "Query the last30days Intelligence Service for current, temporal, and evidence-backed research across supported sources."
 argument-hint: "last30days nvidia earnings reaction | last30days AI video tools | last30days what users want in react"
 homepage: https://github.com/mvanhorn/last30days-skill
@@ -10,7 +10,7 @@ license: MIT
 user-invocable: true
 ---
 
-# last30days v3.6.0: service client
+# last30days v4.0.0: service client
 
 The installed `last30days` Intelligence Service is the product authority. This
 Skill is a least-privilege MCP client for discovery, querying, and synthesis.

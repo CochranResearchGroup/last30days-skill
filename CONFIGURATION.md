@@ -35,7 +35,7 @@ checkout, build and install its independently versioned artifact with:
 ```bash
 bash service/scripts/build-runtime.sh
 bash service/scripts/install.sh install \
-  --artifact dist/service/last30days-service-0.2.7.tar.gz
+  --artifact dist/service/last30days-service-0.2.9.tar.gz
 bash service/scripts/install.sh diagnose
 ```
 
@@ -555,7 +555,7 @@ Build and install the Linux user service independently of an Agent Skill:
 ```bash
 bash service/scripts/build-runtime.sh
 bash service/scripts/install.sh install \
-  --artifact dist/service/last30days-service-0.2.7.tar.gz
+  --artifact dist/service/last30days-service-0.2.9.tar.gz
 bash service/scripts/install.sh diagnose
 
 service_launcher="${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service"
@@ -677,6 +677,13 @@ upgrade restores the prior selectors, restarts, and proves the old release
 ready. Use `service/scripts/install.sh rollback` to swap the current and
 previous verified releases deliberately; `start`, `stop`, `status`, and
 `diagnose` provide the remaining lifecycle controls.
+
+The v4 release uses independent artifact versions: Skill/plugin `4.0.0`, MCP
+adapter `4.0.1`, and service `0.2.9`. Upgrade the service first, install the
+adapter second, and require `service_info` to report
+`compatibility_state=compatible` before updating the optional Skill. Schema 12
+needs no migration. A typed incompatibility means one side is stale; it does
+not authorize source credentials or direct Engine work in the ordinary path.
 
 Pass `--socket <absolute-path>` to install, upgrade, or diagnose a non-default
 owner-private socket. The installer records that same path in the stable unit

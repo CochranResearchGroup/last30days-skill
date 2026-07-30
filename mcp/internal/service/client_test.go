@@ -201,7 +201,7 @@ func TestClientHandshakeCompatibilityMatrix(t *testing.T) {
 				request *http.Request,
 			) {
 				if request.URL.Path == "/v1/service-info" {
-					if request.Header.Get("X-Last30days-MCP-Version") != "4.0.0" ||
+					if request.Header.Get("X-Last30days-MCP-Version") != "4.0.1" ||
 						request.Header.Get("X-Last30days-Expected-Product") !=
 							servicecontracts.ProductIdentity {
 						t.Errorf("client handshake headers were not declared")
@@ -218,7 +218,7 @@ func TestClientHandshakeCompatibilityMatrix(t *testing.T) {
 			}))
 			client := &Client{
 				SocketPath:     socketPath,
-				AdapterVersion: "4.0.0",
+				AdapterVersion: "4.0.1",
 			}
 
 			raw, err := client.Get(context.Background(), "/v1/service-info")
@@ -236,7 +236,7 @@ func TestClientHandshakeCompatibilityMatrix(t *testing.T) {
 					testCase.wantState,
 				)
 			}
-			if diagnostic["mcp_adapter_version"] != "4.0.0" {
+			if diagnostic["mcp_adapter_version"] != "4.0.1" {
 				t.Fatalf("adapter version = %v", diagnostic["mcp_adapter_version"])
 			}
 			if _, exposed := diagnostic["private"]; exposed {

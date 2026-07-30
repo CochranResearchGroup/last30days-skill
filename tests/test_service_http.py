@@ -204,7 +204,7 @@ def test_service_info_body_and_header_publish_the_same_contract_digest(tmp_path)
             "/v1/service-info",
             headers={
                 "X-Last30days-Expected-Product": "last30days",
-                "X-Last30days-MCP-Version": "4.0.0",
+                "X-Last30days-MCP-Version": "4.0.1",
                 "X-Last30days-Service-API-Min": "1",
                 "X-Last30days-Service-API-Max": "1",
                 "X-Last30days-Contract-Schema": "1",
@@ -225,7 +225,7 @@ def test_service_info_body_and_header_publish_the_same_contract_digest(tmp_path)
             == payload["contract_sha256"]
         )
         assert payload["contract_schema_version"] == contracts.SCHEMA_VERSION
-        assert payload["mcp_adapter_version"] == "4.0.0"
+        assert payload["mcp_adapter_version"] == "4.0.1"
         assert payload["compatibility_state"] == "compatible"
     finally:
         connection.close()
