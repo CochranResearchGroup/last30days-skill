@@ -3816,3 +3816,80 @@ Next Bounded Action:
 - execute Plan 0015 R01 under Plan 0018: snapshot current job, index,
   projection, evidence, and provider state before the single bounded temporal
   retrieval/GraphRAG resilience packet.
+
+## Turn 58 | 2026-07-29
+
+Focus: execute and close Plan 0015's temporal retrieval and GraphRAG
+resilience acceptance under Plan 0018.
+
+Authority Consulted:
+
+- Plan 0015's R01-R05 execution graph, bounds, hard stops, acceptance, and
+  definition of done
+- Plan 0018's S04 service-product framing and remaining sequencing
+- live MCP, independent service, schema-12 ledger, immutable profile evidence,
+  semantic index, projection outbox/receipt, and Graphiti health surfaces
+- current planning, roadmap, runtime, validation, Graphiti, and closeout
+  policies
+
+Decisions And Changes:
+
+- Captured the live 49-job, 65-acquisition, 419-evidence-span, one-projection,
+  one-receipt, healthy-provider, and current-index baseline.
+- Executed one fresh MCP `as_of`/`known_as_of` named-profile case and proved
+  exact access partitions, eight content-addressed corpus citations, immutable
+  profile evidence, and no job/acquisition enqueue.
+- Paused only the service projection loop, replayed the sole existing
+  projection once, proved the same stable receipt with no duplicate outbox or
+  receipt authority, then restored ready service status.
+- Exercised provider unavailability only in an isolated database/service copy;
+  it truthfully reported graph degradation while returning the same SQLite
+  citations and unchanged job/acquisition counts.
+- Left the real provider unchanged and healthy and removed all ephemeral proof
+  artifacts.
+- Preserved the machine receipt in commit `f16f527`, pushed to `origin/main`.
+
+Validation Evidence:
+
+- job/acquisition counts were 49/65 before and after the live cache-only case;
+- access partitions were exactly `public` and
+  `profile:last30days-facebook`;
+- the profile evidence resolved to exact version, chunk, span, and digest
+  authority;
+- projection outbox/receipt counts remained one and the stable receipt was
+  unchanged after replay;
+- isolated fallback reported service `degraded`, one failed projection with
+  `projection_unavailable`, eight citations, and unchanged counts;
+- live closeout reported service ready 0.2.7, provider healthy, zero failed or
+  pending projections, index `index-4f096317e15c57da386466f2`, 49 jobs, and
+  65 acquisitions;
+- no hard stop fired.
+
+State Movement:
+
+- Plan 0015: `PLANNED -> CLOSED`;
+- Plan 0018 and P07 remain `OPEN`;
+- Plan 0016 is the next bounded acceptance packet.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the packet's one-query/one-replay bound and shared live state
+  required serialized ownership;
+- independent final outcome review remains required before Plan 0018 closeout.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`;
+- provider readiness passed, but job
+  `01002ba4-a550-4eb6-90b9-c633d9ed741d` timed out after its single
+  180-second attempt while resolving nodes;
+- exact readback found no visible episode;
+- intended compact receipt: commit `f16f527` closes Plan 0015 with
+  cache-only temporal/profile, idempotent replay, and SQLite degradation
+  acceptance; Plan 0016 is next.
+
+Next Bounded Action:
+
+- execute Plan 0016 Packet 1 under Plan 0018: freeze one non-browser task type,
+  exact evidence fixture, contract version, finite limits, and the accepted
+  plus rejected envelope pair before stochastic execution.

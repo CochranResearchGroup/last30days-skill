@@ -851,3 +851,74 @@ Next action:
 - execute Plan 0015 R01: snapshot current job, index, projection, evidence, and
   provider state for the one bounded temporal retrieval/GraphRAG resilience
   packet under Plan 0018.
+
+### Checkpoint P0018-C07 | 2026-07-29
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `Plan 0015 planned -> Plan 0015 closed`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes and runtime outcome:
+
+- commit `f16f527` preserves the sanitized Plan 0015 machine receipt at
+  `docs/dev/notes/0015-temporal-graphrag-resilience-proof.json`;
+- one fresh stamped MCP temporal/profile case used explicit `as_of`,
+  `known_as_of`, and the named profile, returned only the public and exact
+  profile partition, eight content-addressed citations, and the profile's
+  immutable evidence closure;
+- job count remained 49 and acquisition count remained 65;
+- the sole existing Graphiti projection replay retained one outbox row, one
+  receipt, and the identical receipt UUID/digest while advancing its attempt
+  count from one to two;
+- an isolated unavailable-provider service truthfully reported `degraded` and
+  `projection_unavailable` while serving the same eight SQLite citations and
+  leaving job/acquisition counts unchanged;
+- the real provider was not changed, remained healthy, and the live service
+  returned to ready 0.2.7 with the same index and projection state.
+
+Validation evidence:
+
+- focused fresh-process MCP, live service, SQLite ledger, immutable-evidence,
+  provider health, projection replay, and isolated degradation readbacks
+  passed;
+- no acquisition or browser work ran, no access partition widened, no
+  projection authority duplicated, and no provider restoration was required;
+- Plan 0015's acceptance criteria and definition of done are satisfied.
+
+Remaining acceptance criteria:
+
+- execute Plan 0016's accepted/rejected/replay App Intelligence packet;
+- complete S06 client-Skill redesign and S07 compatibility/release transition;
+- run independent final outcome review before closing Plan 0018/P07.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Plan 0015 and Plan 0018 both fix active-agent concurrency at
+  one, and the query/replay/degradation/restore flow was a serialized bounded
+  runtime packet;
+- the primary agent performed the runtime proof and acceptance comparison;
+  independent final outcome review remains required before Plan 0018 closeout.
+
+Graphiti write status:
+
+- `graphiti_write_pending`;
+- provider preflight passed, but job
+  `01002ba4-a550-4eb6-90b9-c633d9ed741d` timed out after its single
+  180-second attempt while resolving nodes, and exact lookup found no episode;
+- intended episode: commit `f16f527` closes Plan 0015 with cache-only
+  temporal/profile, idempotent projection replay, and SQLite degradation
+  acceptance; Plan 0016 is next.
+
+Next action:
+
+- execute Plan 0016 Packet 1: freeze one existing-evidence non-browser task
+  type, exact contract version, accepted/rejected fixtures, and finite limits
+  before any stochastic execution.

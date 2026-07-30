@@ -117,8 +117,9 @@ successor plans without reopening Plans 0010 or 0011:
 3. `docs/dev/plans/0014-2026-07-26-recurring-collection-timer-durability.md`
    is the planned two-interval public-source timer/restart/pause proof.
 4. `docs/dev/plans/0015-2026-07-26-temporal-retrieval-graphrag-resilience.md`
-   is the planned cache-only temporal/profile and GraphRAG degradation packet,
-   supporting both P04 and P05.
+   is closed successfully: fresh-client cache-only temporal/profile access,
+   idempotent replay of the sole projection, and isolated provider-unavailable
+   SQLite fallback passed without access widening or acquisition enqueue.
 5. `docs/dev/plans/0016-2026-07-26-app-intelligence-contract-acceptance.md`
    is the planned accepted/rejected envelope and deterministic replay packet.
 6. `docs/dev/plans/0017-2026-07-26-canonical-profile-selection-regression.md`
@@ -135,7 +136,8 @@ typed restart-bound blocker after repairing stale due replay and missing
 per-spec backpressure. Plan 0018 is now `OPEN` with the bounded
 service-package/lifecycle and MCP-boundary packet that makes later acceptance
 work service-product validation rather than Skill features. Plans 0013 and
-0017 remain planned and outside this transition critical path.
+0017 remain planned and outside this transition critical path. Plan 0015 is
+now closed under Plan 0018; Plan 0016 is the next transition packet.
 
 ## P00 | Productized Content Service MVP
 
@@ -488,6 +490,10 @@ Current State:
   schema-12 migration, and durable live projection canary passed at commit
   `0e7938a`; the current projection reports one published receipt with zero
   pending or failed records.
+- Plan 0015 closed at commit `f16f527`: a fresh MCP temporal/profile case
+  preserved access partitions and acquisition counts, the sole projection
+  replay was idempotent, and an isolated unavailable-provider run preserved
+  citation-ready SQLite retrieval while truthfully reporting degradation.
 
 Goal Seeds:
 
@@ -521,8 +527,8 @@ Active Plan:
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the closed temporal retrieval and GraphRAG foundation authority.
 - `docs/dev/plans/0015-2026-07-26-temporal-retrieval-graphrag-resilience.md`
-  is the planned cache-only retrieval, projection replay, and local-evidence
-  fallback acceptance packet.
+  is the closed cache-only retrieval, projection replay, and local-evidence
+  fallback acceptance authority.
 
 ## P05 | Agent-Facing Intelligence Product
 
@@ -543,6 +549,9 @@ Current State:
 - Fresh installed-client discovery, representative public/profile calls,
   cache-only no-enqueue behavior, authenticated-source canaries, and integrated
   acceptance pass.
+- Plan 0015 additionally proved the named-profile `as_of`/`known_as_of` case,
+  exact profile evidence closure, no-enqueue behavior, and truthful
+  SQLite-backed operation during graph-provider degradation.
 
 Goal Seeds:
 
@@ -567,7 +576,7 @@ Active Plan:
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the closed installed-MCP foundation and acceptance authority.
 - `docs/dev/plans/0015-2026-07-26-temporal-retrieval-graphrag-resilience.md`
-  also owns the planned fresh-client cache-only product acceptance proof.
+  is the closed fresh-client cache-only product acceptance proof.
 
 ## P06 | App Intelligence Control Plane
 
@@ -713,6 +722,11 @@ Current State:
 - `CONCEPTS.md`, `README.md`, and the Skill's service-first path already
   describe the service as authority, but that product decision was not
   previously represented as an implementation transition.
+- Plan 0018's first S01/S02 packet is accepted: the live unit runs the
+  independently versioned release, MCP enforces the compatibility handshake,
+  and installed upgrade/rollback preserved the schema-12 state.
+- Plan 0015 is closed with current temporal/profile, idempotent projection, and
+  GraphRAG-degradation evidence; Plan 0016 is next.
 
 Goal Seeds:
 
@@ -744,9 +758,9 @@ indexes or stochastic workers authoritative.
 Active Plan:
 
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
-  is the open transition authority. Its first bounded packet owns the
-  independent service artifact/lifecycle and explicit MCP compatibility
-  handshake without moving implementation modules or migrating schema 12.
+  is the open transition authority. Its first service-distribution/MCP packet
+  and Plan 0015 resilience packet are accepted without moving implementation
+  modules or migrating schema 12; Plan 0016 is the next bounded packet.
 
 Next Bounded Action:
 

@@ -1,6 +1,6 @@
 # Plan 0015 | Temporal retrieval and GraphRAG resilience
 
-State: PLANNED
+State: CLOSED
 Roadmap: P04
 Supports: P05
 Date: 2026-07-26
@@ -103,3 +103,34 @@ R01 baseline snapshot
 Cache-only temporal/profile retrieval, idempotent projection replay, and
 SQLite-only degradation behavior all have current evidence without browser
 work or broad graph mutation.
+
+## Execution Receipt | 2026-07-29
+
+- transition authority: Plan 0018 checkpoint P0018-C07;
+- machine receipt:
+  `docs/dev/notes/0015-temporal-graphrag-resilience-proof.json` at commit
+  `f16f527`;
+- R01 captured 49 service jobs, 65 acquisitions, 419 immutable evidence
+  spans, index `index-4f096317e15c57da386466f2`, one published projection,
+  one receipt, and a healthy Graphiti provider;
+- R02 used one fresh stamped MCP case with `as_of` and `known_as_of`, derived
+  only `public` plus `profile:last30days-facebook`, returned eight
+  content-addressed corpus citations and the exact profile evidence spans, and
+  changed neither job nor acquisition count;
+- R03 replayed the sole existing projection: outbox and receipt counts remained
+  one, the receipt UUID/digest stayed identical, and only attempt count and
+  publication time advanced;
+- R04 used an isolated database copy and unavailable loopback fixture; the
+  service truthfully reported `degraded` and `projection_unavailable` while
+  returning the same eight SQLite-backed citations and preserving job and
+  acquisition counts; the real provider was never changed and remained
+  healthy;
+- R05 restored/read back the live ready 0.2.7 service, healthy provider, same
+  index, 49 jobs, 65 acquisitions, one published projection, and one receipt;
+- no browser, acquisition, schema migration, broad graph backfill, access
+  widening, or hard-stop event occurred;
+- Graphiti development-memory job
+  `01002ba4-a550-4eb6-90b9-c633d9ed741d` timed out after its single
+  180-second attempt and exact lookup returned no visible episode, so that
+  repo-memory write remains pending;
+- Plan 0016 is the next bounded acceptance packet under Plan 0018.
