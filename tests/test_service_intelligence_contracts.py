@@ -7,6 +7,7 @@ import sqlite3
 
 from lib import service_contracts
 from lib.service_intelligence_contracts import (
+    CONTENT_ASSESSMENT_OUTPUT_SCHEMA,
     ContentAssessmentQueue,
     IntelligenceTaskRequest,
     IntelligenceTaskResult,
@@ -78,6 +79,22 @@ def test_common_task_contract_round_trip_and_registry_are_strict():
     invalid["browser_profile"] = "must-never-cross-contract"
     result = IntelligenceTaskRequest.validate(invalid)
     assert result.value == ValidatorCode.SCHEMA_INVALID.value
+
+
+def test_content_assessment_output_schema_uses_app_server_strict_subset():
+    def assert_strict_object(schema):
+        if schema.get("type") == "object":
+            properties = schema.get("properties", {})
+            assert schema.get("additionalProperties") is False
+            assert set(schema.get("required", ())) == set(properties)
+            for child in properties.values():
+                assert_strict_object(child)
+        if schema.get("type") == "array":
+            assert_strict_object(schema["items"])
+        if "const" in schema:
+            assert "type" in schema
+
+    assert_strict_object(CONTENT_ASSESSMENT_OUTPUT_SCHEMA)
 
 
 def test_result_correlation_and_evidence_closure_use_stable_codes():

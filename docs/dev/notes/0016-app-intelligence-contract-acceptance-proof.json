@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "plan_id": "0016",
+  "generated_at": "2026-07-30T04:11:44Z",
+  "transition_authority": "0018",
+  "status": "accepted_with_release_packaging_follow_up",
+  "task_contract": {
+    "task_type": "content_assessment",
+    "contract_version": 1,
+    "policy_version": "content-assessment-v1",
+    "access_partition_id": "public",
+    "redaction_class": "public",
+    "evidence_ids": [
+      "evidence-931feda73e7aefc5dff0a92d90c351b0"
+    ],
+    "source_version_ids": [
+      "version-a828ba8cd1f6d5dc25db5c0253516df4"
+    ],
+    "corpus_version": "index-4f096317e15c57da386466f2",
+    "allowed_actions": [
+      "record_assessment"
+    ],
+    "limits": {
+      "max_items": 1,
+      "max_bytes": 4096,
+      "max_calls": 1,
+      "max_cost_cents": 1,
+      "wall_timeout_seconds": 60
+    },
+    "browser_allowed": false,
+    "mutation_allowed": false
+  },
+  "strict_schema_defect": {
+    "installed_service_version": "0.2.7",
+    "task_id": "intelligence-task-5183cf020aa0aaae6dd29e99f634fb62",
+    "request_digest": "sha256:0c67f68249b8661087b34d6e810ee8860ee0ff88dce6d9bc78bc76b19d5bf3fd",
+    "state": "failed",
+    "attempt_count": 1,
+    "error_code": "runtimeerror",
+    "stochastic_output_generated": false,
+    "decision_receipt_created": false,
+    "cause": "provider rejected const fields without explicit JSON types before model generation",
+    "repair": "canonical content-assessment schema now uses explicit const types and requires every declared object property",
+    "installed_verification": "installed deterministic replay passed; corrected stochastic schema enters the next compatible service release"
+  },
+  "accepted_envelope": {
+    "execution_surface": "canonical service candidate using read-only Codex App Server",
+    "task_id": "intelligence-task-fa47bff380504648800536a4e6206961",
+    "request_digest": "sha256:cb18a23b4a626a144076bccb84d947a8d8cd90c23c865beb953d8d59aa3757c2",
+    "input_digest": "sha256:cb90f73c5797b26ca0bbfd4895e6c3977eebf841edaae022d079b177eac27a95",
+    "state": "completed",
+    "attempt_count": 1,
+    "lease_generation": 1,
+    "action": "record_assessment",
+    "proposal_count": 1,
+    "worker_ref": "gpt-5.6-sol",
+    "output_digest": "sha256:fed9adc080f0697fbf568110ca82bd0b90d72fe916ed7c0f4052f931d948acf6",
+    "uncertainty_codes": [
+      "TRUNCATED_EVIDENCE",
+      "MIXED_POST_AND_COMMENT_TEXT",
+      "RELEVANCE_CONTEXT_MISSING"
+    ],
+    "validation": {
+      "validation_receipt_id": "validation-receipt-61e56dc19c658ba94acb736abcc2ecd2",
+      "accepted": true,
+      "validator_codes": [],
+      "validator_version": "intelligence-validator-v1"
+    },
+    "promotion": {
+      "promotion_receipt_id": "promotion-receipt-7612e1f20dd4ddfe0dacc24accec0a06",
+      "idempotency_outcome": "created",
+      "prior_authority_version": "index-4f096317e15c57da386466f2",
+      "resulting_authority_version": "index-4f096317e15c57da386466f2"
+    },
+    "replay": {
+      "replay_receipt_id": "replay-receipt-7612e1f20dd4ddfe0dacc24accec0a06",
+      "replay_state": "replayable",
+      "provider_calls": 0,
+      "same_request_digest": true,
+      "same_output_digest": true,
+      "same_validation_receipt": true,
+      "same_promotion_receipt": true,
+      "same_replay_receipt": true
+    },
+    "installed_replay": {
+      "service_version": "0.2.7",
+      "accepted": true,
+      "provider_calls": 0,
+      "counts_before": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "counts_after": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "same_validation_receipt": true,
+      "same_promotion_receipt": true,
+      "same_replay_receipt": true
+    }
+  },
+  "rejected_envelope": {
+    "task_id": "plan-0016-rejected-browser-field",
+    "request_digest": "sha256:295a623a80fa389bc108c169bf28bc396381e3bc89e6142d898fee7cdab99e93",
+    "forbidden_field": "browser_profile",
+    "first_validator_code": "schema_invalid",
+    "replay_validator_code": "schema_invalid",
+    "persisted": false,
+    "provider_calls": 0,
+    "mutation_calls": 0,
+    "terminal_classification": "rejected_before_stochastic_execution"
+  },
+  "replay_count_closure": {
+    "before": {
+      "service_intelligence_tasks": 2,
+      "service_intelligence_validation_receipts": 1,
+      "service_intelligence_promotion_receipts": 1,
+      "service_intelligence_replay_receipts": 1,
+      "service_model_calls": 0,
+      "service_decisions": 0
+    },
+    "after": {
+      "service_intelligence_tasks": 2,
+      "service_intelligence_validation_receipts": 1,
+      "service_intelligence_promotion_receipts": 1,
+      "service_intelligence_replay_receipts": 1,
+      "service_model_calls": 0,
+      "service_decisions": 0
+    }
+  },
+  "canonical_authority_closure": {
+    "before_equals_after": true,
+    "tables": {
+      "evidence_spans": {
+        "rows": 419,
+        "sha256": "90871b8418cfbd8d74dbe0551dbf73175e1baca3e5279609904ba3cc7cf74ee9"
+      },
+      "identity_assertions": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "identity_candidates": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "identity_resolution_outcomes": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "temporal_claims": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "temporal_claim_evidence": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "claim_conflicts": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "claim_supersessions": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "collection_specs": {
+        "rows": 2,
+        "sha256": "dc0225bb9e7ffcbf2896da1d3af150d448607b7d75a9e0863981d010b3e7b8ee"
+      },
+      "collection_spec_revisions": {
+        "rows": 10,
+        "sha256": "f9e7b12ce9f123ea6c88e642a50b1cc7b9d50dbd51e743f39f79fcd6ae55229b"
+      },
+      "collection_runs": {
+        "rows": 12,
+        "sha256": "a2f0edec9eadfc062fa68b57b517f18587de45e870bcef5fba98e20c6f6c561c"
+      },
+      "collection_cursors": {
+        "rows": 2,
+        "sha256": "bec0d4202f2ce65f87256a859efff020932853f7772d9f64d5db4479b5054668"
+      },
+      "collection_schedule_state": {
+        "rows": 2,
+        "sha256": "064ff8c2e333899e779170ec0d30c5d46e9bd00a12991d869817c1ebbfd01c44"
+      },
+      "collection_assessment_batches": {
+        "rows": 7,
+        "sha256": "da0d2e6f9ab874912332a3ed22a294aa457cb894e2966ae59817ff4c68dccc52"
+      },
+      "service_index_head": {
+        "rows": 1,
+        "sha256": "6e9cd2034910b9c6d1d85d53b30692e72a68fe78b5dc9a71821bc23f3494f588"
+      },
+      "index_versions": {
+        "rows": 44,
+        "sha256": "f629e5accc0c61cd09162b01bc77afccfba9f490d39e63f76a826c759fbbf67f"
+      },
+      "documents": {
+        "rows": 50,
+        "sha256": "fd429661f0f9a6d2bfffcaafadbeec132ff12c5699919c88d93999b7b7289f2d"
+      },
+      "document_versions": {
+        "rows": 57,
+        "sha256": "49b5b95ac35bd3c1c43661e90d6f96b7e9efdcfef1d8c39d8fa285781c1f23a5"
+      },
+      "entities": {
+        "rows": 190,
+        "sha256": "91bebed4a4892233bc81a878c9c150dc8b9c38333634d9810ca1b1ab75c748b5"
+      },
+      "relationships": {
+        "rows": 9,
+        "sha256": "c5a353208638a747027b4aa3aa04251cdab779fc74b4167e0513dd93c283e6ac"
+      }
+    },
+    "browser_state_table_present": false,
+    "source_mutation": false,
+    "deployment_mutation": false,
+    "service_restart": false
+  },
+  "discovery_safety": {
+    "installed_service_version": "0.2.7",
+    "task_contract_count": 8,
+    "request_contract_version": 1,
+    "result_contract_version": 1,
+    "prompt_exposed": false,
+    "credentials_exposed": false,
+    "raw_provider_events_exposed": false,
+    "browser_mechanics_exposed": false
+  },
+  "validation": {
+    "focused_tests": {
+      "command": "uv run pytest tests/test_service_intelligence.py tests/test_service_intelligence_contracts.py tests/test_service_http.py tests/test_service_product.py tests/test_service_product_surface.py tests/test_service_runtime_package.py tests/test_service_process.py -q",
+      "result": "50 passed"
+    },
+    "candidate_artifact_sha256": "3c1b3ad42942206f487041c0ce2b383842582732da88f8c60df05d740125d989",
+    "installed_maintenance_status": {
+      "app_intelligence_enabled": true,
+      "completed_tasks": 1,
+      "failed_tasks": 1,
+      "validation_receipts": 1,
+      "promotion_receipts": 1,
+      "replay_receipts": 1
+    }
+  }
+}

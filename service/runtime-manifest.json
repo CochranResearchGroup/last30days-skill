@@ -322,7 +322,7 @@
     },
     {
       "path": "scripts/lib/service_intelligence_contracts.py",
-      "sha256": "66fbd3ee08a2a732b043ae2aba800d11cdb776f4fa320436573ca27d589b63bf",
+      "sha256": "473d657cbe2659432adcc884598258dcf2ae265c9f0fcdfecbb9e8806cd21f00",
       "source": "skills/last30days/scripts/lib/service_intelligence_contracts.py"
     },
     {

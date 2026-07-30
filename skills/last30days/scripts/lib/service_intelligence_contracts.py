@@ -26,7 +26,7 @@ CONTENT_ASSESSMENT_OUTPUT_SCHEMA = {
         "rationale",
     ],
     "properties": {
-        "action": {"const": "record_assessment"},
+        "action": {"type": "string", "const": "record_assessment"},
         "proposals": {
             "type": "array",
             "maxItems": 100,
@@ -41,7 +41,10 @@ CONTENT_ASSESSMENT_OUTPUT_SCHEMA = {
                     "payload",
                 ],
                 "properties": {
-                    "proposal_kind": {"const": "content_signal"},
+                    "proposal_kind": {
+                        "type": "string",
+                        "const": "content_signal",
+                    },
                     "proposal_key": {
                         "type": "string",
                         "minLength": 1,
@@ -70,6 +73,10 @@ CONTENT_ASSESSMENT_OUTPUT_SCHEMA = {
                             "novelty",
                             "relevance",
                             "follow_up_priority",
+                            "entity_candidates",
+                            "claim_candidates",
+                            "event_candidates",
+                            "profile_change_candidates",
                         ],
                         "properties": {
                             "content_type": {
