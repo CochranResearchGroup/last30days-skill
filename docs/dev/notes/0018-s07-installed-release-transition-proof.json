@@ -1,0 +1,132 @@
+{
+  "artifacts": {
+    "mcp_binary_sha256": "feb39182eb42ac426565b95b159ed53e336f671440f90b4f8b0be0ec88686456",
+    "mcpb_sha256": "b9832543c65821fc8c5cd355dc07fa6533ce5350c63a116d2f6b8f154827b31d",
+    "service_sha256": "2c4763fc94541883bdc747d66c0b7cfc0414da6dd2b9e6330335d0ef8ddf52e8",
+    "skill_sha256": "a7f0621837834e190fe22c885693f02ddfd07cbbd4f8aafe46546929e848d19d"
+  },
+  "baseline": {
+    "contract_sha256": "f011c45999769f2c93b9044917179a0c683b3a43b35ec316f973bf91a2e76e34",
+    "current_release": "0.2.7",
+    "database_schema_version": 12,
+    "index_version": "index-4f096317e15c57da386466f2",
+    "previous_release": "0.2.8",
+    "runtime_manifest_sha256": "c889e528914befe807ca0fd3c0f3d4cb110a54af906ff9f4abd614387f1adca5",
+    "service_status": "ready"
+  },
+  "cache_only_acceptance": {
+    "cache_status": "fresh",
+    "citation_urls": [
+      "https://x.com/DrGhattasMD/status/2080698332893057080",
+      "https://x.com/BenGFromTheLPC/status/2080845275120148981",
+      "https://www.linkedin.com/feed/update/urn:li:activity:7488204724114997248/",
+      "https://www.facebook.com/crimetalkofficial/posts/2211753769634766"
+    ],
+    "evidence_count": 4,
+    "index_version": "index-4f096317e15c57da386466f2",
+    "job_id": null,
+    "jobs_after": 49,
+    "jobs_before": 49,
+    "query": "OpenClaw"
+  },
+  "final_installed_state": {
+    "compatibility_state": "compatible",
+    "contract_sha256": "f011c45999769f2c93b9044917179a0c683b3a43b35ec316f973bf91a2e76e34",
+    "current_release": "0.2.9",
+    "database_schema_version": 12,
+    "mcp_adapter_version": "4.0.1",
+    "mcp_registered_enabled": true,
+    "mcp_vcs_modified": false,
+    "mcp_vcs_revision": "ec9299159785a63ce173b261b1cb6f49e6043228",
+    "previous_release": "0.2.7",
+    "retained_unselected_releases": [
+      "0.2.8"
+    ],
+    "runtime_manifest_sha256": "924ad31405fbc116329b34ae9934292f5a3b02d01168cc43d169770996dcf691",
+    "service_status": "ready",
+    "service_version": "0.2.9",
+    "tool_count": 10,
+    "tools": [
+      "collection",
+      "coverage",
+      "job_status",
+      "maintenance_status",
+      "profile_history",
+      "query",
+      "refresh",
+      "service_info",
+      "temporal_query",
+      "topic"
+    ]
+  },
+  "invariants": {
+    "database_integrity": "ok",
+    "env_file_sha256_after": "7b32076759f0e743838249a88ba30efbe4c26003d59059bae3c86265a468619f",
+    "env_file_sha256_before": "7b32076759f0e743838249a88ba30efbe4c26003d59059bae3c86265a468619f",
+    "state_counts_after": {
+      "acquisitions": 65,
+      "collection_runs": 12,
+      "collection_specs": 2,
+      "document_versions": 57,
+      "documents": 50,
+      "evidence_spans": 419,
+      "graph_projection_receipts": 1,
+      "index_versions": 44,
+      "promotion_receipts": 1,
+      "replay_receipts": 1,
+      "service_envelopes": 248,
+      "service_intelligence_tasks": 2,
+      "service_job_events": 478,
+      "service_jobs": 49,
+      "validation_receipts": 1
+    },
+    "state_counts_before": {
+      "acquisitions": 65,
+      "collection_runs": 12,
+      "collection_specs": 2,
+      "document_versions": 57,
+      "documents": 50,
+      "evidence_spans": 419,
+      "graph_projection_receipts": 1,
+      "index_versions": 44,
+      "promotion_receipts": 1,
+      "replay_receipts": 1,
+      "service_envelopes": 248,
+      "service_intelligence_tasks": 2,
+      "service_job_events": 478,
+      "service_jobs": 49,
+      "validation_receipts": 1
+    },
+    "timer_active_after": false,
+    "timer_active_before": false,
+    "unit_file_sha256_after": "6cfdf6976dae4849a40ff6973c165b92649c24bfe829e6d2fbd493c0f10d9d13",
+    "unit_file_sha256_before": "6cfdf6976dae4849a40ff6973c165b92649c24bfe829e6d2fbd493c0f10d9d13"
+  },
+  "notes": [
+    "The existing connected tool process retained the old MCP binary and continued to fail closed; a fresh registered stdio process is the acceptance authority.",
+    "The first immediate post-upgrade sqlite read returned database locked during daemon startup; the bounded read-only retry with a five-second busy timeout returned integrity ok and 49 jobs.",
+    "No refresh, acquisition, timer, browser, credential, source configuration, collection, App Intelligence, or database mutation action ran."
+  ],
+  "release_commit": "ec9299159785a63ce173b261b1cb6f49e6043228",
+  "rollback_sequence": [
+    {
+      "current": "0.2.9",
+      "event": "upgrade",
+      "previous": "0.2.7",
+      "ready": true
+    },
+    {
+      "current": "0.2.7",
+      "event": "rollback",
+      "previous": "0.2.9",
+      "ready": true
+    },
+    {
+      "current": "0.2.9",
+      "event": "restore_by_rollback_swap",
+      "previous": "0.2.7",
+      "ready": true
+    }
+  ],
+  "schema_version": 1
+}
