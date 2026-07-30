@@ -4037,3 +4037,72 @@ Next Bounded Action:
 - execute S06-A: relocate the legacy Engine contract behind its explicit gate,
   author the concise ordinary MCP Skill and three privileged references, and
   add the focused content-boundary test.
+
+## Turn 61 | 2026-07-30
+
+Focus: execute and accept Plan 0018 S06 as a least-privilege Agent client and
+packaged compatibility boundary.
+
+Authority Consulted:
+
+- Plan 0018 S06 packet, ordinary query contract, capability gates, acceptance,
+  two-attempt/rework bounds, and no-live-mutation hard stop
+- current Skill, reference, artifact, README, configuration, onboarding,
+  metadata, service-product, MCP integration, version, planning, validation,
+  Graphiti, Git, and closeout authorities
+
+Decisions And Changes:
+
+- Replaced the 1,908-line ordinary Skill with a 137-line MCP client that calls
+  `service_info` first and names all ten service operations.
+- Moved monitoring, administration, maintenance, and the complete direct
+  Engine contract behind explicit capability-gated references.
+- Removed source credentials, browser/profile mechanics, scraper selection,
+  Bash, WebSearch, and executable Engine/service commands from the ordinary
+  path while retaining the direct Engine and scripts in the package.
+- Aligned README, configuration, onboarding, package, metadata, preflight,
+  service-product, OpenClaw, and version contracts.
+- Committed and pushed the implementation as `ac76e2b`.
+
+Validation Evidence:
+
+- 49 focused tests passed, followed by a clean full `uv run pytest -q`;
+- the built 133-file `dist/last30days.skill` contains the 137-line primary
+  Skill, all four capability references, the existing HTML reference, and
+  `scripts/last30days.py`;
+- canonical isolated MCP integration completed cache-only query behavior;
+- the installed MCP listed exactly ten tools and failed closed at
+  `service_info` and `query(cache_only)` with `local service contract is
+  incompatible`, preserving the S07 release boundary;
+- planning audit passed with one active plan, `git diff --check` passed, and
+  local `main` equaled `origin/main` at `ac76e2b`;
+- no live service, timer, collection, browser, credential, database, or
+  installed configuration state changed.
+
+State Movement:
+
+- Plan 0018 S06: `packet ready -> accepted`;
+- Plan 0018 and P07 remain `OPEN`;
+- S07 compatibility and release transition is next.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one and the
+  Skill/reference/package boundary was one coupled write surface;
+- the primary agent performed implementation, validation, artifact inspection,
+  and installed readback.
+
+Graphiti Write Status:
+
+- `graphiti_write_failed_validation`;
+- provider readiness passed, but the single write attempt was rejected before
+  queueing because `last30days-skill` violated the underscore-only group-ID
+  contract;
+- no retry was made under the one-attempt bound; this runbook entry and
+  checkpoint preserve the intended durable receipt.
+
+Next Bounded Action:
+
+- derive Plan 0018 S07 from the current versioning, release, install, migration,
+  cross-harness acceptance, and rollback authorities before any live runtime
+  change.

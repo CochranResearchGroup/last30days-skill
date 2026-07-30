@@ -54,6 +54,14 @@ software with:
 - Plan 0014 closed at its restart bound after repairing stale due replay and
   per-spec overlap. Revision 9 is disabled, all revision-8 service jobs are
   terminal, and no timer proof is active.
+- S06 is accepted at commit `ac76e2b`: the 137-line primary Skill is a
+  least-privilege ten-operation MCP client, privileged guidance is split into
+  capability-gated references, and the packaged direct Engine remains only as
+  an explicitly approved compatibility/debug path.
+- Canonical isolated MCP integration completes cache-only queries, while the
+  installed MCP currently fails closed with `local service contract is
+  incompatible`; S07 owns the corrected versioned release, installed
+  compatibility proof, and rollback.
 
 ## User Experience Contract
 
@@ -1159,3 +1167,75 @@ Next action:
 - execute S06-A: move the legacy instruction contract behind the explicit
   compatibility gate, author the concise ordinary Skill and privileged
   references, and add the focused content-boundary test.
+
+### Checkpoint P0018-C10 | 2026-07-30
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `S06 packet ready -> S06 accepted`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- replaced the 1,908-line ordinary Skill with a 137-line service client that
+  calls `service_info` first and names the exact ten MCP operations;
+- moved monitoring, administration, maintenance, and direct-Engine guidance
+  into separate references with explicit intent, mutation, approval, and
+  fallback gates;
+- retained `scripts/last30days.py` and the full legacy Engine contract in the
+  installable artifact without exposing credential, browser, scraper, Bash,
+  WebSearch, or internal Python mechanics to ordinary queries;
+- aligned README, configuration, onboarding, metadata, artifact, preflight,
+  service-product, and version tests at commit `ac76e2b`, pushed to
+  `origin/main`.
+
+Validation evidence:
+
+- 49 focused Skill, artifact, metadata, service-product, version, and MCP
+  integration tests passed;
+- the full `uv run pytest -q` suite passed with only its declared skips;
+- `dist/last30days.skill` built with 133 files and contains the primary Skill,
+  all four new references, the existing HTML reference, and the direct Engine;
+- the primary Skill is 137 lines and the content-boundary test rejects
+  privileged mechanics;
+- a fresh canonical MCP process integration completed the cache-only contract;
+  the installed client listed exactly ten operations, then `service_info` and
+  `query(cache_only)` returned the expected fail-closed
+  `local service contract is incompatible` diagnostic;
+- planning audit passed with Plan 0018 as the sole active plan,
+  `git diff --check` passed, and local `main` equaled `origin/main`.
+
+Remaining acceptance criteria:
+
+- execute S07 compatibility and release transition, including a corrected
+  independently versioned service/MCP release, installed cache-only acceptance,
+  state-preserving upgrade, and rollback proof;
+- run independent final outcome review before Plan 0018/P07 closeout.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one and the
+  Skill/reference/package boundary was one coupled write surface;
+- the primary agent performed implementation, focused and full validation,
+  artifact inspection, and installed readback.
+
+Graphiti write status:
+
+- `graphiti_write_failed_validation`;
+- provider readiness passed, but the single write attempt was rejected before
+  queueing because the supplied group ID contained a hyphen;
+- no retry was made under the one-attempt bound; the intended compact receipt
+  is preserved in this checkpoint and Runbook Turn 61.
+
+Next action:
+
+- derive the bounded S07 release packet from current service, MCP, versioning,
+  release, install, migration, and rollback authorities before changing live
+  runtime state.

@@ -735,8 +735,13 @@ Current State:
   independently versioned release, MCP enforces the compatibility handshake,
   and installed upgrade/rollback preserved the schema-12 state.
 - Plans 0015 and 0016 are closed with temporal/GraphRAG resilience plus
-  accepted/rejected/replay App Intelligence authority evidence; S06 client
-  Skill redesign is next.
+  accepted/rejected/replay App Intelligence authority evidence.
+- S06 is accepted at `ac76e2b`: the primary Skill is a 137-line MCP client,
+  privileged guidance is capability-gated, and the direct Engine remains an
+  explicit compatibility/debug path.
+- The installed MCP currently fails closed on its stale service contract; S07
+  owns the corrected versioned release, installed acceptance, migration, and
+  rollback proof.
 
 Goal Seeds:
 
@@ -769,16 +774,16 @@ Active Plan:
 
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the open transition authority. Its first service-distribution/MCP packet
-  plus Plans 0015 and 0016 are accepted without moving implementation modules
-  or migrating schema 12; S06 client Skill redesign is the next bounded
-  packet.
+  plus Plans 0015 and 0016 and the S06 client-Skill redesign are accepted
+  without moving implementation modules or migrating schema 12; S07 is the
+  remaining transition packet.
 
 Next Bounded Action:
 
-- Execute Plan 0018 S06: freeze the ordinary Skill's least-privilege MCP
-  discovery/query/synthesis contract and separate privileged
-  monitoring/administration/maintenance guidance without removing the direct
-  Engine compatibility path.
+- Derive and execute Plan 0018 S07: publish and install a compatible
+  independently versioned service/MCP pair, preserve user state, prove
+  cache-only cross-harness acceptance, and prove rollback before deprecating
+  request-scoped primary operation.
 
 ## Goal-Compatible Plan Conversion
 
