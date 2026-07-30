@@ -130,13 +130,12 @@ successor plans without reopening Plans 0010 or 0011:
    Skills.
 
 The 2026-07-29 architecture direction makes Plan 0018 the governing successor
-after Plan 0014 reaches a terminal timer result. Plan 0014 Revision 3 is `OPEN`
-as the final bounded timer retry after Revision 2 exposed missing per-spec
-backpressure and stopped safely at three runs. Before Plans 0015 and 0016 open,
-Plan 0018 must derive the bounded service-package/lifecycle and
-MCP-boundary packet that makes those plans service-product acceptance rather
-than Skill features. Plans 0013 and 0017 remain planned and outside this
-transition critical path.
+after Plan 0014 reaches a terminal timer result. Plan 0014 is `CLOSED` at its
+typed restart-bound blocker after repairing stale due replay and missing
+per-spec backpressure. Plan 0018 is now `OPEN` with the bounded
+service-package/lifecycle and MCP-boundary packet that makes later acceptance
+work service-product validation rather than Skill features. Plans 0013 and
+0017 remain planned and outside this transition critical path.
 
 ## P00 | Productized Content Service MVP
 
@@ -301,7 +300,7 @@ Active Plan:
 
 ## P02 | Recurring Acquisition And Coverage
 
-State: OPEN
+State: PLANNED
 
 Objective: run governed timers that collect bounded recent feed items and
 optional topic, poster, channel, or account targets without losing cursor,
@@ -369,7 +368,9 @@ Active Plan:
   is the planned current-yield acceptance packet for YouTube transcript and
   bounded media handling.
 - `docs/dev/plans/0014-2026-07-26-recurring-collection-timer-durability.md`
-  is the open public-source two-interval restart and pause proof.
+  is closed at its typed restart-bound blocker. Its scheduler repairs are
+  pushed, revision 9 is disabled, and a future timer proof is subordinate to
+  Plan 0018's independent lifecycle work.
 
 ## P03 | Profile And Identity Acquisition
 
@@ -693,7 +694,7 @@ Active Plan:
 
 ## P07 | Service-First Software Productization
 
-State: PLANNED
+State: OPEN
 
 Objective: complete the transition from a Skill package with supporting
 scripts to independently installed intelligence software whose durable service
@@ -743,16 +744,16 @@ indexes or stochastic workers authoritative.
 Active Plan:
 
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
-  is the planned transition authority. It becomes actionable after Plan 0014
-  reaches a terminal outcome and derives a bounded S01/S02 architecture packet.
+  is the open transition authority. Its first bounded packet owns the
+  independent service artifact/lifecycle and explicit MCP compatibility
+  handshake without moving implementation modules or migrating schema 12.
 
 Next Bounded Action:
 
-- Execute the authorized Plan 0014 Revision-3 final two-interval retry and
-  reconcile its terminal result. Then derive Plan 0018's bounded
-  service-package/lifecycle and MCP-boundary packet before opening Plans 0015
-  or 0016. Preserve the deterministic joins and do not reopen Plans 0010,
-  0011, or 0012.
+- Execute Plan 0018 S01-A: establish the independent service version,
+  runtime-manifest allowlist, reproducible artifact, and package-boundary
+  tests. Preserve the deterministic joins and do not reopen Plans 0010, 0011,
+  0012, or the closed Plan 0014.
 
 ## Goal-Compatible Plan Conversion
 

@@ -3393,3 +3393,68 @@ Next Bounded Action:
 - validate and push the backpressure repair, synchronize the installed Skill,
   perform the activation restart, and execute Revision 3 under its final
   exact-two-run bound.
+
+## Turn 52 | 2026-07-29
+
+Focus: close Plan 0014 at its typed restart bound and open Plan 0018's first
+service-product implementation packet.
+
+Authority Consulted:
+
+- Plan 0014 Revision-3 bounds and live revision-8/revision-9 ledgers
+- Plan 0018 product decision and conversion gate
+- current service runtime, installer, systemd unit, MCP bootstrap/client,
+  generated contract, manifest, and integration tests
+- the user's service-first App Intelligence, RAG, and timed-scraping direction
+- current planning, architecture, documentation, validation, and closeout
+  policies
+
+Decisions And Changes:
+
+- Closed Plan 0014 without a revision-10 run because loading the final
+  job-authoritative backpressure repair and still performing the required
+  durability restart would exceed its two-restart bound.
+- Preserved revision 9 disabled, all revision-8 service jobs terminal, and
+  database integrity.
+- Opened Plan 0018 as the sole active plan.
+- Froze an independent immutable service artifact, versioned release-root
+  installer, stable managed unit, one-target rollback, schema-12 compatibility,
+  and explicit MCP service/client handshake.
+- Kept implementation modules in place for the first packet; S01 proves the
+  artifact boundary before source files move.
+- Split execution into S01-A artifact, S01-B lifecycle, S02-A handshake, S02-B
+  managed MCP bootstrap, and one installed migration/rollback proof.
+
+Validation Evidence:
+
+- Plan 0014 revision 9 is disabled;
+- all three revision-8 service jobs report terminal `failed` with
+  `retry_exhausted`;
+- `PRAGMA integrity_check` returned `ok`;
+- commits `dbe90c6` and `0837646` are pushed;
+- installed-on-disk and source scheduler digests match;
+- installed service remains ready at v0.2.7/schema 12;
+- the active daemon has not been restarted to load commit `0837646`;
+- planning audit and Git equality remain to be validated for this authority
+  transition.
+
+State Movement:
+
+- Plan 0014: `OPEN -> CLOSED` at `closed_typed_blocker`;
+- P02: `OPEN -> PLANNED`;
+- Plan 0018: `PLANNED -> OPEN`;
+- P07: `PLANNED -> OPEN`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this was a serialized live-proof and planning-authority
+  transition.
+
+Graphiti Write Status:
+
+- pending after validation and push.
+
+Next Bounded Action:
+
+- execute Plan 0018 S01-A: add the service version, runtime allowlist and
+  manifest, reproducible independent artifact, and package-boundary tests.

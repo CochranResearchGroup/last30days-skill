@@ -1,6 +1,6 @@
 # Plan 0018 | Service-first software product transition
 
-State: PLANNED
+State: OPEN
 Roadmap: P07
 Date: 2026-07-29
 Predecessors: Plans 0007, 0010, and 0011
@@ -32,6 +32,28 @@ software with:
   retrieval evaluation, and adapter maintenance;
 - optional Skills that consume MCP rather than teaching ordinary agents how to
   operate scrapers.
+
+## Current State
+
+- The daemon, scheduler, corpus, App Intelligence supervisor, and Python
+  service client are implemented under `skills/last30days/scripts/`.
+- `npx skills add` freezes that tree under
+  `~/.agents/skills/last30days`, and the current systemd unit executes
+  `service.py` from that frozen Skill copy.
+- `skills/last30days/scripts/install-service.sh` writes and immediately
+  restarts the user unit, but it has no release directory, loaded-version
+  receipt, upgrade transaction, or rollback target.
+- The MCP adapter is a separate Go binary, but
+  `mcp/scripts/sync-service-runtime.sh` copies the complete installable Skill
+  into the MCP bundle and `BootstrapPackagedService` may directly detach its
+  packaged `service.py`.
+- The Go client already fails closed on the exact
+  `X-Last30days-Contract-SHA256` response header. The service also reports
+  service version 0.2.7 and database schema 12, but there is no explicit
+  client/service API-version compatibility result or loaded-runtime revision.
+- Plan 0014 closed at its restart bound after repairing stale due replay and
+  per-spec overlap. Revision 9 is disabled, all revision-8 service jobs are
+  terminal, and no timer proof is active.
 
 ## User Experience Contract
 
@@ -178,9 +200,170 @@ Plan 0014 terminal timer result
        -> S07 compatibility and release transition
 ```
 
-Before this plan moves to `OPEN`, derive the S01/S02 architecture packet with
-exact file/package ownership, compatibility constraints, install topology,
-version handshake, tests, and rollback. Do not begin by moving files.
+Opening this plan required the S01/S02 architecture packet below with exact
+file/package ownership, compatibility constraints, install topology, version
+handshake, tests, and rollback. The packet does not begin by moving files.
+
+## First Implementation Packet | S01/S02 Service distribution and handshake
+
+Outcome:
+
+- install, upgrade, start, diagnose, and roll back one independently versioned
+  service artifact whose loaded version is provable through MCP;
+- remove the Agent Skill as the distribution and lifecycle authority without
+  moving service implementation modules during this packet.
+
+### Frozen package ownership
+
+New service-product surfaces:
+
+- `service/VERSION` owns the service release version;
+- `service/runtime-manifest.json` owns an explicit allowlist and SHA-256
+  manifest for the runtime payload;
+- `service/scripts/build-runtime.sh` builds a reproducible
+  `last30days-service-<version>` artifact from the current canonical
+  `scripts/`, `schemas/`, and required metadata only;
+- `service/scripts/install.sh` owns install, upgrade, readiness, rollback, and
+  release retention;
+- `service/systemd/last30days.service.in` owns the managed user-unit template.
+
+Existing implementation authority during this packet:
+
+- `skills/last30days/scripts/service.py`,
+  `skills/last30days/scripts/store.py`, the service and acquisition modules
+  under `skills/last30days/scripts/lib/`, and
+  `skills/last30days/schemas/` remain canonical source;
+- `skills/last30days/scripts/install-service.sh` becomes a compatibility
+  delegator and no longer renders a unit whose `ExecStart` points into a Skill
+  install;
+- `mcp/scripts/sync-service-runtime.sh` consumes the independent service
+  artifact and must not copy `SKILL.md`, Skill docs, or the complete Skill
+  tree;
+- `mcp/internal/service/client.go` owns transport and compatibility checks;
+- `mcp/internal/contracts/`, `mcp/internal/tools/`, and
+  `mcp/cmd/last30days-pp-mcp/` own generated contract facts, safe MCP
+  presentation, and the stamped MCP adapter version.
+
+No Python module moves are allowed in this packet. The artifact boundary is
+proved before source ownership is relocated.
+
+### Install and lifecycle topology
+
+The Linux user-scoped layout is frozen as:
+
+```text
+$XDG_DATA_HOME/last30days/
+  research.db                         durable authority, unchanged
+  service/
+    releases/<service-version>/       immutable verified runtime
+    current -> releases/<version>     atomically selected release
+    previous -> releases/<version>    one rollback target
+$XDG_CONFIG_HOME/last30days/.env      owner-scoped configuration, unchanged
+$XDG_CONFIG_HOME/systemd/user/
+  last30days.service                  stable managed unit
+$XDG_RUNTIME_DIR/last30days/
+  service.sock                        owner-private transport, unchanged
+```
+
+The unit executes the `current` service release through a stable
+`last30days-service` launcher. Upgrade stages and verifies a new immutable
+release, records the prior target, atomically switches `current`, restarts once,
+and accepts the upgrade only after readiness reports the expected version,
+contract digest, and database schema. Failure restores `previous`, restarts,
+and proves readiness. Packet one permits no database migration and therefore
+freezes schema 12 for rollback safety.
+
+The MCP adapter may carry the same independently built service artifact as an
+installation payload, but it must install/start it through the managed service
+control path. It may not detach raw `service.py`, copy a Skill tree, or become
+the daemon owner.
+
+### Version handshake
+
+`GET /v1/service-info` and the MCP `service_info` result must expose:
+
+- product identity `last30days`;
+- semantic `service_version`;
+- integer `service_api_version`, initially 1;
+- `contract_schema_version` and `contract_sha256`;
+- `database_schema_version`;
+- immutable `runtime_manifest_sha256`;
+- MCP adapter version and its supported service API range;
+- compatibility state `compatible` or one safe typed incompatibility reason.
+
+The response header contract digest remains mandatory. The Go client performs
+the service-info handshake before any ordinary or operator tool call and fails
+closed on product mismatch, unsupported API version, contract digest mismatch,
+or database schema outside its declared range. `service_info` remains
+available for safe diagnostics and reports both sides of the mismatch without
+paths, credentials, prompts, browser state, or raw subprocess output.
+
+### Compatibility and rollback constraints
+
+- existing service v0.2.7/schema-12 state, socket, configuration, profiles,
+  schedules, ledgers, corpus, and indexes are preserved in place;
+- the first independent release must read the current database without
+  migration and return the same ten MCP operations;
+- exact contract-digest validation remains fail closed until an explicit
+  additive compatibility policy is separately planned;
+- the Skill-first installer and current MCPB stay usable as rollback inputs
+  until the independent service passes live installation and restart proof;
+- removal of packaged runtime bootstrap, source relocation, schema migration,
+  timer re-enablement, and Skill redesign are outside this packet.
+
+### Execution slices
+
+1. S01-A: add service version, runtime manifest, reproducible artifact builder,
+   and package-boundary tests.
+2. S01-B: add versioned installer, stable unit, readiness receipt, atomic
+   upgrade/rollback, and fake-user-manager lifecycle tests.
+3. S02-A: extend service-info and generated Go contract facts with the explicit
+   handshake; add compatible and incompatible client matrices.
+4. S02-B: make MCP bootstrap use the managed independent artifact, preserve the
+   ten-tool surface, and run process-level service/MCP integration.
+5. Migration proof: install over the current schema-12 state, prove the unit no
+   longer executes from `.agents/skills`, restart, query through MCP, roll back
+   once, and prove corpus/job/timer state unchanged.
+
+### Bounds and hard stops
+
+- maximum implementation attempts per slice: 2;
+- maximum review/rework cycles per slice: 1;
+- maximum consecutive hardening-only checkpoints: 1;
+- active-agent concurrency: 1 unless a later checkpoint explicitly partitions
+  non-overlapping files;
+- no service implementation module move, database migration, repository split,
+  authenticated acquisition, timer enablement, App Intelligence enablement, or
+  ordinary Skill redesign;
+- stop on artifact contents outside the allowlist, state-path change, more than
+  one daemon, contract mismatch presented as healthy, database mutation during
+  install/rollback, rollback readiness failure, or loss of any existing MCP
+  operation.
+
+### Validation
+
+- artifact reproducibility and manifest verification tests;
+- installer rendering, atomic switch, readiness, failed-upgrade, and rollback
+  tests with isolated XDG roots and a fake user manager;
+- Python service-info and HTTP-header contract tests;
+- Go client handshake table tests and generated-contract drift checks;
+- `go test ./...`, `go vet ./...`, focused Python service/install/MCP tests,
+  and process-level MCP integration;
+- live unit `ExecStart`, loaded manifest digest, service-info, database
+  integrity, ten-tool catalog, cache-only query, restart, and rollback
+  readbacks;
+- repo-native planning audit, package-boundary audit, `git diff --check`, clean
+  worktree, and local/tracking/remote commit equality.
+
+### Packet acceptance
+
+- a service artifact installs and operates without installing an Agent Skill;
+- the live unit resolves through the independent `current` release;
+- MCP proves client/service compatibility before serving non-diagnostic tools;
+- the Skill tree and MCP adapter contain no independent lifecycle authority;
+- one upgrade and rollback preserve schema-12 state and return the same
+  evidence-backed cache query;
+- unloading or replacing the Skill does not change daemon readiness.
 
 ## Non-Goals
 
@@ -215,15 +398,14 @@ version handshake, tests, and rollback. Do not begin by moving files.
 
 ## Plan Conversion Gate
 
-This is a stable transition plan, not yet an implementation packet. To open it:
+The conversion gate was satisfied on 2026-07-29:
 
-1. reconcile the terminal outcome of active Plan 0014;
-2. inventory current service code that still ships inside
-   `skills/last30days/`;
-3. freeze the service/client package and version-handshake decision;
-4. derive one bounded S01/S02 vertical slice;
-5. update the planning audit only if the new product authority requires a
-   durable invariant beyond the current single-active-plan rule.
+1. Plan 0014 closed at its typed restart-bound blocker;
+2. current service, installer, MCP bootstrap, contract, and install topology
+   were inventoried;
+3. the release-root lifecycle and exact fail-closed handshake were frozen;
+4. the bounded S01/S02 packet above was derived;
+5. the existing single-active-plan audit remains sufficient.
 
 ## Definition Of Done
 
@@ -240,3 +422,52 @@ ordinary agent work.
 - episode `d1da4f3e-a09f-4265-805f-b638103f5951` is visible in
   `last30days_skill_main` with read-after-write ready;
 - no installed runtime or collection state changed.
+
+### Checkpoint P0018-C01 | 2026-07-29
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `PLANNED -> OPEN`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- reconciled Plan 0014's terminal blocker;
+- inventoried the Skill-owned service, managed-unit installer, MCP packaged
+  runtime bootstrap, exact contract-digest check, and version surfaces;
+- froze the independent release layout, lifecycle transaction, handshake,
+  compatibility constraints, rollback, tests, and five execution slices.
+
+Validation evidence:
+
+- revision 9 is disabled;
+- all three revision-8 service jobs are terminal `failed`;
+- database integrity is `ok`;
+- service source and installed-on-disk scheduler digests match;
+- the planning audit must pass with Plan 0018 as the sole active plan before
+  this checkpoint is committed.
+
+Remaining acceptance criteria:
+
+- execute S01-A through the migration proof without crossing a hard stop.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the terminal live proof and successor packet were one
+  serialized authority transition.
+
+Graphiti write status:
+
+- pending after validation and push.
+
+Next action:
+
+- execute S01-A: add the independent version and runtime-manifest boundary with
+  reproducible artifact and package-boundary tests.

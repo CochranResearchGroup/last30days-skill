@@ -1,6 +1,6 @@
 # Plan 0014 | Recurring collection timer durability
 
-State: OPEN
+State: CLOSED
 Roadmap: P02
 Date: 2026-07-26
 Predecessor: Plan 0011
@@ -399,3 +399,63 @@ Next action:
 
 - validate and commit the backpressure repair, synchronize the installed
   Skill, perform the activation restart, and execute Revision 3.
+
+### Checkpoint P0014-C06 | 2026-07-29
+
+Plan version:
+
+- 4
+
+State transition:
+
+- `open_final_retry_backpressure_repair -> closed_typed_blocker`
+
+Progress classification:
+
+- `terminal_blocker`
+
+Terminal outcome:
+
+- Revision 2 stopped safely when three revision-8 runs existed and revision 9
+  was disabled;
+- all three authoritative service jobs are terminal `failed` with
+  `retry_exhausted`, while their collection-run mirrors remain stale at one
+  `acquiring` and two `queued`;
+- the second implementation attempt added per-spec timer backpressure and then
+  joined that gate to authoritative service-job terminal state so stale
+  collection mirrors cannot deadlock the schedule;
+- commits `dbe90c6` and `0837646` are pushed to `origin/main`;
+- the final source is synchronized to the installed Skill on disk, but the
+  active daemon was not restarted a second time to load it because doing so
+  would consume a third Revision-3 lifecycle restart once the required
+  durability restart was included;
+- revision 10 was never created or enabled, no authenticated source or
+  assessment was enabled, and database integrity is `ok`.
+
+Acceptance result:
+
+- the exact two-interval restart proof did not pass;
+- the packet reached its second implementation attempt and closed at the
+  explicit restart bound rather than widening live authority;
+- the acceptance spec remains durably disabled at revision 9.
+
+Carry-forward:
+
+- Plan 0018 owns the independent service install, upgrade, version handshake,
+  and rollback boundary exposed by this failure;
+- a future S03 packet may repeat timer durability only after the service
+  lifecycle makes the loaded runtime version observable and rollback-safe.
+
+Subagent status:
+
+- `not_spawned`; the live proof and authority reconciliation were serialized.
+
+Graphiti write status:
+
+- required at the Plan 0018 activation closeout so the terminal blocker and
+  successor boundary are written together.
+
+Stop reason:
+
+- another activation restart plus the required durability restart would exceed
+  Revision 3's two-restart hard bound.
