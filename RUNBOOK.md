@@ -3893,3 +3893,87 @@ Next Bounded Action:
 - execute Plan 0016 Packet 1 under Plan 0018: freeze one non-browser task type,
   exact evidence fixture, contract version, finite limits, and the accepted
   plus rejected envelope pair before stochastic execution.
+
+## Turn 59 | 2026-07-30
+
+Focus: execute and close Plan 0016's bounded App Intelligence
+accepted/rejected/replay acceptance under Plan 0018.
+
+Authority Consulted:
+
+- Plan 0016's four execution packets, finite bounds, hard stops, acceptance,
+  and no-deployment/non-browser scope
+- Plan 0018's S05 host-authority invariant and S06/S07 successor sequence
+- installed independent service 0.2.7 maintenance discovery, schema-12
+  intelligence ledger, immutable public evidence, and current index authority
+- current planning, architecture, CodeGraph, validation, documentation,
+  Graphiti, Git, and closeout policies
+
+Decisions And Changes:
+
+- Froze `content_assessment` version 1 over one exact public evidence span,
+  `record_assessment` as the sole action, and limits of one item, 4,096 bytes,
+  one call, one cent, and 60 seconds.
+- Preserved the installed attempt's fail-closed response-schema rejection
+  before model generation instead of masking it.
+- Repaired the canonical schema for the Codex App Server strict subset and
+  added a recursive regression test for explicit const types, closed object
+  properties, and complete required sets.
+- Executed one corrected read-only Codex task that produced one accepted
+  proposal and host-owned validation, promotion, and replay receipts.
+- Rejected a request containing forbidden `browser_profile` state twice before
+  persistence, provider execution, or mutation.
+- Replayed the accepted task through both canonical and installed 0.2.7
+  deterministic receipt paths with no new rows or provider calls.
+- Preserved the sanitized proof in commit `bbff9f8`, pushed to `origin/main`.
+
+Validation Evidence:
+
+- accepted task
+  `intelligence-task-fa47bff380504648800536a4e6206961` completed in one
+  attempt with one proposal and no validator errors;
+- validation, promotion, and replay receipts were stable across replay;
+- rejected request digest
+  `sha256:295a623a80fa389bc108c169bf28bc396381e3bc89e6142d898fee7cdab99e93`
+  returned `schema_invalid` twice with zero persistence and zero provider
+  calls;
+- all tracked canonical authority hashes and row counts were identical before
+  and after; no browser, source, deployment, timer, or service restart action
+  ran;
+- 50 focused tests passed, the corrected independent artifact built with
+  SHA-256
+  `3c1b3ad42942206f487041c0ce2b383842582732da88f8c60df05d740125d989`,
+  `git diff --check` passed, and the planning audit retained Plan 0018 as the
+  sole active plan.
+
+State Movement:
+
+- Plan 0016: `PLANNED -> CLOSED`;
+- P06: `PLANNED -> CLOSED`;
+- Plan 0018 and P07 remain `OPEN`;
+- S06 client-Skill redesign is next, with corrected-schema release packaging
+  retained for S07.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the packet fixed active-agent concurrency at one and shared
+  one live evidence/ledger authority;
+- the primary agent performed the bounded execution and invariant comparison;
+  independent final outcome review remains required before Plan 0018 closeout.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`;
+- provider preflight passed, but job
+  `9d14aca9-c195-4686-8bf4-449418015fb9` timed out after its single
+  180-second attempt while resolving edges;
+- exact readback found no visible episode;
+- intended compact receipt: commit `bbff9f8` closes Plan 0016 with strict
+  schema, accepted/rejected/replay, finite-bound, and zero-authority-mutation
+  proof; S06 is next.
+
+Next Bounded Action:
+
+- derive and execute Plan 0018 S06: freeze the ordinary Skill's concise MCP
+  discovery/query/synthesis path, separate privileged guidance, and retain the
+  direct Engine only as a clearly labeled compatibility/debug path.

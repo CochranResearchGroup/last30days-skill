@@ -922,3 +922,85 @@ Next action:
 - execute Plan 0016 Packet 1: freeze one existing-evidence non-browser task
   type, exact contract version, accepted/rejected fixtures, and finite limits
   before any stochastic execution.
+
+### Checkpoint P0018-C08 | 2026-07-30
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `Plan 0016 planned -> Plan 0016 closed`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes and runtime outcome:
+
+- commit `bbff9f8` repairs the canonical `content_assessment` response schema
+  for the Codex App Server strict JSON-schema subset, adds regression coverage,
+  updates the independent runtime manifest, and preserves the sanitized
+  machine receipt at
+  `docs/dev/notes/0016-app-intelligence-contract-acceptance-proof.json`;
+- one public-evidence task completed in one read-only Codex App Server call,
+  consumed one of one calls, returned one proposal, and received accepted host
+  validation, promotion, and replay receipts;
+- one request containing forbidden `browser_profile` state returned
+  `schema_invalid` on original validation and replay before persistence,
+  provider execution, or mutation;
+- canonical and installed 0.2.7 deterministic replay both returned the same
+  receipt IDs without new rows or provider calls;
+- the initial installed attempt retained one terminal pre-stochastic schema
+  failure. The corrected schema enters the next compatible S07 service release
+  without crossing Plan 0016's deployment/restart non-goal.
+
+Validation evidence:
+
+- the accepted task remained within one item, 4,096 bytes, one call, one cent,
+  and 60 seconds;
+- validation receipt
+  `validation-receipt-61e56dc19c658ba94acb736abcc2ecd2`,
+  promotion receipt
+  `promotion-receipt-7612e1f20dd4ddfe0dacc24accec0a06`, and replay receipt
+  `replay-receipt-7612e1f20dd4ddfe0dacc24accec0a06` are durable;
+- logical hashes and row counts were identical before and after for canonical
+  evidence, identity, claim, collection, document, entity, relationship, and
+  index authority;
+- installed discovery still exposes eight version-1 task types without
+  prompts, credentials, raw provider events, or browser mechanics;
+- 50 focused tests passed, the plan-authority audit passed, and the corrected
+  independent artifact SHA-256 is
+  `3c1b3ad42942206f487041c0ce2b383842582732da88f8c60df05d740125d989`.
+
+Remaining acceptance criteria:
+
+- execute S06 client-Skill redesign;
+- execute S07 compatibility/release transition, including packaging the
+  corrected assessment schema into the next compatible service release;
+- run an independent final outcome review before closing Plan 0018/P07.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Plan 0016 fixed active-agent concurrency at one and the
+  accepted/rejected/replay proof shared one live ledger and evidence authority;
+- the primary agent executed and compared the complete bounded packet;
+  independent final outcome review remains required before Plan 0018 closeout.
+
+Graphiti write status:
+
+- `graphiti_write_pending`;
+- provider preflight passed, but job
+  `9d14aca9-c195-4686-8bf4-449418015fb9` timed out after its single
+  180-second attempt while resolving edges, and exact lookup found no episode;
+- intended episode: commit `bbff9f8` closes Plan 0016 with strict-schema,
+  accepted/rejected/replay, finite-bound, and zero-authority-mutation proof;
+  S06 is next.
+
+Next action:
+
+- derive and execute the bounded S06 client-Skill redesign packet: make the
+  ordinary Skill a concise MCP discovery/query/synthesis client, separate
+  privileged guidance, and retain the direct Engine only as an explicit
+  compatibility/debug path.

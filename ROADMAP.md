@@ -168,7 +168,7 @@ Plans:
 
 ## P01 | Temporal Corpus Foundation
 
-State: PLANNED
+State: CLOSED
 
 Objective: make the corpus safe for long-running hydration by separating stable
 content identity from immutable revisions and by preserving what happened,
@@ -598,6 +598,15 @@ Current State:
   attempt two exposed an adapter defect that deterministically confused X's
   stalled loading DOM with a signed-out state; the bounded maintenance response
   is a tested single reload-and-recheck, not an App Intelligence repair loop.
+- Plan 0016 is closed: one bounded public-evidence assessment produced
+  host-owned validation, promotion, and replay receipts; a forbidden browser
+  field failed before persistence or stochastic execution; installed replay
+  returned the same receipt IDs; and canonical authority hashes were
+  unchanged.
+- The accepted execution exposed a strict response-schema defect before model
+  generation. Commit `bbff9f8` repairs the canonical schema and its regression
+  coverage; packaging the fix into the next compatible service release is
+  retained under P07 S07.
 
 Current Substrate:
 
@@ -699,7 +708,7 @@ Active Plan:
 - `docs/dev/plans/0011-2026-07-25-integrated-temporal-intelligence-service.md`
   is the closed integration authority for its four deterministic joins.
 - `docs/dev/plans/0016-2026-07-26-app-intelligence-contract-acceptance.md`
-  is the planned accepted/rejected envelope and deterministic replay proof.
+  is the closed accepted/rejected envelope and deterministic replay proof.
 
 ## P07 | Service-First Software Productization
 
@@ -725,8 +734,9 @@ Current State:
 - Plan 0018's first S01/S02 packet is accepted: the live unit runs the
   independently versioned release, MCP enforces the compatibility handshake,
   and installed upgrade/rollback preserved the schema-12 state.
-- Plan 0015 is closed with current temporal/profile, idempotent projection, and
-  GraphRAG-degradation evidence; Plan 0016 is next.
+- Plans 0015 and 0016 are closed with temporal/GraphRAG resilience plus
+  accepted/rejected/replay App Intelligence authority evidence; S06 client
+  Skill redesign is next.
 
 Goal Seeds:
 
@@ -759,15 +769,16 @@ Active Plan:
 
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the open transition authority. Its first service-distribution/MCP packet
-  and Plan 0015 resilience packet are accepted without moving implementation
-  modules or migrating schema 12; Plan 0016 is the next bounded packet.
+  plus Plans 0015 and 0016 are accepted without moving implementation modules
+  or migrating schema 12; S06 client Skill redesign is the next bounded
+  packet.
 
 Next Bounded Action:
 
-- Execute Plan 0018 S01-A: establish the independent service version,
-  runtime-manifest allowlist, reproducible artifact, and package-boundary
-  tests. Preserve the deterministic joins and do not reopen Plans 0010, 0011,
-  0012, or the closed Plan 0014.
+- Execute Plan 0018 S06: freeze the ordinary Skill's least-privilege MCP
+  discovery/query/synthesis contract and separate privileged
+  monitoring/administration/maintenance guidance without removing the direct
+  Engine compatibility path.
 
 ## Goal-Compatible Plan Conversion
 
