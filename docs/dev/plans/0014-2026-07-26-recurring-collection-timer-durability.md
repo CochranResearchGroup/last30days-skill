@@ -315,3 +315,85 @@ Next action:
 - validate and commit this Revision-2 activation, synchronize the installed
   skill, perform the pre-proof restart, and verify scheduler digest and service
   readiness before enabling revision 8.
+
+### Checkpoint P0014-C05 | 2026-07-29
+
+Plan version:
+
+- 3
+
+State transition:
+
+- `open_retry_authorized -> open_final_retry_backpressure_repair`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Revision-2 result:
+
+- synchronized the repaired working tree into the frozen installed Skill and
+  verified identical source and installed scheduler digests;
+- performed the authorized pre-proof activation restart and confirmed service
+  v0.2.7/schema 12 ready;
+- enabled only the bounded public acceptance spec as revision 8;
+- the first run remained active long enough for the scheduler to create runs
+  for the next two due boundaries;
+- stopped at the hard bound after exactly three revision-8 runs existed and
+  immediately paused the spec as revision 9;
+- did not perform the durability restart and did not enable an authenticated
+  source, assessment, browser profile, or second collection spec;
+- database integrity remained `ok`.
+
+Root cause and repair:
+
+- `CollectionCoordinator.enqueue_due()` considered only the due time and retry
+  delay; it did not suppress a due interval while the same spec already had a
+  non-terminal collection run;
+- add deterministic per-spec backpressure by excluding specs with collection
+  runs outside terminal states `published`, `partial`, and `failed`;
+- focused regression coverage advances the clock across multiple overdue
+  boundaries, proves no second run appears while the first is active, marks
+  the first terminal, admits exactly one successor, and again suppresses
+  overlap.
+
+Revision-3 execution bounds:
+
+- this is the second and final implementation attempt allowed by the plan;
+- validate and commit the backpressure repair, synchronize the installed
+  Skill, and perform one pre-proof activation restart;
+- enable only `acceptance-reddit-temporal-graph` as revision 10 with the same
+  frozen public bounds;
+- measure exactly two distinct 60-second due boundaries;
+- perform exactly one durability restart after interval one is claimed and
+  before interval two is claimed; the restart may recover interval one, but
+  per-spec backpressure must prevent interval two until interval one is
+  terminal;
+- pause revision 10 immediately after interval two appears, allow that already
+  admitted run to finish, and prove more than one interval of quiescence;
+- maximum lifecycle restarts in Revision 3: two total, one activation restart
+  and one durability restart inside the measured proof;
+- no authenticated source, browser, profile, App Intelligence assessment, or
+  second collection spec may be enabled.
+
+Hard stops:
+
+- stop on more than two revision-10 runs, overlapping non-terminal runs,
+  duplicate interval identity, non-public partition, budget escape, restart
+  recovery failure, database-integrity failure, or inability to pause;
+- if Revision 3 fails, close Plan 0014 truthfully at the typed blocker without
+  another live attempt.
+
+Subagent status:
+
+- `not_spawned`; source repair and the live service proof are one serialized
+  critical path.
+
+Graphiti write status:
+
+- deferred to the terminal Plan 0014 checkpoint.
+
+Next action:
+
+- validate and commit the backpressure repair, synchronize the installed
+  Skill, perform the activation restart, and execute Revision 3.

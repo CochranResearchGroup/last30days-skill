@@ -3334,3 +3334,60 @@ Next Bounded Action:
 - validate and push this activation checkpoint, synchronize the installed
   skill, perform the pre-proof activation restart, and verify the repaired
   digest and service readiness before enabling revision 8.
+
+## Turn 51 | 2026-07-29
+
+Focus: fail closed on the Revision-2 run bound and repair scheduler
+backpressure for the final Plan 0014 attempt.
+
+Authority Consulted:
+
+- Plan 0014 Checkpoint P0014-C04 and its exact revision-8 hard stops
+- the user's active goal to finish Plan 0014 before opening Plan 0018
+- installed service, collection, job-event, and database-integrity readbacks
+- current planning, implementation, validation, and closeout policies
+
+Decisions And Changes:
+
+- Synchronized the installed Skill and performed the Revision-2 activation
+  restart.
+- Enabled only the bounded public acceptance spec as revision 8.
+- Stopped when three revision-8 runs existed, before the durability restart,
+  and paused the spec as revision 9.
+- Identified missing per-spec scheduler backpressure: due admission ignored a
+  prior non-terminal run for the same collection spec.
+- Added a deterministic `NOT EXISTS` gate for non-terminal collection runs and
+  a clock-driven regression test covering suppression, terminal release, and
+  renewed suppression.
+- Opened Revision 3 as the second and final implementation attempt. Its
+  durability restart occurs after interval one is claimed and before interval
+  two is admitted.
+
+Validation Evidence:
+
+- source and installed scheduler digests matched before Revision 2;
+- installed service reported ready at v0.2.7/schema 12 after activation;
+- revision 8 produced exactly three runs before the hard stop;
+- revision 9 is disabled;
+- `PRAGMA integrity_check` returned `ok`;
+- focused collection, runtime, and job-runner tests passed: 28 tests.
+
+State Movement:
+
+- Plan 0014:
+  `open_retry_authorized -> open_final_retry_backpressure_repair`;
+- Plan 0018 remains `PLANNED`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; source repair and live proof are serialized.
+
+Graphiti Write Status:
+
+- deferred to the terminal Plan 0014 checkpoint.
+
+Next Bounded Action:
+
+- validate and push the backpressure repair, synchronize the installed Skill,
+  perform the activation restart, and execute Revision 3 under its final
+  exact-two-run bound.

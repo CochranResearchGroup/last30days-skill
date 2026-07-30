@@ -217,6 +217,58 @@ def test_due_tick_respects_pause_and_advances_next_due_deterministically(tmp_pat
     assert next_due == "2026-07-25T13:00:00Z"
 
 
+def test_due_tick_waits_for_prior_spec_run_to_finish(tmp_path):
+    current = [NOW]
+    db_path = tmp_path / "research.db"
+    supervisor = RefreshSupervisor(db_path, clock=lambda: current[0])
+    supervisor.initialize()
+    ledger = ServiceStore(db_path)
+    scheduler = ServiceRefreshScheduler(
+        supervisor,
+        ledger,
+        RefreshPolicy(
+            default_sources=("reddit",),
+            freshness_seconds=3600,
+            max_attempts=2,
+            budget_cents=100,
+        ),
+        clock=lambda: current[0],
+    )
+    coordinator = CollectionCoordinator(
+        db_path,
+        scheduler,
+        clock=lambda: current[0],
+    )
+    coordinator.put_spec(_spec())
+
+    first = coordinator.enqueue_due(limit=10)
+    assert len(first) == 1
+
+    current[0] = NOW + timedelta(hours=3, minutes=5)
+    assert coordinator.enqueue_due(limit=10) == ()
+
+    coordinator.record_completion(
+        job_id=first[0].job_id,
+        state="published",
+        outcomes=(),
+        completed_at=current[0],
+    )
+    second = coordinator.enqueue_due(limit=10)
+    assert len(second) == 1
+
+    current[0] += timedelta(hours=1)
+    assert coordinator.enqueue_due(limit=10) == ()
+    conn = sqlite3.connect(db_path)
+    try:
+        run_count = conn.execute(
+            """SELECT COUNT(*) FROM collection_runs
+               WHERE collection_spec_id = 'spec-reddit-ai'"""
+        ).fetchone()[0]
+    finally:
+        conn.close()
+    assert run_count == 2
+
+
 def test_resume_resets_stale_due_boundary_without_replaying_paused_intervals(
     tmp_path,
 ):

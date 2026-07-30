@@ -725,6 +725,12 @@ class CollectionCoordinator:
                    WHERE s.enabled = 1
                      AND q.next_due_at <= ?
                      AND (q.retry_after IS NULL OR q.retry_after <= ?)
+                     AND NOT EXISTS (
+                         SELECT 1
+                         FROM collection_runs AS active
+                         WHERE active.collection_spec_id = s.collection_spec_id
+                           AND active.state NOT IN ('published', 'partial', 'failed')
+                     )
                    ORDER BY q.next_due_at, s.collection_spec_id
                    LIMIT ?""",
                 (now_text, now_text, limit),

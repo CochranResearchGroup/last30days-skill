@@ -130,9 +130,10 @@ successor plans without reopening Plans 0010 or 0011:
    Skills.
 
 The 2026-07-29 architecture direction makes Plan 0018 the governing successor
-after Plan 0014 reaches a terminal timer result. Plan 0014 Revision 2 is `OPEN`
-with an explicitly authorized repaired timer retry. Before Plans 0015 and 0016
-open, Plan 0018 must derive the bounded service-package/lifecycle and
+after Plan 0014 reaches a terminal timer result. Plan 0014 Revision 3 is `OPEN`
+as the final bounded timer retry after Revision 2 exposed missing per-spec
+backpressure and stopped safely at three runs. Before Plans 0015 and 0016 open,
+Plan 0018 must derive the bounded service-package/lifecycle and
 MCP-boundary packet that makes those plans service-product acceptance rather
 than Skill features. Plans 0013 and 0017 remain planned and outside this
 transition critical path.
@@ -321,11 +322,11 @@ Current State:
   Recurring authenticated timers were not enabled; broad hydration is the
   next operational expansion and must proceed spec-by-spec under explicit
   budgets and source/profile leases.
-- The 2026-07-29 Plan 0014 attempt proved that resuming a long-paused spec
-  replayed its stale due boundary. Revision 7 is disabled and quiescent. The
-  working tree now resets only disabled-to-enabled transitions to the current
-  interval, with focused regression coverage, but the installed service has
-  not been synchronized or restarted for a second live attempt.
+- The first 2026-07-29 Plan 0014 attempt proved stale due-boundary replay and
+  was repaired. Revision 2 then proved that a slow active interval could admit
+  later due intervals for the same spec. The hard stop fired at three
+  revision-8 runs, revision 9 is disabled, and the working tree now suppresses
+  timer admission while any run for that spec remains non-terminal.
 
 Goal Seeds:
 
@@ -747,8 +748,8 @@ Active Plan:
 
 Next Bounded Action:
 
-- Execute the authorized Plan 0014 Revision-2 two-interval retry and reconcile
-  its terminal result. Then derive Plan 0018's bounded
+- Execute the authorized Plan 0014 Revision-3 final two-interval retry and
+  reconcile its terminal result. Then derive Plan 0018's bounded
   service-package/lifecycle and MCP-boundary packet before opening Plans 0015
   or 0016. Preserve the deterministic joins and do not reopen Plans 0010,
   0011, or 0012.
