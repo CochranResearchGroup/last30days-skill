@@ -1849,10 +1849,11 @@ Subagent status and reconciliation:
 
 Graphiti write status:
 
-- `graphiti_write_queued`;
-- provider readiness passed and the compact C16 failure memory queued as job
+- `graphiti_write_timed_out`;
+- provider readiness passed, but the compact C16 failure memory job
   `24763c2a-74f4-44e6-a15f-01550c2460f4` in
-  `last30days_skill_main`.
+  `last30days_skill_main` timed out during node resolution after 120 seconds;
+- C17 carries the superseding repair outcome.
 
 Next action:
 
@@ -1936,7 +1937,10 @@ Subagent status and reconciliation:
 
 Graphiti write status:
 
-- `pending_after_checkpoint_commit`.
+- `graphiti_write_queued`;
+- provider readiness passed and the compact source-backed repair memory queued
+  as job `4d252dc0-1bd7-4d22-9d28-912a26f11c1d` in
+  `last30days_skill_main`.
 
 Next action:
 
