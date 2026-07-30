@@ -3527,3 +3527,76 @@ Next Bounded Action:
 - execute Plan 0018 S01-B: add versioned install/upgrade/readiness/rollback and
   release retention through the stable managed user unit, covered by isolated
   fake-user-manager lifecycle tests.
+
+## Turn 54 | 2026-07-29
+
+Focus: complete Plan 0018 S01-B's independent transactional service
+lifecycle.
+
+Authority Consulted:
+
+- Plan 0018's frozen release layout, lifecycle transaction, schema-12
+  compatibility, hard stops, validation, and packet acceptance
+- ROADMAP P07 and the current service, installer, managed unit, contract,
+  database, and runtime-manifest surfaces
+- current planning, CodeGraph, Git, versioning, validation, documentation,
+  Graphiti, and closeout policies
+
+Decisions And Changes:
+
+- Added a repo-owned installer for install, upgrade, start, stop, status,
+  diagnose, rollback, and bounded release retention.
+- Required canonical manifests, exact file allowlists, SHA-256 payload
+  verification, immutable versioned releases, and safe archive paths.
+- Added atomic `current`/`previous` selectors and a stable launcher whose unit
+  has no `.agents/skills` or Skill-source path.
+- Made upgrade acceptance depend on exact loaded version, contract digest,
+  schema 12, and ready status, with automatic restoration and renewed
+  readiness proof on failure.
+- Made an unsuccessful first install remove its selector and staged release.
+- Preserved complete database state across restart and rollback by preventing
+  identical legacy-index publication from rewriting its activation timestamp.
+- Updated configuration, onboarding, README, and product-surface assertions
+  for the independent lifecycle.
+- Moved no Python module and changed no installed runtime, live daemon,
+  database, timer, browser, or acquisition state.
+
+Validation Evidence:
+
+- commit `e2f966b` contains the S01-B implementation, docs, and tests and is
+  pushed to `origin/main`;
+- 175 service tests passed;
+- the fake-manager lifecycle proved clean install, controls, successful
+  upgrade, deliberate rollback, failed-upgrade restoration, failed-initial
+  cleanup, retention, schema 12, integrity, and exact database-dump equality;
+- `systemd-analyze verify`, `bash -n`, `git diff --check`, the plan-authority
+  audit, and CodeGraph sync passed;
+- rebuilt artifact SHA-256:
+  `ff897b30c277759641c173cb6d81264c529c2c84ab663de5cb2fb9428c1de5a0`.
+
+State Movement:
+
+- Plan 0018 S01-B: `ready -> complete`;
+- Plan 0018 and P07 remain `OPEN`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one and S01-B's
+  transaction surfaces were tightly coupled;
+- independent final outcome review remains required before packet closeout.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`;
+- provider readiness passed, but job
+  `98c0cb19-a8bf-49c9-a5ab-cf33901412d9` timed out after its single
+  180-second attempt while resolving edges;
+- exact readback found no visible episode;
+- intended compact receipt: commit `e2f966b` completes Plan 0018 S01-B's
+  verified transactional lifecycle and S02-A is the next bounded action.
+
+Next Bounded Action:
+
+- execute Plan 0018 S02-A: add the explicit service/MCP version handshake,
+  generated Go compatibility facts, and compatible plus typed-incompatible
+  client matrices.

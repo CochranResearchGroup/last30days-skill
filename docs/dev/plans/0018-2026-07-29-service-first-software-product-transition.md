@@ -539,3 +539,81 @@ Next action:
 - execute S01-B: add the versioned release installer, stable managed unit,
   readiness receipt, atomic upgrade/rollback and release retention with
   isolated fake-user-manager lifecycle tests.
+
+### Checkpoint P0018-C03 | 2026-07-29
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `S01-B ready -> S01-B complete`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- commit `e2f966b` adds the repo-owned transactional service installer and
+  stable managed user-unit template;
+- install and upgrade verify every artifact payload digest, stage immutable
+  versioned releases, switch `current` and `previous` atomically, restart once,
+  and accept only exact service-version, contract-digest, schema-12 readiness;
+- failed upgrades restore and prove the prior release, failed initial installs
+  leave no selected or staged release, deliberate rollback swaps the two
+  verified targets, and release retention preserves the active pair;
+- the stable launcher resolves only the independent release tree, the unit
+  contains no Agent Skill path, and the installer preserves existing
+  owner-scoped configuration while creating an empty `0600` environment file
+  when none exists;
+- identical legacy-index publication no longer mutates `activated_at`, so
+  restart, upgrade, and rollback preserve the complete schema-12 database
+  dump.
+
+Validation evidence:
+
+- 175 `tests/test_service_*.py` tests passed;
+- clean install, upgrade, manual rollback, failed-upgrade restoration, failed
+  initial install, lifecycle controls, retention, full database-dump equality,
+  schema version, and integrity were exercised with isolated XDG roots and a
+  fake user manager;
+- `systemd-analyze verify` passed for the rendered unit;
+- `bash -n`, `git diff --check`, the plan-authority audit, and CodeGraph sync
+  passed;
+- the rebuilt independent artifact SHA-256 is
+  `ff897b30c277759641c173cb6d81264c529c2c84ab663de5cb2fb9428c1de5a0`;
+- commit `e2f966b` is pushed to `origin/main`.
+
+Remaining acceptance criteria:
+
+- execute S02-A, S02-B, and the installed migration/rollback proof;
+- then execute the remaining Plan 0018 workstreams and acceptance packets
+  without treating the independent lifecycle as the complete product
+  transition.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; packet concurrency remains fixed at one and the installer,
+  unit, readiness transaction, and lifecycle tests shared one coupled write
+  surface;
+- the primary agent performed the bounded implementation and validation
+  review; independent final outcome review remains required before packet
+  closeout.
+
+Graphiti write status:
+
+- `graphiti_write_pending`;
+- provider readiness passed, but job
+  `98c0cb19-a8bf-49c9-a5ab-cf33901412d9` timed out after its single
+  180-second attempt while resolving edges, and exact episode lookup returned
+  no visible match;
+- intended episode: commit `e2f966b` completed S01-B with the verified
+  transactional service lifecycle and S02-A is next.
+
+Next action:
+
+- execute S02-A: extend service-info and generated Go contract facts with the
+  explicit product/API/contract/database/runtime/MCP compatibility handshake
+  and add compatible plus typed-incompatible client matrices.
