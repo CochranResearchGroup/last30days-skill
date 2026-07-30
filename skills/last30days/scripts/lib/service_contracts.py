@@ -745,8 +745,19 @@ class ServiceInfo:
     """Dynamic capability and readiness truth for clients."""
 
     schema_version: int
+    product: str
     service_version: str
+    service_api_version: int
+    contract_schema_version: int
+    contract_sha256: str
     database_schema_version: int
+    runtime_manifest_sha256: str | None
+    mcp_adapter_version: str | None
+    mcp_supported_service_api_min: int | None
+    mcp_supported_service_api_max: int | None
+    mcp_supported_database_schema_min: int | None
+    mcp_supported_database_schema_max: int | None
+    compatibility_state: str
     status: ServiceStatus
     capabilities: list[str]
     sources: dict[str, Any]
@@ -765,8 +776,19 @@ class ServiceInfo:
         fields = frozenset(
             {
                 "schema_version",
+                "product",
                 "service_version",
+                "service_api_version",
+                "contract_schema_version",
+                "contract_sha256",
                 "database_schema_version",
+                "runtime_manifest_sha256",
+                "mcp_adapter_version",
+                "mcp_supported_service_api_min",
+                "mcp_supported_service_api_max",
+                "mcp_supported_database_schema_min",
+                "mcp_supported_database_schema_max",
+                "compatibility_state",
                 "status",
                 "capabilities",
                 "sources",
@@ -805,17 +827,88 @@ class ServiceInfo:
         transport = _require_non_empty_string(payload["transport"], "transport")
         if transport != "unix":
             raise ContractValidationError("transport must be unix")
+        product = _require_non_empty_string(payload["product"], "product")
+        if product != "last30days":
+            raise ContractValidationError("product must be last30days")
+        contract_sha256 = _require_non_empty_string(
+            payload["contract_sha256"], "contract_sha256"
+        )
+        if re.fullmatch(r"[0-9a-f]{64}", contract_sha256) is None:
+            raise ContractValidationError("contract_sha256 is invalid")
+        runtime_manifest_sha256 = payload["runtime_manifest_sha256"]
+        if runtime_manifest_sha256 is not None and (
+            not isinstance(runtime_manifest_sha256, str)
+            or re.fullmatch(r"[0-9a-f]{64}", runtime_manifest_sha256) is None
+        ):
+            raise ContractValidationError("runtime_manifest_sha256 is invalid")
+        mcp_adapter_version = payload["mcp_adapter_version"]
+        if mcp_adapter_version is not None and (
+            not isinstance(mcp_adapter_version, str)
+            or not 0 < len(mcp_adapter_version) <= 64
+        ):
+            raise ContractValidationError("mcp_adapter_version is invalid")
+
+        def optional_version(name: str) -> int | None:
+            value = payload[name]
+            if value is None:
+                return None
+            return _require_integer_between(value, name, 1, 2_147_483_647)
+
+        compatibility_state = _require_non_empty_string(
+            payload["compatibility_state"], "compatibility_state"
+        )
+        if compatibility_state not in {
+            "compatible",
+            "mcp_client_not_declared",
+            "product_mismatch",
+            "service_api_unsupported",
+            "contract_schema_unsupported",
+            "contract_digest_mismatch",
+            "database_schema_unsupported",
+            "runtime_manifest_invalid",
+            "handshake_invalid",
+        }:
+            raise ContractValidationError("compatibility_state is invalid")
         return cls(
             schema_version=_validate_schema_version(payload["schema_version"]),
+            product=product,
             service_version=_require_non_empty_string(
                 payload["service_version"], "service_version"
             ),
+            service_api_version=_require_integer_between(
+                payload["service_api_version"],
+                "service_api_version",
+                1,
+                2_147_483_647,
+            ),
+            contract_schema_version=_require_integer_between(
+                payload["contract_schema_version"],
+                "contract_schema_version",
+                1,
+                2_147_483_647,
+            ),
+            contract_sha256=contract_sha256,
             database_schema_version=_require_integer_between(
                 payload["database_schema_version"],
                 "database_schema_version",
                 1,
                 2_147_483_647,
             ),
+            runtime_manifest_sha256=runtime_manifest_sha256,
+            mcp_adapter_version=mcp_adapter_version,
+            mcp_supported_service_api_min=optional_version(
+                "mcp_supported_service_api_min"
+            ),
+            mcp_supported_service_api_max=optional_version(
+                "mcp_supported_service_api_max"
+            ),
+            mcp_supported_database_schema_min=optional_version(
+                "mcp_supported_database_schema_min"
+            ),
+            mcp_supported_database_schema_max=optional_version(
+                "mcp_supported_database_schema_max"
+            ),
+            compatibility_state=compatibility_state,
             status=status,
             capabilities=_require_string_list(
                 payload["capabilities"], "capabilities"
@@ -831,8 +924,23 @@ class ServiceInfo:
     def to_dict(self) -> dict[str, Any]:
         return {
             "schema_version": self.schema_version,
+            "product": self.product,
             "service_version": self.service_version,
+            "service_api_version": self.service_api_version,
+            "contract_schema_version": self.contract_schema_version,
+            "contract_sha256": self.contract_sha256,
             "database_schema_version": self.database_schema_version,
+            "runtime_manifest_sha256": self.runtime_manifest_sha256,
+            "mcp_adapter_version": self.mcp_adapter_version,
+            "mcp_supported_service_api_min": self.mcp_supported_service_api_min,
+            "mcp_supported_service_api_max": self.mcp_supported_service_api_max,
+            "mcp_supported_database_schema_min": (
+                self.mcp_supported_database_schema_min
+            ),
+            "mcp_supported_database_schema_max": (
+                self.mcp_supported_database_schema_max
+            ),
+            "compatibility_state": self.compatibility_state,
             "status": self.status.value,
             "capabilities": list(self.capabilities),
             "sources": dict(self.sources),

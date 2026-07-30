@@ -7,7 +7,7 @@
     },
     {
       "path": "schemas/service-contracts-v1.json",
-      "sha256": "07c1a97065bffea1b9adcfe19195f8dac354c168cd9ef031e2d2e2f06465a7bd",
+      "sha256": "f011c45999769f2c93b9044917179a0c683b3a43b35ec316f973bf91a2e76e34",
       "source": "skills/last30days/schemas/service-contracts-v1.json"
     },
     {
@@ -277,7 +277,7 @@
     },
     {
       "path": "scripts/lib/service_app.py",
-      "sha256": "b6ef424d6a1cb2a41206edbb48c3421fa46d3cd38e3953949b10340620ac67da",
+      "sha256": "4c22c3f29e284b275467c214899db88688075894d5bc001f14cfa22f8224ca04",
       "source": "skills/last30days/scripts/lib/service_app.py"
     },
     {
@@ -292,7 +292,7 @@
     },
     {
       "path": "scripts/lib/service_contracts.py",
-      "sha256": "23544c9fd604b96615b27f37d56d8bdf32b6dfc0d29d10afaa8a06957d74b425",
+      "sha256": "9526753881fc4c6fc9914ec307b89b5ae00844cdeaf80f65ee9bec39e6509020",
       "source": "skills/last30days/scripts/lib/service_contracts.py"
     },
     {
@@ -312,7 +312,7 @@
     },
     {
       "path": "scripts/lib/service_http.py",
-      "sha256": "048c7d1856fdf6a6e1831f5cf3be3c8244f2be2d8d671ef5050c313502a589d7",
+      "sha256": "895a1d1f3cb0500d303a74b465c774423a21de64335e2a1263b2952765883e83",
       "source": "skills/last30days/scripts/lib/service_http.py"
     },
     {

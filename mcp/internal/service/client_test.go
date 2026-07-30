@@ -42,6 +42,36 @@ func unixHTTPServer(
 	return socketPath
 }
 
+func handshakePayload() map[string]any {
+	return map[string]any{
+		"schema_version":          1,
+		"product":                 servicecontracts.ProductIdentity,
+		"service_version":         "0.2.7",
+		"service_api_version":     servicecontracts.ServiceAPIMin,
+		"contract_schema_version": servicecontracts.SchemaVersion,
+		"contract_sha256":         servicecontracts.CatalogSHA256,
+		"database_schema_version": servicecontracts.DatabaseSchemaMin,
+		"runtime_manifest_sha256": strings.Repeat("a", 64),
+		"status":                  "ready",
+	}
+}
+
+func withCompatibleHandshake(
+	t *testing.T,
+	handler http.Handler,
+) http.Handler {
+	t.Helper()
+	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		if request.URL.Path == "/v1/service-info" {
+			if err := json.NewEncoder(writer).Encode(handshakePayload()); err != nil {
+				t.Errorf("encode handshake: %v", err)
+			}
+			return
+		}
+		handler.ServeHTTP(writer, request)
+	})
+}
+
 func TestPackagedServiceEnvironmentIsSanitized(t *testing.T) {
 	t.Setenv("OPENAI_API_KEY", "must-not-cross-boundary")
 	t.Setenv("LAST30DAYS_SERVICE_DB", "/tmp/service-test.db")
@@ -62,49 +92,107 @@ func TestPackagedServiceEnvironmentIsSanitized(t *testing.T) {
 	}
 }
 
-func TestClientRejectsIncompatibleServiceContract(t *testing.T) {
-	socketPath := filepath.Join(t.TempDir(), "service.sock")
-	listener, err := net.Listen("unix", socketPath)
-	if err != nil {
-		t.Fatal(err)
+func TestClientHandshakeCompatibilityMatrix(t *testing.T) {
+	cases := []struct {
+		name         string
+		mutate       func(map[string]any)
+		headerDigest string
+		wantState    string
+	}{
+		{"compatible", func(map[string]any) {}, servicecontracts.CatalogSHA256, compatibilityCompatible},
+		{"product", func(p map[string]any) { p["product"] = "other" }, servicecontracts.CatalogSHA256, compatibilityProductMismatch},
+		{"service api", func(p map[string]any) { p["service_api_version"] = 2 }, servicecontracts.CatalogSHA256, compatibilityServiceAPIUnsupported},
+		{"contract schema", func(p map[string]any) { p["contract_schema_version"] = 2 }, servicecontracts.CatalogSHA256, compatibilityContractSchemaUnsupported},
+		{"contract body", func(p map[string]any) { p["contract_sha256"] = strings.Repeat("b", 64) }, servicecontracts.CatalogSHA256, compatibilityContractDigestMismatch},
+		{"contract header", func(map[string]any) {}, "stale", compatibilityContractDigestMismatch},
+		{"database schema", func(p map[string]any) { p["database_schema_version"] = 13 }, servicecontracts.CatalogSHA256, compatibilityDatabaseSchemaUnsupported},
+		{"runtime manifest", func(p map[string]any) { p["runtime_manifest_sha256"] = nil }, servicecontracts.CatalogSHA256, compatibilityRuntimeManifestInvalid},
+		{"malformed", func(p map[string]any) {
+			p["product"] = map[string]any{"private": "do not expose"}
+			p["private"] = "do not expose"
+		}, servicecontracts.CatalogSHA256, compatibilityHandshakeInvalid},
 	}
-	server := &http.Server{Handler: http.HandlerFunc(func(
-		writer http.ResponseWriter,
-		_ *http.Request,
-	) {
-		writer.Header().Set("X-Last30days-Contract-SHA256", "stale")
-		_, _ = writer.Write([]byte(`{"status":"ready"}`))
-	})}
-	go func() { _ = server.Serve(listener) }()
-	t.Cleanup(func() {
-		_ = server.Close()
-		_ = listener.Close()
-	})
+	for _, testCase := range cases {
+		t.Run(testCase.name, func(t *testing.T) {
+			ordinaryCalls := 0
+			payload := handshakePayload()
+			testCase.mutate(payload)
+			socketPath := unixHTTPServer(t, http.HandlerFunc(func(
+				writer http.ResponseWriter,
+				request *http.Request,
+			) {
+				if request.URL.Path == "/v1/service-info" {
+					if request.Header.Get("X-Last30days-MCP-Version") != "4.0.0" ||
+						request.Header.Get("X-Last30days-Expected-Product") !=
+							servicecontracts.ProductIdentity {
+						t.Errorf("client handshake headers were not declared")
+					}
+					writer.Header().Set(
+						"X-Last30days-Contract-SHA256",
+						testCase.headerDigest,
+					)
+					_ = json.NewEncoder(writer).Encode(payload)
+					return
+				}
+				ordinaryCalls++
+				_, _ = writer.Write([]byte(`{"status":"ready"}`))
+			}))
+			client := &Client{
+				SocketPath:     socketPath,
+				AdapterVersion: "4.0.0",
+			}
 
-	_, err = (&Client{SocketPath: socketPath}).Get(
-		context.Background(),
-		"/v1/service-info",
-	)
-	if err == nil || !strings.Contains(err.Error(), "incompatible") {
-		t.Fatalf("compatibility error = %v", err)
+			raw, err := client.Get(context.Background(), "/v1/service-info")
+			if err != nil {
+				t.Fatalf("diagnostic handshake: %v", err)
+			}
+			var diagnostic map[string]any
+			if err := json.Unmarshal(raw, &diagnostic); err != nil {
+				t.Fatal(err)
+			}
+			if diagnostic["compatibility_state"] != testCase.wantState {
+				t.Fatalf(
+					"compatibility_state = %v, want %s",
+					diagnostic["compatibility_state"],
+					testCase.wantState,
+				)
+			}
+			if diagnostic["mcp_adapter_version"] != "4.0.0" {
+				t.Fatalf("adapter version = %v", diagnostic["mcp_adapter_version"])
+			}
+			if _, exposed := diagnostic["private"]; exposed {
+				t.Fatal("diagnostic exposed an undeclared service field")
+			}
+
+			_, err = client.Get(context.Background(), "/v1/health")
+			if testCase.wantState == compatibilityCompatible {
+				if err != nil || ordinaryCalls != 1 {
+					t.Fatalf("compatible call: calls=%d err=%v", ordinaryCalls, err)
+				}
+			} else if err == nil ||
+				!strings.Contains(err.Error(), testCase.wantState) ||
+				ordinaryCalls != 0 {
+				t.Fatalf("incompatible call: calls=%d err=%v", ordinaryCalls, err)
+			}
+		})
 	}
 }
 
 func TestClientUsesUnixHTTPAndReturnsCompactJSON(t *testing.T) {
 	var method, path string
 	var requestBody map[string]any
-	socketPath := unixHTTPServer(t, http.HandlerFunc(func(
-		writer http.ResponseWriter,
-		request *http.Request,
-	) {
-		method = request.Method
-		path = request.URL.Path
-		if request.Body != nil {
-			_ = json.NewDecoder(request.Body).Decode(&requestBody)
-		}
-		writer.Header().Set("Content-Type", "application/json")
-		_, _ = writer.Write([]byte("{\n  \"status\": \"ready\"\n}"))
-	}))
+	socketPath := unixHTTPServer(t, withCompatibleHandshake(
+		t,
+		http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			method = request.Method
+			path = request.URL.Path
+			if request.Body != nil {
+				_ = json.NewDecoder(request.Body).Decode(&requestBody)
+			}
+			writer.Header().Set("Content-Type", "application/json")
+			_, _ = writer.Write([]byte("{\n  \"status\": \"ready\"\n}"))
+		}),
+	))
 	client := &Client{SocketPath: socketPath}
 
 	payload, err := client.Post(
@@ -128,16 +216,16 @@ func TestClientUsesUnixHTTPAndReturnsCompactJSON(t *testing.T) {
 }
 
 func TestClientReturnsBoundedSafeServiceErrors(t *testing.T) {
-	socketPath := unixHTTPServer(t, http.HandlerFunc(func(
-		writer http.ResponseWriter,
-		_ *http.Request,
-	) {
-		writer.WriteHeader(http.StatusBadRequest)
-		_, _ = writer.Write([]byte(`{"code":"invalid_contract","message":"request contract is invalid","private":"do not expose"}`))
-	}))
+	socketPath := unixHTTPServer(t, withCompatibleHandshake(
+		t,
+		http.HandlerFunc(func(writer http.ResponseWriter, _ *http.Request) {
+			writer.WriteHeader(http.StatusBadRequest)
+			_, _ = writer.Write([]byte(`{"code":"invalid_contract","message":"request contract is invalid","private":"do not expose"}`))
+		}),
+	))
 	client := &Client{SocketPath: socketPath}
 
-	_, err := client.Get(context.Background(), "/v1/service-info")
+	_, err := client.Get(context.Background(), "/v1/health")
 
 	if err == nil ||
 		!strings.Contains(err.Error(), "invalid_contract") ||
@@ -152,7 +240,10 @@ func TestClientRejectsNonSocketAndNonV1Paths(t *testing.T) {
 		t.Fatal("expected missing socket error")
 	}
 
-	socketPath := unixHTTPServer(t, http.NotFoundHandler())
+	socketPath := unixHTTPServer(
+		t,
+		withCompatibleHandshake(t, http.NotFoundHandler()),
+	)
 	client.SocketPath = socketPath
 	if _, err := client.Get(context.Background(), "/internal/debug"); err == nil {
 		t.Fatal("expected non-v1 path error")

@@ -103,13 +103,89 @@ class _RequestHandler(BaseHTTPRequestHandler):
             },
         )
 
+    def _service_info_handshake(
+        self, payload: dict[str, Any]
+    ) -> dict[str, Any]:
+        def positive_header(name: str) -> int | None:
+            try:
+                value = int(self.headers.get(name, ""))
+            except ValueError:
+                return None
+            return value if 0 < value <= 2_147_483_647 else None
+
+        adapter_version = self.headers.get("X-Last30days-MCP-Version")
+        if (
+            adapter_version is None
+            or not adapter_version.strip()
+            or len(adapter_version) > 64
+        ):
+            adapter_version = None
+        else:
+            adapter_version = adapter_version.strip()
+        service_api_min = positive_header("X-Last30days-Service-API-Min")
+        service_api_max = positive_header("X-Last30days-Service-API-Max")
+        database_min = positive_header("X-Last30days-Database-Schema-Min")
+        database_max = positive_header("X-Last30days-Database-Schema-Max")
+        expected_product = self.headers.get("X-Last30days-Expected-Product")
+        expected_contract_schema = positive_header(
+            "X-Last30days-Contract-Schema"
+        )
+        expected_contract_sha = self.headers.get(
+            "X-Last30days-Expected-Contract-SHA256"
+        )
+        declared = all(
+            value is not None
+            for value in (
+                adapter_version,
+                service_api_min,
+                service_api_max,
+                database_min,
+                database_max,
+                expected_product,
+                expected_contract_schema,
+                expected_contract_sha,
+            )
+        )
+        if not declared:
+            compatibility = "mcp_client_not_declared"
+        elif expected_product != payload["product"]:
+            compatibility = "product_mismatch"
+        elif not service_api_min <= payload["service_api_version"] <= service_api_max:
+            compatibility = "service_api_unsupported"
+        elif expected_contract_schema != payload["contract_schema_version"]:
+            compatibility = "contract_schema_unsupported"
+        elif expected_contract_sha != payload["contract_sha256"]:
+            compatibility = "contract_digest_mismatch"
+        elif not database_min <= payload["database_schema_version"] <= database_max:
+            compatibility = "database_schema_unsupported"
+        elif payload["runtime_manifest_sha256"] is None:
+            compatibility = "runtime_manifest_invalid"
+        else:
+            compatibility = "compatible"
+        payload.update(
+            {
+                "mcp_adapter_version": adapter_version,
+                "mcp_supported_service_api_min": service_api_min,
+                "mcp_supported_service_api_max": service_api_max,
+                "mcp_supported_database_schema_min": database_min,
+                "mcp_supported_database_schema_max": database_max,
+                "compatibility_state": compatibility,
+            }
+        )
+        return payload
+
     def do_GET(self) -> None:
         try:
             if self.path == "/v1/health":
                 self._write_json(200, self.application.health())
                 return
             if self.path == "/v1/service-info":
-                self._write_json(200, self.application.service_info().to_dict())
+                self._write_json(
+                    200,
+                    self._service_info_handshake(
+                        self.application.service_info().to_dict()
+                    ),
+                )
                 return
             if self.path in {"/v1/capabilities", "/v1/sources"}:
                 info = self.application.service_info().to_dict()

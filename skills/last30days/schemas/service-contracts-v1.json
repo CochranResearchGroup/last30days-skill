@@ -2,6 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "last30days intelligence service contract catalog",
   "schema_version": 1,
+  "compatibility": {
+    "product": "last30days",
+    "service_api": {"min": 1, "max": 1},
+    "database_schema": {"min": 12, "max": 12}
+  },
   "contracts": {
     "temporal_evidence_ref": {
       "type": "object",
@@ -206,8 +211,19 @@
       "additionalProperties": false,
       "required": [
         "schema_version",
+        "product",
         "service_version",
+        "service_api_version",
+        "contract_schema_version",
+        "contract_sha256",
         "database_schema_version",
+        "runtime_manifest_sha256",
+        "mcp_adapter_version",
+        "mcp_supported_service_api_min",
+        "mcp_supported_service_api_max",
+        "mcp_supported_database_schema_min",
+        "mcp_supported_database_schema_max",
+        "compatibility_state",
         "status",
         "capabilities",
         "sources",
@@ -219,8 +235,54 @@
       ],
       "properties": {
         "schema_version": {"const": 1},
+        "product": {"const": "last30days"},
         "service_version": {"type": "string", "minLength": 1},
+        "service_api_version": {"type": "integer", "minimum": 1},
+        "contract_schema_version": {"type": "integer", "minimum": 1},
+        "contract_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
         "database_schema_version": {"type": "integer", "minimum": 1},
+        "runtime_manifest_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "mcp_adapter_version": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "mcp_supported_service_api_min": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "mcp_supported_service_api_max": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "mcp_supported_database_schema_min": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "mcp_supported_database_schema_max": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "compatibility_state": {
+          "type": "string",
+          "enum": [
+            "compatible",
+            "mcp_client_not_declared",
+            "product_mismatch",
+            "service_api_unsupported",
+            "contract_schema_unsupported",
+            "contract_digest_mismatch",
+            "database_schema_unsupported",
+            "runtime_manifest_invalid",
+            "handshake_invalid"
+          ]
+        },
         "status": {
           "type": "string",
           "enum": ["starting", "ready", "degraded"]

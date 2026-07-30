@@ -32,10 +32,33 @@ const (
 
 // Client talks HTTP/1.1 over one local Unix domain socket.
 type Client struct {
-	SocketPath string
-	Timeout    time.Duration
-	Bootstrap  func(context.Context, string) error
+	SocketPath     string
+	Timeout        time.Duration
+	Bootstrap      func(context.Context, string) error
+	AdapterVersion string
 }
+
+type serviceInfo struct {
+	Product               string  `json:"product"`
+	ServiceVersion        string  `json:"service_version"`
+	ServiceAPIVersion     int     `json:"service_api_version"`
+	ContractSchemaVersion int     `json:"contract_schema_version"`
+	ContractSHA256        string  `json:"contract_sha256"`
+	DatabaseSchemaVersion int     `json:"database_schema_version"`
+	RuntimeManifestSHA256 *string `json:"runtime_manifest_sha256"`
+	Status                string  `json:"status"`
+}
+
+const (
+	compatibilityCompatible                = "compatible"
+	compatibilityProductMismatch           = "product_mismatch"
+	compatibilityServiceAPIUnsupported     = "service_api_unsupported"
+	compatibilityContractSchemaUnsupported = "contract_schema_unsupported"
+	compatibilityContractDigestMismatch    = "contract_digest_mismatch"
+	compatibilityDatabaseSchemaUnsupported = "database_schema_unsupported"
+	compatibilityRuntimeManifestInvalid    = "runtime_manifest_invalid"
+	compatibilityHandshakeInvalid          = "handshake_invalid"
+)
 
 // DefaultSocketPath follows the service runtime's user-scoped resolution.
 func DefaultSocketPath() (string, error) {
@@ -60,7 +83,25 @@ func DefaultSocketPath() (string, error) {
 
 // Get returns one compact validated JSON object.
 func (c *Client) Get(ctx context.Context, path string) (json.RawMessage, error) {
-	return c.do(ctx, http.MethodGet, path, nil)
+	if path == "/v1/service-info" {
+		payload, _, err := c.handshake(ctx)
+		return payload, err
+	}
+	if _, reason, err := c.handshake(ctx); err != nil {
+		return nil, err
+	} else if reason != compatibilityCompatible {
+		return nil, fmt.Errorf("local service is incompatible: %s", reason)
+	}
+	payload, contractDigest, err := c.request(ctx, http.MethodGet, path, nil)
+	if err != nil {
+		return nil, err
+	}
+	if contractDigest != servicecontracts.CatalogSHA256 {
+		return nil, errors.New(
+			"local service is incompatible: contract_digest_mismatch",
+		)
+	}
+	return payload, nil
 }
 
 // Post returns one compact validated JSON object.
@@ -73,28 +114,164 @@ func (c *Client) Post(
 	if err != nil {
 		return nil, fmt.Errorf("encode service request: %w", err)
 	}
-	return c.do(ctx, http.MethodPost, path, body)
+	if _, reason, err := c.handshake(ctx); err != nil {
+		return nil, err
+	} else if reason != compatibilityCompatible {
+		return nil, fmt.Errorf("local service is incompatible: %s", reason)
+	}
+	result, contractDigest, err := c.request(
+		ctx, http.MethodPost, path, body,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if contractDigest != servicecontracts.CatalogSHA256 {
+		return nil, errors.New(
+			"local service is incompatible: contract_digest_mismatch",
+		)
+	}
+	return result, nil
 }
 
-func (c *Client) do(
+func (c *Client) handshake(
+	ctx context.Context,
+) (json.RawMessage, string, error) {
+	raw, headerDigest, err := c.request(
+		ctx, http.MethodGet, "/v1/service-info", nil,
+	)
+	if err != nil {
+		return nil, "", err
+	}
+	var facts serviceInfo
+	if err := json.Unmarshal(raw, &facts); err != nil {
+		facts = serviceInfo{}
+		reason := compatibilityHandshakeInvalid
+		return c.decorateHandshake(nil, facts, reason), reason, nil
+	}
+	reason := compatibilityReason(facts, headerDigest)
+	return c.decorateHandshake(raw, facts, reason), reason, nil
+}
+
+func (c *Client) decorateHandshake(
+	raw json.RawMessage,
+	facts serviceInfo,
+	reason string,
+) json.RawMessage {
+	diagnostic := map[string]any{
+		"product":                 facts.Product,
+		"service_version":         facts.ServiceVersion,
+		"service_api_version":     facts.ServiceAPIVersion,
+		"contract_schema_version": facts.ContractSchemaVersion,
+		"contract_sha256":         facts.ContractSHA256,
+		"database_schema_version": facts.DatabaseSchemaVersion,
+		"runtime_manifest_sha256": facts.RuntimeManifestSHA256,
+		"status":                  facts.Status,
+	}
+	if reason == compatibilityCompatible {
+		var full map[string]any
+		if err := json.Unmarshal(raw, &full); err == nil {
+			for _, key := range []string{
+				"schema_version",
+				"capabilities",
+				"sources",
+				"freshness_policies",
+				"response_modes",
+				"limits",
+				"index",
+				"transport",
+			} {
+				if value, ok := full[key]; ok {
+					diagnostic[key] = value
+				}
+			}
+		}
+	}
+	diagnostic["mcp_adapter_version"] = safeAdapterVersion(c.AdapterVersion)
+	diagnostic["mcp_supported_service_api_min"] = servicecontracts.ServiceAPIMin
+	diagnostic["mcp_supported_service_api_max"] = servicecontracts.ServiceAPIMax
+	diagnostic["mcp_supported_database_schema_min"] =
+		servicecontracts.DatabaseSchemaMin
+	diagnostic["mcp_supported_database_schema_max"] =
+		servicecontracts.DatabaseSchemaMax
+	diagnostic["compatibility_state"] = reason
+	decorated, err := json.Marshal(diagnostic)
+	if err != nil {
+		return json.RawMessage(
+			`{"compatibility_state":"handshake_invalid"}`,
+		)
+	}
+	return json.RawMessage(decorated)
+}
+
+func compatibilityReason(facts serviceInfo, headerDigest string) string {
+	if facts.Product != servicecontracts.ProductIdentity {
+		return compatibilityProductMismatch
+	}
+	if facts.ServiceAPIVersion < servicecontracts.ServiceAPIMin ||
+		facts.ServiceAPIVersion > servicecontracts.ServiceAPIMax {
+		return compatibilityServiceAPIUnsupported
+	}
+	if facts.ContractSchemaVersion != servicecontracts.SchemaVersion {
+		return compatibilityContractSchemaUnsupported
+	}
+	if facts.ContractSHA256 != servicecontracts.CatalogSHA256 ||
+		headerDigest != servicecontracts.CatalogSHA256 {
+		return compatibilityContractDigestMismatch
+	}
+	if facts.DatabaseSchemaVersion < servicecontracts.DatabaseSchemaMin ||
+		facts.DatabaseSchemaVersion > servicecontracts.DatabaseSchemaMax {
+		return compatibilityDatabaseSchemaUnsupported
+	}
+	if facts.RuntimeManifestSHA256 == nil ||
+		!isLowerSHA256(*facts.RuntimeManifestSHA256) {
+		return compatibilityRuntimeManifestInvalid
+	}
+	return compatibilityCompatible
+}
+
+func isLowerSHA256(value string) bool {
+	if len(value) != 64 {
+		return false
+	}
+	for _, character := range value {
+		if !strings.ContainsRune("0123456789abcdef", character) {
+			return false
+		}
+	}
+	return true
+}
+
+func safeAdapterVersion(value string) string {
+	value = strings.TrimSpace(value)
+	if value == "" {
+		return "dev"
+	}
+	if len(value) > 64 ||
+		strings.ContainsAny(value, "\x00\r\n\t") {
+		return "unknown"
+	}
+	return value
+}
+
+func (c *Client) request(
 	ctx context.Context,
 	method string,
 	path string,
 	body []byte,
-) (json.RawMessage, error) {
+) (json.RawMessage, string, error) {
 	socketPath := strings.TrimSpace(c.SocketPath)
 	if socketPath == "" {
 		var err error
 		socketPath, err = DefaultSocketPath()
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
 	}
 	if !filepath.IsAbs(socketPath) {
-		return nil, errors.New("service socket path must be absolute")
+		return nil, "", errors.New("service socket path must be absolute")
 	}
 	if !strings.HasPrefix(path, "/v1/") {
-		return nil, errors.New("service path must be under /v1/")
+		return nil, "", errors.New("service path must be under /v1/")
 	}
 	info, err := os.Lstat(socketPath)
 	if err != nil {
@@ -103,15 +280,15 @@ func (c *Client) do(
 			bootstrap = BootstrapPackagedService
 		}
 		if bootstrapErr := bootstrap(ctx, socketPath); bootstrapErr != nil {
-			return nil, errors.New("local intelligence service is unavailable")
+			return nil, "", errors.New("local intelligence service is unavailable")
 		}
 		info, err = os.Lstat(socketPath)
 		if err != nil {
-			return nil, errors.New("local intelligence service is unavailable")
+			return nil, "", errors.New("local intelligence service is unavailable")
 		}
 	}
 	if info.Mode()&os.ModeSymlink != 0 || info.Mode()&os.ModeSocket == 0 {
-		return nil, errors.New("service socket path is not a Unix socket")
+		return nil, "", errors.New("service socket path is not a Unix socket")
 	}
 
 	timeout := c.Timeout
@@ -142,39 +319,66 @@ func (c *Client) do(
 		requestBody,
 	)
 	if err != nil {
-		return nil, errors.New("construct local service request")
+		return nil, "", errors.New("construct local service request")
 	}
+	request.Header.Set("Accept", "application/json")
+	request.Header.Set(
+		"X-Last30days-Expected-Product",
+		servicecontracts.ProductIdentity,
+	)
+	request.Header.Set("X-Last30days-MCP-Version", safeAdapterVersion(c.AdapterVersion))
+	request.Header.Set(
+		"X-Last30days-Service-API-Min",
+		fmt.Sprintf("%d", servicecontracts.ServiceAPIMin),
+	)
+	request.Header.Set(
+		"X-Last30days-Service-API-Max",
+		fmt.Sprintf("%d", servicecontracts.ServiceAPIMax),
+	)
+	request.Header.Set(
+		"X-Last30days-Contract-Schema",
+		fmt.Sprintf("%d", servicecontracts.SchemaVersion),
+	)
+	request.Header.Set(
+		"X-Last30days-Expected-Contract-SHA256",
+		servicecontracts.CatalogSHA256,
+	)
+	request.Header.Set(
+		"X-Last30days-Database-Schema-Min",
+		fmt.Sprintf("%d", servicecontracts.DatabaseSchemaMin),
+	)
+	request.Header.Set(
+		"X-Last30days-Database-Schema-Max",
+		fmt.Sprintf("%d", servicecontracts.DatabaseSchemaMax),
+	)
 	if body != nil {
 		request.Header.Set("Content-Type", "application/json")
 	}
 	response, err := httpClient.Do(request)
 	if err != nil {
-		return nil, errors.New("local intelligence service is unavailable")
+		return nil, "", errors.New("local intelligence service is unavailable")
 	}
 	defer response.Body.Close()
-	if response.Header.Get("X-Last30days-Contract-SHA256") !=
-		servicecontracts.CatalogSHA256 {
-		return nil, errors.New("local service contract is incompatible")
-	}
+	contractDigest := response.Header.Get("X-Last30days-Contract-SHA256")
 	raw, err := io.ReadAll(io.LimitReader(response.Body, MaxResponseBytes+1))
 	if err != nil {
-		return nil, errors.New("read local service response")
+		return nil, "", errors.New("read local service response")
 	}
 	if len(raw) > MaxResponseBytes {
-		return nil, errors.New("local service response exceeded its size limit")
+		return nil, "", errors.New("local service response exceeded its size limit")
 	}
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
-		return nil, safeHTTPError(response.StatusCode, raw)
+		return nil, "", safeHTTPError(response.StatusCode, raw)
 	}
 	var object map[string]any
 	if err := json.Unmarshal(raw, &object); err != nil || object == nil {
-		return nil, errors.New("local service returned invalid JSON")
+		return nil, "", errors.New("local service returned invalid JSON")
 	}
 	var compact bytes.Buffer
 	if err := json.Compact(&compact, raw); err != nil {
-		return nil, errors.New("local service returned invalid JSON")
+		return nil, "", errors.New("local service returned invalid JSON")
 	}
-	return json.RawMessage(compact.Bytes()), nil
+	return json.RawMessage(compact.Bytes()), contractDigest, nil
 }
 
 // BootstrapPackagedService starts the service runtime shipped beside the MCP

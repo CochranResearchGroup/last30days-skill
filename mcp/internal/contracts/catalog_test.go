@@ -39,4 +39,11 @@ func TestGeneratedCatalogIsCurrent(t *testing.T) {
 	if !reflect.DeepEqual(QueryFilterFields, wantFilters) {
 		t.Fatalf("query filter fields drifted: %#v", QueryFilterFields)
 	}
+	if ProductIdentity != "last30days" ||
+		ServiceAPIMin != 1 ||
+		ServiceAPIMax != 1 ||
+		DatabaseSchemaMin != 12 ||
+		DatabaseSchemaMax != 12 {
+		t.Fatal("generated compatibility facts drifted")
+	}
 }

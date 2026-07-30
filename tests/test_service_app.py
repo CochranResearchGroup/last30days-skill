@@ -337,6 +337,11 @@ def test_service_discovery_reports_durable_acquisition_sources(tmp_path):
 
     info = app.service_info()
 
+    assert info.product == "last30days"
+    assert info.service_api_version == 1
+    assert info.contract_schema_version == contracts.SCHEMA_VERSION
+    assert info.contract_sha256 == contracts.SCHEMA_CATALOG_SHA256
+    assert info.runtime_manifest_sha256 is not None
     assert "durable_refresh" in info.capabilities
     assert "recurring_collection" in info.capabilities
     assert "interval_coverage" in info.capabilities

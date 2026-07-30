@@ -26,7 +26,7 @@ func main() {
 		server.WithResourceCapabilities(false, false),
 	)
 
-	tools.Register(s, tools.Config{})
+	tools.Register(s, tools.Config{AdapterVersion: Version})
 
 	if err := server.ServeStdio(s); err != nil {
 		fmt.Fprintf(os.Stderr, "last30days-pp-mcp: %v\n", err)

@@ -27,15 +27,19 @@ type ServiceAPI interface {
 
 // Config injects a client. SocketPath is used only when Client is nil.
 type Config struct {
-	Client     ServiceAPI
-	SocketPath string
+	Client         ServiceAPI
+	SocketPath     string
+	AdapterVersion string
 }
 
 // Register adds the complete discoverable service surface.
 func Register(s *server.MCPServer, cfg Config) {
 	client := cfg.Client
 	if client == nil {
-		client = &serviceclient.Client{SocketPath: cfg.SocketPath}
+		client = &serviceclient.Client{
+			SocketPath:     cfg.SocketPath,
+			AdapterVersion: cfg.AdapterVersion,
+		}
 	}
 	for _, registration := range toolRegistrations(client) {
 		s.AddTool(registration.tool, registration.handler)

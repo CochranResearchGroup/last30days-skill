@@ -254,10 +254,12 @@ MCP bundle. The MCP process does not crawl pages or launch the Python research
 engine.
 
 1. From a source checkout, build and install the independently versioned Linux
-   service with `bash service/scripts/build-runtime.sh`, then
+service with `bash service/scripts/build-runtime.sh`, then
    `bash service/scripts/install.sh install --artifact
    dist/service/last30days-service-0.2.7.tar.gz`. The Agent Skill is optional
-   for service lifecycle.
+   for service lifecycle. The MCP adapter proves product, API, contract,
+   database-schema, and loaded-runtime compatibility before serving any
+   non-diagnostic operation.
 2. Download `last30days-pp-mcp-linux-amd64.mcpb` from the
    [latest release](https://github.com/mvanhorn/last30days-skill/releases/latest).
 3. Open Claude Desktop, go to Settings > Extensions, and drag the bundle in.

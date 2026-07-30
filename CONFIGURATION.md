@@ -38,6 +38,13 @@ owner-readable readiness receipt. Skill-first installation remains a
 compatibility path during the migration; refreshing a frozen Skill copy is no
 longer the service upgrade contract.
 
+The service handshake publishes product identity, semantic service version,
+service API version, contract schema and SHA-256, database schema, and the
+loaded runtime-manifest SHA-256. MCP adds its stamped adapter version and
+supported service-API/database-schema ranges. `service_info` remains available
+when these facts are incompatible and reports one typed compatibility state;
+all other MCP operations fail closed before reaching the requested endpoint.
+
 App Intelligence is an operator-owned maintenance capability, not an
 environment-variable switch for ordinary queries. The deterministic host sets
 the repeated-failure threshold, model-call attempt limit, allowed write roots,

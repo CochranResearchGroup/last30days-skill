@@ -1,5 +1,6 @@
 """Real Unix-socket transport tests for the local intelligence service."""
 
+import json
 import os
 import socket
 import stat
@@ -9,7 +10,11 @@ import pytest
 
 from lib import service_contracts as contracts
 from lib.service_app import JobResumeConflictError
-from lib.service_client import ServiceClient, ServiceClientError
+from lib.service_client import (
+    ServiceClient,
+    ServiceClientError,
+    _UnixHTTPConnection,
+)
 from lib.service_http import ServiceAlreadyRunningError, UnixServiceServer
 
 
@@ -25,8 +30,19 @@ class StubApplication:
         return contracts.ServiceInfo.from_dict(
             {
                 "schema_version": 1,
+                "product": "last30days",
                 "service_version": "0.1.0",
+                "service_api_version": 1,
+                "contract_schema_version": 1,
+                "contract_sha256": contracts.SCHEMA_CATALOG_SHA256,
                 "database_schema_version": 3,
+                "runtime_manifest_sha256": "a" * 64,
+                "mcp_adapter_version": None,
+                "mcp_supported_service_api_min": None,
+                "mcp_supported_service_api_max": None,
+                "mcp_supported_database_schema_min": None,
+                "mcp_supported_database_schema_max": None,
+                "compatibility_state": "mcp_client_not_declared",
                 "status": "ready",
                 "capabilities": ["cache_query"],
                 "sources": {},
@@ -139,6 +155,11 @@ def test_unix_service_exposes_health_and_capabilities_with_private_socket(tmp_pa
         assert client.health()["status"] == "ready"
         info = client.service_info()
         assert info.status is contracts.ServiceStatus.READY
+        assert info.product == "last30days"
+        assert info.service_api_version == 1
+        assert info.contract_sha256 == contracts.SCHEMA_CATALOG_SHA256
+        assert info.mcp_adapter_version is None
+        assert info.compatibility_state == "mcp_client_not_declared"
         response = client.query(
             contracts.QueryRequest.from_dict(
                 {
@@ -169,6 +190,48 @@ def test_unix_service_exposes_health_and_capabilities_with_private_socket(tmp_pa
         thread.join(timeout=2)
 
     assert not socket_path.exists()
+
+
+def test_service_info_body_and_header_publish_the_same_contract_digest(tmp_path):
+    socket_path = tmp_path / "runtime" / "service.sock"
+    server = UnixServiceServer(socket_path, StubApplication())
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    connection = _UnixHTTPConnection(socket_path, timeout=2)
+    try:
+        connection.request(
+            "GET",
+            "/v1/service-info",
+            headers={
+                "X-Last30days-Expected-Product": "last30days",
+                "X-Last30days-MCP-Version": "4.0.0",
+                "X-Last30days-Service-API-Min": "1",
+                "X-Last30days-Service-API-Max": "1",
+                "X-Last30days-Contract-Schema": "1",
+                "X-Last30days-Expected-Contract-SHA256": (
+                    contracts.SCHEMA_CATALOG_SHA256
+                ),
+                "X-Last30days-Database-Schema-Min": "3",
+                "X-Last30days-Database-Schema-Max": "3",
+            },
+        )
+        response = connection.getresponse()
+        payload = json.loads(response.read())
+
+        assert response.status == 200
+        assert (
+            response.getheader("X-Last30days-Contract-SHA256")
+            == contracts.SCHEMA_CATALOG_SHA256
+            == payload["contract_sha256"]
+        )
+        assert payload["contract_schema_version"] == contracts.SCHEMA_VERSION
+        assert payload["mcp_adapter_version"] == "4.0.0"
+        assert payload["compatibility_state"] == "compatible"
+    finally:
+        connection.close()
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=2)
 
 
 def test_job_endpoint_returns_safe_not_found(tmp_path):

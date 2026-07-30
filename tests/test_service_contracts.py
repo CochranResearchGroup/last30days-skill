@@ -421,6 +421,11 @@ def test_schema_catalog_is_the_golden_contract_for_every_v1_envelope():
     catalog = contracts.load_schema_catalog()
 
     assert catalog["schema_version"] == 1
+    assert catalog["compatibility"] == {
+        "product": "last30days",
+        "service_api": {"min": 1, "max": 1},
+        "database_schema": {"min": 12, "max": 12},
+    }
     assert set(catalog["contracts"]) == {
         "query_request",
         "intelligence_request",
@@ -518,8 +523,19 @@ def test_query_response_round_trips_bounded_evidence_and_freshness():
 def test_service_info_round_trips_dynamic_runtime_capabilities():
     payload = {
         "schema_version": 1,
+        "product": "last30days",
         "service_version": "0.1.0",
+        "service_api_version": 1,
+        "contract_schema_version": 1,
+        "contract_sha256": contracts.SCHEMA_CATALOG_SHA256,
         "database_schema_version": 3,
+        "runtime_manifest_sha256": "a" * 64,
+        "mcp_adapter_version": "4.0.0",
+        "mcp_supported_service_api_min": 1,
+        "mcp_supported_service_api_max": 1,
+        "mcp_supported_database_schema_min": 12,
+        "mcp_supported_database_schema_max": 12,
+        "compatibility_state": "compatible",
         "status": "ready",
         "capabilities": ["cache_query", "lexical_search", "semantic_search"],
         "sources": {"reddit": {"ready": True, "reason": None}},

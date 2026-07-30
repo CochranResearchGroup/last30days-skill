@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import json
 import hashlib
+import json
 import os
 import re
 import sqlite3
@@ -22,7 +22,30 @@ from .service_supervisor import InvalidTransitionError
 
 
 SERVICE_VERSION = os.environ.get("LAST30DAYS_SERVICE_VERSION", "0.2.7")
+PRODUCT_IDENTITY = "last30days"
+SERVICE_API_VERSION = 1
 DEFAULT_FRESH_SECONDS = 24 * 60 * 60
+
+
+def _runtime_manifest_sha256() -> str | None:
+    configured = os.environ.get("LAST30DAYS_RUNTIME_MANIFEST_PATH")
+    candidates = []
+    if configured:
+        candidates.append(Path(configured))
+    resolved = Path(__file__).resolve()
+    candidates.extend(
+        (
+            resolved.parents[2] / "runtime-manifest.json",
+            resolved.parents[4] / "service" / "runtime-manifest.json",
+        )
+    )
+    for path in candidates:
+        try:
+            if path.is_file() and not path.is_symlink():
+                return hashlib.sha256(path.read_bytes()).hexdigest()
+        except OSError:
+            continue
+    return None
 
 
 class JobResumeConflictError(RuntimeError):
@@ -251,8 +274,19 @@ class CacheQueryApplication:
         return contracts.ServiceInfo.from_dict(
             {
                 "schema_version": contracts.SCHEMA_VERSION,
+                "product": PRODUCT_IDENTITY,
                 "service_version": SERVICE_VERSION,
+                "service_api_version": SERVICE_API_VERSION,
+                "contract_schema_version": contracts.SCHEMA_VERSION,
+                "contract_sha256": contracts.SCHEMA_CATALOG_SHA256,
                 "database_schema_version": self._database_schema_version(),
+                "runtime_manifest_sha256": _runtime_manifest_sha256(),
+                "mcp_adapter_version": None,
+                "mcp_supported_service_api_min": None,
+                "mcp_supported_service_api_max": None,
+                "mcp_supported_database_schema_min": None,
+                "mcp_supported_database_schema_max": None,
+                "compatibility_state": "mcp_client_not_declared",
                 "status": "degraded" if self.runtime_error() else "ready",
                 "capabilities": capabilities,
                 "sources": self._source_info(),
