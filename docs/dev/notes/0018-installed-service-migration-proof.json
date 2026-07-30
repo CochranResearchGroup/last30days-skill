@@ -1,0 +1,89 @@
+{
+  "artifact": {
+    "contract_sha256": "f011c45999769f2c93b9044917179a0c683b3a43b35ec316f973bf91a2e76e34",
+    "runtime_artifact_sha256": "ca2106f38493fb341e757b10aed34693f74d8dfe904600200f7aff93bbaf88df",
+    "runtime_manifest_sha256": "c889e528914befe807ca0fd3c0f3d4cb110a54af906ff9f4abd614387f1adca5",
+    "service_version": "0.2.7"
+  },
+  "baseline": {
+    "configuration_sha256": "7b32076759f0e743838249a88ba30efbe4c26003d59059bae3c86265a468619f",
+    "database_counts": {
+      "collection_run_attempts": 13,
+      "collection_runs": 12,
+      "collection_schedule_state": 2,
+      "collection_specs": 2,
+      "document_versions": 57,
+      "documents": 50,
+      "graph_projection_outbox": 1,
+      "index_documents": 1481,
+      "service_job_events": 478,
+      "service_jobs": 49
+    },
+    "database_integrity": "ok",
+    "database_logical_sha256": "004586df10a6c93ac9f633d003ac40a97eb6ef1dd5a9a12d5cfc833d27c4d95f",
+    "database_schema_version": 12,
+    "managed_release_selected": false,
+    "service_active": true,
+    "service_daemon_count": 1,
+    "unit_exec_source": ".agents/skills/last30days/scripts/service.py"
+  },
+  "final_state": {
+    "compatibility_state": "compatible",
+    "configuration_sha256": "7b32076759f0e743838249a88ba30efbe4c26003d59059bae3c86265a468619f",
+    "current_release": "releases/0.2.7",
+    "database_counts": {
+      "collection_run_attempts": 13,
+      "collection_runs": 12,
+      "collection_schedule_state": 2,
+      "collection_specs": 2,
+      "document_versions": 57,
+      "documents": 50,
+      "graph_projection_outbox": 1,
+      "index_documents": 1481,
+      "service_job_events": 478,
+      "service_jobs": 49
+    },
+    "database_integrity": "ok",
+    "database_logical_sha256": "004586df10a6c93ac9f633d003ac40a97eb6ef1dd5a9a12d5cfc833d27c4d95f",
+    "database_schema_version": 12,
+    "previous_release": "releases/0.2.8",
+    "service_active": true,
+    "service_daemon_count": 1,
+    "service_version": "0.2.7",
+    "timer_unit_count": 0,
+    "unit_exec_source": ".local/share/last30days/service/last30days-service"
+  },
+  "hard_stops": [],
+  "mcp_proof": {
+    "adapter_version": "migration-proof",
+    "cache_only_query_status": "fresh",
+    "tool_count": 10,
+    "tools": [
+      "collection",
+      "coverage",
+      "job_status",
+      "maintenance_status",
+      "profile_history",
+      "query",
+      "refresh",
+      "service_info",
+      "temporal_query",
+      "topic"
+    ]
+  },
+  "migration": {
+    "installed_release": "0.2.7",
+    "restart_changed_main_pid": true,
+    "rollback_readiness": "ready",
+    "rollback_target": "0.2.7",
+    "temporary_upgrade_artifact_sha256": "459c4e3855949060f4f041905c28217725d716126111f3966b18b1d7bc692f74",
+    "temporary_upgrade_manifest_sha256": "f64d1af8cba15d3c3a8edea9887ce7d2671ea6a35fa1606dee2cbd24144f8c61",
+    "temporary_upgrade_version": "0.2.8",
+    "upgrade_readiness": "ready"
+  },
+  "plan": "0018",
+  "repo_commit": "ae79e56",
+  "schema_version": 1,
+  "status": "passed",
+  "verified_at": "2026-07-29T22:45:45-05:00"
+}
