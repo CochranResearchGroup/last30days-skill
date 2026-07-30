@@ -56,6 +56,11 @@ def test_indexes_legacy_findings_idempotently_and_returns_cited_fts_hits(tmp_pat
     )
 
     first = retriever.index_legacy_findings()
+    connection = sqlite3.connect(db_path)
+    first_activation = connection.execute(
+        "SELECT activated_at FROM service_index_head WHERE singleton_id = 1"
+    ).fetchone()[0]
+    connection.close()
     second = retriever.index_legacy_findings()
     hits = retriever.search("duplicate Chromium", top_k=3)
 
@@ -63,6 +68,9 @@ def test_indexes_legacy_findings_idempotently_and_returns_cited_fts_hits(tmp_pat
     assert second.documents_indexed == 0
     assert first.index_version == second.index_version
     conn = sqlite3.connect(db_path)
+    assert conn.execute(
+        "SELECT activated_at FROM service_index_head WHERE singleton_id = 1"
+    ).fetchone()[0] == first_activation
     assert conn.execute(
         "SELECT COUNT(*) FROM index_documents WHERE index_version = ?",
         (first.index_version,),

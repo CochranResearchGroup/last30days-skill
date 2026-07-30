@@ -6,7 +6,8 @@ fresh install before release.
 ## 1. Know the package boundary
 
 `skills/last30days/` is the installable Agent Skill. `npx skills add` copies
-that directory recursively, so only runtime files belong there:
+that directory recursively, so only Skill compatibility and client files
+belong there:
 
 - `SKILL.md`
 - `scripts/last30days.py`
@@ -14,6 +15,13 @@ that directory recursively, so only runtime files belong there:
 - runtime helpers such as `store.py`, `watchlist.py`, `briefing.py`,
   `service.py`, `install-service.sh`, `setup-keychain.sh`, and `setup-pass.sh`
 - `references/`
+
+The first-class service product is packaged from the repo-owned `service/`
+boundary. `service/VERSION`, `service/runtime-manifest.json`, its builder,
+transactional installer, and systemd template stay outside the Skill payload.
+The manifest explicitly selects the still-canonical Python runtime sources
+during this migration packet; service artifacts contain no `SKILL.md`, Skill
+docs, setup scripts, or Skill lifecycle authority.
 
 Repo-only files stay outside the installable skill:
 
@@ -44,10 +52,13 @@ uv run pytest \
   tests/test_build_skill_artifact.py \
   tests/test_hermes_skillignore.py \
   tests/test_plugin_contract.py \
+  tests/test_service_runtime_package.py \
+  tests/test_service_lifecycle_install.py \
   tests/test_version_consistency.py \
   tests/test_source_log_visibility.py
 
 LAST30DAYS_BUILD_ALLOW_DIRTY=1 bash dev/last30days/scripts/build-skill.sh
+bash service/scripts/build-runtime.sh
 ```
 
 The artifact check should show a small `.skill` bundle with runtime files
@@ -93,14 +104,24 @@ The installed copy should not contain `assets/`, `agents/`,
 `scripts/build-skill.sh`, `scripts/evaluate_search_quality.py`,
 `scripts/test_device_auth.py`, or `scripts/verify_v3.py`.
 
-For a Linux service-backed dogfood run:
+For a Linux service-backed dogfood run, install the independently built service
+artifact rather than making the copied Skill its lifecycle authority:
 
 ```bash
-bash "$HOME/.agents/skills/last30days/scripts/install-service.sh"
-python3 "$HOME/.agents/skills/last30days/scripts/service.py" status
-python3 "$HOME/.agents/skills/last30days/scripts/service.py" \
+bash service/scripts/build-runtime.sh
+bash service/scripts/install.sh install \
+  --artifact dist/service/last30days-service-0.2.7.tar.gz
+bash service/scripts/install.sh diagnose
+service_launcher="${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service"
+"$service_launcher" \
   query "last30days installed service smoke" --freshness cache_only
 ```
+
+Dogfood one upgrade and `service/scripts/install.sh rollback` only with
+reviewed, version-distinct artifacts. Confirm that `current` and `previous`
+resolve under `releases/`, the readiness receipt matches the live version,
+contract digest, schema 12, and manifest digest, and the managed unit contains
+no `.agents/skills` path.
 
 Then connect the MCP bundle and verify its listed surface is `service_info`,
 `query`, `refresh`, `job_status`, `topic`, `temporal_query`,

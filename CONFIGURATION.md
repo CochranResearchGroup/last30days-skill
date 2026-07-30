@@ -19,16 +19,24 @@ This is a focused **configuration reference** maintained alongside the engine. T
 
 ## Service and App Intelligence boundaries
 
-The installed Linux service is the product authority for agents. Install or
-refresh it with:
+The installed Linux service is the product authority for agents. From a source
+checkout, build and install its independently versioned artifact with:
 
 ```bash
-bash ~/.agents/skills/last30days/scripts/install-service.sh
-python3 ~/.agents/skills/last30days/scripts/service.py status
+bash service/scripts/build-runtime.sh
+bash service/scripts/install.sh install \
+  --artifact dist/service/last30days-service-0.2.7.tar.gz
+bash service/scripts/install.sh diagnose
 ```
 
-The installer always restarts an existing user service so a refreshed frozen
-skill copy cannot leave old runtime code serving requests.
+The service release lives under
+`$XDG_DATA_HOME/last30days/service/releases/<version>`, independently of any
+installed Agent Skill. The managed unit resolves the atomic `current` selector
+through a stable launcher. A successful install records the loaded service
+version, contract digest, schema 12, and runtime-manifest digest in an
+owner-readable readiness receipt. Skill-first installation remains a
+compatibility path during the migration; refreshing a frozen Skill copy is no
+longer the service upgrade contract.
 
 App Intelligence is an operator-owned maintenance capability, not an
 environment-variable switch for ordinary queries. The deterministic host sets
@@ -504,14 +512,19 @@ are owner-readable/writable only (`0600`). These paths contain no browser
 cookies or credentials; authenticated acquisition remains isolated in named
 user-scoped profiles.
 
-Install and start the Linux user service from an installed Skill directory:
+Build and install the Linux user service independently of an Agent Skill:
 
 ```bash
-bash scripts/install-service.sh
-python3 scripts/service.py status
-python3 scripts/service.py query "agent browser reliability" --freshness prefer_cache
-python3 scripts/service.py job <job-id>
-python3 scripts/service.py job <job-id> --resume
+bash service/scripts/build-runtime.sh
+bash service/scripts/install.sh install \
+  --artifact dist/service/last30days-service-0.2.7.tar.gz
+bash service/scripts/install.sh diagnose
+
+service_launcher="${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service"
+"$service_launcher" status
+"$service_launcher" query "agent browser reliability" --freshness prefer_cache
+"$service_launcher" job <job-id>
+"$service_launcher" job <job-id> --resume
 ```
 
 Use `job <job-id> --resume` only after the human action recorded by an
@@ -617,13 +630,21 @@ promotion, and replay receipts. `LAST30DAYS_APP_INTELLIGENCE_MODEL` is optional
 and uses the app-server default when empty. The timeout is seconds and must be
 positive; the service caps it at the task contract's 60-second wall-time limit.
 
-`install-service.sh --print-unit` renders the unit without writing or starting
-anything. The installer writes
-`~/.config/systemd/user/last30days.service`, reloads the user manager, and
-enables the service. Its unit uses an owner-private umask,
+Use `service/scripts/install.sh upgrade --artifact <artifact>` for a new
+semantic service version. The installer verifies every payload SHA-256, stages
+an immutable release, records the old `current` target as `previous`, switches
+atomically, and restarts once. It accepts the upgrade only when the service
+reports the expected version, exact contract digest, and schema 12. A failed
+upgrade restores the prior selectors, restarts, and proves the old release
+ready. Use `service/scripts/install.sh rollback` to swap the current and
+previous verified releases deliberately; `start`, `stop`, `status`, and
+`diagnose` provide the remaining lifecycle controls.
+
+The installer writes `~/.config/systemd/user/last30days.service`, reloads the
+user manager, and enables the service. Its unit uses an owner-private umask,
 restart-on-failure, `NoNewPrivileges`, and a stable PATH containing
-`~/.local/bin` and the reference Linuxbrew paths.
-It also loads the optional owner-scoped
+`~/.local/bin` and the reference Linuxbrew paths. It also loads the optional
+owner-scoped
 `~/.config/last30days/.env`, so the daemon and its acquisition subprocesses
 see the same explicit source enablement and profile routing as direct runs.
 

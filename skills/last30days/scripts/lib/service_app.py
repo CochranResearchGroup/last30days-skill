@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import os
 import re
 import sqlite3
 from collections.abc import Callable, Mapping, Sequence
@@ -20,7 +21,7 @@ from .service_knowledge import TemporalKnowledgeQuery
 from .service_supervisor import InvalidTransitionError
 
 
-SERVICE_VERSION = "0.2.7"
+SERVICE_VERSION = os.environ.get("LAST30DAYS_SERVICE_VERSION", "0.2.7")
 DEFAULT_FRESH_SECONDS = 24 * 60 * 60
 
 

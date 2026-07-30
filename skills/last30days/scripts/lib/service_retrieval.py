@@ -819,7 +819,9 @@ class HybridRetriever:
                    VALUES (1, ?, ?)
                    ON CONFLICT(singleton_id) DO UPDATE SET
                        index_version = excluded.index_version,
-                       activated_at = excluded.activated_at""",
+                       activated_at = excluded.activated_at
+                   WHERE service_index_head.index_version
+                         != excluded.index_version""",
                 (index_version, now),
             )
             conn.commit()

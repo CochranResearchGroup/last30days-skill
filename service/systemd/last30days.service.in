@@ -1,0 +1,17 @@
+[Unit]
+Description=last30days user-scoped intelligence service
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=@LAUNCHER@ serve
+Restart=on-failure
+RestartSec=2
+EnvironmentFile=@ENV_FILE@
+Environment=PATH=%h/.local/bin:%h/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

@@ -29,7 +29,9 @@ def test_operator_docs_name_the_same_thin_service_surface():
     assert "never launch a request-scoped research subprocess" in " ".join(
         concepts.split()
     )
-    assert "install-service.sh" in configuration
+    assert "service/scripts/build-runtime.sh" in configuration
+    assert "service/scripts/install.sh" in configuration
+    assert "Agent Skill is optional" in (ROOT / "README.md").read_text()
 
 
 def test_mcpb_packages_runtime_and_verifies_canonical_contract():
