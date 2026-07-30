@@ -786,9 +786,10 @@ Next Bounded Action:
 - Stop at Plan 0018's `zero_yield_no_index_change` hard bound. Read-only
   diagnosis identifies `temporal knowledge graphs` as the strongest
   same-envelope public Reddit successor because it yielded three items on
-  2026-07-29. With explicit user authority, run the distinct one-attempt
-  successor packet frozen at checkpoint P0018-C14; otherwise keep P07 open and
-  the `v4.0.0` release gate closed.
+  2026-07-29. Checkpoint P0018-C15 classifies the distinct one-attempt
+  successor as inherited standing authority. Execute it under the unchanged
+  public-only bounds; keep the independent-review and `v4.0.0` release gates
+  closed until indexed yield is proven.
 
 ## Goal-Compatible Plan Conversion
 

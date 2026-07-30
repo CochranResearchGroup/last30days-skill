@@ -4377,3 +4377,70 @@ Next Bounded Action:
   `p0018-final-public-collection-v2` and selector
   `temporal knowledge graphs`; without it, preserve the paused runtime and
   closed release gate.
+
+## Turn 66 | 2026-07-30
+
+Focus: correct over-gated goal language so bounded successors inherit standing
+authority while genuine drift and consequential-action gates remain explicit.
+
+Authority Consulted:
+
+- user correction that Plan 0018's retry approval was unnecessary
+- Plan 0018 checkpoints P0018-C13 and P0018-C14
+- goal-execution, planning, policy-management, policy-feedback,
+  documentation-change, validation, Git, and roadmap/runbook policies
+- installed repo-policy-selector bundle v0.1.14 and deterministic
+  product-engineering profile readback
+- prior cross-repo preference for complete capability matrices without
+  per-action approval mazes inside approved policies
+
+Decisions And Changes:
+
+- Clarified that a hard stop ends one attempt but does not revoke the approved
+  goal's standing authority.
+- Defined five inheritance tests for bounded successors and six concrete
+  conditions that still require human approval.
+- Required agents to cite the exact crossed boundary before asking for new
+  approval.
+- Scoped `no retry` to the failed packet instance unless a plan explicitly
+  names a `human_gate` or revokes standing authority.
+- Revised Plan 0018 to version 2 and classified its second, final public Reddit
+  attempt as `inherited_authority`.
+- Preserved the attempt ceiling, public/source/profile boundaries, budgets,
+  fail-closed stops, independent final review, and immutable release gate.
+
+Validation Evidence:
+
+- policy selector enumerated the installed v0.1.14 catalog and recommended the
+  existing product-engineering/goal-governance composition in
+  `patch-missing` mode;
+- the Plan 0018 successor changes only the public topic selector and collection
+  ID while preserving all prior operational limits;
+- no live collection, acquisition, refresh, model, review, tag, or release
+  action ran during this policy correction;
+- the repo authority audit and selector `--goal-only` policy audit passed;
+- six focused authority-audit tests and Python compilation passed;
+- `git diff --check` passed; Ruff was unavailable in the repo environment.
+
+State Movement:
+
+- Plan 0018:
+  `awaiting unnecessary retry approval -> bounded successor ready`;
+- authority classification: `inherited_authority`;
+- Plan 0018 and P07 remain `OPEN`; the independent release gate remains closed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this is one serialized governing-document slice.
+
+Graphiti Write Status:
+
+- provider readiness passed;
+- the compact policy decision queued as job
+  `ff80dc94-d042-4989-9047-3964aa6f241e` in
+  `last30days_skill_main`.
+
+Next Bounded Action:
+
+- validate, commit, and push the authority-language correction, then execute
+  the bounded successor without another approval request.

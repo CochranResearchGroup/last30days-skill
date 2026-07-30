@@ -11,6 +11,9 @@ from typing import Any
 
 
 ALLOWED_LANE_STATES = frozenset({"PLANNED", "OPEN", "CLOSED", "CANCELLED"})
+ALLOWED_AUTHORITY_CLASSIFICATIONS = frozenset(
+    {"inherited_authority", "human_gate", "scope_expansion"}
+)
 PLAN_PATH_PATTERN = re.compile(r"`(docs/dev/plans/[^`]+\.md)`")
 LANE_PATTERN = re.compile(r"^## (P\d{2}) \| (.+)$", re.MULTILINE)
 TURN_PATTERN = re.compile(r"^## Turn (\d+) \| (\d{4}-\d{2}-\d{2})$", re.MULTILINE)
@@ -95,6 +98,33 @@ def _audit_active_plan(
     state = re.search(r"^State:\s+(\S+)\s*$", text, re.MULTILINE)
     if state is None or state.group(1) != "OPEN":
         issues.append(f"active plan {plan_path} must have State: OPEN")
+    checkpoints = list(CHECKPOINT_PATTERN.finditer(text))
+    if not checkpoints:
+        issues.append(f"active plan {plan_path} has no durable checkpoint")
+        latest = None
+        latest_body = ""
+    else:
+        latest = checkpoints[-1]
+        latest_body = _body_until_next(
+            text,
+            latest.end(),
+            re.compile(r"^### |^## ", re.MULTILINE),
+        )
+        authority_match = re.search(
+            r"^Authority classification:\s*(?:\n\s*)+-\s+`([^`]+)`",
+            latest_body,
+            re.MULTILINE,
+        )
+        if authority_match is None:
+            issues.append(
+                f"latest checkpoint {latest.group(1)} is missing "
+                "Authority classification"
+            )
+        elif authority_match.group(1) not in ALLOWED_AUTHORITY_CLASSIFICATIONS:
+            issues.append(
+                f"latest checkpoint {latest.group(1)} has invalid "
+                f"Authority classification {authority_match.group(1)!r}"
+            )
     is_campaign = "## Authority Correction" in text and "four explicit joins" in text
     if not is_campaign:
         if not ("## Scope" in text or "## Objective" in text):
@@ -137,12 +167,9 @@ def _audit_active_plan(
     if plan_path not in runbook_text:
         issues.append(f"active plan is not wired into RUNBOOK.md: {plan_path}")
 
-    checkpoints = list(CHECKPOINT_PATTERN.finditer(text))
-    if not checkpoints:
-        issues.append(f"active plan {plan_path} has no durable checkpoint")
+    if latest is None:
         return
-    latest = checkpoints[-1]
-    body = _body_until_next(text, latest.end(), re.compile(r"^### |^## ", re.MULTILINE))
+    body = latest_body
     required_labels = (
         "Plan version:",
         "State transition:",

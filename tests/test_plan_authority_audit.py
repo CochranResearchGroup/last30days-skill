@@ -74,6 +74,10 @@ State transition: `ready -> active`
 
 Progress classification: `outcome_progress`
 
+Authority classification:
+
+- `inherited_authority`.
+
 Owned changes:
 
 - created the authority.
@@ -232,3 +236,36 @@ def test_latest_checkpoint_requires_graphiti_and_subagent_fields(tmp_path: Path)
     assert report["status"] == "failed"
     assert any("Subagent status" in issue for issue in report["issues"])
     assert any("Graphiti write status" in issue for issue in report["issues"])
+
+
+def test_latest_checkpoint_requires_authority_classification(tmp_path: Path) -> None:
+    auditor = _load_auditor()
+    _write_minimal_authority(tmp_path)
+    plan = next((tmp_path / "docs" / "dev" / "plans").glob("0011-*.md"))
+    text = plan.read_text(encoding="utf-8")
+    text = text.replace(
+        "Authority classification:\n\n- `inherited_authority`.\n\n",
+        "",
+    )
+    plan.write_text(text, encoding="utf-8")
+
+    report = auditor.audit_repository(tmp_path)
+
+    assert report["status"] == "failed"
+    assert any("Authority classification" in issue for issue in report["issues"])
+
+
+def test_latest_checkpoint_rejects_unknown_authority_classification(
+    tmp_path: Path,
+) -> None:
+    auditor = _load_auditor()
+    _write_minimal_authority(tmp_path)
+    plan = next((tmp_path / "docs" / "dev" / "plans").glob("0011-*.md"))
+    text = plan.read_text(encoding="utf-8")
+    text = text.replace("`inherited_authority`", "`ask_again_just_in_case`")
+    plan.write_text(text, encoding="utf-8")
+
+    report = auditor.audit_repository(tmp_path)
+
+    assert report["status"] == "failed"
+    assert any("invalid Authority classification" in issue for issue in report["issues"])

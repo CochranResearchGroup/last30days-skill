@@ -84,6 +84,8 @@ Experimental changes get tested on `mvanhorn/last30days-skill-private`, which in
 ## Policy Re-read Triggers
 
 - re-read planning-related policy before opening, revising, or closing a substantive plan
+- after a hard stop, classify any successor under standing authority before
+  asking for approval; the stop ends the attempt, not the approved goal
 - re-read documentation-related policy before changing docs, contracts, or canonical authorities
 - re-read validation and closeout policy before claiming work complete
 - re-read branch, commit, and integration policy before starting a multi-file or multi-step implementation slice

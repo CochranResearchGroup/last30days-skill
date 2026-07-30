@@ -3,6 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
+Plan version: 2
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -63,8 +64,34 @@ software with:
   rollback and restored-forward operation, and schema-12 state is unchanged.
 - The first independent final review rejected release because autonomous
   governed acquisition/indexing with all stochastic workers disabled remains
-  unproved; the exact one-interval remediation packet below is now the only
-  remaining outcome work.
+  unproved. The first one-interval remediation proved autonomous service
+  ownership but returned zero items. Checkpoint P0018-C15 classifies the
+  evidence-backed successor as inherited standing authority and freezes the
+  remaining outcome work without weakening the independent release gate.
+
+## Standing Authority And Human Gates
+
+The instruction to execute Plan 0018 supplies standing authority for ordinary
+implementation, validation, repair, and bounded successor packets that preserve
+this plan's objective and risk envelope. A packet-level hard stop ends that
+attempt; it does not create a human gate by itself.
+
+The primary agent may reframe and execute a successor without asking again when
+the latest checkpoint classifies it as `inherited_authority`, keeps it within
+the configured attempt ceiling, and preserves the approved systems, source
+class, profile, public/private boundary, mutation class, resource ceilings,
+rollback, and release gates.
+
+New approval is required only for a checkpoint classified `human_gate` or
+`scope_expansion`, including a new system, tenant, credential, private-data
+class, audience, consequential external effect, ceiling increase, destructive
+action, or bypass of the independent final-review or immutable-release gate.
+Before requesting approval, cite the exact boundary the proposed action crosses.
+
+Checkpoint P0018-C15 is the current authority for the remaining collection
+successor. Earlier packet-level `no retry` and explicit-approval statements are
+historical constraints on those packet instances and are superseded for the
+current successor.
 
 ## User Experience Contract
 
@@ -1662,3 +1689,88 @@ Next action:
 
 - await explicit user authority for the proposed one-attempt successor packet;
   without it, preserve the paused runtime and unpublished release.
+
+### Checkpoint P0018-C15 | 2026-07-30
+
+Plan version:
+
+- 2
+
+State transition:
+
+- `awaiting unnecessary retry approval -> bounded successor ready`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`;
+- the standing objective to execute Plan 0018 authorizes ordinary bounded
+  remediation needed to satisfy its unchanged autonomous-indexing criterion;
+- checkpoint P0018-C13's fail-closed stop terminated the `OpenClaw` packet
+  instance. It did not revoke the goal's standing authority;
+- the proposed successor changes only the public Reddit topic selector and
+  uses a distinct collection ID. It adds no system, source class, credential,
+  tenant, audience, private-data class, mutation class, stochastic worker,
+  publication, or immutable release action.
+
+Drift controls:
+
+- this successor is the second and final work-unit attempt, matching
+  `max_work_unit_attempts: 2`;
+- keep source/profile/access at Reddit, `default`, public;
+- keep the prior three-item, 24-hour, 50-request, one-dollar, 120-second,
+  one-scheduled-run, assessment-disabled bounds;
+- create `p0018-final-public-collection-v2`, disconnect the initiating client,
+  allow exactly one service-owned interval, and pause immediately;
+- stop on zero yield, no document/version/index advance, a second run,
+  non-public evidence, budget escape, model/task growth, database-integrity
+  failure, or inability to pause;
+- any further acquisition attempt after this successor requires a new plan
+  version because the configured attempt ceiling would be exhausted;
+- independent final `ACCEPT` remains mandatory before the already-authorized
+  one-time immutable `v4.0.0` tag/release action.
+
+Authority correction:
+
+- checkpoint P0018-C14's explicit-approval requirement is superseded;
+- `no second source or retry` in the first remediation packet remains true for
+  that packet instance. It does not prohibit this evidence-backed successor
+  inside the standing goal and attempt ceiling;
+- fail-closed continues to mean preserve state, checkpoint the failure, and
+  reframe within bounds. It does not automatically create a human gate.
+
+Current state:
+
+- the original `p0018-final-public-collection` remains paused at revision 2
+  with one run;
+- the successor specification does not yet exist and no successor acquisition
+  has run;
+- Plan 0018 and P07 remain `OPEN`; the release gate remains closed.
+
+Remaining acceptance criterion:
+
+- execute the one-attempt successor and prove public document/version/index
+  advancement with assessment and model execution disabled;
+- if it succeeds, run the second independent final review;
+- if it fails, stop at the exhausted attempt ceiling without requesting
+  repeated approval for another equivalent retry.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active-agent concurrency remains one.
+
+Graphiti write status:
+
+- `graphiti_write_queued`;
+- provider readiness passed and the compact policy decision queued as job
+  `ff80dc94-d042-4989-9047-3964aa6f241e` in
+  `last30days_skill_main`.
+
+Next action:
+
+- execute `p0018-final-public-collection-v2` under inherited standing
+  authority; do not ask for another approval unless a named boundary above
+  changes.
