@@ -1,0 +1,567 @@
+{
+  "files": [
+    {
+      "path": "VERSION",
+      "sha256": "5b57e3b8c153d1d33b0c0f1ee29d3de1bf93232ed95aa78b80fe885e99faa915",
+      "source": "service/VERSION"
+    },
+    {
+      "path": "schemas/service-contracts-v1.json",
+      "sha256": "07c1a97065bffea1b9adcfe19195f8dac354c168cd9ef031e2d2e2f06465a7bd",
+      "source": "skills/last30days/schemas/service-contracts-v1.json"
+    },
+    {
+      "path": "scripts/lib/__init__.py",
+      "sha256": "3fb925405f898201188f9b5eea04e214ea8c8a64643397fd727f08ffeea234d9",
+      "source": "skills/last30days/scripts/lib/__init__.py"
+    },
+    {
+      "path": "scripts/lib/agent_browser_config.py",
+      "sha256": "a22493dac52da7699619107c9230875328c086ccadf82a6c5a1fb1cd62302066",
+      "source": "skills/last30days/scripts/lib/agent_browser_config.py"
+    },
+    {
+      "path": "scripts/lib/bird_x.py",
+      "sha256": "982a1e4148c1b3b9f51eb2cccdc5d05d4f365a051e6cf7b94a2ad20ff64657c5",
+      "source": "skills/last30days/scripts/lib/bird_x.py"
+    },
+    {
+      "path": "scripts/lib/bluesky.py",
+      "sha256": "64dda224658ee9c3250278c189a048b7ea75970cbed5b9c9689cc391ec11b6ee",
+      "source": "skills/last30days/scripts/lib/bluesky.py"
+    },
+    {
+      "path": "scripts/lib/categories.py",
+      "sha256": "e4ab8435e09c371f2475751fdc1c58150799b3746afcc7e38d5dad30adb210d5",
+      "source": "skills/last30days/scripts/lib/categories.py"
+    },
+    {
+      "path": "scripts/lib/chrome_cookies.py",
+      "sha256": "105aaa28757a67ed1e9bc602cc7a58f97722fb3fe1a82f40929fa3d2ffb4f683",
+      "source": "skills/last30days/scripts/lib/chrome_cookies.py"
+    },
+    {
+      "path": "scripts/lib/cjk.py",
+      "sha256": "92279dd6d6643b1d4e95793f23e082579c18392114ee19b27a3cdb48cb67d890",
+      "source": "skills/last30days/scripts/lib/cjk.py"
+    },
+    {
+      "path": "scripts/lib/cluster.py",
+      "sha256": "fa9fb8905552e7bb5a2a2854f8b3c620a464054238a008d74ba89d0c247a776e",
+      "source": "skills/last30days/scripts/lib/cluster.py"
+    },
+    {
+      "path": "scripts/lib/competitors.py",
+      "sha256": "433f3e8aab1d470471f0a5bd019bce841a38e0a0a754ab3b466ed6799f98c5e8",
+      "source": "skills/last30days/scripts/lib/competitors.py"
+    },
+    {
+      "path": "scripts/lib/cookie_extract.py",
+      "sha256": "1b831707fbf97560f92fa60cb6e59d4c9f9279d77b2eaf3d320689e4c73d800d",
+      "source": "skills/last30days/scripts/lib/cookie_extract.py"
+    },
+    {
+      "path": "scripts/lib/dates.py",
+      "sha256": "d1c71ec823bf122396523b04875cdd59e169658d158b5dface574233433574c8",
+      "source": "skills/last30days/scripts/lib/dates.py"
+    },
+    {
+      "path": "scripts/lib/dedupe.py",
+      "sha256": "f089918c3a118a0099ea572cb33725bfa15584d1b0e37cb1081c2440085c7d36",
+      "source": "skills/last30days/scripts/lib/dedupe.py"
+    },
+    {
+      "path": "scripts/lib/digg.py",
+      "sha256": "3e20ec3b572f1ccd54ae4cbc11649315b30f094c3773314a6e4a5c3617d7f133",
+      "source": "skills/last30days/scripts/lib/digg.py"
+    },
+    {
+      "path": "scripts/lib/entity_extract.py",
+      "sha256": "b04103103981915557fd410305f3a8031d5e71d687491ca89976be25d9bc84a4",
+      "source": "skills/last30days/scripts/lib/entity_extract.py"
+    },
+    {
+      "path": "scripts/lib/env.py",
+      "sha256": "7852024cd4ac17ed656720d9a2a61ba9ac3f9f96848a3605c970e596a7849dbb",
+      "source": "skills/last30days/scripts/lib/env.py"
+    },
+    {
+      "path": "scripts/lib/facebook.py",
+      "sha256": "ee964767d2755688693c344ba8c7f11dde17b2692e7fc341734faa2124980a5d",
+      "source": "skills/last30days/scripts/lib/facebook.py"
+    },
+    {
+      "path": "scripts/lib/fanout.py",
+      "sha256": "6e9abc16102fb681bfed2a6ff7e0dc423eba368e2f6a715d8a4e532f005034b2",
+      "source": "skills/last30days/scripts/lib/fanout.py"
+    },
+    {
+      "path": "scripts/lib/fusion.py",
+      "sha256": "c764709a7d4576121c193ae75ded057dd177b6bea512ca57dd72680d74030b41",
+      "source": "skills/last30days/scripts/lib/fusion.py"
+    },
+    {
+      "path": "scripts/lib/github.py",
+      "sha256": "51caf0b09ae917f65d53dbea5a2bfe1a5de3d313dab25c9a2c02d67ec65564f9",
+      "source": "skills/last30days/scripts/lib/github.py"
+    },
+    {
+      "path": "scripts/lib/grounding.py",
+      "sha256": "4ef2854a45cb89f2ea5aac4e5fd9d3a986cbfcdf60d7b3f2230708c57cc506e5",
+      "source": "skills/last30days/scripts/lib/grounding.py"
+    },
+    {
+      "path": "scripts/lib/hackernews.py",
+      "sha256": "86f9b104910939af6dbf69adfafc48c6d9eca69aca401988b984d1afff965aeb",
+      "source": "skills/last30days/scripts/lib/hackernews.py"
+    },
+    {
+      "path": "scripts/lib/health.py",
+      "sha256": "fd11011d0c2d9c79b5cb289a271aa3966b2864548444fd3d8ca95911128c92a7",
+      "source": "skills/last30days/scripts/lib/health.py"
+    },
+    {
+      "path": "scripts/lib/hiring_signals.py",
+      "sha256": "c94a00674d79c11f6bc17cf52350d1a357f132c0aeb1c230327f0d9829ee3f23",
+      "source": "skills/last30days/scripts/lib/hiring_signals.py"
+    },
+    {
+      "path": "scripts/lib/html_render.py",
+      "sha256": "c416f01c6fe9aad13a816e8cf61f5c7ae4024534899881611e0d812fd181f7c0",
+      "source": "skills/last30days/scripts/lib/html_render.py"
+    },
+    {
+      "path": "scripts/lib/http.py",
+      "sha256": "1b729a3d35c565bdb27a605d478b7f6786478cc53f769ecd24dbdc20fcecbe54",
+      "source": "skills/last30days/scripts/lib/http.py"
+    },
+    {
+      "path": "scripts/lib/instagram.py",
+      "sha256": "7dd6ada4ee2ecbbefa4b446839d4fd01f31e0da66229566b54f001aea4b0140d",
+      "source": "skills/last30days/scripts/lib/instagram.py"
+    },
+    {
+      "path": "scripts/lib/jobs.py",
+      "sha256": "829176c2ccc5ba09e7697321ce8384e479a2477fb6a861081d18195ee3c7251c",
+      "source": "skills/last30days/scripts/lib/jobs.py"
+    },
+    {
+      "path": "scripts/lib/linkedin.py",
+      "sha256": "1204c840917d7367ea3ae2b5cd3eeec36bd75bd30849f9091b983bfb4e9a1663",
+      "source": "skills/last30days/scripts/lib/linkedin.py"
+    },
+    {
+      "path": "scripts/lib/log.py",
+      "sha256": "4f60ca48ed6daf9a61ed94891683a59718705f7e197fd7a84fe312212bc49b11",
+      "source": "skills/last30days/scripts/lib/log.py"
+    },
+    {
+      "path": "scripts/lib/normalize.py",
+      "sha256": "bbf82521e35fe8094647159143517adfa989b8f82c87fd66039a6046c4fd42f5",
+      "source": "skills/last30days/scripts/lib/normalize.py"
+    },
+    {
+      "path": "scripts/lib/perplexity.py",
+      "sha256": "d1e4d447f9a19c013fafdd1a87f2ddf32071a9ae9cbfee1c9aaabbeb6915e576",
+      "source": "skills/last30days/scripts/lib/perplexity.py"
+    },
+    {
+      "path": "scripts/lib/pinterest.py",
+      "sha256": "75c5098b298dadbeeb82d78ea988200ea8354834b02f0c57ea4e6a58da886b13",
+      "source": "skills/last30days/scripts/lib/pinterest.py"
+    },
+    {
+      "path": "scripts/lib/pipeline.py",
+      "sha256": "2ef5be1da25e938378203557ec06dc3305c1628fab1b65e2bf6de515daa79845",
+      "source": "skills/last30days/scripts/lib/pipeline.py"
+    },
+    {
+      "path": "scripts/lib/planner.py",
+      "sha256": "c92779a318da5d490689b2012fa3ccca65a4dbf41ff729c799c5d892ed7ed216",
+      "source": "skills/last30days/scripts/lib/planner.py"
+    },
+    {
+      "path": "scripts/lib/polymarket.py",
+      "sha256": "11ff96ad97e6a7ce640e0ebf892294580703fb564ea8af1da6a3c96a5b1ed115",
+      "source": "skills/last30days/scripts/lib/polymarket.py"
+    },
+    {
+      "path": "scripts/lib/preflight.py",
+      "sha256": "0fafa53bc63a44ad4525d99d6bb37080b0693e2d45265ce36af09b4a0e9b2c9b",
+      "source": "skills/last30days/scripts/lib/preflight.py"
+    },
+    {
+      "path": "scripts/lib/providers.py",
+      "sha256": "b6163ee56ff4a234282f197f526f978bea561ea169bcef82f2ec067fec88dbcd",
+      "source": "skills/last30days/scripts/lib/providers.py"
+    },
+    {
+      "path": "scripts/lib/quality_nudge.py",
+      "sha256": "c16d757684bc20cf4057698a16333ccd294b3db7d2a11f54988d2fe641110812",
+      "source": "skills/last30days/scripts/lib/quality_nudge.py"
+    },
+    {
+      "path": "scripts/lib/query.py",
+      "sha256": "3151393e5360d18f1544abca7be190e628eda4e1ec86d5875e0ab51fae7daa4a",
+      "source": "skills/last30days/scripts/lib/query.py"
+    },
+    {
+      "path": "scripts/lib/reddit.py",
+      "sha256": "dd76af050206797d73d47033f65254e065cf89949bb13260e6558c927e06e7fe",
+      "source": "skills/last30days/scripts/lib/reddit.py"
+    },
+    {
+      "path": "scripts/lib/reddit_enrich.py",
+      "sha256": "652a9c5abecf22f3c26ff6d6b732a43703113a559ce31acab7af012eb25d4e7a",
+      "source": "skills/last30days/scripts/lib/reddit_enrich.py"
+    },
+    {
+      "path": "scripts/lib/reddit_keyless.py",
+      "sha256": "92ef5008ef657f7b91a5258319b20df6a898c06343ab23f85166b553b6f665e1",
+      "source": "skills/last30days/scripts/lib/reddit_keyless.py"
+    },
+    {
+      "path": "scripts/lib/reddit_listing.py",
+      "sha256": "ce336df5783394a0354f852e1bbe7e212e447148ef224a98167fdfd04f782fa5",
+      "source": "skills/last30days/scripts/lib/reddit_listing.py"
+    },
+    {
+      "path": "scripts/lib/reddit_public.py",
+      "sha256": "ea0a0ce0c033c5fd642dc9a22a6f73e08ad4f0f328a290a13cce3a97b5e10376",
+      "source": "skills/last30days/scripts/lib/reddit_public.py"
+    },
+    {
+      "path": "scripts/lib/reddit_rss.py",
+      "sha256": "c9acd5302509b681738230b5750caf13f5c85679232ac644a7a19420729ff68c",
+      "source": "skills/last30days/scripts/lib/reddit_rss.py"
+    },
+    {
+      "path": "scripts/lib/reddit_shreddit.py",
+      "sha256": "62b440f1ec5a9e1cb72f576ff56ed2a907ce0064705746f980897013081a4099",
+      "source": "skills/last30days/scripts/lib/reddit_shreddit.py"
+    },
+    {
+      "path": "scripts/lib/relevance.py",
+      "sha256": "1fad30389ee8bcbedf0bc2eefbf20fd56ad59c86ffc3281ddeac250474fc4f3e",
+      "source": "skills/last30days/scripts/lib/relevance.py"
+    },
+    {
+      "path": "scripts/lib/render.py",
+      "sha256": "4a22f814e328f4069605665136c37037045f7b3ea1d68cab91ad6c0e618b0c07",
+      "source": "skills/last30days/scripts/lib/render.py"
+    },
+    {
+      "path": "scripts/lib/rerank.py",
+      "sha256": "8fa79564643f8b9b852d62c779f258410899f81ffd36087cc6a40f6ca719f1ac",
+      "source": "skills/last30days/scripts/lib/rerank.py"
+    },
+    {
+      "path": "scripts/lib/resolve.py",
+      "sha256": "2e7a5579ddc5484f2e52457fa60fff0c875fe9dac1cc80b38691a310a6898e8f",
+      "source": "skills/last30days/scripts/lib/resolve.py"
+    },
+    {
+      "path": "scripts/lib/safari_cookies.py",
+      "sha256": "4d66c27cbf5725cc7cb815ca42191e70261c52196c2823bab9c6050ca32ccf71",
+      "source": "skills/last30days/scripts/lib/safari_cookies.py"
+    },
+    {
+      "path": "scripts/lib/schema.py",
+      "sha256": "3048927e3ce6c69c5d0a206a6d77dd4be4a31475bfa9f35fc5da04a656b1fd5f",
+      "source": "skills/last30days/scripts/lib/schema.py"
+    },
+    {
+      "path": "scripts/lib/service_acquisition_worker.py",
+      "sha256": "d02f63882b93e9b13480fc90e36004220d78543dc83c29f8116e1a921065fe3d",
+      "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
+    },
+    {
+      "path": "scripts/lib/service_app.py",
+      "sha256": "2ff6c3db48ffd7c803078ad85f46897988b7c281bd74de0309a1561a60680130",
+      "source": "skills/last30days/scripts/lib/service_app.py"
+    },
+    {
+      "path": "scripts/lib/service_client.py",
+      "sha256": "6664ea0cab6d5d5efd053b1b172d0865e6c9545c92845586fb0ef2044ed73c43",
+      "source": "skills/last30days/scripts/lib/service_client.py"
+    },
+    {
+      "path": "scripts/lib/service_collection.py",
+      "sha256": "bde2fc70404c90df81c7643f2a2c5df3b1b45def2313e38cb6c645acf1a461e9",
+      "source": "skills/last30days/scripts/lib/service_collection.py"
+    },
+    {
+      "path": "scripts/lib/service_contracts.py",
+      "sha256": "23544c9fd604b96615b27f37d56d8bdf32b6dfc0d29d10afaa8a06957d74b425",
+      "source": "skills/last30days/scripts/lib/service_contracts.py"
+    },
+    {
+      "path": "scripts/lib/service_enrichment.py",
+      "sha256": "78f3dbee5ba077faf1ebcfc86b6a69b9a31f70ba897a189cc4686edf3d195b49",
+      "source": "skills/last30days/scripts/lib/service_enrichment.py"
+    },
+    {
+      "path": "scripts/lib/service_eval.py",
+      "sha256": "36dbed3e562599063e6cf9a3127525c9b5f385b78705fa9f0e2b1e5f1cb4b66b",
+      "source": "skills/last30days/scripts/lib/service_eval.py"
+    },
+    {
+      "path": "scripts/lib/service_graphiti.py",
+      "sha256": "362a8b50f3c32dcd596d26a1136514a03d82e33118b563041d10d0ca036f7291",
+      "source": "skills/last30days/scripts/lib/service_graphiti.py"
+    },
+    {
+      "path": "scripts/lib/service_http.py",
+      "sha256": "048c7d1856fdf6a6e1831f5cf3be3c8244f2be2d8d671ef5050c313502a589d7",
+      "source": "skills/last30days/scripts/lib/service_http.py"
+    },
+    {
+      "path": "scripts/lib/service_intelligence.py",
+      "sha256": "79a4aaf02a20609814809b7d1d578951555416701a5c2e0fd936788ab2620b7c",
+      "source": "skills/last30days/scripts/lib/service_intelligence.py"
+    },
+    {
+      "path": "scripts/lib/service_intelligence_contracts.py",
+      "sha256": "66fbd3ee08a2a732b043ae2aba800d11cdb776f4fa320436573ca27d589b63bf",
+      "source": "skills/last30days/scripts/lib/service_intelligence_contracts.py"
+    },
+    {
+      "path": "scripts/lib/service_job_runner.py",
+      "sha256": "9906b69a6d924a2f8728cb5c0a95ffda54289af43f958def2152b6c37b28f687",
+      "source": "skills/last30days/scripts/lib/service_job_runner.py"
+    },
+    {
+      "path": "scripts/lib/service_knowledge.py",
+      "sha256": "b0aecd40e5036c19d22349f5b0d896443f88850e04f9e4fa49157ba6a9a0921c",
+      "source": "skills/last30days/scripts/lib/service_knowledge.py"
+    },
+    {
+      "path": "scripts/lib/service_profiles.py",
+      "sha256": "24a074ecdc8d66918446b889bd8a70261bd1f4eb97d9c936f00cc26c9791624c",
+      "source": "skills/last30days/scripts/lib/service_profiles.py"
+    },
+    {
+      "path": "scripts/lib/service_publication.py",
+      "sha256": "eb448e2d0c8a3dc040a67efb3fd4e8db015559923b298aa73585f1cfe7c1d30a",
+      "source": "skills/last30days/scripts/lib/service_publication.py"
+    },
+    {
+      "path": "scripts/lib/service_refresh.py",
+      "sha256": "a764e3b59f78ef03fae3512a3913c8bf7315075ce28a8a02b7e5490531680f09",
+      "source": "skills/last30days/scripts/lib/service_refresh.py"
+    },
+    {
+      "path": "scripts/lib/service_retrieval.py",
+      "sha256": "3ca68df5d02a153a360c8993de359cd6a1b6c9f66815d5abe09b8c1a2617eeed",
+      "source": "skills/last30days/scripts/lib/service_retrieval.py"
+    },
+    {
+      "path": "scripts/lib/service_runtime.py",
+      "sha256": "fe80b7da9c4d5c1753682f5af16c1a5f60f6efaba63598e24ee6a829006ec341",
+      "source": "skills/last30days/scripts/lib/service_runtime.py"
+    },
+    {
+      "path": "scripts/lib/service_store.py",
+      "sha256": "9fbce62dcce6796525b4411259b467020ecaa7892fa6a83ceed95947e1e84908",
+      "source": "skills/last30days/scripts/lib/service_store.py"
+    },
+    {
+      "path": "scripts/lib/service_supervisor.py",
+      "sha256": "4bec6224d9cecb1a952a4349a0534be978440d8da2a7f64787bb004f9f711847",
+      "source": "skills/last30days/scripts/lib/service_supervisor.py"
+    },
+    {
+      "path": "scripts/lib/service_temporal.py",
+      "sha256": "f0a8558e3044359378069cd816b38097c76d1bf1e5ea27af9855470724310b29",
+      "source": "skills/last30days/scripts/lib/service_temporal.py"
+    },
+    {
+      "path": "scripts/lib/service_worker.py",
+      "sha256": "d6f83f0d8c8609705a96bb1aba0c2cc4b58a4151dd96be864d79399920be6183",
+      "source": "skills/last30days/scripts/lib/service_worker.py"
+    },
+    {
+      "path": "scripts/lib/setup_wizard.py",
+      "sha256": "997dff481e70a9b26720775abc9280898fe6d3964d434fd5e65d27ee36190799",
+      "source": "skills/last30days/scripts/lib/setup_wizard.py"
+    },
+    {
+      "path": "scripts/lib/signals.py",
+      "sha256": "0d2639da03de9ab5c91a10f3c26e7004026b3b903c95b0fe863b85b37c9ffc1f",
+      "source": "skills/last30days/scripts/lib/signals.py"
+    },
+    {
+      "path": "scripts/lib/skill_meta.py",
+      "sha256": "41502f6cccff432fe598af5e56c8fe1672f25155f39c07c4b08358a96cd83acd",
+      "source": "skills/last30days/scripts/lib/skill_meta.py"
+    },
+    {
+      "path": "scripts/lib/snippet.py",
+      "sha256": "6bd2143a4264fe11d5be1b805742336ab82397ae0293c13e8b5b3084bfa2612d",
+      "source": "skills/last30days/scripts/lib/snippet.py"
+    },
+    {
+      "path": "scripts/lib/subproc.py",
+      "sha256": "751a270a1f19bcf74719bd880883438c7d0d5b11a60fe8e74191094cd27da3ca",
+      "source": "skills/last30days/scripts/lib/subproc.py"
+    },
+    {
+      "path": "scripts/lib/threads.py",
+      "sha256": "8e14334c4bf316288c44c716aa275c2b79b4da8bbaffeabb656c5063804d7e49",
+      "source": "skills/last30days/scripts/lib/threads.py"
+    },
+    {
+      "path": "scripts/lib/tiktok.py",
+      "sha256": "fa52737cd3e2c3396fd46a55e457a636fdc8c040ac9c96ce097cb723eb050dd9",
+      "source": "skills/last30days/scripts/lib/tiktok.py"
+    },
+    {
+      "path": "scripts/lib/transcribe.py",
+      "sha256": "7268c5e463645cdb510cda079adf60d647c216661f5a96367e20fc904830b78f",
+      "source": "skills/last30days/scripts/lib/transcribe.py"
+    },
+    {
+      "path": "scripts/lib/truthsocial.py",
+      "sha256": "c5d08749028569fdd0462cca652a6505ff7db322ee2b39328661ee2bc659dc02",
+      "source": "skills/last30days/scripts/lib/truthsocial.py"
+    },
+    {
+      "path": "scripts/lib/ui.py",
+      "sha256": "7606e4175863bf7fee77c989d25ab4d5a27db2d409dad920a4ede6a9d3e8596d",
+      "source": "skills/last30days/scripts/lib/ui.py"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/LICENSE",
+      "sha256": "62316704df7426e5a79d2827ff8aca36e9abb3a73b8e68557030749ebefec667",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/LICENSE"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/bird-search.mjs",
+      "sha256": "584482e894c38bbde7a915013f741974fa8ea722ac34c56704dccf184f7c3d56",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/bird-search.mjs"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/lib/cookies.js",
+      "sha256": "66044440cef3d3b3e3136091b6e224051e8ff97fb1d156f40ccf2d4f3cf203ae",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/lib/cookies.js"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/lib/features.json",
+      "sha256": "36361f4cae0040255f84709459ebb1f0131566a567269ed7b99d073cad930f66",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/lib/features.json"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/lib/paginate-cursor.js",
+      "sha256": "5f20227de1d68250ad59b7ad593db4bfb1d0f1a21694963eab3ed413c2d0d5c0",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/lib/paginate-cursor.js"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/lib/query-ids.json",
+      "sha256": "eba47a9d26f87d0b4eb8a4f554833ed8d11b3d8728e363deeae702d09f87fc02",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/lib/query-ids.json"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/lib/runtime-features.js",
+      "sha256": "f41614d62b6c91dfc85fc4af389e6f49435324bf26460b715a991486609579d8",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/lib/runtime-features.js"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/lib/runtime-query-ids.js",
+      "sha256": "0f5c61dbaad3de7fb44a14c57ed005228e51f9fc361472eff59bff4cb2a1199e",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/lib/runtime-query-ids.js"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/lib/twitter-client-base.js",
+      "sha256": "ea972b7894458e78edd1927d102a052ae45726a7c967b376ac7f5544f5b65499",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/lib/twitter-client-base.js"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/lib/twitter-client-constants.js",
+      "sha256": "27bd1416ff1f5d4f4516d784a8fb9ee08a87413f07b375752821a32e5b0cd6e3",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/lib/twitter-client-constants.js"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/lib/twitter-client-features.js",
+      "sha256": "4b4f2048069f751a821777cb2084f3b9126d99a958494fef71f0699d8145c4dd",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/lib/twitter-client-features.js"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/lib/twitter-client-search.js",
+      "sha256": "3dfbe18ea54215d9a6393ff0884d9977dd9ddf0884a06486bdaee8a4e30d4616",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/lib/twitter-client-search.js"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/lib/twitter-client-types.js",
+      "sha256": "6450f74c664db958d703e09288184ef1ca5f622782f9e11a5a9bfa3d3c78c534",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/lib/twitter-client-types.js"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/lib/twitter-client-utils.js",
+      "sha256": "b230db5583760ccd0b5b5fb1592f449a7d0bc92f6184808e8ffb6f8968df20e9",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/lib/twitter-client-utils.js"
+    },
+    {
+      "path": "scripts/lib/vendor/bird-search/package.json",
+      "sha256": "96b65305969a179ee7a7735f1b475599d6035f32fda1fd030ea57ee09380cdb5",
+      "source": "skills/last30days/scripts/lib/vendor/bird-search/package.json"
+    },
+    {
+      "path": "scripts/lib/web_fetch_keyless.py",
+      "sha256": "3cc82640488812026009d5993b0aef6e04b54d1a9ade0773bd7c2310f9833d00",
+      "source": "skills/last30days/scripts/lib/web_fetch_keyless.py"
+    },
+    {
+      "path": "scripts/lib/web_search_keyless.py",
+      "sha256": "fceea8c9eaf84d45c0295f739424612c07ebdb4f61c28e82ac2fd68b9fdc08d2",
+      "source": "skills/last30days/scripts/lib/web_search_keyless.py"
+    },
+    {
+      "path": "scripts/lib/x_browser.py",
+      "sha256": "6cb375adc7c1c5763eb6018140e2555a07c89022b3f04c955ed751f3b7b3d52e",
+      "source": "skills/last30days/scripts/lib/x_browser.py"
+    },
+    {
+      "path": "scripts/lib/xai_x.py",
+      "sha256": "6cc244293ed6ea3b0f78a6515b583ff36da96ad30acf1d5457278ab020f1bd47",
+      "source": "skills/last30days/scripts/lib/xai_x.py"
+    },
+    {
+      "path": "scripts/lib/xiaohongshu_api.py",
+      "sha256": "c7a29dfa03f871993dc13a8ad528beed8a648102404b658242ca57878077ef60",
+      "source": "skills/last30days/scripts/lib/xiaohongshu_api.py"
+    },
+    {
+      "path": "scripts/lib/xquik.py",
+      "sha256": "7c487cb2ba543ff12e38ec6466a2de6ff6762ccd415c1f07093620b49137681a",
+      "source": "skills/last30days/scripts/lib/xquik.py"
+    },
+    {
+      "path": "scripts/lib/xurl_x.py",
+      "sha256": "5fd11f35c7d53b1c1ebf6c2e09b9b544535d5fbe687d39db43682f8ba05f6336",
+      "source": "skills/last30days/scripts/lib/xurl_x.py"
+    },
+    {
+      "path": "scripts/lib/youtube_media.py",
+      "sha256": "c7c656a2bb5fb5117ad8a237030241a41600edb21c3e043fb65de28b59049c0b",
+      "source": "skills/last30days/scripts/lib/youtube_media.py"
+    },
+    {
+      "path": "scripts/lib/youtube_yt.py",
+      "sha256": "7fdf2884fe39282d4b433fe2b8a5dc00b8f942bb7cea89d3ab0a6627fc7c1b7c",
+      "source": "skills/last30days/scripts/lib/youtube_yt.py"
+    },
+    {
+      "path": "scripts/service.py",
+      "sha256": "50b616b76b85a119e35682772e666f413c57d2c19c7920c0a5893ca6e846bfd0",
+      "source": "skills/last30days/scripts/service.py"
+    },
+    {
+      "path": "scripts/store.py",
+      "sha256": "0410e2a2e7c028a676c91ef8ab0f61d78e90c3eaeaea950095c5561f9e6f0ce3",
+      "source": "skills/last30days/scripts/store.py"
+    }
+  ],
+  "format": "last30days-service-runtime-v1",
+  "hash_algorithm": "sha256",
+  "service_version": "0.2.7"
+}
