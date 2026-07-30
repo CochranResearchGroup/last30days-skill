@@ -1596,3 +1596,69 @@ Next action:
 
 - stop and request explicit user authority for one new public selector/source
   attempt; do not publish `v4.0.0` or reinterpret zero yield as acceptance.
+
+### Checkpoint P0018-C14 | 2026-07-30
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `terminal zero-yield blocker -> diagnosed, awaiting explicit retry authority`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Read-only diagnosis:
+
+- the terminal run's acquisition
+  `work-ae5f9c10db00172e6933c1122ee2357a` is a successful empty Reddit result,
+  not an adapter, budget, validation, or publication failure;
+- the public Reddit path returns an empty successful acquisition when keyless
+  discovery and the requested date filter yield no posts and no configured
+  backup source returns items;
+- the same installed service acquired three public Reddit items for
+  `temporal knowledge graphs` at 2026-07-29T12:38Z with the same three-item,
+  24-hour, 50-request, one-dollar, 120-second work envelope;
+- the current public Reddit corpus contains three 2026-07-28/29 documents from
+  that selector, so it is the narrowest source-backed successor candidate;
+- the existing connected MCP process still reports the already-documented
+  stale-binary compatibility failure. The accepted fresh-stdio MCP proof
+  remains the installed-client authority; this diagnosis used direct
+  read-only service/database receipts.
+
+Proposed successor packet:
+
+- requires explicit user authority before any live write;
+- create distinct collection ID
+  `p0018-final-public-collection-v2`, source/profile/access Reddit,
+  `default`, public, selector `temporal knowledge graphs`;
+- preserve the prior bounds: one 3,600-second initially due boundary, three
+  items, 24-hour lookback, 50 network requests, one dollar, 120 seconds,
+  durable retention, and `assessment_enabled=false`;
+- disconnect after creation, allow exactly one service-owned scheduled run,
+  then pause immediately;
+- stop on zero yield, no document/version/index advance, any second run,
+  non-public evidence, budget escape, model/task growth, or failure to pause;
+- only a positive indexed yield may proceed to the second independent review.
+
+Current state:
+
+- `p0018-final-public-collection` remains paused at revision 2;
+- no second acquisition, collection mutation, refresh, model call, review, tag,
+  or release action ran;
+- Plan 0018 and P07 remain `OPEN`; the release gate remains closed.
+
+Graphiti write status:
+
+- provider readiness passed;
+- the compact blocker diagnosis and successor proposal queued as job
+  `779ab4a7-5532-437c-afc7-90d6ff38ae42` in
+  `last30days_skill_main`.
+
+Next action:
+
+- await explicit user authority for the proposed one-attempt successor packet;
+  without it, preserve the paused runtime and unpublished release.

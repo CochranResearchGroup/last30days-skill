@@ -783,9 +783,12 @@ Active Plan:
 
 Next Bounded Action:
 
-- Stop at Plan 0018's `zero_yield_no_index_change` hard bound. With explicit
-  user authority, derive one new bounded public selector/source attempt;
-  otherwise keep P07 open and the `v4.0.0` release gate closed.
+- Stop at Plan 0018's `zero_yield_no_index_change` hard bound. Read-only
+  diagnosis identifies `temporal knowledge graphs` as the strongest
+  same-envelope public Reddit successor because it yielded three items on
+  2026-07-29. With explicit user authority, run the distinct one-attempt
+  successor packet frozen at checkpoint P0018-C14; otherwise keep P07 open and
+  the `v4.0.0` release gate closed.
 
 ## Goal-Compatible Plan Conversion
 

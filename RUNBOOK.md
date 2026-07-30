@@ -4304,3 +4304,76 @@ Next Bounded Action:
 
 - request explicit user authority for one new bounded public selector/source
   attempt; without it, stop and keep the release unpublished.
+
+## Turn 65 | 2026-07-30
+
+Focus: diagnose the authorized remediation's zero yield read-only and freeze a
+source-backed successor proposal without mutating the live collection state.
+
+Authority Consulted:
+
+- Plan 0018 checkpoint P0018-C13 and its one-attempt hard stop
+- live service 0.2.9 collection, acquisition, job-event, document, and index
+  receipts
+- CodeGraph-indexed Reddit acquisition and keyless date-filter paths
+- the accepted installed-transition proof for the known stale connected MCP
+  process
+- planning, CodeGraph, Graphiti, validation, documentation, Git, and closeout
+  policies
+
+Decisions And Changes:
+
+- Classified the zero yield as a successful empty public Reddit acquisition,
+  not an adapter, budget, validation, or publication error.
+- Identified `temporal knowledge graphs` as the narrowest evidence-backed
+  successor selector: it yielded three public items at 2026-07-29T12:38Z under
+  the same three-item, 24-hour, 50-request, one-dollar, 120-second envelope.
+- Froze a distinct proposed collection ID
+  `p0018-final-public-collection-v2` so the paused revision-2 acceptance spec
+  is not reused or resumed.
+- Preserved the prior single-run, assessment-disabled, public-only bounds and
+  added zero-yield/no-index-advance as terminal stops.
+- Did not create, resume, run, or refresh a collection and did not initiate an
+  independent review, tag, or release.
+
+Validation Evidence:
+
+- run `collection-run-9b89ae5e489d3e473a7a4d1794701c7b` remains one
+  `published` attempt, public, with no error;
+- acquisition `work-ae5f9c10db00172e6933c1122ee2357a` reports
+  `status=succeeded`, `item_count=0`, and query `OpenClaw`;
+- its ten job events show one queue/lease/acquire/normalize/index/validate/
+  publish sequence and unchanged published index
+  `index-4f096317e15c57da386466f2`;
+- current public Reddit corpus has 19 documents through 2026-07-29;
+  `temporal knowledge graphs` produced three items in a matching bounded work
+  request at 2026-07-29T12:38Z;
+- live `last30days.service` is active/running and the original spec remains
+  disabled at revision 2;
+- the connected MCP incompatibility is the previously documented retained
+  process, while the accepted fresh-stdio 4.0.1 proof remains unchanged.
+
+State Movement:
+
+- Plan 0018 checkpoint:
+  `terminal zero-yield blocker -> diagnosed, awaiting explicit retry authority`;
+- progress classification: `blocker_reduction`;
+- Plan 0018 and P07 remain `OPEN`; `v4.0.0` remains unpublished.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one.
+
+Graphiti Write Status:
+
+- provider readiness passed;
+- the compact blocker diagnosis and successor proposal queued as job
+  `779ab4a7-5532-437c-afc7-90d6ff38ae42` in
+  `last30days_skill_main`.
+
+Next Bounded Action:
+
+- await explicit user authority for one autonomous public Reddit interval using
+  `p0018-final-public-collection-v2` and selector
+  `temporal knowledge graphs`; without it, preserve the paused runtime and
+  closed release gate.
