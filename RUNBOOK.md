@@ -4167,3 +4167,78 @@ Next Bounded Action:
 
 - execute S07-A: apply Skill 4.0.0, MCP 4.0.1, service 0.2.9, deterministic
   client stamping, version drift tests, and migration/release documentation.
+
+## Turn 63 | 2026-07-30
+
+Focus: execute S07 source/package/installed transition, then reconcile the
+first independent final-review rejection into one bounded remediation.
+
+Authority Consulted:
+
+- Plan 0018 S07 versions, four execution slices, state-preservation hard stops,
+  final review and release gates
+- release workflow, service/MCP/Skill builders, independent installer,
+  installed schema-12 database, MCP registration, versioning, validation,
+  roadmap/runbook, Git, and closeout policies
+- independent evaluator session
+  `019fb160-4f1a-7c51-9bb2-0f0d121d64c1`
+
+Decisions And Changes:
+
+- Released source identities as Skill 4.0.0, MCP 4.0.1, service 0.2.9 and
+  stamped MCP builds from its own manifest version.
+- Removed source credentials from the Gemini client manifest and documented
+  service-first migration, incompatibility diagnosis, deprecation, and
+  rollback.
+- Built and inspected the service, Skill, MCP binary, and Linux MCPB.
+- Upgraded the live service once, installed MCP once, rolled back to 0.2.7
+  once, and restored 0.2.9 through the deliberate second swap.
+- Preserved the installed transition proof in `04eec13`.
+- Kept the `v4.0.0` tag absent after the independent evaluator returned
+  `REJECT`.
+- Accepted its two missing-outcome findings and authority-drift finding;
+  derived one public, assessment-disabled, service-scheduled interval as the
+  sole remediation.
+
+Validation Evidence:
+
+- full Python suite passed after version/lifecycle reconciliation; all Go
+  tests, vet, and generated-contract drift passed;
+- artifacts: service
+  `2c4763fc94541883bdc747d66c0b7cfc0414da6dd2b9e6330335d0ef8ddf52e8`,
+  Skill `a7f0621837834e190fe22c885693f02ddfd07cbbd4f8aafe46546929e848d19d`,
+  MCP binary
+  `feb39182eb42ac426565b95b159ed53e336f671440f90b4f8b0be0ec88686456`,
+  MCPB `b9832543c65821fc8c5cd355dc07fa6533ce5350c63a116d2f6b8f154827b31d`;
+- fresh stdio MCP reports ten tools, service 0.2.9, adapter 4.0.1,
+  `compatible`, schema 12, and exact contract/runtime digests;
+- the OpenClaw cache-only query returned the same four citations and no job at
+  0.2.9, rollback 0.2.7, and restored 0.2.9;
+- database integrity, selected counts, configuration/unit hashes, index
+  identity, and inactive timer state were unchanged;
+- the evaluator passed seven criteria and rejected two missing live yield
+  proofs plus canonical authority drift.
+
+State Movement:
+
+- Plan 0018 S07: `packet ready -> source/install/rollback accepted`;
+- final outcome review: `pending -> rejected`;
+- Plan 0018 and P07 remain `OPEN`; release gate remains closed.
+
+Subagent Status And Reconciliation:
+
+- independent read-only evaluator session
+  `019fb160-4f1a-7c51-9bb2-0f0d121d64c1` completed with `REJECT`;
+- the primary agent accepted its findings; the only remediation is one
+  deterministic public-source yield packet plus authority reconciliation.
+
+Graphiti Write Status:
+
+- `not_attempted_for_rejected_outcome`;
+- no rejected outcome was recorded as durable success.
+
+Next Bounded Action:
+
+- execute collection `p0018-final-public-collection` for one 3,600-second
+  public Reddit interval with assessment/App Intelligence disabled, pause it,
+  prove quiescence and cache yield, then request the second final review.

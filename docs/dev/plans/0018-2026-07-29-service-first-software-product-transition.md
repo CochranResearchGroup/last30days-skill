@@ -58,10 +58,13 @@ software with:
   least-privilege ten-operation MCP client, privileged guidance is split into
   capability-gated references, and the packaged direct Engine remains only as
   an explicitly approved compatibility/debug path.
-- Canonical isolated MCP integration completes cache-only queries, while the
-  installed MCP currently fails closed with `local service contract is
-  incompatible`; S07 owns the corrected versioned release, installed
-  compatibility proof, and rollback.
+- S07 source/install/rollback is accepted at `04eec13`: service 0.2.9 and MCP
+  4.0.1 are installed and compatible, the same cache-only citations survive
+  rollback and restored-forward operation, and schema-12 state is unchanged.
+- The first independent final review rejected release because autonomous
+  governed acquisition/indexing with all stochastic workers disabled remains
+  unproved; the exact one-interval remediation packet below is now the only
+  remaining outcome work.
 
 ## User Experience Contract
 
@@ -1410,3 +1413,119 @@ Next action:
 
 - execute S07-A: apply the frozen independent versions, deterministic MCP
   stamping, runtime manifest, drift tests, and migration/release documentation.
+
+## Final Review Remediation Packet | Autonomous Deterministic Yield
+
+Trigger:
+
+- the first independent final review rejected release because the original
+  acceptance lacked proof that governed acquisition and indexing continue with
+  no agent connected and all stochastic workers disabled;
+- the review also found that Plan 0018, P07, and the Runbook had not yet been
+  reconciled with the completed S07 source/install/rollback outcome.
+
+Outcome:
+
+- prove one new bounded public Reddit collection interval is scheduled,
+  acquired, published, and indexed by service 0.2.9 after the initiating
+  client disconnects, with assessment and all App Intelligence execution
+  disabled;
+- pause the acceptance specification, prove quiescence and cache retrieval,
+  reconcile canonical authorities, and rerun the independent final review.
+
+### Exact live packet
+
+- collection ID: `p0018-final-public-collection`;
+- source/profile/redaction: Reddit, `default`, public;
+- selector: topic `OpenClaw`;
+- interval: 3,600 seconds, one initially due boundary only;
+- bounds: three items, 24-hour lookback, 50 network requests, one dollar,
+  120 seconds, durable retention;
+- `assessment_enabled=false`;
+- create one enabled revision, disconnect the initiating client, let the
+  resident service own execution, then pause immediately after its sole
+  terminal run.
+
+### Bounds and hard stops
+
+- one implementation/review remediation cycle; no second source or retry;
+- one specification, one revision to enable, one scheduled run, one pause
+  revision, zero service restarts, zero refresh requests, zero model calls;
+- active-agent concurrency: 1;
+- stop on more than one run, non-public evidence, acquisition/model/task budget
+  escape, source failure, database integrity failure, inability to pause,
+  post-pause run growth, or missing citation-ready cache output;
+- a typed failure leaves the specification disabled and the release gate
+  closed.
+
+### Acceptance
+
+- the service, not an attached agent process, owns the run from queued through
+  published/partial terminal state;
+- acquisition, document/version, evidence, active-index, coverage, and run
+  receipts identify the one public interval;
+- App Intelligence task/model-call counts do not change and assessment remains
+  disabled;
+- the paused revision is durable and the run count remains one after a
+  post-pause observation window;
+- cache-only retrieval returns citation-ready evidence without creating a job;
+- Plan 0018 Current State/checkpoint, ROADMAP P07, and the latest RUNBOOK turn
+  reflect S07 and remediation truth before the second independent judgment.
+
+### Checkpoint P0018-C12 | 2026-07-30
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `S07 packet ready -> source/install/rollback accepted; final review rejected`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Accepted evidence:
+
+- release source commit `ec92991` carries Skill 4.0.0, MCP 4.0.1, service
+  0.2.9, independent build stamping, regenerated runtime manifest, tests, and
+  migration/deprecation documentation;
+- service, Skill, MCP binary, and Linux MCPB artifacts built and passed package
+  inspection;
+- installed transition proof commit `04eec13` records ready compatible 0.2.9,
+  exact ten-tool and four-citation cache-only results, 0.2.7 rollback and
+  0.2.9 restore, schema/integrity/count/config/index preservation, and no
+  acquisition or job creation.
+
+Independent review result:
+
+- `REJECT`; release tag creation remains prohibited;
+- accepted seven of nine Plan criteria;
+- rejected autonomous governed collection and all-stochastic-disabled
+  acquisition/indexing evidence;
+- also rejected stale Plan/ROADMAP/RUNBOOK descriptions.
+
+Remaining acceptance criteria:
+
+- execute the exact remediation packet above;
+- reconcile all three canonical authorities;
+- receive `ACCEPT` from the second and final independent review before tag
+  creation.
+
+Subagent status and reconciliation:
+
+- independent evaluator session
+  `019fb160-4f1a-7c51-9bb2-0f0d121d64c1` completed read-only with `REJECT`;
+- the primary agent accepts all three findings and narrows remediation to one
+  deterministic public-source proof plus authority reconciliation.
+
+Graphiti write status:
+
+- `not_attempted_for_rejected_outcome`;
+- no incomplete or rejected plan outcome is written as durable success.
+
+Next action:
+
+- execute the one-spec/one-interval autonomous public collection proof; stop
+  fail-closed on its first typed failure.

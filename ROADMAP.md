@@ -739,9 +739,9 @@ Current State:
 - S06 is accepted at `ac76e2b`: the primary Skill is a 137-line MCP client,
   privileged guidance is capability-gated, and the direct Engine remains an
   explicit compatibility/debug path.
-- The installed MCP currently fails closed on its stale service contract; S07
-  owns the corrected versioned release, installed acceptance, migration, and
-  rollback proof.
+- S07 installed the corrected service 0.2.9/MCP 4.0.1 pair and proved
+  migration plus rollback, but final release review remains rejected pending
+  one autonomous deterministic-yield proof.
 
 Goal Seeds:
 
@@ -780,9 +780,10 @@ Active Plan:
 
 Next Bounded Action:
 
-- Execute Plan 0018 S07-A using the frozen Skill 4.0.0, MCP 4.0.1, and service
-  0.2.9 versions; then validate packages before the bounded installed
-  upgrade/MCP/rollback acceptance.
+- Execute Plan 0018's final-review remediation: one public Reddit
+  service-scheduled interval with assessment/App Intelligence disabled,
+  followed by durable pause, quiescence, authority reconciliation, and the
+  second independent review.
 
 ## Goal-Compatible Plan Conversion
 
