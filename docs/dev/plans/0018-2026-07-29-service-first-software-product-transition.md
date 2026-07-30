@@ -473,3 +473,69 @@ Next action:
 
 - execute S01-A: add the independent version and runtime-manifest boundary with
   reproducible artifact and package-boundary tests.
+
+### Checkpoint P0018-C02 | 2026-07-29
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `S01-A ready -> S01-A complete`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- commit `1a32e61` adds service-owned semantic version `0.2.7`;
+- `service/runtime-manifest.json` now owns the canonical file-level SHA-256
+  allowlist for the current service, acquisition-library, vendored Bird, and
+  schema payload;
+- `service/scripts/build-runtime.sh` verifies that manifest and emits a
+  normalized reproducible `last30days-service-<version>.tar.gz`;
+- package-boundary tests prove manifest drift fails closed, two builds are
+  byte-identical, the extracted runtime starts, and Skill prose plus setup and
+  install scripts do not enter the service artifact.
+
+Validation evidence:
+
+- 11 focused runtime-package, service-process, service-install, and
+  Skill-artifact tests passed;
+- the independent artifact digest was
+  `bf7b1a0b5b561c911db645f1a152aa9cd4004087969c41c8349bc35c21c0f965`;
+- the extracted runtime returned service help from its independent tree;
+- the plan-authority audit passed with Plan 0018 as the sole active plan;
+- CodeGraph synchronized with no pending changes and `git diff --check`
+  passed.
+
+Remaining acceptance criteria:
+
+- execute S01-B, S02-A, S02-B, and the installed migration/rollback proof;
+- then execute the remaining Plan 0018 workstreams and acceptance packets
+  without treating this first artifact boundary as plan completion.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; packet concurrency remains fixed at one and S01-A's builder,
+  manifest, and boundary tests shared one tightly coupled write surface;
+- the primary agent performed the bounded implementation and validation
+  review; independent final outcome review remains required before packet
+  closeout.
+
+Graphiti write status:
+
+- `graphiti_write_pending`;
+- job `2c6e899b-b6e8-4442-a105-7b375476316f` timed out after its single
+  180-second attempt while resolving nodes, and exact episode lookup returned
+  no visible match;
+- intended episode: commit `1a32e61` completed S01-A with the verified
+  independent artifact boundary and S01-B is next.
+
+Next action:
+
+- execute S01-B: add the versioned release installer, stable managed unit,
+  readiness receipt, atomic upgrade/rollback and release retention with
+  isolated fake-user-manager lifecycle tests.

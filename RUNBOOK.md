@@ -3460,3 +3460,70 @@ Next Bounded Action:
 
 - execute Plan 0018 S01-A: add the service version, runtime allowlist and
   manifest, reproducible independent artifact, and package-boundary tests.
+
+## Turn 53 | 2026-07-29
+
+Focus: complete Plan 0018 S01-A's independent service runtime artifact
+boundary.
+
+Authority Consulted:
+
+- Plan 0018's frozen S01/S02 package ownership, bounds, validation, and packet
+  acceptance
+- ROADMAP P07 and the current service, installer, schema, and acquisition
+  dependency surfaces
+- current planning, goal, CodeGraph, Git, versioning, validation,
+  documentation, Graphiti, and closeout policies
+
+Decisions And Changes:
+
+- Added `service/VERSION` as the service release-version authority at `0.2.7`.
+- Added a canonical file-level SHA-256 manifest for only the current service
+  entrypoint, durable store, service/acquisition library tree, vendored Bird
+  runtime, and service schema.
+- Added a deterministic builder that fails closed on payload or manifest drift
+  and normalizes path order, timestamps, ownership, modes, tar metadata, and
+  gzip metadata.
+- Proved the extracted artifact starts without `SKILL.md`, the Skill installer,
+  setup scripts, or other Skill-only material.
+- Moved no Python implementation module and changed no installed runtime,
+  database, timer, browser, or acquisition state.
+
+Validation Evidence:
+
+- commit `1a32e61` contains the S01-A implementation and tests;
+- 11 focused runtime-package, service-process, service-install, and
+  Skill-artifact tests passed;
+- two independent builds were byte-identical;
+- the extracted runtime returned its service help successfully;
+- artifact SHA-256:
+  `bf7b1a0b5b561c911db645f1a152aa9cd4004087969c41c8349bc35c21c0f965`;
+- the plan-authority audit passed with Plan 0018 as the sole active plan;
+- CodeGraph synchronized with no pending changes and `git diff --check`
+  passed.
+
+State Movement:
+
+- Plan 0018 S01-A: `ready -> complete`;
+- Plan 0018 and P07 remain `OPEN`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one and the
+  manifest, builder, and package-boundary test edits were tightly coupled;
+- independent final outcome review remains required before packet closeout.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`;
+- job `2c6e899b-b6e8-4442-a105-7b375476316f` timed out after its single
+  180-second attempt while resolving nodes;
+- exact readback found no visible episode;
+- intended compact receipt: commit `1a32e61` completes Plan 0018 S01-A's
+  verified independent artifact boundary and S01-B is the next bounded action.
+
+Next Bounded Action:
+
+- execute Plan 0018 S01-B: add versioned install/upgrade/readiness/rollback and
+  release retention through the stable managed user unit, covered by isolated
+  fake-user-manager lifecycle tests.
