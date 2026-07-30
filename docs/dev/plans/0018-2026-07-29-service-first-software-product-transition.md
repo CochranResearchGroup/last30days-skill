@@ -770,3 +770,84 @@ Next action:
   snapshot durable and service state, install the independent release through
   the managed path, prove unit/socket/version and all ten MCP operations,
   restart, roll back once, and prove state invariants unchanged.
+
+### Checkpoint P0018-C06 | 2026-07-29
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `migration proof ready -> first S01/S02 packet accepted`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes and live outcome:
+
+- commit `462ca42` preserves the sanitized machine-readable receipt at
+  `docs/dev/notes/0018-installed-service-migration-proof.json`;
+- the live legacy Skill-executed service was stopped only after a coherent
+  schema-12, integrity, daemon, unit, timer, configuration, and logical
+  database baseline was captured;
+- independent release 0.2.7 installed through the managed transaction and the
+  live unit now resolves through
+  `.local/share/last30days/service/last30days-service`, not
+  `.agents/skills`;
+- restart changed the main PID, restored exact readiness, and retained exactly
+  one daemon;
+- a fresh stamped MCP client listed all ten operations, reported a compatible
+  service/API/schema/runtime handshake, and returned the same evidence-backed
+  cache-only query;
+- one source-equivalent temporary 0.2.8 artifact upgraded successfully and
+  deliberate rollback restored 0.2.7 readiness, leaving 0.2.8 as the managed
+  previous target.
+
+Validation evidence:
+
+- database integrity remained `ok`, schema remained 12, and the complete
+  logical database SHA-256 was identical before and after:
+  `004586df10a6c93ac9f633d003ac40a97eb6ef1dd5a9a12d5cfc833d27c4d95f`;
+- document, version, index, job, job-event, collection-spec,
+  schedule-state, collection-run, attempt, and Graphiti-outbox counts were
+  identical;
+- owner configuration SHA-256 remained
+  `7b32076759f0e743838249a88ba30efbe4c26003d59059bae3c86265a468619f`;
+- no last30days timer unit existed before or after the proof;
+- final state is active service 0.2.7, `current -> releases/0.2.7`,
+  `previous -> releases/0.2.8`, one daemon, compatible MCP, and no hard-stop
+  violation;
+- the private ephemeral database backup and temporary proof fixtures were
+  removed after the committed receipt and successful invariant comparison.
+
+Remaining acceptance criteria:
+
+- execute the Plan 0015 temporal retrieval/GraphRAG resilience packet;
+- execute the Plan 0016 App Intelligence authority packet;
+- complete S06 client-Skill redesign and S07 compatibility/release transition,
+  then run an independent final outcome review before closing Plan 0018/P07.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one and the live
+  baseline/install/restart/MCP/upgrade/rollback sequence was one ordered state
+  transaction;
+- the primary agent performed the live proof and invariant comparison;
+  independent final outcome review remains required before Plan 0018 closeout.
+
+Graphiti write status:
+
+- `graphiti_write_pending`;
+- the next provider preflight passed, but the single allowed job
+  `5a150399-0e46-4f59-8606-e3ae99b00021` timed out after 180 seconds while
+  resolving nodes, and exact episode lookup returned no visible match;
+- intended episode: commits `ae79e56` and `462ca42` completed S02-B and the
+  installed first-packet migration proof without state loss; Plan 0015 is next.
+
+Next action:
+
+- execute Plan 0015 R01: snapshot current job, index, projection, evidence, and
+  provider state for the one bounded temporal retrieval/GraphRAG resilience
+  packet under Plan 0018.

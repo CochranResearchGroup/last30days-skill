@@ -3740,3 +3740,79 @@ Next Bounded Action:
   schema-12 service and durable state, install and restart the independent
   release, query through all ten MCP operations, roll back once, and prove the
   required state invariants unchanged.
+
+## Turn 57 | 2026-07-29
+
+Focus: accept Plan 0018's first S01/S02 packet through installed migration,
+restart, MCP, upgrade, and rollback proof.
+
+Authority Consulted:
+
+- Plan 0018's migration-proof steps, validation, packet acceptance, hard stops,
+  and remaining workstream sequence
+- the live systemd user unit, exact daemon command, Unix socket,
+  service-info/MCP handshake, release selectors, readiness receipts, timer
+  inventory, schema-12 database, and owner configuration digests
+- current planning, runtime, validation, documentation, Graphiti, and closeout
+  policies
+
+Decisions And Changes:
+
+- Captured a private stopped-service database backup and sanitized logical
+  state baseline before the first live independent install.
+- Installed release 0.2.7 through the managed transaction and replaced the
+  unit's Skill path with the independent stable launcher.
+- Proved a clean managed restart, one daemon, exact readiness, compatible
+  client/service facts, all ten MCP operations, and an evidence-backed
+  cache-only query.
+- Built one temporary source-equivalent 0.2.8 proof artifact, upgraded to it,
+  and deliberately rolled back to ready 0.2.7.
+- Preserved the machine receipt in commit `462ca42`, pushed to `origin/main`.
+- Removed the private ephemeral backup, temporary 0.2.8 source fixture, and
+  proof binary after the committed receipt and successful comparison.
+
+Validation Evidence:
+
+- live unit `ExecStart` resolves through
+  `.local/share/last30days/service/last30days-service` and contains no
+  `.agents/skills` path;
+- restart changed the main PID and exactly one service daemon remained;
+- MCP listed the exact ten-tool catalog and reported compatible product,
+  service API 1, schema 12, service 0.2.7, and the loaded runtime digest;
+- upgrade to 0.2.8 and rollback to 0.2.7 both returned exact readiness;
+- full logical database SHA-256 remained
+  `004586df10a6c93ac9f633d003ac40a97eb6ef1dd5a9a12d5cfc833d27c4d95f`,
+  integrity remained `ok`, and all tracked corpus/job/schedule/outbox counts
+  were unchanged;
+- configuration SHA-256 remained
+  `7b32076759f0e743838249a88ba30efbe4c26003d59059bae3c86265a468619f`;
+- no last30days timer existed before or after; no hard stop fired.
+
+State Movement:
+
+- Plan 0018 first S01/S02 packet: `OPEN -> ACCEPTED`;
+- Plan 0018 and P07 remain `OPEN`;
+- Plan 0015 is the next planned acceptance packet under Plan 0018 authority.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the live proof was one ordered state transaction under the
+  plan's concurrency-one constraint;
+- independent final outcome review remains required before Plan 0018 closeout.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`;
+- provider readiness recovered, but job
+  `5a150399-0e46-4f59-8606-e3ae99b00021` timed out after its single
+  180-second attempt while resolving nodes;
+- exact readback found no visible episode;
+- intended compact receipt: commits `ae79e56` and `462ca42` completed S02-B
+  and the installed first-packet migration proof without state loss; Plan 0015
+  R01 is next.
+
+Next Bounded Action:
+
+- execute Plan 0015 R01 under Plan 0018: snapshot current job, index,
+  projection, evidence, and provider state before the single bounded temporal
+  retrieval/GraphRAG resilience packet.
