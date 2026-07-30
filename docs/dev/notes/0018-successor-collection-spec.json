@@ -1,0 +1,22 @@
+{
+  "assessment_enabled": false,
+  "budget_cents": 100,
+  "collection_spec_id": "p0018-final-public-collection-v2",
+  "enabled": true,
+  "interval_seconds": 3600,
+  "item_limit": 3,
+  "lookback_seconds": 86400,
+  "name": "Plan 0018 final public collection successor",
+  "network_request_limit": 50,
+  "profile_id": "default",
+  "redaction_class": "public",
+  "retention_class": "durable",
+  "schema_version": 1,
+  "selector": {
+    "topic": "temporal knowledge graphs"
+  },
+  "source": "reddit",
+  "spec_version": 1,
+  "surface_kind": "topic",
+  "wall_timeout_seconds": 120
+}

@@ -4444,3 +4444,70 @@ Next Bounded Action:
 
 - validate, commit, and push the authority-language correction, then execute
   the bounded successor without another approval request.
+
+## Turn 67 | 2026-07-30
+
+Focus: execute Plan 0018's one bounded public successor and stop fail-closed
+when its worker and collection terminal-state bounds fail.
+
+Authority Consulted:
+
+- Plan 0018 version 2 checkpoint P0018-C15
+- live service 0.2.9 collection, scheduler, supervisor, job, acquisition,
+  corpus, index, and database authorities
+- current installed/source worker, job-runner, lease-recovery, validation,
+  documentation, Graphiti, Git, and release policies
+
+Decisions And Changes:
+
+- Added and contract-validated the exact successor spec at
+  `docs/dev/notes/0018-successor-collection-spec.json`.
+- Enabled revision 1, disconnected the initiating command, and allowed the
+  resident daemon to schedule the 18:00Z interval.
+- Paused the spec as revision 2 at 19:00:12Z before another due poll could
+  schedule the 19:00Z boundary.
+- Did not restart the service, manually retry the job, create a second run,
+  enable assessment, invoke a model, run an evaluator, or create a release.
+- Classified installed/restart/third-live-attempt work as a real human gate
+  because the configured two-attempt live ceiling is now exhausted.
+
+Validation Evidence:
+
+- exact spec SHA-256:
+  `46d7afa418ee7171beaa649b5d82aa1b0ee5b2b5ec20a29cc16eb75a5305b5d8`;
+- exactly one timer run and one job; the job used two lease generations and
+  ended `failed/retry_exhausted`;
+- both lease attempts exceeded the 120-second worker wall bound without an
+  acquisition receipt;
+- the collection run and both attempt rows remained `acquiring` after the job
+  became terminal;
+- acquisitions stayed 66, documents 50, versions 57, evidence spans 419,
+  coverage 10, index versions 44, model calls 0, and intelligence tasks 2;
+- collection attempts advanced 14 to 16, runs 13 to 14, specs 3 to 4, jobs 50
+  to 51, and events 488 to 499;
+- revision 2 is disabled, the post-pause run count stayed one, service 0.2.9
+  remained ready, active index stayed
+  `index-4f096317e15c57da386466f2`, and database integrity is `ok`.
+
+State Movement:
+
+- Plan 0018:
+  `bounded successor ready -> terminal runtime-bound failure`;
+- progress classification: `regression`;
+- authority classification: `human_gate` for installed/restart/third-live
+  actions, while deterministic source repair retains standing authority;
+- Plan 0018 and P07 remain `OPEN`; release gates remain closed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one.
+
+Graphiti Write Status:
+
+- `pending_after_checkpoint_commit`.
+
+Next Bounded Action:
+
+- checkpoint and push the failed live proof, then diagnose and repair the
+  deterministic timeout/terminal-state defects without mutating the installed
+  runtime.

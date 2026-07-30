@@ -783,13 +783,13 @@ Active Plan:
 
 Next Bounded Action:
 
-- Stop at Plan 0018's `zero_yield_no_index_change` hard bound. Read-only
-  diagnosis identifies `temporal knowledge graphs` as the strongest
-  same-envelope public Reddit successor because it yielded three items on
-  2026-07-29. Checkpoint P0018-C15 classifies the distinct one-attempt
-  successor as inherited standing authority. Execute it under the unchanged
-  public-only bounds; keep the independent-review and `v4.0.0` release gates
-  closed until indexed yield is proven.
+- Checkpoint P0018-C16 records that the bounded successor exhausted both
+  internal leases without an acquisition receipt and left its failed job's
+  collection run incorrectly `acquiring`. Deterministic source diagnosis,
+  repair, tests, and a reviewable transition packet remain under standing
+  authority. Stop before installing/restarting the repaired daemon or running
+  a third live interval; those actions cross the exhausted live-attempt gate.
+  Keep independent review and `v4.0.0` closed until indexed yield is proven.
 
 ## Goal-Compatible Plan Conversion
 

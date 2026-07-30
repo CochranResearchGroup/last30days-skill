@@ -1774,3 +1774,85 @@ Next action:
 - execute `p0018-final-public-collection-v2` under inherited standing
   authority; do not ask for another approval unless a named boundary above
   changes.
+
+### Checkpoint P0018-C16 | 2026-07-30
+
+Plan version:
+
+- 2
+
+State transition:
+
+- `bounded successor ready -> terminal runtime-bound failure`
+
+Progress classification:
+
+- `regression`
+
+Authority classification:
+
+- `human_gate`;
+- the two-attempt live acceptance ceiling is exhausted;
+- deterministic diagnosis, source repair, tests, and a reviewable repair
+  packet remain under standing Plan 0018 authority;
+- installing or restarting a repaired daemon, changing the live ceiling, or
+  initiating a third acquisition interval crosses the exhausted-attempt and
+  runtime-mutation boundaries and requires explicit approval.
+
+Live outcome:
+
+- revision 1 of `p0018-final-public-collection-v2` enabled one public Reddit
+  topic interval for `temporal knowledge graphs` with assessment disabled;
+- after the initiating command disconnected, service 0.2.9 scheduled the
+  18:00Z boundary as timer run
+  `collection-run-765dce990e42275c8b949a861b08000d`;
+- both internal job leases exceeded the 120-second worker wall bound without
+  creating an acquisition receipt;
+- the supervisor recovered the first expired lease, exhausted the second, and
+  marked job `5a67717d-9fd0-4d8f-845a-6f37fb6fe813` failed with
+  `retry_exhausted`;
+- the collection run and both collection attempts incorrectly remained
+  `acquiring`, exposing a deterministic terminal-state propagation defect;
+- revision 2 paused the spec before the next due poll; one post-pause
+  observation confirmed one run, eleven job events, and no second interval.
+
+Hard-stop result:
+
+- `wall_timeout_exceeded_no_acquisition_receipt`;
+- acquisitions, documents, versions, evidence, coverage, and index versions
+  did not advance;
+- model calls and intelligence tasks stayed unchanged;
+- database integrity remained `ok`, service 0.2.9 remained ready, and the
+  active index stayed `index-4f096317e15c57da386466f2`;
+- the independent review, tag, and release gates remain closed.
+
+Durable evidence:
+
+- `docs/dev/notes/0018-successor-collection-spec.json`;
+- `docs/dev/notes/0018-successor-autonomous-yield-proof.json`.
+
+Remaining acceptance criteria:
+
+- repair worker-wall-bound completion so timeout produces a typed acquisition
+  result before the lease expires;
+- reconcile terminal job failure into terminal collection-run and attempt
+  states;
+- validate the repair deterministically and prepare an installed transition
+  with rollback;
+- obtain explicit approval before the repaired live install/restart and one
+  third acquisition interval;
+- only indexed public yield may proceed to independent final review.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active-agent concurrency remained one.
+
+Graphiti write status:
+
+- `pending_after_checkpoint_commit`.
+
+Next action:
+
+- checkpoint this failed live packet, then derive and execute one bounded
+  deterministic source-repair packet; stop before installed-runtime mutation
+  or a third live interval.
