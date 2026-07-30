@@ -299,7 +299,13 @@ exec {shlex.quote(str(python_bin))} "$current/scripts/service.py" "$@"
     atomic_write(launcher, content.encode("utf-8"), 0o755)
 
 
-def render_unit(repo_root: Path, unit_path: Path, launcher: Path, env_file: Path) -> None:
+def render_unit(
+    repo_root: Path,
+    unit_path: Path,
+    launcher: Path,
+    env_file: Path,
+    socket_path: Path,
+) -> None:
     template_path = repo_root / "service" / "systemd" / "last30days.service.in"
     try:
         template = template_path.read_text(encoding="utf-8")
@@ -307,8 +313,15 @@ def render_unit(repo_root: Path, unit_path: Path, launcher: Path, env_file: Path
         fail(f"unable to read managed unit template: {exc}")
     rendered = template.replace("@LAUNCHER@", systemd_quote(launcher)).replace(
         "@ENV_FILE@", systemd_escape_path(env_file)
+    ).replace(
+        "@SOCKET_ENV@",
+        "Environment="
+        + systemd_quote_value(f"LAST30DAYS_SERVICE_SOCKET={socket_path}"),
     )
-    if "@LAUNCHER@" in rendered or "@ENV_FILE@" in rendered:
+    if any(
+        placeholder in rendered
+        for placeholder in ("@LAUNCHER@", "@ENV_FILE@", "@SOCKET_ENV@")
+    ):
         fail("managed unit template contains unresolved placeholders")
     atomic_write(unit_path, rendered.encode("utf-8"), 0o600)
 
@@ -466,6 +479,7 @@ def main() -> None:
     parser.add_argument("--retain", type=int, default=2)
     parser.add_argument("--timeout", type=float, default=15.0)
     parser.add_argument("--systemctl", type=Path)
+    parser.add_argument("--socket", type=Path)
     args = parser.parse_args()
 
     if sys.version_info < (3, 12):
@@ -489,7 +503,17 @@ def main() -> None:
     current_link = service_root / "current"
     previous_link = service_root / "previous"
     receipt_path = service_root / "readiness.json"
-    socket_path = Path(runtime_home) / "last30days" / "service.sock"
+    socket_path = (
+        args.socket
+        or (
+            Path(os.environ["LAST30DAYS_SERVICE_SOCKET"])
+            if os.environ.get("LAST30DAYS_SERVICE_SOCKET")
+            else None
+        )
+        or Path(runtime_home) / "last30days" / "service.sock"
+    )
+    if not socket_path.is_absolute():
+        fail("service socket path must be absolute")
     unit_path = config_home / "systemd" / "user" / UNIT_NAME
     env_file = config_home / "last30days" / ".env"
     python_bin = Path(os.environ.get("LAST30DAYS_PYTHON", sys.executable)).resolve()
@@ -590,6 +614,7 @@ def main() -> None:
         unit_path,
         service_root / "last30days-service",
         env_file,
+        socket_path,
     )
     release = stage_release(
         releases, version, manifest_raw, manifest, payloads

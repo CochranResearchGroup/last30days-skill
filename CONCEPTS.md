@@ -32,8 +32,10 @@ agents use the cache/query contract instead of invoking it per request.
 The CGO-free Go process that exposes service discovery, cached query, durable
 refresh, and job polling as compact MCP tools/resources. It is deliberately a
 thin Unix-socket client: it contains no source acquisition logic. A packaged
-MCPB may start the one shared service daemon when absent, but query handlers
-never launch a request-scoped research subprocess.
+MCPB may install and start the independent service artifact through the
+managed user-service lifecycle when absent; it never detaches raw
+`service.py`. Query handlers never launch a request-scoped research
+subprocess.
 
 ### Intelligence Ledger
 

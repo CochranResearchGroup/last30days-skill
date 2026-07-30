@@ -13,9 +13,12 @@ The adapter exposes:
 - resources `last30days://capabilities`, `last30days://sources`, and
   `last30days://topics`
 
-It contains no acquisition logic. The bundle carries the canonical Python
-runtime and may start the one shared daemon when no service is running; an MCP
-query never starts a request-scoped research engine, browser, or scraper.
+It contains no acquisition logic. The bundle carries the independently
+versioned service artifact and its managed user-service installer. When no
+service is running, bootstrap installs and starts that artifact through the
+managed lifecycle; it does not detach `service.py` or become the daemon owner.
+An MCP query never starts a request-scoped research engine, browser, or
+scraper.
 
 ## Layout
 
@@ -42,12 +45,15 @@ The last command must return no dependency.
 
 ## Runtime
 
-The MCPB can bootstrap its packaged service runtime automatically. Operators
-may instead install the systemd user service explicitly:
+The MCPB can bootstrap its packaged service artifact automatically through the
+same managed installer used for explicit lifecycle operations. Operators may
+instead build and install the user service explicitly:
 
 ```bash
-bash ../skills/last30days/scripts/install-service.sh
-python3 ../skills/last30days/scripts/service.py status
+bash ../service/scripts/build-runtime.sh
+bash ../service/scripts/install.sh install \
+  --artifact ../dist/service/last30days-service-0.2.7.tar.gz
+bash ../service/scripts/install.sh status
 ```
 
 Socket resolution matches the Python service:

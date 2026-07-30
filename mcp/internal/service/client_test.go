@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -75,6 +76,8 @@ func withCompatibleHandshake(
 func TestPackagedServiceEnvironmentIsSanitized(t *testing.T) {
 	t.Setenv("OPENAI_API_KEY", "must-not-cross-boundary")
 	t.Setenv("LAST30DAYS_SERVICE_DB", "/tmp/service-test.db")
+	t.Setenv("XDG_RUNTIME_DIR", "/tmp/runtime-test")
+	t.Setenv("LAST30DAYS_SYSTEMCTL", "/tmp/fake-systemctl")
 	environment := strings.Join(packagedServiceEnvironment(), "\n")
 	if strings.Contains(environment, "OPENAI_API_KEY") ||
 		strings.Contains(environment, "must-not-cross-boundary") {
@@ -89,6 +92,82 @@ func TestPackagedServiceEnvironmentIsSanitized(t *testing.T) {
 	if !strings.Contains(environment, ".local/bin") ||
 		!strings.Contains(environment, ".linuxbrew/bin") {
 		t.Fatal("sanitized worker PATH is incomplete")
+	}
+	if !strings.Contains(environment, "XDG_RUNTIME_DIR=/tmp/runtime-test") ||
+		!strings.Contains(environment, "LAST30DAYS_SYSTEMCTL=/tmp/fake-systemctl") {
+		t.Fatal("managed service controls were not preserved")
+	}
+}
+
+func TestManagedBootstrapInvokesPackagedInstaller(t *testing.T) {
+	socketPath := unixHTTPServer(t, http.NotFoundHandler())
+	root := t.TempDir()
+	installer := filepath.Join(root, "install.sh")
+	artifact := filepath.Join(root, "last30days-service-0.2.7.tar.gz")
+	logPath := filepath.Join(root, "installer.log")
+	script := "#!/bin/sh\nprintf '%s\\n' \"$@\" > '" + logPath + "'\n"
+	if err := os.WriteFile(installer, []byte(script), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(artifact, []byte("artifact"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := bootstrapManagedService(
+		context.Background(), socketPath, installer, artifact,
+	); err != nil {
+		t.Fatalf("bootstrapManagedService: %v", err)
+	}
+	raw, err := os.ReadFile(logPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	arguments := strings.Split(strings.TrimSpace(string(raw)), "\n")
+	want := []string{
+		"install",
+		"--artifact",
+		artifact,
+		"--socket",
+		socketPath,
+		"--timeout",
+		"15",
+	}
+	if strings.Join(arguments, "\n") != strings.Join(want, "\n") {
+		t.Fatalf("installer arguments = %#v, want %#v", arguments, want)
+	}
+}
+
+func TestPackagedServicePayloadResolvesIndependentBundleLayout(t *testing.T) {
+	root := t.TempDir()
+	executable := filepath.Join(root, "bin", "last30days-pp-mcp")
+	installer := filepath.Join(root, "runtime", "service", "scripts", "install.sh")
+	artifact := filepath.Join(
+		root,
+		"runtime",
+		"service",
+		"artifacts",
+		"last30days-service-0.2.7.tar.gz",
+	)
+	for _, path := range []string{executable, installer, artifact} {
+		if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(path, []byte("fixture"), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	gotInstaller, gotArtifact, err := packagedServicePayload(executable)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if gotInstaller != installer || gotArtifact != artifact {
+		t.Fatalf(
+			"payload = (%q, %q), want (%q, %q)",
+			gotInstaller,
+			gotArtifact,
+			installer,
+			artifact,
+		)
 	}
 }
 

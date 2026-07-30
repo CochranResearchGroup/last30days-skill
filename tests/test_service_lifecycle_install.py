@@ -208,6 +208,10 @@ def test_clean_install_uses_independent_current_release_and_receipt(tmp_path):
         assert ".agents/skills" not in unit
         assert "skills/last30days" not in unit
         assert str(env_file) in unit
+        assert (
+            f"LAST30DAYS_SERVICE_SOCKET={env['XDG_RUNTIME_DIR']}"
+            "/last30days/service.sock"
+        ) in unit
         assert env_file.read_bytes() == b""
         assert env_file.stat().st_mode & 0o777 == 0o600
         assert "UMask=0077" in unit

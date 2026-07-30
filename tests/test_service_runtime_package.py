@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BUILDER = ROOT / "service" / "scripts" / "build-runtime.sh"
 MANIFEST = ROOT / "service" / "runtime-manifest.json"
 VERSION = ROOT / "service" / "VERSION"
+MCP_SYNC = ROOT / "mcp" / "scripts" / "sync-service-runtime.sh"
 
 
 def _build(output_dir: Path, *, repo_root: Path = ROOT) -> Path:
@@ -130,3 +131,41 @@ def test_builder_fails_closed_when_manifest_or_payload_drifts(tmp_path):
     assert result.returncode != 0
     assert "runtime-manifest.json is stale" in result.stderr
     assert not (tmp_path / "output").exists()
+
+
+def test_mcp_runtime_stages_only_independent_artifact_and_controls(tmp_path):
+    runtime = tmp_path / "runtime"
+    result = subprocess.run(
+        [
+            "bash",
+            str(MCP_SYNC),
+            "--repo-root",
+            str(ROOT),
+            "--runtime-dir",
+            str(runtime),
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+        env={**os.environ, "SOURCE_DATE_EPOCH": "0"},
+    )
+
+    service = runtime / "service"
+    artifact = next((service / "artifacts").glob("last30days-service-*.tar.gz"))
+    files = {
+        path.relative_to(runtime).as_posix()
+        for path in runtime.rglob("*")
+        if path.is_file()
+    }
+    assert files == {
+        f"service/artifacts/{artifact.name}",
+        "service/VERSION",
+        "service/scripts/install.sh",
+        "service/systemd/last30days.service.in",
+    }
+    assert "independent service payload" in result.stdout
+    assert not any(path.name == "SKILL.md" for path in runtime.rglob("*"))
+    with tarfile.open(artifact, "r:gz") as archive:
+        names = archive.getnames()
+    assert any(name.endswith("/scripts/service.py") for name in names)
+    assert not any(name.endswith("/SKILL.md") for name in names)

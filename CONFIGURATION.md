@@ -647,6 +647,11 @@ ready. Use `service/scripts/install.sh rollback` to swap the current and
 previous verified releases deliberately; `start`, `stop`, `status`, and
 `diagnose` provide the remaining lifecycle controls.
 
+Pass `--socket <absolute-path>` to install, upgrade, or diagnose a non-default
+owner-private socket. The installer records that same path in the stable unit
+and uses it for readiness; otherwise `LAST30DAYS_SERVICE_SOCKET` wins, followed
+by `$XDG_RUNTIME_DIR/last30days/service.sock`.
+
 The installer writes `~/.config/systemd/user/last30days.service`, reloads the
 user manager, and enables the service. Its unit uses an owner-private umask,
 restart-on-failure, `NoNewPrivileges`, and a stable PATH containing
@@ -688,10 +693,11 @@ Service-enabled MCP clients expose ten compact operations:
   validator-enforced limit ranges without prompts, raw provider events, or
   repair execution.
 
-The MCP adapter connects to the same Unix socket. A standalone MCPB packages
-the canonical runtime and may bootstrap the single shared daemon if absent. A
-query handler never launches the request-scoped research engine or operates a
-browser.
+The MCP adapter connects to the same Unix socket. A standalone Linux MCPB
+packages the independently versioned service artifact plus its lifecycle
+controls and may install/start it through the managed user-service path when
+absent. It never detaches raw `service.py` or owns the daemon. A query handler
+never launches the request-scoped research engine or operates a browser.
 
 `temporal_query`, `profile_history`, `coverage`, and `maintenance_status` are
 read-only and cache-only. The host derives authorized access partitions from

@@ -8,6 +8,7 @@ ExecStart=@LAUNCHER@ serve
 Restart=on-failure
 RestartSec=2
 EnvironmentFile=@ENV_FILE@
+@SOCKET_ENV@
 Environment=PATH=%h/.local/bin:%h/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin
 UMask=0077
 NoNewPrivileges=true

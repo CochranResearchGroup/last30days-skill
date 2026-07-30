@@ -15,7 +15,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"syscall"
 	"time"
 
 	servicecontracts "github.com/mvanhorn/last30days-skill/mcp/internal/contracts"
@@ -381,74 +380,84 @@ func (c *Client) request(
 	return json.RawMessage(compact.Bytes()), contractDigest, nil
 }
 
-// BootstrapPackagedService starts the service runtime shipped beside the MCP
-// binary and waits for its singleton Unix socket. It never launches a crawl.
+// BootstrapPackagedService installs and starts the independent service artifact
+// shipped beside the MCP binary through the managed user-service control path.
 func BootstrapPackagedService(ctx context.Context, socketPath string) error {
-	runtimeScript := strings.TrimSpace(os.Getenv("LAST30DAYS_SERVICE_RUNTIME"))
-	if runtimeScript == "" {
-		executable, err := os.Executable()
-		if err != nil {
-			return errors.New("locate MCP executable")
-		}
-		runtimeScript = filepath.Clean(
-			filepath.Join(
-				filepath.Dir(executable),
-				"..",
-				"runtime",
-				"last30days",
-				"scripts",
-				"service.py",
-			),
-		)
+	executable, err := os.Executable()
+	if err != nil {
+		return errors.New("locate MCP executable")
 	}
-	if !filepath.IsAbs(runtimeScript) {
-		return errors.New("packaged service runtime must be an absolute path")
+	installer, artifact, err := packagedServicePayload(executable)
+	if err != nil {
+		return err
 	}
-	info, err := os.Lstat(runtimeScript)
+	return bootstrapManagedService(ctx, socketPath, installer, artifact)
+}
+
+func packagedServicePayload(executable string) (string, string, error) {
+	if !filepath.IsAbs(executable) {
+		return "", "", errors.New("MCP executable path must be absolute")
+	}
+	serviceRoot := filepath.Clean(
+		filepath.Join(filepath.Dir(executable), "..", "runtime", "service"),
+	)
+	installer := filepath.Join(serviceRoot, "scripts", "install.sh")
+	artifacts, err := filepath.Glob(
+		filepath.Join(serviceRoot, "artifacts", "last30days-service-*.tar.gz"),
+	)
+	if err != nil || len(artifacts) != 1 {
+		return "", "", errors.New("packaged service artifact is unavailable")
+	}
+	return installer, artifacts[0], nil
+}
+
+func bootstrapManagedService(
+	ctx context.Context,
+	socketPath string,
+	installer string,
+	artifact string,
+) error {
+	if !filepath.IsAbs(installer) || !filepath.IsAbs(artifact) {
+		return errors.New("packaged service controls must use absolute paths")
+	}
+	info, err := os.Lstat(installer)
 	if err != nil ||
 		info.Mode()&os.ModeSymlink != 0 ||
 		!info.Mode().IsRegular() {
-		return errors.New("packaged service runtime is unavailable")
+		return errors.New("packaged service installer is unavailable")
 	}
-	python := strings.TrimSpace(os.Getenv("LAST30DAYS_SERVICE_PYTHON"))
-	if python == "" {
-		python = "python3"
+	artifactInfo, err := os.Lstat(artifact)
+	if err != nil ||
+		artifactInfo.Mode()&os.ModeSymlink != 0 ||
+		!artifactInfo.Mode().IsRegular() {
+		return errors.New("packaged service artifact is unavailable")
 	}
-	command := exec.Command(
-		python,
-		runtimeScript,
-		"serve",
+	command := exec.CommandContext(
+		ctx,
+		"bash",
+		installer,
+		"install",
+		"--artifact",
+		artifact,
 		"--socket",
 		socketPath,
+		"--timeout",
+		"15",
 	)
 	command.Stdin = nil
 	command.Stdout = nil
 	command.Stderr = nil
 	command.Env = packagedServiceEnvironment()
-	command.SysProcAttr = &syscall.SysProcAttr{Setsid: true}
-	if err := command.Start(); err != nil {
-		return errors.New("start packaged intelligence service")
+	if err := command.Run(); err != nil {
+		return errors.New("managed intelligence service bootstrap failed")
 	}
-	_ = command.Process.Release()
-	deadline := time.NewTimer(3 * time.Second)
-	defer deadline.Stop()
-	ticker := time.NewTicker(50 * time.Millisecond)
-	defer ticker.Stop()
-	for {
-		select {
-		case <-ctx.Done():
-			return errors.New("service bootstrap cancelled")
-		case <-deadline.C:
-			return errors.New("service bootstrap timed out")
-		case <-ticker.C:
-			socketInfo, statErr := os.Lstat(socketPath)
-			if statErr == nil &&
-				socketInfo.Mode()&os.ModeSymlink == 0 &&
-				socketInfo.Mode()&os.ModeSocket != 0 {
-				return nil
-			}
-		}
+	socketInfo, err := os.Lstat(socketPath)
+	if err != nil ||
+		socketInfo.Mode()&os.ModeSymlink != 0 ||
+		socketInfo.Mode()&os.ModeSocket == 0 {
+		return errors.New("managed intelligence service did not publish its socket")
 	}
+	return nil
 }
 
 func packagedServiceEnvironment() []string {
@@ -471,8 +480,12 @@ func packagedServiceEnvironment() []string {
 		"LC_ALL",
 		"XDG_CONFIG_HOME",
 		"XDG_DATA_HOME",
+		"XDG_RUNTIME_DIR",
 		"LAST30DAYS_CONFIG_DIR",
 		"LAST30DAYS_SERVICE_DB",
+		"LAST30DAYS_SERVICE_SOCKET",
+		"LAST30DAYS_SYSTEMCTL",
+		"LAST30DAYS_PYTHON",
 	} {
 		if value := strings.TrimSpace(os.Getenv(name)); value != "" {
 			environment = append(environment, name+"="+value)

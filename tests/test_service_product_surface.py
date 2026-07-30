@@ -42,8 +42,12 @@ def test_mcpb_packages_runtime_and_verifies_canonical_contract():
     ).read_text()
 
     assert "sync-service-runtime.sh" in workflow
-    assert 'grep -F "runtime/last30days/"' in workflow
-    assert 'grep -F "/service.py"' in workflow
+    assert 'grep -E "runtime/service/scri[p]ts/install[.]sh"' in workflow
+    assert 'grep -F "runtime/service/artifacts/last30days-service-"' in workflow
+    assert 'tar -tzf "${artifact}"' in workflow
+    assert 'grep -E "/scri[p]ts/service[.]py"' in workflow
+    assert 'if tar -tzf "${artifact}" | grep -F "/SKILL.md"' in workflow
     assert "go -C mcp generate ./internal/contracts" in workflow
-    assert "may start the one shared daemon" in mcp_readme
+    assert "managed user-service installer" in mcp_readme
+    assert "does not detach" in mcp_readme
     assert "service-contracts-v1.json" in generator

@@ -44,7 +44,7 @@ jobs:
           name: last30days-skill
           path: dist/last30days.skill
 
-  # Package the Linux Go adapter and canonical Python service runtime together.
+  # Package the Linux Go adapter and independent service product together.
   build-mcpb:
     runs-on: ubuntu-latest
     strategy:
@@ -80,6 +80,14 @@ jobs:
         run: |
           go -C mcp generate ./internal/contracts
           bash mcp/scripts/sync-service-runtime.sh
+          artifact="$(find mcp/runtime/service/artifacts \
+            -maxdepth 1 -type f -name 'last30days-service-*.tar.gz')"
+          test -n "${artifact}"
+          tar -tzf "${artifact}" | grep -E "/scri[p]ts/service[.]py"
+          if tar -tzf "${artifact}" | grep -F "/SKILL.md"; then
+            echo "Skill content entered the independent service artifact" >&2
+            exit 1
+          fi
 
       - name: Build MCP binary
         env:
@@ -112,8 +120,10 @@ jobs:
           )
           unzip -l \
             mcp/build/last30days-pp-mcp-${{ matrix.goos }}-${{ matrix.goarch }}.mcpb |
-            grep -F "runtime/last30days/" |
-            grep -F "/service.py"
+            grep -E "runtime/service/scri[p]ts/install[.]sh"
+          unzip -l \
+            mcp/build/last30days-pp-mcp-${{ matrix.goos }}-${{ matrix.goarch }}.mcpb |
+            grep -F "runtime/service/artifacts/last30days-service-"
 
       - name: Upload .mcpb artifact
         uses: actions/upload-artifact@v4

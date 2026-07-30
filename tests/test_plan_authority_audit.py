@@ -176,7 +176,7 @@ def test_current_repository_authority_passes() -> None:
     assert report["issues"] == []
     assert report["active_plan_count"] == 1
     assert report["active_plans"] == [
-        "docs/dev/plans/0014-2026-07-26-recurring-collection-timer-durability.md"
+        "docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md"
     ]
     assert report["campaign_plan_count"] == 0
 

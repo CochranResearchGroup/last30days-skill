@@ -253,8 +253,10 @@ Claude Desktop connects to the user-scoped last30days service through a thin
 MCP bundle. The MCP process does not crawl pages or launch the Python research
 engine.
 
-1. From a source checkout, build and install the independently versioned Linux
-service with `bash service/scripts/build-runtime.sh`, then
+1. Either let the MCPB install its packaged independent artifact through the
+   managed user-service lifecycle, or explicitly build and install the Linux
+   service from a source checkout with `bash service/scripts/build-runtime.sh`,
+   then
    `bash service/scripts/install.sh install --artifact
    dist/service/last30days-service-0.2.7.tar.gz`. The Agent Skill is optional
    for service lifecycle. The MCP adapter proves product, API, contract,
