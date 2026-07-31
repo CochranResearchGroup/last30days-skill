@@ -255,7 +255,10 @@ Remaining acceptance criteria:
 
 Graphiti write status:
 
-- pending closeout write and verification.
+- completed and verified in `last30days_skill_main` as episode
+  `c72ef904-547b-468b-a477-f8a374803429` (job
+  `41d7186f-5843-43b8-9c6a-51e826f9c976`); exact episode retrieval and fact
+  search both returned the Plan 0021 outcome.
 
 Authority classification:
 

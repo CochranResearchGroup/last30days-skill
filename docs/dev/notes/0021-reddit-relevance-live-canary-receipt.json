@@ -135,7 +135,11 @@
   },
   "graphiti": {
     "group_id": "last30days_skill_main",
-    "status": "pending"
+    "status": "completed_verified",
+    "job_id": "41d7186f-5843-43b8-9c6a-51e826f9c976",
+    "episode_uuid": "c72ef904-547b-468b-a477-f8a374803429",
+    "exact_episode_read": true,
+    "fact_search_match": true
   },
   "next_action": "return to Plan 0018 S07; require separate approval for any new Reddit live packet"
 }
