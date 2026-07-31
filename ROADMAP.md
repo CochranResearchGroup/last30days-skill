@@ -797,13 +797,16 @@ Active Plan:
   plus Plans 0015 and 0016 and the S06 client-Skill redesign are accepted
   without moving implementation modules or migrating schema 12; S07 is the
   remaining transition packet.
+- `docs/dev/plans/0022-2026-07-31-reddit-relevance-machine-spaced-canary.md`
+  is the separately authorized successor to cancelled Plan 0021. It owns one
+  fresh four-query public Reddit matrix with machine-enforced 65-second start
+  spacing and no installation or downstream mutation.
 
 Next Bounded Action:
 
-- Resume Plan 0018 at S07. Plan 0021 cancelled after C2 began four seconds
-  before its minimum start-spacing gate; C3/C4 were not run, cleanup passed,
-  and source service 0.2.13 remains uninstalled. Any new Reddit validation,
-  push, tag, publication, or release requires separate authority.
+- Run Plan 0022's read-only preflight, commit the ready checkpoint, and only
+  then execute its persistent-controller matrix. Plan 0018 S07 resumes after
+  canary closeout; install, push, tag, publication, and release remain gated.
 
 ## Goal-Compatible Plan Conversion
 

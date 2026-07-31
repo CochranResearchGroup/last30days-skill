@@ -5767,3 +5767,44 @@ Next Bounded Action:
 
 - keep source service 0.2.13 uninstalled, return to Plan 0018 S07, and do not
   retry Reddit live validation without a separately approved packet.
+
+## Turn 90 | 2026-07-31
+
+Focus: open the separately authorized machine-spaced Reddit canary.
+
+Authority Consulted:
+
+- operator authorization to adjust and retry once;
+- cancelled Plan 0021, its receipt, and verified Graphiti episode;
+- planning, live-goal, validation, closeout, documentation, worktree, commit,
+  and roadmap/runbook policies.
+
+Decisions And Changes:
+
+- opened Plan 0022 with a fresh four-query budget;
+- replaced manual timing with a persistent monotonic controller enforcing a
+  65-second interval and `NEXT`/`STOP` review boundaries;
+- retained every Plan 0021 relevance, hard-stop, cleanup, and non-goal bound.
+
+Validation Evidence:
+
+- Plan 0021 cancellation commit `6709502` and durability commit `cc9f0ad`;
+- Graphiti episode `c72ef904-547b-468b-a477-f8a374803429` was exactly readable
+  and returned matching facts.
+
+State Movement:
+
+- Plan 0022 `PLANNED -> OPEN`; no query consumed;
+- progress classification `outcome_progress`; authority `human_gate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; exclusive browser ownership remains serialized.
+
+Graphiti Write Status:
+
+- pending live outcome closeout.
+
+Next Bounded Action:
+
+- run and commit current read-only preflight before starting C1.
