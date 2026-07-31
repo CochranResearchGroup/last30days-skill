@@ -797,14 +797,18 @@ Active Plan:
   plus Plans 0015 and 0016 and the S06 client-Skill redesign are accepted
   without moving implementation modules or migrating schema 12; S07 is the
   remaining transition packet.
+- `docs/dev/plans/0020-2026-07-31-reddit-multiword-relevance-remediation.md`
+  is the open offline-only successor to rejected Plan 0019. It tightens
+  multiword Reddit browser relevance without changing shared numeric scoring
+  or authorizing browser traffic, installation, or release.
 
 Next Bounded Action:
 
-- Plan 0019 is cancelled after T3 rejection. All six public queries were
-  consumed; route/session cleanup passed, but multiword relevance did not.
-  Keep 0.2.13 uninstalled. Any retry requires a bounded successor with an
-  offline phrase/token relevance gate and a newly authorized live-query budget.
-  Push, tag, publication, and release remain gated.
+- Execute Plan 0020 offline: add strict query-term coverage at the relevance
+  seam, apply it only to multiword Reddit browser candidates, and prove the
+  Plan 0019 false positives plus synonym/single-word compatibility. Keep 0.2.13
+  uninstalled and do not request live-query authority until the full offline
+  gate passes. Push, tag, publication, and release remain gated.
 
 ## Goal-Compatible Plan Conversion
 

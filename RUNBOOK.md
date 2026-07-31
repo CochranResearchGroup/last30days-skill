@@ -5514,3 +5514,50 @@ Next Bounded Action:
 - keep source service 0.2.13 uninstalled; if the user wants further work,
   create a successor for phrase-aware multiword relevance, pass deterministic
   tests, then request a new bounded live-query budget.
+
+## Turn 85 | 2026-07-31
+
+Focus: activate an offline-only successor for Plan 0019's multiword relevance
+failure.
+
+Authority Consulted:
+
+- the user's explicit goal to fix phrase-aware/multiword relevance offline;
+- Plan 0019 checkpoint P0019-C11 and its machine-readable rejection evidence;
+- current planning, goal, architecture, validation, documentation, worktree,
+  CodeGraph, TDD, codebase-design, and Graphiti policies.
+
+Decisions And Changes:
+
+- opened Plan 0020 under P07 with no browser, network, install, push, tag, or
+  release authority;
+- selected a deep relevance-module interface for literal/synonym query-term
+  coverage while preserving the existing numeric scorer for all callers;
+- constrained strict 100% coverage to multiword Reddit browser candidates and
+  named `partial_query_match` as the diagnostic rejection reason.
+
+Validation Evidence:
+
+- CodeGraph shows `_quality_gate` accepts every score above zero and identifies
+  `token_overlap_relevance` as the scoring seam;
+- the Plan 0019 receipt proves `agent browser` and `Claude Code` one-token
+  false positives;
+- the worktree was clean and local `main` was 14 commits ahead of origin.
+
+State Movement:
+
+- Plan 0020 `PLANNED -> OPEN`; progress classification `outcome_progress`;
+- authority classification `inherited_authority`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this is one tightly coupled offline TDD slice.
+
+Graphiti Write Status:
+
+- pending validated implementation closeout.
+
+Next Bounded Action:
+
+- execute RED/GREEN packet A for query-term coverage, then packet B through
+  the public Reddit browser search interface.
