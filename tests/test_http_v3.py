@@ -128,6 +128,29 @@ class TestDNSResolutionRetry(unittest.TestCase):
 
     @patch("lib.http.urllib.request.urlopen")
     @patch("lib.http.time.sleep")
+    def test_one_shot_caller_can_disable_dns_retry_widening(
+        self, mock_sleep, mock_urlopen
+    ):
+        import socket
+
+        err = urllib.error.URLError(
+            socket.gaierror(-2, "Name or service not known")
+        )
+        mock_urlopen.side_effect = err
+
+        with self.assertRaises(http.HTTPError):
+            http.request(
+                "GET",
+                "http://nonexistent.example",
+                retries=1,
+                min_dns_retries=1,
+            )
+
+        self.assertEqual(mock_urlopen.call_count, 1)
+        mock_sleep.assert_not_called()
+
+    @patch("lib.http.urllib.request.urlopen")
+    @patch("lib.http.time.sleep")
     def test_gaierror_succeeds_after_transient_failure(self, mock_sleep, mock_urlopen):
         """gaierror on attempt 1, then success — should NOT raise."""
         import socket

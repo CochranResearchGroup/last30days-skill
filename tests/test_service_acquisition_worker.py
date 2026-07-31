@@ -179,15 +179,16 @@ def test_named_profile_config_is_user_scoped_and_process_env_wins(tmp_path):
 def test_reddit_adapter_is_public_first_and_uses_supported_backup_key(monkeypatch):
     from lib import reddit, reddit_public
 
-    paid_tokens = []
+    public_depths = []
+    paid_calls = []
     monkeypatch.setattr(
         reddit_public,
         "search_reddit_public",
-        lambda *_args, **_kwargs: [],
+        lambda *_args, depth=None, **_kwargs: public_depths.append(depth) or [],
     )
 
-    def paid(*_args, token=None, **_kwargs):
-        paid_tokens.append(token)
+    def paid(*_args, token=None, **kwargs):
+        paid_calls.append((token, kwargs))
         return {"items": []}
 
     monkeypatch.setattr(reddit, "search_reddit", paid)
@@ -195,6 +196,7 @@ def test_reddit_adapter_is_public_first_and_uses_supported_backup_key(monkeypatc
         source="reddit",
         adapter="reddit_api",
         work_id="work-reddit-001",
+        item_limit=3,
     )
 
     result = service_acquisition_worker._reddit_adapter(
@@ -202,7 +204,49 @@ def test_reddit_adapter_is_public_first_and_uses_supported_backup_key(monkeypatc
     )
 
     assert result == {"items": [], "_cost_cents": 1}
-    assert paid_tokens == ["dummy-test-key"]
+    assert public_depths == ["quick"]
+    assert paid_calls == [
+        (
+            "dummy-test-key",
+            {
+                "depth": "quick",
+                "global_search_limit": 1,
+                "subreddit_search_limit": 0,
+                "request_timeout": 20,
+                "request_retries": 1,
+                "min_dns_retries": 1,
+            },
+        )
+    ]
+
+
+def test_reddit_adapter_returns_public_items_without_paid_fallback(monkeypatch):
+    from lib import reddit, reddit_public
+
+    monkeypatch.setattr(
+        reddit_public,
+        "search_reddit_public",
+        lambda *_args, **_kwargs: [{"id": "R1"}],
+    )
+    paid_calls = []
+    monkeypatch.setattr(
+        reddit,
+        "search_reddit",
+        lambda *_args, **_kwargs: paid_calls.append(True),
+    )
+
+    result = service_acquisition_worker._reddit_adapter(
+        _request(
+            source="reddit",
+            adapter="reddit_api",
+            work_id="work-reddit-public-001",
+            item_limit=3,
+        ),
+        {"SCRAPECREATORS_API_KEY": "dummy-test-key"},
+    )
+
+    assert result == {"items": [{"id": "R1"}], "_cost_cents": 0}
+    assert paid_calls == []
 
 
 def test_zero_network_budget_rejects_work_before_adapter_call():

@@ -61,6 +61,8 @@ _PERMANENT_ERRORS = frozenset(
         "budget_exhausted",
     }
 )
+_BOUNDED_REDDIT_ITEM_LIMIT = 3
+_BOUNDED_REDDIT_FALLBACK_TIMEOUT_SECONDS = 20
 
 
 def _default_config_root(environ: Mapping[str, str]) -> Path:
@@ -165,23 +167,35 @@ def _reddit_adapter(
 ) -> dict[str, Any]:
     from . import reddit, reddit_public
 
+    bounded = request.item_limit <= _BOUNDED_REDDIT_ITEM_LIMIT
+    depth = "quick" if bounded else _depth(request.depth)
     public_items = reddit_public.search_reddit_public(
         request.query,
         request.from_date,
         request.to_date,
-        depth=_depth(request.depth),
+        depth=depth,
     )
     if public_items:
         return {"items": public_items, "_cost_cents": 0}
     token = config.get("SCRAPECREATORS_API_KEY")
     if not token:
         return {"items": [], "_cost_cents": 0}
+    search_options: dict[str, Any] = {}
+    if bounded:
+        search_options = {
+            "global_search_limit": 1,
+            "subreddit_search_limit": 0,
+            "request_timeout": _BOUNDED_REDDIT_FALLBACK_TIMEOUT_SECONDS,
+            "request_retries": 1,
+            "min_dns_retries": 1,
+        }
     result = reddit.search_reddit(
         request.query,
         request.from_date,
         request.to_date,
-        depth=_depth(request.depth),
+        depth=depth,
         token=token,
+        **search_options,
     )
     result["_cost_cents"] = 1
     return result

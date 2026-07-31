@@ -1,6 +1,7 @@
 """Tests for reddit.py — ScrapeCreators Reddit search module."""
 
 import unittest
+from unittest.mock import patch
 
 # Add lib to path
 
@@ -153,6 +154,34 @@ class TestDepthConfig(unittest.TestCase):
             reddit.DEPTH_CONFIG["deep"]["global_searches"],
             reddit.DEPTH_CONFIG["quick"]["global_searches"],
         )
+
+
+class TestBoundedSearch(unittest.TestCase):
+    def test_one_global_request_and_no_subreddit_fanout(self):
+        with (
+            patch("lib.reddit._global_search", return_value=[]) as global_search,
+            patch("lib.reddit._subreddit_search") as subreddit_search,
+        ):
+            result = reddit.search_reddit(
+                "cache service",
+                "2026-06-24",
+                "2026-07-24",
+                depth="quick",
+                token="dummy-test-key",
+                global_search_limit=1,
+                subreddit_search_limit=0,
+                request_timeout=20,
+                request_retries=1,
+                min_dns_retries=1,
+            )
+
+        self.assertEqual(result, {"items": []})
+        self.assertEqual(global_search.call_count, 1)
+        self.assertEqual(
+            global_search.call_args.kwargs,
+            {"timeout": 20, "retries": 1, "min_dns_retries": 1},
+        )
+        subreddit_search.assert_not_called()
 
 
 class TestPostRelevance(unittest.TestCase):

@@ -54,6 +54,7 @@ def request(
     timeout: int = DEFAULT_TIMEOUT,
     retries: int = MAX_RETRIES,
     max_429_retries: int = MAX_429_RETRIES,
+    min_dns_retries: int = MIN_DNS_RETRIES,
     raw: bool = False,
 ) -> Union[Dict[str, Any], str]:
     """Make an HTTP request and return JSON response.
@@ -68,6 +69,7 @@ def request(
         timeout: Request timeout in seconds
         retries: Number of retries on failure
         max_429_retries: Maximum 429 retries before giving up (separate cap)
+        min_dns_retries: Minimum DNS attempts; set to 1 for a one-shot caller
         raw: If True, return raw response text instead of parsed JSON
 
     Returns:
@@ -165,12 +167,13 @@ def request(
                 # default. Counts DNS attempts separately so other URLError
                 # causes don't bypass the regular retry budget.
                 dns_attempts += 1
-                if effective_retries < MIN_DNS_RETRIES:
+                dns_retry_floor = max(1, min_dns_retries)
+                if effective_retries < dns_retry_floor:
                     log(
                         f"DNS resolution failed; expanding retry budget from "
-                        f"{effective_retries} to {MIN_DNS_RETRIES}"
+                        f"{effective_retries} to {dns_retry_floor}"
                     )
-                    effective_retries = MIN_DNS_RETRIES
+                    effective_retries = dns_retry_floor
                 if attempt < effective_retries - 1:
                     delay = 2 ** (dns_attempts - 1)  # 1s, 2s, 4s, 8s, ...
                     log(

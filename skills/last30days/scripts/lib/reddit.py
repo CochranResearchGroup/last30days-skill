@@ -334,6 +334,10 @@ def _global_search(
     token: str,
     sort: str = "relevance",
     timeframe: str = "month",
+    *,
+    timeout: int = 30,
+    retries: int = 2,
+    min_dns_retries: int = http.MIN_DNS_RETRIES,
 ) -> List[Dict[str, Any]]:
     """Search across all of Reddit via ScrapeCreators global search.
 
@@ -351,8 +355,9 @@ def _global_search(
             f"{SCRAPECREATORS_BASE}/search",
             headers=http.scrapecreators_headers(token),
             params={"query": query, "sort": sort, "timeframe": timeframe},
-            timeout=30,
-            retries=2,
+            timeout=timeout,
+            retries=retries,
+            min_dns_retries=min_dns_retries,
         )
         return data.get("posts", data.get("data", []))
     except http.HTTPError as e:
@@ -371,6 +376,10 @@ def _subreddit_search(
     token: str,
     sort: str = "relevance",
     timeframe: str = "month",
+    *,
+    timeout: int = 30,
+    retries: int = 2,
+    min_dns_retries: int = http.MIN_DNS_RETRIES,
 ) -> List[Dict[str, Any]]:
     """Search within a specific subreddit via ScrapeCreators.
 
@@ -394,8 +403,9 @@ def _subreddit_search(
                 "sort": sort,
                 "timeframe": timeframe,
             },
-            timeout=30,
-            retries=2,
+            timeout=timeout,
+            retries=retries,
+            min_dns_retries=min_dns_retries,
         )
         return data.get("posts", data.get("data", []))
     except http.HTTPError as e:
@@ -467,6 +477,12 @@ def search_reddit(
     depth: str = "default",
     token: str = None,
     subreddits: List[str] | None = None,
+    *,
+    global_search_limit: int | None = None,
+    subreddit_search_limit: int | None = None,
+    request_timeout: int = 30,
+    request_retries: int = 2,
+    min_dns_retries: int = http.MIN_DNS_RETRIES,
 ) -> Dict[str, Any]:
     """Full Reddit search: multi-query global discovery + subreddit drill-down.
 
@@ -479,6 +495,11 @@ def search_reddit(
         depth: 'quick', 'default', or 'deep'
         token: ScrapeCreators API key
         subreddits: Optional list of subreddit names to search first (pre-resolved)
+        global_search_limit: Optional cap on global request fan-out
+        subreddit_search_limit: Optional cap on subreddit request fan-out
+        request_timeout: Per-request timeout in seconds
+        request_retries: Per-request attempt count
+        min_dns_retries: Minimum DNS attempt count
 
     Returns:
         Dict with 'items' list and optional 'error'.
@@ -504,7 +525,19 @@ def search_reddit(
         with ThreadPoolExecutor(max_workers=min(5, len(subreddits))) as executor:
             futures = {}
             for sub in subreddits:
-                futures[executor.submit(_subreddit_search, sub, core, token, "relevance", timeframe)] = sub
+                futures[
+                    executor.submit(
+                        _subreddit_search,
+                        sub,
+                        core,
+                        token,
+                        "relevance",
+                        timeframe,
+                        timeout=request_timeout,
+                        retries=request_retries,
+                        min_dns_retries=min_dns_retries,
+                    )
+                ] = sub
             for future in as_completed(futures):
                 sub = futures[future]
                 sub_posts = future.result()
@@ -515,6 +548,8 @@ def search_reddit(
 
     # === Phase 2: Global Discovery ===
     max_global = config["global_searches"]
+    if global_search_limit is not None:
+        max_global = min(max_global, max(0, global_search_limit))
 
     with ThreadPoolExecutor(max_workers=max_global or 1) as executor:
         futures = {}
@@ -523,7 +558,18 @@ def search_reddit(
             # from relevant communities instead of keyword-matched noise.
             sort = "top" if intent in ("product", "comparison") else ("relevance" if i == 0 else "top")
             _log(f"Global search {i+1}/{max_global}: '{query}' (sort={sort})")
-            futures[executor.submit(_global_search, query, token, sort, timeframe)] = query
+            futures[
+                executor.submit(
+                    _global_search,
+                    query,
+                    token,
+                    sort,
+                    timeframe,
+                    timeout=request_timeout,
+                    retries=request_retries,
+                    min_dns_retries=min_dns_retries,
+                )
+            ] = query
         for future in as_completed(futures):
             query = futures[future]
             posts = future.result()
@@ -537,6 +583,10 @@ def search_reddit(
 
     # === Phase 3: Subreddit Discovery + Targeted Search ===
     subreddit_budget = 0 if intent == "how_to" else config["subreddit_searches"]
+    if subreddit_search_limit is not None:
+        subreddit_budget = min(
+            subreddit_budget, max(0, subreddit_search_limit)
+        )
     discovered_subs = discover_subreddits(all_raw_posts, topic=topic, max_subs=subreddit_budget)
     _log(f"Discovered subreddits: {discovered_subs}")
 
@@ -546,7 +596,19 @@ def search_reddit(
             futures = {}
             for sub in discovered_subs[:subreddit_limit]:
                 _log(f"Subreddit search: r/{sub} for '{core}'")
-                futures[executor.submit(_subreddit_search, sub, core, token, "relevance", timeframe)] = sub
+                futures[
+                    executor.submit(
+                        _subreddit_search,
+                        sub,
+                        core,
+                        token,
+                        "relevance",
+                        timeframe,
+                        timeout=request_timeout,
+                        retries=request_retries,
+                        min_dns_retries=min_dns_retries,
+                    )
+                ] = sub
             for future in as_completed(futures):
                 sub = futures[future]
                 sub_posts = future.result()
