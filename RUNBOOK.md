@@ -6256,3 +6256,59 @@ Next Bounded Action:
   remote-view-open gate to pass before constructing any bounded source
   successor. Push, final-review bypass, tag, publication, and release remain
   closed.
+
+## Turn 99 | 2026-07-31
+
+Focus: accept the repaired agent-browser live gate and open fresh, bounded
+successor intervals for the rejected configured browser methods.
+
+Authority Consulted:
+
+- Plan 0018 C30, Roadmap P07, agent-browser Plans 0083-0085 and commit
+  `662050d7`, installed service status, user-scoped access orders, and the
+  planning, goal, documentation, validation, Git, CodeGraph, and Graphiti
+  policies.
+
+Decisions And Changes:
+
+- advanced Plan 0018 to version 10 and opened checkpoint C31 under inherited
+  authority;
+- accepted the one passing agent-browser live gate as satisfying C30's named
+  prerequisite;
+- bounded fresh successor IDs to one serial interval each for Reddit browser,
+  X, Facebook, LinkedIn topic, and LinkedIn profile;
+- retained exact method provenance, immediate pause/quiescence, config restore,
+  zero assessment/model work, and no push/release authority.
+
+Validation Evidence:
+
+- agent-browser focused and broader client/type/route checks passed at commit
+  `662050d7`;
+- live artifact
+  `/tmp/agent-browser-remote-view-open-live-2026-07-31T23-12-57-008Z` reports
+  success, a browser-visible handoff, exact LinkedIn target URL/title, one
+  matching intent tab, and cleanup;
+- service 0.2.16/schema 12 reports ready with 53 documents, 61 versions in the
+  prior receipt, index `index-0b31b594c3222cb1fa8f6175`, and all collection
+  specs disabled;
+- user config remains mode 0600 with Reddit `keyless,agent_browser` and
+  X/Facebook/LinkedIn `agent_browser`.
+
+State Movement:
+
+- Plan 0018 `version 9 -> 10`; C30 hard-stop prerequisite `failed -> satisfied`;
+- C31 `PLANNED -> READY`; source successors `blocked -> ready_serial`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one and the cases
+  share config, service state, and browser leases.
+
+Graphiti Write Status:
+
+- deferred to the execution/closeout checkpoint.
+
+Next Bounded Action:
+
+- execute the five fresh successor cases serially, restore config, reconcile
+  service/profile/route state, and persist one machine-readable receipt.

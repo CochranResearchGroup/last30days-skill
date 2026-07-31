@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 9
+Plan version: 10
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -66,6 +66,10 @@ software with:
   gate: 7/7 accepted posts were manually relevant, multiword partials were
   rejected, all four calls stayed under 55 seconds, and browser cleanup passed.
   This proves the adapter candidate, not timer-owned durable publication.
+- Agent-browser Plan 0085 repaired route attribution, exact handle-bound
+  readback, and profile routing. Its one live gate passed at commit `662050d7`
+  with artifact
+  `/tmp/agent-browser-remote-view-open-live-2026-07-31T23-12-57-008Z`.
 
 ## Standing Authority And Human Gates
 
@@ -86,7 +90,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C30 is the current authority. Service architecture and timed
+Checkpoint P0018-C31 is the current authority. Service architecture and timed
 ingestion are accepted. The six configured source/method pairs have independent
 acceptance packets; method failure degrades only that method and does not block
 the service foundation or unrelated method packets. Independent final review,
@@ -2974,3 +2978,73 @@ Next action:
   degraded `last30days-facebook` retained lane, prove
   `pnpm test:remote-view-open-live`, and only then revisit one-interval source
   successors for the rejected browser methods.
+
+### Checkpoint P0018-C31 | 2026-07-31
+
+Plan version:
+
+- 10
+
+State transition:
+
+- `browser successor blocked -> live gate accepted and AM02-AM05 successors ready`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Current evidence:
+
+- agent-browser commit `662050d7` preserves route-owned stream attribution,
+  exact service-tab-handle readback, and browser/session/target/profile routing;
+- focused client, generated-type, route-confusion, release-fixture, syntax, and
+  diff checks pass;
+- the one live `pnpm test:remote-view-open-live` rerun passed at artifact
+  `/tmp/agent-browser-remote-view-open-live-2026-07-31T23-12-57-008Z`, reading
+  `https://www.linkedin.com/` and `LinkedIn: Log In or Sign Up` from the exact
+  returned target, with one matching intent tab and cleanup;
+- installed last30days service 0.2.16/schema 12 remains ready, all collection
+  specs remain disabled, the index remains
+  `index-0b31b594c3222cb1fa8f6175`, and user access orders remain restored.
+
+Successor packets and bounds:
+
+- create fresh successor spec IDs; do not reuse failed run identities;
+- execute serially in order: Reddit browser, X, Facebook, LinkedIn topic,
+  LinkedIn canonical profile;
+- each case permits one manual timer-owned interval, one acquisition attempt,
+  three items, 120 seconds wall time, 50 network requests, assessment disabled,
+  immediate pause, and post-pause quiescence;
+- Reddit temporarily uses ordered access `agent_browser,keyless` and a
+  100-cent reservation ceiling so the configured first method can actually be
+  attempted; restore `keyless,agent_browser` after its case;
+- authenticated sources retain `agent_browser` as their sole configured method;
+- accept or reject each method independently from exact adapter variant,
+  attempted/selected access method, canonical evidence, durable publication,
+  and cleanup facts.
+
+Hard stops:
+
+- stop the individual case after its single terminal interval; do not retry a
+  failed source case inside C31;
+- stop the campaign on cleanup failure, service integrity failure, an
+  unexpected credential/account mutation request, or loss of exact method
+  provenance;
+- no push, independent-review bypass, tag, publication, or release is
+  authorized.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one and these
+  packets share user config, service state, and browser profile/route leases.
+
+Authority classification:
+
+- `inherited_authority`; the repaired live gate satisfies C30's named
+  prerequisite, while the operator's existing authorization and C28 ceilings
+  continue to cover the source successors.
+
+Next action:
+
+- create and execute the five fresh successor cases serially, restore config,
+  persist a machine-readable receipt, and adjudicate each method independently.

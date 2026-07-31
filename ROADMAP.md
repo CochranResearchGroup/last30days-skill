@@ -796,18 +796,20 @@ Active Plan:
   is the open transition authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
   rollback are accepted foundations on installed service 0.2.16/schema 12.
-  Plan version 9 records the completed configured-method campaign: YouTube
+  Plan version 10 records the first configured-method campaign and its repaired
+  browser successor gate: YouTube
   `yt_dlp` is accepted; Reddit browser, X, Facebook, and both LinkedIn browser
-  cases are rejected without reopening the accepted service foundations. Exact
-  provenance is now durable, and manual collection attempts are correctly
-  bounded to one. All specs are disabled and user access orders are restored.
+  cases remain historically rejected without reopening the accepted service
+  foundations. Agent-browser commit `662050d7` now passes the required live
+  gate, exact provenance is durable, and manual collection attempts are bounded
+  to one. All specs are disabled and user access orders are restored.
 
 Next Bounded Action:
 
-- Repair or retire the degraded retained `last30days-facebook` agent-browser
-  lane under a separately reviewed runtime successor. Require
-  `pnpm test:remote-view-open-live` to pass before creating any one-interval
-  successor for AM02, AM03, AM04, or AM05. Push, independent final review, tag,
+- Execute Plan 0018 checkpoint C31's fresh, serial, one-interval successors for
+  Reddit browser, X, Facebook, LinkedIn topic, and LinkedIn profile. Restore
+  user configuration after each temporary override and persist exact method,
+  publication, and cleanup evidence. Push, independent final review, tag,
   publication, and release remain separately gated.
 
 ## Goal-Compatible Plan Conversion
