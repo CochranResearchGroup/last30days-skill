@@ -5619,3 +5619,50 @@ Next Bounded Action:
 
 - resume Plan 0018 S07. Keep service 0.2.13 uninstalled; any live Reddit
   validation requires a separately approved bounded query budget.
+
+## Turn 87 | 2026-07-31
+
+Focus: activate the operator-approved four-query live canary for Plan 0020's
+Reddit relevance repair.
+
+Authority Consulted:
+
+- the operator's explicit `ok go` approval of the proposed four-query budget;
+- Plan 0020 checkpoint P0020-C02 and its offline validation receipt;
+- current planning, goal, validation, closeout, documentation, worktree,
+  CodeGraph, and agent-browser policy.
+
+Decisions And Changes:
+
+- opened Plan 0021 under P07 for exactly four serialized public Reddit
+  searches with one attempt each and no retries;
+- selected `openclaw` quick, `AI agents` quick, `agent browser` default, and
+  `Claude Code` quick, with at least 60 seconds between starts and 120 seconds
+  maximum per query;
+- prohibited service installation, collection, persistence, credentials,
+  paid/model fallback, source mutation, push, tag, publication, and release.
+
+Validation Evidence:
+
+- Plan 0020's full offline gate and Graphiti checkpoint passed at commits
+  `2af08b2` and `7b05281`;
+- the planning packet started from a clean worktree;
+- no live query has started and the entire four-query budget remains.
+
+State Movement:
+
+- Plan 0021 `PLANNED -> OPEN`; progress classification `outcome_progress`;
+- authority classification: `human_gate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; live browser/session ownership is serialized.
+
+Graphiti Write Status:
+
+- pending live outcome closeout.
+
+Next Bounded Action:
+
+- run the read-only install, route, access-plan, session, and source-version
+  preflight; launch C1 only if every gate is ready.
