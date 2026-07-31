@@ -67,6 +67,27 @@ _PERMANENT_ERRORS = frozenset(
 )
 _BOUNDED_REDDIT_ITEM_LIMIT = 3
 _BOUNDED_REDDIT_FALLBACK_TIMEOUT_SECONDS = 20
+_ACCESS_METHOD_BY_ADAPTER = {
+    "x_agent_browser": "agent_browser",
+    "facebook_agent_browser": "agent_browser",
+    "linkedin_agent_browser": "agent_browser",
+    "linkedin_profile_agent_browser": "agent_browser",
+    "youtube_ytdlp": "yt_dlp",
+}
+
+
+def _with_access_method_provenance(
+    result: dict[str, Any],
+    *,
+    attempted: list[str],
+    selected: str | None,
+) -> dict[str, Any]:
+    diagnostics = result.get("diagnostics")
+    diagnostics = dict(diagnostics) if isinstance(diagnostics, Mapping) else {}
+    diagnostics["attempted_access_methods"] = list(attempted)
+    diagnostics["selected_access_method"] = selected
+    result["diagnostics"] = diagnostics
+    return result
 
 
 def _default_config_root(environ: Mapping[str, str]) -> Path:
@@ -178,10 +199,12 @@ def _reddit_adapter(
     browser_result: dict[str, Any] | None = None
     total_cost_cents = 0
     unavailable: list[str] = []
+    attempted: list[str] = []
     for method in access_order:
         if not policy.method_available("reddit", method, config):
             unavailable.append(method)
             continue
+        attempted.append(method)
         if method == "keyless":
             public_items = reddit_public.search_reddit_public(
                 request.query,
@@ -190,7 +213,11 @@ def _reddit_adapter(
                 depth=depth,
             )
             if public_items:
-                return {"items": public_items, "_cost_cents": total_cost_cents}
+                return _with_access_method_provenance(
+                    {"items": public_items, "_cost_cents": total_cost_cents},
+                    attempted=attempted,
+                    selected=method,
+                )
             continue
         if method == "agent_browser":
             browser_result = reddit_browser.search_reddit_browser(
@@ -203,7 +230,9 @@ def _reddit_adapter(
             )
             if browser_result.get("items"):
                 browser_result["_cost_cents"] = total_cost_cents
-                return browser_result
+                return _with_access_method_provenance(
+                    browser_result, attempted=attempted, selected=method
+                )
             continue
         if method == "scrapecreators":
             token = config.get("SCRAPECREATORS_API_KEY")
@@ -254,7 +283,9 @@ def _reddit_adapter(
                 result["diagnostics"] = paid_diagnostics
             result["_cost_cents"] = total_cost_cents
             if result.get("items"):
-                return result
+                return _with_access_method_provenance(
+                    result, attempted=attempted, selected=method
+                )
 
     if browser_result is not None:
         browser_result["_cost_cents"] = total_cost_cents
@@ -263,11 +294,15 @@ def _reddit_adapter(
             diagnostics = dict(diagnostics) if isinstance(diagnostics, Mapping) else {}
             diagnostics["unavailable_access_methods"] = unavailable
             browser_result["diagnostics"] = diagnostics
-        return browser_result
+        return _with_access_method_provenance(
+            browser_result, attempted=attempted, selected=None
+        )
     result = {"items": [], "_cost_cents": total_cost_cents}
     if unavailable:
         result["diagnostics"] = {"unavailable_access_methods": unavailable}
-    return result
+    return _with_access_method_provenance(
+        result, attempted=attempted, selected=None
+    )
 
 
 _DEFAULT_ADAPTERS: dict[str, Adapter] = {
@@ -520,6 +555,13 @@ def execute_work(
     diagnostics = _sanitize(raw.get("diagnostics") or {})
     if not isinstance(diagnostics, dict):
         diagnostics = {}
+    access_method = _ACCESS_METHOD_BY_ADAPTER.get(request.adapter)
+    if access_method is not None:
+        diagnostics.setdefault("attempted_access_methods", [access_method])
+        diagnostics.setdefault(
+            "selected_access_method", access_method if raw_items else None
+        )
+    diagnostics["adapter_variant"] = request.adapter
     cost_cents = raw.get("_cost_cents", 0)
     if (
         isinstance(cost_cents, bool)

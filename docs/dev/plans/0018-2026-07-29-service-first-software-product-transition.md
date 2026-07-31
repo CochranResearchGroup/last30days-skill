@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 7
+Plan version: 8
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -86,11 +86,19 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C28 is the current authority. Service architecture and timed
+Checkpoint P0018-C29 is the current authority. Service architecture and timed
 ingestion are accepted. The six configured source/method pairs have independent
 acceptance packets; method failure degrades only that method and does not block
 the service foundation or unrelated method packets. Independent final review,
 tagging, publication, and release remain closed.
+
+The operator's later 2026-07-31 instruction to continue through the remaining
+configured services, explicitly including X, Facebook, and LinkedIn,
+satisfies the live and authenticated packet gates for AM02-AM06. Execution
+remains serial and bounded by C28: one interval per case, one implementation
+attempt and one review/rework cycle per packet, no credential addition or
+export, and no account mutation, push, review bypass, tag, publication, or
+release.
 
 The operator's 2026-07-31 request to develop an agent-browser-powered Reddit
 post routine authorizes the bounded C22 development packet below. It does not

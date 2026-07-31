@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Safe access-method provenance.** Every managed acquisition result now
+  records its exact adapter variant plus the ordered access methods attempted
+  and the method that supplied publishable items. This makes configured
+  fallbacks independently auditable without exposing browser state or
+  credentials.
+
 - **User-scoped recurring-source policy.** The managed service now reads an
   explicit source catalog and per-source ordered access chains from the user
   configuration, advertises readiness from that effective policy, and rejects

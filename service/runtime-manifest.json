@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "26e6ebd4b069ddb03df79ec9a299ee4a39c60bf8d34a2b6a3ff059d4f2e21b88",
+      "sha256": "83d303e6b26d4650921ff1388729c76bb1397419877ffcf30cb403e2a5501421",
       "source": "service/VERSION"
     },
     {
@@ -277,7 +277,7 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "9e1dd870b234187be2f6d96ac210663487404c0a3e12f25c67b4c7343eb43f77",
+      "sha256": "bf4f1aa6a0e2669fe9d43a78b154da3a9dd5d45070c5e38ec207f73745a19641",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
@@ -573,5 +573,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.2.14"
+  "service_version": "0.2.15"
 }

@@ -6119,3 +6119,54 @@ Next Bounded Action:
 
 - validate and commit Plan 0018 version 7, then stop before AM02 live mutation
   unless the operator separately authorizes its one interval.
+
+## Turn 97 | 2026-07-31
+
+Focus: authorize serial live adjudication of every remaining configured access
+method.
+
+Authority Consulted:
+
+- the operator's instruction to continue through the remaining configured
+  services, explicitly including X, Facebook, and LinkedIn;
+- Plan 0018 C28, its machine-readable method matrix, Roadmap P07, installed
+  service 0.2.14/schema 12, and current agent-browser guidance;
+- planning, goal-execution, validation, documentation, Git, CodeGraph, and
+  Graphiti policies.
+
+Decisions And Changes:
+
+- advanced Plan 0018 to version 8 and classified AM02-AM06 as authorized under
+  the existing C28 bounds;
+- retained one live interval per case, serial execution, independent method
+  adjudication, and immediate pause/cleanup;
+- retained the prohibitions on credential addition/export, account mutation,
+  push, review bypass, tag, publication, and release.
+
+Validation Evidence:
+
+- installed service is live and ready at 0.2.14/schema 12 with active index
+  `index-90a8aea59d32c62f3df8bbee`;
+- CodeGraph shows exact adapters for X, Facebook, LinkedIn topic/profile, and
+  YouTube, while the Reddit aggregate adapter requires explicit ordered-method
+  provenance for AM02 adjudication.
+
+State Movement:
+
+- Plan 0018 `version 7 -> 8`; C29 `AWAITING_GATE -> ACTIVE`;
+- AM02-AM06 `pending gate/planned -> authorized_pending_live_execution`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active-agent concurrency remains one because the packets share
+  user config, service state, and browser profile/route leases.
+
+Graphiti Write Status:
+
+- deferred to the bounded implementation/live-campaign checkpoint.
+
+Next Bounded Action:
+
+- add safe access-method provenance where the current worker contract cannot
+  prove it, validate and install the successor service, then execute AM02-AM06
+  serially with one interval per case.

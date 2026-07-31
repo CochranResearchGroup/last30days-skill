@@ -796,17 +796,18 @@ Active Plan:
   is the open transition authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
   rollback are accepted foundations on installed service 0.2.14/schema 12.
-  Plan version 7 tracks configured access methods as independent evidence
-  packets rather than a global architecture or release join gate.
+  Plan version 8 tracks configured access methods as independent evidence
+  packets rather than a global architecture or release join gate. The operator
+  has authorized serial execution of AM02-AM06, including the authenticated X,
+  Facebook, and LinkedIn cases.
 
 Next Bounded Action:
 
-- Stop at Plan 0018 C28's live gate after committing the independent
-  access-method matrix. The first ready method packet is AM02: one
-  agent-browser-first public Reddit interval under its explicit user-config
-  mutation gate. AM06 is the next public packet; authenticated X, Facebook,
-  and LinkedIn packets retain separate human gates. Push, independent final
-  review, tag, publication, and release remain separately gated.
+- Execute Plan 0018 C29 serially in the C28 matrix order: AM02 Reddit browser,
+  AM06 YouTube, AM03 X, AM04 Facebook, then both AM05 LinkedIn cases. Preserve
+  the one-attempt bounds and adjudicate every method independently. Push,
+  independent final review, tag, publication, and release remain separately
+  gated.
 
 ## Goal-Compatible Plan Conversion
 

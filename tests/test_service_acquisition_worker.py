@@ -138,6 +138,9 @@ def test_worker_normalizes_publishable_items_into_the_versioned_result():
     assert result.items[0].url == "https://x.com/example/status/1"
     assert "cache-backed" in result.items[0].text
     assert result.items[0].metadata["media"][0]["kind"] == "image"
+    assert result.diagnostics["attempted_access_methods"] == ["agent_browser"]
+    assert result.diagnostics["selected_access_method"] == "agent_browser"
+    assert result.diagnostics["adapter_variant"] == "x_agent_browser"
 
 
 def test_explicit_no_results_is_success_for_negative_caching():
@@ -203,7 +206,14 @@ def test_reddit_adapter_is_public_first_and_uses_supported_backup_key(monkeypatc
         request, {"SCRAPECREATORS_API_KEY": "dummy-test-key"}
     )
 
-    assert result == {"items": [], "_cost_cents": 1}
+    assert result == {
+        "items": [],
+        "_cost_cents": 1,
+        "diagnostics": {
+            "attempted_access_methods": ["keyless", "scrapecreators"],
+            "selected_access_method": None,
+        },
+    }
     assert public_depths == ["quick"]
     assert paid_calls == [
         (
@@ -245,7 +255,14 @@ def test_reddit_adapter_returns_public_items_without_paid_fallback(monkeypatch):
         {"SCRAPECREATORS_API_KEY": "dummy-test-key"},
     )
 
-    assert result == {"items": [{"id": "R1"}], "_cost_cents": 0}
+    assert result == {
+        "items": [{"id": "R1"}],
+        "_cost_cents": 0,
+        "diagnostics": {
+            "attempted_access_methods": ["keyless"],
+            "selected_access_method": "keyless",
+        },
+    }
     assert paid_calls == []
 
 
@@ -270,7 +287,14 @@ def test_reddit_adapter_uses_enabled_browser_before_paid_fallback(monkeypatch):
         },
     )
 
-    assert result == {"items": [{"id": "RB1"}], "_cost_cents": 0}
+    assert result == {
+        "items": [{"id": "RB1"}],
+        "_cost_cents": 0,
+        "diagnostics": {
+            "attempted_access_methods": ["keyless", "agent_browser"],
+            "selected_access_method": "agent_browser",
+        },
+    }
     assert browser_calls == [{
         "depth": "quick",
         "config": {
@@ -316,7 +340,14 @@ def test_reddit_adapter_obeys_explicit_user_access_order(monkeypatch):
         },
     )
 
-    assert result == {"items": [{"id": "R-browser"}], "_cost_cents": 0}
+    assert result == {
+        "items": [{"id": "R-browser"}],
+        "_cost_cents": 0,
+        "diagnostics": {
+            "attempted_access_methods": ["agent_browser"],
+            "selected_access_method": "agent_browser",
+        },
+    }
     assert calls == ["agent_browser"]
 
 
@@ -374,7 +405,13 @@ def test_reddit_adapter_uses_paid_fallback_after_empty_browser_yield(monkeypatch
             "browser_fallback": {
                 "error_type": "extraction_empty",
                 "failure_stage": "adapter_result",
-            }
+            },
+            "attempted_access_methods": [
+                "keyless",
+                "agent_browser",
+                "scrapecreators",
+            ],
+            "selected_access_method": "scrapecreators",
         },
         "_cost_cents": 1,
     }
