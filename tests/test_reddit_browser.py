@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import json
+import os
+from pathlib import Path
+import sys
 
 import pytest
 
@@ -649,3 +653,255 @@ def test_each_depth_enforces_its_own_timeout_and_scroll_ceiling(
     assert result["error_type"] is None
     assert client.requests[0].timeout == timeout
     assert [action.operation for action in client.actions].count("scroll") == scrolls
+
+
+def _install_fake_agent_browser(tmp_path: Path, monkeypatch, *, scenario="new") -> Path:
+    executable = tmp_path / "agent-browser"
+    log_path = tmp_path / "commands.jsonl"
+    executable.write_text(
+        f"#!{sys.executable}\n"
+        + r'''import json
+import os
+import sys
+import time
+
+log_path = os.environ["FAKE_AGENT_BROWSER_LOG"]
+try:
+    with open(log_path, encoding="utf-8") as handle:
+        prior = [json.loads(line) for line in handle if line.strip()]
+except FileNotFoundError:
+    prior = []
+args = sys.argv[1:]
+with open(log_path, "a", encoding="utf-8") as handle:
+    handle.write(json.dumps(args) + "\n")
+index = len(prior)
+if os.environ.get("FAKE_AGENT_BROWSER_SLEEP_AT") == str(index):
+    time.sleep(5)
+if os.environ.get("FAKE_AGENT_BROWSER_FAIL_AT") == str(index):
+    print("Authorization: Bearer secret-token-123 private@example.test", file=sys.stderr)
+    raise SystemExit(17)
+if os.environ.get("FAKE_AGENT_BROWSER_MALFORMED_AT") == str(index):
+    print("{malformed")
+    raise SystemExit(0)
+
+scenario = os.environ.get("FAKE_AGENT_BROWSER_SCENARIO", "new")
+if args[1:3] == ["service", "access-plan"]:
+    data = {
+        "selectedProfile": {"id": "last30days-facebook"},
+        "decision": {"launchPosture": {"remoteViewRecommended": True}},
+    }
+elif args[1:3] == ["service", "status"]:
+    if scenario == "retained":
+        data = {"service_state": {
+            "sessions": {"last30days-reddit": {
+                "profileId": "last30days-facebook",
+                "browserIds": ["browser-retained"],
+                "tabIds": ["target:retained"],
+            }},
+            "browsers": {"browser-retained": {
+                "health": "ready",
+                "profileId": "last30days-facebook",
+                "viewStreams": [{
+                    "provider": "rdp_gateway",
+                    "readiness": {"state": "ready"},
+                    "id": "guacamole:retained",
+                }],
+            }},
+            "tabs": {"target:retained": {
+                "targetId": "retained",
+                "url": "https://www.reddit.com/search/?q=old",
+            }},
+        }}
+    elif scenario == "unrelated":
+        data = {"service_state": {
+            "sessions": {"last30days-reddit": {
+                "profileId": "unrelated-profile",
+                "browserIds": ["browser-unrelated"],
+            }},
+            "browsers": {"browser-unrelated": {
+                "health": "ready", "profileId": "unrelated-profile"
+            }},
+            "tabs": {},
+        }}
+    else:
+        data = {"service_state": {"sessions": {}, "browsers": {}, "tabs": {}}}
+elif "remote-view" in args and "open" in args:
+    session = args[args.index("--session") + 1]
+    data = {
+        "profileId": "last30days-facebook",
+        "browserId": "browser-new",
+        "sessionName": session,
+        "targetId": "target-new",
+        "routeId": "guacamole:new",
+        "operatorVisible": {"state": "ready"},
+    }
+elif args[-2:] == ["tab", "list"]:
+    tabs = [] if scenario != "retained" else [{
+        "index": 0,
+        "active": True,
+        "url": "https://www.reddit.com/search/?q=old",
+    }]
+    data = {"tabs": tabs}
+elif "eval" in args:
+    eval_number = sum("eval" in previous for previous in prior)
+    if eval_number == 0:
+        data = {"result": {
+            "url": "https://www.reddit.com/search/?q=openclaw&type=posts&sort=new&t=month",
+            "title": "openclaw - Reddit Search!",
+            "query_value": "openclaw",
+            "has_posts": True,
+        }}
+    else:
+        data = {"result": {"candidates": [{
+            "title": "OpenClaw browser routine",
+            "permalink": "/r/agents/comments/cli001/browser_routine/",
+            "subreddit": "r/agents",
+            "created_at": "2026-07-30T09:15:00Z",
+            "score": "1.2K",
+            "comment_count": "34",
+            "dom_shape": "shreddit-post",
+        }]}}
+else:
+    data = {"url": args[-1] if args else ""}
+print(json.dumps({"success": True, "data": data}))
+''',
+        encoding="utf-8",
+    )
+    executable.chmod(0o755)
+    monkeypatch.setenv("PATH", f"{tmp_path}{os.pathsep}{os.environ['PATH']}")
+    monkeypatch.setenv("FAKE_AGENT_BROWSER_LOG", str(log_path))
+    monkeypatch.setenv("FAKE_AGENT_BROWSER_SCENARIO", scenario)
+    monkeypatch.setattr(
+        reddit_browser.browser_runtime.agent_browser_config,
+        "record_access_plan",
+        lambda *_args, **_kwargs: tmp_path / "unused.json",
+    )
+    monkeypatch.setattr(reddit_browser.time, "sleep", lambda _seconds: None)
+    return log_path
+
+
+def _fake_cli_search():
+    return reddit_browser.search_reddit_browser(
+        "openclaw",
+        "2026-07-01",
+        "2026-07-31",
+        depth="quick",
+        config={
+            "LAST30DAYS_REDDIT_BROWSER_INITIAL_WAIT": "0",
+            "LAST30DAYS_REDDIT_BROWSER_SCROLL_WAIT": "0",
+        },
+    )
+
+
+def _commands(log_path: Path) -> list[list[str]]:
+    return [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
+
+
+def test_fake_cli_exercises_the_real_subprocess_contract_in_bounded_order(
+    tmp_path, monkeypatch
+):
+    log_path = _install_fake_agent_browser(tmp_path, monkeypatch)
+
+    result = _fake_cli_search()
+
+    commands = _commands(log_path)
+    assert result["error_type"] is None
+    assert [item["reddit_id"] for item in result["items"]] == ["cli001"]
+    assert [command[1:3] for command in commands[:2]] == [
+        ["service", "access-plan"],
+        ["service", "status"],
+    ]
+    assert "remote-view" in commands[2] and "open" in commands[2]
+    assert commands[3][-2:] == ["tab", "list"]
+    assert commands[4][-3:-1] == ["tab", "new"]
+    assert commands[5][-2:] == ["eval", "--stdin"]
+    assert commands[6][-2:] == ["eval", "--stdin"]
+    assert len(commands) == 7
+    access = commands[0]
+    assert access[access.index("--target-service-id") + 1] == "reddit"
+    assert access[access.index("--display-isolation") + 1] == "private_virtual_display"
+    assert all(
+        token.casefold() not in {"cdp", "process", "ps"}
+        for command in commands
+        for token in command
+    )
+
+
+def test_fake_cli_reuses_a_ready_retained_session_without_open_or_close(
+    tmp_path, monkeypatch
+):
+    log_path = _install_fake_agent_browser(tmp_path, monkeypatch, scenario="retained")
+
+    result = _fake_cli_search()
+
+    commands = _commands(log_path)
+    assert result["error_type"] is None
+    assert result["workspace"]["browser_id"] == "browser-retained"
+    assert not any("remote-view" in command or "close" in command for command in commands)
+    assert all(
+        command[command.index("--session") + 1] == "last30days-reddit"
+        for command in commands
+        if "--session" in command
+    )
+
+
+def test_fake_cli_does_not_replace_an_unrelated_named_session_owner(
+    tmp_path, monkeypatch
+):
+    log_path = _install_fake_agent_browser(tmp_path, monkeypatch, scenario="unrelated")
+
+    result = _fake_cli_search()
+
+    commands = _commands(log_path)
+    assert result["error_type"] is None
+    assert not any("close" in command for command in commands)
+    opened = next(command for command in commands if "remote-view" in command)
+    assert opened[opened.index("--session") + 1] != "last30days-reddit"
+    assert "last30days-facebook" in opened[opened.index("--session") + 1]
+
+
+@pytest.mark.parametrize("failure_index", range(7))
+def test_fake_cli_failure_at_each_command_boundary_is_terminal_and_redacted(
+    tmp_path, monkeypatch, failure_index
+):
+    log_path = _install_fake_agent_browser(tmp_path, monkeypatch)
+    monkeypatch.setenv("FAKE_AGENT_BROWSER_FAIL_AT", str(failure_index))
+
+    result = _fake_cli_search()
+
+    assert result["error_type"] == "agent_browser_error"
+    assert "secret-token-123" not in str(result)
+    assert "private@example.test" not in str(result)
+    assert len(_commands(log_path)) == failure_index + 1
+
+
+def test_fake_cli_malformed_json_is_terminal_without_follow_on_commands(
+    tmp_path, monkeypatch
+):
+    log_path = _install_fake_agent_browser(tmp_path, monkeypatch)
+    monkeypatch.setenv("FAKE_AGENT_BROWSER_MALFORMED_AT", "0")
+
+    result = _fake_cli_search()
+
+    assert result["error_type"] == "agent_browser_error"
+    assert "malformed JSON" in result["error"]
+    assert len(_commands(log_path)) == 1
+
+
+def test_fake_cli_timeout_is_propagated_and_kills_the_command_fixture(
+    tmp_path, monkeypatch
+):
+    log_path = _install_fake_agent_browser(tmp_path, monkeypatch)
+    monkeypatch.setenv("FAKE_AGENT_BROWSER_SLEEP_AT", "0")
+
+    result = reddit_browser.search_reddit_browser(
+        "openclaw",
+        "2026-07-01",
+        "2026-07-31",
+        depth="quick",
+        config={"LAST30DAYS_REDDIT_BROWSER_TIMEOUT": "1"},
+    )
+
+    assert result["error_type"] == "agent_browser_timeout"
+    assert "after 1s" in result["error"]
+    assert len(_commands(log_path)) == 1

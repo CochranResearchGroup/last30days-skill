@@ -801,11 +801,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- Plan 0019 T0 and T1 pass. The expanded deterministic adapter/worker matrix,
-  complete Python and Go suites, runtime packaging, artifact builds, and
-  authority audit are green without Reddit traffic. Execute T2 against a
-  controlled fake CLI; T3 live queries, credentials, push, tag, and release
-  remain gated until the next checkpoint.
+- Plan 0019 T0-T2 pass. The real-subprocess fake-CLI contract proves bounded
+  command order, terminal failures, timeout propagation, redaction,
+  retained-session reuse, and unrelated-owner preservation without traffic.
+  Revalidate browser readiness, then execute the already-authorized six-query
+  G1 matrix; credentials, push, tag, and release remain gated.
 
 ## Goal-Compatible Plan Conversion
 

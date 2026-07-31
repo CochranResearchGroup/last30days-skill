@@ -5186,3 +5186,61 @@ Next Bounded Action:
 - execute T2 against a controlled fake `agent-browser` subprocess without
   Reddit traffic;
 - keep G1/T3 live traffic closed until the T2 checkpoint.
+
+## Turn 79 | 2026-07-31
+
+Focus: complete Plan 0019 T2 real-subprocess CLI integration without Reddit
+traffic.
+
+Authority Consulted:
+
+- Plan 0019 T2 and checkpoint P0019-C05;
+- agent-browser command, routing, retained-session, privacy, and cleanup
+  contracts;
+- CodeGraph source/blast-radius context for `CliAgentBrowserClient` workspace,
+  tab, action, evaluation, subprocess, and profile-owner paths.
+
+Decisions And Changes:
+
+- created a pytest-temporary executable that returns controlled JSON and logs
+  argv while crossing the real synchronous subprocess boundary;
+- exercised the seven-command new-session path and all terminal command
+  boundaries without network or browser traffic;
+- preserved ready retained-session reuse and selected a profile-scoped lane
+  instead of replacing an unrelated named-session owner;
+- fixed a Reddit-boundary redaction gap exposed when a CLI failure contained a
+  bearer token plus email.
+
+Validation Evidence:
+
+- 12 fake-CLI cases prove command order, arguments, JSON decoding, malformed
+  output, one-second timeout/child termination, redaction, and no follow-ons;
+- 57 Reddit adapter tests and 69 combined adapter/worker tests pass;
+- Python compilation, runtime-package/lifecycle tests, reproducible runtime
+  build, Skill build, the complete 2,390-test Python collection, and the Go MCP
+  suite pass;
+- `git diff --check` and the plan-authority audit pass with zero issues;
+- no raw CDP/process discovery, Reddit request, browser session, collection
+  attempt, install/restart, credential, paid call, or model call occurred.
+
+State Movement:
+
+- Plan 0019 T2: `ready -> passed`; G1: `closed -> ready`;
+- progress classification: `outcome_progress`;
+- authority classification: `inherited_authority` under the operator's prior
+  bounded G1 approval.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active concurrency remained one.
+
+Graphiti Write Status:
+
+- deferred; checkpoint P0019-C06, this turn, and the receipt are durable.
+
+Next Bounded Action:
+
+- revalidate current agent-browser readiness and execute exactly six public
+  G1 searches across two windows at least 30 minutes apart;
+- preserve one active query, 60-second starts, no retry, paid fallback off,
+  and all credential/push/tag/release gates.

@@ -7,9 +7,9 @@
     "authority": "operator approved execution including G1 and G2 on 2026-07-31"
   },
   "checkpoint": {
-    "id": "P0019-C05",
-    "recorded_at": "2026-07-31T13:02:04-05:00",
-    "stage": "T1",
+    "id": "P0019-C06",
+    "recorded_at": "2026-07-31T13:08:39-05:00",
+    "stage": "T2",
     "status": "passed",
     "progress_classification": "outcome_progress"
   },
@@ -17,7 +17,7 @@
     "checkpoint_commit": "f2d7d6ea8ed370032ff350a99bee28e3bbba6e5e",
     "reddit_feature_commit": "12b729840e0b1f83b0ae5c2534644c9a6bccd0cc",
     "service_version": "0.2.13",
-    "runtime_manifest_sha256": "7dc68816edaea08408ec9855e57f3254eeed4cfa701e5ca7bf9d601d8082c2d4"
+    "runtime_manifest_sha256": "1ff42a2fe9e5b58736c0e2555ed34a9416415e9fe2e6e3ca3761cfd36cf7fde5"
   },
   "installed_service": {
     "status": "ready",
@@ -217,6 +217,39 @@
     "subagent_status": "not_spawned",
     "graphiti_write_status": "deferred"
   },
+  "t2": {
+    "status": "passed",
+    "network_traffic": false,
+    "fake_cli_cases": 12,
+    "reddit_adapter_tests": 57,
+    "adapter_and_worker_tests": 69,
+    "full_python_tests_collected": 2390,
+    "python_suite_exit_status": 0,
+    "go_mcp_suite_exit_status": 0,
+    "command_boundaries_tested": 7,
+    "command_order": [
+      "service access-plan",
+      "service status",
+      "remote-view open",
+      "tab list",
+      "tab new or retained-tab navigation",
+      "page-state eval",
+      "post-extraction eval"
+    ],
+    "contract_proof": [
+      "real synchronous subprocess boundary with a temporary fake executable",
+      "JSON and nested-result decoding",
+      "one-second timeout propagation and child termination",
+      "terminal no-follow-on behavior at every command boundary",
+      "credential and email redaction from typed errors",
+      "ready retained-session reuse without open or close",
+      "unrelated named-session owner preserved on a profile-scoped lane",
+      "no raw CDP or process-discovery command"
+    ],
+    "fixture_cleanup": "pytest temporary directory only; no browser session or daemon fixture created",
+    "subagent_status": "not_spawned",
+    "graphiti_write_status": "deferred"
+  },
   "hard_stop": {
     "triggered": true,
     "reason": "T0 requires successful mutually consistent install doctor, remote-view doctor, service status, and access-plan evidence",
@@ -231,12 +264,12 @@
   },
   "next_action": {
     "state": "active",
-    "recommended_successor": "T2",
+    "recommended_successor": "T3",
     "requires_operator_authority": false,
     "scope": [
-      "exercise the real CLI subprocess contract with a controlled fake executable",
-      "verify command order, timeout propagation, redaction, terminal stops, and cleanup",
-      "preserve all T3 live-query gates"
+      "checkpoint and revalidate current browser readiness before G1",
+      "run exactly six approved public searches across two windows at least 30 minutes apart",
+      "preserve one active query, 60-second spacing, no retry, and paid fallback disabled"
     ]
   },
   "live_cases": [],

@@ -268,7 +268,7 @@ class RedditBrowserScraper:
         except (RedditBrowserFailure, browser_runtime.FacebookScraperFailure) as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
             return self._result(
-                [], exc.error_type, str(exc), workspace, page, diagnostics
+                [], exc.error_type, _safe_error_message(str(exc)), workspace, page, diagnostics
             )
 
     def _navigate(self, workspace: BrowserWorkspace, topic: str) -> RedditPageState:
@@ -568,6 +568,20 @@ def _count(value: Any) -> int:
 
 def _clean(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
+
+
+def _safe_error_message(value: str) -> str:
+    redacted = re.sub(
+        r"(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b",
+        "[REDACTED]",
+        value,
+    )
+    redacted = re.sub(
+        r"(?i)(?:bearer\s+|\[REDACTED\]\s+)[^\s,;]+",
+        "[REDACTED]",
+        redacted,
+    )
+    return redacted[:512]
 
 
 def _elapsed_ms(started: float) -> int:

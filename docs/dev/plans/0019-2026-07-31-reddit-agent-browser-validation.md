@@ -41,6 +41,10 @@ not acceptance evidence.
   tests, the complete 2,378-test Python collection, runtime-package/build
   checks, the Go MCP suite, compilation, diff, and authority gates green. No
   Reddit traffic ran.
+- T2 passed on 2026-07-31 with 12 real-subprocess fake-CLI cases covering the
+  seven-command new-session path, every terminal boundary, malformed output,
+  timeout/child termination, redaction, retained-session reuse, and unrelated
+  session ownership. No Reddit traffic or browser session ran.
 
 ## Authority And Gates
 
@@ -619,6 +623,66 @@ Next action:
 
 - execute T2 against a controlled fake `agent-browser` subprocess without
   Reddit traffic; keep G1/T3 closed until the T2 checkpoint.
+
+### Checkpoint P0019-C06 | 2026-07-31
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `active -> active`; T2 `ready -> passed`; G1 `closed -> ready`.
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- added a temporary executable fixture that crosses the real synchronous
+  subprocess boundary without Reddit or browser traffic;
+- proved the bounded access-plan, service-status, remote-view, tab, page-state,
+  and extraction command order plus nested JSON decoding;
+- proved a terminal typed result with no follow-on command at all seven command
+  boundaries, malformed JSON, and a one-second subprocess timeout;
+- proved retained-session reuse without opening or closing it and preserved an
+  unrelated named-session owner by selecting a profile-scoped lane;
+- added Reddit-boundary redaction for residual bearer-token and email material
+  exposed by the controlled failure stream.
+
+Validation evidence:
+
+- all 12 fake-CLI cases, 57 Reddit adapter tests, and 69 combined
+  adapter/worker tests pass;
+- Python compilation, runtime-package/lifecycle tests, reproducible runtime
+  build, and installable Skill build pass;
+- the complete Python suite collected 2,390 tests and exited zero; the complete
+  Go MCP suite passes;
+- `git diff --check` and the plan-authority audit pass with zero issues;
+- no raw CDP/process-discovery command, Reddit request, real browser session,
+  collection attempt, install/restart, credential, paid call, or model call
+  occurred.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active concurrency remained one.
+
+Graphiti write status:
+
+- deferred; checkpoint C06, runbook Turn 79, and the updated receipt are the
+  durable evidence surfaces.
+
+Authority classification:
+
+- `inherited_authority`; the operator already approved bounded G1, while the
+  plan still requires this checkpoint and current readiness before crossing.
+
+Next action:
+
+- rerun current readiness checks, then execute exactly the G1 six-query public
+  matrix across two windows at least 30 minutes apart, with one active query,
+  60-second start spacing, paid fallback disabled, and no retries.
 
 ## Best Next Action
 
