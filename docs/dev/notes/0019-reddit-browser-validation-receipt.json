@@ -7,11 +7,11 @@
     "authority": "operator approved execution including G1 and G2 on 2026-07-31"
   },
   "checkpoint": {
-    "id": "P0019-C08",
-    "recorded_at": "2026-07-31T13:19:19-05:00",
-    "stage": "T3-window-A",
-    "status": "failed_closed",
-    "progress_classification": "regression"
+    "id": "P0019-C09",
+    "recorded_at": "2026-07-31T13:22:43-05:00",
+    "stage": "T3-isolation-diagnosis",
+    "status": "awaiting_gate",
+    "progress_classification": "blocker_reduction"
   },
   "candidate": {
     "checkpoint_commit": "f2d7d6ea8ed370032ff350a99bee28e3bbba6e5e",
@@ -411,6 +411,34 @@
         "remaining_reddit_tab_count": 0
       },
       "window_b_started": false
+    },
+    "isolation_diagnosis": {
+      "status": "confirmed",
+      "agent_browser_source_commit": "914728ac",
+      "installed_agent_browser_version": "0.27.0",
+      "method": "read-only source trace plus one remote-view open dry run",
+      "browser_launched": false,
+      "reddit_request_sent": false,
+      "requested_display_isolation": "private_virtual_display",
+      "selected_route_pool_entry_id": "guacamole-rdp-a",
+      "selected_route_id": "guacamole:1",
+      "selected_display_name": ":10",
+      "planned_route_binding_display_isolation": "shared_display",
+      "planned_launch_display_isolation": "shared_display",
+      "planner_blocker_count": 0,
+      "source_findings": [
+        "fixed RDP route entries with a display name default to shared_display",
+        "build_route_binding does not accept or compare the requested display isolation",
+        "the launch command copies the route binding rather than the request",
+        "existing tests explicitly expect a fixed RDP route display to override stale private allocation metadata with shared_display",
+        "current documentation says fixed route displays use shared_display while private displays require the service private-display allocator"
+      ],
+      "bounded_options": [
+        "implement dynamic private-display-to-RDP routing in agent-browser",
+        "explicitly revise Plan 0019 to accept the fixed route scoped shared-display topology",
+        "cancel the remaining matrix"
+      ],
+      "no_safe_in_scope_retry": true
     },
   "canary": null,
   "soak": null,

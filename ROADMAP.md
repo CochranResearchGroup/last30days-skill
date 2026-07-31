@@ -806,8 +806,10 @@ Next Bounded Action:
   retained-session reuse, and unrelated-owner preservation without traffic.
   G1 Window A completed three spaced/no-retry public cases, but the live
   browser contradicted the required private-display posture by reporting
-  `shared_display`. The named session was closed and Window B is blocked
-  pending an explicit agent-browser repair scope or cancellation. Credentials,
+  `shared_display`. Read-only diagnosis proved fixed XRDP route displays
+  deterministically rewrite the private request to shared with no planner
+  blocker. The named session is closed and Window B awaits an explicit choice:
+  dynamic private-RDP work, acceptance revision, or cancellation. Credentials,
   install/canary, push, tag, and release remain gated.
 
 ## Goal-Compatible Plan Conversion

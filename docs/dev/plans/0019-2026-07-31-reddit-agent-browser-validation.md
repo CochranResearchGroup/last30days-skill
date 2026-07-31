@@ -53,6 +53,10 @@ not acceptance evidence.
   truthful `extraction_empty`. Post-window status then exposed a hard isolation
   mismatch: the private-display launch request produced `shared_display`.
   Window B did not start, and the named session/browser/tab were closed cleanly.
+- Read-only cross-repo diagnosis confirmed the mismatch is deterministic:
+  agent-browser fixed RDP route displays intentionally default to
+  `shared_display`, the route planner does not compare the requested private
+  isolation, and a dry run silently rewrites both binding and launch posture.
 
 ## Authority And Gates
 
@@ -805,6 +809,68 @@ Next action:
 - obtain operator direction to authorize a separate bounded agent-browser
   isolation repair or cancel the remaining Plan 0019 matrix;
 - do not run Window B, T4, installation, canary, soak, push, tag, or release.
+
+### Checkpoint P0019-C09 | 2026-07-31
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `awaiting_gate -> awaiting_gate`; isolation cause `unknown -> confirmed`.
+
+Progress classification:
+
+- `blocker_reduction`
+
+Owned changes:
+
+- performed read-only source and advisory-memory discovery in the current
+  agent-browser `main` worktree at `914728ac`;
+- ran one documented `remote-view open --dry-run` with the exact Plan 0019
+  labels/posture and launched no browser;
+- modified no agent-browser source, runtime, route, profile, credential, or
+  service state and preserved its unrelated untracked `--full-page` file.
+
+Validation evidence:
+
+- the dry run records requested isolation `private_virtual_display`, selects
+  `guacamole-rdp-a` / `guacamole:1` / `:10`, then emits route binding and launch
+  isolation `shared_display` with zero planner blockers;
+- `build_route_binding` defaults any fixed RDP route with a display name to
+  `shared_display` unless the route target explicitly declares otherwise and
+  does not receive the request intent for compatibility checking;
+- existing unit coverage explicitly expects fixed route display metadata to
+  override a stale private allocation with `shared_display`;
+- current agent-browser guidance says fixed XRDP route-display smokes use
+  `shared_display`, while true `private_virtual_display` uses the service
+  private-display allocator;
+- Graphiti was healthy and supplied only advisory route-history leads; current
+  source and dry-run output are the authority.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; investigation remained direct and read-only.
+
+Graphiti write status:
+
+- not written; the result is already captured in this source-backed checkpoint
+  and receipt.
+
+Authority classification:
+
+- `scope_expansion`; dynamic private-display-to-RDP routing requires
+  agent-browser product work, while accepting fixed-route `shared_display`
+  changes Plan 0019's safety acceptance.
+
+Next action:
+
+- obtain operator selection among: authorize a separately planned
+  agent-browser private-display/RDP implementation; explicitly revise Plan 0019
+  to accept the route-scoped shared-display topology; or cancel the remaining
+  matrix;
+- do not retry G1 or run T4-T7 meanwhile.
 
 ## Best Next Action
 

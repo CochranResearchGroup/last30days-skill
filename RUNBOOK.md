@@ -5352,3 +5352,57 @@ Next Bounded Action:
 - obtain operator direction for a separate bounded agent-browser isolation
   repair or cancel the remaining matrix;
 - do not run Window B, T4, install/canary/soak, push, tag, or release.
+
+## Turn 82 | 2026-07-31
+
+Focus: diagnose the G1 display-isolation hard stop without browser launch or
+cross-repo mutation.
+
+Authority Consulted:
+
+- Plan 0019 checkpoint P0019-C08 and its agent-browser non-goal;
+- current agent-browser `main` source at `914728ac`, repo policy, CodeGraph,
+  agent-browser skill guidance, Graphiti advisory memory, and live dry-run
+  output.
+
+Decisions And Changes:
+
+- kept Window B and T4-T7 closed;
+- traced requested display isolation through remote-view route planning and
+  launch-command construction;
+- ran one exact `remote-view open --dry-run`, which launched no browser and
+  made no Reddit request;
+- made no agent-browser source/runtime changes and preserved its unrelated
+  untracked `--full-page` file.
+
+Validation Evidence:
+
+- the dry run requested `private_virtual_display` but selected fixed route
+  `guacamole-rdp-a` / `guacamole:1` / `:10` and emitted
+  `shared_display` in both route binding and launch command with no blocker;
+- current source defaults fixed RDP entries with display names to
+  `shared_display` and does not compare that binding with request intent;
+- existing tests and documentation confirm fixed XRDP route displays use
+  `shared_display`; true private displays use a different allocator path;
+- Graphiti runtime was healthy, and all advisory leads were verified against
+  current source or dry-run evidence.
+
+State Movement:
+
+- Plan 0019 remains `awaiting_gate`; cause `unknown -> confirmed`;
+- progress classification: `blocker_reduction`;
+- authority classification: `scope_expansion`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; investigation was direct and read-only.
+
+Graphiti Write Status:
+
+- not written; checkpoint P0019-C09, this turn, and the receipt are durable.
+
+Next Bounded Action:
+
+- obtain an operator choice among dynamic private-display/RDP implementation,
+  explicit shared-route acceptance revision, or cancellation;
+- do not retry G1 or run T4-T7 without that authority.
