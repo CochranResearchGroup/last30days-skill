@@ -7,11 +7,11 @@
     "authority": "operator approved execution including G1 and G2 on 2026-07-31"
   },
   "checkpoint": {
-    "id": "P0019-C07",
-    "recorded_at": "2026-07-31T13:13:03-05:00",
-    "stage": "T3-preflight",
-    "status": "ready",
-    "progress_classification": "outcome_progress"
+    "id": "P0019-C08",
+    "recorded_at": "2026-07-31T13:19:19-05:00",
+    "stage": "T3-window-A",
+    "status": "failed_closed",
+    "progress_classification": "regression"
   },
   "candidate": {
     "checkpoint_commit": "f2d7d6ea8ed370032ff350a99bee28e3bbba6e5e",
@@ -299,17 +299,119 @@
     "paid_calls": 0,
     "model_calls": 0
   },
-  "next_action": {
-    "state": "active",
-    "recommended_successor": "T3",
-    "requires_operator_authority": false,
-    "scope": [
-      "checkpoint and revalidate current browser readiness before G1",
-      "run exactly six approved public searches across two windows at least 30 minutes apart",
-      "preserve one active query, 60-second spacing, no retry, and paid fallback disabled"
-    ]
-  },
-  "live_cases": [],
+    "next_action": {
+      "state": "awaiting_gate",
+      "recommended_successor": "operator_decision",
+      "requires_operator_authority": true,
+      "scope": [
+      "authorize a separate agent-browser isolation repair outside Plan 0019",
+      "or cancel the remaining G1 matrix without weakening private-display acceptance",
+      "do not run Window B, T4, installation, canary, or soak while blocked"
+      ]
+    },
+    "live_cases": [
+      {
+        "case": "A1",
+        "topic": "openclaw",
+        "depth": "quick",
+        "started_at": "2026-07-31T18:14:14.709572+00:00",
+        "ended_at": "2026-07-31T18:14:57.503949+00:00",
+        "wall_ms": 42794,
+        "requested_url": "https://www.reddit.com/search/?q=openclaw&type=posts&sort=new&t=month",
+        "final_url": "https://www.reddit.com/search/?q=openclaw&type=posts&sort=new&t=month",
+        "profile_id": "last30days-facebook",
+        "session_id": "last30days-reddit",
+        "browser_id": "session:last30days-reddit",
+        "route_id": "guacamole:1",
+        "page_state": "posts",
+        "command_count": 7,
+        "candidate_count": 7,
+        "accepted_count": 3,
+        "rejection_counts": {},
+        "dom_shape_digest": {"search-post-unit": 3},
+        "manual_sample": {
+          "sampled": 3,
+          "relevant": 3,
+          "promoted": 0
+        },
+        "items": [
+          {"reddit_id": "1vbxjno", "subreddit": "founder", "date": "2026-07-31", "score": 2, "num_comments": 0, "url": "https://www.reddit.com/r/founder/comments/1vbxjno/run_claude_code_openclaw_for_free_using_this/"},
+          {"reddit_id": "1vbxhbn", "subreddit": "openclaw", "date": "2026-07-31", "score": 1, "num_comments": 0, "url": "https://www.reddit.com/r/openclaw/comments/1vbxhbn/have_setup_openclaw_in_my_vps_via_coolify_to/"},
+          {"reddit_id": "1vbxc41", "subreddit": "IndiaFinance", "date": "2026-07-31", "score": 1, "num_comments": 2, "url": "https://www.reddit.com/r/IndiaFinance/comments/1vbxc41/sharing_my_openclaw_setup_to_simplify_my_life/"}
+        ]
+      },
+      {
+        "case": "A2",
+        "topic": "agent browser",
+        "depth": "quick",
+        "started_at": "2026-07-31T18:15:50.013649+00:00",
+        "ended_at": "2026-07-31T18:16:18.874720+00:00",
+        "wall_ms": 28861,
+        "requested_url": "https://www.reddit.com/search/?q=agent+browser&type=posts&sort=new&t=month",
+        "final_url": "",
+        "profile_id": "last30days-facebook",
+        "session_id": "last30days-reddit",
+        "browser_id": "session:last30days-reddit",
+        "route_id": "remote-headed-view",
+        "page_state": "checkpoint_required",
+        "error_type": "checkpoint_required",
+        "command_count": 5,
+        "candidate_count": 0,
+        "accepted_count": 0,
+        "rejection_counts": {},
+        "retried": false
+      },
+      {
+        "case": "A3",
+        "topic": "zzqv-no-such-topic-20260731",
+        "depth": "quick",
+        "started_at": "2026-07-31T18:17:11.637186+00:00",
+        "ended_at": "2026-07-31T18:17:50.530178+00:00",
+        "wall_ms": 38893,
+        "requested_url": "https://www.reddit.com/search/?q=zzqv-no-such-topic-20260731&type=posts&sort=new&t=month",
+        "final_url": "https://www.reddit.com/search/?q=zzqv-no-such-topic-20260731&type=posts&sort=new&t=month",
+        "profile_id": "last30days-facebook",
+        "session_id": "last30days-reddit",
+        "browser_id": "session:last30days-reddit",
+        "route_id": "remote-headed-view",
+        "page_state": "extraction_empty",
+        "error_type": "extraction_empty",
+        "command_count": 6,
+        "candidate_count": 0,
+        "accepted_count": 0,
+        "rejection_counts": {},
+        "verified_no_results": false,
+        "retried": false
+      }
+    ],
+    "t3_window_a": {
+      "status": "failed_closed",
+      "query_count": 3,
+      "query_start_gaps_seconds": [95.304, 81.624],
+      "single_active_query": true,
+      "paid_fallback_enabled": false,
+      "automatic_retries": 0,
+      "window_completed_at": "2026-07-31T18:17:50.530178+00:00",
+      "post_window_runtime": {
+        "session_id": "last30days-reddit",
+        "profile_id": "last30days-facebook",
+        "browser_id": "session:last30days-reddit",
+        "route_id": "guacamole:1",
+        "browser_health": "ready",
+        "tab_count": 1,
+        "requested_display_isolation": "private_virtual_display",
+        "observed_display_isolation": "shared_display",
+        "isolation_match": false
+      },
+      "hard_stop": "live browser isolation contradicted the approved access plan",
+      "cleanup": {
+        "named_session_close_success": true,
+        "remaining_session_count": 0,
+        "remaining_matching_browser_count": 0,
+        "remaining_reddit_tab_count": 0
+      },
+      "window_b_started": false
+    },
   "canary": null,
   "soak": null,
   "independent_review": null

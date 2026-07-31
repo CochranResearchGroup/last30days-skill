@@ -48,6 +48,11 @@ not acceptance evidence.
 - G1 preflight passed on 2026-07-31: successful results now expose bounded
   command/page-state diagnostics, all deterministic gates remain green, and
   current doctors/access-plan evidence is ready with no plan session or lease.
+- G1 Window A ran exactly three spaced, non-retried public searches. A1 yielded
+  three relevant posts, A2 returned `checkpoint_required`, and A3 returned
+  truthful `extraction_empty`. Post-window status then exposed a hard isolation
+  mismatch: the private-display launch request produced `shared_display`.
+  Window B did not start, and the named session/browser/tab were closed cleanly.
 
 ## Authority And Gates
 
@@ -742,8 +747,67 @@ Next action:
   `zzqv-no-such-topic-20260731` quick; then hold Window B until at least 30
   minutes after Window A completes.
 
+### Checkpoint P0019-C08 | 2026-07-31
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `active -> awaiting_gate`; T3 Window A `active -> failed_closed`.
+
+Progress classification:
+
+- `regression`
+
+Owned changes:
+
+- ran exactly Window A's three public quick searches with one active query,
+  95.304-second and 81.624-second start gaps, paid fallback disabled, and zero
+  retries;
+- recorded bounded normalized outcomes and a three-item manual sample;
+- inspected the plan-owned live session after the window and found one browser
+  plus one tab but a display-isolation contradiction;
+- stopped before Window B and closed only `last30days-reddit`, leaving zero
+  matching sessions, browsers, or Reddit tabs.
+
+Validation evidence:
+
+- A1 `openclaw`: three of seven candidates accepted in 42.794 seconds; all
+  sampled items were relevant, non-promoted `search-post-unit` results;
+- A2 `agent browser`: typed `checkpoint_required` in 28.861 seconds after five
+  commands, with no extraction or retry;
+- A3 improbable topic: typed `extraction_empty` in 38.893 seconds after six
+  commands, explicitly not verified negative coverage and not retried;
+- all queries used profile `last30days-facebook`, session
+  `last30days-reddit`, and one active query;
+- post-window status reported the requested `private_virtual_display` browser
+  as `shared_display` on route `guacamole:1`; cleanup then reported
+  `closed=true` and zero plan resources.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active concurrency remained one.
+
+Graphiti write status:
+
+- not written; the source-backed plan, runbook, and machine-readable receipt
+  are the durable incident evidence.
+
+Authority classification:
+
+- `scope_expansion`; repairing agent-browser is an explicit non-goal, while
+  accepting `shared_display` would weaken the approved isolation criterion.
+
+Next action:
+
+- obtain operator direction to authorize a separate bounded agent-browser
+  isolation repair or cancel the remaining Plan 0019 matrix;
+- do not run Window B, T4, installation, canary, soak, push, tag, or release.
+
 ## Best Next Action
 
-Execute T2 against a controlled fake `agent-browser` subprocess. Then
-checkpoint before crossing the already-authorized G1 boundary, verify current
-readiness again, and preserve the exact six-case/no-retry traffic ceiling.
+Resolve the G1 isolation hard stop without weakening the private-display
+criterion. A repair requires separate scope because modifying agent-browser is
+a Plan 0019 non-goal. Until then, keep Window B and T4-T7 closed.

@@ -5295,3 +5295,60 @@ Next Bounded Action:
   `zzqv-no-such-topic-20260731` at quick depth with starts at least 60 seconds
   apart and no retries;
 - hold Window B until at least 30 minutes after Window A completes.
+
+## Turn 81 | 2026-07-31
+
+Focus: execute Plan 0019 G1 Window A and fail closed on the observed live
+display-isolation contradiction.
+
+Authority Consulted:
+
+- operator-approved G1 and checkpoint P0019-C07;
+- exact T3 query, spacing, concurrency, retry, acceptance, and hard-stop bounds;
+- current post-window agent-browser session/browser/tab state.
+
+Decisions And Changes:
+
+- ran exactly three Window A queries with one active query, paid fallback off,
+  and no retries;
+- accepted A1's bounded public yield, recorded A2's browser challenge, and
+  recorded A3's truthful non-success without fabricating negative coverage;
+- stopped before Window B after live status contradicted the requested
+  private-display isolation;
+- closed only named session `last30days-reddit` and verified that its browser,
+  route lease, and Reddit tab were gone.
+
+Validation Evidence:
+
+- query-start gaps were 95.304 and 81.624 seconds;
+- A1 returned three of seven candidates in 42.794 seconds, with a three-item
+  sample that was 100% relevant and contained no promoted unit;
+- A2 returned `checkpoint_required` in 28.861 seconds after five commands;
+- A3 returned `extraction_empty` in 38.893 seconds after six commands and was
+  not marked verified no-results;
+- the single retained session had one browser and one tab, but reported
+  `shared_display` despite the required/requested `private_virtual_display`;
+- cleanup returned `closed=true`; subsequent status reports zero matching
+  session, browser, and Reddit tab.
+
+State Movement:
+
+- Plan 0019: `active -> awaiting_gate`; T3 Window A `active -> failed_closed`;
+- progress classification: `regression` because the live runtime violated an
+  approved safety posture;
+- authority classification: `scope_expansion` because modifying agent-browser
+  is outside Plan 0019 and weakening private isolation is not authorized.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active concurrency remained one.
+
+Graphiti Write Status:
+
+- not written; checkpoint P0019-C08, this turn, and the receipt are durable.
+
+Next Bounded Action:
+
+- obtain operator direction for a separate bounded agent-browser isolation
+  repair or cancel the remaining matrix;
+- do not run Window B, T4, install/canary/soak, push, tag, or release.
