@@ -5666,3 +5666,52 @@ Next Bounded Action:
 
 - run the read-only install, route, access-plan, session, and source-version
   preflight; launch C1 only if every gate is ready.
+
+## Turn 88 | 2026-07-31
+
+Focus: pass Plan 0021's zero-query readiness gate.
+
+Authority Consulted:
+
+- Plan 0021 checkpoint P0021-C01 and the agent-browser preferred remote-headed
+  posture;
+- current installed last30days and agent-browser runtime read-backs.
+
+Decisions And Changes:
+
+- accepted the required preflight because both authoritative doctors and the
+  access plan independently report the selected browser/profile/route lane
+  ready with no lease conflict;
+- treated the optional browser-capability CLI's self-rejection of documented
+  arguments as an advisory command defect, not contradictory launch evidence;
+- preserved the full query budget and made no runtime mutation.
+
+Validation Evidence:
+
+- install doctor: agent-browser 0.27.0, success, zero issues, runtime converged,
+  patched Chromium ready, zero cleanup candidates;
+- remote-view doctor: overall and remote-control ready, route A available at
+  `guacamole:1` / `:10`, route/display/public ingress ready;
+- access plan: `last30days-facebook`, zero active leases, no duplicate pressure,
+  new remote-headed private-display browser recommended and available;
+- no `last30days-reddit` session exists; installed last30days remains ready at
+  0.2.12/schema 12.
+
+State Movement:
+
+- Plan 0021 preflight `ready -> active`; no query consumed;
+- progress classification: `outcome_progress`;
+- authority classification: `human_gate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; live ownership remains serialized.
+
+Graphiti Write Status:
+
+- pending live outcome closeout.
+
+Next Bounded Action:
+
+- run C1 `openclaw` quick once; continue only after the spacing gate and only
+  if no hard stop fires.

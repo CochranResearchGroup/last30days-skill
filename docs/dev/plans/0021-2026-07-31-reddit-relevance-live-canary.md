@@ -163,3 +163,52 @@ Authority classification:
 
 Next action: run only the read-only preflight; launch C1 only if every gate is
 ready.
+
+### Checkpoint P0021-C02 | 2026-07-31
+
+Plan version: 1
+
+State transition: `ready -> active`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- completed the zero-query read-only live preflight.
+
+Validation evidence:
+
+- agent-browser 0.27.0 install doctor returned `success=true`, zero issues,
+  converged runtimes, a ready patched Chromium manifest, and no resource
+  cleanup candidates;
+- remote-view doctor returned overall, remote-control, route-pool, display
+  access, and public ingress readiness, with route A on `guacamole:1` / `:10`;
+- access-plan selected `last30days-facebook`, `stealthcdp_chromium`,
+  `remote_headed`, `rdp_gateway`, manual desktop control, and private display
+  isolation with zero active leases and no duplicate pressure;
+- no `last30days-reddit` session existed;
+- installed service diagnosis remained ready at 0.2.12/schema 12;
+- the optional browser-capability preflight command rejected its own documented
+  argument form before dispatch, but the required install doctor and access
+  plan independently reported compatible profile and passed validation
+  evidence; no browser or query was launched by that advisory command.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; live ownership remains serialized.
+
+Remaining acceptance criteria:
+
+- C1-C4, manual relevance review, cleanup, receipt, Graphiti, and closeout
+  governance remain.
+
+Graphiti write status:
+
+- pending live outcome closeout.
+
+Authority classification:
+
+- `human_gate`
+
+Next action: run C1 `openclaw` quick once, then preserve at least 60 seconds
+before C2 if no hard stop fires.
