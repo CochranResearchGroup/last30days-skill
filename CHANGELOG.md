@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Opt-in agent-browser Reddit fallback.** Service-owned Reddit acquisition can
+  now run a bounded public post-search DOM routine after empty RSS/Shreddit
+  yield and before the paid ScrapeCreators fallback. The routine uses the
+  broker-selected managed profile, emits canonical normalized posts, performs
+  no account actions, and returns typed navigation, challenge, rate-limit,
+  extraction, and quality failures.
+
 ## [4.0.0] - 2026-07-30
 
 This release makes the independently installed intelligence service and its

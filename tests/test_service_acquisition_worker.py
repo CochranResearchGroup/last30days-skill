@@ -249,6 +249,91 @@ def test_reddit_adapter_returns_public_items_without_paid_fallback(monkeypatch):
     assert paid_calls == []
 
 
+def test_reddit_adapter_uses_enabled_browser_before_paid_fallback(monkeypatch):
+    from lib import reddit, reddit_browser, reddit_public
+
+    monkeypatch.setattr(reddit_public, "search_reddit_public", lambda *_args, **_kwargs: [])
+    browser_calls = []
+    monkeypatch.setattr(
+        reddit_browser,
+        "search_reddit_browser",
+        lambda *_args, **kwargs: browser_calls.append(kwargs) or {"items": [{"id": "RB1"}]},
+    )
+    paid_calls = []
+    monkeypatch.setattr(reddit, "search_reddit", lambda *_args, **_kwargs: paid_calls.append(True))
+
+    result = service_acquisition_worker._reddit_adapter(
+        _request(source="reddit", adapter="reddit_api", work_id="work-reddit-browser", item_limit=3),
+        {
+            "LAST30DAYS_REDDIT_BROWSER": "true",
+            "SCRAPECREATORS_API_KEY": "dummy-test-key",
+        },
+    )
+
+    assert result == {"items": [{"id": "RB1"}], "_cost_cents": 0}
+    assert browser_calls == [{
+        "depth": "quick",
+        "config": {
+            "LAST30DAYS_REDDIT_BROWSER": "true",
+            "SCRAPECREATORS_API_KEY": "dummy-test-key",
+        },
+        "limit": 3,
+    }]
+    assert paid_calls == []
+
+
+def test_reddit_adapter_preserves_browser_failure_without_paid_fallback(monkeypatch):
+    from lib import reddit_browser, reddit_public
+
+    monkeypatch.setattr(reddit_public, "search_reddit_public", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(
+        reddit_browser,
+        "search_reddit_browser",
+        lambda *_args, **_kwargs: {
+            "items": [],
+            "error": "Reddit returned a challenge page",
+            "error_type": "checkpoint_required",
+        },
+    )
+
+    result = service_acquisition_worker._reddit_adapter(
+        _request(source="reddit", adapter="reddit_api", work_id="work-reddit-browser-fail"),
+        {"LAST30DAYS_REDDIT_BROWSER": "true"},
+    )
+
+    assert result["items"] == []
+    assert result["error_type"] == "checkpoint_required"
+    assert result["_cost_cents"] == 0
+
+
+def test_reddit_adapter_uses_paid_fallback_after_empty_browser_yield(monkeypatch):
+    from lib import reddit, reddit_browser, reddit_public
+
+    monkeypatch.setattr(reddit_public, "search_reddit_public", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(
+        reddit_browser,
+        "search_reddit_browser",
+        lambda *_args, **_kwargs: {"items": [], "error_type": "extraction_empty"},
+    )
+    paid_calls = []
+    monkeypatch.setattr(
+        reddit,
+        "search_reddit",
+        lambda *_args, **_kwargs: paid_calls.append(True) or {"items": [{"id": "RP1"}]},
+    )
+
+    result = service_acquisition_worker._reddit_adapter(
+        _request(source="reddit", adapter="reddit_api", work_id="work-reddit-paid"),
+        {
+            "LAST30DAYS_REDDIT_BROWSER": "true",
+            "SCRAPECREATORS_API_KEY": "dummy-test-key",
+        },
+    )
+
+    assert result == {"items": [{"id": "RP1"}], "_cost_cents": 1}
+    assert paid_calls == [True]
+
+
 def test_zero_network_budget_rejects_work_before_adapter_call():
     calls = []
 

@@ -165,7 +165,7 @@ def _youtube_adapter(
 def _reddit_adapter(
     request: contracts.AcquisitionWorkRequest, config: Mapping[str, str]
 ) -> dict[str, Any]:
-    from . import reddit, reddit_public
+    from . import reddit, reddit_browser, reddit_public
 
     bounded = request.item_limit <= _BOUNDED_REDDIT_ITEM_LIMIT
     depth = "quick" if bounded else _depth(request.depth)
@@ -177,8 +177,27 @@ def _reddit_adapter(
     )
     if public_items:
         return {"items": public_items, "_cost_cents": 0}
+    browser_result: dict[str, Any] | None = None
+    browser_enabled = str(config.get("LAST30DAYS_REDDIT_BROWSER") or "").strip().casefold() in {
+        "1", "true", "yes", "on",
+    }
+    if browser_enabled:
+        browser_result = reddit_browser.search_reddit_browser(
+            request.query,
+            request.from_date,
+            request.to_date,
+            depth=depth,
+            config=dict(config),
+            limit=request.item_limit,
+        )
+        if browser_result.get("items"):
+            browser_result["_cost_cents"] = 0
+            return browser_result
     token = config.get("SCRAPECREATORS_API_KEY")
     if not token:
+        if browser_result is not None:
+            browser_result["_cost_cents"] = 0
+            return browser_result
         return {"items": [], "_cost_cents": 0}
     search_options: dict[str, Any] = {}
     if bounded:

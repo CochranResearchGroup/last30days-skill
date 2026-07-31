@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 4
+Plan version: 5
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -94,6 +94,11 @@ but observed zero items. The packet's one-interval ceiling is exhausted.
 Adding a ScrapeCreators credential would add a credential class, while another
 keyless interval would exceed the explicit attempt ceiling; either path is a
 real human gate. Independent acceptance, tagging, and release remain closed.
+
+The operator's 2026-07-31 request to develop an agent-browser-powered Reddit
+post routine authorizes the bounded C22 development packet below. It does not
+authorize another collection interval, installation, service restart,
+credential addition, evaluator run, tag, or release.
 
 ## User Experience Contract
 
@@ -2229,3 +2234,90 @@ Next action or stop reason:
   120-second interval using a previously successful high-yield selector,
   without adding a credential; adding ScrapeCreators instead requires separate
   authorization to configure that credential.
+
+### Execution Packet P0018-C22 | 2026-07-31
+
+Plan version:
+
+- 5
+
+Bounded outcome:
+
+- implement a deterministic agent-browser-powered Reddit post-search adapter
+  that returns the existing normalized Reddit item contract and can be selected
+  as the public adapter's bounded fallback when RSS/Shreddit yields nothing;
+- preserve the current public-first and paid-fallback behavior outside the new
+  browser selection seam.
+
+Current evidence:
+
+- service 0.2.12 completed its authorized public Reddit interval within the
+  worker wall bound but returned a durable zero-item receipt;
+- Facebook and LinkedIn already prove the repo's typed agent-browser workspace,
+  navigation, DOM extraction, quality-gate, and diagnostic pattern;
+- a no-launch agent-browser access plan for target `reddit` selected the
+  existing `last30days-facebook` shared-service profile and a local-headless
+  CDP posture, but Reddit has no dedicated target registration or freshness
+  evidence yet.
+
+Owned write surfaces:
+
+- `skills/last30days/scripts/lib/reddit_browser.py`;
+- the Reddit selection seam in
+  `skills/last30days/scripts/lib/service_acquisition_worker.py`;
+- service version, runtime manifest, and unreleased changelog surfaces for the
+  source-reserved 0.2.13 package;
+- focused Reddit browser and worker tests;
+- `CONFIGURATION.md`, this plan, `ROADMAP.md`, and `RUNBOOK.md`.
+
+Acceptance criteria:
+
+1. fixture-driven tests prove canonical URL, subreddit, author, score, comment
+   count, timestamp, relevance, deduplication, date filtering, and item-limit
+   behavior;
+2. blocked, login, rate-limit, navigation-mismatch, empty-extraction, and
+   malformed agent-browser outputs fail with typed, non-secret diagnostics;
+3. the service adapter remains public-first, invokes the browser routine only
+   after empty keyless yield, and invokes the paid adapter only after empty or
+   unavailable browser yield;
+4. browser work uses the installed agent-browser JSON CLI with caller labels,
+   target `reddit`, one managed session, bounded waits/scrolls, and no direct
+   CDP-port or browser-process discovery;
+5. one public development smoke may prove current Reddit DOM compatibility;
+   it must not create or resume a collection spec, install a service release,
+   or record profile freshness;
+6. targeted tests and the complete deterministic suite pass, and docs describe
+   every new configuration knob.
+
+Non-goals and hard gates:
+
+- no Reddit authentication seeding, credential configuration, private/community
+  access, voting, posting, commenting, messaging, or account mutation;
+- no new collection interval, service install/restart, evaluator/model call,
+  independent acceptance, tag, or release;
+- do not claim durable indexed yield from a standalone browser smoke;
+- stop after one public smoke, on any checkpoint/challenge, or if the routine
+  cannot remain inside the existing 120-second acquisition wall.
+
+Execution bounds and delegation receipt:
+
+- active-agent concurrency: one;
+- work-unit attempts: one implementation pass and one remediation pass;
+- live browser smokes: at most one query and one managed session;
+- review/rework cycles: one;
+- delegation: `not_spawned`; the repo's CodeGraph policy requires direct
+  structural exploration, the write surfaces are tightly coupled, and the
+  active Plan 0018 lane fixes concurrency at one.
+
+Authority classification:
+
+- `inherited_authority` for implementation, fixture validation, documentation,
+  and one public read-only browser smoke because they preserve the approved
+  Reddit source, profile class, public-data boundary, and resource ceiling;
+- `human_gate` remains in force for another timer interval, any new credential
+  class, install/restart, evaluator, tag, or release.
+
+Terminal condition:
+
+- checkpoint with either validated source-ready implementation plus explicit
+  live-smoke status, or a typed blocker and no production/runtime mutation.

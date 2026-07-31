@@ -195,7 +195,7 @@ The project-scoped file is the cleanest pattern for **per-client setups**: drop 
 
 | Source | Key(s) | Required for | Free tier |
 |---|---|---|---|
-| Reddit (public) | none | always on | yes |
+| Reddit (public) | none; optional `LAST30DAYS_REDDIT_BROWSER=1` plus `agent-browser` | RSS/Shreddit is always on; browser DOM fallback is opt-in | yes |
 | Hacker News | none | always on | yes |
 | Polymarket | none | always on | yes |
 | GitHub | `gh` CLI installed (uses your GitHub auth) | always on if `gh` present | yes |
@@ -228,6 +228,19 @@ BRAVE_API_KEY=<your-brave-key>
 # Optional sources
 SCRAPECREATORS_API_KEY=<your-scrapecreators-key>
 INCLUDE_SOURCES=tiktok,instagram
+
+# Reddit stays keyless/public first. Opt in to a bounded agent-browser DOM
+# fallback before the paid ScrapeCreators fallback.
+LAST30DAYS_REDDIT_BROWSER=1
+# LAST30DAYS_REDDIT_BROWSER_PROFILE=last30days-facebook
+# LAST30DAYS_REDDIT_BROWSER_SESSION=last30days-reddit
+# LAST30DAYS_REDDIT_BROWSER_BUILD=stealthcdp_chromium
+# LAST30DAYS_REDDIT_BROWSER_VIEW_PROVIDER=rdp_gateway
+# LAST30DAYS_REDDIT_BROWSER_TIMEOUT=75
+# LAST30DAYS_REDDIT_BROWSER_MAX_RESULTS=10
+# LAST30DAYS_REDDIT_BROWSER_SCROLLS=1
+# LAST30DAYS_REDDIT_BROWSER_INITIAL_WAIT=2
+# LAST30DAYS_REDDIT_BROWSER_SCROLL_WAIT=1.5
 
 # YouTube keeps yt-dlp as its primary path. When a classified transport or
 # bot-check failure exhausts it, auto uses one hidden-RDP stealth Chromium lane.
@@ -282,7 +295,8 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # LAST30DAYS_LINKEDIN_MAX_ACTIONS_PER_MINUTE=6
 # LAST30DAYS_LINKEDIN_DEBUG_DIR=~/.local/state/last30days/linkedin-debug
 
-# The scraper asks agent-browser for an access plan by target identity on every
+# The Reddit, Facebook, and LinkedIn scrapers ask agent-browser for an access
+# plan by target identity on every
 # acquisition. The access plan's retained browserId and sessionName route hints
 # override the optional session values above when a compatible shared profile
 # owner is already live. Route IDs, browser IDs, session names, tabs, and display
@@ -296,6 +310,10 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # URLs, browser/session IDs, routes, displays, tabs, or page data. The live
 # access plan remains authoritative over the recorded file.
 #
+# Reddit remains public-first: RSS/Shreddit runs before the opt-in browser DOM
+# path, and ScrapeCreators remains the final configured fallback. The browser
+# routine searches post results only, emits canonical public post URLs, and
+# performs no account actions.
 # Facebook navigates each query through its Search control or a verified
 # service-owned tab in the broker-selected retained profile.
 # LinkedIn reuses one retained site tab, spaces user-like browser actions by
@@ -306,7 +324,7 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # Debug artifacts contain timings, assertions, counts, and item lengths only;
 # they exclude cookies, operator URLs, raw HTML, and private page text.
 
-X, Facebook, and LinkedIn browser failures are typed so operator action is unambiguous:
+Reddit, X, Facebook, and LinkedIn browser failures are typed so operator action is unambiguous:
 
 | Error type | Meaning / action |
 |---|---|

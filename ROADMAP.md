@@ -792,11 +792,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- Checkpoint P0018-C21 records the 0.2.12 wall-bound success and zero-yield
-  rejection. The exact one-run authorization is exhausted. Stop for a real
-  human gate before another live interval or before adding the absent
-  ScrapeCreators credential. Keep independent review and `v4.0.0` closed until
-  indexed yield is proven.
+- Execute Plan 0018 packet C22: add and deterministically validate a bounded
+  agent-browser Reddit post-search fallback, with at most one public
+  development smoke. Do not consume another collection interval, add a
+  credential, install/restart the service, or open the independent review and
+  `v4.0.0` gates.
 
 ## Goal-Compatible Plan Conversion
 
