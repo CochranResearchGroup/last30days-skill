@@ -5131,3 +5131,58 @@ Next Bounded Action:
 - execute T1 deterministic adapter expansion and validation without Reddit
   traffic, then execute T2 fake-CLI integration;
 - keep G1/T3 live traffic closed.
+
+## Turn 78 | 2026-07-31
+
+Focus: complete Plan 0019 T1 deterministic Reddit adapter expansion without
+Reddit traffic.
+
+Authority Consulted:
+
+- operator-approved Plan 0019 and checkpoint P0019-C04;
+- TDD, agent-browser, runtime packaging, validation, and plan-authority
+  contracts;
+- current source blast radius and checked service runtime manifest.
+
+Decisions And Changes:
+
+- expanded fixture coverage across three supported DOM shapes, canonical
+  identity, engagement/date normalization, malformed and promoted units,
+  page-state failures, subprocess/runtime failures, and depth ceilings;
+- changed the browser request to private virtual-display isolation and bounded
+  extraction to 80 candidates;
+- required valid timestamps, titles, and subreddits before accepting an item;
+- preserved only safe typed browser diagnostics at the paid-fallback seam;
+- refreshed the runtime manifest and aligned the authority test with both
+  roadmap-declared open plans.
+
+Validation Evidence:
+
+- 45 Reddit adapter tests and 57 combined adapter/worker tests pass;
+- Python compilation, runtime-package/lifecycle tests, reproducible runtime
+  build, and installable Skill build pass;
+- the full 2,378-test Python collection exits zero and the Go MCP suite passes;
+- `git diff --check` and the plan-authority audit pass with zero issues;
+- zero Reddit requests, browser launches, collection attempts, installs,
+  restarts, credentials, paid calls, or model calls occurred.
+
+State Movement:
+
+- Plan 0019 T1: `ready -> passed`; plan remains `active`;
+- progress classification: `outcome_progress`;
+- authority classification: `inherited_authority`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active concurrency remained one.
+
+Graphiti Write Status:
+
+- deferred; checkpoint P0019-C05, this runbook entry, and the JSON receipt are
+  the durable evidence surfaces.
+
+Next Bounded Action:
+
+- execute T2 against a controlled fake `agent-browser` subprocess without
+  Reddit traffic;
+- keep G1/T3 live traffic closed until the T2 checkpoint.

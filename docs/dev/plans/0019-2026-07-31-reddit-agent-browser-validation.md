@@ -37,6 +37,10 @@ not acceptance evidence.
 - T0 passed on 2026-07-31 after Docker recovered without a host restart and
   the plan-owned stale browser had been closed. All required readiness
   surfaces are current and mutually consistent; no Reddit query has run.
+- T1 passed on 2026-07-31 with 45 adapter tests, 57 combined adapter/worker
+  tests, the complete 2,378-test Python collection, runtime-package/build
+  checks, the Go MCP suite, compilation, diff, and authority gates green. No
+  Reddit traffic ran.
 
 ## Authority And Gates
 
@@ -558,8 +562,66 @@ Next action:
 - execute T1 deterministic adapter expansion without Reddit traffic, then T2
   fake-CLI contract validation; keep G1/T3 closed.
 
+### Checkpoint P0019-C05 | 2026-07-31
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `active -> active`; T1 `ready -> passed`.
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- expanded the Reddit adapter's fixture matrix across all supported DOM
+  shapes, normalization gates, typed page/runtime failures, depth ceilings,
+  and caller/access-plan posture;
+- enforced private virtual-display isolation, bounded candidate accumulation,
+  valid timestamps/titles/subreddits, promoted-unit rejection, and truthful
+  verified-no-results diagnostics;
+- preserved a safe typed browser outcome at the paid-fallback seam and
+  refreshed the service runtime manifest;
+- aligned the current-repository authority assertion with open Plans 0018 and
+  0019;
+- made no Reddit request, browser launch, service install/restart, collection
+  attempt, credential, paid-source call, or model call.
+
+Validation evidence:
+
+- 45 Reddit adapter tests and 57 combined adapter/worker tests pass;
+- Python compilation, `git diff --check`, runtime-package and lifecycle tests,
+  reproducible service-runtime build, and installable Skill build pass;
+- the complete Python suite collected 2,378 tests and exited zero; the complete
+  Go MCP suite passes;
+- the plan-authority audit reports `status=passed`, zero issues, and the two
+  roadmap-declared open plans.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the plan fixes active concurrency at one and all work was
+  performed by the primary agent.
+
+Graphiti write status:
+
+- deferred; the plan, runbook, and machine-readable receipt are the current
+  source-backed evidence surfaces.
+
+Authority classification:
+
+- `inherited_authority`
+
+Next action:
+
+- execute T2 against a controlled fake `agent-browser` subprocess without
+  Reddit traffic; keep G1/T3 closed until the T2 checkpoint.
+
 ## Best Next Action
 
-Implement and run T0-T2 only after the operator authorizes execution of this
-plan. Return at G1 with deterministic evidence and the exact six-case query
-labels for approval before generating more Reddit traffic.
+Execute T2 against a controlled fake `agent-browser` subprocess. Then
+checkpoint before crossing the already-authorized G1 boundary, verify current
+readiness again, and preserve the exact six-case/no-retry traffic ceiling.

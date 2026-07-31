@@ -801,11 +801,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- Plan 0019 T0 passed after Docker recovered without a host restart. Current
-  install doctor, remote-view doctor, route pool, browser build, access plan,
-  installed service, and baseline corpus agree. Execute T1-T2 deterministically
-  without Reddit traffic; T3 live queries, credentials, push, tag, and release
-  remain gated.
+- Plan 0019 T0 and T1 pass. The expanded deterministic adapter/worker matrix,
+  complete Python and Go suites, runtime packaging, artifact builds, and
+  authority audit are green without Reddit traffic. Execute T2 against a
+  controlled fake CLI; T3 live queries, credentials, push, tag, and release
+  remain gated until the next checkpoint.
 
 ## Goal-Compatible Plan Conversion
 

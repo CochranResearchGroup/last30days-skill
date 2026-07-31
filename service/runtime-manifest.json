@@ -212,7 +212,7 @@
     },
     {
       "path": "scripts/lib/reddit_browser.py",
-      "sha256": "664497542bc6132631a2b84728771c9a1b83288bc81faf3d21f8af1f53f4a099",
+      "sha256": "4c7d2c0911a37980361992c1cd69e28364785803eb7c930ed022bc56aeeca7f6",
       "source": "skills/last30days/scripts/lib/reddit_browser.py"
     },
     {
@@ -277,7 +277,7 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "c998ae94c1882b8d90505fbbbe5665fff813b8664834bc2ca0306d608391a390",
+      "sha256": "424dbf9aab2965df170323700b5772fd4b2242700d08450565256562be05e57d",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {

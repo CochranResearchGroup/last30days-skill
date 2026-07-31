@@ -330,8 +330,56 @@ def test_reddit_adapter_uses_paid_fallback_after_empty_browser_yield(monkeypatch
         },
     )
 
-    assert result == {"items": [{"id": "RP1"}], "_cost_cents": 1}
+    assert result == {
+        "items": [{"id": "RP1"}],
+        "diagnostics": {
+            "browser_fallback": {
+                "error_type": "extraction_empty",
+                "failure_stage": "adapter_result",
+            }
+        },
+        "_cost_cents": 1,
+    }
     assert paid_calls == [True]
+
+
+def test_reddit_paid_fallback_preserves_typed_browser_outcome_without_raw_error(
+    monkeypatch,
+):
+    from lib import reddit, reddit_browser, reddit_public
+
+    monkeypatch.setattr(reddit_public, "search_reddit_public", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(
+        reddit_browser,
+        "search_reddit_browser",
+        lambda *_args, **_kwargs: {
+            "items": [],
+            "error": "raw challenge page text must not survive",
+            "error_type": "checkpoint_required",
+            "diagnostics": {"failure_stage": "navigation", "raw_dom": "secret"},
+        },
+    )
+    monkeypatch.setattr(
+        reddit,
+        "search_reddit",
+        lambda *_args, **_kwargs: {"items": [{"id": "RP1"}]},
+    )
+
+    result = service_acquisition_worker._reddit_adapter(
+        _request(source="reddit", adapter="reddit_api", work_id="work-reddit-audit"),
+        {
+            "LAST30DAYS_REDDIT_BROWSER": "true",
+            "SCRAPECREATORS_API_KEY": "dummy-test-key",
+        },
+    )
+
+    assert result["items"] == [{"id": "RP1"}]
+    assert result["diagnostics"]["browser_fallback"] == {
+        "error_type": "checkpoint_required",
+        "failure_stage": "navigation",
+    }
+    assert "raw challenge" not in repr(result)
+    assert "raw_dom" not in repr(result)
 
 
 def test_zero_network_budget_rejects_work_before_adapter_call():

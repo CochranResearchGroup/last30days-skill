@@ -21,12 +21,20 @@ DEPTH_CONFIG = {
     "default": {"results": 10, "scrolls": 1, "timeout": 75},
     "deep": {"results": 20, "scrolls": 2, "timeout": 110},
 }
+DOM_SHAPES = frozenset({"search-post-unit", "shreddit-post", "article-permalink"})
 
 BrowserWorkspaceRequest = browser_runtime.BrowserWorkspaceRequest
 BrowserWorkspace = browser_runtime.BrowserWorkspace
 BrowserAction = browser_runtime.BrowserAction
 BrowserState = browser_runtime.BrowserState
-RedditBrowserFailure = browser_runtime.FacebookScraperFailure
+
+
+class RedditBrowserFailure(RuntimeError):
+    """Typed terminal failure at the Reddit browser adapter seam."""
+
+    def __init__(self, error_type: str, message: str) -> None:
+        super().__init__(message)
+        self.error_type = error_type
 
 
 PAGE_STATE_SCRIPT = r"""
@@ -35,17 +43,19 @@ PAGE_STATE_SCRIPT = r"""
   const lower = text.toLowerCase();
   const url = location.href;
   const search = new URL(url).searchParams;
+  const hasPosts = Boolean(document.querySelector('shreddit-post, [data-testid="search-post-unit"], article a[href*="/comments/"]'));
   return {
     url,
     title: document.title || '',
     query_value: search.get('q') || '',
-    has_posts: Boolean(document.querySelector('shreddit-post, [data-testid="search-post-unit"], article a[href*="/comments/"]')),
+    has_posts: hasPosts,
     no_results: /(?:hm\.\.\. we couldn.t find any results|no results)/i.test(text),
     login_page: /\/login\/?(?:[?#]|$)/i.test(location.pathname),
     checkpoint: /(?:captcha|security check|verify you are human)/i.test(lower),
     rate_limited: /(?:whoa there, pardner|you.re doing that too much|too many requests)/i.test(lower),
     rate_limit_reason: lower.includes('whoa there, pardner') ? 'whoa_there' : '',
     error_page: /(?:something went wrong|our cdn was unable|upstream connect error)/i.test(lower),
+    interstitial: !hasPosts && /(?:before you continue to reddit|review your privacy choices|consent to continue)/i.test(lower),
   };
 })()
 """
@@ -68,6 +78,14 @@ EXTRACT_SCRIPT = r"""
     const body = post.querySelector('[slot="text-body"], [slot="post-body"], shreddit-post-text-body');
     const counters = [...post.querySelectorAll('[data-testid="search-counter-row"] faceplate-number')];
     const created = post.getAttribute('created-timestamp') || post.querySelector('time[datetime]')?.getAttribute('datetime') || '';
+    const promoted = post.hasAttribute('promoted') ||
+      post.getAttribute('data-promoted') === 'true' ||
+      Boolean(post.querySelector('[aria-label*="promoted" i], [data-testid*="promoted" i]')) ||
+      context?.post?.isPromoted === true;
+    const dom_shape = post.matches('shreddit-post') ? 'shreddit-post' : 'search-post-unit';
+    const crosspost = post.hasAttribute('is-crosspost') ||
+      post.getAttribute('post-type') === 'crosspost' ||
+      Boolean(post.querySelector('shreddit-post[slot="crosspost"], [data-testid*="crosspost" i]'));
     candidates.push({
       title: clean(title),
       text: clean(body?.innerText || ''),
@@ -77,6 +95,9 @@ EXTRACT_SCRIPT = r"""
       created_at: clean(created),
       score: clean(post.getAttribute('score') || counters[0]?.getAttribute('number') || ''),
       comment_count: clean(post.getAttribute('comment-count') || counters[1]?.getAttribute('number') || ''),
+      promoted,
+      dom_shape,
+      crosspost,
     });
   }
   if (!candidates.length) {
@@ -95,6 +116,9 @@ EXTRACT_SCRIPT = r"""
         created_at: clean(time?.getAttribute('datetime') || ''),
         score: '',
         comment_count: '',
+        promoted: /(?:^|\s)promoted(?:\s|$)/i.test(clean(article.innerText || '')),
+        dom_shape: 'article-permalink',
+        crosspost: false,
       });
     }
   }
@@ -115,6 +139,7 @@ class RedditPageState:
     rate_limited: bool = False
     rate_limit_reason: str = ""
     error_page: bool = False
+    interstitial: bool = False
 
 
 @dataclass
@@ -124,6 +149,7 @@ class RedditDiagnostics:
     candidate_count: int = 0
     duration_ms: int = 0
     failure_stage: str = "workspace_acquisition"
+    verified_no_results: bool = False
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -131,6 +157,7 @@ class RedditDiagnostics:
             "rejection_counts": dict(self.rejection_counts),
             "accepted_count": self.accepted_count,
             "duration_ms": self.duration_ms,
+            "verified_no_results": self.verified_no_results,
         }
 
 
@@ -171,7 +198,7 @@ def browser_request(config: dict[str, Any], *, timeout: int) -> BrowserWorkspace
         agent_name="reddit-scraper",
         task_name="reddit-post-search",
         target_service_id="reddit",
-        display_isolation="shared_display",
+        display_isolation="private_virtual_display",
     )
 
 
@@ -205,6 +232,7 @@ class RedditBrowserScraper:
             diagnostics.failure_stage = "navigation"
             page = self._navigate(workspace, topic)
             if page.no_results:
+                diagnostics.verified_no_results = True
                 diagnostics.duration_ms = _elapsed_ms(started)
                 return self._result([], None, None, workspace, page, diagnostics)
             if self.initial_wait:
@@ -218,6 +246,7 @@ class RedditBrowserScraper:
                 if self.scroll_wait:
                     time.sleep(self.scroll_wait)
                 raw_candidates.extend(self._extract(workspace))
+                raw_candidates = raw_candidates[:80]
             if not raw_candidates:
                 raise RedditBrowserFailure(
                     "extraction_empty",
@@ -236,7 +265,7 @@ class RedditBrowserScraper:
                     diagnostics,
                 )
             return self._result(items, None, None, workspace, page, diagnostics)
-        except RedditBrowserFailure as exc:
+        except (RedditBrowserFailure, browser_runtime.FacebookScraperFailure) as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
             return self._result(
                 [], exc.error_type, str(exc), workspace, page, diagnostics
@@ -269,6 +298,10 @@ class RedditBrowserScraper:
             )
         if page.error_page:
             raise RedditBrowserFailure("search_unavailable", "Reddit returned an error page")
+        if page.interstitial:
+            raise RedditBrowserFailure(
+                "interstitial_detected", "Reddit returned a blocking consent interstitial"
+            )
         if not _page_matches_query(page, topic):
             raise RedditBrowserFailure(
                 "navigation_mismatch",
@@ -283,7 +316,7 @@ class RedditBrowserScraper:
             raise RedditBrowserFailure(
                 "agent_browser_error", "agent-browser returned malformed Reddit extraction data"
             )
-        return [item for item in candidates if isinstance(item, dict)]
+        return [item for item in candidates if isinstance(item, dict)][:80]
 
     def _quality_gate(
         self,
@@ -297,6 +330,9 @@ class RedditBrowserScraper:
         items: list[dict[str, Any]] = []
         seen: set[str] = set()
         for raw in raw_candidates:
+            if bool(raw.get("promoted")):
+                diagnostics.rejection_counts["promoted"] += 1
+                continue
             canonical = _canonical_post_url(str(raw.get("permalink") or ""))
             reddit_id = _reddit_id(canonical or "")
             if not canonical or not reddit_id:
@@ -305,21 +341,33 @@ class RedditBrowserScraper:
             if reddit_id in seen:
                 diagnostics.rejection_counts["duplicate"] += 1
                 continue
-            seen.add(reddit_id)
             title = _clean(str(raw.get("title") or ""))
             text = _clean(str(raw.get("text") or ""))
+            if not title:
+                diagnostics.rejection_counts["missing_title"] += 1
+                continue
             relevance = token_overlap_relevance(topic, f"{title} {text}".strip())
             if relevance <= 0:
                 diagnostics.rejection_counts["off_topic"] += 1
                 continue
             published_at = _timestamp(str(raw.get("created_at") or ""))
-            date = published_at.date().isoformat() if published_at else None
-            if date and not (from_date <= date <= to_date):
+            if published_at is None:
+                diagnostics.rejection_counts["invalid_timestamp"] += 1
+                continue
+            date = published_at.date().isoformat()
+            if not (from_date <= date <= to_date):
                 diagnostics.rejection_counts["outside_date_range"] += 1
                 continue
             subreddit = str(raw.get("subreddit") or "").strip()
             if subreddit.casefold().startswith("r/"):
                 subreddit = subreddit[2:]
+            if not subreddit:
+                match = re.search(r"/r/([^/]+)/comments/", canonical, re.IGNORECASE)
+                subreddit = unquote(match.group(1)) if match else ""
+            if not subreddit:
+                diagnostics.rejection_counts["missing_subreddit"] += 1
+                continue
+            seen.add(reddit_id)
             items.append(
                 {
                     "id": f"R{reddit_id}",
@@ -336,6 +384,12 @@ class RedditBrowserScraper:
                     "why_relevant": f"Reddit post: {title[:80]}",
                     "metadata": {
                         "extraction": "agent-browser-dom-v1",
+                        "dom_shape": (
+                            str(raw.get("dom_shape"))
+                            if str(raw.get("dom_shape")) in DOM_SHAPES
+                            else "unknown"
+                        ),
+                        "crosspost": bool(raw.get("crosspost")),
                         "remote_browser": True,
                         "published_at": published_at.isoformat() if published_at else None,
                     },
@@ -397,17 +451,40 @@ def search_reddit_browser(
             "error_type": "agent_browser_missing",
         }
     settings = DEPTH_CONFIG.get(depth, DEPTH_CONFIG["default"])
-    timeout = min(
-        110,
-        int(config.get("LAST30DAYS_REDDIT_BROWSER_TIMEOUT") or settings["timeout"]),
+    timeout = max(
+        1,
+        min(
+            settings["timeout"],
+            int(
+                config.get("LAST30DAYS_REDDIT_BROWSER_TIMEOUT")
+                or settings["timeout"]
+            ),
+        ),
+    )
+    result_limit = max(
+        1,
+        min(
+            settings["results"],
+            int(
+                limit
+                if limit is not None
+                else config.get("LAST30DAYS_REDDIT_BROWSER_MAX_RESULTS")
+                or settings["results"]
+            ),
+        ),
+    )
+    scrolls = max(
+        0,
+        min(
+            settings["scrolls"],
+            int(config.get("LAST30DAYS_REDDIT_BROWSER_SCROLLS") or settings["scrolls"]),
+        ),
     )
     scraper = RedditBrowserScraper(
         CliAgentBrowserClient(timeout=timeout),
         browser_request(config, timeout=timeout),
-        limit=limit or int(
-            config.get("LAST30DAYS_REDDIT_BROWSER_MAX_RESULTS") or settings["results"]
-        ),
-        scrolls=int(config.get("LAST30DAYS_REDDIT_BROWSER_SCROLLS") or settings["scrolls"]),
+        limit=result_limit,
+        scrolls=scrolls,
         initial_wait=float(config.get("LAST30DAYS_REDDIT_BROWSER_INITIAL_WAIT") or 2.0),
         scroll_wait=float(config.get("LAST30DAYS_REDDIT_BROWSER_SCROLL_WAIT") or 1.5),
     )
@@ -431,6 +508,7 @@ def _page_state(raw: dict[str, Any]) -> RedditPageState:
         rate_limited=bool(raw.get("rate_limited")),
         rate_limit_reason=str(raw.get("rate_limit_reason") or ""),
         error_page=bool(raw.get("error_page")),
+        interstitial=bool(raw.get("interstitial")),
     )
 
 

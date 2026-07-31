@@ -216,6 +216,29 @@ def _reddit_adapter(
         token=token,
         **search_options,
     )
+    if browser_result is not None:
+        browser_diagnostics = browser_result.get("diagnostics")
+        browser_diagnostics = (
+            browser_diagnostics if isinstance(browser_diagnostics, Mapping) else {}
+        )
+        paid_diagnostics = result.get("diagnostics")
+        paid_diagnostics = (
+            dict(paid_diagnostics) if isinstance(paid_diagnostics, Mapping) else {}
+        )
+        browser_error_type = _safe_error_code(browser_result.get("error_type"))
+        if browser_error_type is None:
+            browser_error_type = (
+                "verified_no_results"
+                if browser_diagnostics.get("verified_no_results") is True
+                else "empty_result"
+            )
+        paid_diagnostics["browser_fallback"] = {
+            "error_type": browser_error_type,
+            "failure_stage": _safe_failure_stage(
+                browser_diagnostics.get("failure_stage")
+            ),
+        }
+        result["diagnostics"] = paid_diagnostics
     result["_cost_cents"] = 1
     return result
 
