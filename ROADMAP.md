@@ -797,17 +797,13 @@ Active Plan:
   plus Plans 0015 and 0016 and the S06 client-Skill redesign are accepted
   without moving implementation modules or migrating schema 12; S07 is the
   remaining transition packet.
-- `docs/dev/plans/0021-2026-07-31-reddit-relevance-live-canary.md` is the
-  operator-approved four-query successor to Plan 0020. It validates current
-  public Reddit relevance without installing 0.2.13 or authorizing collection,
-  persistence, push, tag, publication, or release.
 
 Next Bounded Action:
 
-- Execute Plan 0021's read-only preflight and, only if ready, its four
-  serialized public Reddit queries. Close the named browser lane afterward and
-  keep source service 0.2.13 uninstalled. Plan 0018 S07 resumes after the
-  canary outcome; push, tag, publication, and release remain separately gated.
+- Resume Plan 0018 at S07. Plan 0021 cancelled after C2 began four seconds
+  before its minimum start-spacing gate; C3/C4 were not run, cleanup passed,
+  and source service 0.2.13 remains uninstalled. Any new Reddit validation,
+  push, tag, publication, or release requires separate authority.
 
 ## Goal-Compatible Plan Conversion
 

@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "plan": {
+    "id": "0021",
+    "version": 1,
+    "state": "cancelled",
+    "authority": "four serialized public Reddit queries, one attempt each, no retries"
+  },
+  "checkpoint": {
+    "id": "P0021-C03",
+    "recorded_at": "2026-07-31T15:54:00-05:00",
+    "status": "failed_closed",
+    "progress_classification": "regression"
+  },
+  "source": {
+    "relevance_implementation_commit": "2af08b2",
+    "planning_commit": "cf76996",
+    "preflight_commit": "1d9590d",
+    "service_version": "0.2.13",
+    "installed": false
+  },
+  "preflight": {
+    "status": "passed",
+    "agent_browser_version": "0.27.0",
+    "install_doctor_success": true,
+    "install_doctor_issue_count": 0,
+    "runtime_convergence": "converged",
+    "remote_view_status": "ready",
+    "remote_control_status": "ready",
+    "route_pool_entry_id": "guacamole-rdp-a",
+    "route_id": "guacamole:1",
+    "display_name": ":10",
+    "selected_profile_id": "last30days-facebook",
+    "active_profile_leases": 0,
+    "duplicate_pressure": false,
+    "installed_service_version": "0.2.12",
+    "installed_schema_version": 12,
+    "advisory_browser_capability_preflight": "documented CLI argument form rejected before dispatch; install doctor and access plan independently reported passed capability evidence"
+  },
+  "budget": {
+    "authorized_queries": 4,
+    "consumed_queries": 2,
+    "unused_queries_expired": 2,
+    "automatic_retries": 0,
+    "maximum_concurrency": 1,
+    "required_start_spacing_seconds": 60,
+    "observed_c1_c2_start_spacing_seconds": 56
+  },
+  "cases": [
+    {
+      "case": "C1",
+      "topic": "openclaw",
+      "depth": "quick",
+      "status": "passed",
+      "started_at": "2026-07-31T15:52:03-05:00",
+      "ended_at": "2026-07-31T15:52:50-05:00",
+      "duration_ms": 47307,
+      "page_state": "posts",
+      "candidate_count": 7,
+      "accepted_count": 3,
+      "rejection_counts": {
+        "off_topic": 3
+      },
+      "manual_relevance": {
+        "sampled": 3,
+        "relevant": 3,
+        "percent": 100.0
+      },
+      "accepted_reddit_ids": [
+        "1vbyrc7",
+        "1vbxjno",
+        "1vbxhbn"
+      ]
+    },
+    {
+      "case": "C2",
+      "topic": "AI agents",
+      "depth": "quick",
+      "status": "invalid_timing",
+      "started_at": "2026-07-31T15:52:59-05:00",
+      "ended_at": "2026-07-31T15:53:37-05:00",
+      "duration_ms": 37766,
+      "page_state": "posts",
+      "error_type": "quality_gate_failed",
+      "candidate_count": 4,
+      "accepted_count": 0,
+      "rejection_counts": {
+        "off_topic": 2,
+        "partial_query_match": 2
+      },
+      "synonym_backed_acceptance_observed": false
+    },
+    {
+      "case": "C3",
+      "topic": "agent browser",
+      "depth": "default",
+      "status": "not_run"
+    },
+    {
+      "case": "C4",
+      "topic": "Claude Code",
+      "depth": "quick",
+      "status": "not_run"
+    }
+  ],
+  "hard_stop": {
+    "triggered": true,
+    "reason": "C2 started 56 seconds after C1, violating the 60-second minimum",
+    "remaining_queries_run": false,
+    "retry_authorized": false
+  },
+  "cleanup": {
+    "named_session": "last30days-reddit",
+    "close_success": true,
+    "remaining_matching_sessions": 0,
+    "remaining_matching_browsers": 0,
+    "remaining_reddit_tabs": 0,
+    "remote_view_status": "ready",
+    "route_pool_entry_id": "guacamole-rdp-a",
+    "route_id": "guacamole:1",
+    "route_pool_ready": true
+  },
+  "prohibited_operations": {
+    "service_installs": 0,
+    "service_restarts": 0,
+    "collection_attempts": 0,
+    "persistence_attempts": 0,
+    "credentials_added": 0,
+    "paid_calls": 0,
+    "research_model_calls": 0,
+    "source_changes": 0,
+    "pushes": 0,
+    "tags": 0,
+    "releases": 0
+  },
+  "graphiti": {
+    "group_id": "last30days_skill_main",
+    "status": "pending"
+  },
+  "next_action": "return to Plan 0018 S07; require separate approval for any new Reddit live packet"
+}

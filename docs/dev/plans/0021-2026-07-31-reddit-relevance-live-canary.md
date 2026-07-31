@@ -1,6 +1,6 @@
 # Plan 0021 | Reddit relevance live canary
 
-State: OPEN
+State: CANCELLED
 Roadmap: P07
 Date: 2026-07-31
 Plan version: 1
@@ -212,3 +212,55 @@ Authority classification:
 
 Next action: run C1 `openclaw` quick once, then preserve at least 60 seconds
 before C2 if no hard stop fires.
+
+### Checkpoint P0021-C03 | 2026-07-31
+
+Plan version: 1
+
+State transition: `active -> cancelled`
+
+Progress classification: `regression`
+
+Owned changes:
+
+- ran C1 and C2 through the repaired working-tree adapter;
+- stopped the matrix on the query-start spacing violation;
+- closed and verified cleanup of the named browser lane;
+- recorded the bounded outcome in
+  `docs/dev/notes/0021-reddit-relevance-live-canary-receipt.json`.
+
+Validation evidence:
+
+- C1 `openclaw` started at `2026-07-31T15:52:03-05:00`, completed in
+  47,307 ms, accepted 3/7, and all 3 accepted items were manually relevant;
+- C2 `AI agents` started at `2026-07-31T15:52:59-05:00`, only 56 seconds after
+  C1, violating the 60-second minimum; it completed in 37,766 ms with zero
+  accepted items, two `partial_query_match` rejections, and two `off_topic`
+  rejections;
+- C3 and C4 were not run; two of four query slots expired unused;
+- named-session close returned `closed=true`; grouped session, browser, and
+  Reddit-tab read-backs were empty; remote-view doctor returned ready with
+  route A available on `guacamole:1`;
+- no service install/restart, collection, persistence, credential, paid call,
+  research-model call, source change, push, tag, publication, or release ran.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary agent owned all live work and review.
+
+Remaining acceptance criteria:
+
+- the full four-query canary, C3/C4 false-positive checks, and compliant timing
+  proof remain unverified; this cancelled packet grants no retry authority.
+
+Graphiti write status:
+
+- pending closeout write and verification.
+
+Authority classification:
+
+- `human_gate`
+
+Next action: keep source service 0.2.13 uninstalled and do not spend the expired
+query budget. Return active execution to Plan 0018; any new Reddit canary must
+be separately proposed and approved.

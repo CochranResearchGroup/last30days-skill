@@ -5715,3 +5715,53 @@ Next Bounded Action:
 
 - run C1 `openclaw` quick once; continue only after the spacing gate and only
   if no hard stop fires.
+
+## Turn 89 | 2026-07-31
+
+Focus: fail closed on Plan 0021's query-start spacing violation.
+
+Authority Consulted:
+
+- Plan 0021 checkpoint P0021-C02 and its 60-second minimum start spacing,
+  one-attempt ceiling, hard stops, and cleanup contract;
+- current live adapter results and agent-browser session/route read-backs.
+
+Decisions And Changes:
+
+- accepted C1's clean single-word control result;
+- triggered the hard stop when C2's shell timestamp proved only 56 seconds
+  between starts, four seconds below the committed minimum;
+- did not run C3 or C4 and expired both unused query slots;
+- closed only `last30days-reddit` and preserved service 0.2.13 as uninstalled.
+
+Validation Evidence:
+
+- C1 `openclaw`: 47,307 ms, 7 candidates, 3 accepted, 3/3 manually relevant,
+  3 zero-overlap rejections;
+- C2 `AI agents`: 37,766 ms, 4 candidates, zero accepted, 2
+  `partial_query_match` and 2 `off_topic` rejections; synonym-backed acceptance
+  was not observed;
+- C1/C2 start timestamps were `15:52:03-05:00` and `15:52:59-05:00`;
+- session close returned `closed=true`; no matching session, browser, or Reddit
+  tab remained; route A and remote control returned ready;
+- no install/restart, collection, persistence, credential, paid/model fallback,
+  source change, push, tag, publication, or release occurred.
+
+State Movement:
+
+- Plan 0021 `OPEN -> CANCELLED`; C1 `passed`, C2 `invalid_timing`, C3/C4
+  `not_run`; progress classification `regression`;
+- authority classification: `human_gate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; all live work remained under the primary agent.
+
+Graphiti Write Status:
+
+- pending closeout write and verification.
+
+Next Bounded Action:
+
+- keep source service 0.2.13 uninstalled, return to Plan 0018 S07, and do not
+  retry Reddit live validation without a separately approved packet.
