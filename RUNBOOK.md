@@ -5027,3 +5027,57 @@ Next Bounded Action:
   only `last30days-reddit`, reconcile the installed Guacamole stack, and rerun
   T0 exactly once without Reddit traffic;
 - do not begin T1-T7 under the failed T0 attempt.
+
+## Turn 76 | 2026-07-31
+
+Focus: execute operator-approved Plan 0019 T0-R1 and preserve the hard-stop
+boundary when the host container engine remained unavailable.
+
+Authority Consulted:
+
+- operator approval for T0-R1;
+- Plan 0019 checkpoint P0019-C02;
+- current agent-browser session, browser, resource, access-plan, remote-view,
+  Docker engine, and Docker Desktop backend-log evidence.
+
+Decisions And Changes:
+
+- closed only named session `last30days-reddit` and released its selected
+  profile lease;
+- preserved all unrelated `default`-profile sessions;
+- attempted one non-destructive start of the installed Docker Desktop app;
+- did not run Compose against an unavailable engine and did not rerun T0.
+
+Validation Evidence:
+
+- agent-browser reported `closed=true` for `last30days-reddit`;
+- post-close inventory found zero matching browser processes and the access
+  plan found zero active profile leases;
+- Docker Desktop processes are running, but `docker info` cannot connect;
+- the backend log reports HTTP 503 while waiting for the engine for more than
+  1 hour 52 minutes;
+- zero new Reddit queries, collection attempts, installs, credentials, paid
+  calls, or model calls occurred.
+
+State Movement:
+
+- Plan 0019: `awaiting_gate -> active -> awaiting_gate` at T0-R1;
+- progress classification: `blocker_reduction` because the plan-owned lease
+  conflict was removed and the remaining block is attributed to host Docker;
+- authority classification: `human_gate` because restarting the host-level
+  Docker engine can affect container workloads outside Plan 0019.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active concurrency remained one.
+
+Graphiti Write Status:
+
+- not written; checkpoint P0019-C03 and the updated JSON receipt are durable.
+
+Next Bounded Action:
+
+- obtain explicit authority for T0-R2: restart Docker Desktop once, require
+  engine readiness, reconcile Guacamole, and rerun T0 exactly once without
+  Reddit traffic;
+- keep T1-T7 closed until T0 passes.

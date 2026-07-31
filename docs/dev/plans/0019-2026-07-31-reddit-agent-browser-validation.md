@@ -447,6 +447,60 @@ Next action:
   sessions, close only the plan-owned `last30days-reddit` browser, reconcile
   the Guacamole stack, and rerun T0 once without Reddit traffic.
 
+### Checkpoint P0019-C03 | 2026-07-31
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `awaiting_gate -> active -> awaiting_gate`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Owned changes:
+
+- executed the operator-approved T0-R1 packet once;
+- closed only named session `last30days-reddit`, removing browser PID 1945818
+  and releasing the `last30days-facebook` profile lease;
+- attempted to start the already-installed Docker Desktop application once;
+- made no Reddit request, collection attempt, service install, credential,
+  paid-source call, or model call.
+
+Validation evidence:
+
+- post-close resource inventory reports zero plan-browser processes and the
+  Reddit access plan reports zero active leases plus
+  `defaultAcquisition=launch_new_browser`;
+- the three unrelated `default`-profile sessions remain present and unmodified;
+- Docker Desktop processes are present, but `docker info` remains unable to
+  connect and the host backend log reports HTTP 503 while waiting for the
+  engine for more than 1 hour 52 minutes;
+- Guacamole Compose was not attempted without a ready Docker engine;
+- remote-view readiness therefore remains `blocked` and T0 was not rerun.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active concurrency remained one.
+
+Graphiti write status:
+
+- not written; the plan checkpoint, runbook, and updated JSON receipt are the
+  durable evidence surfaces.
+
+Authority classification:
+
+- `human_gate`
+
+Next action:
+
+- obtain explicit authority for T0-R2 to perform one host-level Docker Desktop
+  engine restart, require `docker info` readiness, reconcile the installed
+  Guacamole stack, and rerun T0 exactly once without Reddit traffic.
+
 ## Best Next Action
 
 Implement and run T0-T2 only after the operator authorizes execution of this

@@ -801,10 +801,12 @@ Active Plan:
 
 Next Bounded Action:
 
-- Plan 0019 T0 attempt 1 failed closed before traffic or mutation. Obtain
-  explicit authority for T0-R1 to preserve unrelated browser sessions, close
-  the plan-owned stale Reddit browser, reconcile the Guacamole stack, and
-  rerun T0 once. T1-T7, credentials, push, tag, and release remain closed.
+- Plan 0019 T0-R1 closed the plan-owned stale Reddit browser and released its
+  profile lease without touching unrelated sessions, then failed closed because
+  Docker Desktop's engine has returned HTTP 503 for more than 1 hour 52
+  minutes. Obtain explicit authority for one host-level Docker Desktop restart
+  under T0-R2 before reconciling Guacamole and rerunning T0. T1-T7,
+  credentials, push, tag, and release remain closed.
 
 ## Goal-Compatible Plan Conversion
 
