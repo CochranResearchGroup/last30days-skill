@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 5
+Plan version: 6
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -68,6 +68,10 @@ software with:
   ownership but returned zero items. Checkpoint P0018-C15 classifies the
   evidence-backed successor as inherited standing authority and freezes the
   remaining outcome work without weakening the independent release gate.
+- Plans 0020-0022 repaired and live-validated the Reddit browser relevance
+  gate: 7/7 accepted posts were manually relevant, multiword partials were
+  rejected, all four calls stayed under 55 seconds, and browser cleanup passed.
+  This proves the adapter candidate, not timer-owned durable publication.
 
 ## Standing Authority And Human Gates
 
@@ -99,6 +103,13 @@ The operator's 2026-07-31 request to develop an agent-browser-powered Reddit
 post routine authorizes the bounded C22 development packet below. It does not
 authorize another collection interval, installation, service restart,
 credential addition, evaluator run, tag, or release.
+
+The operator's later 2026-07-31 instruction authorizes the bounded C24 packet:
+make the service source catalog and per-source access/fallback order user-scope
+configuration, build the resulting successor service, perform one managed
+upgrade/restart, and run one timer-owned public Reddit proof. This authority
+does not add a credential, private source, paid/model call, second interval,
+push, independent acceptance bypass, tag, publication, or release.
 
 ## User Experience Contract
 
@@ -2403,3 +2414,153 @@ Next action or stop reason:
 - require explicit approval before a managed 0.2.13 install/restart and one
   bounded collection interval; keep independent review and release closed
   until durable indexed yield is proven.
+
+### Execution Packet P0018-C24 | 2026-07-31
+
+Plan version:
+
+- 6
+
+Bounded outcome:
+
+- replace the daemon's hard-coded default polling catalog and Reddit-specific
+  fallback selection with one strict user-scope source-policy contract;
+- build the resulting successor service, install it through the managed
+  release transaction, and run exactly one timer-owned public Reddit interval
+  with assessment disabled;
+- accept the packet only if the timer publishes at least one durable item and
+  advances documents/version/index without an agent orchestrating acquisition.
+
+Changed assumption:
+
+- Reddit is one source in a multi-source service; proving its adapter does not
+  justify a source-specific control-plane exception;
+- the effective polled source set and every currently supported service access
+  method/order must be derived from `~/.config/last30days/.env` (or
+  `LAST30DAYS_CONFIG_DIR`) with safe defaults, strict validation, and truthful
+  readiness diagnostics.
+
+Owned write surfaces:
+
+- one shared service-source policy module plus the runtime and isolated worker
+  seams that consume it;
+- focused service runtime/worker/config tests;
+- `service/VERSION`, runtime manifest, unreleased changelog, and
+  `CONFIGURATION.md`;
+- Plan 0018, `ROADMAP.md`, `RUNBOOK.md`, and bounded transition/live receipts;
+- the user-scoped last30days `.env`, managed release symlinks/unit, and one
+  existing-or-successor public Reddit collection specification.
+
+Configuration contract:
+
+- `LAST30DAYS_SERVICE_SOURCES` is the ordered, comma-separated enabled service
+  source catalog;
+- `LAST30DAYS_<SOURCE>_ACCESS_ORDER` is the ordered, comma-separated access
+  chain for each enabled source;
+- supported initial methods are Reddit `keyless`, `agent_browser`, and
+  `scrapecreators`; X/Facebook/LinkedIn `agent_browser`; and YouTube `yt_dlp`;
+- unknown sources/methods, duplicates, empty enabled-source method chains, and
+  methods assigned to the wrong source fail closed without exposing secrets;
+- existing per-method credentials, profile/build/session, timeout, and browser
+  settings remain user-scope inputs; runtime leases remain non-config state;
+- defaults preserve current behavior, while the live packet explicitly sets
+  all five current service sources and excludes paid Reddit fallback.
+
+Implementation and validation bounds:
+
+- one implementation pass and one remediation pass;
+- active-agent concurrency one; `not_spawned` because runtime, worker,
+  packaging, config docs, and live transition form one critical path;
+- targeted policy/runtime/worker/package/lifecycle tests, complete deterministic
+  pytest, reproducible artifact, planning audit, and clean diff before install;
+- reserve service 0.2.14 because the configuration contract is consumer- and
+  operator-visible beyond the already-built uninstalled 0.2.13 candidate;
+- no schema migration; schema 12 remains the rollback boundary.
+
+Live transition packet:
+
+1. record current unit, release links, service-info, database integrity,
+   document/version/index counts, collection state, agent-browser doctors,
+   access plan, selected profile lease state, and redacted config keys;
+2. commit the reviewed 0.2.14 source/artifact/transition receipt before runtime
+   mutation;
+3. update the user `.env` atomically with explicit five-source policy and
+   Reddit `keyless,agent_browser`, preserving secrets and mode 0600;
+4. install/restart 0.2.14 through `service/scripts/install.sh`; require exact
+   version/manifest/contract/schema readiness and 0.2.12 rollback availability;
+5. create or revise one disabled public/default-profile Reddit topic spec with
+   three-item, 120-second, 50-request, 100-cent outer bounds and assessment
+   disabled; enable it for exactly one timer-owned interval, then pause it;
+6. require one terminal run/attempt, zero model calls, browser fallback proof,
+   at least one durable item and document/version, and active-index advance;
+7. close only the plan-owned browser lane and verify route readiness.
+
+Hard stops and rollback:
+
+- stop before install on source-policy ambiguity, validation failure, artifact
+  drift, dirty worktree, config mode/parse failure, route/profile conflict, or
+  service 0.2.14 readiness mismatch;
+- restore the pre-edit user config and roll back to 0.2.12 on transition or
+  readiness failure;
+- after a successful transition, stop and preserve 0.2.14 on acquisition
+  timeout, typed adapter failure, zero yield, publication/index non-advance, or
+  cleanup failure; do not spend a second interval;
+- no credential addition, authenticated/private Reddit access, paid fallback,
+  App Intelligence/model work, push, tag, publication, or release.
+
+Authority classification:
+
+- `human_gate` satisfied by the operator's instruction to do the managed
+  transition now while making all service polling/access policy user-config
+  driven;
+- independent final review and immutable release remain separate gates.
+
+Terminal condition:
+
+- close with source-policy and live durable-yield acceptance plus verified
+  rollback posture, or checkpoint the first hard stop with unused authority
+  expired and production truth preserved.
+
+### Checkpoint P0018-C25 | 2026-07-31
+
+Plan version:
+
+- 6
+
+State transition:
+
+- `browser adapter validated -> user-configured timed-service packet ready`
+
+Progress classification:
+
+- `outcome_progress`
+
+Validation evidence:
+
+- Plan 0022 passed four current public Reddit queries with 7/7 manual relevance,
+  9 partial-query rejections, 67.291-second minimum start spacing, 54.304-second
+  maximum adapter duration, and complete named-lane cleanup;
+- current installed service remains ready at 0.2.12/schema 12 with 50 documents
+  and active index `index-4f096317e15c57da386466f2`;
+- structural review found collection specs already select a source and profile,
+  but `build_acquisition_runtime()` still defaults from `SOURCE_ADAPTERS` and
+  `_reddit_adapter()` embeds its fallback sequence;
+- the worktree was clean before this planning packet.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; concurrency remains one.
+
+Graphiti write status:
+
+- pending the implementation/live outcome checkpoint.
+
+Authority classification:
+
+- `human_gate`; the operator satisfied this gate for C24 in the current
+  session.
+
+Next action:
+
+- implement and validate the shared user-scope source-policy contract; do not
+  mutate user config or installed runtime until its reviewed commit exists.

@@ -800,10 +800,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- Resume Plan 0018 at S07. Plan 0022's machine-spaced Reddit canary passed all
-  four cases, manual relevance, timing, and cleanup gates; source service
-  0.2.13 remains uninstalled. Install, push, tag, publication, and release
-  remain separately gated.
+- Execute Plan 0018 C24: first make the five-source polling catalog and each
+  source's access/fallback chain user-scope configuration, then build and
+  review service 0.2.14 before one authorized managed upgrade and one
+  timer-owned public Reddit proof. Push, independent acceptance, tag,
+  publication, and release remain separately gated.
 
 ## Goal-Compatible Plan Conversion
 

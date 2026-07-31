@@ -5900,3 +5900,50 @@ Graphiti Write Status:
 Next Bounded Action:
 
 - persist and verify Graphiti outcome, then return to Plan 0018 S07.
+
+## Turn 93 | 2026-07-31
+
+Focus: revise Plan 0018 around user-configured multi-source timed acquisition.
+
+Authority Consulted:
+
+- operator authorization for the managed timed-service proof plus the explicit
+  requirement that polled sources and access/fallback methods be user-scope
+  configuration;
+- Plan 0018 C21-C23, Plan 0022's verified live outcome, current roadmap, and
+  planning/goal/validation/documentation/git/version policies;
+- CodeGraph structural source-policy and timed-acquisition flow.
+
+Decisions And Changes:
+
+- advanced Plan 0018 to version 6 and opened C24/C25;
+- replaced the proposed Reddit-only install packet with a shared five-source
+  policy contract before installation;
+- reserved 0.2.14 for the operator-visible source-policy contract and retained
+  one timer interval, no paid/model calls, schema 12, and 0.2.12 rollback.
+
+Validation Evidence:
+
+- installed service ready at 0.2.12/schema 12, 50 documents, unchanged active
+  index;
+- structural evidence shows hard-coded runtime source defaults and embedded
+  Reddit fallback order despite existing user-scope per-method settings;
+- worktree clean at packet start; Plan 0022 durable outcome verified.
+
+State Movement:
+
+- Plan 0018 version `5 -> 6`; C24 `PLANNED -> READY`;
+- progress `outcome_progress`; authority `human_gate_satisfied`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active-agent concurrency remains one.
+
+Graphiti Write Status:
+
+- pending implementation/live outcome.
+
+Next Bounded Action:
+
+- implement and validate the shared source-policy contract before any user
+  config or installed-runtime mutation.
