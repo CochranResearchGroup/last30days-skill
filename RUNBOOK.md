@@ -5406,3 +5406,53 @@ Next Bounded Action:
 - obtain an operator choice among dynamic private-display/RDP implementation,
   explicit shared-route acceptance revision, or cancellation;
 - do not retry G1 or run T4-T7 without that authority.
+
+## Turn 83 | 2026-07-31
+
+Focus: revise Plan 0019 under the operator's option-2 decision and reopen only
+the unconsumed G1 Window B packet.
+
+Authority Consulted:
+
+- the operator's explicit selection `2`;
+- Plan 0019 checkpoint P0019-C09 and the confirmed fixed-route behavior;
+- planning, goal, documentation, validation, worktree, commit, and
+  roadmap/runbook policies plus the agent-browser operating contract.
+
+Decisions And Changes:
+
+- advanced Plan 0019 to version 2 and accepted `shared_display` only for the
+  fixed selected Guacamole/XRDP route with exclusive plan-owned browser,
+  profile lease, display, operator-visible proof, and cleanup;
+- preserved the original six-query ceiling and treated Window A's three cases
+  as consumed, not retryable;
+- preselected `Claude Code` as Window B's current public topic and authorized
+  no agent-browser mutation.
+
+Validation Evidence:
+
+- diagnosis already binds the exception to `guacamole-rdp-a`, `guacamole:1`,
+  and display `:10`;
+- more than 30 minutes elapsed after Window A completion;
+- JSON receipt parsing, `git diff --check`, and plan-authority audit remain the
+  preflight gates before live traffic.
+
+State Movement:
+
+- Plan 0019 `awaiting_gate -> active`; G1 Window B `closed -> ready`;
+- progress classification: `blocker_reduction`;
+- authority classification: `human_gate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the plan requires serialized live ownership.
+
+Graphiti Write Status:
+
+- deferred; checkpoint P0019-C10, this turn, and the receipt are durable.
+
+Next Bounded Action:
+
+- revalidate current browser readiness and the narrow route/owner/display
+  conditions, then run only Window B's three cases with 60-second start gaps,
+  no retries, and paid fallback disabled.

@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-31
-Plan version: 1
+Plan version: 2
 Predecessor: Plan 0018 checkpoints C22 and C23
 
 ## Objective
@@ -57,6 +57,10 @@ not acceptance evidence.
   agent-browser fixed RDP route displays intentionally default to
   `shared_display`, the route planner does not compare the requested private
   isolation, and a dry run silently rewrites both binding and launch posture.
+- On 2026-07-31 the operator selected option 2 and explicitly accepted that
+  fixed, route-scoped topology for this validation. Window B may resume on the
+  single selected Guacamole route only; this does not authorize arbitrary
+  shared desktops, a second browser/profile owner, or weaker cleanup.
 
 ## Authority And Gates
 
@@ -75,6 +79,13 @@ The approved execution includes these two bounded gates:
 The primary agent must still checkpoint before crossing G1 and G2 and must
 stop on the plan's hard-stop conditions; the approval does not increase any
 query, attempt, time, concurrency, remediation, or data-scope ceiling.
+
+Plan version 2 records the operator's option-2 decision: the requested access
+plan may continue to state `private_virtual_display`, while the concrete fixed
+XRDP route binding may report `shared_display` only when all of these remain
+true: one plan-owned browser, one exclusive profile lease, one selected route
+pool entry, one live display, current operator-visible proof, and plan-owned
+cleanup. Any route, display, owner, or lease disagreement still fails closed.
 
 ## Scope
 
@@ -121,8 +132,9 @@ Before any browser launch:
    - `agent-browser service status --json` with a ready compatible browser
      build and live route displays;
    - an access plan labeled `last30days` / `reddit-scraper` /
-     `reddit-post-search`, target `reddit`, remote-headed RDP view, and private
-     virtual-display isolation.
+     `reddit-post-search`, target `reddit`, remote-headed RDP view, and either
+     private virtual-display isolation or the version-2 fixed-route exception
+     defined above.
 4. Reject retained readiness when its display socket, route allocation,
    browser-build proof, or operator-visible evidence is stale or mismatched.
 
@@ -220,6 +232,9 @@ Live acceptance:
   non-success, never fabricated negative coverage;
 - all searches reuse the intended managed profile/session lane, with no leaked
   duplicate browser process or tab accumulation after cleanup.
+- a final `shared_display` value is accepted only for the one fixed
+  Guacamole/XRDP route selected by the current access plan, with exclusive
+  plan-owned browser/profile/route evidence and no second owner or display.
 
 T3 rejects rather than repairs when two distinct page shapes fail, any
 positive selector fails twice, or one remediation cannot restore a newly
@@ -319,7 +334,8 @@ reason; never persist cookies, authorization headers, profile data, or secrets.
 
 Stop the current stage immediately on:
 
-- non-ready or mismatched install/remote-view/access-plan evidence;
+- non-ready or mismatched install/remote-view/access-plan evidence, except for
+  the explicitly accepted version-2 fixed-route isolation mapping;
 - login, checkpoint, CAPTCHA, account restriction, or rate limit;
 - navigation outside public `reddit.com` post/search scope;
 - any account mutation or request for new authentication;
@@ -874,6 +890,54 @@ Next action:
 
 ## Best Next Action
 
-Resolve the G1 isolation hard stop without weakening the private-display
-criterion. A repair requires separate scope because modifying agent-browser is
-a Plan 0019 non-goal. Until then, keep Window B and T4-T7 closed.
+Revalidate the version-2 fixed-route safety conditions, then run only Window B
+cases B1-B3 with the original spacing, concurrency, no-retry, paid-source, and
+cleanup bounds. Do not rerun Window A.
+
+### Checkpoint P0019-C10 | 2026-07-31
+
+Plan version:
+
+- 2
+
+State transition:
+
+- `awaiting_gate -> active`; G1 Window B `closed -> ready`.
+
+Progress classification:
+
+- `blocker_reduction`
+
+Owned changes:
+
+- recorded the operator's option-2 acceptance of the fixed, route-scoped
+  `shared_display` topology;
+- preserved all six-query, spacing, concurrency, retry, public-data, paid-call,
+  cleanup, install, push, tag, and release bounds;
+- authorized no agent-browser implementation or configuration mutation.
+
+Validation evidence:
+
+- current diagnosis binds the exception to route-pool entry
+  `guacamole-rdp-a`, route `guacamole:1`, and display `:10`;
+- Window A is durable history at three attempts and will not be rerun;
+- more than 30 minutes elapsed after Window A completed before this revision.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; live work remains serialized under the primary agent.
+
+Graphiti write status:
+
+- deferred; this versioned plan checkpoint, runbook entry, and receipt are the
+  durable authority.
+
+Authority classification:
+
+- `human_gate`; the operator explicitly selected option 2.
+
+Next action:
+
+- run current readiness checks, then execute only Window B: `openclaw` quick,
+  `agent browser` default, and one preselected current public topic (`Claude
+  Code`) quick, with starts at least 60 seconds apart and zero retries.
