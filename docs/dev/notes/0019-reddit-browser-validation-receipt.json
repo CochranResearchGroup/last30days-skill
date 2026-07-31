@@ -7,11 +7,11 @@
     "authority": "operator approved execution including G1 and G2 on 2026-07-31"
   },
   "checkpoint": {
-    "id": "P0019-C03",
-    "recorded_at": "2026-07-31T16:39:13+00:00",
-    "stage": "T0-R1",
-    "status": "failed_closed",
-    "progress_classification": "blocker_reduction"
+    "id": "P0019-C04",
+    "recorded_at": "2026-07-31T17:38:23+00:00",
+    "stage": "T0",
+    "status": "passed",
+    "progress_classification": "outcome_progress"
   },
   "candidate": {
     "checkpoint_commit": "f2d7d6ea8ed370032ff350a99bee28e3bbba6e5e",
@@ -143,6 +143,54 @@
     "paid_calls": 0,
     "model_calls": 0
   },
+  "t0_recovery": {
+    "docker_server_version": "29.6.2",
+    "host_restart_performed": false,
+    "guacamole_compose": {
+      "postgres": "running_healthy",
+      "guacd": "running_healthy",
+      "guacamole": "running",
+      "postgres_continuity": "ready",
+      "postgres_system_identifier_matches_recorded": true,
+      "mount_type": "volume"
+    },
+    "install_doctor": {
+      "success": true,
+      "version": "0.27.0",
+      "issue_count": 0,
+      "duplicate_profile_pressure_warnings": 0,
+      "readiness_impacting_candidates": 0,
+      "runtime_convergence": "converged",
+      "stealth_browser_ready": true,
+      "remote_view_privileges_ready": true
+    },
+    "remote_view_doctor": {
+      "status": "ready",
+      "remote_control_status": "ready",
+      "many_to_many_status": "ready",
+      "route_pool_status": "ready",
+      "issue_count": 0
+    },
+    "access_plan": {
+      "selected_profile_id": "last30days-facebook",
+      "active_lease_count": 0,
+      "duplicate_pressure": false,
+      "default_acquisition": "launch_new_browser",
+      "browser_host": "remote_headed",
+      "view_stream_provider": "rdp_gateway",
+      "control_input_provider": "manual_attached_desktop",
+      "display_isolation": "private_virtual_display"
+    },
+    "installed_service": {
+      "status": "ready",
+      "service_version": "0.2.12",
+      "database_schema_version": 12,
+      "mutated": false
+    },
+    "baseline_unchanged": true,
+    "new_reddit_queries": 0,
+    "collection_attempts": 0
+  },
   "hard_stop": {
     "triggered": true,
     "reason": "T0 requires successful mutually consistent install doctor, remote-view doctor, service status, and access-plan evidence",
@@ -156,15 +204,13 @@
     "model_calls": 0
   },
   "next_action": {
-    "state": "awaiting_gate",
-    "recommended_successor": "T0-R2",
-    "requires_operator_authority": true,
+    "state": "active",
+    "recommended_successor": "T1",
+    "requires_operator_authority": false,
     "scope": [
-      "preserve unrelated default-profile sessions",
-      "perform one host-level Docker Desktop engine restart",
-      "require docker info to become ready before any Compose mutation",
-      "reconcile the installed agent-browser Guacamole stack",
-      "rerun T0 exactly once without Reddit traffic"
+      "expand deterministic Reddit browser adapter fixtures and tests",
+      "run focused and complete validation without Reddit traffic",
+      "preserve all T3 live-query gates"
     ]
   },
   "live_cases": [],

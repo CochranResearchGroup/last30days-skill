@@ -34,6 +34,9 @@ not acceptance evidence.
   plan-owned `last30days-reddit` browser still holds the selected social
   profile on `shared_display`, which cannot satisfy T0's required
   `private_virtual_display` access plan.
+- T0 passed on 2026-07-31 after Docker recovered without a host restart and
+  the plan-owned stale browser had been closed. All required readiness
+  surfaces are current and mutually consistent; no Reddit query has run.
 
 ## Authority And Gates
 
@@ -500,6 +503,60 @@ Next action:
 - obtain explicit authority for T0-R2 to perform one host-level Docker Desktop
   engine restart, require `docker info` readiness, reconcile the installed
   Guacamole stack, and rerun T0 exactly once without Reddit traffic.
+
+### Checkpoint P0019-C04 | 2026-07-31
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `awaiting_gate -> active`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- resumed after Docker recovered naturally; no host restart was performed;
+- verified Guacamole PostgreSQL continuity and all T0 readiness surfaces;
+- made no Reddit request, collection attempt, service install, credential,
+  paid-source call, or model call.
+
+Validation evidence:
+
+- Docker server 29.6.2 is ready; PostgreSQL and guacd are healthy and the
+  Guacamole web container is running;
+- PostgreSQL continuity reports `status=ready`, the recorded system identifier
+  matches, and the named-volume mount remains authoritative;
+- install doctor 0.27.0 reports `success=true`, zero issues, zero duplicate
+  pressure, converged runtimes, ready stealth Chromium, and ready privileges;
+- remote-view doctor reports remote control, many-to-many, and route pool
+  `ready` with zero issues;
+- the exact labeled Reddit access plan selects `last30days-facebook`, has zero
+  active leases or duplicate pressure, and preserves remote-headed RDP/private
+  display posture;
+- installed last30days 0.2.12/schema 12 remains ready and the redacted baseline
+  counts remain unchanged at 19 Reddit documents and 14 Reddit acquisitions.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active concurrency remained one.
+
+Graphiti write status:
+
+- not written; checkpoint C04 and the updated JSON receipt are durable.
+
+Authority classification:
+
+- `inherited_authority`
+
+Next action:
+
+- execute T1 deterministic adapter expansion without Reddit traffic, then T2
+  fake-CLI contract validation; keep G1/T3 closed.
 
 ## Best Next Action
 
