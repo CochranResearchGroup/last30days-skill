@@ -676,7 +676,7 @@ class CollectionCoordinator:
             sources=(spec.source,),
             profile_id=spec.profile_id,
             freshness_window_seconds=spec.interval_seconds,
-            max_attempts=2,
+            max_attempts=1 if trigger == "manual" else 2,
             budget_cents=spec.budget_cents,
         )
         conn = self._connect()

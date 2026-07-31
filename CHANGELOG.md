@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and the method that supplied publishable items. This makes configured
   fallbacks independently auditable without exposing browser state or
   credentials.
+- **One-attempt manual collections.** Operator-triggered collection intervals
+  now use a single durable job attempt, while recurring timer intervals retain
+  their two-attempt recovery policy. Bounded acceptance and diagnostic runs can
+  therefore enforce their declared attempt ceiling without disabling normal
+  scheduler resilience.
 
 - **User-scoped recurring-source policy.** The managed service now reads an
   explicit source catalog and per-source ordered access chains from the user

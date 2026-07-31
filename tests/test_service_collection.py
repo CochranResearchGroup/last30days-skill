@@ -134,6 +134,19 @@ def test_timer_and_manual_trigger_coalesce_into_one_interval_run(tmp_path):
     assert [row[0] for row in claims] == ["manual", "timer"]
 
 
+def test_manual_collection_run_has_one_attempt_ceiling(tmp_path):
+    _db_path, supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
+    stored = coordinator.put_spec(_spec(enabled=False))
+
+    manual = coordinator.enqueue_interval(
+        stored.collection_spec_id,
+        scheduled_for="2026-07-25T12:17:00Z",
+        trigger="manual",
+    )
+
+    assert supervisor.get_job(manual.job_id).max_attempts == 1
+
+
 def test_collection_spec_edits_require_one_new_immutable_revision(tmp_path):
     db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
     coordinator.put_spec(_spec())
