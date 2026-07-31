@@ -4660,3 +4660,64 @@ Next Bounded Action:
 - complete full validation, commit and push service 0.2.11 plus the live proof
   and reviewed packet, then stop for explicit approval before another installed
   transition or live interval.
+
+## Turn 70 | 2026-07-30
+
+Focus: replace the superseded 0.2.11 transition with an explicitly authorized,
+deadline-aware 0.2.12 Reddit acquisition packet.
+
+Authority Consulted:
+
+- Plan 0018 checkpoint P0018-C19 and goal-execution governance
+- explicit operator authorization `ok go`
+- current Reddit keyless, keyed fallback, HTTP retry, worker, packaging, and
+  installed 0.2.10 authorities
+
+Decisions And Changes:
+
+- Kept the 120-second host wall ceiling.
+- Made service Reddit requests capped at three items use quick keyless depth.
+- Capped an empty-keyless keyed fallback at one 20-second global request with
+  no subreddit fan-out and no DNS retry widening.
+- Preserved current behavior for larger and interactive Reddit requests.
+- Reserved service 0.2.12, refreshed the independent runtime manifest, built
+  the reproducible artifact, and superseded the uninstalled 0.2.11 packet.
+- Classified the operator's `ok go` as satisfying the exact managed-transition
+  and one-live-interval human gate without widening any resource or release
+  boundary.
+- Did not yet install, restart, resume the collection, run an evaluator, create
+  a tag, or publish a release.
+
+Validation Evidence:
+
+- 95 focused acquisition-worker, Reddit, HTTP, runtime-package, and
+  release-version tests passed;
+- full suite passed:
+  `2322 passed, 7 skipped, 6 subtests passed`;
+- artifact:
+  `dist/service/last30days-service-0.2.12.tar.gz`;
+- SHA-256:
+  `c4e6fe9a5bf86a615e411245509d45276de29ddb3320fd69e3abbd9aa1ddf3a9`.
+
+State Movement:
+
+- Plan 0018 version 4:
+  `bounded reaping repair ready -> deadline-aware acquisition repair validated`;
+- progress classification: `blocker_reduction`;
+- authority classification: `human_gate`, explicitly satisfied for the exact
+  0.2.12 transition and one interval;
+- independent review and immutable release gates remain closed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one.
+
+Graphiti Write Status:
+
+- `pending_after_live_checkpoint`.
+
+Next Bounded Action:
+
+- commit and push the 0.2.12 packet, verify current preconditions, then execute
+  exactly one managed transition and one live interval with fail-closed
+  containment.

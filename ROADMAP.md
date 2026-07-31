@@ -751,7 +751,8 @@ Current State:
 - The approved 0.2.10 upgrade reconciled stranded state and remained ready,
   but its one new timer attempt again exceeded the worker wall bound without a
   receipt. Bounded containment prevented attempt 2. The installed daemon is
-  0.2.10; service 0.2.11 now bounds post-kill child reaping in source only.
+  0.2.10. Source service 0.2.12 retains bounded post-kill reaping and makes the
+  three-item Reddit route deadline-aware under the existing 120-second ceiling.
 
 Goal Seeds:
 
@@ -790,12 +791,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- Checkpoint P0018-C18 records the approved 0.2.10 upgrade, successful
-  reconciliation, repeated live wall-bound failure, and bounded containment.
-  Checkpoint P0018-C19 opens plan version 3 with the deterministic 0.2.11
-  reaping fix and reviewed packet. Stop for explicit approval before
-  installing/restarting 0.2.11 or running another live interval. Keep
-  independent review and `v4.0.0` closed until indexed yield is proven.
+- Checkpoint P0018-C20 opens plan version 4 with the validated 0.2.12
+  deadline-aware acquisition repair. The operator's `ok go` satisfies the
+  exact transition/live human gate: push the checkpoint, upgrade once from
+  0.2.10 to 0.2.12, and observe one timer interval under the unchanged bounds.
+  Keep independent review and `v4.0.0` closed until indexed yield is proven.
 
 ## Goal-Compatible Plan Conversion
 

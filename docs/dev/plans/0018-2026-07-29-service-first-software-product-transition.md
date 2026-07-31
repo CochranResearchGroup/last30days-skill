@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 3
+Plan version: 4
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -88,11 +88,13 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C19 is the current authority for the remaining collection
+Checkpoint P0018-C20 is the current authority for the remaining collection
 proof. Earlier packet-level `no retry` and explicit-approval statements remain
-historical constraints on those packet instances. Repeated live wall-bound
-failure now places any further installed transition or live interval behind
-the explicit version-3 human gate.
+historical constraints on those packet instances. The operator's explicit
+`ok go` satisfies the repeated-live-failure human gate for the exact 0.2.12
+transition and one live interval recorded in the C20 packet; it does not
+authorize a ceiling increase, a second interval, independent acceptance,
+tagging, or release.
 
 ## User Experience Contract
 
@@ -2092,3 +2094,70 @@ Next action:
 
 - complete broad validation, commit and push plan version 3 plus service
   0.2.11, then stop at the explicit repeated-live-failure gate.
+
+### Checkpoint P0018-C20 | 2026-07-30
+
+Plan version:
+
+- 4
+
+State transition:
+
+- `bounded reaping repair ready -> deadline-aware acquisition repair validated`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `human_gate`;
+- the operator's `ok go` explicitly authorizes the recommended 120-second
+  deadline-aware repair, managed transition, and one bounded live proof;
+- the packet preserves the existing public Reddit source, default profile,
+  three-item limit, 50-request outer ceiling, 100-cent budget, disabled
+  assessment/model execution, rollback, and release gates.
+
+Changed assumption and repair:
+
+- 120 seconds is a reasonable host safety ceiling, but the prior standard-depth
+  keyless route followed by the full keyed fallback had a legitimate
+  worst-case duration beyond that ceiling;
+- service requests with an item limit of three now use quick keyless depth;
+- an empty keyless result permits exactly one keyed global request, capped at
+  20 seconds, with subreddit fan-out and DNS retry widening disabled;
+- larger and interactive Reddit searches retain their existing depth and
+  fallback behavior;
+- the existing one-second post-kill reap bound remains the final containment
+  layer.
+
+Authorized successor:
+
+- `docs/dev/notes/0018-service-0.2.12-authorized-transition-packet.json`;
+- one upgrade from installed 0.2.10 to 0.2.12 and one new timer run;
+- at most one started job attempt, immediate collection pause, and rollback to
+  0.2.10 on transition/readiness failure;
+- independent final review and immutable release gates remain unchanged.
+
+Validation evidence:
+
+- 95 focused acquisition-worker, Reddit, HTTP, runtime-package, and
+  release-version tests passed;
+- the complete suite passed:
+  `2322 passed, 7 skipped, 6 subtests passed`;
+- reproducible artifact:
+  `dist/service/last30days-service-0.2.12.tar.gz`;
+- SHA-256:
+  `c4e6fe9a5bf86a615e411245509d45276de29ddb3320fd69e3abbd9aa1ddf3a9`.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active-agent concurrency remained one.
+
+Next action:
+
+- commit and push the exact 0.2.12 source, manifest, packet, and checkpoint;
+- verify packet preconditions, perform the authorized managed transition, and
+  observe exactly one live interval;
+- hard-stop and contain on any packet violation; proceed to independent final
+  review only if current indexed public yield satisfies every success criterion.

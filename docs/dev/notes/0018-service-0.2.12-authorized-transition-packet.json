@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "packet_id": "p0018-service-0.2.12-transition",
+  "authority_classification": "human_gate",
+  "authorization_status": "granted",
+  "authorization_evidence": "operator said ok go after the 120-second deadline-aware route was proposed",
+  "prepared_at": "2026-07-30",
+  "source_version": "0.2.12",
+  "installed_baseline_version": "0.2.10",
+  "supersedes": "p0018-service-0.2.11-transition",
+  "artifact": {
+    "path": "dist/service/last30days-service-0.2.12.tar.gz",
+    "sha256": "c4e6fe9a5bf86a615e411245509d45276de29ddb3320fd69e3abbd9aa1ddf3a9"
+  },
+  "changed_assumption": "The 120-second host ceiling is reasonable, but the standard-depth keyless route plus full keyed fallback can legitimately exceed it.",
+  "repair": [
+    "use quick keyless depth for service requests capped at three items",
+    "after an empty keyless result, permit one keyed global request capped at 20 seconds",
+    "disable subreddit fan-out and DNS retry widening for that bounded fallback",
+    "retain the one-second post-kill reap bound as final containment"
+  ],
+  "authorized_scope": [
+    "upgrade the managed user service once from 0.2.10 to 0.2.12",
+    "resume p0018-final-public-collection-v2 for exactly one service-owned interval",
+    "pause the collection immediately after that interval is observed",
+    "rollback to 0.2.10 on transition or readiness failure"
+  ],
+  "preconditions": [
+    "source commit containing this packet is pushed",
+    "artifact digest matches this packet",
+    "v4.0.0 is absent",
+    "p0018-final-public-collection-v2 is disabled at revision 4",
+    "service 0.2.10 is ready and database integrity is ok",
+    "job 06b8025c-5ade-4c25-9029-68f382257fd4 remains terminal failed with exactly one attempt"
+  ],
+  "live_interval_bounds": {
+    "maximum_new_runs": 1,
+    "maximum_job_attempts_started": 1,
+    "wall_timeout_seconds": 120,
+    "kill_reap_grace_seconds": 1,
+    "keyed_fallback_requests": 1,
+    "keyed_fallback_timeout_seconds": 20,
+    "source": "reddit",
+    "profile_id": "default",
+    "access_class": "public",
+    "item_limit": 3,
+    "network_request_limit": 50,
+    "budget_cents": 100,
+    "assessment_enabled": false
+  },
+  "hard_stops": [
+    "artifact or installed readiness mismatch",
+    "database integrity failure or schema change",
+    "more than one new collection run or one started job attempt",
+    "non-public evidence or source/profile drift",
+    "model-call or intelligence-task growth",
+    "inability to pause the collection",
+    "no durable typed acquisition receipt within the worker wall bound"
+  ],
+  "success_criteria": [
+    "one timer-owned run occurs after the initiating client disconnects",
+    "a durable public acquisition receipt is recorded within the worker wall bound",
+    "public document and document-version counts advance",
+    "a new active index version contains the acquired public evidence",
+    "assessment and model execution remain disabled",
+    "the collection is paused and no second run appears"
+  ],
+  "release_gate": "Independent final ACCEPT remains mandatory; this packet never creates a tag or release."
+}
