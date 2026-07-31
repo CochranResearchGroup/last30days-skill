@@ -793,18 +793,20 @@ indexes or stochastic workers authoritative.
 Active Plan:
 
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
-  is the open transition authority. Its first service-distribution/MCP packet
-  plus Plans 0015 and 0016 and the S06 client-Skill redesign are accepted
-  without moving implementation modules or migrating schema 12; S07 is the
-  remaining transition packet.
+  is the open transition authority. Service distribution, MCP compatibility,
+  client-Skill redesign, timer ownership, durable publication/indexing, and
+  rollback are accepted foundations on installed service 0.2.14/schema 12.
+  Plan version 7 tracks configured access methods as independent evidence
+  packets rather than a global architecture or release join gate.
 
 Next Bounded Action:
 
-- Revisit Plan 0018 from checkpoint C27. Configured timer-owned acquisition,
-  durable versioning, and indexing now pass on installed service 0.2.14, but
-  the sole interval yielded through keyless Reddit before agent-browser and
-  therefore did not exercise the fallback. A new interval, push, independent
-  acceptance, tag, publication, and release remain separately gated.
+- Stop at Plan 0018 C28's live gate after committing the independent
+  access-method matrix. The first ready method packet is AM02: one
+  agent-browser-first public Reddit interval under its explicit user-config
+  mutation gate. AM06 is the next public packet; authenticated X, Facebook,
+  and LinkedIn packets retain separate human gates. Push, independent final
+  review, tag, publication, and release remain separately gated.
 
 ## Goal-Compatible Plan Conversion
 

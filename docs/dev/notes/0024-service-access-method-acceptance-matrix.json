@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "plan_id": "0018",
+  "plan_version": 7,
+  "recorded_at": "2026-07-31T17:10:00-05:00",
+  "foundation": {
+    "service_architecture": "accepted",
+    "timer_owned_ingestion": "accepted",
+    "durable_publication_and_indexing": "accepted",
+    "installed_service_version": "0.2.14",
+    "database_schema_version": 12,
+    "rollback_version": "0.2.12",
+    "acceptance_receipt": "docs/dev/notes/0023-configured-timed-acquisition-receipt.json",
+    "method_packets_are_global_release_join_gate": false
+  },
+  "common_bounds": {
+    "active_agent_concurrency": 1,
+    "implementation_attempts_per_packet": 1,
+    "live_intervals_per_case": 1,
+    "review_rework_cycles_per_packet": 1,
+    "item_limit": 3,
+    "wall_timeout_seconds": 120,
+    "network_request_limit": 50,
+    "assessment_enabled": false,
+    "require_terminal_run": true,
+    "require_pause_and_post_pause_quiescence": true,
+    "require_exact_method_evidence": true,
+    "failure_effect": "method_packet_only"
+  },
+  "configured_packets": [
+    {
+      "id": "P0018-AM01",
+      "source": "reddit",
+      "method": "keyless",
+      "data_class": "public",
+      "status": "accepted",
+      "evidence": {
+        "collection_run_id": "collection-run-564219083f18bc982339e87913775df8",
+        "acquisition_id": "work-e641c06fc4abfccb27edcd300a8fc52e",
+        "observed_count": 1,
+        "stored_count": 1,
+        "actual_source_cost_cents": 0,
+        "document_versions_delta": 1,
+        "index_advanced": true
+      }
+    },
+    {
+      "id": "P0018-AM02",
+      "source": "reddit",
+      "method": "agent_browser",
+      "data_class": "public",
+      "status": "ready_pending_live_execution",
+      "access_order_for_case": ["agent_browser", "keyless"],
+      "live_cases": 1,
+      "acceptance": [
+        "timer owns the run after the initiating client disconnects",
+        "acquisition diagnostics prove agent_browser was attempted first",
+        "the browser result is typed and quality-gated",
+        "one or more agent_browser items become durable versions and advance the index",
+        "the plan-owned browser tab, lease, display, and route are released"
+      ],
+      "authority": "human_gate_before_live_config_and_interval"
+    },
+    {
+      "id": "P0018-AM03",
+      "source": "x",
+      "method": "agent_browser",
+      "data_class": "authenticated",
+      "status": "planned",
+      "access_order_for_case": ["agent_browser"],
+      "live_cases": 1,
+      "authority": "human_gate_for_authenticated_collection"
+    },
+    {
+      "id": "P0018-AM04",
+      "source": "facebook",
+      "method": "agent_browser",
+      "data_class": "authenticated",
+      "status": "planned",
+      "access_order_for_case": ["agent_browser"],
+      "live_cases": 1,
+      "authority": "human_gate_for_authenticated_collection"
+    },
+    {
+      "id": "P0018-AM05",
+      "source": "linkedin",
+      "method": "agent_browser",
+      "data_class": "authenticated",
+      "status": "planned",
+      "access_order_for_case": ["agent_browser"],
+      "live_cases": 2,
+      "cases": ["topic_or_account", "canonical_profile_url"],
+      "authority": "human_gate_for_authenticated_collection"
+    },
+    {
+      "id": "P0018-AM06",
+      "source": "youtube",
+      "method": "yt_dlp",
+      "data_class": "public",
+      "status": "planned",
+      "access_order_for_case": ["yt_dlp"],
+      "live_cases": 1,
+      "authority": "inherited_authority_after_read_only_preflight"
+    }
+  ],
+  "supported_not_configured": [
+    {
+      "source": "reddit",
+      "method": "scrapecreators",
+      "reason": "absent from the effective Reddit access order",
+      "activation_effect": "new paid credential and cost class",
+      "packet_rule": "create a new human-gated packet only if the operator enables it"
+    }
+  ],
+  "execution_order": [
+    "P0018-AM02",
+    "P0018-AM06",
+    "P0018-AM03",
+    "P0018-AM04",
+    "P0018-AM05"
+  ]
+}

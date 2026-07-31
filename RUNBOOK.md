@@ -6056,3 +6056,66 @@ Next Bounded Action:
 
 - revisit Plan 0018 acceptance design; do not retry or enter release operations
   without new authority.
+
+## Turn 96 | 2026-07-31
+
+Focus: accept the service foundation and split live proof by configured access
+method.
+
+Authority Consulted:
+
+- the operator's instruction to treat service architecture and timed ingestion
+  as accepted and create independent method packets;
+- Plan 0018 C27, Roadmap P07, the C27 live receipt, current installed service
+  and config readbacks, and planning/goal/validation/documentation policies;
+- current CodeGraph source for the strict service policy and isolated worker;
+- agent-browser service-routing, access-plan, remote-view, profile lease, and
+  cleanup guidance.
+
+Decisions And Changes:
+
+- advanced Plan 0018 to version 7 and accepted service-first architecture,
+  timer ownership, durable publication/indexing, and rollback as foundations;
+- created machine-readable C28 packets for all six configured source/method
+  pairs, with failures scoped to the exact method rather than the whole
+  service or unrelated packets;
+- accepted Reddit keyless from C27, made Reddit agent-browser first, left
+  YouTube yt-dlp as the next public packet, and retained separate authenticated
+  gates for X, Facebook, and LinkedIn;
+- excluded ScrapeCreators from the required matrix because it is supported but
+  absent from the effective user access order; enabling it remains a paid
+  credential/cost-class human gate.
+
+Validation Evidence:
+
+- installed 0.2.14 remains ready on schema 12 with five configured and
+  acquisition-ready sources and active index
+  `index-90a8aea59d32c62f3df8bbee`;
+- every existing collection specification is disabled;
+- current source policy maps Reddit to configured `keyless,agent_browser`,
+  X/Facebook/LinkedIn to `agent_browser`, and YouTube to `yt_dlp`;
+- matrix artifact:
+  `docs/dev/notes/0024-service-access-method-acceptance-matrix.json`.
+
+State Movement:
+
+- Plan 0018 `version 6 -> 7`; C28 `PLANNED -> READY`;
+- architecture/timed ingestion `conditional -> accepted foundation`;
+- per-method validation `global blocker -> independent packet campaign`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active-agent concurrency remains one because live packets
+  share user config, service state, and profile/route leases.
+
+Graphiti Write Status:
+
+- `timed_out` after one bounded attempt: job
+  `247244d6-6162-4247-b7ea-daae687ce459` in group
+  `last30days_skill_main` reached its 60-second processing limit without an
+  episode UUID; no retry was attempted.
+
+Next Bounded Action:
+
+- validate and commit Plan 0018 version 7, then stop before AM02 live mutation
+  unless the operator separately authorizes its one interval.

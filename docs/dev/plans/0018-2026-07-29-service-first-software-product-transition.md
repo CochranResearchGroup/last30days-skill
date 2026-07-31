@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 6
+Plan version: 7
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -36,25 +36,22 @@ software with:
 
 ## Current State
 
-- The daemon, scheduler, corpus, App Intelligence supervisor, and Python
-  service client are implemented under `skills/last30days/scripts/`.
-- `npx skills add` freezes that tree under
-  `~/.agents/skills/last30days`, and the current systemd unit executes
-  `service.py` from that frozen Skill copy.
-- `skills/last30days/scripts/install-service.sh` writes and immediately
-  restarts the user unit, but it has no release directory, loaded-version
-  receipt, upgrade transaction, or rollback target.
-- The MCP adapter is a separate Go binary, but
-  `mcp/scripts/sync-service-runtime.sh` copies the complete installable Skill
-  into the MCP bundle and `BootstrapPackagedService` may directly detach its
-  packaged `service.py`.
-- The Go client already fails closed on the exact
-  `X-Last30days-Contract-SHA256` response header. The service also reports
-  service version 0.2.7 and database schema 12, but there is no explicit
-  client/service API-version compatibility result or loaded-runtime revision.
-- Plan 0014 closed at its restart bound after repairing stale due replay and
-  per-spec overlap. Revision 9 is disabled, all revision-8 service jobs are
-  terminal, and no timer proof is active.
+- The independent managed service is the installed runtime authority at
+  version 0.2.14/schema 12; `current` and `previous` select verified immutable
+  0.2.14 and 0.2.12 releases through the stable launcher.
+- The service publishes its exact contract, API, schema, runtime-manifest,
+  source-readiness, and active-index facts. The MCP adapter performs the
+  fail-closed compatibility handshake before ordinary operations.
+- User-scoped configuration now owns the enabled five-source catalog and each
+  source's ordered access chain. The runtime readiness catalog and isolated
+  acquisition worker consume the same strict policy.
+- A timer-owned public Reddit interval on 0.2.14 published one durable version
+  and advanced the active index with assessment disabled and no connected
+  acquisition agent. The specification is paused and remained quiescent.
+- Service architecture, timer ownership, durable publication/indexing, and
+  rollback are accepted foundations. Source/access-method validation is now an
+  orthogonal evidence campaign whose individual results cannot reopen those
+  accepted foundations absent a shared-runtime regression.
 - S06 is accepted at commit `ac76e2b`: the 137-line primary Skill is a
   least-privilege ten-operation MCP client, privileged guidance is split into
   capability-gated references, and the packaged direct Engine remains only as
@@ -62,12 +59,9 @@ software with:
 - S07 source/install/rollback is accepted at `04eec13`: service 0.2.9 and MCP
   4.0.1 are installed and compatible, the same cache-only citations survive
   rollback and restored-forward operation, and schema-12 state is unchanged.
-- The first independent final review rejected release because autonomous
-  governed acquisition/indexing with all stochastic workers disabled remains
-  unproved. The first one-interval remediation proved autonomous service
-  ownership but returned zero items. Checkpoint P0018-C15 classifies the
-  evidence-backed successor as inherited standing authority and freezes the
-  remaining outcome work without weakening the independent release gate.
+- The earlier independent final-review rejection on missing durable timed yield
+  is superseded by C27's installed 0.2.14 proof. A fresh final review is still
+  required before any push/tag/publication/release action.
 - Plans 0020-0022 repaired and live-validated the Reddit browser relevance
   gate: 7/7 accepted posts were manually relevant, multiword partials were
   rejected, all four calls stayed under 55 seconds, and browser cleanup passed.
@@ -92,13 +86,11 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C27 is the current authority. Service 0.2.14 is installed with
-the explicit five-source user policy, and its sole timer-owned interval
-published one durable Reddit version and advanced the active index. The first
-configured keyless method returned the item, so that interval did not exercise
-the agent-browser fallback. Its one-interval ceiling is exhausted; a new
-fallback-specific interval is a human gate. Independent acceptance, tagging,
-and release remain closed.
+Checkpoint P0018-C28 is the current authority. Service architecture and timed
+ingestion are accepted. The six configured source/method pairs have independent
+acceptance packets; method failure degrades only that method and does not block
+the service foundation or unrelated method packets. Independent final review,
+tagging, publication, and release remain closed.
 
 The operator's 2026-07-31 request to develop an agent-browser-powered Reddit
 post routine authorizes the bounded C22 development packet below. It does not
@@ -470,6 +462,11 @@ The conversion gate was satisfied on 2026-07-29:
 service and MCP interface are the primary product. Skills are optional,
 least-privilege agent clients, and direct scraping mechanics are absent from
 ordinary agent work.
+
+The definition of done does not require every optional access method to pass a
+live canary. The installed service foundation must remain truthful when an
+individual method is unaccepted, unavailable, degraded, or disabled; method
+acceptance is tracked independently by the C28 matrix.
 
 ## Planning Receipt | 2026-07-29
 
@@ -2669,3 +2666,180 @@ Next action:
 
 - revisit Plan 0018 acceptance design with the operator; do not retry, push,
   tag, publish, or release under this packet.
+
+### Execution Packet P0018-C28 | Independent Access-Method Acceptance
+
+Plan version:
+
+- 7
+
+Bounded outcome:
+
+- accept service-first architecture, timer ownership, durable publication and
+  indexing, and rollback as completed Plan 0018 foundations;
+- validate each configured source/access-method pair through its own bounded
+  packet without creating a global all-method join gate;
+- preserve truthful per-method `accepted`, `unaccepted`, `unavailable`,
+  `degraded`, or `disabled` state while the service remains operable.
+
+Machine-readable authority:
+
+- `docs/dev/notes/0024-service-access-method-acceptance-matrix.json`;
+- the matrix is exhaustive for the effective configured policy at C28:
+  Reddit `keyless,agent_browser`; X/Facebook/LinkedIn `agent_browser`; YouTube
+  `yt_dlp`;
+- Reddit `scrapecreators` is supported but not configured and therefore is not
+  a required packet. Enabling it creates a new paid credential/cost-class
+  human gate and a successor packet.
+
+Shared controller and invariants:
+
+- the primary agent is the sole critical-path controller; active-agent
+  concurrency is one because every live packet mutates the same user config,
+  service database, scheduler, and source/profile leases;
+- each live case permits one interval, one started acquisition attempt, one
+  implementation attempt, and one review/remediation cycle;
+- every case uses a distinct disabled specification or a reviewed successor,
+  assessment disabled, three-item/120-second/50-request bounds, immediate
+  pause after the sole terminal run, and a post-pause quiescence readback;
+- before mutation, record service/version/schema/index, database integrity,
+  spec/run/model-call counts, effective access order, config mode, source-tool
+  readiness, and profile/route/lease state where applicable;
+- after mutation, require exact method-attempt evidence from the acquisition
+  envelope, terminal run/attempt receipts, durable items/versions/index effect
+  when yield exists, unchanged service-model-call count, integrity `ok`, and
+  restored user policy;
+- a packet failure is terminal for that packet instance. It cannot erase C27's
+  accepted service/timer foundation or block unrelated packets unless it proves
+  a shared scheduler, database, publication, rollback, or policy regression;
+- no packet authorizes push, independent acceptance bypass, tag, publication,
+  release, credential addition, private-data expansion, or paid access.
+
+#### P0018-AM01 | Reddit keyless | ACCEPTED
+
+- evidence: C27 run `collection-run-564219083f18bc982339e87913775df8`
+  attempted, observed, and stored one public item at zero actual source cost;
+- document versions and the active index advanced; the spec was paused with no
+  post-pause run growth;
+- no further keyless acceptance interval is required.
+
+#### P0018-AM02 | Reddit agent-browser first | READY, LIVE GATE
+
+- temporarily set the effective Reddit order to
+  `agent_browser,keyless`, preserving and restoring the reviewed user config;
+- run one public/default-profile topic interval under the shared bounds;
+- accept the method only when diagnostics prove `agent_browser` was attempted
+  first, its typed quality-gated result supplied at least one stored item, and
+  the related browser tab, profile lease, display allocation, and route are
+  closed or released afterward;
+- if agent-browser returns a typed empty/failure and keyless later publishes,
+  preserve the service result but mark AM02 rejected; fallback success is not
+  browser-method acceptance;
+- preflight uses agent-browser install doctor, remote-view doctor, exact
+  service access plan, browser-capability preflight when recommended, and
+  selected-profile lease/readiness. Retained freshness is not live auth proof,
+  though this case remains public and requires no Reddit login;
+- authority: human gate before the live user-config mutation and interval.
+
+#### P0018-AM03 | X agent-browser | PLANNED, AUTHENTICATED GATE
+
+- exact order `agent_browser`; one authenticated-redaction topic/account case
+  using the broker-selected named profile;
+- require current access-plan, target freshness or bounded auth probe, no lease
+  conflict, exact browser-method diagnostics, canonical X item identity, and
+  durable partition-correct publication;
+- authority: human gate for authenticated collection; no cookie/token export or
+  new credential is permitted.
+
+#### P0018-AM04 | Facebook agent-browser | PLANNED, AUTHENTICATED GATE
+
+- exact order `agent_browser`; one authenticated-redaction topic/account case
+  using the broker-selected named profile;
+- require current access-plan, target freshness or bounded auth probe, no lease
+  conflict, exact browser-method diagnostics, canonical Facebook item
+  identity, and durable partition-correct publication;
+- authority: human gate for authenticated collection; no message, friend,
+  group-join, reaction, or other account mutation is permitted.
+
+#### P0018-AM05 | LinkedIn agent-browser | PLANNED, AUTHENTICATED GATE
+
+- exact order `agent_browser`; two cases because one method serves distinct
+  adapter contracts: one topic/account surface and one exact canonical public
+  company-or-person profile URL;
+- each case has its own one-interval ceiling and receipt. A case result does not
+  substitute for the other;
+- require current access-plan/auth proof, no lease conflict, exact method and
+  adapter-variant evidence, partition-correct durable publication, and
+  `not_observed` semantics for hidden/missing profile sections;
+- authority: human gate for authenticated collection; no messages,
+  connections, invitations, applications, or account mutation.
+
+#### P0018-AM06 | YouTube yt-dlp | PLANNED, PUBLIC
+
+- exact order `yt_dlp`; one public topic/channel case after proving `yt-dlp` is
+  on the service subprocess PATH;
+- require exact method diagnostics, canonical video identity, freshness bounds,
+  durable publication/index effect when yield exists, and no browser/profile
+  activity;
+- authority: inherited for one bounded public interval after the read-only
+  preflight; stop if the binary is absent or off PATH.
+
+Packet dependency and execution order:
+
+1. AM02 first, because it closes the only method-specific gap exposed by C27;
+2. AM06 next as the remaining public no-credential method;
+3. AM03, AM04, and AM05 only after their separate authenticated human gates;
+4. no join across AM02-AM06 is required for architecture acceptance, a fresh
+   independent Plan 0018 review, or truthful release readiness.
+
+### Checkpoint P0018-C28 | 2026-07-31
+
+Plan version:
+
+- 7
+
+State transition:
+
+- `configured timed acquisition passed with fallback not exercised -> service foundation accepted and method matrix active`
+
+Progress classification:
+
+- `outcome_progress`
+
+Validation evidence:
+
+- installed service 0.2.14 remains ready on schema 12 with five configured,
+  acquisition-ready sources and active index
+  `index-90a8aea59d32c62f3df8bbee`;
+- all collection specifications remain disabled after C27;
+- current source policy defines exactly six configured source/method pairs;
+  ScrapeCreators is supported but absent from the effective Reddit order;
+- C27 is sufficient direct evidence for Reddit keyless plus the shared
+  scheduler/publication/index foundation; earlier Plans 0021-0022 remain
+  adapter-only evidence for the Reddit browser implementation;
+- the C28 matrix defines independent gates, bounds, evidence, failure effects,
+  and an ordered next packet for every configured method.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active-agent concurrency remains one because live packets
+  share user config, service state, and profile/route leases.
+
+Graphiti write status:
+
+- `timed_out` after one bounded attempt: job
+  `247244d6-6162-4247-b7ea-daae687ce459` in group
+  `last30days_skill_main` reached the 60-second processing limit before an
+  episode UUID was assigned; no retry was attempted.
+
+Authority classification:
+
+- `human_gate`; the operator explicitly directed acceptance of the service
+  foundation and creation of independent access-method packets. Live AM02 and
+  authenticated method execution retain their packet-specific gates.
+
+Next action:
+
+- validate and commit Plan 0018 version 7 and the C28 matrix; then stop before
+  AM02's user-config mutation and one timer interval unless the operator
+  separately authorizes live execution.
