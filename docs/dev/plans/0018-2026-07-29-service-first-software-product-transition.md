@@ -92,12 +92,13 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C21 is the current authority for the remaining collection
-proof. The operator-authorized 0.2.12 interval completed within the wall bound
-but observed zero items. The packet's one-interval ceiling is exhausted.
-Adding a ScrapeCreators credential would add a credential class, while another
-keyless interval would exceed the explicit attempt ceiling; either path is a
-real human gate. Independent acceptance, tagging, and release remain closed.
+Checkpoint P0018-C27 is the current authority. Service 0.2.14 is installed with
+the explicit five-source user policy, and its sole timer-owned interval
+published one durable Reddit version and advanced the active index. The first
+configured keyless method returned the item, so that interval did not exercise
+the agent-browser fallback. Its one-interval ceiling is exhausted; a new
+fallback-specific interval is a human gate. Independent acceptance, tagging,
+and release remain closed.
 
 The operator's 2026-07-31 request to develop an agent-browser-powered Reddit
 post routine authorizes the bounded C22 development packet below. It does not
@@ -2610,3 +2611,61 @@ Next action:
 
 - commit the reviewed 0.2.14 source and evidence, then perform the redacted
   preflight before any user-config or installed-runtime mutation.
+
+### Checkpoint P0018-C27 | 2026-07-31
+
+Plan version:
+
+- 6
+
+State transition:
+
+- `0.2.14 source validated -> configured timed acquisition passed with fallback not exercised`
+
+Progress classification:
+
+- `outcome_progress`
+
+Validation evidence:
+
+- managed upgrade installed ready service 0.2.14 on schema 12 with verified
+  0.2.12 rollback and explicit five-source user policy;
+- the sole timer-owned spec-version-3 interval published one public Reddit
+  item with one attempt, one observation, one stored item, zero actual source
+  cost, and zero service model calls;
+- document versions advanced `57 -> 58`; active index advanced from
+  `index-4f096317e15c57da386466f2` to
+  `index-90a8aea59d32c62f3df8bbee`; integrity remained `ok`;
+- paused spec version 4 remained disabled with no run growth after the
+  post-pause observation window;
+- the acquisition envelope had empty diagnostics because `keyless` returned
+  the item before `agent_browser`; therefore the interval did not prove the
+  fallback despite proving configured timed service acquisition;
+- durable receipt:
+  `docs/dev/notes/0023-configured-timed-acquisition-receipt.json`.
+
+Hard stop:
+
+- do not run a second interval under C24; preserve healthy 0.2.14 and its
+  user-scoped policy;
+- agent-browser fallback-specific timer acceptance remains open and requires a
+  newly authorized interval or a revised acceptance method that cannot be
+  satisfied by the first access method.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; concurrency remained one.
+
+Graphiti write status:
+
+- completed as episode `0056b5a0-1f92-4df1-8382-caae6be51d26` from job
+  `f25211c4-b2d4-469a-989f-1b4c315b5e05` in group `last30days_skill`.
+
+Authority classification:
+
+- `human_gate`; the C24 one-interval authority is consumed.
+
+Next action:
+
+- revisit Plan 0018 acceptance design with the operator; do not retry, push,
+  tag, publish, or release under this packet.

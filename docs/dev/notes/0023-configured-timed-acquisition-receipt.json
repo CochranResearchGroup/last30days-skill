@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "plan": {"id": "0018", "version": 6, "packet": "C24"},
+  "checkpoint": {
+    "id": "P0018-C27",
+    "recorded_at": "2026-07-31T16:57:00-05:00",
+    "status": "partial_acceptance_hard_stop"
+  },
+  "source": {
+    "commit": "6161e1b",
+    "service_version": "0.2.14",
+    "artifact_sha256": "1b29209a31dc5e303bed56d2712d92d4a63d1db6c6b1f425ce32afa4e6de85a5",
+    "installed_runtime_manifest_sha256": "b0a656c64025f80ece818242452a63085c03bfa10b549070e581b46a3ad2b36e",
+    "database_schema_version": 12,
+    "rollback_version": "0.2.12"
+  },
+  "policy": {
+    "sources": ["reddit", "x", "facebook", "linkedin", "youtube"],
+    "reddit_access_order": ["keyless", "agent_browser"],
+    "paid_reddit_fallback_enabled": false,
+    "config_mode": "0600"
+  },
+  "collection": {
+    "collection_spec_id": "p0018-final-public-collection",
+    "enabled_spec_version": 3,
+    "paused_spec_version": 4,
+    "collection_run_id": "collection-run-564219083f18bc982339e87913775df8",
+    "job_id": "afcd42db-124e-4181-9e5d-2302dadd74df",
+    "acquisition_id": "work-e641c06fc4abfccb27edcd300a8fc52e",
+    "state": "published",
+    "attempted_count": 1,
+    "observed_count": 1,
+    "stored_count": 1,
+    "actual_source_cost_cents": 0,
+    "service_model_calls_before": 0,
+    "service_model_calls_after": 0,
+    "post_pause_run_growth": 0,
+    "database_integrity": "ok"
+  },
+  "publication": {
+    "document_count_before": 50,
+    "document_count_after": 50,
+    "document_versions_before": 57,
+    "document_versions_after": 58,
+    "index_versions_before": 44,
+    "index_versions_after": 46,
+    "active_index_before": "index-4f096317e15c57da386466f2",
+    "published_index": "index-d9266963b233800d46ec2d97",
+    "active_index_after": "index-90a8aea59d32c62f3df8bbee",
+    "document_id": "doc-e7d230f481c557a36d39e987768034ce",
+    "document_version_id": "version-163f0e3ee2790ed560f4a1431f176b14"
+  },
+  "acceptance": {
+    "configured_timed_service_acquisition": "passed",
+    "durable_version_and_index_advance": "passed",
+    "agent_browser_fallback_in_this_interval": "not_exercised",
+    "reason": "the first configured keyless method returned one item",
+    "retry_performed": false,
+    "next_gate": "explicit authority for a new fallback-specific interval"
+  },
+  "graphiti": {
+    "group_id": "last30days_skill",
+    "job_id": "f25211c4-b2d4-469a-989f-1b4c315b5e05",
+    "episode_uuid": "0056b5a0-1f92-4df1-8382-caae6be51d26",
+    "status_at_receipt": "completed"
+  }
+}

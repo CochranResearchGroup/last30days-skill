@@ -800,11 +800,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- Execute Plan 0018 C24 from validated checkpoint C26: commit the reproducible
-  service 0.2.14 source/artifact authority, run the redacted live preflight,
-  then perform one authorized managed upgrade and one timer-owned public
-  Reddit proof. Push, independent acceptance, tag, publication, and release
-  remain separately gated.
+- Revisit Plan 0018 from checkpoint C27. Configured timer-owned acquisition,
+  durable versioning, and indexing now pass on installed service 0.2.14, but
+  the sole interval yielded through keyless Reddit before agent-browser and
+  therefore did not exercise the fallback. A new interval, push, independent
+  acceptance, tag, publication, and release remain separately gated.
 
 ## Goal-Compatible Plan Conversion
 

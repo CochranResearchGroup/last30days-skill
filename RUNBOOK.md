@@ -5993,3 +5993,66 @@ Next Bounded Action:
 
 - commit source state, run the redacted preflight, then enter the one authorized
   managed transition and timer-owned collection interval.
+
+## Turn 95 | 2026-07-31
+
+Focus: execute the one authorized managed transition and timer-owned interval.
+
+Authority Consulted:
+
+- Plan 0018 C24/C26, the operator's one-interval authorization, and the
+  validation, closeout, documentation, and Graphiti-memory policies;
+- installed service/config/database readbacks and agent-browser install,
+  remote-view, and access-plan diagnostics.
+
+Decisions And Changes:
+
+- applied the explicit five-source user policy with Reddit ordered
+  `keyless,agent_browser`, preserving the owner-only configuration and backup;
+- upgraded through the managed transaction, used one existing public
+  collection specification, and enforced the one-interval hard stop;
+- preserved 0.2.14 after successful acquisition while recording the unexercised
+  fallback as the remaining acceptance gap.
+
+Outcome:
+
+- installed service 0.2.14 with explicit five-source user policy and 0.2.12
+  rollback;
+- one timer-owned public Reddit interval published one stored item, created one
+  new document version, and advanced the active index;
+- paused immediately at spec version 4; no post-pause run growth occurred;
+- keyless Reddit produced the item first, so the configured agent-browser
+  fallback was not exercised and no second interval was attempted.
+
+Validation Evidence:
+
+- run `collection-run-564219083f18bc982339e87913775df8`, job
+  `afcd42db-124e-4181-9e5d-2302dadd74df`, acquisition
+  `work-e641c06fc4abfccb27edcd300a8fc52e` all reached published/succeeded;
+- actual source cost and service model calls remained zero;
+- versions `57 -> 58`, index head
+  `index-4f096317e15c57da386466f2 -> index-90a8aea59d32c62f3df8bbee`, database
+  integrity `ok`, service ready on schema 12;
+- exact receipt:
+  `docs/dev/notes/0023-configured-timed-acquisition-receipt.json`.
+
+State Movement:
+
+- configured timed service acquisition `unproved -> passed`;
+- timer-owned agent-browser fallback `unproved -> not_exercised`;
+- Plan 0018 remains open at human gate C27; C24 interval authority is consumed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active-agent concurrency remained one.
+
+Graphiti Write Status:
+
+- outcome completed in group `last30days_skill` as episode
+  `0056b5a0-1f92-4df1-8382-caae6be51d26` from job
+  `f25211c4-b2d4-469a-989f-1b4c315b5e05`.
+
+Next Bounded Action:
+
+- revisit Plan 0018 acceptance design; do not retry or enter release operations
+  without new authority.
