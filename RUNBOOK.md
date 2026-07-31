@@ -5851,3 +5851,50 @@ Graphiti Write Status:
 Next Bounded Action:
 
 - start the persistent controller and run C1 once.
+
+## Turn 92 | 2026-07-31
+
+Focus: complete and clean up Plan 0022's live Reddit canary.
+
+Authority Consulted:
+
+- Plan 0022 checkpoint P0022-C02, four-query budget, acceptance criteria,
+  hard stops, and cleanup contract;
+- persistent-controller outputs and current agent-browser read-backs.
+
+Decisions And Changes:
+
+- manually accepted 7/7 returned items as relevant;
+- treated C3's zero-yield typed quality failure as valid rejection evidence,
+  not proof of useful live yield;
+- closed only `last30days-reddit` and preserved all downstream gates.
+
+Validation Evidence:
+
+- C1: 3/7 accepted; C2: 1/7 accepted with 3 partial rejections; C3: 0/19
+  accepted with 5 partial rejections; C4: 3/7 accepted with one partial;
+- 7/7 accepted items manually relevant; 9 total partial and 21 off-topic
+  rejections across 40 candidates;
+- start gaps 70.764, 68.261, and 67.291 seconds; maximum duration 54,304 ms;
+- four pre-query wrapper/startup defects consumed zero requests and opened no
+  browser before the final controller ran;
+- close returned true; no matching session/browser/Reddit tab remained; route
+  A and remote control remained ready;
+- service 0.2.13 remained uninstalled and no prohibited operation occurred.
+
+State Movement:
+
+- Plan 0022 `OPEN -> CLOSED`; progress `outcome_progress`; authority
+  `standing_goal` for deterministic closeout.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`.
+
+Graphiti Write Status:
+
+- pending closeout write and verification.
+
+Next Bounded Action:
+
+- persist and verify Graphiti outcome, then return to Plan 0018 S07.

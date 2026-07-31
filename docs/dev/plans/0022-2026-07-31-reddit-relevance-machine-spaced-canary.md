@@ -1,6 +1,6 @@
 # Plan 0022 | Reddit relevance machine-spaced canary
 
-State: OPEN
+State: CLOSED
 Roadmap: P07
 Date: 2026-07-31
 Plan version: 1
@@ -190,3 +190,57 @@ Authority classification:
 
 Next action: start the persistent controller, send `NEXT` for C1 once, inspect
 the result, and continue only if no hard stop fires.
+
+### Checkpoint P0022-C03 | 2026-07-31
+
+Plan version: 1
+
+State transition: `active -> closed`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- completed all four machine-spaced queries and manual adjudication;
+- closed and verified the named browser lane;
+- recorded `docs/dev/notes/0022-reddit-relevance-machine-spaced-canary-receipt.json`.
+
+Validation evidence:
+
+- C1 `openclaw`: 45,083 ms, 7 candidates, 3 accepted, 3/3 relevant;
+- C2 `AI agents`: 39,828 ms, 7 candidates, 1 accepted, 1/1 relevant,
+  3 partial and 3 off-topic rejections;
+- C3 `agent browser`: 54,304 ms, 19 candidates, zero accepted, 5 partial and
+  14 off-topic rejections; typed `quality_gate_failed` proved live rejection
+  but not useful yield;
+- C4 `Claude Code`: 37,141 ms, 7 candidates, 3 accepted, 3/3 relevant, one
+  partial and one off-topic rejection;
+- monotonic start gaps were 70.764, 68.261, and 67.291 seconds; concurrency was
+  one and every call stayed below 120 seconds;
+- four wrapper/controller startup defects occurred before any adapter call;
+  two were orchestration construction errors and two were process startup/input
+  errors; all consumed zero queries and opened no browser;
+- named close returned `closed=true`; no matching session/browser/Reddit tab
+  remained; route A `guacamole:1` / `:10` and remote control remained ready;
+- no install/restart, collection, persistence, credential, paid/model fallback,
+  source change, push, tag, publication, or release occurred.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary agent owned execution and review.
+
+Remaining acceptance criteria:
+
+- none for this canary; installation and downstream gates remain separate.
+
+Graphiti write status:
+
+- pending closeout write and verification.
+
+Authority classification:
+
+- `standing_goal`
+
+Next action: preserve service 0.2.13 as uninstalled and return to Plan 0018
+S07; any installation, push, tag, publication, or release remains separately
+gated.
