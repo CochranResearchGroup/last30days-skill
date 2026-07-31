@@ -5244,3 +5244,54 @@ Next Bounded Action:
   G1 searches across two windows at least 30 minutes apart;
 - preserve one active query, 60-second starts, no retry, paid fallback off,
   and all credential/push/tag/release gates.
+
+## Turn 80 | 2026-07-31
+
+Focus: close the final deterministic observability gap and pass current G1
+preflight before any Reddit traffic.
+
+Authority Consulted:
+
+- Plan 0019 T3/G1 and checkpoint P0019-C06;
+- current install doctor, remote-view doctor, access plan, and service status;
+- successful-result diagnostics required by the G1 evidence schema.
+
+Decisions And Changes:
+
+- exposed bounded browser operation timings, command count, and page-state
+  classification on successful results, not only failures;
+- refreshed the runtime manifest and reran deterministic gates;
+- accepted G1 readiness only after all current browser surfaces agreed and no
+  plan-owned session or lease existed.
+
+Validation Evidence:
+
+- 57 Reddit adapter tests and the complete 2,390-test Python collection pass;
+- compilation, runtime-package/lifecycle checks, and runtime build pass;
+- install doctor 0.27.0 reports success, zero issues/resource warnings, and
+  converged runtimes;
+- remote view, remote control, and route pool report ready;
+- the exact access plan selects `last30days-facebook` with zero lease pressure
+  and remote-headed RDP/private-display posture;
+- zero Reddit requests or browser launches occurred during preflight.
+
+State Movement:
+
+- Plan 0019 G1: `ready -> active` at preflight;
+- progress classification: `blocker_reduction`;
+- authority classification: `inherited_authority`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active concurrency remains one.
+
+Graphiti Write Status:
+
+- deferred; checkpoint P0019-C07, this turn, and the receipt are durable.
+
+Next Bounded Action:
+
+- run Window A cases `openclaw`, `agent browser`, and
+  `zzqv-no-such-topic-20260731` at quick depth with starts at least 60 seconds
+  apart and no retries;
+- hold Window B until at least 30 minutes after Window A completes.

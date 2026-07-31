@@ -410,11 +410,19 @@ class RedditBrowserScraper:
         diagnostics: RedditDiagnostics,
     ) -> dict[str, Any]:
         details = diagnostics.as_dict()
+        operations = list(getattr(self.client, "command_timings", []))[-12:]
+        details["command_count"] = len(operations)
+        details["browser_operations"] = operations
+        if page.no_results:
+            details["page_state"] = "verified_no_results"
+        elif page.has_posts:
+            details["page_state"] = "posts"
+        elif error_type:
+            details["page_state"] = error_type
+        else:
+            details["page_state"] = "unknown"
         if error_type:
             details["failure_stage"] = diagnostics.failure_stage
-            details["browser_operations"] = list(
-                getattr(self.client, "command_timings", [])
-            )[-12:]
         return {
             "items": items,
             "error": error,

@@ -804,8 +804,9 @@ Next Bounded Action:
 - Plan 0019 T0-T2 pass. The real-subprocess fake-CLI contract proves bounded
   command order, terminal failures, timeout propagation, redaction,
   retained-session reuse, and unrelated-owner preservation without traffic.
-  Revalidate browser readiness, then execute the already-authorized six-query
-  G1 matrix; credentials, push, tag, and release remain gated.
+  G1 preflight is current and ready; execute the already-authorized six-query
+  public matrix across its two bounded windows. Credentials, push, tag, and
+  release remain gated.
 
 ## Goal-Compatible Plan Conversion
 

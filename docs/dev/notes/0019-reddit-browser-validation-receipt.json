@@ -7,17 +7,17 @@
     "authority": "operator approved execution including G1 and G2 on 2026-07-31"
   },
   "checkpoint": {
-    "id": "P0019-C06",
-    "recorded_at": "2026-07-31T13:08:39-05:00",
-    "stage": "T2",
-    "status": "passed",
+    "id": "P0019-C07",
+    "recorded_at": "2026-07-31T13:13:03-05:00",
+    "stage": "T3-preflight",
+    "status": "ready",
     "progress_classification": "outcome_progress"
   },
   "candidate": {
     "checkpoint_commit": "f2d7d6ea8ed370032ff350a99bee28e3bbba6e5e",
     "reddit_feature_commit": "12b729840e0b1f83b0ae5c2534644c9a6bccd0cc",
     "service_version": "0.2.13",
-    "runtime_manifest_sha256": "1ff42a2fe9e5b58736c0e2555ed34a9416415e9fe2e6e3ca3761cfd36cf7fde5"
+    "runtime_manifest_sha256": "cdeadd9d12d0cfc6f4fcbc8417a872730812a56ee162cc282c7c5492ff2b18cb"
   },
   "installed_service": {
     "status": "ready",
@@ -249,6 +249,43 @@
     "fixture_cleanup": "pytest temporary directory only; no browser session or daemon fixture created",
     "subagent_status": "not_spawned",
     "graphiti_write_status": "deferred"
+  },
+  "g1_preflight": {
+    "status": "ready",
+    "observability_amendment": {
+      "command_count_on_success": true,
+      "bounded_browser_operations_on_success": true,
+      "page_state_classification_on_success": true,
+      "reddit_adapter_tests": 57,
+      "full_python_tests_collected": 2390,
+      "python_suite_exit_status": 0,
+      "runtime_package_tests": "passed"
+    },
+    "install_doctor": {
+      "success": true,
+      "version": "0.27.0",
+      "issue_count": 0,
+      "resource_warning_count": 0,
+      "runtime_convergence": "converged"
+    },
+    "remote_view_doctor": {
+      "status": "ready",
+      "remote_control_status": "ready",
+      "route_pool_status": "ready"
+    },
+    "access_plan": {
+      "selected_profile_id": "last30days-facebook",
+      "active_lease_count": 0,
+      "duplicate_pressure": false,
+      "recommended_action": "launch_new_browser",
+      "browser_host": "remote_headed",
+      "view_stream_provider": "rdp_gateway",
+      "control_input_provider": "manual_attached_desktop",
+      "display_isolation": "private_virtual_display"
+    },
+    "plan_session_present": false,
+    "new_reddit_queries": 0,
+    "collection_attempts": 0
   },
   "hard_stop": {
     "triggered": true,

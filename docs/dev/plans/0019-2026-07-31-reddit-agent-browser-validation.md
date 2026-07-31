@@ -45,6 +45,9 @@ not acceptance evidence.
   seven-command new-session path, every terminal boundary, malformed output,
   timeout/child termination, redaction, retained-session reuse, and unrelated
   session ownership. No Reddit traffic or browser session ran.
+- G1 preflight passed on 2026-07-31: successful results now expose bounded
+  command/page-state diagnostics, all deterministic gates remain green, and
+  current doctors/access-plan evidence is ready with no plan session or lease.
 
 ## Authority And Gates
 
@@ -683,6 +686,61 @@ Next action:
 - rerun current readiness checks, then execute exactly the G1 six-query public
   matrix across two windows at least 30 minutes apart, with one active query,
   60-second start spacing, paid fallback disabled, and no retries.
+
+### Checkpoint P0019-C07 | 2026-07-31
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `active -> active`; G1 `ready -> active` at preflight.
+
+Progress classification:
+
+- `blocker_reduction`
+
+Owned changes:
+
+- exposed the already-bounded CLI operation timings, command count, and
+  page-state classification on successful adapter results so every G1 query
+  can satisfy the plan's observability contract;
+- refreshed the checked runtime manifest;
+- performed current read-only G1 readiness checks and made no Reddit request
+  or browser mutation.
+
+Validation evidence:
+
+- 57 Reddit adapter tests, the complete 2,390-test Python collection,
+  compilation, runtime-package/lifecycle checks, and runtime build pass;
+- install doctor 0.27.0 reports success, zero issues/resource warnings, and
+  converged runtimes;
+- remote-view and remote-control status plus route pool are ready;
+- the exact access plan selects `last30days-facebook`, reports zero active
+  leases/duplicate pressure, and requests remote-headed RDP/private-display
+  launch;
+- service status contains no `last30days-reddit` session or browser.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active concurrency remains one.
+
+Graphiti write status:
+
+- deferred; checkpoint C07, runbook Turn 80, and the receipt are durable.
+
+Authority classification:
+
+- `inherited_authority`; G1 is within the operator-approved six-query public
+  scope and all preconditions are now satisfied.
+
+Next action:
+
+- execute Window A exactly once per case, with query starts at least 60 seconds
+  apart: `openclaw` quick, `agent browser` quick, and
+  `zzqv-no-such-topic-20260731` quick; then hold Window B until at least 30
+  minutes after Window A completes.
 
 ## Best Next Action
 

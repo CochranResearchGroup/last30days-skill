@@ -807,6 +807,9 @@ def test_fake_cli_exercises_the_real_subprocess_contract_in_bounded_order(
     commands = _commands(log_path)
     assert result["error_type"] is None
     assert [item["reddit_id"] for item in result["items"]] == ["cli001"]
+    assert result["diagnostics"]["page_state"] == "posts"
+    assert result["diagnostics"]["command_count"] == 7
+    assert len(result["diagnostics"]["browser_operations"]) == 7
     assert [command[1:3] for command in commands[:2]] == [
         ["service", "access-plan"],
         ["service", "status"],
