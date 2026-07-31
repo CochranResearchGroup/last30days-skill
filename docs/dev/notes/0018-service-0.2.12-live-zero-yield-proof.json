@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "plan_id": "0018",
+  "checkpoint_id": "P0018-C21",
+  "executed_at": "2026-07-30",
+  "authority": {
+    "classification": "human_gate",
+    "authorization_status": "granted_and_consumed",
+    "user_authorization": "ok go",
+    "packet": "docs/dev/notes/0018-service-0.2.12-authorized-transition-packet.json"
+  },
+  "source": {
+    "commit": "e6d12d23171b7af2cb74d5da0558c539a5b9cf6a",
+    "origin_main": "e6d12d23171b7af2cb74d5da0558c539a5b9cf6a",
+    "artifact": "dist/service/last30days-service-0.2.12.tar.gz",
+    "artifact_sha256": "c4e6fe9a5bf86a615e411245509d45276de29ddb3320fd69e3abbd9aa1ddf3a9"
+  },
+  "installed_transition": {
+    "from_version": "0.2.10",
+    "to_version": "0.2.12",
+    "current_release": "releases/0.2.12",
+    "rollback_release": "releases/0.2.10",
+    "service_status": "ready",
+    "database_schema_version": 12,
+    "database_integrity": "ok",
+    "runtime_manifest_sha256": "333bf0e3c605da0e74291b33cfbd352b3686cf7438a78c52d610b2b1d8e3ec41"
+  },
+  "live_interval": {
+    "collection_spec_id": "p0018-final-public-collection-v2",
+    "selector": {
+      "topic": "temporal knowledge graphs"
+    },
+    "source": "reddit",
+    "profile_id": "default",
+    "redaction_class": "public",
+    "assessment_enabled": false,
+    "enabled_revision": 5,
+    "paused_revision": 6,
+    "scheduled_for": "2026-07-31T01:00:00Z",
+    "started_at": "2026-07-31T01:24:39.468555Z",
+    "completed_at": "2026-07-31T01:24:41.978286Z",
+    "collection_run_id": "collection-run-da045ae3ddd7aef4f55f95ea8edb0bc2",
+    "job_id": "a1eb58b1-7a47-4dfd-8cf1-6cc3a990dbb0",
+    "acquisition_id": "work-1ee0b617c4be5215bfa444ebfcf573a3",
+    "job_attempts_started": 1,
+    "maximum_job_attempts": 2,
+    "acquisition_receipts": 1,
+    "acquisition_status": "succeeded",
+    "acquisition_item_count": 0,
+    "acquisition_cost_cents": 0,
+    "job_spent_cents": 1,
+    "coverage_state": "observed_empty",
+    "wall_timeout_seconds": 120,
+    "elapsed_seconds": 2.51
+  },
+  "credential_readiness": {
+    "scrapecreators_configured": false,
+    "keyed_fallback_executed": false,
+    "new_credential_would_cross_human_gate": true
+  },
+  "counts": {
+    "before": {
+      "acquisitions": 66,
+      "collection_run_attempts": 17,
+      "collection_runs": 15,
+      "collection_coverage_intervals": 15,
+      "document_versions": 57,
+      "documents": 50,
+      "evidence_spans": 419,
+      "index_versions": 44,
+      "service_intelligence_tasks": 2,
+      "service_model_calls": 0,
+      "service_job_events": 505,
+      "service_jobs": 52
+    },
+    "after": {
+      "acquisitions": 67,
+      "collection_run_attempts": 18,
+      "collection_runs": 16,
+      "collection_coverage_intervals": 16,
+      "document_versions": 57,
+      "documents": 50,
+      "evidence_spans": 419,
+      "index_versions": 44,
+      "service_intelligence_tasks": 2,
+      "service_model_calls": 0,
+      "service_job_events": 515,
+      "service_jobs": 53
+    }
+  },
+  "final_runtime": {
+    "service_version": "0.2.12",
+    "service_status": "ready",
+    "database_schema_version": 12,
+    "database_integrity": "ok",
+    "collection_enabled": false,
+    "collection_spec_version": 6,
+    "collection_run_count": 3,
+    "active_index": "index-4f096317e15c57da386466f2",
+    "v4_tag_present": false
+  },
+  "acceptance": {
+    "autonomous_timer_run": true,
+    "single_new_run": true,
+    "single_job_attempt": true,
+    "typed_receipt_within_wall_bound": true,
+    "public_acquisition_receipt": true,
+    "public_items_observed": false,
+    "document_version_advance": false,
+    "index_advance": false,
+    "assessment_disabled": true,
+    "model_calls_unchanged": true,
+    "independent_review": "not_run",
+    "verdict": "rejected"
+  },
+  "summary": "Service 0.2.12 removed the prior wall-bound failure: the resident timer published one durable public acquisition receipt in about 2.5 seconds with exactly one attempt and no model execution. The keyless route observed zero items, no ScrapeCreators credential was configured to engage the prepared keyed fallback, and no document, version, evidence, or index advanced. The collection is paused, the installed service remains ready, and indexed-yield acceptance remains rejected."
+}

@@ -751,8 +751,9 @@ Current State:
 - The approved 0.2.10 upgrade reconciled stranded state and remained ready,
   but its one new timer attempt again exceeded the worker wall bound without a
   receipt. Bounded containment prevented attempt 2. The installed daemon is
-  0.2.10. Source service 0.2.12 retains bounded post-kill reaping and makes the
-  three-item Reddit route deadline-aware under the existing 120-second ceiling.
+  now 0.2.12. Its authorized timer run produced a durable public receipt in
+  about 2.5 seconds, proving the deadline repair, but observed zero items and
+  did not advance documents or the active index.
 
 Goal Seeds:
 
@@ -791,11 +792,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- Checkpoint P0018-C20 opens plan version 4 with the validated 0.2.12
-  deadline-aware acquisition repair. The operator's `ok go` satisfies the
-  exact transition/live human gate: push the checkpoint, upgrade once from
-  0.2.10 to 0.2.12, and observe one timer interval under the unchanged bounds.
-  Keep independent review and `v4.0.0` closed until indexed yield is proven.
+- Checkpoint P0018-C21 records the 0.2.12 wall-bound success and zero-yield
+  rejection. The exact one-run authorization is exhausted. Stop for a real
+  human gate before another live interval or before adding the absent
+  ScrapeCreators credential. Keep independent review and `v4.0.0` closed until
+  indexed yield is proven.
 
 ## Goal-Compatible Plan Conversion
 

@@ -4721,3 +4721,70 @@ Next Bounded Action:
 - commit and push the 0.2.12 packet, verify current preconditions, then execute
   exactly one managed transition and one live interval with fail-closed
   containment.
+
+## Turn 71 | 2026-07-30
+
+Focus: execute the authorized 0.2.12 managed transition and one live
+deadline-aware collection interval.
+
+Authority Consulted:
+
+- Plan 0018 version 4 checkpoint P0018-C20
+- `docs/dev/notes/0018-service-0.2.12-authorized-transition-packet.json`
+- pushed commits `54c77cc` and `e6d12d2`
+- installed release, database, collection, job, acquisition, index, model, and
+  credential-presence readbacks
+
+Decisions And Changes:
+
+- Verified the source commit was pushed, artifact digest matched, `v4.0.0` was
+  absent, installed 0.2.10 was ready, schema 12 and integrity were unchanged,
+  revision 4 was disabled, and the prior failed job remained fenced at one
+  attempt.
+- Upgraded once to service 0.2.12; retained 0.2.10 as rollback.
+- Resumed revision 5, disconnected the client, observed one timer-owned run,
+  and paused immediately at revision 6.
+- Did not run a second interval, add a credential, invoke a model/evaluator,
+  create a tag, or publish a release.
+
+Validation Evidence:
+
+- run `collection-run-da045ae3ddd7aef4f55f95ea8edb0bc2` and job
+  `a1eb58b1-7a47-4dfd-8cf1-6cc3a990dbb0`;
+- exactly one attempt published in about 2.5 seconds;
+- acquisition `work-1ee0b617c4be5215bfa444ebfcf573a3` is a durable public
+  success receipt with zero items;
+- coverage state is `observed_empty`;
+- acquisitions advanced 66 to 67, collection attempts 17 to 18, runs 15 to 16,
+  coverage intervals 15 to 16, jobs 52 to 53, and events 505 to 515;
+- documents stayed 50, versions 57, evidence 419, index versions 44, active
+  index `index-4f096317e15c57da386466f2`, model calls zero, and intelligence
+  tasks two;
+- no ScrapeCreators credential is configured, so the keyed fallback did not
+  execute;
+- service 0.2.12 remains ready, schema 12, integrity `ok`, revision 6 disabled,
+  and total successor runs three.
+
+State Movement:
+
+- Plan 0018 version 4:
+  `deadline-aware acquisition repair validated -> wall-bound success with zero-yield rejection`;
+- progress classification: `blocker_reduction`;
+- the timeout invariant is removed, but indexed-yield acceptance remains
+  rejected;
+- authority classification: `human_gate` because the one-run ceiling is
+  exhausted and adding the absent credential would add a credential class.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0018 fixes active-agent concurrency at one.
+
+Graphiti Write Status:
+
+- `pending_after_checkpoint_commit`.
+
+Stop Reason:
+
+- stop before another live interval or credential configuration;
+- best next packet is one more unchanged-bound public interval using a
+  previously successful high-yield selector, subject to explicit approval.

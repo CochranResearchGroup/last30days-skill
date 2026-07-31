@@ -88,13 +88,12 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C20 is the current authority for the remaining collection
-proof. Earlier packet-level `no retry` and explicit-approval statements remain
-historical constraints on those packet instances. The operator's explicit
-`ok go` satisfies the repeated-live-failure human gate for the exact 0.2.12
-transition and one live interval recorded in the C20 packet; it does not
-authorize a ceiling increase, a second interval, independent acceptance,
-tagging, or release.
+Checkpoint P0018-C21 is the current authority for the remaining collection
+proof. The operator-authorized 0.2.12 interval completed within the wall bound
+but observed zero items. The packet's one-interval ceiling is exhausted.
+Adding a ScrapeCreators credential would add a credential class, while another
+keyless interval would exceed the explicit attempt ceiling; either path is a
+real human gate. Independent acceptance, tagging, and release remain closed.
 
 ## User Experience Contract
 
@@ -2161,3 +2160,69 @@ Next action:
   observe exactly one live interval;
 - hard-stop and contain on any packet violation; proceed to independent final
   review only if current indexed public yield satisfies every success criterion.
+
+### Checkpoint P0018-C21 | 2026-07-30
+
+Plan version:
+
+- 4
+
+State transition:
+
+- `deadline-aware acquisition repair validated -> wall-bound success with zero-yield rejection`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `human_gate`;
+- the authorized 0.2.12 transition and one live interval are complete;
+- a new attempt would exceed the packet's one-run ceiling;
+- configuring the prepared keyed fallback would introduce a new credential
+  class, which also requires explicit approval.
+
+Live outcome:
+
+- installed service 0.2.12 is ready with schema 12, integrity `ok`, and 0.2.10
+  as rollback;
+- revision 5 enabled one timer-owned run after client disconnect and revision 6
+  paused it immediately;
+- run `collection-run-da045ae3ddd7aef4f55f95ea8edb0bc2` and job
+  `a1eb58b1-7a47-4dfd-8cf1-6cc3a990dbb0` published in about 2.5 seconds with
+  exactly one attempt;
+- acquisition `work-1ee0b617c4be5215bfa444ebfcf573a3` is a durable public
+  `succeeded` receipt with zero items and zero adapter cost;
+- no ScrapeCreators credential is configured in the service's global or
+  default-profile configuration, so the prepared keyed fallback did not run;
+- coverage recorded `observed_empty`; documents, versions, evidence, and index
+  remained unchanged; model calls stayed zero and intelligence tasks stayed two.
+
+Acceptance:
+
+- autonomous timer ownership: accepted;
+- typed result within the worker wall bound: accepted;
+- exactly one run and one attempt: accepted;
+- public item, document/version, and active-index advance: rejected;
+- independent final review and immutable release: not run.
+
+Durable proof:
+
+- `docs/dev/notes/0018-service-0.2.12-live-zero-yield-proof.json`.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active-agent concurrency remained one.
+
+Graphiti write status:
+
+- `pending_after_checkpoint_commit`.
+
+Next action or stop reason:
+
+- stop at the exhausted live-attempt and credential-class human gate;
+- best next packet is one additional public/default-profile, three-item,
+  120-second interval using a previously successful high-yield selector,
+  without adding a credential; adding ScrapeCreators instead requires separate
+  authorization to configure that credential.
