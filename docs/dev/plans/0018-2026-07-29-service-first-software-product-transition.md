@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 8
+Plan version: 9
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -37,8 +37,8 @@ software with:
 ## Current State
 
 - The independent managed service is the installed runtime authority at
-  version 0.2.14/schema 12; `current` and `previous` select verified immutable
-  0.2.14 and 0.2.12 releases through the stable launcher.
+  version 0.2.16/schema 12; `current` and `previous` select verified immutable
+  0.2.16 and 0.2.15 releases through the stable launcher.
 - The service publishes its exact contract, API, schema, runtime-manifest,
   source-readiness, and active-index facts. The MCP adapter performs the
   fail-closed compatibility handshake before ordinary operations.
@@ -86,7 +86,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C29 is the current authority. Service architecture and timed
+Checkpoint P0018-C30 is the current authority. Service architecture and timed
 ingestion are accepted. The six configured source/method pairs have independent
 acceptance packets; method failure degrades only that method and does not block
 the service foundation or unrelated method packets. Independent final review,
@@ -2851,3 +2851,126 @@ Next action:
 - validate and commit Plan 0018 version 7 and the C28 matrix; then stop before
   AM02's user-config mutation and one timer interval unless the operator
   separately authorizes live execution.
+
+### Checkpoint P0018-C29 | 2026-07-31
+
+Plan version:
+
+- 8
+
+State transition:
+
+- `method packets gated -> AM02-AM06 authorized for serial live execution`
+
+Progress classification:
+
+- `authority_progress`
+
+Authority and bounds:
+
+- the operator explicitly authorized continuation through the remaining
+  configured services, including authenticated X, Facebook, and LinkedIn;
+- C28's one-interval-per-case, one implementation attempt, one review/rework
+  cycle, serial execution, cost, cleanup, and exact-provenance bounds remained
+  unchanged;
+- credential addition/export, account mutation, push, review bypass, tag,
+  publication, and release remained prohibited.
+
+Validation evidence:
+
+- installed service 0.2.14/schema 12 was ready with all campaign specs absent
+  or disabled before mutation;
+- CodeGraph identified exact adapter variants for X, Facebook, both LinkedIn
+  surfaces, and YouTube, while Reddit aggregate diagnostics required explicit
+  ordered-method provenance before AM02 could be adjudicated.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the shared config, service state, and browser route/profile
+  leases required a single serial controller.
+
+Graphiti write status:
+
+- deferred to the campaign checkpoint.
+
+Next action:
+
+- add exact access-method provenance, install the validated successor service,
+  and execute AM02-AM06 serially in the C28 matrix order.
+
+### Checkpoint P0018-C30 | 2026-07-31
+
+Plan version:
+
+- 9
+
+State transition:
+
+- `AM02-AM06 authorized -> YouTube accepted, browser methods rejected, live browser successor gate failed`
+
+Progress classification:
+
+- `outcome_progress_with_runtime_hard_stop`
+
+Implementation and live evidence:
+
+- commits `b46d5c5` and `b560ca0` added exact adapter/access-method provenance
+  and corrected manual collection jobs to one attempt while timer jobs retain
+  the existing two-attempt retry policy;
+- installed service 0.2.16/schema 12 is ready with verified 0.2.15 rollback,
+  integrity `ok`, zero service model calls, all collection specs disabled, and
+  the user access orders restored;
+- AM06 accepted: `youtube_ytdlp` attempted and selected `yt_dlp`, observed and
+  stored three canonical videos at zero source cost, advanced document counts
+  `50 -> 53`, version counts `58 -> 61`, and active index
+  `index-90a8aea59d32c62f3df8bbee -> index-0b31b594c3222cb1fa8f6175`;
+- AM02 rejected before acquisition because its zero-cent packet could not
+  reserve the Reddit adapter's one-cent worst-case budget; neither browser nor
+  keyless fallback was attempted;
+- AM03, AM04, and both AM05 cases rejected on agent-browser remote-view-open
+  timeout/CDP-disconnect failures. AM03 exposed the shared manual retry defect
+  by starting two acquisitions against a declared ceiling of one; service
+  0.2.16 repairs that controller defect for all future manual packets;
+- agent-browser advanced from 0.27.0 to source-free 0.28.0, its workstation
+  payload now matches provenance, and both static doctors report ready;
+- the required live `remote-view-open` gate nevertheless failed twice because
+  retained browser and route/display ownership diverged. The one permitted
+  `service_remote_view_browser_reattach` remediation returned `reattached`, but
+  the second live gate again reported `reattachable_stale_route` with the
+  retained browser degraded;
+- no browser successor collection interval was created or started. Exact
+  packet, job, acquisition, provenance, and live-gate evidence is preserved in
+  `docs/dev/notes/0025-service-access-method-live-campaign-receipt.json`.
+
+Hard stop:
+
+- do not start a successor AM02, AM03, AM04, or AM05 interval while the live
+  remote-view-open gate fails, even though static doctors report ready;
+- repair or retire the degraded retained agent-browser lane under a separately
+  reviewed successor, then require one passing live gate before constructing
+  any source successor packet;
+- no push, independent-review bypass, tag, publication, or release is
+  authorized.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; execution remained serial on shared runtime state.
+
+Graphiti write status:
+
+- `timed_out` after one bounded 60-second attempt during node extraction: job
+  `b5d0f937-f902-4957-a26f-414f9934d363` in group
+  `last30days_skill_main`; no episode UUID was assigned and no retry was made.
+
+Authority classification:
+
+- `inherited_authority`; the source campaign goal remains active, but the
+  runtime packet is at a hard stop because this attempt and its one remediation
+  cycle are consumed.
+
+Next action:
+
+- create a bounded agent-browser runtime successor that repairs or retires the
+  degraded `last30days-facebook` retained lane, prove
+  `pnpm test:remote-view-open-live`, and only then revisit one-interval source
+  successors for the rejected browser methods.

@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "plan_id": "0018",
-  "plan_version": 8,
-  "recorded_at": "2026-07-31T17:10:00-05:00",
+  "plan_version": 9,
+  "recorded_at": "2026-07-31T17:58:00-05:00",
   "foundation": {
     "service_architecture": "accepted",
     "timer_owned_ingestion": "accepted",
     "durable_publication_and_indexing": "accepted",
-    "installed_service_version": "0.2.14",
+    "installed_service_version": "0.2.16",
     "database_schema_version": 12,
-    "rollback_version": "0.2.12",
+    "rollback_version": "0.2.15",
     "acceptance_receipt": "docs/dev/notes/0023-configured-timed-acquisition-receipt.json",
     "method_packets_are_global_release_join_gate": false
   },
@@ -49,7 +49,7 @@
       "source": "reddit",
       "method": "agent_browser",
       "data_class": "public",
-      "status": "authorized_pending_live_execution",
+      "status": "rejected",
       "access_order_for_case": ["agent_browser", "keyless"],
       "live_cases": 1,
       "acceptance": [
@@ -59,48 +59,77 @@
         "one or more agent_browser items become durable versions and advance the index",
         "the plan-owned browser tab, lease, display, and route are released"
       ],
-      "authority": "operator_authorized_2026_07_31"
+      "authority": "operator_authorized_2026_07_31",
+      "result": {
+        "reason": "pre_acquisition_budget_exhausted",
+        "browser_attempted": false,
+        "fallback_attempted": false,
+        "actual_source_cost_cents": 0
+      }
     },
     {
       "id": "P0018-AM03",
       "source": "x",
       "method": "agent_browser",
       "data_class": "authenticated",
-      "status": "authorized_pending_live_execution",
+      "status": "rejected",
       "access_order_for_case": ["agent_browser"],
       "live_cases": 1,
-      "authority": "operator_authorized_2026_07_31"
+      "authority": "operator_authorized_2026_07_31",
+      "result": {
+        "reason": "remote_view_open_timeout_then_cdp_disconnect",
+        "attempts": 2,
+        "declared_attempt_ceiling": 1,
+        "control_defect_repaired_in_service_version": "0.2.16"
+      }
     },
     {
       "id": "P0018-AM04",
       "source": "facebook",
       "method": "agent_browser",
       "data_class": "authenticated",
-      "status": "authorized_pending_live_execution",
+      "status": "rejected",
       "access_order_for_case": ["agent_browser"],
       "live_cases": 1,
-      "authority": "operator_authorized_2026_07_31"
+      "authority": "operator_authorized_2026_07_31",
+      "result": {
+        "reason": "remote_view_open_timeout_then_cdp_disconnect",
+        "attempts": 1,
+        "max_attempts": 1
+      }
     },
     {
       "id": "P0018-AM05",
       "source": "linkedin",
       "method": "agent_browser",
       "data_class": "authenticated",
-      "status": "authorized_pending_live_execution",
+      "status": "rejected",
       "access_order_for_case": ["agent_browser"],
       "live_cases": 2,
       "cases": ["topic_or_account", "canonical_profile_url"],
-      "authority": "operator_authorized_2026_07_31"
+      "authority": "operator_authorized_2026_07_31",
+      "result": {
+        "reason": "both_required_cases_failed_remote_view_open_timeout",
+        "topic_case_attempts": 1,
+        "profile_case_attempts": 1
+      }
     },
     {
       "id": "P0018-AM06",
       "source": "youtube",
       "method": "yt_dlp",
       "data_class": "public",
-      "status": "authorized_pending_live_execution",
+      "status": "accepted",
       "access_order_for_case": ["yt_dlp"],
       "live_cases": 1,
-      "authority": "inherited_authority_after_read_only_preflight"
+      "authority": "inherited_authority_after_read_only_preflight",
+      "result": {
+        "adapter_variant": "youtube_ytdlp",
+        "selected_access_method": "yt_dlp",
+        "observed_count": 3,
+        "stored_count": 3,
+        "actual_source_cost_cents": 0
+      }
     }
   ],
   "supported_not_configured": [
@@ -118,5 +147,7 @@
     "P0018-AM03",
     "P0018-AM04",
     "P0018-AM05"
-  ]
+  ],
+  "campaign_receipt": "docs/dev/notes/0025-service-access-method-live-campaign-receipt.json",
+  "successor_campaign_status": "blocked_by_failed_live_runtime_gate"
 }

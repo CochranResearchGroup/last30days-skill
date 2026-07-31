@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "plan_id": "0018",
+  "plan_version": 9,
+  "checkpoint_id": "P0018-C30",
+  "recorded_at": "2026-07-31T17:58:00-05:00",
+  "campaign": {
+    "service_version_started": "0.2.15",
+    "service_version_current": "0.2.16",
+    "database_schema_version": 12,
+    "source_commit_provenance": "b46d5c5",
+    "manual_attempt_bound_commit": "b560ca0",
+    "initial_index_version": "index-90a8aea59d32c62f3df8bbee",
+    "current_index_version": "index-0b31b594c3222cb1fa8f6175",
+    "initial_document_count": 50,
+    "current_document_count": 53,
+    "initial_document_version_count": 58,
+    "current_document_version_count": 61,
+    "service_model_calls": 0,
+    "database_integrity": "ok",
+    "all_collection_specs_disabled": true,
+    "user_config_mode": "0600",
+    "user_access_policy_restored": true
+  },
+  "preflight": {
+    "agent_browser_initial_version": "0.27.0",
+    "agent_browser_binary_current_version": "0.28.0",
+    "agent_browser_binary_sha256": "7187dc27722885d145220dc7b872768598120e865043f2a5d7a150905b67a2c9",
+    "remote_view_initial_status": "ready",
+    "profile_id": "last30days-facebook",
+    "profile_lease_before": "available",
+    "profile_lease_after": "available",
+    "yt_dlp_path": "/home/linuxbrew/.linuxbrew/bin/yt-dlp",
+    "yt_dlp_version": "2026.07.04",
+    "browser_capability_preflight": "cli_missing_arguments",
+    "browser_runtime_gate_current": "failed_live_remote_view_ownership_proof",
+    "workstation_payload_current": "installed_and_provenance_matched",
+    "install_doctor_current": "ready",
+    "remote_view_doctor_current": "ready",
+    "live_gate_attempts": 2,
+    "live_gate_artifacts": [
+      "/tmp/agent-browser-remote-view-open-live-2026-07-31T22-54-48-779Z",
+      "/tmp/agent-browser-remote-view-open-live-2026-07-31T22-56-04-094Z"
+    ],
+    "live_gate_failure": "retained browser stayed degraded and route ownership did not match browser display ownership",
+    "review_rework_action": "service_remote_view_browser_reattach",
+    "review_rework_result": "reattached_then_live_gate_failed_again",
+    "cleanup_action": "closed_plan_owned_default_lane_then_service_reconcile",
+    "cleanup_result": "profile_lease_available_and_route_released"
+  },
+  "results": [
+    {
+      "packet_id": "P0018-AM02",
+      "source": "reddit",
+      "method": "agent_browser",
+      "status": "rejected",
+      "reason": "pre_acquisition_budget_exhausted",
+      "collection_spec_id": "p0018-am02-reddit-browser",
+      "collection_run_id": "collection-run-69721d55f644e46b38913fc186feba24",
+      "job_id": "75ce33e4-ec8a-48e2-a517-7a58872df4c3",
+      "observed_count": 0,
+      "stored_count": 0,
+      "actual_source_cost_cents": 0,
+      "browser_attempted": false,
+      "fallback_attempted": false
+    },
+    {
+      "packet_id": "P0018-AM06",
+      "source": "youtube",
+      "method": "yt_dlp",
+      "status": "accepted",
+      "collection_spec_id": "p0018-am06-youtube",
+      "collection_run_id": "collection-run-9b74e351946d783125362eebe75eb1aa",
+      "job_id": "50c1b408-445f-4db5-b8d2-f7ae7d35db06",
+      "acquisition_id": "work-a63f7678f574403254f190f3420e4a6d",
+      "adapter_variant": "youtube_ytdlp",
+      "attempted_access_methods": ["yt_dlp"],
+      "selected_access_method": "yt_dlp",
+      "observed_count": 3,
+      "stored_count": 3,
+      "actual_source_cost_cents": 0,
+      "canonical_urls": [
+        "https://www.youtube.com/watch?v=9f-Ew_lDtxc",
+        "https://www.youtube.com/watch?v=Wq45rvPGNHs",
+        "https://www.youtube.com/watch?v=tCzdgOg301Q"
+      ]
+    },
+    {
+      "packet_id": "P0018-AM03",
+      "source": "x",
+      "method": "agent_browser",
+      "status": "rejected",
+      "reason": "remote_view_open_timeout_then_cdp_disconnect",
+      "collection_spec_id": "p0018-am03-x-browser",
+      "collection_run_id": "collection-run-c03a1f999248f88ed083fbb5297e3ccc",
+      "job_id": "40c64f10-30c1-4eaf-b97d-383640d54710",
+      "acquisition_ids": [
+        "work-514d56fedff6fe5ba48fa8ec52e6de11",
+        "work-6c99737d47f4e8960299b897382b9f07"
+      ],
+      "adapter_variant": "x_agent_browser",
+      "attempted_access_methods": ["agent_browser"],
+      "selected_access_method": null,
+      "attempts": 2,
+      "declared_attempt_ceiling": 1,
+      "control_defect_repaired_in_service_version": "0.2.16",
+      "actual_source_cost_cents": 0
+    },
+    {
+      "packet_id": "P0018-AM04",
+      "source": "facebook",
+      "method": "agent_browser",
+      "status": "rejected",
+      "reason": "remote_view_open_timeout_then_cdp_disconnect",
+      "collection_spec_id": "p0018-am04-facebook-browser",
+      "collection_run_id": "collection-run-bd4ffe6eec3c9969adf50896b9551d43",
+      "job_id": "e43d61df-0cf8-4891-8740-a2c6cfbc6e25",
+      "acquisition_id": "work-5895799d2085f77f82946f55cc55c84c",
+      "adapter_variant": "facebook_agent_browser",
+      "attempted_access_methods": ["agent_browser"],
+      "selected_access_method": null,
+      "attempts": 1,
+      "max_attempts": 1,
+      "actual_source_cost_cents": 0
+    },
+    {
+      "packet_id": "P0018-AM05",
+      "source": "linkedin",
+      "method": "agent_browser",
+      "status": "rejected",
+      "reason": "both_required_cases_failed_remote_view_open_timeout",
+      "cases": [
+        {
+          "case": "topic_or_account",
+          "collection_run_id": "collection-run-197d289f5924819d89dd9d60f4699cd7",
+          "job_id": "24327cfe-9b87-4642-aa22-b43a15068db3",
+          "acquisition_id": "work-81457319115164e8a68d7f218326db9c",
+          "adapter_variant": "linkedin_agent_browser",
+          "attempts": 1,
+          "max_attempts": 1
+        },
+        {
+          "case": "canonical_profile_url",
+          "collection_run_id": "collection-run-d98902ed8b0e6d2d19d8326905eab4f9",
+          "job_id": "17c5c7d2-082c-490e-b9e7-855acec38d1a",
+          "acquisition_id": "work-05bc0104d75fa4ab41e2fd6110c5da6c",
+          "adapter_variant": "linkedin_profile_agent_browser",
+          "attempts": 1,
+          "max_attempts": 1
+        }
+      ],
+      "attempted_access_methods": ["agent_browser"],
+      "selected_access_method": null,
+      "actual_source_cost_cents": 0
+    }
+  ],
+  "successor_state": {
+    "status": "blocked_by_failed_live_runtime_gate",
+    "reason": "the installed 0.28.0 payload and both static doctors are ready, but the required live remote-view-open gate failed before and after its one allowed reattach remediation because retained browser and route ownership diverged",
+    "live_successor_intervals_started": 0,
+    "next_action_after_gate": "repair or retire the degraded retained browser lane in agent-browser under a separately reviewed successor, then require the live remote-view-open gate to pass before creating any source successor interval"
+  }
+}

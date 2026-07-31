@@ -795,19 +795,20 @@ Active Plan:
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the open transition authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
-  rollback are accepted foundations on installed service 0.2.14/schema 12.
-  Plan version 8 tracks configured access methods as independent evidence
-  packets rather than a global architecture or release join gate. The operator
-  has authorized serial execution of AM02-AM06, including the authenticated X,
-  Facebook, and LinkedIn cases.
+  rollback are accepted foundations on installed service 0.2.16/schema 12.
+  Plan version 9 records the completed configured-method campaign: YouTube
+  `yt_dlp` is accepted; Reddit browser, X, Facebook, and both LinkedIn browser
+  cases are rejected without reopening the accepted service foundations. Exact
+  provenance is now durable, and manual collection attempts are correctly
+  bounded to one. All specs are disabled and user access orders are restored.
 
 Next Bounded Action:
 
-- Execute Plan 0018 C29 serially in the C28 matrix order: AM02 Reddit browser,
-  AM06 YouTube, AM03 X, AM04 Facebook, then both AM05 LinkedIn cases. Preserve
-  the one-attempt bounds and adjudicate every method independently. Push,
-  independent final review, tag, publication, and release remain separately
-  gated.
+- Repair or retire the degraded retained `last30days-facebook` agent-browser
+  lane under a separately reviewed runtime successor. Require
+  `pnpm test:remote-view-open-live` to pass before creating any one-interval
+  successor for AM02, AM03, AM04, or AM05. Push, independent final review, tag,
+  publication, and release remain separately gated.
 
 ## Goal-Compatible Plan Conversion
 

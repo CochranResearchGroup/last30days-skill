@@ -6170,3 +6170,89 @@ Next Bounded Action:
 - add safe access-method provenance where the current worker contract cannot
   prove it, validate and install the successor service, then execute AM02-AM06
   serially with one interval per case.
+
+## Turn 98 | 2026-07-31
+
+Focus: execute and adjudicate every remaining configured access method, then
+fail closed at the browser successor gate.
+
+Authority Consulted:
+
+- Plan 0018 C28-C29, the machine-readable method matrix, Roadmap P07, current
+  user-scoped source policy, installed service/runtime readbacks, and the
+  agent-browser skill;
+- planning, goal-execution, documentation, validation, Git, CodeGraph, and
+  Graphiti policies.
+
+Decisions And Changes:
+
+- added exact acquisition provenance: adapter variant, ordered attempted access
+  methods, and selected access method;
+- installed ready service 0.2.16 and preserved verified 0.2.15 rollback;
+- repaired manual collection jobs to `max_attempts=1`; timer-created jobs retain
+  the existing two-attempt retry policy;
+- executed AM02-AM06 serially and adjudicated each method independently;
+- advanced agent-browser from 0.27.0 to source-free 0.28.0 and synchronized its
+  provenance-matched workstation payload;
+- stopped before every browser successor interval after the required live
+  remote-view gate failed before and after the one allowed reattach remediation.
+
+Validation Evidence:
+
+- full repository suite passed after each service change; commits are
+  `b46d5c5` and `b560ca0`;
+- service status is ready at 0.2.16/schema 12 with runtime-manifest SHA
+  `183719409642f1824bc93aaa22b337f84d0051621a4da4dfb9efd83210b5cc7f`;
+- integrity is `ok`, service model calls remain zero, all collection specs are
+  disabled, config mode is `0600`, and access orders are restored to Reddit
+  `keyless,agent_browser`, X/Facebook/LinkedIn `agent_browser`, and YouTube
+  `yt_dlp`;
+- AM06 accepted with exact `youtube_ytdlp` / `yt_dlp` provenance and three
+  observed/stored canonical videos at zero source cost; documents advanced
+  `50 -> 53`, versions `58 -> 61`, and the active index advanced to
+  `index-0b31b594c3222cb1fa8f6175`;
+- AM02 rejected before acquisition on budget reservation, with no browser or
+  fallback attempt and zero source cost;
+- AM03, AM04, and both AM05 cases rejected on remote-view-open timeout/CDP
+  disconnect. AM03 started two acquisitions against its one-attempt ceiling,
+  directly motivating the 0.2.16 manual-job repair;
+- current agent-browser install and remote-view doctors report ready, but
+  `pnpm test:remote-view-open-live` failed at artifacts
+  `/tmp/agent-browser-remote-view-open-live-2026-07-31T22-54-48-779Z` and
+  `/tmp/agent-browser-remote-view-open-live-2026-07-31T22-56-04-094Z` because
+  retained browser and route/display ownership diverged;
+- the typed `service_remote_view_browser_reattach` recovery returned
+  `reattached`, but the single post-remediation gate again returned
+  `reattachable_stale_route`; zero browser successor source intervals started;
+- final plan-owned lane close plus service reconciliation released the route
+  and restored the social profile lease to `available`; the inert retained
+  browser record remains degraded evidence for the successor repair;
+- durable receipt:
+  `docs/dev/notes/0025-service-access-method-live-campaign-receipt.json`.
+
+State Movement:
+
+- Plan 0018 `version 8 -> 9`; C29 `ACTIVE -> CONSUMED`; C30 is the current
+  fail-closed authority;
+- AM06 `authorized_pending_live_execution -> accepted`;
+- AM02-AM05 `authorized_pending_live_execution -> rejected`;
+- browser successor campaign `not_started -> blocked_by_failed_live_runtime_gate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the campaign remained serial on shared user config, service
+  state, and browser profile/route leases.
+
+Graphiti Write Status:
+
+- provider readiness passed, but the one bounded 60-second write timed out
+  during node extraction: job `b5d0f937-f902-4957-a26f-414f9934d363` in group
+  `last30days_skill_main`; no episode UUID was assigned and no retry was made.
+
+Next Bounded Action:
+
+- repair or retire the degraded retained `last30days-facebook` browser lane in
+  a separately reviewed agent-browser runtime successor; require the live
+  remote-view-open gate to pass before constructing any bounded source
+  successor. Push, final-review bypass, tag, publication, and release remain
+  closed.
