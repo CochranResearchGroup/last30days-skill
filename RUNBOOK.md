@@ -5893,7 +5893,9 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending closeout write and verification.
+- completed and verified as episode
+  `4c176bc9-ff7a-435e-af6f-703d6a77247a` in `last30days_skill_main`; exact
+  episode, metadata, and fact reads returned the Plan 0022 outcome.
 
 Next Bounded Action:
 

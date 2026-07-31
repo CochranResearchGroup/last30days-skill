@@ -145,7 +145,12 @@
   },
   "graphiti": {
     "group_id": "last30days_skill_main",
-    "status": "pending"
+    "status": "completed_verified",
+    "job_id": "8640b7a4-d8f6-4f33-8293-9bf62b0a6ccc",
+    "episode_uuid": "4c176bc9-ff7a-435e-af6f-703d6a77247a",
+    "exact_episode_read": true,
+    "exact_metadata_match": true,
+    "fact_search_match": true
   },
   "next_action": "return to Plan 0018 S07; keep install, push, tag, publication, and release separately gated"
 }
