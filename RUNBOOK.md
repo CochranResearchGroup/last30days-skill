@@ -4653,7 +4653,10 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- `pending_after_checkpoint_commit`.
+- provider readiness passed;
+- the compact C21 outcome memory queued as job
+  `555f8b0c-20b6-4529-89ed-57d1b9dd34e8` in
+  `last30days_skill_main`.
 
 Next Bounded Action:
 
