@@ -5947,3 +5947,49 @@ Next Bounded Action:
 
 - implement and validate the shared source-policy contract before any user
   config or installed-runtime mutation.
+
+## Turn 94 | 2026-07-31
+
+Focus: implement and validate the user-configured multi-source service policy.
+
+Authority Consulted:
+
+- Plan 0018 C24/C25 and the configuration, validation, versioning, and closeout
+  policies;
+- the service runtime, isolated acquisition worker, user config allowlist,
+  runtime packager, and their focused tests.
+
+Decisions And Changes:
+
+- added one strict shared policy for the ordered source catalog and each
+  source's ordered access chain;
+- routed runtime discovery/readiness and worker execution through the same
+  effective policy while preserving absent-policy compatibility;
+- documented the user-scope contract and reserved service 0.2.14 without a
+  schema change.
+
+Validation Evidence:
+
+- focused source-policy/runtime/worker/package/version tests passed;
+- complete deterministic pytest passed with repository-native skips only;
+- two builds produced identical service artifact SHA-256
+  `1b29209a31dc5e303bed56d2712d92d4a63d1db6c6b1f425ce32afa4e6de85a5`;
+- `git diff --check` passed.
+
+State Movement:
+
+- Plan 0018 C26 records `0.2.14 source and artifact validated`;
+- production and user configuration remain unchanged.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active-agent concurrency remains one.
+
+Graphiti Write Status:
+
+- pending live runtime outcome.
+
+Next Bounded Action:
+
+- commit source state, run the redacted preflight, then enter the one authorized
+  managed transition and timer-owned collection interval.

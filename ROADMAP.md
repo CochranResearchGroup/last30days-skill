@@ -800,11 +800,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- Execute Plan 0018 C24: first make the five-source polling catalog and each
-  source's access/fallback chain user-scope configuration, then build and
-  review service 0.2.14 before one authorized managed upgrade and one
-  timer-owned public Reddit proof. Push, independent acceptance, tag,
-  publication, and release remain separately gated.
+- Execute Plan 0018 C24 from validated checkpoint C26: commit the reproducible
+  service 0.2.14 source/artifact authority, run the redacted live preflight,
+  then perform one authorized managed upgrade and one timer-owned public
+  Reddit proof. Push, independent acceptance, tag, publication, and release
+  remain separately gated.
 
 ## Goal-Compatible Plan Conversion
 

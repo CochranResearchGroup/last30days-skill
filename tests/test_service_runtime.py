@@ -107,6 +107,22 @@ def test_runtime_readiness_uses_worker_visible_browser_enablement(tmp_path, monk
     }
 
 
+def test_runtime_uses_user_scoped_source_catalog_and_access_orders(tmp_path, monkeypatch):
+    monkeypatch.setenv("LAST30DAYS_SERVICE_SOURCES", "reddit,youtube")
+    monkeypatch.setenv("LAST30DAYS_REDDIT_ACCESS_ORDER", "keyless,agent_browser")
+    monkeypatch.setenv("LAST30DAYS_YOUTUBE_ACCESS_ORDER", "yt_dlp")
+    monkeypatch.setattr("lib.service_runtime.shutil.which", lambda name: f"/bin/{name}")
+
+    runtime = build_acquisition_runtime(
+        tmp_path / "configured-readiness.db",
+        HybridRetriever(tmp_path / "configured-readiness.db"),
+        worker=EmptyWorker(),
+    )
+
+    assert runtime.sources == ("reddit", "youtube")
+    assert runtime.source_readiness == {"reddit": True, "youtube": True}
+
+
 def test_acquisition_loop_starts_and_stops_cleanly():
     class IdleRunner:
         def __init__(self):

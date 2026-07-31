@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "a2360447b0685602375f211322ff397b0eb8be1d291f4c95173fccb189d19175",
+      "sha256": "26e6ebd4b069ddb03df79ec9a299ee4a39c60bf8d34a2b6a3ff059d4f2e21b88",
       "source": "service/VERSION"
     },
     {
@@ -82,7 +82,7 @@
     },
     {
       "path": "scripts/lib/env.py",
-      "sha256": "16b5d01f557729672a9a7fc47b68f35595844d706fb0666a6954e71812291dab",
+      "sha256": "3d4d53ce5af11b7c119c3bd5a8bcd7697898d4d32133fd1dc65d97ab630ae0ba",
       "source": "skills/last30days/scripts/lib/env.py"
     },
     {
@@ -277,7 +277,7 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "424dbf9aab2965df170323700b5772fd4b2242700d08450565256562be05e57d",
+      "sha256": "9e1dd870b234187be2f6d96ac210663487404c0a3e12f25c67b4c7343eb43f77",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
@@ -362,8 +362,13 @@
     },
     {
       "path": "scripts/lib/service_runtime.py",
-      "sha256": "fe80b7da9c4d5c1753682f5af16c1a5f60f6efaba63598e24ee6a829006ec341",
+      "sha256": "179737bc7af9f877cd21c720294862fc5b96a8e93d0114bb781d1555d92e7997",
       "source": "skills/last30days/scripts/lib/service_runtime.py"
+    },
+    {
+      "path": "scripts/lib/service_source_policy.py",
+      "sha256": "a7644443235629b9bded73e7347ee19bcdabce3426605e61f6fda122716d2d92",
+      "source": "skills/last30days/scripts/lib/service_source_policy.py"
     },
     {
       "path": "scripts/lib/service_store.py",
@@ -568,5 +573,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.2.13"
+  "service_version": "0.2.14"
 }

@@ -24,6 +24,7 @@ from .service_retrieval import HybridRetriever
 from .service_store import ServiceStore
 from .service_supervisor import RefreshSupervisor
 from .service_worker import SOURCE_ADAPTERS, SubprocessAcquisitionRunner
+from .service_source_policy import load_service_source_policy
 
 
 Clock = Callable[[], datetime]
@@ -340,28 +341,18 @@ def build_acquisition_runtime(
     *,
     worker: AcquisitionRunner | None = None,
     clock: Clock | None = None,
-    default_sources: Sequence[str] = tuple(SOURCE_ADAPTERS),
+    default_sources: Sequence[str] | None = None,
     refresh_policy: RefreshPolicy | None = None,
     job_policy: JobRunnerPolicy | None = None,
 ) -> AcquisitionRuntime:
     """Build the host-owned policy objects; source code remains subprocess-only."""
-    sources = tuple(sorted(set(default_sources)))
-    browser_available = bool(shutil.which("agent-browser"))
-    browser_enabled = {
-        source: os.getenv(f"LAST30DAYS_{source.upper()}_BROWSER", "").strip().casefold()
-        in {"1", "true", "yes", "on"}
-        for source in ("x", "facebook", "linkedin")
-    }
+    source_policy = load_service_source_policy(
+        os.environ,
+        sources_override=default_sources,
+    )
+    sources = source_policy.sources
     source_readiness = {
-        source: (
-            True
-            if source == "reddit"
-            else bool(shutil.which("yt-dlp"))
-            if source == "youtube"
-            else browser_available and browser_enabled[source]
-            if source in browser_enabled
-            else False
-        )
+        source: source_policy.source_ready(source, os.environ, which=shutil.which)
         for source in sources
     }
     supervisor = RefreshSupervisor(db_path, clock=clock)

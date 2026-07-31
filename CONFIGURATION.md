@@ -784,6 +784,32 @@ working directory. Keep both files owner-only (`chmod 600`). The service stores
 only the profile ID, adapter name/version, safe outcome codes, and content
 provenance—not cookies, tokens, browser routes, or session payloads.
 
+Choose the service-owned source catalog and each source's ordered access chain
+in the user-scoped `~/.config/last30days/.env`:
+
+```bash
+LAST30DAYS_SERVICE_SOURCES=reddit,x,facebook,linkedin,youtube
+LAST30DAYS_REDDIT_ACCESS_ORDER=keyless,agent_browser
+LAST30DAYS_X_ACCESS_ORDER=agent_browser
+LAST30DAYS_FACEBOOK_ACCESS_ORDER=agent_browser
+LAST30DAYS_LINKEDIN_ACCESS_ORDER=agent_browser
+LAST30DAYS_YOUTUBE_ACCESS_ORDER=yt_dlp
+```
+
+Catalog order is preserved. Reddit supports `keyless`, `agent_browser`, and
+`scrapecreators`; the other supported mappings are X/Facebook/LinkedIn to
+`agent_browser` and YouTube to `yt_dlp`. An explicit order is authoritative:
+the worker tries only those methods, in that order, and never appends a hidden
+paid fallback. A method is ready only when its local prerequisite is present
+(`agent-browser` or `yt-dlp` on the service PATH, or
+`SCRAPECREATORS_API_KEY`). Empty entries, duplicates, unknown sources, and
+methods assigned to the wrong source fail closed during service startup.
+
+When these variables are absent, the service retains the legacy catalog and
+enablement behavior for compatibility. Prefer the explicit form for managed
+recurring collection so the daemon's effective policy is reviewable without
+changing a collection specification.
+
 The MVP acquisition registry supports `reddit`, `x`, `youtube`, `facebook`,
 and `linkedin`. Cache queries are served immediately. A stale or missing
 `prefer_cache`, `refresh_if_stale`, or `force_refresh` request creates or joins
@@ -791,7 +817,7 @@ one durable refresh job; acquisition runs in a bounded subprocess and publishes
 successful sources even when another source needs operator authentication or a
 retry. `cache_only` never queues work.
 
-Service discovery distinguishes a registered source (`configured`) from one
+Service discovery distinguishes an enabled source (`configured`) from one
 that passes a non-mutating local readiness probe (`acquisition_ready`). Reddit's
 keyless path is ready by construction; YouTube requires `yt-dlp` on the service
 PATH. Browser-backed sources remain `configured` until profile-specific work

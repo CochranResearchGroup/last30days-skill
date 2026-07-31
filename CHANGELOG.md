@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **User-scoped recurring-source policy.** The managed service now reads an
+  explicit source catalog and per-source ordered access chains from the user
+  configuration, advertises readiness from that effective policy, and rejects
+  empty, duplicate, unsupported, or cross-source methods. Explicit Reddit
+  policy can include the bounded `agent_browser` fallback without implicitly
+  enabling the paid ScrapeCreators route.
 - **Opt-in agent-browser Reddit fallback.** Service-owned Reddit acquisition can
   now run a bounded public post-search DOM routine after empty RSS/Shreddit
   yield and before the paid ScrapeCreators fallback. The routine uses the

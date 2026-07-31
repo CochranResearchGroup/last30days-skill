@@ -2564,3 +2564,49 @@ Next action:
 
 - implement and validate the shared user-scope source-policy contract; do not
   mutate user config or installed runtime until its reviewed commit exists.
+
+### Checkpoint P0018-C26 | 2026-07-31
+
+Plan version:
+
+- 6
+
+State transition:
+
+- `C24 implementation planned -> 0.2.14 source and artifact validated`
+
+Progress classification:
+
+- `outcome_progress`
+
+Validation evidence:
+
+- the shared policy strictly resolves the ordered enabled-source catalog and
+  per-source access chains, and the runtime readiness catalog and isolated
+  worker both consume that policy;
+- explicit access chains do not append hidden methods; legacy behavior remains
+  compatible only when the new policy variables are absent;
+- focused policy/runtime/worker/package/version tests pass, followed by the
+  complete deterministic pytest suite;
+- two service builds produced byte-identical 0.2.14 artifact SHA-256
+  `1b29209a31dc5e303bed56d2712d92d4a63d1db6c6b1f425ce32afa4e6de85a5`;
+- `CONFIGURATION.md`, the unreleased changelog, version, and canonical runtime
+  manifest describe and bind the new contract; schema remains 12.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; concurrency remains one.
+
+Graphiti write status:
+
+- pending the live runtime outcome checkpoint.
+
+Authority classification:
+
+- `human_gate`; the operator-approved live packet remains active, and this
+  checkpoint is its required source-validation predecessor.
+
+Next action:
+
+- commit the reviewed 0.2.14 source and evidence, then perform the redacted
+  preflight before any user-config or installed-runtime mutation.

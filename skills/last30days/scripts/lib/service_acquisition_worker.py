@@ -22,6 +22,10 @@ from . import env as env_config
 from . import normalize
 from . import service_contracts as contracts
 from .service_worker import PROFILE_SOURCE_ADAPTERS, SOURCE_ADAPTERS
+from .service_source_policy import (
+    ServiceSourcePolicyError,
+    load_service_source_policy,
+)
 
 
 Adapter = Callable[
@@ -169,77 +173,100 @@ def _reddit_adapter(
 
     bounded = request.item_limit <= _BOUNDED_REDDIT_ITEM_LIMIT
     depth = "quick" if bounded else _depth(request.depth)
-    public_items = reddit_public.search_reddit_public(
-        request.query,
-        request.from_date,
-        request.to_date,
-        depth=depth,
-    )
-    if public_items:
-        return {"items": public_items, "_cost_cents": 0}
+    policy = load_service_source_policy(config)
+    access_order = policy.access_order("reddit")
     browser_result: dict[str, Any] | None = None
-    browser_enabled = str(config.get("LAST30DAYS_REDDIT_BROWSER") or "").strip().casefold() in {
-        "1", "true", "yes", "on",
-    }
-    if browser_enabled:
-        browser_result = reddit_browser.search_reddit_browser(
-            request.query,
-            request.from_date,
-            request.to_date,
-            depth=depth,
-            config=dict(config),
-            limit=request.item_limit,
-        )
-        if browser_result.get("items"):
-            browser_result["_cost_cents"] = 0
-            return browser_result
-    token = config.get("SCRAPECREATORS_API_KEY")
-    if not token:
-        if browser_result is not None:
-            browser_result["_cost_cents"] = 0
-            return browser_result
-        return {"items": [], "_cost_cents": 0}
-    search_options: dict[str, Any] = {}
-    if bounded:
-        search_options = {
-            "global_search_limit": 1,
-            "subreddit_search_limit": 0,
-            "request_timeout": _BOUNDED_REDDIT_FALLBACK_TIMEOUT_SECONDS,
-            "request_retries": 1,
-            "min_dns_retries": 1,
-        }
-    result = reddit.search_reddit(
-        request.query,
-        request.from_date,
-        request.to_date,
-        depth=depth,
-        token=token,
-        **search_options,
-    )
-    if browser_result is not None:
-        browser_diagnostics = browser_result.get("diagnostics")
-        browser_diagnostics = (
-            browser_diagnostics if isinstance(browser_diagnostics, Mapping) else {}
-        )
-        paid_diagnostics = result.get("diagnostics")
-        paid_diagnostics = (
-            dict(paid_diagnostics) if isinstance(paid_diagnostics, Mapping) else {}
-        )
-        browser_error_type = _safe_error_code(browser_result.get("error_type"))
-        if browser_error_type is None:
-            browser_error_type = (
-                "verified_no_results"
-                if browser_diagnostics.get("verified_no_results") is True
-                else "empty_result"
+    total_cost_cents = 0
+    unavailable: list[str] = []
+    for method in access_order:
+        if not policy.method_available("reddit", method, config):
+            unavailable.append(method)
+            continue
+        if method == "keyless":
+            public_items = reddit_public.search_reddit_public(
+                request.query,
+                request.from_date,
+                request.to_date,
+                depth=depth,
             )
-        paid_diagnostics["browser_fallback"] = {
-            "error_type": browser_error_type,
-            "failure_stage": _safe_failure_stage(
-                browser_diagnostics.get("failure_stage")
-            ),
-        }
-        result["diagnostics"] = paid_diagnostics
-    result["_cost_cents"] = 1
+            if public_items:
+                return {"items": public_items, "_cost_cents": total_cost_cents}
+            continue
+        if method == "agent_browser":
+            browser_result = reddit_browser.search_reddit_browser(
+                request.query,
+                request.from_date,
+                request.to_date,
+                depth=depth,
+                config=dict(config),
+                limit=request.item_limit,
+            )
+            if browser_result.get("items"):
+                browser_result["_cost_cents"] = total_cost_cents
+                return browser_result
+            continue
+        if method == "scrapecreators":
+            token = config.get("SCRAPECREATORS_API_KEY")
+            search_options: dict[str, Any] = {}
+            if bounded:
+                search_options = {
+                    "global_search_limit": 1,
+                    "subreddit_search_limit": 0,
+                    "request_timeout": _BOUNDED_REDDIT_FALLBACK_TIMEOUT_SECONDS,
+                    "request_retries": 1,
+                    "min_dns_retries": 1,
+                }
+            result = reddit.search_reddit(
+                request.query,
+                request.from_date,
+                request.to_date,
+                depth=depth,
+                token=token,
+                **search_options,
+            )
+            total_cost_cents += 1
+            if browser_result is not None:
+                browser_diagnostics = browser_result.get("diagnostics")
+                browser_diagnostics = (
+                    browser_diagnostics
+                    if isinstance(browser_diagnostics, Mapping)
+                    else {}
+                )
+                paid_diagnostics = result.get("diagnostics")
+                paid_diagnostics = (
+                    dict(paid_diagnostics)
+                    if isinstance(paid_diagnostics, Mapping)
+                    else {}
+                )
+                browser_error_type = _safe_error_code(browser_result.get("error_type"))
+                if browser_error_type is None:
+                    browser_error_type = (
+                        "verified_no_results"
+                        if browser_diagnostics.get("verified_no_results") is True
+                        else "empty_result"
+                    )
+                paid_diagnostics["browser_fallback"] = {
+                    "error_type": browser_error_type,
+                    "failure_stage": _safe_failure_stage(
+                        browser_diagnostics.get("failure_stage")
+                    ),
+                }
+                result["diagnostics"] = paid_diagnostics
+            result["_cost_cents"] = total_cost_cents
+            if result.get("items"):
+                return result
+
+    if browser_result is not None:
+        browser_result["_cost_cents"] = total_cost_cents
+        if unavailable:
+            diagnostics = browser_result.get("diagnostics")
+            diagnostics = dict(diagnostics) if isinstance(diagnostics, Mapping) else {}
+            diagnostics["unavailable_access_methods"] = unavailable
+            browser_result["diagnostics"] = diagnostics
+        return browser_result
+    result = {"items": [], "_cost_cents": total_cost_cents}
+    if unavailable:
+        result["diagnostics"] = {"unavailable_access_methods": unavailable}
     return result
 
 
@@ -398,7 +425,20 @@ def execute_work(
     adapter = adapter_registry.get(request.adapter)
     now = clock or (lambda: datetime.now(timezone.utc))
     observed_at = now().astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
-    if adapter is None:
+    try:
+        source_policy = load_service_source_policy(config)
+        source_policy.access_order(request.source)
+    except ServiceSourcePolicyError:
+        raw = {
+            "items": [],
+            "error_type": "invalid_configuration",
+            "diagnostics": {"failure_stage": "source_policy"},
+        }
+    else:
+        raw = {}
+    if raw:
+        pass
+    elif adapter is None:
         raw: dict[str, Any] = {
             "items": [],
             "error_type": "unsupported_source",

@@ -282,6 +282,44 @@ def test_reddit_adapter_uses_enabled_browser_before_paid_fallback(monkeypatch):
     assert paid_calls == []
 
 
+def test_reddit_adapter_obeys_explicit_user_access_order(monkeypatch):
+    from lib import reddit, reddit_browser, reddit_public
+
+    calls = []
+    monkeypatch.setattr(
+        reddit_public,
+        "search_reddit_public",
+        lambda *_args, **_kwargs: calls.append("keyless") or [{"id": "R-public"}],
+    )
+    monkeypatch.setattr(
+        reddit_browser,
+        "search_reddit_browser",
+        lambda *_args, **_kwargs: calls.append("agent_browser")
+        or {"items": [{"id": "R-browser"}]},
+    )
+    monkeypatch.setattr(
+        reddit,
+        "search_reddit",
+        lambda *_args, **_kwargs: calls.append("scrapecreators")
+        or {"items": [{"id": "R-paid"}]},
+    )
+    monkeypatch.setattr(
+        "lib.service_source_policy.shutil.which", lambda name: f"/bin/{name}"
+    )
+
+    result = service_acquisition_worker._reddit_adapter(
+        _request(source="reddit", adapter="reddit_api", work_id="work-order"),
+        {
+            "LAST30DAYS_SERVICE_SOURCES": "reddit",
+            "LAST30DAYS_REDDIT_ACCESS_ORDER": "agent_browser,keyless",
+            "SCRAPECREATORS_API_KEY": "dummy-test-key",
+        },
+    )
+
+    assert result == {"items": [{"id": "R-browser"}], "_cost_cents": 0}
+    assert calls == ["agent_browser"]
+
+
 def test_reddit_adapter_preserves_browser_failure_without_paid_fallback(monkeypatch):
     from lib import reddit_browser, reddit_public
 
