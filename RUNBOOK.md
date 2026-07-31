@@ -5808,3 +5808,46 @@ Graphiti Write Status:
 Next Bounded Action:
 
 - run and commit current read-only preflight before starting C1.
+
+## Turn 91 | 2026-07-31
+
+Focus: pass Plan 0022's zero-query live preflight.
+
+Authority Consulted:
+
+- Plan 0022 checkpoint P0022-C01 and its preflight/hard-stop bounds;
+- current agent-browser and installed-service read-backs.
+
+Decisions And Changes:
+
+- selected the explicit `last30days-facebook` runtime profile rather than the
+  global default;
+- accepted one unrelated custom-profile browser as non-conflicting because the
+  selected profile has zero leases and duplicate pressure is false;
+- consumed no query and made no browser/service mutation.
+
+Validation Evidence:
+
+- install doctor: 0.27.0, success, zero issues/candidates, converged runtime;
+- remote-view: overall/control/route pool ready; route A `guacamole:1` / `:10`;
+- access plan: `last30days-facebook`, `stealthcdp_chromium`, remote headed,
+  RDP gateway, manual attached desktop, private display, zero leases;
+- no `last30days-reddit` session or Reddit tab;
+- installed service ready at 0.2.12/schema 12; source 0.2.13 uninstalled.
+
+State Movement:
+
+- Plan 0022 preflight `ready -> active`; zero of four queries consumed;
+- progress classification `outcome_progress`; authority `human_gate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`.
+
+Graphiti Write Status:
+
+- pending live outcome closeout.
+
+Next Bounded Action:
+
+- start the persistent controller and run C1 once.

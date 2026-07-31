@@ -141,3 +141,52 @@ Authority classification:
 
 Next action: run only the current read-only preflight and commit it before
 starting the persistent controller.
+
+### Checkpoint P0022-C02 | 2026-07-31
+
+Plan version: 1
+
+State transition: `ready -> active`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- completed the fresh zero-query read-only preflight.
+
+Validation evidence:
+
+- agent-browser 0.27.0 install doctor returned `success=true`, zero issues,
+  converged runtimes, ready patched Chromium, and zero resource candidates;
+- remote-view doctor returned overall and remote-control `ready`; both route
+  pool entries were ready, including route A `guacamole:1` on display `:10`;
+- access planning explicitly selected profile `last30days-facebook` with
+  `stealthcdp_chromium`, `remote_headed`, `rdp_gateway`,
+  `manual_attached_desktop`, and `private_virtual_display`; active leases were
+  zero and duplicate pressure was false;
+- no retained session named `last30days-reddit` and no retained Reddit tab
+  existed; one unrelated custom-profile browser was active without a route and
+  does not share the selected profile;
+- installed service status was ready at 0.2.12/schema 12, confirming source
+  service 0.2.13 remains uninstalled;
+- the governed worktree was clean before this checkpoint.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; live browser ownership remains serialized.
+
+Remaining acceptance criteria:
+
+- C1-C4, manual relevance, timing, cleanup, receipt, Graphiti, and closeout
+  governance remain.
+
+Graphiti write status:
+
+- pending live outcome closeout.
+
+Authority classification:
+
+- `human_gate`
+
+Next action: start the persistent controller, send `NEXT` for C1 once, inspect
+the result, and continue only if no hard stop fires.
