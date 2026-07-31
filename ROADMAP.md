@@ -801,10 +801,10 @@ Active Plan:
 
 Next Bounded Action:
 
-- Execute Plan 0019 in order. Bind T0 readiness and complete T1-T2 before the
-  approved six-query G1 matrix, then require T3-T4 acceptance before crossing
-  the approved G2 install/canary/soak boundary. Credential, push, tag, and
-  release gates remain closed.
+- Plan 0019 T0 attempt 1 failed closed before traffic or mutation. Obtain
+  explicit authority for T0-R1 to preserve unrelated browser sessions, close
+  the plan-owned stale Reddit browser, reconcile the Guacamole stack, and
+  rerun T0 once. T1-T7, credentials, push, tag, and release remain closed.
 
 ## Goal-Compatible Plan Conversion
 

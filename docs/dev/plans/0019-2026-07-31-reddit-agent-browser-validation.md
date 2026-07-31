@@ -28,6 +28,12 @@ not acceptance evidence.
   value.
 - Installed service 0.2.12 remains production authority. Source 0.2.13 is not
   installed or pushed, and the paused collection has not been resumed.
+- T0 attempt 1 failed closed on 2026-07-31 before new Reddit traffic. The
+  install doctor reports unrelated duplicate leases on profile `default`; the
+  remote-view doctor additionally reports the Guacamole stack down; and the
+  plan-owned `last30days-reddit` browser still holds the selected social
+  profile on `shared_display`, which cannot satisfy T0's required
+  `private_virtual_display` access plan.
 
 ## Authority And Gates
 
@@ -384,6 +390,62 @@ Next action:
 
 - run T0 and stop without traffic or mutation if readiness evidence is not
   current, ready, and mutually consistent.
+
+### Checkpoint P0019-C02 | 2026-07-31
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `active -> awaiting_gate`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Owned changes:
+
+- created the redacted T0 receipt at
+  `docs/dev/notes/0019-reddit-browser-validation-receipt.json`;
+- made no browser, service, collection, credential, paid-source, or model
+  mutation.
+
+Validation evidence:
+
+- source candidate is 0.2.13 with runtime-manifest SHA-256
+  `7e878b728694c1c5b48fc82698d3764403f29b37bf91014f42562ac16fd10e0b`;
+- installed service 0.2.12/schema 12 is ready on
+  `/run/user/1000/last30days/service.sock` with 19 indexed Reddit documents;
+- `agent-browser install doctor --json` returned `success=false` with
+  `service_duplicate_profile_pressure` caused by three unrelated exclusive
+  sessions on profile `default`;
+- `agent-browser doctor remote-view --json` returned remote-control `blocked`
+  because the Guacamole containers/route pool are unavailable and the install
+  doctor is non-ready;
+- the Reddit access plan selected `last30days-facebook` but recommended
+  `wait_for_profile_lease`: the plan-owned `last30days-reddit` browser is ready
+  on `shared_display`/`:11`, while T0 requires `private_virtual_display`;
+- no new Reddit query, install, restart, or collection attempt ran.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; all evidence was collected directly by the primary agent.
+
+Graphiti write status:
+
+- not written; the hard-stop receipt and repo checkpoint are durable authority.
+
+Authority classification:
+
+- `human_gate`
+
+Next action:
+
+- obtain explicit authority for successor T0-R1 to preserve unrelated
+  sessions, close only the plan-owned `last30days-reddit` browser, reconcile
+  the Guacamole stack, and rerun T0 once without Reddit traffic.
 
 ## Best Next Action
 

@@ -4970,3 +4970,60 @@ Next Bounded Action:
 - run T0 read-only candidate/runtime/readiness binding;
 - stop without Reddit traffic or service mutation if any T0 surface is not
   current, ready, and mutually consistent.
+
+## Turn 75 | 2026-07-31
+
+Focus: execute Plan 0019 T0 and fail closed on current browser-runtime
+readiness contradictions.
+
+Authority Consulted:
+
+- operator-approved Plan 0019 and checkpoint P0019-C01;
+- current source/installed service identifiers and durable SQLite state;
+- current agent-browser install doctor, remote-view doctor, access plan,
+  profile allocation, sessions, browsers, tabs, and resource inventory.
+
+Decisions And Changes:
+
+- stopped T0 before new Reddit traffic or runtime/service mutation;
+- attributed global duplicate pressure to three unrelated `default`-profile
+  sessions and left them untouched;
+- attributed the relevant profile wait to the plan-owned retained
+  `last30days-reddit` browser using `shared_display`, incompatible with T0's
+  required private display;
+- attributed remote-view blocking to the stopped Guacamole stack/route pool;
+- created the redacted machine-readable T0 receipt.
+
+Validation Evidence:
+
+- installed service 0.2.12/schema 12 remains ready with 50 active-index
+  documents, including 19 Reddit documents;
+- source candidate is 0.2.13 and its manifest hash is recorded in the receipt;
+- install doctor returned `success=false`; remote-control doctor returned
+  `blocked`; the access plan recommended `wait_for_profile_lease`;
+- zero new Reddit queries, installs, restarts, collection attempts, browser
+  mutations, credentials, paid calls, or model calls occurred.
+
+State Movement:
+
+- Plan 0019: `active -> awaiting_gate` at T0;
+- progress classification: `blocker_reduction` because the broad readiness
+  failure is now concretely attributed without disturbing unrelated work;
+- authority classification: `human_gate` because Plan 0019 explicitly says a
+  hard stop does not authorize a retry or runtime repair.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active concurrency remained one.
+
+Graphiti Write Status:
+
+- not written; Plan checkpoint C02, this runbook entry, and the JSON receipt
+  are the durable evidence surfaces.
+
+Next Bounded Action:
+
+- obtain explicit authority for T0-R1 to preserve unrelated sessions, close
+  only `last30days-reddit`, reconcile the installed Guacamole stack, and rerun
+  T0 exactly once without Reddit traffic;
+- do not begin T1-T7 under the failed T0 attempt.
