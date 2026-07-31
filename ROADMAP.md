@@ -793,13 +793,16 @@ Active Plan:
   plus Plans 0015 and 0016 and the S06 client-Skill redesign are accepted
   without moving implementation modules or migrating schema 12; S07 is the
   remaining transition packet.
+- `docs/dev/plans/0019-2026-07-31-reddit-agent-browser-validation.md`
+  is the planned production-validation packet for the source-ready Reddit
+  browser fallback. It requires a deterministic gate, a separately approved
+  six-query public matrix, and a separately approved installed canary/soak.
 
 Next Bounded Action:
 
-- Checkpoint P0018-C23 records the committed source-ready 0.2.13 browser
-  fallback and current-DOM extraction proof. Stop for explicit approval before
-  installing/restarting 0.2.13 or running one bounded collection interval;
-  keep credential, evaluator, independent-review, tag, and release gates closed.
+- Review Plan 0019. If execution is approved, run only its T0-T2 deterministic
+  packet, then stop at G1 before any additional Reddit search. Installation,
+  restart, collection, soak, credential, tag, and release gates remain closed.
 
 ## Goal-Compatible Plan Conversion
 

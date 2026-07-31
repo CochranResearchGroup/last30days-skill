@@ -4859,3 +4859,62 @@ Stop Reason:
 - obtain explicit approval before a managed install/restart and one bounded
   collection interval; do not open independent review or release until durable
   indexed yield is proven.
+
+## Turn 73 | 2026-07-31
+
+Focus: design a thorough production-validation plan for the source-ready
+Reddit agent-browser fallback without running new tests or browser traffic.
+
+Authority Consulted:
+
+- operator request for a more thorough testing plan;
+- Plan 0018 v5 checkpoints C22/C23 and roadmap P07;
+- repo planning, validation, goal-governance, documentation, and
+  roadmap/runbook policies;
+- agent-browser service-owned remote-headed, access-plan, readiness, session,
+  cleanup, and evidence posture;
+- current source/test flow through `reddit_browser.py` and the acquisition
+  worker fallback seam.
+
+Decisions And Changes:
+
+- created planned Plan 0019 with deterministic, CLI-contract, six-query live,
+  resilience, installed-canary, recurring-soak, and independent-review stages;
+- separated G1 public-browser authorization from G2 install/restart/collection
+  authorization;
+- capped live traffic at six searches plus one canary and three soak attempts,
+  with zero automatic retries, one active query, typed hard stops, and a
+  redacted machine-readable receipt;
+- kept installed 0.2.12, collection state, browser runtime, credentials,
+  remotes, and release state unchanged.
+
+Validation Evidence:
+
+- plan checked against the current Plan 0018 gate and roadmap authority;
+- CodeGraph confirmed the Reddit adapter-to-worker seam and current focused
+  test surface;
+- no tests, live queries, install, restart, collection, or evaluator ran in
+  this planning-only turn.
+
+State Movement:
+
+- P07 remains `OPEN`;
+- Plan 0018 remains the open product-transition authority;
+- Plan 0019 is `PLANNED` and is not execution authority until the operator
+  explicitly approves it.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the operator did not request delegation and this turn was a
+  single-author plan slice.
+
+Graphiti Write Status:
+
+- not written; the durable repo plan, roadmap wiring, and runbook entry are
+  sufficient authority for this planning-only outcome.
+
+Next Bounded Action:
+
+- review Plan 0019;
+- best next action after approval is T0-T2 only, followed by a hard stop at G1
+  before any additional public Reddit traffic.
