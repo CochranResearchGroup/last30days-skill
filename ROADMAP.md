@@ -745,6 +745,10 @@ Current State:
 - The one authorized public Reddit remediation interval ran autonomously with
   assessment disabled but yielded zero items and no index change. Its spec is
   paused.
+- Source service 0.2.13 now has a committed opt-in agent-browser Reddit fallback
+  after keyless RSS/Shreddit and before the paid adapter. One public smoke plus
+  a same-page remediation proved the current `search-post-unit` DOM extractor,
+  but 0.2.13 is not installed and durable indexed yield remains unproved.
 - The bounded successor exhausted both live leases and exposed worker-failure
   persistence plus collection reconciliation defects. Service 0.2.10 repairs
   both paths and passed the complete deterministic suite.
@@ -792,11 +796,10 @@ Active Plan:
 
 Next Bounded Action:
 
-- Execute Plan 0018 packet C22: add and deterministically validate a bounded
-  agent-browser Reddit post-search fallback, with at most one public
-  development smoke. Do not consume another collection interval, add a
-  credential, install/restart the service, or open the independent review and
-  `v4.0.0` gates.
+- Checkpoint P0018-C23 records the committed source-ready 0.2.13 browser
+  fallback and current-DOM extraction proof. Stop for explicit approval before
+  installing/restarting 0.2.13 or running one bounded collection interval;
+  keep credential, evaluator, independent-review, tag, and release gates closed.
 
 ## Goal-Compatible Plan Conversion
 

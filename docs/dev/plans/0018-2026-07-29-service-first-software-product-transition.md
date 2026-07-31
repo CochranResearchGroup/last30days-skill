@@ -2321,3 +2321,85 @@ Terminal condition:
 
 - checkpoint with either validated source-ready implementation plus explicit
   live-smoke status, or a typed blocker and no production/runtime mutation.
+
+### Checkpoint P0018-C23 | 2026-07-31
+
+Plan version:
+
+- 5
+
+State transition:
+
+- `wall-bound success with zero-yield rejection -> source-ready browser fallback with current-DOM extraction proof`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Implementation result:
+
+- commit `12b7298` adds the opt-in Reddit browser adapter, configuration
+  contract, worker fallback order, typed diagnostics, fixture tests, and
+  source-reserved service 0.2.13 runtime manifest;
+- the deterministic service order is keyless RSS/Shreddit, then the optional
+  agent-browser DOM routine, then the existing paid ScrapeCreators fallback;
+- the browser routine uses target `reddit`, caller labels, one managed session,
+  canonical public post URLs, date/relevance/deduplication gates, and no account
+  mutation.
+
+Validation evidence:
+
+- 38 focused Reddit-browser, worker, environment, package, lifecycle, and
+  release-version tests passed after the final version/manifest refresh;
+- the complete deterministic pytest suite passed after the final changes;
+- `git diff --check` and Python compilation passed;
+- agent-browser remote-view doctor reported a ready route pool with live `:11`
+  and `:12` displays before the smoke.
+
+Live smoke status:
+
+- exactly one public `OpenClaw` search ran in managed session
+  `last30days-reddit` on route `guacamole:1` and completed in about 47 seconds;
+- the first extraction correctly failed closed as `extraction_empty` because
+  current Reddit search results use `data-testid="search-post-unit"`, not the
+  older `shreddit-post` element;
+- the one authorized remediation pass added the current search-unit DOM shape;
+  a read against the same already-open page then returned seven structured
+  candidates with canonical permalinks, authors, subreddits, timestamps,
+  scores, and comment counts;
+- no second query or end-to-end collection run was started, so this is current
+  DOM/extractor proof, not durable indexed-yield proof.
+
+Acceptance result:
+
+- source implementation and deterministic acceptance criteria: accepted;
+- current Reddit DOM extraction compatibility: accepted on the already-open
+  smoke page after one bounded remediation;
+- installed service, autonomous collection, durable document/index advance,
+  independent release review, tag, and release: not run.
+
+Authority classification:
+
+- `inherited_authority` covered implementation, the one public smoke, its
+  single remediation pass, validation, local commit, and durable closeout;
+- `human_gate` remains in force for installing/restarting 0.2.13, another live
+  collection interval, a new credential, evaluator/model work, tag, or release.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the active plan fixed concurrency at one, the CodeGraph policy
+  required direct structural exploration, and the write surfaces were tightly
+  coupled.
+
+Graphiti write status:
+
+- provider readiness passed;
+- the compact C22/C23 outcome memory queued in `last30days_skill_main` as job
+  `6691ce5f-4b4d-4b57-a89a-b5ab1259da81`.
+
+Next action or stop reason:
+
+- stop with source 0.2.13 committed locally and production unchanged;
+- require explicit approval before a managed 0.2.13 install/restart and one
+  bounded collection interval; keep independent review and release closed
+  until durable indexed yield is proven.

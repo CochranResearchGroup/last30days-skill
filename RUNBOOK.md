@@ -4791,3 +4791,71 @@ Stop Reason:
 - stop before another live interval or credential configuration;
 - best next packet is one more unchanged-bound public interval using a
   previously successful high-yield selector, subject to explicit approval.
+
+## Turn 72 | 2026-07-31
+
+Focus: develop and validate an agent-browser-powered Reddit post routine
+without consuming another production collection interval.
+
+Authority Consulted:
+
+- operator request to develop the Reddit browser routine;
+- Plan 0018 v5 packets C22/C23 and roadmap P07;
+- current Reddit keyless/paid worker seam and the existing Facebook/LinkedIn
+  agent-browser workspace contract;
+- agent-browser skill posture, no-launch access plan, remote-view doctor, and
+  the current retained service state.
+
+Decisions And Changes:
+
+- added `reddit_browser.py` with bounded navigation, current-DOM extraction,
+  canonical normalization, date/relevance/deduplication gates, and typed
+  failure states;
+- ordered service acquisition as keyless RSS/Shreddit, optional browser DOM,
+  then paid ScrapeCreators;
+- added the operator configuration contract and reserved source service
+  version 0.2.13 without installing it;
+- committed the feature packet as `12b7298`;
+- did not add credentials, install/restart the service, resume collection,
+  invoke an evaluator/model, create a tag, publish, or push.
+
+Validation Evidence:
+
+- 38 focused Reddit-browser, worker, environment, runtime-package, lifecycle,
+  and release-version tests passed;
+- the complete deterministic pytest suite passed after final version and
+  runtime-manifest refresh;
+- `git diff --check` and Python compilation passed;
+- remote-view doctor reported ready route displays and route pool;
+- one public `OpenClaw` smoke initially failed closed on stale
+  `shreddit-post` assumptions, then the one remediation pass and a same-page
+  read returned seven structured current-DOM candidates.
+
+State Movement:
+
+- Plan 0018 v5:
+  `wall-bound success with zero-yield rejection -> source-ready browser fallback with current-DOM extraction proof`;
+- progress classification: `blocker_reduction`;
+- source implementation accepted; installed runtime, autonomous collection,
+  durable indexed yield, independent review, tag, and release not run;
+- authority classification: `human_gate` for install/restart, another live
+  interval, credentials, evaluator/model work, tag, or release.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active concurrency remained one because the current plan and
+  direct CodeGraph exploration contract fixed the critical path locally.
+
+Graphiti Write Status:
+
+- provider readiness passed;
+- outcome memory queued as job
+  `6691ce5f-4b4d-4b57-a89a-b5ab1259da81` in
+  `last30days_skill_main`.
+
+Stop Reason:
+
+- stop with source 0.2.13 committed locally and production unchanged;
+- obtain explicit approval before a managed install/restart and one bounded
+  collection interval; do not open independent review or release until durable
+  indexed yield is proven.
