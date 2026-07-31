@@ -43,5 +43,35 @@ class RelevanceCoreV3Tests(unittest.TestCase):
         )
         self.assertGreater(score, 0.0)
 
+    def test_query_term_coverage_distinguishes_partial_from_complete_reordered_match(self):
+        self.assertEqual(
+            0.5,
+            relevance.query_term_coverage(
+                "agent browser", "A coding agent writes documentation."
+            ),
+        )
+        self.assertEqual(
+            1.0,
+            relevance.query_term_coverage(
+                "agent browser", "The browser delegates work to an agent."
+            ),
+        )
+
+    def test_query_term_coverage_accepts_configured_synonyms_per_original_term(self):
+        self.assertEqual(
+            1.0,
+            relevance.query_term_coverage(
+                "AI agents", "Artificial intelligence agents coordinate tasks."
+            ),
+        )
+
+    def test_query_term_coverage_ignores_stopwords_and_normalizes_case_and_punctuation(self):
+        self.assertEqual(
+            1.0,
+            relevance.query_term_coverage(
+                "How to Claude Code", "A CLAUDE-code workflow."
+            ),
+        )
+
 if __name__ == "__main__":
     unittest.main()

@@ -70,6 +70,11 @@ LOW_SIGNAL_QUERY_TOKENS = frozenset({
 })
 
 
+def _base_tokens(text: str) -> Set[str]:
+    """Return lexical relevance tokens before synonym expansion."""
+    return {w for w in cjk.segment(text) if w not in STOPWORDS and len(w) > 1}
+
+
 def tokenize(text: str) -> Set[str]:
     """Lowercase, strip punctuation, remove stopwords, drop single-char tokens.
 
@@ -79,13 +84,25 @@ def tokenize(text: str) -> Set[str]:
     overlap scoring works on Chinese sources; ASCII text keeps the original
     whitespace path.
     """
-    words = cjk.segment(text)
-    tokens = {w for w in words if w not in STOPWORDS and len(w) > 1}
+    tokens = _base_tokens(text)
     expanded = set(tokens)
     for t in tokens:
         if t in SYNONYMS:
             expanded.update(SYNONYMS[t])
     return expanded
+
+
+def query_term_coverage(query: str, text: str) -> float:
+    """Return the fraction of non-stopword query terms represented in text."""
+    query_terms = _base_tokens(query)
+    if not query_terms:
+        return 1.0
+    text_terms = _base_tokens(text)
+    covered = sum(
+        term in text_terms or bool(SYNONYMS.get(term, set()) & text_terms)
+        for term in query_terms
+    )
+    return covered / len(query_terms)
 
 
 def _normalize_phrase(text: str) -> str:

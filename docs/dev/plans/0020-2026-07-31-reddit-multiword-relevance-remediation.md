@@ -32,6 +32,7 @@ Owned write surfaces:
 - `skills/last30days/scripts/lib/reddit_browser.py`;
 - `tests/test_relevance_core_v3.py`;
 - `tests/test_reddit_browser.py`;
+- `tests/test_plan_authority_audit.py` for the current active-plan assertion;
 - runtime manifest/build artifacts when required by repo checks;
 - this plan, `ROADMAP.md`, `RUNBOOK.md`, and one redacted offline receipt.
 

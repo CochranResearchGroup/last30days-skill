@@ -13,7 +13,7 @@ from urllib.parse import parse_qs, quote_plus, unquote, urlsplit, urlunsplit
 
 from . import facebook as browser_runtime
 from . import log
-from .relevance import token_overlap_relevance
+from .relevance import query_term_coverage, token_overlap_relevance
 
 
 DEPTH_CONFIG = {
@@ -349,6 +349,9 @@ class RedditBrowserScraper:
             relevance = token_overlap_relevance(topic, f"{title} {text}".strip())
             if relevance <= 0:
                 diagnostics.rejection_counts["off_topic"] += 1
+                continue
+            if query_term_coverage(topic, f"{title} {text}".strip()) < 1.0:
+                diagnostics.rejection_counts["partial_query_match"] += 1
                 continue
             published_at = _timestamp(str(raw.get("created_at") or ""))
             if published_at is None:

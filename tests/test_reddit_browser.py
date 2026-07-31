@@ -138,6 +138,117 @@ def test_search_normalizes_filters_deduplicates_and_limits_posts():
     assert client.requests[0].display_isolation == "private_virtual_display"
 
 
+def test_multiword_search_rejects_one_term_matches_and_keeps_full_coverage():
+    client = FakeClient(
+        page={
+            "url": "https://www.reddit.com/search/?q=Claude+Code&type=posts&sort=new&t=month",
+            "title": "Claude Code - Reddit Search!",
+            "query_value": "Claude Code",
+            "has_posts": True,
+        },
+        extracts=[
+            {
+                "title": "Why bundled HTMLs from Claude Design?",
+                "permalink": "/r/ClaudeAI/comments/claude1/design/",
+                "subreddit": "r/ClaudeAI",
+                "created_at": "2026-07-30T09:15:00Z",
+            },
+            {
+                "title": "Minimalism from Visual Studio to VS Code",
+                "permalink": "/r/programming/comments/code001/minimalism/",
+                "subreddit": "r/programming",
+                "created_at": "2026-07-30T09:16:00Z",
+            },
+            {
+                "title": "Claude workflows for writing Code safely",
+                "permalink": "/r/ClaudeAI/comments/full001/workflow/",
+                "subreddit": "r/ClaudeAI",
+                "created_at": "2026-07-30T09:17:00Z",
+            },
+        ]
+    )
+
+    result = _scraper(client).search("Claude Code", "2026-07-01", "2026-07-31")
+
+    assert result["error_type"] is None
+    assert [item["reddit_id"] for item in result["items"]] == ["full001"]
+    assert result["diagnostics"]["rejection_counts"] == {
+        "partial_query_match": 2
+    }
+
+
+def test_agent_browser_query_requires_both_terms_across_title_and_body():
+    client = FakeClient(
+        page={
+            "url": "https://www.reddit.com/search/?q=agent+browser&type=posts&sort=new&t=month",
+            "title": "agent browser - Reddit Search!",
+            "query_value": "agent browser",
+            "has_posts": True,
+        },
+        extracts=[
+            {
+                "title": "A coding agent writes documentation",
+                "permalink": "/r/agents/comments/agent01/docs/",
+                "subreddit": "r/agents",
+                "created_at": "2026-07-30T09:15:00Z",
+            },
+            {
+                "title": "Browser performance improvements",
+                "permalink": "/r/browsers/comments/browser1/performance/",
+                "subreddit": "r/browsers",
+                "created_at": "2026-07-30T09:16:00Z",
+            },
+            {
+                "title": "An agent workflow",
+                "text": "The browser provides the controlled interface.",
+                "permalink": "/r/agents/comments/both001/workflow/",
+                "subreddit": "r/agents",
+                "created_at": "2026-07-30T09:17:00Z",
+            },
+        ],
+    )
+
+    result = _scraper(client).search("agent browser", "2026-07-01", "2026-07-31")
+
+    assert [item["reddit_id"] for item in result["items"]] == ["both001"]
+    assert result["diagnostics"]["rejection_counts"] == {
+        "partial_query_match": 2
+    }
+
+
+def test_only_partial_multiword_matches_return_a_typed_quality_failure():
+    client = FakeClient(
+        page={
+            "url": "https://www.reddit.com/search/?q=Claude+Code&type=posts&sort=new&t=month",
+            "title": "Claude Code - Reddit Search!",
+            "query_value": "Claude Code",
+            "has_posts": True,
+        },
+        extracts=[
+            {
+                "title": "Claude Design workflow",
+                "permalink": "/r/ClaudeAI/comments/partial1/design/",
+                "subreddit": "r/ClaudeAI",
+                "created_at": "2026-07-30T09:15:00Z",
+            },
+            {
+                "title": "VS Code configuration",
+                "permalink": "/r/programming/comments/partial2/config/",
+                "subreddit": "r/programming",
+                "created_at": "2026-07-30T09:16:00Z",
+            },
+        ],
+    )
+
+    result = _scraper(client).search("Claude Code", "2026-07-01", "2026-07-31")
+
+    assert result["items"] == []
+    assert result["error_type"] == "quality_gate_failed"
+    assert result["diagnostics"]["rejection_counts"] == {
+        "partial_query_match": 2
+    }
+
+
 def test_rate_limit_page_returns_typed_failure_without_extracting():
     client = FakeClient(
         page={
