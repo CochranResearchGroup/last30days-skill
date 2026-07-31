@@ -3,19 +3,21 @@
   "plan": {
     "id": "0019",
     "version": 2,
-    "state": "open",
+    "state": "cancelled",
     "authority": "operator approved execution including G1 and G2, then selected option 2 fixed-route shared-display acceptance on 2026-07-31"
   },
   "checkpoint": {
-    "id": "P0019-C10",
-    "recorded_at": "2026-07-31T14:12:17-05:00",
-    "stage": "T3-window-b-authorization",
-    "status": "active",
-    "progress_classification": "blocker_reduction"
+    "id": "P0019-C11",
+    "recorded_at": "2026-07-31T14:19:25-05:00",
+    "stage": "T3-live-matrix-closeout",
+    "status": "failed",
+    "progress_classification": "regression"
   },
   "candidate": {
     "checkpoint_commit": "f2d7d6ea8ed370032ff350a99bee28e3bbba6e5e",
     "reddit_feature_commit": "12b729840e0b1f83b0ae5c2534644c9a6bccd0cc",
+    "validated_source_commit": "4fc4265",
+    "window_b_authorization_commit": "1db686e",
     "service_version": "0.2.13",
     "runtime_manifest_sha256": "cdeadd9d12d0cfc6f4fcbc8417a872730812a56ee162cc282c7c5492ff2b18cb"
   },
@@ -287,26 +289,60 @@
     "new_reddit_queries": 0,
     "collection_attempts": 0
   },
+  "window_b_preflight": {
+    "status": "ready",
+    "install_doctor": {
+      "success": true,
+      "version": "0.27.0",
+      "issue_count": 0,
+      "runtime_convergence": "converged"
+    },
+    "transient_observation": {
+      "issue": "default daemon briefly reported stale executable metadata",
+      "mutated": false,
+      "second_doctor_success": true
+    },
+    "remote_view_doctor": {
+      "status": "ready",
+      "remote_control_status": "ready",
+      "many_to_many_status": "ready",
+      "issue_count": 0
+    },
+    "access_plan": {
+      "selected_profile_id": "last30days-facebook",
+      "active_lease_count": 0,
+      "duplicate_pressure": false,
+      "default_acquisition": "launch_new_browser",
+      "display_isolation": "private_virtual_display"
+    },
+    "fixed_route": {
+      "route_pool_entry_id": "guacamole-rdp-a",
+      "route_id": "guacamole:1",
+      "display_name": ":10",
+      "state": "available"
+    },
+    "plan_session_present": false
+  },
   "hard_stop": {
-    "triggered": false,
-    "reason": null,
-    "new_reddit_queries": 0,
+    "triggered": true,
+    "reason": "T3 rejected: multiword relevance and repeated-selector acceptance criteria failed",
+    "new_reddit_queries": 3,
     "service_installs": 0,
     "service_restarts": 0,
     "collection_attempts": 0,
-    "browser_runtime_mutations": 0,
+    "browser_runtime_mutations": 1,
     "credentials_added": 0,
     "paid_calls": 0,
     "model_calls": 0
   },
     "next_action": {
-      "state": "active",
-      "recommended_successor": "t3_window_b",
-      "requires_operator_authority": false,
+      "state": "cancelled",
+      "recommended_successor": "bounded_relevance_remediation_plan",
+      "requires_operator_authority": true,
       "scope": [
-      "revalidate fixed route scoped shared-display safety conditions",
-      "run only the three remaining Window B queries without retrying Window A",
-      "keep T4, installation, canary, and soak closed until T3 acceptance"
+      "fix multiword relevance so one-token matches do not pass as relevant",
+      "authorize a new bounded live validation matrix because all six Plan 0019 queries are consumed",
+      "keep T4, installation, canary, soak, push, tag, and release closed"
       ]
     },
     "live_cases": [
@@ -382,6 +418,85 @@
         "rejection_counts": {},
         "verified_no_results": false,
         "retried": false
+      },
+      {
+        "case": "B1",
+        "topic": "openclaw",
+        "depth": "quick",
+        "started_at": "2026-07-31T19:15:59.282763+00:00",
+        "ended_at": "2026-07-31T19:16:45.456818+00:00",
+        "wall_ms": 46174,
+        "requested_url": "https://www.reddit.com/search/?q=openclaw&type=posts&sort=new&t=month",
+        "final_url": "https://www.reddit.com/search/?q=openclaw&type=posts&sort=new&t=month",
+        "profile_id": "last30days-facebook",
+        "session_id": "last30days-reddit",
+        "browser_id": "session:last30days-reddit",
+        "route_id": "guacamole:1",
+        "page_state": "posts",
+        "command_count": 7,
+        "candidate_count": 7,
+        "accepted_count": 3,
+        "rejection_counts": {},
+        "dom_shape_digest": {"search-post-unit": 3},
+        "manual_sample": {"sampled": 3, "relevant": 3, "promoted": 0},
+        "items": [
+          {"reddit_id": "1vbyrc7", "subreddit": "NewMaxx", "date": "2026-07-31", "score": 1, "num_comments": 0, "url": "https://www.reddit.com/r/NewMaxx/comments/1vbyrc7/setting_up_openclaw_isnt_as_straightforward_as/"},
+          {"reddit_id": "1vbxjno", "subreddit": "founder", "date": "2026-07-31", "score": 2, "num_comments": 0, "url": "https://www.reddit.com/r/founder/comments/1vbxjno/run_claude_code_openclaw_for_free_using_this/"},
+          {"reddit_id": "1vbxhbn", "subreddit": "openclaw", "date": "2026-07-31", "score": 2, "num_comments": 1, "url": "https://www.reddit.com/r/openclaw/comments/1vbxhbn/have_setup_openclaw_in_my_vps_via_coolify_to/"}
+        ]
+      },
+      {
+        "case": "B2",
+        "topic": "agent browser",
+        "depth": "default",
+        "started_at": "2026-07-31T19:17:26.080733+00:00",
+        "ended_at": "2026-07-31T19:18:22.081299+00:00",
+        "wall_ms": 56001,
+        "requested_url": "https://www.reddit.com/search/?q=agent+browser&type=posts&sort=new&t=month",
+        "final_url": "https://www.reddit.com/search/?q=agent+browser&type=posts&sort=new&t=month",
+        "profile_id": "last30days-facebook",
+        "session_id": "last30days-reddit",
+        "browser_id": "session:last30days-reddit",
+        "route_id": "guacamole:1",
+        "page_state": "posts",
+        "command_count": 8,
+        "candidate_count": 21,
+        "accepted_count": 5,
+        "rejection_counts": {"duplicate": 1, "off_topic": 15},
+        "dom_shape_digest": {"search-post-unit": 5},
+        "manual_sample": {"sampled": 3, "relevant": 0, "promoted": 0},
+        "items": [
+          {"reddit_id": "1vbyfgf", "subreddit": "vibecoding", "date": "2026-07-31", "score": 2, "num_comments": 1, "url": "https://www.reddit.com/r/vibecoding/comments/1vbyfgf/i_built_demotape_a_screen_recorder_your_coding/"},
+          {"reddit_id": "1vby6x8", "subreddit": "ClaudeAI", "date": "2026-07-31", "score": 0, "num_comments": 1, "url": "https://www.reddit.com/r/ClaudeAI/comments/1vby6x8/my_agent_writes_my_client_docs_i_just_review_them/"},
+          {"reddit_id": "1vby0f3", "subreddit": "planhub", "date": "2026-07-31", "score": 1, "num_comments": 0, "url": "https://www.reddit.com/r/planhub/comments/1vby0f3/google_expands_its_247_gemini_spark_ai_agent_to/"},
+          {"reddit_id": "1vbxbxg", "subreddit": "AISEOInsider", "date": "2026-07-31", "score": 1, "num_comments": 0, "url": "https://www.reddit.com/r/AISEOInsider/comments/1vbxbxg/build_a_5agent_team_with_google_antigravity/"},
+          {"reddit_id": "1vbw4or", "subreddit": "AISEOInsider", "date": "2026-07-31", "score": 1, "num_comments": 0, "url": "https://www.reddit.com/r/AISEOInsider/comments/1vbw4or/anthropic_safety_report_exposes_the_biggest_agent/"}
+        ]
+      },
+      {
+        "case": "B3",
+        "topic": "Claude Code",
+        "depth": "quick",
+        "started_at": "2026-07-31T19:18:47.401120+00:00",
+        "ended_at": "2026-07-31T19:19:25.192812+00:00",
+        "wall_ms": 37792,
+        "requested_url": "https://www.reddit.com/search/?q=Claude+Code&type=posts&sort=new&t=month",
+        "final_url": "https://www.reddit.com/search/?q=Claude+Code&type=posts&sort=new&t=month",
+        "profile_id": "last30days-facebook",
+        "session_id": "last30days-reddit",
+        "browser_id": "session:last30days-reddit",
+        "route_id": "guacamole:1",
+        "page_state": "posts",
+        "command_count": 6,
+        "candidate_count": 7,
+        "accepted_count": 2,
+        "rejection_counts": {"off_topic": 5},
+        "dom_shape_digest": {"search-post-unit": 2},
+        "manual_sample": {"sampled": 2, "relevant": 0, "promoted": 0},
+        "items": [
+          {"reddit_id": "1vc0adp", "subreddit": "devsarg", "date": "2026-07-31", "score": 1, "num_comments": 4, "url": "https://www.reddit.com/r/devsarg/comments/1vc0adp/minimalismo_huyendo_de_los_ide_de_visual_studio_a/"},
+          {"reddit_id": "1vc071b", "subreddit": "ClaudeAI", "date": "2026-07-31", "score": 1, "num_comments": 2, "url": "https://www.reddit.com/r/ClaudeAI/comments/1vc071b/why_bundled_htmls_from_claude_design/"}
+        ]
       }
     ],
     "t3_window_a": {
@@ -411,6 +526,65 @@
         "remaining_reddit_tab_count": 0
       },
       "window_b_started": false
+    },
+    "t3_window_b": {
+      "status": "completed",
+      "query_count": 3,
+      "query_start_gaps_seconds": [86.798, 81.32],
+      "window_gap_after_a_seconds": 3488.753,
+      "single_active_query": true,
+      "paid_fallback_enabled": false,
+      "automatic_retries": 0,
+      "window_completed_at": "2026-07-31T19:19:25.192812+00:00",
+      "post_window_runtime": {
+        "session_id": "last30days-reddit",
+        "profile_id": "last30days-facebook",
+        "browser_id": "session:last30days-reddit",
+        "route_id": "guacamole:1",
+        "display_name": ":10",
+        "observed_display_isolation": "shared_display",
+        "lease": "exclusive",
+        "browser_health": "ready",
+        "tab_count": 1
+      },
+      "cleanup": {
+        "named_session_close_success": true,
+        "remaining_session_count": 0,
+        "remaining_matching_browser_count": 0,
+        "remaining_reddit_tab_count": 0,
+        "route_pool_entry_state": "available"
+      }
+    },
+    "t3_acceptance": {
+      "status": "rejected",
+      "total_query_count": 6,
+      "positive_cases_with_items": 4,
+      "positive_case_count": 5,
+      "positive_yield_threshold_met": true,
+      "repeated_selector_acceptance_met": false,
+      "manual_sample": {
+        "sampled": 11,
+        "relevant": 6,
+        "relevance_percent": 54.5,
+        "promoted": 0,
+        "threshold_percent": 90,
+        "threshold_met": false
+      },
+      "quick_wall_ms": [42794, 28861, 38893, 46174, 37792],
+      "quick_p95_ms": 46174,
+      "quick_p95_threshold_met": true,
+      "default_wall_ms": 56001,
+      "default_threshold_met": true,
+      "service_wall_threshold_met": true,
+      "typed_improbable_outcome": "extraction_empty",
+      "improbable_negative_coverage_verified": false,
+      "failed_criteria": [
+        "agent browser did not return items in Window A",
+        "manual relevance was 54.5 percent rather than at least 90 percent",
+        "multiword queries accepted one-token false positives"
+      ],
+      "downstream_stages_run": [],
+      "g2_crossed": false
     },
     "isolation_diagnosis": {
       "status": "confirmed",

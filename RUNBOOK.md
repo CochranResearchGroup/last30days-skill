@@ -5456,3 +5456,61 @@ Next Bounded Action:
 - revalidate current browser readiness and the narrow route/owner/display
   conditions, then run only Window B's three cases with 60-second start gaps,
   no retries, and paid fallback disabled.
+
+## Turn 84 | 2026-07-31
+
+Focus: complete Plan 0019's six-query live matrix and close the rejected
+candidate without crossing the installed-runtime gate.
+
+Authority Consulted:
+
+- Plan 0019 version 2 checkpoint P0019-C10;
+- the operator's fixed-route acceptance and the original query, spacing,
+  concurrency, retry, relevance, latency, cleanup, and G2 gates;
+- current install doctor, remote-view doctor, access plan, service state, and
+  the agent-browser/Graphiti skill contracts.
+
+Decisions And Changes:
+
+- accepted a transient stale-`default` daemon warning only after it cleared
+  without mutation and a second install doctor returned converged/zero issues;
+- ran B1 `openclaw` quick, B2 `agent browser` default, and B3 `Claude Code`
+  quick with one active query, paid fallback off, and zero retries;
+- rejected T3 because multiword queries admitted one-token false positives and
+  the manual relevance sample missed the required threshold;
+- closed only `last30days-reddit`; did not run T4 or cross G2.
+
+Validation Evidence:
+
+- Window B starts were spaced by 86.798 and 81.320 seconds and began 3,488.753
+  seconds after Window A completed;
+- B1 accepted 3/7 in 46.174 seconds with 3/3 sampled relevant;
+- B2 accepted 5/21 in 56.001 seconds after one scroll but sampled 0/3 relevant;
+- B3 accepted 2/7 in 37.792 seconds but sampled 0/2 relevant;
+- the full manual sample was 6/11 relevant (54.5%) with zero promoted items;
+- quick p95 was 46.174 seconds, default latency was 56.001 seconds, and every
+  query stayed below the 120-second service wall;
+- cleanup returned `closed=true`, zero matching sessions/browsers/Reddit tabs,
+  and route A available on `guacamole:1` / `:10`.
+
+State Movement:
+
+- G1 Window B `ready -> completed`; T3 `active -> rejected`; Plan 0019
+  `OPEN -> CANCELLED`; G2 and T4-T7 remain not run;
+- progress classification: `regression`;
+- authority classification: `inherited_authority`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; live ownership remained serialized.
+
+Graphiti Write Status:
+
+- not written; the discovery skill defaults to no write absent explicit user
+  request, and the repo artifacts are durable authority.
+
+Next Bounded Action:
+
+- keep source service 0.2.13 uninstalled; if the user wants further work,
+  create a successor for phrase-aware multiword relevance, pass deterministic
+  tests, then request a new bounded live-query budget.

@@ -749,6 +749,10 @@ Current State:
   after keyless RSS/Shreddit and before the paid adapter. One public smoke plus
   a same-page remediation proved the current `search-post-unit` DOM extractor,
   but 0.2.13 is not installed and durable indexed yield remains unproved.
+- Plan 0019 completed its six-query public matrix and rejected production use:
+  browser routing and latency were bounded, but multiword queries admitted
+  one-token false positives and manual relevance was 54.5% against a 90% gate.
+  The candidate remains uninstalled and no canary or soak ran.
 - The bounded successor exhausted both live leases and exposed worker-failure
   persistence plus collection reconciliation defects. Service 0.2.10 repairs
   both paths and passed the complete deterministic suite.
@@ -793,23 +797,14 @@ Active Plan:
   plus Plans 0015 and 0016 and the S06 client-Skill redesign are accepted
   without moving implementation modules or migrating schema 12; S07 is the
   remaining transition packet.
-- `docs/dev/plans/0019-2026-07-31-reddit-agent-browser-validation.md`
-  is the open, operator-approved production-validation packet for the
-  source-ready Reddit browser fallback. It requires deterministic acceptance,
-  a six-query public matrix, and a bounded installed canary/soak before
-  independent judgment.
 
 Next Bounded Action:
 
-- Plan 0019 T0-T2 pass. The real-subprocess fake-CLI contract proves bounded
-  command order, terminal failures, timeout propagation, redaction,
-  retained-session reuse, and unrelated-owner preservation without traffic.
-  G1 Window A completed three spaced/no-retry public cases. Read-only diagnosis
-  proved fixed XRDP route displays deterministically map the private request to
-  route-scoped `shared_display`. The operator selected Plan 0019 version 2's
-  narrow fixed-route acceptance; the named session is closed and only the
-  three remaining Window B cases are ready after current preflight. Credentials,
-  install/canary, push, tag, and release remain gated.
+- Plan 0019 is cancelled after T3 rejection. All six public queries were
+  consumed; route/session cleanup passed, but multiword relevance did not.
+  Keep 0.2.13 uninstalled. Any retry requires a bounded successor with an
+  offline phrase/token relevance gate and a newly authorized live-query budget.
+  Push, tag, publication, and release remain gated.
 
 ## Goal-Compatible Plan Conversion
 

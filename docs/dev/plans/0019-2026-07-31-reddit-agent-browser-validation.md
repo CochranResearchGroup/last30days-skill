@@ -1,6 +1,6 @@
 # Plan 0019 | Reddit agent-browser production validation
 
-State: OPEN
+State: CANCELLED
 Roadmap: P07
 Date: 2026-07-31
 Plan version: 2
@@ -61,6 +61,11 @@ not acceptance evidence.
   fixed, route-scoped topology for this validation. Window B may resume on the
   single selected Guacamole route only; this does not authorize arbitrary
   shared desktops, a second browser/profile owner, or weaker cleanup.
+- Window B then completed all three remaining searches with compliant spacing,
+  one retained route/profile lane, no retries, and clean teardown. T3 rejected
+  the candidate: only 6 of 11 manually sampled items were relevant (54.5%
+  versus 90% required), multiword selectors admitted one-token false positives,
+  and `agent browser` did not yield in both windows. T4 and G2/T5-T7 did not run.
 
 ## Authority And Gates
 
@@ -888,12 +893,6 @@ Next action:
   matrix;
 - do not retry G1 or run T4-T7 meanwhile.
 
-## Best Next Action
-
-Revalidate the version-2 fixed-route safety conditions, then run only Window B
-cases B1-B3 with the original spacing, concurrency, no-retry, paid-source, and
-cleanup bounds. Do not rerun Window A.
-
 ### Checkpoint P0019-C10 | 2026-07-31
 
 Plan version:
@@ -941,3 +940,69 @@ Next action:
 - run current readiness checks, then execute only Window B: `openclaw` quick,
   `agent browser` default, and one preselected current public topic (`Claude
   Code`) quick, with starts at least 60 seconds apart and zero retries.
+
+### Checkpoint P0019-C11 | 2026-07-31
+
+Plan version:
+
+- 2
+
+State transition:
+
+- G1 Window B `ready -> completed`; T3 `active -> rejected`; Plan 0019
+  `OPEN -> CANCELLED`.
+
+Progress classification:
+
+- `regression`
+
+Owned changes:
+
+- ran only the three unconsumed Window B queries and exhausted the six-query
+  campaign ceiling;
+- closed only named session `last30days-reddit` and returned route A to
+  available state;
+- kept T4, G2, installation, canary, soak, push, tag, and release closed.
+
+Validation evidence:
+
+- Window B start gaps were 86.798 and 81.320 seconds; its start was 3,488.753
+  seconds after Window A completed;
+- B1 `openclaw` quick accepted 3/7 in 46.174 seconds and sampled 3/3 relevant;
+- B2 `agent browser` default accepted 5/21 in 56.001 seconds after one scroll,
+  but sampled 0/3 relevant because results matched only `agent`;
+- B3 `Claude Code` quick accepted 2/7 in 37.792 seconds, but sampled 0/2
+  relevant because results matched only `Claude` or `Code`;
+- across yielding positive cases, 6/11 sampled items were relevant (54.5%),
+  below the 90% requirement; no promoted item was accepted;
+- quick p95 was 46.174 seconds, default latency was 56.001 seconds, and no
+  query crossed the 120-second wall;
+- cleanup reports zero matching sessions, browsers, or Reddit tabs and
+  `guacamole-rdp-a` available on `guacamole:1` / `:10`.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; all live work was serialized by the primary agent.
+
+Graphiti write status:
+
+- not written; the skill defaults to no write without an explicit request, and
+  the plan, receipt, runbook, and commits are durable current authority.
+
+Authority classification:
+
+- `inherited_authority`; the operator's option-2 decision reopened only the
+  remaining Window B scope.
+
+Next action:
+
+- if further work is desired, create a bounded successor for multiword
+  relevance gating and authorize a new live matrix; do not reuse or expand
+  Plan 0019's exhausted query budget.
+
+## Best Next Action
+
+Keep source service 0.2.13 uninstalled. Design a bounded successor that requires
+all meaningful multiword query tokens (or an equivalent phrase-aware rule)
+before acceptance, proves it deterministically, and requests a fresh, explicit
+live-query budget only after the offline relevance gate passes.
