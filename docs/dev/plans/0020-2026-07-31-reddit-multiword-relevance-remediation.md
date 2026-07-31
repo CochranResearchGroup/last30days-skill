@@ -1,6 +1,6 @@
 # Plan 0020 | Reddit multiword relevance remediation
 
-State: OPEN
+State: CLOSED
 Roadmap: P07
 Date: 2026-07-31
 Plan version: 1
@@ -142,3 +142,58 @@ Authority classification:
 - `inherited_authority`
 
 Next action: execute RED/GREEN packet A without network or browser traffic.
+
+### Checkpoint P0020-C02 | 2026-07-31
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`
+
+Progress classification: `outcome_progress`
+
+Owned changes:
+
+- added query-term coverage as a deep relevance-module interface;
+- required complete meaningful-term coverage only in the multiword Reddit
+  browser quality gate;
+- preserved shared numeric relevance scoring and single-term behavior;
+- added deterministic coverage and public-adapter regression tests plus the
+  offline validation receipt.
+
+Validation evidence:
+
+- 68 focused relevance and Reddit-browser tests passed;
+- 102 combined relevance, Reddit, worker, governance, and runtime tests passed;
+- all 2,396 Python tests passed in the serial full-suite run;
+- the Go MCP suite, Python compilation, runtime artifact build, Skill build,
+  runtime manifest validation, `git diff --check`, and CodeGraph impact review
+  passed;
+- runtime artifact SHA-256 is
+  `4f4082b9562b7d9832c485c3c699dfed5079b035158b8e9771595fc2c1cad99d`;
+- `docs/dev/notes/0020-reddit-multiword-relevance-receipt.json` records zero
+  browser launches, network research queries, service installs, paid
+  acquisition calls, research model calls, pushes, tags, and releases.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary agent implemented and validated the coupled slice.
+
+Remaining acceptance criteria:
+
+- none for the offline remediation; public behavior remains intentionally
+  unverified until separately authorized live validation.
+
+Graphiti write status:
+
+- completed as episode `0fa5e7ec-64c0-47a0-a5c1-29316e75a1af` after the
+  initial job timed out with the episode persisted and one same-UUID retry job
+  `7c6abcd3-988f-4c43-bb26-97a0f4facbfe` completed; exact episode, grouped-list,
+  and fact-search read-backs passed.
+
+Authority classification:
+
+- `inherited_authority`
+
+Next action: return active execution authority to Plan 0018. Keep source service
+0.2.13 uninstalled; any live Reddit validation requires a separately approved,
+bounded query budget.

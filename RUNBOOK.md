@@ -5561,3 +5561,61 @@ Next Bounded Action:
 
 - execute RED/GREEN packet A for query-term coverage, then packet B through
   the public Reddit browser search interface.
+
+## Turn 86 | 2026-07-31
+
+Focus: complete Plan 0020's offline multiword Reddit relevance remediation and
+close it without opening a live-query or installed-runtime gate.
+
+Authority Consulted:
+
+- the user's explicit offline remediation goal;
+- Plan 0020 version 1 and the current relevance/Reddit-browser contracts;
+- planning, goal, validation, closeout, documentation, worktree, CodeGraph,
+  TDD, codebase-design, and Graphiti policy.
+
+Decisions And Changes:
+
+- added `query_term_coverage` over original meaningful query tokens, allowing
+  literal or configured-synonym coverage without changing numeric scoring;
+- required complete coverage in the Reddit browser adapter after zero-overlap
+  rejection and exposed partial matches as `partial_query_match`;
+- retained case/punctuation normalization, reordered/separated token matches,
+  stopword handling, and single-term compatibility;
+- refreshed the runtime manifest and preserved source service 0.2.13 as
+  uninstalled.
+
+Validation Evidence:
+
+- 68 focused tests and 102 combined Reddit/relevance/worker/governance/runtime
+  tests passed;
+- the serial full Python suite passed all 2,396 tests; Go MCP tests and Python
+  compilation passed;
+- runtime and Skill artifact builds passed; the service artifact SHA-256 is
+  `4f4082b9562b7d9832c485c3c699dfed5079b035158b8e9771595fc2c1cad99d`;
+- `git diff --check`, CodeGraph impact review, JSON receipt parsing, targeted
+  closeout governance tests, and the plan-authority audit passed;
+- zero browser launches, Reddit/network research queries, service installs,
+  paid acquisition calls, research model calls, pushes, tags, or releases ran.
+
+State Movement:
+
+- Plan 0020 `OPEN -> CLOSED`; P07 returns to Plan 0018 as its sole active plan;
+- progress classification: `outcome_progress`;
+- authority classification: `inherited_authority`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary agent implemented and validated the coupled slice.
+
+Graphiti Write Status:
+
+- episode `0fa5e7ec-64c0-47a0-a5c1-29316e75a1af` completed through same-UUID
+  retry job `7c6abcd3-988f-4c43-bb26-97a0f4facbfe` after the initial bounded job
+  timed out with the episode already persisted;
+- exact episode, grouped-list, and fact-search read-backs passed.
+
+Next Bounded Action:
+
+- resume Plan 0018 S07. Keep service 0.2.13 uninstalled; any live Reddit
+  validation requires a separately approved bounded query budget.

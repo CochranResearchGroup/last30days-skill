@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "plan": {
+    "id": "0020",
+    "version": 1,
+    "state": "closed",
+    "authority": "offline phrase-aware and multiword relevance remediation only"
+  },
+  "checkpoint": {
+    "id": "P0020-C02",
+    "recorded_at": "2026-07-31T15:14:04-05:00",
+    "status": "passed",
+    "progress_classification": "outcome_progress"
+  },
+  "candidate": {
+    "implementation_commit": "2af08b2",
+    "service_version": "0.2.13",
+    "installed": false,
+    "runtime_artifact": "dist/service/last30days-service-0.2.13.tar.gz",
+    "runtime_artifact_sha256": "4f4082b9562b7d9832c485c3c699dfed5079b035158b8e9771595fc2c1cad99d"
+  },
+  "behavior": {
+    "multiword_requirement": "all meaningful query terms covered",
+    "term_coverage": "literal token or configured synonym",
+    "exact_phrase_required": false,
+    "term_reordering_allowed": true,
+    "case_and_punctuation_normalized": true,
+    "stopwords_excluded_from_requirement": true,
+    "single_term_behavior_preserved": true,
+    "zero_overlap_reason": "off_topic",
+    "partial_overlap_reason": "partial_query_match",
+    "regressions_proved": [
+      "agent browser rejects agent-only and browser-only candidates",
+      "Claude Code rejects Claude-only and Code-only candidates"
+    ]
+  },
+  "validation": {
+    "controller": "primary_agent",
+    "focused_tests_passed": 68,
+    "combined_tests_passed": 102,
+    "full_python_tests_collected": 2396,
+    "full_python_suite": "passed_serially",
+    "go_mcp_suite": "passed",
+    "python_compileall": "passed",
+    "runtime_artifact_build": "passed",
+    "skill_artifact_build": "passed",
+    "runtime_manifest": "refreshed_and_validated",
+    "git_diff_check": "passed",
+    "codegraph_impact": "passed_narrow",
+    "plan_authority_audit": "passed_after_closeout_refresh",
+    "concurrency_note": "an initial parallel lifecycle-build collision was inconclusive; immediate serial rerun and the complete serial suite passed"
+  },
+  "graphiti": {
+    "group_id": "last30days_skill_main",
+    "initial_job_id": "49e1086f-24f6-4f1a-ad6e-4c4c90fb9d7d",
+    "initial_job_status": "timed_out_after_episode_persisted",
+    "retry_job_id": "7c6abcd3-988f-4c43-bb26-97a0f4facbfe",
+    "status": "completed",
+    "episode_uuid": "0fa5e7ec-64c0-47a0-a5c1-29316e75a1af",
+    "verified_by_get_episode": true,
+    "verified_by_get_episodes": true,
+    "verified_by_fact_search": true,
+    "fact_evidence": [
+      "RedditBrowserScraper uses query_term_coverage to apply complete term coverage after zero-overlap scoring",
+      "RedditBrowserScraper rejects partial multiword matches as partial_query_match",
+      "Offline remediation is implemented in commit 2af08b2"
+    ]
+  },
+  "prohibited_operations": {
+    "browser_launches": 0,
+    "network_queries": 0,
+    "reddit_queries": 0,
+    "service_installs": 0,
+    "paid_acquisition_calls": 0,
+    "research_model_calls": 0,
+    "pushes": 0,
+    "tags": 0,
+    "releases": 0
+  },
+  "next_gate": "separate explicit authority for any bounded live Reddit validation"
+}
