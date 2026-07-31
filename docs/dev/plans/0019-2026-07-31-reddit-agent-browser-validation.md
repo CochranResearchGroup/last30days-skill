@@ -1,6 +1,6 @@
 # Plan 0019 | Reddit agent-browser production validation
 
-State: PLANNED
+State: OPEN
 Roadmap: P07
 Date: 2026-07-31
 Plan version: 1
@@ -31,11 +31,11 @@ not acceptance evidence.
 
 ## Authority And Gates
 
-The operator's request authorizes this plan and non-mutating deterministic
-planning/inspection only. It does not authorize the live searches, service
-install/restart, collection run, soak, evaluator, push, tag, or release below.
+The operator's 2026-07-31 instruction, `i approve. execute plan 19`, activates
+this plan and authorizes both bounded execution gates below. Push, tag,
+publication, and independent release acceptance remain outside that authority.
 
-Execution requires two explicit human gates:
+The approved execution includes these two bounded gates:
 
 1. `G1 | public browser matrix`: authorize up to six public Reddit searches in
    one managed agent-browser profile/session lane.
@@ -43,7 +43,9 @@ Execution requires two explicit human gates:
    restart of 0.2.13, one service-owned collection attempt, and the bounded
    soak defined below.
 
-Push, independent release acceptance, tag, and release remain separate gates.
+The primary agent must still checkpoint before crossing G1 and G2 and must
+stop on the plan's hard-stop conditions; the approval does not increase any
+query, attempt, time, concurrency, remediation, or data-scope ceiling.
 
 ## Scope
 
@@ -64,7 +66,7 @@ Public live scope:
   account/profile mutation;
 - no new credential, proxy, CAPTCHA-solving service, or paid-source use.
 
-## Non-goals
+## Non-Goals
 
 - proving comprehensive Reddit coverage or parity with the Reddit API;
 - testing authenticated or private-community access;
@@ -337,6 +339,51 @@ paused, the receipt is durable and redacted, installed state and rollback
 status are explicit, every acceptance criterion has current evidence, and the
 independent reviewer accepts production use. Otherwise close as `CANCELLED`,
 leave `PLANNED`, or transition to a bounded successor with the exact blocker.
+
+### Checkpoint P0019-C01 | 2026-07-31
+
+Plan version:
+
+- 1
+
+State transition:
+
+- `PLANNED -> OPEN`
+
+Progress classification:
+
+- `outcome_progress`
+
+Owned changes:
+
+- activated Plan 0019 and wired its approved execution state into the roadmap
+  and runbook;
+- preserved all traffic, runtime, retry, data-scope, and release bounds.
+
+Validation evidence:
+
+- the operator explicitly instructed `i approve. execute plan 19`;
+- current plan, roadmap, runbook, agent-browser skill, and execution policies
+  were re-read before live/runtime work;
+- no browser launch, service mutation, or collection attempt preceded this
+  checkpoint.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; active concurrency remains one.
+
+Graphiti write status:
+
+- pending after the first validated execution packet.
+
+Authority classification:
+
+- `inherited_authority`
+
+Next action:
+
+- run T0 and stop without traffic or mutation if readiness evidence is not
+  current, ready, and mutually consistent.
 
 ## Best Next Action
 

@@ -794,15 +794,17 @@ Active Plan:
   without moving implementation modules or migrating schema 12; S07 is the
   remaining transition packet.
 - `docs/dev/plans/0019-2026-07-31-reddit-agent-browser-validation.md`
-  is the planned production-validation packet for the source-ready Reddit
-  browser fallback. It requires a deterministic gate, a separately approved
-  six-query public matrix, and a separately approved installed canary/soak.
+  is the open, operator-approved production-validation packet for the
+  source-ready Reddit browser fallback. It requires deterministic acceptance,
+  a six-query public matrix, and a bounded installed canary/soak before
+  independent judgment.
 
 Next Bounded Action:
 
-- Review Plan 0019. If execution is approved, run only its T0-T2 deterministic
-  packet, then stop at G1 before any additional Reddit search. Installation,
-  restart, collection, soak, credential, tag, and release gates remain closed.
+- Execute Plan 0019 in order. Bind T0 readiness and complete T1-T2 before the
+  approved six-query G1 matrix, then require T3-T4 acceptance before crossing
+  the approved G2 install/canary/soak boundary. Credential, push, tag, and
+  release gates remain closed.
 
 ## Goal-Compatible Plan Conversion
 

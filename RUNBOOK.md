@@ -4918,3 +4918,55 @@ Next Bounded Action:
 - review Plan 0019;
 - best next action after approval is T0-T2 only, followed by a hard stop at G1
   before any additional public Reddit traffic.
+
+## Turn 74 | 2026-07-31
+
+Focus: activate and begin executing Plan 0019 under the operator's explicit
+approval.
+
+Authority Consulted:
+
+- operator instruction `i approve. execute plan 19`;
+- Plan 0019 v1, Plan 0018 C23, and roadmap P07;
+- agent-browser service-owned access-plan, readiness, private-display,
+  session-reuse, and cleanup posture;
+- repo goal-execution, validation, branch, commit, and roadmap/runbook policy.
+
+Decisions And Changes:
+
+- transitioned Plan 0019 from `PLANNED` to `OPEN`;
+- classified the instruction as explicit authorization for both bounded G1
+  public-browser and G2 install/restart/canary/soak gates;
+- preserved the plan's six-search, four-collection-attempt, zero-retry,
+  one-active-query, public-only, and 120-second ceilings;
+- kept credentials, paid fallback, push, tag, publication, and independent
+  release acceptance outside authority.
+
+Validation Evidence:
+
+- current worktree, Plan 0019, roadmap, runbook, agent-browser skill, and
+  execution policies were re-read before runtime work;
+- no browser launch, service install/restart, or collection attempt occurred
+  before this authorization checkpoint.
+
+State Movement:
+
+- Plan 0019: `PLANNED -> OPEN`;
+- progress classification: `outcome_progress`;
+- authority classification: `inherited_authority` for T0-T7 within the stated
+  bounds, with immutable release and external publication still gated.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; Plan 0019 fixes live/runtime ownership and active concurrency
+  at one.
+
+Graphiti Write Status:
+
+- pending after the first validated execution checkpoint.
+
+Next Bounded Action:
+
+- run T0 read-only candidate/runtime/readiness binding;
+- stop without Reddit traffic or service mutation if any T0 surface is not
+  current, ready, and mutually consistent.
