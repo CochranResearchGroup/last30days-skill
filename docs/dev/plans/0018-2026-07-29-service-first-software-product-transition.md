@@ -74,11 +74,13 @@ software with:
 - Agent-browser commit `11a276fb` is installed and executable-converged. Its
   duplicate-profile-pressure warning is not readiness-impacting and does not
   authorize cleanup of unrelated default or LitScout sessions.
-- Version 17's first live gate was exercised: four of five manual lanes
-  published 10 total items, while Reddit failed before source execution under
-  superseded service 0.2.21 and was not retried. Service 0.2.22 contains the
-  child-boundary repair but has no live Reddit proof. Recurring production
-  collection is not authorized, and no specification is enabled.
+- Version 17's first live gate published 10 items across four lanes; Reddit
+  failed before source execution under superseded service 0.2.21. After the
+  version-18 observability successor, C42 live-proved that 0.2.22 child-boundary
+  repair on service 0.2.24: one keyless attempt, six governed requests, a
+  complete immutable zero-yield receipt, and unchanged 59/59 corpus/index
+  state. Recurring production collection is not authorized, and no
+  specification is enabled.
 
 ## Standing Authority And Human Gates
 
@@ -99,15 +101,14 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C41 is the current authority. Service architecture, timer
+Checkpoint P0018-C42 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
-version-18 observability successor is `awaiting_reddit_proof_gate`: its five fresh
-specifications exist but remain disabled, and no further source attempt or
-recurring enablement is authorized by the consumed first live gate. The
-successor may change, build, install, and deterministically validate the same
-service/MCP runtime to repair durable request/index evidence. It must stop at
-a separate human gate before live-proving the repaired Reddit exact-method
-path. The recurring enable gate cannot be reconsidered before that proof.
+version-18 observability successor and the separately authorized fresh Reddit
+proof are complete. The five specifications remain disabled, the Reddit proof
+was healthy zero-yield rather than content yield, and state is
+`awaiting_recurring_enable_gate`. No further source attempt or recurring
+enablement is authorized by the consumed proof gate. The recurring enable gate
+must be evaluated and explicitly approved as a separate packet.
 Independent final review, push, tagging, publication, and release remain
 closed.
 
@@ -3933,3 +3934,77 @@ Next action:
   observability runtime: one attempt, at most three items, at most 50 governed
   request units, at most 120 seconds, and zero cost. Keep the specification
   disabled before and after. Recurring enablement remains unauthorized.
+
+### Checkpoint P0018-C42 | 2026-08-01
+
+Plan version:
+
+- 18
+
+State transition:
+
+- `awaiting_reddit_proof_gate -> reddit_proof_complete -> awaiting_recurring_enable_gate`
+
+Progress classification:
+
+- `outcome_progress`
+
+Authority classification:
+
+- `human_gate`; the Reddit proof gate is consumed, and any recurring
+  enablement remains a new human gate
+
+Authority and bounded execution:
+
+- the operator explicitly replied `approved`, authorizing exactly one manual
+  run of existing disabled specification
+  `p0018-v17-reddit-keyless-manual`;
+- a preflight at `2026-08-01T20:14:47Z` cadence-deduplicated to the prior failed
+  interval, created no job or source attempt, and consumed zero requests. The
+  next unique 12-hour boundary, `2026-08-02T00:00:00Z`, created the sole proof
+  run with supervisor `max_attempts=1`;
+- no selector, access order, profile, credential, ceiling, schedule-enable
+  state, assessment setting, or cost authority changed.
+
+Proof evidence:
+
+- durable receipt `docs/dev/notes/0028-reddit-observability-live-proof.json`
+  binds run `collection-run-14988c98b0a5932538dd772c265e58d1`, job
+  `b3a63856-b6af-4d3f-aefa-ed649103382d`, and acquisition
+  `work-6fcbe254bc0644e1b6c4a4a3af35eebd`;
+- service 0.2.24/schema 12 exercised adapter variant `reddit_keyless`, proving
+  the constrained child-boundary repair introduced in 0.2.22. It made six of
+  50 governed requests, accepted zero of three allowed items, completed in
+  2.082 of 120 seconds, spent zero cents, and ran one attempt with no retry;
+- exact attempted/observed/accepted/rejected/stored/deduplicated/indexed counts
+  are all zero. Attempted method is `keyless`; selected method is truthfully
+  null because no candidate yielded. This is healthy zero-yield, not content
+  yield and not evidence for arbitrary Reddit selectors;
+- immutable attempt-start, acquisition-result, and run-receipt hashes
+  recomputed exactly. Public `collection list` returns the complete receipt;
+  pre/post snapshots both bind 59 documents, 59 embeddings, and
+  `index-8c968b3c270aa6c2b5abcbac`;
+- SQLite `quick_check` is `ok`; service remains ready; all 37 specifications,
+  including the target, remain disabled.
+
+Independent review:
+
+- `/root/reddit_proof_review` returned `PASS` with no critical findings. It
+  confirmed the fresh execution/observability proof is complete, distinguished
+  healthy zero-yield from content yield, and preserved recurring enablement as
+  a separate human gate.
+
+Graphiti write status:
+
+- provider readiness passed and source-backed closeout job
+  `429ae2f9-e63b-422b-98bf-87501a7b134e` was queued in
+  `last30days_skill_main` and remained running after its 90-second server-side
+  window at the final bounded observation; no retry was made. This asynchronous
+  memory status does not weaken the live service receipt.
+
+Next action:
+
+- stop. The observability-successor and fresh Reddit-proof objective is
+  complete. Do not run another source attempt or enable any specification.
+  Any recurring canary requires a separately reviewed packet and explicit
+  operator approval; push, tag, publication, and release remain closed.

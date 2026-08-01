@@ -813,17 +813,18 @@ Active Plan:
   rollback are accepted foundations on installed service 0.2.24/schema 12.
   Plan version 18 adds contract-bound request and outcome counts, immutable
   schema-12 start/final receipts, pre/post corpus/index snapshots, and public
-  `collection list` `last_run` evidence. Checkpoint C41 records the successor
-  as `awaiting_reddit_proof_gate`; all 37 specifications remain disabled, no
-  source was run during the successor, and recurring enablement is not ready.
+  `collection list` `last_run` evidence. Checkpoint C42 records the separately
+  authorized Reddit keyless proof as complete: one attempt, six governed
+  requests, healthy zero yield, exact immutable receipt and unchanged 59/59
+  snapshots. All 37 specifications remain disabled; recurring enablement is a
+  separate human gate.
 
 Next Bounded Action:
 
-- Obtain explicit operator approval for exactly one manual run of disabled
-  specification `p0018-v17-reddit-keyless-manual` on service 0.2.24: one
-  attempt, at most three items, 50 governed request units, 120 seconds, and
-  zero cost. Keep it disabled before and after; recurring enablement remains a
-  separate later gate.
+- Stop at `awaiting_recurring_enable_gate`. Before any schedule enablement,
+  independently evaluate the complete five-lane manual evidence, explicitly
+  distinguish healthy process proof from content yield, and obtain a new
+  operator approval. Do not infer recurring authority from C42.
 
 ## Goal-Compatible Plan Conversion
 

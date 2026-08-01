@@ -6709,3 +6709,80 @@ Next Bounded Action:
   three items, 50 governed request units, 120 seconds, and zero cost. Keep it
   disabled before and after. Recurring enablement remains a separate later
   gate; do not push, tag, publish, or release.
+
+## Turn 106 | 2026-08-01
+
+Focus: consume the separately approved Reddit proof gate, validate the new
+observability receipt, and close the active goal without enabling recurrence.
+
+Authority Consulted:
+
+- the operator's exact `approved` message; AGENTS.md; Plan 0018 C41; Roadmap
+  P07; Runbook Turn 105; installed service/collection/index/SQLite readbacks;
+  CodeGraph's manual-interval flow; and planning, validation, goal, closeout,
+  and Roadmap/Runbook policies.
+
+Decisions And Changes:
+
+- preserved existing disabled spec `p0018-v17-reddit-keyless-manual`, exact
+  `keyless` method, OpenClaw selector, three-item/50-request/120-second/$0
+  ceilings, assessment disabled, and supervisor one-attempt maximum;
+- recorded a cadence-deduplicated preflight that returned the prior failed run
+  without creating a job, source attempt, or request, then used the next unique
+  12-hour boundary for the single authorized proof;
+- persisted repo receipt
+  `docs/dev/notes/0028-reddit-observability-live-proof.json`; no product code,
+  runtime configuration, credential, schedule enablement, push, tag,
+  publication, or release changed.
+
+Validation Evidence:
+
+- run `collection-run-14988c98b0a5932538dd772c265e58d1`, job
+  `b3a63856-b6af-4d3f-aefa-ed649103382d`, and acquisition
+  `work-6fcbe254bc0644e1b6c4a4a3af35eebd` terminalized `published/succeeded` in
+  2.082 seconds with exactly one attempt and no retry;
+- service 0.2.24/schema 12 exercised `reddit_keyless`, the constrained path
+  repaired in 0.2.22. It used six of 50 governed requests, spent $0, and
+  returned zero candidates/items; all seven exact outcome counts are zero;
+- attempted method is `keyless`, selected method is null because yield is zero.
+  This proves execution and observability, not content yield;
+- pre/post snapshots are identical at 59 documents, 59 embeddings, and
+  `index-8c968b3c270aa6c2b5abcbac`; SQLite `quick_check` is `ok`, service remains
+  ready, and all 37 specifications remain disabled;
+- attempt-start, acquisition-result, and run-receipt SHA-256 digests recomputed
+  exactly; the database contains one attempt and one acquisition for the proof
+  job, and public `collection list` exposes the full receipt;
+- receipt JSON, authority audit, and `git diff --check` passed before closeout.
+- the focused 81-test receipt/service packet and final complete repository
+  suite passed; the latter reports 2,414 passes, seven skips, and six subtests;
+- a final executable completion audit re-read the live service, collection
+  list, job/attempt/acquisition rows, all three immutable envelopes, SHA-256
+  digests, SQLite integrity, counts, snapshots, and enabled-spec total and
+  returned `completion_audit=passed`.
+
+State Movement:
+
+- Plan 0018 `C41 -> C42` at version 18;
+- `awaiting_reddit_proof_gate -> reddit_proof_complete -> awaiting_recurring_enable_gate`;
+- active goal objective `observability successor + fresh Reddit proof -> complete`;
+- recurring enablement remains `not_authorized`; all specs remain disabled.
+
+Subagent Status And Reconciliation:
+
+- `completed`; `/root/reddit_proof_review` performed a fresh-context,
+  read-only final review and returned `PASS` with no critical findings. Its
+  healthy-zero-yield distinction and separate recurring gate are incorporated.
+
+Graphiti Write Status:
+
+- provider readiness passed. Source-backed closeout job
+  `429ae2f9-e63b-422b-98bf-87501a7b134e` was queued in
+  `last30days_skill_main` and remained `running` after its 90-second
+  server-side window at the final bounded observation. No episode UUID or
+  error was yet reported, and no retry was made.
+
+Next Bounded Action:
+
+- stop. Any recurring canary enablement requires a separately reviewed packet
+  and explicit operator approval. Do not run another source attempt, enable a
+  specification, push, tag, publish, or release under this completed goal.

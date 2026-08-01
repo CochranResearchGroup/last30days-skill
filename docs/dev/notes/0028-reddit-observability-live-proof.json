@@ -1,0 +1,129 @@
+{
+  "schema": "last30days.reddit-observability-live-proof.v1",
+  "plan": "P0018",
+  "plan_version": 18,
+  "checkpoint_before": "P0018-C41",
+  "authority": {
+    "classification": "human_gate",
+    "approval_evidence": "operator message in the active conversation: approved",
+    "approved_scope": "exactly one manual run of the existing disabled Reddit keyless specification",
+    "recurring_enablement_authorized": false
+  },
+  "runtime": {
+    "observability_service_version": "0.2.24",
+    "reddit_fix_origin_version": "0.2.22",
+    "database_schema_version": 12,
+    "service_status": "ready",
+    "implementation_commit": "adb55c895f8534a0bbf66b67c9201cbe705a2c20",
+    "contract_sha256": "3fb7df8ab6d17e1e381090120a7d30c99027cc3d555b1c3bfe7a0eeb84983c6f",
+    "runtime_manifest_sha256": "667d88dfcc68feb426c322f48a945a1da2a48e29bb4f4009297fc754871179c0"
+  },
+  "spec": {
+    "collection_spec_id": "p0018-v17-reddit-keyless-manual",
+    "spec_version": 1,
+    "spec_digest": "sha256:a756aa3e5d5dbaf85f75f1c69540b0210f8462a246b81a92807058b85d1f91de",
+    "selector_digest": "sha256:9479c5b215fa84ec165f36afa80790d7612f3a8fa7dfd5c282e17e5a143c4e87",
+    "selector": {"topic": "OpenClaw"},
+    "required_access_method": "keyless",
+    "enabled_before": false,
+    "enabled_after": false,
+    "item_limit": 3,
+    "network_request_limit": 50,
+    "wall_timeout_seconds": 120,
+    "budget_cents": 0,
+    "assessment_enabled": false
+  },
+  "deduplicated_preflight": {
+    "scheduled_for": "2026-08-01T20:14:47Z",
+    "returned_existing_run_id": "collection-run-5b02f8b5e8535202a1663ac18e6eadcd",
+    "reason": "the 12-hour cadence floored the timestamp to the already consumed 2026-08-01T12:00:00Z interval",
+    "new_job_created": false,
+    "source_attempt_consumed": false,
+    "network_requests": 0
+  },
+  "manual_run": {
+    "scheduled_for": "2026-08-02T00:00:00Z",
+    "interval_from": "2026-08-01T00:00:00Z",
+    "interval_to": "2026-08-02T00:00:00Z",
+    "collection_run_id": "collection-run-14988c98b0a5932538dd772c265e58d1",
+    "job_id": "b3a63856-b6af-4d3f-aefa-ed649103382d",
+    "acquisition_id": "work-6fcbe254bc0644e1b6c4a4a3af35eebd",
+    "started_at": "2026-08-01T20:16:19.524037Z",
+    "completed_at": "2026-08-01T20:16:21.605571Z",
+    "wall_seconds": 2.082,
+    "attempts": 1,
+    "max_attempts": 1,
+    "job_state": "published",
+    "acquisition_status": "succeeded",
+    "error_code": null,
+    "retry": "not_run",
+    "network_request_count": 6,
+    "counts": {
+      "attempted": 0,
+      "observed": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "stored": 0,
+      "deduplicated": 0,
+      "indexed": 0
+    },
+    "provenance": {
+      "adapter_variant": "reddit_keyless",
+      "attempted_access_methods": ["keyless"],
+      "selected_access_method": null
+    },
+    "pre_snapshot": {
+      "document_count": 59,
+      "embedding_count": 59,
+      "index_version": "index-8c968b3c270aa6c2b5abcbac"
+    },
+    "post_snapshot": {
+      "document_count": 59,
+      "embedding_count": 59,
+      "index_version": "index-8c968b3c270aa6c2b5abcbac"
+    },
+    "coverage_status": "succeeded",
+    "yield_classification": "observed_empty"
+  },
+  "immutable_envelopes": {
+    "attempt_start": {
+      "envelope_id": "collection-run-14988c98b0a5932538dd772c265e58d1:1",
+      "payload_sha256": "41efffe97124ef0ec4d8ca848adeae52dc4a3e57ed2ebc6cc439fa5e8f2aff77"
+    },
+    "acquisition_result": {
+      "envelope_id": "work-6fcbe254bc0644e1b6c4a4a3af35eebd",
+      "payload_sha256": "762fea3631bbcd604a49125fe0c1c9ac5e3154eff18bed3d3a59c6f9f69c335b"
+    },
+    "run_receipt": {
+      "envelope_id": "collection-run-14988c98b0a5932538dd772c265e58d1:1",
+      "payload_sha256": "064acd10c80e21fa327f216f63302a062b8bd26e4b90128f692dbaf322106dfb"
+    }
+  },
+  "post_state": {
+    "service_version": "0.2.24",
+    "database_schema_version": 12,
+    "service_status": "ready",
+    "database_quick_check": "ok",
+    "collection_spec_count": 37,
+    "enabled_spec_count": 0,
+    "target_spec_enabled": false,
+    "document_count": 59,
+    "embedding_count": 59,
+    "relationship_count": 16,
+    "index_version": "index-8c968b3c270aa6c2b5abcbac"
+  },
+  "acceptance": {
+    "exactly_one_source_attempt": true,
+    "within_request_ceiling": true,
+    "within_item_ceiling": true,
+    "within_wall_ceiling": true,
+    "within_cost_ceiling": true,
+    "exact_keyless_variant_proved": true,
+    "complete_observability_receipt": true,
+    "pre_post_snapshot_bound": true,
+    "spec_remained_disabled": true,
+    "recurring_enablement_authorized": false
+  },
+  "terminal_state": "reddit_proof_complete",
+  "summary": "The explicitly authorized one-attempt Reddit proof exercised the 0.2.22 keyless child-boundary repair on the observability-capable 0.2.24/schema-12 runtime. It made six governed public requests, returned a healthy zero-candidate result, and published complete immutable request/count/provenance/pre-post snapshot evidence in about 2.1 seconds. Corpus and index state did not change, all 37 specifications remained disabled, no retry ran, and recurring enablement remains a separate human gate."
+}
