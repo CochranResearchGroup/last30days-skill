@@ -170,6 +170,67 @@ def test_acquisition_work_result_round_trips_sanitized_items_and_retry_state():
     assert result.to_dict() == payload
 
 
+def test_acquisition_work_result_round_trips_exact_observability_counts():
+    payload = {
+        "schema_version": 1,
+        "work_id": "work-observable",
+        "job_id": "job-observable",
+        "lease_generation": 1,
+        "source": "reddit",
+        "adapter": "reddit_keyless",
+        "adapter_version": "1",
+        "status": "succeeded",
+        "safe_error_code": None,
+        "retry_class": "none",
+        "retry_after_seconds": None,
+        "observed_at": "2026-08-01T12:00:00Z",
+        "fetched_at": "2026-08-01T12:00:01Z",
+        "items": [],
+        "item_count": 0,
+        "cost_cents": 0,
+        "diagnostics": {},
+        "network_request_count": 2,
+        "attempted_count": 4,
+        "observed_count": 4,
+        "accepted_count": 0,
+        "rejected_count": 4,
+    }
+
+    result = contracts.AcquisitionWorkResult.from_dict(payload)
+
+    assert result.to_dict() == payload
+
+
+def test_acquisition_work_result_rejects_inconsistent_observability_counts():
+    payload = {
+        "schema_version": 1,
+        "work_id": "work-observable",
+        "job_id": "job-observable",
+        "lease_generation": 1,
+        "source": "reddit",
+        "adapter": "reddit_keyless",
+        "adapter_version": "1",
+        "status": "succeeded",
+        "safe_error_code": None,
+        "retry_class": "none",
+        "retry_after_seconds": None,
+        "observed_at": "2026-08-01T12:00:00Z",
+        "fetched_at": "2026-08-01T12:00:01Z",
+        "items": [],
+        "item_count": 0,
+        "cost_cents": 0,
+        "diagnostics": {},
+        "network_request_count": 1,
+        "attempted_count": 2,
+        "observed_count": 2,
+        "accepted_count": 1,
+        "rejected_count": 0,
+    }
+
+    with pytest.raises(contracts.ContractValidationError, match="outcome counts"):
+        contracts.AcquisitionWorkResult.from_dict(payload)
+
+
 def test_acquisition_work_result_rejects_browser_leases_in_diagnostics():
     payload = {
         "schema_version": 1,

@@ -517,6 +517,15 @@
           }
         },
         "item_count": {"type": "integer", "minimum": 0, "maximum": 10000},
+        "network_request_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "attempted_count": {"type": "integer", "minimum": 0, "maximum": 10000},
+        "observed_count": {"type": "integer", "minimum": 0, "maximum": 10000},
+        "accepted_count": {"type": "integer", "minimum": 0, "maximum": 10000},
+        "rejected_count": {"type": "integer", "minimum": 0, "maximum": 10000},
         "cost_cents": {"type": "integer", "minimum": 0, "maximum": 10000000},
         "diagnostics": {"type": "object"}
       }

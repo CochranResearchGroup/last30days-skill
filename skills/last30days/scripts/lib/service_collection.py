@@ -281,9 +281,26 @@ class CollectionRun:
     interval_from: str
     interval_to: str
     access_partition_id: str
+    network_request_count: int | None = None
+    attempted_count: int | None = None
+    observed_count: int | None = None
+    accepted_count: int | None = None
+    rejected_count: int | None = None
+    stored_count: int | None = None
+    deduplicated_count: int | None = None
+    indexed_count: int | None = None
+    pre_document_count: int | None = None
+    pre_embedding_count: int | None = None
+    pre_index_version: str | None = None
+    post_document_count: int | None = None
+    post_embedding_count: int | None = None
+    post_index_version: str | None = None
+    attempted_access_methods: tuple[str, ...] | None = None
+    selected_access_method: str | None = None
+    adapter_variant: str | None = None
 
-    def to_dict(self) -> dict[str, str]:
-        return {
+    def to_dict(self) -> dict[str, object]:
+        payload: dict[str, object] = {
             "collection_run_id": self.collection_run_id,
             "collection_spec_id": self.collection_spec_id,
             "job_id": self.job_id,
@@ -292,6 +309,39 @@ class CollectionRun:
             "interval_to": self.interval_to,
             "access_partition_id": self.access_partition_id,
         }
+        if self.network_request_count is not None:
+            payload.update(
+                {
+                    "network_request_count": self.network_request_count,
+                    "counts": {
+                        "attempted": self.attempted_count,
+                        "observed": self.observed_count,
+                        "accepted": self.accepted_count,
+                        "rejected": self.rejected_count,
+                        "stored": self.stored_count,
+                        "deduplicated": self.deduplicated_count,
+                        "indexed": self.indexed_count,
+                    },
+                    "pre_snapshot": {
+                        "document_count": self.pre_document_count,
+                        "embedding_count": self.pre_embedding_count,
+                        "index_version": self.pre_index_version,
+                    },
+                    "post_snapshot": {
+                        "document_count": self.post_document_count,
+                        "embedding_count": self.post_embedding_count,
+                        "index_version": self.post_index_version,
+                    },
+                    "provenance": {
+                        "attempted_access_methods": list(
+                            self.attempted_access_methods or ()
+                        ),
+                        "selected_access_method": self.selected_access_method,
+                        "adapter_variant": self.adapter_variant,
+                    },
+                }
+            )
+        return payload
 
 
 class CollectionCoordinator:
@@ -329,9 +379,27 @@ class CollectionCoordinator:
         return datetime.fromtimestamp(epoch - (epoch % seconds), tz=timezone.utc)
 
     @staticmethod
-    def _run_from_row(row: sqlite3.Row) -> CollectionRun:
+    def _run_from_row(
+        row: sqlite3.Row,
+        receipt: Mapping[str, object] | None = None,
+    ) -> CollectionRun:
         if not row["job_id"]:
             raise RuntimeError("collection run has not been linked to a job")
+        evidence = receipt or {}
+        counts = evidence.get("counts")
+        counts = counts if isinstance(counts, Mapping) else {}
+        before = evidence.get("pre_snapshot")
+        before = before if isinstance(before, Mapping) else {}
+        after = evidence.get("post_snapshot")
+        after = after if isinstance(after, Mapping) else {}
+        provenance = evidence.get("provenance")
+        provenance = provenance if isinstance(provenance, Mapping) else {}
+        attempted_methods = provenance.get("attempted_access_methods")
+        attempted_methods = (
+            tuple(str(item) for item in attempted_methods)
+            if isinstance(attempted_methods, list)
+            else None
+        )
         return CollectionRun(
             collection_run_id=row["collection_run_id"],
             collection_spec_id=row["collection_spec_id"],
@@ -340,6 +408,50 @@ class CollectionCoordinator:
             interval_from=row["interval_from"],
             interval_to=row["interval_to"],
             access_partition_id=row["access_partition_id"],
+            network_request_count=evidence.get("network_request_count"),
+            attempted_count=counts.get("attempted", row["attempted_count"]),
+            observed_count=counts.get("observed", row["observed_count"]),
+            accepted_count=counts.get("accepted"),
+            rejected_count=counts.get("rejected"),
+            stored_count=counts.get("stored", row["stored_count"]),
+            deduplicated_count=counts.get("deduplicated"),
+            indexed_count=counts.get("indexed"),
+            pre_document_count=before.get("document_count"),
+            pre_embedding_count=before.get("embedding_count"),
+            pre_index_version=before.get("index_version"),
+            post_document_count=after.get("document_count"),
+            post_embedding_count=after.get("embedding_count"),
+            post_index_version=after.get("index_version"),
+            attempted_access_methods=attempted_methods,
+            selected_access_method=provenance.get("selected_access_method"),
+            adapter_variant=provenance.get("adapter_variant"),
+        )
+
+    @staticmethod
+    def _put_observability_envelope(
+        conn: sqlite3.Connection,
+        *,
+        envelope_type: str,
+        envelope_id: str,
+        payload: Mapping[str, object],
+    ) -> None:
+        payload_json = _canonical_json(payload)
+        payload_sha256 = hashlib.sha256(payload_json.encode("utf-8")).hexdigest()
+        existing = conn.execute(
+            """SELECT payload_sha256 FROM service_envelopes
+               WHERE envelope_type = ? AND envelope_id = ?""",
+            (envelope_type, envelope_id),
+        ).fetchone()
+        if existing is not None:
+            if existing["payload_sha256"] != payload_sha256:
+                raise RuntimeError("immutable collection observability conflict")
+            return
+        conn.execute(
+            """INSERT INTO service_envelopes
+               (envelope_type, envelope_id, schema_version,
+                payload_json, payload_sha256)
+               VALUES (?, ?, 1, ?, ?)""",
+            (envelope_type, envelope_id, payload_json, payload_sha256),
         )
 
     def put_spec(self, spec: CollectionSpec) -> CollectionSpec:
@@ -515,7 +627,8 @@ class CollectionCoordinator:
         conn = self._connect()
         try:
             rows = conn.execute(
-                """SELECT r.spec_json, q.next_due_at, q.last_scheduled_at,
+                """SELECT s.collection_spec_id, r.spec_json,
+                          q.next_due_at, q.last_scheduled_at,
                           q.consecutive_failures, q.retry_after,
                           (
                               SELECT cr.state
@@ -532,21 +645,55 @@ class CollectionCoordinator:
                      ON q.collection_spec_id = s.collection_spec_id
                    ORDER BY s.name, s.collection_spec_id"""
             ).fetchall()
+            output: list[dict[str, object]] = []
+            for row in rows:
+                run_row = conn.execute(
+                    """SELECT * FROM collection_runs
+                       WHERE collection_spec_id = ?
+                       ORDER BY scheduled_for DESC, collection_run_id DESC
+                       LIMIT 1""",
+                    (row["collection_spec_id"],),
+                ).fetchone()
+                receipt_row = (
+                    conn.execute(
+                        """SELECT payload_json FROM service_envelopes
+                           WHERE envelope_type = 'collection_run_receipt'
+                             AND substr(envelope_id, 1, length(?) + 1) = ? || ':'
+                           ORDER BY created_at DESC, envelope_id DESC
+                           LIMIT 1""",
+                        (
+                            run_row["collection_run_id"],
+                            run_row["collection_run_id"],
+                        ),
+                    ).fetchone()
+                    if run_row is not None
+                    else None
+                )
+                receipt = (
+                    json.loads(receipt_row["payload_json"])
+                    if receipt_row is not None
+                    else None
+                )
+                output.append(
+                    {
+                        "spec": json.loads(row["spec_json"]),
+                        "schedule": {
+                            "next_due_at": row["next_due_at"],
+                            "last_scheduled_at": row["last_scheduled_at"],
+                            "consecutive_failures": row["consecutive_failures"],
+                            "retry_after": row["retry_after"],
+                        },
+                        "last_run_state": row["last_run_state"],
+                        "last_run": (
+                            self._run_from_row(run_row, receipt).to_dict()
+                            if run_row is not None
+                            else None
+                        ),
+                    }
+                )
         finally:
             conn.close()
-        return tuple(
-            {
-                "spec": json.loads(row["spec_json"]),
-                "schedule": {
-                    "next_due_at": row["next_due_at"],
-                    "last_scheduled_at": row["last_scheduled_at"],
-                    "consecutive_failures": row["consecutive_failures"],
-                    "retry_after": row["retry_after"],
-                },
-                "last_run_state": row["last_run_state"],
-            }
-            for row in rows
-        )
+        return tuple(output)
 
     def policy_for_job(self, job_id: str) -> dict[str, object] | None:
         conn = self._connect()
@@ -852,6 +999,7 @@ class CollectionCoordinator:
         job_id: str,
         worker_id: str,
         lease_generation: int,
+        pre_snapshot: Mapping[str, object] | None = None,
     ) -> None:
         now = _timestamp(self._now())
         conn = self._connect()
@@ -904,6 +1052,21 @@ class CollectionCoordinator:
                         run["access_partition_id"],
                     ),
                 )
+                if pre_snapshot is not None:
+                    self._put_observability_envelope(
+                        conn,
+                        envelope_type="collection_run_attempt_start",
+                        envelope_id=(
+                            f"{run['collection_run_id']}:{lease_generation}"
+                        ),
+                        payload={
+                            "schema_version": 1,
+                            "collection_run_id": run["collection_run_id"],
+                            "attempt": lease_generation,
+                            "captured_at": now,
+                            "snapshot": dict(pre_snapshot),
+                        },
+                    )
             conn.execute(
                 """UPDATE collection_runs
                    SET state = 'acquiring', claimed_by = ?,
@@ -997,6 +1160,8 @@ class CollectionCoordinator:
         state: str,
         outcomes: tuple[Mapping[str, object], ...],
         completed_at: datetime,
+        pre_snapshot: Mapping[str, object] | None = None,
+        post_snapshot: Mapping[str, object] | None = None,
     ) -> None:
         completed = _timestamp(completed_at)
         conn = self._connect()
@@ -1010,6 +1175,48 @@ class CollectionCoordinator:
                 attempted = sum(int(item.get("attempted_count") or 0) for item in outcomes)
                 observed = sum(int(item.get("observed_count") or 0) for item in outcomes)
                 stored = sum(int(item.get("stored_count") or 0) for item in outcomes)
+                network_values = [
+                    item.get("network_request_count") for item in outcomes
+                ]
+                network_requests = (
+                    sum(int(value) for value in network_values)
+                    if all(
+                        isinstance(value, int) and not isinstance(value, bool)
+                        for value in network_values
+                    )
+                    else None
+                )
+                accepted = sum(int(item.get("accepted_count") or 0) for item in outcomes)
+                rejected = sum(int(item.get("rejected_count") or 0) for item in outcomes)
+                deduplicated = sum(
+                    int(item.get("deduplicated_count") or 0) for item in outcomes
+                )
+                indexed = sum(int(item.get("indexed_count") or 0) for item in outcomes)
+                attempted_methods: list[str] = []
+                for item in outcomes:
+                    methods = item.get("attempted_access_methods")
+                    if isinstance(methods, list):
+                        for method in methods:
+                            if isinstance(method, str) and method not in attempted_methods:
+                                attempted_methods.append(method)
+                selected_method = next(
+                    (
+                        str(item["selected_access_method"])
+                        for item in outcomes
+                        if item.get("selected_access_method") is not None
+                    ),
+                    None,
+                )
+                adapter_variant = next(
+                    (
+                        str(item["adapter_variant"])
+                        for item in outcomes
+                        if item.get("adapter_variant") is not None
+                    ),
+                    None,
+                )
+                before = pre_snapshot or {}
+                after = post_snapshot or {}
                 error_code = next(
                     (
                         str(item["error_code"])
@@ -1051,6 +1258,41 @@ class CollectionCoordinator:
                         error_code,
                         run["collection_run_id"],
                     ),
+                )
+                receipt = {
+                    "schema_version": 1,
+                    "collection_run_id": run["collection_run_id"],
+                    "collection_spec_id": run["collection_spec_id"],
+                    "job_id": job_id,
+                    "attempt": run["lease_generation"],
+                    "state": state,
+                    "completed_at": completed,
+                    "network_request_count": network_requests,
+                    "counts": {
+                        "attempted": attempted,
+                        "observed": observed,
+                        "accepted": accepted,
+                        "rejected": rejected,
+                        "stored": stored,
+                        "deduplicated": deduplicated,
+                        "indexed": indexed,
+                    },
+                    "pre_snapshot": dict(before),
+                    "post_snapshot": dict(after),
+                    "provenance": {
+                        "attempted_access_methods": attempted_methods,
+                        "selected_access_method": selected_method,
+                        "adapter_variant": adapter_variant,
+                    },
+                    "error_code": error_code,
+                }
+                self._put_observability_envelope(
+                    conn,
+                    envelope_type="collection_run_receipt",
+                    envelope_id=(
+                        f"{run['collection_run_id']}:{run['lease_generation']}"
+                    ),
+                    payload=receipt,
                 )
                 conn.execute(
                     """UPDATE collection_run_attempts

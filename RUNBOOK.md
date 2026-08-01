@@ -6624,3 +6624,88 @@ Next Bounded Action:
   rerun Reddit, request enablement approval, enable a schedule, push, tag,
   publish, or release until the missing receipt fields and 0.2.22 Reddit proof
   have a separately bounded and authorized path.
+
+## Turn 105 | 2026-08-01
+
+Focus: implement and install Plan 0018 version 18's bounded observability
+successor, reconcile independent review, and stop before a fresh Reddit proof.
+
+Authority Consulted:
+
+- the active `/goal`; AGENTS.md; Plan 0018 C40; Roadmap P07; Runbook Turn 104;
+  installed service, collection, index, selector, and SQLite readbacks; the TDD
+  and codebase-design Skills; CodeGraph; and planning, memory, Git, validation,
+  documentation, goal, parallel, closeout, and roadmap policies.
+
+Decisions And Changes:
+
+- expanded the versioned acquisition result with exact governed request and
+  attempted/observed/accepted/rejected counts, preserving legacy payloads;
+- captured exact stored/deduplicated/indexed counts, method provenance, and
+  pre/post document/embedding/index snapshots through the existing collection
+  deep module, storing immutable schema-12 start/final envelopes and exposing
+  the latest receipt through `collection list` `last_run`;
+- rejected an initial schema-13 column design because it would strand the
+  verified 0.2.22 rollback; no database migration was retained;
+- reconciled independent review in one remediation pass: excluded aggregate
+  `rejected` candidate buckets, bound Reddit opaque browser invocations,
+  promoted `attempted_count` from diagnostics into the result contract, and
+  refreshed package/authority evidence;
+- installed version-distinct service 0.2.24 and regenerated/reinstalled the
+  digest-matched MCP 4.0.1 adapter. No source was run and no schedule enabled.
+
+Validation Evidence:
+
+- focused contract/worker/publication/job-runner/collection/runtime-package/
+  release/MCP integration tests passed; worker red tests first demonstrated
+  the candidate double-count and missing Reddit browser accounting;
+- the first full suite reached 2,413 passes with one expected missing-C41
+  authority failure. After C41/Turn 105 reconciliation, the final suite passed
+  2,414 tests with seven skips and six subtests; authority audit, Python
+  compilation, Go tests, and `git diff --check` passed;
+- installed service 0.2.24 is ready on schema 12 with contract digest
+  `3fb7df8ab6d17e1e381090120a7d30c99027cc3d555b1c3bfe7a0eeb84983c6f`,
+  runtime-manifest digest
+  `667d88dfcc68feb426c322f48a945a1da2a48e29bb4f4009297fc754871179c0`,
+  and artifact SHA-256
+  `c61e32b95d15a9f4e62a232903982bf32f3c0860e625ee945f9802613dc39042`;
+- managed rollback 0.2.24 -> 0.2.23 -> 0.2.24 stayed ready on schema 12; the
+  earlier 0.2.22 rollback proof remains retained; SQLite `quick_check` is `ok`;
+- corpus/index state is unchanged at 59 documents, 59 embeddings, 16
+  relationships, and `index-8c968b3c270aa6c2b5abcbac`; 37 specifications
+  exist and zero are enabled; no new observability receipt exists live because
+  the separate Reddit acquisition gate was not crossed;
+- `ruff` remains unavailable and was not installed.
+
+State Movement:
+
+- Plan 0018 `C40 -> C41` at plan version 18;
+- observability successor `active_implementation -> awaiting_reddit_proof_gate`;
+- service `0.2.23 -> 0.2.24`, with direct managed rollback 0.2.23 and retained
+  verified 0.2.22 release/schema compatibility;
+- recurring production scheduling remains `not_authorized`, and every
+  specification remains disabled.
+
+Subagent Status And Reconciliation:
+
+- `completed`; `/root/v18_observability_review` and
+  `/root/v18_final_review` returned a consolidated critical defect set. One
+  bounded remediation pass addressed candidate/request/attempt accounting,
+  package reproducibility, and authority reconciliation; the follow-up review
+  returned `PASS` with no remaining critical findings. No parallel writer or
+  live mutation was used.
+
+Graphiti Write Status:
+
+- provider readiness passed. Source-backed closeout job
+  `5f2842b3-0778-4736-a771-882c559b3f3e` completed in
+  `last30days_skill_main` as episode
+  `ea56fe0f-5dca-49ba-bfaf-56415a6982d6`; no retry was made.
+
+Next Bounded Action:
+
+- require explicit operator approval for exactly one manual run of disabled
+  `p0018-v17-reddit-keyless-manual` on service 0.2.24: one attempt, at most
+  three items, 50 governed request units, 120 seconds, and zero cost. Keep it
+  disabled before and after. Recurring enablement remains a separate later
+  gate; do not push, tag, publish, or release.

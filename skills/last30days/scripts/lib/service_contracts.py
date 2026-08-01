@@ -1145,6 +1145,11 @@ class AcquisitionWorkResult:
     item_count: int
     cost_cents: int
     diagnostics: dict[str, Any]
+    network_request_count: int | None = None
+    attempted_count: int | None = None
+    observed_count: int | None = None
+    accepted_count: int | None = None
+    rejected_count: int | None = None
 
     CONTRACT_NAME: ClassVar[str] = "acquisition_work_result"
 
@@ -1173,7 +1178,20 @@ class AcquisitionWorkResult:
                 "diagnostics",
             }
         )
-        _require_exact_fields(payload, required=fields)
+        observability_fields = frozenset(
+            {
+                "network_request_count",
+                "attempted_count",
+                "observed_count",
+                "accepted_count",
+                "rejected_count",
+            }
+        )
+        _require_exact_fields(
+            payload,
+            required=fields,
+            optional=observability_fields,
+        )
         try:
             status = AcquisitionStatus(payload["status"])
             retry_class = RetryClass(payload["retry_class"])
@@ -1190,6 +1208,41 @@ class AcquisitionWorkResult:
         )
         if item_count != len(items):
             raise ContractValidationError("item_count must equal the items length")
+        present_observability = observability_fields.intersection(payload)
+        if present_observability and present_observability != observability_fields:
+            raise ContractValidationError(
+                "observability counts must be supplied together"
+            )
+        network_request_count: int | None = None
+        attempted_count: int | None = None
+        observed_count: int | None = None
+        accepted_count: int | None = None
+        rejected_count: int | None = None
+        if present_observability:
+            network_request_count = _require_integer_between(
+                payload["network_request_count"],
+                "network_request_count",
+                0,
+                1_000_000,
+            )
+            attempted_count = _require_integer_between(
+                payload["attempted_count"], "attempted_count", 0, 10_000
+            )
+            observed_count = _require_integer_between(
+                payload["observed_count"], "observed_count", 0, 10_000
+            )
+            accepted_count = _require_integer_between(
+                payload["accepted_count"], "accepted_count", 0, 10_000
+            )
+            rejected_count = _require_integer_between(
+                payload["rejected_count"], "rejected_count", 0, 10_000
+            )
+            if (
+                accepted_count != item_count
+                or attempted_count < observed_count
+                or observed_count != accepted_count + rejected_count
+            ):
+                raise ContractValidationError("inconsistent outcome counts")
         retry_after = payload["retry_after_seconds"]
         if retry_after is not None:
             retry_after = _require_integer_between(
@@ -1269,10 +1322,15 @@ class AcquisitionWorkResult:
             diagnostics=_validate_json_object(
                 payload["diagnostics"], "diagnostics"
             ),
+            network_request_count=network_request_count,
+            attempted_count=attempted_count,
+            observed_count=observed_count,
+            accepted_count=accepted_count,
+            rejected_count=rejected_count,
         )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "schema_version": self.schema_version,
             "work_id": self.work_id,
             "job_id": self.job_id,
@@ -1291,6 +1349,17 @@ class AcquisitionWorkResult:
             "cost_cents": self.cost_cents,
             "diagnostics": dict(self.diagnostics),
         }
+        if self.network_request_count is not None:
+            payload.update(
+                {
+                    "network_request_count": self.network_request_count,
+                    "attempted_count": self.attempted_count,
+                    "observed_count": self.observed_count,
+                    "accepted_count": self.accepted_count,
+                    "rejected_count": self.rejected_count,
+                }
+            )
+        return payload
 
 
 @dataclass(frozen=True)

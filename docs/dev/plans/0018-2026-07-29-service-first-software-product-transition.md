@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 17
+Plan version: 18
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -37,7 +37,7 @@ software with:
 ## Current State
 
 - The independent managed service is the installed runtime authority at
-  version 0.2.22/schema 12 with 59 documents, 59 embeddings, and active index
+  version 0.2.24/schema 12 with 59 documents, 59 embeddings, and active index
   `index-8c968b3c270aa6c2b5abcbac`.
 - The service publishes its exact contract, API, schema, runtime-manifest,
   source-readiness, and active-index facts. The MCP adapter performs the
@@ -99,13 +99,15 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C39 is the current authority. Service architecture, timer
+Checkpoint P0018-C41 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
-version-17 timed-polling packet is `manual_canary_blocked`: its five fresh
+version-18 observability successor is `awaiting_reddit_proof_gate`: its five fresh
 specifications exist but remain disabled, and no further source attempt or
-recurring enablement is authorized by the consumed first live gate. A bounded
-successor must repair durable request/index evidence and live-prove the
-0.2.22 Reddit exact-method path before the enable gate can be reconsidered.
+recurring enablement is authorized by the consumed first live gate. The
+successor may change, build, install, and deterministically validate the same
+service/MCP runtime to repair durable request/index evidence. It must stop at
+a separate human gate before live-proving the repaired Reddit exact-method
+path. The recurring enable gate cannot be reconsidered before that proof.
 Independent final review, push, tagging, publication, and release remain
 closed.
 
@@ -3702,3 +3704,232 @@ Next action:
 - design a bounded evidence-observability successor packet under standing
   authority. Do not rerun a source attempt or enable any specification until
   that packet classifies and satisfies its live gate.
+
+## Version 18 | Evidence-observability successor
+
+### Bounded outcome
+
+Make one collection run self-reconciling through the existing collection
+interface: exact governed source-request usage, observed/accepted/rejected/
+stored/deduplicated/indexed counts, exact method provenance, and pre/post
+corpus/index snapshots must be durable and returned with the latest run.
+
+This packet may implement, test, build, and install one version-distinct
+service successor plus the digest-matched MCP adapter. It may not run a source
+acquisition, enable a specification, change a selector/access order/profile,
+add credentials, increase any V17 ceiling, push, tag, publish, or release.
+
+### Evidence semantics
+
+- A `network_request_count` is the exact count of governed outbound source
+  operations at the adapter seam. Python HTTP calls count individually;
+  opaque CLI/browser adapters count one governed top-level source-search
+  invocation. Internal browser navigation and asset/subresource traffic outside
+  that seam are not represented and are not the unit governed by the ceiling.
+- `attempted_count` is the exact number of candidates submitted to the worker
+  outcome path. The current worker observes every submitted candidate, so a new
+  result binds `attempted_count >= observed_count` and emits equal values;
+  legacy results may omit the field rather than receiving an inferred zero.
+- `observed_count` is the number of source candidates reported to the worker,
+  including adapter-rejected candidates when bounded diagnostics expose them.
+- `accepted_count` is the number of items that survive worker normalization
+  and the item limit. `rejected_count = observed_count - accepted_count` and
+  must never be negative.
+- `stored_count` is the number of accepted item sightings durably associated
+  with the acquisition. `deduplicated_count` is the accepted count whose
+  canonical document already existed. `indexed_count` is the number of those
+  accepted items represented in the published immutable index.
+- Each run records pre/post document count, embedding count, and active index
+  version. Null denotes a legacy run that predates this contract, never zero.
+- Attempted/selected access methods and concrete adapter variant are copied
+  from the validated worker result into the durable run receipt. Missing new
+  evidence fails the live-proof acceptance check rather than being inferred.
+
+### Module and write surfaces
+
+The deep module remains the collection interface. Callers receive a richer
+`last_run` receipt from the existing list operation; adapter, publication,
+schema, and index mechanics remain implementation details.
+
+Owned write surfaces:
+
+- `service/VERSION`, runtime manifest, and service contract schema;
+- acquisition result contract/worker and source adapter wrappers;
+- corpus publication statistics, job-runner evidence capture, and schema-12
+  immutable observability envelopes surfaced by collection list;
+- focused contract, worker, publication, job-runner, collection, migration,
+  runtime-package, and MCP compatibility tests;
+- `CONFIGURATION.md`, Plan 0018, Roadmap P07, and append-only Runbook.
+
+### Work graph and hard bounds
+
+| Work unit | Dependency | Exit condition |
+| --- | --- | --- |
+| O01 result accounting | C40 | worker result round-trips exact request and outcome counts; malformed/over-budget evidence fails closed |
+| O02 publication/index accounting | O01 | publication and active-index checks produce exact stored/deduplicated/indexed counts |
+| O03 durable run receipt | O02 | schema-12 immutable start/final envelopes persist all counts, method provenance, and snapshots; collection list returns the latest receipt |
+| O04 packaged runtime | O03 | version-distinct artifact and digest-matched MCP pass install/rollback/readiness checks with zero enabled specs |
+| O05 independent review | O04 | one fresh reviewer returns no critical finding or the packet stops split/reframed/blocked |
+| G03 Reddit proof gate | O05 | explicit operator approval authorizes exactly one manual run of the existing disabled Reddit spec |
+
+Bounds: one vertical TDD cycle per behavior, one implementation packet, one
+independent review, at most one consolidated remediation pass, concurrency
+one for runtime mutation, no source attempts, zero source-request usage, zero
+assessment/model spend, and rollback to installed service 0.2.22. The fresh
+Reddit proof is a later one-attempt/three-item/50-request-unit/120-second/
+zero-cost manual packet and is not consumed by this implementation unit.
+
+Delegation decision: critical-path discovery and implementation remain with
+the primary agent because the files and schema are tightly coupled. One
+fresh-context read-only evaluator is required after deterministic validation;
+no parallel implementation lane is authorized.
+
+### Acceptance and terminal state
+
+The implementation packet is accepted only when deterministic tests prove all
+new fields through the public collection list interface, legacy rows/results
+remain readable, the schema stays at 12 so rollback remains executable, the installed
+service/MCP pair is compatible and ready, all specifications remain disabled,
+rollback remains available, and one independent review has no critical
+finding after at most one remediation pass.
+
+The packet then stops at `awaiting_reddit_proof_gate`. This is not recurring
+enablement approval. The later Reddit proof must itself publish a complete
+receipt before Plan 0018 can return to enable-gate consideration.
+
+### Checkpoint P0018-C40 | 2026-08-01
+
+Plan version:
+
+- 18
+
+State transition:
+
+- `manual_canary_blocked -> active_implementation`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`
+
+Changed assumption and evidence:
+
+- V17 used `network requests` without naming the governable seam. The opaque
+  browser and yt-dlp implementations cannot truthfully expose every internal
+  HTTP subrequest; V18 defines and enforces exact governed source operations
+  while explicitly excluding unobservable asset/subresource traffic;
+- an initial column-migration design was rejected before packaging because a
+  schema-13 database would strand the verified 0.2.22 rollback. Versioned
+  immutable envelopes provide the same durable receipt without schema drift;
+- C39 and receipt 0027 prove the remaining blockers: absent request usage,
+  absent exact per-run outcome/index counts and snapshots, and no live 0.2.22
+  Reddit exact-method proof.
+
+Owned changes and current evidence:
+
+- plan-only successor definition; repository starts clean at commit
+  `a16119e873833056196550c86d0201d3fcfa1b1b`, 39 commits ahead of
+  `origin/main`;
+- installed service 0.2.22/schema 12 is ready at 59 documents/59 embeddings;
+  all 37 specifications, including the five V17 specs, are disabled;
+- CodeGraph is healthy with 318 indexed files and identified the worker result,
+  corpus publication, job runner, collection persistence, and schema migration
+  seams described above.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; discovery/implementation are one tightly coupled critical
+  path. A fresh evaluator is reserved for O05.
+
+Graphiti write status:
+
+- deferred to the validated implementation checkpoint; C39's prior write
+  timed out and will not be retried as part of planning.
+
+Next action:
+
+- execute O01-O04 with vertical TDD and no live acquisition, then perform the
+  one-pass O05 review. Stop before G03.
+
+### Checkpoint P0018-C41 | 2026-08-01
+
+Plan version:
+
+- 18
+
+State transition:
+
+- `active_implementation -> awaiting_reddit_proof_gate`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `human_gate`
+
+Changed assumption and evidence:
+
+- the first independent review found that Facebook/LinkedIn aggregate
+  `rejected` buckets were being added to their candidate-kind totals and that
+  Reddit's opaque browser path did not bind its governed top-level invocation;
+- a second bounded review found `attempted_count` still came from optional
+  diagnostics and identified the expected stale runtime manifest and authority
+  closeout. The single consolidated remediation excludes the aggregate bucket,
+  accounts every Reddit browser invocation including failure/fallback, moves
+  `attempted_count` into the validated result contract, refreshes the package,
+  and reconciles Plan/Roadmap/Runbook authority;
+- transparent Reddit keyless and ScrapeCreators HTTP calls remain counted
+  individually through the bounded `urllib` seam. Opaque browser/CLI counts are
+  explicitly one governed top-level source-search invocation, not raw internal
+  navigation or asset traffic.
+
+Owned changes and validation evidence:
+
+- service 0.2.24/schema 12 is installed ready with contract digest
+  `3fb7df8ab6d17e1e381090120a7d30c99027cc3d555b1c3bfe7a0eeb84983c6f`
+  and runtime-manifest digest
+  `667d88dfcc68feb426c322f48a945a1da2a48e29bb4f4009297fc754871179c0`;
+- immutable artifact
+  `last30days-service-0.2.24.tar.gz` has SHA-256
+  `c61e32b95d15a9f4e62a232903982bf32f3c0860e625ee945f9802613dc39042`;
+- contract, worker, publication, job-runner, collection, runtime-package,
+  release-version, and MCP integration tests pass. The final complete
+  repository suite passed 2,414 tests with seven skips and six subtests;
+  authority audit, Python compilation, Go tests, and `git diff --check` pass;
+- managed rollback 0.2.24 -> 0.2.23 -> 0.2.24 stayed ready on schema 12. The
+  earlier 0.2.22 rollback proof and retained release remain valid; no schema
+  migration occurred;
+- installed corpus/index state remains 59 documents, 59 embeddings, 16
+  relationships, and `index-8c968b3c270aa6c2b5abcbac`; SQLite quick check is
+  `ok`; all 37 collection specifications remain disabled;
+- no source acquisition, assessment/model call, credential change, schedule
+  enablement, push, tag, publication, or release occurred.
+
+Subagent status and reconciliation:
+
+- `completed`; the two bounded read-only review outputs were reconciled as one
+  consolidated defect set and one remediation pass. The post-remediation
+  follow-up returned `PASS` with no remaining critical findings. Candidate
+  double-counting, Reddit opaque request accounting, contract-bound attempted
+  count, stale package evidence, and authority drift were repaired without
+  widening scope.
+
+Graphiti write status:
+
+- provider readiness passed and closeout job
+  `5f2842b3-0778-4736-a771-882c559b3f3e` completed in
+  `last30days_skill_main` as episode
+  `ea56fe0f-5dca-49ba-bfaf-56415a6982d6`; it is not a live-source gate.
+
+Next action:
+
+- stop at G03. Explicit operator approval may authorize exactly one manual run
+  of disabled specification `p0018-v17-reddit-keyless-manual` on the 0.2.24
+  observability runtime: one attempt, at most three items, at most 50 governed
+  request units, at most 120 seconds, and zero cost. Keep the specification
+  disabled before and after. Recurring enablement remains unauthorized.

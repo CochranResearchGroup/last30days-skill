@@ -147,6 +147,125 @@ def test_worker_normalizes_publishable_items_into_the_versioned_result():
     assert result.diagnostics["adapter_variant"] == "x_agent_browser"
 
 
+def test_worker_emits_exact_request_and_outcome_counts():
+    def fake_adapter(_request, _config):
+        return {
+            "items": [
+                {
+                    "id": "X1",
+                    "text": "Observable acquisition evidence survives the worker seam.",
+                    "url": "https://x.com/example/status/observable",
+                    "author_handle": "example",
+                    "date": "2026-07-23",
+                }
+            ],
+            "_network_request_count": 1,
+            "diagnostics": {
+                "accepted_count": 1,
+                "rejection_counts": {"off_topic": 2},
+            },
+        }
+
+    result = execute_work(
+        _request(),
+        {},
+        adapters={"x_agent_browser": fake_adapter},
+    )
+
+    assert result.network_request_count == 1
+    assert result.attempted_count == 3
+    assert result.observed_count == 3
+    assert result.accepted_count == 1
+    assert result.rejected_count == 2
+
+
+def test_worker_does_not_double_count_aggregate_rejected_candidates():
+    def fake_adapter(_request, _config):
+        return {
+            "items": [
+                {
+                    "id": "X1",
+                    "text": "One accepted candidate remains exact after quality gating.",
+                    "url": "https://x.com/example/status/candidate-count",
+                    "date": "2026-07-23",
+                }
+            ],
+            "_network_request_count": 1,
+            "diagnostics": {
+                "candidate_counts": {"post": 3, "rejected": 2},
+                "accepted_count": 1,
+                "rejection_counts": {"off_topic": 2},
+            },
+        }
+
+    result = execute_work(
+        _request(),
+        {},
+        adapters={"x_agent_browser": fake_adapter},
+    )
+
+    assert result.observed_count == 3
+    assert result.accepted_count == 1
+    assert result.rejected_count == 2
+
+
+def test_worker_rejects_opaque_request_usage_over_the_limit():
+    result = execute_work(
+        _request(network_request_limit=1),
+        {},
+        adapters={
+            "x_agent_browser": lambda _request, _config: {
+                "items": [],
+                "_network_request_count": 2,
+            }
+        },
+    )
+
+    assert result.status is contracts.AcquisitionStatus.FAILED
+    assert result.safe_error_code == "network_budget_exhausted"
+    assert result.network_request_count == 2
+
+
+def test_youtube_adapter_accounts_for_one_opaque_source_request(monkeypatch):
+    from lib import youtube_yt
+
+    monkeypatch.setattr(
+        youtube_yt,
+        "search_youtube",
+        lambda *_args, **_kwargs: {"items": []},
+    )
+
+    result = service_acquisition_worker._youtube_adapter(_request(), {})
+
+    assert result["_network_request_count"] == 1
+
+
+def test_browser_adapters_account_for_one_opaque_source_request(monkeypatch):
+    from lib import facebook, linkedin, x_browser
+
+    monkeypatch.setattr(
+        x_browser, "search_x_browser", lambda *_args, **_kwargs: {"items": []}
+    )
+    monkeypatch.setattr(
+        facebook, "search_facebook", lambda *_args, **_kwargs: {"items": []}
+    )
+    monkeypatch.setattr(
+        linkedin, "search_linkedin", lambda *_args, **_kwargs: {"items": []}
+    )
+    monkeypatch.setattr(
+        linkedin, "acquire_linkedin_profile", lambda *_args, **_kwargs: {"items": []}
+    )
+
+    results = (
+        service_acquisition_worker._x_adapter(_request(), {}),
+        service_acquisition_worker._facebook_adapter(_request(), {}),
+        service_acquisition_worker._linkedin_adapter(_request(), {}),
+        service_acquisition_worker._linkedin_profile_adapter(_request(), {}),
+    )
+
+    assert [item["_network_request_count"] for item in results] == [1, 1, 1, 1]
+
+
 def test_reddit_adapter_variant_follows_exact_access_method_provenance():
     assert service_acquisition_worker._result_adapter_variant(
         "reddit_api",
@@ -377,6 +496,7 @@ def test_reddit_adapter_uses_enabled_browser_before_paid_fallback(monkeypatch):
 
     assert result == {
         "items": [{"id": "RB1"}],
+        "_network_request_count": 1,
         "_cost_cents": 0,
         "diagnostics": {
             "attempted_access_methods": ["keyless", "agent_browser"],
@@ -430,6 +550,7 @@ def test_reddit_adapter_obeys_explicit_user_access_order(monkeypatch):
 
     assert result == {
         "items": [{"id": "R-browser"}],
+        "_network_request_count": 1,
         "_cost_cents": 0,
         "diagnostics": {
             "attempted_access_methods": ["agent_browser"],
@@ -460,6 +581,7 @@ def test_reddit_adapter_preserves_browser_failure_without_paid_fallback(monkeypa
 
     assert result["items"] == []
     assert result["error_type"] == "checkpoint_required"
+    assert result["_network_request_count"] == 1
     assert result["_cost_cents"] == 0
 
 
@@ -489,6 +611,7 @@ def test_reddit_adapter_uses_paid_fallback_after_empty_browser_yield(monkeypatch
 
     assert result == {
         "items": [{"id": "RP1"}],
+        "_network_request_count": 1,
         "diagnostics": {
             "browser_fallback": {
                 "error_type": "extraction_empty",

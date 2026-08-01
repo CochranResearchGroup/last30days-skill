@@ -2,12 +2,12 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "1c26b6827d8350fcc391724bf4e71440a594c6580edb5e88687febdab34f8a70",
+      "sha256": "4ce70733152daba047916c32d0f6671601a34c45272c34a50c886235652d9c25",
       "source": "service/VERSION"
     },
     {
       "path": "schemas/service-contracts-v1.json",
-      "sha256": "b68d732133a6512df011fd2c3c421642893ebc8e724f906c33f134f9c1b5190f",
+      "sha256": "3fb7df8ab6d17e1e381090120a7d30c99027cc3d555b1c3bfe7a0eeb84983c6f",
       "source": "skills/last30days/schemas/service-contracts-v1.json"
     },
     {
@@ -277,12 +277,12 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "030b33007dbcc988ff8b16561a289faf6f783b953e6bae76819402be093a6341",
+      "sha256": "a3ebec8fb012c2bbc4fbb3267e18b9f3d6e5b3c3a16cd20c8df02fae0c9fe0ea",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
       "path": "scripts/lib/service_app.py",
-      "sha256": "ae338c02444e44a312b0f31ee6eaa1237b94e66c994c31decc2c250aed7e1b9b",
+      "sha256": "f94b238a3e238a68cfae32067ac19cba004602b65dd21d194cf4a38c309da976",
       "source": "skills/last30days/scripts/lib/service_app.py"
     },
     {
@@ -292,12 +292,12 @@
     },
     {
       "path": "scripts/lib/service_collection.py",
-      "sha256": "5d05a75a2402cf82dc00d8b343b7db3fb65a53a302c4384d139afa962888abb4",
+      "sha256": "a86693524d4b06f4fc38a3c0a934c11a9300217b24ff32d492fd2fa61fd8292b",
       "source": "skills/last30days/scripts/lib/service_collection.py"
     },
     {
       "path": "scripts/lib/service_contracts.py",
-      "sha256": "9526753881fc4c6fc9914ec307b89b5ae00844cdeaf80f65ee9bec39e6509020",
+      "sha256": "31e03970be165deba42b8c84805ffe41960ab7ba4ec270ef71ad167e6b648a77",
       "source": "skills/last30days/scripts/lib/service_contracts.py"
     },
     {
@@ -332,7 +332,7 @@
     },
     {
       "path": "scripts/lib/service_job_runner.py",
-      "sha256": "c1a18215e593558d785aad762015ece28f7347f9fb915b69a11b7da3f60d0cc7",
+      "sha256": "6a5e455a177ac7c464ec29efbbd902e95aca73f306365d4b9c7a33c66c17eb38",
       "source": "skills/last30days/scripts/lib/service_job_runner.py"
     },
     {
@@ -347,7 +347,7 @@
     },
     {
       "path": "scripts/lib/service_publication.py",
-      "sha256": "eb448e2d0c8a3dc040a67efb3fd4e8db015559923b298aa73585f1cfe7c1d30a",
+      "sha256": "ac7e39564079594043388b9607d5ef718f843b334da3aba7e8f15b37a5b74afc",
       "source": "skills/last30days/scripts/lib/service_publication.py"
     },
     {
@@ -573,5 +573,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.2.22"
+  "service_version": "0.2.24"
 }

@@ -103,6 +103,7 @@ def test_publisher_validates_and_idempotently_projects_worker_content(tmp_path):
         retriever,
         clock=lambda: datetime(2026, 7, 24, 12, 0, tzinfo=timezone.utc),
     )
+    before = publisher.evidence_snapshot()
 
     first = publisher.record_result(
         _work_request(), _work_result(), worker_id="publisher-test"
@@ -111,9 +112,21 @@ def test_publisher_validates_and_idempotently_projects_worker_content(tmp_path):
         _work_request(), _work_result(), worker_id="publisher-test"
     )
     index_version = publisher.publish_index()
+    after = publisher.evidence_snapshot()
 
     assert first.documents_inserted == 1
+    assert first.stored_count == 1
+    assert first.deduplicated_count == 0
     assert second.documents_inserted == 0
+    assert second.stored_count == 1
+    assert second.deduplicated_count == 1
+    assert before.document_count == 0
+    assert before.embedding_count == 0
+    assert before.index_version is None
+    assert after.document_count == 1
+    assert after.embedding_count == 0
+    assert after.index_version == index_version
+    assert publisher.indexed_item_count("work-001", index_version) == 1
     assert index_version.startswith("index-")
     snapshot = retriever.search_snapshot("browser mechanics")
     assert snapshot.index_version == index_version

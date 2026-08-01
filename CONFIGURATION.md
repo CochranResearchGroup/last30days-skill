@@ -665,6 +665,18 @@ a source/method mismatch. Historical specifications may omit the field for
 backward compatibility and continue to use the configured source access
 order.
 
+`collection list` includes the latest completed run as `last_run` when the
+installed service has a versioned observability receipt. The receipt binds the
+exact governed source-request count; attempted/observed/accepted/rejected/
+stored/deduplicated/indexed counts; attempted and selected access method plus
+adapter variant; and pre/post document, embedding, and active-index snapshots.
+Python HTTP calls count individually. Opaque yt-dlp and browser adapters count
+one governed top-level source-search invocation at their adapter seam;
+internal navigation, browser assets, and subresource traffic are outside this
+governed unit. Legacy
+runs remain readable and omit evidence fields they never recorded rather than
+reporting inferred zeroes.
+
 For LinkedIn profile collection, `selector.profile_url` must be an exact
 canonical `https://www.linkedin.com/in/<slug>/` or
 `https://www.linkedin.com/company/<slug>/` URL. The adapter reads only that

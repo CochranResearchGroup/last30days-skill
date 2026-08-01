@@ -2,11 +2,11 @@
 package contracts
 
 const (
-	SchemaVersion     = 1
-	CatalogSHA256     = "b68d732133a6512df011fd2c3c421642893ebc8e724f906c33f134f9c1b5190f"
-	ProductIdentity   = "last30days"
-	ServiceAPIMin     = 1
-	ServiceAPIMax     = 1
+	SchemaVersion = 1
+	CatalogSHA256 = "3fb7df8ab6d17e1e381090120a7d30c99027cc3d555b1c3bfe7a0eeb84983c6f"
+	ProductIdentity = "last30days"
+	ServiceAPIMin = 1
+	ServiceAPIMax = 1
 	DatabaseSchemaMin = 12
 	DatabaseSchemaMax = 12
 )

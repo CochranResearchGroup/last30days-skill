@@ -510,7 +510,18 @@ class _Worker:
                 ],
                 "item_count": 1,
                 "cost_cents": 0,
-                "diagnostics": {"attempted_count": 3, "cursor_after": "cursor-2"},
+                "diagnostics": {
+                    "attempted_count": 3,
+                    "cursor_after": "cursor-2",
+                    "attempted_access_methods": ["keyless"],
+                    "selected_access_method": "keyless",
+                    "adapter_variant": "reddit_keyless",
+                },
+                "network_request_count": 2,
+                "attempted_count": 3,
+                "observed_count": 3,
+                "accepted_count": 1,
+                "rejected_count": 2,
             }
         )
 
@@ -605,13 +616,53 @@ def test_collection_completion_records_yield_coverage_cursor_and_assessment_fail
         assessment = conn.execute(
             "SELECT state, error_code FROM collection_assessment_batches"
         ).fetchone()
+        receipt = json.loads(
+            conn.execute(
+                """SELECT payload_json FROM service_envelopes
+                   WHERE envelope_type = 'collection_run_receipt'
+                     AND envelope_id = ?""",
+                (f"{run.collection_run_id}:1",),
+            ).fetchone()[0]
+        )
     finally:
         conn.close()
 
     assert stored_run["state"] == "published"
     assert stored_run["attempted_count"] == 3
-    assert stored_run["observed_count"] == 1
+    assert stored_run["observed_count"] == 3
     assert stored_run["stored_count"] == 1
+    assert receipt["network_request_count"] == 2
+    assert receipt["counts"]["accepted"] == 1
+    assert receipt["counts"]["rejected"] == 2
+    assert receipt["counts"]["deduplicated"] == 0
+    assert receipt["counts"]["indexed"] == 1
+    assert receipt["pre_snapshot"] == {
+        "document_count": 0,
+        "embedding_count": 0,
+        "index_version": None,
+    }
+    assert receipt["post_snapshot"] == {
+        "document_count": 1,
+        "embedding_count": 0,
+        "index_version": completed.published_index_version,
+    }
+    assert receipt["provenance"] == {
+        "attempted_access_methods": ["keyless"],
+        "selected_access_method": "keyless",
+        "adapter_variant": "reddit_keyless",
+    }
+    latest = coordinator.list_specs()[0]["last_run"]
+    assert latest["collection_run_id"] == run.collection_run_id
+    assert latest["network_request_count"] == 2
+    assert latest["counts"] == {
+        "attempted": 3,
+        "observed": 3,
+        "accepted": 1,
+        "rejected": 2,
+        "stored": 1,
+        "deduplicated": 0,
+        "indexed": 1,
+    }
     assert coverage["coverage_state"] == "observed"
     assert cursor["cursor_value"] == "cursor-2"
     assert health["process_state"] == "healthy"

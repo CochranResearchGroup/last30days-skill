@@ -154,18 +154,23 @@ def _depth(value: str) -> str:
     return "default" if value == "standard" else value
 
 
+def _account_opaque_source_request(result: dict[str, Any]) -> dict[str, Any]:
+    result["_network_request_count"] = 1
+    return result
+
+
 def _x_adapter(
     request: contracts.AcquisitionWorkRequest, config: Mapping[str, str]
 ) -> dict[str, Any]:
     from . import x_browser
 
-    return x_browser.search_x_browser(
+    return _account_opaque_source_request(x_browser.search_x_browser(
         request.query,
         request.from_date,
         request.to_date,
         depth=_depth(request.depth),
         config=dict(config),
-    )
+    ))
 
 
 def _facebook_adapter(
@@ -173,13 +178,13 @@ def _facebook_adapter(
 ) -> dict[str, Any]:
     from . import facebook
 
-    return facebook.search_facebook(
+    return _account_opaque_source_request(facebook.search_facebook(
         request.query,
         request.from_date,
         request.to_date,
         depth=_depth(request.depth),
         config=dict(config),
-    )
+    ))
 
 
 def _linkedin_adapter(
@@ -187,13 +192,13 @@ def _linkedin_adapter(
 ) -> dict[str, Any]:
     from . import linkedin
 
-    return linkedin.search_linkedin(
+    return _account_opaque_source_request(linkedin.search_linkedin(
         request.query,
         request.from_date,
         request.to_date,
         depth=_depth(request.depth),
         config=dict(config),
-    )
+    ))
 
 
 def _linkedin_profile_adapter(
@@ -201,7 +206,9 @@ def _linkedin_profile_adapter(
 ) -> dict[str, Any]:
     from . import linkedin
 
-    return linkedin.acquire_linkedin_profile(request.query, config=dict(config))
+    return _account_opaque_source_request(
+        linkedin.acquire_linkedin_profile(request.query, config=dict(config))
+    )
 
 
 def _youtube_adapter(
@@ -210,12 +217,13 @@ def _youtube_adapter(
     del config
     from . import youtube_yt
 
-    return youtube_yt.search_youtube(
+    result = youtube_yt.search_youtube(
         request.query,
         request.from_date,
         request.to_date,
         depth=_depth(request.depth),
     )
+    return _account_opaque_source_request(result)
 
 
 def _reddit_adapter(
@@ -251,14 +259,28 @@ def _reddit_adapter(
                 )
             continue
         if method == "agent_browser":
-            browser_result = reddit_browser.search_reddit_browser(
-                request.query,
-                request.from_date,
-                request.to_date,
-                depth=depth,
-                config=dict(config),
-                limit=request.item_limit,
-            )
+            try:
+                browser_result = reddit_browser.search_reddit_browser(
+                    request.query,
+                    request.from_date,
+                    request.to_date,
+                    depth=depth,
+                    config=dict(config),
+                    limit=request.item_limit,
+                )
+            except Exception:
+                return _with_access_method_provenance(
+                    {
+                        "items": [],
+                        "error_type": "adapter_exception",
+                        "diagnostics": {"failure_stage": "adapter_execution"},
+                        "_network_request_count": 1,
+                        "_cost_cents": total_cost_cents,
+                    },
+                    attempted=attempted,
+                    selected=None,
+                )
+            browser_result["_network_request_count"] = 1
             if browser_result.get("items"):
                 browser_result["_cost_cents"] = total_cost_cents
                 return _with_access_method_provenance(
@@ -313,6 +335,8 @@ def _reddit_adapter(
                 }
                 result["diagnostics"] = paid_diagnostics
             result["_cost_cents"] = total_cost_cents
+            if browser_result is not None:
+                result["_network_request_count"] = 1
             if result.get("items"):
                 return _with_access_method_provenance(
                     result, attempted=attempted, selected=method
@@ -494,6 +518,45 @@ def _normalized_items(
     return items
 
 
+def _observed_candidate_count(
+    raw_items: list[dict[str, Any]], diagnostics: Mapping[str, Any]
+) -> int:
+    candidate_counts = diagnostics.get("candidate_counts")
+    if isinstance(candidate_counts, Mapping):
+        values = [
+            value
+            for key, value in candidate_counts.items()
+            if str(key) != "rejected"
+            if isinstance(value, int) and not isinstance(value, bool) and value >= 0
+        ]
+        expected_values = len(candidate_counts) - int("rejected" in candidate_counts)
+        if len(values) == expected_values:
+            return max(len(raw_items), sum(values))
+    candidate_count = diagnostics.get("candidate_count")
+    if (
+        isinstance(candidate_count, int)
+        and not isinstance(candidate_count, bool)
+        and candidate_count >= 0
+    ):
+        return max(len(raw_items), candidate_count)
+    accepted_count = diagnostics.get("accepted_count")
+    rejection_counts = diagnostics.get("rejection_counts")
+    if (
+        isinstance(accepted_count, int)
+        and not isinstance(accepted_count, bool)
+        and accepted_count >= 0
+        and isinstance(rejection_counts, Mapping)
+    ):
+        rejected = [
+            value
+            for value in rejection_counts.values()
+            if isinstance(value, int) and not isinstance(value, bool) and value >= 0
+        ]
+        if len(rejected) == len(rejection_counts):
+            return max(len(raw_items), accepted_count + sum(rejected))
+    return len(raw_items)
+
+
 def execute_work(
     request: contracts.AcquisitionWorkRequest,
     config: Mapping[str, str],
@@ -506,6 +569,7 @@ def execute_work(
     adapter = adapter_registry.get(request.adapter)
     now = clock or (lambda: datetime.now(timezone.utc))
     observed_at = now().astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    network_count = 0
     try:
         source_policy = load_service_source_policy(config)
         source_policy.access_order(request.source)
@@ -534,7 +598,6 @@ def execute_work(
     else:
         original_urlopen = urllib.request.urlopen
         network_lock = threading.Lock()
-        network_count = 0
         network_exhausted = False
 
         def bounded_urlopen(*args, **kwargs):
@@ -566,6 +629,28 @@ def execute_work(
                     "network_requests": network_count,
                 },
             }
+    external_network_count = raw.pop("_network_request_count", 0)
+    if (
+        isinstance(external_network_count, bool)
+        or not isinstance(external_network_count, int)
+        or external_network_count < 0
+    ):
+        raw = {
+            "items": [],
+            "error_type": "validator_failed",
+            "diagnostics": {"failure_stage": "request_accounting"},
+        }
+    else:
+        network_count += external_network_count
+    if network_count > request.network_request_limit:
+        raw = {
+            "items": [],
+            "error_type": "network_budget_exhausted",
+            "diagnostics": {
+                "failure_stage": "budget_guard",
+                "network_requests": network_count,
+            },
+        }
     raw_items = raw.get("items")
     if not isinstance(raw_items, list):
         raw_items = []
@@ -601,6 +686,7 @@ def execute_work(
     diagnostics = _sanitize(raw.get("diagnostics") or {})
     if not isinstance(diagnostics, dict):
         diagnostics = {}
+    observed_count = _observed_candidate_count(raw_items, diagnostics)
     access_method = _ACCESS_METHOD_BY_ADAPTER.get(request.adapter)
     if access_method is not None:
         diagnostics.setdefault("attempted_access_methods", [access_method])
@@ -624,6 +710,8 @@ def execute_work(
         retry_after = None
         cost_cents = 0
         diagnostics = {"failure_stage": "cost_validation"}
+    accepted_count = len(items)
+    rejected_count = max(0, observed_count - accepted_count)
     failure_stage = ""
     if error_code is not None:
         failure_stage = _safe_failure_stage(diagnostics.get("failure_stage"))
@@ -666,6 +754,11 @@ def execute_work(
             "item_count": len(items),
             "cost_cents": cost_cents,
             "diagnostics": diagnostics,
+            "network_request_count": network_count,
+            "attempted_count": observed_count,
+            "observed_count": observed_count,
+            "accepted_count": accepted_count,
+            "rejected_count": rejected_count,
         }
     )
 

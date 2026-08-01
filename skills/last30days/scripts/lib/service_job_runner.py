@@ -3,12 +3,16 @@
 from __future__ import annotations
 
 import hashlib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timedelta, timezone
 from typing import Callable, Mapping, Protocol
 
 from . import service_contracts as contracts
-from .service_publication import CorpusPublisher
+from .service_publication import (
+    CorpusEvidenceSnapshot,
+    CorpusPublisher,
+    PublicationStats,
+)
 from .service_profiles import ProfilePublisher
 from .service_refresh import ServiceRefreshScheduler
 from .service_store import ServiceStore
@@ -35,7 +39,12 @@ class CollectionRecorder(Protocol):
     def policy_for_job(self, job_id: str) -> Mapping[str, object] | None: ...
 
     def record_started(
-        self, *, job_id: str, worker_id: str, lease_generation: int
+        self,
+        *,
+        job_id: str,
+        worker_id: str,
+        lease_generation: int,
+        pre_snapshot: Mapping[str, object] | None = None,
     ) -> None: ...
 
     def record_assessment(
@@ -56,6 +65,8 @@ class CollectionRecorder(Protocol):
         state: str,
         outcomes: tuple[Mapping[str, object], ...],
         completed_at: datetime,
+        pre_snapshot: Mapping[str, object],
+        post_snapshot: Mapping[str, object],
     ) -> None: ...
 
 
@@ -106,6 +117,8 @@ class _Outcome:
     request: contracts.AcquisitionWorkRequest
     result: contracts.AcquisitionWorkResult
     retry_after: str | None
+    publication: PublicationStats
+    indexed_count: int = 0
 
 
 class AcquisitionJobRunner:
@@ -256,7 +269,16 @@ class AcquisitionJobRunner:
                 "items": [],
                 "item_count": 0,
                 "cost_cents": 0,
-                "diagnostics": {},
+                "diagnostics": {
+                    "attempted_access_methods": [],
+                    "selected_access_method": None,
+                    "adapter_variant": request.adapter,
+                },
+                "network_request_count": 0,
+                "attempted_count": 0,
+                "observed_count": 0,
+                "accepted_count": 0,
+                "rejected_count": 0,
             }
         )
 
@@ -297,17 +319,38 @@ class AcquisitionJobRunner:
     @staticmethod
     def _collection_outcome(outcome: _Outcome) -> dict[str, object]:
         diagnostics = outcome.result.diagnostics
-        attempted = diagnostics.get("attempted_count", outcome.result.item_count)
+        attempted = (
+            outcome.result.attempted_count
+            if outcome.result.attempted_count is not None
+            else outcome.result.item_count
+        )
+        attempted_methods = diagnostics.get("attempted_access_methods")
+        if not isinstance(attempted_methods, list) or not all(
+            isinstance(item, str) for item in attempted_methods
+        ):
+            attempted_methods = []
         return {
             "source": outcome.result.source,
             "status": outcome.result.status.value,
-            "attempted_count": (
-                attempted
-                if isinstance(attempted, int) and not isinstance(attempted, bool)
+            "attempted_count": attempted,
+            "network_request_count": outcome.result.network_request_count,
+            "observed_count": (
+                outcome.result.observed_count
+                if outcome.result.observed_count is not None
                 else outcome.result.item_count
             ),
-            "observed_count": outcome.result.item_count,
-            "stored_count": outcome.result.item_count,
+            "accepted_count": (
+                outcome.result.accepted_count
+                if outcome.result.accepted_count is not None
+                else outcome.result.item_count
+            ),
+            "rejected_count": outcome.result.rejected_count or 0,
+            "stored_count": outcome.publication.stored_count,
+            "deduplicated_count": outcome.publication.deduplicated_count,
+            "indexed_count": outcome.indexed_count,
+            "attempted_access_methods": attempted_methods,
+            "selected_access_method": diagnostics.get("selected_access_method"),
+            "adapter_variant": diagnostics.get("adapter_variant"),
             "cursor_after": diagnostics.get("cursor_after"),
             "watermark_after": diagnostics.get("watermark_after"),
             "retry_after": outcome.retry_after,
@@ -318,6 +361,9 @@ class AcquisitionJobRunner:
         self,
         job: contracts.JobRecord,
         outcomes: list[_Outcome],
+        *,
+        pre_snapshot: CorpusEvidenceSnapshot,
+        post_snapshot: CorpusEvidenceSnapshot,
     ) -> None:
         if self.collection_coordinator is None:
             return
@@ -326,6 +372,8 @@ class AcquisitionJobRunner:
             state=job.state.value,
             outcomes=tuple(self._collection_outcome(item) for item in outcomes),
             completed_at=self._now(),
+            pre_snapshot=pre_snapshot.to_dict(),
+            post_snapshot=post_snapshot.to_dict(),
         )
 
     def run_once(self, *, worker_id: str) -> contracts.JobRecord | None:
@@ -335,11 +383,13 @@ class AcquisitionJobRunner:
         )
         if job is None:
             return None
+        pre_snapshot = self.publisher.evidence_snapshot()
         if self.collection_coordinator is not None:
             self.collection_coordinator.record_started(
                 job_id=job.job_id,
                 worker_id=worker_id,
                 lease_generation=job.lease_generation,
+                pre_snapshot=pre_snapshot.to_dict(),
             )
         snapshot = self.supervisor.get_snapshot(job.job_id)
         sources = self._job_sources(job.job_id, snapshot.events)
@@ -488,7 +538,7 @@ class AcquisitionJobRunner:
                         contracts.RetryClass.PERMANENT,
                     ),
                 )
-            self.publisher.record_result(
+            publication = self.publisher.record_result(
                 work,
                 result,
                 worker_id=worker_id,
@@ -550,7 +600,7 @@ class AcquisitionJobRunner:
                 if delay is not None
                 else None
             )
-            outcomes.append(_Outcome(work, result, retry_after))
+            outcomes.append(_Outcome(work, result, retry_after, publication))
 
         completed = [
             outcome
@@ -594,7 +644,12 @@ class AcquisitionJobRunner:
                 worker_id=worker_id,
                 lease_generation=job.lease_generation,
             )
-            self._record_collection_completion(terminal_job, outcomes)
+            self._record_collection_completion(
+                terminal_job,
+                outcomes,
+                pre_snapshot=pre_snapshot,
+                post_snapshot=self.publisher.evidence_snapshot(),
+            )
             return terminal_job
 
         job = self.supervisor.transition(
@@ -610,6 +665,16 @@ class AcquisitionJobRunner:
             lease_generation=job.lease_generation,
         )
         index_version = self.publisher.publish_index()
+        outcomes = [
+            replace(
+                outcome,
+                indexed_count=self.publisher.indexed_item_count(
+                    outcome.result.work_id,
+                    index_version,
+                ),
+            )
+            for outcome in outcomes
+        ]
         for outcome in outcomes:
             self._record_coverage(
                 job,
@@ -653,5 +718,10 @@ class AcquisitionJobRunner:
                 "successful_source_count": len(completed),
             },
         )
-        self._record_collection_completion(terminal_job, outcomes)
+        self._record_collection_completion(
+            terminal_job,
+            outcomes,
+            pre_snapshot=pre_snapshot,
+            post_snapshot=self.publisher.evidence_snapshot(),
+        )
         return terminal_job

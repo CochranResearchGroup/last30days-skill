@@ -48,6 +48,22 @@ class PublicationStats:
     documents_inserted: int
     chunks_inserted: int
     sightings_inserted: int
+    stored_count: int
+    deduplicated_count: int
+
+
+@dataclass(frozen=True)
+class CorpusEvidenceSnapshot:
+    document_count: int
+    embedding_count: int
+    index_version: str | None
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "document_count": self.document_count,
+            "embedding_count": self.embedding_count,
+            "index_version": self.index_version,
+        }
 
 
 class PublicationLeaseError(RuntimeError):
@@ -68,6 +84,52 @@ class CorpusPublisher:
         self.retriever = retriever
         self.ledger = ServiceStore(self.db_path)
         self._clock = clock or (lambda: datetime.now(timezone.utc))
+
+    def evidence_snapshot(self) -> CorpusEvidenceSnapshot:
+        conn = self._connect()
+        try:
+            document_count = int(
+                conn.execute("SELECT COUNT(*) FROM documents").fetchone()[0]
+            )
+            head = conn.execute(
+                "SELECT index_version FROM service_index_head WHERE singleton_id = 1"
+            ).fetchone()
+            index_version = str(head["index_version"]) if head is not None else None
+            embedding_count = (
+                int(
+                    conn.execute(
+                        "SELECT COUNT(*) FROM index_chunk_embeddings "
+                        "WHERE index_version = ?",
+                        (index_version,),
+                    ).fetchone()[0]
+                )
+                if index_version is not None
+                else 0
+            )
+            return CorpusEvidenceSnapshot(
+                document_count=document_count,
+                embedding_count=embedding_count,
+                index_version=index_version,
+            )
+        finally:
+            conn.close()
+
+    def indexed_item_count(self, acquisition_id: str, index_version: str) -> int:
+        conn = self._connect()
+        try:
+            return int(
+                conn.execute(
+                    """SELECT COUNT(DISTINCT dvs.version_id)
+                       FROM document_version_sightings AS dvs
+                       JOIN index_document_versions AS iv
+                         ON iv.version_id = dvs.version_id
+                        AND iv.index_version = ?
+                       WHERE dvs.acquisition_id = ?""",
+                    (index_version, acquisition_id),
+                ).fetchone()[0]
+            )
+        finally:
+            conn.close()
 
     def _connect(self) -> sqlite3.Connection:
         conn = sqlite3.connect(str(self.db_path), timeout=5)
@@ -583,6 +645,13 @@ class CorpusPublisher:
                        VALUES (?, ?, NULL, ?)""",
                     (document_id, acquisition.acquisition_id, result.observed_at),
                 ).rowcount
+            stored_count = int(
+                conn.execute(
+                    """SELECT COUNT(*) FROM document_version_sightings
+                       WHERE acquisition_id = ?""",
+                    (acquisition.acquisition_id,),
+                ).fetchone()[0]
+            )
             conn.commit()
         except Exception:
             conn.rollback()
@@ -594,6 +663,8 @@ class CorpusPublisher:
             documents_inserted=documents_inserted,
             chunks_inserted=chunks_inserted,
             sightings_inserted=sightings_inserted,
+            stored_count=stored_count,
+            deduplicated_count=max(0, result.item_count - documents_inserted),
         )
 
     def publish_index(self) -> str:

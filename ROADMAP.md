@@ -810,19 +810,20 @@ Active Plan:
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the open transition authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
-  rollback are accepted foundations on installed service 0.2.22/schema 12.
-  Plan version 17 preserves the closed configured-method campaign and its
-  five-specification timed-polling canary for accepted X, LinkedIn, YouTube,
-  and Reddit-keyless selectors. Checkpoint C39 records the first live gate as
-  `manual_canary_blocked`; all 37 specifications remain disabled, Facebook and
-  Reddit browser remain excluded, and recurring enablement is not ready.
+  rollback are accepted foundations on installed service 0.2.24/schema 12.
+  Plan version 18 adds contract-bound request and outcome counts, immutable
+  schema-12 start/final receipts, pre/post corpus/index snapshots, and public
+  `collection list` `last_run` evidence. Checkpoint C41 records the successor
+  as `awaiting_reddit_proof_gate`; all 37 specifications remain disabled, no
+  source was run during the successor, and recurring enablement is not ready.
 
 Next Bounded Action:
 
-- Design a bounded evidence-observability successor that emits actual request
-  use, per-run corpus/index snapshots, and exact outcome counts. Preserve the
-  five disabled specifications and stop before any source rerun or recurring
-  enablement; those actions require the successor's classified live gate.
+- Obtain explicit operator approval for exactly one manual run of disabled
+  specification `p0018-v17-reddit-keyless-manual` on service 0.2.24: one
+  attempt, at most three items, 50 governed request units, 120 seconds, and
+  zero cost. Keep it disabled before and after; recurring enablement remains a
+  separate later gate.
 
 ## Goal-Compatible Plan Conversion
 
