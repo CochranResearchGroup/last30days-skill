@@ -6425,3 +6425,55 @@ Next Bounded Action:
 - revisit Plan 0018 as a timed-polling production packet for the accepted
   source set, explicitly separating schedule/freshness/budget policy from
   Facebook and Reddit-browser quality successors.
+
+## Turn 102 | 2026-08-01
+
+Focus: write a fresh-session handoff for the timed-polling service replan.
+
+Authority Consulted:
+
+- Roadmap P07, Plan 0018 C37, receipt 0026, live service and agent-browser
+  readbacks, and handoff, validation, goal, documentation, and roadmap/runbook
+  policies.
+
+Decisions And Changes:
+
+- added
+  `docs/dev/notes/2026-08-01-timed-polling-service-replan-handoff.md` with
+  startup order, authority, live truth, source classifications, commands,
+  hard stops, skills, and the next bounded planning packet;
+- preserved the completed campaign and kept recurring schedule enablement
+  behind plan review and an explicit live-state gate;
+- classified current duplicate-profile pressure as a non-readiness warning on
+  unrelated `default`/LitScout sessions and prohibited unowned cleanup.
+
+Validation Evidence:
+
+- service 0.2.20/schema 12 remains ready with 56 documents and no enabled
+  collection specs;
+- agent-browser executable/runtime convergence remains current; doctor reports
+  one non-readiness-impacting duplicate-profile warning;
+- last30days Git worktree was clean before this handoff change and 36 commits
+  ahead; agent-browser remains two commits ahead with only the preserved
+  user-owned `--full-page` file untracked;
+- Graphiti job `48efd724-f1ea-46df-9788-9057a6c782b2` completed as episode
+  `3c4bf360-4efd-4443-9d2a-72b5c56c8e5c`.
+
+State Movement:
+
+- timed-polling replan continuity `implicit -> durable_handoff_ready`;
+- recurring live enablement remains `not_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this was a single-artifact continuity slice.
+
+Graphiti Write Status:
+
+- prior campaign closeout memory is completed and read-after-write ready; no
+  new Graphiti write was needed for this handoff-only slice.
+
+Next Bounded Action:
+
+- start from the handoff, create and review Plan 0018 version 17 for timed
+  polling, and stop before enabling recurring production collections.
