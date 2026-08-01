@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- The installed v0.2.7/schema-12 daemon, Unix-socket MCP adapter, durable
+- The installed v0.2.20/schema-12 daemon, Unix-socket MCP adapter, durable
   collection supervisor, temporal corpus, semantic index, Graphiti projection,
   and App Intelligence contracts already demonstrate most runtime seams.
 - Source and distribution are still conceptually anchored under
@@ -762,6 +762,11 @@ Current State:
   now 0.2.12. Its authorized timer run produced a durable public receipt in
   about 2.5 seconds, proving the deadline repair, but observed zero items and
   did not advance documents or the active index.
+- The configured browser-method campaign is closed: X topic, LinkedIn topic,
+  and LinkedIn profile published through exact `agent_browser` provenance;
+  Facebook and Reddit browser reached their adapters but failed closed on
+  content quality. Reddit remains `keyless,agent_browser`, all campaign specs
+  are disabled, and the corpus is ready at 56 documents.
 
 Goal Seeds:
 
@@ -795,25 +800,21 @@ Active Plan:
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the open transition authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
-  rollback are accepted foundations on installed service 0.2.16/schema 12.
-  Plan version 11 records the first configured-method campaign, its repaired
-  browser successor gate, and the common CLI per-job-timeout defect isolated by
-  the consumed C31 intervals: YouTube
-  `yt_dlp` is accepted; Reddit browser, X, Facebook, and both LinkedIn browser
-  cases remain historically rejected without reopening the accepted service
-  foundations. Agent-browser commit `662050d7` passes the typed-client live
-  gate, but CLI-driven durable-profile opens still terminate at the daemon's
-  approximately 15-second default because `remote-view open` cannot yet supply
-  `jobTimeoutMs`. Exact provenance is durable, all specs are disabled, and user
-  access orders are restored.
+  rollback are accepted foundations on installed service 0.2.20/schema 12.
+  Plan version 16 closes the configured-method campaign after agent-browser
+  commit `11a276fb`: X topic and both LinkedIn surfaces published; YouTube
+  `yt_dlp` and Reddit keyless remain accepted production methods; Facebook and
+  Reddit browser are transport-ready but quality-rejected. Exact provenance is
+  durable, all campaign specs are disabled, and user access orders are
+  restored.
 
 Next Bounded Action:
 
-- Complete Plan 0018 checkpoint C32 and agent-browser Plan 0086: expose and
-  configure a per-request remote-view-open timeout, validate the installed
-  runtime, then create fresh serial one-interval successors for Reddit browser,
-  X, Facebook, LinkedIn topic, and LinkedIn profile. Push, independent final
-  review, tag, publication, and release remain separately gated.
+- Reframe the next Plan 0018 packet around timed production polling for the
+  accepted source set, with explicit schedules, freshness objectives, budget
+  ceilings, negative-yield behavior, and rollback. Keep Facebook and Reddit
+  browser quality work separate. Push, independent final review, tag,
+  publication, and release remain separately gated.
 
 ## Goal-Compatible Plan Conversion
 

@@ -6361,3 +6361,67 @@ Next Bounded Action:
 
 - implement and install agent-browser Plan 0086, wire last30's user-scoped
   timeout, then execute fresh bounded browser-source intervals serially.
+
+## Turn 101 | 2026-08-01
+
+Focus: close the configured browser-method campaign and establish readiness to
+resume the service-first timed-polling plan.
+
+Authority Consulted:
+
+- Plan 0018 C32-C36, agent-browser Plans 0086-0089, Roadmap P07, live service
+  and browser state, user-scoped config, and planning, documentation,
+  validation, Git, CodeGraph, and Graphiti policies.
+
+Decisions And Changes:
+
+- installed agent-browser commit `11a276fb` and last30days service 0.2.20;
+- moved browser job timeout, display isolation, profiles, sessions, and source
+  access orders to user-scoped policy;
+- fixed shared-browser operator routing and forward Reddit adapter-variant
+  provenance without rewriting historical evidence;
+- executed one fresh terminal case per remaining configured browser surface,
+  restored Reddit keyless-first policy, and left every campaign spec disabled.
+
+Validation Evidence:
+
+- agent-browser cold LinkedIn handoff passed in 5.5 seconds; 32 focused tests,
+  production clippy, route-confusion gates, and docs build passed;
+- agent-browser all-target clippy remains blocked by unrelated pre-existing
+  test-only lint findings; the installed daemon is executable-converged, but
+  the workstation manifest refresh requires interactive sudo;
+- last30days full suite passed with 2400 tests, 7 skips, and 6 subtests; the
+  final provenance focus passed 21 tests;
+- service 0.2.20/schema 12 is ready with 56 documents and active index
+  `index-c237b6d6591afe53629fe99a`;
+- X topic stored 2, LinkedIn topic stored 3, and LinkedIn profile stored 1;
+  Facebook and Reddit browser failed closed at content quality with zero
+  stored items;
+- durable receipt:
+  `docs/dev/notes/0026-configured-browser-service-campaign-receipt.json`.
+
+State Movement:
+
+- Plan 0018 `version 15 -> 16`; C36 successor chain `OPEN -> CLOSED`;
+- configured browser transport `blocked -> accepted`;
+- X and both LinkedIn cases `rejected -> published`;
+- Facebook and Reddit browser `transport_unknown -> quality_rejected`;
+- timed-polling product planning `blocked -> ready_for_bounded_replan`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the campaign was serialized because every live case shared
+  one profile, session, route pool, and user configuration.
+
+Graphiti Write Status:
+
+- provider preflight passed and one closeout episode queued in
+  `last30days_skill_main` as job
+  `48efd724-f1ea-46df-9788-9057a6c782b2`; no retry or completion claim was
+  made because the write remained asynchronous at closeout.
+
+Next Bounded Action:
+
+- revisit Plan 0018 as a timed-polling production packet for the accepted
+  source set, explicitly separating schedule/freshness/budget policy from
+  Facebook and Reddit-browser quality successors.

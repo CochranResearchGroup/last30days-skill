@@ -3279,3 +3279,57 @@ Authority classification:
 Next action:
 
 - complete Plan 0088 and rerun the no-collection LinkedIn feed gate.
+
+### Checkpoint P0018-C37 | 2026-08-01
+
+Plan version:
+
+- 16
+
+State transition:
+
+- `browser handoff blockers removed -> configured source methods adjudicated`
+
+Progress classification:
+
+- `acceptance_and_limit_isolation`
+
+Accepted evidence:
+
+- agent-browser Plans 0086-0089 are closed at commit `11a276fb`; the installed
+  cold LinkedIn feed gate passed exact-target, visible-window, and operator
+  route proof in 5.5 seconds;
+- installed last30days service 0.2.20/schema 12 is ready with user-scoped
+  timeout, display, profile, session, and ordered access-method policy;
+- X topic, LinkedIn topic, and LinkedIn profile each published on one attempt
+  with exact `agent_browser` selected-method provenance;
+- Facebook and Reddit each cleared browser acquisition and authentication but
+  failed closed at their content quality gates; neither published;
+- Reddit's normal `keyless,agent_browser` order is restored, all campaign
+  specs remain disabled, and service model/assessment work remained disabled;
+- receipt `docs/dev/notes/0026-configured-browser-service-campaign-receipt.json`
+  binds exact runs, jobs, counts, commits, installed versions, and residuals.
+
+Residual limits:
+
+- Facebook's observed cards lacked sufficient author/date/permalink quality
+  and included unknown/off-topic shapes;
+- Reddit browser found seven candidates, all rejected as off topic; keyless
+  remains the production-first method;
+- the current agent-browser binary and daemon are converged, while the
+  source-free workstation manifest still requires an interactive-sudo refresh;
+- no recurring collection was enabled and no push, tag, release, or
+  publication authority was inferred.
+
+Authority classification:
+
+- `inherited_authority`; the configured-method campaign objective is complete,
+  and source-quality limits are preserved as evidence rather than hidden by
+  retries.
+
+Next action:
+
+- revisit the service-first timed-polling product plan using accepted X,
+  LinkedIn, YouTube, and Reddit keyless lanes as the initial production set;
+  retain Facebook and Reddit browser as observed fallback/diagnostic lanes
+  until separate quality improvements pass fresh bounded cases.

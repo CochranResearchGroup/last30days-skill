@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "campaign": "plan-0018-configured-browser-service-successors",
+  "recorded_at": "2026-08-01T00:42:00Z",
+  "decision": "timed_polling_foundation_ready_with_source_specific_quality_limits",
+  "source_commits": {
+    "agent_browser": "11a276fb",
+    "last30days_browser_config": "eb24cdf",
+    "last30days_reddit_provenance": "44a8304"
+  },
+  "installed_runtime": {
+    "agent_browser_sha256": "cc22abe43a069e55e2dd46598b3eaa4954ffd4b8859388f646d7761c6c05da60",
+    "agent_browser_runtime_convergence": "converged",
+    "agent_browser_workstation_payload": "manifest_refresh_requires_interactive_sudo",
+    "service_version": "0.2.20",
+    "database_schema_version": 12,
+    "runtime_manifest_sha256": "47005b1da4a8ef4b80323db1f2eeafce321883a7b61b265b7893531f30e791ee",
+    "status": "ready"
+  },
+  "user_policy": {
+    "config_mode": "0600",
+    "reddit_access_order": ["keyless", "agent_browser"],
+    "x_access_order": ["agent_browser"],
+    "facebook_access_order": ["agent_browser"],
+    "linkedin_access_order": ["agent_browser"],
+    "youtube_access_order": ["yt_dlp"],
+    "browser_job_timeout_ms": 90000,
+    "browser_display_isolation": "private_virtual_display",
+    "shared_social_profile": "last30days-facebook",
+    "shared_social_session": "last30days-facebook"
+  },
+  "cases": [
+    {
+      "source": "linkedin",
+      "surface": "topic",
+      "spec_id": "p0018-am05-linkedin-topic-browser-v9",
+      "run_id": "collection-run-6775555db0e57622cf65492dd719a73c",
+      "job_id": "62963e9b-6d08-4076-8580-766d4b906ea3",
+      "state": "published",
+      "adapter_variant": "linkedin_agent_browser",
+      "attempted_access_methods": ["agent_browser"],
+      "selected_access_method": "agent_browser",
+      "observed_count": 3,
+      "stored_count": 3
+    },
+    {
+      "source": "x",
+      "surface": "topic",
+      "spec_id": "p0018-am03-x-browser-v4",
+      "run_id": "collection-run-ce6fc929f7816a1d6d5b1e87050418b5",
+      "job_id": "e6ab8e8d-0d49-41fc-b608-feb4e1406df4",
+      "state": "published",
+      "adapter_variant": "x_agent_browser",
+      "attempted_access_methods": ["agent_browser"],
+      "selected_access_method": "agent_browser",
+      "observed_count": 2,
+      "stored_count": 2
+    },
+    {
+      "source": "facebook",
+      "surface": "topic",
+      "spec_id": "p0018-am04-facebook-browser-v5",
+      "run_id": "collection-run-2a2d0451b3240b956fbca0be499838b1",
+      "job_id": "c7594ea7-7223-4db0-aed8-c872b243c866",
+      "state": "failed",
+      "error_code": "quality_gate_failed",
+      "adapter_variant": "facebook_agent_browser",
+      "attempted_access_methods": ["agent_browser"],
+      "selected_access_method": null,
+      "candidate_count": 16,
+      "accepted_count": 0,
+      "reason": "missing metadata, unknown card shapes, and off-topic candidates"
+    },
+    {
+      "source": "linkedin",
+      "surface": "profile",
+      "spec_id": "p0018-am05-linkedin-profile-browser-v4",
+      "run_id": "collection-run-c2d9cd09087807a27daa5d12bf76c5b8",
+      "job_id": "8cdeb5ce-a949-43a6-aa72-23d672b182ec",
+      "state": "published",
+      "adapter_variant": "linkedin_profile_agent_browser",
+      "attempted_access_methods": ["agent_browser"],
+      "selected_access_method": "agent_browser",
+      "observed_count": 1,
+      "stored_count": 1
+    },
+    {
+      "source": "reddit",
+      "surface": "topic",
+      "spec_id": "p0018-am02-reddit-browser-v5",
+      "run_id": "collection-run-f91f4d24421811eeeeb69f1f2bee785c",
+      "job_id": "c4890641-17e7-4c0d-995a-0737bd796237",
+      "state": "failed",
+      "error_code": "quality_gate_failed",
+      "historical_outer_adapter": "reddit_api",
+      "effective_adapter_variant": "reddit_agent_browser",
+      "attempted_access_methods": ["agent_browser"],
+      "selected_access_method": null,
+      "candidate_count": 7,
+      "accepted_count": 0,
+      "reason": "all candidates were off topic",
+      "forward_fix": "service 0.2.20 derives the concrete diagnostic variant from method provenance"
+    }
+  ],
+  "final_corpus": {
+    "document_count": 56,
+    "embedding_count": 56,
+    "index_version": "index-c237b6d6591afe53629fe99a",
+    "source_document_counts": {
+      "reddit": 19,
+      "x": 15,
+      "facebook": 7,
+      "linkedin": 10,
+      "youtube": 5
+    }
+  },
+  "safety": {
+    "all_campaign_specs_enabled": false,
+    "attempts_per_final_case": 1,
+    "assessment_enabled": false,
+    "normal_reddit_order_restored": true,
+    "push_performed": false,
+    "release_or_tag_performed": false
+  },
+  "validation": {
+    "last30days_full_suite": "2400 passed, 7 skipped, 6 subtests passed",
+    "last30days_provenance_focus": "21 passed",
+    "agent_browser_focused_tests": "32 passed",
+    "agent_browser_production_clippy": "passed",
+    "agent_browser_all_target_clippy": "blocked by pre-existing test-only lint findings",
+    "agent_browser_route_confusion_gates": "passed",
+    "agent_browser_docs_build": "passed",
+    "cold_linkedin_remote_view_seconds": 5.5
+  }
+}
