@@ -12,6 +12,7 @@ from typing import Callable, Mapping
 
 from . import service_contracts as contracts
 from .service_refresh import ServiceRefreshScheduler
+from .service_source_policy import SOURCE_ACCESS_METHODS
 from .service_temporal import access_partition_id
 
 
@@ -111,12 +112,13 @@ class CollectionSpec:
     assessment_enabled: bool
     enabled: bool
     spec_version: int
+    required_access_method: str | None = None
 
     @classmethod
     def from_dict(cls, payload: Mapping[str, object]) -> CollectionSpec:
         if not isinstance(payload, Mapping):
             raise CollectionSpecValidationError("collection spec must be an object")
-        fields = frozenset(
+        required_fields = frozenset(
             {
                 "schema_version",
                 "collection_spec_id",
@@ -138,8 +140,9 @@ class CollectionSpec:
                 "spec_version",
             }
         )
-        unknown = sorted(set(payload) - fields)
-        missing = sorted(fields - set(payload))
+        allowed_fields = required_fields | {"required_access_method"}
+        unknown = sorted(set(payload) - allowed_fields)
+        missing = sorted(required_fields - set(payload))
         if missing:
             raise CollectionSpecValidationError(
                 f"missing fields: {', '.join(missing)}"
@@ -175,6 +178,17 @@ class CollectionSpec:
         if redaction not in {"public", "authenticated", "restricted"}:
             raise CollectionSpecValidationError("redaction_class is invalid")
         source = _nonempty(payload, "source", 64).casefold()
+        required_access_method = payload.get("required_access_method")
+        if required_access_method is not None:
+            if not isinstance(required_access_method, str) or not required_access_method.strip():
+                raise CollectionSpecValidationError(
+                    "required_access_method must be a non-empty string"
+                )
+            required_access_method = required_access_method.strip().casefold()
+            if required_access_method not in SOURCE_ACCESS_METHODS.get(source, ()):
+                raise CollectionSpecValidationError(
+                    "required_access_method is unsupported for source"
+                )
         if source in _BROWSER_SOURCES and redaction != "authenticated":
             raise CollectionSpecValidationError(
                 "redaction_class must be authenticated for browser sources"
@@ -213,6 +227,7 @@ class CollectionSpec:
             assessment_enabled=bool(payload["assessment_enabled"]),
             enabled=bool(payload["enabled"]),
             spec_version=_bounded_int(payload, "spec_version", 1, 1_000_000),
+            required_access_method=required_access_method,
         )
 
     @property
@@ -232,7 +247,7 @@ class CollectionSpec:
         return access_partition_id(self.redaction_class, self.profile_id)
 
     def to_dict(self) -> dict[str, object]:
-        return {
+        payload: dict[str, object] = {
             "schema_version": self.schema_version,
             "collection_spec_id": self.collection_spec_id,
             "name": self.name,
@@ -252,6 +267,9 @@ class CollectionSpec:
             "enabled": self.enabled,
             "spec_version": self.spec_version,
         }
+        if self.required_access_method is not None:
+            payload["required_access_method"] = self.required_access_method
+        return payload
 
 
 @dataclass(frozen=True)

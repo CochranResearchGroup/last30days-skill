@@ -3,7 +3,7 @@ package contracts
 
 const (
 	SchemaVersion     = 1
-	CatalogSHA256     = "f011c45999769f2c93b9044917179a0c683b3a43b35ec316f973bf91a2e76e34"
+	CatalogSHA256     = "b68d732133a6512df011fd2c3c421642893ebc8e724f906c33f134f9c1b5190f"
 	ProductIdentity   = "last30days"
 	ServiceAPIMin     = 1
 	ServiceAPIMax     = 1

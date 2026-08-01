@@ -96,6 +96,17 @@ def test_collection_spec_is_strict_bounded_and_surface_typed():
         _spec(source="linkedin")
     with pytest.raises(CollectionSpecValidationError, match="item_limit"):
         _spec(item_limit=10001)
+    with pytest.raises(CollectionSpecValidationError, match="required_access_method"):
+        _spec(required_access_method="yt_dlp")
+
+
+def test_collection_spec_preserves_exact_access_method_without_breaking_legacy_specs():
+    legacy = _spec()
+    constrained = _spec(required_access_method="keyless")
+
+    assert "required_access_method" not in legacy.to_dict()
+    assert constrained.required_access_method == "keyless"
+    assert constrained.to_dict()["required_access_method"] == "keyless"
 
 
 def test_timer_and_manual_trigger_coalesce_into_one_interval_run(tmp_path):
@@ -672,6 +683,42 @@ def test_runner_applies_frozen_collection_limits_and_retention(tmp_path):
         conn.close()
     assert retention == "durable"
     assert frozen_version == 1
+
+
+def test_runner_enforces_frozen_collection_access_method_and_cost(tmp_path):
+    db_path, supervisor, ledger, scheduler, coordinator = _coordinator(tmp_path)
+    coordinator.put_spec(
+        _spec(
+            required_access_method="keyless",
+            budget_cents=0,
+            assessment_enabled=False,
+            enabled=False,
+        )
+    )
+    coordinator.enqueue_interval(
+        "spec-reddit-ai",
+        scheduled_for="2026-07-25T12:00:00Z",
+        trigger="manual",
+    )
+    retriever = HybridRetriever(db_path)
+    worker = _Worker()
+    runner = AcquisitionJobRunner(
+        supervisor,
+        ledger,
+        CorpusPublisher(db_path, retriever, clock=lambda: NOW),
+        worker,
+        scheduler,
+        JobRunnerPolicy(),
+        clock=lambda: NOW,
+        collection_coordinator=coordinator,
+    )
+
+    completed = runner.run_once(worker_id="collector-exact-method")
+
+    assert completed is not None and completed.state is contracts.JobState.PUBLISHED
+    assert completed.budget_cents == 0
+    assert completed.spent_cents == 0
+    assert worker.requests[0].adapter == "reddit_keyless"
 
 
 def test_failed_collection_records_gap_without_advancing_cursor(tmp_path):

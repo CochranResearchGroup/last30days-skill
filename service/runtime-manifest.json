@@ -2,12 +2,12 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "f2b441d0c9b7b81e8d9385e7e89ede33d7521583579dcb7b42fa366fd49758ab",
+      "sha256": "1c26b6827d8350fcc391724bf4e71440a594c6580edb5e88687febdab34f8a70",
       "source": "service/VERSION"
     },
     {
       "path": "schemas/service-contracts-v1.json",
-      "sha256": "f011c45999769f2c93b9044917179a0c683b3a43b35ec316f973bf91a2e76e34",
+      "sha256": "b68d732133a6512df011fd2c3c421642893ebc8e724f906c33f134f9c1b5190f",
       "source": "skills/last30days/schemas/service-contracts-v1.json"
     },
     {
@@ -277,12 +277,12 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "a531bfde517240b7c55071a46e224105acc0e31bf1f11b47535988572a82cb9c",
+      "sha256": "030b33007dbcc988ff8b16561a289faf6f783b953e6bae76819402be093a6341",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
       "path": "scripts/lib/service_app.py",
-      "sha256": "add1886fd809875be5769c20a2e72e6bd2bddfd282013b798affeb85a77c274b",
+      "sha256": "ae338c02444e44a312b0f31ee6eaa1237b94e66c994c31decc2c250aed7e1b9b",
       "source": "skills/last30days/scripts/lib/service_app.py"
     },
     {
@@ -292,7 +292,7 @@
     },
     {
       "path": "scripts/lib/service_collection.py",
-      "sha256": "3544d3d515b35e81b7f6723a88f82e0061fd31ab9ec75fca51d707d9a0d56427",
+      "sha256": "5d05a75a2402cf82dc00d8b343b7db3fb65a53a302c4384d139afa962888abb4",
       "source": "skills/last30days/scripts/lib/service_collection.py"
     },
     {
@@ -332,7 +332,7 @@
     },
     {
       "path": "scripts/lib/service_job_runner.py",
-      "sha256": "2423954e628941acce65b9cb09a1914fa201e008606460653deebeb3559bb14c",
+      "sha256": "c1a18215e593558d785aad762015ece28f7347f9fb915b69a11b7da3f60d0cc7",
       "source": "skills/last30days/scripts/lib/service_job_runner.py"
     },
     {
@@ -387,7 +387,7 @@
     },
     {
       "path": "scripts/lib/service_worker.py",
-      "sha256": "b6112707f7d0be5456b5211def54682470ca1f440503dddfa007b868f044834f",
+      "sha256": "e8fec9692299162ea82adf1b6ad23853403e2ba2278d99b6ba51073faab1a917",
       "source": "skills/last30days/scripts/lib/service_worker.py"
     },
     {
@@ -573,5 +573,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.2.20"
+  "service_version": "0.2.22"
 }

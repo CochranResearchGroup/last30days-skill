@@ -1,5 +1,9 @@
 """Typed source-adapter boundary tests for the isolated worker process."""
 
+import io
+import json
+import sys
+
 from pathlib import Path
 
 from lib import service_contracts as contracts
@@ -288,6 +292,66 @@ def test_reddit_adapter_returns_public_items_without_paid_fallback(monkeypatch):
         },
     }
     assert paid_calls == []
+
+
+def test_reddit_keyless_adapter_cannot_fall_through_to_browser_or_paid(monkeypatch):
+    from lib import reddit, reddit_browser, reddit_public
+
+    calls = []
+    monkeypatch.setattr(
+        reddit_public,
+        "search_reddit_public",
+        lambda *_args, **_kwargs: calls.append("keyless") or [],
+    )
+    monkeypatch.setattr(
+        reddit_browser,
+        "search_reddit_browser",
+        lambda *_args, **_kwargs: calls.append("agent_browser") or {"items": []},
+    )
+    monkeypatch.setattr(
+        reddit,
+        "search_reddit",
+        lambda *_args, **_kwargs: calls.append("scrapecreators") or {"items": []},
+    )
+
+    result = service_acquisition_worker.execute_work(
+        _request(
+            source="reddit",
+            adapter="reddit_keyless",
+            work_id="work-reddit-keyless-only",
+            cost_budget_cents=0,
+        ),
+        {
+            "LAST30DAYS_REDDIT_ACCESS_ORDER": "keyless,agent_browser",
+            "SCRAPECREATORS_API_KEY": "dummy-test-key",
+        },
+    )
+
+    assert calls == ["keyless"]
+    assert result.status is contracts.AcquisitionStatus.SUCCEEDED
+    assert result.cost_cents == 0
+    assert result.diagnostics["attempted_access_methods"] == ["keyless"]
+    assert result.diagnostics["selected_access_method"] is None
+    assert result.diagnostics["adapter_variant"] == "reddit_keyless"
+
+
+def test_worker_entrypoint_accepts_collection_constrained_adapter(monkeypatch):
+    request = _request(
+        source="reddit",
+        adapter="reddit_keyless",
+        work_id="work-reddit-keyless-entrypoint",
+        network_request_limit=0,
+        cost_budget_cents=0,
+    )
+    stdout = io.StringIO()
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(request.to_dict())))
+    monkeypatch.setattr(sys, "stdout", stdout)
+    monkeypatch.setattr(service_acquisition_worker, "load_profile_config", lambda _profile: {})
+
+    assert service_acquisition_worker.main() == 0
+    payload = json.loads(stdout.getvalue())
+    assert payload["adapter"] == "reddit_keyless"
+    assert payload["safe_error_code"] == "network_budget_exhausted"
 
 
 def test_reddit_adapter_uses_enabled_browser_before_paid_fallback(monkeypatch):

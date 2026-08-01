@@ -37,15 +37,15 @@ software with:
 ## Current State
 
 - The independent managed service is the installed runtime authority at
-  version 0.2.20/schema 12 with 56 documents, 56 embeddings, and active index
-  `index-c237b6d6591afe53629fe99a`.
+  version 0.2.22/schema 12 with 59 documents, 59 embeddings, and active index
+  `index-8c968b3c270aa6c2b5abcbac`.
 - The service publishes its exact contract, API, schema, runtime-manifest,
   source-readiness, and active-index facts. The MCP adapter performs the
   fail-closed compatibility handshake before ordinary operations.
 - User-scoped configuration owns the five-source catalog, ordered access
   chains, browser timeout, display isolation, profile, and session policy. All
-  32 retained collection specifications are disabled at the version-17
-  planning baseline.
+  37 collection specifications are disabled, including the five version-17
+  manual-canary specifications.
 - A timer-owned public Reddit interval on 0.2.14 published one durable version
   and advanced the active index with assessment disabled and no connected
   acquisition agent. The specification is paused and remained quiescent.
@@ -74,9 +74,11 @@ software with:
 - Agent-browser commit `11a276fb` is installed and executable-converged. Its
   duplicate-profile-pressure warning is not readiness-impacting and does not
   authorize cleanup of unrelated default or LitScout sessions.
-- No recurring production collection is authorized. Version 17 defines a
-  plan-only canary packet and stops at review before any collection
-  specification is created or enabled.
+- Version 17's first live gate was exercised: four of five manual lanes
+  published 10 total items, while Reddit failed before source execution under
+  superseded service 0.2.21 and was not retried. Service 0.2.22 contains the
+  child-boundary repair but has no live Reddit proof. Recurring production
+  collection is not authorized, and no specification is enabled.
 
 ## Standing Authority And Human Gates
 
@@ -97,12 +99,15 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C38 is the current authority. Service architecture, timer
+Checkpoint P0018-C39 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
-version-17 timed-polling packet is `awaiting_review`; it grants no authority to
-create or enable collection specifications, run source acquisitions, mutate
-user policy, or touch browser/profile/session state. Independent final review,
-push, tagging, publication, and release remain closed.
+version-17 timed-polling packet is `manual_canary_blocked`: its five fresh
+specifications exist but remain disabled, and no further source attempt or
+recurring enablement is authorized by the consumed first live gate. A bounded
+successor must repair durable request/index evidence and live-prove the
+0.2.22 Reddit exact-method path before the enable gate can be reconsidered.
+Independent final review, push, tagging, publication, and release remain
+closed.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -3481,9 +3486,9 @@ evidence as success or failure.
 | `recurring_canary` | phase-staggered enablement within the 48-hour/14-attempt ceiling | all identities terminal, a lane stop fires, or global rollback fires |
 | `awaiting_closeout_review` | disable all five specs and reconcile receipt/index state | independent final judgment records accepted, rejected, or blocked outcome |
 
-The current packet stops at `awaiting_review`. Neither standing Plan 0018
-authority nor the user's authorization to draft this version satisfies either
-live mutation gate.
+The manual packet stopped at `manual_canary_blocked`. The first live mutation
+gate is consumed; the second live gate is neither ready nor satisfied.
+Recurring enablement is prohibited.
 
 ### Rollback and hard stops
 
@@ -3604,3 +3609,96 @@ Next action:
 
 - stop at `awaiting_live_mutation_gate`. Do not create specifications, run
   acquisitions, enable schedules, or mutate service/browser/user-policy state.
+
+### Checkpoint P0018-C39 | 2026-08-01
+
+Plan version:
+
+- 17
+
+State transition:
+
+- `awaiting_live_mutation_gate -> manual_canary -> manual_canary_blocked`
+
+Progress classification:
+
+- `outcome_progress`
+
+Authority classification:
+
+- `inherited_authority`
+
+Owned changes:
+
+- added backward-compatible `required_access_method` collection constraints,
+  exact source/method adapter selection, and method-specific cost reservation;
+- built and installed service 0.2.22/schema 12 with rollback retained at
+  0.2.20 after the superseded 0.2.21 child-entrypoint failure was repaired;
+- regenerated and reinstalled MCP adapter 4.0.1 after full-suite integration
+  caught its stale embedded contract digest; client/service compatibility is
+  restored without changing the adapter release identity;
+- created five fresh version-17 specifications, kept every specification
+  disabled, and consumed exactly one serial manual attempt per lane;
+- persisted receipt 0027: YouTube, X, LinkedIn topic, and LinkedIn profile
+  published 10 total items at zero cost; Reddit failed before source execution
+  and was not retried;
+- reconciled the independent review failure as a blocked manual canary rather
+  than advancing to the enable gate.
+
+Validation evidence:
+
+- 111 relevant service, acquisition, collection, contract, HTTP, runtime,
+  version, and package tests passed after the 0.2.22 repair; the focused
+  child-boundary regression passed in a 34-test packet;
+- the installed service is ready on 0.2.22/schema 12; SQLite `quick_check` is
+  `ok`; corpus/index state settled at 59 documents and 59 embeddings;
+- 37 specifications exist, including exactly five version-17 canaries, and
+  enabled-spec count is zero; user configuration remains mode 0600;
+- agent-browser remained executable-converged and reused the retained
+  `last30days-facebook` profile without spawning a duplicate browser;
+- the initial full suite produced one MCP contract-digest integration failure;
+  after regenerating/reinstalling the adapter catalog, the failed integration
+  packet and all Go adapter tests passed;
+- the final repository suite passed: 2,407 tests, seven skips, and six
+  subtests; the authority audit, receipt validation, compilation, and diff
+  check also passed;
+- `ruff` was unavailable in the repository environment and was not installed.
+
+Independent review and evidence gaps:
+
+- `/root/manual_canary_review` returned terminal `fail` in one read-only pass:
+  actual request use, per-run indexed/deduplicated counts and pre/post index
+  snapshots are absent; Reddit has no attempted-method provenance because the
+  subprocess failed before adapter execution; and repaired 0.2.22 Reddit has
+  no live proof;
+- receipt 0027 therefore records `enable_gate_ready=false`; the manual-canary
+  exit condition was not met and the one-pass review bound requires split,
+  reframe, or block rather than another attempt in this packet.
+
+Subagent status and reconciliation:
+
+- `completed`; `/root/manual_canary_review` made no edits or live mutations.
+  Its three critical findings were accepted without opening a remediation or
+  re-review loop.
+
+Remaining acceptance criteria:
+
+- a bounded successor must add durable actual-request accounting, per-run
+  pre/post corpus/index snapshots, and explicit accepted/rejected/stored/
+  deduplicated/indexed counts, then obtain authority for one fresh 0.2.22
+  Reddit exact-method proof;
+- all five manual identities must reconcile before an enablement approval can
+  be requested; recurring scheduling, push, tag, publication, and release
+  remain prohibited.
+
+Graphiti write status:
+
+- provider readiness passed, but source-backed closeout memory job
+  `1a6a8554-6d52-4004-aeb6-cb2803dc2bc4` timed out after 60 seconds during
+  node resolution; no episode UUID was assigned and no retry was made.
+
+Next action:
+
+- design a bounded evidence-observability successor packet under standing
+  authority. Do not rerun a source attempt or enable any specification until
+  that packet classifies and satisfies its live gate.

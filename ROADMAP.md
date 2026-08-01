@@ -767,6 +767,16 @@ Current State:
   Facebook and Reddit browser reached their adapters but failed closed on
   content quality. Reddit remains `keyless,agent_browser`, all campaign specs
   are disabled, and the corpus is ready at 56 documents.
+- The version-17 first live gate installed service 0.2.22 with an exact
+  per-spec access-method constraint and created five fresh disabled canary
+  specifications. Four serial manual lanes published 10 total items; Reddit
+  failed before source execution under superseded 0.2.21 and was not retried.
+  The corpus settled at 59 documents/59 embeddings, all 37 specifications are
+  disabled, rollback remains 0.2.20, and MCP adapter 4.0.1 was regenerated and
+  reinstalled to restore its embedded contract-digest compatibility.
+- Independent receipt review rejected recurring enablement: actual request
+  use, exact per-run index/deduplication counts, and a live 0.2.22 Reddit proof
+  are missing. The packet is `manual_canary_blocked`, not awaiting enablement.
 
 Goal Seeds:
 
@@ -800,22 +810,19 @@ Active Plan:
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the open transition authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
-  rollback are accepted foundations on installed service 0.2.20/schema 12.
-  Plan version 17 preserves the closed configured-method campaign and defines
-  a plan-only, five-specification timed-polling canary for accepted X,
-  LinkedIn, YouTube, and Reddit-keyless selectors. The packet is
-  `awaiting_review`; all retained specifications remain disabled, Facebook and
-  Reddit browser remain excluded, and disabled-spec creation plus recurring
-  enablement are separate explicit human gates.
+  rollback are accepted foundations on installed service 0.2.22/schema 12.
+  Plan version 17 preserves the closed configured-method campaign and its
+  five-specification timed-polling canary for accepted X, LinkedIn, YouTube,
+  and Reddit-keyless selectors. Checkpoint C39 records the first live gate as
+  `manual_canary_blocked`; all 37 specifications remain disabled, Facebook and
+  Reddit browser remain excluded, and recurring enablement is not ready.
 
 Next Bounded Action:
 
-- Review Plan 0018 version 17 against its selector boundary, 48-hour/14-attempt
-  ceilings, source-local circuit breakers, provenance/no-yield receipt,
-  serialized browser leases, rollback, and two live-state gates. Stop in
-  `awaiting_live_mutation_gate`; no collection specification creation,
-  acquisition, recurring enablement, push, tag, publication, or release is
-  authorized by the planning packet.
+- Design a bounded evidence-observability successor that emits actual request
+  use, per-run corpus/index snapshots, and exact outcome counts. Preserve the
+  five disabled specifications and stop before any source rerun or recurring
+  enablement; those actions require the successor's classified live gate.
 
 ## Goal-Compatible Plan Conversion
 

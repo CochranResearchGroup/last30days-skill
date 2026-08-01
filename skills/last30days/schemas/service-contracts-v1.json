@@ -857,6 +857,10 @@
           "type": "string",
           "enum": ["public", "authenticated", "restricted"]
         },
+        "required_access_method": {
+          "type": "string",
+          "enum": ["agent_browser", "keyless", "scrapecreators", "yt_dlp"]
+        },
         "assessment_enabled": {"type": "boolean"},
         "enabled": {"type": "boolean"},
         "spec_version": {"type": "integer", "minimum": 1, "maximum": 1000000}

@@ -14,6 +14,7 @@ from .service_refresh import ServiceRefreshScheduler
 from .service_store import ServiceStore
 from .service_supervisor import RefreshSupervisor
 from .service_worker import (
+    COLLECTION_ACCESS_METHOD_ADAPTERS,
     PROFILE_SOURCE_ADAPTERS,
     SOURCE_ADAPTERS,
     SOURCE_COST_RESERVATIONS_CENTS,
@@ -369,18 +370,33 @@ class AcquisitionJobRunner:
                 lease_generation=job.lease_generation,
                 lease_seconds=self.policy.lease_seconds,
             )
-            adapter_registry = (
-                PROFILE_SOURCE_ADAPTERS
+            required_access_method = (
+                collection_policy.get("required_access_method")
                 if collection_policy
-                and collection_policy.get("surface_kind") == "profile"
-                else SOURCE_ADAPTERS
+                else None
             )
-            adapter, adapter_version = adapter_registry.get(
-                source,
-                (f"{source}_unsupported", "1"),
-            )
+            if required_access_method:
+                adapter, adapter_version, reserved_cost = (
+                    COLLECTION_ACCESS_METHOD_ADAPTERS.get(
+                        (source, str(required_access_method)),
+                        (f"{source}_unsupported", "1", 0),
+                    )
+                )
+                if source == "linkedin" and collection_policy.get("surface_kind") == "profile":
+                    adapter, adapter_version = PROFILE_SOURCE_ADAPTERS[source]
+            else:
+                adapter_registry = (
+                    PROFILE_SOURCE_ADAPTERS
+                    if collection_policy
+                    and collection_policy.get("surface_kind") == "profile"
+                    else SOURCE_ADAPTERS
+                )
+                adapter, adapter_version = adapter_registry.get(
+                    source,
+                    (f"{source}_unsupported", "1"),
+                )
+                reserved_cost = SOURCE_COST_RESERVATIONS_CENTS.get(source, 0)
             remaining_budget = job.budget_cents - job.spent_cents
-            reserved_cost = SOURCE_COST_RESERVATIONS_CENTS.get(source, 0)
             work = contracts.AcquisitionWorkRequest.from_dict(
                 {
                     "schema_version": contracts.SCHEMA_VERSION,

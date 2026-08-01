@@ -21,7 +21,11 @@ from typing import Any
 from . import env as env_config
 from . import normalize
 from . import service_contracts as contracts
-from .service_worker import PROFILE_SOURCE_ADAPTERS, SOURCE_ADAPTERS
+from .service_worker import (
+    COLLECTION_ACCESS_METHOD_ADAPTERS,
+    PROFILE_SOURCE_ADAPTERS,
+    SOURCE_ADAPTERS,
+)
 from .service_source_policy import (
     ServiceSourcePolicyError,
     load_service_source_policy,
@@ -73,6 +77,9 @@ _ACCESS_METHOD_BY_ADAPTER = {
     "linkedin_agent_browser": "agent_browser",
     "linkedin_profile_agent_browser": "agent_browser",
     "youtube_ytdlp": "yt_dlp",
+    "reddit_keyless": "keyless",
+    "reddit_agent_browser": "agent_browser",
+    "reddit_scrapecreators": "scrapecreators",
 }
 _REDDIT_ADAPTER_VARIANT_BY_METHOD = {
     "keyless": "reddit_keyless",
@@ -329,6 +336,18 @@ def _reddit_adapter(
     )
 
 
+def _reddit_method_adapter(method: str) -> Adapter:
+    def run(
+        request: contracts.AcquisitionWorkRequest,
+        config: Mapping[str, str],
+    ) -> dict[str, Any]:
+        constrained_config = dict(config)
+        constrained_config["LAST30DAYS_REDDIT_ACCESS_ORDER"] = method
+        return _reddit_adapter(request, constrained_config)
+
+    return run
+
+
 _DEFAULT_ADAPTERS: dict[str, Adapter] = {
     "x_agent_browser": _x_adapter,
     "facebook_agent_browser": _facebook_adapter,
@@ -336,6 +355,9 @@ _DEFAULT_ADAPTERS: dict[str, Adapter] = {
     "linkedin_profile_agent_browser": _linkedin_profile_adapter,
     "youtube_ytdlp": _youtube_adapter,
     "reddit_api": _reddit_adapter,
+    "reddit_keyless": _reddit_method_adapter("keyless"),
+    "reddit_agent_browser": _reddit_method_adapter("agent_browser"),
+    "reddit_scrapecreators": _reddit_method_adapter("scrapecreators"),
 }
 
 
@@ -655,6 +677,12 @@ def main() -> int:
         expected = {
             SOURCE_ADAPTERS.get(request.source),
             PROFILE_SOURCE_ADAPTERS.get(request.source),
+            *(
+                (adapter, version)
+                for (source, _method), (adapter, version, _cost) in
+                COLLECTION_ACCESS_METHOD_ADAPTERS.items()
+                if source == request.source
+            ),
         }
         if (request.adapter, request.adapter_version) not in expected:
             raise contracts.ContractValidationError("source adapter mismatch")

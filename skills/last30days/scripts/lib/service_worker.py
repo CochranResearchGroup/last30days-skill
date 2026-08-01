@@ -30,6 +30,15 @@ SOURCE_ADAPTERS = {
 PROFILE_SOURCE_ADAPTERS = {
     "linkedin": ("linkedin_profile_agent_browser", "1"),
 }
+COLLECTION_ACCESS_METHOD_ADAPTERS = {
+    ("facebook", "agent_browser"): ("facebook_agent_browser", "1", 0),
+    ("linkedin", "agent_browser"): ("linkedin_agent_browser", "1", 0),
+    ("reddit", "agent_browser"): ("reddit_agent_browser", "1", 0),
+    ("reddit", "keyless"): ("reddit_keyless", "1", 0),
+    ("reddit", "scrapecreators"): ("reddit_scrapecreators", "1", 1),
+    ("x", "agent_browser"): ("x_agent_browser", "1", 0),
+    ("youtube", "yt_dlp"): ("youtube_ytdlp", "1", 0),
+}
 SOURCE_COST_RESERVATIONS_CENTS = {
     "reddit": 1,
     "x": 0,

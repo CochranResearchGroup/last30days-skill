@@ -6546,3 +6546,81 @@ Next Bounded Action:
   next live packet may create five disabled specs and run five serial manual
   proofs only after operator approval; recurring enablement remains behind a
   second later gate.
+
+## Turn 104 | 2026-08-01
+
+Focus: execute Plan 0018's first version-17 live gate, preserve its manual
+receipt, and stop fail-closed before recurring enablement.
+
+Authority Consulted:
+
+- the operator's active `ok go` approval; AGENTS.md; Plan 0018 C38; Roadmap
+  P07; Runbook Turn 103; installed service/collection/index and agent-browser
+  readbacks; the last30days and agent-browser Skills; and planning, Git,
+  validation, documentation, goal, parallel, closeout, and roadmap policies.
+
+Decisions And Changes:
+
+- added backward-compatible per-spec `required_access_method` enforcement and
+  exact adapter/cost freezing across collection policy, job runner, and child
+  acquisition worker boundaries;
+- installed version-distinct service 0.2.22/schema 12, retaining verified
+  0.2.20 as rollback after 0.2.21's Reddit child-entrypoint failure;
+- regenerated and reinstalled MCP adapter 4.0.1 after the full suite exposed
+  its stale embedded contract digest; adapter/service compatibility is
+  restored without a release-version change;
+- created five fresh disabled version-17 specifications and ran exactly one
+  serial manual attempt per specification; no schedule was enabled;
+- persisted receipt 0027: YouTube, X, LinkedIn topic, and LinkedIn profile
+  published 10 total items; Reddit failed before source execution and was not
+  retried;
+- accepted the one-pass independent review failure and classified the packet
+  `manual_canary_blocked` because its evidence contract cannot reconcile
+  actual request use, exact per-run index/deduplication counts, or live 0.2.22
+  Reddit provenance.
+
+Validation Evidence:
+
+- 111 relevant service tests and the focused 34-test child-boundary packet
+  passed; Python compilation and `git diff --check` passed;
+- installed service 0.2.22/schema 12 is ready, SQLite `quick_check` is `ok`,
+  and corpus/index state settled at 59 documents/59 embeddings;
+- collection state is 37 total, five version-17 canaries, zero enabled; config
+  mode remains 0600 and rollback is 0.2.20;
+- agent-browser remained executable-converged with the retained
+  `last30days-facebook` profile healthy and no readiness-impacting cleanup
+  candidate;
+- the first full suite reached 2,406 passes and one MCP contract-digest
+  integration failure; the regenerated/reinstalled adapter then passed the
+  failed integration packet plus the complete Go adapter suite;
+- the final repository suite passed 2,407 tests with seven skips and six
+  subtests; authority audit, receipt validation, compilation, and diff check
+  also passed;
+- `ruff` was unavailable in the current environment and was not installed.
+
+State Movement:
+
+- Plan 0018 `C38 -> C39` at plan version 17;
+- timed polling `awaiting_live_mutation_gate -> manual_canary -> manual_canary_blocked`;
+- service `0.2.20 -> superseded 0.2.21 -> 0.2.22`, with rollback 0.2.20;
+- recurring production scheduling remains `not_authorized` and every
+  specification remains disabled.
+
+Subagent Status And Reconciliation:
+
+- `completed`; `/root/manual_canary_review` performed one fresh-context,
+  read-only review and returned terminal `fail`. Its findings were accepted;
+  no live mutation, remediation attempt, or second evaluator cycle followed.
+
+Graphiti Write Status:
+
+- provider readiness passed, but source-backed closeout memory job
+  `1a6a8554-6d52-4004-aeb6-cb2803dc2bc4` timed out after 60 seconds during
+  node resolution; no episode UUID was assigned and no retry was made.
+
+Next Bounded Action:
+
+- design an evidence-observability successor under standing authority. Do not
+  rerun Reddit, request enablement approval, enable a schedule, push, tag,
+  publish, or release until the missing receipt fields and 0.2.22 Reddit proof
+  have a separately bounded and authorized path.

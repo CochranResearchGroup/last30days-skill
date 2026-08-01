@@ -638,6 +638,7 @@ Example:
   "wall_timeout_seconds": 90,
   "network_request_limit": 50,
   "budget_cents": 25,
+  "required_access_method": "keyless",
   "retention_class": "cache",
   "redaction_class": "public",
   "assessment_enabled": true,
@@ -653,6 +654,16 @@ lookback, and cadence bounds are mandatory. X, Facebook, and LinkedIn specs
 must use `redaction_class=authenticated`; their named profile is leased so two
 collection runs cannot operate the same retained browser profile
 concurrently.
+
+Set `required_access_method` when a production specification must use exactly
+one method instead of the source-wide fallback order. The allowed method must
+belong to the selected source: Reddit accepts `keyless`, `agent_browser`, or
+`scrapecreators`; X, Facebook, and LinkedIn accept `agent_browser`; YouTube
+accepts `yt_dlp`. The service freezes the constraint with the spec revision,
+selects the matching worker adapter and cost reservation, and fails closed on
+a source/method mismatch. Historical specifications may omit the field for
+backward compatibility and continue to use the configured source access
+order.
 
 For LinkedIn profile collection, `selector.profile_url` must be an exact
 canonical `https://www.linkedin.com/in/<slug>/` or
