@@ -6312,3 +6312,52 @@ Next Bounded Action:
 
 - execute the five fresh successor cases serially, restore config, reconcile
   service/profile/route state, and persist one machine-readable receipt.
+
+## Turn 100 | 2026-07-31
+
+Focus: adjudicate the consumed C31 source successors and open a changed-input
+repair for the common remote-view job-timeout boundary.
+
+Authority Consulted:
+
+- Plan 0018 C31, agent-browser live/job evidence, Plan 0086, and the planning,
+  validation, documentation, Git, CodeGraph, and goal policies.
+
+Decisions And Changes:
+
+- advanced Plan 0018 to version 11 and opened checkpoint C32;
+- accepted Reddit's configured fallback chain but continued to reject its
+  browser method because exact provenance selected keyless;
+- rejected the consumed X, Facebook, and LinkedIn cases at the common
+  `remote_view_open` timeout boundary without misclassifying them as
+  authentication failures;
+- bounded one general CLI timeout fix, one last30 config-driven adapter wiring,
+  installed validation, and fresh serial successor identities.
+
+Validation Evidence:
+
+- all browser cases launched their requested target URL before cleanup;
+- every CLI-driven browser job failed at approximately 15 seconds;
+- the passing typed-client live smoke supplied `jobTimeoutMs=300000`;
+- control-plane source honors command-level `jobTimeoutMs`, while
+  `remote-view open` currently has no CLI option that populates it;
+- user Reddit order is restored and all C31 specs are disabled.
+
+State Movement:
+
+- Plan 0018 `version 10 -> 11`; C31 `READY -> CONSUMED`; C32 `PLANNED -> OPEN`;
+- common browser blocker `authentication_unknown -> CLI job timeout isolated`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active-agent concurrency remains one and both live runtimes
+  share profile, route, config, and service state.
+
+Graphiti Write Status:
+
+- deferred to the execution/closeout checkpoint.
+
+Next Bounded Action:
+
+- implement and install agent-browser Plan 0086, wire last30's user-scoped
+  timeout, then execute fresh bounded browser-source intervals serially.

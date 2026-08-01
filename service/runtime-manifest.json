@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "40c43ab8e7ce30cc40918279add8264f655245245092136cf31362f990100836",
+      "sha256": "d8f3e6b0f7817c4ad634608dc673833c04c255c7ad2ef87ece9a443579553d25",
       "source": "service/VERSION"
     },
     {
@@ -82,12 +82,12 @@
     },
     {
       "path": "scripts/lib/env.py",
-      "sha256": "3d4d53ce5af11b7c119c3bd5a8bcd7697898d4d32133fd1dc65d97ab630ae0ba",
+      "sha256": "d6612150ad99413257239b30e05533e80dec8e260e0c13d1cece9b33147b1354",
       "source": "skills/last30days/scripts/lib/env.py"
     },
     {
       "path": "scripts/lib/facebook.py",
-      "sha256": "ee964767d2755688693c344ba8c7f11dde17b2692e7fc341734faa2124980a5d",
+      "sha256": "f7b66bace10c40b9c9fd8c5145d1357465a5bed71ca29a10f96ca8d67cb3f8ab",
       "source": "skills/last30days/scripts/lib/facebook.py"
     },
     {
@@ -147,7 +147,7 @@
     },
     {
       "path": "scripts/lib/linkedin.py",
-      "sha256": "1204c840917d7367ea3ae2b5cd3eeec36bd75bd30849f9091b983bfb4e9a1663",
+      "sha256": "4e942102f5bca43bd65cc40cad724690b66e0f856267e583a8ec1f2e13fa7898",
       "source": "skills/last30days/scripts/lib/linkedin.py"
     },
     {
@@ -212,7 +212,7 @@
     },
     {
       "path": "scripts/lib/reddit_browser.py",
-      "sha256": "2876254a0b20b96b6a03bad4929f9c06974dab540b6c13368cc580d616a502d5",
+      "sha256": "c09afe929e63b4fb48cc988a4923a6fd93ce32a5321fb25323e1d91d9b2d4e00",
       "source": "skills/last30days/scripts/lib/reddit_browser.py"
     },
     {
@@ -527,7 +527,7 @@
     },
     {
       "path": "scripts/lib/x_browser.py",
-      "sha256": "6cb375adc7c1c5763eb6018140e2555a07c89022b3f04c955ed751f3b7b3d52e",
+      "sha256": "50b2ee061d55ad47e28b11401287cce3e00c8f98bacc32e78234209f28fdbe4f",
       "source": "skills/last30days/scripts/lib/x_browser.py"
     },
     {
@@ -573,5 +573,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.2.16"
+  "service_version": "0.2.19"
 }

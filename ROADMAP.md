@@ -796,21 +796,24 @@ Active Plan:
   is the open transition authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
   rollback are accepted foundations on installed service 0.2.16/schema 12.
-  Plan version 10 records the first configured-method campaign and its repaired
-  browser successor gate: YouTube
+  Plan version 11 records the first configured-method campaign, its repaired
+  browser successor gate, and the common CLI per-job-timeout defect isolated by
+  the consumed C31 intervals: YouTube
   `yt_dlp` is accepted; Reddit browser, X, Facebook, and both LinkedIn browser
   cases remain historically rejected without reopening the accepted service
-  foundations. Agent-browser commit `662050d7` now passes the required live
-  gate, exact provenance is durable, and manual collection attempts are bounded
-  to one. All specs are disabled and user access orders are restored.
+  foundations. Agent-browser commit `662050d7` passes the typed-client live
+  gate, but CLI-driven durable-profile opens still terminate at the daemon's
+  approximately 15-second default because `remote-view open` cannot yet supply
+  `jobTimeoutMs`. Exact provenance is durable, all specs are disabled, and user
+  access orders are restored.
 
 Next Bounded Action:
 
-- Execute Plan 0018 checkpoint C31's fresh, serial, one-interval successors for
-  Reddit browser, X, Facebook, LinkedIn topic, and LinkedIn profile. Restore
-  user configuration after each temporary override and persist exact method,
-  publication, and cleanup evidence. Push, independent final review, tag,
-  publication, and release remain separately gated.
+- Complete Plan 0018 checkpoint C32 and agent-browser Plan 0086: expose and
+  configure a per-request remote-view-open timeout, validate the installed
+  runtime, then create fresh serial one-interval successors for Reddit browser,
+  X, Facebook, LinkedIn topic, and LinkedIn profile. Push, independent final
+  review, tag, publication, and release remain separately gated.
 
 ## Goal-Compatible Plan Conversion
 

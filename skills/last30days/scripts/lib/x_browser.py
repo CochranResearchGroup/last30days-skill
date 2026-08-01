@@ -388,9 +388,23 @@ def search_x_browser(
         agent_name="x-scraper",
         task_name="x-search",
         target_service_id="x",
-        display_isolation="shared_display",
+        display_isolation=str(
+            config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION")
+            or "shared_display"
+        ),
     )
-    client = CliAgentBrowserClient(timeout=request.timeout)
+    client = CliAgentBrowserClient(
+        timeout=request.timeout,
+        **(
+            {
+                "job_timeout_ms": int(
+                    config["LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS"]
+                )
+            }
+            if config.get("LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS")
+            else {}
+        ),
+    )
     scraper = XBrowserScraper(
         client,
         request,

@@ -7,7 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Shared-browser operator routing.** Facebook shared-profile reuse now
+  resolves the live retained browser and its service-local operator route
+  before returning the workspace. Logged-out sessions therefore distinguish
+  an actionable authentication gate from a missing handoff URL.
+
 ### Added
+
+- **Configurable browser job timeout.** Every Reddit, X, Facebook, and LinkedIn
+  agent-browser launch now passes a positive per-request control-plane timeout.
+  The default follows that source's user-scoped browser timeout, while
+  `LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS` supplies one shared user override.
+  This keeps slow durable-profile launches from inheriting agent-browser's
+  shorter daemon default without hard-coding policy per service.
+- **User-scoped browser display policy.** Reddit, X, Facebook, and LinkedIn now
+  resolve display isolation from
+  `LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION`, while preserving their existing
+  source defaults when it is unset. Serial service deployments can select
+  private route displays without patching individual adapters.
 
 - **Safe access-method provenance.** Every managed acquisition result now
   records its exact adapter variant plus the ordered access methods attempted

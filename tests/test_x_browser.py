@@ -447,7 +447,7 @@ class XBrowserAcquisitionTests(TestCase):
                 "tabs": {"target:x": {"targetId": "x", "url": "https://x.com/home"}},
             },
         }
-        recorder = RecordingCliClient([plan])
+        recorder = RecordingCliClient([plan, status])
         recorder._client._invoke = recorder.invoke
 
         with patch.object(x_browser.agent_browser_config, "record_access_plan"):
@@ -463,8 +463,8 @@ class XBrowserAcquisitionTests(TestCase):
 
         self.assertEqual("session:last30days-facebook", workspace.browser_id)
         self.assertEqual("last30days-facebook", workspace.session_name)
-        self.assertEqual("", workspace.target_id)
-        self.assertEqual(1, len(recorder.calls))
+        self.assertEqual("x", workspace.target_id)
+        self.assertEqual(2, len(recorder.calls))
 
 
 class XBrowserIntegrationTests(TestCase):

@@ -804,10 +804,24 @@ def search_linkedin(
         agent_name="linkedin-scraper",
         task_name="linkedin-content-search",
         target_service_id="linkedin",
-        display_isolation="shared_display",
+        display_isolation=str(
+            config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION")
+            or "shared_display"
+        ),
     )
     scraper = LinkedInScraper(
-        CliAgentBrowserClient(timeout=timeout),
+        CliAgentBrowserClient(
+            timeout=timeout,
+            **(
+                {
+                    "job_timeout_ms": int(
+                        config["LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS"]
+                    )
+                }
+                if config.get("LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS")
+                else {}
+            ),
+        ),
         request,
         limit=int(config.get("LAST30DAYS_LINKEDIN_MAX_RESULTS") or settings["results"]),
         scrolls=int(config.get("LAST30DAYS_LINKEDIN_SCROLLS") or settings["scrolls"]),
@@ -881,9 +895,23 @@ def acquire_linkedin_profile(
         agent_name="linkedin-profile-scraper",
         task_name="linkedin-profile-acquisition",
         target_service_id="linkedin",
-        display_isolation="shared_display",
+        display_isolation=str(
+            config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION")
+            or "shared_display"
+        ),
     )
-    client = CliAgentBrowserClient(timeout=timeout)
+    client = CliAgentBrowserClient(
+        timeout=timeout,
+        **(
+            {
+                "job_timeout_ms": int(
+                    config["LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS"]
+                )
+            }
+            if config.get("LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS")
+            else {}
+        ),
+    )
     try:
         workspace = client.acquire_workspace(request)
         auth = client.inspect_auth(workspace)

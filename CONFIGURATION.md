@@ -251,6 +251,14 @@ LAST30DAYS_YOUTUBE_BROWSER_FALLBACK=auto
 # LAST30DAYS_YOUTUBE_BROWSER_VIEW_PROVIDER=rdp_gateway
 # LAST30DAYS_YOUTUBE_BROWSER_TIMEOUT=75
 
+# Shared per-request control-plane timeout for every agent-browser-backed
+# source. This is separate from the subprocess timeout above; when unset, each
+# source's configured browser timeout is converted to milliseconds.
+# LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS=120000
+# Shared display policy for all agent-browser-backed sources. Existing source
+# defaults remain in effect when unset.
+# LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION=private_virtual_display
+
 # X via an authenticated agent-browser profile (opt-in; preferred over API
 # backends while enabled). The default profile already used on this workstation
 # is shown; use a different registered X profile elsewhere.

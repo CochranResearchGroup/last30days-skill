@@ -198,7 +198,10 @@ def browser_request(config: dict[str, Any], *, timeout: int) -> BrowserWorkspace
         agent_name="reddit-scraper",
         task_name="reddit-post-search",
         target_service_id="reddit",
-        display_isolation="private_virtual_display",
+        display_isolation=str(
+            config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION")
+            or "private_virtual_display"
+        ),
     )
 
 
@@ -492,7 +495,18 @@ def search_reddit_browser(
         ),
     )
     scraper = RedditBrowserScraper(
-        CliAgentBrowserClient(timeout=timeout),
+        CliAgentBrowserClient(
+            timeout=timeout,
+            **(
+                {
+                    "job_timeout_ms": int(
+                        config["LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS"]
+                    )
+                }
+                if config.get("LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS")
+                else {}
+            ),
+        ),
         browser_request(config, timeout=timeout),
         limit=result_limit,
         scrolls=scrolls,

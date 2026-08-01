@@ -3048,3 +3048,234 @@ Next action:
 
 - create and execute the five fresh successor cases serially, restore config,
   persist a machine-readable receipt, and adjudicate each method independently.
+
+### Checkpoint P0018-C32 | 2026-07-31
+
+Plan version:
+
+- 11
+
+State transition:
+
+- `C31 source intervals consumed -> common CLI timeout defect isolated and changed-input successors bounded`
+
+Progress classification:
+
+- `blocker_isolation`
+
+Consumed C31 evidence:
+
+- Reddit published three canonical items through `reddit_api` after exact
+  attempted order `agent_browser,keyless` selected `keyless`; browser remains
+  rejected independently while the configured fallback chain is accepted;
+- X, Facebook, LinkedIn topic, and LinkedIn profile each consumed one attempt
+  and failed with `agent_browser_error`;
+- agent-browser service evidence shows every browser case launched Chromium
+  and opened its requested service URL, then `remote_view_open` terminated at
+  approximately 15 seconds and cleanup closed the browser;
+- the passing standalone live gate supplied `jobTimeoutMs=300000` through the
+  typed client, while the user-facing `remote-view open` CLI exposes no
+  equivalent and last30days invokes that CLI;
+- user Reddit order is restored to `keyless,agent_browser`, all successor specs
+  remain disabled, and no retry is authorized under C31.
+
+Changed-input successor bounds:
+
+- implement agent-browser Plan 0086's CLI exposure of the existing per-request
+  timeout contract and wire the last30 browser adapter from user-scoped config;
+- one implementation pass and one review/rework cycle across both repos;
+- validate the installed CLI before source work;
+- after validation, create fresh IDs and execute one serial interval each for
+  X, Facebook, LinkedIn topic, and LinkedIn profile with the existing C31 item,
+  wall, network, assessment, cleanup, and provenance bounds;
+- Reddit browser may receive one fresh browser-only interval only after the
+  common timeout repair is proven; preserve its normal user fallback order
+  outside that interval;
+- stop an individual case after one terminal attempt and classify any distinct
+  authentication or extraction result independently.
+
+Hard stops:
+
+- no reuse of C31 run, job, acquisition, or spec identities;
+- no credential addition/export, account mutation, push, independent-review
+  bypass, release, publication, or tag;
+- stop on failed install/runtime convergence, cleanup failure, service
+  integrity failure, or loss of exact access-method provenance.
+
+Authority classification:
+
+- `inherited_authority`; C31 completed its allowed attempts, and the common
+  per-job timeout is a newly isolated input covered by the operator's standing
+  direction to continue through configured services.
+
+Next action:
+
+- complete agent-browser Plan 0086, wire the last30 user-scoped timeout knob,
+  validate both repos, and execute the fresh serial source successors.
+
+### Checkpoint P0018-C33 | 2026-07-31
+
+Plan version:
+
+- 12
+
+State transition:
+
+- `per-job timeout installed -> inner target-creation timeout isolated`
+
+Progress classification:
+
+- `blocker_isolation`
+
+Evidence and consumed work:
+
+- service 0.2.17 is installed and ready with user-scoped
+  `LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS=90000`;
+- the Reddit browser-only and LinkedIn topic C32 successors each consumed one
+  attempt and remained rejected;
+- agent-browser job evidence records `timeoutMs=90000`, proving the CLI/config
+  repair reached the control plane, while each action still failed after about
+  15 seconds;
+- both failed actions launched the intended profile/browser and recorded the
+  intended site tab before cleanup;
+- the remaining X, Facebook, and LinkedIn profile C32 cases were not started,
+  avoiding repeated attempts against the same unresolved inner failure.
+
+Changed-input successor:
+
+- agent-browser Plan 0087 creates and attaches a blank target before using the
+  existing no-wait destination navigation and target-bound proof path;
+- after its focused installed gate passes, create fresh source identities for
+  Reddit browser, LinkedIn topic, X, Facebook, and LinkedIn profile, preserving
+  C32's one-attempt, item, wall, network, assessment, cleanup, and provenance
+  limits;
+- preserve Reddit's normal `keyless,agent_browser` user order outside its one
+  browser-only interval.
+
+Authority classification:
+
+- `inherited_authority`; this is a distinct inner target-acquisition defect,
+  and the operator's configured-services objective remains unchanged.
+
+Next action:
+
+- complete Plan 0087 and run only fresh, changed-input source successors.
+
+### Checkpoint P0018-C34 | 2026-07-31
+
+Plan version:
+
+- 13
+
+State transition:
+
+- `blank-target acquisition accepted -> source lane identity mismatch isolated`
+
+Progress classification:
+
+- `blocker_isolation`
+
+Evidence:
+
+- installed agent-browser hash
+  `fb4d62ade6670a4dcf646fc112dc5135d41286f80d7eb2e14400e1db260826ff`
+  is converged and passed the exact LinkedIn feed gate in 5.62 seconds with
+  blank-target creation, destination readiness, and operator-visible readiness;
+- the fresh LinkedIn topic source case then recorded `about:blank` followed by
+  the exact feed URL, proving Plan 0087 reached the live source path, but failed
+  during later remote-view finalization;
+- that source path launched session `default--last30days-facebook`, while the
+  passing gate used the durable `last30days-facebook` session;
+- no X, Facebook, LinkedIn profile, or Reddit post-Plan-0087 interval has run.
+
+Changed input and bounds:
+
+- explicitly bind X, Facebook, and LinkedIn profile/session selection to
+  `last30days-facebook` in the user-scoped config while retaining independent
+  source access orders;
+- restart service 0.2.17, create one fresh LinkedIn topic identity, and consume
+  one attempt under the existing C33 ceilings;
+- on acceptance or a distinct post-routing result, adjudicate remaining source
+  cases independently; do not reuse consumed identities.
+
+Authority classification:
+
+- `inherited_authority`; this changes only stable user-scoped routing policy
+  and preserves the configured-services objective, credentials, and accounts.
+
+Next action:
+
+- run the fresh LinkedIn topic routing successor, then classify the remaining
+  source packets from its exact terminal evidence.
+
+### Checkpoint P0018-C35 | 2026-07-31
+
+Plan version:
+
+- 14
+
+State transition:
+
+- `durable session proven -> hard-coded shared-display divergence isolated`
+
+Progress classification:
+
+- `blocker_isolation`
+
+Evidence and successor:
+
+- the C34 LinkedIn topic case used exact durable session
+  `last30days-facebook`, created a blank target, navigated to the feed, and
+  still failed during remote-view finalization;
+- the passing Plan 0087 gate used agent-browser's private-display default,
+  whereas Reddit, X, Facebook, and LinkedIn encode display policy inside their
+  adapters;
+- service 0.2.18 makes display isolation a shared user-scoped browser policy,
+  preserving each source's prior default when unset;
+- this workstation selects `private_virtual_display`; one fresh LinkedIn topic
+  attempt may adjudicate the changed route/display policy before other sources.
+
+Authority classification:
+
+- `inherited_authority`; the change moves a transport choice into the
+  user-scoped policy requested by the operator and does not mutate credentials
+  or accounts.
+
+Next action:
+
+- validate/install 0.2.18 and execute one fresh LinkedIn topic successor.
+
+### Checkpoint P0018-C36 | 2026-07-31
+
+Plan version:
+
+- 15
+
+State transition:
+
+- `private display applied -> redundant active-target activation isolated`
+
+Progress classification:
+
+- `blocker_isolation`
+
+Evidence and successor:
+
+- service 0.2.18 applied private-display policy and the fresh LinkedIn topic
+  target reached exact URL `https://www.linkedin.com/feed/` with title
+  `Feed | LinkedIn`;
+- remote-view still failed before final proof, and reconciliation recorded
+  target discovery degraded during rollback;
+- Plan 0088 removes only the redundant target activation when the exact target
+  is already active, while retaining real switch behavior and all proof gates;
+- no further source interval is authorized until its installed LinkedIn feed
+  gate passes; afterward use fresh identities under the existing ceilings.
+
+Authority classification:
+
+- `inherited_authority`; the defect is a distinct exact-target readback issue
+  within the already authorized browser transport repair.
+
+Next action:
+
+- complete Plan 0088 and rerun the no-collection LinkedIn feed gate.

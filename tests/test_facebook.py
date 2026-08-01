@@ -130,15 +130,16 @@ class FacebookCliAdapterTests(unittest.TestCase):
     def test_access_plan_receives_the_requested_remote_view_transport(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         plan = access_plan(shared_owner=("browser-1", "shared-social"))
+        status = {"service_state": {"sessions": {}, "browsers": {}, "tabs": {}}}
 
         with mock.patch.object(
-            client, "_invoke", return_value=plan
+            client, "_invoke", side_effect=[plan, status]
         ) as invoke, mock.patch.object(
             facebook.agent_browser_config, "record_access_plan"
         ):
             client.acquire_workspace(request(display_isolation="shared_display"))
 
-        command = invoke.call_args.args[0]
+        command = invoke.call_args_list[0].args[0]
         self.assertEqual("shared_display", command[command.index("--display-isolation") + 1])
         self.assertEqual("remote_headed", command[command.index("--browser-host") + 1])
         self.assertEqual("rdp_gateway", command[command.index("--view-stream-provider") + 1])
@@ -351,21 +352,23 @@ class FacebookCliAdapterTests(unittest.TestCase):
         }
         plan = access_plan(shared_owner=("browser-1", "last30days-facebook"))
         with mock.patch.object(
-            client, "_invoke", side_effect=[plan, plan]
+            client, "_invoke", side_effect=[plan, status, plan, status]
         ) as invoke, mock.patch.object(facebook.agent_browser_config, "record_access_plan"):
             first = client.acquire_workspace(request(session_name="default"))
             second = client.acquire_workspace(request(session_name="default"))
         self.assertEqual(first.browser_id, second.browser_id)
         self.assertEqual("last30days-facebook", first.session_name)
-        self.assertEqual("", first.target_id)
-        self.assertEqual(2, invoke.call_count)
+        self.assertEqual("t1", first.target_id)
+        self.assertEqual("https://operator.example/token", first.operator_url)
+        self.assertEqual(4, invoke.call_count)
 
-    def test_access_plan_route_hints_reuse_shared_browser_without_status_roundtrip(self):
+    def test_access_plan_route_hints_fall_back_when_status_has_no_live_owner(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         plan = access_plan(shared_owner=("browser-1", "shared-social"))
+        status = {"service_state": {"sessions": {}, "browsers": {}, "tabs": {}}}
 
         with mock.patch.object(
-            client, "_invoke", return_value=plan
+            client, "_invoke", side_effect=[plan, status]
         ) as invoke, mock.patch.object(
             facebook.agent_browser_config, "record_access_plan"
         ):
@@ -374,10 +377,10 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual("browser-1", workspace.browser_id)
         self.assertEqual("shared-social", workspace.session_name)
         self.assertEqual("not_required", workspace.operator_visible_state)
-        invoke.assert_called_once()
+        self.assertEqual(2, invoke.call_count)
 
     def test_wrong_profile_on_requested_session_uses_profile_scoped_lane(self):
-        client = facebook.CliAgentBrowserClient(timeout=5)
+        client = facebook.CliAgentBrowserClient(timeout=5, job_timeout_ms=120_000)
         status = {
             "service_state": {
                 "sessions": {
@@ -416,6 +419,8 @@ class FacebookCliAdapterTests(unittest.TestCase):
             "last30days-facebook--last30days-facebook",
             command[command.index("--session-name") + 1],
         )
+        self.assertEqual("120000", command[command.index("--job-timeout-ms") + 1])
+        self.assertEqual(125, invoke.call_args_list[2].kwargs["timeout"])
         self.assertEqual("last30days-facebook--last30days-facebook", workspace.session_name)
 
     def test_profile_scoped_lane_skips_retained_wrong_profile_placeholder(self):

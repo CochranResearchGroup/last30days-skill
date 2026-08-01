@@ -320,8 +320,11 @@ class AgentBrowserClient(Protocol):
 class CliAgentBrowserClient:
     """Typed adapter for the installed agent-browser JSON CLI."""
 
-    def __init__(self, *, timeout: int) -> None:
+    def __init__(self, *, timeout: int, job_timeout_ms: int | None = None) -> None:
         self.timeout = timeout
+        self.job_timeout_ms = job_timeout_ms or timeout * 1000
+        if self.job_timeout_ms <= 0:
+            raise ValueError("agent-browser job timeout must be positive")
         self.command_timings: list[dict[str, Any]] = []
         self._prepared_sites: set[tuple[str, str]] = set()
 
@@ -371,13 +374,6 @@ class CliAgentBrowserClient:
             access_plan,
             expected_profile_id=selected_profile,
         )
-        if shared_route:
-            return BrowserWorkspace(
-                profile_id=selected_profile,
-                browser_id=shared_route["browser_id"],
-                session_name=shared_route["session_name"],
-                operator_visible_state="not_required",
-            )
 
         status = self._invoke(["service", "status"], timeout=min(request.timeout, 30))
         state = status.get("service_state") if isinstance(status.get("service_state"), dict) else status
@@ -398,8 +394,16 @@ class CliAgentBrowserClient:
                 session_name=shared_owner["session_name"],
                 target_id=shared_owner["target_id"],
                 route_id=str(stream.get("id") or ""),
-                operator_url=str(stream.get("externalUrl") or stream.get("url") or ""),
+                operator_url=str(stream.get("url") or stream.get("externalUrl") or ""),
                 operator_visible_state="ready" if stream else "not_required",
+            )
+
+        if shared_route:
+            return BrowserWorkspace(
+                profile_id=selected_profile,
+                browser_id=shared_route["browser_id"],
+                session_name=shared_route["session_name"],
+                operator_visible_state="not_required",
             )
 
         session = sessions.get(request.session_name) if isinstance(sessions, dict) else None
@@ -434,7 +438,7 @@ class CliAgentBrowserClient:
                 session_name=request.session_name,
                 target_id=target_id,
                 route_id=str(stream.get("id") or ""),
-                operator_url=str(stream.get("externalUrl") or stream.get("url") or ""),
+                operator_url=str(stream.get("url") or stream.get("externalUrl") or ""),
                 operator_visible_state="ready",
             )
 
@@ -460,6 +464,7 @@ class CliAgentBrowserClient:
                 "--service-name", request.service_name,
                 "--agent-name", request.agent_name,
                 "--task-name", request.task_name,
+                "--job-timeout-ms", str(self.job_timeout_ms),
             ]
             if browser:
                 cmd.extend(["--browser-id", browser_id])
@@ -482,7 +487,10 @@ class CliAgentBrowserClient:
             ]
 
         try:
-            opened = self._invoke(cmd, timeout=request.timeout)
+            opened = self._invoke(
+                cmd,
+                timeout=max(request.timeout, (self.job_timeout_ms + 999) // 1000 + 5),
+            )
         except FacebookScraperFailure as exc:
             newly_selected_lane = not isinstance(
                 sessions.get(launch_session_name) if isinstance(sessions, dict) else None,
@@ -504,7 +512,10 @@ class CliAgentBrowserClient:
                     timeout=min(request.timeout, 30),
                 )
                 time.sleep(0.5)
-                opened = self._invoke(cmd, timeout=request.timeout)
+                opened = self._invoke(
+                    cmd,
+                    timeout=max(request.timeout, (self.job_timeout_ms + 999) // 1000 + 5),
+                )
             elif exc.error_type == "agent_browser_error" and re.search(
                 r"route_|display.*(?:stale|unavailable|mismatch)|no .*x11 socket", str(exc), re.I
             ):
@@ -1102,10 +1113,24 @@ def search_facebook(
         browser_id_hint=str(config.get("LAST30DAYS_FACEBOOK_BROWSER_ID") or "").strip(),
         route_id_hint=str(config.get("LAST30DAYS_FACEBOOK_ROUTE_ID") or "").strip(),
         route_pool_entry_id_hint=str(config.get("LAST30DAYS_FACEBOOK_ROUTE_POOL_ENTRY_ID") or "").strip(),
-        display_isolation="shared_display",
+        display_isolation=str(
+            config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION")
+            or "shared_display"
+        ),
     )
     scraper = FacebookScraper(
-        CliAgentBrowserClient(timeout=timeout),
+        CliAgentBrowserClient(
+            timeout=timeout,
+            **(
+                {
+                    "job_timeout_ms": int(
+                        config["LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS"]
+                    )
+                }
+                if config.get("LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS")
+                else {}
+            ),
+        ),
         request,
         limit=int(config.get("LAST30DAYS_FACEBOOK_MAX_RESULTS") or settings["results"]),
         scrolls=int(config.get("LAST30DAYS_FACEBOOK_SCROLLS") or settings["scrolls"]),
