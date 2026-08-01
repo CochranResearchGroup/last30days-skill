@@ -21,6 +21,18 @@ CHECKPOINT_PATTERN = re.compile(
     r"^### Checkpoint ([A-Za-z0-9-]+) \| (\d{4}-\d{2}-\d{2})$",
     re.MULTILINE,
 )
+PLAN_VERSION_PATTERN = re.compile(
+    r"^Plan version:[ \t]*(\d+)[ \t]*$",
+    re.MULTILINE,
+)
+CHECKPOINT_VERSION_PATTERN = re.compile(
+    r"^Plan version:[ \t]*(?:([0-9]+)[ \t]*$|"
+    r"\n(?:[ \t]*\n)?[ \t]*-[ \t]*([0-9]+)[ \t]*$)",
+    re.MULTILINE,
+)
+CURRENT_AUTHORITY_PATTERN = re.compile(
+    r"Checkpoint ([A-Za-z0-9-]+) is the current authority",
+)
 
 
 def _body_until_next(text: str, start: int, pattern: re.Pattern[str]) -> str:
@@ -125,6 +137,31 @@ def _audit_active_plan(
                 f"latest checkpoint {latest.group(1)} has invalid "
                 f"Authority classification {authority_match.group(1)!r}"
             )
+        declared_version = PLAN_VERSION_PATTERN.search(text)
+        checkpoint_version = CHECKPOINT_VERSION_PATTERN.search(latest_body)
+        if checkpoint_version is None:
+            issues.append(
+                f"latest checkpoint {latest.group(1)} has no parseable plan version"
+            )
+        elif declared_version is not None:
+            latest_version = (
+                checkpoint_version.group(1) or checkpoint_version.group(2)
+            )
+            if declared_version.group(1) != latest_version:
+                issues.append(
+                    f"active plan {plan_path} declares plan version "
+                    f"{declared_version.group(1)}, but latest checkpoint "
+                    f"{latest.group(1)} declares {latest_version}"
+                )
+        authority_declarations = list(CURRENT_AUTHORITY_PATTERN.finditer(text))
+        if authority_declarations:
+            declared_checkpoint = authority_declarations[-1].group(1)
+            if declared_checkpoint != latest.group(1):
+                issues.append(
+                    f"active plan {plan_path} declares checkpoint "
+                    f"{declared_checkpoint} as current, but latest checkpoint is "
+                    f"{latest.group(1)}"
+                )
     is_campaign = "## Authority Correction" in text and "four explicit joins" in text
     if not is_campaign:
         if not ("## Scope" in text or "## Objective" in text):

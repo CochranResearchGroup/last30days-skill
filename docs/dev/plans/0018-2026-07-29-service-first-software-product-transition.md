@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 10
+Plan version: 17
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -37,14 +37,15 @@ software with:
 ## Current State
 
 - The independent managed service is the installed runtime authority at
-  version 0.2.16/schema 12; `current` and `previous` select verified immutable
-  0.2.16 and 0.2.15 releases through the stable launcher.
+  version 0.2.20/schema 12 with 56 documents, 56 embeddings, and active index
+  `index-c237b6d6591afe53629fe99a`.
 - The service publishes its exact contract, API, schema, runtime-manifest,
   source-readiness, and active-index facts. The MCP adapter performs the
   fail-closed compatibility handshake before ordinary operations.
-- User-scoped configuration now owns the enabled five-source catalog and each
-  source's ordered access chain. The runtime readiness catalog and isolated
-  acquisition worker consume the same strict policy.
+- User-scoped configuration owns the five-source catalog, ordered access
+  chains, browser timeout, display isolation, profile, and session policy. All
+  32 retained collection specifications are disabled at the version-17
+  planning baseline.
 - A timer-owned public Reddit interval on 0.2.14 published one durable version
   and advanced the active index with assessment disabled and no connected
   acquisition agent. The specification is paused and remained quiescent.
@@ -66,10 +67,16 @@ software with:
   gate: 7/7 accepted posts were manually relevant, multiword partials were
   rejected, all four calls stayed under 55 seconds, and browser cleanup passed.
   This proves the adapter candidate, not timer-owned durable publication.
-- Agent-browser Plan 0085 repaired route attribution, exact handle-bound
-  readback, and profile routing. Its one live gate passed at commit `662050d7`
-  with artifact
-  `/tmp/agent-browser-remote-view-open-live-2026-07-31T23-12-57-008Z`.
+- The configured browser-method campaign is complete at C37. X topic and
+  LinkedIn topic/profile published through exact `agent_browser` provenance;
+  YouTube `yt_dlp` and Reddit keyless are accepted production methods;
+  Facebook and Reddit browser are transport-ready but quality-rejected.
+- Agent-browser commit `11a276fb` is installed and executable-converged. Its
+  duplicate-profile-pressure warning is not readiness-impacting and does not
+  authorize cleanup of unrelated default or LitScout sessions.
+- No recurring production collection is authorized. Version 17 defines a
+  plan-only canary packet and stops at review before any collection
+  specification is created or enabled.
 
 ## Standing Authority And Human Gates
 
@@ -90,11 +97,12 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C31 is the current authority. Service architecture and timed
-ingestion are accepted. The six configured source/method pairs have independent
-acceptance packets; method failure degrades only that method and does not block
-the service foundation or unrelated method packets. Independent final review,
-tagging, publication, and release remain closed.
+Checkpoint P0018-C38 is the current authority. Service architecture, timer
+ownership, and durable publication/indexing are accepted foundations. The
+version-17 timed-polling packet is `awaiting_review`; it grants no authority to
+create or enable collection specifications, run source acquisitions, mutate
+user policy, or touch browser/profile/session state. Independent final review,
+push, tagging, publication, and release remain closed.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -3333,3 +3341,266 @@ Next action:
   LinkedIn, YouTube, and Reddit keyless lanes as the initial production set;
   retain Facebook and Reddit browser as observed fallback/diagnostic lanes
   until separate quality improvements pass fresh bounded cases.
+
+## Version 17 | Timed Production Polling Canary Packet
+
+### Stable outcome
+
+Prove that the installed service can run a user-configured, recurring,
+timer-owned production canary across the accepted source/method surfaces while
+preserving bounded cost, serialized browser ownership, exact provenance,
+source-local failure containment, durable no-yield evidence, and reversible
+schedule state.
+
+This version is a planning packet only. Its current terminal state is
+`awaiting_review`; it does not authorize specification creation, manual source
+runs, schedule enablement, or any other live mutation.
+
+### Scope and selector boundary
+
+The canary is limited to five specifications and the selectors already covered
+by accepted evidence:
+
+| Lane | Selector/surface | Required production method | Proposed interval | Freshness objective |
+| --- | --- | --- | ---: | ---: |
+| Reddit topic | `OpenClaw` | `keyless` | 12 hours | terminal receipt within 14 hours |
+| YouTube topic | `OpenAI latest` | `yt_dlp` | 12 hours | terminal receipt within 14 hours |
+| X topic | `OpenAI` | `agent_browser` | 24 hours | terminal receipt within 26 hours |
+| LinkedIn topic | `OpenAI` | `agent_browser` | 24 hours | terminal receipt within 26 hours |
+| LinkedIn profile | `https://www.linkedin.com/company/openai/` | `agent_browser` | 24 hours | terminal receipt within 26 hours |
+
+Acceptance of these selectors does not approve arbitrary topics, profiles, or
+source-wide content quality. Selector expansion requires a separate bounded
+packet and authority classification.
+
+Facebook and Reddit `agent_browser` are excluded from this packet. Reddit may
+retain the user order `keyless,agent_browser`, but a production canary result is
+publishable only when exact provenance reports `selected_access_method=keyless`.
+Selection of `reddit_agent_browser` is a diagnostic terminal result and must
+fail closed without publication or weakening the quality gate. If the current
+service cannot enforce that per-spec method constraint, the execution packet
+must implement and deterministically test the constraint before any live run.
+
+### Per-attempt and cumulative ceilings
+
+Each proposed specification uses:
+
+- `assessment_enabled=false` and `budget_cents=0`;
+- `item_limit=3`, `network_request_limit=50`, and
+  `wall_timeout_seconds=120`;
+- a 24-hour lookback after the initial bounded manual proof;
+- existing redaction, retention, profile, and access-order policy only.
+
+The recurring canary lasts 48 hours. Its maximum scheduled attempts are 14:
+four each for Reddit and YouTube and two each for X, LinkedIn topic, and
+LinkedIn profile. The five pre-enable manual proofs make the packet-wide
+maximum 19 acquisition attempts. Manual and scheduled work share cumulative
+ceilings of 57 accepted items, 950 network requests, 2,280 wall-clock seconds,
+zero assessment/model spend, and one active acquisition at a time. The manual
+proofs may consume at most 15 items, 250 requests, and 600 wall-clock seconds;
+the scheduled canary may consume the remaining 42 items, 700 requests, and
+1,680 seconds. A skipped or overlap-rejected tick consumes its
+scheduled-attempt identity and is not replayed automatically.
+
+### Schedule, lease, and attempt policy
+
+- Critical-path owner and timer controller: the primary agent operating the
+  installed last30days service; the service remains scheduling authority.
+- Active-agent concurrency: one. No subagent may operate the live service,
+  user configuration, shared social profile, browser session, or route pool.
+- Browser-backed schedules are phase-staggered by at least 20 minutes. Enable
+  order, if later authorized, is Reddit, YouTube, X, LinkedIn topic, then
+  LinkedIn profile; the last three must never overlap on
+  profile/session `last30days-facebook`.
+- Before recurring enablement, each newly created disabled specification gets
+  at most one manual acquisition attempt. Manual proof identities are distinct
+  from historical campaign IDs and from scheduled-attempt identities.
+- A lease conflict, already-running specification, or occupied shared profile
+  produces a durable skipped/blocked receipt. It must not queue an unbounded
+  retry, launch another browser, or steal an unrelated lease.
+- Timer retries are disabled for the canary. No failed or skipped attempt is
+  retried under the same identity. A changed-input successor requires a durable
+  checkpoint and must remain inside the cumulative ceilings.
+
+### Outcome and failure semantics
+
+Service readiness, acquisition transport, content quality, durable
+publication, and index projection remain separate judgments:
+
+- `ready=true` proves only acquisition readiness;
+- a successful zero-item interval is acceptable only with exact method
+  provenance, bounded request/wall evidence, a durable no-yield receipt, and no
+  false index-advance claim;
+- a non-empty interval is accepted only when all stored items pass the existing
+  quality gate, the collection receipt binds observed/stored counts and method
+  provenance, and the active index either advances or records a truthful
+  no-change/deduplication reason;
+- one source's negative yield or quality rejection does not block unrelated
+  source lanes;
+- two consecutive failed, quality-rejected, provenance-missing, or
+  freshness-missed attempts pause only that specification and terminate its
+  canary lane;
+- two consecutive `accepted_no_yield` results also pause only that lane for
+  diagnostic review; they remain truthful no-yield outcomes rather than being
+  relabeled as transport or quality failures;
+- service integrity failure, database inconsistency, runtime convergence
+  failure, ambiguous profile ownership, or inability to disable a schedule
+  terminates the entire canary and requires rollback.
+
+No selector widening, access-order mutation, quality-threshold weakening,
+credential work, cookie export, account mutation, model assessment, or
+Facebook/Reddit-browser repair is allowed to manufacture yield.
+
+### Evidence contract
+
+Every manual or scheduled attempt must preserve a durable collection receipt
+binding:
+
+- collection specification ID/version, scheduled/manual attempt identity,
+  run ID, job ID, source, surface, and selector digest;
+- attempted and selected access method plus concrete adapter variant;
+- scheduled, started, terminal, and next-due timestamps;
+- item, request, wall-time, and cost usage against ceilings;
+- observed, accepted, rejected, stored, deduplicated, and indexed counts;
+- pre/post document count, embedding count, and active index version;
+- terminal classification: published, accepted_no_yield, quality_rejected,
+  method_rejected, skipped_overlap, blocked_lease, failed, or rolled_back.
+
+The 48-hour closeout receipt must reconcile all 14 scheduled identities,
+including not-run identities after a lane pauses, without interpreting missing
+evidence as success or failure.
+
+### Rollout transitions and gates
+
+| State | Authorized action | Exit condition |
+| --- | --- | --- |
+| `awaiting_review` | documentation, deterministic tests, read-only live readbacks | one independent review returns no critical finding |
+| `awaiting_live_mutation_gate` | no live mutation | explicit operator approval naming disabled-spec creation and five manual proofs |
+| `manual_canary` | create five disabled specs and run at most one manual attempt each | all five terminal receipts reconcile; failures stop only their lane unless a global hard stop fires |
+| `awaiting_enable_gate` | no schedule enablement | independent receipt review plus explicit operator approval to enable recurring canary schedules |
+| `recurring_canary` | phase-staggered enablement within the 48-hour/14-attempt ceiling | all identities terminal, a lane stop fires, or global rollback fires |
+| `awaiting_closeout_review` | disable all five specs and reconcile receipt/index state | independent final judgment records accepted, rejected, or blocked outcome |
+
+The current packet stops at `awaiting_review`. Neither standing Plan 0018
+authority nor the user's authorization to draft this version satisfies either
+live mutation gate.
+
+### Rollback and hard stops
+
+Rollback means disable all five canary specifications, wait for or reconcile
+any already-running bounded job, restore the exact pre-canary user-policy
+readback, verify zero enabled specifications, and preserve all receipts and
+published evidence. Rollback never deletes collection, run, job, corpus, or
+index history.
+
+Stop before live work on any service not ready, runtime not converged,
+non-private config mode, pre-existing enabled specification, ambiguous profile
+ownership, missing exact provenance, inability to enforce the Reddit-keyless
+publication constraint, unavailable rollback, dirty/unowned overlapping
+worktree, or changed source/data/credential scope.
+
+### Work units and bounds
+
+1. Review V17 documentation and deterministic audit enforcement. No live
+   mutation.
+2. After the first explicit human gate, implement any required per-spec method
+   constraint, create five disabled specs, and execute five serial manual
+   proofs.
+3. Review the manual receipt and stop at the enable gate.
+4. After the second explicit human gate, enable the phase-staggered 48-hour
+   canary, monitor only through service-owned receipts, then disable/reconcile.
+5. Run one independent final review and record the Plan 0018 disposition.
+
+Bounds: one implementation attempt and one review/rework cycle per work unit;
+one successor packet after a changed-input failure, provided it consumes the
+same 19-attempt and resource ceilings; one active acquisition; one durable
+checkpoint after each work unit and before either human gate; maximum one
+consecutive hardening-only checkpoint. Exhausting a packet-wide ceiling
+requires a new human gate. Review failure splits, reframes, or blocks the unit
+rather than reopening an unbounded loop.
+
+### Version-17 acceptance and terminal condition
+
+This planning work unit is accepted when Plan 0018, Roadmap P07, the latest
+Runbook turn, and the deterministic authority audit agree on version 17/C38;
+the packet contains the selector boundary, ceilings, attempt graph, evidence
+contract, rollback, and two explicit human gates; current readbacks prove zero
+enabled collection specifications; and an independent reviewer reports no
+critical finding.
+
+The unit then stops in `awaiting_live_mutation_gate`. Production polling is not
+accepted, enabled, or complete merely because this plan is review-ready.
+
+### Checkpoint P0018-C38 | 2026-08-01
+
+Plan version:
+
+- 17
+
+State transition:
+
+- `ready_for_bounded_replan -> awaiting_live_mutation_gate`
+
+Progress classification:
+
+- `outcome_progress`
+
+Authority classification:
+
+- `human_gate`
+
+Owned changes:
+
+- reconciled the Plan 0018 header, Current State, and current-authority
+  declaration with installed service 0.2.20 and checkpoint C38;
+- defined the plan-only version-17 timed-polling canary, two live-state gates,
+  selector boundary, exact-method semantics, packet-wide ceilings, serialized
+  schedule/lease policy, outcome classifications, evidence contract, rollback,
+  and bounded state transitions;
+- strengthened `audit_plan_authority.py` and its focused tests so declared plan
+  version and explicit current-checkpoint authority cannot drift from the
+  latest checkpoint;
+- reconciled Roadmap P07 and the timed-polling handoff's historical Git/audit
+  wording; appended Runbook Turn 103 without rewriting prior history.
+
+Validation evidence:
+
+- primary-agent TDD: the two new audit cases failed before implementation and
+  passed afterward; seven focused cases passed before authority closeout;
+- the strengthened live-repository audit failed closed on the missing C38 with
+  exactly the expected version/current-authority findings;
+- independent read-only reviewer `/root/v17_independent_review` returned
+  `fail` with two bounded findings: missing C38/Runbook wiring and cumulative
+  ceilings that did not include five manual proofs;
+- the one remediation pass adds this checkpoint/Runbook turn and caps all 19
+  manual-plus-scheduled attempts at 57 items, 950 requests, 2,280 wall-clock
+  seconds, zero assessment/model spend, and concurrency one;
+- final focused tests, authority audit, diff check, and zero-enabled-spec live
+  readback are required immediately after this checkpoint is written.
+
+Subagent status and reconciliation:
+
+- `spawned`; `/root/v17_independent_review` ran one fresh-context, read-only
+  review with no edits or live mutations and returned terminal verdict `fail`;
+  both findings were accepted and addressed in the single bounded remediation
+  pass. No second evaluator cycle is authorized.
+
+Remaining acceptance criteria:
+
+- explicit operator approval is required before creating five disabled
+  specifications or running any manual source proof;
+- after manual receipts reconcile, a second explicit operator approval is
+  required before enabling the recurring 48-hour canary;
+- production acceptance still requires the executed canary, closeout receipt,
+  rollback proof, and one independently reviewed final disposition.
+
+Graphiti write status:
+
+- provider readiness passed, but the one bounded source-backed memory job
+  `89c558c6-4456-4fd5-bee2-89ab28717120` timed out after 60 seconds during
+  node resolution; no episode UUID was assigned and no retry was made.
+
+Next action:
+
+- stop at `awaiting_live_mutation_gate`. Do not create specifications, run
+  acquisitions, enable schedules, or mutate service/browser/user-policy state.

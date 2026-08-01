@@ -62,11 +62,17 @@ Installed agent-browser truth at handoff:
 
 ## Git And Installed State
 
-Last30days `main` is locally clean and 36 commits ahead of its upstream:
+Before the handoff commit, last30days `main` was locally clean and 36 commits
+ahead of its upstream:
 
 - `82944d9 docs(plan): close browser service campaign`
 - `44a8304 fix(service): label reddit access variants`
 - `eb24cdf fix(service): configure durable browser handoff`
+
+The handoff itself landed as
+`abaee85 docs(handoff): prepare timed polling replan`, making the branch 37
+commits ahead before the version-17 planning slice. Use the fresh readback
+commands below for current Git truth.
 
 Agent-browser `main` is 2 commits ahead:
 
@@ -89,7 +95,9 @@ Primary-agent evidence:
   lint findings unrelated to the handoff slice;
 - cold LinkedIn route-bound handoff passed exact target, visible X11 window,
   and operator route in 5.5 seconds;
-- Plan authority audit passed at latest Runbook Turn 101.
+- the pre-handoff Plan authority audit passed through Runbook Turn 101; the
+  handoff commit appended Turn 102, so the fresh audit below is authoritative
+  for the next session.
 
 No subagents were used because the live cases shared one user config, browser
 profile/session, and route pool.

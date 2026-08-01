@@ -801,20 +801,21 @@ Active Plan:
   is the open transition authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
   rollback are accepted foundations on installed service 0.2.20/schema 12.
-  Plan version 16 closes the configured-method campaign after agent-browser
-  commit `11a276fb`: X topic and both LinkedIn surfaces published; YouTube
-  `yt_dlp` and Reddit keyless remain accepted production methods; Facebook and
-  Reddit browser are transport-ready but quality-rejected. Exact provenance is
-  durable, all campaign specs are disabled, and user access orders are
-  restored.
+  Plan version 17 preserves the closed configured-method campaign and defines
+  a plan-only, five-specification timed-polling canary for accepted X,
+  LinkedIn, YouTube, and Reddit-keyless selectors. The packet is
+  `awaiting_review`; all retained specifications remain disabled, Facebook and
+  Reddit browser remain excluded, and disabled-spec creation plus recurring
+  enablement are separate explicit human gates.
 
 Next Bounded Action:
 
-- Reframe the next Plan 0018 packet around timed production polling for the
-  accepted source set, with explicit schedules, freshness objectives, budget
-  ceilings, negative-yield behavior, and rollback. Keep Facebook and Reddit
-  browser quality work separate. Push, independent final review, tag,
-  publication, and release remain separately gated.
+- Review Plan 0018 version 17 against its selector boundary, 48-hour/14-attempt
+  ceilings, source-local circuit breakers, provenance/no-yield receipt,
+  serialized browser leases, rollback, and two live-state gates. Stop in
+  `awaiting_live_mutation_gate`; no collection specification creation,
+  acquisition, recurring enablement, push, tag, publication, or release is
+  authorized by the planning packet.
 
 ## Goal-Compatible Plan Conversion
 

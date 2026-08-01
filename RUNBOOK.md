@@ -6477,3 +6477,72 @@ Next Bounded Action:
 
 - start from the handoff, create and review Plan 0018 version 17 for timed
   polling, and stop before enabling recurring production collections.
+
+## Turn 103 | 2026-08-01
+
+Focus: reconcile Plan 0018 authority drift and open a review-bounded
+version-17 timed-production-polling canary packet without live mutation.
+
+Authority Consulted:
+
+- `AGENTS.md`; Roadmap P07; Runbook Turn 102; Plan 0018 C37; receipt 0026;
+  installed service, collection, user-policy, and agent-browser readbacks; and
+  planning, Git, validation, goal, parallel, documentation, closeout, and
+  roadmap/runbook policies.
+
+Decisions And Changes:
+
+- advanced Plan 0018 from version 16/C37 to version 17/C38 and reconciled its
+  stale header, installed-service Current State, and current-authority text;
+- defined five selector-bound production candidates, exact required methods,
+  proposed 12/24-hour intervals, freshness objectives, two explicit live-state
+  gates, serialized browser scheduling, source-local circuit breakers,
+  durable evidence, rollback, and a 48-hour canary;
+- bounded five manual plus 14 scheduled attempts at 57 items, 950 requests,
+  2,280 wall-clock seconds, zero assessment/model spend, and concurrency one;
+- kept Facebook and Reddit browser outside the packet and made a Reddit browser
+  fallback a non-publishable diagnostic result;
+- strengthened the authority audit to fail on plan-header/latest-checkpoint
+  version mismatch or a stale explicit current-authority declaration;
+- corrected the handoff's Git/audit wording as historical rather than current
+  truth and updated Roadmap P07 to the version-17 review state.
+
+Validation Evidence:
+
+- primary-agent TDD observed the two new audit cases fail before implementation
+  and pass after it; seven focused non-repository cases then passed;
+- the strengthened live audit rejected the interim tree with exactly two
+  expected findings: version 17 versus latest C37/version 16, and declared C38
+  versus latest C37;
+- independent reviewer `/root/v17_independent_review` returned `fail` on the
+  intentionally incomplete checkpoint plus ambiguous manual-attempt ceilings;
+  one bounded remediation added C38/Turn 103 and made the 19-attempt cumulative
+  ceilings explicit;
+- final focused tests, authority audit, `git diff --check`, and live proof of
+  zero enabled specifications remain the closeout commands for this turn.
+
+State Movement:
+
+- Plan 0018 `version 16/C37 -> version 17/C38`;
+- timed-polling planning `ready_for_bounded_replan -> awaiting_live_mutation_gate`;
+- authority audit `allowed_header_drift -> fail_closed_consistency_check`;
+- recurring production scheduling remains `not_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `spawned`; `/root/v17_independent_review` performed one read-only independent
+  review, returned terminal `fail`, and supplied two accepted findings. The
+  primary agent applied one remediation pass; no second review loop was opened.
+
+Graphiti Write Status:
+
+- provider readiness passed, but the one bounded Plan 0018 version-17 memory
+  job `89c558c6-4456-4fd5-bee2-89ab28717120` timed out after 60 seconds during
+  node resolution; no episode UUID was assigned and no retry was made.
+
+Next Bounded Action:
+
+- complete deterministic closeout and stop at the explicit human gate. The
+  next live packet may create five disabled specs and run five serial manual
+  proofs only after operator approval; recurring enablement remains behind a
+  second later gate.

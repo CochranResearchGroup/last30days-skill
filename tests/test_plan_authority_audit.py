@@ -269,3 +269,39 @@ def test_latest_checkpoint_rejects_unknown_authority_classification(
 
     assert report["status"] == "failed"
     assert any("invalid Authority classification" in issue for issue in report["issues"])
+
+
+def test_declared_plan_version_must_match_latest_checkpoint(tmp_path: Path) -> None:
+    auditor = _load_auditor()
+    _write_minimal_authority(tmp_path)
+    plan = next((tmp_path / "docs" / "dev" / "plans").glob("0011-*.md"))
+    text = plan.read_text(encoding="utf-8")
+    text = text.replace("Plan version: 1\n", "Plan version: 7\n", 1)
+    plan.write_text(text, encoding="utf-8")
+
+    report = auditor.audit_repository(tmp_path)
+
+    assert report["status"] == "failed"
+    assert any("declares plan version 7" in issue for issue in report["issues"])
+    assert any("latest checkpoint P0011-C01 declares 1" in issue for issue in report["issues"])
+
+
+def test_current_authority_declaration_must_name_latest_checkpoint(
+    tmp_path: Path,
+) -> None:
+    auditor = _load_auditor()
+    _write_minimal_authority(tmp_path)
+    plan = next((tmp_path / "docs" / "dev" / "plans").glob("0011-*.md"))
+    text = plan.read_text(encoding="utf-8")
+    text = text.replace(
+        "Packet 6 is active.\n",
+        "Checkpoint P0011-C00 is the current authority.\n",
+        1,
+    )
+    plan.write_text(text, encoding="utf-8")
+
+    report = auditor.audit_repository(tmp_path)
+
+    assert report["status"] == "failed"
+    assert any("declares checkpoint P0011-C00 as current" in issue for issue in report["issues"])
+    assert any("latest checkpoint is P0011-C01" in issue for issue in report["issues"])
