@@ -74,6 +74,11 @@ _ACCESS_METHOD_BY_ADAPTER = {
     "linkedin_profile_agent_browser": "agent_browser",
     "youtube_ytdlp": "yt_dlp",
 }
+_REDDIT_ADAPTER_VARIANT_BY_METHOD = {
+    "keyless": "reddit_keyless",
+    "agent_browser": "reddit_agent_browser",
+    "scrapecreators": "reddit_scrapecreators",
+}
 
 
 def _with_access_method_provenance(
@@ -88,6 +93,25 @@ def _with_access_method_provenance(
     diagnostics["selected_access_method"] = selected
     result["diagnostics"] = diagnostics
     return result
+
+
+def _result_adapter_variant(
+    adapter: str,
+    diagnostics: Mapping[str, Any],
+) -> str:
+    if adapter != "reddit_api":
+        return adapter
+    selected = diagnostics.get("selected_access_method")
+    if isinstance(selected, str) and selected in _REDDIT_ADAPTER_VARIANT_BY_METHOD:
+        return _REDDIT_ADAPTER_VARIANT_BY_METHOD[selected]
+    attempted = diagnostics.get("attempted_access_methods")
+    if isinstance(attempted, list):
+        methods = [method for method in attempted if isinstance(method, str)]
+        if len(methods) == 1 and methods[0] in _REDDIT_ADAPTER_VARIANT_BY_METHOD:
+            return _REDDIT_ADAPTER_VARIANT_BY_METHOD[methods[0]]
+        if methods:
+            return "reddit_access_chain"
+    return adapter
 
 
 def _default_config_root(environ: Mapping[str, str]) -> Path:
@@ -561,7 +585,10 @@ def execute_work(
         diagnostics.setdefault(
             "selected_access_method", access_method if raw_items else None
         )
-    diagnostics["adapter_variant"] = request.adapter
+    diagnostics["adapter_variant"] = _result_adapter_variant(
+        request.adapter,
+        diagnostics,
+    )
     cost_cents = raw.get("_cost_cents", 0)
     if (
         isinstance(cost_cents, bool)

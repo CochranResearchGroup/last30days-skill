@@ -143,6 +143,30 @@ def test_worker_normalizes_publishable_items_into_the_versioned_result():
     assert result.diagnostics["adapter_variant"] == "x_agent_browser"
 
 
+def test_reddit_adapter_variant_follows_exact_access_method_provenance():
+    assert service_acquisition_worker._result_adapter_variant(
+        "reddit_api",
+        {
+            "attempted_access_methods": ["agent_browser"],
+            "selected_access_method": None,
+        },
+    ) == "reddit_agent_browser"
+    assert service_acquisition_worker._result_adapter_variant(
+        "reddit_api",
+        {
+            "attempted_access_methods": ["keyless", "agent_browser"],
+            "selected_access_method": None,
+        },
+    ) == "reddit_access_chain"
+    assert service_acquisition_worker._result_adapter_variant(
+        "reddit_api",
+        {
+            "attempted_access_methods": ["keyless", "agent_browser"],
+            "selected_access_method": "agent_browser",
+        },
+    ) == "reddit_agent_browser"
+
+
 def test_explicit_no_results_is_success_for_negative_caching():
     result = execute_work(
         _request(),

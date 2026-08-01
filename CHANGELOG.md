@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Reddit adapter provenance.** Reddit acquisition diagnostics now derive the
+  concrete `reddit_keyless`, `reddit_agent_browser`, or
+  `reddit_scrapecreators` variant from the recorded access-method chain, while
+  preserving `reddit_access_chain` when no single method was selected.
 - **Shared-browser operator routing.** Facebook shared-profile reuse now
   resolves the live retained browser and its service-local operator route
   before returning the workspace. Logged-out sessions therefore distinguish
