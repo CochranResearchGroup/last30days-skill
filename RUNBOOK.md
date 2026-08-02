@@ -7575,3 +7575,69 @@ Next Bounded Action:
 
 - commit and push the handoff slice, verify `HEAD == origin/main`, then stop at
   the explicit 25-to-28 remaining-proof human gate.
+
+## Turn 121 | 2026-08-02
+
+Focus: derive the review-first Version 23 successor for the three remaining
+evidence-completion proofs without crossing the source-attempt human gate.
+
+Authority Consulted:
+
+- Plan 0018 V22/C54; Roadmap P07; Runbook through Turn 120; receipts 0031 and
+  0032; the fresh-agent handoff; current Git, installed-service, systemd,
+  SQLite/index, configuration, and target-spec readbacks; and planning,
+  documentation, validation, goal, delegation, Git, roadmap/runbook, Graphiti,
+  and closeout policy.
+
+Decisions And Changes:
+
+- corrected Plan 0018's stale top-level pre-repair runtime summary to the
+  reviewed 0.2.26/59-of-59 C54 state;
+- opened Version 23/C55 `awaiting_remaining_evidence_plan_review` as a docs-only
+  successor for exactly one X topic, one LinkedIn topic, and one LinkedIn
+  profile proof through the existing disabled specs and exact
+  `agent_browser`/`last30days-facebook` boundary;
+- proposed the explicit cumulative attempt-ceiling increase from 25 to 28 while
+  retaining 67 items, 1,157 requests, 2,280 seconds, zero cost/model use, and
+  concurrency one; no live authority is claimed before review and operator
+  approval;
+- preserved serial execution, one attempt per identity, no retry/replay,
+  immutable receipts, global integrity stops, fresh final review, and a
+  separate later recurring-enablement human gate.
+
+Validation Evidence:
+
+- startup Git fetch proved `HEAD == origin/main == c6ee0be`; the worktree began
+  clean and the deterministic authority audit passed with one active plan and
+  zero issues;
+- service 0.2.26/schema 12 is ready and systemd active/running on manifest
+  `21564f14a2c87f3d2ee27013470bdc3642e9d70997facebc726b75c92982c1fb`;
+  documents and stable/current-version embeddings are 59/59, and active index
+  `index-28418bd968076bba6653223f` has 59 stable and 59 version rows;
+- SQLite quick check is `ok`, foreign-key check is empty, config is 0600,
+  acquisition/job/run counts remain 102/87/50, and 37 specs/zero enabled pass;
+- all three target specs are disabled, retain their exact existing selectors,
+  profile, and daily schedule, and have no run for the proposed
+  `2026-08-01T00:00:00Z` through `2026-08-02T00:00:00Z` intervals.
+
+State Movement:
+
+- Plan 0018 `V22/C54 -> V23/C55`;
+- `zero_source_index_sequencing_repair_complete -> awaiting_remaining_evidence_plan_review`;
+- source authority remains closed at the consumed 25-attempt ceiling.
+
+Subagent Status And Reconciliation:
+
+- `pending`; one fresh-context read-only reviewer is reserved for the C55 plan.
+  The primary retains all writes and every live/browser operation.
+
+Graphiti Write Status:
+
+- prior job `1dfbe360-4e08-4dab-92e4-fa7d6e09b3b5` remains
+  `graphiti_write_pending`; it is not retried before plan review.
+
+Next Bounded Action:
+
+- validate and commit C55, then obtain one independent read-only plan review.
+  Do not execute a source, browser, schedule, service, database, or memory
+  mutation.

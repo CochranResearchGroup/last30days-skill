@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 22
+Plan version: 23
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -37,9 +37,9 @@ software with:
 ## Current State
 
 - The independent managed service is the installed runtime authority at
-  version 0.2.25/schema 12 with 59 documents, 59 stable embeddings, 56 current-
-  version embeddings, and active index `index-e7d905148e9b02e077e1759e`.
-  Rollback remains service 0.2.24.
+  version 0.2.26/schema 12 with 59 documents, 59 stable embeddings, 59 current-
+  version embeddings, and active index `index-28418bd968076bba6653223f` at
+  59 stable and 59 current-version rows. Rollback remains service 0.2.25.
 - The service publishes its exact contract, API, schema, runtime-manifest,
   source-readiness, and active-index facts. The MCP adapter performs the
   fail-closed compatibility handshake before ordinary operations.
@@ -96,10 +96,13 @@ software with:
   and stops before any replacement proof. C46 accepted the independently
   reviewed repair: current publication is complete at 59/59 while the two
   damaged 56-row historical indexes remain unchanged as defect evidence.
-- Version 21 is the operator-approved, independently reviewed-before-live
-  replacement-YouTube successor. It authorizes one distinct disabled proof at
-  the unconsumed `2026-08-02T12:00:00Z` cadence boundary, one attempt, no retry,
-  and no X, LinkedIn, or recurring work.
+- Version 21 is the operator-approved replacement-YouTube successor. Its one
+  distinct disabled proof preserved every historical index but stopped on
+  three missing current-version embeddings. Version 22 independently closed
+  the zero-source sequencing repair on service 0.2.26 at exact 59/59
+  completeness. Version 23 is a review-first proposal for the remaining X and
+  two LinkedIn proofs; it carries no live authority until the operator
+  explicitly raises the cumulative attempt ceiling from 25 to 28.
 
 ## Standing Authority And Human Gates
 
@@ -120,7 +123,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C54 is the current authority. Service architecture, timer
+Checkpoint P0018-C55 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -134,9 +137,10 @@ byte-identical. Independent review accepted the failed-closed receipt. C50 is
 `replacement_youtube_proof_failed_closed`; installed service 0.2.25 remains
 process-ready on schema 12 but version-embedding completeness is 56/59.
 Version 22/C54 independently closes the zero-source 0.2.26 repair with 59/59
-version completeness. X, LinkedIn,
-recurring enablement, independent final review, push, tagging, publication,
-and release remain closed.
+version completeness. Version 23/C55 derives a bounded, review-first successor
+for the three remaining proofs but does not authorize them. X, LinkedIn,
+recurring enablement, proof execution, tagging, publication, and release remain
+closed pending independent plan review and the exact operator gate.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -5021,3 +5025,178 @@ Next action:
   `1dfbe360-4e08-4dab-92e4-fa7d6e09b3b5` timed out on its single 120-second
   ingestion attempt and is `graphiti_write_pending` for the next non-trivial
   closeout. Do not retry it now. Stop at the remaining-proof human gate.
+
+## Version 23 | Remaining X and LinkedIn evidence-completion successor
+
+### Bounded outcome and requested authority
+
+Complete the version-18 observability evidence set with exactly three fresh,
+serialized, disabled-specification proofs: one X topic, one LinkedIn topic,
+and one LinkedIn profile. Each proof must use the already configured exact
+`agent_browser` method and existing `last30days-facebook` profile, publish a
+complete immutable receipt, and leave every specification disabled.
+
+This successor is review-first and is not live authority. The terminated
+Version 19 packet and consumed replacement-YouTube successor leave the
+cumulative source-attempt ceiling fully allocated at 25. Before any submission,
+the operator must explicitly raise only that ceiling from 25 to 28 for the
+three named identities. The existing cumulative maxima remain 67 accepted
+items, 1,157 governed requests, 2,280 wall seconds, zero cents, zero
+assessment/model calls, and acquisition concurrency one: Version 19 already
+reserved the three remaining cases' worst-case item, request, and wall usage,
+but its terminated live authority cannot be silently reused as three new
+attempt identities.
+
+The proposed approval does not authorize YouTube or Reddit, a retry or replay,
+recurrence, an enabled specification, a selector/method/profile/access-order
+change, credential work, service installation, database repair, browser-session
+cleanup, push, tag, publication, or release. Recurring enablement remains a
+separate later human gate even if all three proofs pass.
+
+### Exact identities and execution controller
+
+Use the existing specifications without revision, in this order:
+
+1. `p0018-v17-x-browser-manual`, X topic `OpenAI`;
+2. `p0018-v17-linkedin-topic-browser-manual`, LinkedIn topic `OpenAI`;
+3. `p0018-v17-linkedin-profile-browser-manual`, LinkedIn profile
+   `https://www.linkedin.com/company/openai/`.
+
+For each specification, use the distinct daily cadence boundary
+`2026-08-02T00:00:00Z`, covering `2026-08-01T00:00:00Z` through
+`2026-08-02T00:00:00Z`. Current readback shows no run owns any of those three
+spec/interval identities. Before each submission, re-read the exact spec,
+latest run, enabled state, browser-profile ownership, service/systemd status,
+config mode, SQLite checks, corpus/current-version completeness, active-index
+membership, and cumulative usage.
+
+The primary agent alone operates the service and browser profile. Hard-code
+manual supervisor `max_attempts=1`; do not retry, replay, or substitute a
+cadence boundary after a failed, deduplicated, skipped, or incomplete identity.
+Keep the target and all other specifications disabled before, during, and after
+each proof. Serialize browser work on `last30days-facebook`; verify the prior
+lease is released before advancing.
+
+### Evidence and acceptance contract
+
+Receipt `docs/dev/notes/0033-remaining-x-linkedin-evidence-completion.json`
+must bind all three proposed identities plus the previously consumed evidence:
+
+- run, job, acquisition, attempt, selector/spec, interval, and immutable
+  envelope identities and digests;
+- exact attempted, observed, accepted, rejected, stored, deduplicated, and
+  indexed counts; governed requests within 50 per proof; zero cost; one attempt
+  per identity; and terminal wall time within 120 seconds per proof;
+- exact adapter variant and attempted/selected `agent_browser` provenance;
+- pre/post documents, stable and current-version embeddings, active-index
+  stable/version membership, SQLite, config-mode, enabled-spec, and execution
+  counts;
+- deterministic membership digests proving every pre-existing immutable index
+  row remains byte-identical;
+- cumulative actual/reserved use against the 28/67/1,157/2,280/zero envelope;
+- truthful per-lane classification as content yield, deduplicated yield,
+  healthy zero yield, quality rejection, method rejection, or failure.
+
+Acceptance does not require content yield, but only non-empty accepted/stored
+content supports current selector yield. Missing evidence is `not_proven`,
+never zero or success. Final acceptance requires all three identities terminal
+without retry; all immutable envelopes and count invariants complete; service
+0.2.26/schema 12 ready and systemd active/running; 59 documents with 59 stable
+and 59 current-version embeddings; a complete active index; unchanged
+historical membership; SQLite `quick_check=ok` with zero foreign-key rows;
+config mode 0600; 37 specifications with zero enabled; and one fresh-context
+independent final receipt review with no critical finding.
+
+### Work graph, bounds, and hard stops
+
+| State | Authorized action | Exit condition |
+| --- | --- | --- |
+| `awaiting_remaining_evidence_plan_review` | plan/docs and read-only Git/runtime/database checks | one fresh reviewer passes after at most one consolidated remediation |
+| `awaiting_remaining_evidence_operator_gate` | no live or browser mutation | operator explicitly approves the exact 25-to-28 ceiling increase and three identities |
+| `remaining_evidence_authorized` | three exact disabled manual proofs, serialized, one attempt each | all three identities terminal or the first global stop fires |
+| `awaiting_remaining_evidence_final_review` | receipt/docs and read-only validation only | one fresh reviewer passes or fails |
+| `awaiting_recurring_enable_gate` | no schedule mutation | a later separately reviewed packet receives explicit approval |
+
+One pre-live plan review, three serial work-unit attempts, zero retries, one
+terminal receipt review, and at most one consolidated remediation per review
+are the hard bounds. A source-local failure records that terminal identity and
+may advance only when service integrity, browser ownership, cumulative limits,
+and every global invariant remain sound. No failed identity is retried.
+
+Stop the full packet immediately on any acquisition before the exact operator
+approval; enabled specification; unexpected source or access method; retry,
+replay, duplicate interval, or out-of-order proof; ambiguous browser ownership;
+inability to enforce one-attempt supervision; cumulative ceiling breach;
+nonzero cost or assessment/model use; service/schema/manifest/source-install
+drift; config-mode or rollback drift; SQLite failure; document loss; stable or
+current-version completeness below 59/59; incomplete active index; any change
+to a pre-existing immutable index row; missing immutable evidence; or an
+unresolved critical review finding.
+
+Delegation is limited to one fresh-context read-only plan review and one
+fresh-context read-only final receipt review. The primary agent owns plan
+integration, all live and browser commands, receipt construction, validation,
+and final judgment. The plan review gets one pass plus at most one consolidated
+remediation; a failed final review stops for split, reframe, or escalation.
+
+### Checkpoint P0018-C55 | 2026-08-02
+
+Plan version:
+
+- 23
+
+State transition:
+
+- `zero_source_index_sequencing_repair_complete -> awaiting_remaining_evidence_plan_review`
+
+Progress classification:
+
+- `blocker_reduction`; the three remaining cases now have one inspectable,
+  bounded successor whose authority request and terminal stops are explicit.
+
+Authority classification:
+
+- `human_gate`; C55 authorizes planning, deterministic validation, and
+  read-only review only. It does not raise the 25-attempt ceiling or authorize
+  a source, browser, specification, schedule, credential, service, database,
+  memory, push, tag, publication, or release mutation.
+
+Current evidence and arithmetic:
+
+- `HEAD` and `origin/main` both resolve to handoff commit `c6ee0be`; the
+  worktree began clean and the deterministic authority audit passed with Plan
+  0018 as the sole active plan;
+- installed service 0.2.26/schema 12 is ready and systemd active/running with
+  manifest `21564f14a2c87f3d2ee27013470bdc3642e9d70997facebc726b75c92982c1fb`,
+  rollback 0.2.25, 59 documents, 59 stable/current-version embeddings, and
+  active index `index-28418bd968076bba6653223f` at 59/59 rows;
+- SQLite `quick_check` is `ok`, foreign-key check is empty, config is mode
+  0600, acquisitions/jobs/collection runs remain 102/87/50, and all 37
+  specifications are disabled;
+- each target spec remains disabled on profile `last30days-facebook`, uses a
+  daily schedule and item limit three, and has only its legacy
+  `2026-07-31T00:00:00Z` through `2026-08-01T00:00:00Z` run. The proposed
+  `2026-08-02T00:00:00Z` boundaries are distinct and unowned;
+- raising attempts from 25 to 28 crosses an explicit cumulative ceiling and
+  therefore requires new operator approval. The previously reserved
+  item/request/wall maxima remain sufficient and unchanged.
+
+Delegation decision:
+
+- `spawned`; one fresh-context read-only reviewer will inspect the current
+  plan, Roadmap P07, Runbook, receipts 0031/0032, Git, live service/database
+  state, identity uniqueness, arithmetic, and gate semantics. The primary
+  retains every write and all live-operation authority.
+
+Graphiti write status:
+
+- prior job `1dfbe360-4e08-4dab-92e4-fa7d6e09b3b5` remains
+  `graphiti_write_pending`; C55 does not retry it before the required plan
+  review.
+
+Next action:
+
+- validate and commit this docs-only checkpoint, then obtain one independent
+  plan review. On pass after at most one consolidated remediation, advance to
+  `awaiting_remaining_evidence_operator_gate` and ask the operator for the
+  exact 25-to-28 ceiling increase. Do not run a source or browser command.
