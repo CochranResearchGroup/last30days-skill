@@ -8076,3 +8076,46 @@ Next Bounded Action:
 - commit C61 locally and run installed
   `p0018-v17-x-browser-manual` at `2026-08-02T21:20:00Z` with max attempts two.
   Stop before LinkedIn on any hard failure.
+
+## Turn 129 | 2026-08-02
+
+Focus: correct the fresh proof identity after safe daily-interval
+canonicalization returned the old held job.
+
+Authority Consulted:
+
+- Plan 0018 V25/C61; installed collection idempotency readback; standing
+  successor and attempt ceilings.
+
+Decisions And Changes:
+
+- the C61 command returned existing run
+  `collection-run-fc6cfa3530bb442ff277c09b8b9a2bc0` and job
+  `8808aca5-396d-4f9b-bbd5-192af6cad623`; job readback remains
+  `awaiting_operator/auth_required`, attempts one/max two;
+- no source attempt, retry, browser action, or state rewrite occurred;
+- C62 changes only `scheduled_for` to `2026-08-03T00:00:00Z`, the next
+  distinct daily interval identity.
+
+Validation Evidence:
+
+- installed job readback confirms the old job still has attempts one/max two;
+  the returned run/job identifiers are byte-identical to C59.
+
+State Movement:
+
+- Plan 0018 `C61 -> C62`;
+- `x_successor_proof_authorized -> x_distinct_interval_successor_authorized`.
+
+Subagent Status And Reconciliation:
+
+- no delegated work; the prior terminal independent PASS remains unchanged.
+
+Graphiti Write Status:
+
+- deferred until the corrected distinct proof reaches a terminal receipt.
+
+Next Bounded Action:
+
+- commit C62 locally, execute the corrected X successor, and inspect its
+  immutable receipt before any LinkedIn lane.

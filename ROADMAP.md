@@ -862,13 +862,14 @@ Active Plan:
   the canonical X profile is already authenticated, while the repo failed to
   consume its durable binding and dropped agent-browser's external Guacamole
   handoff URL. Candidate 0.2.28 repairs those seams without a source attempt;
-  C61 records terminal review PASS, exact healthy installation, and one fresh
-  X successor proof identity. LinkedIn remains `not_run`. Recurring enablement
-  remains a later gate.
+  C61 records terminal review PASS and exact healthy installation. Its proposed
+  timestamp canonicalized to the old held daily interval without executing;
+  C62 corrects the fresh X successor to the distinct Aug 2-3 interval.
+  LinkedIn remains `not_run`. Recurring enablement remains a later gate.
 
 Next Bounded Action:
 
-- Run the exact C61 fresh X successor proof and inspect its immutable receipt.
+- Run the exact C62 Aug 2-3 X successor proof and inspect its immutable receipt.
   Do not resume the old job, start LinkedIn, push, or enable recurrence before
   that receipt passes the profile, external-handoff, count, and integrity
   gates.

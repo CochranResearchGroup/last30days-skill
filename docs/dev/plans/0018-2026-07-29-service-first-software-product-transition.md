@@ -123,7 +123,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C61 is the current authority. Service architecture, timer
+Checkpoint P0018-C62 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -5732,3 +5732,31 @@ Next action:
 
 - commit this successor authority locally, execute the one X proof serially,
   and inspect its immutable receipt before any further lane.
+
+### Checkpoint P0018-C62 | 2026-08-02
+
+Plan version:
+
+- 25
+
+State transition:
+
+- `x_successor_proof_authorized -> x_distinct_interval_successor_authorized`
+
+Progress classification:
+
+- `no_progress`; the C61 command made no source call. Daily interval
+  canonicalization mapped `2026-08-02T21:20:00Z` to the existing Aug 1-2 run
+  and returned its immutable held job with attempts still one of two.
+
+Authority classification:
+
+- `inherited_authority`; replace only the scheduled identity with the next
+  distinct daily boundary `2026-08-03T00:00:00Z`. It creates the Aug 2-3
+  interval, remains inside the same public X/profile/resource envelope, and
+  does not resume or rewrite the old job.
+
+Next action:
+
+- run the installed collection once at the corrected distinct boundary and
+  inspect the new run/job receipt before LinkedIn.
