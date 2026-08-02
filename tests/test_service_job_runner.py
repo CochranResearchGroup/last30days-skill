@@ -68,12 +68,19 @@ class BrokenWorker:
         raise RuntimeError(f"private worker detail for {request.source}")
 
 
-def _runtime(tmp_path, worker, *, budget_cents=50):
+class DeterministicEmbedder:
+    model = "job-runner-test-v1"
+
+    def embed(self, texts):
+        return [[1.0] for _text in texts]
+
+
+def _runtime(tmp_path, worker, *, budget_cents=50, embedding_provider=None):
     db_path = tmp_path / "research.db"
     supervisor = RefreshSupervisor(db_path, clock=lambda: NOW)
     supervisor.initialize()
     ledger = ServiceStore(db_path)
-    retriever = HybridRetriever(db_path)
+    retriever = HybridRetriever(db_path, embedding_provider=embedding_provider)
     scheduler = ServiceRefreshScheduler(
         supervisor,
         ledger,
@@ -103,6 +110,44 @@ def _runtime(tmp_path, worker, *, budget_cents=50):
         clock=lambda: NOW,
     )
     return scheduler, supervisor, retriever, runner
+
+
+def test_successful_runner_publishes_new_content_with_semantic_evidence(tmp_path):
+    worker = FakeWorker(
+        {
+            "reddit": {
+                "status": "succeeded",
+                "items": [
+                    {
+                        "source_native_id": "reddit-embedding-001",
+                        "url": "https://reddit.example/embedding-sequence",
+                        "title": "Publication ordering",
+                        "text": "A deterministic vector survives the publication sequence.",
+                        "author": "example",
+                        "published_at": "2026-07-23T12:00:00Z",
+                        "metadata": {},
+                    }
+                ],
+            }
+        }
+    )
+    scheduler, _supervisor, retriever, runner = _runtime(
+        tmp_path,
+        worker,
+        embedding_provider=DeterministicEmbedder(),
+    )
+    scheduler.ensure_refresh(_query("query-embedding-sequence", ["reddit"]))
+
+    completed = runner.run_once(worker_id="service-worker")
+    snapshot = retriever.search_snapshot("unrelated-semantic-query")
+
+    assert completed is not None
+    assert completed.state is contracts.JobState.PUBLISHED
+    assert snapshot.index_version == completed.published_index_version
+    assert [item.url for item in snapshot.evidence] == [
+        "https://reddit.example/embedding-sequence"
+    ]
+    assert snapshot.evidence[0].scores["semantic"] == 1.0
 
 
 def test_one_source_success_and_one_failure_publishes_a_partial_index(tmp_path):

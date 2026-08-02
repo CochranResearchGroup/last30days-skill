@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 21
+Plan version: 22
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -37,8 +37,9 @@ software with:
 ## Current State
 
 - The independent managed service is the installed runtime authority at
-  version 0.2.25/schema 12 with 59 documents, 59 embeddings, and active index
-  `index-b5cd4d63810e8d5333a0aa93`. Rollback remains service 0.2.24.
+  version 0.2.25/schema 12 with 59 documents, 59 stable embeddings, 56 current-
+  version embeddings, and active index `index-e7d905148e9b02e077e1759e`.
+  Rollback remains service 0.2.24.
 - The service publishes its exact contract, API, schema, runtime-manifest,
   source-readiness, and active-index facts. The MCP adapter performs the
   fail-closed compatibility handshake before ordinary operations.
@@ -119,7 +120,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C51 is the current authority. Service architecture, timer
+Checkpoint P0018-C52 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -132,8 +133,8 @@ YouTube versions lack version embeddings. Every pre-existing index remained
 byte-identical. Independent review accepted the failed-closed receipt. C50 is
 `replacement_youtube_proof_failed_closed`; installed service 0.2.25 remains
 process-ready on schema 12 but version-embedding completeness is 56/59.
-Version 22/C51 opens one zero-source production sequencing repair under
-standing authority. X, LinkedIn,
+Version 22/C52 is package-ready after the zero-source RED/GREEN sequencing
+repair. X, LinkedIn,
 recurring enablement, independent final review, push, tagging, publication,
 and release remain closed.
 
@@ -4868,3 +4869,46 @@ Next action:
 
 - commit C51, write exactly one full-runner regression, and capture RED before
   editing product code. Do not run or retry any source.
+
+### Checkpoint P0018-C52 | 2026-08-02
+
+Plan version:
+
+- 22
+
+State transition:
+
+- `zero_source_index_sequencing_repair_open -> zero_source_repair_package_ready`
+
+Progress classification:
+
+- `implementation_complete`; the bounded source correction and repository
+  validation pass before live installation.
+
+Authority classification:
+
+- `inherited_authority`; C51 permits one reversible install verification of the
+  already-reviewed zero-source repair. All source and release gates remain
+  closed.
+
+RED/GREEN and package evidence:
+
+- the new full-runner test failed on unchanged product code because the
+  published semantic evidence list was empty;
+- the minimal correction makes `CorpusPublisher.publish_index()` call
+  `embed_pending_chunks()` before `HybridRetriever.publish_index()` while
+  preserving its single existing interface;
+- the same test passed, followed by 23 focused runner/publication/retrieval
+  tests and 7 service version/runtime-package tests;
+- the deterministic runtime manifest was refreshed for service 0.2.26;
+- the full repository suite passed with 2,416 tests, 7 skips, and 6 subtests.
+  The sole first-pass failure was the plan header's stale version declaration;
+  after correcting it to version 22, the authority audit and full suite passed;
+- CodeGraph post-edit blast-radius review retains the runner's one-call
+  publication flow. No acquisition source or installed runtime was touched.
+
+Next action:
+
+- commit C52 and the package-ready implementation. Then capture exact live
+  pre-install hashes, build the reproducible 0.2.26 artifact, install once,
+  and verify deterministic forward repair without running a source.

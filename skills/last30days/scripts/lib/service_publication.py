@@ -664,5 +664,6 @@ class CorpusPublisher:
         )
 
     def publish_index(self) -> str:
-        """Publish the deterministic current corpus manifest after projections."""
+        """Complete pending embeddings and publish the current corpus manifest."""
+        self.retriever.embed_pending_chunks()
         return self.retriever.publish_index()

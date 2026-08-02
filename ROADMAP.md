@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 22/C51. Installed service 0.2.25/schema
+- Current authority is Plan 0018 version 22/C52. Installed service 0.2.25/schema
   12 is ready with 59 documents, 59 embeddings, active index
   `index-b5cd4d63810e8d5333a0aa93`, rollback 0.2.24, and all 37 specifications
   disabled. The immutable-index repair passed independent review; the two
@@ -730,7 +730,8 @@ Current State:
   cumulative attempt ceiling to 25. The one replacement proof preserved every
   pre-existing index but exposed three missing current-version embeddings;
   current completeness is 56/59. Independent review accepted the failed-closed
-  receipt. C51 opens one zero-source index-sequencing repair; X, both LinkedIn
+  receipt. C52 is package-ready after the zero-source sequencing repair; X,
+  both LinkedIn
   proofs, and recurrence remain prohibited.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
@@ -850,9 +851,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- Commit C51, capture one full-runner RED regression, then implement and verify
-  the zero-source sequencing repair. Do not retry YouTube or run X, LinkedIn,
-  Reddit, or recurrence.
+- Commit C52, capture exact live pre-install hashes, then build/install and
+  verify service 0.2.26 without a source run. Do not retry YouTube or run X,
+  LinkedIn, Reddit, or recurrence.
 
 ## Goal-Compatible Plan Conversion
 

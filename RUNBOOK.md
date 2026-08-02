@@ -7325,3 +7325,50 @@ Next Bounded Action:
 
 - commit C51, add exactly one full-runner regression, and capture RED before
   product-code edits. Do not run or retry any source.
+
+## Turn 116 | 2026-08-02
+
+Focus: complete RED/GREEN and make the zero-source 0.2.26 package install-ready.
+
+Authority Consulted:
+
+- committed V22/C51 at `c7f218d`; CodeGraph; TDD and codebase-design skills;
+  runtime package/version tests; and Plan 0018 validation and install gates.
+
+Decisions And Changes:
+
+- added one full-runner semantic-publication regression and captured its RED on
+  unchanged 0.2.25 product code;
+- preserved the publisher's existing interface and moved pending-embedding
+  completion inside it before immutable publication;
+- advanced the independent service identity and manifest to 0.2.26;
+- corrected the plan header from stale version 21 to 22 after the authority
+  test caught the mismatch. No product behavior changed in that correction.
+
+Validation Evidence:
+
+- RED: one expected failure, empty published evidence list;
+- GREEN: the new test passed; 23 focused runner/publication/retrieval tests and
+  7 package/version tests passed;
+- final full suite: 2,416 passed, 7 skipped, 6 subtests passed in 77.22 seconds;
+- deterministic authority audit passed with one active plan and zero issues;
+- manifest refresh, `git diff --check`, and CodeGraph blast-radius review pass.
+
+State Movement:
+
+- Plan 0018 `C51 -> C52`; version remains 22;
+- `zero_source_index_sequencing_repair_open -> zero_source_repair_package_ready`.
+
+Subagent Status And Reconciliation:
+
+- `not_started`; no implementation work was delegated. Fresh-context final
+  review remains reserved until live install evidence is immutable.
+
+Graphiti Write Status:
+
+- deferred until live forward-repair evidence exists.
+
+Next Bounded Action:
+
+- commit C52 and product changes; capture exact live pre-install index hashes;
+  build/install 0.2.26 once; verify forward repair and all source prohibitions.
