@@ -7696,8 +7696,13 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending one provider-readiness check and at most one compact C56 closeout
-  episode. The earlier C54 timeout job is not requeued.
+- provider readiness passed through the Codex app-server path. One compact C56
+  episode was submitted to `last30days_skill_main` as job
+  `741995ba-4085-45b3-8975-ab5401eafb43` with a 180-second job budget;
+- the job remained `running` after the bounded observation, past its nominal
+  budget, while progressing through node-attribute extraction. It is recorded
+  as `graphiti_write_pending`; no second submission or manual requeue ran. The
+  earlier C54 timeout job was not requeued.
 
 Next Bounded Action:
 
