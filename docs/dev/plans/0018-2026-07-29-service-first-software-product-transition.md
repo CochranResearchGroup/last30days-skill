@@ -119,17 +119,20 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C48 is the current authority. Service architecture, timer
+Checkpoint P0018-C50 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
 was healthy zero-yield rather than content yield, and the first recurring-gate
 assessment failed closed. Version 19 terminated at its global integrity stop
 after one YouTube attempt. Version 20 is complete. The operator's 2026-08-02
-approval and independent plan review open Version 21 at
-`replacement_youtube_proof_authorized` with a 25-attempt cumulative ceiling.
-Installed service 0.2.25 is ready on schema 12
-with a complete 59/59 successor index and rollback 0.2.24. X, LinkedIn,
+approval and independent plan review authorized one Version 21 proof. That
+identity consumed one attempt and stopped globally because three new current
+YouTube versions lack version embeddings. Every pre-existing index remained
+byte-identical. Independent review accepted the failed-closed receipt. C50 is
+`replacement_youtube_proof_failed_closed`; installed service 0.2.25 remains
+process-ready on schema 12 but version-embedding
+completeness is 56/59. X, LinkedIn,
 recurring enablement, independent final review, push, tagging, publication,
 and release remain closed.
 
@@ -4669,3 +4672,128 @@ Next action:
 - commit C48, repeat the exact preflight, then submit only
   `p0018-v17-youtube-ytdlp-manual` at `2026-08-02T12:00:00Z`. Observe it to one
   terminal state, persist receipt 0031, and do not retry.
+
+### Checkpoint P0018-C49 | 2026-08-02
+
+Plan version:
+
+- 21
+
+State transition:
+
+- `replacement_youtube_proof_authorized -> global_integrity_stop -> awaiting_replacement_youtube_final_review`
+
+Progress classification:
+
+- `regression`; the prior historical-cascade defect did not recur, but the
+  production job path exposed a distinct current-version embedding gap.
+
+Authority classification:
+
+- `inherited_authority`; this checkpoint records and reviews the consumed
+  identity only. It authorizes no retry, source, schedule, service repair,
+  configuration change, or recurrence.
+
+Execution and integrity evidence:
+
+- committed pre-live authority `5946d0d` submitted only boundary
+  `2026-08-02T12:00:00Z`, producing run
+  `collection-run-779569ba5d104c1809c26f145a7b541b`, job
+  `df2b728e-9f14-4d55-8679-71f5830ab1d3`, and acquisition
+  `work-aa9680b95971f28413c5a47370008845`;
+- one attempt completed in 1.772 seconds with one governed request, zero cost,
+  exact `youtube_ytdlp`/`yt_dlp`, counts 8 attempted/observed, 3 accepted,
+  5 rejected, and 3 stored/deduplicated/indexed;
+- the aggregate full-row hash for all 66 pre-existing indexes remained
+  `25ef7bff455b6c063cb13096244d2822e7914ccdbde15a1f0bafefea4d796fa4`.
+  Both damaged 56-row indexes and repaired pre-proof 59-row index retained
+  their exact individual hashes;
+- the job published `index-d86e2cfdbbafaf5728fe1dd8`, after which active
+  service state advanced to `index-e7d905148e9b02e077e1759e`. Both contain
+  59 stable snapshot embeddings but only 56 current-version snapshot
+  embeddings;
+- three updated YouTube documents now point to current version chunks with no
+  `document_version_embeddings` row. Stable embeddings remain 59, current-
+  version completeness is 56, SQLite remains `ok`/FK0, config is 0600, and all
+  37 specs remain disabled;
+- receipt `docs/dev/notes/0031-replacement-youtube-index-proof.json` binds all
+  identities, immutable envelopes, counts, hashes, missing versions, and the
+  hard stop. No retry or other source ran.
+
+Read-only structural diagnosis:
+
+- CodeGraph proves `AcquisitionJobRunner.run_once()` records content and then
+  calls `CorpusPublisher.publish_index()`, which delegates directly to
+  `HybridRetriever.publish_index()` without `embed_pending_chunks()`;
+- `embed_pending_chunks()` has production use only through legacy bootstrap;
+  its other callers are tests. The 0.2.25 regression manually invoked the
+  primitive, so it did not cover live job-runner ordering;
+- a successor repair must be zero-source, use a full job-runner RED/GREEN test,
+  complete version embeddings before index publication, preserve all existing
+  index rows, and remain separately checkpointed. C49 itself does not authorize
+  that repair.
+
+Delegation status:
+
+- one fresh-context read-only final reviewer is required to verify receipt
+  0031, live state, the hard-stop classification, and the diagnosis. The
+  primary owns all writes and no live operation may resume.
+
+Graphiti write status:
+
+- deferred until the failed proof is independently reviewed; no prior job is
+  retried.
+
+Next action:
+
+- independently review receipt 0031 and C49. On pass, commit the fail-closed
+  checkpoint and classify a bounded zero-source successor under standing
+  authority. Do not run or retry any source.
+
+### Checkpoint P0018-C50 | 2026-08-02
+
+Plan version:
+
+- 21
+
+State transition:
+
+- `awaiting_replacement_youtube_final_review -> replacement_youtube_proof_failed_closed`
+
+Progress classification:
+
+- `blocker_reduction`; independent review establishes the exact production
+  sequencing defect and preserves truthful terminal evidence for the consumed
+  proof.
+
+Authority classification:
+
+- `inherited_authority`; C50 closes review of the consumed proof. It authorizes
+  no repair or source operation by itself.
+
+Independent review and reconciliation:
+
+- fresh-context reviewer `/root/v21_final_review` returned `PASS` in one
+  read-only pass with no critical finding;
+- it independently reproduced the one-run/one-attempt/no-retry scope, 1.772-
+  second wall time, one request, zero cost, exact 8/8/3/5/3/3/3 counts,
+  `youtube_ytdlp`/`yt_dlp` provenance, and all six envelope hashes;
+- it reproduced the aggregate pre-existing index-row hash
+  `25ef7bff455b6c063cb13096244d2822e7914ccdbde15a1f0bafefea4d796fa4`,
+  bound-index hashes/counts, both new 59-stable/56-version index snapshots,
+  and exactly three missing current YouTube version embeddings;
+- it verified service 0.2.25/schema 12, manifest digest, SQLite `ok`/FK0,
+  config 0600, 37 specs/zero enabled, no other source or recurrence, and the
+  CodeGraph production-caller gap;
+- JSON validation, deterministic authority audit, and `git diff --check` pass.
+  The review authorizes no repair or source run.
+
+Graphiti write status:
+
+- deferred to the separately classified repair or terminal campaign
+  checkpoint; no prior job was retried.
+
+Next action:
+
+- commit C50. Then classify one zero-source full-job-runner TDD successor under
+  standing Plan 0018 repair authority. Do not retry or run any source.

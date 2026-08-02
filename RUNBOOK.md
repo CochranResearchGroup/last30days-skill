@@ -7159,3 +7159,120 @@ Next Bounded Action:
 
 - commit C48, repeat exact preflight, then submit the one authorized YouTube
   boundary and observe it to terminal state without retry.
+
+## Turn 113 | 2026-08-02
+
+Focus: execute the one replacement YouTube proof and enforce the current-
+version embedding hard stop.
+
+Authority Consulted:
+
+- committed Plan 0018 V21/C48 at `5946d0d`; live service/collection/job/
+  envelope/SQLite/index readbacks; CodeGraph job-runner, publication, and
+  retrieval flows; and planning, goal, validation, documentation, delegation,
+  and closeout policy.
+
+Decisions And Changes:
+
+- submitted only `p0018-v17-youtube-ytdlp-manual` at exact boundary
+  `2026-08-02T12:00:00Z`; it terminated published after one attempt and no
+  retry;
+- verified useful publication and exact provenance, then fired the global
+  integrity stop because three updated YouTube current versions have no
+  version embeddings. X, LinkedIn, Reddit, and recurrence were not run;
+- proved all 66 pre-existing indexes remained byte-identical, so the repaired
+  historical-cascade invariant passed while a distinct production sequencing
+  invariant failed;
+- persisted receipt 0031 and advanced to C49
+  `awaiting_replacement_youtube_final_review`. No repair or source successor is
+  authorized by this checkpoint.
+
+Validation Evidence:
+
+- run `collection-run-779569ba5d104c1809c26f145a7b541b`, job
+  `df2b728e-9f14-4d55-8679-71f5830ab1d3`, acquisition
+  `work-aa9680b95971f28413c5a47370008845`; 1.772 seconds, one attempt, one
+  governed request, zero cost, exact `youtube_ytdlp`/`yt_dlp`;
+- counts: attempted/observed 8, accepted 3, rejected 5, stored/deduplicated/
+  indexed 3. All six immutable envelope digests are in receipt 0031;
+- aggregate pre-existing index-row SHA-256 remained
+  `25ef7bff455b6c063cb13096244d2822e7914ccdbde15a1f0bafefea4d796fa4`;
+  pre-proof bound-index hashes and counts are unchanged;
+- both new indexes contain 59 stable embeddings and 56 current-version
+  embeddings. Database current-version completeness is 56/59; the three
+  missing rows are all new YouTube versions;
+- service still reports ready on 0.2.25/schema 12, SQLite quick check is `ok`,
+  foreign-key check is empty, config is 0600, and all 37 specs are disabled.
+
+State Movement:
+
+- Plan 0018 `C48 -> C49`, version remains 21;
+- `replacement_youtube_proof_authorized -> global_integrity_stop -> awaiting_replacement_youtube_final_review`;
+- replacement attempt is consumed; all other live lanes remain unauthorized.
+
+Subagent Status And Reconciliation:
+
+- `pending`; one fresh-context read-only reviewer will validate receipt 0031,
+  C49, current live state, and the fail-closed diagnosis. The primary retains
+  all writes and no live authority.
+
+Graphiti Write Status:
+
+- deferred until independent failed-proof review; no prior job was retried.
+
+Next Bounded Action:
+
+- independently review receipt 0031 and C49. On pass, commit the stop and
+  classify a zero-source successor. Do not run or retry a source.
+
+## Turn 114 | 2026-08-02
+
+Focus: independently accept the replacement-proof hard stop and close its
+terminal evidence checkpoint.
+
+Authority Consulted:
+
+- Plan 0018 V21/C49; Roadmap P07; Runbook Turn 113; receipt 0031; reviewer
+  `/root/v21_final_review`; live service/database/index readbacks; CodeGraph;
+  and validation, goal, documentation, delegation, Git, and closeout policy.
+
+Decisions And Changes:
+
+- accepted the fresh reviewer's one-pass `PASS` and advanced C49 to C50
+  `replacement_youtube_proof_failed_closed`;
+- retained the hard stop, all source prohibitions, and the requirement that any
+  repair be a separate zero-source successor;
+- corrected receipt 0031's cumulative known/reserved request subtotal to 258
+  before review closeout. No evidence identity or outcome changed.
+
+Validation Evidence:
+
+- reviewer independently reproduced the exact one-attempt execution, all
+  counts/provenance/timing/cost, six immutable envelope hashes, aggregate and
+  bound index hashes, two new 59/56 snapshots, and three missing YouTube
+  version embeddings;
+- it verified 0.2.25/schema 12, manifest digest, SQLite `ok`/FK0, config 0600,
+  37 specs/zero enabled, and no other source or recurrence;
+- CodeGraph confirms the production job path omits `embed_pending_chunks()`
+  before publishing; JSON, authority, and diff checks pass.
+
+State Movement:
+
+- Plan 0018 `C49 -> C50`, version remains 21;
+- `awaiting_replacement_youtube_final_review -> replacement_youtube_proof_failed_closed`;
+- no live lane is authorized.
+
+Subagent Status And Reconciliation:
+
+- `completed`; `/root/v21_final_review` was fresh-context and read-only. Its
+  `PASS` is accepted without remediation and does not authorize repair.
+
+Graphiti Write Status:
+
+- deferred to the separately classified repair or terminal checkpoint; no
+  previous memory job was retried.
+
+Next Bounded Action:
+
+- commit C50, then classify one bounded zero-source full-job-runner TDD repair
+  under standing authority. Do not run or retry a source.

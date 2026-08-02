@@ -1,0 +1,182 @@
+{
+  "schema": "last30days.replacement-youtube-index-proof.v1",
+  "plan": "P0018",
+  "plan_version": 21,
+  "checkpoint_before": "P0018-C48",
+  "pre_live_commit": "5946d0d",
+  "authority": {
+    "classification": "human_gate",
+    "approval_evidence": "operator message: om approved",
+    "approved_scope": "one distinct disabled YouTube proof at the 2026-08-02T12:00:00Z boundary within the 25-attempt cumulative envelope",
+    "retry_authorized": false,
+    "other_sources_authorized": false,
+    "recurring_enablement_authorized": false
+  },
+  "identity": {
+    "collection_spec_id": "p0018-v17-youtube-ytdlp-manual",
+    "scheduled_for": "2026-08-02T12:00:00Z",
+    "interval_from": "2026-08-01T12:00:00Z",
+    "interval_to": "2026-08-02T12:00:00Z",
+    "collection_run_id": "collection-run-779569ba5d104c1809c26f145a7b541b",
+    "job_id": "df2b728e-9f14-4d55-8679-71f5830ab1d3",
+    "acquisition_id": "work-aa9680b95971f28413c5a47370008845",
+    "query_request_id": "collection-request-2552584d13cd483d352afc281b14377c"
+  },
+  "execution": {
+    "trigger_kind": "manual",
+    "started_at": "2026-08-02T18:14:28.606473Z",
+    "completed_at": "2026-08-02T18:14:30.378031Z",
+    "wall_seconds": 1.772,
+    "job_state": "published",
+    "acquisition_status": "succeeded",
+    "attempts": 1,
+    "max_attempts": 1,
+    "retry": "not_run",
+    "spent_cents": 0,
+    "network_request_count": 1,
+    "counts": {
+      "attempted": 8,
+      "observed": 8,
+      "accepted": 3,
+      "rejected": 5,
+      "stored": 3,
+      "deduplicated": 3,
+      "indexed": 3
+    },
+    "provenance": {
+      "adapter_variant": "youtube_ytdlp",
+      "attempted_access_methods": ["yt_dlp"],
+      "selected_access_method": "yt_dlp"
+    }
+  },
+  "immutable_envelopes": {
+    "query_request_sha256": "da5e716e9cac24228fbe626ba7498f1ae58738a04900d38a92b2596342bb919f",
+    "attempt_start_sha256": "a8a27909b5c8fff70134f662fb2a5c4391c72092a020e1b87374b447cfcbad02",
+    "work_request_sha256": "567fb7f2c34c92fd0cd603ca1c53844804efc76264770843c8926a9d24df841e",
+    "work_result_sha256": "d348ff115b8417a114b6c3e767866280e2f7a739fc582c0deb13ff4df4738534",
+    "acquisition_envelope_sha256": "1e77969ce22c3522e379430a6a6af30e40395b385a785b5dd262408f41e83835",
+    "run_receipt_sha256": "51b2f78c26e7ad0bb0359123d589c7b96e8f93f6868df562d84abd0acf3bddd9"
+  },
+  "pre_state": {
+    "service_version": "0.2.25",
+    "database_schema_version": 12,
+    "runtime_manifest_sha256": "15f816afd3a84fdac036b895d1c912696e5e320b0dfbb1fd7e465200215bdf90",
+    "service_status": "ready",
+    "document_count": 59,
+    "stable_embedding_count": 59,
+    "current_version_embedding_count": 59,
+    "active_index": "index-b5cd4d63810e8d5333a0aa93",
+    "active_index_embedding_rows": 59,
+    "index_version_count": 66,
+    "all_preexisting_index_rows_sha256": "25ef7bff455b6c063cb13096244d2822e7914ccdbde15a1f0bafefea4d796fa4",
+    "config_mode": "0600",
+    "sqlite_quick_check": "ok",
+    "sqlite_foreign_key_check_rows": 0,
+    "collection_spec_count": 37,
+    "enabled_spec_count": 0,
+    "duplicate_interval_rows": 0
+  },
+  "preexisting_index_immutability": {
+    "index_version_count": 66,
+    "all_rows_sha256_before": "25ef7bff455b6c063cb13096244d2822e7914ccdbde15a1f0bafefea4d796fa4",
+    "all_rows_sha256_after_excluding_two_new_indexes": "25ef7bff455b6c063cb13096244d2822e7914ccdbde15a1f0bafefea4d796fa4",
+    "all_preexisting_rows_byte_identical": true,
+    "bound_indexes": [
+      {
+        "index_version": "index-8c968b3c270aa6c2b5abcbac",
+        "embedding_rows_before": 56,
+        "embedding_rows_after": 56,
+        "rows_sha256_before": "3aa52c387bf063f246ee3240845fdf64692370643665927989be698278645d31",
+        "rows_sha256_after": "3aa52c387bf063f246ee3240845fdf64692370643665927989be698278645d31"
+      },
+      {
+        "index_version": "index-761f40d7055bbc84a4018cd1",
+        "embedding_rows_before": 56,
+        "embedding_rows_after": 56,
+        "rows_sha256_before": "d261c7b1d69e7ff64f1a69d8c3f56baef8593b9767531872f93d3ac4ee0379cb",
+        "rows_sha256_after": "d261c7b1d69e7ff64f1a69d8c3f56baef8593b9767531872f93d3ac4ee0379cb"
+      },
+      {
+        "index_version": "index-b5cd4d63810e8d5333a0aa93",
+        "embedding_rows_before": 59,
+        "embedding_rows_after": 59,
+        "rows_sha256_before": "ad10e19f15d7fa9bcda0549a8972a73cebae493c1717d0798e41e3ba670d37ff",
+        "rows_sha256_after": "ad10e19f15d7fa9bcda0549a8972a73cebae493c1717d0798e41e3ba670d37ff"
+      }
+    ]
+  },
+  "new_indexes": [
+    {
+      "index_version": "index-d86e2cfdbbafaf5728fe1dd8",
+      "origin": "job published_index_version",
+      "stable_snapshot_embeddings": 59,
+      "current_version_snapshot_embeddings": 56,
+      "stable_rows_sha256": "65284df8a33210593141bcf5273f2b2f987b8ab9db8751bfc76424d74cd9c827"
+    },
+    {
+      "index_version": "index-e7d905148e9b02e077e1759e",
+      "origin": "subsequent active service index",
+      "stable_snapshot_embeddings": 59,
+      "current_version_snapshot_embeddings": 56,
+      "stable_rows_sha256": "2500876b03261aeecac13d5ac85fd04f35423b46c46550786780e410b11260d4"
+    }
+  ],
+  "post_state": {
+    "service_version": "0.2.25",
+    "database_schema_version": 12,
+    "runtime_manifest_sha256": "15f816afd3a84fdac036b895d1c912696e5e320b0dfbb1fd7e465200215bdf90",
+    "service_status": "ready",
+    "document_count": 59,
+    "stable_embedding_count": 59,
+    "current_version_embedding_count": 56,
+    "missing_current_version_embedding_count": 3,
+    "missing_current_version_embedding_source": "youtube",
+    "active_index": "index-e7d905148e9b02e077e1759e",
+    "active_index_stable_embedding_rows": 59,
+    "active_index_current_version_embedding_rows": 56,
+    "index_version_count": 68,
+    "sqlite_quick_check": "ok",
+    "sqlite_foreign_key_check_rows": 0,
+    "config_mode": "0600",
+    "collection_spec_count": 37,
+    "enabled_spec_count": 0
+  },
+  "global_integrity_stop": {
+    "fired": true,
+    "reason": "three updated current YouTube document versions have no document_version_embeddings rows even though the job and service report published/ready and stable snapshot membership remains 59",
+    "missing_current_version_ids": [
+      "version-a0732c792ab09049a7df19e504cd342d",
+      "version-ff82ffad914a730bb1490a81ca12ec7e",
+      "version-cb4688774bd4bb33bcede228c0b1dc6e"
+    ],
+    "historical_index_mutation_recurred": false,
+    "current_version_embedding_completeness_preserved": false,
+    "proof_acceptance": "failed_closed"
+  },
+  "read_only_diagnosis": {
+    "cause": "AcquisitionJobRunner.run_once calls CorpusPublisher.record_result and then CorpusPublisher.publish_index, but the production collection path never calls HybridRetriever.embed_pending_chunks before publication",
+    "structural_evidence": "CodeGraph reports embed_pending_chunks callers only in tests and index_legacy_findings; CorpusPublisher.publish_index delegates directly to HybridRetriever.publish_index",
+    "test_gap": "the 0.2.25 regression test explicitly calls embed_pending_chunks, so it proved the repaired primitive but not production job-runner sequencing",
+    "required_successor": "a zero-source TDD repair must place version embedding completion in the production publication controller before index publication and prove the full AcquisitionJobRunner path"
+  },
+  "cumulative_actual_usage": {
+    "attempts_consumed": 8,
+    "accepted_items_known_actual": 16,
+    "governed_requests_known_or_reserved_before_future_lanes": 258,
+    "replacement_attempts": 1,
+    "replacement_accepted_items": 3,
+    "replacement_governed_requests": 1,
+    "replacement_wall_seconds": 1.772,
+    "replacement_cost_cents": 0
+  },
+  "not_run": [
+    "replacement YouTube retry",
+    "X proof",
+    "LinkedIn topic proof",
+    "LinkedIn profile proof",
+    "Reddit proof",
+    "recurring collection"
+  ],
+  "terminal_state": "global_integrity_stop",
+  "summary": "The single authorized replacement YouTube proof yielded three deduplicated items in one attempt and preserved every pre-existing index row byte-for-byte, but it failed closed because all three updated current versions lack version embeddings. No retry or other source ran; all 37 specs remain disabled."
+}
