@@ -612,6 +612,7 @@ Create or revise a specification from a reviewed strict JSON file:
 python3 scripts/service.py collection put --input /path/to/collection.json
 python3 scripts/service.py collection list
 python3 scripts/service.py collection run spec-reddit-ai
+python3 scripts/service.py collection run spec-reddit-ai --max-attempts 2
 python3 scripts/service.py collection pause spec-reddit-ai
 python3 scripts/service.py collection resume spec-reddit-ai
 ```
@@ -620,6 +621,13 @@ Resuming a paused specification resets its due boundary to the current
 interval. Intervals that elapsed while the specification was disabled are not
 replayed as catch-up work. Revising an already enabled specification preserves
 its existing due boundary.
+
+Manual runs default to one durable job attempt. An operator with a separately
+reviewed retry budget may set `--max-attempts 2`; values outside 1-2 are
+rejected before a run is created. The second attempt remains service-owned
+inside the same immutable run/job identity. The flag does not enable a
+specification, change timer runs, replay a terminal interval, or authorize a
+different selector, source, profile, access method, cost, or data scope.
 
 Example:
 

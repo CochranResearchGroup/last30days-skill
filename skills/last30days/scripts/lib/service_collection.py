@@ -730,9 +730,22 @@ class CollectionCoordinator:
         *,
         scheduled_for: str,
         trigger: str,
+        max_attempts: int | None = None,
     ) -> CollectionRun:
         if trigger not in _TRIGGERS:
             raise ValueError("trigger must be timer or manual")
+        if trigger == "timer":
+            if max_attempts is not None:
+                raise ValueError("timer max_attempts is service-owned")
+            resolved_max_attempts = 2
+        else:
+            resolved_max_attempts = 1 if max_attempts is None else max_attempts
+            if (
+                isinstance(resolved_max_attempts, bool)
+                or not isinstance(resolved_max_attempts, int)
+                or resolved_max_attempts not in {1, 2}
+            ):
+                raise ValueError("manual max_attempts must be 1 or 2")
         spec = self.get_spec(collection_spec_id)
         scheduled = _parse_timestamp(scheduled_for, "scheduled_for")
         interval_to_dt = self._floor_interval(scheduled, spec.interval_seconds)
@@ -841,7 +854,7 @@ class CollectionCoordinator:
             sources=(spec.source,),
             profile_id=spec.profile_id,
             freshness_window_seconds=spec.interval_seconds,
-            max_attempts=1 if trigger == "manual" else 2,
+            max_attempts=resolved_max_attempts,
             budget_cents=spec.budget_cents,
         )
         conn = self._connect()

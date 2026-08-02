@@ -20,6 +20,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Bounded manual collection retries.** Operator-triggered collection runs
+  retain a one-attempt default and now accept an explicit
+  `--max-attempts 2` override for separately reviewed transient-retry budgets.
+  Timer retry policy stays service-owned, invalid values fail before run
+  creation, and both attempts remain inside one immutable run/job identity.
+
 - **Configurable browser job timeout.** Every Reddit, X, Facebook, and LinkedIn
   agent-browser launch now passes a positive per-request control-plane timeout.
   The default follows that source's user-scoped browser timeout, while

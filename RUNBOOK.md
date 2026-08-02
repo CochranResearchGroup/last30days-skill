@@ -7709,3 +7709,78 @@ Next Bounded Action:
 - stop and ask the operator for the exact three-proof approval and 25-to-28
   cumulative attempt-ceiling increase. Do not execute a source or browser
   command before explicit approval.
+
+## Turn 123 | 2026-08-02
+
+Focus: consume the operator's higher approval threshold and convert the retry
+request into a bounded, review-first service controller.
+
+Authority Consulted:
+
+- operator instruction to raise the approval threshold/retry budgets and set
+  the cumulative ceiling to 50; Plan 0018 V23/C56; Roadmap P07; Runbook through
+  Turn 122; installed service and collection-spec readbacks; planning,
+  documentation, validation, release, Git, delegation, and closeout policy;
+  `last30days`, TDD, and codebase-design skill contracts.
+
+Decisions And Changes:
+
+- interpreted the standing cumulative approval ceiling as 50 while bounding
+  this packet to one initial attempt plus one transient-only service retry per
+  remaining X/LinkedIn identity, six attempts total and cumulative attempt use
+  no higher than 31;
+- derived retry-inclusive cumulative maxima of 76 accepted items, 1,307
+  governed requests, 2,640 seconds, zero cost/model use, and concurrency one;
+- kept recurrence, credential/private-scope changes, source/method/profile
+  expansion, nonzero cost/model use, integrity repair, release, and attempt 50
+  behind explicit stops;
+- CodeGraph proved the installed manual collection seam hard-codes one attempt,
+  so opened Version 24/C57 for a default-preserving operator-only
+  `collection run --max-attempts 2` patch, tests, docs, patch release, and
+  independent review before install or live proof work.
+
+Validation Evidence:
+
+- Git started clean with `HEAD == origin/main == edc31ec345f9413938b4a8cfeadcdb89b4039d18`;
+- canonical `last30days.service` is active/running and installed service
+  0.2.26/schema 12 reports ready on unchanged manifest
+  `21564f14a2c87f3d2ee27013470bdc3642e9d70997facebc726b75c92982c1fb`,
+  active index `index-28418bd968076bba6653223f`, and 59/59 documents/
+  embeddings;
+- an initial probe used the nonexistent unit name
+  `last30days-service.service`; the canonical-unit check immediately corrected
+  that false alarm and no drift or mutation occurred;
+- CodeGraph readback of `CollectionCoordinator.enqueue_interval` shows
+  `max_attempts=1 if trigger == "manual" else 2`; the public CLI currently has
+  no attempt override in installed 0.2.26;
+- source candidate 0.2.27 preserves default-one manual behavior, admits only
+  explicit manual values one/two, keeps timer attempts service-owned, and
+  exposes `collection run --max-attempts {1,2}`;
+- focused collection/CLI/release/runtime-package tests pass, the complete
+  `uv run pytest` suite passes, the authority audit reports one active plan
+  with zero issues, and `git diff --check` passes;
+- refreshed runtime manifest SHA-256 is
+  `d5664018d0bcd92bca376ced37f2cb6f8c20fc6bf213e951e62213337c8f9c79`.
+
+State Movement:
+
+- Plan 0018 `V23/C56 -> V24/C57`;
+- `awaiting_remaining_evidence_operator_gate -> awaiting_retry_policy_plan_review`;
+- operator authority is consumed, but install/restart/source work remains
+  closed until independent review passes.
+
+Subagent Status And Reconciliation:
+
+- `pending`; `/root/v23_plan_review` is reserved for one bounded read-only
+  Version 24 implementation/plan review after tests pass. Primary owns all
+  writes and every runtime/source mutation.
+
+Graphiti Write Status:
+
+- deferred until the non-trivial implementation/review checkpoint closes; no
+  memory job was submitted during planning.
+
+Next Bounded Action:
+
+- commit the validated Version 24/0.2.27 review surface, then obtain
+  independent review. Do not install or execute a source before review passes.

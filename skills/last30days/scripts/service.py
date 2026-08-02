@@ -328,6 +328,7 @@ def _collection(args: argparse.Namespace) -> int:
             args.collection_spec_id,
             scheduled_for=scheduled_for,
             trigger="manual",
+            max_attempts=args.max_attempts,
         ).to_dict()
     print(json.dumps(response, indent=2, sort_keys=True))
     return 0
@@ -545,6 +546,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     collection_run.add_argument("collection_spec_id")
     collection_run.add_argument("--scheduled-for")
+    collection_run.add_argument("--max-attempts", type=int, choices=(1, 2))
     collection_run.add_argument("--db")
     collection_run.set_defaults(handler=_collection)
 

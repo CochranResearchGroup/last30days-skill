@@ -21,7 +21,7 @@ from .service_knowledge import TemporalKnowledgeQuery
 from .service_supervisor import InvalidTransitionError
 
 
-SERVICE_VERSION = os.environ.get("LAST30DAYS_SERVICE_VERSION", "0.2.26")
+SERVICE_VERSION = os.environ.get("LAST30DAYS_SERVICE_VERSION", "0.2.27")
 PRODUCT_IDENTITY = "last30days"
 SERVICE_API_VERSION = 1
 DEFAULT_FRESH_SECONDS = 24 * 60 * 60

@@ -158,6 +158,65 @@ def test_manual_collection_run_has_one_attempt_ceiling(tmp_path):
     assert supervisor.get_job(manual.job_id).max_attempts == 1
 
 
+def test_manual_collection_run_accepts_two_attempt_ceiling(tmp_path):
+    _db_path, supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
+    stored = coordinator.put_spec(_spec(enabled=False))
+
+    manual = coordinator.enqueue_interval(
+        stored.collection_spec_id,
+        scheduled_for="2026-07-25T12:17:00Z",
+        trigger="manual",
+        max_attempts=2,
+    )
+
+    assert supervisor.get_job(manual.job_id).max_attempts == 2
+
+
+def test_manual_collection_run_rejects_attempt_ceiling_below_one(tmp_path):
+    _db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
+    stored = coordinator.put_spec(_spec(enabled=False))
+
+    with pytest.raises(ValueError, match="manual max_attempts must be 1 or 2"):
+        coordinator.enqueue_interval(
+            stored.collection_spec_id,
+            scheduled_for="2026-07-25T12:17:00Z",
+            trigger="manual",
+            max_attempts=0,
+        )
+
+    assert coordinator.list_specs()[0]["last_run"] is None
+
+
+def test_manual_collection_run_rejects_attempt_ceiling_above_two(tmp_path):
+    _db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
+    stored = coordinator.put_spec(_spec(enabled=False))
+
+    with pytest.raises(ValueError, match="manual max_attempts must be 1 or 2"):
+        coordinator.enqueue_interval(
+            stored.collection_spec_id,
+            scheduled_for="2026-07-25T12:17:00Z",
+            trigger="manual",
+            max_attempts=3,
+        )
+
+    assert coordinator.list_specs()[0]["last_run"] is None
+
+
+def test_timer_collection_run_rejects_attempt_override(tmp_path):
+    _db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
+    stored = coordinator.put_spec(_spec(enabled=True))
+
+    with pytest.raises(ValueError, match="timer max_attempts is service-owned"):
+        coordinator.enqueue_interval(
+            stored.collection_spec_id,
+            scheduled_for="2026-07-25T12:17:00Z",
+            trigger="timer",
+            max_attempts=1,
+        )
+
+    assert coordinator.list_specs()[0]["last_run"] is None
+
+
 def test_collection_spec_edits_require_one_new_immutable_revision(tmp_path):
     db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
     coordinator.put_spec(_spec())

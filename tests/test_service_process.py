@@ -253,6 +253,15 @@ def test_job_cli_exposes_explicit_operator_resume():
     assert args.resume is True
 
 
+def test_manual_collection_cli_exposes_bounded_attempt_override():
+    args = build_parser().parse_args(
+        ["collection", "run", "spec-x", "--max-attempts", "2"]
+    )
+
+    assert args.collection_spec_id == "spec-x"
+    assert args.max_attempts == 2
+
+
 def test_operator_intelligence_entrypoint_is_explicit_and_bounded():
     args = build_parser().parse_args(
         [

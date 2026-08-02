@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 23
+Plan version: 24
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -123,7 +123,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C56 is the current authority. Service architecture, timer
+Checkpoint P0018-C57 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -5268,3 +5268,185 @@ Next action:
   67-item, 1,157-request, 2,280-second, zero-cost/model, concurrency-one
   envelope and every C55 stop? No source or browser command may run before an
   explicit approval.
+
+## Version 24 | Standing attempt ceiling and bounded manual retries
+
+### Operator authority and bounded outcome
+
+The operator explicitly raised Plan 0018's cumulative source-attempt approval
+ceiling from 25 to 50 and requested larger retry budgets so routine transient
+failures do not repeatedly return to a human gate. This authority applies only
+inside the already approved Plan 0018 goal, sources, authenticated/public data
+classes, exact access methods, existing profiles, zero-cost/model boundary,
+and concurrency-one controller. It is not permission to spend all 50 attempts
+in this packet.
+
+For the three Version 23 proof identities, authorize at most two attempts per
+identity: one initial attempt plus one service-owned retry. The packet therefore
+adds at most six source attempts and can move cumulative actual use only from
+25 to 31. The 50-attempt value is the standing human-approval threshold for
+later bounded Plan 0018 successors: a separately planned and reviewed successor
+that preserves these exact systems, sources, data classes, profiles, access
+methods, cost, integrity, and concurrency constraints need not ask the operator
+again merely because it consumes another source attempt below 50.
+
+Retries add worst-case resource exposure beyond Version 23's one-attempt
+reservation. Add three retry maxima of three items, 50 governed requests, and
+120 seconds. This packet's cumulative maxima are therefore 31 source attempts,
+76 accepted items, 1,307 governed requests, 2,640 wall-clock seconds, zero
+cents, zero assessment/model calls, and acquisition concurrency one. Exceeding
+any packet maximum stops this packet. Reaching cumulative attempt 50 stops all
+later source work at a new human gate even when every other invariant passes.
+
+Recurrence, enabled specifications, a new source or identity, selector/method/
+profile/access-order change, credential work, service repair, browser-session
+cleanup, private-data expansion, nonzero cost/model use, push, tag,
+publication, and release remain separate authority. In particular, this
+approval does not enable a schedule.
+
+### Required narrow implementation slice
+
+The installed manual collection interface currently hard-codes
+`max_attempts=1`; timer runs use two. Add one operator-only
+`collection run --max-attempts N` option and thread it through
+`CollectionCoordinator.enqueue_interval`. Preserve the public default of one
+for manual runs and two for timer runs. Validate the override as an integer in
+the closed interval 1 through 2; reject an override on a timer-triggered call.
+Do not add the field to collection specifications or broaden the MCP research
+surface. Document the operator flag in `CONFIGURATION.md`.
+
+Use test-driven vertical slices:
+
+1. preserve a manual run's observable default of one attempt;
+2. prove an explicit manual value of two reaches the durable job record;
+3. prove zero, values above two, and timer overrides fail before a run/job is
+   created;
+4. prove the CLI exposes and forwards `--max-attempts 2` through the public
+   operator interface.
+
+After focused and full tests pass, build and install a new patch service
+release under the existing version/release policy, restart only the canonical
+`last30days.service` unit, and prove source manifest, MCP compatibility,
+database schema 12, rollback identity, 59/59 completeness, SQLite/config, and
+zero-enabled-spec state before any proof submission. Installation/restart is
+authorized only after the implementation and this Version 24 plan pass one
+fresh-context read-only review.
+
+### Retry eligibility and controller
+
+Run the same three Version 23 specifications, intervals, order,
+`agent_browser` method, and `last30days-facebook` profile. Submit each manual
+run with `--max-attempts 2`. The resident service owns both attempts inside the
+single immutable run/job identity; the primary agent must not create a second
+interval, replay a terminal run, or manually invoke a browser adapter.
+
+Attempt two is eligible only when attempt one fails with a service-classified
+transient transport, retained-session disconnect, profile-lease expiry, or
+worker-timeout outcome and the durable readback proves zero accepted, stored,
+deduplicated, or indexed side effects. It is ineligible after content yield,
+deduplicated yield, healthy zero yield, quality or method rejection,
+authentication/credential failure, selector mismatch, access-scope drift,
+database/index/integrity failure, ambiguous publication, or any nonzero or
+missing side-effect count. An ineligible result terminalizes the lane without
+retry and may advance to the next lane only when every global invariant and
+profile-lease check passes.
+
+No routine human ping is required for an eligible second attempt or for a
+later reviewed successor below cumulative attempt 50. Stop for human authority
+on recurrence, credentials/private scope, source/method/profile expansion,
+nonzero cost/model use, cumulative attempt 50, or any action outside the
+standing Plan 0018 boundary. Stop without asking for a retry on a global
+integrity failure, because additional authority cannot make corrupted evidence
+acceptable.
+
+Receipt `docs/dev/notes/0033-remaining-x-linkedin-evidence-completion.json`
+must add the configured and actual attempt count per job, the retry-eligibility
+classification and evidence for each attempt, and cumulative actual/reserved
+use against both the 31-attempt packet maximum and 50-attempt standing approval
+ceiling. All Version 23 immutable evidence and final-review requirements remain
+in force, except its one-attempt/no-retry statements are superseded only by
+this section.
+
+### Revised work graph and hard bounds
+
+| State | Authorized action | Exit condition |
+| --- | --- | --- |
+| `awaiting_retry_policy_plan_review` | plan, code/tests/docs, and read-only Git/runtime/database checks; no install or source work | one fresh reviewer passes after at most one consolidated remediation |
+| `remaining_evidence_authorized` | install reviewed patch runtime, then run three exact disabled manual proofs serially with at most two service-owned attempts each | all three identities terminal or the first global stop fires |
+| `awaiting_remaining_evidence_final_review` | receipt/docs and read-only validation only | one fresh reviewer passes or fails |
+| `awaiting_recurring_enable_gate` | no schedule mutation | a later separately reviewed packet receives explicit approval |
+
+One implementation/review packet, at most one consolidated plan-review
+remediation, six maximum source attempts, one terminal receipt review, and at
+most one consolidated final-review remediation are the hard bounds. The
+primary agent owns all writes, install/runtime commands, proof execution,
+receipt construction, and reconciliation. One fresh-context read-only reviewer
+audits the implementation/plan before install; another fresh-context read-only
+reviewer audits the terminal receipt.
+
+The Version 23 global stops remain, except an eligible service-owned attempt
+two and cumulative source attempts through 31 are now expected. Also stop on a
+manual retry value other than two, an attempt-three observation, retry without
+the eligibility evidence above, timer/spec enablement, installed version or
+manifest mismatch after upgrade, or inability to preserve the exact rollback
+artifact.
+
+### Checkpoint P0018-C57 | 2026-08-02
+
+Plan version:
+
+- 24
+
+State transition:
+
+- `awaiting_remaining_evidence_operator_gate -> awaiting_retry_policy_plan_review`
+
+Progress classification:
+
+- `blocker_reduction`; the operator gate is consumed, the standing threshold
+  is 50, and the requested retry budget is translated into one inspectable
+  service-owned retry per remaining identity rather than an unbounded loop.
+
+Authority classification:
+
+- `human_gate`; the operator authorizes the exact standing and
+  packet ceilings above. Code/tests/docs may proceed now. Install, restart, and
+  live proof work remain conditional on one fresh independent review pass.
+
+Current evidence and design finding:
+
+- `HEAD == origin/main == edc31ec345f9413938b4a8cfeadcdb89b4039d18` and the
+  worktree began clean;
+- canonical unit `last30days.service` is active/running; installed service
+  0.2.26/schema 12 reports ready on manifest
+  `21564f14a2c87f3d2ee27013470bdc3642e9d70997facebc726b75c92982c1fb`
+  with active index `index-28418bd968076bba6653223f` at 59/59;
+- the initial `last30days-service.service` probe was a wrong-unit-name false
+  alarm. No runtime drift occurred and the canonical unit readback corrected
+  it before planning continued;
+- CodeGraph shows `CollectionCoordinator.enqueue_interval` hard-codes manual
+  jobs to one attempt and timer jobs to two, so the retry request requires the
+  narrow reviewed operator-interface patch above rather than a docs-only
+  controller change;
+- source candidate service 0.2.27 now preserves the manual default of one,
+  accepts only explicit manual values one or two, rejects timer overrides, and
+  exposes `collection run --max-attempts {1,2}`. Focused collection/CLI/
+  release/runtime-package tests and the complete `uv run pytest` suite pass;
+  the deterministic runtime manifest is
+  `d5664018d0bcd92bca376ced37f2cb6f8c20fc6bf213e951e62213337c8f9c79`;
+- the deterministic authority audit passes with Plan 0018 as the sole active
+  plan and latest Runbook Turn 123; `git diff --check` passes;
+- all target specifications and recurrence remain disabled. No source, job,
+  interval, browser, install, service, or database mutation has run in C57.
+
+Delegation decision:
+
+- `pending`; reuse `/root/v23_plan_review` for one bounded read-only review of
+  the Version 24 plan and implementation after tests pass. The primary keeps
+  the critical-path implementation and all mutation authority local.
+
+Next action:
+
+- commit the validated Version 24/0.2.27 review surface and obtain the
+  independent read-only review. Do not install or run a proof before the
+  review passes.
