@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 19
+Plan version: 20
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -87,6 +87,12 @@ software with:
   therefore requires four fresh disabled observability proofs and explicitly
   rebaselines cumulative ceilings before recurring enablement can be
   reconsidered.
+- Version 19 consumed only its YouTube proof before stopping globally. The
+  bounded run succeeded with three deduplicated items and complete
+  observability, but updating mutable legacy chunk embeddings cascaded deletion
+  into the previously published immutable index. X and both LinkedIn proofs
+  were not run. Version 20 repairs index immutability without source traffic
+  and stops before any replacement proof.
 
 ## Standing Authority And Human Gates
 
@@ -107,14 +113,16 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C44 is the current authority. Service architecture, timer
+Checkpoint P0018-C45 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
 was healthy zero-yield rather than content yield, and the first recurring-gate
-assessment failed closed. Version 19 is `evidence_completion_authorized` after
-its independent review passed. The operator's `ok go` authorizes the bounded
-four-proof successor; it does not authorize recurring enablement.
+assessment failed closed. Version 19 terminated at its global integrity stop
+after one YouTube attempt. Version 20 is
+`active_index_immutability_remediation` under inherited implementation
+authority and permits no source attempt. Any replacement YouTube proof and
+recurring enablement remain separate human gates.
 Independent final review, push, tagging, publication, and release remain
 closed.
 
@@ -4239,3 +4247,144 @@ Next action:
 - commit C44 as the pre-live checkpoint. Then execute the four existing
   disabled specifications serially in the named order with one attempt each,
   no retry, and no schedule enablement. Stop on a global hard stop.
+
+## Version 20 | Immutable index-membership remediation
+
+### Trigger and bounded outcome
+
+Version 19's first proof published YouTube run
+`collection-run-b813953558bd3f2098bffb15f14168b1` on one attempt with one
+governed request and three accepted, stored, deduplicated items. Its receipt
+recorded 59 embeddings before publication and 56 afterward. Read-only database
+evidence then showed both the new index and the previously published
+`index-8c968b3c270aa6c2b5abcbac` at 56 embedding rows with identical membership
+digests. The old index had been mutated after publication, violating the
+immutable snapshot contract even though SQLite checks and service readiness
+remained healthy.
+
+Repair the existing retrieval/publication deep module so a content-version
+update refreshes the mutable current embedding without deleting the parent row
+referenced by historical index snapshots. Preserve historical index rows and
+publish a complete successor index for the new current document versions.
+Remain on schema 12 and retain rollback to service 0.2.24.
+
+### Scope and non-goals
+
+Owned write surfaces are:
+
+- `skills/last30days/scripts/lib/service_publication.py` and
+  `service_retrieval.py` at the existing chunk/version embedding seam;
+- one vertical public-path regression in existing publication/retrieval tests;
+- service version/runtime package evidence and only the governing
+  Plan/Roadmap/Runbook/receipt surfaces.
+
+Do not add an endpoint, schema migration, alternate index lifecycle, source
+attempt, schedule change, selector/method/profile change, credential work,
+assessment/model call, data deletion, push, tag, publication, or release.
+Do not reconstruct or silently rewrite the already-mutated historical index;
+receipt 0029 preserves that defect as evidence. The repaired service must
+prevent future mutation and publish forward from current authoritative corpus
+state.
+
+### Design and test contract
+
+The module interface remains `CorpusPublisher.record_result()`,
+`HybridRetriever.embed_pending_chunks()`, `publish_index()`, and service status.
+The implementation must:
+
+- stop deleting a mutable `chunk_embeddings` parent whose foreign-key cascade
+  removes copied rows from every historical `index_chunk_embeddings` snapshot;
+- treat a new current document version without its version embedding as
+  pending even when the stable legacy chunk already has an embedding;
+- upsert the stable current embedding in place, insert the version-specific
+  embedding, and leave every previously published index row byte-identical;
+- publish a new index whose embedding membership covers the current corpus and
+  whose semantic query observes the changed current text.
+
+The tracer test must fail on 0.2.24 by proving that publishing changed content
+reduces or mutates the old index. It passes only when the old index count and
+membership digest remain unchanged, the new index retains full embedding
+membership, current version embedding exists, and retrieval returns the new
+content. Add only the next test needed if the tracer exposes another invariant.
+
+### Work graph and bounds
+
+| Work unit | Dependency | Exit condition |
+| --- | --- | --- |
+| I01 vertical RED | C45 | one public publication/retrieval regression fails for historical index mutation |
+| I02 minimal GREEN | I01 | parent deletion is removed and current/version embeddings refresh without historical mutation |
+| I03 package/install | I02 | focused and full suites pass; version-distinct schema-12 artifact installs ready with rollback 0.2.24 retained |
+| I04 independent review | I03 | one fresh reviewer returns no critical finding after at most one remediation pass |
+
+One implementation packet, one vertical TDD cycle per revealed behavior, one
+review/rework cycle, zero source requests, zero model/assessment spend, and
+runtime mutation concurrency one. A schema change, rollback failure, corpus
+count loss, enabled specification, database integrity failure, package digest
+mismatch, or unresolved critical review finding stops the packet.
+
+### Acceptance and terminal state
+
+Acceptance requires deterministic proof that historical index rows no longer
+change after a current-version update; current and version embeddings refresh;
+the full repository suite, package checks, authority audit, and SQLite checks
+pass; a version-distinct service is installed ready on schema 12; all 37 specs
+remain disabled; and independent review passes.
+
+The packet then stops at `awaiting_replacement_youtube_proof_gate`. The consumed
+Version 19 YouTube identity is never retried. A distinct replacement proof
+would raise the cumulative envelope from 24 to 25 attempts and therefore
+requires explicit operator approval. X, LinkedIn, and recurring enablement
+remain prohibited until that successor gate is satisfied.
+
+### Checkpoint P0018-C45 | 2026-08-02
+
+Plan version:
+
+- 20
+
+State transition:
+
+- `evidence_completion_authorized -> global_integrity_stop -> active_index_immutability_remediation`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`; the no-source deterministic repair preserves Plan
+  0018's approved system, data, mutation, cost, and rollback envelope. It does
+  not authorize a replacement source attempt or increase a live ceiling.
+
+Evidence and containment:
+
+- receipt `docs/dev/notes/0029-timed-polling-observability-completion-receipt.json`
+  binds the YouTube run, all immutable envelope digests, exact counts and
+  provenance, the 59-to-56 embedding regression, identical current membership
+  hashes for old/new indexes, and three `not_run` lanes;
+- the hard stop fired before X or LinkedIn submission. One attempt, one
+  governed request, three accepted items, 1.942 seconds, and zero cost were
+  consumed; no retry ran;
+- service 0.2.24/schema 12 remains process-ready, SQLite `quick_check` is `ok`,
+  foreign-key check is empty, corpus remains 59 documents, active index reports
+  56 embeddings, and all 37 specifications remain disabled;
+- structural diagnosis identified the narrow failure: publication deletes the
+  stable chunk embedding before changing a version, and
+  `index_chunk_embeddings` uses an `ON DELETE CASCADE` foreign key to that
+  mutable parent.
+
+Delegation decision:
+
+- `not_spawned` for the tightly coupled RED/GREEN implementation; the primary
+  agent owns the deep module and package/install path. One fresh-context
+  read-only reviewer is reserved for I04.
+
+Graphiti write status:
+
+- deferred to the terminal remediation checkpoint; no memory is written from
+  the unreviewed diagnosis.
+
+Next action:
+
+- commit receipt 0029 and C45, then execute I01-I03 with vertical TDD and zero
+  source traffic. Stop before any replacement proof.

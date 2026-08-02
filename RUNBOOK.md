@@ -6910,3 +6910,74 @@ Next Bounded Action:
 
 - commit C44, then run the four existing disabled specifications serially in
   the exact Version 19 order. Do not run Reddit or enable recurrence.
+
+## Turn 109 | 2026-08-02
+
+Focus: execute the first Version 19 proof, enforce the global integrity stop,
+and open a no-source immutable-index remediation.
+
+Authority Consulted:
+
+- operator-approved Plan 0018 V19/C44; committed pre-live checkpoint
+  `ac6d9e9`; receipt 0028; current service/collection/job/envelope/index/SQLite
+  readbacks; CodeGraph publication and retrieval flows; and planning,
+  validation, goal, architecture, documentation, Git, and TDD policy.
+
+Decisions And Changes:
+
+- submitted only `p0018-v17-youtube-ytdlp-manual` at unique boundary
+  `2026-08-02T00:00:00Z`; the hard-coded manual supervisor enforced one attempt;
+- the job published three accepted/stored/deduplicated items through exact
+  `yt_dlp` provenance in 1.942 seconds, one governed request, and zero cost;
+- enforced the global integrity stop when the run receipt reported embedding
+  membership `59 -> 56`. X and both LinkedIn proofs are `not_run`; no retry or
+  recurring schedule ran;
+- read-only diagnosis proved that the old and new indexes now each contain 56
+  identical legacy embedding rows, while receipt 0028/C42 had bound the old
+  index at 59. Publication's parent deletion cascaded into historical index
+  rows despite SQLite relational checks passing;
+- persisted receipt 0029 and opened Version 20/C45 for a zero-source TDD repair
+  at the existing publication/retrieval deep module. Any replacement YouTube
+  proof is excluded and separately gated.
+
+Validation Evidence:
+
+- run `collection-run-b813953558bd3f2098bffb15f14168b1`, job
+  `10c3c04d-4434-45f6-bacf-142edc5922eb`, acquisition
+  `work-6172c7c87a0733843c913434016979ae`; one attempt, no retry;
+- exact counts are attempted/observed 8, accepted 3, rejected 5, stored 3,
+  deduplicated 3, indexed 3; all five immutable envelope digests are recorded
+  in receipt 0029;
+- both index membership lists currently hash to
+  `4e4b8a18a6d42721064368246f4eb27bb88cc90ab8c6ef8fcfb25fae5b434639`;
+  historical immutability is therefore disproven rather than inferred from
+  process readiness;
+- service remains ready on 0.2.24/schema 12, SQLite `quick_check` is `ok`,
+  foreign-key check is empty, document count is 59, active embeddings are 56,
+  and all 37 specs remain disabled.
+
+State Movement:
+
+- Plan 0018 `C44 -> C45`, version `19 -> 20`;
+- `evidence_completion_authorized -> global_integrity_stop` after one proof;
+- remediation `not_planned -> active_index_immutability_remediation`;
+- X, LinkedIn topic/profile, replacement YouTube, and recurrence remain
+  `not_authorized`/`not_run`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned` for live execution or diagnosis because service/profile/index
+  state is one serialized critical path. One fresh reviewer remains reserved
+  for the deterministic remediation.
+
+Graphiti Write Status:
+
+- deferred to the reviewed remediation checkpoint; no unreviewed diagnosis was
+  written as durable memory.
+
+Next Bounded Action:
+
+- commit receipt 0029 and C45. Then reproduce the cascade through the public
+  publication/retrieval path, repair it on schema 12, install a version-distinct
+  service with rollback retained, independently review, and stop before any
+  source proof.

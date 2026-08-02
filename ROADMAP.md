@@ -721,12 +721,12 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is installed service 0.2.24/schema 12, ready at 59
-  documents/59 embeddings with all 37 specifications disabled. C42 completed
-  the fresh Reddit observability proof; C44 is
-  `evidence_completion_authorized` for four independently reviewed,
-  operator-approved disabled successor proofs. Recurring enablement remains
-  separately gated.
+- Current authority is Plan 0018 version 20/C45. Installed service 0.2.24/schema
+  12 remains process-ready with 59 documents and all 37 specifications
+  disabled, but the first C44 YouTube proof exposed historical index mutation
+  and reduced active embedding membership to 56. X and both LinkedIn proofs
+  were not run. C45 authorizes a zero-source immutable-index remediation and
+  stops before a separately gated replacement proof or recurrence.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -832,17 +832,19 @@ Active Plan:
   snapshots. The first recurring-gate assessment failed because the other four
   yielding receipts predate that evidence contract and the planned 14
   scheduled identities no longer fit the consumed attempt ceiling. All 37
-  specifications remain disabled. C44 accepts the independently reviewed,
-  operator-approved four-proof evidence-completion successor; recurring
-  enablement remains a separate human gate.
+  specifications remain disabled. C44 accepted the independently reviewed,
+  operator-approved four-proof evidence-completion successor, but its first
+  YouTube proof triggered the global integrity stop when historical index
+  embedding membership mutated from 59 to 56. Version 20/C45 is the active
+  no-source remediation; recurring enablement remains a separate human gate.
 
 Next Bounded Action:
 
-- Execute C44 serially: one fresh disabled proof each for YouTube, X, LinkedIn
-  topic, and LinkedIn profile. Do not rerun Reddit or enable recurrence. Stop
-  on any global hard stop or ceiling breach. After receipt reconciliation,
-  independently review all five current proofs and return to a separate
-  recurring-enable human gate.
+- Execute C45 with vertical TDD: preserve historical index rows across current
+  content-version updates, package/install a version-distinct schema-12
+  service, independently review it, and stop at
+  `awaiting_replacement_youtube_proof_gate`. Do not run a source, enable a
+  schedule, or infer replacement-proof authority from the repair.
 
 ## Goal-Compatible Plan Conversion
 

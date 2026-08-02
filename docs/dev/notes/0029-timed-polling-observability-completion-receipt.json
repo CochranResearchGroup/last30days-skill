@@ -1,0 +1,126 @@
+{
+  "schema": "last30days.timed-polling-observability-completion-receipt.v1",
+  "plan": "P0018",
+  "plan_version": 19,
+  "checkpoint_before": "P0018-C44",
+  "authority": {
+    "classification": "human_gate",
+    "approval_evidence": "operator message in the active conversation: ok go",
+    "approved_scope": "one fresh disabled observability proof each for YouTube, X, LinkedIn topic, and LinkedIn profile within the Version 19 cumulative envelope",
+    "recurring_enablement_authorized": false
+  },
+  "pre_live_checkpoint": {
+    "commit": "ac6d9e9",
+    "service_version": "0.2.24",
+    "database_schema_version": 12,
+    "service_status": "ready",
+    "document_count": 59,
+    "embedding_count": 59,
+    "index_version": "index-8c968b3c270aa6c2b5abcbac",
+    "collection_spec_count": 37,
+    "enabled_spec_count": 0,
+    "config_mode": "0600"
+  },
+  "executed_proofs": [
+    {
+      "collection_spec_id": "p0018-v17-youtube-ytdlp-manual",
+      "scheduled_for": "2026-08-02T00:00:00Z",
+      "interval_from": "2026-08-01T00:00:00Z",
+      "interval_to": "2026-08-02T00:00:00Z",
+      "collection_run_id": "collection-run-b813953558bd3f2098bffb15f14168b1",
+      "job_id": "10c3c04d-4434-45f6-bacf-142edc5922eb",
+      "acquisition_id": "work-6172c7c87a0733843c913434016979ae",
+      "started_at": "2026-08-02T04:22:50.373842Z",
+      "completed_at": "2026-08-02T04:22:52.315559Z",
+      "wall_seconds": 1.942,
+      "attempts": 1,
+      "max_attempts": 1,
+      "job_state": "published",
+      "acquisition_status": "succeeded",
+      "error_code": null,
+      "retry": "not_run",
+      "network_request_count": 1,
+      "counts": {
+        "attempted": 8,
+        "observed": 8,
+        "accepted": 3,
+        "rejected": 5,
+        "stored": 3,
+        "deduplicated": 3,
+        "indexed": 3
+      },
+      "provenance": {
+        "adapter_variant": "youtube_ytdlp",
+        "attempted_access_methods": ["yt_dlp"],
+        "selected_access_method": "yt_dlp"
+      },
+      "pre_snapshot": {
+        "document_count": 59,
+        "embedding_count": 59,
+        "index_version": "index-8c968b3c270aa6c2b5abcbac"
+      },
+      "post_snapshot": {
+        "document_count": 59,
+        "embedding_count": 56,
+        "index_version": "index-761f40d7055bbc84a4018cd1"
+      },
+      "immutable_envelopes": {
+        "attempt_start_sha256": "ff9377a305bffb398eebf0039a8fc5a230c97c51c53b6dd615e769a4289a5a6b",
+        "work_request_sha256": "9de2a58b563335ce94a74d9a617044e9a1a78104a86dcd1393c8aac72eaa51f1",
+        "work_result_sha256": "059eabf232a0f7a52a06a40dc3ca69caa040343feeaf82c3c74062bb6a218920",
+        "acquisition_envelope_sha256": "cd1702d62a75f595dbdc5998c7028ff39d856a0178666d2ecf688ad9b381d0c0",
+        "run_receipt_sha256": "32cb39b5fadc51deab176f80d908eb56b373251fff2e16ed452b67f5e211c799"
+      },
+      "content_yield": "three accepted deduplicated items",
+      "proof_acceptance": "rejected_global_integrity_stop"
+    }
+  ],
+  "global_integrity_stop": {
+    "detected_at": "2026-08-02T04:26:55Z",
+    "reason": "publishing the deduplicated YouTube result reduced active embedding membership and mutated the previously published index's embedding rows",
+    "prior_receipt_embedding_count": 59,
+    "current_prior_index_embedding_rows": 56,
+    "new_index_embedding_rows": 56,
+    "prior_index_version": "index-8c968b3c270aa6c2b5abcbac",
+    "new_index_version": "index-761f40d7055bbc84a4018cd1",
+    "prior_index_membership_sha256_now": "4e4b8a18a6d42721064368246f4eb27bb88cc90ab8c6ef8fcfb25fae5b434639",
+    "new_index_membership_sha256": "4e4b8a18a6d42721064368246f4eb27bb88cc90ab8c6ef8fcfb25fae5b434639",
+    "immutable_history_preserved": false,
+    "sqlite_quick_check": "ok",
+    "sqlite_foreign_key_check_rows": 0,
+    "service_status": "ready",
+    "interpretation": "relational integrity and process health remain ready, but the immutable index-history contract is violated; ready status does not clear the Plan 0018 global stop"
+  },
+  "not_run": [
+    {
+      "collection_spec_id": "p0018-v17-x-browser-manual",
+      "reason": "global_integrity_stop_before_submission"
+    },
+    {
+      "collection_spec_id": "p0018-v17-linkedin-topic-browser-manual",
+      "reason": "global_integrity_stop_before_submission"
+    },
+    {
+      "collection_spec_id": "p0018-v17-linkedin-profile-browser-manual",
+      "reason": "global_integrity_stop_before_submission"
+    }
+  ],
+  "post_state": {
+    "service_version": "0.2.24",
+    "database_schema_version": 12,
+    "service_status": "ready",
+    "document_count": 59,
+    "embedding_count": 56,
+    "index_version": "index-761f40d7055bbc84a4018cd1",
+    "collection_spec_count": 37,
+    "enabled_spec_count": 0,
+    "source_attempts_consumed_this_packet": 1,
+    "network_requests_consumed_this_packet": 1,
+    "accepted_items_this_packet": 3,
+    "wall_seconds_this_packet": 1.942,
+    "cost_cents_this_packet": 0
+  },
+  "terminal_state": "global_integrity_stop",
+  "recurring_enable_gate_ready": false,
+  "summary": "The first Version 19 proof completed within source bounds and produced exact YouTube observability, but publication mutated historical index embedding membership from the C42-recorded 59 rows to 56. The global integrity stop terminated the packet before X or LinkedIn. All specifications remain disabled, no retry ran, and recurring enablement remains prohibited."
+}
