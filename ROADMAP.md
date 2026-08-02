@@ -721,7 +721,17 @@ least-privilege agent clients.
 
 Current State:
 
-- The installed v0.2.20/schema-12 daemon, Unix-socket MCP adapter, durable
+- Current authority is installed service 0.2.24/schema 12, ready at 59
+  documents/59 embeddings with all 37 specifications disabled. C42 completed
+  the fresh Reddit observability proof; C44 is
+  `evidence_completion_authorized` for four independently reviewed,
+  operator-approved disabled successor proofs. Recurring enablement remains
+  separately gated.
+- The remaining bullets in this Current State block preserve chronological
+  implementation history; version phrases such as "installed" or "now" are
+  scoped to their historical checkpoint and do not override the first bullet.
+- Historical baseline: the then-installed v0.2.20/schema-12 daemon,
+  Unix-socket MCP adapter, durable
   collection supervisor, temporal corpus, semantic index, Graphiti projection,
   and App Intelligence contracts already demonstrate most runtime seams.
 - Source and distribution are still conceptually anchored under
@@ -774,9 +784,11 @@ Current State:
   The corpus settled at 59 documents/59 embeddings, all 37 specifications are
   disabled, rollback remains 0.2.20, and MCP adapter 4.0.1 was regenerated and
   reinstalled to restore its embedded contract-digest compatibility.
-- Independent receipt review rejected recurring enablement: actual request
-  use, exact per-run index/deduplication counts, and a live 0.2.22 Reddit proof
-  are missing. The packet is `manual_canary_blocked`, not awaiting enablement.
+- Historical C39 result: independent receipt review rejected recurring
+  enablement because actual request use, exact per-run index/deduplication
+  counts, and a live repaired-Reddit proof were missing. C41-C42 subsequently
+  repaired and proved Reddit observability; the other four legacy receipt gaps
+  remain the bounded C43 successor scope.
 
 Goal Seeds:
 
@@ -811,20 +823,26 @@ Active Plan:
   is the open transition authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
   rollback are accepted foundations on installed service 0.2.24/schema 12.
-  Plan version 18 adds contract-bound request and outcome counts, immutable
+  Plan version 19 consumes the version-18 contract-bound request and outcome
+  counts, immutable
   schema-12 start/final receipts, pre/post corpus/index snapshots, and public
   `collection list` `last_run` evidence. Checkpoint C42 records the separately
   authorized Reddit keyless proof as complete: one attempt, six governed
   requests, healthy zero yield, exact immutable receipt and unchanged 59/59
-  snapshots. All 37 specifications remain disabled; recurring enablement is a
-  separate human gate.
+  snapshots. The first recurring-gate assessment failed because the other four
+  yielding receipts predate that evidence contract and the planned 14
+  scheduled identities no longer fit the consumed attempt ceiling. All 37
+  specifications remain disabled. C44 accepts the independently reviewed,
+  operator-approved four-proof evidence-completion successor; recurring
+  enablement remains a separate human gate.
 
 Next Bounded Action:
 
-- Stop at `awaiting_recurring_enable_gate`. Before any schedule enablement,
-  independently evaluate the complete five-lane manual evidence, explicitly
-  distinguish healthy process proof from content yield, and obtain a new
-  operator approval. Do not infer recurring authority from C42.
+- Execute C44 serially: one fresh disabled proof each for YouTube, X, LinkedIn
+  topic, and LinkedIn profile. Do not rerun Reddit or enable recurrence. Stop
+  on any global hard stop or ceiling breach. After receipt reconciliation,
+  independently review all five current proofs and return to a separate
+  recurring-enable human gate.
 
 ## Goal-Compatible Plan Conversion
 

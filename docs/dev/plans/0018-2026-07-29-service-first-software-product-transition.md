@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 18
+Plan version: 19
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -81,6 +81,12 @@ software with:
   complete immutable zero-yield receipt, and unchanged 59/59 corpus/index
   state. Recurring production collection is not authorized, and no
   specification is enabled.
+- The C42 recurring-gate assessment failed closed: the four yielding version-17
+  receipts predate the version-18 observability contract, and the separately
+  authorized Reddit successor makes six consumed manual attempts. Version 19
+  therefore requires four fresh disabled observability proofs and explicitly
+  rebaselines cumulative ceilings before recurring enablement can be
+  reconsidered.
 
 ## Standing Authority And Human Gates
 
@@ -101,14 +107,14 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C42 is the current authority. Service architecture, timer
+Checkpoint P0018-C44 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
-was healthy zero-yield rather than content yield, and state is
-`awaiting_recurring_enable_gate`. No further source attempt or recurring
-enablement is authorized by the consumed proof gate. The recurring enable gate
-must be evaluated and explicitly approved as a separate packet.
+was healthy zero-yield rather than content yield, and the first recurring-gate
+assessment failed closed. Version 19 is `evidence_completion_authorized` after
+its independent review passed. The operator's `ok go` authorizes the bounded
+four-proof successor; it does not authorize recurring enablement.
 Independent final review, push, tagging, publication, and release remain
 closed.
 
@@ -4008,3 +4014,228 @@ Next action:
   complete. Do not run another source attempt or enable any specification.
   Any recurring canary requires a separately reviewed packet and explicit
   operator approval; push, tag, publication, and release remain closed.
+
+## Version 19 | Five-lane evidence-completion successor
+
+### Bounded outcome
+
+Complete the version-18 observability evidence set for the four yielding
+version-17 lanes without rerunning Reddit or enabling recurrence. Run exactly
+one fresh, serialized, disabled-specification proof for YouTube topic, X topic,
+LinkedIn topic, and LinkedIn profile. Each proof must publish the complete
+request, outcome, provenance, and pre/post snapshot receipt now proven by C42.
+
+The legacy version-17 attempts remain consumed historical evidence. They are
+not rewritten, inferred complete, or retried. The new proofs are distinct
+successor identities. This packet may create durable run/job/acquisition,
+corpus/index, and receipt state produced by the four existing selectors. It may
+not run Reddit, change a selector, method, profile, credential, access order,
+quality threshold, assessment setting, or service release; enable any schedule;
+push, tag, publish, or release; or touch unrelated browser sessions.
+
+### Authority and cumulative ceilings
+
+The operator's 2026-08-01 `ok go`, given immediately after the failed recurring
+gate assessment and its exact successor recommendation, authorizes this
+four-proof packet and the following cumulative ceiling rebaseline. Live work
+remains conditional on one independent plan review returning no critical
+finding after at most one consolidated remediation pass.
+
+The packet accounts for all work conservatively:
+
+| Evidence class | Attempts | Accepted items | Governed requests | Wall seconds |
+| --- | ---: | ---: | ---: | ---: |
+| five legacy V17 manual identities | 5 | 10 actual | 250 reserved because actual use is unreconcilable | 51.939 actual |
+| C42 Reddit observability successor | 1 | 0 actual | 6 actual | 2.082 actual |
+| four V19 evidence-completion proofs | 4 | 12 maximum | 200 maximum | 480 maximum |
+| later 48-hour recurring canary, still gated | 14 | 42 maximum | 700 maximum | 1,680 maximum |
+| rebaselined cumulative envelope | 24 | 64 | 1,156 | 2,280 |
+
+Cost remains zero cents, assessment/model calls remain zero, and active
+acquisition concurrency remains one. The wall envelope retains the V17 2,280
+second ceiling because the exact legacy and C42 usage plus both future maxima
+sum to 2,214.021 seconds. The attempt, item, and request ceilings increase only
+to cover the consumed successor and four new proofs while preserving the
+planned 14 scheduled identities. A future recurring packet may tighten these
+ceilings from exact V19 usage but may not exceed them without another human
+gate.
+
+### Proof identities and execution order
+
+Use the existing disabled version-17 specifications without revision:
+
+1. `p0018-v17-youtube-ytdlp-manual` using exact `yt_dlp`;
+2. `p0018-v17-x-browser-manual` using exact `agent_browser`;
+3. `p0018-v17-linkedin-topic-browser-manual` using exact `agent_browser`;
+4. `p0018-v17-linkedin-profile-browser-manual` using exact `agent_browser`.
+
+Select one fresh cadence boundary per specification that cannot deduplicate to
+an existing run. Before each submission, re-read the latest run and enabled
+state. Set supervisor `max_attempts=1`; do not retry or replay a failed,
+deduplicated, skipped, or incomplete identity. Keep every specification
+disabled before and after its proof. Browser-backed work is serialized on
+`last30days-facebook`; confirm the prior lease is released before advancing.
+No subagent may operate the service, browser profile, or live proof commands.
+
+### Evidence and acceptance contract
+
+Each fresh proof must expose through public `collection list` and immutable
+schema-12 envelopes:
+
+- distinct run, job, acquisition, and attempt identities plus selector/spec
+  digests and exact scheduled interval;
+- exact governed request count within 50, zero cost, one attempt, and terminal
+  wall time within 120 seconds;
+- attempted, observed, accepted, rejected, stored, deduplicated, and indexed
+  counts with their invariants satisfied;
+- attempted and selected access methods plus concrete adapter variant;
+- exact pre/post document count, embedding count, and active index version;
+- truthful yield classification: content yield, deduplicated yield, healthy
+  zero yield, quality rejection, method rejection, or failure.
+
+Receipt `docs/dev/notes/0029-timed-polling-observability-completion-receipt.json`
+must bind all four new proofs, the C42 Reddit proof, the five consumed legacy
+identities, cumulative actual/reserved usage, current enabled-spec count, and
+every immutable payload digest. Missing evidence is `not_proven`, never zero or
+success. Content yield is not required for process proof, but only a non-empty
+accepted/stored result supports current selector yield.
+
+### Work graph, review, and hard stops
+
+| State | Authorized action | Exit condition |
+| --- | --- | --- |
+| `awaiting_evidence_completion_review` | docs, deterministic validation, read-only runtime checks | one independent reviewer returns no critical finding |
+| `evidence_completion_authorized` | four exact disabled manual proofs, serialized, no retry | all four identities terminal or a global stop fires |
+| `awaiting_five_lane_review` | no source or schedule mutation | receipt 0029 and live state independently reviewed |
+| `awaiting_recurring_enable_gate` | no schedule mutation | a later explicit operator approval covers a reviewed recurring packet |
+
+Global hard stops are service/database integrity failure, any enabled
+specification, private config mode drift, runtime non-convergence affecting the
+owned browser lane, ambiguous `last30days-facebook` ownership, inability to
+enforce exact method or one-attempt supervision, missing immutable receipt,
+ceiling breach, credential/data-scope change, or inability to preserve
+rollback. A source-local failure records that terminal identity and may allow
+the next unrelated lane only when service integrity, ownership, and cumulative
+ceilings remain sound. No failed lane is retried.
+
+Delegation is deliberately limited to two fresh-context read-only reviews:
+one before live work and one after receipt reconciliation. The primary agent
+owns plan integration, all live commands, receipt construction, validation,
+and final judgment. Each review has one pass; the plan review permits at most
+one consolidated remediation, while a failed final evidence review stops the
+packet split, reframed, or blocked.
+
+### Checkpoint P0018-C43 | 2026-08-01
+
+Plan version:
+
+- 19
+
+State transition:
+
+- `awaiting_recurring_enable_gate -> awaiting_evidence_completion_review`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `human_gate`; the operator's `ok go` authorizes the exact four-proof
+  successor and cumulative rebaseline above, conditional on independent plan
+  review. Recurring enablement remains a separate unconsumed human gate.
+
+Current evidence and changed assumption:
+
+- independent recurring-gate assessment returned `FAIL`: four yielding legacy
+  receipts prove 10 stored items but not the version-18 request/count/snapshot
+  contract; Reddit proves complete healthy-zero-yield observability but no
+  current content yield;
+- five original manual attempts plus the C42 successor consume six identities,
+  so the planned 14 scheduled identities no longer fit V17's maximum 19;
+- C43 treats legacy identities as consumed and reserves their full 250-request
+  allowance rather than inventing actual usage. The cumulative envelope is
+  rebaselined to 24 attempts, 64 items, 1,156 requests, 2,280 seconds, zero
+  cost/model use, and concurrency one;
+- current readbacks show service 0.2.24/schema 12 ready, config mode 0600,
+  59 documents/59 embeddings, authority audit passing, and all 37
+  specifications disabled.
+
+Subagent status and reconciliation:
+
+- `completed`; fresh-context read-only reviewer `/root/v19_plan_review`
+  returned `FAIL` with one consolidated authority-drift finding: Roadmap P07
+  still presented v0.2.20/C39 facts as current. The single permitted
+  remediation marked that progression historical and added current
+  0.2.24/C42/C43 authority. Scope, arithmetic, exact methods, evidence,
+  attempt controls, serialization, hard stops, and the separate recurring gate
+  were otherwise sound. No delegated writer or live operator was authorized.
+
+Graphiti write status:
+
+- deferred until the reviewed plan checkpoint or terminal evidence checkpoint;
+  the C42 asynchronous write is not retried by this packet.
+
+Next action:
+
+- independently review Version 19/C43. If it passes after at most one bounded
+  remediation, write a durable reviewed checkpoint and commit it before any
+  source request. Otherwise stop without live mutation.
+
+### Checkpoint P0018-C44 | 2026-08-01
+
+Plan version:
+
+- 19
+
+State transition:
+
+- `awaiting_evidence_completion_review -> evidence_completion_authorized`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `human_gate`; the operator-approved four-proof successor may run
+  within Version 19's exact cumulative envelope. Recurring enablement remains
+  a separate unconsumed human gate.
+
+Independent review and remediation:
+
+- fresh-context reviewer `/root/v19_plan_review` returned one consolidated
+  `FAIL`: Roadmap P07 retained superseded v0.2.20/C39 facts as current state;
+- the one permitted remediation added explicit current 0.2.24/C42/C43
+  authority and marked the remaining progression historical;
+- the same reviewer returned `PASS` after remediation with no remaining
+  critical finding. It confirmed the 24-attempt/64-item/1,156-request/2,280-
+  second arithmetic, exact methods and selectors, evidence contract,
+  one-attempt/no-retry policy, browser serialization, hard stops, and separate
+  recurring gate;
+- `git diff --check` and the deterministic authority audit pass with one active
+  plan, latest Runbook Turn 107, and zero issues.
+
+Current containment:
+
+- no source, schedule, service, config, credential, or browser mutation has
+  occurred in Version 19;
+- service 0.2.24/schema 12 remains ready, config is mode 0600, corpus/index is
+  59/59, and all 37 specifications remain disabled.
+
+Subagent status and reconciliation:
+
+- `completed`; `/root/v19_plan_review` was read-only and made no edits or live
+  mutations. Its sole finding was accepted and repaired in the bounded pass;
+  its post-remediation verdict is the independent plan acceptance evidence.
+
+Graphiti write status:
+
+- deferred to the terminal evidence checkpoint so the durable memory can bind
+  actual proof outcomes; no prior job was retried.
+
+Next action:
+
+- commit C44 as the pre-live checkpoint. Then execute the four existing
+  disabled specifications serially in the named order with one attempt each,
+  no retry, and no schedule enablement. Stop on a global hard stop.

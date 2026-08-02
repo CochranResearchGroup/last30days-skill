@@ -6786,3 +6786,127 @@ Next Bounded Action:
 - stop. Any recurring canary enablement requires a separately reviewed packet
   and explicit operator approval. Do not run another source attempt, enable a
   specification, push, tag, publish, or release under this completed goal.
+
+## Turn 107 | 2026-08-01
+
+Focus: assess the recurring gate and define the fail-closed five-lane
+evidence-completion successor without running a source or enabling recurrence.
+
+Authority Consulted:
+
+- the operator's `ok go`; AGENTS.md; Plan 0018 C42; Roadmap P07; Runbook Turn
+  106; receipts 0027 and 0028; current service, collection, index, config-mode,
+  agent-browser, Git, and authority-audit readbacks; and planning, validation,
+  goal, documentation, Git, parallel, multi-agent, and closeout policies.
+
+Decisions And Changes:
+
+- recurring-gate assessment returned `FAIL`: four yielding legacy manual
+  receipts prove 10 stored items but lack exact request use, outcome/index
+  counts, and per-run snapshots; Reddit's complete receipt proves healthy
+  zero-yield execution, not content yield;
+- six manual identities are consumed, leaving only 13 of V17's 19 attempts for
+  the planned 14 scheduled identities; legacy request use is unreconcilable;
+- opened Plan 0018 version 19/C43 for exactly four fresh disabled proofs:
+  YouTube, X, LinkedIn topic, and LinkedIn profile. Reddit is excluded and no
+  schedule may be enabled;
+- conservatively reserved all 250 legacy request units and rebaselined the
+  complete manual-plus-later-scheduled envelope to 24 attempts, 64 accepted
+  items, 1,156 governed requests, 2,280 seconds, zero cost/model calls, and
+  concurrency one;
+- recorded the operator's approval as conditional on one passing independent
+  plan review. No source, schedule, service, configuration, credential,
+  browser, push, tag, publication, or release mutation occurred.
+
+Validation Evidence:
+
+- service 0.2.24/schema 12 is ready at 59 documents/59 embeddings and
+  `index-8c968b3c270aa6c2b5abcbac`; config mode is 0600;
+- current collection readback reports 37 specifications, zero enabled, and
+  complete C42 fields only on the Reddit canary's latest run;
+- the repository authority audit passed at Turn 106 before this planning edit;
+  final audit and diff validation remain required after C43 reconciliation.
+
+State Movement:
+
+- Plan 0018 `C42 -> C43` and version `18 -> 19`;
+- recurring assessment `awaiting_recurring_enable_gate -> failed_closed`;
+- evidence completion `not_planned -> awaiting_evidence_completion_review`;
+- all schedule state remains disabled and recurring enablement remains
+  `not_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `completed`; fresh-context read-only reviewer `/root/v19_plan_review`
+  returned `FAIL` with one consolidated finding: Roadmap P07 retained stale
+  v0.2.20/C39 facts as current state. The single permitted remediation marked
+  those facts historical and added the current 0.2.24/C42/C43 authority. The
+  reviewer found the scope, arithmetic, exact methods, evidence contract,
+  attempt policy, serialization, hard stops, and separate recurring gate
+  otherwise sound. No delegated writer or live operator was authorized.
+
+Graphiti Write Status:
+
+- deferred to the reviewed plan checkpoint or terminal evidence checkpoint;
+  no retry of C42's asynchronous job was made.
+
+Next Bounded Action:
+
+- run one independent plan review. On pass after at most one consolidated
+  remediation, persist and commit the reviewed checkpoint before live work.
+  On fail, stop without a source attempt or schedule mutation.
+
+## Turn 108 | 2026-08-01
+
+Focus: reconcile the independent Version 19 plan review and establish the
+recoverable C44 pre-live checkpoint.
+
+Authority Consulted:
+
+- Plan 0018 V19/C43; Roadmap P07; Runbook Turn 107; reviewer
+  `/root/v19_plan_review`; current Git diff; deterministic authority audit; and
+  planning, validation, documentation, multi-agent, Git, and closeout policy.
+
+Decisions And Changes:
+
+- accepted the reviewer's one consolidated finding that Roadmap P07 presented
+  superseded v0.2.20/C39 facts as current;
+- used the one permitted remediation to add explicit current
+  0.2.24/C42/C43 authority and qualify the remaining progression as historical;
+- accepted the reviewer's post-remediation `PASS` with no remaining critical
+  finding and advanced C43 to C44 `evidence_completion_authorized`;
+- preserved the four-proof scope, rebaselined ceilings, exact selectors and
+  methods, one-attempt/no-retry behavior, serialized browser ownership, global
+  hard stops, and separately unconsumed recurring-enable gate.
+
+Validation Evidence:
+
+- reviewer confirmed the attempt/item/request/wall arithmetic and all gate and
+  evidence semantics; it made no edits or runtime mutations;
+- `git diff --check` and the authority audit pass with one active plan, latest
+  Runbook Turn 107 before this entry, and zero issues;
+- no source, schedule, service, configuration, credential, or browser mutation
+  occurred during planning/review.
+
+State Movement:
+
+- Plan 0018 `C43 -> C44`, remaining at version 19;
+- `awaiting_evidence_completion_review -> evidence_completion_authorized`;
+- recurring enablement remains `not_authorized`; all specifications remain
+  disabled.
+
+Subagent Status And Reconciliation:
+
+- `completed`; `/root/v19_plan_review` returned `FAIL` then post-remediation
+  `PASS`. Its only finding was accepted, repaired once, and independently
+  verified; no delegated writer or live operator was used.
+
+Graphiti Write Status:
+
+- deferred to the terminal proof checkpoint so durable memory binds outcomes;
+  no prior job was retried.
+
+Next Bounded Action:
+
+- commit C44, then run the four existing disabled specifications serially in
+  the exact Version 19 order. Do not run Reddit or enable recurrence.
