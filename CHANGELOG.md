@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Canonical X profile and operator handoff.** X acquisition now consumes the
+  stable user-scoped target binding in `agent-browser.json` when an explicit
+  run/environment override is absent, while the live agent-browser access plan
+  remains authoritative. Genuine X authentication or checkpoint gates retain
+  agent-browser's direct external Guacamole `publicOperatorUrl`; localhost
+  dashboard/embed URLs are never substituted as the human interaction link.
 - **Reddit adapter provenance.** Reddit acquisition diagnostics now derive the
   concrete `reddit_keyless`, `reddit_agent_browser`, or
   `reddit_scrapecreators` variant from the recorded access-method chain, while

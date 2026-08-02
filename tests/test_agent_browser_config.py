@@ -49,6 +49,34 @@ def access_plan():
 
 
 class AgentBrowserConfigTests(unittest.TestCase):
+    def test_loads_stable_user_scoped_target_configuration(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "agent-browser.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": agent_browser_config.SCHEMA_VERSION,
+                        "targets": {
+                            "x": {
+                                "profile_id": "last30days-facebook",
+                                "browser_build": "stealthcdp_chromium",
+                                "browser_host": "remote_headed",
+                                "view_stream_provider": "rdp_gateway",
+                                "display_isolation": "private_virtual_display",
+                                "runtime_browser_id": "must-not-load",
+                            }
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            target = agent_browser_config.load_target_config("x", path=path)
+
+        self.assertEqual("last30days-facebook", target["profile_id"])
+        self.assertEqual("rdp_gateway", target["view_stream_provider"])
+        self.assertNotIn("runtime_browser_id", target)
+
     def test_records_only_stable_user_scoped_target_configuration(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "agent-browser.json"

@@ -858,15 +858,18 @@ Active Plan:
   a manual `--max-attempts 2` control. C58 records the bounded initial FAIL,
   one remediation, and terminal PASS. C59 installs exact 0.2.27 and records
   the first X attempt stopping `awaiting_operator/auth_required` with zero
-  side effects and no retry; LinkedIn remains `not_run`. Recurring enablement
-  remains a later separate gate.
+  side effects and no retry. C60/Version 25 records the operator correction:
+  the canonical X profile is already authenticated, while the repo failed to
+  consume its durable binding and dropped agent-browser's external Guacamole
+  handoff URL. Candidate 0.2.28 repairs those seams without a source attempt;
+  LinkedIn remains `not_run`. Recurring enablement remains a later gate.
 
 Next Bounded Action:
 
-- Reattach the retained browser from `http://127.0.0.1:4848/`, authenticate X
-  manually without sharing credentials, and report completion. Do not resume
-  the job, spend attempt two, start LinkedIn, push, or enable recurrence until
-  the exact successor disposition is recorded.
+- Finish validation and independent review of candidate service 0.2.28. Do not
+  install, resume the X job, spend attempt two, start LinkedIn, push, or enable
+  recurrence before terminal review PASS; never substitute a localhost
+  dashboard/embed URL for the direct external Guacamole operator handoff.
 
 ## Goal-Compatible Plan Conversion
 

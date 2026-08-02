@@ -7963,3 +7963,63 @@ Next Bounded Action:
 - operator opens `http://127.0.0.1:4848/`, reattaches the retained browser,
   authenticates X manually, and reports completion. Do not resume the job or
   spend another attempt before recording the successor disposition.
+
+## Turn 127 | 2026-08-02
+
+Focus: correct the recurring canonical X profile and operator-handoff defect
+without consuming another acquisition attempt.
+
+Authority Consulted:
+
+- operator correction; Plan 0018 V25/C60; Roadmap P07; user-scoped last30days
+  and agent-browser configuration; CodeGraph; bug-diagnosis, browser, TDD,
+  release, validation, documentation, and closeout policy.
+
+Decisions And Changes:
+
+- confirmed `~/.config/last30days/.env` and
+  `~/.config/last30days/agent-browser.json` bind X to
+  `last30days-facebook`; agent-browser also marks that profile authenticated
+  for X and the exact no-launch access plan selects it without manual action;
+- superseded C59's login conclusion and localhost-dashboard handoff;
+- added a schema-checked, allowlisted read path for the stable user-scoped X
+  binding while preserving explicit override and live-access-plan precedence;
+- propagated direct external Guacamole operator URLs through X auth/checkpoint
+  failures and changed shared-owner reuse to prefer `publicOperatorUrl` over
+  local stream/embed URLs;
+- bumped the independently installable service candidate to 0.2.28. No source,
+  browser, installed-service, profile, schedule, or database mutation ran.
+
+Validation Evidence:
+
+- the deterministic red loop produced four exact failures across stable-config
+  read, X fallback selection, auth-gate URL propagation, and external-route
+  preference; all are green after the fix;
+- focused config/X/Facebook/worker/release/runtime-package tests pass;
+- first full suite: 2,430 passed, 7 skipped, 6 subtests passed, with only the
+  stale Plan-version header audit failing; the header is now reconciled;
+- runtime-manifest SHA-256
+  `8b8d66fc9253c973be58b4dc929563a5c4926995976d9e1825114a8db591e365`;
+  artifact SHA-256
+  `da506f2b0db4b9a002056839f9bf9bfc024d1b82ac2535155b50c32a28fa72b4`.
+
+State Movement:
+
+- Plan 0018 `V24/C59 -> V25/C60`;
+- `awaiting_x_auth_operator -> x_profile_handoff_regression_active`;
+- X held job, LinkedIn lanes, recurrence, install, and push remain closed.
+
+Subagent Status And Reconciliation:
+
+- no delegated work in the implementation packet; one independent read-only
+  review is required after the clean candidate commit.
+
+Graphiti Write Status:
+
+- deferred until independent review and installed disposition are known.
+
+Next Bounded Action:
+
+- rerun authority audit and full suite, commit candidate 0.2.28 locally, and
+  request one independent review. Do not install or resume the held job before
+  PASS.

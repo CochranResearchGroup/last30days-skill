@@ -96,6 +96,73 @@ class FakeAgentBrowserClient:
 
 
 class XBrowserSearchTests(TestCase):
+    def test_uses_stable_user_scoped_x_profile_when_run_override_is_absent(self):
+        from lib import x_browser
+
+        client = FakeAgentBrowserClient()
+        with (
+            patch.object(x_browser, "CliAgentBrowserClient", return_value=client),
+            patch.object(
+                x_browser.agent_browser_config,
+                "load_target_config",
+                return_value={
+                    "profile_id": "last30days-facebook",
+                    "browser_build": "stealthcdp_chromium",
+                    "browser_host": "remote_headed",
+                    "view_stream_provider": "rdp_gateway",
+                    "display_isolation": "private_virtual_display",
+                },
+            ),
+        ):
+            result = x_browser.search_x_browser(
+                "OpenAI",
+                "2026-06-20",
+                "2026-07-20",
+                depth="quick",
+                config={
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertIsNone(result["error"])
+        self.assertEqual("last30days-facebook", client.requests[0].profile_id)
+        self.assertEqual("private_virtual_display", client.requests[0].display_isolation)
+
+    def test_auth_gate_returns_the_direct_external_guacamole_url(self):
+        from lib import x_browser
+
+        external_url = "https://agent-browser.example/guacamole/#/client/direct-x"
+        client = FakeAgentBrowserClient(auth=SimpleNamespace(
+            authenticated=False,
+            login_form=True,
+            checkpoint=False,
+            restricted=False,
+            url="https://x.com/i/flow/login",
+        ))
+        original_acquire = client.acquire_workspace
+
+        def acquire(request):
+            workspace = original_acquire(request)
+            workspace.operator_url = external_url
+            return workspace
+
+        client.acquire_workspace = acquire
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.search_x_browser(
+                "OpenAI",
+                "2026-06-20",
+                "2026-07-20",
+                depth="quick",
+                config={"LAST30DAYS_X_BROWSER_PROFILE": "last30days-facebook"},
+            )
+
+        self.assertEqual("auth_required", result["error_type"])
+        self.assertEqual(external_url, result["operator_url"])
+        self.assertEqual(external_url, result["diagnostics"]["operator_url"])
+        self.assertNotIn("127.0.0.1", result["operator_url"])
+
     def test_checkpoint_detection_does_not_treat_generic_challenge_copy_as_auth(self):
         from lib import x_browser
 
@@ -126,6 +193,7 @@ class XBrowserSearchTests(TestCase):
                 config={
                     "LAST30DAYS_X_BROWSER_PROFILE": "last30days-facebook",
                     "LAST30DAYS_X_BROWSER_SESSION": "last30days-facebook",
+                    "LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION": "shared_display",
                     "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
                     "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
                     "_NOW": NOW,
@@ -465,6 +533,66 @@ class XBrowserAcquisitionTests(TestCase):
         self.assertEqual("last30days-facebook", workspace.session_name)
         self.assertEqual("x", workspace.target_id)
         self.assertEqual(2, len(recorder.calls))
+
+    def test_shared_owner_prefers_direct_external_guacamole_url(self):
+        from lib import x_browser
+
+        external_url = "https://agent-browser.example/guacamole/#/client/direct-x"
+        plan = {
+            "selectedProfile": {"id": "last30days-facebook"},
+            "decision": {
+                "manualActionRequired": False,
+                "profileReuse": {
+                    "recommendedAction": "reuse_existing_browser",
+                    "sharedAcquisition": {
+                        "mode": "tab_new",
+                        "browserId": "session:last30days-facebook",
+                        "sessionName": "last30days-facebook",
+                    },
+                },
+            },
+        }
+        status = {
+            "service_state": {
+                "sessions": {
+                    "last30days-facebook": {
+                        "profileId": "last30days-facebook",
+                        "browserIds": ["session:last30days-facebook"],
+                        "tabIds": ["target:x"],
+                    },
+                },
+                "browsers": {
+                    "session:last30days-facebook": {
+                        "profileId": "last30days-facebook",
+                        "health": "ready",
+                        "viewStreams": [{
+                            "id": "guacamole:1",
+                            "provider": "rdp_gateway",
+                            "url": "http://127.0.0.1:8092/guacamole/#/client/local",
+                            "publicOperatorUrl": external_url,
+                            "readiness": {"state": "ready"},
+                        }],
+                    },
+                },
+                "tabs": {"target:x": {"targetId": "x", "url": "https://x.com/home"}},
+            },
+        }
+        recorder = RecordingCliClient([plan, status])
+        recorder._client._invoke = recorder.invoke
+
+        with patch.object(x_browser.agent_browser_config, "record_access_plan"):
+            workspace = recorder._client.acquire_workspace(
+                x_browser.BrowserWorkspaceRequest(
+                    profile_id="last30days-facebook",
+                    session_name="last30days-facebook",
+                    browser_build="stealthcdp_chromium",
+                    view_provider="rdp_gateway",
+                    timeout=45,
+                )
+            )
+
+        self.assertEqual(external_url, workspace.operator_url)
+        self.assertNotIn("127.0.0.1", workspace.operator_url)
 
 
 class XBrowserIntegrationTests(TestCase):

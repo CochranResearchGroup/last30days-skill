@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -12,6 +13,23 @@ from typing import Any
 
 SCHEMA_VERSION = "last30days.agent-browser-targets.v1"
 CONFIG_FILENAME = "agent-browser.json"
+_TARGET_ID = re.compile(r"^[a-z][a-z0-9_.-]{0,63}$")
+_STABLE_TARGET_FIELDS = frozenset(
+    {
+        "browser_build",
+        "browser_host",
+        "client_sharing_policy",
+        "control_input_provider",
+        "default_acquisition",
+        "display_isolation",
+        "profile_class",
+        "profile_id",
+        "profile_origin",
+        "profile_process_policy",
+        "recorded_at",
+        "view_stream_provider",
+    }
+)
 
 
 def config_path() -> Path:
@@ -23,6 +41,33 @@ def config_path() -> Path:
 def selected_profile_id(access_plan: dict[str, Any]) -> str:
     selected = access_plan.get("selectedProfile")
     return str(selected.get("id") or "") if isinstance(selected, dict) else ""
+
+
+def load_target_config(
+    target_service_id: str,
+    *,
+    path: Path | None = None,
+) -> dict[str, Any]:
+    """Load one stable, non-secret target binding from user scope."""
+    if not _TARGET_ID.fullmatch(target_service_id):
+        return {}
+    source = path or config_path()
+    try:
+        payload = json.loads(source.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    if not isinstance(payload, dict) or payload.get("schema_version") != SCHEMA_VERSION:
+        return {}
+    targets = payload.get("targets")
+    target = targets.get(target_service_id) if isinstance(targets, dict) else None
+    if not isinstance(target, dict):
+        return {}
+    return {
+        str(key): value
+        for key, value in target.items()
+        if key in _STABLE_TARGET_FIELDS
+        and (value is None or isinstance(value, (str, int, float, bool)))
+    }
 
 
 def record_access_plan(

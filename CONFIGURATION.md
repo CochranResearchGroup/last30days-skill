@@ -303,7 +303,7 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # LAST30DAYS_LINKEDIN_MAX_ACTIONS_PER_MINUTE=6
 # LAST30DAYS_LINKEDIN_DEBUG_DIR=~/.local/state/last30days/linkedin-debug
 
-# The Reddit, Facebook, and LinkedIn scrapers ask agent-browser for an access
+# The Reddit, X, Facebook, and LinkedIn scrapers ask agent-browser for an access
 # plan by target identity on every
 # acquisition. The access plan's retained browserId and sessionName route hints
 # override the optional session values above when a compatible shared profile
@@ -313,8 +313,11 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # Stable, non-secret access-plan selections are recorded at:
 # ~/.config/last30days/agent-browser.json
 # Set LAST30DAYS_CONFIG_DIR to place this file with the rest of the user-scoped
-# last30days configuration. The file records profile/build/host/provider/sharing
-# policy only. It never records cookies, credentials, profile paths, operator
+# last30days configuration. X reads that stable target binding as its fallback
+# when an explicit per-run/environment value is absent; explicit values still
+# win, and every acquisition still revalidates against the live access plan.
+# The file records profile/build/host/provider/sharing policy only. It never
+# records cookies, credentials, profile paths, operator
 # URLs, browser/session IDs, routes, displays, tabs, or page data. The live
 # access plan remains authoritative over the recorded file.
 #
@@ -332,7 +335,7 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # Debug artifacts contain timings, assertions, counts, and item lengths only;
 # they exclude cookies, operator URLs, raw HTML, and private page text.
 
-Reddit, X, Facebook, and LinkedIn browser failures are typed so operator action is unambiguous:
+Reddit, X, Facebook, and LinkedIn browser failures are typed so operator action is unambiguous. When X genuinely requires human interaction, its safe action uses agent-browser's direct external Guacamole `publicOperatorUrl`; a localhost dashboard or embed URL is diagnostic-only and is not returned as the operator handoff:
 
 | Error type | Meaning / action |
 |---|---|

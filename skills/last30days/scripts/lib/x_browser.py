@@ -312,7 +312,11 @@ class XBrowserScraper:
                 operator_url=workspace.operator_url,
             )
         if not auth.authenticated:
-            raise XBrowserFailure("auth_required", "X authentication is required")
+            raise XBrowserFailure(
+                "auth_required",
+                "X authentication is required",
+                operator_url=workspace.operator_url,
+            )
         query = _dated_query(topic, from_date, to_date)
         search_url = _search_url(query)
         retained = self.client.prepare_site_tab(workspace, "x.com", consolidate=True)
@@ -326,11 +330,19 @@ class XBrowserScraper:
         )
         page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
         if page.checkpoint:
-            raise XBrowserFailure("checkpoint_required", "X search opened a security checkpoint")
+            raise XBrowserFailure(
+                "checkpoint_required",
+                "X search opened a security checkpoint",
+                operator_url=workspace.operator_url,
+            )
         if page.restricted:
             raise XBrowserFailure("rate_limited", "X search reported an account restriction or rate limit")
         if page.login_page:
-            raise XBrowserFailure("auth_required", "X search redirected to login")
+            raise XBrowserFailure(
+                "auth_required",
+                "X search redirected to login",
+                operator_url=workspace.operator_url,
+            )
         if page.error_page:
             raise XBrowserFailure("search_unavailable", "X search returned a temporary error page")
         if not _page_matches_query(page, query):
@@ -376,12 +388,25 @@ def search_x_browser(
     config: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     config = config or {}
+    stable = agent_browser_config.load_target_config("x")
     settings = DEPTH_CONFIG.get(depth, DEPTH_CONFIG["default"])
     request = BrowserWorkspaceRequest(
-        profile_id=str(config.get("LAST30DAYS_X_BROWSER_PROFILE") or "last30days-facebook"),
+        profile_id=str(
+            config.get("LAST30DAYS_X_BROWSER_PROFILE")
+            or stable.get("profile_id")
+            or "last30days-facebook"
+        ),
         session_name=str(config.get("LAST30DAYS_X_BROWSER_SESSION") or "last30days-facebook"),
-        browser_build=str(config.get("LAST30DAYS_X_BROWSER_BUILD") or "stealthcdp_chromium"),
-        view_provider=str(config.get("LAST30DAYS_X_BROWSER_VIEW_PROVIDER") or "rdp_gateway"),
+        browser_build=str(
+            config.get("LAST30DAYS_X_BROWSER_BUILD")
+            or stable.get("browser_build")
+            or "stealthcdp_chromium"
+        ),
+        view_provider=str(
+            config.get("LAST30DAYS_X_BROWSER_VIEW_PROVIDER")
+            or stable.get("view_stream_provider")
+            or "rdp_gateway"
+        ),
         timeout=int(config.get("LAST30DAYS_X_BROWSER_TIMEOUT") or settings["timeout"]),
         start_url="https://x.com/home",
         service_name="last30days",
@@ -390,7 +415,12 @@ def search_x_browser(
         target_service_id="x",
         display_isolation=str(
             config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION")
+            or stable.get("display_isolation")
             or "shared_display"
+        ),
+        browser_host=str(stable.get("browser_host") or "remote_headed"),
+        control_input_provider=str(
+            stable.get("control_input_provider") or "manual_attached_desktop"
         ),
     )
     client = CliAgentBrowserClient(
@@ -418,24 +448,33 @@ def search_x_browser(
         return scraper.search(topic, from_date, to_date)
     except XBrowserFailure as exc:
         _log(f"Failed error_type={exc.error_type} message={exc}")
+        diagnostics = {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0}
+        if exc.operator_url:
+            diagnostics["operator_url"] = exc.operator_url
         return {
             "items": [],
             "error": str(exc),
             "error_type": exc.error_type,
             "profile": request.profile_id,
             "session": request.session_name,
-            "diagnostics": {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0},
+            "operator_url": exc.operator_url or None,
+            "diagnostics": diagnostics,
         }
     except browser_runtime.FacebookScraperFailure as exc:
         error_type = exc.error_type if exc.error_type in ERROR_TYPES else "agent_browser_error"
         _log(f"Failed error_type={error_type} message={exc}")
+        operator_url = str(getattr(exc, "operator_url", "") or "")
+        diagnostics = {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0}
+        if operator_url:
+            diagnostics["operator_url"] = operator_url
         return {
             "items": [],
             "error": str(exc),
             "error_type": error_type,
             "profile": request.profile_id,
             "session": request.session_name,
-            "diagnostics": {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0},
+            "operator_url": operator_url or None,
+            "diagnostics": diagnostics,
         }
 
 

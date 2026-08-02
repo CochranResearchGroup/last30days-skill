@@ -394,7 +394,7 @@ class CliAgentBrowserClient:
                 session_name=shared_owner["session_name"],
                 target_id=shared_owner["target_id"],
                 route_id=str(stream.get("id") or ""),
-                operator_url=str(stream.get("url") or stream.get("externalUrl") or ""),
+                operator_url=_operator_url(stream),
                 operator_visible_state="ready" if stream else "not_required",
             )
 
@@ -438,7 +438,7 @@ class CliAgentBrowserClient:
                 session_name=request.session_name,
                 target_id=target_id,
                 route_id=str(stream.get("id") or ""),
-                operator_url=str(stream.get("url") or stream.get("externalUrl") or ""),
+                operator_url=_operator_url(stream),
                 operator_visible_state="ready",
             )
 

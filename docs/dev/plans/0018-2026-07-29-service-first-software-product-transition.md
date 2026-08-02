@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 24
+Plan version: 25
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -123,7 +123,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C59 is the current authority. Service architecture, timer
+Checkpoint P0018-C60 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -5586,3 +5586,96 @@ Next action:
   completion. Do not resume the job, spend attempt two, start LinkedIn, push,
   or enable recurrence until that human action and the exact successor
   disposition are recorded.
+
+### Checkpoint P0018-C60 | 2026-08-02
+
+Plan version:
+
+- 25
+
+State transition:
+
+- `awaiting_x_auth_operator -> x_profile_handoff_regression_active`
+
+Progress classification:
+
+- `blocker_reduction`; operator correction disproves C59's login conclusion.
+  X is already authenticated under `last30days-facebook`, and both user-scoped
+  configuration surfaces contain that canonical binding.
+
+Authority classification:
+
+- `inherited_authority`; this is one bounded no-source successor repair under
+  the standing evidence-completion goal. It may change the X adapter,
+  user-scoped stable-config resolver, focused tests, release metadata, and
+  governing docs. It may not consume a source attempt, navigate a browser,
+  inspect credentials/cookies/private content, install or restart the service,
+  resume the held job, run LinkedIn, push, or enable recurrence before one
+  independent review pass.
+
+Changed assumption and current evidence:
+
+- `~/.config/last30days/.env` sets X profile/session to
+  `last30days-facebook`; `~/.config/last30days/agent-browser.json` records X
+  profile `last30days-facebook` and the stable remote-headed/RDP posture;
+- `~/.agent-browser/config.json` marks `last30days-facebook` authenticated for
+  X, Facebook, and LinkedIn with X readiness `fresh`; the exact no-launch X
+  access plan selects it with no manual action or seeding requirement;
+- the last30days stable target file is currently write-only: acquisition
+  records it but does not load it as the durable fallback;
+- the X adapter drops `workspace.operator_url` on `auth_required`, and the
+  shared-owner fast path prefers a generic stream URL over agent-browser's
+  direct external `publicOperatorUrl`. Therefore C59's localhost dashboard
+  handoff was not a valid product outcome.
+
+Bounded execution packet:
+
+1. Add a deterministic red test proving X reads the stable user-scoped target
+   profile/posture when per-run overrides are absent.
+2. Add a deterministic red test proving an X operator failure retains a direct
+   external Guacamole URL and never substitutes a localhost/dashboard URL.
+3. Implement the narrow resolver and operator-URL propagation, preserving
+   explicit env/per-run precedence and excluding runtime browser/session/route/
+   display leases from persistent configuration.
+4. Run focused config/X/worker/browser tests, full suite, package boundary,
+   manifest/artifact validation, and one independent read-only review.
+
+Bounds and terminal conditions:
+
+- maximum implementation attempts: 2; review/rework cycles: 1; concurrency: 1;
+- no network/source attempts, browser navigation, installed-runtime mutation,
+  or profile mutation in this packet;
+- stop at terminal PASS, a cross-repository agent-browser requirement, an
+  unresolved critical review finding, or repeated failure at the bounds.
+
+Next action:
+
+- write and run the two regression tests red, then implement the smallest
+  repo-local fix. Do not use or present a localhost dashboard URL as the human
+  interaction contract.
+
+Implementation and validation evidence:
+
+- the initial focused loop failed four exact assertions: no stable target
+  loader, no X failure `operator_url`, no durable fallback use, and localhost
+  URL selected ahead of `publicOperatorUrl`;
+- candidate service 0.2.28 adds an allowlisted, schema-checked stable target
+  reader; explicit run/environment values remain higher precedence and runtime
+  browser/session/route/display state remains excluded;
+- X auth/checkpoint failures retain the workspace operator URL in direct and
+  service diagnostics; shared-owner acquisition uses only the external
+  `publicOperatorUrl`/`externalUrl` chain for human handoff;
+- focused config/X/Facebook/worker/release/runtime-package tests pass. The first
+  full suite reached 2,430 passed, 7 skipped, and 6 subtests passed with one
+  governance-only failure caused by the stale plan header; no product test
+  failed;
+- runtime-manifest SHA-256 is
+  `8b8d66fc9253c973be58b4dc929563a5c4926995976d9e1825114a8db591e365`;
+  artifact `dist/service/last30days-service-0.2.28.tar.gz` has SHA-256
+  `da506f2b0db4b9a002056839f9bf9bfc024d1b82ac2535155b50c32a28fa72b4`.
+
+Review gate:
+
+- rerun the authority audit and full suite after this header reconciliation,
+  commit the bounded candidate locally, then request one independent read-only
+  review. Installation, job resume, and source work remain closed pending PASS.
