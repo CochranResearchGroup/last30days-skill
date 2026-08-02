@@ -8023,3 +8023,56 @@ Next Bounded Action:
 - rerun authority audit and full suite, commit candidate 0.2.28 locally, and
   request one independent review. Do not install or resume the held job before
   PASS.
+
+## Turn 128 | 2026-08-02
+
+Focus: accept terminal review PASS, install exact 0.2.28, and authorize one
+fresh X successor proof without resuming the failed job.
+
+Authority Consulted:
+
+- Plan 0018 V25/C60; reviewer `/root/v23_plan_review`; exact 0.2.28 artifact;
+  standing 50/31 attempt ceilings; installation, validation, goal, and
+  closeout policy.
+
+Decisions And Changes:
+
+- accepted terminal independent PASS with no findings and installed exact
+  service 0.2.28/schema 12; rollback is 0.2.27;
+- preserved old job `8808aca5-396d-4f9b-bbd5-192af6cad623` unchanged and
+  opened one fresh C61 X run identity instead of bypassing its ineligible auth
+  receipt;
+- kept LinkedIn, recurrence, push, and all collection specifications disabled.
+
+Validation Evidence:
+
+- primary full suite: 2,431 passed, 7 skipped, 6 subtests; authority audit and
+  `git diff --check` pass;
+- reviewer independently reproduced the complete 2,438-test collection,
+  focused seams, artifact reproducibility, stable-config allowlist, explicit
+  precedence, external Guac URL propagation, and governance alignment;
+- installed service readback: 0.2.28, active/running, runtime-manifest
+  `8b8d66fc9253c973be58b4dc929563a5c4926995976d9e1825114a8db591e365`,
+  index 59 documents/59 embeddings, 37 specs/zero enabled;
+- exact no-launch X plan selects `last30days-facebook` with no manual action or
+  seeding and runtime profile `last30days-facebook`.
+
+State Movement:
+
+- Plan 0018 `C60 -> C61`;
+- `x_profile_handoff_regression_active -> x_successor_proof_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `completed_pass`; independent reviewer performed read-only validation and no
+  runtime/repo mutation. Primary independently verified installed identity.
+
+Graphiti Write Status:
+
+- deferred until the successor proof reaches a terminal receipt.
+
+Next Bounded Action:
+
+- commit C61 locally and run installed
+  `p0018-v17-x-browser-manual` at `2026-08-02T21:20:00Z` with max attempts two.
+  Stop before LinkedIn on any hard failure.

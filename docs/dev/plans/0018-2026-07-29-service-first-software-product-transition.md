@@ -123,7 +123,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C60 is the current authority. Service architecture, timer
+Checkpoint P0018-C61 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -5679,3 +5679,56 @@ Review gate:
 - rerun the authority audit and full suite after this header reconciliation,
   commit the bounded candidate locally, then request one independent read-only
   review. Installation, job resume, and source work remain closed pending PASS.
+
+### Checkpoint P0018-C61 | 2026-08-02
+
+Plan version:
+
+- 25
+
+State transition:
+
+- `x_profile_handoff_regression_active -> x_successor_proof_authorized`
+
+Progress classification:
+
+- `blocker_reduction`; independent review returned terminal PASS and exact
+  service 0.2.28 is installed healthy with rollback 0.2.27.
+
+Authority classification:
+
+- `inherited_authority`; the prior failed run remains immutable and is not
+  resumed. One fresh X successor identity is authorized under the standing
+  50-attempt approval, cumulative packet ceiling 31, and remaining five packet
+  attempts. No new source, profile, credential, audience, cost, or mutation
+  class is introduced.
+
+Review and installed evidence:
+
+- reviewer `/root/v23_plan_review` returned terminal `PASS` on commit
+  `1ecad89411fdc3653ef6928a8270e0566ca39a8f` with no critical findings;
+- primary full suite passed 2,431 tests, 7 skipped, and 6 subtests; reviewer
+  independently passed the full 2,438-test collection, focused tests,
+  authority audit, artifact reproducibility, and clean-worktree checks;
+- installed service is 0.2.28/schema 12, runtime-manifest SHA-256
+  `8b8d66fc9253c973be58b4dc929563a5c4926995976d9e1825114a8db591e365`,
+  active/running with rollback 0.2.27 and active index 59/59;
+- all 37 collection specifications remain disabled. Exact no-launch X access
+  planning selects `last30days-facebook`, reports no manual action/seeding,
+  and requests runtime profile `last30days-facebook`.
+
+Successor proof controller:
+
+- command: installed `collection run p0018-v17-x-browser-manual` with
+  `--scheduled-for 2026-08-02T21:20:00Z --max-attempts 2`;
+- this is one fresh durable run/job identity, not a resume or rewrite of
+  `8808aca5-396d-4f9b-bbd5-192af6cad623`;
+- attempt two remains restricted to the reviewed four-code transient allowlist
+  and complete zero-side-effect receipt gate;
+- stop before LinkedIn on auth/checkpoint, route/integrity failure, unexpected
+  side effects, or incomplete receipt evidence.
+
+Next action:
+
+- commit this successor authority locally, execute the one X proof serially,
+  and inspect its immutable receipt before any further lane.

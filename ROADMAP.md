@@ -862,14 +862,16 @@ Active Plan:
   the canonical X profile is already authenticated, while the repo failed to
   consume its durable binding and dropped agent-browser's external Guacamole
   handoff URL. Candidate 0.2.28 repairs those seams without a source attempt;
-  LinkedIn remains `not_run`. Recurring enablement remains a later gate.
+  C61 records terminal review PASS, exact healthy installation, and one fresh
+  X successor proof identity. LinkedIn remains `not_run`. Recurring enablement
+  remains a later gate.
 
 Next Bounded Action:
 
-- Finish validation and independent review of candidate service 0.2.28. Do not
-  install, resume the X job, spend attempt two, start LinkedIn, push, or enable
-  recurrence before terminal review PASS; never substitute a localhost
-  dashboard/embed URL for the direct external Guacamole operator handoff.
+- Run the exact C61 fresh X successor proof and inspect its immutable receipt.
+  Do not resume the old job, start LinkedIn, push, or enable recurrence before
+  that receipt passes the profile, external-handoff, count, and integrity
+  gates.
 
 ## Goal-Compatible Plan Conversion
 
