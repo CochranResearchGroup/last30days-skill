@@ -120,7 +120,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C52 is the current authority. Service architecture, timer
+Checkpoint P0018-C54 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -133,8 +133,8 @@ YouTube versions lack version embeddings. Every pre-existing index remained
 byte-identical. Independent review accepted the failed-closed receipt. C50 is
 `replacement_youtube_proof_failed_closed`; installed service 0.2.25 remains
 process-ready on schema 12 but version-embedding completeness is 56/59.
-Version 22/C52 is package-ready after the zero-source RED/GREEN sequencing
-repair. X, LinkedIn,
+Version 22/C54 independently closes the zero-source 0.2.26 repair with 59/59
+version completeness. X, LinkedIn,
 recurring enablement, independent final review, push, tagging, publication,
 and release remain closed.
 
@@ -4912,3 +4912,110 @@ Next action:
 - commit C52 and the package-ready implementation. Then capture exact live
   pre-install hashes, build the reproducible 0.2.26 artifact, install once,
   and verify deterministic forward repair without running a source.
+
+### Checkpoint P0018-C53 | 2026-08-02
+
+Plan version:
+
+- 22
+
+State transition:
+
+- `zero_source_repair_package_ready -> awaiting_zero_source_repair_final_review`
+
+Progress classification:
+
+- `verification_complete`; installed runtime and database evidence satisfy the
+  bounded repair gates pending neutral review.
+
+Authority classification:
+
+- `inherited_authority`; the one permitted reversible install is consumed. C53
+  authorizes read-only review only and no source, retry, schedule, repair,
+  release, tag, push, or publication action.
+
+Install and forward-repair evidence:
+
+- committed implementation `f3a7c9c` built reproducible artifact SHA-256
+  `c1e9ba5a2eb0cda88f873cc045eca25d5cfb940ea6072b156b9df7e9b50b2264`;
+- the repo-native installer upgraded exactly once to service 0.2.26/schema 12,
+  manifest `21564f14a2c87f3d2ee27013470bdc3642e9d70997facebc726b75c92982c1fb`,
+  leaving 0.2.25 as rollback;
+- startup deterministically added only the three missing current-version
+  vectors and one successor index `index-28418bd968076bba6653223f`. Current-
+  version completeness is 59/59 and both its stable and version snapshot
+  surfaces contain 59 rows;
+- all 2,345 rows across the 68 pre-install stable index snapshots retained exact
+  aggregate SHA-256
+  `d825e7dbd6dc59fd29028faa9a40c2b36843504d664aabe8f137612191e8de5b`.
+  The earlier 66-index aggregate also remains the receipt-bound
+  `25ef7bff455b6c063cb13096244d2822e7914ccdbde15a1f0bafefea4d796fa4`;
+- documents, acquisitions, jobs, and collection runs stayed 59/102/87/50.
+  SQLite is `ok`/FK0, service is ready and active/running, config is 0600, and
+  all 37 specifications remain disabled;
+- machine-readable receipt
+  `docs/dev/notes/0032-zero-source-index-sequencing-repair.json` binds the
+  RED/GREEN, artifact, manifest, pre/post counts, hashes, versions, and source
+  prohibitions.
+
+Delegation status:
+
+- one fresh-context read-only final reviewer must verify code, tests, package,
+  receipt 0032, installed runtime, database completeness, historical
+  immutability, and zero-source scope. The primary retains all writes.
+
+Next action:
+
+- run exactly one independent final review. On pass, reconcile and close the
+  repair checkpoint; on critical finding, stop and classify a new successor.
+
+### Checkpoint P0018-C54 | 2026-08-02
+
+Plan version:
+
+- 22
+
+State transition:
+
+- `awaiting_zero_source_repair_final_review -> zero_source_index_sequencing_repair_complete`
+
+Progress classification:
+
+- `complete`; the bounded production sequencing repair is implemented,
+  installed, independently verified, and closed.
+
+Authority classification:
+
+- `inherited_authority`; C54 closes only the zero-source repair. It does not
+  increase the consumed 25-attempt ceiling or authorize X, LinkedIn, YouTube,
+  Reddit, recurrence, push, tag, publication, or release.
+
+Independent review and reconciliation:
+
+- fresh-context read-only reviewer `/root/v22_final_review` returned `PASS`
+  with no critical finding;
+- it independently reran 23 focused tests, 7 package/version tests, and the
+  full 2,416-test suite with 7 skips and 6 passing subtests;
+- it verified the public full-runner regression, one deep publisher interface,
+  embed-before-publish ordering, and identical installed/source publisher
+  SHA-256 `bfbf2c7526887c5f02099087925fb99323d512812747c85ba6f7896a6ceef208`;
+- it reproduced the artifact, manifest, installed/rollback versions, ready and
+  active runtime, SQLite integrity, exact 59/59 completeness, active 59/59
+  index, both historical aggregate hashes, unchanged 102/87/50 execution
+  counts, config 0600, and 37 specs/zero enabled;
+- receipt 0032, deterministic authority audit, JSON validation, and diff check
+  pass. No rework or additional live action was required.
+
+Remaining campaign gate:
+
+- the repair is complete, but the cumulative source-attempt ceiling is fully
+  consumed at 25. The three unexecuted proof identities—one X and two LinkedIn
+  cases—remain closed. Any successor must separately request the exact attempt
+  ceiling increase and retain one-attempt/no-retry, serial execution, global
+  integrity stops, and independent receipt review. Recurrence remains a later
+  separate gate even if those proofs pass.
+
+Next action:
+
+- commit C54 and receipt 0032, write one compact Graphiti development-journey
+  episode, and stop at the explicit remaining-proof human gate.

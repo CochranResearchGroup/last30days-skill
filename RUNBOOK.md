@@ -7372,3 +7372,106 @@ Next Bounded Action:
 
 - commit C52 and product changes; capture exact live pre-install index hashes;
   build/install 0.2.26 once; verify forward repair and all source prohibitions.
+
+## Turn 117 | 2026-08-02
+
+Focus: install service 0.2.26 once and bind the zero-source forward-repair
+evidence for neutral review.
+
+Authority Consulted:
+
+- committed C52/product change `f3a7c9c`; service runtime builder and installer;
+  live status, readiness receipt, systemd, and SQLite/index readbacks; Plan 0018
+  C52 hard stops and validation policy.
+
+Decisions And Changes:
+
+- captured the 0.2.25 live baseline, built one reproducible 0.2.26 artifact,
+  and upgraded once through the repo-native installer;
+- accepted only the intended local forward repair: three pending version
+  embeddings and one new immutable successor index;
+- persisted receipt 0032 and advanced to C53
+  `awaiting_zero_source_repair_final_review`; no further mutation is authorized.
+
+Validation Evidence:
+
+- artifact SHA-256 `c1e9ba5a2eb0cda88f873cc045eca25d5cfb940ea6072b156b9df7e9b50b2264`;
+  installed manifest SHA-256
+  `21564f14a2c87f3d2ee27013470bdc3642e9d70997facebc726b75c92982c1fb`;
+- service 0.2.26/schema 12 is ready and systemd active/running; rollback is
+  0.2.25;
+- current-version completeness moved 56/59 to 59/59; successor index
+  `index-28418bd968076bba6653223f` has 59 stable and 59 version rows;
+- all 68 pre-install indexes retained 2,345 stable rows with identical aggregate
+  hash `d825e7dbd6dc59fd29028faa9a40c2b36843504d664aabe8f137612191e8de5b`;
+- acquisitions/jobs/collection-runs remained 102/87/50; SQLite `ok`/FK0,
+  documents 59, config 0600, and 37 specs/zero enabled all pass.
+
+State Movement:
+
+- Plan 0018 `C52 -> C53`; version remains 22;
+- `zero_source_repair_package_ready -> awaiting_zero_source_repair_final_review`.
+
+Subagent Status And Reconciliation:
+
+- `pending`; one fresh-context read-only reviewer will verify receipt 0032 and
+  live state. The primary retains all writes and no live authority.
+
+Graphiti Write Status:
+
+- deferred until independent terminal review.
+
+Next Bounded Action:
+
+- perform one fresh-context read-only final review; close only on pass.
+
+## Turn 118 | 2026-08-02
+
+Focus: accept neutral review and close the zero-source index-sequencing repair.
+
+Authority Consulted:
+
+- Plan 0018 V22/C53; receipt 0032; reviewer `/root/v22_final_review`; live
+  service/database/package evidence; and validation, closeout, and Graphiti
+  memory policy.
+
+Decisions And Changes:
+
+- accepted the fresh reviewer's `PASS` with no critical finding;
+- advanced to C54 `zero_source_index_sequencing_repair_complete` and updated
+  receipt 0032 to its reviewed terminal state;
+- retained every source prohibition and stopped at a new explicit human gate:
+  the attempt ceiling is consumed at 25 and the remaining X/two LinkedIn proof
+  identities have no execution authority.
+
+Validation Evidence:
+
+- reviewer independently reran 23 focused, 7 package, and 2,416 full-suite
+  tests; 7 tests skipped and 6 subtests passed;
+- installed/source publisher hashes match
+  `bfbf2c7526887c5f02099087925fb99323d512812747c85ba6f7896a6ceef208`;
+- artifact, manifest, 0.2.26/schema 12 readiness, rollback 0.2.25, 59/59 current
+  completeness, active 59/59 index, historical hashes, SQLite, config, and
+  zero-enabled-spec evidence all reproduce;
+- acquisitions/jobs/collection-runs remain 102/87/50. No retry, recurrence, or
+  source operation occurred during repair or review.
+
+State Movement:
+
+- Plan 0018 `C53 -> C54`; version remains 22;
+- `awaiting_zero_source_repair_final_review -> zero_source_index_sequencing_repair_complete`.
+
+Subagent Status And Reconciliation:
+
+- `completed`; `/root/v22_final_review` was fresh-context and read-only. Its
+  `PASS` is accepted without rework or expanded authority.
+
+Graphiti Write Status:
+
+- provider readiness passed; one compact `last30days_skill_main` development-
+  journey episode is required before final closeout.
+
+Next Bounded Action:
+
+- commit C54 and receipt 0032, write the Graphiti episode, and stop at the
+  remaining-proof human gate.

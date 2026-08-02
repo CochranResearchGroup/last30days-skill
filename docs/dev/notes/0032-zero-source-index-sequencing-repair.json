@@ -1,0 +1,108 @@
+{
+  "schema": "last30days.zero-source-index-sequencing-repair.v1",
+  "plan": "0018",
+  "plan_version": 22,
+  "checkpoint_before": "P0018-C52",
+  "authority": "inherited_zero_source_repair",
+  "source_operations": {
+    "attempts": 0,
+    "network_requests": 0,
+    "acquisitions_before": 102,
+    "acquisitions_after": 102,
+    "jobs_before": 87,
+    "jobs_after": 87,
+    "collection_runs_before": 50,
+    "collection_runs_after": 50
+  },
+  "tdd": {
+    "test": "tests/test_service_job_runner.py::test_successful_runner_publishes_new_content_with_semantic_evidence",
+    "red": "published semantic evidence was empty on unchanged product code",
+    "green": "passed after CorpusPublisher.publish_index completed pending embeddings before publication",
+    "focused_tests": 23,
+    "package_tests": 7,
+    "full_suite_passed": 2416,
+    "full_suite_skipped": 7,
+    "full_suite_subtests_passed": 6
+  },
+  "release": {
+    "source_commit": "f3a7c9c",
+    "service_version_before": "0.2.25",
+    "service_version_after": "0.2.26",
+    "artifact_sha256": "c1e9ba5a2eb0cda88f873cc045eca25d5cfb940ea6072b156b9df7e9b50b2264",
+    "runtime_manifest_sha256_before": "15f816afd3a84fdac036b895d1c912696e5e320b0dfbb1fd7e465200215bdf90",
+    "runtime_manifest_sha256_after": "21564f14a2c87f3d2ee27013470bdc3642e9d70997facebc726b75c92982c1fb",
+    "installed_release": "releases/0.2.26",
+    "rollback_release": "releases/0.2.25",
+    "installed_at": "2026-08-02T18:36:05.934136Z"
+  },
+  "database": {
+    "schema_version": 12,
+    "quick_check": "ok",
+    "foreign_key_check_rows": 0,
+    "documents_before": 59,
+    "documents_after": 59,
+    "current_version_chunks_before": 59,
+    "current_version_chunks_after": 59,
+    "current_version_embeddings_before": 56,
+    "current_version_embeddings_after": 59,
+    "version_embedding_rows_before": 77,
+    "version_embedding_rows_after": 80,
+    "missing_versions_before": [
+      "version-a0732c792ab09049a7df19e504cd342d",
+      "version-cb4688774bd4bb33bcede228c0b1dc6e",
+      "version-ff82ffad914a730bb1490a81ca12ec7e"
+    ],
+    "missing_versions_after": []
+  },
+  "index_integrity": {
+    "index_versions_before": 68,
+    "index_versions_after": 69,
+    "preexisting_stable_rows_before": 2345,
+    "preexisting_stable_rows_after": 2345,
+    "preexisting_stable_rows_sha256_before": "d825e7dbd6dc59fd29028faa9a40c2b36843504d664aabe8f137612191e8de5b",
+    "preexisting_stable_rows_sha256_after": "d825e7dbd6dc59fd29028faa9a40c2b36843504d664aabe8f137612191e8de5b",
+    "preproof_66_index_rows_sha256_after": "25ef7bff455b6c063cb13096244d2822e7914ccdbde15a1f0bafefea4d796fa4",
+    "preproof_66_index_rows_sha256_expected": "25ef7bff455b6c063cb13096244d2822e7914ccdbde15a1f0bafefea4d796fa4",
+    "successor_index": "index-28418bd968076bba6653223f",
+    "successor_stable_embedding_rows": 59,
+    "successor_current_version_embedding_rows": 59,
+    "successor_stable_rows_sha256": "87e0e372eece37b9cc639fe3a3b5385739203fe9a55ba780f5b9317bbb679fcb",
+    "successor_current_version_rows_sha256": "26696d0efaf753b1539fb98dcd9e89e736e0ba8af28189d7004b4915c00e12a1",
+    "historical_rows_byte_identical": true
+  },
+  "forward_filled_versions": [
+    {
+      "version_id": "version-a0732c792ab09049a7df19e504cd342d",
+      "chunk_id": "vchunk-8deb761ad8e22b273d15fefe794de989",
+      "vector_hash": "63f10b800484f3fa34281c5aa45228b6d76af80ea25dd907b65c19179889b587"
+    },
+    {
+      "version_id": "version-cb4688774bd4bb33bcede228c0b1dc6e",
+      "chunk_id": "vchunk-e513750dc89dea56b2ab2fe4dc17cc8d",
+      "vector_hash": "c3ddf4644a7b090251b6f162240e2b5175de47b75d1c048cdd09e6e167356f7c"
+    },
+    {
+      "version_id": "version-ff82ffad914a730bb1490a81ca12ec7e",
+      "chunk_id": "vchunk-73e1fbf42fe75cc32e1e950c23b30337",
+      "vector_hash": "80aa2eb565c2ceba90ace7bc12ad9a0d545d3cec29db56cdbe53149a947a705b"
+    }
+  ],
+  "runtime": {
+    "status": "ready",
+    "systemd_active_state": "active",
+    "systemd_sub_state": "running",
+    "config_mode": "0600",
+    "collection_specs": 37,
+    "enabled_collection_specs": 0
+  },
+  "independent_review": {
+    "reviewer": "/root/v22_final_review",
+    "result": "PASS",
+    "critical_findings": 0,
+    "installed_source_publisher_sha256": "bfbf2c7526887c5f02099087925fb99323d512812747c85ba6f7896a6ceef208",
+    "full_suite_passed": 2416,
+    "full_suite_skipped": 7,
+    "full_suite_subtests_passed": 6
+  },
+  "terminal_state": "zero_source_index_sequencing_repair_complete"
+}

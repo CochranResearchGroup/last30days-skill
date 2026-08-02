@@ -721,17 +721,17 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 22/C52. Installed service 0.2.25/schema
-  12 is ready with 59 documents, 59 embeddings, active index
-  `index-b5cd4d63810e8d5333a0aa93`, rollback 0.2.24, and all 37 specifications
+- Current authority is Plan 0018 version 22/C54. Installed service 0.2.26/schema
+  12 is ready with 59 documents, 59 current-version embeddings, active index
+  `index-28418bd968076bba6653223f`, rollback 0.2.25, and all 37 specifications
   disabled. The immutable-index repair passed independent review; the two
   already-damaged 56-row historical indexes remain preserved as evidence.
   The operator approved one distinct replacement YouTube proof and raised the
   cumulative attempt ceiling to 25. The one replacement proof preserved every
   pre-existing index but exposed three missing current-version embeddings;
   current completeness is 56/59. Independent review accepted the failed-closed
-  receipt. C52 is package-ready after the zero-source sequencing repair; X,
-  both LinkedIn
+  receipt. C54 independently closes the zero-source repair at exact 59/59
+  completeness without a source attempt; X, both LinkedIn
   proofs, and recurrence remain prohibited.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
@@ -851,9 +851,8 @@ Active Plan:
 
 Next Bounded Action:
 
-- Commit C52, capture exact live pre-install hashes, then build/install and
-  verify service 0.2.26 without a source run. Do not retry YouTube or run X,
-  LinkedIn, Reddit, or recurrence.
+- Stop at the remaining-proof human gate. The 25-attempt ceiling is consumed;
+  X, both LinkedIn cases, Reddit, YouTube retry, and recurrence remain closed.
 
 ## Goal-Compatible Plan Conversion
 
