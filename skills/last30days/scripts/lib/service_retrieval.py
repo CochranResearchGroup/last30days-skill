@@ -850,16 +850,20 @@ class HybridRetriever:
         try:
             rows = conn.execute(
                 """SELECT c.chunk_id, c.text,
-                          vc.chunk_id AS version_chunk_id
+                          vc.chunk_id AS version_chunk_id,
+                          e.chunk_id AS legacy_embedding_id
                    FROM document_chunks AS c
                    LEFT JOIN document_version_chunks AS vc
                      ON vc.version_id = c.document_version_id
                     AND vc.ordinal = c.ordinal
                    LEFT JOIN chunk_embeddings AS e
                      ON e.chunk_id = c.chunk_id AND e.model = ?
+                   LEFT JOIN document_version_embeddings AS ve
+                     ON ve.chunk_id = vc.chunk_id AND ve.model = ?
                    WHERE e.chunk_id IS NULL
+                      OR (vc.chunk_id IS NOT NULL AND ve.chunk_id IS NULL)
                    ORDER BY c.chunk_id""",
-                (model,),
+                (model, model),
             ).fetchall()
             if not rows:
                 return 0
@@ -872,18 +876,32 @@ class HybridRetriever:
             inserted = 0
             for row, vector in zip(rows, vectors):
                 packed = _pack_vector(vector)
-                inserted += conn.execute(
-                    """INSERT OR IGNORE INTO chunk_embeddings
-                       (chunk_id, model, dimensions, vector, created_at)
-                       VALUES (?, ?, ?, ?, ?)""",
-                    (
-                        row["chunk_id"],
-                        model,
-                        len(vector),
-                        packed,
-                        created_at,
-                    ),
-                ).rowcount
+                if row["legacy_embedding_id"] is None:
+                    inserted += conn.execute(
+                        """INSERT OR IGNORE INTO chunk_embeddings
+                           (chunk_id, model, dimensions, vector, created_at)
+                           VALUES (?, ?, ?, ?, ?)""",
+                        (
+                            row["chunk_id"],
+                            model,
+                            len(vector),
+                            packed,
+                            created_at,
+                        ),
+                    ).rowcount
+                else:
+                    conn.execute(
+                        """UPDATE chunk_embeddings
+                           SET dimensions = ?, vector = ?, created_at = ?
+                           WHERE chunk_id = ? AND model = ?""",
+                        (
+                            len(vector),
+                            packed,
+                            created_at,
+                            row["chunk_id"],
+                            model,
+                        ),
+                    )
                 if row["version_chunk_id"] is not None:
                     conn.execute(
                         """INSERT OR IGNORE INTO document_version_embeddings

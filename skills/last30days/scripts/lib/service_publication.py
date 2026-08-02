@@ -615,10 +615,6 @@ class CorpusPublisher:
                         ),
                     )
                     conn.execute(
-                        "DELETE FROM chunk_embeddings WHERE chunk_id = ?",
-                        (chunk_id,),
-                    )
-                    conn.execute(
                         """INSERT INTO document_chunks
                            (chunk_id, document_id, ordinal, text, content_hash,
                             chunker_version, document_version_id)

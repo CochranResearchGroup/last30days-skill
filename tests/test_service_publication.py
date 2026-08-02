@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from lib import service_contracts as contracts
 from lib.service_publication import CorpusPublisher, PublicationLeaseError
-from lib.service_retrieval import HybridRetriever
+from lib.service_retrieval import HybridRetriever, LocalHashEmbeddingProvider
 from lib.service_supervisor import RefreshSupervisor
 
 
@@ -401,6 +401,102 @@ def test_changed_content_advances_current_projection_and_preserves_versions(tmp_
            JOIN document_versions AS v
              ON v.version_id = d.current_version_id"""
     ).fetchone()[0] == new_text
+    conn.close()
+    assert [item.url for item in retriever.search("revised semantic")] == [
+        "https://reddit.example/r/agents/1"
+    ]
+
+
+def test_changed_content_preserves_published_embedding_snapshot(tmp_path):
+    db_path = tmp_path / "research.db"
+    RefreshSupervisor(db_path).initialize()
+    conn = sqlite3.connect(db_path)
+    for job_id, dedupe in (("job-001", "dedupe-1"), ("job-002", "dedupe-2")):
+        conn.execute(
+            """INSERT INTO service_jobs
+               (job_id, job_type, dedupe_key, state, query_request_id,
+                attempts, max_attempts, budget_cents, spent_cents,
+                lease_generation, lease_owner, lease_expires_at,
+                created_at, updated_at)
+               VALUES (?, 'refresh', ?, 'acquiring', 'query-001',
+                       1, 1, 25, 0, 1, 'publisher-test',
+                       '2026-07-24T12:05:00Z',
+                       '2026-07-24T12:00:00Z', '2026-07-24T12:00:00Z')""",
+            (job_id, dedupe),
+        )
+    conn.commit()
+    conn.close()
+    retriever = HybridRetriever(
+        db_path,
+        embedding_provider=LocalHashEmbeddingProvider(),
+    )
+    publisher = CorpusPublisher(
+        db_path,
+        retriever,
+        clock=lambda: datetime(2026, 7, 24, 12, 0, tzinfo=timezone.utc),
+    )
+    publisher.record_result(
+        _work_request(), _work_result(), worker_id="publisher-test"
+    )
+    assert retriever.embed_pending_chunks() == 1
+    old_index = publisher.publish_index()
+    conn = sqlite3.connect(db_path)
+    old_rows = conn.execute(
+        """SELECT chunk_id, model, dimensions, vector, vector_hash
+           FROM index_chunk_embeddings
+           WHERE index_version = ? ORDER BY chunk_id, model""",
+        (old_index,),
+    ).fetchall()
+    conn.close()
+    assert len(old_rows) == 1
+
+    second_request = contracts.AcquisitionWorkRequest.from_dict(
+        {
+            **_work_request().to_dict(),
+            "work_id": "work-002",
+            "job_id": "job-002",
+        }
+    )
+    new_text = "Agents now query revised semantic evidence from the durable cache."
+    second_result = contracts.AcquisitionWorkResult.from_dict(
+        {
+            **_work_result().to_dict(),
+            "work_id": "work-002",
+            "job_id": "job-002",
+            "fetched_at": "2026-07-24T12:02:00Z",
+            "items": [
+                {
+                    **_work_result().items[0].to_dict(),
+                    "text": new_text,
+                }
+            ],
+        }
+    )
+    publisher.record_result(
+        second_request, second_result, worker_id="publisher-test"
+    )
+    assert retriever.embed_pending_chunks() == 0
+    new_index = publisher.publish_index()
+
+    conn = sqlite3.connect(db_path)
+    assert conn.execute(
+        """SELECT chunk_id, model, dimensions, vector, vector_hash
+           FROM index_chunk_embeddings
+           WHERE index_version = ? ORDER BY chunk_id, model""",
+        (old_index,),
+    ).fetchall() == old_rows
+    assert conn.execute(
+        "SELECT COUNT(*) FROM index_chunk_embeddings WHERE index_version = ?",
+        (new_index,),
+    ).fetchone()[0] == 1
+    assert conn.execute(
+        """SELECT COUNT(*)
+           FROM documents AS d
+           JOIN document_version_chunks AS c
+             ON c.version_id = d.current_version_id
+           JOIN document_version_embeddings AS e ON e.chunk_id = c.chunk_id
+           WHERE e.model = 'local-hash-v1'"""
+    ).fetchone()[0] == 1
     conn.close()
     assert [item.url for item in retriever.search("revised semantic")] == [
         "https://reddit.example/r/agents/1"
