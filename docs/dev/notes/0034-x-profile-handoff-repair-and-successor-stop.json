@@ -1,0 +1,114 @@
+{
+  "schema": "last30days.x-profile-handoff-repair-and-successor-stop.v1",
+  "plan": "0018",
+  "plan_version": 25,
+  "checkpoint_before": "P0018-C62",
+  "repair": {
+    "commit": "1ecad89411fdc3653ef6928a8270e0566ca39a8f",
+    "review": "PASS",
+    "service_version": "0.2.28",
+    "schema_version": 12,
+    "runtime_manifest_sha256": "8b8d66fc9253c973be58b4dc929563a5c4926995976d9e1825114a8db591e365",
+    "contract_sha256": "3fb7df8ab6d17e1e381090120a7d30c99027cc3d555b1c3bfe7a0eeb84983c6f",
+    "rollback_release": "0.2.27",
+    "profile_binding": "last30days-facebook",
+    "manual_handoff_contract": "external_agent_browser_guacamole_url_only",
+    "local_dashboard_urls_allowed": false
+  },
+  "authority": {
+    "standing_attempt_ceiling": 50,
+    "packet_cumulative_attempt_ceiling": 31,
+    "packet_source_attempt_ceiling": 6,
+    "concurrency": 1
+  },
+  "predecessor": {
+    "run_id": "collection-run-fc6cfa3530bb442ff277c09b8b9a2bc0",
+    "job_id": "8808aca5-396d-4f9b-bbd5-192af6cad623",
+    "state": "awaiting_operator",
+    "error_code": "auth_required",
+    "attempts": 1,
+    "max_attempts": 2,
+    "mutated_or_resumed": false
+  },
+  "successor": {
+    "spec_id": "p0018-v17-x-browser-manual",
+    "scheduled_for": "2026-08-03T00:00:00Z",
+    "interval_from": "2026-08-02T00:00:00Z",
+    "interval_to": "2026-08-03T00:00:00Z",
+    "run_id": "collection-run-83b9f1b2b0125764b077068eef285cdd",
+    "job_id": "e227749c-d01e-47c5-a406-0aa9496c4a05",
+    "state": "failed",
+    "error_code": "agent_browser_error",
+    "attempts": 2,
+    "max_attempts": 2,
+    "access_partition_id": "profile:last30days-facebook",
+    "profile_id": "last30days-facebook",
+    "auth_required_observed": false,
+    "manual_handoff_required": false,
+    "attempt_receipts": [
+      {
+        "attempt": 1,
+        "receipt_id": "collection-run-83b9f1b2b0125764b077068eef285cdd:1",
+        "receipt_sha256": "70ef9d7c0251b4d4d0e89c66b1885ada2884ede8c7803e942ec3ded3b0840cd9",
+        "work_id": "work-5b046e1a9f2c0928adb2d8e58b587776",
+        "work_result_sha256": "fcd8d32fdb4868ca242263557ee586d34bf1087f00274a91fa13eeb9d44f9fcb",
+        "retry_class": "transient",
+        "retry_eligible": true,
+        "failure_signature": "sha256:d540fd31eda485872f608d59bcf715cadfd4ae0f60cd53962c7321a7687ed3c7",
+        "failure_stage": "adapter_result"
+      },
+      {
+        "attempt": 2,
+        "receipt_id": "collection-run-83b9f1b2b0125764b077068eef285cdd:2",
+        "receipt_sha256": "27d8b94dadea41cf7ce94712fa8da4d328ebfd886039860b3e65254bf157333e",
+        "work_id": "work-d59a1bc4ef48789c0575a2bd6374e795",
+        "work_result_sha256": "9cfb219df11c8a09816b888c7db91e3ad8f152dac615efe5b2dddd8f66ec0895",
+        "retry_class": "transient",
+        "retry_eligible": true,
+        "failure_signature": "sha256:d540fd31eda485872f608d59bcf715cadfd4ae0f60cd53962c7321a7687ed3c7",
+        "failure_stage": "adapter_result"
+      }
+    ],
+    "runtime_trace": {
+      "operation": "remote_view_open",
+      "job_ids": ["r788244", "r414957"],
+      "error": "Operation timed out. The page may still be loading or the element may not exist.",
+      "browser_id": "session:last30days-facebook--last30days-facebook",
+      "host_mode": "remote_headed",
+      "display_isolation": "private_virtual_display",
+      "cleanup": "operator_requested_close"
+    },
+    "counts": {
+      "attempted": 0,
+      "observed": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "stored": 0,
+      "deduplicated": 0,
+      "indexed": 0,
+      "network_requests_per_attempt": 1
+    }
+  },
+  "post_attempt_integrity": {
+    "sqlite_quick_check": "ok",
+    "foreign_key_check_rows": 0,
+    "active_profile_leases": 0,
+    "documents": 59,
+    "current_version_embeddings": 59,
+    "active_index_id": "index-28418bd968076bba6653223f",
+    "pre_post_snapshots_equal": true
+  },
+  "remaining_lanes": {
+    "linkedin_topic": "not_run",
+    "linkedin_profile": "not_run"
+  },
+  "attempt_accounting": {
+    "cumulative_before_successor": 26,
+    "cumulative_after": 28,
+    "standing_attempts_remaining": 22,
+    "packet_attempts_used": 3,
+    "packet_attempts_remaining": 3
+  },
+  "terminal_state": "x_profile_handoff_fixed_remote_view_timeout_stop",
+  "stop_reason": "both_reviewed_successor_attempts_reached_the_same_remote_view_open_timeout;_retry_budget_exhausted;stop_before_linkedin"
+}

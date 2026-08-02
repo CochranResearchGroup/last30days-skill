@@ -864,15 +864,18 @@ Active Plan:
   handoff URL. Candidate 0.2.28 repairs those seams without a source attempt;
   C61 records terminal review PASS and exact healthy installation. Its proposed
   timestamp canonicalized to the old held daily interval without executing;
-  C62 corrects the fresh X successor to the distinct Aug 2-3 interval.
-  LinkedIn remains `not_run`. Recurring enablement remains a later gate.
+  C62 corrects the fresh X successor to the distinct Aug 2-3 interval. C63
+  proves the repaired `last30days-facebook` binding live without an auth or
+  manual-handoff incident, then stops terminally after both allowed attempts
+  hit the same agent-browser `remote_view_open` timeout. LinkedIn remains
+  `not_run`. Recurring enablement remains a later gate.
 
 Next Bounded Action:
 
-- Run the exact C62 Aug 2-3 X successor proof and inspect its immutable receipt.
-  Do not resume the old job, start LinkedIn, push, or enable recurrence before
-  that receipt passes the profile, external-handoff, count, and integrity
-  gates.
+- Diagnose the C63 agent-browser `remote_view_open` timeout without another
+  source attempt. Do not ask for X login or offer a local dashboard URL; a
+  genuine future human handoff must be the external agent-browser Guacamole
+  route. Do not start LinkedIn, push, or enable recurrence.
 
 ## Goal-Compatible Plan Conversion
 

@@ -123,7 +123,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C62 is the current authority. Service architecture, timer
+Checkpoint P0018-C63 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -139,11 +139,14 @@ process-ready on schema 12 but version-embedding completeness is 56/59.
 Version 22/C54 independently closes the zero-source 0.2.26 repair with 59/59
 version completeness. Version 23/C56 independently accepts a bounded successor
 for the three remaining proofs. Version 24/C58 authorizes the reviewed 0.2.27
-install and proof packet under the standing 50-attempt ceiling. C59 installs
-exact 0.2.27 and stops X attempt one at `awaiting_operator/auth_required` with
-zero side effects and no retry; LinkedIn remains `not_run`. Job resume, attempt
-two, recurrence, push, tagging, publication, and release remain closed pending
-the manual X authentication action and exact successor disposition.
+install and proof packet under the standing 50-attempt ceiling. C59's
+`awaiting_operator/auth_required` conclusion is superseded by the operator's
+correction and the independently accepted 0.2.28 repair. C63 confirms that
+repair live: X used `last30days-facebook` and did not request authentication or
+manual handoff. Both allowed successor attempts instead stopped on the same
+agent-browser `remote_view_open` timeout. LinkedIn remains `not_run`;
+recurrence, another source attempt, push, tagging, publication, and release
+remain closed.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -5760,3 +5763,51 @@ Next action:
 
 - run the installed collection once at the corrected distinct boundary and
   inspect the new run/job receipt before LinkedIn.
+
+### Checkpoint P0018-C63 | 2026-08-02
+
+Plan version:
+
+- 25
+
+State transition:
+
+- `x_distinct_interval_successor_authorized -> x_profile_handoff_fixed_remote_view_timeout_stop`
+
+Progress classification:
+
+- `partial_progress_terminal_stop`; the repaired installed service consumed the
+  canonical user-scoped `last30days-facebook` binding and did not enter an
+  authentication or manual-handoff state. The source lane did not complete:
+  both reviewed attempts failed on the same agent-browser `remote_view_open`
+  timeout with zero accepted or stored items.
+
+Authority classification:
+
+- `inherited_authority`; terminal hard stop: the fresh successor exhausted its
+  two-attempt job budget. Do not resume it, create another source attempt, or
+  start LinkedIn. Diagnosis of the
+  agent-browser route timeout may proceed read-only under inherited authority;
+  any new live proof requires a successor checkpoint.
+
+Immutable evidence:
+
+- receipt `docs/dev/notes/0034-x-profile-handoff-repair-and-successor-stop.json`;
+- run `collection-run-83b9f1b2b0125764b077068eef285cdd`, job
+  `e227749c-d01e-47c5-a406-0aa9496c4a05`, attempts two/max two, terminal
+  `failed/agent_browser_error`;
+- both acquisitions used profile `last30days-facebook`; neither reported
+  `auth_required` or requested a human handoff;
+- both agent-browser operations stopped at `remote_view_open` with the same
+  timeout and failure signature;
+- counts stayed zero, active index stayed 59/59, database integrity passed,
+  and no profile lease remained;
+- cumulative attempt count is 28 of the standing 50; this packet used three of
+  six attempts and has three unconsumed attempts. LinkedIn is `not_run`.
+
+Next action:
+
+- diagnose the agent-browser `remote_view_open` timeout without another source
+  attempt. Do not ask the operator to log in and do not provide a localhost
+  handoff URL; any genuine future handoff must use agent-browser's external
+  Guacamole URL.

@@ -8119,3 +8119,53 @@ Next Bounded Action:
 
 - commit C62 locally, execute the corrected X successor, and inspect its
   immutable receipt before any LinkedIn lane.
+
+## Turn 130 | 2026-08-02
+
+Focus: execute the corrected X successor and close on its terminal receipt.
+
+Authority Consulted:
+
+- Plan 0018 V25/C62; installed 0.2.28 identity; standing 50-attempt ceiling;
+  reviewed two-attempt successor controller.
+
+Decisions And Changes:
+
+- executed the distinct Aug 2-3 X run once; the service automatically consumed
+  its eligible second attempt after the first transient failure;
+- both attempts used `last30days-facebook`, proving the durable profile repair;
+- neither attempt entered `auth_required` or produced a manual handoff;
+- both failed at agent-browser `remote_view_open` with the same timeout, so the
+  job budget is exhausted and LinkedIn was not started;
+- created receipt 0034 and advanced Plan 0018 to terminal checkpoint C63.
+
+Validation Evidence:
+
+- run `collection-run-83b9f1b2b0125764b077068eef285cdd`, job
+  `e227749c-d01e-47c5-a406-0aa9496c4a05`, terminal failed, attempts two/max two;
+- two durable acquisitions use `last30days-facebook`, contain zero items, and
+  share failure signature
+  `sha256:d540fd31eda485872f608d59bcf715cadfd4ae0f60cd53962c7321a7687ed3c7`;
+- installed service remains ready at 0.2.28/schema 12 with index 59/59;
+- SQLite quick check passed, foreign-key check returned zero rows, and active
+  profile leases are zero.
+
+State Movement:
+
+- Plan 0018 `C62 -> C63`;
+- `x_distinct_interval_successor_authorized -> x_profile_handoff_fixed_remote_view_timeout_stop`.
+
+Subagent Status And Reconciliation:
+
+- no new delegated work; the prior independent repair review remains terminal
+  PASS and is reconciled with the live profile-selection result.
+
+Graphiti Write Status:
+
+- deferred; receipt 0034 is the source-backed durable authority for this stop.
+
+Next Bounded Action:
+
+- diagnose agent-browser `remote_view_open` timeout read-only. Do not consume
+  another source attempt, ask for X login, provide a local URL, or start
+  LinkedIn.
