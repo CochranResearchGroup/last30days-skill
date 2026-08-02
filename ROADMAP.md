@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 23/C55. Installed service 0.2.26/schema
+- Current authority is Plan 0018 version 23/C56. Installed service 0.2.26/schema
   12 is ready with 59 documents, 59 current-version embeddings, active index
   `index-28418bd968076bba6653223f`, rollback 0.2.25, and all 37 specifications
   disabled. The immutable-index repair passed independent review; the two
@@ -731,10 +731,10 @@ Current State:
   pre-existing index but exposed three missing current-version embeddings;
   that proof's historical post-state was 56/59. Independent review accepted the
   failed-closed receipt. C54 independently closes the zero-source repair at
-  exact 59/59 current completeness without a source attempt. C55 derives a
-  review-first successor for X and both LinkedIn proofs, but the 25-attempt
-  ceiling remains unchanged; those proofs and recurrence remain prohibited
-  pending independent review and the exact 25-to-28 operator gate.
+  exact 59/59 current completeness without a source attempt. C56 independently
+  accepts the bounded successor for X and both LinkedIn proofs, but the
+  25-attempt ceiling remains unchanged; those proofs and recurrence remain
+  prohibited pending the exact 25-to-28 operator gate.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -849,15 +849,16 @@ Active Plan:
   global integrity stop: historical snapshots stayed immutable, but three new
   current versions were published without version embeddings. Version 22/C51
   opens the bounded deterministic repair, and C54 closes it on 0.2.26 at
-  59/59. C55 proposes the three remaining X/LinkedIn proofs with serial,
-  one-attempt/no-retry controls but carries no live authority. Recurring
-  enablement remains a later separate gate.
+  59/59. C56 independently accepts the three remaining X/LinkedIn proof plan
+  with serial, one-attempt/no-retry controls but carries no live authority.
+  Recurring enablement remains a later separate gate.
 
 Next Bounded Action:
 
-- Independently review Version 23/C55. On pass, ask the operator to raise only
-  the cumulative attempt ceiling from 25 to 28 for the named X and two LinkedIn
-  proofs. X, LinkedIn, Reddit, YouTube retry, and recurrence remain closed.
+- Ask the operator to approve exactly the three named Version 23 X/LinkedIn
+  proofs and raise only the cumulative attempt ceiling from 25 to 28. X,
+  LinkedIn, Reddit, YouTube retry, and recurrence remain closed until an
+  explicit approval.
 
 ## Goal-Compatible Plan Conversion
 

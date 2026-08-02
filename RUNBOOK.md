@@ -7641,3 +7641,66 @@ Next Bounded Action:
 - validate and commit C55, then obtain one independent read-only plan review.
   Do not execute a source, browser, schedule, service, database, or memory
   mutation.
+
+## Turn 122 | 2026-08-02
+
+Focus: reconcile the independent Version 23 plan review and stop at the exact
+25-to-28 remaining-evidence operator gate.
+
+Authority Consulted:
+
+- committed C55 `80d594b`; reviewer `/root/v23_plan_review`; remediation commit
+  `2d0dc73`; Plan 0018 Version 23, Roadmap P07, Runbook Turn 121; current live
+  readbacks; and validation, planning, documentation, delegation, Graphiti,
+  Git, goal, and closeout policy.
+
+Decisions And Changes:
+
+- accepted one consolidated review `FAIL`: Roadmap P07 mislabeled the
+  replacement proof's historical 56/59 post-state as current despite the live
+  and leading authority state being 59/59;
+- used the one permitted remediation to mark 56/59 historical and restate
+  C54's exact current 59/59 completeness; no scope, arithmetic, identity, gate,
+  or runtime state changed;
+- accepted the same reviewer's terminal `PASS` with no remaining critical
+  finding and advanced to C56 `awaiting_remaining_evidence_operator_gate`;
+- retained zero live authority. The exact requested boundary is approval for
+  only the three named X/LinkedIn proof identities and a cumulative attempt-
+  ceiling increase from 25 to 28. Recurrence remains a later separate gate.
+
+Validation Evidence:
+
+- both review passes were fresh-context and read-only. The reviewer confirmed
+  the exact specs/order, distinct intervals, method/profile enforcement,
+  serial one-attempt/no-retry execution, 28/67/1,157/2,280/zero arithmetic,
+  immutable receipt contract, global stops, and authority ordering;
+- terminal readbacks reproduce service 0.2.26/schema 12 ready and systemd
+  active/running, manifest and rollback, 59/59 current and active-index
+  completeness, SQLite `ok`/FK0, config 0600, counts 102/87/50, 37 specs/zero
+  enabled, zero proposed-interval owners, and zero active profile leases;
+- deterministic authority audit and `git diff --check` pass after remediation.
+  Receipts 0031/0032 remain unchanged and no source/browser command ran.
+
+State Movement:
+
+- Plan 0018 remains Version 23 and moves `C55 -> C56`;
+- `awaiting_remaining_evidence_plan_review -> awaiting_remaining_evidence_operator_gate`;
+- the attempt ceiling remains 25 and all live lanes remain unauthorized.
+
+Subagent Status And Reconciliation:
+
+- `completed`; `/root/v23_plan_review` returned one bounded finding and then
+  terminal `PASS` after the sole remediation. The primary verified the audit
+  and current readbacks and accepts the result. No delegated write or live
+  operation occurred.
+
+Graphiti Write Status:
+
+- pending one provider-readiness check and at most one compact C56 closeout
+  episode. The earlier C54 timeout job is not requeued.
+
+Next Bounded Action:
+
+- stop and ask the operator for the exact three-proof approval and 25-to-28
+  cumulative attempt-ceiling increase. Do not execute a source or browser
+  command before explicit approval.
