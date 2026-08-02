@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 24/C57. Installed service 0.2.26/schema
+- Current authority is Plan 0018 version 24/C58. Installed service 0.2.26/schema
   12 is ready with 59 documents, 59 current-version embeddings, active index
   `index-28418bd968076bba6653223f`, rollback 0.2.25, and all 37 specifications
   disabled. The immutable-index repair passed independent review; the two
@@ -735,8 +735,9 @@ Current State:
   accepted the bounded successor for X and both LinkedIn proofs. At C57 the
   operator raised the standing cumulative attempt approval ceiling from 25 to
   50 and authorized one transient-only service retry per remaining proof. The
-  six-attempt packet is now review-gated at maxima 31/76/1,307/2,640/zero;
-  recurrence remains prohibited behind its separate gate.
+  six-attempt packet passed independent retry-controller review at maxima
+  31/76/1,307/2,640/zero. C58 authorizes the exact reviewed 0.2.27 install and
+  three serial proofs; recurrence remains prohibited behind its separate gate.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -854,16 +855,16 @@ Active Plan:
   59/59. C56 independently accepted the three remaining X/LinkedIn proof plan.
   Version 24/C57 consumes the operator gate, establishes the standing
   50-attempt approval threshold, and opens the review-first implementation of
-  a manual `--max-attempts 2` control. Install and live proof work remain
-  closed until that plan and implementation pass independent review. Recurring
-  enablement remains a later separate gate.
+  a manual `--max-attempts 2` control. C58 records the bounded initial FAIL,
+  one remediation, and terminal PASS; the exact 0.2.27 install and three live
+  proofs are authorized. Recurring enablement remains a later separate gate.
 
 Next Bounded Action:
 
-- Implement the Version 24 manual attempt override test-first, document and
-  validate the patch release, then obtain one fresh read-only review. Do not
-  install the patch or run X/LinkedIn before that review passes; recurrence
-  remains a later separate human gate.
+- Install the exact reviewed 0.2.27 artifact, validate rollback/schema/index/
+  SQLite/config/spec/profile invariants, then run the three exact X/LinkedIn
+  proofs serially with `--max-attempts 2`. Stop on the first global hard stop;
+  do not push or enable recurrence.
 
 ## Goal-Compatible Plan Conversion
 

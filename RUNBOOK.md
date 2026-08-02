@@ -7849,3 +7849,61 @@ Next Bounded Action:
 
 - commit the single remediation and request the same reviewer's terminal
   recheck. Do not install or run a proof unless it passes.
+
+## Turn 125 | 2026-08-02
+
+Focus: accept the terminal Version 24 review PASS and open only the exact
+reviewed install/live packet.
+
+Authority Consulted:
+
+- commits `1a8df29` and `bc2ad45`; reviewer `/root/v23_plan_review`; Plan 0018
+  V24/C57; Roadmap P07; Runbook through Turn 124; artifact/manifest, Git,
+  validation, installation, delegation, and closeout policy.
+
+Decisions And Changes:
+
+- accepted the reviewer's terminal `PASS` after the one permitted remediation;
+- advanced Plan 0018 to C58 `remaining_evidence_authorized` for the exact
+  reviewed 0.2.27 artifact and three serial Version 24 proofs;
+- retained the packet cap at six source attempts/cumulative 31 and standing
+  approval ceiling at 50. Push, recurrence, tag, external publication/release,
+  and scope expansion remain closed.
+
+Validation Evidence:
+
+- reviewer independently confirmed the four-code transient allowlist,
+  complete zero-side-effect gate, ineligible broad classes, fail-closed lease
+  expiry, immutable retry evidence, default/CLI/timer/same-job semantics, and
+  unchanged generic refresh behavior;
+- 54 focused tests pass, the full suite exits zero, and authority audit passes
+  with Plan 0018 only and Runbook Turn 124;
+- runtime-manifest SHA-256 is
+  `560fa57c8a1cd0d0eb0b7c630ddab7d3944ed5725b6c2e6fe6d3790cfd0237cb`;
+  artifact SHA-256 is
+  `34e71d4b205f9a262647718b5ad9417758e54c879fb05d1eb3a8566fc686402b`;
+- installed runtime is still healthy 0.2.26/schema 12 with SQLite `ok`, 37
+  specs/zero enabled, zero proposed intervals, and zero active profile leases.
+
+State Movement:
+
+- Plan 0018 `C57 -> C58`;
+- `awaiting_retry_policy_plan_review -> remaining_evidence_authorized`;
+- install/live proof work opens only after the C58 local commit.
+
+Subagent Status And Reconciliation:
+
+- `completed_pass`; `/root/v23_plan_review` returned terminal PASS with no
+  critical finding. Primary retains install, proof, receipt, and final-judgment
+  ownership.
+
+Graphiti Write Status:
+
+- deferred until the live packet reaches a terminal checkpoint; no memory job
+  was submitted.
+
+Next Bounded Action:
+
+- commit C58 locally, install and validate exact 0.2.27, then execute X topic,
+  LinkedIn topic, and LinkedIn profile serially. Do not push or enable
+  recurrence.

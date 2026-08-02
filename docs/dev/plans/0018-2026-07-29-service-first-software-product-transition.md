@@ -123,7 +123,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C57 is the current authority. Service architecture, timer
+Checkpoint P0018-C58 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -5467,3 +5467,62 @@ Next action:
 - commit the one consolidated remediation and return it to the same independent
   reviewer for a terminal recheck. Do not install or run a proof before the
   review passes.
+
+### Checkpoint P0018-C58 | 2026-08-02
+
+Plan version:
+
+- 24
+
+State transition:
+
+- `awaiting_retry_policy_plan_review -> remaining_evidence_authorized`
+
+Progress classification:
+
+- `blocker_reduction`; the reviewed 0.2.27 retry controller is now eligible for
+  installation and the three remaining disabled-specification proofs.
+
+Authority classification:
+
+- `human_gate`; the operator's standing 50-attempt approval and six-attempt
+  packet passed the required independent review. This checkpoint authorizes
+  installation of the exact reviewed artifact and the three Version 24 proofs
+  under the 31/76/1,307/2,640/zero packet maxima. It does not authorize push,
+  tag, external publication/release, recurrence, or any scope expansion.
+
+Independent review and reconciliation:
+
+- reviewer `/root/v23_plan_review` initially returned one consolidated `FAIL`
+  at commit `1a8df29`: the manual-two interface inherited generic broad retry
+  classes without the plan's allowlist and zero-side-effect gate;
+- the single remediation at `bc2ad45` added the exact allowlist, complete
+  zero-side-effect gate and receipt evidence, fail-closed unreceipted lease
+  expiry, and focused tests while preserving generic refresh/timer behavior;
+- the same reviewer returned terminal `PASS` with no critical finding. It
+  independently reproduced all retry classes, receipt fields, default/CLI/
+  timer semantics, same-job identity, release metadata, 54 focused tests, full
+  suite exit zero, authority audit, and unchanged installed/live state.
+
+Reviewed artifact and install boundary:
+
+- source candidate service is 0.2.27; runtime-manifest SHA-256 is
+  `560fa57c8a1cd0d0eb0b7c630ddab7d3944ed5725b6c2e6fe6d3790cfd0237cb`;
+- reproducible artifact
+  `dist/service/last30days-service-0.2.27.tar.gz` has SHA-256
+  `34e71d4b205f9a262647718b5ad9417758e54c879fb05d1eb3a8566fc686402b`;
+- installed service remains 0.2.26/schema 12 until the next action. The
+  reviewer confirmed SQLite `ok`, 37 specs/zero enabled, zero proposed
+  intervals, and zero active profile leases.
+
+Delegation status and reconciliation:
+
+- `completed`; `/root/v23_plan_review` supplied the bounded FAIL/recheck PASS
+  sequence. The primary accepted the sole finding and verified the terminal
+  result. No delegated write or runtime mutation occurred.
+
+Next action:
+
+- commit C58 locally, install the exact reviewed artifact with rollback
+  preservation, validate installed 0.2.27/schema 12 and all invariants, then
+  run the three proofs serially. Do not push or enable recurrence.
