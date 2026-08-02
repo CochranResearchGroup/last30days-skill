@@ -7521,3 +7521,57 @@ Next Bounded Action:
 
 - stop at the remaining-proof human gate. No source or memory retry is
   authorized in this turn.
+
+## Turn 120 | 2026-08-02
+
+Focus: publish the completed structured commit stack and create a fresh-agent
+handoff at the remaining-proof human gate.
+
+Authority Consulted:
+
+- Plan 0018 V22/C54; Roadmap P07; Runbook through Turn 119; receipts 0031 and
+  0032; Git/integration, documentation, validation, and handoff policy; current
+  origin and installed-service readbacks.
+
+Decisions And Changes:
+
+- retained the existing 51-commit stack without history surgery because its
+  implementation, plan, evidence, closeout, and memory-timeout slices were
+  already coherent and truthful;
+- pushed `main` through `b913b68` to the public `origin`; upstream remains
+  push-disabled;
+- created
+  `docs/dev/notes/2026-08-02-plan0018-v22-fresh-agent-handoff.md` with authority
+  order, startup checks, live state, remaining gate, hard stops, and suggested
+  skills. No source, spec, installed runtime, or memory job was mutated.
+
+Validation Evidence:
+
+- pre-push fetch showed origin behind by 51 and local behind by zero; push
+  advanced `origin/main` from `a32e619` to `b913b68` and exact remote SHA
+  matched;
+- authority audit passed with Plan 0018 as the sole active plan and zero issues;
+- worktree was clean before the handoff slice; live service remained
+  0.2.26/schema 12 ready on `index-28418bd968076bba6653223f`, corpus/current
+  embeddings 59/59, SQLite `ok`, and 37 specs/zero enabled.
+
+State Movement:
+
+- Plan 0018 remains V22/C54 repair-complete;
+- Git moved `local_only -> origin_published`; continuity moved
+  `chat_context -> repo_native_fresh_agent_handoff`.
+
+Subagent Status And Reconciliation:
+
+- no new subagent was required; the already accepted V22 final-review `PASS`
+  remains the terminal product judgment.
+
+Graphiti Write Status:
+
+- unchanged `graphiti_write_pending`; no retry was authorized for this
+  orientation-only closeout.
+
+Next Bounded Action:
+
+- commit and push the handoff slice, verify `HEAD == origin/main`, then stop at
+  the explicit 25-to-28 remaining-proof human gate.
