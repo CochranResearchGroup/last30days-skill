@@ -7784,3 +7784,68 @@ Next Bounded Action:
 
 - commit the validated Version 24/0.2.27 review surface, then obtain
   independent review. Do not install or execute a source before review passes.
+
+## Turn 124 | 2026-08-02
+
+Focus: reconcile the single Version 24 review failure without weakening retry
+eligibility or crossing the install/live boundary.
+
+Authority Consulted:
+
+- commit `1a8df29`; reviewer `/root/v23_plan_review`; Plan 0018 V24/C57;
+  generic supervisor/job-runner and collection-specific policy paths; TDD,
+  CodeGraph, validation, release, documentation, delegation, and closeout
+  policy.
+
+Decisions And Changes:
+
+- accepted the reviewer's consolidated `FAIL`: explicit manual attempt two
+  inherited the generic runner's retry of rate-limit, all transient, and
+  content outcomes without the plan's zero-side-effect gate;
+- used the one permitted remediation to mark explicit manual-two collection
+  jobs at the frozen policy seam and allow attempt two only for exact
+  `worker_timeout`, `agent_browser_timeout`, `agent_browser_error`, or
+  `route_stale` transient results with zero accepted, stored, deduplicated, and
+  indexed counts;
+- made rate limits, content failures, unexpected internal-worker errors,
+  missing side-effect counts, and expired leases without a complete attempt
+  receipt terminal for this manual policy while preserving generic refresh and
+  timer retry behavior;
+- added the eligibility classification and its count evidence to each
+  immutable manual attempt receipt. No installed runtime, source, browser,
+  specification, schedule, or database state was mutated.
+
+Validation Evidence:
+
+- the initial reviewer independently passed the 50-vs-31 authority split,
+  31/76/1,307/2,640/zero arithmetic, CLI/default/timer bounds, durable identity,
+  release metadata, install ordering, recurrence gate, and live-state checks;
+- six focused manual-policy cases now cover the eligible timeout path plus
+  rate-limit/content rejection, internal-error rejection, missing-count
+  rejection, and fail-closed lease expiry;
+- focused collection, job-runner, supervisor, CLI, release, and runtime-package
+  tests pass; the full `uv run pytest` suite passes; refreshed source candidate
+  0.2.27 manifest SHA-256 is
+  `560fa57c8a1cd0d0eb0b7c630ddab7d3944ed5725b6c2e6fe6d3790cfd0237cb`.
+
+State Movement:
+
+- Plan 0018 remains V24/C57 `awaiting_retry_policy_plan_review`;
+- review result moved `initial_fail -> one_consolidated_remediation_complete`;
+- install and live proof authority remain held pending terminal reviewer pass.
+
+Subagent Status And Reconciliation:
+
+- `completed_fail_pending_recheck`; `/root/v23_plan_review` supplied one
+  consolidated critical finding. The primary accepted it, changed only the
+  retry-policy seam/tests/docs/manifest, and will return the same surface for
+  one terminal recheck.
+
+Graphiti Write Status:
+
+- deferred until review reconciliation closes; no memory job was submitted.
+
+Next Bounded Action:
+
+- commit the single remediation and request the same reviewer's terminal
+  recheck. Do not install or run a proof unless it passes.

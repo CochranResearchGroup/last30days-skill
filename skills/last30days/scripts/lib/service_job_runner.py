@@ -240,6 +240,35 @@ class AcquisitionJobRunner:
         ) % jitter_bound
         return min(86_400, base + jitter)
 
+    @staticmethod
+    def _failure_is_retryable(
+        outcome: _Outcome,
+        collection_policy: Mapping[str, object] | None,
+    ) -> bool:
+        generic_retryable = outcome.result.retry_class in {
+            contracts.RetryClass.RATE_LIMIT,
+            contracts.RetryClass.TRANSIENT,
+            contracts.RetryClass.CONTENT,
+        }
+        if not collection_policy or not collection_policy.get(
+            "_manual_retry_budget", False
+        ):
+            return generic_retryable
+        return (
+            outcome.result.retry_class is contracts.RetryClass.TRANSIENT
+            and outcome.result.safe_error_code
+            in {
+                "agent_browser_error",
+                "agent_browser_timeout",
+                "route_stale",
+                "worker_timeout",
+            }
+            and outcome.result.accepted_count == 0
+            and outcome.publication.stored_count == 0
+            and outcome.publication.deduplicated_count == 0
+            and outcome.indexed_count == 0
+        )
+
     def _failure_result(
         self,
         request: contracts.AcquisitionWorkRequest,
@@ -316,8 +345,12 @@ class AcquisitionJobRunner:
             error_code=outcome.result.safe_error_code,
         )
 
-    @staticmethod
-    def _collection_outcome(outcome: _Outcome) -> dict[str, object]:
+    @classmethod
+    def _collection_outcome(
+        cls,
+        outcome: _Outcome,
+        collection_policy: Mapping[str, object] | None,
+    ) -> dict[str, object]:
         diagnostics = outcome.result.diagnostics
         attempted = (
             outcome.result.attempted_count
@@ -329,7 +362,7 @@ class AcquisitionJobRunner:
             isinstance(item, str) for item in attempted_methods
         ):
             attempted_methods = []
-        return {
+        payload: dict[str, object] = {
             "source": outcome.result.source,
             "status": outcome.result.status.value,
             "attempted_count": attempted,
@@ -356,6 +389,21 @@ class AcquisitionJobRunner:
             "retry_after": outcome.retry_after,
             "error_code": outcome.result.safe_error_code,
         }
+        if collection_policy and collection_policy.get(
+            "_manual_retry_budget", False
+        ):
+            payload["retry"] = {
+                "eligible": cls._failure_is_retryable(
+                    outcome, collection_policy
+                ),
+                "retry_class": outcome.result.retry_class.value,
+                "error_code": outcome.result.safe_error_code,
+                "accepted_count": outcome.result.accepted_count,
+                "stored_count": outcome.publication.stored_count,
+                "deduplicated_count": outcome.publication.deduplicated_count,
+                "indexed_count": outcome.indexed_count,
+            }
+        return payload
 
     def _record_collection_completion(
         self,
@@ -364,13 +412,17 @@ class AcquisitionJobRunner:
         *,
         pre_snapshot: CorpusEvidenceSnapshot,
         post_snapshot: CorpusEvidenceSnapshot,
+        collection_policy: Mapping[str, object] | None,
     ) -> None:
         if self.collection_coordinator is None:
             return
         self.collection_coordinator.record_completion(
             job_id=job.job_id,
             state=job.state.value,
-            outcomes=tuple(self._collection_outcome(item) for item in outcomes),
+            outcomes=tuple(
+                self._collection_outcome(item, collection_policy)
+                for item in outcomes
+            ),
             completed_at=self._now(),
             pre_snapshot=pre_snapshot.to_dict(),
             post_snapshot=post_snapshot.to_dict(),
@@ -630,11 +682,7 @@ class AcquisitionJobRunner:
                 None,
             )
             failure = operator or outcomes[0]
-            retryable = failure.result.retry_class in {
-                contracts.RetryClass.RATE_LIMIT,
-                contracts.RetryClass.TRANSIENT,
-                contracts.RetryClass.CONTENT,
-            }
+            retryable = self._failure_is_retryable(failure, collection_policy)
             terminal_job = self.supervisor.handle_failure(
                 job.job_id,
                 error_code=failure.result.safe_error_code or "acquisition_failed",
@@ -649,6 +697,7 @@ class AcquisitionJobRunner:
                 outcomes,
                 pre_snapshot=pre_snapshot,
                 post_snapshot=self.publisher.evidence_snapshot(),
+                collection_policy=collection_policy,
             )
             return terminal_job
 
@@ -723,5 +772,6 @@ class AcquisitionJobRunner:
             outcomes,
             pre_snapshot=pre_snapshot,
             post_snapshot=self.publisher.evidence_snapshot(),
+            collection_policy=collection_policy,
         )
         return terminal_job

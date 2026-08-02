@@ -513,11 +513,27 @@ class RefreshSupervisor:
             (*(state.value for state in _LEASED_STATES), now),
         ).fetchall()
         for row in rows:
-            exhausted = row["attempts"] >= row["max_attempts"]
+            manual_retry_budget = bool(
+                int(row["max_attempts"]) == 2
+                and conn.execute(
+                    """SELECT 1 FROM collection_runs
+                       WHERE job_id = ? AND trigger_kind = 'manual'
+                       LIMIT 1""",
+                    (row["job_id"],),
+                ).fetchone()
+            )
+            exhausted = (
+                row["attempts"] >= row["max_attempts"] or manual_retry_budget
+            )
             next_state = (
                 contracts.JobState.FAILED
                 if exhausted
                 else contracts.JobState.QUEUED
+            )
+            error_code = (
+                "manual_retry_evidence_missing"
+                if manual_retry_budget
+                else ("retry_exhausted" if exhausted else None)
             )
             conn.execute(
                 """UPDATE service_jobs
@@ -527,7 +543,7 @@ class RefreshSupervisor:
                 (
                     next_state.value,
                     now,
-                    "retry_exhausted" if exhausted else None,
+                    error_code,
                     row["job_id"],
                     row["lease_generation"],
                 ),

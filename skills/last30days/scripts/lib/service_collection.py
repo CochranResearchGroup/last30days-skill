@@ -699,11 +699,12 @@ class CollectionCoordinator:
         conn = self._connect()
         try:
             row = conn.execute(
-                """SELECT sr.spec_json
+                """SELECT sr.spec_json, r.trigger_kind, j.max_attempts
                    FROM collection_runs AS r
                    JOIN collection_spec_revisions AS sr
                      ON sr.collection_spec_id = r.collection_spec_id
                     AND sr.spec_version = r.spec_version
+                   JOIN service_jobs AS j ON j.job_id = r.job_id
                    WHERE r.job_id = ?
                    ORDER BY r.scheduled_for, r.collection_run_id
                    LIMIT 1""",
@@ -711,7 +712,13 @@ class CollectionCoordinator:
             ).fetchone()
         finally:
             conn.close()
-        return json.loads(row["spec_json"]) if row is not None else None
+        if row is None:
+            return None
+        policy = json.loads(row["spec_json"])
+        policy["_manual_retry_budget"] = (
+            row["trigger_kind"] == "manual" and int(row["max_attempts"]) == 2
+        )
+        return policy
 
     def set_enabled(self, collection_spec_id: str, *, enabled: bool) -> CollectionSpec:
         spec = self.get_spec(collection_spec_id)
@@ -1000,6 +1007,15 @@ class CollectionCoordinator:
                             else row["state"]
                         ),
                         "retry_after": None,
+                        "retry": (
+                            {
+                                "eligible": False,
+                                "reason": "missing_attempt_receipt",
+                            }
+                            if row["error_code"]
+                            == "manual_retry_evidence_missing"
+                            else None
+                        ),
                     },
                 ),
                 completed_at=completed_at,
@@ -1254,6 +1270,14 @@ class CollectionCoordinator:
                     ),
                     None,
                 )
+                retry = next(
+                    (
+                        dict(item["retry"])
+                        for item in outcomes
+                        if isinstance(item.get("retry"), Mapping)
+                    ),
+                    None,
+                )
                 conn.execute(
                     """UPDATE collection_runs
                        SET state = ?, completed_at = ?, cursor_after = ?,
@@ -1298,6 +1322,7 @@ class CollectionCoordinator:
                         "adapter_variant": adapter_variant,
                     },
                     "error_code": error_code,
+                    "retry": retry,
                 }
                 self._put_observability_envelope(
                     conn,

@@ -292,7 +292,7 @@
     },
     {
       "path": "scripts/lib/service_collection.py",
-      "sha256": "eb1180cb87224cf42c04b66a2d5c19e8819f20f94dce1fc8fce7ebc60901dc01",
+      "sha256": "fca2056a49790417ab5a02e0ff0a1190faf327772657500f7c8882b8d1e77765",
       "source": "skills/last30days/scripts/lib/service_collection.py"
     },
     {
@@ -332,7 +332,7 @@
     },
     {
       "path": "scripts/lib/service_job_runner.py",
-      "sha256": "6a5e455a177ac7c464ec29efbbd902e95aca73f306365d4b9c7a33c66c17eb38",
+      "sha256": "8100d39bccee67cdad22763db37fd2204fa07cb13f0ffee8ae8953a8fd6a0724",
       "source": "skills/last30days/scripts/lib/service_job_runner.py"
     },
     {
@@ -377,7 +377,7 @@
     },
     {
       "path": "scripts/lib/service_supervisor.py",
-      "sha256": "4bec6224d9cecb1a952a4349a0534be978440d8da2a7f64787bb004f9f711847",
+      "sha256": "b022de9cef9cf4aaf8e9f0067f6865c0694c4891cd2b5ed8f039e835b973fc05",
       "source": "skills/last30days/scripts/lib/service_supervisor.py"
     },
     {

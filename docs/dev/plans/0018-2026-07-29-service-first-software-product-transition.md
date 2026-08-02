@@ -5340,14 +5340,16 @@ run with `--max-attempts 2`. The resident service owns both attempts inside the
 single immutable run/job identity; the primary agent must not create a second
 interval, replay a terminal run, or manually invoke a browser adapter.
 
-Attempt two is eligible only when attempt one fails with a service-classified
-transient transport, retained-session disconnect, profile-lease expiry, or
-worker-timeout outcome and the durable readback proves zero accepted, stored,
-deduplicated, or indexed side effects. It is ineligible after content yield,
+Attempt two is eligible only when attempt one fails with exact safe code
+`worker_timeout`, `agent_browser_timeout`, `agent_browser_error`, or
+`route_stale`, retry class `transient`, and the durable readback proves zero
+accepted, stored, deduplicated, and indexed side effects. It is ineligible
+after a lease expiry without a complete attempt receipt, content yield,
 deduplicated yield, healthy zero yield, quality or method rejection,
 authentication/credential failure, selector mismatch, access-scope drift,
 database/index/integrity failure, ambiguous publication, or any nonzero or
-missing side-effect count. An ineligible result terminalizes the lane without
+missing side-effect count. Rate-limit, content, and unexpected internal-worker
+classes are explicitly ineligible. An ineligible result terminalizes the lane without
 retry and may advance to the next lane only when every global invariant and
 profile-lease check passes.
 
@@ -5433,11 +5435,26 @@ Current evidence and design finding:
   exposes `collection run --max-attempts {1,2}`. Focused collection/CLI/
   release/runtime-package tests and the complete `uv run pytest` suite pass;
   the deterministic runtime manifest is
-  `d5664018d0bcd92bca376ced37f2cb6f8c20fc6bf213e951e62213337c8f9c79`;
+  superseded by the remediation manifest recorded below;
 - the deterministic authority audit passes with Plan 0018 as the sole active
   plan and latest Runbook Turn 123; `git diff --check` passes;
 - all target specifications and recurrence remain disabled. No source, job,
   interval, browser, install, service, or database mutation has run in C57.
+- independent reviewer `/root/v23_plan_review` returned one consolidated
+  `FAIL`: the first 0.2.27 candidate forwarded two attempts but inherited the
+  generic runner's broad rate-limit/transient/content retry decision without
+  the Version 24 allowlist and zero-side-effect gate;
+- the single permitted remediation makes explicit manual-two jobs retry only
+  the four named safe codes with complete zero accepted/stored/deduplicated/
+  indexed evidence, writes that classification into the immutable attempt
+  receipt, and fails expired leases without a complete receipt as
+  `manual_retry_evidence_missing`. Generic refresh and timer retry behavior is
+  unchanged;
+- six focused manual-retry cases cover eligible timeout, rate-limit/content
+  rejection, unexpected internal error, missing counts, and unreceipted lease
+  expiry. Focused collection/job-runner/supervisor/CLI/release/runtime tests and
+  the full suite pass after remediation. Refreshed runtime-manifest SHA-256 is
+  `560fa57c8a1cd0d0eb0b7c630ddab7d3944ed5725b6c2e6fe6d3790cfd0237cb`.
 
 Delegation decision:
 
@@ -5447,6 +5464,6 @@ Delegation decision:
 
 Next action:
 
-- commit the validated Version 24/0.2.27 review surface and obtain the
-  independent read-only review. Do not install or run a proof before the
+- commit the one consolidated remediation and return it to the same independent
+  reviewer for a terminal recheck. Do not install or run a proof before the
   review passes.

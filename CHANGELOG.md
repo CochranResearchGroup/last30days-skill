@@ -25,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `--max-attempts 2` override for separately reviewed transient-retry budgets.
   Timer retry policy stays service-owned, invalid values fail before run
   creation, and both attempts remain inside one immutable run/job identity.
+  Attempt two is restricted to allowlisted browser/worker transients with an
+  immutable zero-side-effect receipt; broad rate-limit, content, internal-error,
+  missing-count, and unreceipted lease-expiry retries fail closed.
 
 - **Configurable browser job timeout.** Every Reddit, X, Facebook, and LinkedIn
   agent-browser launch now passes a positive per-request control-plane timeout.

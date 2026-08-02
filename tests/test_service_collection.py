@@ -831,6 +831,273 @@ def test_runner_enforces_frozen_collection_access_method_and_cost(tmp_path):
     assert worker.requests[0].adapter == "reddit_keyless"
 
 
+@pytest.mark.parametrize(
+    ("error_code", "retry_class"),
+    [
+        ("quality_gate_failed", "content"),
+        ("rate_limited", "rate_limit"),
+    ],
+)
+def test_manual_retry_budget_rejects_non_allowlisted_failure(
+    tmp_path, error_code, retry_class
+):
+    class ContentFailureWorker:
+        def run(self, request):
+            return contracts.AcquisitionWorkResult.from_dict(
+                {
+                    "schema_version": 1,
+                    "work_id": request.work_id,
+                    "job_id": request.job_id,
+                    "lease_generation": request.lease_generation,
+                    "source": request.source,
+                    "adapter": request.adapter,
+                    "adapter_version": request.adapter_version,
+                    "status": "failed",
+                    "safe_error_code": error_code,
+                    "retry_class": retry_class,
+                    "retry_after_seconds": None,
+                    "observed_at": "2026-07-25T12:00:00Z",
+                    "fetched_at": "2026-07-25T12:00:01Z",
+                    "items": [],
+                    "item_count": 0,
+                    "cost_cents": 0,
+                    "diagnostics": {},
+                    "network_request_count": 1,
+                    "attempted_count": 1,
+                    "observed_count": 1,
+                    "accepted_count": 0,
+                    "rejected_count": 1,
+                }
+            )
+
+    db_path, supervisor, ledger, scheduler, coordinator = _coordinator(tmp_path)
+    coordinator.put_spec(_spec(enabled=False, assessment_enabled=False))
+    run = coordinator.enqueue_interval(
+        "spec-reddit-ai",
+        scheduled_for="2026-07-25T12:00:00Z",
+        trigger="manual",
+        max_attempts=2,
+    )
+    retriever = HybridRetriever(db_path)
+    runner = AcquisitionJobRunner(
+        supervisor,
+        ledger,
+        CorpusPublisher(db_path, retriever, clock=lambda: NOW),
+        ContentFailureWorker(),
+        scheduler,
+        JobRunnerPolicy(),
+        clock=lambda: NOW,
+        collection_coordinator=coordinator,
+    )
+
+    completed = runner.run_once(worker_id="collector-content-failure")
+
+    assert completed is not None and completed.job_id == run.job_id
+    assert completed.state is contracts.JobState.FAILED
+    assert completed.attempts == 1
+
+
+def test_manual_retry_budget_accepts_zero_side_effect_worker_timeout(tmp_path):
+    class TimeoutWorker:
+        def run(self, request):
+            return contracts.AcquisitionWorkResult.from_dict(
+                {
+                    "schema_version": 1,
+                    "work_id": request.work_id,
+                    "job_id": request.job_id,
+                    "lease_generation": request.lease_generation,
+                    "source": request.source,
+                    "adapter": request.adapter,
+                    "adapter_version": request.adapter_version,
+                    "status": "failed",
+                    "safe_error_code": "worker_timeout",
+                    "retry_class": "transient",
+                    "retry_after_seconds": None,
+                    "observed_at": "2026-07-25T12:00:00Z",
+                    "fetched_at": "2026-07-25T12:00:01Z",
+                    "items": [],
+                    "item_count": 0,
+                    "cost_cents": 0,
+                    "diagnostics": {},
+                    "network_request_count": 0,
+                    "attempted_count": 0,
+                    "observed_count": 0,
+                    "accepted_count": 0,
+                    "rejected_count": 0,
+                }
+            )
+
+    db_path, supervisor, ledger, scheduler, coordinator = _coordinator(tmp_path)
+    coordinator.put_spec(_spec(enabled=False, assessment_enabled=False))
+    run = coordinator.enqueue_interval(
+        "spec-reddit-ai",
+        scheduled_for="2026-07-25T12:00:00Z",
+        trigger="manual",
+        max_attempts=2,
+    )
+    runner = AcquisitionJobRunner(
+        supervisor,
+        ledger,
+        CorpusPublisher(db_path, HybridRetriever(db_path), clock=lambda: NOW),
+        TimeoutWorker(),
+        scheduler,
+        JobRunnerPolicy(),
+        clock=lambda: NOW,
+        collection_coordinator=coordinator,
+    )
+
+    completed = runner.run_once(worker_id="collector-timeout")
+
+    assert completed is not None and completed.job_id == run.job_id
+    assert completed.state is contracts.JobState.QUEUED
+    assert completed.attempts == 1
+    conn = sqlite3.connect(db_path)
+    try:
+        receipt = json.loads(
+            conn.execute(
+                """SELECT payload_json FROM service_envelopes
+                   WHERE envelope_type = 'collection_run_receipt'
+                     AND envelope_id = ?""",
+                (f"{run.collection_run_id}:1",),
+            ).fetchone()[0]
+        )
+    finally:
+        conn.close()
+    assert receipt["retry"] == {
+        "eligible": True,
+        "retry_class": "transient",
+        "error_code": "worker_timeout",
+        "accepted_count": 0,
+        "stored_count": 0,
+        "deduplicated_count": 0,
+        "indexed_count": 0,
+    }
+
+
+def test_manual_retry_budget_rejects_unexpected_worker_error(tmp_path):
+    class BrokenWorker:
+        def run(self, request):
+            raise RuntimeError(f"unexpected private error for {request.job_id}")
+
+    db_path, supervisor, ledger, scheduler, coordinator = _coordinator(tmp_path)
+    coordinator.put_spec(_spec(enabled=False, assessment_enabled=False))
+    run = coordinator.enqueue_interval(
+        "spec-reddit-ai",
+        scheduled_for="2026-07-25T12:00:00Z",
+        trigger="manual",
+        max_attempts=2,
+    )
+    runner = AcquisitionJobRunner(
+        supervisor,
+        ledger,
+        CorpusPublisher(db_path, HybridRetriever(db_path), clock=lambda: NOW),
+        BrokenWorker(),
+        scheduler,
+        JobRunnerPolicy(),
+        clock=lambda: NOW,
+        collection_coordinator=coordinator,
+    )
+
+    completed = runner.run_once(worker_id="collector-broken-worker")
+
+    assert completed is not None and completed.job_id == run.job_id
+    assert completed.state is contracts.JobState.FAILED
+    assert completed.error_code == "worker_internal_error"
+    assert completed.attempts == 1
+
+
+def test_manual_retry_budget_rejects_missing_side_effect_count(tmp_path):
+    class IncompleteTimeoutWorker:
+        def run(self, request):
+            return contracts.AcquisitionWorkResult.from_dict(
+                {
+                    "schema_version": 1,
+                    "work_id": request.work_id,
+                    "job_id": request.job_id,
+                    "lease_generation": request.lease_generation,
+                    "source": request.source,
+                    "adapter": request.adapter,
+                    "adapter_version": request.adapter_version,
+                    "status": "failed",
+                    "safe_error_code": "worker_timeout",
+                    "retry_class": "transient",
+                    "retry_after_seconds": None,
+                    "observed_at": "2026-07-25T12:00:00Z",
+                    "fetched_at": "2026-07-25T12:00:01Z",
+                    "items": [],
+                    "item_count": 0,
+                    "cost_cents": 0,
+                    "diagnostics": {},
+                }
+            )
+
+    db_path, supervisor, ledger, scheduler, coordinator = _coordinator(tmp_path)
+    coordinator.put_spec(_spec(enabled=False, assessment_enabled=False))
+    run = coordinator.enqueue_interval(
+        "spec-reddit-ai",
+        scheduled_for="2026-07-25T12:00:00Z",
+        trigger="manual",
+        max_attempts=2,
+    )
+    runner = AcquisitionJobRunner(
+        supervisor,
+        ledger,
+        CorpusPublisher(db_path, HybridRetriever(db_path), clock=lambda: NOW),
+        IncompleteTimeoutWorker(),
+        scheduler,
+        JobRunnerPolicy(),
+        clock=lambda: NOW,
+        collection_coordinator=coordinator,
+    )
+
+    completed = runner.run_once(worker_id="collector-incomplete-timeout")
+
+    assert completed is not None and completed.job_id == run.job_id
+    assert completed.state is contracts.JobState.FAILED
+    assert completed.attempts == 1
+
+
+def test_manual_retry_budget_does_not_retry_expired_lease_without_receipt(tmp_path):
+    current = [NOW]
+    db_path = tmp_path / "research.db"
+    supervisor = RefreshSupervisor(db_path, clock=lambda: current[0])
+    supervisor.initialize()
+    ledger = ServiceStore(db_path)
+    scheduler = ServiceRefreshScheduler(
+        supervisor,
+        ledger,
+        RefreshPolicy(
+            default_sources=("reddit",),
+            freshness_seconds=3600,
+            max_attempts=2,
+            budget_cents=100,
+        ),
+        clock=lambda: current[0],
+    )
+    coordinator = CollectionCoordinator(
+        db_path,
+        scheduler,
+        clock=lambda: current[0],
+    )
+    coordinator.put_spec(_spec(enabled=False, assessment_enabled=False))
+    run = coordinator.enqueue_interval(
+        "spec-reddit-ai",
+        scheduled_for="2026-07-25T12:00:00Z",
+        trigger="manual",
+        max_attempts=2,
+    )
+
+    first = supervisor.lease_next(worker_id="worker-one", lease_seconds=60)
+    assert first is not None and first.job_id == run.job_id
+    current[0] += timedelta(seconds=61)
+
+    assert supervisor.lease_next(worker_id="worker-two", lease_seconds=60) is None
+    failed = supervisor.get_job(run.job_id)
+    assert failed.state is contracts.JobState.FAILED
+    assert failed.error_code == "manual_retry_evidence_missing"
+    assert failed.attempts == 1
+
+
 def test_failed_collection_records_gap_without_advancing_cursor(tmp_path):
     db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
     coordinator.put_spec(_spec())

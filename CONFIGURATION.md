@@ -625,7 +625,12 @@ its existing due boundary.
 Manual runs default to one durable job attempt. An operator with a separately
 reviewed retry budget may set `--max-attempts 2`; values outside 1-2 are
 rejected before a run is created. The second attempt remains service-owned
-inside the same immutable run/job identity. The flag does not enable a
+inside the same immutable run/job identity. It is scheduled only for a
+`worker_timeout`, `agent_browser_timeout`, `agent_browser_error`, or
+`route_stale` transient whose immutable receipt proves zero accepted, stored,
+deduplicated, and indexed side effects. Rate limits, content failures,
+unexpected worker errors, missing counts, and expired leases without a
+complete receipt fail closed without consuming attempt two. The flag does not enable a
 specification, change timer runs, replay a terminal interval, or authorize a
 different selector, source, profile, access method, cost, or data scope.
 
