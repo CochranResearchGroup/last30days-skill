@@ -7907,3 +7907,59 @@ Next Bounded Action:
 - commit C58 locally, install and validate exact 0.2.27, then execute X topic,
   LinkedIn topic, and LinkedIn profile serially. Do not push or enable
   recurrence.
+
+## Turn 126 | 2026-08-02
+
+Focus: install the reviewed retry controller and stop the first proof cleanly
+at the retained-profile X authentication gate.
+
+Authority Consulted:
+
+- Plan 0018 V24/C58; Roadmap P07; exact reviewed 0.2.27 artifact; installation,
+  validation, browser-handoff, documentation, and closeout policy.
+
+Decisions And Changes:
+
+- installed exact 0.2.27/schema 12 with rollback 0.2.26 and validated the
+  canonical service, database, disabled specifications, index, config, and
+  profile-lease invariants;
+- ran only X topic attempt one. It stopped `awaiting_operator/auth_required`,
+  which Version 24 classifies as retry ineligible; no automatic retry or
+  LinkedIn lane ran;
+- inspected only agent-browser readiness and retained route metadata. The
+  browser and X tab are healthy, its remote-view route is detached, and the
+  local dashboard exposes the safe reattach action. No page content, cookies,
+  credentials, or private data were inspected.
+
+Validation Evidence:
+
+- immutable attempt receipt records one governed request, complete zero item
+  and side-effect counts, retry `eligible=false`, and operator failure class;
+- corpus and all active-index counts remain 59/59; historical digest
+  `696f5192e01196942687e53ed66aca28411665314acb4d11d981539a2d6842de`
+  is byte-identical; zero active profile leases remain;
+- cumulative attempt use is 26 below the standing 50 ceiling; packet use is
+  one of six. Receipt:
+  `docs/dev/notes/0033-remaining-x-linkedin-evidence-completion.json`.
+
+State Movement:
+
+- Plan 0018 `C58 -> C59`;
+- `remaining_evidence_authorized -> awaiting_x_auth_operator`;
+- LinkedIn topic/profile remain `not_run`; recurrence and push remain closed.
+
+Subagent Status And Reconciliation:
+
+- terminal Version 24 review PASS from `/root/v23_plan_review` remains the
+  governing independent result; no additional delegated work occurred.
+
+Graphiti Write Status:
+
+- deferred while the evidence packet remains at a human gate; the source-
+  backed C59 receipt and authorities are durable repo state.
+
+Next Bounded Action:
+
+- operator opens `http://127.0.0.1:4848/`, reattaches the retained browser,
+  authenticates X manually, and reports completion. Do not resume the job or
+  spend another attempt before recording the successor disposition.

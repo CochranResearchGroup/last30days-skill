@@ -856,15 +856,17 @@ Active Plan:
   Version 24/C57 consumes the operator gate, establishes the standing
   50-attempt approval threshold, and opens the review-first implementation of
   a manual `--max-attempts 2` control. C58 records the bounded initial FAIL,
-  one remediation, and terminal PASS; the exact 0.2.27 install and three live
-  proofs are authorized. Recurring enablement remains a later separate gate.
+  one remediation, and terminal PASS. C59 installs exact 0.2.27 and records
+  the first X attempt stopping `awaiting_operator/auth_required` with zero
+  side effects and no retry; LinkedIn remains `not_run`. Recurring enablement
+  remains a later separate gate.
 
 Next Bounded Action:
 
-- Install the exact reviewed 0.2.27 artifact, validate rollback/schema/index/
-  SQLite/config/spec/profile invariants, then run the three exact X/LinkedIn
-  proofs serially with `--max-attempts 2`. Stop on the first global hard stop;
-  do not push or enable recurrence.
+- Reattach the retained browser from `http://127.0.0.1:4848/`, authenticate X
+  manually without sharing credentials, and report completion. Do not resume
+  the job, spend attempt two, start LinkedIn, push, or enable recurrence until
+  the exact successor disposition is recorded.
 
 ## Goal-Compatible Plan Conversion
 

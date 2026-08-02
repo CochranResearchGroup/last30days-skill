@@ -123,7 +123,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C58 is the current authority. Service architecture, timer
+Checkpoint P0018-C59 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -138,9 +138,12 @@ byte-identical. Independent review accepted the failed-closed receipt. C50 is
 process-ready on schema 12 but version-embedding completeness is 56/59.
 Version 22/C54 independently closes the zero-source 0.2.26 repair with 59/59
 version completeness. Version 23/C56 independently accepts a bounded successor
-for the three remaining proofs but does not authorize them. X, LinkedIn,
-recurring enablement, proof execution, tagging, publication, and release remain
-closed pending the exact 25-to-28 operator gate.
+for the three remaining proofs. Version 24/C58 authorizes the reviewed 0.2.27
+install and proof packet under the standing 50-attempt ceiling. C59 installs
+exact 0.2.27 and stops X attempt one at `awaiting_operator/auth_required` with
+zero side effects and no retry; LinkedIn remains `not_run`. Job resume, attempt
+two, recurrence, push, tagging, publication, and release remain closed pending
+the manual X authentication action and exact successor disposition.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -5526,3 +5529,60 @@ Next action:
 - commit C58 locally, install the exact reviewed artifact with rollback
   preservation, validate installed 0.2.27/schema 12 and all invariants, then
   run the three proofs serially. Do not push or enable recurrence.
+
+### Checkpoint P0018-C59 | 2026-08-02
+
+Plan version:
+
+- 24
+
+State transition:
+
+- `remaining_evidence_authorized -> awaiting_x_auth_operator`
+
+Progress classification:
+
+- `human_gate`; exact 0.2.27 is installed and healthy, and the first X proof
+  stopped before content processing because the retained browser requires
+  manual authentication.
+
+Authority classification:
+
+- `human_gate`; Version 24 authorizes only the four named zero-side-effect
+  transient retry classes. `auth_required` is an operator outcome and is not
+  retry eligible. The remaining LinkedIn lanes stay `not_run` until the X lane
+  closes under a reviewed successor disposition.
+
+Installed and live evidence:
+
+- exact artifact SHA-256
+  `34e71d4b205f9a262647718b5ad9417758e54c879fb05d1eb3a8566fc686402b`
+  installed service 0.2.27/schema 12 with rollback 0.2.26; canonical systemd
+  state is active/running;
+- preflight passed SQLite `ok`, zero foreign-key rows, 37 specifications/zero
+  enabled, zero active profile leases, and active index
+  `index-28418bd968076bba6653223f` at 59/59 across all four governed counts;
+- X run `collection-run-fc6cfa3530bb442ff277c09b8b9a2bc0`, job
+  `8808aca5-396d-4f9b-bbd5-192af6cad623`, attempt one stopped
+  `awaiting_operator/auth_required`. Its immutable receipt records one network
+  request, zero attempted/observed/accepted/rejected/stored/deduplicated/
+  indexed items, retry ineligible, and complete zero-side-effect counts;
+- no retry or LinkedIn attempt ran. Cumulative attempt use is now 26, packet
+  use is one of six, and the standing ceiling remains 50;
+- corpus/index counts and historical-row digest
+  `696f5192e01196942687e53ed66aca28411665314acb4d11d981539a2d6842de`
+  remain unchanged. Receipt is
+  `docs/dev/notes/0033-remaining-x-linkedin-evidence-completion.json`;
+- agent-browser read-only diagnostics show the retained browser and X tab are
+  healthy, but its RDP route is detached. The local dashboard at
+  `http://127.0.0.1:4848/` recommends
+  `service_remote_view_browser_reattach`; public operator ingress was not
+  claimed ready.
+
+Next action:
+
+- the operator reattaches the retained browser through the local dashboard,
+  authenticates X manually without sharing credentials, and reports
+  completion. Do not resume the job, spend attempt two, start LinkedIn, push,
+  or enable recurrence until that human action and the exact successor
+  disposition are recorded.

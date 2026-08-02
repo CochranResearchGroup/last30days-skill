@@ -1,0 +1,111 @@
+{
+  "schema": "last30days.remaining-x-linkedin-evidence-completion.v1",
+  "plan": "0018",
+  "plan_version": 24,
+  "checkpoint_before": "P0018-C58",
+  "authority": {
+    "standing_attempt_ceiling": 50,
+    "packet_cumulative_attempt_ceiling": 31,
+    "packet_source_attempt_ceiling": 6,
+    "packet_accepted_item_ceiling": 76,
+    "packet_governed_request_ceiling": 1307,
+    "packet_wall_clock_seconds_ceiling": 2640,
+    "packet_cost_model_ceiling": 0,
+    "concurrency": 1
+  },
+  "release": {
+    "service_version": "0.2.27",
+    "schema_version": 12,
+    "runtime_manifest_sha256": "560fa57c8a1cd0d0eb0b7c630ddab7d3944ed5725b6c2e6fe6d3790cfd0237cb",
+    "artifact_sha256": "34e71d4b205f9a262647718b5ad9417758e54c879fb05d1eb3a8566fc686402b",
+    "rollback_release": "0.2.26",
+    "systemd_active_state": "active",
+    "systemd_sub_state": "running"
+  },
+  "preflight": {
+    "sqlite_quick_check": "ok",
+    "foreign_key_check_rows": 0,
+    "collection_specs": 37,
+    "enabled_collection_specs": 0,
+    "active_profile_leases": 0,
+    "documents": 59,
+    "current_version_embeddings": 59,
+    "active_index_id": "index-28418bd968076bba6653223f",
+    "active_index_documents": 59,
+    "active_index_document_versions": 59,
+    "active_index_chunk_embeddings": 59,
+    "active_index_document_version_embeddings": 59,
+    "historical_rows_sha256": "696f5192e01196942687e53ed66aca28411665314acb4d11d981539a2d6842de"
+  },
+  "x_topic": {
+    "spec_id": "p0018-v17-x-browser-manual",
+    "scheduled_for": "2026-08-02T00:00:00Z",
+    "run_id": "collection-run-fc6cfa3530bb442ff277c09b8b9a2bc0",
+    "job_id": "8808aca5-396d-4f9b-bbd5-192af6cad623",
+    "attempts": 1,
+    "max_attempts": 2,
+    "state": "awaiting_operator",
+    "error_code": "auth_required",
+    "attempt_receipt_id": "collection-run-fc6cfa3530bb442ff277c09b8b9a2bc0:1",
+    "attempted_access_methods": [
+      "agent_browser"
+    ],
+    "selected_access_method": null,
+    "adapter": "x_agent_browser",
+    "counts": {
+      "attempted": 0,
+      "observed": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "stored": 0,
+      "deduplicated": 0,
+      "indexed": 0,
+      "network_requests": 1
+    },
+    "retry": {
+      "eligible": false,
+      "failure_class": "operator",
+      "error_code": "auth_required",
+      "accepted_count": 0,
+      "stored_count": 0,
+      "deduplicated_count": 0,
+      "indexed_count": 0,
+      "retry_consumed": false
+    }
+  },
+  "remaining_lanes": {
+    "linkedin_topic": "not_run",
+    "linkedin_profile": "not_run"
+  },
+  "post_attempt_integrity": {
+    "documents": 59,
+    "current_version_embeddings": 59,
+    "active_index_id": "index-28418bd968076bba6653223f",
+    "active_index_documents": 59,
+    "active_index_document_versions": 59,
+    "active_index_chunk_embeddings": 59,
+    "active_index_document_version_embeddings": 59,
+    "historical_rows_sha256": "696f5192e01196942687e53ed66aca28411665314acb4d11d981539a2d6842de",
+    "historical_rows_byte_identical": true,
+    "active_profile_leases": 0
+  },
+  "operator_handoff": {
+    "browser_health": "ready",
+    "browser_id": "session:default",
+    "profile_id": "default",
+    "x_tab_state": "ready",
+    "route_state": "reattachable_no_route",
+    "recommended_action": "service_remote_view_browser_reattach",
+    "local_dashboard_url": "http://127.0.0.1:4848/",
+    "public_operator_route_ready": false,
+    "safe_action": "Reattach the retained browser in the local dashboard, authenticate X manually, and report completion without sharing credentials."
+  },
+  "attempt_accounting": {
+    "cumulative_before": 25,
+    "cumulative_after": 26,
+    "packet_attempts_used": 1,
+    "packet_attempts_remaining": 5
+  },
+  "terminal_state": "awaiting_x_auth_operator",
+  "stop_reason": "auth_required_is_not_retry_eligible_and_linkedin_lanes_must_not_start_before_x_lane_closes"
+}
