@@ -7699,10 +7699,10 @@ Graphiti Write Status:
 - provider readiness passed through the Codex app-server path. One compact C56
   episode was submitted to `last30days_skill_main` as job
   `741995ba-4085-45b3-8975-ab5401eafb43` with a 180-second job budget;
-- the job remained `running` after the bounded observation, past its nominal
-  budget, while progressing through node-attribute extraction. It is recorded
-  as `graphiti_write_pending`; no second submission or manual requeue ran. The
-  earlier C54 timeout job was not requeued.
+- the same job completed on its first attempt at
+  `2026-08-02T20:05:50.264761+00:00` as episode
+  `0266c6d3-904f-4c91-bab4-7d9dbcf93041`. No second submission or manual
+  requeue ran. The earlier C54 timeout job was not requeued.
 
 Next Bounded Action:
 

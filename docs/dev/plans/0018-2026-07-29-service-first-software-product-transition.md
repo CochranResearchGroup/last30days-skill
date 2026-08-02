@@ -5256,10 +5256,10 @@ Graphiti write status:
 
 - prior C54 job `1dfbe360-4e08-4dab-92e4-fa7d6e09b3b5` remains historical
   timeout evidence. Provider readiness passed and one compact successor episode
-  was submitted as job `741995ba-4085-45b3-8975-ab5401eafb43`; it remained
-  running after the bounded observation, past its nominal 180-second budget,
-  while making stage progress. C56 records `graphiti_write_pending`; no second
-  submission or manual requeue is authorized at this gate.
+  completed on its first attempt as job
+  `741995ba-4085-45b3-8975-ab5401eafb43`, episode
+  `0266c6d3-904f-4c91-bab4-7d9dbcf93041`. No second submission or manual
+  requeue ran.
 
 Next action:
 
