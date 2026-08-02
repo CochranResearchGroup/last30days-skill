@@ -119,7 +119,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C50 is the current authority. Service architecture, timer
+Checkpoint P0018-C51 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -131,8 +131,9 @@ identity consumed one attempt and stopped globally because three new current
 YouTube versions lack version embeddings. Every pre-existing index remained
 byte-identical. Independent review accepted the failed-closed receipt. C50 is
 `replacement_youtube_proof_failed_closed`; installed service 0.2.25 remains
-process-ready on schema 12 but version-embedding
-completeness is 56/59. X, LinkedIn,
+process-ready on schema 12 but version-embedding completeness is 56/59.
+Version 22/C51 opens one zero-source production sequencing repair under
+standing authority. X, LinkedIn,
 recurring enablement, independent final review, push, tagging, publication,
 and release remain closed.
 
@@ -4797,3 +4798,73 @@ Next action:
 
 - commit C50. Then classify one zero-source full-job-runner TDD successor under
   standing Plan 0018 repair authority. Do not retry or run any source.
+
+### Checkpoint P0018-C51 | 2026-08-02
+
+Plan version:
+
+- 22
+
+State transition:
+
+- `replacement_youtube_proof_failed_closed -> zero_source_index_sequencing_repair_open`
+
+Progress classification:
+
+- `blocker_reduction`; repair the deterministic production sequence exposed by
+  the consumed proof without acquiring any additional external evidence.
+
+Authority classification:
+
+- `inherited_authority`; Plan 0018 standing repair authority permits a bounded,
+  reversible service correction after the hard stop. This checkpoint does not
+  authorize a source attempt, retry, recurring schedule, release, tag, push, or
+  public publication.
+
+Bounded outcome and design:
+
+- make the existing `CorpusPublisher.publish_index()` interface own the full
+  preparation-and-publication invariant: configured pending current-version
+  embeddings complete before its immutable snapshot is published;
+- keep the module interface unchanged. `AcquisitionJobRunner` remains a caller
+  of one deep publication operation and does not learn an extra ordering rule;
+- add one integration-style regression through the real
+  `AcquisitionJobRunner.run_once()` interface with a deterministic local
+  embedding adapter. The observable result must be a published job whose index
+  contains the new current-version embedding;
+- prove the test fails on 0.2.25 before implementation, then apply the minimal
+  publisher change and prove it passes;
+- advance the package to 0.2.26, run focused and full repository validation,
+  build and install through the repo-native installer, and verify service,
+  schema, manifest, database integrity, 59/59 current-version completeness,
+  immutable pre-existing index rows, and 37 disabled specifications;
+- installation may deterministically forward-fill the three already-recorded
+  version embeddings and publish a successor index. It may not mutate any
+  pre-existing `index_chunk_embeddings` row or execute an acquisition worker.
+
+Owned write surfaces:
+
+- `tests/test_service_job_runner.py`;
+- `skills/last30days/scripts/lib/service_publication.py`;
+- service version and runtime-package artifacts required by the existing build
+  workflow;
+- Plan 0018, Roadmap P07, Runbook, and one machine-readable repair receipt.
+
+Acceptance and hard stops:
+
+- RED must identify the missing version embedding through the full runner path;
+- GREEN must preserve the single publication interface and existing immutable
+  snapshot tests;
+- focused tests, full `uv run pytest`, package validation, install verification,
+  SQLite `quick_check=ok`/foreign-key zero, manifest verification, exact 59/59
+  current-version completeness, historical full-row aggregate equality, config
+  mode 0600, and 37 specifications/zero enabled must pass;
+- stop immediately on any source execution, pre-existing index-row mutation,
+  schema or config drift, failed validation, or incomplete live forward repair;
+- one fresh-context read-only final review is required before terminal closeout.
+  The primary owns all writes; no implementation delegation is authorized.
+
+Next action:
+
+- commit C51, write exactly one full-runner regression, and capture RED before
+  editing product code. Do not run or retry any source.

@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 21/C50. Installed service 0.2.25/schema
+- Current authority is Plan 0018 version 22/C51. Installed service 0.2.25/schema
   12 is ready with 59 documents, 59 embeddings, active index
   `index-b5cd4d63810e8d5333a0aa93`, rollback 0.2.24, and all 37 specifications
   disabled. The immutable-index repair passed independent review; the two
@@ -730,7 +730,7 @@ Current State:
   cumulative attempt ceiling to 25. The one replacement proof preserved every
   pre-existing index but exposed three missing current-version embeddings;
   current completeness is 56/59. Independent review accepted the failed-closed
-  receipt; C50 is `replacement_youtube_proof_failed_closed`. X, both LinkedIn
+  receipt. C51 opens one zero-source index-sequencing repair; X, both LinkedIn
   proofs, and recurrence remain prohibited.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
@@ -844,14 +844,15 @@ Active Plan:
   no-source remediation on installed service 0.2.25 and stops at a separate
   replacement-YouTube human gate. Version 21/C49 records that exact proof as a
   global integrity stop: historical snapshots stayed immutable, but three new
-  current versions were published without version embeddings. Recurring
-  enablement remains a later separate gate.
+  current versions were published without version embeddings. Version 22/C51
+  opens the bounded deterministic repair. Recurring enablement remains a later
+  separate gate.
 
 Next Bounded Action:
 
-- Commit the independently accepted failed-closed receipt, then derive one
-  bounded zero-source full-job-runner sequencing repair. Do not retry YouTube
-  or run X, LinkedIn, Reddit, or recurrence.
+- Commit C51, capture one full-runner RED regression, then implement and verify
+  the zero-source sequencing repair. Do not retry YouTube or run X, LinkedIn,
+  Reddit, or recurrence.
 
 ## Goal-Compatible Plan Conversion
 

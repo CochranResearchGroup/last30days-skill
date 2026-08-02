@@ -7276,3 +7276,52 @@ Next Bounded Action:
 
 - commit C50, then classify one bounded zero-source full-job-runner TDD repair
   under standing authority. Do not run or retry a source.
+
+## Turn 115 | 2026-08-02
+
+Focus: classify the failed proof's deterministic zero-source repair successor.
+
+Authority Consulted:
+
+- committed C50/receipt 0031 at `ee88bff`; Plan 0018 standing repair authority;
+  CodeGraph production publication flow; TDD and codebase-design skills; and
+  planning, validation, Git, documentation, goal, and closeout policy.
+
+Decisions And Changes:
+
+- opened Plan 0018 version 22/C51
+  `zero_source_index_sequencing_repair_open` under inherited authority;
+- selected the existing `CorpusPublisher.publish_index()` interface as the deep
+  module seam that must hide embedding-before-snapshot ordering from callers;
+- bounded the implementation to one full-runner RED/GREEN regression, the
+  minimal publisher correction, service 0.2.26 package/install proof, immutable
+  historical-row proof, and fresh final review;
+- prohibited every acquisition source, retry, recurrence, push, tag, and
+  release action.
+
+Validation Evidence:
+
+- CodeGraph identifies the missing production call and confirms the publisher
+  interface is the narrow shared seam; existing tests manually cover the
+  embedding primitive but not the live runner sequence;
+- worktree was clean after `ee88bff`; no source was invoked while classifying
+  this successor.
+
+State Movement:
+
+- Plan 0018 `C50 -> C51`; version `21 -> 22`;
+- `replacement_youtube_proof_failed_closed -> zero_source_index_sequencing_repair_open`.
+
+Subagent Status And Reconciliation:
+
+- `not_started`; implementation remains with the primary. One fresh-context
+  read-only reviewer is reserved for the terminal checkpoint only.
+
+Graphiti Write Status:
+
+- deferred until terminal repair evidence exists.
+
+Next Bounded Action:
+
+- commit C51, add exactly one full-runner regression, and capture RED before
+  product-code edits. Do not run or retry any source.
