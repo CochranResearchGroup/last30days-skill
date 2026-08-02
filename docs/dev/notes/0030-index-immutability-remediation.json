@@ -1,0 +1,107 @@
+{
+  "schema": "last30days.index-immutability-remediation-receipt.v1",
+  "plan": "P0018",
+  "plan_version": 20,
+  "checkpoint_before": "P0018-C45",
+  "checkpoint_after": "P0018-C46",
+  "trigger_receipt": "docs/dev/notes/0029-timed-polling-observability-completion-receipt.json",
+  "authority": {
+    "classification": "inherited_authority",
+    "scope": "zero-source schema-12 repair of historical index embedding immutability",
+    "source_attempt_authorized": false,
+    "recurring_enablement_authorized": false
+  },
+  "cause": {
+    "defect": "publication deleted a stable chunk_embeddings parent when current content changed",
+    "cascade": "index_chunk_embeddings references chunk_embeddings with ON DELETE CASCADE, so the deletion removed rows copied into previously published indexes",
+    "damaged_historical_indexes": [
+      {"index_version": "index-8c968b3c270aa6c2b5abcbac", "embedding_rows": 56},
+      {"index_version": "index-761f40d7055bbc84a4018cd1", "embedding_rows": 56}
+    ],
+    "preservation_policy": "the damaged historical snapshots remain unchanged as defect evidence and were not reconstructed"
+  },
+  "repair": {
+    "implementation_commit": "358d041856b978b5ae2956a44f07c6f22981e8de",
+    "service_version_before": "0.2.24",
+    "service_version_after": "0.2.25",
+    "database_schema_version": 12,
+    "interface_changed": false,
+    "schema_changed": false,
+    "behavior": [
+      "publication no longer deletes the stable embedding parent on a content-version change",
+      "a current version missing its version embedding is pending even when the stable embedding exists",
+      "the stable current embedding is updated in place and the version embedding is inserted",
+      "future index publication copies complete current embedding membership without mutating prior snapshots"
+    ]
+  },
+  "tdd": {
+    "regression": "test_changed_content_preserves_published_embedding_snapshot",
+    "red": "the 0.2.24 behavior deleted the stable parent and embed_pending_chunks returned one missing embedding after the cascade",
+    "green": "the prior index membership remains unchanged while the changed current version receives both stable and version embeddings and is retrievable"
+  },
+  "package_and_install": {
+    "artifact_sha256": "d8791fcdfe66bf20f14f84292b843e2ef39db904eb35df3a331cb95c1bb34400",
+    "runtime_manifest_sha256": "15f816afd3a84fdac036b895d1c912696e5e320b0dfbb1fd7e465200215bdf90",
+    "contract_sha256": "3fb7df8ab6d17e1e381090120a7d30c99027cc3d555b1c3bfe7a0eeb84983c6f",
+    "installed_release": "/home/ecochran76/.local/share/last30days/service/releases/0.2.25",
+    "rollback_release": "/home/ecochran76/.local/share/last30days/service/releases/0.2.24",
+    "status": "ready"
+  },
+  "post_state": {
+    "service_version": "0.2.25",
+    "database_schema_version": 12,
+    "service_status": "ready",
+    "document_count": 59,
+    "stable_embedding_count": 59,
+    "current_version_embedding_count": 59,
+    "active_index": {
+      "index_version": "index-b5cd4d63810e8d5333a0aa93",
+      "document_count": 59,
+      "embedding_count": 59,
+      "relationship_count": 16
+    },
+    "sqlite_quick_check": "ok",
+    "sqlite_foreign_key_check_rows": 0,
+    "collection_spec_count": 37,
+    "enabled_spec_count": 0
+  },
+  "validation": {
+    "focused_tests": "passed",
+    "python_compile": "passed",
+    "go_test": "passed",
+    "full_suite": {"passed": 2415, "skipped": 7, "subtests_passed": 6},
+    "package_checks": "passed",
+    "deterministic_plan_authority_audit": "passed",
+    "independent_review": {
+      "reviewer": "/root/v20_index_review",
+      "verdict": "PASS",
+      "critical_findings": 0,
+      "focused_tests_passed": 22
+    }
+  },
+  "source_containment": {
+    "source_attempts": 0,
+    "retries": 0,
+    "newest_collection_run": "collection-run-b813953558bd3f2098bffb15f14168b1",
+    "x_proof": "not_run",
+    "linkedin_topic_proof": "not_run",
+    "linkedin_profile_proof": "not_run",
+    "recurring_collection": "not_run"
+  },
+  "graphiti": {
+    "group_id": "last30days_skill_main",
+    "job_id": "053ba077-eb9d-4a7e-9bd9-699228d9d9f0",
+    "name": "P0018 C46 immutable index remediation",
+    "status_at_checkpoint": "queued",
+    "retry": "not_run"
+  },
+  "terminal_state": "awaiting_replacement_youtube_proof_gate",
+  "next_gate": "a distinct replacement YouTube proof raises the cumulative attempt ceiling from 24 to 25 and requires explicit operator approval",
+  "prohibited_until_successor_gate": [
+    "replacement YouTube source attempt",
+    "X proof",
+    "LinkedIn topic proof",
+    "LinkedIn profile proof",
+    "recurring enablement"
+  ]
+}

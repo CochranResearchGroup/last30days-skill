@@ -37,8 +37,8 @@ software with:
 ## Current State
 
 - The independent managed service is the installed runtime authority at
-  version 0.2.24/schema 12 with 59 documents, 59 embeddings, and active index
-  `index-8c968b3c270aa6c2b5abcbac`.
+  version 0.2.25/schema 12 with 59 documents, 59 embeddings, and active index
+  `index-b5cd4d63810e8d5333a0aa93`. Rollback remains service 0.2.24.
 - The service publishes its exact contract, API, schema, runtime-manifest,
   source-readiness, and active-index facts. The MCP adapter performs the
   fail-closed compatibility handshake before ordinary operations.
@@ -92,7 +92,9 @@ software with:
   observability, but updating mutable legacy chunk embeddings cascaded deletion
   into the previously published immutable index. X and both LinkedIn proofs
   were not run. Version 20 repairs index immutability without source traffic
-  and stops before any replacement proof.
+  and stops before any replacement proof. C46 accepted the independently
+  reviewed repair: current publication is complete at 59/59 while the two
+  damaged 56-row historical indexes remain unchanged as defect evidence.
 
 ## Standing Authority And Human Gates
 
@@ -113,15 +115,16 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C45 is the current authority. Service architecture, timer
+Checkpoint P0018-C46 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
 was healthy zero-yield rather than content yield, and the first recurring-gate
 assessment failed closed. Version 19 terminated at its global integrity stop
-after one YouTube attempt. Version 20 is
-`active_index_immutability_remediation` under inherited implementation
-authority and permits no source attempt. Any replacement YouTube proof and
+after one YouTube attempt. Version 20 is complete at
+`awaiting_replacement_youtube_proof_gate`; installed service 0.2.25 is ready
+on schema 12 with a complete 59/59 successor index and rollback 0.2.24. Any
+replacement YouTube proof and
 recurring enablement remain separate human gates.
 Independent final review, push, tagging, publication, and release remain
 closed.
@@ -4388,3 +4391,73 @@ Next action:
 
 - commit receipt 0029 and C45, then execute I01-I03 with vertical TDD and zero
   source traffic. Stop before any replacement proof.
+
+### Checkpoint P0018-C46 | 2026-08-02
+
+Plan version:
+
+- 20
+
+State transition:
+
+- `active_index_immutability_remediation -> awaiting_replacement_youtube_proof_gate`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `human_gate`; the deterministic repair is complete. A distinct replacement
+  YouTube proof would raise the cumulative ceiling from 24 to 25 attempts and
+  therefore requires explicit operator approval. X, both LinkedIn lanes, and
+  recurring enablement remain prohibited.
+
+Implementation and evidence:
+
+- implementation commit
+  `358d041856b978b5ae2956a44f07c6f22981e8de` removes stable-parent deletion,
+  recognizes missing current-version embeddings as pending, updates the stable
+  embedding in place, and inserts version embeddings without changing the
+  existing public interfaces or schema 12;
+- the public-path regression first reproduced the cascade and now proves that
+  a changed current version leaves the published historical membership
+  unchanged, receives stable and version embeddings, publishes a complete new
+  index, and returns the changed text;
+- service 0.2.25 installed ready with artifact SHA-256
+  `d8791fcdfe66bf20f14f84292b843e2ef39db904eb35df3a331cb95c1bb34400`,
+  runtime manifest
+  `15f816afd3a84fdac036b895d1c912696e5e320b0dfbb1fd7e465200215bdf90`,
+  unchanged contract digest
+  `3fb7df8ab6d17e1e381090120a7d30c99027cc3d555b1c3bfe7a0eeb84983c6f`,
+  and rollback release 0.2.24 retained;
+- active index `index-b5cd4d63810e8d5333a0aa93` contains 59 documents
+  and 59 embeddings. Both already-damaged historical indexes remain at 56
+  rows and were not reconstructed or silently rewritten;
+- receipt `docs/dev/notes/0030-index-immutability-remediation.json` binds the
+  cause, repair, installed state, validation, preserved damage, source
+  containment, and successor gate.
+
+Validation and review:
+
+- full suite: 2,415 passed, 7 skipped, and 6 subtests passed; focused tests,
+  Python compilation, Go tests, package checks, SQLite quick/foreign-key
+  checks, and deterministic authority audit passed;
+- fresh-context reviewer `/root/v20_index_review` returned `PASS` with zero
+  critical findings and independently confirmed source/install equality,
+  59 current embeddings, preserved 56-row damaged history, 59-row successor
+  index, rollback 0.2.24, zero enabled specs, and no post-stop source run;
+- all 37 specifications remain disabled. No YouTube retry, X/LinkedIn proof,
+  recurring interval, schema change, credential mutation, push, tag,
+  publication, or release occurred.
+
+Graphiti write status:
+
+- one provider-ready write was queued in `last30days_skill_main` as job
+  `053ba077-eb9d-4a7e-9bd9-699228d9d9f0`; no retry is authorized or run.
+
+Next action:
+
+- stop at `awaiting_replacement_youtube_proof_gate`. If the operator explicitly
+  approves the 25-attempt ceiling, design/review one distinct replacement
+  YouTube proof before reconsidering X, LinkedIn, or recurrence.

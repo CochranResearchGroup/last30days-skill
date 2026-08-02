@@ -6981,3 +6981,69 @@ Next Bounded Action:
   publication/retrieval path, repair it on schema 12, install a version-distinct
   service with rollback retained, independently review, and stop before any
   source proof.
+
+## Turn 110 | 2026-08-02
+
+Focus: repair historical index immutability, install service 0.2.25, and stop
+at the replacement-proof human gate.
+
+Authority Consulted:
+
+- Plan 0018 V20/C45; Roadmap P07; Runbook Turn 109; receipt 0029; CodeGraph
+  publication/retrieval context; TDD and codebase-design skill guidance;
+  installed service/database readbacks; reviewer `/root/v20_index_review`;
+  and planning, validation, documentation, Git, versioning, architecture,
+  Graphiti, and closeout policy.
+
+Decisions And Changes:
+
+- added a public-path RED regression that reproduced deletion of a stable
+  embedding parent and the resulting cascade into historical index snapshots;
+- removed the parent deletion, made a missing current-version embedding
+  pending, updated the stable embedding in place, and inserted the version
+  embedding. Public interfaces and schema 12 remain unchanged;
+- bumped and installed service 0.2.25. The current corpus/index is complete at
+  59/59, rollback 0.2.24 is retained, and the already-damaged 56-row historical
+  indexes were deliberately not rewritten;
+- persisted receipt 0030 and advanced Plan 0018 to C46
+  `awaiting_replacement_youtube_proof_gate`. No source or recurring run is
+  authorized by the repair.
+
+Validation Evidence:
+
+- implementation commit
+  `358d041856b978b5ae2956a44f07c6f22981e8de`; service artifact SHA-256
+  `d8791fcdfe66bf20f14f84292b843e2ef39db904eb35df3a331cb95c1bb34400`;
+- full suite: 2,415 passed, 7 skipped, 6 subtests passed; focused tests, Python
+  compilation, Go tests, package checks, SQLite checks, and the authority audit
+  passed;
+- installed status is ready on 0.2.25/schema 12 at active index
+  `index-b5cd4d63810e8d5333a0aa93`, with 59 documents, 59 embeddings, and 16
+  relationships. All 37 specifications are disabled;
+- fresh reviewer `/root/v20_index_review` returned `PASS` with no critical
+  findings and independently verified the implementation, install, preserved
+  historical evidence, successor index, rollback, and source containment.
+
+State Movement:
+
+- Plan 0018 `C45 -> C46`, remaining at version 20;
+- `active_index_immutability_remediation -> awaiting_replacement_youtube_proof_gate`;
+- X, LinkedIn topic/profile, replacement YouTube, and recurrence remain
+  `not_authorized`/`not_run`.
+
+Subagent Status And Reconciliation:
+
+- `completed`; `/root/v20_index_review` was a fresh-context read-only reviewer.
+  Its `PASS` had no critical finding and required no remediation.
+
+Graphiti Write Status:
+
+- provider readiness passed and one source-backed episode was queued in
+  `last30days_skill_main` as job
+  `053ba077-eb9d-4a7e-9bd9-699228d9d9f0`; no retry ran.
+
+Next Bounded Action:
+
+- stop. A distinct replacement YouTube proof raises the cumulative ceiling
+  from 24 to 25 and requires explicit operator approval. X, LinkedIn, and
+  recurring enablement remain prohibited until their later gates.

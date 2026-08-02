@@ -721,12 +721,13 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 20/C45. Installed service 0.2.24/schema
-  12 remains process-ready with 59 documents and all 37 specifications
-  disabled, but the first C44 YouTube proof exposed historical index mutation
-  and reduced active embedding membership to 56. X and both LinkedIn proofs
-  were not run. C45 authorizes a zero-source immutable-index remediation and
-  stops before a separately gated replacement proof or recurrence.
+- Current authority is Plan 0018 version 20/C46. Installed service 0.2.25/schema
+  12 is ready with 59 documents, 59 embeddings, active index
+  `index-b5cd4d63810e8d5333a0aa93`, rollback 0.2.24, and all 37 specifications
+  disabled. The immutable-index repair passed independent review; the two
+  already-damaged 56-row historical indexes remain preserved as evidence.
+  State is `awaiting_replacement_youtube_proof_gate`; X, both LinkedIn proofs,
+  and recurrence remain prohibited.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -822,7 +823,7 @@ Active Plan:
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the open transition authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
-  rollback are accepted foundations on installed service 0.2.24/schema 12.
+  rollback are accepted foundations on installed service 0.2.25/schema 12.
   Plan version 19 consumes the version-18 contract-bound request and outcome
   counts, immutable
   schema-12 start/final receipts, pre/post corpus/index snapshots, and public
@@ -835,16 +836,17 @@ Active Plan:
   specifications remain disabled. C44 accepted the independently reviewed,
   operator-approved four-proof evidence-completion successor, but its first
   YouTube proof triggered the global integrity stop when historical index
-  embedding membership mutated from 59 to 56. Version 20/C45 is the active
-  no-source remediation; recurring enablement remains a separate human gate.
+  embedding membership mutated from 59 to 56. Version 20/C46 closes the
+  no-source remediation on installed service 0.2.25 and stops at a separate
+  replacement-YouTube human gate; recurring enablement remains a later
+  separate human gate.
 
 Next Bounded Action:
 
-- Execute C45 with vertical TDD: preserve historical index rows across current
-  content-version updates, package/install a version-distinct schema-12
-  service, independently review it, and stop at
-  `awaiting_replacement_youtube_proof_gate`. Do not run a source, enable a
-  schedule, or infer replacement-proof authority from the repair.
+- Await explicit operator approval to raise the cumulative ceiling from 24 to
+  25 attempts. If approved, design and independently review one distinct
+  replacement YouTube proof. Do not infer authority for X, LinkedIn, or
+  recurring enablement from that approval.
 
 ## Goal-Compatible Plan Conversion
 
