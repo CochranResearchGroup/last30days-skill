@@ -729,12 +729,12 @@ Current State:
   The operator approved one distinct replacement YouTube proof and raised the
   cumulative attempt ceiling to 25. The one replacement proof preserved every
   pre-existing index but exposed three missing current-version embeddings;
-  current completeness is 56/59. Independent review accepted the failed-closed
-  receipt. C54 independently closes the zero-source repair at exact 59/59
-  completeness without a source attempt. C55 derives a review-first successor
-  for X and both LinkedIn proofs, but the 25-attempt ceiling remains unchanged;
-  those proofs and recurrence remain prohibited pending independent review and
-  the exact 25-to-28 operator gate.
+  that proof's historical post-state was 56/59. Independent review accepted the
+  failed-closed receipt. C54 independently closes the zero-source repair at
+  exact 59/59 current completeness without a source attempt. C55 derives a
+  review-first successor for X and both LinkedIn proofs, but the 25-attempt
+  ceiling remains unchanged; those proofs and recurrence remain prohibited
+  pending independent review and the exact 25-to-28 operator gate.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
