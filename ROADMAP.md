@@ -721,13 +721,15 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 20/C46. Installed service 0.2.25/schema
+- Current authority is Plan 0018 version 21/C48. Installed service 0.2.25/schema
   12 is ready with 59 documents, 59 embeddings, active index
   `index-b5cd4d63810e8d5333a0aa93`, rollback 0.2.24, and all 37 specifications
   disabled. The immutable-index repair passed independent review; the two
   already-damaged 56-row historical indexes remain preserved as evidence.
-  State is `awaiting_replacement_youtube_proof_gate`; X, both LinkedIn proofs,
-  and recurrence remain prohibited.
+  The operator approved one distinct replacement YouTube proof and raised the
+  cumulative attempt ceiling to 25. Independent plan review passed and C48 is
+  `replacement_youtube_proof_authorized`; X, both LinkedIn proofs, and
+  recurrence remain prohibited.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -838,15 +840,15 @@ Active Plan:
   YouTube proof triggered the global integrity stop when historical index
   embedding membership mutated from 59 to 56. Version 20/C46 closes the
   no-source remediation on installed service 0.2.25 and stops at a separate
-  replacement-YouTube human gate; recurring enablement remains a later
-  separate human gate.
+  replacement-YouTube human gate. Version 21/C48 authorizes the independently
+  reviewed single proof at exact unconsumed boundary
+  `2026-08-02T12:00:00Z`; recurring enablement remains a later separate gate.
 
 Next Bounded Action:
 
-- Await explicit operator approval to raise the cumulative ceiling from 24 to
-  25 attempts. If approved, design and independently review one distinct
-  replacement YouTube proof. Do not infer authority for X, LinkedIn, or
-  recurring enablement from that approval.
+- Commit C48, run exactly one disabled YouTube proof with one attempt and no
+  retry, then independently review its immutable receipt. Do not run X,
+  LinkedIn, Reddit, or recurrence.
 
 ## Goal-Compatible Plan Conversion
 

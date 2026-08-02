@@ -7047,3 +7047,115 @@ Next Bounded Action:
 - stop. A distinct replacement YouTube proof raises the cumulative ceiling
   from 24 to 25 and requires explicit operator approval. X, LinkedIn, and
   recurring enablement remain prohibited until their later gates.
+
+## Turn 111 | 2026-08-02
+
+Focus: accept the replacement-YouTube human gate and open its reviewed-before-
+live successor packet.
+
+Authority Consulted:
+
+- operator message `om approved`; Plan 0018 V20/C46; Roadmap P07; Runbook Turn
+  110; receipts 0029/0030; installed service, collection, SQLite, and index
+  readbacks; the `last30days` service-first Skill contract; and planning, goal,
+  validation, documentation, delegation, Git, and roadmap/runbook policy.
+
+Decisions And Changes:
+
+- advanced Plan 0018 to Version 21/C47
+  `awaiting_replacement_youtube_plan_review` for one distinct disabled YouTube
+  proof and no other source or recurrence;
+- bound the exact unconsumed `2026-08-02T12:00:00Z` cadence identity, existing
+  `yt_dlp` method/selector, one attempt, no retry, and receipt 0031;
+- reconciled the cumulative envelope to 25 attempts, 67 accepted items, 1,157
+  governed requests, 2,280 seconds, zero cost/model calls, and concurrency one;
+- required live evidence of at least one deduplicated publication, unchanged
+  membership for every pre-existing index, a complete successor index, and an
+  independent final receipt review. Healthy zero yield is `not_proven` and is
+  not retried.
+
+Validation Evidence:
+
+- service 0.2.25/schema 12 is ready at 59 documents/59 embeddings and active
+  index `index-b5cd4d63810e8d5333a0aa93`; rollback remains 0.2.24;
+- both damaged historical indexes remain preserved at 56 rows, the current
+  repaired index has 59, config mode is 0600, SQLite quick check is `ok`,
+  foreign-key check is empty, and all 37 specifications are disabled;
+- exact prior YouTube boundaries are `2026-08-01T12:00:00Z` and
+  `2026-08-02T00:00:00Z`; the selected 12:00 boundary is distinct and past.
+
+State Movement:
+
+- Plan 0018 `C46 -> C47`, version `20 -> 21`;
+- `awaiting_replacement_youtube_proof_gate -> awaiting_replacement_youtube_plan_review`;
+- replacement YouTube is conditionally approved; X, LinkedIn, Reddit, and
+  recurrence remain `not_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `spawned`; one fresh-context read-only plan reviewer owns only independent
+  assessment. The primary retains all writes and live operation. The review is
+  pending and no source may run before it passes.
+
+Graphiti Write Status:
+
+- deferred to the reviewed pre-live or terminal checkpoint; the C46 queued job
+  is not retried.
+
+Next Bounded Action:
+
+- independently review C47. On pass after at most one consolidated
+  remediation, commit the reviewed checkpoint before the single live proof.
+
+## Turn 112 | 2026-08-02
+
+Focus: accept the independent Version 21 plan review and establish the C48
+recoverable pre-live checkpoint.
+
+Authority Consulted:
+
+- Plan 0018 V21/C47; Roadmap P07; Runbook Turn 111; reviewer
+  `/root/v21_plan_review`; current live service/collection/SQLite/index
+  readbacks; and planning, validation, goal, documentation, delegation, Git,
+  and closeout policy.
+
+Decisions And Changes:
+
+- accepted the reviewer's one-pass `PASS` with no critical finding and advanced
+  C47 to C48 `replacement_youtube_proof_authorized`;
+- preserved the exact `2026-08-02T12:00:00Z` disabled identity, `yt_dlp`, one
+  attempt/no retry, cumulative ceilings, immutable-index evidence contract,
+  and separate prohibitions on X, LinkedIn, Reddit, and recurrence;
+- made no live source, schedule, service, config, credential, database,
+  browser, push, tag, publication, or release mutation during review.
+
+Validation Evidence:
+
+- reviewer confirmed 25 attempts, 67 items, 1,157 requests, and the retained
+  2,280-second ceiling; the exact interval has zero existing runs and is past;
+- reviewer live readbacks matched the primary preflight: service 0.2.25/schema
+  12 ready, 59 documents/59 stable/59 current-version embeddings, current
+  59-row index, two preserved 56-row damaged indexes, SQLite `ok`/FK0, config
+  0600, and 37 specs/zero enabled;
+- deterministic authority audit and `git diff --check` pass with one active
+  plan and zero issues.
+
+State Movement:
+
+- Plan 0018 `C47 -> C48`, remaining at version 21;
+- `awaiting_replacement_youtube_plan_review -> replacement_youtube_proof_authorized`;
+- replacement YouTube may run once; all other live lanes remain unauthorized.
+
+Subagent Status And Reconciliation:
+
+- `completed`; `/root/v21_plan_review` was fresh-context and read-only. Its
+  `PASS` required no remediation and is accepted as the pre-live review.
+
+Graphiti Write Status:
+
+- deferred to the terminal proof checkpoint; no prior job was retried.
+
+Next Bounded Action:
+
+- commit C48, repeat exact preflight, then submit the one authorized YouTube
+  boundary and observe it to terminal state without retry.

@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 20
+Plan version: 21
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -95,6 +95,10 @@ software with:
   and stops before any replacement proof. C46 accepted the independently
   reviewed repair: current publication is complete at 59/59 while the two
   damaged 56-row historical indexes remain unchanged as defect evidence.
+- Version 21 is the operator-approved, independently reviewed-before-live
+  replacement-YouTube successor. It authorizes one distinct disabled proof at
+  the unconsumed `2026-08-02T12:00:00Z` cadence boundary, one attempt, no retry,
+  and no X, LinkedIn, or recurring work.
 
 ## Standing Authority And Human Gates
 
@@ -115,19 +119,19 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C46 is the current authority. Service architecture, timer
+Checkpoint P0018-C48 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
 was healthy zero-yield rather than content yield, and the first recurring-gate
 assessment failed closed. Version 19 terminated at its global integrity stop
-after one YouTube attempt. Version 20 is complete at
-`awaiting_replacement_youtube_proof_gate`; installed service 0.2.25 is ready
-on schema 12 with a complete 59/59 successor index and rollback 0.2.24. Any
-replacement YouTube proof and
-recurring enablement remain separate human gates.
-Independent final review, push, tagging, publication, and release remain
-closed.
+after one YouTube attempt. Version 20 is complete. The operator's 2026-08-02
+approval and independent plan review open Version 21 at
+`replacement_youtube_proof_authorized` with a 25-attempt cumulative ceiling.
+Installed service 0.2.25 is ready on schema 12
+with a complete 59/59 successor index and rollback 0.2.24. X, LinkedIn,
+recurring enablement, independent final review, push, tagging, publication,
+and release remain closed.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -4461,3 +4465,207 @@ Next action:
 - stop at `awaiting_replacement_youtube_proof_gate`. If the operator explicitly
   approves the 25-attempt ceiling, design/review one distinct replacement
   YouTube proof before reconsidering X, LinkedIn, or recurrence.
+
+## Version 21 | Replacement YouTube immutable-index proof
+
+### Bounded outcome and authority
+
+Run exactly one distinct manual proof through existing disabled specification
+`p0018-v17-youtube-ytdlp-manual` on installed service 0.2.25/schema 12. The
+proof must exercise exact `yt_dlp` publication after the immutable-index repair
+while proving that every already-published index snapshot remains unchanged
+and the new active index is complete for current document versions.
+
+The operator's 2026-08-02 `om approved`, replying to the exact C46 gate,
+authorizes this single proof and raises the cumulative attempt ceiling from 24
+to 25. It also authorizes the proof-local existing specification ceilings:
+three accepted items, 50 governed requests, 120 wall seconds, zero cents, zero
+assessment/model calls, and acquisition concurrency one. Reconciliation of
+the previously consumed YouTube proof to its exact actual use sets the
+cumulative envelope to 25 attempts, 67 accepted items, 1,157 governed
+requests, 2,280 wall seconds, zero cost/model calls, and concurrency one.
+
+Live work remains conditional on one fresh-context read-only plan review with
+no critical finding after at most one consolidated remediation. The user did
+not authorize X, LinkedIn, Reddit, recurring enablement, configuration or
+credential change, selector/method revision, service upgrade, push, tag,
+publication, or release.
+
+### Exact identity and execution controller
+
+Use the existing specification without revision:
+
+- collection specification: `p0018-v17-youtube-ytdlp-manual`;
+- source/surface/selector: YouTube topic `OpenAI latest`;
+- required and expected selected method: `yt_dlp`;
+- scheduled boundary: `2026-08-02T12:00:00Z`;
+- expected interval: `2026-08-01T12:00:00Z` through
+  `2026-08-02T12:00:00Z`;
+- supervisor: hard-coded manual `max_attempts=1`, no retry or replay;
+- specification state: disabled before, during, and after the proof.
+
+Before submission, re-read service status, exact spec, latest run, config mode,
+SQLite checks, current corpus/index counts, and membership digests for the two
+damaged historical indexes plus current index
+`index-b5cd4d63810e8d5333a0aa93`. Verify no run already owns the exact interval.
+The primary agent alone operates the service. A reviewer may inspect only.
+
+### Evidence and acceptance contract
+
+Receipt `docs/dev/notes/0031-replacement-youtube-index-proof.json` must bind:
+
+- run, job, acquisition, attempt, selector/spec, and immutable envelope
+  identities and digests;
+- exact attempted/observed/accepted/rejected/stored/deduplicated/indexed counts,
+  exact governed request count within 50, zero cost, one attempt, and terminal
+  wall time within 120 seconds;
+- exact `youtube_ytdlp` adapter variant and attempted/selected `yt_dlp` method;
+- pre/post document, stable/current-version embedding, active-index, SQLite,
+  and enabled-spec counts;
+- pre/post row counts and deterministic membership digests for the two damaged
+  historical indexes and the repaired pre-proof current index;
+- whether the run created an updated document version and a complete successor
+  active index without changing any prior snapshot.
+
+Acceptance requires at least one accepted, stored, and deduplicated item so the
+live publication path is exercised; unchanged row counts and membership
+digests for every pre-existing index; 59 documents and 59 stable/current-
+version embeddings after publication; a complete new active index; SQLite
+`quick_check=ok` with zero foreign-key rows; all 37 specs disabled; and one
+independent final receipt review with no critical finding. Healthy zero yield,
+quality rejection, missing provenance/envelopes, unchanged active index without
+an updated version, or incomplete embeddings is truthful `not_proven`, never a
+pass, and receives no retry.
+
+### Work graph and hard stops
+
+| State | Authorized action | Exit condition |
+| --- | --- | --- |
+| `awaiting_replacement_youtube_plan_review` | docs, deterministic audit, read-only runtime checks | one independent reviewer passes |
+| `replacement_youtube_proof_authorized` | one exact manual submission and observation | terminal receipt or first hard stop |
+| `awaiting_replacement_youtube_final_review` | receipt/docs and read-only validation only | independent receipt review passes or fails |
+| `awaiting_remaining_evidence_plan` | no live mutation | later bounded successor is reviewed and authorized |
+
+Global hard stops are any enabled spec, service/schema/runtime-manifest drift,
+config-mode drift, duplicate interval identity, inability to enforce exact
+method or one attempt, request/wall/cost ceiling breach, SQLite failure,
+document loss, stable/current-version embedding incompleteness, any change to a
+pre-existing index's membership, missing immutable evidence, rollback loss, or
+unreviewed critical finding. The consumed V19 identity is never retried. X,
+LinkedIn, Reddit, and recurrence remain prohibited regardless of proof outcome.
+
+Delegation is limited to one fresh-context read-only plan review and one
+fresh-context read-only final receipt review. The primary owns all planning
+integration, live commands, receipt construction, validation, and judgment.
+Each review has one pass; the plan review permits at most one consolidated
+remediation, and a failed final review stops without reopening the proof.
+
+### Checkpoint P0018-C47 | 2026-08-02
+
+Plan version:
+
+- 21
+
+State transition:
+
+- `awaiting_replacement_youtube_proof_gate -> awaiting_replacement_youtube_plan_review`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `human_gate`; the operator explicitly approved the distinct replacement
+  YouTube proof and 25-attempt cumulative ceiling. The proof-local standard
+  limits and reconciled cumulative item/request ceilings above are part of that
+  single approved proof. No other live lane or recurrence is authorized.
+
+Current evidence and containment:
+
+- service 0.2.25/schema 12 is ready with runtime manifest
+  `15f816afd3a84fdac036b895d1c912696e5e320b0dfbb1fd7e465200215bdf90`,
+  59 documents, 59 embeddings, and active index
+  `index-b5cd4d63810e8d5333a0aa93` at 59 embedding rows;
+- damaged historical indexes `index-8c968b3c270aa6c2b5abcbac` and
+  `index-761f40d7055bbc84a4018cd1` remain at 56 rows; config mode is 0600,
+  SQLite quick check is `ok`, foreign-key check is empty, and all 37 specs are
+  disabled;
+- the exact `2026-08-02T12:00:00Z` boundary is the next unconsumed 12-hour
+  cadence boundary after the V19 `2026-08-02T00:00:00Z` identity and is not in
+  the future at checkpoint time;
+- no source, schedule, service, config, credential, database, browser, push,
+  tag, publication, or release mutation occurred while opening C47.
+
+Delegation decision:
+
+- `spawned`; one fresh-context read-only reviewer will inspect only the Plan,
+  Roadmap, Runbook, receipts 0029/0030, live readbacks, and arithmetic. The
+  primary retains the serialized critical path and all write/live authority.
+
+Graphiti write status:
+
+- deferred to the reviewed pre-live or terminal proof checkpoint; C46 job
+  `053ba077-eb9d-4a7e-9bd9-699228d9d9f0` is not retried.
+
+Next action:
+
+- run one independent plan review. On pass after at most one consolidated
+  remediation, persist and commit the pre-live checkpoint before submission.
+  On fail, stop with all specifications disabled.
+
+### Checkpoint P0018-C48 | 2026-08-02
+
+Plan version:
+
+- 21
+
+State transition:
+
+- `awaiting_replacement_youtube_plan_review -> replacement_youtube_proof_authorized`
+
+Progress classification:
+
+- `blocker_reduction`
+
+Authority classification:
+
+- `human_gate`; the operator-approved single proof passed its required
+  independent plan review. This checkpoint authorizes only the exact C47
+  YouTube identity within the 25-attempt cumulative envelope.
+
+Independent review and current evidence:
+
+- fresh-context reviewer `/root/v21_plan_review` returned `PASS` in one pass
+  with no critical finding and no edits or runtime mutations;
+- the reviewer independently confirmed scope, exact `yt_dlp` selector/method,
+  one-attempt/no-retry behavior, 25/67/1,157/2,280 cumulative arithmetic,
+  immutable-index acceptance, healthy-zero-yield `not_proven` semantics,
+  hard stops, and prohibition of X, LinkedIn, Reddit, and recurrence;
+- its readbacks confirmed service 0.2.25/schema 12 ready, runtime manifest
+  `15f816afd3a84fdac036b895d1c912696e5e320b0dfbb1fd7e465200215bdf90`,
+  59 documents, 59 stable embeddings, 59 current-version embeddings, active
+  index `index-b5cd4d63810e8d5333a0aa93` at 59 rows, both damaged historical
+  indexes at 56 rows, SQLite `ok`/zero foreign-key rows, config 0600, and 37
+  specs with zero enabled;
+- exact interval `2026-08-01T12:00:00Z` through `2026-08-02T12:00:00Z`
+  has zero existing runs. The reviewer confirmed the boundary is past and the
+  V19 run remains the newest target-spec identity;
+- deterministic authority audit and `git diff --check` pass with Plan/Roadmap/
+  Runbook aligned at Version 21/C47 before this reviewed checkpoint.
+
+Delegation status and reconciliation:
+
+- `completed`; the reviewer was read-only and its `PASS` is accepted as the
+  required pre-live review. The primary independently verified the audit,
+  arithmetic, and live preflight and retains all live-operation authority.
+
+Graphiti write status:
+
+- deferred to the terminal proof checkpoint; no prior memory job is retried.
+
+Next action:
+
+- commit C48, repeat the exact preflight, then submit only
+  `p0018-v17-youtube-ytdlp-manual` at `2026-08-02T12:00:00Z`. Observe it to one
+  terminal state, persist receipt 0031, and do not retry.
