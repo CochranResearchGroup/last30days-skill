@@ -7475,3 +7475,49 @@ Next Bounded Action:
 
 - commit C54 and receipt 0032, write the Graphiti episode, and stop at the
   remaining-proof human gate.
+
+## Turn 119 | 2026-08-02
+
+Focus: record the bounded Graphiti timeout without reopening completed repair
+work.
+
+Authority Consulted:
+
+- committed C54 `7f11000`; graph-backed memory policy; provider readiness and
+  memory job `1dfbe360-4e08-4dab-92e4-fa7d6e09b3b5` status.
+
+Decisions And Changes:
+
+- submitted one compact development-journey episode to
+  `last30days_skill_main` after provider readiness passed;
+- the one 120-second ingestion attempt timed out during edge extraction. It was
+  not retried or requeued;
+- recorded `graphiti_write_pending` for the next non-trivial closeout. The
+  service repair remains complete and no source authority changed.
+
+Validation Evidence:
+
+- job status is `timed_out`, attempt count 1, failure category `timeout`, and
+  retryable false; no episode UUID was produced;
+- worktree was clean at `7f11000` before this truthful bookkeeping correction.
+
+State Movement:
+
+- Plan 0018 remains V22/C54
+  `zero_source_index_sequencing_repair_complete`;
+- durable memory projection moved `required -> graphiti_write_pending` only.
+
+Subagent Status And Reconciliation:
+
+- unchanged; the final review remains `PASS` with no critical finding.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; intended episode name is `Plan 0018 V22 C54
+  zero-source index sequencing repair complete`. Do not retry before the next
+  non-trivial closeout.
+
+Next Bounded Action:
+
+- stop at the remaining-proof human gate. No source or memory retry is
+  authorized in this turn.

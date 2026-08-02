@@ -5017,5 +5017,7 @@ Remaining campaign gate:
 
 Next action:
 
-- commit C54 and receipt 0032, write one compact Graphiti development-journey
-  episode, and stop at the explicit remaining-proof human gate.
+- commits `f3a7c9c` and `7f11000` close the repair and receipt. Graphiti job
+  `1dfbe360-4e08-4dab-92e4-fa7d6e09b3b5` timed out on its single 120-second
+  ingestion attempt and is `graphiti_write_pending` for the next non-trivial
+  closeout. Do not retry it now. Stop at the remaining-proof human gate.
