@@ -125,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C75 is the current authority. Service architecture, timer
+Checkpoint P0018-C76 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -164,8 +164,10 @@ records five serial one-attempt terminal receipts and verifies all sealed
 reveals only after source work stopped. Reddit was healthy zero yield; YouTube,
 X, and Facebook accepted 3, 3, and 1 items; LinkedIn failed source-locally with
 `agent_browser_error`. Only YouTube matched its hidden prediction, for 1/5
-class and range accuracy. Exact final review is the sole open action;
-recurrence, push, tagging, publication, and release remain closed.
+class and range accuracy. C76 independently accepts the complete reveal and
+receipt packet after one documented semantic-authority repair and terminal
+recheck. Version 28 is terminal; recurrence, push, tagging, publication, and
+release remain closed.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -6750,3 +6752,62 @@ Next action:
   review that recomputes the reveals, all 25 envelope hashes, arithmetic,
   service/index/spec/lease state, and exact final agent-browser absence. Stop
   before any further live or release action.
+
+### Checkpoint P0018-C76 | 2026-08-03
+
+Plan version:
+
+- 28
+
+State transition:
+
+- `awaiting_blinded_yield_canary_final_review -> blinded_yield_canary_evidence_accepted`
+
+Progress classification:
+
+- `acceptance`; the exact reveal/results receipt is independently verified and
+  Version 28's reset, zero-yield observability, sealed design, five live
+  canaries, reveal, and calibration objectives are terminally complete.
+
+Authority classification:
+
+- `inherited_authority`; C76 accepts evidence and closes this approved goal.
+  It adds no source attempt, retry, browser action, recurrence, credential or
+  profile mutation, push, tag, publication, release, or cleanup authority.
+
+Independent review sequence:
+
+- the first assigned reviewer became non-responsive during read-only
+  diagnostics, was interrupted, returned no verdict, and made no mutation;
+- replacement reviewer `/root/v28_canary_final_review_2` returned an initial
+  terminal FAIL with two findings: one real Roadmap P07 current-state drift and
+  one incomplete-review evidence gap;
+- commit `c2cd60159532ffba8c891aa94db5ab7f89c6d4fa` corrected the stale C74/59/37
+  Roadmap block to C75/62/42 and preserved both findings in receipt 0040;
+- the same reviewer performed the exact bounded recheck and returned `TERMINAL
+  PASS` with zero critical findings and no mutation.
+
+Terminal review evidence:
+
+- all five canonical reveal hashes and the ordered combined commitment were
+  independently recomputed from nonce-bearing objects;
+- all 25 raw `service_envelopes.payload_json` byte hashes independently matched
+  both the database and receipt;
+- historical index `index-28418bd968076bba6653223f` remains 59/59 and active
+  head `index-d4b3c45667cc2f635c557b85` is 62/62;
+- bounded agent-browser session/browser JSON readbacks completed and contained
+  no exact `last30days-facebook` record;
+- Roadmap P07, its active-plan summary, this plan, Runbook, and receipt now
+  agree on C76 acceptance while keeping recurrence and release actions closed.
+
+Graphiti disposition:
+
+- no Graphiti write is made at closeout. The compact source-backed receipt and
+  canonical C76 checkpoint are the durable authority; cross-agent recall should
+  route to them rather than duplicate runtime claims in derived memory.
+
+Next action:
+
+- no further Version 28 action. A future recurring-collection decision requires
+  its own reconciled successor plan and gate; this checkpoint does not enable a
+  timer or authorize another canary.

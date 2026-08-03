@@ -2,7 +2,7 @@
   "schema": "last30days.blinded-yield-canary-reveal-and-results.v1",
   "plan_id": "0018",
   "plan_version": 28,
-  "checkpoint": "P0018-C75",
+  "checkpoint": "P0018-C76",
   "created_at": "2026-08-03T15:20:00Z",
   "execution_authority_checkpoint": "P0018-C74",
   "sealed_plan": {
@@ -346,9 +346,9 @@
     "push_tag_publication_or_release": false,
     "unrelated_cleanup": false
   },
-  "terminal_state": "awaiting_independent_final_review",
+  "terminal_state": "accepted",
   "review": {
-    "status": "pending_terminal_recheck",
+    "status": "terminal_pass",
     "required": "one fresh-context independent read-only final review",
     "initial_reviewer": "/root/v28_canary_final_review_2",
     "initial_result": "terminal_fail",
@@ -365,8 +365,14 @@
         "remediation": "same reviewer must perform an exact bounded recheck on the remediated commit"
       }
     ],
-    "terminal_reviewer": null,
-    "terminal_critical_findings": null,
-    "decision": null
+    "terminal_reviewer": "/root/v28_canary_final_review_2",
+    "terminal_reviewed_commit": "c2cd60159532ffba8c891aa94db5ab7f89c6d4fa",
+    "terminal_critical_findings": 0,
+    "recomputed_reveal_commitments": "5/5",
+    "recomputed_combined_commitment": true,
+    "recomputed_service_envelope_payload_hashes": "25/25",
+    "historical_and_active_index_membership_verified": true,
+    "bounded_agent_browser_absence_verified": true,
+    "decision": "accept blinded-yield canary evidence at P0018-C76"
   }
 }

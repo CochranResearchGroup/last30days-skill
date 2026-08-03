@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 28/C75. Installed service 0.2.29/schema
+- Current authority is Plan 0018 version 28/C76. Installed service 0.2.29/schema
   12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
   disabled. The immutable-index repair passed independent review; the two
@@ -770,8 +770,10 @@ Current State:
   one bounded recheck; terminal PASS found no critical issue and C74 authorized
   exact disabled spec materialization plus serial one-attempt execution. C75
   records five terminal one-attempt receipts, seven accepted items, verified
-  post-terminal reveal commitments, 20% hidden class/range accuracy, and the
-  awaiting-final-review state. Recurrence and release actions remain closed.
+  post-terminal reveal commitments, and 20% hidden class/range accuracy. C76
+  accepts terminal independent review after one documented Roadmap authority
+  repair and exact bounded recheck. Recurrence and release actions remain
+  closed.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -924,15 +926,16 @@ Active Plan:
   post-terminal reveal: Reddit healthy-zero, YouTube/X/Facebook accepted
   3/3/1, and LinkedIn source-local `agent_browser_error`. All commitments
   verify; only YouTube's hidden forecast matched, for 20% class/range accuracy.
-  Final independent receipt review is open. Recurring enablement remains a
-  later gate.
+  C76 accepts the terminal independent recheck with zero critical findings.
+  Recurring enablement remains a later gate.
 
 Next Bounded Action:
 
-- Review C75's exact reveal/results receipt independently: recompute five
-  reveal commitments, the combined commitment, 25 service-envelope hashes,
-  arithmetic, and current service/index/spec/lease/browser state. Keep source
-  attempts, retries, recurrence, push, tag, publication, and release closed.
+- Version 28 is terminally accepted. Before any recurring collection decision,
+  reconcile a new successor plan against the accepted source-local outcomes,
+  failed 20% forecast calibration, current 62/62 index, and 42/0 spec state.
+  Keep source attempts, recurrence, push, tag, publication, and release closed
+  until that separate gate is reviewed and explicitly opened.
 
 ## Goal-Compatible Plan Conversion
 

@@ -8900,3 +8900,73 @@ Next Bounded Action:
 - validate and commit C75 locally, then obtain one fresh independent read-only
   review of commitments, 25 envelope hashes, arithmetic, and final runtime
   state. Keep all new source, browser, recurrence, and release actions closed.
+
+## Turn 143 | 2026-08-03
+
+Focus: reconcile the blinded-canary final review, remediate its one canonical
+authority defect, complete the missing independent proofs, and accept C76.
+
+Authority Consulted:
+
+- Plan 0018 V28/C75; Roadmap P07; receipt 0040; clean commits `25a2a5e` and
+  `c2cd601`; policies for validation, independent review, documentation change,
+  multi-agent reconciliation, and closeout; reviewers
+  `/root/v28_canary_final_review` and `/root/v28_canary_final_review_2`.
+
+Decisions And Changes:
+
+- interrupted the first assigned final reviewer only after repeated bounded
+  guidance failed to produce a verdict; it made no mutation and is not used as
+  acceptance evidence;
+- accepted the replacement reviewer's initial terminal FAIL: the earlier P07
+  Current State block still said C74/59/37, and the reviewer had not completed
+  raw hash, historical-index, or bounded agent-browser absence proofs;
+- corrected that semantic authority drift to C75/62/42, preserved the initial
+  FAIL and both finding dispositions in receipt 0040, and committed the exact
+  remediation as `c2cd60159532ffba8c891aa94db5ab7f89c6d4fa`;
+- required the same reviewer to run only the five exact missing checks on the
+  remediated clean commit, then accepted its terminal PASS with zero critical
+  findings;
+- advanced canonical authority to C76 and left every source, retry, recurrence,
+  browser, credential/profile, push, tag, publication, and release action
+  closed.
+
+Validation Evidence:
+
+- five canonical nonce-bearing reveal objects independently recomputed their
+  exact per-lane commitments, and the ordered digests recomputed combined hash
+  `612f4cd389a1734718e6f9ce34cd809711e7f16b7710eeadfc8791379b770f04`;
+- all 25 raw persisted `service_envelopes.payload_json` byte hashes matched the
+  database's stored hashes and receipt 0040;
+- historical index `index-28418bd968076bba6653223f` remains exactly 59/59 and
+  active index `index-d4b3c45667cc2f635c557b85` is exactly 62/62;
+- both 12-second-bounded agent-browser readbacks completed: 20 retained
+  sessions and 12 retained browsers, with no exact `last30days-facebook`
+  record;
+- Roadmap's P07 Current State and active-plan summary now agree with Plan 0018,
+  Runbook, receipt 0040, and live state.
+
+State Movement:
+
+- Plan 0018 remains Version 28 and advances `C75 -> C76`;
+- `awaiting_blinded_yield_canary_final_review -> blinded_yield_canary_evidence_accepted`.
+
+Subagent Status And Reconciliation:
+
+- `/root/v28_canary_final_review`: interrupted without verdict or mutation and
+  excluded from acceptance;
+- `/root/v28_canary_final_review_2`: initial terminal FAIL, one exact
+  remediation cycle, then terminal PASS at `c2cd601` with zero critical
+  findings and no mutation.
+
+Graphiti Write Status:
+
+- not written. Receipt 0040 plus C76 are compact source-backed canonical
+  authority, so duplicating these runtime claims into derived memory would add
+  no acceptance evidence.
+
+Next Bounded Action:
+
+- close the approved goal at C76. Any recurring-collection decision is a new
+  reconciled successor plan/gate and must not infer timer enablement from these
+  accepted disabled canaries.
