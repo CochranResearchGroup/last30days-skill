@@ -37,16 +37,16 @@ software with:
 ## Current State
 
 - The independent managed service is the installed runtime authority at
-  version 0.2.29/schema 12 with 59 documents, 59 stable embeddings, 59 current-
-  version embeddings, and active index `index-28418bd968076bba6653223f` at
-  59 stable and 59 current-version rows. Rollback is service 0.2.28.
+  version 0.2.29/schema 12 with 62 documents, 62 stable embeddings, 62 current-
+  version embeddings, and active index `index-d4b3c45667cc2f635c557b85` at
+  62 stable and 62 current-version rows. Rollback is service 0.2.28.
 - The service publishes its exact contract, API, schema, runtime-manifest,
   source-readiness, and active-index facts. The MCP adapter performs the
   fail-closed compatibility handshake before ordinary operations.
 - User-scoped configuration owns the five-source catalog, ordered access
   chains, browser timeout, display isolation, profile, and session policy. All
-  37 collection specifications are disabled, including the five version-17
-  manual-canary specifications.
+  42 collection specifications are disabled, including the five version-17
+  and five version-28 manual-canary specifications.
 - A timer-owned public Reddit interval on 0.2.14 published one durable version
   and advanced the active index with assessment disabled and no connected
   acquisition agent. The specification is paused and remained quiescent.
@@ -125,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C74 is the current authority. Service architecture, timer
+Checkpoint P0018-C75 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -156,10 +156,16 @@ authorized installation of that exact artifact and one fresh X proof under its
 reviewed controller. C67 records installed 0.2.29 and the one fresh X identity
 published on attempt one as healthy zero yield with no auth or manual handoff,
 unchanged 59/59 integrity, and cumulative actual use 29/50. C68 accepts the
-fresh independent receipt-review PASS with no critical finding. The next
-authorized action is planning and review for a bounded LinkedIn successor;
-LinkedIn live execution, recurrence, push, tagging, publication, and release
-remain closed.
+fresh independent receipt-review PASS with no critical finding. C69-C72 reset
+the governed epoch without rewriting lifetime history and independently accept
+the two-lane LinkedIn zero-yield observability packet. C73-C74 sealed and
+independently approved the five-service blinded-yield canary controller. C75
+records five serial one-attempt terminal receipts and verifies all sealed
+reveals only after source work stopped. Reddit was healthy zero yield; YouTube,
+X, and Facebook accepted 3, 3, and 1 items; LinkedIn failed source-locally with
+`agent_browser_error`. Only YouTube matched its hidden prediction, for 1/5
+class and range accuracy. Exact final review is the sole open action;
+recurrence, push, tagging, publication, and release remain closed.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -6683,3 +6689,64 @@ Next action:
 - commit C74 locally, revalidate preflight, materialize exact disabled specs,
   prove 42/0 with zero V28 runs, then execute Reddit first. Stop immediately on
   any Version 28 hard stop.
+
+### Checkpoint P0018-C75 | 2026-08-03
+
+Plan version:
+
+- 28
+
+State transition:
+
+- `blinded_yield_canary_live_authorized -> awaiting_blinded_yield_canary_final_review`
+
+Progress classification:
+
+- `evidence_capture`; all five exact lanes reached immutable terminal receipts,
+  the reveal gate opened only after source/browser work stopped, and the
+  executor independently recomputed five per-lane commitments plus the combined
+  commitment before evaluating predictions.
+
+Authority classification:
+
+- `inherited_authority`; C75 permits only deterministic validation, local
+  evidence commit, and one fresh independent read-only final review. It does
+  not authorize another source attempt, retry, browser launch, recurrence,
+  credential/profile mutation, push, tag, publication, or release.
+
+Observed packet:
+
+- Reddit published healthy zero yield at 0 accepted; YouTube published 3; X
+  published 3; Facebook published 1; LinkedIn stopped source-locally with
+  `agent_browser_error` and 0 accepted;
+- totals are five attempts, 38 attempted/observed, seven accepted/stored/indexed,
+  31 rejected, four deduplicated, 11 governed requests, 178.838795 wall seconds,
+  zero cost, zero model calls, and three net new documents;
+- the epoch is 7/50 attempts, 8/150 accepted items, 13/2500 requests, and
+  304.612795/6000 seconds; immutable lifetime attempts are 36;
+- the service is ready at exact 0.2.29/schema 12, corpus/current embeddings and
+  active index are 62/62, all 42 specs remain disabled, zero profile leases
+  remain, and no exact selected-profile session/browser remains.
+
+Reveal and calibration:
+
+- all five nonces and reveal objects recompute their public commitment hashes;
+  their ordered concatenation recomputes combined commitment
+  `612f4cd389a1734718e6f9ce34cd809711e7f16b7710eeadfc8791379b770f04`;
+- only YouTube matched both hidden class and accepted range. Reddit, X,
+  Facebook, and LinkedIn did not; class accuracy and range accuracy are both
+  1/5 (20%). This is a failed forecast and valid blinded calibration evidence,
+  not a reason to relabel outcomes or retry lanes.
+
+Machine-readable evidence:
+
+- `docs/dev/notes/0040-blinded-yield-canary-reveal-and-results.json` records
+  reveal objects, verified commitments, exact identities, counts, provenance,
+  25 envelope hashes, snapshots, budgets, final state, and closed scope.
+
+Next action:
+
+- validate and commit C75 locally, then obtain one fresh independent read-only
+  review that recomputes the reveals, all 25 envelope hashes, arithmetic,
+  service/index/spec/lease state, and exact final agent-browser absence. Stop
+  before any further live or release action.

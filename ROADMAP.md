@@ -917,14 +917,19 @@ Active Plan:
   across Reddit, YouTube, X, Facebook, and LinkedIn. The preparer retains
   private predictions/nonces; the executor sees only public selectors and
   commitments. C74 records the blind terminal review PASS and opens the exact
-  live packet. Recurring enablement remains a later gate.
+  live packet. C75 records all five one-attempt terminal receipts and the
+  post-terminal reveal: Reddit healthy-zero, YouTube/X/Facebook accepted
+  3/3/1, and LinkedIn source-local `agent_browser_error`. All commitments
+  verify; only YouTube's hidden forecast matched, for 20% class/range accuracy.
+  Final independent receipt review is open. Recurring enablement remains a
+  later gate.
 
 Next Bounded Action:
 
-- Materialize C74's exact five disabled specs, require 42/0 and zero V28 runs,
-  then execute Reddit, YouTube, X, Facebook, and LinkedIn serially at one
-  attempt each. Do not reveal expectations before all lanes are terminal or
-  blocked, and keep recurrence closed.
+- Review C75's exact reveal/results receipt independently: recompute five
+  reveal commitments, the combined commitment, 25 service-envelope hashes,
+  arithmetic, and current service/index/spec/lease/browser state. Keep source
+  attempts, retries, recurrence, push, tag, publication, and release closed.
 
 ## Goal-Compatible Plan Conversion
 

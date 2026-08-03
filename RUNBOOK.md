@@ -8836,3 +8836,67 @@ Next Bounded Action:
 - commit C74 locally, revalidate, materialize exact five disabled specs, prove
   42/0 with zero runs, and execute Reddit first. Stop on the first global hard
   stop and do not request reveal early.
+
+## Turn 142 | 2026-08-03
+
+Focus: execute the independently approved five-service blinded-yield packet,
+open the reveal only after every lane is terminal, and record exact evidence.
+
+Authority Consulted:
+
+- the operator's plan-and-execute instruction; Plan 0018 V28/C74; Roadmap P07;
+  receipt/spec artifacts 0039; installed service 0.2.29/schema 12; budget epoch
+  `p0018-v27-e2`; agent-browser external-only handoff contract; preparer
+  `/root/v28_blind_commit_preparer` after the terminal reveal gate.
+
+Decisions And Changes:
+
+- materialized the five exact spec artifacts serially, proved each remained
+  disabled, then proved 42 total/zero enabled and zero Version 28 runs;
+- submitted Reddit, YouTube, X, Facebook, and LinkedIn in the sealed order at
+  the exact Aug 3-4 interval with one attempt each and no retry;
+- closed only packet-owned browser state between authenticated lanes and used
+  no human handoff, local dashboard, credential/profile mutation, or unrelated
+  cleanup;
+- requested the exact reveal only after all five lanes were immutable terminal
+  and source/browser work had stopped; independently recomputed every per-lane
+  commitment and the combined commitment before comparing forecasts.
+
+Validation Evidence:
+
+- Reddit published healthy zero yield with seven governed requests; YouTube,
+  X, and Facebook published 3, 3, and 1 accepted items; LinkedIn stopped
+  source-locally with `agent_browser_error`, zero accepted, and no retry;
+- the packet consumed five attempts, 11 requests, 178.838795 seconds, seven
+  accepted/stored/indexed items, zero cost, and zero model calls; epoch use is
+  7/50 attempts and lifetime attempts are 36;
+- service 0.2.29/schema 12 remains ready on the exact manifest, SQLite is
+  `ok`/FK0, corpus/current embeddings and active index are 62/62, historical
+  59-row membership remains preserved, and all 42 specs remain disabled;
+- zero service profile leases and no exact `last30days-facebook` session or
+  browser remain after the packet;
+- all five reveal commitments and combined commitment
+  `612f4cd389a1734718e6f9ce34cd809711e7f16b7710eeadfc8791379b770f04`
+  verify. Only YouTube matched its hidden class/range, so both forecast
+  accuracies are 1/5 (20%).
+
+State Movement:
+
+- Plan 0018 remains Version 28 and advances `C74 -> C75`;
+- `blinded_yield_canary_live_authorized -> awaiting_blinded_yield_canary_final_review`.
+
+Subagent Status And Reconciliation:
+
+- `reveal_verified_after_all_terminal`; the preparer made no repo/runtime/source
+  mutation and returned only the five exact canonical reveal objects after the
+  primary confirmed the gate. No prediction was used to choose or alter a run.
+
+Graphiti Write Status:
+
+- deferred until independent final review accepts or rejects the receipt.
+
+Next Bounded Action:
+
+- validate and commit C75 locally, then obtain one fresh independent read-only
+  review of commitments, 25 envelope hashes, arithmetic, and final runtime
+  state. Keep all new source, browser, recurrence, and release actions closed.
