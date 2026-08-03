@@ -8290,3 +8290,59 @@ Next Bounded Action:
 - run final candidate validation, commit C65, and return it to
   `/root/v23_plan_review` for terminal read-only recheck. Do not install or
   submit a collection run before PASS and a separate pre-live checkpoint.
+
+## Turn 133 | 2026-08-02
+
+Focus: accept terminal review PASS and open the exact 0.2.29 install plus one-X
+live boundary.
+
+Authority Consulted:
+
+- Plan 0018 V26/C65; exact commit `dfefca5`; reviewer
+  `/root/v23_plan_review`; service artifact/manifest; current installed
+  service/database/index and agent-browser readbacks; validation, goal, and
+  installation policy.
+
+Decisions And Changes:
+
+- accepted terminal PASS after the single permitted remediation cycle;
+- advanced to C66 and authorized only exact 0.2.29 installation, complete
+  invariant validation, and one fresh Aug 3-4 X submission at max two service-
+  owned attempts;
+- preserved the failed C63 run, LinkedIn `not_run`, all disabled
+  specifications, external-Guacamole-only handoff, and the 30/50 cumulative
+  successor maximum.
+
+Validation Evidence:
+
+- reviewer independently reproduced explicit `--runtime-profile
+  last30days-facebook` forwarding before returned-selection validation and kept
+  the mismatch guard;
+- reviewer reproduced red/green sensitivity, focused and complete suites,
+  authority/JSON/diff checks, exact 0.2.29 manifest and artifact contents, and
+  a clean candidate worktree;
+- current installed service remains 0.2.28/schema 12, active/ready, 59/59,
+  SQLite `ok`/FK0, 37 specs/zero enabled, zero leases, and zero proposed-
+  interval owners;
+- agent-browser source/install identities and both readiness doctors remain
+  converged and ready. No runtime or source mutation occurred during review.
+
+State Movement:
+
+- Plan 0018 `C65 -> C66`, remaining at Version 26;
+- `awaiting_x_successor_remediation_recheck -> x_successor_install_and_proof_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `completed_pass`; the bounded FAIL/rework/PASS sequence is reconciled. The
+  primary independently reproduced the finding and fix and retains every live
+  operation.
+
+Graphiti Write Status:
+
+- deferred until the install and successor proof reach terminal evidence.
+
+Next Bounded Action:
+
+- commit C66, install exact 0.2.29, validate all invariants, and submit the one
+  X successor once. Stop before LinkedIn.

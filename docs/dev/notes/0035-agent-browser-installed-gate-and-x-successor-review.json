@@ -4,6 +4,7 @@
   "plan_version": 26,
   "checkpoint": "P0018-C64",
   "checkpoint_after_remediation": "P0018-C65",
+  "checkpoint_after_terminal_recheck": "P0018-C66",
   "created_at": "2026-08-02",
   "review": {
     "reviewer": "/root/v23_plan_review",
@@ -11,6 +12,13 @@
     "result": "FAIL",
     "blocking_finding": "installed_0_2_28_x_access_plan_omits_explicit_runtime_profile",
     "all_other_checks": "PASS",
+    "runtime_or_source_mutation": false
+  },
+  "terminal_recheck": {
+    "reviewer": "/root/v23_plan_review",
+    "commit": "dfefca5fb43e178e7e27369ef09dfba1fe918a30",
+    "result": "PASS",
+    "remaining_critical_findings": 0,
     "runtime_or_source_mutation": false
   },
   "agent_browser": {
@@ -113,8 +121,9 @@
     "artifact_sha256": "b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d",
     "full_suite": "2431_passed_7_skipped_6_subtests_passed",
     "installed": false,
+    "installation_authorized_at_checkpoint": "P0018-C66",
     "source_attempt_consumed": false,
-    "terminal_recheck_required": true
+    "terminal_recheck_required": false
   },
   "attempt_accounting": {
     "cumulative_actual_before": 28,
@@ -132,5 +141,5 @@
     "concurrency": 1,
     "ceiling_increase": false
   },
-  "state": "awaiting_x_successor_remediation_recheck"
+  "state": "x_successor_install_and_proof_authorized"
 }

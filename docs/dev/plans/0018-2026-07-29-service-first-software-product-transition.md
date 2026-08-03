@@ -125,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C65 is the current authority. Service architecture, timer
+Checkpoint P0018-C66 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -151,8 +151,10 @@ Agent-browser P90 subsequently repaired and live-proved the exact route-bound
 display path on the installed runtime. Version 26/C64's independent review
 found that service 0.2.28 validated the selected X profile without explicitly
 passing the durable caller binding into access planning. C65 contains the one
-bounded 0.2.29 remediation and awaits terminal recheck; source work, LinkedIn,
-recurrence, push, tagging, publication, and release remain closed.
+bounded 0.2.29 remediation and received terminal independent PASS. C66
+authorizes installation of that exact artifact and one fresh X proof under its
+reviewed controller; LinkedIn, recurrence, push, tagging, publication, and
+release remain closed.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -6021,3 +6023,75 @@ Next action:
 - validate and commit C65, then request the terminal independent recheck. Do
   not install 0.2.29 or submit the Aug 3-4 X identity before PASS and a separate
   pre-live authorization checkpoint.
+
+### Checkpoint P0018-C66 | 2026-08-02
+
+Plan version:
+
+- 26
+
+State transition:
+
+- `awaiting_x_successor_remediation_recheck -> x_successor_install_and_proof_authorized`
+
+Progress classification:
+
+- `blocker_reduction`; the durable caller binding now has one independent
+  terminal PASS and an exact installable artifact.
+
+Authority classification:
+
+- `inherited_authority`; install exact reviewed service 0.2.29 with rollback
+  preservation, validate every preflight invariant, then submit the one fresh
+  Aug 3-4 X identity under the Version 26 controller. This does not authorize a
+  second run identity, manual retry, LinkedIn, recurrence, push, tag,
+  publication, or release.
+
+Terminal independent recheck:
+
+- reviewer `/root/v23_plan_review` returned `TERMINAL PASS` on exact clean
+  commit `dfefca5fb43e178e7e27369ef09dfba1fe918a30` with no remaining critical
+  finding;
+- the reviewer independently proved the access-plan command forwards
+  `request.profile_id` as `--runtime-profile` before validating the broker's
+  selected profile, while preserving the mismatch guard;
+- it reproduced the regression's red/green sensitivity, focused tests, full
+  suite exit zero, manifest/artifact contents and hashes, authority audit,
+  JSON, diff, and clean-worktree checks;
+- its live readback kept installed service 0.2.28/schema 12 ready on 59/59,
+  37 specs/zero enabled, SQLite `ok`/FK0, zero profile leases, zero proposed-
+  interval owners, exact `last30days-facebook` fresh/no-manual access planning,
+  and healthy agent-browser install/remote-view convergence;
+- no install, browser, source, collection, config, service, database, or index
+  mutation occurred during review.
+
+Exact install and live boundary:
+
+- install only artifact
+  `dist/service/last30days-service-0.2.29.tar.gz`, SHA-256
+  `b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d`,
+  runtime manifest
+  `32bff26cf96a277a1c3d9bdf59c5fcc0ed7235eeb744dcad5cdcb11e2d22902a`;
+- require installed 0.2.29/schema 12 active/running and ready with rollback
+  0.2.28, exact manifest, SQLite/integrity, 59 current-version embedding
+  documents, active index 59/59, 37 specs/zero enabled, zero leases, zero
+  proposed-interval owners, and both agent-browser doctors ready;
+- require the explicit no-launch access plan with runtime profile
+  `last30days-facebook` to select that profile with X fresh/authenticated and no
+  manual action or seeding;
+- only then submit installed `collection run p0018-v17-x-browser-manual
+  --scheduled-for 2026-08-04T00:00:00Z --max-attempts 2` once and inspect its
+  immutable run/job/attempt evidence to terminal state before any new plan.
+
+Delegation status and reconciliation:
+
+- `completed_pass`; the same reviewer supplied the bounded FAIL/rework/
+  terminal-PASS sequence. The primary reproduced the defect and red/green fix,
+  ran the complete suite, and accepts the terminal result. All writes and live
+  operations remain primary-owned.
+
+Next action:
+
+- commit C66 locally, install exact 0.2.29, validate installed and external-
+  route invariants, then submit the one X successor exactly once. Stop on the
+  first Version 26 hard stop and do not start LinkedIn.
