@@ -8715,3 +8715,66 @@ Next Bounded Action:
 - commit C72 locally, then derive and independently review a sealed blinded-
   yield service-canary plan. Do not execute canaries before a separate live
   checkpoint.
+
+## Turn 140 | 2026-08-03
+
+Focus: construct the executor-blinded, reveal-after-terminal canary plan for
+all five configured source services.
+
+Authority Consulted:
+
+- the operator's plan-and-execute instruction; Plan 0018 V27/C72; Roadmap P07;
+  receipt 0038; planning, architecture, documentation, validation, goal,
+  branch, and independent-review policy; current service/spec/acquisition
+  history and epoch state; preparer `/root/v28_blind_commit_preparer`.
+
+Decisions And Changes:
+
+- advanced Plan 0018 to Version 28/C73 and fixed five unique disabled manual
+  specs for Reddit, YouTube, X, Facebook, and LinkedIn;
+- separated valid spec payloads from scheduled-time/max-attempt execution
+  metadata and committed immutable artifact hashes for each;
+- assigned private predictions to a fresh preparer, which used only prior
+  read-only evidence, generated fresh 32-byte nonces, and returned only five
+  commitment hashes plus a combined commitment;
+- kept the primary executor and future plan reviewer blind to predictions,
+  ranges, nonces, and hints, with reveal forbidden until every lane is
+  terminal or blocked;
+- bounded the packet to one attempt per lane, no retries, serial execution,
+  15 accepted items, 250 requests, 600 seconds, zero cost/model calls, and no
+  recurrence or unrelated cleanup.
+
+Validation Evidence:
+
+- installed service remains 0.2.29/schema 12 ready with exact manifest, five
+  configured/ready sources, active index 59/59, and epoch use 2/50;
+- public spec artifacts encode item limit three, request limit 50, wall limit
+  120, assessment disabled, enabled false, durable retention, correct public/
+  authenticated redaction, and exact method/profile per source;
+- combined opaque commitment is
+  `612f4cd389a1734718e6f9ce34cd809711e7f16b7710eeadfc8791379b770f04`;
+  no reveal content is stored in the repo or known to the primary;
+- receipt 0039 records execution order, vocabulary, canonical reveal encoding,
+  commitments, artifacts/hashes, budgets, preflights, browser lifecycle,
+  external-only handoff, and hard stops.
+
+State Movement:
+
+- Plan 0018 `Version 27/C72 -> Version 28/C73`;
+- `linkedin_observability_evidence_accepted -> awaiting_blinded_yield_canary_plan_review`.
+
+Subagent Status And Reconciliation:
+
+- `sealed_commitments_ready`; the preparer made no file/runtime/source changes
+  and retains the private reveals. The primary owns public planning and all
+  future mutations/execution.
+
+Graphiti Write Status:
+
+- deferred until reveal verification and final canary review.
+
+Next Bounded Action:
+
+- validate and commit C73 locally, then obtain one fresh independent read-only
+  review that receives no reveal. Do not materialize specs or execute canaries
+  before PASS and C74.

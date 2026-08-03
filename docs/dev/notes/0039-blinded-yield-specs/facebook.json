@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "collection_spec_id": "p0018-v28-blind-facebook-manual",
+  "name": "P0018 V28 blind Facebook OpenAI manual canary",
+  "source": "facebook",
+  "surface_kind": "topic",
+  "selector": {"topic": "OpenAI"},
+  "profile_id": "last30days-facebook",
+  "interval_seconds": 86400,
+  "lookback_seconds": 86400,
+  "item_limit": 3,
+  "wall_timeout_seconds": 120,
+  "network_request_limit": 50,
+  "budget_cents": 0,
+  "retention_class": "durable",
+  "redaction_class": "authenticated",
+  "assessment_enabled": false,
+  "enabled": false,
+  "spec_version": 1,
+  "required_access_method": "agent_browser"
+}

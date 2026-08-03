@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 27
+Plan version: 28
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -125,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C72 is the current authority. Service architecture, timer
+Checkpoint P0018-C73 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -6522,3 +6522,101 @@ Next action:
 
 - commit C72 locally, then derive the review-first blinded-yield service-canary
   successor with a sealed expectation contract. Stop before live canaries.
+
+## Version 28 | Sealed blinded-yield canaries across configured services
+
+Version 28 defines a genuine executor-blinded canary packet for exactly the
+five already configured source services. A fresh expectation preparer selected
+private outcome classes and accepted-yield ranges from prior immutable evidence
+without source traffic, salted each reveal with a random 32-byte nonce, and
+returned only public specifications and SHA-256 commitments. The primary
+executor has not seen predictions, ranges, nonces, or hints.
+
+Blinding protocol:
+
+1. The public plan fixes five unique disabled specs and execution order Reddit,
+   YouTube, X, Facebook, LinkedIn. All use the OpenAI selector; LinkedIn uses
+   the exact OpenAI company profile.
+2. Each hidden reveal is compact UTF-8 JSON with exact ordered keys
+   `collection_spec_id`, `predicted_class`, `accepted_min`, `accepted_max`,
+   and `nonce_hex`. Its SHA-256 is committed before any spec mutation or source
+   run. A combined hash commits the ordered set.
+3. The preparer `/root/v28_blind_commit_preparer` retains all reveal objects
+   privately. Neither the executor nor plan reviewer receives them.
+4. Reveal is forbidden until every submitted lane is terminal or explicitly
+   blocked/skipped. The primary then requests the exact reveal, recomputes all
+   hashes, classifies actual outcomes, and measures prediction/range matches.
+5. Commitment failure is a terminal integrity stop. Actual source-local
+   failure is data and does not invalidate blinding; global integrity failure
+   stops the remaining packet before reveal.
+
+Execution controller:
+
+- materialize exactly the five reviewed specs from receipt 0039's artifacts,
+  require 37 to 42 specs with zero enabled and exact readback, and leave them
+  disabled as evidence;
+- run each unique Aug 3-4 identity once with `--max-attempts 1`. No manual or
+  service retry exists in this packet;
+- execute serially and stop after each receipt to verify service, SQLite,
+  current-version embedding and active-index integrity, budgets, method
+  provenance, spec state, profile lease, and immutable envelopes;
+- a source-local terminal may advance to the next service when every global
+  invariant holds. Any global failure stops the packet;
+- before X, Facebook, and LinkedIn, require exact target access planning on
+  `last30days-facebook`, fresh target readiness, no manual action/seeding,
+  duplicate pressure false, and no conflicting lease. Close only the packet-
+  owned session between browser lanes;
+- if human interaction becomes necessary, expose only agent-browser's direct
+  external Guacamole URL. Never expose a localhost/dashboard URL, never reveal
+  expectations during a handoff, and do not clean unrelated state.
+
+Packet ceilings are five attempts, 15 accepted items, 250 governed requests,
+600 wall seconds, zero cost, zero model calls, and concurrency one. Starting
+epoch use is 2/50 attempts, one accepted item, two requests, and 125.774
+seconds; maximum post-packet use is 7/50 attempts, 16 accepted items, 252
+requests, 725.774 seconds, zero cost/model calls, and lifetime attempts 36.
+
+### Checkpoint P0018-C73 | 2026-08-03
+
+Plan version:
+
+- 28
+
+State transition:
+
+- `linkedin_observability_evidence_accepted -> awaiting_blinded_yield_canary_plan_review`
+
+Progress classification:
+
+- `experiment_design`; public selectors, immutable spec artifacts, hidden
+  salted expectations, per-lane commitments, combined commitment, execution
+  order, budgets, and reveal rules are fixed before source work.
+
+Authority classification:
+
+- `human_gate`; the operator explicitly requested planning and execution, but
+  this checkpoint permits documentation, deterministic validation, and one
+  fresh independent read-only plan review only. No spec materialization,
+  source/browser run, or reveal is authorized before PASS and C74.
+
+Machine-readable controller:
+
+- `docs/dev/notes/0039-blinded-yield-canary-plan.json` records the public
+  controller and opaque commitments;
+- exact valid `CollectionSpec` payloads live under
+  `docs/dev/notes/0039-blinded-yield-specs/`. Scheduled time and max attempts
+  are execution-controller fields, not invalid spec-schema additions.
+
+Closed scope:
+
+- no new service, source, credential, tenant, profile, selector expansion,
+  recurring schedule, spec enablement, assessment/model call, concurrency,
+  retry, push, tag, publication, release, or unrelated cleanup;
+- no source observation was used to choose expectations and no reveal is
+  stored in the repo at C73.
+
+Next action:
+
+- validate and commit C73 locally, obtain one fresh independent review of the
+  public controller without reveal access, and stop before spec materialization
+  unless it passes and C74 opens the exact packet.

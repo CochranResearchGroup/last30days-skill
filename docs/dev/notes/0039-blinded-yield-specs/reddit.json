@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "collection_spec_id": "p0018-v28-blind-reddit-manual",
+  "name": "P0018 V28 blind Reddit OpenAI manual canary",
+  "source": "reddit",
+  "surface_kind": "topic",
+  "selector": {"topic": "OpenAI"},
+  "profile_id": "default",
+  "interval_seconds": 86400,
+  "lookback_seconds": 86400,
+  "item_limit": 3,
+  "wall_timeout_seconds": 120,
+  "network_request_limit": 50,
+  "budget_cents": 0,
+  "retention_class": "durable",
+  "redaction_class": "public",
+  "assessment_enabled": false,
+  "enabled": false,
+  "spec_version": 1,
+  "required_access_method": "keyless"
+}
