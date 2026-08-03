@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 26/C67. Installed service 0.2.29/schema
+- Current authority is Plan 0018 version 26/C68. Installed service 0.2.29/schema
   12 is ready with 59 documents, 59 current-version embeddings, active index
   `index-28418bd968076bba6653223f`, rollback 0.2.28, and all 37 specifications
   disabled. The immutable-index repair passed independent review; the two
@@ -749,8 +749,9 @@ Current State:
   50. C67 records the installed artifact and a published attempt-one healthy
   zero-yield result with exact `last30days-facebook`, no auth/manual handoff,
   and unchanged 59/59 state. Cumulative actual use is 29/50; fresh independent
-  receipt review is required before any successor, and recurrence remains
-  prohibited.
+  receipt review passed with no critical finding. X evidence is accepted as
+  healthy zero yield, not content yield; the next action is a review-first
+  LinkedIn successor, and recurrence remains prohibited.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -886,16 +887,17 @@ Active Plan:
   C65 records the review FAIL and one bounded 0.2.29 remediation that forwards
   the explicit durable `last30days-facebook` binding. C66 records terminal PASS
   and authorizes exact installation plus the single fresh X proof. C67 records
-  that proof as attempt-one healthy zero yield with unchanged 59/59 integrity;
-  it now awaits fresh independent receipt review. Recurring enablement remains
-  a later gate.
+  that proof as attempt-one healthy zero yield with unchanged 59/59 integrity.
+  C68 accepts its fresh independent receipt review with no critical finding;
+  both LinkedIn lanes remain `not_run`. Recurring enablement remains a later
+  gate.
 
 Next Bounded Action:
 
-- Commit C67 locally and obtain one fresh independent read-only review of
-  receipt 0036 and the live runtime/database evidence. Do not start LinkedIn,
+- Derive and independently review a bounded LinkedIn topic/profile successor
+  that allocates the two remaining Version 24 attempts. Do not start LinkedIn,
   retry X, enable recurrence, or substitute a local dashboard URL for a genuine
-  external Guacamole handoff.
+  external Guacamole handoff in C68.
 
 ## Goal-Compatible Plan Conversion
 

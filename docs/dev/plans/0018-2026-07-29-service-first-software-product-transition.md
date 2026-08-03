@@ -125,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C67 is the current authority. Service architecture, timer
+Checkpoint P0018-C68 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -155,9 +155,11 @@ bounded 0.2.29 remediation and received terminal independent PASS. C66
 authorized installation of that exact artifact and one fresh X proof under its
 reviewed controller. C67 records installed 0.2.29 and the one fresh X identity
 published on attempt one as healthy zero yield with no auth or manual handoff,
-unchanged 59/59 integrity, and cumulative actual use 29/50. Fresh independent
-receipt review is the only authorized next action; LinkedIn, recurrence, push,
-tagging, publication, and release remain closed.
+unchanged 59/59 integrity, and cumulative actual use 29/50. C68 accepts the
+fresh independent receipt-review PASS with no critical finding. The next
+authorized action is planning and review for a bounded LinkedIn successor;
+LinkedIn live execution, recurrence, push, tagging, publication, and release
+remain closed.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -6168,3 +6170,61 @@ Next action:
 
 - commit C67 locally and request the one fresh read-only final receipt review.
   Stop before LinkedIn.
+
+### Checkpoint P0018-C68 | 2026-08-02
+
+Plan version:
+
+- 26
+
+State transition:
+
+- `awaiting_x_successor_final_review -> x_successor_evidence_accepted`
+
+Progress classification:
+
+- `acceptance`; the independently reviewed X result closes the repaired
+  profile/caller/agent-browser route packet as healthy zero yield. It does not
+  claim current selector content yield.
+
+Authority classification:
+
+- `inherited_authority`; planning, deterministic validation, and read-only
+  review for a bounded LinkedIn successor are permitted. No LinkedIn live run,
+  X retry, recurrence, push, tag, publication, or release is authorized by
+  this checkpoint.
+
+Fresh independent final review:
+
+- reviewer `/root/v26_x_final_review` returned `TERMINAL PASS` on exact clean
+  commit `ecaf40d` with zero critical findings and no runtime/source mutation;
+- the reviewer independently matched installed service 0.2.29/schema 12,
+  exact manifest/artifact/rollback, active/running readiness, agent-browser
+  source/install identities, both ready doctors, and successful job `r936025`
+  on `guacamole:1`/`remote-view-display:10`;
+- it matched the run, job, attempt, acquisition, all five recomputed envelope
+  hashes, zero content counts, one request, zero model calls/cost, and retry
+  class `none`;
+- live access planning selected `last30days-facebook` with X fresh, no manual
+  action/seeding, and no auth/manual/operator-URL terminal evidence;
+- SQLite `ok`/FK0, 37 specs/zero enabled, zero leases, 59/59 current embedding
+  and active-index completeness, one interval owner, and no later LinkedIn
+  attempt all passed;
+- cumulative actual arithmetic 28 to 29 of 50 and Version 24 packet use three
+  to four of six, leaving two, passed independently.
+
+Accepted result and remaining boundary:
+
+- receipt `docs/dev/notes/0036-x-successor-healthy-zero-yield.json` is accepted
+  as the terminal source-backed record;
+- X is not retried. LinkedIn topic and profile remain `not_run`; all 37
+  specifications remain disabled;
+- because the Version 24 packet has only two attempts remaining, the next
+  successor must explicitly allocate those attempts, preserve serial
+  execution and the standing ceiling 50, receive independent review, and stop
+  before any live run unless separately authorized by a later checkpoint.
+
+Next action:
+
+- derive the bounded review-first LinkedIn topic/profile successor from the
+  accepted X receipt. Do not execute it in this checkpoint.

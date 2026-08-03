@@ -8409,3 +8409,59 @@ Next Bounded Action:
 
 - validate and commit C67 locally, then obtain one fresh read-only final receipt
   review. Do not start LinkedIn.
+
+## Turn 135 | 2026-08-02
+
+Focus: reconcile the fresh independent X receipt review and close the resumed
+source slice at an accepted terminal checkpoint.
+
+Authority Consulted:
+
+- Plan 0018 V26/C67; exact commit `ecaf40d`; receipt 0036; reviewer
+  `/root/v26_x_final_review`; live service/database/index/profile and
+  agent-browser readbacks; validation and closeout policy.
+
+Decisions And Changes:
+
+- accepted the reviewer's `TERMINAL PASS` with no critical finding;
+- advanced to C68 `x_successor_evidence_accepted` while preserving the truthful
+  healthy-zero-yield classification;
+- kept X retry, both LinkedIn lanes, all schedules/specifications, push, tag,
+  publication, and release closed;
+- made a separately reviewed two-attempt LinkedIn successor the next bounded
+  planning action rather than treating unused retry capacity as live authority.
+
+Validation Evidence:
+
+- the reviewer independently matched installed service 0.2.29/schema 12,
+  manifest/artifact/rollback, active/running readiness, the exact agent-browser
+  source/install identities and route/display job, and both readiness doctors;
+- run/job/attempt/acquisition identities, all five recomputed envelope hashes,
+  zero content counts, one request, zero model calls/cost, and no retry passed;
+- live access planning selected `last30days-facebook`, X remained fresh, and no
+  auth, manual action/seeding, operator URL, or local handoff occurred;
+- SQLite `ok`/FK0, 37 specifications/zero enabled, zero leases, 59/59 corpus/
+  index completeness, one interval owner, and no LinkedIn attempts passed;
+- accounting remains 29/50 cumulative and four of six Version 24 packet
+  attempts used, leaving two.
+
+State Movement:
+
+- Plan 0018 `C67 -> C68`, remaining at Version 26;
+- `awaiting_x_successor_final_review -> x_successor_evidence_accepted`.
+
+Subagent Status And Reconciliation:
+
+- `completed_pass`; `/root/v26_x_final_review` made no changes. The primary
+  reconciles and accepts its exact read-only evidence.
+
+Graphiti Write Status:
+
+- deferred; Plan C68, Runbook Turn 135, and accepted receipt 0036 are the
+  durable source-backed authorities. No external memory write is needed for
+  this bounded closeout.
+
+Next Bounded Action:
+
+- derive and independently review the LinkedIn topic/profile successor using
+  the two remaining Version 24 attempts. Do not execute it under C68.
