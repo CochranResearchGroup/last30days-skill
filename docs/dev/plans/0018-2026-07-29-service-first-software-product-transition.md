@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 26
+Plan version: 27
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -125,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C68 is the current authority. Service architecture, timer
+Checkpoint P0018-C69 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -6228,3 +6228,100 @@ Next action:
 
 - derive the bounded review-first LinkedIn topic/profile successor from the
   accepted X receipt. Do not execute it in this checkpoint.
+
+## Version 27 | Reset proof-budget epoch and complete zero-yield observability
+
+Version 27 consumes the operator's explicit request to reset the budget
+counters, finish the remaining zero-yield observability passes, and then plan
+and execute blinded-yield service canaries. The reset starts a new governed
+ledger epoch; it does not delete, rewrite, renumber, or conceal any immutable
+service run, attempt, receipt, or historical plan evidence.
+
+Budget epoch `p0018-v27-e2`:
+
+- lifetime actual attempt evidence remains 29 and is reported beside, not
+  inside, the reset epoch;
+- the Version 24 packet retires at four of six attempts used. Its two unused
+  attempts do not carry into the new epoch;
+- epoch counters start at zero with ceilings of 50 attempts, 150 accepted
+  items, 2,500 governed requests, 6,000 wall seconds, zero cost, zero model
+  calls, and concurrency one;
+- this LinkedIn observability packet reserves no more than four attempts, six
+  accepted items, 100 governed requests, 240 wall seconds, zero cost, zero
+  model calls, and concurrency one.
+
+Remaining observability controller:
+
+1. Execute the disabled LinkedIn topic specification first, then the disabled
+   LinkedIn profile specification, both for the fresh Aug 3-4 interval and
+   each submitted once with service-owned `--max-attempts 2`.
+2. The service may consume attempt two only for `worker_timeout`,
+   `agent_browser_timeout`, `agent_browser_error`, or `route_stale` after a
+   complete attempt with zero side effects. Manual requeue and attempt three
+   are forbidden.
+3. Before the first lane, close only the currently owned X browser session for
+   `last30days-facebook`. Do not clean unrelated default, LitScout, retained-
+   display, route, or browser state.
+4. Before each lane, require installed service 0.2.29/schema 12 ready, SQLite
+   `ok`/FK0, 59/59 current embedding and active-index completeness, 37 specs
+   with zero enabled, zero service profile leases, no owner for the proposed
+   identity, exact `agent_browser` access planning on
+   `last30days-facebook`, fresh authenticated source evidence, ready remote
+   view, and no manual action or seeding.
+5. Poll the service-owned job to a terminal immutable receipt. Proceed from
+   topic to profile only if the first lane preserves every global integrity
+   invariant. Healthy zero yield is a successful observability result; it is
+   not content-yield proof.
+6. If human interaction becomes necessary, expose only the direct external
+   Guacamole client URL supplied by agent-browser. A localhost or local
+   dashboard URL is never an operator handoff.
+
+The blinded-yield canary campaign is a distinct successor packet. It may be
+planned after both observability lanes reach terminal evidence, but no canary
+source operation is authorized until that plan has a sealed expectation
+contract, independent review, and its own pre-live checkpoint.
+
+### Checkpoint P0018-C69 | 2026-08-03
+
+Plan version:
+
+- 27
+
+State transition:
+
+- `x_successor_evidence_accepted -> awaiting_linkedin_observability_plan_review`
+
+Progress classification:
+
+- `authority_and_budget_reset`; the remaining zero-yield observability work is
+  bounded under a fresh counter epoch without altering historical evidence.
+
+Authority classification:
+
+- `human_gate`; the operator explicitly authorized the
+  reset and requested execution, but this checkpoint permits documentation,
+  deterministic validation, and one fresh independent read-only review only.
+  No LinkedIn browser/source run is permitted before review PASS and a separate
+  pre-live checkpoint.
+
+Machine-readable controller:
+
+- `docs/dev/notes/0037-budget-epoch-reset-and-linkedin-observability-plan.json`
+  records the epoch, immutable lifetime total, retired packet, fresh counters,
+  lane budgets, retry allowlist, installed-service facts, owned browser
+  transition, handoff contract, and pending review.
+
+Hard stops:
+
+- stop on review FAIL, a preflight mismatch, an existing interval owner,
+  source/profile mismatch, auth staleness, non-external handoff, unauthorized
+  retry, receipt/hash incompleteness, database/index mutation outside the
+  lane's published items, cost/model activity, or any global integrity failure;
+- keep recurrence, all specification enablement, X retry, push, tag,
+  publication, release, and blinded-yield execution closed.
+
+Next action:
+
+- validate and commit C69 locally, obtain one fresh independent read-only
+  plan review, and stop before live work unless it passes and C70 explicitly
+  opens the two serialized LinkedIn lanes.

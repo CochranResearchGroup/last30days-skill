@@ -8465,3 +8465,67 @@ Next Bounded Action:
 
 - derive and independently review the LinkedIn topic/profile successor using
   the two remaining Version 24 attempts. Do not execute it under C68.
+
+## Turn 136 | 2026-08-03
+
+Focus: reset the governed proof-budget counters without altering historical
+evidence and open a review-first controller for the two remaining zero-yield
+observability lanes.
+
+Authority Consulted:
+
+- the operator's explicit reset-and-execute request; AGENTS.md and planning,
+  validation, branch, closeout, documentation, architecture, goal-execution,
+  and independent-review policy; Plan 0018 V26/C68; Roadmap P07; receipt 0036;
+  installed service/database/index/spec/profile and agent-browser readbacks.
+
+Decisions And Changes:
+
+- advanced Plan 0018 to Version 27/C69 and started governed budget epoch
+  `p0018-v27-e2` with counters at zero under ceilings 50 attempts, 150 accepted
+  items, 2,500 governed requests, 6,000 wall seconds, zero cost/model calls,
+  and concurrency one;
+- preserved the immutable lifetime actual total of 29 attempts and retired the
+  Version 24 packet at four of six with no carry-forward or history mutation;
+- bounded the disabled LinkedIn topic then profile observability lanes to four
+  attempts, six accepted items, 100 requests, and 240 seconds, with only the
+  existing service-owned transient retry allowlist;
+- required closing only the owned X browser session after review PASS, exact
+  `last30days-facebook` access planning before each lane, and direct external
+  Guacamole handoff only if human interaction is genuinely required;
+- kept every live source/browser mutation closed pending a fresh independent
+  plan PASS and separate pre-live checkpoint. Blinded-yield service canaries
+  remain a distinct successor plan after observability completes.
+
+Validation Evidence:
+
+- installed service remains 0.2.29/schema 12 ready with exact runtime manifest,
+  rollback 0.2.28, SQLite `ok`/FK0, 59 documents/current embeddings, active
+  index 59/59, 37 specifications/zero enabled, and zero service profile leases;
+- both proposed Aug 3-4 LinkedIn identities had zero interval owners at plan
+  time;
+- agent-browser no-launch planning selected `last30days-facebook`, reported
+  fresh source readiness with no manual action/seeding, one compatible owned X
+  session, and an external Guacamole handoff route. Unrelated session/display
+  cleanup is explicitly outside authority;
+- receipt 0037 is the machine-readable controller and remains review-pending.
+
+State Movement:
+
+- Plan 0018 `C68 -> C69`, `Version 26 -> Version 27`;
+- `x_successor_evidence_accepted -> awaiting_linkedin_observability_plan_review`.
+
+Subagent Status And Reconciliation:
+
+- `pending`; one fresh-context read-only reviewer must inspect the committed
+  controller. The primary retains all writes and live operations.
+
+Graphiti Write Status:
+
+- deferred until the observability packet reaches terminal reviewed evidence.
+
+Next Bounded Action:
+
+- validate and commit C69 locally, then obtain the required fresh independent
+  read-only review. Do not close the owned browser or start LinkedIn before
+  PASS and C70.
