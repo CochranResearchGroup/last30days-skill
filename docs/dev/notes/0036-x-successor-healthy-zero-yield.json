@@ -1,0 +1,150 @@
+{
+  "schema": "last30days.x-successor-healthy-zero-yield.v1",
+  "plan": "0018",
+  "plan_version": 26,
+  "checkpoint_before": "P0018-C66",
+  "checkpoint": "P0018-C67",
+  "created_at": "2026-08-03T02:53:41Z",
+  "authority": {
+    "standing_attempt_ceiling": 50,
+    "version24_packet_attempt_ceiling": 6,
+    "concurrency": 1,
+    "authorized_operation": "install_exact_reviewed_0.2.29_then_submit_one_fresh_x_identity_once",
+    "linkedin_authorized": false,
+    "recurrence_authorized": false,
+    "push_release_or_publication_authorized": false
+  },
+  "reviewed_repair": {
+    "repair_commit": "dfefca5fb43e178e7e27369ef09dfba1fe918a30",
+    "authorization_commit": "a3cbdeaaf68028fa77f3b96c58449f66a91fe607",
+    "terminal_candidate_review": "PASS",
+    "change": "forward_request_profile_id_as_agent_browser_access_plan_runtime_profile",
+    "profile_id": "last30days-facebook",
+    "manual_handoff_contract": "external_agent_browser_guacamole_url_only",
+    "local_dashboard_urls_allowed": false
+  },
+  "installed_service": {
+    "service_version": "0.2.29",
+    "database_schema_version": 12,
+    "status": "ready",
+    "systemd": "active_running",
+    "runtime_manifest_sha256": "32bff26cf96a277a1c3d9bdf59c5fcc0ed7235eeb744dcad5cdcb11e2d22902a",
+    "contract_sha256": "3fb7df8ab6d17e1e381090120a7d30c99027cc3d555b1c3bfe7a0eeb84983c6f",
+    "artifact": "dist/service/last30days-service-0.2.29.tar.gz",
+    "artifact_sha256": "b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d",
+    "rollback_release": "0.2.28",
+    "verified_at": "2026-08-03T02:45:45.835122Z"
+  },
+  "agent_browser": {
+    "source_commit": "7dd1243650e52809dfe8be92715a29bfac15b02b",
+    "installed_executable_sha256": "a99728c56a57a80bd89ad1bc4e8c8d4a1d1af7bc08e2d52919ea0e384a5d7211",
+    "package_version": "0.28.0",
+    "install_doctor": "ready_zero_issues",
+    "remote_view_doctor": "ready_both_route_displays",
+    "remote_view_job": {
+      "id": "r936025",
+      "action": "remote_view_open",
+      "state": "succeeded",
+      "error": null,
+      "route_pool_entry_id": "guacamole-rdp-a",
+      "remote_view_route_id": "guacamole:1",
+      "display_allocation_id": "remote-view-display:10",
+      "submitted_at": "2026-08-03T02:46:54.062724655Z",
+      "started_at": "2026-08-03T02:46:54.588227582Z",
+      "completed_at": "2026-08-03T02:46:57.448710591Z"
+    }
+  },
+  "successor": {
+    "spec_id": "p0018-v17-x-browser-manual",
+    "source": "x",
+    "selector": {
+      "topic": "OpenAI"
+    },
+    "scheduled_for": "2026-08-04T00:00:00Z",
+    "interval_from": "2026-08-03T00:00:00Z",
+    "interval_to": "2026-08-04T00:00:00Z",
+    "run_id": "collection-run-256fafac6f64847cbca3130a4dede6aa",
+    "job_id": "e0cd5bc1-1ca7-4cbb-8a47-d800eee2c004",
+    "state": "published",
+    "attempts": 1,
+    "max_attempts": 2,
+    "access_partition_id": "profile:last30days-facebook",
+    "profile_id": "last30days-facebook",
+    "access_method": "agent_browser",
+    "adapter": "x_agent_browser",
+    "adapter_version": "1",
+    "auth_required_observed": false,
+    "manual_handoff_required": false,
+    "operator_url": null,
+    "started_at": "2026-08-03T02:46:52.865580Z",
+    "completed_at": "2026-08-03T02:47:52.722702Z",
+    "attempt": {
+      "attempt_number": 1,
+      "state": "published",
+      "error_code": null,
+      "attempt_start_envelope_sha256": "38d0039e049f422e32a831e4b8e526a8d8f1a1e01e8809ab9a4a9e8dd4b6ae93",
+      "collection_receipt_envelope_sha256": "95102331f60023bce5d29b06ebd331af390511bdeeb698c53e5a14795f9c0616",
+      "retry_eligible": false,
+      "retry_class": "none"
+    },
+    "acquisition": {
+      "work_id": "work-3b7037305a19b79d55dd6a64468f4617",
+      "status": "succeeded",
+      "error": null,
+      "item_count": 0,
+      "artifact_ref": "service-envelope:acquisition_work_result/work-3b7037305a19b79d55dd6a64468f4617",
+      "content_hash": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "duration_ms": 62087,
+      "rejection_counts": {}
+    },
+    "counts": {
+      "attempted": 0,
+      "observed": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "stored": 0,
+      "deduplicated": 0,
+      "indexed": 0,
+      "network_requests": 1,
+      "model_calls": 0,
+      "cost_cents": 0
+    },
+    "classification": "healthy_zero_yield",
+    "content_yield_proven": false
+  },
+  "post_attempt_integrity": {
+    "sqlite_quick_check": "ok",
+    "foreign_key_check_rows": 0,
+    "collection_spec_count": 37,
+    "enabled_spec_count": 0,
+    "active_profile_leases": 0,
+    "successor_interval_owners": 1,
+    "documents": 59,
+    "current_version_embedding_documents": 59,
+    "active_index_id": "index-28418bd968076bba6653223f",
+    "active_index_documents": 59,
+    "active_index_current_embedding_documents": 59,
+    "pre_post_snapshots_equal": true
+  },
+  "attempt_accounting": {
+    "cumulative_before_successor": 28,
+    "cumulative_after": 29,
+    "standing_attempts_remaining": 21,
+    "version24_packet_attempts_used_before": 3,
+    "version24_packet_attempts_used_after": 4,
+    "version24_packet_attempts_remaining": 2,
+    "retry_consumed": false
+  },
+  "remaining_lanes": {
+    "linkedin_topic": "not_run",
+    "linkedin_profile": "not_run"
+  },
+  "final_review": {
+    "required": true,
+    "state": "pending",
+    "reviewer": null,
+    "result": null
+  },
+  "terminal_state": "x_successor_healthy_zero_yield_awaiting_final_review",
+  "stop_reason": "authorized_x_identity_published_on_attempt_1_with_healthy_zero_yield;stop_before_linkedin_for_fresh_independent_receipt_review"
+}

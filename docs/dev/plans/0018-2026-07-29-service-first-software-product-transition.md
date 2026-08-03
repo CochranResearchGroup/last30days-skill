@@ -37,9 +37,9 @@ software with:
 ## Current State
 
 - The independent managed service is the installed runtime authority at
-  version 0.2.28/schema 12 with 59 documents, 59 stable embeddings, 59 current-
+  version 0.2.29/schema 12 with 59 documents, 59 stable embeddings, 59 current-
   version embeddings, and active index `index-28418bd968076bba6653223f` at
-  59 stable and 59 current-version rows. Rollback remains service 0.2.27.
+  59 stable and 59 current-version rows. Rollback is service 0.2.28.
 - The service publishes its exact contract, API, schema, runtime-manifest,
   source-readiness, and active-index facts. The MCP adapter performs the
   fail-closed compatibility handshake before ordinary operations.
@@ -125,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C66 is the current authority. Service architecture, timer
+Checkpoint P0018-C67 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -152,9 +152,12 @@ display path on the installed runtime. Version 26/C64's independent review
 found that service 0.2.28 validated the selected X profile without explicitly
 passing the durable caller binding into access planning. C65 contains the one
 bounded 0.2.29 remediation and received terminal independent PASS. C66
-authorizes installation of that exact artifact and one fresh X proof under its
-reviewed controller; LinkedIn, recurrence, push, tagging, publication, and
-release remain closed.
+authorized installation of that exact artifact and one fresh X proof under its
+reviewed controller. C67 records installed 0.2.29 and the one fresh X identity
+published on attempt one as healthy zero yield with no auth or manual handoff,
+unchanged 59/59 integrity, and cumulative actual use 29/50. Fresh independent
+receipt review is the only authorized next action; LinkedIn, recurrence, push,
+tagging, publication, and release remain closed.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -6095,3 +6098,73 @@ Next action:
 - commit C66 locally, install exact 0.2.29, validate installed and external-
   route invariants, then submit the one X successor exactly once. Stop on the
   first Version 26 hard stop and do not start LinkedIn.
+
+### Checkpoint P0018-C67 | 2026-08-02
+
+Plan version:
+
+- 26
+
+State transition:
+
+- `x_successor_install_and_proof_authorized -> awaiting_x_successor_final_review`
+
+Progress classification:
+
+- `blocker_reduction`; exact installed service 0.2.29 forwarded the durable
+  `last30days-facebook` binding, agent-browser completed its route-bound display
+  operation, and the fresh X identity published on attempt one. The result is
+  healthy zero yield, not content yield.
+
+Authority classification:
+
+- `inherited_authority`; receipt/docs and read-only validation only until one
+  fresh independent reviewer passes or fails. Do not submit LinkedIn, retry X,
+  enable recurrence, push, tag, publish, or release.
+
+Installed and live evidence:
+
+- exact artifact `dist/service/last30days-service-0.2.29.tar.gz`, SHA-256
+  `b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d`,
+  installed ready on schema 12 and runtime-manifest SHA-256
+  `32bff26cf96a277a1c3d9bdf59c5fcc0ed7235eeb744dcad5cdcb11e2d22902a`;
+  rollback is 0.2.28;
+- the installed no-launch access plan selected durable profile
+  `last30days-facebook`, retained fresh authenticated X evidence, and requested
+  no manual action or seeding;
+- the one authorized command created run
+  `collection-run-256fafac6f64847cbca3130a4dede6aa`, job
+  `e0cd5bc1-1ca7-4cbb-8a47-d800eee2c004`, for the distinct Aug 3-4 interval;
+- attempt one published successfully. Acquisition work
+  `work-3b7037305a19b79d55dd6a64468f4617` succeeded through `x_agent_browser`
+  with zero items and one governed network request. No retry, model call, cost,
+  auth request, manual handoff, or operator URL occurred;
+- agent-browser job `r936025` completed `remote_view_open` on
+  `guacamole-rdp-a`, route `guacamole:1`, display
+  `remote-view-display:10`, with no error;
+- immutable attempt-start and collection-receipt envelope SHA-256 values are
+  `38d0039e049f422e32a831e4b8e526a8d8f1a1e01e8809ab9a4a9e8dd4b6ae93`
+  and `95102331f60023bce5d29b06ebd331af390511bdeeb698c53e5a14795f9c0616`;
+- pre/post corpus and index snapshots remain identical: SQLite `ok`, FK0,
+  59 documents, 59 current-version embedding documents, active index
+  `index-28418bd968076bba6653223f` at 59/59, 37 specifications/zero enabled,
+  zero profile leases, and exactly one owner for the successor interval;
+- cumulative actual attempts move 28 to 29 of 50. Version 24 packet use moves
+  three to four of six, leaving two. LinkedIn topic and profile remain
+  `not_run`.
+
+Receipt and review boundary:
+
+- `docs/dev/notes/0036-x-successor-healthy-zero-yield.json` is the machine-
+  readable terminal receipt;
+- one fresh-context independent reviewer must verify exact runtime identity,
+  route evidence, immutable run/job/attempt/acquisition evidence, attempt
+  arithmetic, and unchanged database/index/spec/lease state;
+- this result proves the repaired route/profile/caller path and a healthy
+  zero-yield terminal outcome. It does not prove current X selector content
+  yield.
+
+Next action:
+
+- commit C67 locally and request the one fresh read-only final receipt review.
+  Stop before LinkedIn.

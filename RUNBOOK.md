@@ -8346,3 +8346,66 @@ Next Bounded Action:
 
 - commit C66, install exact 0.2.29, validate all invariants, and submit the one
   X successor once. Stop before LinkedIn.
+
+## Turn 134 | 2026-08-02
+
+Focus: install the reviewed X caller repair and execute the one authorized
+fresh X identity to its terminal receipt.
+
+Authority Consulted:
+
+- Plan 0018 V26/C66; receipt 0035; exact reviewed commits `dfefca5` and
+  `a3cbdea`; installed last30days and agent-browser doctors; live
+  database/index/profile readbacks; standing 50-attempt ceiling.
+
+Decisions And Changes:
+
+- installed exact service 0.2.29 with rollback 0.2.28 and confirmed its
+  runtime-manifest, contract, schema, service state, and user configuration;
+- confirmed the no-launch plan selected `last30days-facebook`, with X fresh and
+  authenticated and no manual action or seeding;
+- submitted only the reviewed Aug 3-4 X identity once at max two service-owned
+  attempts;
+- classified the terminal publication as healthy zero yield, not content
+  yield, and stopped before LinkedIn for the required independent receipt
+  review.
+
+Validation Evidence:
+
+- installed service 0.2.29/schema 12 is active/running and ready on runtime-
+  manifest SHA-256
+  `32bff26cf96a277a1c3d9bdf59c5fcc0ed7235eeb744dcad5cdcb11e2d22902a`;
+- run `collection-run-256fafac6f64847cbca3130a4dede6aa`, job
+  `e0cd5bc1-1ca7-4cbb-8a47-d800eee2c004`, published on attempt one with zero
+  attempted/observed/accepted/rejected/stored/deduplicated/indexed items, one
+  governed network request, zero model calls, and zero cost;
+- acquisition work `work-3b7037305a19b79d55dd6a64468f4617` succeeded through
+  `x_agent_browser`; agent-browser job `r936025` succeeded on route
+  `guacamole:1` and display `remote-view-display:10`, with no auth, manual
+  handoff, operator URL, or error;
+- SQLite quick check is `ok`, FK0, 37 specifications/zero enabled, zero profile
+  leases, 59 documents/current-version embeddings, and active index
+  `index-28418bd968076bba6653223f` remains 59/59;
+- cumulative actual use is 29/50. Version 24 packet use is four of six, leaving
+  two; no retry was consumed. LinkedIn topic/profile remain `not_run`.
+
+State Movement:
+
+- Plan 0018 `C66 -> C67`, remaining at Version 26;
+- `x_successor_install_and_proof_authorized -> awaiting_x_successor_final_review`.
+
+Subagent Status And Reconciliation:
+
+- `pending`; one fresh-context reviewer must verify receipt 0036 and the live
+  readbacks. The primary retains all writes and no further source authority is
+  open during review.
+
+Graphiti Write Status:
+
+- deferred until the receipt review reaches a terminal result; receipt 0036 is
+  the source-backed repo authority.
+
+Next Bounded Action:
+
+- validate and commit C67 locally, then obtain one fresh read-only final receipt
+  review. Do not start LinkedIn.

@@ -721,9 +721,9 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 26/C66. Installed service 0.2.28/schema
+- Current authority is Plan 0018 version 26/C67. Installed service 0.2.29/schema
   12 is ready with 59 documents, 59 current-version embeddings, active index
-  `index-28418bd968076bba6653223f`, rollback 0.2.27, and all 37 specifications
+  `index-28418bd968076bba6653223f`, rollback 0.2.28, and all 37 specifications
   disabled. The immutable-index repair passed independent review; the two
   already-damaged 56-row historical indexes remain preserved as evidence.
   The operator approved one distinct replacement YouTube proof and raised the
@@ -746,7 +746,11 @@ Current State:
   access planning. C65 contains the one 0.2.29 remediation and awaits terminal
   recheck. The recheck passed exact commit `dfefca5`; C66 authorizes installing
   that exact 0.2.29 artifact and one fresh X proof at cumulative maximum 30 of
-  50. No attempt has yet been submitted and recurrence remains prohibited.
+  50. C67 records the installed artifact and a published attempt-one healthy
+  zero-yield result with exact `last30days-facebook`, no auth/manual handoff,
+  and unchanged 59/59 state. Cumulative actual use is 29/50; fresh independent
+  receipt review is required before any successor, and recurrence remains
+  prohibited.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -842,7 +846,7 @@ Active Plan:
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the open transition authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
-  rollback are accepted foundations on installed service 0.2.28/schema 12.
+  rollback are accepted foundations on installed service 0.2.29/schema 12.
   Plan version 26 preserves the version-18 contract-bound request and outcome
   counts, immutable
   schema-12 start/final receipts, pre/post corpus/index snapshots, and public
@@ -881,15 +885,17 @@ Active Plan:
   C64 opened the review-first checkpoint for one fresh Aug 3-4 X identity.
   C65 records the review FAIL and one bounded 0.2.29 remediation that forwards
   the explicit durable `last30days-facebook` binding. C66 records terminal PASS
-  and authorizes exact installation plus the single fresh X proof. Recurring
-  enablement remains a later gate.
+  and authorizes exact installation plus the single fresh X proof. C67 records
+  that proof as attempt-one healthy zero yield with unchanged 59/59 integrity;
+  it now awaits fresh independent receipt review. Recurring enablement remains
+  a later gate.
 
 Next Bounded Action:
 
-- Commit C66, install exact reviewed 0.2.29, validate every service/database/
-  index/profile/agent-browser invariant, then submit the fresh X identity once.
-  Stop on the first hard failure. Do not start LinkedIn, enable recurrence, or
-  substitute a local dashboard URL for a genuine external Guacamole handoff.
+- Commit C67 locally and obtain one fresh independent read-only review of
+  receipt 0036 and the live runtime/database evidence. Do not start LinkedIn,
+  retry X, enable recurrence, or substitute a local dashboard URL for a genuine
+  external Guacamole handoff.
 
 ## Goal-Compatible Plan Conversion
 
