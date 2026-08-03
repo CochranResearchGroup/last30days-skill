@@ -8658,3 +8658,60 @@ Next Bounded Action:
 
 - validate and commit C71 locally, then obtain one fresh independent read-only
   final review. Do not plan or execute blinded-yield canaries before PASS.
+
+## Turn 139 | 2026-08-03
+
+Focus: accept the independently verified LinkedIn observability evidence and
+open only review-first planning for blinded-yield service canaries.
+
+Authority Consulted:
+
+- Plan 0018 V27/C71; Roadmap P07; exact clean commit `2651c87`; receipt 0038;
+  reviewer `/root/v27_linkedin_final_review`; primary authority/JSON/diff
+  validation and current live postflight.
+
+Decisions And Changes:
+
+- accepted `TERMINAL PASS` with zero critical finding and advanced to C72;
+- closed the zero-yield observability backlog with truthful mixed outcomes,
+  immutable history, and epoch counters at two of 50;
+- opened planning and sealed-expectation preparation for a blinded-yield
+  successor while keeping all live canary work and recurrence closed;
+- required a separate independent plan review and pre-live checkpoint before
+  any canary identity can be submitted.
+
+Validation Evidence:
+
+- reviewer recomputed all ten envelope payload SHA-256 values and matched every
+  run/job/attempt/acquisition identity and receipt count;
+- it reproduced topic zero-yield quality-gate failure, profile one-item
+  accepted/deduplicated publication, no retries, 125.774342 wall seconds, two
+  requests, zero model calls/cost, epoch 2/50, and lifetime 29 to 31;
+- installed 0.2.29/schema 12, exact manifest, active/running readiness, SQLite
+  `ok`/FK0, 37 specs/zero enabled, zero leases, 59 documents/current
+  embeddings, active index 59/59, and no exact final profile session/browser
+  passed;
+- a live agent-browser sessions/browsers CLI diagnostic hung and was
+  terminated; the reviewer used direct persisted-state inspection for exact
+  absence. The primary's authority audit and focused tests remained green.
+
+State Movement:
+
+- Plan 0018 `C71 -> C72`, remaining Version 27;
+- `awaiting_linkedin_observability_final_review -> linkedin_observability_evidence_accepted`.
+
+Subagent Status And Reconciliation:
+
+- `completed_pass`; the reviewer made no changes or live mutations. The
+  primary accepts its exact evidence and retains successor planning/writes.
+
+Graphiti Write Status:
+
+- deferred until the blinded-yield canary successor reaches terminal reviewed
+  disposition.
+
+Next Bounded Action:
+
+- commit C72 locally, then derive and independently review a sealed blinded-
+  yield service-canary plan. Do not execute canaries before a separate live
+  checkpoint.

@@ -125,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C71 is the current authority. Service architecture, timer
+Checkpoint P0018-C72 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -6462,3 +6462,63 @@ Next action:
 - validate and commit C71 locally, then obtain one fresh independent read-only
   final receipt review. Do not plan or execute blinded-yield canaries before
   that review reaches terminal PASS.
+
+### Checkpoint P0018-C72 | 2026-08-03
+
+Plan version:
+
+- 27
+
+State transition:
+
+- `awaiting_linkedin_observability_final_review -> linkedin_observability_evidence_accepted`
+
+Progress classification:
+
+- `acceptance`; the remaining observability packet is independently verified
+  and the fresh budget epoch accounting is accepted.
+
+Authority classification:
+
+- `inherited_authority`; planning, deterministic preparation, sealed
+  expectation construction, and fresh independent review for a blinded-yield
+  service-canary successor are open. No canary source/browser execution is
+  authorized until that successor has its own reviewed pre-live checkpoint.
+
+Fresh independent final review:
+
+- reviewer `/root/v27_linkedin_final_review` returned `TERMINAL PASS` on exact
+  clean commit `2651c8751ca5a00c2b95365a315ba6db59fe90ef` with zero critical
+  findings;
+- it recomputed all ten SHA-256 values directly from stored envelope payloads,
+  matched every run/job/attempt/acquisition binding and count, verified one
+  attempt per identity with no unauthorized retry, and reproduced 125.774342
+  wall seconds, two requests, one accepted item, zero model calls/cost, epoch
+  use 2/50, and lifetime movement 29 to 31;
+- topic's zero-yield `quality_gate_failed` and profile's one accepted/stored/
+  deduplicated/indexed publication were classified truthfully with unchanged
+  59/59 snapshots;
+- live service/runtime/database/index/spec/lease facts matched and persisted
+  agent-browser state contained no exact `last30days-facebook` session or
+  browser. No manual/local-dashboard handoff or later source action occurred;
+- the agent-browser session/browser CLI diagnostic hung and was terminated;
+  direct persisted-state inspection supplied the exact final absence proof.
+  The primary's authority audit and focused authority test remain green.
+
+Accepted result and successor boundary:
+
+- receipt 0038 is accepted. The zero-yield observability backlog is complete;
+  recurrence remains closed and no result is promoted into a timer schedule;
+- the next successor must define “blinded yield” precisely, precommit expected
+  identities or yield outcomes without exposing the reveal to the executor,
+  use only already configured source services and credentials, remain serial
+  and disabled, fit epoch `p0018-v27-e2` remaining ceilings, receive fresh
+  independent review, and create a separate live authorization checkpoint;
+- no canary plan may treat a selector chosen after viewing current source
+  results as blinded, and no reveal may be opened before all submitted canary
+  identities reach terminal receipts.
+
+Next action:
+
+- commit C72 locally, then derive the review-first blinded-yield service-canary
+  successor with a sealed expectation contract. Stop before live canaries.

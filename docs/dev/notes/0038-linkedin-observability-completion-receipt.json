@@ -173,10 +173,15 @@
     "owned_agent_browser_session_present": false,
     "owned_agent_browser_browser_present": false
   },
-  "terminal_state": "awaiting_independent_final_receipt_review",
+  "terminal_state": "accepted",
   "review": {
-    "status": "pending",
+    "status": "terminal_pass",
+    "reviewer": "/root/v27_linkedin_final_review",
+    "reviewed_commit": "2651c8751ca5a00c2b95365a315ba6db59fe90ef",
+    "critical_findings": 0,
+    "recomputed_envelope_hashes": "10/10",
     "live_actions_closed": true,
-    "blinded_yield_planning_before_pass": false
+    "blinded_yield_planning_before_pass": false,
+    "decision": "accept observability packet at P0018-C72"
   }
 }

@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 27/C71. Installed service 0.2.29/schema
+- Current authority is Plan 0018 version 27/C72. Installed service 0.2.29/schema
   12 is ready with 59 documents, 59 current-version embeddings, active index
   `index-28418bd968076bba6653223f`, rollback 0.2.28, and all 37 specifications
   disabled. The immutable-index repair passed independent review; the two
@@ -761,7 +761,9 @@ Current State:
   source-locally on `quality_gate_failed` with zero accepted items, while
   profile published one accepted item that deduplicated into the unchanged
   59/59 corpus/index. The two attempts used two requests, zero model calls and
-  zero cost; final receipt review is pending. Recurrence remains prohibited.
+  zero cost. C72 accepts terminal independent receipt review after 10/10
+  envelope hashes and every live postflight invariant passed. Blinded-yield
+  planning is open, but canary execution and recurrence remain prohibited.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -905,15 +907,16 @@ Active Plan:
   topic/profile observability successor. C70 records terminal PASS and opens
   that exact topic-then-profile packet. C71 records two attempt-one receipts,
   unchanged 59/59 integrity, two epoch requests, one accepted/deduplicated
-  profile item, and zero cost/model calls, and now awaits independent final
-  review. Recurring enablement and blinded-yield execution remain later gates.
+  profile item, and zero cost/model calls. C72 accepts its independent final
+  review. A sealed, review-first blinded-yield successor is the next plan;
+  recurring enablement and canary execution remain later gates.
 
 Next Bounded Action:
 
-- Independently review C71's LinkedIn completion receipt and live postflight.
-  Do not retry either lane, retry X, enable recurrence, plan or execute blinded-
-  yield canaries, or substitute a local dashboard URL for a genuine external
-  Guacamole handoff before terminal review disposition.
+- Derive and independently review a sealed blinded-yield service-canary
+  successor using only configured services and existing credentials. Do not
+  execute canaries, retry completed lanes, enable recurrence, or reveal the
+  expectation set before a separate reviewed pre-live checkpoint.
 
 ## Goal-Compatible Plan Conversion
 
