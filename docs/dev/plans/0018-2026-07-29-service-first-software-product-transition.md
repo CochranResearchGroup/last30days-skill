@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-07-29
-Plan version: 25
+Plan version: 26
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
 
@@ -37,9 +37,9 @@ software with:
 ## Current State
 
 - The independent managed service is the installed runtime authority at
-  version 0.2.26/schema 12 with 59 documents, 59 stable embeddings, 59 current-
+  version 0.2.28/schema 12 with 59 documents, 59 stable embeddings, 59 current-
   version embeddings, and active index `index-28418bd968076bba6653223f` at
-  59 stable and 59 current-version rows. Rollback remains service 0.2.25.
+  59 stable and 59 current-version rows. Rollback remains service 0.2.27.
 - The service publishes its exact contract, API, schema, runtime-manifest,
   source-readiness, and active-index facts. The MCP adapter performs the
   fail-closed compatibility handshake before ordinary operations.
@@ -100,9 +100,11 @@ software with:
   distinct disabled proof preserved every historical index but stopped on
   three missing current-version embeddings. Version 22 independently closed
   the zero-source sequencing repair on service 0.2.26 at exact 59/59
-  completeness. Version 23 is a review-first proposal for the remaining X and
-  two LinkedIn proofs; it carries no live authority until the operator
-  explicitly raises the cumulative attempt ceiling from 25 to 28.
+  completeness. Versions 23-25 established the standing 50-attempt ceiling,
+  installed the bounded retry controller and durable X profile/handoff repair,
+  then stopped after the fresh X job exhausted both attempts on agent-browser's
+  route-bound display proof. Agent-browser P90 is now installed and live-
+  proven; Version 26 is the review-first successor for one new X identity.
 
 ## Standing Authority And Human Gates
 
@@ -123,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C63 is the current authority. Service architecture, timer
+Checkpoint P0018-C64 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -144,9 +146,12 @@ install and proof packet under the standing 50-attempt ceiling. C59's
 correction and the independently accepted 0.2.28 repair. C63 confirms that
 repair live: X used `last30days-facebook` and did not request authentication or
 manual handoff. Both allowed successor attempts instead stopped on the same
-agent-browser `remote_view_open` timeout. LinkedIn remains `not_run`;
-recurrence, another source attempt, push, tagging, publication, and release
-remain closed.
+agent-browser `remote_view_open` timeout. LinkedIn remains `not_run`.
+Agent-browser P90 subsequently repaired and live-proved the exact route-bound
+display path on the installed runtime. Version 26/C64 authorizes planning and
+independent review for one fresh X successor only; source work, LinkedIn,
+recurrence, push, tagging, publication, and release remain closed until the
+checkpoint's exact gates are satisfied.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -5811,3 +5816,135 @@ Next action:
   attempt. Do not ask the operator to log in and do not provide a localhost
   handoff URL; any genuine future handoff must use agent-browser's external
   Guacamole URL.
+
+## Version 26 | Installed agent-browser gate and one fresh X successor
+
+### Bounded outcome and inherited authority
+
+Agent-browser P90 has repaired the C63 route-bound visible-window proof and the
+exact reviewed executable is installed, provenance-converged, and live-proven.
+Authorize one separately reviewed fresh X proof identity under the operator's
+standing 50-attempt threshold. This successor stays on the existing disabled
+`p0018-v17-x-browser-manual` specification, X topic `OpenAI`, exact
+`agent_browser` method, durable `last30days-facebook` profile, zero-cost/model
+boundary, and concurrency one.
+
+Do not resume or rewrite run
+`collection-run-83b9f1b2b0125764b077068eef285cdd` or job
+`e227749c-d01e-47c5-a406-0aa9496c4a05`; their two-attempt budget is exhausted
+and immutable. The fresh successor uses scheduled boundary
+`2026-08-04T00:00:00Z`, covering the distinct Aug 3-4 interval. Current public
+collection readback ends at the Aug 2-3 failed interval, so the proposed
+identity is unowned.
+
+Submit the new manual run with `--max-attempts 2`. Attempt two remains service-
+owned and eligible only under Version 24's four-code transient allowlist plus
+complete zero-side-effect receipt gate. Starting cumulative actual use is 28;
+this successor can reach at most 30 of the standing 50. It consumes at most two
+of Version 24's three unconsumed packet attempt slots and therefore does not
+raise the existing 31-attempt, 76-item, 1,307-request, 2,640-second, zero-cost/
+model, concurrency-one maxima. No recurrence or specification enablement is
+authorized.
+
+### Installed gate evidence and exact caller contract
+
+- agent-browser source and public fork are at commit `7dd12436`; installed
+  executable SHA-256 is
+  `a99728c56a57a80bd89ad1bc4e8c8d4a1d1af7bc08e2d52919ea0e384a5d7211`;
+- install doctor passes with zero issues, one converged live daemon, a ready
+  dashboard, and no stale or diagnostic runtimes;
+- remote-view doctor is ready with route displays `:10` and `:11` accessible,
+  the route pool ready, and external Guacamole ingress ready;
+- one disposable installed-binary Route B gate loaded the existing dashboard
+  through `guacamole:2`, returned the direct external Guacamole route, and
+  aligned target, route, display, `browser_window_visible`, operator-visible,
+  and attachability proof before clean close; post-close doctor stayed ready
+  and no route allocation remained;
+- the repository fixture harness separately reached the repaired visible-
+  window proof but blocked its own in-process HTTP fixture while synchronously
+  waiting on the CLI child. That navigation-only harness defect cleaned up and
+  is not treated as product-path success or as a source attempt;
+- installed last30days service 0.2.28/schema 12 is active/running and ready on
+  runtime manifest
+  `8b8d66fc9253c973be58b4dc929563a5c4926995976d9e1825114a8db591e365`,
+  with active index 59/59 and 37 specifications/zero enabled;
+- the exact no-launch access plan must be called with runtime profile
+  `last30days-facebook`. With that durable binding it selects the same profile,
+  carries X in `authenticatedServiceIds`, carries an X `fresh` readiness row,
+  requests remote-headed/RDP/private-display posture, and requires neither
+  manual action nor manual seeding. A generic plan without the durable caller
+  binding selects the default profile and is not acceptable evidence.
+
+Receipt
+`docs/dev/notes/0035-agent-browser-installed-gate-and-x-successor-review.json`
+binds this installed gate, caller contract, proposed identity, and attempt
+arithmetic.
+
+### Review, execution controller, and hard stops
+
+This is review-first inherited authority. Commit the docs-only candidate and
+obtain one fresh-context independent read-only review. On PASS, add a separate
+authorization checkpoint before submitting the installed command exactly once:
+
+`last30days-service collection run p0018-v17-x-browser-manual --scheduled-for
+2026-08-04T00:00:00Z --max-attempts 2`.
+
+Before submission re-read service/systemd readiness, exact installed manifest,
+the target specification and proposed interval owner, all enabled states,
+profile leases, SQLite/integrity, corpus/current-version completeness, active-
+index membership, agent-browser doctors, explicit runtime-profile access plan,
+and cumulative use. Inspect the new immutable run/job receipt to terminal state
+before deciding any later lane. LinkedIn remains `not_run` in this packet.
+
+Stop without another source attempt on review failure; identity collision;
+profile other than `last30days-facebook`; generic-profile fallback; manual
+retry; attempt three; ineligible retry; authentication, checkpoint, selector,
+route, display, operator-URL, receipt, database, index, integrity, cost/model,
+or ownership drift; missing side-effect counts; enabled specification; or any
+cumulative/packet maximum breach. If a genuine human handoff is required,
+preserve only agent-browser's direct external Guacamole URL; never return a
+localhost or dashboard URL.
+
+### Checkpoint P0018-C64 | 2026-08-02
+
+Plan version:
+
+- 26
+
+State transition:
+
+- `x_profile_handoff_fixed_remote_view_timeout_stop -> awaiting_x_successor_plan_review`
+
+Progress classification:
+
+- `blocker_reduction`; the cross-repository route-bound proof defect is fixed,
+  installed, and live-proven without consuming a last30days source attempt.
+
+Authority classification:
+
+- `inherited_authority`; planning, deterministic validation, commit, and one
+  fresh-context read-only review are authorized under the standing Plan 0018
+  goal and attempt threshold. No source attempt is authorized before PASS and
+  a separate pre-live checkpoint.
+
+Current evidence:
+
+- receipt 0035 records the agent-browser source/install identities, both ready
+  doctors, successful direct Route B product gate, fixture-only navigation
+  limitation, cleanup, and exact durable-profile access-plan result;
+- the last30days service remains ready at 0.2.28/schema 12, active/running,
+  active index 59/59, all sources ready, and 37 specifications/zero enabled;
+- the failed Aug 2-3 X run remains immutable, cumulative use remains 28 of 50,
+  and no source attempt, new run, job, interval, profile lease, or schedule
+  mutation ran while creating C64.
+
+Delegation decision:
+
+- `pending`; reuse `/root/v23_plan_review` for one bounded fresh-context read-
+  only review. The primary retains every write and all runtime/source mutation.
+
+Next action:
+
+- validate and commit C64, then request the independent review. Do not submit
+  the Aug 3-4 X identity or start LinkedIn before terminal PASS and a separate
+  authorization checkpoint.

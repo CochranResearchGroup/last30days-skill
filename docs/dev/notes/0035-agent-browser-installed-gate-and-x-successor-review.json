@@ -1,0 +1,113 @@
+{
+  "schema": "last30days.agent-browser-installed-gate-and-x-successor-review.v1",
+  "plan": "0018",
+  "plan_version": 26,
+  "checkpoint": "P0018-C64",
+  "created_at": "2026-08-02",
+  "agent_browser": {
+    "repo_commit": "7dd12436",
+    "installed_executable_sha256": "a99728c56a57a80bd89ad1bc4e8c8d4a1d1af7bc08e2d52919ea0e384a5d7211",
+    "install_doctor": {
+      "success": true,
+      "issues": [],
+      "runtime_convergence": "converged",
+      "stale_runtime_count": 0,
+      "diagnostic_runtime_count": 0,
+      "dashboard_ready": true
+    },
+    "remote_view_doctor": {
+      "success": true,
+      "status": "ready",
+      "runtime_convergence": "converged",
+      "route_pool_ready": true,
+      "accessible_displays": [":10", ":11"],
+      "external_ingress": "https://agent-browser.ecochran.dyndns.org/guacamole/"
+    },
+    "direct_product_gate": {
+      "job_id": "r63183",
+      "state": "succeeded",
+      "route_pool_entry_id": "guacamole-rdp-b",
+      "route_id": "guacamole:2",
+      "display": ":11",
+      "target": "http://127.0.0.1:4848/",
+      "external_operator_url": "https://agent-browser.ecochran.dyndns.org/guacamole/#/client/MgBjAHBvc3RncmVzcWw=",
+      "target_readbacks": 1,
+      "visible_window_proof": "browser_window_visible",
+      "operator_visible": "ready",
+      "attachability": "ready",
+      "session_closed": true,
+      "route_allocation_after": null,
+      "last30days_source_attempt_consumed": false
+    },
+    "fixture_harness": {
+      "artifact": "/tmp/agent-browser-remote-view-open-live-2026-08-03T02-07-28-467Z",
+      "display_proof": "browser_window_visible",
+      "terminal_result": "failed",
+      "failure_stage": "fixture_navigation",
+      "target_after_timeout": "about:blank",
+      "cause": "in_process_http_fixture_cannot_serve_while_same_node_event_loop_blocks_on_synchronous_cli_child",
+      "product_path_success_claimed": false,
+      "cleanup_complete": true,
+      "last30days_source_attempt_consumed": false
+    }
+  },
+  "last30days_runtime": {
+    "service_version": "0.2.28",
+    "database_schema_version": 12,
+    "status": "ready",
+    "systemd": "active_running",
+    "runtime_manifest_sha256": "8b8d66fc9253c973be58b4dc929563a5c4926995976d9e1825114a8db591e365",
+    "active_index_id": "index-28418bd968076bba6653223f",
+    "documents": 59,
+    "current_version_embeddings": 59,
+    "collection_spec_count": 37,
+    "enabled_spec_count": 0
+  },
+  "durable_profile_contract": {
+    "profile_id": "last30days-facebook",
+    "target_service_id": "x",
+    "authenticated": true,
+    "readiness_state": "fresh",
+    "manual_action_required": false,
+    "manual_seeding_required": false,
+    "browser_host": "remote_headed",
+    "view_stream_provider": "rdp_gateway",
+    "display_isolation": "private_virtual_display",
+    "caller_must_supply_runtime_profile": true,
+    "generic_default_profile_acceptable": false,
+    "human_handoff_url_contract": "direct_external_agent_browser_guacamole_url_only",
+    "localhost_handoff_allowed": false
+  },
+  "successor_proposal": {
+    "spec_id": "p0018-v17-x-browser-manual",
+    "source": "x",
+    "selector": {"topic": "OpenAI"},
+    "required_access_method": "agent_browser",
+    "profile_id": "last30days-facebook",
+    "scheduled_for": "2026-08-04T00:00:00Z",
+    "interval_from": "2026-08-03T00:00:00Z",
+    "interval_to": "2026-08-04T00:00:00Z",
+    "max_attempts": 2,
+    "review_required_before_live": true,
+    "live_authorized_at_checkpoint": false,
+    "linkedin_topic": "not_run",
+    "linkedin_profile": "not_run"
+  },
+  "attempt_accounting": {
+    "cumulative_actual_before": 28,
+    "successor_maximum_attempts": 2,
+    "cumulative_actual_maximum_after": 30,
+    "standing_attempt_ceiling": 50,
+    "version24_packet_attempt_ceiling": 31,
+    "version24_packet_attempts_remaining_before": 3,
+    "version24_packet_attempts_remaining_after_maximum": 1,
+    "item_maximum": 76,
+    "governed_request_maximum": 1307,
+    "wall_seconds_maximum": 2640,
+    "cost_cents_maximum": 0,
+    "model_calls_maximum": 0,
+    "concurrency": 1,
+    "ceiling_increase": false
+  },
+  "state": "awaiting_x_successor_plan_review"
+}

@@ -8169,3 +8169,66 @@ Next Bounded Action:
 - diagnose agent-browser `remote_view_open` timeout read-only. Do not consume
   another source attempt, ask for X login, provide a local URL, or start
   LinkedIn.
+
+## Turn 131 | 2026-08-02
+
+Focus: close the cross-repository agent-browser runtime gate and open one
+review-first X successor without consuming a source attempt.
+
+Authority Consulted:
+
+- active goal; Plan 0018 V25/C63; Roadmap P07; agent-browser P90/Turn 134;
+  installed agent-browser and last30days runtime readbacks; standing 50-attempt
+  threshold; planning, validation, goal, documentation, and closeout policy.
+
+Decisions And Changes:
+
+- accepted current installed evidence only after agent-browser install doctor
+  and remote-view doctor both passed and a direct installed-binary Route B gate
+  aligned route, display, browser-window, operator-visible, and attachability
+  proof;
+- classified the repository fixture's self-server navigation timeout as a
+  separate harness defect because the repaired display proof passed and all
+  disposable resources cleaned up;
+- advanced Plan 0018 to Version 26/C64 and proposed exactly one fresh Aug 3-4 X
+  identity at max two service-owned attempts;
+- preserved the failed C63 job as immutable, kept LinkedIn `not_run`, and kept
+  every specification disabled;
+- bound the successor to the durable `last30days-facebook` caller contract and
+  the external-Guacamole-only human-handoff rule.
+
+Validation Evidence:
+
+- agent-browser source/public fork commit `7dd12436`; installed SHA-256
+  `a99728c56a57a80bd89ad1bc4e8c8d4a1d1af7bc08e2d52919ea0e384a5d7211`;
+  install doctor success/zero issues; remote-view doctor ready on both route
+  displays; direct Route B job `r63183` succeeded and cleaned up;
+- installed last30days service 0.2.28/schema 12 is active/running and ready on
+  manifest `8b8d66fc9253c973be58b4dc929563a5c4926995976d9e1825114a8db591e365`,
+  index 59/59, five sources ready, 37 specifications/zero enabled;
+- explicit no-launch runtime profile `last30days-facebook` selects that profile,
+  retains X authenticated/fresh evidence, and requests no manual action or
+  seeding;
+- proposed maximum moves cumulative actual attempts only from 28 to 30, within
+  both the remaining Version 24 packet allocation and standing ceiling 50.
+
+State Movement:
+
+- Plan 0018 `V25/C63 -> V26/C64`;
+- `x_profile_handoff_fixed_remote_view_timeout_stop -> awaiting_x_successor_plan_review`.
+
+Subagent Status And Reconciliation:
+
+- `pending`; one fresh-context read-only review is required before a pre-live
+  authorization checkpoint. The primary retains all writes and live authority.
+
+Graphiti Write Status:
+
+- deferred until the successor reaches a terminal receipt; repo-local receipt
+  0035 is the current source-backed routing authority.
+
+Next Bounded Action:
+
+- validate and commit the docs-only C64 checkpoint, then reuse
+  `/root/v23_plan_review` for one read-only review. Do not create the X run or
+  start LinkedIn before PASS and a separate authorization checkpoint.
