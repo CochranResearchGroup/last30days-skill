@@ -7,7 +7,7 @@
   "authority": {
     "human_gate": "satisfied",
     "operator_request": "reset the budget counters, finish the zero-yield observability passes, then plan and execute blinded-yield service canaries",
-    "live_scope_at_this_checkpoint": "closed_pending_independent_review"
+    "live_scope_at_this_checkpoint": "authorized_by_P0018-C70"
   },
   "budget_epoch": {
     "epoch_id": "p0018-v27-e2",
@@ -108,8 +108,12 @@
     "local_dashboard_handoff_allowed": false
   },
   "review": {
-    "status": "pending",
+    "status": "terminal_pass",
+    "reviewer": "/root/v27_linkedin_plan_review",
+    "reviewed_commit": "971d045d72fc",
+    "critical_findings": 0,
     "required": "one fresh-context independent read-only review",
-    "live_before_pass": false
+    "live_before_pass": false,
+    "decision": "C70 may open the exact two-lane serialized packet"
   }
 }

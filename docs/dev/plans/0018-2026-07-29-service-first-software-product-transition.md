@@ -125,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C69 is the current authority. Service architecture, timer
+Checkpoint P0018-C70 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -6325,3 +6325,68 @@ Next action:
 - validate and commit C69 locally, obtain one fresh independent read-only
   plan review, and stop before live work unless it passes and C70 explicitly
   opens the two serialized LinkedIn lanes.
+
+### Checkpoint P0018-C70 | 2026-08-03
+
+Plan version:
+
+- 27
+
+State transition:
+
+- `awaiting_linkedin_observability_plan_review -> linkedin_observability_live_authorized`
+
+Progress classification:
+
+- `blocker_reduction`; the fresh budget epoch and two-lane controller passed
+  independent review with no critical finding.
+
+Authority classification:
+
+- `human_gate`; the operator's explicit execute instruction plus the C69
+  terminal review PASS authorizes the exact serialized disabled LinkedIn topic
+  then profile packet. Authority is consumed one submitted identity at a time.
+
+Fresh independent plan review:
+
+- reviewer `/root/v27_linkedin_plan_review` returned `TERMINAL PASS` on exact
+  clean commit `971d045d72fc` with zero critical findings and no mutation;
+- it matched epoch `p0018-v27-e2` at 0/50, immutable lifetime evidence 29,
+  retired Version 24 use four of six with zero carry, per-lane max two and
+  packet max four attempts, exact service-only retry allowlist, zero-side-
+  effect retry precondition, serial ordering, and all closed non-goals;
+- it independently matched installed service 0.2.29/schema 12, exact manifest
+  and rollback, active/running readiness, SQLite `ok`/FK0, 59/59 current and
+  active-index completeness, 37 specs/zero enabled, zero service profile
+  leases, and zero proposed-interval owners;
+- both disabled specs use exact `agent_browser`, profile
+  `last30days-facebook`, and their expected selectors and 50-request/120-second
+  limits;
+- the exact LinkedIn no-launch access plan selected the fresh authenticated
+  profile with no manual action/seeding or duplicate pressure. It correctly
+  waits on the one owned X lease, whose ready route exposes the direct external
+  Guacamole URL rather than the localhost embed URL.
+
+Exact live controller:
+
+1. Revalidate service, database, index, specification, interval-owner,
+   agent-browser doctor, profile, and external-route facts.
+2. Close only session `last30days-facebook`, currently owned by
+   `last30days/x-scraper/x-search`, then require its lease to clear. Do not use
+   `--all`, garbage collection, retained-state pruning, or unrelated cleanup.
+3. Submit `p0018-v17-linkedin-topic-browser-manual` once for
+   `2026-08-04T00:00:00Z` with `--max-attempts 2`; poll its service-owned job
+   to terminal evidence and stop on any Version 27 hard stop.
+4. Only if topic preserves every global invariant, require its profile lease
+   to clear and submit the profile spec with the same timestamp and attempt
+   bound once. Do not manually requeue either identity.
+5. Record both terminal outcomes and epoch consumption, then require one fresh
+   independent final receipt review before accepting the packet or planning
+   blinded-yield canaries.
+
+Next action:
+
+- commit C70 locally, revalidate the exact preflight, close only the owned X
+  session, and execute the topic lane. Keep the profile lane conditional on
+  topic integrity and stop before blinded-yield planning until both lanes have
+  terminal evidence.

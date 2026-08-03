@@ -8529,3 +8529,63 @@ Next Bounded Action:
 - validate and commit C69 locally, then obtain the required fresh independent
   read-only review. Do not close the owned browser or start LinkedIn before
   PASS and C70.
+
+## Turn 137 | 2026-08-03
+
+Focus: reconcile the independent Version 27 controller review and open the
+separate pre-live checkpoint for the two remaining observability lanes.
+
+Authority Consulted:
+
+- Plan 0018 V27/C69; Roadmap P07; receipt 0037; exact clean commit `971d045`;
+  reviewer `/root/v27_linkedin_plan_review`; direct installed service,
+  database, index, specification, interval-owner, profile, route, and
+  agent-browser no-launch readbacks.
+
+Decisions And Changes:
+
+- accepted `TERMINAL PASS` with zero critical findings and advanced to C70;
+- authorized only the serialized disabled LinkedIn topic then profile specs for
+  Aug 3-4, each submitted once at max two service-owned attempts;
+- made profile execution conditional on topic terminal integrity and retained
+  the external-Guacamole-only manual handoff contract;
+- kept recurrence, X retry, specification enablement, unrelated browser or
+  retained-state cleanup, blinded-yield execution, push, tag, publication, and
+  release closed.
+
+Validation Evidence:
+
+- reviewer matched epoch 0/50, immutable lifetime 29, retired packet four of
+  six with zero carry, packet max four attempts, exact retry allowlist and
+  zero-side-effect retry precondition;
+- installed 0.2.29/schema 12 is active/running and ready with exact manifest,
+  rollback 0.2.28, SQLite `ok`/FK0, 59/59 current embeddings and active index,
+  37 specs/zero enabled, zero service profile leases, and zero proposed-
+  interval owners;
+- both disabled LinkedIn specifications select exact `agent_browser` and
+  `last30days-facebook`; the no-launch access plan reports fresh authenticated
+  LinkedIn, no manual action/seeding, and no duplicate-profile pressure;
+- one owned X session holds the selected profile. Its ready route provides a
+  direct external Guacamole URL. C70 permits closing only that session before
+  topic submission.
+
+State Movement:
+
+- Plan 0018 `C69 -> C70`, remaining Version 27;
+- `awaiting_linkedin_observability_plan_review -> linkedin_observability_live_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `completed_pass`; the reviewer made no changes or live/runtime mutations.
+  The primary reproduced the read-only preflight and retains all writes and
+  live execution.
+
+Graphiti Write Status:
+
+- deferred until terminal receipt review and canary disposition.
+
+Next Bounded Action:
+
+- commit C70 locally, rerun preflight, close only the owned X session, then
+  submit and poll the LinkedIn topic identity. Stop before profile on any hard
+  stop.
