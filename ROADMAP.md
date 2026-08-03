@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 28/C73. Installed service 0.2.29/schema
+- Current authority is Plan 0018 version 28/C74. Installed service 0.2.29/schema
   12 is ready with 59 documents, 59 current-version embeddings, active index
   `index-28418bd968076bba6653223f`, rollback 0.2.28, and all 37 specifications
   disabled. The immutable-index repair passed independent review; the two
@@ -766,7 +766,9 @@ Current State:
   planning is open, but canary execution and recurrence remain prohibited. C73
   fixes five unique disabled specs, executor-blind salted yield commitments,
   one-attempt serial execution, packet ceilings, and reveal-after-terminal
-  rules; independent public-plan review is pending.
+  rules. Independent review's initial evidentiary-command FAIL was corrected in
+  one bounded recheck; terminal PASS found no critical issue and C74 authorizes
+  exact disabled spec materialization plus serial one-attempt execution.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -914,14 +916,15 @@ Active Plan:
   review. Version 28/C73 records a sealed, review-first blinded-yield successor
   across Reddit, YouTube, X, Facebook, and LinkedIn. The preparer retains
   private predictions/nonces; the executor sees only public selectors and
-  commitments. Recurring enablement and canary execution remain later gates.
+  commitments. C74 records the blind terminal review PASS and opens the exact
+  live packet. Recurring enablement remains a later gate.
 
 Next Bounded Action:
 
-- Independently review C73's public blinded-yield controller without receiving
-  the hidden reveal. Do not materialize specs, execute canaries, retry completed
-  lanes, enable recurrence, or reveal expectations before a separate reviewed
-  pre-live checkpoint.
+- Materialize C74's exact five disabled specs, require 42/0 and zero V28 runs,
+  then execute Reddit, YouTube, X, Facebook, and LinkedIn serially at one
+  attempt each. Do not reveal expectations before all lanes are terminal or
+  blocked, and keep recurrence closed.
 
 ## Goal-Compatible Plan Conversion
 

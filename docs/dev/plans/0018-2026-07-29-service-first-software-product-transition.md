@@ -125,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C73 is the current authority. Service architecture, timer
+Checkpoint P0018-C74 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -6620,3 +6620,66 @@ Next action:
 - validate and commit C73 locally, obtain one fresh independent review of the
   public controller without reveal access, and stop before spec materialization
   unless it passes and C74 opens the exact packet.
+
+### Checkpoint P0018-C74 | 2026-08-03
+
+Plan version:
+
+- 28
+
+State transition:
+
+- `awaiting_blinded_yield_canary_plan_review -> blinded_yield_canary_live_authorized`
+
+Progress classification:
+
+- `blocker_reduction`; the public blinded controller passed independent review
+  after one bounded evidentiary-command remediation. The reviewer remained
+  blind and found no plan contradiction.
+
+Authority classification:
+
+- `human_gate`; the operator's explicit execute instruction, fixed sealed
+  commitments, and terminal plan PASS authorize exact spec materialization and
+  the five one-attempt serial identities. Authority is consumed one lane at a
+  time and ends before reveal evaluation/final acceptance.
+
+Independent review sequence:
+
+- reviewer `/root/v28_canary_plan_review` initially returned an evidentiary
+  `FAIL`, not a plan contradiction: its parser environment lacked the service
+  module, its JSON command used a no-output expression, and SQLite/profile
+  checks were incomplete;
+- one bounded recheck on unchanged clean commit `c2245fe` used exact commands
+  and returned `TERMINAL PASS` with zero critical findings;
+- all five JSON artifacts parsed and passed `CollectionSpec.from_dict`; file
+  hashes, five 64-hex commitments, combined commitment, execution order,
+  budgets, methods/profiles/selectors/redaction, lifecycle, reveal gate, hard
+  stops, and closed non-goals passed;
+- SQLite `ok`/FK0, 37 specs/zero enabled, zero leases, zero V28 specs/runs, 59
+  current-version embedding documents, installed service 0.2.29/schema 12 exact
+  manifest and active index 59/59, five ready sources, and exact absence of the
+  selected profile session/browser passed;
+- reviewer received no reveal and performed no mutation, browser/source action,
+  preparer contact, or profile lifecycle action.
+
+Exact pre-live sequence:
+
+1. Revalidate the same global state and recompute artifact/commitment hashes.
+2. Materialize the five artifacts in execution order through installed
+   `collection put`; after every put require disabled exact readback. Before
+   source work require exactly 42 specs/zero enabled and zero V28 runs.
+3. Submit Reddit once at `2026-08-04T00:00:00Z --max-attempts 1`, poll to
+   immutable terminal receipt, validate integrity, then repeat for YouTube.
+4. For X, Facebook, and LinkedIn, perform the exact per-target no-launch profile
+   gate immediately before submission and close only the packet-owned session
+   after its terminal receipt. Continue after source-local outcomes only while
+   all global invariants hold.
+5. After the fifth terminal/blocked lane, stop source/browser work and request
+   the preparer's exact reveal. Do not reveal earlier for any reason.
+
+Next action:
+
+- commit C74 locally, revalidate preflight, materialize exact disabled specs,
+  prove 42/0 with zero V28 runs, then execute Reddit first. Stop immediately on
+  any Version 28 hard stop.

@@ -7,7 +7,7 @@
   "authority": {
     "operator_request": "plan and execute blinded-yield canaries on the services",
     "scope": "five already configured source services",
-    "live_at_this_checkpoint": false,
+    "live_at_this_checkpoint": "authorized_by_P0018-C74",
     "requires_independent_plan_pass": true,
     "requires_separate_pre_live_checkpoint": true
   },
@@ -190,9 +190,17 @@
     "commitment or combined-hash verification failure"
   ],
   "review": {
-    "status": "pending",
+    "status": "terminal_pass",
+    "reviewer": "/root/v28_canary_plan_review",
+    "reviewed_commit": "c2245fe",
+    "initial_result": "evidentiary_fail_from_reviewer_command_errors",
+    "remediation": "exact JSON, CollectionSpec, SQLite, service, and exact profile-state commands",
+    "terminal_recheck": "pass",
+    "critical_findings": 0,
     "required": "one fresh-context independent read-only plan review",
     "reviewer_must_not_receive_reveal": true,
-    "live_before_pass": false
+    "reveal_received": false,
+    "live_before_pass": false,
+    "decision": "C74 may materialize and execute the exact serial packet"
   }
 }

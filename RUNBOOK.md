@@ -8778,3 +8778,61 @@ Next Bounded Action:
 - validate and commit C73 locally, then obtain one fresh independent read-only
   review that receives no reveal. Do not materialize specs or execute canaries
   before PASS and C74.
+
+## Turn 141 | 2026-08-03
+
+Focus: reconcile the blind public-plan review and open the exact five-service
+canary packet at a separate pre-live checkpoint.
+
+Authority Consulted:
+
+- Plan 0018 V28/C73; Roadmap P07; receipt/spec artifacts 0039; exact clean
+  commit `c2245fe`; reviewer `/root/v28_canary_plan_review`; primary parser,
+  JSON, artifact/commitment, authority, service, SQLite, index, spec, lease,
+  and three-target no-launch checks.
+
+Decisions And Changes:
+
+- classified the reviewer's first result as an evidentiary-command FAIL, not a
+  public-plan defect, and used one bounded terminal recheck on the unchanged
+  commit;
+- accepted terminal PASS with zero critical finding and advanced to C74;
+- authorized exact disabled materialization followed by Reddit, YouTube, X,
+  Facebook, and LinkedIn at one attempt each, serially;
+- kept the reviewer and primary blind, the reveal private with the preparer,
+  recurrence disabled, and all unrelated lifecycle/release actions closed.
+
+Validation Evidence:
+
+- corrected JSON and `CollectionSpec` validation passed all six public JSON
+  files and all five spec artifacts;
+- SQLite passed `ok`/FK0 with 37/0 specs, zero leases, zero V28 specs/runs, and
+  59 current-version embedding documents;
+- installed service 0.2.29/schema 12, exact manifest, active index 59/59, and
+  all five configured sources passed ready;
+- exact agent-browser state contained no selected-profile session/browser; the
+  primary additionally reproduced fresh/no-manual/no-seeding/zero-lease/no-
+  duplicate-pressure access plans for X, Facebook, and LinkedIn;
+- ordered artifact and combined commitment hashes passed. The reviewer did not
+  receive reveal content or contact the preparer.
+
+State Movement:
+
+- Plan 0018 `C73 -> C74`, remaining Version 28;
+- `awaiting_blinded_yield_canary_plan_review -> blinded_yield_canary_live_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `terminal_pass_after_one_evidentiary_recheck`; reviewer made no changes or
+  live mutations. The primary retains all spec materialization/source/browser
+  execution.
+
+Graphiti Write Status:
+
+- deferred until reveal verification and final reviewed canary evidence.
+
+Next Bounded Action:
+
+- commit C74 locally, revalidate, materialize exact five disabled specs, prove
+  42/0 with zero runs, and execute Reddit first. Stop on the first global hard
+  stop and do not request reveal early.
