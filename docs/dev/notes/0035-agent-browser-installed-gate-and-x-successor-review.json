@@ -3,7 +3,16 @@
   "plan": "0018",
   "plan_version": 26,
   "checkpoint": "P0018-C64",
+  "checkpoint_after_remediation": "P0018-C65",
   "created_at": "2026-08-02",
+  "review": {
+    "reviewer": "/root/v23_plan_review",
+    "commit": "1f6b6c4",
+    "result": "FAIL",
+    "blocking_finding": "installed_0_2_28_x_access_plan_omits_explicit_runtime_profile",
+    "all_other_checks": "PASS",
+    "runtime_or_source_mutation": false
+  },
   "agent_browser": {
     "repo_commit": "7dd12436",
     "installed_executable_sha256": "a99728c56a57a80bd89ad1bc4e8c8d4a1d1af7bc08e2d52919ea0e384a5d7211",
@@ -74,6 +83,8 @@
     "view_stream_provider": "rdp_gateway",
     "display_isolation": "private_virtual_display",
     "caller_must_supply_runtime_profile": true,
+    "installed_0_2_28_satisfies_caller_contract": false,
+    "candidate_0_2_29_satisfies_caller_contract": true,
     "generic_default_profile_acceptable": false,
     "human_handoff_url_contract": "direct_external_agent_browser_guacamole_url_only",
     "localhost_handoff_allowed": false
@@ -93,6 +104,18 @@
     "linkedin_topic": "not_run",
     "linkedin_profile": "not_run"
   },
+  "remediation_candidate": {
+    "service_version": "0.2.29",
+    "change": "forward_request_profile_id_as_agent_browser_access_plan_runtime_profile",
+    "red_green_test": "tests/test_x_browser.py::XBrowserAcquisitionTests::test_acquisition_resolves_the_authenticated_x_profile_by_target_identity",
+    "runtime_manifest_sha256": "32bff26cf96a277a1c3d9bdf59c5fcc0ed7235eeb744dcad5cdcb11e2d22902a",
+    "artifact": "dist/service/last30days-service-0.2.29.tar.gz",
+    "artifact_sha256": "b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d",
+    "full_suite": "2431_passed_7_skipped_6_subtests_passed",
+    "installed": false,
+    "source_attempt_consumed": false,
+    "terminal_recheck_required": true
+  },
   "attempt_accounting": {
     "cumulative_actual_before": 28,
     "successor_maximum_attempts": 2,
@@ -109,5 +132,5 @@
     "concurrency": 1,
     "ceiling_increase": false
   },
-  "state": "awaiting_x_successor_plan_review"
+  "state": "awaiting_x_successor_remediation_recheck"
 }

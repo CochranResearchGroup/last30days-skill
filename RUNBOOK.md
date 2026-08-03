@@ -8232,3 +8232,61 @@ Next Bounded Action:
 - validate and commit the docs-only C64 checkpoint, then reuse
   `/root/v23_plan_review` for one read-only review. Do not create the X run or
   start LinkedIn before PASS and a separate authorization checkpoint.
+
+## Turn 132 | 2026-08-02
+
+Focus: remediate the independent C64 caller-contract finding before any install
+or X source attempt.
+
+Authority Consulted:
+
+- reviewer `/root/v23_plan_review`; Plan 0018 V26/C64; receipt 0035; CodeGraph;
+  diagnosing-bugs and TDD skills; release, validation, goal, architecture,
+  documentation, Git, and integration policy.
+
+Decisions And Changes:
+
+- accepted the consolidated review FAIL: installed 0.2.28 validates the
+  broker-returned X profile but does not constrain the no-launch access plan
+  with the request's durable profile ID;
+- established one fast adapter-boundary test as the exact feedback loop and
+  observed it fail on the absent `--runtime-profile` argument;
+- forwarded only `request.profile_id`, observed the same test turn green, and
+  left the later returned-profile mismatch guard intact;
+- bumped the independent service candidate to 0.2.29, refreshed its canonical
+  runtime manifest, and updated release assertions and changelog;
+- kept installed service 0.2.28, the failed C63 job, the proposed interval,
+  LinkedIn, all specifications, and every live runtime unchanged.
+
+Validation Evidence:
+
+- exact red/green command:
+  `uv run pytest tests/test_x_browser.py -q -k
+  acquisition_resolves_the_authenticated_x_profile_by_target_identity`;
+- full X file and focused release/runtime-package tests pass;
+- complete suite: 2,431 passed, 7 skipped, 6 subtests passed;
+- candidate runtime-manifest SHA-256
+  `32bff26cf96a277a1c3d9bdf59c5fcc0ed7235eeb744dcad5cdcb11e2d22902a`;
+  artifact SHA-256
+  `b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d`.
+
+State Movement:
+
+- Plan 0018 `C64 -> C65`, remaining at Version 26;
+- `awaiting_x_successor_plan_review -> awaiting_x_successor_remediation_recheck`.
+
+Subagent Status And Reconciliation:
+
+- `one_fail_remediated`; the reviewer changed no repo/runtime state. The
+  primary reproduced the finding and owns the one remediation. One terminal
+  recheck remains; a second critical finding stops this packet.
+
+Graphiti Write Status:
+
+- deferred until installed/runtime and successor outcomes are terminal.
+
+Next Bounded Action:
+
+- run final candidate validation, commit C65, and return it to
+  `/root/v23_plan_review` for terminal read-only recheck. Do not install or
+  submit a collection run before PASS and a separate pre-live checkpoint.

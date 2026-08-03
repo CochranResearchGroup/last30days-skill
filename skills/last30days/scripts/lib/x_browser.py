@@ -208,6 +208,7 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
                 "--agent-name", "x-scraper",
                 "--task-name", "x-search",
                 "--target-service-id", "x",
+                "--runtime-profile", request.profile_id,
                 "--url", "https://x.com/search",
                 "--browser-build", request.browser_build,
                 "--browser-host", request.browser_host,

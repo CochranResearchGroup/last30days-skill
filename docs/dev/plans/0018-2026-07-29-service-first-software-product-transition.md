@@ -125,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C64 is the current authority. Service architecture, timer
+Checkpoint P0018-C65 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -148,10 +148,11 @@ repair live: X used `last30days-facebook` and did not request authentication or
 manual handoff. Both allowed successor attempts instead stopped on the same
 agent-browser `remote_view_open` timeout. LinkedIn remains `not_run`.
 Agent-browser P90 subsequently repaired and live-proved the exact route-bound
-display path on the installed runtime. Version 26/C64 authorizes planning and
-independent review for one fresh X successor only; source work, LinkedIn,
-recurrence, push, tagging, publication, and release remain closed until the
-checkpoint's exact gates are satisfied.
+display path on the installed runtime. Version 26/C64's independent review
+found that service 0.2.28 validated the selected X profile without explicitly
+passing the durable caller binding into access planning. C65 contains the one
+bounded 0.2.29 remediation and awaits terminal recheck; source work, LinkedIn,
+recurrence, push, tagging, publication, and release remain closed.
 
 The operator's later 2026-07-31 instruction to continue through the remaining
 configured services, explicitly including X, Facebook, and LinkedIn,
@@ -5948,3 +5949,75 @@ Next action:
 - validate and commit C64, then request the independent review. Do not submit
   the Aug 3-4 X identity or start LinkedIn before terminal PASS and a separate
   authorization checkpoint.
+
+### Checkpoint P0018-C65 | 2026-08-02
+
+Plan version:
+
+- 26
+
+State transition:
+
+- `awaiting_x_successor_plan_review -> awaiting_x_successor_remediation_recheck`
+
+Progress classification:
+
+- `blocker_reduction`; independent review caught that the installed 0.2.28 X
+  caller still relied on ambient broker selection before a live attempt, and
+  the one bounded remediation now binds the requested profile explicitly.
+
+Authority classification:
+
+- `inherited_authority`; code, tests, release candidate construction, docs,
+  commit, and terminal read-only recheck remain inside the same approved X/
+  profile/service mutation class. Installation and source work remain closed
+  until recheck PASS and a separate pre-live checkpoint.
+
+Independent review and exact defect:
+
+- reviewer `/root/v23_plan_review` returned one consolidated `FAIL` at exact
+  commit `1f6b6c4`: `CliAgentBrowserClient.acquire_workspace` passed X target,
+  browser, display, and stream hints to `agent-browser service access-plan`,
+  but omitted `--runtime-profile request.profile_id`;
+- service 0.2.28 therefore compared the broker's returned selection with
+  `last30days-facebook` but did not durably constrain planning to that profile.
+  Ambient target configuration happened to select the correct row, which is
+  insufficient under Version 26's exact caller contract;
+- the reviewer passed all other authority, identity, arithmetic, retry,
+  runtime, cleanup, integrity, and external-handoff checks and performed no
+  mutation or source/browser action.
+
+One bounded remediation:
+
+- the public adapter-boundary regression adds an exact assertion that the
+  access-plan command contains `--runtime-profile last30days-facebook`;
+- red command
+  `uv run pytest tests/test_x_browser.py -q -k
+  acquisition_resolves_the_authenticated_x_profile_by_target_identity`
+  failed because the flag was absent;
+- the minimal implementation forwards `request.profile_id` in that access-plan
+  call; the same command then passed, and the full X test file passed;
+- service candidate is 0.2.29 with runtime-manifest SHA-256
+  `32bff26cf96a277a1c3d9bdf59c5fcc0ed7235eeb744dcad5cdcb11e2d22902a`;
+  reproducible artifact
+  `dist/service/last30days-service-0.2.29.tar.gz` has SHA-256
+  `b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d`;
+- focused X/release/runtime-package tests pass. The complete suite passes with
+  2,431 tests, 7 skipped, and 6 subtests. Authority audit, JSON validation, and
+  `git diff --check` remain required on the committed candidate;
+- installed service remains unchanged at 0.2.28. No install, restart, source,
+  browser, profile, schedule, run, job, interval, lease, database, or index
+  mutation occurred in the remediation.
+
+Delegation status and reconciliation:
+
+- `remediation_ready`; return the exact committed candidate to
+  `/root/v23_plan_review` for the single terminal recheck. The one allowed
+  remediation cycle is consumed; any remaining critical finding stops this
+  packet for split or reframe.
+
+Next action:
+
+- validate and commit C65, then request the terminal independent recheck. Do
+  not install 0.2.29 or submit the Aug 3-4 X identity before PASS and a separate
+  pre-live authorization checkpoint.

@@ -471,6 +471,11 @@ class XBrowserAcquisitionTests(TestCase):
         self.assertIn("--target-service-id", recorder.calls[0])
         target_index = recorder.calls[0].index("--target-service-id")
         self.assertEqual("x", recorder.calls[0][target_index + 1])
+        runtime_profile_index = recorder.calls[0].index("--runtime-profile")
+        self.assertEqual(
+            "last30days-facebook",
+            recorder.calls[0][runtime_profile_index + 1],
+        )
         display_index = recorder.calls[0].index("--display-isolation")
         self.assertEqual("shared_display", recorder.calls[0][display_index + 1])
         self.assertEqual("remote-view", recorder.calls[2][2])

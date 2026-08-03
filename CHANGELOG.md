@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Durable X profile planning.** The X adapter now passes its resolved
+  user-scoped profile ID to agent-browser's no-launch access planner as the
+  explicit runtime profile before validating the returned selection. Ambient
+  target defaults can no longer stand in for the caller's durable
+  `last30days-facebook` binding.
 - **Canonical X profile and operator handoff.** X acquisition now consumes the
   stable user-scoped target binding in `agent-browser.json` when an explicit
   run/environment override is absent, while the live agent-browser access plan

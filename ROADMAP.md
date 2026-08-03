@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 26/C64. Installed service 0.2.28/schema
+- Current authority is Plan 0018 version 26/C65. Installed service 0.2.28/schema
   12 is ready with 59 documents, 59 current-version embeddings, active index
   `index-28418bd968076bba6653223f`, rollback 0.2.27, and all 37 specifications
   disabled. The immutable-index repair passed independent review; the two
@@ -740,8 +740,11 @@ Current State:
   proof packet. C63 then stopped after the repaired last30days profile binding
   reached agent-browser's route-bound display proof and exhausted both
   attempts. Agent-browser P90 is now installed, provenance-converged, and live-
-  proven. C64 opens independent review for one fresh X successor at cumulative
-  maximum 30 of 50; no source attempt is yet authorized and recurrence remains
+  proven. C64 opened independent review for one fresh X successor at cumulative
+  maximum 30 of 50. That review caught one caller defect: 0.2.28 checked the
+  returned profile but did not explicitly pass its durable profile binding to
+  access planning. C65 contains the one 0.2.29 remediation and awaits terminal
+  recheck; no source attempt is yet authorized and recurrence remains
   prohibited.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
@@ -874,16 +877,17 @@ Active Plan:
   manual-handoff incident, then stops terminally after both allowed attempts
   hit the same agent-browser `remote_view_open` timeout. LinkedIn remains
   `not_run`. Agent-browser P90 is now installed and direct-route live-proven;
-  C64 is the review-first checkpoint for one fresh Aug 3-4 X identity using the
-  explicit durable `last30days-facebook` binding. Recurring enablement remains
-  a later gate.
+  C64 opened the review-first checkpoint for one fresh Aug 3-4 X identity.
+  C65 records the review FAIL and one bounded 0.2.29 remediation that forwards
+  the explicit durable `last30days-facebook` binding. Recurring enablement
+  remains a later gate.
 
 Next Bounded Action:
 
-- Validate and commit C64, then obtain one independent read-only plan review.
-  Do not submit the fresh X identity before terminal PASS and a separate pre-
-  live checkpoint. Do not start LinkedIn, enable recurrence, or substitute a
-  local dashboard URL for a genuine external Guacamole handoff.
+- Validate and commit C65, then obtain the terminal independent recheck. Do not
+  install 0.2.29 or submit the fresh X identity before terminal PASS and a
+  separate pre-live checkpoint. Do not start LinkedIn, enable recurrence, or
+  substitute a local dashboard URL for a genuine external Guacamole handoff.
 
 ## Goal-Compatible Plan Conversion
 
