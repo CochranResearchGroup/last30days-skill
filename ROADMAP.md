@@ -721,9 +721,9 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 28/C74. Installed service 0.2.29/schema
-  12 is ready with 59 documents, 59 current-version embeddings, active index
-  `index-28418bd968076bba6653223f`, rollback 0.2.28, and all 37 specifications
+- Current authority is Plan 0018 version 28/C75. Installed service 0.2.29/schema
+  12 is ready with 62 documents, 62 current-version embeddings, active index
+  `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
   disabled. The immutable-index repair passed independent review; the two
   already-damaged 56-row historical indexes remain preserved as evidence.
   The operator approved one distinct replacement YouTube proof and raised the
@@ -767,8 +767,11 @@ Current State:
   fixes five unique disabled specs, executor-blind salted yield commitments,
   one-attempt serial execution, packet ceilings, and reveal-after-terminal
   rules. Independent review's initial evidentiary-command FAIL was corrected in
-  one bounded recheck; terminal PASS found no critical issue and C74 authorizes
-  exact disabled spec materialization plus serial one-attempt execution.
+  one bounded recheck; terminal PASS found no critical issue and C74 authorized
+  exact disabled spec materialization plus serial one-attempt execution. C75
+  records five terminal one-attempt receipts, seven accepted items, verified
+  post-terminal reveal commitments, 20% hidden class/range accuracy, and the
+  awaiting-final-review state. Recurrence and release actions remain closed.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.

@@ -348,9 +348,25 @@
   },
   "terminal_state": "awaiting_independent_final_review",
   "review": {
-    "status": "pending",
+    "status": "pending_terminal_recheck",
     "required": "one fresh-context independent read-only final review",
-    "critical_findings": null,
+    "initial_reviewer": "/root/v28_canary_final_review_2",
+    "initial_result": "terminal_fail",
+    "initial_critical_findings": 2,
+    "finding_disposition": [
+      {
+        "finding": "earlier Roadmap P07 current-state block still named C74 and 59/37 runtime state",
+        "classification": "semantic_authority_drift",
+        "remediation": "update that current-state block to C75 and exact 62/42 state"
+      },
+      {
+        "finding": "reviewer stopped before raw reveal/envelope hash recomputation, historical-index proof, and bounded browser absence readback",
+        "classification": "incomplete_review_evidence",
+        "remediation": "same reviewer must perform an exact bounded recheck on the remediated commit"
+      }
+    ],
+    "terminal_reviewer": null,
+    "terminal_critical_findings": null,
     "decision": null
   }
 }
