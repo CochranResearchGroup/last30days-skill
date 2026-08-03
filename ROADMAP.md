@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 27/C70. Installed service 0.2.29/schema
+- Current authority is Plan 0018 version 27/C71. Installed service 0.2.29/schema
   12 is ready with 59 documents, 59 current-version embeddings, active index
   `index-28418bd968076bba6653223f`, rollback 0.2.28, and all 37 specifications
   disabled. The immutable-index repair passed independent review; the two
@@ -757,7 +757,11 @@ Current State:
   review-only, serial LinkedIn topic/profile observability plan. Independent
   review returned terminal PASS with zero critical finding; C70 authorizes the
   exact disabled topic-then-profile live packet, one identity at a time under
-  its hard stops. Recurrence remains prohibited.
+  its hard stops. C71 records both attempt-one terminal outcomes: topic stopped
+  source-locally on `quality_gate_failed` with zero accepted items, while
+  profile published one accepted item that deduplicated into the unchanged
+  59/59 corpus/index. The two attempts used two requests, zero model calls and
+  zero cost; final receipt review is pending. Recurrence remains prohibited.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -899,16 +903,17 @@ Active Plan:
   immutable lifetime total of 29, retires the Version 24 packet at four of six,
   and independently reviews a maximum-four-attempt serial LinkedIn
   topic/profile observability successor. C70 records terminal PASS and opens
-  that exact topic-then-profile packet. Both lanes remain `not_run` before
-  execution. Recurring enablement and blinded-yield execution remain later
-  gates.
+  that exact topic-then-profile packet. C71 records two attempt-one receipts,
+  unchanged 59/59 integrity, two epoch requests, one accepted/deduplicated
+  profile item, and zero cost/model calls, and now awaits independent final
+  review. Recurring enablement and blinded-yield execution remain later gates.
 
 Next Bounded Action:
 
-- Execute C70's exact serial disabled LinkedIn topic/profile packet, stopping
-  after each identity to verify terminal receipts and global integrity. Do not
-  retry X, enable recurrence, execute blinded-yield canaries, or substitute a
-  local dashboard URL for a genuine external Guacamole handoff.
+- Independently review C71's LinkedIn completion receipt and live postflight.
+  Do not retry either lane, retry X, enable recurrence, plan or execute blinded-
+  yield canaries, or substitute a local dashboard URL for a genuine external
+  Guacamole handoff before terminal review disposition.
 
 ## Goal-Compatible Plan Conversion
 

@@ -1,0 +1,182 @@
+{
+  "schema": "last30days.linkedin-observability-completion-receipt.v1",
+  "plan_id": "0018",
+  "plan_version": 27,
+  "checkpoint": "P0018-C71",
+  "created_at": "2026-08-03T14:36:30Z",
+  "budget_epoch": {
+    "epoch_id": "p0018-v27-e2",
+    "lifetime_actual_attempts_before": 29,
+    "lifetime_actual_attempts_after": 31,
+    "epoch_consumed": {
+      "attempts": 2,
+      "accepted_items": 1,
+      "governed_requests": 2,
+      "wall_seconds": 125.774,
+      "cost_usd": 0,
+      "model_calls": 0,
+      "max_concurrency": 1
+    },
+    "epoch_remaining": {
+      "attempts": 48,
+      "accepted_items": 149,
+      "governed_requests": 2498,
+      "wall_seconds": 5874.226,
+      "cost_usd": 0,
+      "model_calls": 0
+    }
+  },
+  "preflight": {
+    "service_version": "0.2.29",
+    "database_schema_version": 12,
+    "runtime_manifest_sha256": "32bff26cf96a277a1c3d9bdf59c5fcc0ed7235eeb744dcad5cdcb11e2d22902a",
+    "service_state": "ready",
+    "systemd_state": "active/running",
+    "sqlite_quick_check": "ok",
+    "foreign_key_errors": 0,
+    "documents": 59,
+    "current_version_embedding_documents": 59,
+    "active_index_id": "index-28418bd968076bba6653223f",
+    "active_index_documents": 59,
+    "active_index_embeddings": 59,
+    "collection_specs": 37,
+    "enabled_specs": 0,
+    "service_profile_leases": 0,
+    "proposed_interval_owners_per_lane": 0,
+    "selected_profile": "last30days-facebook",
+    "linkedin_readiness": "fresh",
+    "manual_action_required": false,
+    "manual_seeding_required": false,
+    "selected_profile_duplicate_pressure": false,
+    "remote_view_state": "ready",
+    "human_handoff_used": false
+  },
+  "owned_browser_transition": {
+    "closed_prior_x_session": true,
+    "prior_owner": "last30days/x-scraper/x-search",
+    "topic_owner": "last30days/linkedin-scraper/linkedin-content-search",
+    "topic_session_closed_before_profile": true,
+    "profile_owner": "last30days/linkedin-profile-scraper/linkedin-profile-acquisition",
+    "profile_session_closed_after_terminal_receipt": true,
+    "final_session_present": false,
+    "final_browser_present": false,
+    "unrelated_cleanup_performed": false,
+    "external_guacamole_route_available": true,
+    "local_dashboard_handoff_used": false
+  },
+  "lanes": [
+    {
+      "collection_spec_id": "p0018-v17-linkedin-topic-browser-manual",
+      "scheduled_for": "2026-08-04T00:00:00Z",
+      "interval_from": "2026-08-03T00:00:00Z",
+      "interval_to": "2026-08-04T00:00:00Z",
+      "collection_run_id": "collection-run-86b8d0fa7f2823b99b4e9838ac7ba27e",
+      "job_id": "9e006339-ed8d-4911-af2e-6b304bc99003",
+      "acquisition_id": "work-debb7bd3b1a952b265eb8f8846cd7659",
+      "attempts": 1,
+      "max_attempts": 2,
+      "state": "failed",
+      "error_code": "quality_gate_failed",
+      "classification": "source_local_zero_yield_quality_gate_failed",
+      "attempted": 12,
+      "observed": 12,
+      "accepted": 0,
+      "rejected": 12,
+      "stored": 0,
+      "deduplicated": 0,
+      "indexed": 0,
+      "governed_requests": 1,
+      "cost_usd": 0,
+      "model_calls": 0,
+      "retry_eligible": false,
+      "retry_class": "content",
+      "adapter_variant": "linkedin_agent_browser",
+      "attempted_access_methods": ["agent_browser"],
+      "selected_access_method": null,
+      "pre_snapshot": {
+        "documents": 59,
+        "embeddings": 59,
+        "index_id": "index-28418bd968076bba6653223f"
+      },
+      "post_snapshot": {
+        "documents": 59,
+        "embeddings": 59,
+        "index_id": "index-28418bd968076bba6653223f"
+      },
+      "envelope_sha256": {
+        "collection_run_attempt_start": "60b477ade0a6f6e646c1d9304d135dbc489cc5a59ea164066dc1092a07847a78",
+        "acquisition_work_request": "7bb3dd943463e739d77e7cde33f7fff0d10e8f20d277b8de5b8cebc30b1cdc18",
+        "acquisition_work_result": "ba5bf410c72441f16653e66744e1b67796f5847808044e28369f0c39257dce2f",
+        "acquisition_envelope": "dd2282be689b5c54b1788b6e8dc607838d4c23f510b1bc7996fda6654ab9b512",
+        "collection_run_receipt": "ffde4a03a8ecf239af316e400fb0e6d62d1aee5e78c1ebde95d27911dc8152b4"
+      }
+    },
+    {
+      "collection_spec_id": "p0018-v17-linkedin-profile-browser-manual",
+      "scheduled_for": "2026-08-04T00:00:00Z",
+      "interval_from": "2026-08-03T00:00:00Z",
+      "interval_to": "2026-08-04T00:00:00Z",
+      "collection_run_id": "collection-run-e85a7898dd4a2f96e655f95abf2f14e5",
+      "job_id": "4184639c-1c2a-422c-ac02-774e62bba259",
+      "acquisition_id": "work-eb40d12041e553b3d7c5ba82ecd497dc",
+      "attempts": 1,
+      "max_attempts": 2,
+      "state": "published",
+      "error_code": null,
+      "classification": "content_yield_deduplicated_publication",
+      "attempted": 1,
+      "observed": 1,
+      "accepted": 1,
+      "rejected": 0,
+      "stored": 1,
+      "deduplicated": 1,
+      "indexed": 1,
+      "governed_requests": 1,
+      "cost_usd": 0,
+      "model_calls": 0,
+      "retry_eligible": false,
+      "retry_class": "none",
+      "adapter_variant": "linkedin_profile_agent_browser",
+      "attempted_access_methods": ["agent_browser"],
+      "selected_access_method": "agent_browser",
+      "pre_snapshot": {
+        "documents": 59,
+        "embeddings": 59,
+        "index_id": "index-28418bd968076bba6653223f"
+      },
+      "post_snapshot": {
+        "documents": 59,
+        "embeddings": 59,
+        "index_id": "index-28418bd968076bba6653223f"
+      },
+      "envelope_sha256": {
+        "collection_run_attempt_start": "7cf9e1b45a2d524ff41ba72d529ece65115caa5fbd0d33af5251df37be59e7bf",
+        "acquisition_work_request": "179fcfd78bb0a72b1bb19e6e53c06b977305a4b2a6dab774953266d37102c644",
+        "acquisition_work_result": "5ac08aa91f84416b80495476bb3dbaf497481eaac5d0c0812cdbfa15237a363b",
+        "acquisition_envelope": "04b2069d6e7108863296e57333ca8f767e22159bad4b9e1d5b9b8fa96220993b",
+        "collection_run_receipt": "e75c3e9216c5cccf0985d51bccb86f1313fc6977753452b38285430b61dfe21b"
+      }
+    }
+  ],
+  "postflight": {
+    "service_state": "ready",
+    "sqlite_quick_check": "ok",
+    "foreign_key_errors": 0,
+    "documents": 59,
+    "current_version_embedding_documents": 59,
+    "active_index_id": "index-28418bd968076bba6653223f",
+    "active_index_documents": 59,
+    "active_index_embeddings": 59,
+    "collection_specs": 37,
+    "enabled_specs": 0,
+    "service_profile_leases": 0,
+    "owned_agent_browser_session_present": false,
+    "owned_agent_browser_browser_present": false
+  },
+  "terminal_state": "awaiting_independent_final_receipt_review",
+  "review": {
+    "status": "pending",
+    "live_actions_closed": true,
+    "blinded_yield_planning_before_pass": false
+  }
+}

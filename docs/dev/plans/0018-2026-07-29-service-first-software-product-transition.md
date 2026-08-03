@@ -125,7 +125,7 @@ class, audience, consequential external effect, ceiling increase, destructive
 action, or bypass of the independent final-review or immutable-release gate.
 Before requesting approval, cite the exact boundary the proposed action crosses.
 
-Checkpoint P0018-C70 is the current authority. Service architecture, timer
+Checkpoint P0018-C71 is the current authority. Service architecture, timer
 ownership, and durable publication/indexing are accepted foundations. The
 version-18 observability successor and the separately authorized fresh Reddit
 proof are complete. The five specifications remain disabled, the Reddit proof
@@ -6390,3 +6390,75 @@ Next action:
   session, and execute the topic lane. Keep the profile lane conditional on
   topic integrity and stop before blinded-yield planning until both lanes have
   terminal evidence.
+
+### Checkpoint P0018-C71 | 2026-08-03
+
+Plan version:
+
+- 27
+
+State transition:
+
+- `linkedin_observability_live_authorized -> awaiting_linkedin_observability_final_review`
+
+Progress classification:
+
+- `blocker_reduction`; both remaining observability identities reached complete
+  immutable attempt-one terminal receipts without a retry or global integrity
+  stop.
+
+Authority classification:
+
+- `inherited_authority`; live source/browser work is closed. Receipt writing,
+  deterministic readback, and one fresh independent final review only. Do not
+  start blinded-yield planning or any additional source identity before review
+  disposition.
+
+Execution evidence:
+
+- after exact preflight, only the owned X session was closed. Topic then
+  launched on exact `last30days-facebook` with owner
+  `last30days/linkedin-scraper/linkedin-content-search`, fresh auth, no manual
+  action/seeding, and a ready external Guacamole route;
+- topic run `collection-run-86b8d0fa7f2823b99b4e9838ac7ba27e`, job
+  `9e006339-ed8d-4911-af2e-6b304bc99003`, and acquisition
+  `work-debb7bd3b1a952b265eb8f8846cd7659` stopped attempt one as source-local
+  `quality_gate_failed`: 12 attempted/observed/rejected, zero accepted/stored/
+  deduplicated/indexed, one request, zero model calls/cost, and no eligible
+  retry. Its start and final receipts preserve identical 59/59 snapshots;
+- the owned topic session was closed. Profile preflight again selected the
+  exact fresh profile with zero active lease, zero duplicate pressure, no
+  manual action/seeding, and zero proposed owner;
+- profile run `collection-run-e85a7898dd4a2f96e655f95abf2f14e5`, job
+  `4184639c-1c2a-422c-ac02-774e62bba259`, and acquisition
+  `work-eb40d12041e553b3d7c5ba82ecd497dc` published on attempt one through
+  `linkedin_profile_agent_browser`: one attempted/observed/accepted/stored/
+  deduplicated/indexed, one request, zero model calls/cost, and no retry. The
+  accepted profile material deduplicated into the existing corpus, leaving the
+  active index unchanged at 59/59;
+- the final owned profile session was closed. SQLite remains `ok`/FK0, all 37
+  specs remain disabled, service profile leases are zero, current-version
+  embeddings remain 59/59, and no owned agent-browser session/browser remains.
+
+Budget accounting:
+
+- epoch `p0018-v27-e2` consumed two of 50 attempts, one of 150 accepted items,
+  two of 2,500 governed requests, 125.774 of 6,000 wall seconds, zero cost,
+  zero model calls, and concurrency one. Immutable lifetime attempt evidence
+  advances from 29 to 31;
+- neither unused service attempt was consumed or carried into a new packet.
+
+Receipt and review boundary:
+
+- `docs/dev/notes/0038-linkedin-observability-completion-receipt.json` records
+  both lanes, all ten immutable envelope hashes, exact counters, snapshots,
+  browser ownership transitions, cleanup, and postflight state;
+- one fresh-context independent reviewer must recompute the envelope hashes,
+  verify run/job/attempt/acquisition identities and arithmetic, and match live
+  postflight state before the packet is accepted.
+
+Next action:
+
+- validate and commit C71 locally, then obtain one fresh independent read-only
+  final receipt review. Do not plan or execute blinded-yield canaries before
+  that review reaches terminal PASS.

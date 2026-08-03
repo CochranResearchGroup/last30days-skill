@@ -8589,3 +8589,72 @@ Next Bounded Action:
 - commit C70 locally, rerun preflight, close only the owned X session, then
   submit and poll the LinkedIn topic identity. Stop before profile on any hard
   stop.
+
+## Turn 138 | 2026-08-03
+
+Focus: execute the two independently reviewed remaining observability
+identities to immutable terminal receipts and stop for final review.
+
+Authority Consulted:
+
+- Plan 0018 V27/C70; Roadmap P07; reviewed receipt 0037; installed service,
+  database, index, specification, interval-owner, agent-browser doctor,
+  profile-access-plan, session/browser ownership, and direct external-route
+  readbacks.
+
+Decisions And Changes:
+
+- revalidated every preflight invariant, closed only the owned X session, and
+  submitted the disabled topic identity once with service-owned max attempts
+  two;
+- accepted its attempt-one source-local `quality_gate_failed` as a complete
+  zero-yield observability outcome with no eligible retry and unchanged global
+  integrity, then closed its owned session;
+- revalidated the distinct profile caller and submitted it once with the same
+  reviewed timestamp and attempt limit;
+- recorded its attempt-one publication and deduplicated content yield without
+  claiming a corpus/index count increase, then closed its owned session;
+- stopped all source/browser work at C71 pending fresh final receipt review.
+
+Validation Evidence:
+
+- topic run `collection-run-86b8d0fa7f2823b99b4e9838ac7ba27e`, job
+  `9e006339-ed8d-4911-af2e-6b304bc99003`, acquisition
+  `work-debb7bd3b1a952b265eb8f8846cd7659`: one attempt, 12 observed/rejected,
+  zero accepted/stored/indexed, one request, zero cost/model calls, complete
+  start/final and acquisition envelopes, and identical 59/59 snapshots;
+- profile run `collection-run-e85a7898dd4a2f96e655f95abf2f14e5`, job
+  `4184639c-1c2a-422c-ac02-774e62bba259`, acquisition
+  `work-eb40d12041e553b3d7c5ba82ecd497dc`: one attempt, one accepted/stored/
+  deduplicated/indexed item through `linkedin_profile_agent_browser`, one
+  request, zero cost/model calls, complete immutable envelopes, and unchanged
+  59/59 snapshots;
+- epoch consumption is two of 50 attempts, one accepted item, two requests,
+  125.774 wall seconds, zero cost/model calls, concurrency one. Lifetime
+  actual evidence advances 29 to 31;
+- SQLite remains `ok`/FK0, 37 specs/zero enabled, zero service profile leases,
+  59 documents/current embeddings, active index 59/59, and no final owned
+  `last30days-facebook` agent-browser session or browser;
+- receipt 0038 records the exact identities, ten envelope hashes, arithmetic,
+  profile/route ownership transitions, and terminal review gate.
+
+State Movement:
+
+- Plan 0018 `C70 -> C71`, remaining Version 27;
+- `linkedin_observability_live_authorized -> awaiting_linkedin_observability_final_review`.
+
+Subagent Status And Reconciliation:
+
+- `pending`; one new fresh-context reviewer must validate receipt 0038 and the
+  live postflight. The primary retains all writes; no further live action is
+  open during review.
+
+Graphiti Write Status:
+
+- deferred until receipt review and the successor canary plan reach terminal
+  disposition.
+
+Next Bounded Action:
+
+- validate and commit C71 locally, then obtain one fresh independent read-only
+  final review. Do not plan or execute blinded-yield canaries before PASS.
