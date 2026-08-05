@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C11 is the current authority.
+Checkpoint P0023-C12 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1409,3 +1409,61 @@ Next action:
 - commit this evidence checkpoint, then obtain the fresh independent exact-
   candidate review. Stop after its terminal result; do not cross any live,
   install, config, notification, Guac, recurrence, publication, or cost gate.
+
+### Checkpoint P0023-C12 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `v2_candidate_review_pending -> v2_candidate_accepted_live_gate`.
+
+Progress classification:
+
+- `blocker_reduction`; terminal independent review accepts the repaired local
+  candidate and retires both C08 implementation blockers.
+
+Independent review result:
+
+- reviewer `/root/p0023_c06_review` returned terminal `PASS` with no release-
+  blocking, high-severity, regression, or consolidated rework finding;
+- actual agent-browser request flattening, takeover response identity,
+  retained-route use, process/lease proof, and acknowledgement-before-observe
+  ordering all passed;
+- media deadline, DNS-set admission, address pinning, peer verification,
+  original-host SNI/Host, redirect re-admission, malformed-destination stop,
+  socket cleanup, and typed degradation checks all passed;
+- reviewer validation passed 58 focused Python tests, 4 package tests, all Go
+  packages, diff checks, exact package contents, and a clean worktree;
+- exact implementation commit:
+  `6402d16c0ba652ac339c0d75e0994203e930aeae`;
+- exact evidence commit:
+  `803b71234b38fb164915c28c204a5a96ef97f836`;
+- exact artifact SHA-256:
+  `ea91dd5897a2b67911e9b60683ef5896d168ceda045d5e15fdff3d9f2683a8ba`;
+- durable review receipt:
+  `docs/dev/notes/0042-service-0.3.0-v2-independent-review-receipt.json`.
+
+Ceiling and rework accounting:
+
+- one of one fresh independent reviews used and passed;
+- zero of one consolidated rework packets used;
+- one of two implementation attempts used;
+- no retry, provider, notification, observation, or recurrence budget was
+  consumed.
+
+Authority classification:
+
+- `human_gate`; the V2 local repair packet is terminally accepted, but Plan
+  0023 remains `OPEN`. Installing the exact reviewed artifact, reading or
+  changing real user-scoped service/incident/provider configuration, and
+  executing the live manual all-target T08 tick each require a separately
+  bounded operator authorization. Guac remains observation-only and on-demand;
+  timer or schedule creation remains prohibited until T08 is accepted and a
+  separate successor plan is reviewed.
+
+Next action:
+
+- request one separately bounded installation/config/live-T08 authority packet
+  for the exact accepted candidate. Do not infer it from this terminal local
+  PASS, and do not create or enable recurrence.

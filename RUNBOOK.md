@@ -9631,3 +9631,57 @@ Next Bounded Action:
 - commit C11 and receipt 0041, then request one fresh independent exact-
   candidate review. Keep every live, install, user-config, notification, Guac,
   recurrence, publication, release, and cost gate closed.
+
+## Turn 154 | 2026-08-05
+
+Focus: reconcile the terminal independent Plan 0023 V2 candidate review and
+identify the exact remaining MVP gate.
+
+Authority Consulted:
+
+- Plan 0023 V2/C11, Roadmap P07, Runbook Turn 153, exact implementation commit
+  `6402d16`, evidence commit `803b712`, artifact/receipt 0041, and the reserved
+  evaluator's fresh read-only result.
+
+Review Result:
+
+- `/root/p0023_c06_review` returned terminal `PASS` with no release-blocking,
+  high-severity, regression, or consolidated rework finding;
+- the evaluator confirmed agent-browser request flattening plus exact takeover
+  identity/lease/process validation, retained-route behavior, and mandatory
+  acknowledgement before explicit observation;
+- the evaluator confirmed one absolute media deadline, safe complete DNS-set
+  admission, pinned connect and peer verification, original-host SNI/Host,
+  redirect re-admission, and safe malformed/error handling;
+- 58 focused Python tests, 4 package tests, all Go packages, exact artifact and
+  package contents, diff checks, and worktree cleanliness passed;
+- receipt:
+  `docs/dev/notes/0042-service-0.3.0-v2-independent-review-receipt.json`.
+
+State Movement:
+
+- Plan 0023 advances `C11 -> C12`;
+- `v2_candidate_review_pending -> v2_candidate_accepted_live_gate`;
+- Plan 0023 and Roadmap P07 remain `OPEN`; neither the manual T08 tick nor
+  timer admission is complete.
+
+Ceiling And Rework Accounting:
+
+- one of one fresh independent reviews used and passed;
+- zero of one consolidated rework packets used;
+- one of two implementation attempts used;
+- no live/provider/retry/notification/Guac/recurrence budget was consumed.
+
+Graphiti Write Status:
+
+- pending one compact source-backed closeout write for the accepted V2 local
+  candidate and remaining human gate; repo-native C12 and receipt 0042 remain
+  operational authority.
+
+Next Bounded Action:
+
+- request separate operator authority for exact reviewed candidate
+  installation, required real user-scoped configuration reconciliation, and
+  the manual live T08 tick. Guac remains on-demand observation only. Do not
+  create or enable any timer or schedule until T08 passes and a separate
+  recurrence successor is reviewed.

@@ -1,0 +1,33 @@
+{
+  "artifact": {
+    "runtime_artifact_sha256": "ea91dd5897a2b67911e9b60683ef5896d168ceda045d5e15fdff3d9f2683a8ba",
+    "service_version": "0.3.0"
+  },
+  "closed_gates_confirmed": [
+    "real_installation",
+    "user_config_access_or_mutation",
+    "live_provider_execution",
+    "real_notification",
+    "guacamole_observation_lease",
+    "timer_or_schedule",
+    "push_tag_or_release"
+  ],
+  "evidence_commit": "803b71234b38fb164915c28c204a5a96ef97f836",
+  "findings": [],
+  "implementation_commit": "6402d16c0ba652ac339c0d75e0994203e930aeae",
+  "plan": "0023",
+  "review": {
+    "artifact_and_package": "passed",
+    "closed_gate_compliance": "passed",
+    "focused_python_tests_passed": 58,
+    "go_packages": "passed",
+    "media_transport": "passed",
+    "observation_handoff": "passed",
+    "package_tests_passed": 4,
+    "reviewer": "/root/p0023_c06_review",
+    "worktree_clean": true
+  },
+  "schema_version": 1,
+  "status": "terminal_pass",
+  "verified_at": "2026-08-05T02:14:59-05:00"
+}
