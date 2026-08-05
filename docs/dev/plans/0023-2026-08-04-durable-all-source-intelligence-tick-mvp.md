@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C09 is the current authority.
+Checkpoint P0023-C10 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1290,3 +1290,57 @@ Next action:
 - commit this authority checkpoint, then run the first focused red/green cycle
   for actual-contract observation handoff. Continue with the deadline-pinned
   media cycle only after observation is green.
+
+### Checkpoint P0023-C10 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `v2_observation_media_repair_active -> v2_contract_verified_implementation_active`.
+
+Progress classification:
+
+- `blocker_reduction`; direct agent-browser source evidence removed one stale
+  planning assumption before implementation began.
+
+Authority correction:
+
+- `view_takeover` returns accepted takeover identity, `viewerLeaseId`, viewer
+  event metadata, and service-event identity; it does not create a durable
+  record in the separate `/api/service/viewer-leases` collection;
+- the agent-browser dashboard's external-open path resolves the external URL
+  from the retained stream, queues `view_takeover`, requires success, and then
+  opens that retained URL. Version 2 will mirror that contract: require the
+  response's accepted status, preserved process, non-empty viewer lease, and
+  exact browser/session/stream/provider/open-mode identity, then return and
+  persist the already-validated retained-stream route;
+- the C09 requirement for post-action viewer-lease collection readback is
+  retired. No replacement endpoint, durable lease invention, or agent-browser
+  repo change is authorized or required.
+
+Validation adjustment:
+
+- the observation regression fixture must use the actual takeover response
+  shape with no external URL and must fail closed on any missing lease,
+  non-accepted status, unpreserved process, or identity mismatch;
+- acknowledgment and explicit-observe ordering remains covered through the
+  incident interface, while transport tests prove the retained route is
+  resolved before takeover and is the returned URL afterward.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; CodeGraph and agent-browser's own handler/dashboard source
+  provided the contract evidence. The independent evaluator remains reserved
+  for the exact committed candidate.
+
+Authority classification:
+
+- `inherited_authority`; this correction narrows implementation to the actual
+  approved contract and crosses no live, config, install, notification, Guac,
+  recurrence, publication, or cost gate.
+
+Next action:
+
+- write the actual-shape observation regression test, prove it fails against
+  the C08 implementation, and make only that vertical slice green.

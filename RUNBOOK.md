@@ -9521,3 +9521,52 @@ Next Bounded Action:
   media transport cycle. Keep install, real user-config access or mutation,
   live sources, real notifications, Guac observation, recurrence, push, tag,
   publication, release, paid calls, and ceiling changes closed.
+
+## Turn 152 | 2026-08-05
+
+Focus: correct the version-2 observation proof seam from direct agent-browser
+source before writing the first test.
+
+Authority Consulted:
+
+- Plan 0023 V2/C09, Roadmap P07, Runbook Turn 151; agent-browser's
+  `handle_view_takeover`, `ViewerLease` model, generated client contract, and
+  dashboard external-open flow through CodeGraph; planning, architecture, and
+  documentation policies.
+
+Decisions And Changes:
+
+- rejected C09's proposed post-action `/viewer-leases` readback because
+  `view_takeover` does not create that durable record;
+- adopted the actual dashboard contract: retain the ready stream's external
+  URL, require accepted takeover response identity plus its viewer-lease ID,
+  and return the retained URL only after that proof;
+- left the media-transport design and every closed gate unchanged.
+
+Validation Evidence:
+
+- source readback proves `handle_view_takeover` returns status, browser,
+  session, stream, provider, open mode, process-preservation, viewer-lease and
+  event fields without an external URL; dashboard source queues that action and
+  then opens its already-resolved `externalStreamUrl`.
+
+State Movement:
+
+- Plan 0023 remains version 2 and advances `C09 -> C10`;
+- `v2_observation_media_repair_active -> v2_contract_verified_implementation_active`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; structural source evidence was read directly. The existing
+  evaluator remains reserved for the committed candidate.
+
+Graphiti Write Status:
+
+- not attempted; this source-backed repo checkpoint supersedes C09's one stale
+  proof requirement.
+
+Next Bounded Action:
+
+- commit C10, then run the actual-shape observation red/green cycle. Keep all
+  live, install, user-config, notification, Guac, recurrence, push,
+  publication, release, and cost gates closed.
