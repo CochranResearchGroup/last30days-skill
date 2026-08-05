@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C29 is the current authority.
+Checkpoint P0023-C30 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2398,3 +2398,56 @@ Next action:
 
 - commit receipt 0047/C29 evidence and submit the exact immutable identities
   to the existing evaluator. Stop before real mutation until terminal result.
+
+### Checkpoint P0023-C30 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `phase_a_rollback_terminal_recheck_pending -> phase_a_exact_install_admitted`.
+
+Progress classification:
+
+- `outcome_progress`; the sole terminal recheck returned PASS with no finding,
+  clearing the last local prerequisite for the already-authorized Phase A
+  exact upgrade.
+
+Independent acceptance:
+
+- exact implementation `1a53f67`, evidence `efcf253`, installer, runtime
+  artifact, runtime manifest, historical artifact, and receipt 0047 identities
+  match;
+- running runtime-manifest mismatch is a strict readiness failure;
+- recovery stop failure aborts before selector restore, database replacement,
+  or WAL/SHM removal, while displaced snapshots remain durable;
+- all 21 affected tests and the independent full Python suite pass;
+- fresh exact-artifact replay passes schema `12 -> 15 -> 12 -> 15`, both dumps
+  match, integrity is `ok`, and both state pairs are mode 0600;
+- independent receipt:
+  `docs/dev/notes/0048-service-transactional-rollback-recheck-independent-review-receipt.json`.
+
+Exact admitted mutation:
+
+- re-verify candidate/historical hashes and current 0.2.29/schema-12 ready
+  identity immediately before mutation;
+- invoke one installer `upgrade` with exact artifact
+  `dist/service/last30days-service-0.3.0.tar.gz` and no other mutation;
+- require exact current 0.3.0/schema 15/ready, previous 0.2.29, owner-private
+  release-bound 0.2.29 rollback state with matching digest/schema/integrity,
+  installed runtime identity, and active unit readback;
+- stop on any mismatch. Do not invoke real rollback, config preflight,
+  providers, sends, Guac, crash/replay, T08, timers, push, publication, release,
+  paid calls, or ceiling changes in the install packet.
+
+Authority classification:
+
+- `inherited_authority`; C22's operator-approved Phase A explicitly admits the
+  exact candidate install after reconciled rollback safety. This checkpoint
+  admits that single mutation and nothing beyond it.
+
+Next action:
+
+- commit C30/receipt 0048, perform exact pre-mutation readback, execute the one
+  admitted upgrade, and verify installed/rollback identity before considering
+  the separately bounded sanitized config preflight.

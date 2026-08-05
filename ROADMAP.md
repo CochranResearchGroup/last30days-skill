@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 2/C29; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 2/C30; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -860,8 +860,11 @@ Current State:
   the complete Python/Go/shell/compile/diff/authority matrix, exact historical
   rollback/roll-forward replay, and unchanged real 0.2.29/schema-12 readback.
   C29 binds immutable commit `1a53f67`, installer hash, unchanged artifacts,
-  and replacement receipt 0047 for the sole terminal recheck. Real install/
-  restart and every config/live/recurrence gate stay closed.
+  and replacement receipt 0047 for the sole terminal recheck. That recheck
+  returned PASS with no finding and is bound in receipt 0048. C30 admits the
+  one already-authorized exact 0.3.0 upgrade plus strict installed/rollback
+  readback; real rollback, config preflight, and every live/recurrence gate
+  remain closed during that install packet.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -1031,9 +1034,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- obtain the sole terminal recheck of exact Plan 0023/C29 commit `1a53f67` and
-  receipt 0047. Keep real
-  installation, user-config access or mutation, live
+- execute the single Plan 0023/C30 exact 0.3.0 upgrade and verify installed
+  0.3.0/schema-15 readiness plus the owner-private exact 0.2.29 rollback state.
+  Keep real rollback, user-config access or mutation, live
   sources, notification sends, Guac, recurrence, push, publication, release,
   paid calls, and ceiling changes closed.
 

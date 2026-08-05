@@ -10593,3 +10593,50 @@ Next Bounded Action:
 
 - commit C29/receipt 0047, submit exact identities to the evaluator, and stop
   before real mutation until terminal PASS is reconciled.
+
+## Turn 173 | 2026-08-05
+
+Focus: accept the C29 terminal recheck and admit the exact Phase A upgrade.
+
+Authority Consulted:
+
+- Plan 0023 V2/C22/C29; Roadmap P07; Runbook Turn 172; terminal evaluator
+  result; exact candidate and receipt identities.
+
+Decisions And Changes:
+
+- accepted terminal PASS with no remaining finding and bound it in receipt
+  0048;
+- admitted one exact 0.3.0 installer upgrade under the operator-approved C22
+  Phase A after one final pre-mutation readback;
+- kept real rollback, config preflight, providers, sends, Guac, crash/replay,
+  T08, timers, push/release, costs, and ceiling changes closed during install.
+
+Validation Evidence:
+
+- evaluator independently passed all 21 affected tests and the complete Python
+  suite;
+- exact artifact replay passed schema `12 -> 15 -> 12 -> 15`, matching dumps,
+  integrity `ok`, and two mode-0600 state pairs;
+- strict manifest identity and successful-stop-before-restore ordering passed
+  direct source and adversarial checks;
+- exact identities match receipt 0047 and the worktree remained clean.
+
+State Movement:
+
+- Plan 0023 advances `C29 -> C30`;
+- `phase_a_rollback_terminal_recheck_pending -> phase_a_exact_install_admitted`.
+
+Subagent Status And Reconciliation:
+
+- terminal reviewer PASS is reconciled; the evaluator is complete and no
+  further implementation/review cycle is open.
+
+Graphiti Write Status:
+
+- no write before real installed-state verification completes.
+
+Next Bounded Action:
+
+- commit C30/receipt 0048, re-verify exact pre-state and artifact hashes,
+  execute one exact 0.3.0 upgrade, and stop on any installed/rollback mismatch.
