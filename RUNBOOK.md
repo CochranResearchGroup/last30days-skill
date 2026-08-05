@@ -9685,3 +9685,24 @@ Next Bounded Action:
   the manual live T08 tick. Guac remains on-demand observation only. Do not
   create or enable any timer or schedule until T08 passes and a separate
   recurrence successor is reviewed.
+
+## Turn 155 | 2026-08-05
+
+Focus: complete the required durable-memory closeout without changing Plan
+0023 authority.
+
+Result:
+
+- Graphiti provider readiness passed;
+- queued one compact source-backed episode named
+  `last30days Plan 0023 V2 local candidate accepted at C12` in group
+  `last30days_skill`, job `587a0636-3931-4386-9b77-dbf6e10558f5`;
+- the episode records the exact commits, artifact, accepted local seams, repo
+  evidence paths, and the remaining human-gated install/config/live-T08 state;
+- Graphiti remains derived recall. Plan 0023/C12, Roadmap P07, Runbook, and
+  receipts 0041/0042 remain operational authority.
+
+State Movement:
+
+- none; Plan 0023 remains `OPEN` at
+  `v2_candidate_accepted_live_gate`, and recurrence remains prohibited.
