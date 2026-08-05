@@ -9570,3 +9570,64 @@ Next Bounded Action:
 - commit C10, then run the actual-shape observation red/green cycle. Keep all
   live, install, user-config, notification, Guac, recurrence, push,
   publication, release, and cost gates closed.
+
+## Turn 153 | 2026-08-05
+
+Focus: complete the Plan 0023 version-2 local repair candidate and bind exact
+validation plus isolated lifecycle evidence before independent review.
+
+Authority Consulted:
+
+- Plan 0023 V2/C10, Roadmap P07, Runbook Turn 152; the operator-approved V2
+  ceilings and hard stops; agent-browser's actual takeover/dashboard contract;
+  planning, architecture, validation, closeout, Git, and documentation policy.
+
+Decisions And Changes:
+
+- implemented actual-shape observation handoff: validate the accepted takeover
+  identity and lease metadata, preserve the browser process, and return the
+  already-validated retained external stream route;
+- replaced urllib media retrieval with an HTTPS transport that bounds DNS,
+  pins the admitted address through connect and peer verification, preserves
+  original-host TLS/HTTP identity, and reapplies admission to redirects under
+  one absolute deadline;
+- refreshed the service manifest, built a byte-identical candidate twice, and
+  recorded exact commit/artifact/lifecycle evidence in receipt 0041;
+- did not inspect or change the real installed runtime or user-scoped config,
+  and did not execute providers, notifications, Guac observation, recurrence,
+  publication, release, or paid calls.
+
+Validation Evidence:
+
+- exact code commit: `6402d16c0ba652ac339c0d75e0994203e930aeae`;
+- focused affected matrix: 55 passed;
+- full Python suite: 2,515 passed, 7 skipped, 6 subtests passed;
+- all Go packages, compileall, packaging checks, and diff checks passed;
+- two clean builds and the repository artifact share SHA-256
+  `ea91dd5897a2b67911e9b60683ef5896d168ceda045d5e15fdff3d9f2683a8ba`;
+- isolated baseline-0.2.29 upgrade, rollback, and roll-forward all diagnosed
+  ready; schema remained 15 and SQLite integrity was `ok`;
+- receipt:
+  `docs/dev/notes/0041-service-0.3.0-v2-candidate-install-rollback-receipt.json`.
+
+State Movement:
+
+- Plan 0023 advances `C10 -> C11`;
+- `v2_contract_verified_implementation_active -> v2_candidate_review_pending`.
+
+Subagent Status And Reconciliation:
+
+- primary implementation and validation are complete. The existing independent
+  evaluator is reserved for one fresh read-only review of the exact candidate;
+  at most one consolidated rework is available afterward.
+
+Graphiti Write Status:
+
+- deferred until the independent review establishes the terminal V2 result;
+  Plan 0023, Roadmap P07, this turn, and receipt 0041 are current authority.
+
+Next Bounded Action:
+
+- commit C11 and receipt 0041, then request one fresh independent exact-
+  candidate review. Keep every live, install, user-config, notification, Guac,
+  recurrence, publication, release, and cost gate closed.

@@ -1,0 +1,52 @@
+{
+  "artifact": {
+    "contract_sha256": "d3362ef9edc1e8e58f76d4a5a5ed5375fbc51e39169da1f84714584165f4efd8",
+    "reproducible_build_count": 2,
+    "runtime_artifact_sha256": "ea91dd5897a2b67911e9b60683ef5896d168ceda045d5e15fdff3d9f2683a8ba",
+    "runtime_manifest_sha256": "58e34738d2e55f0b857bac05aaebb8726f31620365c99038a8234db3c61a8fb3",
+    "service_version": "0.3.0"
+  },
+  "hard_stops": [
+    "real_installation",
+    "user_config_access_or_mutation",
+    "live_provider_execution",
+    "real_notification",
+    "guacamole_observation_lease",
+    "timer_or_schedule",
+    "push_tag_or_release"
+  ],
+  "installed_state_postflight": {
+    "checked": false,
+    "reason": "real installed-runtime and user-scoped state are outside the authorized V2 local packet",
+    "state_changed": false
+  },
+  "isolated_lifecycle": {
+    "current_release": "releases/0.3.0",
+    "database_integrity": "ok",
+    "database_schema_version": 15,
+    "final_readiness": "ready",
+    "initial_readiness": "ready",
+    "initial_version": "0.2.29",
+    "previous_release": "releases/0.2.29",
+    "rollback_readiness": "ready",
+    "rollback_version": "0.2.29",
+    "roll_forward_readiness": "ready",
+    "roll_forward_version": "0.3.0",
+    "test_environment": "temporary XDG roots and fake user manager",
+    "upgrade_readiness": "ready",
+    "upgrade_version": "0.3.0"
+  },
+  "plan": "0023",
+  "repo_commit": "6402d16c0ba652ac339c0d75e0994203e930aeae",
+  "schema_version": 1,
+  "status": "passed",
+  "validation": {
+    "compileall": "passed",
+    "focused_python_tests": 55,
+    "full_go_packages": "passed",
+    "full_python_subtests_passed": 6,
+    "full_python_tests_passed": 2515,
+    "full_python_tests_skipped": 7
+  },
+  "verified_at": "2026-08-05T02:03:45-05:00"
+}

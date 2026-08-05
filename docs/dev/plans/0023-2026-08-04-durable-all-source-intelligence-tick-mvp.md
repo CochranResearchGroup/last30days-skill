@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C10 is the current authority.
+Checkpoint P0023-C11 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1344,3 +1344,68 @@ Next action:
 
 - write the actual-shape observation regression test, prove it fails against
   the C08 implementation, and make only that vertical slice green.
+
+### Checkpoint P0023-C11 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `v2_contract_verified_implementation_active -> v2_candidate_review_pending`.
+
+Progress classification:
+
+- `blocker_reduction`; both terminal C08 defects now have implementation,
+  regression, packaging, and isolated lifecycle evidence at one exact commit.
+
+Candidate implementation:
+
+- exact code commit `6402d16c0ba652ac339c0d75e0994203e930aeae`
+  validates the actual agent-browser takeover shape while retaining the
+  prevalidated external stream route;
+- the same commit introduces a deadline-pinned HTTPS media transport that
+  bounds DNS under the one absolute media deadline, admits only globally
+  routable resolutions, connects to the admitted socket address, verifies the
+  peer, preserves original-host TLS SNI and HTTP `Host`, and applies the same
+  checks to every redirect;
+- service runtime manifest SHA-256 is
+  `58e34738d2e55f0b857bac05aaebb8726f31620365c99038a8234db3c61a8fb3`;
+- two clean builds and the repository candidate artifact are byte-identical at
+  SHA-256
+  `ea91dd5897a2b67911e9b60683ef5896d168ceda045d5e15fdff3d9f2683a8ba`.
+
+Validation and lifecycle evidence:
+
+- focused affected matrix: 55 passed;
+- full Python suite: 2,515 passed, 7 skipped, 6 subtests passed;
+- all Go packages, compileall, and diff checks passed;
+- temporary-XDG lifecycle proof installed synthetic 0.2.29, upgraded to the
+  exact candidate, diagnosed ready, rolled back ready, and rolled forward
+  ready; schema remained 15 and SQLite integrity was `ok`;
+- receipt:
+  `docs/dev/notes/0041-service-0.3.0-v2-candidate-install-rollback-receipt.json`.
+
+Closed-gate readback:
+
+- no real installed runtime, user-scoped config, provider, notification,
+  Guacamole observation, recurrence, paid call, push, tag, publication, or
+  release action was read or changed.
+
+Subagent status and reconciliation:
+
+- the primary completed the two coupled vertical TDD seams and exact candidate
+  validation. The existing read-only evaluator is now assigned one fresh
+  review of this exact commit, evidence checkpoint, and artifact; only its one
+  consolidated rework allowance remains if that review fails.
+
+Authority classification:
+
+- `inherited_authority`; implementation and local validation are inside the
+  operator-approved V2 packet. Independent review is required before any
+  separately human-gated installation or live T08 request.
+
+Next action:
+
+- commit this evidence checkpoint, then obtain the fresh independent exact-
+  candidate review. Stop after its terminal result; do not cross any live,
+  install, config, notification, Guac, recurrence, publication, or cost gate.
