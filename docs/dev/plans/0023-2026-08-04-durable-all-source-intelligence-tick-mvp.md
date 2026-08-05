@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C31 is the current authority.
+Checkpoint P0023-C32 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2504,3 +2504,55 @@ Next action:
 - commit C31/receipt 0049, inspect the installed preflight command surface,
   then execute one sanitized real user-config preflight and stop on any secret
   exposure, state write, provider action, or notification send.
+
+### Checkpoint P0023-C32 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `phase_a_exact_install_verified -> phase_a_sanitized_preflight_config_missing`.
+
+Progress classification:
+
+- `human_gate`; the installed side-effect-free preflight failed closed because
+  the required user-scoped tick configuration document does not exist at the
+  default XDG config location.
+
+Exact attempt and stop:
+
+- one installed `tick preflight` attempt used the latest complete UTC day,
+  `2026-08-04T00:00:00Z -> 2026-08-05T00:00:00Z`, with no schedule override;
+- it exited 2 at config load before config content, lane/provider admission,
+  notification readiness, state construction, or any live action;
+- provider attempts, notification readiness calls, notification sends, state
+  writes, incidents, artifact creation, observation leases, and timers are
+  all zero;
+- repository code and documentation confirm config resolution accepts only an
+  explicit `--config`, process `LAST30DAYS_CONFIG_DIR`, XDG config root, or the
+  default user path. It does not load this document from the service `.env`,
+  and no repo bootstrap command materializes the operator particulars.
+
+Postflight:
+
+- installed 0.3.0 remains active/ready at schema 15 with integrity `ok`, 62
+  documents, exact accepted runtime manifest, previous 0.2.29, and its
+  verified rollback state preserved;
+- durable failed-closed receipt:
+  `docs/dev/notes/0050-service-0.3.0-sanitized-preflight-missing-config-receipt.json`.
+
+Authority classification:
+
+- `human_gate`; C22 authorizes sanitized config readback, not creation of a
+  missing operator configuration. Materializing the document would choose and
+  persist user-specific services, targets/selectors, access partitions,
+  provider chains/credentials/resources/ceilings, artifact root/retention,
+  analysis policy, observation endpoint, sequential notification routing, and
+  query versions. Those particulars cannot be inferred or stored in repo data.
+
+Next action:
+
+- stop and obtain explicit authority plus the exact user-scoped configuration
+  values (or authority to derive a reviewed draft from named existing user
+  profiles/acceptance targets). Then create only the owner-private user config
+  and rerun sanitized preflight; keep T08 and every live/timer gate separate.

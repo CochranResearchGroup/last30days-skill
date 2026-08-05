@@ -1,0 +1,44 @@
+{
+  "attempt": {
+    "command": "installed tick preflight with default user-scoped config",
+    "interval_from": "2026-08-04T00:00:00Z",
+    "interval_to": "2026-08-05T00:00:00Z",
+    "schedule_id_override": null
+  },
+  "closed_gates": [
+    "user_config_creation_or_mutation",
+    "live_provider_execution",
+    "real_notification_send",
+    "guacamole_observation_lease",
+    "crash_or_replay",
+    "manual_t08_tick",
+    "timer_or_schedule",
+    "push_tag_or_release",
+    "paid_call_or_ceiling_change"
+  ],
+  "failure": {
+    "config_content_loaded": false,
+    "config_path": "$XDG_CONFIG_HOME/last30days/tick-config-v1.json",
+    "error_code": "tick_config_missing",
+    "exit_code": 2,
+    "notification_readiness_calls": 0,
+    "notification_sends": 0,
+    "provider_attempts": 0,
+    "state_writes": 0
+  },
+  "installed_state_postflight": {
+    "current_release": "releases/0.3.0",
+    "database_integrity": "ok",
+    "database_schema_version": 15,
+    "document_count": 62,
+    "previous_release": "releases/0.2.29",
+    "readiness": "ready",
+    "rollback_state_preserved": true,
+    "runtime_manifest_sha256": "da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514",
+    "service_active": true
+  },
+  "plan": "0023",
+  "schema_version": 1,
+  "status": "blocked_missing_user_config",
+  "verified_at": "2026-08-05T08:51:30-05:00"
+}

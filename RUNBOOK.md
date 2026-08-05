@@ -10687,3 +10687,54 @@ Next Bounded Action:
 
 - commit C31/receipt 0049, inspect installed preflight help, then execute one
   sanitized real user-config readback with readiness checks and zero sends.
+
+## Turn 175 | 2026-08-05
+
+Focus: execute the sanitized Phase A preflight and stop at missing user config.
+
+Authority Consulted:
+
+- Plan 0023 V2/C22/C31; Roadmap P07; Runbook Turn 174; installed CLI help;
+  documented config contract; CodeGraph config-resolution/preflight flow;
+  exact failed command and installed postflight.
+
+Decisions And Changes:
+
+- ran one installed state-free preflight for the latest complete UTC day;
+- accepted exit 2 as a correct fail-closed result because the default
+  user-scoped tick config is absent;
+- did not inspect config particulars, invent operator targets/routing, create
+  user config, or cross any live/T08/timer gate;
+- retained the healthy installed 0.3.0 and exact 0.2.29 rollback state.
+
+Validation Evidence:
+
+- failure occurred before config content load, provider admission, sequential
+  readiness, database/artifact construction, or any side effect;
+- provider attempts, readiness calls, sends, state writes, observation leases,
+  and timers are zero;
+- repo machinery exposes no config bootstrap; resolution is explicit path,
+  process config root, XDG root, or default only;
+- installed postflight remains 0.3.0/schema15 ready, integrity `ok`, 62
+  documents, previous 0.2.29, exact runtime identity and rollback preserved;
+- receipt 0050 binds the attempt and stop.
+
+State Movement:
+
+- Plan 0023 advances `C31 -> C32`;
+- `phase_a_exact_install_verified -> phase_a_sanitized_preflight_config_missing`.
+
+Subagent Status And Reconciliation:
+
+- `not_active`; this is an operator-configuration gate, not an implementation
+  delegation or review task.
+
+Graphiti Write Status:
+
+- no write while the user-scoped configuration gate remains unresolved.
+
+Next Bounded Action:
+
+- obtain exact user config values or explicit authority to derive a reviewed
+  user-scoped draft, then create it owner-private and rerun sanitized preflight.
+  T08 and recurrence remain separately closed.
