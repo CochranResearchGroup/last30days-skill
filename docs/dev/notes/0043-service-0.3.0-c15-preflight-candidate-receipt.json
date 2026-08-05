@@ -1,0 +1,62 @@
+{
+  "artifact": {
+    "contract_sha256": "d3362ef9edc1e8e58f76d4a5a5ed5375fbc51e39169da1f84714584165f4efd8",
+    "reproducible_build_count": 2,
+    "runtime_artifact_sha256": "32107a9dd13de7f548f1456cf5a91d7dfe414c3ef63b58129c295bd033b0a9ea",
+    "runtime_manifest_sha256": "6dda355222e90df958169022df365973cfb317565954dbded25994984784a5c4",
+    "service_version": "0.3.0"
+  },
+  "hard_stops": [
+    "real_installation",
+    "user_config_access_or_mutation",
+    "live_provider_execution",
+    "real_notification_send",
+    "guacamole_observation_lease",
+    "timer_or_schedule",
+    "push_tag_or_release"
+  ],
+  "installed_state_postflight": {
+    "checked": false,
+    "reason": "real installed-runtime and user-scoped state remain outside the C13 local packet",
+    "state_changed": false
+  },
+  "isolated_lifecycle": {
+    "current_release": "releases/0.3.0",
+    "database_integrity": "ok",
+    "database_schema_version": 15,
+    "final_readiness": "ready",
+    "initial_readiness": "ready",
+    "initial_version": "0.2.29",
+    "previous_release": "releases/0.2.29",
+    "rollback_readiness": "ready",
+    "rollback_version": "0.2.29",
+    "roll_forward_readiness": "ready",
+    "roll_forward_version": "0.3.0",
+    "test_environment": "temporary XDG roots and fake user manager",
+    "upgrade_readiness": "ready",
+    "upgrade_version": "0.3.0"
+  },
+  "plan": "0023",
+  "preflight_contract": {
+    "config_read_count": 1,
+    "database_or_artifact_writes": 0,
+    "notification_send_count": 0,
+    "provider_execution_count": 0,
+    "raw_operator_particulars_emitted": 0,
+    "readiness_mode": "sequential_stop_after_first_ready",
+    "tick_identity_matches_enqueue": true
+  },
+  "repo_commit": "0fa63c06578dc9d1c6b41fc6afd531508c5728f3",
+  "schema_version": 1,
+  "status": "passed",
+  "validation": {
+    "compileall": "passed",
+    "full_go_packages": "passed",
+    "full_python_subtests_passed": 6,
+    "full_python_tests_passed": 2523,
+    "full_python_tests_skipped": 7,
+    "goal_planning_audit": "passed",
+    "plan_authority_audit": "passed"
+  },
+  "verified_at": "2026-08-05T02:51:38-05:00"
+}

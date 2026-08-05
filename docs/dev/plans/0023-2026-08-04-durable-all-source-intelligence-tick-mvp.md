@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C15 is the current authority.
+Checkpoint P0023-C16 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1656,3 +1656,53 @@ Next action:
 - commit this exact candidate, rebuild twice, prove isolated 0.2.29 upgrade,
   rollback, and roll-forward, then bind hashes/receipts before independent
   review.
+
+### Checkpoint P0023-C16 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `t08_preflight_candidate_commit_ready -> t08_preflight_independent_review_pending`.
+
+Progress classification:
+
+- `outcome_progress`; the Manual Acceptance Gate now has an exact committed,
+  reproducibly packaged, and lifecycle-proven sanitized preflight candidate.
+
+Exact candidate evidence:
+
+- implementation/evidence-base commit:
+  `0fa63c06578dc9d1c6b41fc6afd531508c5728f3`;
+- two independent clean builds and the repository candidate artifact are
+  byte-identical at SHA-256
+  `32107a9dd13de7f548f1456cf5a91d7dfe414c3ef63b58129c295bd033b0a9ea`;
+- runtime manifest SHA-256 is
+  `6dda355222e90df958169022df365973cfb317565954dbded25994984784a5c4`;
+- temporary-XDG lifecycle proof installed synthetic 0.2.29, upgraded to exact
+  0.3.0, diagnosed ready, rolled back ready, and rolled forward ready while
+  preserving schema 15 and SQLite integrity `ok`;
+- durable candidate receipt:
+  `docs/dev/notes/0043-service-0.3.0-c15-preflight-candidate-receipt.json`.
+
+Review contract:
+
+- one fresh read-only independent review must verify shared preflight/enqueue
+  identity, one config read, strict adapter/observation admission, complete
+  sanitization, sequential non-message readiness, zero state/provider/send
+  effects, clock-rollback receipt integrity, package identity, lifecycle
+  evidence, and closed-gate compliance;
+- maximum independent review/rework cycles: 1; return one consolidated PASS or
+  FAIL result; no implementation delegation or live action is authorized.
+
+Authority classification:
+
+- `inherited_authority`; exact local review is the last C13 action. Real
+  install, user-config access/mutation, provider work, notification send, Guac,
+  recurrence, push, publication, release, paid calls, and ceiling changes
+  remain `human_gate` actions.
+
+Next action:
+
+- commit this evidence checkpoint, then send exact commit/artifact/receipt 0043
+  to the existing read-only evaluator. Stop after its terminal result.

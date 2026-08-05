@@ -9879,3 +9879,58 @@ Next Bounded Action:
 - commit the exact candidate, build it twice, run isolated upgrade/rollback/
   roll-forward, and bind the exact hashes and receipt before independent
   review. Keep real install/config/live and recurrence gates closed.
+
+## Turn 159 | 2026-08-05
+
+Focus: bind the exact committed C15 preflight candidate to reproducible build
+and isolated lifecycle evidence before independent review.
+
+Authority Consulted:
+
+- Plan 0023 V2/C15, Roadmap P07, Runbook Turn 158; exact commit `0fa63c0`;
+  service builder/installer; candidate artifact and temporary-XDG lifecycle
+  readbacks; validation and goal policy.
+
+Decisions And Changes:
+
+- committed the complete sanitized preflight and clock-rollback repair as
+  `0fa63c06578dc9d1c6b41fc6afd531508c5728f3`;
+- built the candidate twice in independent temporary outputs and once at the
+  repository artifact location, all with identical bytes;
+- exercised only fake-manager temporary-XDG install state through upgrade,
+  rollback, and roll-forward; did not inspect or change the real installation;
+- created receipt 0043 and opened one exact fresh read-only review.
+
+Validation Evidence:
+
+- artifact SHA-256:
+  `32107a9dd13de7f548f1456cf5a91d7dfe414c3ef63b58129c295bd033b0a9ea`;
+- runtime manifest SHA-256:
+  `6dda355222e90df958169022df365973cfb317565954dbded25994984784a5c4`;
+- isolated 0.2.29 install, exact 0.3.0 upgrade, 0.2.29 rollback, and exact
+  0.3.0 roll-forward all diagnosed `ready`;
+- schema remained 15 and SQLite integrity was `ok`;
+- receipt:
+  `docs/dev/notes/0043-service-0.3.0-c15-preflight-candidate-receipt.json`.
+
+State Movement:
+
+- Plan 0023 advances `C15 -> C16`;
+- `t08_preflight_candidate_commit_ready -> t08_preflight_independent_review_pending`.
+
+Subagent Status And Reconciliation:
+
+- primary implementation, validation, packaging, and lifecycle proof are
+  complete. The existing read-only evaluator is now reserved for one fresh
+  exact-candidate review with one consolidated result.
+
+Graphiti Write Status:
+
+- no new write before independent judgment. The terminal correction will use
+  policy group `last30days_skill_main` and preserve repo-native authority.
+
+Next Bounded Action:
+
+- commit C16/receipt 0043, then request the exact independent review. Stop
+  after its terminal result; do not cross real install/config/live or
+  recurrence gates.

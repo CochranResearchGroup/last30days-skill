@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 2/C15; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 2/C16; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -823,7 +823,11 @@ Current State:
   candidate validation and exact artifact proof are in progress. C15 records a
   complete green local matrix, including the repaired clock-rollback receipt
   edge, and makes the exact candidate ready for commit, reproducible build,
-  isolated lifecycle proof, and independent review.
+  isolated lifecycle proof, and independent review. C16 binds exact commit
+  `0fa63c0`, reproducible artifact
+  `32107a9dd13de7f548f1456cf5a91d7dfe414c3ef63b58129c295bd033b0a9ea`,
+  schema-15 lifecycle proof, and receipt 0043. One fresh independent read-only
+  review is pending; every real/live and recurrence gate remains closed.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -993,9 +997,8 @@ Active Plan:
 
 Next Bounded Action:
 
-- commit the exact Plan 0023/C15 preflight candidate, rebuild reproducibly,
-  prove isolated upgrade/rollback/roll-forward, and obtain one fresh
-  independent review. Keep real installation, user-config
+- obtain one fresh independent review of the exact Plan 0023/C16 candidate,
+  artifact, and receipt 0043. Keep real installation, user-config
   access or mutation, live sources, notification sends, Guac, recurrence,
   push, publication, release, paid calls, and ceiling changes closed.
 
