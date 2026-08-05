@@ -319,7 +319,7 @@ class GraphProjectionLoop:
             self._thread.join(timeout=timeout)
 
 
-def _default_worker() -> SubprocessAcquisitionRunner:
+def build_subprocess_acquisition_worker() -> SubprocessAcquisitionRunner:
     scripts_root = Path(__file__).resolve().parents[1]
 
     def environment(_request) -> dict[str, str]:
@@ -380,7 +380,7 @@ def build_acquisition_runtime(
         clock=clock,
     )
     assessment_queue = ContentAssessmentQueue(db_path, clock=clock)
-    acquisition_worker = worker or _default_worker()
+    acquisition_worker = worker or build_subprocess_acquisition_worker()
     runner = AcquisitionJobRunner(
         supervisor,
         ledger,

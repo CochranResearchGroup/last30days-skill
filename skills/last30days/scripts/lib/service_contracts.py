@@ -148,6 +148,34 @@ class JobState(StrEnum):
     AWAITING_OPERATOR = "awaiting_operator"
 
 
+class TickTrigger(StrEnum):
+    MANUAL = "manual"
+    TIMER = "timer"
+
+
+class TickState(StrEnum):
+    QUEUED = "queued"
+    PREFLIGHT = "preflight"
+    COLLECTING = "collecting"
+    ANALYZING = "analyzing"
+    CATALOGING = "cataloging"
+    INDEXING = "indexing"
+    COMPLETE = "complete"
+    COMPLETE_DEGRADED = "complete_degraded"
+    FAILED = "failed"
+    MISSED_DUE_TO_OVERLAP = "missed_due_to_overlap"
+
+
+class TickLaneState(StrEnum):
+    READY = "ready"
+    SUCCESS = "success"
+    EMPTY = "empty"
+    UNSUPPORTED = "unsupported"
+    FAILURE = "failure"
+    BLOCKED_HUMAN = "blocked_human"
+    BUDGET_EXHAUSTED = "budget_exhausted"
+
+
 def _require_exact_fields(
     payload: Mapping[str, Any],
     *,
@@ -346,6 +374,371 @@ def _validate_timestamp(value: Any, field: str) -> datetime:
     if parsed.tzinfo is None or parsed.utcoffset() is None:
         raise ContractValidationError(f"{field} must include a timezone")
     return parsed.astimezone(timezone.utc)
+
+
+def _canonical_timestamp(value: Any, field: str) -> str:
+    return _validate_timestamp(value, field).isoformat().replace("+00:00", "Z")
+
+
+@dataclass(frozen=True)
+class TickRequest:
+    """One manual or scheduled request for an immutable global tick interval."""
+
+    schema_version: int
+    schedule_id: str
+    interval_from: str
+    interval_to: str
+    trigger: TickTrigger
+
+    CONTRACT_NAME: ClassVar[str] = "tick_request"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> TickRequest:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("tick request must be an object")
+        _require_exact_fields(
+            payload,
+            required=frozenset(
+                {
+                    "schema_version",
+                    "schedule_id",
+                    "interval_from",
+                    "interval_to",
+                    "trigger",
+                }
+            ),
+        )
+        interval_from = _canonical_timestamp(
+            payload["interval_from"], "interval_from"
+        )
+        interval_to = _canonical_timestamp(payload["interval_to"], "interval_to")
+        if interval_to <= interval_from:
+            raise ContractValidationError("interval_to must be after interval_from")
+        try:
+            trigger = TickTrigger(payload["trigger"])
+        except (TypeError, ValueError) as exc:
+            raise ContractValidationError("invalid tick trigger") from exc
+        return cls(
+            schema_version=_validate_schema_version(payload["schema_version"]),
+            schedule_id=_require_bounded_string(
+                payload["schedule_id"], "schedule_id", 128
+            ),
+            interval_from=interval_from,
+            interval_to=interval_to,
+            trigger=trigger,
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "schedule_id": self.schedule_id,
+            "interval_from": self.interval_from,
+            "interval_to": self.interval_to,
+            "trigger": self.trigger.value,
+        }
+
+
+@dataclass(frozen=True)
+class TickLaneReceipt:
+    """Caller-visible state for one immutable service/target tick lane."""
+
+    schema_version: int
+    lane_id: str
+    service_id: str
+    target_id: str
+    access_partition_id: str
+    state: TickLaneState
+
+    CONTRACT_NAME: ClassVar[str] = "tick_lane_receipt"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> TickLaneReceipt:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("tick lane receipt must be an object")
+        _require_exact_fields(
+            payload,
+            required=frozenset(
+                {
+                    "schema_version",
+                    "lane_id",
+                    "service_id",
+                    "target_id",
+                    "access_partition_id",
+                    "state",
+                }
+            ),
+        )
+        try:
+            state = TickLaneState(payload["state"])
+        except (TypeError, ValueError) as exc:
+            raise ContractValidationError("invalid tick lane state") from exc
+        return cls(
+            schema_version=_validate_schema_version(payload["schema_version"]),
+            lane_id=_require_bounded_string(payload["lane_id"], "lane_id", 128),
+            service_id=_require_bounded_string(
+                payload["service_id"], "service_id", 128
+            ),
+            target_id=_require_bounded_string(
+                payload["target_id"], "target_id", 128
+            ),
+            access_partition_id=_require_bounded_string(
+                payload["access_partition_id"], "access_partition_id", 256
+            ),
+            state=state,
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "lane_id": self.lane_id,
+            "service_id": self.service_id,
+            "target_id": self.target_id,
+            "access_partition_id": self.access_partition_id,
+            "state": self.state.value,
+        }
+
+
+@dataclass(frozen=True)
+class TickReceipt:
+    """Compact durable receipt returned by the deep tick interface."""
+
+    schema_version: int
+    tick_id: str
+    schedule_id: str
+    interval_from: str
+    interval_to: str
+    trigger: TickTrigger
+    config_revision: str
+    config_digest: str
+    state: TickState
+    execution_attempt_ids: tuple[str, ...]
+    lanes: tuple[TickLaneReceipt, ...]
+    stage_states: dict[str, str]
+    budget_summary: dict[str, Any]
+    provider_attempt_ids: tuple[str, ...]
+    resource_lease_ids: tuple[str, ...]
+    source_version_ids: tuple[str, ...]
+    incident_ids: tuple[str, ...]
+    incident_transition_ids: tuple[str, ...]
+    notification_delivery_ids: tuple[str, ...]
+    anomaly_result_ids: tuple[str, ...]
+    artifact_ids: tuple[str, ...]
+    derivative_ids: tuple[str, ...]
+    catalog_cluster_ids: tuple[str, ...]
+    snapshot_id: str | None
+    head_promoted: bool
+    manifest_digests: dict[str, str]
+    receipt_manifests: dict[str, Any]
+    coverage_gaps: tuple[str, ...]
+    versions: dict[str, str]
+    created_at: str
+    updated_at: str
+
+    CONTRACT_NAME: ClassVar[str] = "tick_receipt"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> TickReceipt:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("tick receipt must be an object")
+        _require_exact_fields(
+            payload,
+            required=frozenset(
+                {
+                    "schema_version",
+                    "tick_id",
+                    "schedule_id",
+                    "interval_from",
+                    "interval_to",
+                    "trigger",
+                    "config_revision",
+                    "config_digest",
+                    "state",
+                    "execution_attempt_ids",
+                    "lanes",
+                    "stage_states",
+                    "budget_summary",
+                    "provider_attempt_ids",
+                    "resource_lease_ids",
+                    "source_version_ids",
+                    "incident_ids",
+                    "incident_transition_ids",
+                    "notification_delivery_ids",
+                    "anomaly_result_ids",
+                    "artifact_ids",
+                    "derivative_ids",
+                    "catalog_cluster_ids",
+                    "snapshot_id",
+                    "head_promoted",
+                    "manifest_digests",
+                    "receipt_manifests",
+                    "coverage_gaps",
+                    "versions",
+                    "created_at",
+                    "updated_at",
+                }
+            ),
+        )
+        try:
+            trigger = TickTrigger(payload["trigger"])
+            state = TickState(payload["state"])
+        except (TypeError, ValueError) as exc:
+            raise ContractValidationError("invalid tick receipt state") from exc
+        raw_attempts = payload["execution_attempt_ids"]
+        if not isinstance(raw_attempts, list) or not raw_attempts:
+            raise ContractValidationError(
+                "execution_attempt_ids must be a non-empty list"
+            )
+        attempt_ids = tuple(
+            _require_bounded_string(value, "execution_attempt_ids", 128)
+            for value in raw_attempts
+        )
+        if len(set(attempt_ids)) != len(attempt_ids):
+            raise ContractValidationError("execution_attempt_ids must be unique")
+        raw_lanes = payload["lanes"]
+        if not isinstance(raw_lanes, list) or len(raw_lanes) > 100_000:
+            raise ContractValidationError("lanes must be a bounded list")
+        lanes = tuple(TickLaneReceipt.from_dict(value) for value in raw_lanes)
+        if len({lane.lane_id for lane in lanes}) != len(lanes):
+            raise ContractValidationError("lane IDs must be unique")
+
+        def identifiers(field: str) -> tuple[str, ...]:
+            values = payload[field]
+            if not isinstance(values, list) or len(values) > 1_000_000:
+                raise ContractValidationError(f"{field} must be a bounded list")
+            result = tuple(
+                _require_bounded_string(value, field, 256) for value in values
+            )
+            if len(set(result)) != len(result):
+                raise ContractValidationError(f"{field} must be unique")
+            return result
+
+        stage_states = _validate_json_object(payload["stage_states"], "stage_states")
+        if any(
+            not isinstance(key, str) or not isinstance(value, str)
+            for key, value in stage_states.items()
+        ):
+            raise ContractValidationError("stage_states must map strings to strings")
+        budget_summary = _validate_json_object(
+            payload["budget_summary"], "budget_summary"
+        )
+        _reject_forbidden_ledger_fields(budget_summary, "budget_summary")
+        manifest_digests = _validate_json_object(
+            payload["manifest_digests"], "manifest_digests"
+        )
+        if any(
+            not isinstance(key, str)
+            or not isinstance(value, str)
+            or re.fullmatch(r"sha256:[0-9a-f]{64}", value) is None
+            for key, value in manifest_digests.items()
+        ):
+            raise ContractValidationError("manifest_digests must contain sha256 values")
+        receipt_manifests = _validate_json_object(
+            payload["receipt_manifests"], "receipt_manifests"
+        )
+        if set(receipt_manifests) != set(manifest_digests):
+            raise ContractValidationError(
+                "receipt_manifests must exactly match manifest_digests"
+            )
+        versions = _validate_json_object(payload["versions"], "versions")
+        if any(
+            not isinstance(key, str) or not isinstance(value, str) or not value
+            for key, value in versions.items()
+        ):
+            raise ContractValidationError("versions must map strings to strings")
+        snapshot_id = payload["snapshot_id"]
+        if snapshot_id is not None:
+            snapshot_id = _require_bounded_string(snapshot_id, "snapshot_id", 128)
+        if not isinstance(payload["head_promoted"], bool):
+            raise ContractValidationError("head_promoted must be boolean")
+        interval_from = _canonical_timestamp(
+            payload["interval_from"], "interval_from"
+        )
+        interval_to = _canonical_timestamp(payload["interval_to"], "interval_to")
+        if interval_to <= interval_from:
+            raise ContractValidationError("interval_to must be after interval_from")
+        config_digest = _require_bounded_string(
+            payload["config_digest"], "config_digest", 71
+        )
+        if re.fullmatch(r"sha256:[0-9a-f]{64}", config_digest) is None:
+            raise ContractValidationError("config_digest must be a sha256 digest")
+        created_at = _canonical_timestamp(payload["created_at"], "created_at")
+        updated_at = _canonical_timestamp(payload["updated_at"], "updated_at")
+        if updated_at < created_at:
+            raise ContractValidationError("updated_at cannot precede created_at")
+        return cls(
+            schema_version=_validate_schema_version(payload["schema_version"]),
+            tick_id=_require_bounded_string(payload["tick_id"], "tick_id", 128),
+            schedule_id=_require_bounded_string(
+                payload["schedule_id"], "schedule_id", 128
+            ),
+            interval_from=interval_from,
+            interval_to=interval_to,
+            trigger=trigger,
+            config_revision=_require_bounded_string(
+                payload["config_revision"], "config_revision", 128
+            ),
+            config_digest=config_digest,
+            state=state,
+            execution_attempt_ids=attempt_ids,
+            lanes=lanes,
+            stage_states={str(key): str(value) for key, value in stage_states.items()},
+            budget_summary=budget_summary,
+            provider_attempt_ids=identifiers("provider_attempt_ids"),
+            resource_lease_ids=identifiers("resource_lease_ids"),
+            source_version_ids=identifiers("source_version_ids"),
+            incident_ids=identifiers("incident_ids"),
+            incident_transition_ids=identifiers("incident_transition_ids"),
+            notification_delivery_ids=identifiers("notification_delivery_ids"),
+            anomaly_result_ids=identifiers("anomaly_result_ids"),
+            artifact_ids=identifiers("artifact_ids"),
+            derivative_ids=identifiers("derivative_ids"),
+            catalog_cluster_ids=identifiers("catalog_cluster_ids"),
+            snapshot_id=snapshot_id,
+            head_promoted=payload["head_promoted"],
+            manifest_digests={
+                str(key): str(value) for key, value in manifest_digests.items()
+            },
+            receipt_manifests=receipt_manifests,
+            coverage_gaps=identifiers("coverage_gaps"),
+            versions={str(key): str(value) for key, value in versions.items()},
+            created_at=created_at,
+            updated_at=updated_at,
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "tick_id": self.tick_id,
+            "schedule_id": self.schedule_id,
+            "interval_from": self.interval_from,
+            "interval_to": self.interval_to,
+            "trigger": self.trigger.value,
+            "config_revision": self.config_revision,
+            "config_digest": self.config_digest,
+            "state": self.state.value,
+            "execution_attempt_ids": list(self.execution_attempt_ids),
+            "lanes": [lane.to_dict() for lane in self.lanes],
+            "stage_states": dict(self.stage_states),
+            "budget_summary": dict(self.budget_summary),
+            "provider_attempt_ids": list(self.provider_attempt_ids),
+            "resource_lease_ids": list(self.resource_lease_ids),
+            "source_version_ids": list(self.source_version_ids),
+            "incident_ids": list(self.incident_ids),
+            "incident_transition_ids": list(self.incident_transition_ids),
+            "notification_delivery_ids": list(self.notification_delivery_ids),
+            "anomaly_result_ids": list(self.anomaly_result_ids),
+            "artifact_ids": list(self.artifact_ids),
+            "derivative_ids": list(self.derivative_ids),
+            "catalog_cluster_ids": list(self.catalog_cluster_ids),
+            "snapshot_id": self.snapshot_id,
+            "head_promoted": self.head_promoted,
+            "manifest_digests": dict(self.manifest_digests),
+            "receipt_manifests": dict(self.receipt_manifests),
+            "coverage_gaps": list(self.coverage_gaps),
+            "versions": dict(self.versions),
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+        }
 
 
 def _require_confidence(value: Any) -> float:
@@ -2013,6 +2406,9 @@ ContractEnvelope = (
     | JobRecord
     | JobEvent
     | DecisionRecord
+    | TickRequest
+    | TickLaneReceipt
+    | TickReceipt
 )
 
 _CONTRACT_TYPES = {
@@ -2029,6 +2425,9 @@ _CONTRACT_TYPES = {
     JobRecord.CONTRACT_NAME: JobRecord,
     JobEvent.CONTRACT_NAME: JobEvent,
     DecisionRecord.CONTRACT_NAME: DecisionRecord,
+    TickRequest.CONTRACT_NAME: TickRequest,
+    TickLaneReceipt.CONTRACT_NAME: TickLaneReceipt,
+    TickReceipt.CONTRACT_NAME: TickReceipt,
 }
 
 

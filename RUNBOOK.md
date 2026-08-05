@@ -8970,3 +8970,283 @@ Next Bounded Action:
 - close the approved goal at C76. Any recurring-collection decision is a new
   reconciled successor plan/gate and must not infer timer enablement from these
   accepted disabled canaries.
+
+## Turn 144 | 2026-08-04
+
+Focus: convert the operator-grilled all-source tick design into the canonical
+successor plan while keeping recurrence closed.
+
+Authority Consulted:
+
+- the operator's accepted one-question-at-a-time design decisions; Plan 0018
+  V28/C76; Plan 0023 at
+  `docs/dev/plans/0023-2026-08-04-durable-all-source-intelligence-tick-mvp.md`;
+  Roadmap P07; Runbook Turn 143; fresh installed service, collection,
+  corpus/index, and media readbacks; CodeGraph service/config/publication/
+  retrieval seams; planning, architecture, documentation, validation, git,
+  closeout, and roadmap/runbook policies.
+
+Decisions And Changes:
+
+- created Plan 0023 as the sole actionable P07 successor and made one manual,
+  durable, all-source intelligence tick the first MVP;
+- closed Plan 0018's stale `OPEN` header at its already-terminal C76 checkpoint
+  and preserved it as historical predecessor authority;
+- froze generic repo machinery versus user-scoped service, target, provider,
+  credential-ref, notification, retention, threshold, and scheduling config;
+- specified raw-first publication, terminal lane/stage accounting, bounded
+  retry/fallback/budgets, incidents and sequential notification failover,
+  human-only Guac observation, exact rendered-page screenshots, OCR/semantic
+  sidecars, cross-source derived cataloging, coherent hybrid snapshots,
+  recovery/replay, and manual acceptance;
+- kept every schedule, source attempt, user-config mutation, real notification,
+  Guac lease, push, tag, publication, and release closed.
+
+Validation Evidence:
+
+- `last30days.service` was active/running at 0.2.29/schema 12 with all five
+  configured sources ready and active index
+  `index-d4b3c45667cc2f635c557b85` at 62/62;
+- collection readback returned 42 total specifications, zero enabled, across
+  Facebook, LinkedIn, Reddit, X, and YouTube;
+- SQLite readback returned 62 documents and 47 media references: 41 images, 6
+  videos, and 32 non-empty alt-text values, with no OCR/sidecar/media-asset
+  tables;
+- baseline authority audit passed at Plan 0018/Turn 143 before documentation
+  reconciliation; the post-change authority audit passes with Plan 0023 as the
+  sole active plan, zero issues, and Turn 144 current;
+- `uv run pytest tests/test_plan_authority_audit.py` passes 8/8, including the
+  updated active-plan regression expectation;
+- the reusable planning-contract audit confirms Plan 0023 is correctly named,
+  `OPEN`, assigned to P07, and wired in both Roadmap and Runbook. Its overall
+  active-scope result remains false only for the pre-existing missing Runbook
+  wiring of planned Plans 0013 and 0017, which this slice does not rewrite.
+
+State Movement:
+
+- Plan 0018 `OPEN -> CLOSED` at unchanged version 28/C76;
+- Plan 0023 `planned -> OPEN` at version 1/C01;
+- P07 remains `OPEN` and moves its actionable authority from Plan 0018 to Plan
+  0023; recurring timer admission remains a separate successor gate.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the operator requested plan conversion, and repository policy
+  plus CodeGraph supplied the needed architecture evidence directly.
+
+Graphiti Write Status:
+
+- not written. Plan 0023, Roadmap P07, and this append-only turn are the compact
+  source-backed authority; no separate memory write was requested or needed.
+
+Next Bounded Action:
+
+- review Plan 0023 as the design freeze. On an explicit implementation
+  instruction, begin T01 contracts only and preserve every live/user-config/
+  recurrence/release gate.
+
+## Turn 145 | 2026-08-04
+
+Focus: execute Plan 0023 T01 and the bounded T02 durable-state foundation.
+
+Authority Consulted:
+
+- Plan 0023 V1/C02; Roadmap P07; Runbook Turn 144; CodeGraph contract,
+  migration, supervisor, publication, and retrieval seams; TDD and codebase-
+  design skills; planning, architecture, documentation, git, versioning,
+  validation, closeout, and roadmap/runbook policies.
+
+Decisions And Changes:
+
+- introduced the deliberately small `enqueue_tick`/`get_tick` seam with strict
+  request, lane, and receipt contracts;
+- froze `tick-config-v1.json` as user-scoped schema data and stripped
+  credential locators from immutable tick snapshots;
+- advanced the candidate runtime to service 0.3.0/database schema 13, including
+  synchronized MCP compatibility constants and packaged schema/module hashes;
+- persisted tick identity, execution attempts, lanes, stages, ordered provider
+  manifests, budgets and budget events, resource leases, provider attempts,
+  and append-only tick events;
+- made repeated enqueue idempotent, recovered expired attempts without changing
+  the tick/window, and rejected corrupted config or lane digests;
+- kept runtime installation, real config, live providers, notification sends,
+  Guac observation, timer work, push, tag, publication, and release closed.
+
+Validation Evidence:
+
+- focused Python validation passes 48/48 across tick, contracts, migrations,
+  temporal export, versions, runtime packaging, lifecycle install, and Skill
+  artifact boundaries;
+- Go catalog/client compatibility tests pass with schema 13;
+- the TDD history contains observable RED failures for the missing coordinator,
+  missing catalog/config schema, missing durable stage tables, missing recovery,
+  and missing integrity error before each behavior passed;
+- deterministic lifecycle tests install and roll back schema-13 test artifacts;
+  no installed user runtime was touched;
+- `git diff --check` passes.
+
+State Movement:
+
+- Plan 0023 remains Version 1 and advances `C02 -> C03`;
+- `t01_active -> t03_active`; T01 and the bounded T02 foundation validate,
+  while T03-T08 and acceptance criteria 2-16 remain.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active files overlap and no checkpoint authorized delegation.
+
+Graphiti Write Status:
+
+- not written. Plan 0023 C03 and this turn are the compact source-backed
+  authority for the validated contract/state slice.
+
+Next Bounded Action:
+
+- implement T03 strict config admission and installed adapter registry with
+  in-memory providers, sequential configured fallback, resource-key exclusion,
+  and explicit terminal lane receipts. Preserve every live and recurrence gate.
+
+## Turn 146 | 2026-08-04
+
+Focus: join Plan 0023's deterministic manual tick and expose the exact T07
+provider/raw crash boundary before any live gate.
+
+Authority Consulted:
+
+- Plan 0023 V1/C03; Roadmap P07; Runbook Turn 145; CodeGraph provider,
+  acquisition-worker, media, incident, query, catalog, and receipt flows; TDD
+  and codebase-design skills; planning, architecture, documentation, git,
+  versioning, validation, closeout, and roadmap/runbook policies.
+
+Decisions And Changes:
+
+- admitted source-specific installed adapters only with stable non-zero
+  normalization fixtures, and preserved worker outcome counts through frozen
+  provider attempts and rejection-rate anomaly evaluation;
+- executed all enabled lanes through configured sequential fallback,
+  one-retry ceilings, resource exclusion, aggregate/provider budgets, explicit
+  admission refusal, singleton overlap deferral, and late coverage gaps;
+- persisted immutable source versions/sightings, content-addressed media,
+  config-selected OCR and semantic-sidecar outputs or independent failure
+  derivatives, exact rendered-page incident artifacts, and their access and
+  retention inheritance;
+- added deterministic incident dedup/reminders/recovery, sequential
+  Slack-receipts then GWS-style transport failover, sequence-stable delivery
+  idempotency, acknowledgment-gated external Guac observation, and no automatic
+  Guac allocation;
+- joined exact-normalized-text cross-source catalog clusters without merging
+  source records, filter-first RRF v1 across independent channels, terminal
+  staging, and atomic ordinary-head promotion;
+- exposed manual tick and incident CLI operations from user-scoped config,
+  with no schedule path, and expanded terminal receipts into sanitized,
+  independently hashable manifests including per-tick incident artifacts;
+- stopped the acceptance claim at the remaining T07 boundary: a crash after a
+  provider returns but before raw publication cannot yet replay its bounded
+  result without another provider call. Production browser media and rendered
+  screenshot carriage also remain for the T08 live proof.
+
+Validation Evidence:
+
+- the focused Python tick, media, incident, anomaly, query, runner, runtime,
+  contract, migration, temporal, version, package, lifecycle, and Skill
+  artifact set passes 94/94;
+- the full repository Python suite passes at the exact C04 documented state;
+- Go internal contract and service packages pass against generated service
+  0.3.0/database-schema-13 compatibility data;
+- TDD includes RED then GREEN evidence for measured rejection counts,
+  zero-baseline high-direction anomalies, exact catalog joining, missing
+  analysis output, persistent rate-warning lifecycle, and reconstructable
+  receipt manifests;
+- generated Go contracts and `service/runtime-manifest.json` are synchronized;
+  no installed runtime, user config, live source, notification recipient,
+  Guac lease, schedule, timer, or remote was touched.
+
+State Movement:
+
+- Plan 0023 remains Version 1 and advances `C03 -> C04`;
+- `t03_active -> t07_recovery_active`; deterministic T03/T05/T06 join, typed
+  T04 behavior, and most T07 matrices validate, while arbitrary provider/raw
+  crash replay, production media carriage, T08, and closeout remain open.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; active schema/runner/receipt surfaces overlap and no
+  checkpoint authorized delegation.
+
+Graphiti Write Status:
+
+- not written. Plan 0023 C04 and this turn are the compact source-backed
+  authority; no memory write was requested.
+
+Next Bounded Action:
+
+- make provider completion and raw publication durably replayable as one
+  boundary, reconstruct snapshot inputs from persisted evidence after restart,
+  and prove a controlled same-tick crash/restart without a duplicate source
+  call. Keep install, live sources, notifications, Guac, recurrence, and push
+  closed.
+
+## Turn 147 | 2026-08-04
+
+Focus: close Plan 0023's deterministic T07 provider/raw recovery boundary and
+reconstruct terminal snapshots from durable evidence before any T08 or timer
+work.
+
+Authority Consulted:
+
+- Plan 0023 V1/C04; Roadmap P07; Runbook Turn 146; documentation, roadmap,
+  validation, git, and goal-execution policies; the TDD and codebase-design
+  skill instructions; current CodeGraph runner/coordinator structure.
+
+Decisions And Changes:
+
+- added a durable provider-result ledger whose sanitized JSON payload points
+  to hash-verified user-scoped content-addressed bytes for collected media and
+  rendered pages;
+- split provider completion into a `result_staged` boundary followed by one
+  idempotent raw-evidence/provider-terminal/resource-release transaction;
+- expired-attempt recovery preserves staged results, reuses the original
+  provider attempt without another adapter call or budget debit, and releases
+  abandoned resource leases;
+- raw media receipts now publish in the same transaction as source versions;
+  recovered ticks skip terminal lanes and rebuild source, alt-text, OCR, and
+  sidecar snapshot entries from the database before cataloging and promotion;
+- added provider-result receipt manifests and controlled crash tests at the
+  provider/raw and between-lanes boundaries. Schedules and recurrence remain
+  absent.
+
+Validation Evidence:
+
+- TDD RED then GREEN proves a crash after result staging recovers under the
+  same tick with one source call, one provider result, one source version, two
+  execution attempts, no live lease, and a queryable OCR/sidecar snapshot;
+- a second RED/GREEN case proves a completed lane is not rerun and both
+  pre-crash and post-restart lanes appear in the promoted snapshot;
+- focused Python acceptance passes 119/119; the full repository Python suite
+  passes; Go `./internal/contracts` and `./internal/service` pass;
+- the deterministic runtime manifest was refreshed after the runtime change;
+  no installed runtime or external state was used for any proof.
+
+State Movement:
+
+- Plan 0023 remains Version 1 and advances `C04 -> C05`;
+- `t07_recovery_active -> t08_candidate_review_pending`; deterministic T07 is
+  complete, while production media/screenshot carriage and all T08 human/live
+  acceptance remain gated.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no applicable instruction authorized delegation, and all
+  changed runtime surfaces lie on one overlapping recovery critical path.
+
+Graphiti Write Status:
+
+- not written. Plan 0023/C05, Roadmap P07, and this turn are the compact
+  source-backed authority; no memory write was requested.
+
+Next Bounded Action:
+
+- create one coherent local candidate commit, independently review its exact
+  diff and build/install/rollback artifact, then request an explicit bounded
+  T08 human/live packet. Keep install, user config, live sources,
+  notifications, Guac, recurrence, push, tag, publication, and release closed.

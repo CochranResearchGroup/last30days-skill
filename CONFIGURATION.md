@@ -35,7 +35,7 @@ checkout, build and install its independently versioned artifact with:
 ```bash
 bash service/scripts/build-runtime.sh
 bash service/scripts/install.sh install \
-  --artifact dist/service/last30days-service-0.2.9.tar.gz
+  --artifact dist/service/last30days-service-0.3.0.tar.gz
 bash service/scripts/install.sh diagnose
 ```
 
@@ -43,7 +43,7 @@ The service release lives under
 `$XDG_DATA_HOME/last30days/service/releases/<version>`, independently of any
 installed Agent Skill. The managed unit resolves the atomic `current` selector
 through a stable launcher. A successful install records the loaded service
-version, contract digest, schema 12, and runtime-manifest digest in an
+version, contract digest, schema 13, and runtime-manifest digest in an
 owner-readable readiness receipt. Skill-first installation remains a
 compatibility path during the migration; refreshing a frozen Skill copy is no
 longer the service upgrade contract.
@@ -63,6 +63,98 @@ constructs a maintenance run. The Codex app-server worker receives a strict
 schema and read-only sandbox. It may return enrichment, evaluation, or repair
 proposals, but it has no publish, deploy, credential, browser-session, or
 live-source-configuration mutation tool.
+
+### Durable tick configuration
+
+The durable all-source tick reads one versioned, user-scoped JSON document:
+
+```text
+$LAST30DAYS_CONFIG_DIR/tick-config-v1.json
+```
+
+When `LAST30DAYS_CONFIG_DIR` is unset, the default is
+`~/.config/last30days/tick-config-v1.json`. The canonical schema ships as
+`skills/last30days/schemas/tick-config-v1.json`. Keep the runtime document
+owner-readable and out of the repository; repo examples and tests use only
+sanitized placeholders.
+
+The document defines generic services, targets, ordered provider chains,
+resource keys and ceilings, artifact policy, OCR and semantic-sidecar stages,
+deterministic anomaly rules, notification transports, and query/index versions.
+Adapter types must resolve through the installed adapter registry and carry a
+non-zero stable-fixture or bounded-canary normalization proof. Credential and
+routing fields are references only: cookies, tokens, raw credentials,
+browser/session leases, operator URLs, recipient addresses, tenant IDs, and
+profile particulars do not belong in repo data or frozen tick receipts.
+
+Each tick freezes the validated non-secret config revision and digest. Changing
+the config affects only a newly enqueued tick; it does not rewrite an existing
+tick. `tick.lateness_seconds` bounds how long a distinct queued interval may
+wait behind the singleton active tick; after that bound it terminalizes as
+`missed_due_to_overlap` with an exact coverage gap. A notification chain is
+required for unattended preflight, but transport
+order and all routing particulars remain user configuration. The runtime does
+not schedule recurrence from this document in the current MVP; timer work is a
+separate successor after a bounded manual all-source tick is accepted.
+
+The installed acquisition bridge currently declares the source-specific
+adapter types `x_agent_browser`, `facebook_agent_browser`,
+`linkedin_agent_browser`, `linkedin_profile_agent_browser`, `youtube_ytdlp`,
+`reddit_keyless`, `reddit_agent_browser`, and `reddit_scrapecreators`. A target
+selector supplies a bounded `query` (or `topic`, `url`, or `handle`), optional
+`depth`, and user-profile reference where the adapter requires one. Browsers
+run normally through agent-browser; the tick does not acquire a Guacamole
+lease. Human observation remains a separate acknowledged incident action.
+
+Enabled image analysis stages also select installed adapter types. The current
+deterministic bridge names `provider_output_ocr_v1` and
+`provider_output_semantic_sidecar_v1`; these accept only bounded typed outputs
+returned by an acquisition provider. Set `analysis.ocr_adapter_type` and
+`analysis.semantic_sidecar_adapter_type` to those names when the corresponding
+stage is enabled, or to another installed analysis adapter supplied by the
+deployment. Set the adapter field to `null` when its stage is disabled. A
+missing or invalid installed adapter fails preflight before source work. Media
+can still publish when an individual derivative fails; the derivative receives
+an immutable failure receipt and the terminal tick is degraded.
+
+The manual acceptance packet must prove that every enabled production adapter
+actually returns content bytes for images or video thumbnails and exact
+rendered-page bytes for browser incidents. The source-worker bridge currently
+proves normalized item carriage; deterministic fixtures prove media,
+OCR/sidecar, and screenshot behavior. Those facts do not substitute for the
+bounded live all-target proof, and no recurring schedule is enabled meanwhile.
+
+`analysis.anomaly_rules` is optional. Each rule names one of `yield_count`,
+`rejection_rate`, `latency_seconds`, or `missing_media_rate`, a `low` or `high`
+direction, a minimum comparable-tick count, and warning/critical ratios. The
+rule remains `learning_baseline` until the minimum exists, then uses the
+versioned deterministic median evaluator. Models cannot declare or resolve an
+anomaly. For a high-direction metric with a stable zero baseline, zero remains
+healthy and the first positive spike is critical; this avoids permanently
+learning over rejection or missing-media failures from a zero baseline.
+
+Notification adapters are code-owned while routing is config-owned:
+
+- `slack_receipts` requires routing fields `workspace` and `channel_ref`;
+- `gws_email` requires `recipient` and optionally `subject_prefix`.
+
+They are attempted sequentially in document order. Notification payloads
+contain safe incident metadata and a protected artifact reference, never the
+rendered page bytes or authentication material.
+
+Run one explicit interval manually with:
+
+```bash
+python3 ~/.agents/skills/last30days/scripts/service.py tick enqueue \
+  --interval-from 2026-08-03T00:00:00Z \
+  --interval-to 2026-08-04T00:00:00Z
+
+python3 ~/.agents/skills/last30days/scripts/service.py tick get TICK_ID
+```
+
+Both commands use the user-scoped database/config defaults unless `--db` or
+`--config` is supplied. `tick enqueue` is manual-only: it does not create,
+resume, or enable a collection spec or timer.
 
 `publish` and `mutate_live_source_config` always require an explicit approval
 record from a configured operator. Approval authorizes only the named action;
@@ -737,7 +829,7 @@ Use `service/scripts/install.sh upgrade --artifact <artifact>` for a new
 semantic service version. The installer verifies every payload SHA-256, stages
 an immutable release, records the old `current` target as `previous`, switches
 atomically, and restarts once. It accepts the upgrade only when the service
-reports the expected version, exact contract digest, and schema 12. A failed
+reports the expected version, exact contract digest, and schema 13. A failed
 upgrade restores the prior selectors, restarts, and proves the old release
 ready. Use `service/scripts/install.sh rollback` to swap the current and
 previous verified releases deliberately; `start`, `stop`, `status`, and

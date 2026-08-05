@@ -31,6 +31,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Durable all-source tick foundation.** Service 0.3.0 introduces database
+  schema 13, the versioned user-scoped `tick-config-v1.json` contract, and a
+  two-call durable tick seam. Enqueueing freezes an exact interval, sanitized
+  config digest, enabled lanes, provider order, expected stages, and aggregate
+  and provider ceilings. Expired execution leases create a bounded recovery
+  attempt under the same tick identity, with integrity checks on frozen state.
+  Provider results are staged durably before raw publication, with media and
+  rendered-page bytes referenced through the user-scoped content-addressed
+  store. Recovery reuses that exact result without another source call or
+  budget charge, skips terminal lanes, and rebuilds the query snapshot from
+  persisted evidence. This candidate does not enable a recurring timer or
+  mutate user configuration.
+
+- **Manual tick execution and evidence pipeline.** Installed provider adapters
+  now execute config-owned service/target lanes with sequential fallback,
+  resource-key exclusion, measured outcome counts, and exact budget admission.
+  Successful evidence publishes as immutable records, versions, and sightings;
+  content-addressed images preserve OCR and typed semantic-sidecar derivatives,
+  including independent failure receipts. A deterministic exact-text catalog
+  links cross-source duplicates without merging their source records, and one
+  terminal lexical/semantic/OCR/sidecar/catalog snapshot promotes atomically.
+
+- **Tick incidents and reconstructable receipts.** Deterministic browser,
+  authentication, rate-limit, provider, and statistical signals persist before
+  sequential notification failover. Exact rendered pages remain protected
+  artifacts, repeated incidents suppress alert churn, exact recovery resolves
+  once, and Guacamole observation remains acknowledgment-gated. Terminal tick
+  receipts now carry sanitized manifests whose independently recomputable
+  digests cover attempts, events, budgets, providers, staged provider results,
+  evidence, artifacts, derivatives, incidents, deliveries, anomalies, catalog
+  entries, and the promoted snapshot. Production live acceptance,
+  installation, scheduling, and release remain separate gates.
+
 - **Bounded manual collection retries.** Operator-triggered collection runs
   retain a one-attempt default and now accept an explicit
   `--max-attempts 2` override for separately reviewed transient-retry budgets.

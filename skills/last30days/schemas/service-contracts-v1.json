@@ -5,9 +5,222 @@
   "compatibility": {
     "product": "last30days",
     "service_api": {"min": 1, "max": 1},
-    "database_schema": {"min": 12, "max": 12}
+    "database_schema": {"min": 13, "max": 13}
   },
   "contracts": {
+    "tick_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "schedule_id",
+        "interval_from",
+        "interval_to",
+        "trigger"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "schedule_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "interval_from": {"type": "string", "format": "date-time"},
+        "interval_to": {"type": "string", "format": "date-time"},
+        "trigger": {"type": "string", "enum": ["manual", "timer"]}
+      }
+    },
+    "tick_lane_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "lane_id",
+        "service_id",
+        "target_id",
+        "access_partition_id",
+        "state"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "lane_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "service_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "target_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "access_partition_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "ready",
+            "success",
+            "empty",
+            "unsupported",
+            "failure",
+            "blocked_human",
+            "budget_exhausted"
+          ]
+        }
+      }
+    },
+    "tick_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "tick_id",
+        "schedule_id",
+        "interval_from",
+        "interval_to",
+        "trigger",
+        "config_revision",
+        "config_digest",
+        "state",
+        "execution_attempt_ids",
+        "lanes",
+        "stage_states",
+        "budget_summary",
+        "provider_attempt_ids",
+        "resource_lease_ids",
+        "source_version_ids",
+        "incident_ids",
+        "incident_transition_ids",
+        "notification_delivery_ids",
+        "anomaly_result_ids",
+        "artifact_ids",
+        "derivative_ids",
+        "catalog_cluster_ids",
+        "snapshot_id",
+        "head_promoted",
+        "manifest_digests",
+        "receipt_manifests",
+        "coverage_gaps",
+        "versions",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "tick_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "schedule_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "interval_from": {"type": "string", "format": "date-time"},
+        "interval_to": {"type": "string", "format": "date-time"},
+        "trigger": {"type": "string", "enum": ["manual", "timer"]},
+        "config_revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "config_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "queued",
+            "preflight",
+            "collecting",
+            "analyzing",
+            "cataloging",
+            "indexing",
+            "complete",
+            "complete_degraded",
+            "failed",
+            "missed_due_to_overlap"
+          ]
+        },
+        "execution_attempt_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 128}
+        },
+        "lanes": {
+          "type": "array",
+          "maxItems": 100000,
+          "items": {"$ref": "#/contracts/tick_lane_receipt"}
+        },
+        "stage_states": {
+          "type": "object",
+          "additionalProperties": {"type": "string"}
+        },
+        "budget_summary": {"type": "object"},
+        "provider_attempt_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "resource_lease_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "source_version_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "incident_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "incident_transition_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "notification_delivery_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "anomaly_result_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "artifact_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "derivative_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "catalog_cluster_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "snapshot_id": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "head_promoted": {"type": "boolean"},
+        "manifest_digests": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        },
+        "receipt_manifests": {"type": "object"},
+        "coverage_gaps": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "versions": {
+          "type": "object",
+          "additionalProperties": {"type": "string", "minLength": 1}
+        },
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"}
+      }
+    },
     "temporal_evidence_ref": {
       "type": "object",
       "additionalProperties": false,

@@ -41,6 +41,8 @@ from lib.service_runtime import (
     GraphProjectionLoop,
     build_acquisition_runtime,
 )
+from lib.service_tick import TickConfigError, TickCoordinator
+from lib.service_tick_runtime import build_tick_runtime, default_tick_config_path
 
 
 def _default_socket_path() -> Path:
@@ -334,6 +336,50 @@ def _collection(args: argparse.Namespace) -> int:
     return 0
 
 
+def _tick(args: argparse.Namespace) -> int:
+    db_path = Path(args.db) if args.db else _default_db_path()
+    config_path = Path(args.config) if args.config else default_tick_config_path()
+    _prepare_private_data_path(db_path)
+    if args.tick_action == "get":
+        coordinator = TickCoordinator(db_path, config_path=config_path)
+        response = coordinator.get_tick(args.tick_id)
+        payload = response.to_dict()
+    elif args.tick_action == "enqueue":
+        runtime = build_tick_runtime(db_path, config_path=config_path)
+        response = runtime.coordinator.enqueue_tick(
+            contracts.TickRequest.from_dict(
+                {
+                    "schema_version": contracts.SCHEMA_VERSION,
+                    "schedule_id": args.schedule_id,
+                    "interval_from": args.interval_from,
+                    "interval_to": args.interval_to,
+                    "trigger": "manual",
+                }
+            )
+        )
+        payload = response.to_dict()
+    else:
+        runtime = build_tick_runtime(db_path, config_path=config_path)
+        incidents = runtime.runner.incidents
+        if args.incident_action == "get":
+            payload = incidents.get(args.incident_id).to_dict()
+        elif args.incident_action == "acknowledge":
+            payload = incidents.acknowledge(
+                args.incident_id,
+                actor_ref=args.actor_ref,
+            ).to_dict()
+        else:
+            payload = {
+                "incident_id": args.incident_id,
+                "public_operator_url": incidents.request_observation(
+                    args.incident_id,
+                    public_operator_url=args.operator_url,
+                ),
+            }
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
 def _intelligence(args: argparse.Namespace) -> int:
     db_path = Path(args.db) if args.db else _default_db_path()
     input_path = Path(args.input).resolve()
@@ -550,6 +596,50 @@ def build_parser() -> argparse.ArgumentParser:
     collection_run.add_argument("--db")
     collection_run.set_defaults(handler=_collection)
 
+    tick = subparsers.add_parser(
+        "tick",
+        help="Run or inspect one durable manual all-source tick",
+    )
+    tick_subparsers = tick.add_subparsers(dest="tick_action", required=True)
+    tick_enqueue = tick_subparsers.add_parser(
+        "enqueue",
+        help="Execute one explicit UTC interval; does not create a timer",
+    )
+    tick_enqueue.add_argument("--interval-from", required=True)
+    tick_enqueue.add_argument("--interval-to", required=True)
+    tick_enqueue.add_argument("--schedule-id", default="manual-default")
+    tick_enqueue.add_argument("--config")
+    tick_enqueue.add_argument("--db")
+    tick_enqueue.set_defaults(handler=_tick)
+    tick_get = tick_subparsers.add_parser("get", help="Read one durable tick receipt")
+    tick_get.add_argument("tick_id")
+    tick_get.add_argument("--config")
+    tick_get.add_argument("--db")
+    tick_get.set_defaults(handler=_tick)
+    tick_incident = tick_subparsers.add_parser(
+        "incident",
+        help="Read or explicitly advance a persisted human incident gate",
+    )
+    incident_subparsers = tick_incident.add_subparsers(
+        dest="incident_action",
+        required=True,
+    )
+    for action in ("get", "acknowledge", "observe"):
+        command = incident_subparsers.add_parser(action)
+        command.add_argument("incident_id")
+        command.add_argument("--config")
+        command.add_argument("--db")
+        command.set_defaults(handler=_tick)
+    incident_subparsers.choices["acknowledge"].add_argument(
+        "--actor-ref",
+        required=True,
+    )
+    incident_subparsers.choices["observe"].add_argument(
+        "--operator-url",
+        required=True,
+        help="Direct external agent-browser Guacamole HTTPS URL",
+    )
+
     intelligence = subparsers.add_parser(
         "intelligence",
         help="Run one operator-owned bounded enrichment or evaluation turn",
@@ -608,6 +698,7 @@ def main() -> int:
     except (
         contracts.ContractValidationError,
         CollectionSpecValidationError,
+        TickConfigError,
         RuntimeError,
     ) as exc:
         print(f"last30days service error: {exc}", file=sys.stderr)

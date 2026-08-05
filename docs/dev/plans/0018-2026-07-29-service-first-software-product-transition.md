@@ -1,11 +1,12 @@
 # Plan 0018 | Service-first software product transition
 
-State: OPEN
+State: CLOSED
 Roadmap: P07
 Date: 2026-07-29
 Plan version: 28
 Predecessors: Plans 0007, 0010, and 0011
 Consumes acceptance packets: Plans 0014, 0015, and 0016
+Successor: Plan 0023 checkpoint P0023-C01
 
 ## Product Decision
 

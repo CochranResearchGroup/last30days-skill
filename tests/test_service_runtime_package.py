@@ -45,13 +45,14 @@ def test_runtime_manifest_is_explicit_current_and_skill_free():
 
     assert manifest["format"] == "last30days-service-runtime-v1"
     assert manifest["hash_algorithm"] == "sha256"
-    assert manifest["service_version"] == VERSION.read_text().strip() == "0.2.29"
+    assert manifest["service_version"] == VERSION.read_text().strip() == "0.3.0"
     assert paths == sorted(paths)
     assert len(paths) == len(set(paths))
     assert len(sources) == len(set(sources))
-    assert paths[:3] == [
+    assert paths[:4] == [
         "VERSION",
         "schemas/service-contracts-v1.json",
+        "schemas/tick-config-v1.json",
         "scripts/lib/__init__.py",
     ]
     assert "scripts/service.py" in paths

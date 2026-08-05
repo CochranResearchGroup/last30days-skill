@@ -126,18 +126,18 @@ successor plans without reopening Plans 0010 or 0011:
    is the planned identity-first, ambiguity-safe profile-selection regression
    packet.
 7. `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
-   is the planned product transition from Skill-first packaging to independent
-   intelligence software with a first-class MCP contract and optional client
-   Skills.
+   is closed at its terminally accepted version 28/C76 product transition.
+8. `docs/dev/plans/0023-2026-08-04-durable-all-source-intelligence-tick-mvp.md`
+   is the open successor for one durable manual all-source intelligence tick;
+   recurring scheduling remains outside its acceptance boundary.
 
-The 2026-07-29 architecture direction makes Plan 0018 the governing successor
-after Plan 0014 reaches a terminal timer result. Plan 0014 is `CLOSED` at its
-typed restart-bound blocker after repairing stale due replay and missing
-per-spec backpressure. Plan 0018 is now `OPEN` with the bounded
-service-package/lifecycle and MCP-boundary packet that makes later acceptance
-work service-product validation rather than Skill features. Plans 0013 and
-0017 remain planned and outside this transition critical path. Plan 0015 is
-now closed under Plan 0018; Plan 0016 is the next transition packet.
+The 2026-07-29 architecture direction made Plan 0018 the governing successor
+after Plan 0014's terminal timer result. Plan 0018 is now `CLOSED` at its
+independently accepted version 28/C76 service-product and source-evidence
+boundary. Plan 0023 is `OPEN` as the bounded successor that must prove one
+complete manual tick before any timer decision. Plans 0013 and 0017 remain
+planned and outside this transition critical path; Plans 0015 and 0016 are
+closed foundations.
 
 ## P00 | Productized Content Service MVP
 
@@ -721,8 +721,9 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0018 version 28/C76. Installed service 0.2.29/schema
-  12 is ready with 62 documents, 62 current-version embeddings, active index
+- Current authority is Plan 0023 version 1/C05; Plan 0018 is closed at its
+  terminally accepted version 28/C76 predecessor boundary. Installed service
+  0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
   disabled. The immutable-index repair passed independent review; the two
   already-damaged 56-row historical indexes remain preserved as evidence.
@@ -772,8 +773,13 @@ Current State:
   records five terminal one-attempt receipts, seven accepted items, verified
   post-terminal reveal commitments, and 20% hidden class/range accuracy. C76
   accepts terminal independent review after one documented Roadmap authority
-  repair and exact bounded recheck. Recurrence and release actions remain
-  closed.
+  repair and exact bounded recheck. Plan 0023/C05 now has a deterministically
+  validated service-0.3.0/schema-13 candidate whose staged provider results,
+  raw-first replay, terminal-lane recovery, and durable snapshot
+  reconstruction close T07 without a duplicate source call. The installed
+  runtime remains 0.2.29/schema 12; candidate review, install/rollback,
+  user-config readback, live T08 acceptance, recurrence, and release actions
+  remain closed.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -866,8 +872,20 @@ indexes or stochastic workers authoritative.
 
 Active Plan:
 
+- `docs/dev/plans/0023-2026-08-04-durable-all-source-intelligence-tick-mvp.md`
+  is the sole actionable successor. It freezes the manual all-source tick as
+  the first MVP: config-driven services and targets, raw-first durable
+  evidence, terminal lane/stage accounting, incidents and notification
+  failover, protected rendered-page artifacts, OCR and semantic image
+  sidecars, cross-source derived cataloging, coherent hybrid query snapshots,
+  recovery/replay, and a manual acceptance gate. It explicitly excludes timer
+  enablement. Checkpoint C04 validates the deterministic provider, evidence,
+  media/analysis, incident, catalog, query, and reconstructable-receipt join.
+  The active implementation boundary is now the T07 provider/raw crash seam:
+  interrupted work must resume from a durable result without another source
+  call before any install or live T08 packet can open.
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
-  is the open transition authority. Service distribution, MCP compatibility,
+  is the closed predecessor authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
   rollback are accepted foundations on installed service 0.2.29/schema 12.
   Plan version 27 preserves the version-18 contract-bound request and outcome
@@ -931,11 +949,10 @@ Active Plan:
 
 Next Bounded Action:
 
-- Version 28 is terminally accepted. Before any recurring collection decision,
-  reconcile a new successor plan against the accepted source-local outcomes,
-  failed 20% forecast calibration, current 62/62 index, and 42/0 spec state.
-  Keep source attempts, recurrence, push, tag, publication, and release closed
-  until that separate gate is reviewed and explicitly opened.
+- review Plan 0023 as the design freeze. When implementation is explicitly
+  opened, begin T01 contracts without live source work, user-config mutation,
+  notifications, Guac observation, recurrence, push, tag, publication, or
+  release.
 
 ## Goal-Compatible Plan Conversion
 

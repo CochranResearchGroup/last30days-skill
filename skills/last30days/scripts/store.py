@@ -1575,6 +1575,496 @@ CREATE TABLE temporal_retrieval_evaluations (
     UNIQUE (case_id, policy_version, result_digest)
 );
 """,
+    13: """
+CREATE TABLE service_ticks (
+    tick_id TEXT PRIMARY KEY,
+    schedule_id TEXT NOT NULL,
+    interval_from TEXT NOT NULL,
+    interval_to TEXT NOT NULL,
+    trigger TEXT NOT NULL CHECK (trigger IN ('manual', 'timer')),
+    config_revision TEXT NOT NULL,
+    config_digest TEXT NOT NULL,
+    config_json TEXT NOT NULL,
+    state TEXT NOT NULL CHECK (
+        state IN (
+            'queued', 'preflight', 'collecting', 'analyzing', 'cataloging',
+            'indexing', 'complete', 'complete_degraded', 'failed',
+            'missed_due_to_overlap'
+        )
+    ),
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE (schedule_id, interval_from, interval_to, config_digest),
+    CHECK (interval_to > interval_from)
+);
+
+CREATE INDEX service_ticks_state_interval
+    ON service_ticks(state, interval_from, interval_to);
+
+CREATE TABLE service_tick_attempts (
+    execution_attempt_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    attempt INTEGER NOT NULL CHECK (attempt > 0),
+    state TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    started_at TEXT,
+    completed_at TEXT,
+    error_code TEXT,
+    lease_owner TEXT,
+    lease_generation INTEGER NOT NULL DEFAULT 0 CHECK (lease_generation >= 0),
+    lease_expires_at TEXT,
+    UNIQUE (tick_id, attempt)
+);
+
+CREATE INDEX service_tick_attempts_tick_state
+    ON service_tick_attempts(tick_id, state, attempt);
+
+CREATE TABLE service_tick_lanes (
+    lane_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    service_id TEXT NOT NULL,
+    target_id TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    service_config_json TEXT NOT NULL,
+    target_config_json TEXT NOT NULL,
+    lane_digest TEXT NOT NULL,
+    state TEXT NOT NULL CHECK (
+        state IN (
+            'ready', 'success', 'empty', 'unsupported', 'failure',
+            'blocked_human', 'budget_exhausted'
+        )
+    ),
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE (tick_id, service_id, target_id, access_partition_id)
+);
+
+CREATE INDEX service_tick_lanes_tick_state
+    ON service_tick_lanes(tick_id, state, service_id, target_id);
+
+CREATE TABLE service_tick_stages (
+    stage_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    lane_id TEXT REFERENCES service_tick_lanes(lane_id) ON DELETE CASCADE,
+    stage_scope TEXT NOT NULL CHECK (stage_scope IN ('global', 'lane')),
+    scope_id TEXT NOT NULL,
+    stage_name TEXT NOT NULL,
+    state TEXT NOT NULL CHECK (
+        state IN (
+            'pending', 'running', 'success', 'empty', 'unsupported',
+            'failure', 'blocked_human', 'budget_exhausted'
+        )
+    ),
+    input_digest TEXT,
+    output_digest TEXT,
+    execution_attempt_id TEXT REFERENCES service_tick_attempts(execution_attempt_id),
+    started_at TEXT,
+    completed_at TEXT,
+    updated_at TEXT NOT NULL,
+    UNIQUE (tick_id, stage_scope, scope_id, stage_name),
+    CHECK (
+        (stage_scope = 'global' AND lane_id IS NULL AND scope_id = tick_id)
+        OR (stage_scope = 'lane' AND lane_id IS NOT NULL AND scope_id = lane_id)
+    )
+);
+
+CREATE INDEX service_tick_stages_tick_state
+    ON service_tick_stages(tick_id, state, stage_scope, stage_name);
+
+CREATE TABLE service_tick_providers (
+    provider_manifest_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    lane_id TEXT NOT NULL REFERENCES service_tick_lanes(lane_id) ON DELETE CASCADE,
+    provider_ordinal INTEGER NOT NULL CHECK (provider_ordinal >= 0),
+    provider_id TEXT NOT NULL,
+    adapter_type TEXT NOT NULL,
+    normalization_proof_ref TEXT NOT NULL,
+    resource_keys_json TEXT NOT NULL,
+    fallback_on_json TEXT NOT NULL,
+    limits_json TEXT NOT NULL,
+    provider_digest TEXT NOT NULL,
+    UNIQUE (lane_id, provider_ordinal),
+    UNIQUE (lane_id, provider_id)
+);
+
+CREATE INDEX service_tick_providers_tick_lane
+    ON service_tick_providers(tick_id, lane_id, provider_ordinal);
+
+CREATE TABLE service_tick_budgets (
+    budget_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    scope_kind TEXT NOT NULL CHECK (scope_kind IN ('tick', 'lane', 'provider')),
+    scope_id TEXT NOT NULL,
+    limit_json TEXT NOT NULL,
+    consumed_json TEXT NOT NULL,
+    budget_digest TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE (tick_id, scope_kind, scope_id)
+);
+
+CREATE TABLE service_tick_budget_events (
+    budget_event_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    budget_id TEXT NOT NULL REFERENCES service_tick_budgets(budget_id),
+    execution_attempt_id TEXT NOT NULL REFERENCES service_tick_attempts(execution_attempt_id),
+    provider_attempt_id TEXT,
+    delta_json TEXT NOT NULL,
+    resulting_consumed_json TEXT NOT NULL,
+    idempotency_key TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (budget_id, idempotency_key)
+);
+
+CREATE TABLE service_tick_provider_attempts (
+    provider_attempt_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    lane_id TEXT NOT NULL REFERENCES service_tick_lanes(lane_id) ON DELETE CASCADE,
+    provider_manifest_id TEXT NOT NULL REFERENCES service_tick_providers(provider_manifest_id),
+    execution_attempt_id TEXT NOT NULL REFERENCES service_tick_attempts(execution_attempt_id),
+    retry_ordinal INTEGER NOT NULL CHECK (retry_ordinal IN (0, 1)),
+    state TEXT NOT NULL CHECK (state IN ('running', 'result_staged', 'success', 'empty', 'failure', 'blocked_human', 'budget_exhausted')),
+    failure_class TEXT,
+    fallback_reason TEXT,
+    result_digest TEXT,
+    outcome_counts_json TEXT NOT NULL DEFAULT '{"attempted":0,"observed":0,"accepted":0,"rejected":0}',
+    started_at TEXT NOT NULL,
+    completed_at TEXT,
+    UNIQUE (
+        execution_attempt_id, lane_id, provider_manifest_id, retry_ordinal
+    )
+);
+
+CREATE TABLE service_tick_provider_results (
+    provider_attempt_id TEXT PRIMARY KEY REFERENCES service_tick_provider_attempts(provider_attempt_id),
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    lane_id TEXT NOT NULL REFERENCES service_tick_lanes(lane_id) ON DELETE CASCADE,
+    result_json TEXT NOT NULL,
+    result_digest TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE service_tick_resource_leases (
+    lease_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    lane_id TEXT NOT NULL REFERENCES service_tick_lanes(lane_id) ON DELETE CASCADE,
+    provider_attempt_id TEXT NOT NULL REFERENCES service_tick_provider_attempts(provider_attempt_id),
+    resource_key TEXT NOT NULL,
+    lease_owner TEXT NOT NULL,
+    lease_generation INTEGER NOT NULL CHECK (lease_generation > 0),
+    acquired_at TEXT NOT NULL,
+    lease_expires_at TEXT NOT NULL,
+    released_at TEXT
+);
+
+CREATE UNIQUE INDEX service_tick_resource_leases_active_key
+    ON service_tick_resource_leases(resource_key)
+    WHERE released_at IS NULL;
+
+CREATE TABLE service_tick_events (
+    event_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    sequence INTEGER NOT NULL CHECK (sequence > 0),
+    event_type TEXT NOT NULL,
+    execution_attempt_id TEXT REFERENCES service_tick_attempts(execution_attempt_id),
+    lane_id TEXT REFERENCES service_tick_lanes(lane_id),
+    payload_json TEXT NOT NULL,
+    occurred_at TEXT NOT NULL,
+    UNIQUE (tick_id, sequence)
+);
+
+CREATE INDEX service_tick_events_tick_sequence
+    ON service_tick_events(tick_id, sequence);
+
+CREATE TABLE service_media_assets (
+    asset_id TEXT PRIMARY KEY,
+    parent_version_id TEXT NOT NULL,
+    source_url TEXT NOT NULL,
+    content_hash TEXT NOT NULL,
+    mime_type TEXT NOT NULL,
+    media_kind TEXT NOT NULL CHECK (
+        media_kind IN ('image', 'video_thumbnail', 'rendered_page')
+    ),
+    alt_text TEXT,
+    byte_size INTEGER NOT NULL CHECK (byte_size >= 0),
+    storage_ref TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    retention_class TEXT NOT NULL,
+    bytes_present INTEGER NOT NULL DEFAULT 1 CHECK (bytes_present IN (0, 1)),
+    created_at TEXT NOT NULL,
+    UNIQUE (
+        parent_version_id, source_url, content_hash,
+        media_kind, access_partition_id
+    )
+);
+
+CREATE INDEX service_media_assets_parent
+    ON service_media_assets(parent_version_id, media_kind, asset_id);
+
+CREATE TABLE service_media_derivatives (
+    derivative_id TEXT PRIMARY KEY,
+    asset_id TEXT NOT NULL REFERENCES service_media_assets(asset_id),
+    derivative_kind TEXT NOT NULL CHECK (
+        derivative_kind IN ('ocr', 'semantic_sidecar')
+    ),
+    derivative_version TEXT NOT NULL,
+    input_digest TEXT NOT NULL,
+    output_digest TEXT NOT NULL,
+    output_json TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    retention_class TEXT NOT NULL,
+    state TEXT NOT NULL CHECK (state IN ('success', 'empty', 'failure')),
+    created_at TEXT NOT NULL,
+    UNIQUE (asset_id, derivative_kind, derivative_version, input_digest)
+);
+
+CREATE TABLE service_ocr_regions (
+    derivative_id TEXT NOT NULL REFERENCES service_media_derivatives(derivative_id),
+    ordinal INTEGER NOT NULL CHECK (ordinal >= 0),
+    text TEXT NOT NULL,
+    bounding_box_json TEXT NOT NULL,
+    confidence REAL NOT NULL CHECK (confidence >= 0 AND confidence <= 1),
+    detected_language TEXT,
+    PRIMARY KEY (derivative_id, ordinal)
+);
+
+CREATE TABLE service_semantic_sidecars (
+    derivative_id TEXT PRIMARY KEY REFERENCES service_media_derivatives(derivative_id),
+    literal_description TEXT NOT NULL,
+    observable_entities_json TEXT NOT NULL,
+    observable_relationships_json TEXT NOT NULL,
+    objects_actions_json TEXT NOT NULL,
+    inferred_context_json TEXT NOT NULL,
+    search_terms_json TEXT NOT NULL,
+    uncertainty_json TEXT NOT NULL,
+    model_provider TEXT NOT NULL,
+    model_version TEXT NOT NULL,
+    input_refs_json TEXT NOT NULL
+);
+
+CREATE TABLE service_incidents (
+    incident_id TEXT PRIMARY KEY,
+    fingerprint TEXT NOT NULL UNIQUE,
+    first_tick_id TEXT NOT NULL,
+    last_tick_id TEXT NOT NULL,
+    lane_id TEXT NOT NULL,
+    source TEXT NOT NULL,
+    profile_ref TEXT NOT NULL,
+    stage TEXT NOT NULL,
+    incident_type TEXT NOT NULL CHECK (
+        incident_type IN (
+            'captcha_required', 'cloudflare_challenge',
+            'rate_limit_warning', 'rate_limit_blocked',
+            'reauthentication_required', 'provider_degraded',
+            'notification_exhausted'
+        )
+    ),
+    severity TEXT NOT NULL CHECK (severity IN ('warning', 'error', 'critical')),
+    state TEXT NOT NULL CHECK (state IN ('open', 'acknowledged', 'resolved')),
+    safe_summary TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    protected_asset_id TEXT REFERENCES service_media_assets(asset_id),
+    protected_artifact_ref TEXT,
+    occurrence_count INTEGER NOT NULL CHECK (occurrence_count > 0),
+    first_detected_at TEXT NOT NULL,
+    last_detected_at TEXT NOT NULL,
+    acknowledged_at TEXT,
+    acknowledged_by_ref TEXT,
+    resolved_at TEXT,
+    resolution_execution_id TEXT
+);
+
+CREATE TABLE service_incident_transitions (
+    transition_id TEXT PRIMARY KEY,
+    incident_id TEXT NOT NULL REFERENCES service_incidents(incident_id),
+    sequence INTEGER NOT NULL CHECK (sequence > 0),
+    transition_type TEXT NOT NULL,
+    from_state TEXT,
+    to_state TEXT NOT NULL,
+    tick_id TEXT NOT NULL,
+    safe_payload_json TEXT NOT NULL,
+    occurred_at TEXT NOT NULL,
+    UNIQUE (incident_id, sequence)
+);
+
+CREATE TABLE service_notification_deliveries (
+    delivery_attempt_id TEXT PRIMARY KEY,
+    incident_id TEXT NOT NULL REFERENCES service_incidents(incident_id),
+    tick_id TEXT NOT NULL,
+    notification_kind TEXT NOT NULL CHECK (
+        notification_kind IN ('detected', 'state_change', 'reminder', 'resolved')
+    ),
+    notification_sequence INTEGER NOT NULL CHECK (notification_sequence > 0),
+    transport_ordinal INTEGER NOT NULL CHECK (transport_ordinal >= 0),
+    transport_id TEXT NOT NULL,
+    state TEXT NOT NULL CHECK (state IN ('failed', 'success')),
+    safe_error_code TEXT,
+    delivery_ref TEXT,
+    payload_digest TEXT NOT NULL,
+    attempted_at TEXT NOT NULL,
+    UNIQUE (
+        incident_id, notification_kind, notification_sequence, transport_ordinal
+    )
+);
+
+CREATE TABLE service_incident_observations (
+    observation_request_id TEXT PRIMARY KEY,
+    incident_id TEXT NOT NULL UNIQUE REFERENCES service_incidents(incident_id),
+    public_operator_url TEXT NOT NULL,
+    requested_at TEXT NOT NULL
+);
+
+CREATE TABLE service_incident_artifacts (
+    incident_artifact_id TEXT PRIMARY KEY,
+    incident_id TEXT NOT NULL REFERENCES service_incidents(incident_id),
+    tick_id TEXT NOT NULL,
+    asset_id TEXT NOT NULL REFERENCES service_media_assets(asset_id),
+    artifact_ref TEXT NOT NULL,
+    capture_reason TEXT NOT NULL CHECK (capture_reason IN ('detected', 'changed')),
+    created_at TEXT NOT NULL,
+    UNIQUE (incident_id, tick_id, asset_id)
+);
+
+CREATE TABLE service_tick_anomaly_results (
+    result_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    lane_id TEXT NOT NULL REFERENCES service_tick_lanes(lane_id) ON DELETE CASCADE,
+    source TEXT NOT NULL,
+    profile_ref TEXT NOT NULL,
+    rule_id TEXT NOT NULL,
+    metric TEXT NOT NULL CHECK (
+        metric IN ('yield_count', 'rejection_rate', 'latency_seconds', 'missing_media_rate')
+    ),
+    direction TEXT NOT NULL CHECK (direction IN ('low', 'high')),
+    state TEXT NOT NULL CHECK (
+        state IN ('learning_baseline', 'healthy', 'warning', 'critical')
+    ),
+    current_value REAL NOT NULL,
+    baseline_value REAL,
+    ratio REAL,
+    sample_count INTEGER NOT NULL CHECK (sample_count >= 0),
+    result_digest TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (tick_id, lane_id, rule_id)
+);
+
+CREATE TABLE service_catalog_clusters (
+    cluster_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    cluster_kind TEXT NOT NULL,
+    label TEXT NOT NULL,
+    rationale TEXT NOT NULL,
+    validator_version TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    cluster_digest TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (tick_id, cluster_digest)
+);
+
+CREATE TABLE service_catalog_cluster_members (
+    cluster_id TEXT NOT NULL REFERENCES service_catalog_clusters(cluster_id),
+    member_id TEXT NOT NULL,
+    source TEXT NOT NULL,
+    relationship TEXT NOT NULL,
+    evidence_ref TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    confidence REAL NOT NULL CHECK (confidence >= 0 AND confidence <= 1),
+    PRIMARY KEY (cluster_id, member_id, source)
+);
+
+CREATE TABLE service_tick_query_snapshots (
+    snapshot_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    embedding_space TEXT NOT NULL,
+    embedding_dimension INTEGER CHECK (embedding_dimension > 0),
+    fusion_version TEXT NOT NULL,
+    completeness_json TEXT NOT NULL,
+    snapshot_digest TEXT NOT NULL,
+    state TEXT NOT NULL CHECK (state IN ('staging', 'promoted', 'superseded')),
+    created_at TEXT NOT NULL,
+    promoted_at TEXT,
+    UNIQUE (tick_id, embedding_space, fusion_version, snapshot_digest)
+);
+
+CREATE TABLE service_tick_query_entries (
+    snapshot_id TEXT NOT NULL REFERENCES service_tick_query_snapshots(snapshot_id),
+    entry_id TEXT NOT NULL,
+    channel TEXT NOT NULL CHECK (
+        channel IN (
+            'lexical_source', 'source_alt_text', 'ocr', 'semantic_source',
+            'semantic_sidecar', 'catalog'
+        )
+    ),
+    source TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    published_at TEXT NOT NULL,
+    text TEXT NOT NULL,
+    embedding_json TEXT NOT NULL,
+    provenance_json TEXT NOT NULL,
+    entry_digest TEXT NOT NULL,
+    PRIMARY KEY (snapshot_id, entry_id, channel)
+);
+
+CREATE INDEX service_tick_query_entries_filters
+    ON service_tick_query_entries(
+        snapshot_id, access_partition_id, source, published_at, channel
+    );
+
+CREATE TABLE service_tick_query_head (
+    singleton_id INTEGER PRIMARY KEY CHECK (singleton_id = 1),
+    snapshot_id TEXT NOT NULL REFERENCES service_tick_query_snapshots(snapshot_id),
+    promoted_at TEXT NOT NULL
+);
+
+CREATE TABLE service_source_records (
+    record_id TEXT PRIMARY KEY,
+    service_id TEXT NOT NULL,
+    source TEXT NOT NULL,
+    source_native_id TEXT NOT NULL,
+    canonical_url TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    current_version_id TEXT,
+    created_at TEXT NOT NULL,
+    UNIQUE (service_id, source_native_id, access_partition_id)
+);
+
+CREATE TABLE service_source_versions (
+    version_id TEXT PRIMARY KEY,
+    record_id TEXT NOT NULL REFERENCES service_source_records(record_id),
+    provider_attempt_id TEXT NOT NULL REFERENCES service_tick_provider_attempts(provider_attempt_id),
+    content_hash TEXT NOT NULL,
+    title TEXT NOT NULL,
+    normalized_text TEXT NOT NULL,
+    author TEXT,
+    published_at TEXT,
+    metadata_json TEXT NOT NULL,
+    observed_at TEXT NOT NULL,
+    access_partition_id TEXT NOT NULL,
+    retention_class TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (record_id, content_hash)
+);
+
+CREATE TABLE service_source_sightings (
+    version_id TEXT NOT NULL REFERENCES service_source_versions(version_id),
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id),
+    lane_id TEXT NOT NULL REFERENCES service_tick_lanes(lane_id),
+    provider_attempt_id TEXT NOT NULL REFERENCES service_tick_provider_attempts(provider_attempt_id),
+    observed_at TEXT NOT NULL,
+    PRIMARY KEY (version_id, tick_id, lane_id)
+);
+
+CREATE TRIGGER service_source_versions_immutable_update
+BEFORE UPDATE ON service_source_versions
+BEGIN
+    SELECT RAISE(ABORT, 'service source version is immutable');
+END;
+
+CREATE TRIGGER service_source_versions_immutable_delete
+BEFORE DELETE ON service_source_versions
+BEGIN
+    SELECT RAISE(ABORT, 'service source version is immutable');
+END;
+""",
 }
 
 
