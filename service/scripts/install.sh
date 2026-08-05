@@ -21,6 +21,7 @@ import re
 import shlex
 import shutil
 import socket
+import sqlite3
 import subprocess
 import sys
 import tarfile
@@ -32,7 +33,6 @@ from pathlib import Path, PurePosixPath
 
 FORMAT = "last30days-service-runtime-v1"
 UNIT_NAME = "last30days.service"
-DATABASE_SCHEMA_VERSION = 15
 SEMVER = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$")
 
 
@@ -42,6 +42,14 @@ def fail(message: str) -> "NoReturn":
 
 def sha256(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        while chunk := handle.read(1_048_576):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def canonical_json(payload: object) -> bytes:
@@ -59,6 +67,224 @@ def atomic_write(path: Path, raw: bytes, mode: int) -> None:
         temporary = Path(handle.name)
     os.chmod(temporary, mode)
     os.replace(temporary, path)
+
+
+def database_schema_version(database_path: Path) -> int:
+    if (
+        not database_path.is_file()
+        or database_path.is_symlink()
+        or not database_path.is_absolute()
+    ):
+        raise RuntimeError("managed database is missing or unsafe")
+    try:
+        connection = sqlite3.connect(
+            database_path.as_uri() + "?mode=ro",
+            uri=True,
+            timeout=5,
+        )
+        try:
+            row = connection.execute(
+                "SELECT MAX(version) FROM schema_version"
+            ).fetchone()
+        finally:
+            connection.close()
+    except sqlite3.Error as exc:
+        raise RuntimeError(
+            f"unable to read managed database schema: {exc}"
+        ) from exc
+    version = row[0] if row is not None else None
+    if isinstance(version, bool) or not isinstance(version, int) or version < 1:
+        raise RuntimeError("managed database schema version is invalid")
+    return version
+
+
+def database_integrity(database_path: Path) -> str:
+    try:
+        connection = sqlite3.connect(
+            database_path.as_uri() + "?mode=ro",
+            uri=True,
+            timeout=5,
+        )
+        try:
+            row = connection.execute("PRAGMA integrity_check").fetchone()
+        finally:
+            connection.close()
+    except sqlite3.Error as exc:
+        raise RuntimeError(f"unable to verify managed database: {exc}") from exc
+    result = row[0] if row is not None else None
+    if result != "ok":
+        raise RuntimeError("managed database integrity check failed")
+    return result
+
+
+def snapshot_database(database_path: Path, working_directory: Path) -> Path:
+    source_schema = database_schema_version(database_path)
+    database_integrity(database_path)
+    working_directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+    os.chmod(working_directory, 0o700)
+    with tempfile.NamedTemporaryFile(
+        dir=working_directory,
+        prefix=".database-snapshot.",
+        delete=False,
+    ) as handle:
+        snapshot = Path(handle.name)
+    try:
+        source = sqlite3.connect(
+            database_path.as_uri() + "?mode=ro",
+            uri=True,
+            timeout=5,
+        )
+        target = sqlite3.connect(str(snapshot), timeout=5)
+        try:
+            source.backup(target)
+            target.commit()
+        finally:
+            target.close()
+            source.close()
+        os.chmod(snapshot, 0o600)
+        if database_schema_version(snapshot) != source_schema:
+            raise RuntimeError("database snapshot schema mismatch")
+        database_integrity(snapshot)
+        return snapshot
+    except Exception:
+        snapshot.unlink(missing_ok=True)
+        raise
+
+
+def rollback_state_paths(
+    service_root: Path,
+    release_name: str,
+) -> tuple[Path, Path]:
+    if not SEMVER.fullmatch(release_name):
+        fail("rollback release name is invalid")
+    state_root = service_root / "rollback-states" / release_name
+    return state_root / "research.db", state_root / "state.json"
+
+
+def commit_rollback_state(
+    service_root: Path,
+    release_name: str,
+    pending_snapshot: Path,
+) -> None:
+    snapshot_path, metadata_path = rollback_state_paths(service_root, release_name)
+    state_root = snapshot_path.parent
+    rollback_root = state_root.parent
+    if rollback_root.is_symlink() or (
+        rollback_root.exists() and not rollback_root.is_dir()
+    ):
+        fail("rollback state root is unsafe")
+    rollback_root.mkdir(parents=True, exist_ok=True, mode=0o700)
+    os.chmod(rollback_root, 0o700)
+    if state_root.is_symlink() or (
+        state_root.exists() and not state_root.is_dir()
+    ):
+        fail("rollback release state is unsafe")
+    state_root.mkdir(parents=True, exist_ok=True, mode=0o700)
+    os.chmod(state_root, 0o700)
+    with tempfile.NamedTemporaryFile(
+        dir=state_root,
+        prefix=".research.db.",
+        delete=False,
+    ) as handle:
+        staged_snapshot = Path(handle.name)
+    try:
+        shutil.copyfile(pending_snapshot, staged_snapshot)
+        os.chmod(staged_snapshot, 0o600)
+        schema_version = database_schema_version(staged_snapshot)
+        database_integrity(staged_snapshot)
+        digest = sha256_file(staged_snapshot)
+        os.replace(staged_snapshot, snapshot_path)
+        metadata = {
+            "database_schema_version": schema_version,
+            "database_sha256": digest,
+            "release": f"releases/{release_name}",
+            "schema_version": 1,
+        }
+        atomic_write(metadata_path, canonical_json(metadata), 0o600)
+    finally:
+        staged_snapshot.unlink(missing_ok=True)
+
+
+def validated_rollback_snapshot(service_root: Path, release_name: str) -> Path:
+    snapshot_path, metadata_path = rollback_state_paths(service_root, release_name)
+    rollback_root = snapshot_path.parent.parent
+    if (
+        rollback_root.is_symlink()
+        or not rollback_root.is_dir()
+        or snapshot_path.parent.is_symlink()
+        or not snapshot_path.parent.is_dir()
+    ):
+        fail("rollback database state root is unsafe")
+    if (
+        not snapshot_path.is_file()
+        or snapshot_path.is_symlink()
+        or not metadata_path.is_file()
+        or metadata_path.is_symlink()
+    ):
+        fail(f"rollback database state is missing for {release_name}")
+    if metadata_path.stat().st_size > 4_096:
+        fail("rollback database metadata is too large")
+    try:
+        raw = metadata_path.read_bytes()
+        metadata = json.loads(raw)
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        fail(f"rollback database metadata is invalid: {exc}")
+    if raw != canonical_json(metadata) or not isinstance(metadata, dict):
+        fail("rollback database metadata is not canonical")
+    if set(metadata) != {
+        "database_schema_version",
+        "database_sha256",
+        "release",
+        "schema_version",
+    }:
+        fail("rollback database metadata fields are invalid")
+    if metadata.get("schema_version") != 1 or metadata.get("release") != (
+        f"releases/{release_name}"
+    ):
+        fail("rollback database metadata release is invalid")
+    if metadata.get("database_sha256") != sha256_file(snapshot_path):
+        fail("rollback database snapshot digest mismatch")
+    if metadata.get("database_schema_version") != database_schema_version(
+        snapshot_path
+    ):
+        fail("rollback database snapshot schema mismatch")
+    database_integrity(snapshot_path)
+    if snapshot_path.stat().st_mode & 0o077 or metadata_path.stat().st_mode & 0o077:
+        fail("rollback database state permissions are unsafe")
+    return snapshot_path
+
+
+def remove_database_companions(database_path: Path) -> None:
+    for suffix in ("-wal", "-shm"):
+        companion = Path(str(database_path) + suffix)
+        if companion.is_symlink() or (
+            companion.exists() and not companion.is_file()
+        ):
+            fail("managed database companion is unsafe")
+        companion.unlink(missing_ok=True)
+
+
+def restore_database(snapshot_path: Path, database_path: Path) -> None:
+    expected_schema = database_schema_version(snapshot_path)
+    database_integrity(snapshot_path)
+    database_path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    with tempfile.NamedTemporaryFile(
+        dir=database_path.parent,
+        prefix=".database-restore.",
+        delete=False,
+    ) as handle:
+        staged_database = Path(handle.name)
+    try:
+        shutil.copyfile(snapshot_path, staged_database)
+        os.chmod(staged_database, 0o600)
+        if database_schema_version(staged_database) != expected_schema:
+            raise RuntimeError("restored database schema mismatch")
+        database_integrity(staged_database)
+        remove_database_companions(database_path)
+        os.replace(staged_database, database_path)
+        remove_database_companions(database_path)
+    finally:
+        staged_database.unlink(missing_ok=True)
 
 
 def checked_relative(value: str, field: str) -> PurePosixPath:
@@ -357,6 +583,7 @@ def release_expectations(release: Path) -> tuple[str, str, str]:
 def readiness(
     release: Path,
     socket_path: Path,
+    database_path: Path,
     timeout: float,
     receipt_path: Path | None,
 ) -> dict[str, object]:
@@ -377,11 +604,12 @@ def readiness(
             payload = json.loads(raw.decode("utf-8"))
             if response.status != 200 or not isinstance(payload, dict):
                 raise RuntimeError("service-info response is not healthy")
+            actual_database_schema = database_schema_version(database_path)
             checks = {
                 "service_version": payload.get("service_version") == version,
                 "database_schema_version": (
                     payload.get("database_schema_version")
-                    == DATABASE_SCHEMA_VERSION
+                    == actual_database_schema
                 ),
                 "contract_sha256": header_digest == contract_sha,
                 "status": payload.get("status") == "ready",
@@ -391,7 +619,7 @@ def readiness(
                 raise RuntimeError(f"service readiness mismatch: {failed}")
             receipt = {
                 "contract_sha256": contract_sha,
-                "database_schema_version": DATABASE_SCHEMA_VERSION,
+                "database_schema_version": actual_database_schema,
                 "release": f"releases/{version}",
                 "runtime_manifest_sha256": manifest_sha,
                 "schema_version": 1,
@@ -458,6 +686,24 @@ def enforce_retention(releases: Path, current: str, previous: str | None, retain
         remove_release(path)
 
 
+def enforce_rollback_state_retention(service_root: Path, releases: Path) -> None:
+    rollback_root = service_root / "rollback-states"
+    if not rollback_root.exists():
+        return
+    if rollback_root.is_symlink() or not rollback_root.is_dir():
+        fail("rollback state root is unsafe")
+    retained_releases = {
+        path.name
+        for path in releases.iterdir()
+        if path.is_dir() and not path.is_symlink()
+    }
+    for path in rollback_root.iterdir():
+        if path.is_symlink() or not path.is_dir():
+            fail("rollback release state is unsafe")
+        if path.name not in retained_releases:
+            remove_release(path)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Install and operate the last30days user-scoped service"
@@ -503,6 +749,7 @@ def main() -> None:
     current_link = service_root / "current"
     previous_link = service_root / "previous"
     receipt_path = service_root / "readiness.json"
+    database_path = data_home / "last30days" / "research.db"
     socket_path = (
         args.socket
         or (
@@ -551,6 +798,7 @@ def main() -> None:
                 readiness(
                     releases / current_name,
                     socket_path,
+                    database_path,
                     args.timeout,
                     None,
                 ),
@@ -564,7 +812,11 @@ def main() -> None:
             fail("no current service release is selected")
         manager_command(manager, "start", UNIT_NAME)
         receipt = readiness(
-            releases / current_name, socket_path, args.timeout, receipt_path
+            releases / current_name,
+            socket_path,
+            database_path,
+            args.timeout,
+            receipt_path,
         )
         print(json.dumps(receipt, indent=2, sort_keys=True))
         return
@@ -573,28 +825,50 @@ def main() -> None:
             fail("rollback requires current and previous releases")
         if current_name == previous_name:
             fail("rollback target is the current release")
-        atomic_symlink(current_link, f"releases/{previous_name}")
-        atomic_symlink(previous_link, f"releases/{current_name}")
+        target_snapshot = validated_rollback_snapshot(service_root, previous_name)
         try:
-            manager_command(manager, "restart", UNIT_NAME)
+            displaced_snapshot = snapshot_database(database_path, service_root)
+        except (OSError, RuntimeError, sqlite3.Error) as exc:
+            fail(f"unable to snapshot current database before rollback: {exc}")
+        try:
+            manager_command(manager, "stop", UNIT_NAME)
+            restore_database(target_snapshot, database_path)
+            atomic_symlink(current_link, f"releases/{previous_name}")
+            atomic_symlink(previous_link, f"releases/{current_name}")
+            manager_command(manager, "start", UNIT_NAME)
             receipt = readiness(
-                releases / previous_name, socket_path, args.timeout, receipt_path
+                releases / previous_name,
+                socket_path,
+                database_path,
+                args.timeout,
+                receipt_path,
             )
-        except SystemExit as failure:
+            commit_rollback_state(
+                service_root,
+                current_name,
+                displaced_snapshot,
+            )
+        except (SystemExit, OSError, RuntimeError, sqlite3.Error) as failure:
+            manager_command(manager, "stop", UNIT_NAME, check=False)
             atomic_symlink(current_link, f"releases/{current_name}")
             atomic_symlink(previous_link, f"releases/{previous_name}")
             try:
-                manager_command(manager, "restart", UNIT_NAME)
+                restore_database(displaced_snapshot, database_path)
+                manager_command(manager, "start", UNIT_NAME)
                 readiness(
                     releases / current_name,
                     socket_path,
+                    database_path,
                     args.timeout,
                     receipt_path,
                 )
-            except SystemExit:
+            except (SystemExit, OSError, RuntimeError, sqlite3.Error):
                 fail("rollback failed and original release readiness was not restored")
             fail(f"rollback failed; original release restored: {failure}")
+        finally:
+            displaced_snapshot.unlink(missing_ok=True)
         enforce_retention(releases, previous_name, current_name, args.retain)
+        enforce_rollback_state_retention(service_root, releases)
         print(json.dumps(receipt, indent=2, sort_keys=True))
         return
 
@@ -621,42 +895,69 @@ def main() -> None:
     )
     old_current = current_name
     old_previous = previous_name
+    pending_database_snapshot = None
     if old_current is not None and old_current != version:
-        atomic_symlink(previous_link, f"releases/{old_current}")
-    atomic_symlink(current_link, f"releases/{version}")
-    manager_command(manager, "daemon-reload")
-    manager_command(manager, "enable", UNIT_NAME)
+        try:
+            pending_database_snapshot = snapshot_database(database_path, service_root)
+        except (OSError, RuntimeError, sqlite3.Error) as exc:
+            fail(f"unable to snapshot current database before upgrade: {exc}")
     try:
+        if old_current is not None and old_current != version:
+            atomic_symlink(previous_link, f"releases/{old_current}")
+        atomic_symlink(current_link, f"releases/{version}")
+        manager_command(manager, "daemon-reload")
+        manager_command(manager, "enable", UNIT_NAME)
         manager_command(manager, "restart", UNIT_NAME)
-        receipt = readiness(release, socket_path, args.timeout, receipt_path)
-    except SystemExit as failure:
+        receipt = readiness(
+            release,
+            socket_path,
+            database_path,
+            args.timeout,
+            receipt_path,
+        )
+        if pending_database_snapshot is not None and old_current is not None:
+            commit_rollback_state(
+                service_root,
+                old_current,
+                pending_database_snapshot,
+            )
+    except (SystemExit, OSError, RuntimeError, sqlite3.Error) as failure:
         if old_current is None:
             manager_command(manager, "stop", UNIT_NAME, check=False)
             atomic_symlink(current_link, None)
             receipt_path.unlink(missing_ok=True)
             remove_release(release)
             fail(f"initial install failed readiness: {failure}")
+        manager_command(manager, "stop", UNIT_NAME, check=False)
         atomic_symlink(current_link, f"releases/{old_current}")
         atomic_symlink(
             previous_link,
             f"releases/{old_previous}" if old_previous is not None else None,
         )
         try:
-            manager_command(manager, "restart", UNIT_NAME)
+            if pending_database_snapshot is not None:
+                restore_database(pending_database_snapshot, database_path)
+            manager_command(manager, "start", UNIT_NAME)
             readiness(
                 releases / old_current,
                 socket_path,
+                database_path,
                 args.timeout,
                 receipt_path,
             )
-        except SystemExit:
+        except (SystemExit, OSError, RuntimeError, sqlite3.Error):
             fail("upgrade failed and previous release readiness was not restored")
         enforce_retention(
             releases, old_current, old_previous, args.retain
         )
+        enforce_rollback_state_retention(service_root, releases)
         fail(f"upgrade failed; previous release restored and ready: {failure}")
+    finally:
+        if pending_database_snapshot is not None:
+            pending_database_snapshot.unlink(missing_ok=True)
     selected_previous = selected_release(previous_link, releases)
     enforce_retention(releases, version, selected_previous, args.retain)
+    enforce_rollback_state_retention(service_root, releases)
     print(json.dumps(receipt, indent=2, sort_keys=True))
 
 

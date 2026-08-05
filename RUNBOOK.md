@@ -10293,3 +10293,106 @@ Next Bounded Action:
 - implement exact schema-transition snapshot/restore semantics through TDD,
   run full lifecycle and repository validation, and obtain one independent
   terminal review before any real upgrade or config preflight.
+
+## Turn 167 | 2026-08-05
+
+Focus: implement and prove the C23 transactional release+database rollback
+candidate before broad validation.
+
+Authority Consulted:
+
+- Plan 0023 V2/C23; Roadmap P07; Runbook Turn 166; installer and lifecycle
+  tests; exact historical 0.2.29 installer/artifact; exact accepted 0.3.0
+  artifact; untouched real installed diagnose.
+
+Decisions And Changes:
+
+- replaced candidate-global schema readiness with selected database/service
+  agreement while preserving exact release, manifest, contract, and status
+  checks;
+- added SQLite online backup before upgrade and release-bound, hashed,
+  schema/integrity-verified owner-private rollback states;
+- made rollback swap release and database as one recoverable pair and retain
+  the displaced database for inverse roll-forward;
+- made upgrade/rollback failures restore the original release+database pair;
+- added adversarial schema-ceiling lifecycle fixtures rather than relying on
+  synthetic version labels over current code.
+
+Validation Evidence:
+
+- the new schema-changing lifecycle test was RED at old-release installation,
+  then all four new rollback cases and all 8 installer lifecycle tests passed;
+- 16 lifecycle/package/release/MCP integration tests pass;
+- exact 0.2.29/schema12 -> 0.3.0/schema15 -> 0.2.29/schema12 ->
+  0.3.0/schema15 replay passes, rollback restores an identical database dump,
+  final integrity is `ok`, and state/metadata modes are 0600;
+- repaired read-only real diagnose reports exact 0.2.29/schema12 ready;
+- no real service or user config mutation occurred.
+
+State Movement:
+
+- Plan 0023 advances `C23 -> C24`;
+- `phase_a_transactional_rollback_repair_active -> phase_a_rollback_candidate_validation_active`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; implementation remains primary-owned. The existing evaluator
+  remains reserved for the immutable validated successor.
+
+Graphiti Write Status:
+
+- no memory write while candidate validation/review remains incomplete.
+
+Next Bounded Action:
+
+- run full validation, commit the exact installer/tests, bind exact historical
+  replay evidence, and obtain one independent terminal review before any real
+  Phase A mutation.
+
+## Turn 168 | 2026-08-05
+
+Focus: finish complete primary validation of the C24 transactional rollback
+candidate and make it commit-ready.
+
+Authority Consulted:
+
+- Plan 0023 V2/C24; Roadmap P07; Runbook Turn 167; full Python/Go/lifecycle,
+  compile, shell, artifact, diff, and plan-authority surfaces.
+
+Decisions And Changes:
+
+- accepted the source-only installer successor as locally commit-ready;
+- retained exact runtime artifact/manifest identities because the installer is
+  not packaged into the service archive;
+- made no additional behavior change after exact replay passed; kept all real
+  Phase A and live/T08/timer effects closed pending independent review.
+
+Validation Evidence:
+
+- complete Python suite: 2,539 collected, 2,532 passed, 7 skipped, 6 subtests
+  passed;
+- all Go packages, 8 installer lifecycle tests, and 16 lifecycle/package/
+  release/MCP integration tests pass;
+- compileall, `bash -n`, artifact hashes, `git diff --check`, and plan-authority
+  audit pass;
+- shellcheck is unavailable and is not claimed;
+- exact 0.2.29/0.3.0 replay and real installed read-only diagnose remain green.
+
+State Movement:
+
+- Plan 0023 advances `C24 -> C25`;
+- `phase_a_rollback_candidate_validation_active -> phase_a_rollback_candidate_commit_ready`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; primary validation is complete. The existing evaluator remains
+  reserved for the exact committed candidate and evidence only.
+
+Graphiti Write Status:
+
+- no write before immutable candidate review.
+
+Next Bounded Action:
+
+- commit exact source/tests/docs, create a durable exact-lifecycle receipt, and
+  obtain one independent terminal review before any real service mutation.

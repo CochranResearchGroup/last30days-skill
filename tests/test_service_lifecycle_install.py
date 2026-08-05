@@ -60,8 +60,11 @@ elif command in {"restart", "start"}:
     version = (service_root / "current" / "VERSION").read_text().strip()
     if version == os.environ.get("FAKE_MANAGER_FAIL_VERSION"):
         raise SystemExit(1)
+    service_command = [str(service_root / "last30days-service"), "serve"]
+    if os.environ.get("FAKE_MANAGER_SCHEMA_BY_VERSION"):
+        service_command = [os.environ["FAKE_SCHEMA_SERVICE"]]
     process = subprocess.Popen(
-        [str(service_root / "last30days-service"), "serve"],
+        service_command,
         stdin=subprocess.DEVNULL,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
@@ -84,9 +87,89 @@ elif command == "status":
     path.chmod(0o755)
 
 
+def _write_fake_schema_service(path: Path) -> None:
+    path.write_text(
+        """#!/usr/bin/env python3
+import hashlib
+import json
+import os
+import signal
+import socketserver
+import sqlite3
+from http.server import BaseHTTPRequestHandler
+from pathlib import Path
+
+service_root = Path(os.environ["XDG_DATA_HOME"]) / "last30days" / "service"
+release = service_root / "current"
+version = (release / "VERSION").read_text().strip()
+supported = int(json.loads(os.environ["FAKE_MANAGER_SCHEMA_BY_VERSION"])[version])
+database = Path(os.environ["XDG_DATA_HOME"]) / "last30days" / "research.db"
+database.parent.mkdir(parents=True, exist_ok=True)
+connection = sqlite3.connect(database)
+connection.execute("CREATE TABLE IF NOT EXISTS schema_version (version INTEGER PRIMARY KEY)")
+current = connection.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] or 0
+if current > supported:
+    raise SystemExit(2)
+for schema_version in range(current + 1, supported + 1):
+    connection.execute("INSERT INTO schema_version(version) VALUES (?)", (schema_version,))
+connection.commit()
+connection.close()
+
+contract = hashlib.sha256(
+    (release / "schemas/service-contracts-v1.json").read_bytes()
+).hexdigest()
+manifest = hashlib.sha256((release / "runtime-manifest.json").read_bytes()).hexdigest()
+payload = json.dumps({
+    "service_version": version,
+    "database_schema_version": supported,
+    "contract_sha256": contract,
+    "runtime_manifest_sha256": manifest,
+    "status": (
+        "degraded"
+        if version == os.environ.get("FAKE_SCHEMA_SERVICE_UNHEALTHY_VERSION")
+        else "ready"
+    ),
+}).encode()
+
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path != "/v1/service-info":
+            self.send_error(404)
+            return
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(payload)))
+        self.send_header("X-Last30days-Contract-SHA256", contract)
+        self.end_headers()
+        self.wfile.write(payload)
+
+    def log_message(self, _format, *_args):
+        pass
+
+socket_path = Path(os.environ["XDG_RUNTIME_DIR"]) / "last30days" / "service.sock"
+socket_path.parent.mkdir(parents=True, exist_ok=True)
+socket_path.unlink(missing_ok=True)
+
+class Server(socketserver.UnixStreamServer):
+    allow_reuse_address = True
+
+server = Server(str(socket_path), Handler)
+def stop(*_args):
+    raise SystemExit(0)
+
+signal.signal(signal.SIGTERM, stop)
+server.serve_forever()
+""",
+        encoding="utf-8",
+    )
+    path.chmod(0o755)
+
+
 def _environment(tmp_path: Path) -> dict[str, str]:
     fake_manager = tmp_path / "fake-systemctl"
     _write_fake_manager(fake_manager)
+    fake_schema_service = tmp_path / "fake-schema-service"
+    _write_fake_schema_service(fake_schema_service)
     runtime = tmp_path / "runtime"
     runtime.mkdir()
     return {
@@ -99,6 +182,7 @@ def _environment(tmp_path: Path) -> dict[str, str]:
         "LAST30DAYS_SYSTEMCTL": str(fake_manager),
         "FAKE_MANAGER_LOG": str(tmp_path / "manager.log"),
         "FAKE_MANAGER_PID": str(tmp_path / "manager.pid"),
+        "FAKE_SCHEMA_SERVICE": str(fake_schema_service),
     }
 
 
@@ -295,6 +379,194 @@ def test_upgrade_manual_rollback_and_failed_upgrade_restore_state(tmp_path):
         after_dump = "\n".join(connection.iterdump())
         connection.close()
         assert after_dump == before_dump
+    finally:
+        _stop(env)
+
+
+def test_schema_changing_upgrade_rolls_database_back_and_forward_with_release(
+    tmp_path,
+):
+    env = {
+        **_environment(tmp_path),
+        "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps(
+            {"0.2.29": 12, CURRENT_VERSION: 15}
+        ),
+    }
+    previous_artifact = _artifact(tmp_path, "0.2.29")
+    candidate_artifact = _artifact(tmp_path, CURRENT_VERSION)
+    service_root = Path(env["XDG_DATA_HOME"]) / "last30days" / "service"
+    db_path = Path(env["XDG_DATA_HOME"]) / "last30days" / "research.db"
+    try:
+        installed = json.loads(
+            _run(env, "install", artifact=previous_artifact).stdout
+        )
+        assert installed["database_schema_version"] == 12
+        connection = sqlite3.connect(db_path)
+        connection.execute("CREATE TABLE release_sentinel (value TEXT PRIMARY KEY)")
+        connection.execute("INSERT INTO release_sentinel VALUES ('schema-12')")
+        connection.commit()
+        connection.close()
+
+        upgraded = json.loads(
+            _run(env, "upgrade", artifact=candidate_artifact).stdout
+        )
+        assert upgraded["database_schema_version"] == 15
+        connection = sqlite3.connect(db_path)
+        connection.execute("INSERT INTO release_sentinel VALUES ('schema-15')")
+        connection.commit()
+        connection.close()
+
+        rolled_back = json.loads(_run(env, "rollback").stdout)
+        assert rolled_back["service_version"] == "0.2.29"
+        assert rolled_back["database_schema_version"] == 12
+        connection = sqlite3.connect(db_path)
+        assert connection.execute(
+            "SELECT value FROM release_sentinel ORDER BY value"
+        ).fetchall() == [("schema-12",)]
+        connection.close()
+
+        rolled_forward = json.loads(_run(env, "rollback").stdout)
+        assert rolled_forward["service_version"] == CURRENT_VERSION
+        assert rolled_forward["database_schema_version"] == 15
+        connection = sqlite3.connect(db_path)
+        assert connection.execute(
+            "SELECT value FROM release_sentinel ORDER BY value"
+        ).fetchall() == [("schema-12",), ("schema-15",)]
+        assert connection.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+        connection.close()
+
+        rollback_root = service_root / "rollback-states" / "0.2.29"
+        rollback_snapshot = rollback_root / "research.db"
+        rollback_metadata = rollback_root / "state.json"
+        assert rollback_snapshot.stat().st_mode & 0o777 == 0o600
+        assert rollback_metadata.stat().st_mode & 0o777 == 0o600
+    finally:
+        _stop(env)
+
+
+def test_failed_schema_rollback_restores_current_release_and_database(tmp_path):
+    env = {
+        **_environment(tmp_path),
+        "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps(
+            {"0.2.29": 12, CURRENT_VERSION: 15}
+        ),
+    }
+    previous_artifact = _artifact(tmp_path, "0.2.29")
+    candidate_artifact = _artifact(tmp_path, CURRENT_VERSION)
+    service_root = Path(env["XDG_DATA_HOME"]) / "last30days" / "service"
+    db_path = Path(env["XDG_DATA_HOME"]) / "last30days" / "research.db"
+    try:
+        _run(env, "install", artifact=previous_artifact)
+        connection = sqlite3.connect(db_path)
+        connection.execute("CREATE TABLE release_sentinel (value TEXT PRIMARY KEY)")
+        connection.execute("INSERT INTO release_sentinel VALUES ('schema-12')")
+        connection.commit()
+        connection.close()
+        _run(env, "upgrade", artifact=candidate_artifact)
+        connection = sqlite3.connect(db_path)
+        connection.execute("INSERT INTO release_sentinel VALUES ('schema-15')")
+        connection.commit()
+        connection.close()
+
+        failed = _run(
+            {**env, "FAKE_MANAGER_FAIL_VERSION": "0.2.29"},
+            "rollback",
+            check=False,
+        )
+
+        assert failed.returncode != 0
+        assert "original release restored" in failed.stderr
+        assert (service_root / "current").readlink() == Path(
+            f"releases/{CURRENT_VERSION}"
+        )
+        assert (service_root / "previous").readlink() == Path("releases/0.2.29")
+        diagnosed = json.loads(_run(env, "diagnose").stdout)
+        assert diagnosed["database_schema_version"] == 15
+        connection = sqlite3.connect(db_path)
+        assert connection.execute(
+            "SELECT value FROM release_sentinel ORDER BY value"
+        ).fetchall() == [("schema-12",), ("schema-15",)]
+        assert connection.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+        connection.close()
+    finally:
+        _stop(env)
+
+
+def test_schema_upgrade_failure_restores_pre_migration_database(tmp_path):
+    env = {
+        **_environment(tmp_path),
+        "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps(
+            {"0.2.29": 12, CURRENT_VERSION: 15}
+        ),
+    }
+    previous_artifact = _artifact(tmp_path, "0.2.29")
+    candidate_artifact = _artifact(tmp_path, CURRENT_VERSION)
+    service_root = Path(env["XDG_DATA_HOME"]) / "last30days" / "service"
+    db_path = Path(env["XDG_DATA_HOME"]) / "last30days" / "research.db"
+    try:
+        _run(env, "install", artifact=previous_artifact)
+        connection = sqlite3.connect(db_path)
+        connection.execute("CREATE TABLE release_sentinel (value TEXT PRIMARY KEY)")
+        connection.execute("INSERT INTO release_sentinel VALUES ('schema-12')")
+        connection.commit()
+        connection.close()
+
+        failed = _run(
+            {**env, "FAKE_SCHEMA_SERVICE_UNHEALTHY_VERSION": CURRENT_VERSION},
+            "upgrade",
+            artifact=candidate_artifact,
+            check=False,
+        )
+
+        assert failed.returncode != 0
+        assert "previous release restored and ready" in failed.stderr
+        assert (service_root / "current").readlink() == Path("releases/0.2.29")
+        diagnosed = json.loads(_run(env, "diagnose").stdout)
+        assert diagnosed["database_schema_version"] == 12
+        connection = sqlite3.connect(db_path)
+        assert connection.execute(
+            "SELECT value FROM release_sentinel"
+        ).fetchall() == [("schema-12",)]
+        assert connection.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+        connection.close()
+    finally:
+        _stop(env)
+
+
+def test_rollback_rejects_release_snapshot_mismatch_without_state_change(tmp_path):
+    env = {
+        **_environment(tmp_path),
+        "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps(
+            {"0.2.29": 12, CURRENT_VERSION: 15}
+        ),
+    }
+    previous_artifact = _artifact(tmp_path, "0.2.29")
+    candidate_artifact = _artifact(tmp_path, CURRENT_VERSION)
+    service_root = Path(env["XDG_DATA_HOME"]) / "last30days" / "service"
+    db_path = Path(env["XDG_DATA_HOME"]) / "last30days" / "research.db"
+    try:
+        _run(env, "install", artifact=previous_artifact)
+        _run(env, "upgrade", artifact=candidate_artifact)
+        metadata_path = service_root / "rollback-states/0.2.29/state.json"
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        metadata["release"] = "releases/0.2.28"
+        metadata_path.write_text(
+            json.dumps(metadata, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        before = db_path.read_bytes()
+
+        failed = _run(env, "rollback", check=False)
+
+        assert failed.returncode != 0
+        assert "metadata release is invalid" in failed.stderr
+        assert db_path.read_bytes() == before
+        assert (service_root / "current").readlink() == Path(
+            f"releases/{CURRENT_VERSION}"
+        )
+        assert json.loads(_run(env, "diagnose").stdout)[
+            "database_schema_version"
+        ] == 15
     finally:
         _stop(env)
 

@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C23 is the current authority.
+Checkpoint P0023-C25 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2084,3 +2084,107 @@ Next action:
 - drive the exact schema-transition lifecycle through RED/GREEN tests, validate
   the installer broadly, and submit one immutable successor for independent
   review before reconsidering real upgrade admission.
+
+### Checkpoint P0023-C24 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `phase_a_transactional_rollback_repair_active -> phase_a_rollback_candidate_validation_active`.
+
+Progress classification:
+
+- `blocker_reduction`; exact release+database rollback and inverse
+  roll-forward now pass deterministically without weakening readiness.
+
+TDD and implementation evidence:
+
+- the schema-ceiling lifecycle fixture first failed while attempting to install
+  a healthy schema-12 release because installer readiness was hard-coded to
+  schema 15;
+- readiness now compares service-info with the selected owner-private
+  database's actual schema and continues to require exact release version,
+  contract digest, runtime manifest, and `ready` status;
+- upgrade creates a SQLite-consistent snapshot before restart, verifies schema
+  and integrity, and binds its digest/schema to the exact prior release under
+  owner-only rollback state;
+- rollback validates the release-bound snapshot, snapshots the displaced
+  current database, stops the service, atomically restores the target database,
+  switches release selectors, starts and reads back the target, then retains
+  the displaced database as the inverse roll-forward state;
+- failed upgrade or rollback restores both the original selector pair and its
+  matching database before readiness; malformed release/snapshot metadata
+  fails before any state change;
+- rollback state retention follows retained release directories and rejects
+  unsafe roots, symlinks, digests, schema, integrity, or permissions.
+
+Validation evidence:
+
+- all 8 lifecycle installer tests pass, including four new schema-transition,
+  failed-upgrade, failed-rollback, and snapshot-mismatch cases;
+- the 16-test lifecycle/package/release/MCP integration matrix passes;
+- exact disposable replay using historical artifact SHA-256
+  `b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d`
+  and accepted candidate SHA-256
+  `b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2`
+  proves 0.2.29/schema 12 -> 0.3.0/schema 15 -> exact schema-12 database
+  rollback -> schema-15 roll-forward, final integrity `ok`, and two mode-0600
+  release-bound states;
+- the repaired installer diagnoses the untouched real 0.2.29/schema-12 service
+  as ready with its exact installed contract and manifest identities;
+- no real installation, restart, rollback, config read, provider, send, Guac,
+  timer, or remote action has occurred.
+
+Authority classification:
+
+- `inherited_authority`; implementation stays within C23. Complete repository
+  validation, immutable commit/evidence, and one independent review remain
+  before the authorized real upgrade may resume.
+
+Next action:
+
+- run the complete Python/Go/shell/diff/authority matrix, commit the exact
+  installer successor, bind an exact historical lifecycle receipt, and obtain
+  one terminal independent review.
+
+### Checkpoint P0023-C25 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `phase_a_rollback_candidate_validation_active -> phase_a_rollback_candidate_commit_ready`.
+
+Progress classification:
+
+- `outcome_progress`; the transactional installer successor passes the full
+  repository and exact historical lifecycle validation matrix.
+
+Complete validation evidence:
+
+- 2,539 Python tests collected; the complete suite exits zero with 2,532
+  passed, 7 intentionally skipped, and 6 subtests passed;
+- all Go packages pass;
+- all 8 installer lifecycle tests and the 16-test lifecycle/package/release/MCP
+  integration matrix pass;
+- full Python compilation, installer shell syntax, artifact hashes,
+  `git diff --check`, and deterministic plan-authority audit pass;
+- `shellcheck` is not installed, so no shellcheck result is claimed; executable
+  lifecycle tests and `bash -n` cover the current shell/Python hybrid surface;
+- exact historical replay and untouched real installed `diagnose` remain green
+  after the final retention/security hardening;
+- runtime artifact and manifest bytes remain unchanged at the C20/C21 accepted
+  identities because installer machinery is outside the runtime archive.
+
+Authority classification:
+
+- `inherited_authority`; the exact implementation/docs candidate is ready for
+  commit, durable receipt binding, and one independent review. No real Phase A
+  mutation is admitted until that review passes.
+
+Next action:
+
+- commit the exact installer/tests/docs, bind exact commit and replay evidence
+  in a machine-readable receipt, then request the one bounded independent
+  terminal review.
