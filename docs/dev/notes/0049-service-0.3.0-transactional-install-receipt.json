@@ -1,0 +1,58 @@
+{
+  "candidate": {
+    "implementation_commit": "1a53f67e9dbc67023b47cfa8b20c632f7eee2b10",
+    "installer_sha256": "91de23cd3c71839d45eab25d5a7d4999ea36fc298514924b7feab2ffd4a75161",
+    "runtime_artifact_sha256": "b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2",
+    "runtime_manifest_sha256": "da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514",
+    "service_version": "0.3.0"
+  },
+  "closed_gates": [
+    "real_rollback",
+    "user_config_preflight",
+    "live_provider_execution",
+    "real_notification_send",
+    "guacamole_observation_lease",
+    "crash_or_replay",
+    "manual_t08_tick",
+    "timer_or_schedule",
+    "push_tag_or_release",
+    "paid_call_or_ceiling_change"
+  ],
+  "install": {
+    "attempts": 1,
+    "command": "installer upgrade with exact 0.3.0 artifact",
+    "contract_sha256": "d3362ef9edc1e8e58f76d4a5a5ed5375fbc51e39169da1f84714584165f4efd8",
+    "current_release": "releases/0.3.0",
+    "database_integrity": "ok",
+    "database_schema_version": 15,
+    "document_count": 62,
+    "embedding_count": 62,
+    "index_version": "index-d4b3c45667cc2f635c557b85",
+    "previous_release": "releases/0.2.29",
+    "readiness": "ready",
+    "service_active": true
+  },
+  "plan": "0023",
+  "preinstall": {
+    "current_release": "releases/0.2.29",
+    "database_integrity": "ok",
+    "database_schema_version": 12,
+    "previous_release": "releases/0.2.28",
+    "readiness": "ready"
+  },
+  "rollback_state": {
+    "database_mode": "0600",
+    "database_schema_version": 12,
+    "database_sha256": "e9bf367d46f51f199da99dffc563298d4ff6a89f7cec4232a0e6a2eb0c042795",
+    "directory_mode": "0700",
+    "document_count": 62,
+    "integrity": "ok",
+    "metadata_digest_matches_database": true,
+    "metadata_mode": "0600",
+    "release": "releases/0.2.29"
+  },
+  "schema_version": 1,
+  "state_changed": true,
+  "status": "passed",
+  "verified_at": "2026-08-05T08:48:06-05:00"
+}

@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C30 is the current authority.
+Checkpoint P0023-C31 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2451,3 +2451,56 @@ Next action:
 - commit C30/receipt 0048, perform exact pre-mutation readback, execute the one
   admitted upgrade, and verify installed/rollback identity before considering
   the separately bounded sanitized config preflight.
+
+### Checkpoint P0023-C31 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `phase_a_exact_install_admitted -> phase_a_exact_install_verified`.
+
+Progress classification:
+
+- `outcome_progress`; the exact reviewed 0.3.0 candidate is installed and its
+  live runtime, migrated database, retained corpus/index, and rollback state
+  pass exact postflight.
+
+Installed outcome:
+
+- one authorized installer upgrade exited zero and returned exact
+  0.3.0/schema 15/ready with runtime manifest
+  `da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514`;
+- current is `releases/0.3.0`, previous is `releases/0.2.29`, the user unit is
+  active, and independent diagnose plus live service-info match contract
+  `d3362ef9edc1e8e58f76d4a5a5ed5375fbc51e39169da1f84714584165f4efd8`;
+- the migrated database is schema 15 with integrity `ok`, 62 documents, 62
+  embeddings, and unchanged active index
+  `index-d4b3c45667cc2f635c557b85`;
+- exact 0.2.29 rollback state is schema 12/integrity `ok` with 62 documents,
+  database digest
+  `e9bf367d46f51f199da99dffc563298d4ff6a89f7cec4232a0e6a2eb0c042795`,
+  matching canonical metadata, directory mode 0700, and file modes 0600;
+- durable install receipt:
+  `docs/dev/notes/0049-service-0.3.0-transactional-install-receipt.json`.
+
+Gate reconciliation:
+
+- the authorized real installation is consumed successfully; no real rollback
+  was invoked because C22 requires preserved identified rollback, not an
+  additional production rollback mutation;
+- sanitized real user-config preflight remains authorized but has not yet run;
+- providers, notification sends, Guac, crash/replay, T08, timers, push,
+  publication, release, paid calls, and ceiling changes remain closed.
+
+Authority classification:
+
+- `inherited_authority`; C22 Phase A next admits only installed 0.3.0's
+  side-effect-free sanitized `tick preflight`, including sequential configured
+  notification transport readiness without sends.
+
+Next action:
+
+- commit C31/receipt 0049, inspect the installed preflight command surface,
+  then execute one sanitized real user-config preflight and stop on any secret
+  exposure, state write, provider action, or notification send.

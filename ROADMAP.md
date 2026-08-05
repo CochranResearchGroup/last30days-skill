@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 2/C30; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 2/C31; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -864,7 +864,12 @@ Current State:
   returned PASS with no finding and is bound in receipt 0048. C30 admits the
   one already-authorized exact 0.3.0 upgrade plus strict installed/rollback
   readback; real rollback, config preflight, and every live/recurrence gate
-  remain closed during that install packet.
+  remain closed during that install packet. C31 records the one exact upgrade
+  PASS: installed current/previous are 0.3.0/0.2.29, schema 15 is ready with
+  unchanged 62/62 corpus/index completeness, and the exact schema-12 rollback
+  state is digest-bound, integrity `ok`, and owner-private. Receipt 0049 binds
+  the result. The next admitted Phase A action is sanitized config preflight
+  without provider or notification sends.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -1034,9 +1039,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- execute the single Plan 0023/C30 exact 0.3.0 upgrade and verify installed
-  0.3.0/schema-15 readiness plus the owner-private exact 0.2.29 rollback state.
-  Keep real rollback, user-config access or mutation, live
+- execute one installed 0.3.0 sanitized `tick preflight` readback of the real
+  user-scoped config and sequential transport readiness without sends. Keep
+  real rollback, user-config mutation, live
   sources, notification sends, Guac, recurrence, push, publication, release,
   paid calls, and ceiling changes closed.
 

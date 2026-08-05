@@ -10640,3 +10640,50 @@ Next Bounded Action:
 
 - commit C30/receipt 0048, re-verify exact pre-state and artifact hashes,
   execute one exact 0.3.0 upgrade, and stop on any installed/rollback mismatch.
+
+## Turn 174 | 2026-08-05
+
+Focus: execute and verify the exact transactional 0.3.0 Phase A upgrade.
+
+Authority Consulted:
+
+- Plan 0023 V2/C22/C30; Roadmap P07; Runbook Turn 173; exact hashes; pre/post
+  installer, live service, database, index, and rollback-state readbacks.
+
+Decisions And Changes:
+
+- re-verified clean worktree, exact candidate/installer/historical hashes,
+  active 0.2.29/schema12 readiness, and database integrity immediately before
+  mutation;
+- invoked one exact artifact upgrade and accepted only its strict ready result;
+- did not invoke real rollback or cross into config/live/T08/timer surfaces.
+
+Validation Evidence:
+
+- installed current/previous are exact 0.3.0/0.2.29; service is active and
+  diagnose/live service-info agree on schema 15, runtime manifest, contract,
+  and ready status;
+- database integrity is `ok`; document/embedding counts remain 62/62 on the
+  unchanged active index;
+- 0.2.29 rollback snapshot and metadata are digest-bound, schema 12,
+  integrity `ok`, 62 documents, directory 0700, files 0600;
+- receipt 0049 binds pre-state, mutation, post-state, and closed gates.
+
+State Movement:
+
+- Plan 0023 advances `C30 -> C31`;
+- `phase_a_exact_install_admitted -> phase_a_exact_install_verified`.
+
+Subagent Status And Reconciliation:
+
+- `not_active`; independent rollback review is complete and this exact
+  installed-state readback is primary-owned.
+
+Graphiti Write Status:
+
+- no write before sanitized Phase A config preflight completes.
+
+Next Bounded Action:
+
+- commit C31/receipt 0049, inspect installed preflight help, then execute one
+  sanitized real user-config readback with readiness checks and zero sends.
