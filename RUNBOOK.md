@@ -9453,8 +9453,11 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending one compact C08 superseding episode after this canonical checkpoint
-  is committed; no earlier C06/C07 memory is treated as current authority.
+- provider readiness passed, but compact C08 superseding episode job
+  `eedfadef-ba22-4548-9685-856325281b1c` timed out after 60 seconds during node
+  extraction and produced no episode UUID. It was not retried; this committed
+  checkpoint remains authority, and no earlier C06/C07 memory is treated as
+  current operational evidence.
 
 Next Bounded Action:
 
