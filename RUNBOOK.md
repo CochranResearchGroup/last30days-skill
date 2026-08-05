@@ -9706,3 +9706,63 @@ State Movement:
 
 - none; Plan 0023 remains `OPEN` at
   `v2_candidate_accepted_live_gate`, and recurrence remains prohibited.
+
+## Turn 156 | 2026-08-05
+
+Focus: audit full Plan 0023 completion after C12 and open the remaining local
+T08 preflight-readback prerequisite without crossing the human gate.
+
+Authority Consulted:
+
+- active goal; Plan 0023 V2/C12 including all 16 acceptance criteria and the
+  Manual Acceptance Gate; Roadmap P07; Runbook through Turn 155; exact current
+  source through CodeGraph; planning, validation, goal, roadmap/runbook, TDD,
+  and deep-module policy.
+
+Completion Audit Result:
+
+- T01-T07 and the C08 observation/media repair have current deterministic,
+  packaging, lifecycle, and independent-review evidence;
+- Plan 0023 is not complete: no exact candidate is installed, no current
+  sanitized real user-config freeze exists, no controlled live failure packet
+  or manual all-target tick has run, and no terminal live receipt has received
+  independent review;
+- the current CLI exposes `tick enqueue`, `get`, and incident actions but no
+  side-effect-free admission readback. Calling enqueue to discover config
+  would start provider work, so it cannot safely satisfy the pre-live gate;
+- criterion 16 remains unproven-current without separately authorized
+  installed-state readback, although no repo timer implementation or schedule
+  mutation occurred in the local packets.
+
+Bounded Decision:
+
+- open C13 for one deep `tick preflight` interface that reuses enqueue's
+  config/identity/admission machinery, performs ordered non-message
+  notification readiness, emits only digests and non-sensitive identifiers,
+  and makes no state or external-message mutation;
+- use vertical public-interface TDD, rebuild and lifecycle-prove the changed
+  candidate, and require one fresh independent exact-candidate review;
+- all real install, user-config, live provider, notification-send, Guac,
+  recurrence, push, publication, release, and cost gates remain closed.
+
+State Movement:
+
+- Plan 0023 advances `C12 -> C13`;
+- `v2_candidate_accepted_live_gate -> t08_sanitized_preflight_active`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; CodeGraph supplied direct source structure and the primary
+  owns this one deep seam. The existing read-only evaluator is reserved for
+  the exact committed candidate after primary validation.
+
+Graphiti Write Status:
+
+- no new write. Turn 155 used group `last30days_skill`, but current policy
+  names `last30days_skill_main`; a source-backed correction will be queued at
+  the next material closeout. Repo-native artifacts remain authority.
+
+Next Bounded Action:
+
+- commit C13 and run the first `tick preflight` public-interface RED/GREEN
+  cycle. Keep every human/live and recurrence gate closed.

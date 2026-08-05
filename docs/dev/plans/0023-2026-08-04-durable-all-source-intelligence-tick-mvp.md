@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C12 is the current authority.
+Checkpoint P0023-C13 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1467,3 +1467,70 @@ Next action:
 - request one separately bounded installation/config/live-T08 authority packet
   for the exact accepted candidate. Do not infer it from this terminal local
   PASS, and do not create or enable recurrence.
+
+### Checkpoint P0023-C13 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `v2_candidate_accepted_live_gate -> t08_sanitized_preflight_active`.
+
+Progress classification:
+
+- `blocker_reduction`; the requirement-by-requirement completion audit found
+  that the live gate still lacks a side-effect-free, sanitized readback of the
+  exact frozen config, lane, provider, resource, budget, and notification
+  admission data required by the Manual Acceptance Gate.
+
+Bounded local packet:
+
+- add one public `tick preflight` interface using the same interval,
+  schedule, config loader, adapter registry, identity derivation, lane
+  expansion, and notification adapter machinery as `tick enqueue`;
+- return the exact prospective tick/config identity; enabled lane IDs and
+  non-sensitive identity digests; provider order, adapter types,
+  normalization-proof refs, fallback classes, resource-key digests, and
+  limits; aggregate limits; and ordered notification transport IDs, adapter
+  types, routing digests, and non-message readiness results;
+- never emit target selectors, access-partition values, routing particulars,
+  credential refs, artifact paths, observation URLs, recipient values, or
+  other operator-specific config content;
+- read the config exactly once and perform no database, artifact-store,
+  provider-acquisition, notification-send, incident, observation, schedule, or
+  timer mutation;
+- fail before source work when the config is invalid, an adapter lacks a
+  normalization proof, notification configuration is invalid, or no
+  configured notification transport passes readiness.
+
+TDD and validation contract:
+
+- first public-interface tracer proves a sanitized ready receipt and fails
+  before implementation;
+- separate vertical tests prove zero state writes, exact enqueue identity
+  parity, secret/operator-particular omission, ordered readiness/fail-closed
+  behavior, and CLI argument/output wiring;
+- maximum implementation attempts: 2; maximum independent review/rework
+  cycles: 1; checkpoint before independent review and before any real config
+  readback or installation;
+- rebuild and lifecycle proof are required because this changes the exact
+  install candidate.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary owns the single deep preflight seam. The existing
+  read-only evaluator may review the exact committed successor after primary
+  validation; no implementation delegation is authorized.
+
+Authority classification:
+
+- `inherited_authority`; this local deterministic interface directly closes a
+  named Manual Acceptance Gate prerequisite and crosses no live, user-config,
+  install, provider, notification-send, Guac, recurrence, publication, or cost
+  boundary.
+
+Next action:
+
+- commit C13, then run one public-interface RED/GREEN tracer for `tick
+  preflight`. Keep the real install/config/live-T08 and every recurrence gate
+  closed.
