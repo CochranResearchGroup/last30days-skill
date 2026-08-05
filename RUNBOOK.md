@@ -9467,3 +9467,57 @@ Next Bounded Action:
   independent-review bounds. Do not repair under C07/C08 or cross any existing
   live, install, config, notification, Guac, recurrence, publication, or cost
   gate.
+
+## Turn 151 | 2026-08-05
+
+Focus: consume explicit operator approval and open Plan 0023 version 2 as one
+bounded local observation/media repair packet.
+
+Authority Consulted:
+
+- the operator's explicit `yes`; Plan 0023 V1/C08, Roadmap P07, Runbook Turn
+  150; planning, goal-execution, architecture, documentation, validation,
+  Git/integration, roadmap/runbook, and closeout policies; the repo policy
+  selector, TDD, codebase-design, and agent-browser skill instructions.
+
+Decisions And Changes:
+
+- advanced Plan 0023 to version 2/C09 and treated the approval as opening only
+  the two seams named at C08;
+- defined agent-browser's retained ready stream as route authority and
+  `view_takeover` plus post-action viewer-lease readback as lease authority;
+- defined media retrieval as a single deadline-aware pinned transport that
+  resolves, admits, connects, verifies the peer, preserves HTTPS hostname
+  semantics, and repeats those checks after each redirect;
+- reset bounded version-2 accounting to two implementation attempts and one
+  fresh independent review with at most one consolidated rework. No
+  implementation delegation is authorized.
+
+Validation Evidence:
+
+- authority-only checkpoint; code and tests are intentionally unchanged. The
+  worktree was clean at `da9ff98`, `main` was six commits ahead of
+  `origin/main`, and the real installed runtime was not inspected or changed.
+
+State Movement:
+
+- Plan 0023 `version 1/C08 -> version 2/C09`;
+- `failed_recheck_human_gate -> v2_observation_media_repair_active`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary owns the coupled implementation. The existing
+  read-only evaluator is reserved for the exact committed candidate after
+  primary validation.
+
+Graphiti Write Status:
+
+- not attempted at this authority-only checkpoint. The repo-native plan,
+  Roadmap, and Runbook are the current operational authority.
+
+Next Bounded Action:
+
+- commit C09, then execute one observation red/green cycle before opening the
+  media transport cycle. Keep install, real user-config access or mutation,
+  live sources, real notifications, Guac observation, recurrence, push, tag,
+  publication, release, paid calls, and ceiling changes closed.

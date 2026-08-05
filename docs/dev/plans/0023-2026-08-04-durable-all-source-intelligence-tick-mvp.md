@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 1
+Plan version: 2
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C08 is the current authority.
+Checkpoint P0023-C09 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1203,3 +1203,90 @@ Next action or stop reason:
   one bounded packet owning only actual-contract observation handoff and a
   deadline-aware, destination-pinned media transport, with fresh independent
   review bounds. Do not repair either seam under C07/C08 authority.
+
+### Checkpoint P0023-C09 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `failed_recheck_human_gate -> v2_observation_media_repair_active`.
+
+Progress classification:
+
+- `blocker_reduction`; the operator explicitly approved Plan 0023 version 2,
+  removing the C08 human gate while preserving every live, install, config,
+  notification, Guac, recurrence, publication, and cost boundary.
+
+Changed assumptions and bounded outcome:
+
+- agent-browser `view_takeover` is lease authority, not route authority. The
+  already-resolved ready stream remains route authority; after takeover the
+  bridge must re-read service state and prove the returned viewer lease is
+  active and bound to the same browser, session, stream, provider, and route
+  before returning or persisting that stream's direct external HTTPS URL;
+- media admission and media connection cannot be separate DNS decisions. One
+  internal transport must resolve under the tick deadline, reject every
+  non-global destination, connect to one admitted address, preserve the
+  original hostname for TLS SNI/certificate and `Host`, verify the connected
+  peer, recompute remaining time before each blocking phase, and repeat the
+  full process for every redirect;
+- this packet owns only those two seams and their focused regression tests.
+  It does not reopen T08, add a timer, change service/config schemas, install a
+  candidate, read or mutate real user config, call a provider, notify a real
+  recipient, or acquire a real observation lease.
+
+Owned write surfaces:
+
+- the existing tick runtime modules that implement observation handoff and
+  media retrieval, their focused tests/fixtures, and only the contract or
+  configuration documentation proven necessary by an observable interface
+  change;
+- this plan, Roadmap P07, Runbook, and candidate evidence required by policy.
+
+Execution and review bounds:
+
+- one primary implementation packet with at most two implementation attempts;
+- vertical TDD: one failing behavior test followed by the minimum passing
+  implementation before the next behavior is opened;
+- one fresh independent candidate review and at most one consolidated
+  review/rework cycle for version 2;
+- checkpoint before independent review and on any repeated invariant failure,
+  deadline ambiguity, unpinned connection path, route/lease identity mismatch,
+  dirty-worktree overlap, or proposed crossing of a closed gate;
+- terminal stop after a failed exact recheck, after two implementation
+  attempts, or after two consecutive hardening/no-progress checkpoints.
+
+Validation evidence required before candidate review:
+
+- actual-contract takeover fixtures omit external URL data and succeed only
+  when a post-takeover service read proves the returned lease against the
+  unchanged ready stream and route; missing/mismatched/changed proof fails
+  closed and no takeover occurs before acknowledgment plus explicit observe;
+- resolver latency can consume the deadline without any connect attempt;
+  admitted-address and connected-peer disagreement fails closed; HTTPS keeps
+  original-host TLS and `Host` semantics while connecting to the admitted IP;
+  redirects repeat resolution/pinning and remain inside the shared request and
+  wall budgets;
+- focused tests, affected integration/runtime/lifecycle tests, the complete
+  Python suite, all Go packages, compile checks, and `git diff --check` pass.
+
+Subagent status and reconciliation:
+
+- no implementation delegation. The primary owns both coupled seams and their
+  integration. The existing read-only evaluator may receive only the exact
+  committed candidate for the single fresh version-2 review.
+
+Authority classification:
+
+- `inherited_authority`; the operator's explicit `yes` opens this exact local
+  repair and validation packet. Installation, real user-config access or
+  mutation, live providers, real notifications, Guac observation, recurrence,
+  push, tag, publication, release, paid calls, and ceiling increases remain
+  `human_gate` actions and are not authorized here.
+
+Next action:
+
+- commit this authority checkpoint, then run the first focused red/green cycle
+  for actual-contract observation handoff. Continue with the deadline-pinned
+  media cycle only after observation is green.
