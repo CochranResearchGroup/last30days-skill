@@ -373,7 +373,6 @@ def _tick(args: argparse.Namespace) -> int:
                 "incident_id": args.incident_id,
                 "public_operator_url": incidents.request_observation(
                     args.incident_id,
-                    public_operator_url=args.operator_url,
                 ),
             }
     print(json.dumps(payload, indent=2, sort_keys=True))
@@ -634,12 +633,6 @@ def build_parser() -> argparse.ArgumentParser:
         "--actor-ref",
         required=True,
     )
-    incident_subparsers.choices["observe"].add_argument(
-        "--operator-url",
-        required=True,
-        help="Direct external agent-browser Guacamole HTTPS URL",
-    )
-
     intelligence = subparsers.add_parser(
         "intelligence",
         help="Run one operator-owned bounded enrichment or evaluation turn",

@@ -162,7 +162,7 @@ def test_tick_contracts_are_published_in_the_golden_catalog():
         "trigger": "manual",
     }
 
-    assert catalog["compatibility"]["database_schema"] == {"min": 13, "max": 13}
+    assert catalog["compatibility"]["database_schema"] == {"min": 14, "max": 14}
     assert {
         "tick_request",
         "tick_lane_receipt",

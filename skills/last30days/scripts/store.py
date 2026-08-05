@@ -2065,6 +2065,9 @@ BEGIN
     SELECT RAISE(ABORT, 'service source version is immutable');
 END;
 """,
+    14: """
+ALTER TABLE service_incidents ADD COLUMN operator_url TEXT;
+""",
 }
 
 

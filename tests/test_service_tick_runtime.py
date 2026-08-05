@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import base64
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -11,6 +12,7 @@ import pytest
 
 from lib import service_contracts as contracts
 from lib.service_tick_builtin_adapters import build_acquisition_adapter_registry
+from lib.service_tick_adapters import AdapterRegistry
 from lib.service_tick_notifications import (
     CommandReceipt,
     build_notification_transports,
@@ -68,6 +70,9 @@ def _result(
     retry="none",
     attempted_count=None,
     observed_count=None,
+    media=False,
+    operator_url=None,
+    rendered_page=None,
 ):
     items = (
         [
@@ -79,6 +84,21 @@ def _result(
                 "author": "Example",
                 "published_at": "2026-08-03T10:00:00Z",
                 "metadata": {"surface": "post"},
+                **(
+                    {
+                        "media": [
+                            {
+                                "source_url": "https://cdn.example.test/image.jpg",
+                                "content_base64": base64.b64encode(b"image-bytes").decode("ascii"),
+                                "mime_type": "image/jpeg",
+                                "media_kind": "image",
+                                "alt_text": "A queryable image",
+                            }
+                        ]
+                    }
+                    if media
+                    else {}
+                ),
             }
         ]
         if status in {"succeeded", "partial"}
@@ -105,6 +125,15 @@ def _result(
             "item_count": len(items),
             "cost_cents": 0,
             "diagnostics": {"failure_stage": "authentication"} if error else {},
+            **({"operator_url": operator_url} if operator_url else {}),
+            **(
+                {
+                    "rendered_page_base64": base64.b64encode(rendered_page).decode("ascii"),
+                    "rendered_page_mime_type": "image/jpeg",
+                }
+                if rendered_page
+                else {}
+            ),
             "network_request_count": 2,
             "attempted_count": attempted,
             "observed_count": observed,
@@ -183,6 +212,54 @@ def test_builtin_adapter_bridge_preserves_worker_outcome_counts():
     }
 
 
+def test_builtin_adapter_bridge_preserves_media_and_agent_browser_incident_evidence():
+    success_worker = FixtureWorker(lambda request: _result(request, media=True))
+    success = build_acquisition_adapter_registry(success_worker).require(
+        "x_agent_browser", source="x", capability="collect"
+    ).collect(_context())
+
+    assert success.items[0].media[0].content == b"image-bytes"
+    assert success.items[0].media[0].media_kind == "image"
+
+    failure_worker = FixtureWorker(
+        lambda request: _result(
+            request,
+            status="awaiting_operator",
+            error="auth_required",
+            retry="operator",
+            operator_url="https://guac.example.test/client/session-1",
+            rendered_page=b"rendered-auth-page",
+        )
+    )
+    failure = build_acquisition_adapter_registry(failure_worker).require(
+        "x_agent_browser", source="x", capability="collect"
+    ).collect(_context())
+
+    assert failure.operator_url == "https://guac.example.test/client/session-1"
+    assert failure.rendered_page == b"rendered-auth-page"
+    assert failure.rendered_page_mime_type == "image/jpeg"
+
+    partial_worker = FixtureWorker(
+        lambda request: _result(
+            request,
+            status="partial",
+            error="auth_required",
+            retry="operator",
+            media=True,
+            operator_url="https://guac.example.test/client/session-2",
+            rendered_page=b"rendered-partial-auth-page",
+        )
+    )
+    partial = build_acquisition_adapter_registry(partial_worker).require(
+        "x_agent_browser", source="x", capability="collect"
+    ).collect(_context())
+
+    assert partial.items[0].media[0].content == b"image-bytes"
+    assert partial.operator_url == "https://guac.example.test/client/session-2"
+    assert partial.rendered_page == b"rendered-partial-auth-page"
+    assert partial.rendered_page_mime_type == "image/jpeg"
+
+
 def test_builtin_adapter_bridge_maps_operator_auth_to_non_retryable_failure():
     worker = FixtureWorker(
         lambda request: _result(
@@ -211,6 +288,48 @@ def test_default_tick_config_is_always_user_scoped(tmp_path):
     assert default_tick_config_path(environ={}, home=tmp_path / "home") == (
         tmp_path / "home" / ".config" / "last30days" / "tick-config-v1.json"
     )
+
+
+def test_runtime_accepts_an_explicit_installed_provider_registry_and_absolute_artifacts(
+    tmp_path,
+):
+    config_path = tmp_path / "tick-config-v1.json"
+    config = {
+        "query": {"embedding_space": "local-hash-v1"},
+        "artifacts": {"root": str(tmp_path / "artifacts")},
+        "notifications": {
+            "transports": [
+                {
+                    "transport_id": "ops-fallback",
+                    "adapter_type": "gws_email",
+                    "routing": {
+                        "recipient": "operator@example.test",
+                        "subject_prefix": "tick incident",
+                    },
+                }
+            ]
+        },
+    }
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    registry = AdapterRegistry()
+
+    runtime = build_tick_runtime(
+        tmp_path / "research.db",
+        config_path=config_path,
+        adapter_registry=registry,
+    )
+
+    assert runtime.runner.registry is registry
+    assert runtime.coordinator.adapter_registry is registry
+
+    config["artifacts"]["root"] = "relative-artifacts"
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    with pytest.raises(RuntimeError, match="absolute"):
+        build_tick_runtime(
+            tmp_path / "relative.db",
+            config_path=config_path,
+            adapter_registry=registry,
+        )
 
 
 class FixtureCommands:
@@ -424,19 +543,12 @@ def test_service_cli_exposes_manual_tick_and_explicit_incident_gate_actions():
     )
     get = parser.parse_args(["tick", "get", "tick-001"])
     observe = parser.parse_args(
-        [
-            "tick",
-            "incident",
-            "observe",
-            "incident-001",
-            "--operator-url",
-            "https://guac.example.test/client/session-1",
-        ]
+        ["tick", "incident", "observe", "incident-001"]
     )
 
     assert enqueue.tick_action == "enqueue"
     assert enqueue.schedule_id == "manual-default"
     assert get.tick_action == "get"
     assert observe.incident_action == "observe"
-    assert observe.operator_url.startswith("https://")
+    assert not hasattr(observe, "operator_url")
     assert "timer" not in build_parser().format_help().casefold()

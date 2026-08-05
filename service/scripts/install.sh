@@ -32,7 +32,7 @@ from pathlib import Path, PurePosixPath
 
 FORMAT = "last30days-service-runtime-v1"
 UNIT_NAME = "last30days.service"
-DATABASE_SCHEMA_VERSION = 13
+DATABASE_SCHEMA_VERSION = 14
 SEMVER = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$")
 
 

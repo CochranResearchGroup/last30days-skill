@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Durable all-source tick foundation.** Service 0.3.0 introduces database
-  schema 13, the versioned user-scoped `tick-config-v1.json` contract, and a
+  schema 14, the versioned user-scoped `tick-config-v1.json` contract, and a
   two-call durable tick seam. Enqueueing freezes an exact interval, sanitized
   config digest, enabled lanes, provider order, expected stages, and aggregate
   and provider ceilings. Expired execution leases create a bounded recovery
@@ -63,6 +63,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   evidence, artifacts, derivatives, incidents, deliveries, anomalies, catalog
   entries, and the promoted snapshot. Production live acceptance,
   installation, scheduling, and release remain separate gates.
+
+- **Production media and browser-incident carriage.** The isolated acquisition
+  contract now transports bounded image and video-thumbnail bytes plus exact
+  rendered-page screenshots through the production tick bridge. Browser issue
+  capture reuses the active agent-browser tab without requesting Guacamole;
+  the direct external operator URL is persisted with the incident and becomes
+  observable only after acknowledgment. The observation command no longer
+  accepts a caller-supplied link, and deployments may inject a code-owned
+  provider registry while user config remains limited to selecting registered
+  adapter types. This schema-14 candidate supersedes the unreleased schema-13
+  build; neither candidate has been installed or released.
 
 - **Bounded manual collection retries.** Operator-triggered collection runs
   retain a one-attempt default and now accept an explicit

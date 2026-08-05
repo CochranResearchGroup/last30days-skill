@@ -527,7 +527,7 @@ def test_manual_tick_runs_every_lane_raw_first_and_publishes_one_degraded_snapsh
         "events",
         "execution_attempts",
     }
-    assert completed.versions["database_schema"] == "13"
+    assert completed.versions["database_schema"] == "14"
     assert completed.versions["embedding_space"] == "fixture-space-v1"
     assert snapshots.current().tick_id == completed.tick_id
     results = snapshots.query("revenue chart", access_partitions=("public",))

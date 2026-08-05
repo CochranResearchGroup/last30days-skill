@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C05 is the current authority.
+Checkpoint P0023-C06 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -976,3 +976,91 @@ Next action:
 - bind this validated checkpoint into one coherent local candidate commit,
   independently review that exact commit and its build/install/rollback
   artifact, then stop for an explicit bounded T08 human/live authorization.
+
+### Checkpoint P0023-C06 | 2026-08-04
+
+Plan version: 1
+
+State transition:
+
+- `t08_candidate_review_pending -> exact_candidate_review_pending`
+
+Progress classification:
+
+- `outcome_progress` and `blocker_reduction`; the production acquisition seam
+  now transports the media, rendered-page, and operator-route evidence that
+  T08 must exercise instead of dropping it before the tick runner.
+
+Owned changes:
+
+- add bounded typed image and video-thumbnail bytes to the isolated worker
+  result, enforce one aggregate binary-evidence envelope, and decode them into
+  the existing content-addressed tick artifact path;
+- capture the current rendered agent-browser tab for authentication, captcha,
+  checkpoint, Cloudflare, and rate-limit incidents without requesting remote
+  view or a Guacamole observation lease;
+- carry only a direct external HTTPS agent-browser operator URL into the
+  persisted incident, reject localhost/loopback routes, and return that stored
+  route only after acknowledgment; the observation CLI no longer accepts a
+  caller-supplied URL;
+- require an absolute user-scoped artifact root and permit deployments to
+  inject a code-owned provider registry, while configuration remains limited
+  to selecting already-registered adapter types;
+- advance the unreleased service 0.3.0 candidate from database schema 13 to
+  schema 14, superseding the earlier local artifact without installing it.
+
+Validation evidence:
+
+- TDD recorded six initial failures at the media, screenshot, route, registry,
+  and artifact-root seams, plus separate RED/GREEN aggregate binary-evidence
+  and partial-result screenshot-carriage cases;
+- the final focused contract, worker, and runner set passes 59/59; the complete
+  repository Python suite exits zero; all Go packages pass; Python compilation,
+  canonical JSON parsing, diff hygiene, and the plan-authority audit pass, with
+  the audit reporting 8/8;
+- three independent builds of
+  `dist/service/last30days-service-0.3.0.tar.gz` are byte-identical at SHA-256
+  `4f8a92db987b15c7de4d16bf966743198f55b4c6e610413aa93f299340e908d6`;
+- read-only postflight confirms the installed runtime remains service 0.2.29,
+  database schema 12, ready, with 42 collection specifications and zero
+  enabled;
+- no user config, live source, real notification, Guac lease, install, timer,
+  remote, or external recipient was touched.
+
+Remaining acceptance criteria:
+
+- deterministic media/screenshot carriage is fixture-proven, but T08 must
+  still prove every enabled production adapter against one separately
+  authorized controlled-failure and manual all-target live packet;
+- the exact local candidate still requires independent review,
+  install/rollback proof, sanitized user-config readback, and independent
+  terminal receipt review;
+- criterion 16 remains preserved: every schedule is disabled and no recurring
+  timer has been implemented.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the active runtime instruction explicitly prohibited
+  delegation. Consequently an independent evaluator was not available in this
+  slice and that review gate is not claimed as passed.
+
+Graphiti write status:
+
+- provider readiness passed. The initial compact episode is still `running` as
+  job `44b0d8e8-f171-4e43-9ac3-60c6e8ee97cd`; after final review changed the
+  artifact digest, an explicit final-state correction was queued behind it as
+  job `ea998210-8dca-44eb-9d43-06b1457294e2` so the earlier in-slice digest is
+  superseded rather than presented as final.
+
+Authority classification:
+
+- `human_gate`; deterministic implementation and candidate construction are
+  complete. Installation, real user-config readback or mutation, live
+  providers, real notifications, Guac observation, recurrence, push, tag,
+  publication, release, paid calls, and ceiling increases remain closed.
+
+Next action:
+
+- independently review the exact local candidate commit and reproducible
+  build/install/rollback artifact, then request explicit bounded T08 human/live
+  authorization. Timer design remains a separate successor after T08.

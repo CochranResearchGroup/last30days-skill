@@ -12,6 +12,7 @@ from pathlib import Path
 from .service_retrieval import LocalHashEmbeddingProvider
 from .service_runtime import build_subprocess_acquisition_worker
 from .service_tick import TickCoordinator
+from .service_tick_adapters import AdapterRegistry
 from .service_tick_builtin_adapters import build_acquisition_adapter_registry
 from .service_tick_incidents import IncidentManager
 from .service_tick_media import (
@@ -55,6 +56,7 @@ def build_tick_runtime(
     *,
     config_path: Path | None = None,
     worker=None,
+    adapter_registry: AdapterRegistry | None = None,
     command_runner: CommandRunner = _run_command,
     clock: Callable[[], datetime] | None = None,
 ) -> TickRuntime:
@@ -75,11 +77,21 @@ def build_tick_runtime(
         notifications_config, Mapping
     ):
         raise RuntimeError("tick artifact/notification configuration is incomplete")
-    artifact_root = Path(str(artifacts_config.get("root") or "")).expanduser()
-    if not str(artifact_root):
+    artifact_root_value = artifacts_config.get("root")
+    if not isinstance(artifact_root_value, str) or not artifact_root_value.strip():
         raise RuntimeError("tick artifact root is required")
-    active_worker = worker or build_subprocess_acquisition_worker()
-    registry = build_acquisition_adapter_registry(active_worker)
+    artifact_root = Path(artifact_root_value).expanduser()
+    if not artifact_root.is_absolute():
+        raise RuntimeError("tick artifact root must be an absolute user-scoped path")
+    if adapter_registry is not None and not isinstance(
+        adapter_registry, AdapterRegistry
+    ):
+        raise TypeError("adapter_registry must be an AdapterRegistry")
+    if adapter_registry is None:
+        active_worker = worker or build_subprocess_acquisition_worker()
+        registry = build_acquisition_adapter_registry(active_worker)
+    else:
+        registry = adapter_registry
     media = MediaDerivativePublisher(
         db_path,
         ContentAddressedArtifactStore(artifact_root),

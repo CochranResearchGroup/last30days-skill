@@ -1,7 +1,9 @@
 """Typed source-adapter boundary tests for the isolated worker process."""
 
 import io
+import base64
 import json
+from types import SimpleNamespace
 import sys
 
 from pathlib import Path
@@ -36,12 +38,16 @@ def _request(**overrides):
 
 
 def test_worker_preserves_operator_failure_type_without_browser_leases():
+    rendered_page = b"rendered-auth-challenge"
+
     def fake_adapter(_request, _config):
         return {
             "items": [],
             "error": "login required at a private operator URL",
             "error_type": "auth_required",
             "operator_url": "https://operator.example/private",
+            "rendered_page_base64": base64.b64encode(rendered_page).decode("ascii"),
+            "rendered_page_mime_type": "image/jpeg",
             "session": "secret-session",
             "diagnostics": {
                 "accepted_count": 0,
@@ -63,9 +69,107 @@ def test_worker_preserves_operator_failure_type_without_browser_leases():
     assert result.diagnostics["failure_stage"] == "authentication"
     assert result.diagnostics["failure_signature"].startswith("sha256:")
     serialized = result.to_dict()
-    assert "operator.example" not in str(serialized)
+    assert serialized["operator_url"] == "https://operator.example/private"
+    assert result.rendered_page == rendered_page
+    assert result.rendered_page_mime_type == "image/jpeg"
     assert "secret-session" not in str(serialized)
     assert "secret-route" not in str(serialized)
+
+
+def test_worker_fetches_bounded_image_bytes_into_the_typed_item_contract(monkeypatch):
+    image = b"small-image-bytes"
+
+    class Response:
+        headers = {"Content-Type": "image/jpeg"}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def read(self, _limit=-1):
+            return image
+
+    monkeypatch.setattr(
+        service_acquisition_worker.urllib.request,
+        "urlopen",
+        lambda *_args, **_kwargs: Response(),
+    )
+
+    def fake_adapter(_request, _config):
+        return {
+            "items": [
+                {
+                    "id": "X-media",
+                    "text": "A post with a queryable image.",
+                    "url": "https://x.com/example/status/media",
+                    "date": "2026-07-23",
+                    "metadata": {
+                        "media": [
+                            {
+                                "kind": "image",
+                                "url": "https://pbs.twimg.com/media/example.jpg",
+                                "mime_type": "image/jpeg",
+                                "alt_text": "A rendered chart",
+                            }
+                        ]
+                    },
+                }
+            ],
+            "diagnostics": {"accepted_count": 1},
+        }
+
+    result = execute_work(
+        _request(network_request_limit=2),
+        {},
+        adapters={"x_agent_browser": fake_adapter},
+    )
+
+    assert result.status is contracts.AcquisitionStatus.SUCCEEDED
+    assert result.network_request_count == 1
+    assert len(result.items[0].media) == 1
+    media = result.items[0].media[0]
+    assert base64.b64decode(media.content_base64) == image
+    assert media.media_kind == "image"
+    assert media.alt_text == "A rendered chart"
+
+
+def test_worker_captures_problem_page_through_agent_browser_without_guac_lease(
+    monkeypatch,
+):
+    calls = []
+
+    def run(argv, **_kwargs):
+        calls.append(tuple(argv))
+        output = service_acquisition_worker.Path(
+            argv[argv.index("screenshot") + 1]
+        )
+        output.write_bytes(b"agent-browser-rendered-page")
+        return SimpleNamespace(returncode=0, stdout="{}", stderr="")
+
+    monkeypatch.setattr(service_acquisition_worker.subprocess, "run", run)
+
+    result = execute_work(
+        _request(),
+        {},
+        adapters={
+            "x_agent_browser": lambda _request, _config: {
+                "items": [],
+                "error_type": "auth_required",
+                "session": "last30days-facebook",
+                "operator_url": "https://guac.example.test/client/session-1",
+                "diagnostics": {"failure_stage": "authentication"},
+            }
+        },
+    )
+
+    assert result.rendered_page == b"agent-browser-rendered-page"
+    assert result.rendered_page_mime_type == "image/jpeg"
+    assert len(calls) == 1
+    assert "screenshot" in calls[0]
+    assert "remote-view" not in calls[0]
+    assert "view_takeover" not in calls[0]
 
 
 def test_worker_failure_signature_is_stable_across_attempts_and_job_ids():

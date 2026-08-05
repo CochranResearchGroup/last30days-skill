@@ -127,6 +127,7 @@ def test_incidents_deduplicate_resolve_exactly_and_gate_external_observation(tmp
         access_partition_id="profile:social-primary",
         rendered_page=b"rendered-login-page",
         rendered_page_mime_type="image/png",
+        operator_url="https://guac.example.test/client/session-1",
     )
 
     first = manager.record(signal)
@@ -135,25 +136,36 @@ def test_incidents_deduplicate_resolve_exactly_and_gate_external_observation(tmp
     assert repeated.incident_id == first.incident_id
     assert repeated.occurrence_count == 2
     with pytest.raises(ObservationGateError, match="acknowledged"):
-        manager.request_observation(
-            first.incident_id,
-            public_operator_url="https://guac.example.test/client/session-1",
-        )
+        manager.request_observation(first.incident_id)
     manager.acknowledge(first.incident_id, actor_ref="operator-ref:primary")
-    with pytest.raises(ObservationGateError, match="external"):
-        manager.request_observation(
-            first.incident_id,
-            public_operator_url="http://127.0.0.1:19080/session-1",
-        )
-    assert manager.request_observation(
-        first.incident_id,
-        public_operator_url="https://guac.example.test/client/session-1",
-    ) == "https://guac.example.test/client/session-1"
+    assert manager.request_observation(first.incident_id) == (
+        "https://guac.example.test/client/session-1"
+    )
     resolved = manager.resolve(
         first.incident_id,
         successful_execution_id="provider-attempt-recovered",
     )
     assert resolved.state == "resolved"
+
+
+def test_browser_incident_rejects_local_or_non_https_operator_routes():
+    for operator_url in (
+        "http://127.0.0.1:19080/session-1",
+        "https://localhost/session-1",
+    ):
+        with pytest.raises(ValueError, match="external HTTPS"):
+            IncidentSignal(
+                tick_id="tick-001",
+                lane_id="lane-x",
+                source="x",
+                profile_ref="profile-ref:social-primary",
+                stage="collection",
+                incident_type="captcha_required",
+                severity="critical",
+                safe_summary="Challenge detected.",
+                access_partition_id="profile:social-primary",
+                operator_url=operator_url,
+            )
 
 
 def test_notification_exhaustion_persists_incident_and_blocks_later_preflight(

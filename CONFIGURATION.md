@@ -43,7 +43,7 @@ The service release lives under
 `$XDG_DATA_HOME/last30days/service/releases/<version>`, independently of any
 installed Agent Skill. The managed unit resolves the atomic `current` selector
 through a stable launcher. A successful install records the loaded service
-version, contract digest, schema 13, and runtime-manifest digest in an
+version, contract digest, schema 14, and runtime-manifest digest in an
 owner-readable readiness receipt. Skill-first installation remains a
 compatibility path during the migration; refreshing a frozen Skill copy is no
 longer the service upgrade contract.
@@ -86,6 +86,8 @@ non-zero stable-fixture or bounded-canary normalization proof. Credential and
 routing fields are references only: cookies, tokens, raw credentials,
 browser/session leases, operator URLs, recipient addresses, tenant IDs, and
 profile particulars do not belong in repo data or frozen tick receipts.
+`artifacts.root` must be an absolute path in user-scoped storage; relative
+paths are rejected before a tick runtime is constructed.
 
 Each tick freezes the validated non-secret config revision and digest. Changing
 the config affects only a newly enqueued tick; it does not rewrite an existing
@@ -105,6 +107,10 @@ selector supplies a bounded `query` (or `topic`, `url`, or `handle`), optional
 `depth`, and user-profile reference where the adapter requires one. Browsers
 run normally through agent-browser; the tick does not acquire a Guacamole
 lease. Human observation remains a separate acknowledged incident action.
+Deployments may construct the runtime with another code-owned registry, such
+as paid API adapters, and user config may select only adapter types already in
+that registry. Configuration never loads an executable, module, or arbitrary
+callable.
 
 Enabled image analysis stages also select installed adapter types. The current
 deterministic bridge names `provider_output_ocr_v1` and
@@ -117,12 +123,14 @@ missing or invalid installed adapter fails preflight before source work. Media
 can still publish when an individual derivative fails; the derivative receives
 an immutable failure receipt and the terminal tick is degraded.
 
-The manual acceptance packet must prove that every enabled production adapter
-actually returns content bytes for images or video thumbnails and exact
-rendered-page bytes for browser incidents. The source-worker bridge currently
-proves normalized item carriage; deterministic fixtures prove media,
-OCR/sidecar, and screenshot behavior. Those facts do not substitute for the
-bounded live all-target proof, and no recurring schedule is enabled meanwhile.
+The source-worker bridge carries bounded fetched bytes for images and video
+thumbnails into the content-addressed artifact path. On authentication,
+captcha, checkpoint, Cloudflare, and rate-limit failures it captures the
+current rendered agent-browser tab programmatically, without opening a remote
+view or acquiring a Guacamole observation lease. Deterministic fixtures prove
+media, OCR/sidecar, and screenshot carriage. The manual acceptance packet must
+still prove those paths for every enabled production adapter; no recurring
+schedule is enabled meanwhile.
 
 `analysis.anomaly_rules` is optional. Each rule names one of `yield_count`,
 `rejection_rate`, `latency_seconds`, or `missing_media_rate`, a `low` or `high`
@@ -150,11 +158,20 @@ python3 ~/.agents/skills/last30days/scripts/service.py tick enqueue \
   --interval-to 2026-08-04T00:00:00Z
 
 python3 ~/.agents/skills/last30days/scripts/service.py tick get TICK_ID
+
+python3 ~/.agents/skills/last30days/scripts/service.py tick incident acknowledge \
+  INCIDENT_ID --actor-ref OPERATOR_REF
+python3 ~/.agents/skills/last30days/scripts/service.py tick incident observe \
+  INCIDENT_ID
 ```
 
-Both commands use the user-scoped database/config defaults unless `--db` or
+These commands use the user-scoped database/config defaults unless `--db` or
 `--config` is supplied. `tick enqueue` is manual-only: it does not create,
 resume, or enable a collection spec or timer.
+`tick incident observe` accepts no URL from the caller. It returns only the
+external HTTPS agent-browser operator URL stored with an acknowledged browser
+incident; localhost and loopback links fail closed. Screenshot bytes remain a
+protected artifact and are never included in notifications.
 
 `publish` and `mutate_live_source_config` always require an explicit approval
 record from a configured operator. Approval authorizes only the named action;
@@ -829,7 +846,7 @@ Use `service/scripts/install.sh upgrade --artifact <artifact>` for a new
 semantic service version. The installer verifies every payload SHA-256, stages
 an immutable release, records the old `current` target as `previous`, switches
 atomically, and restarts once. It accepts the upgrade only when the service
-reports the expected version, exact contract digest, and schema 13. A failed
+reports the expected version, exact contract digest, and schema 14. A failed
 upgrade restores the prior selectors, restarts, and proves the old release
 ready. Use `service/scripts/install.sh rollback` to swap the current and
 previous verified releases deliberately; `start`, `stop`, `status`, and

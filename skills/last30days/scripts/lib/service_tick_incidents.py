@@ -110,6 +110,7 @@ class IncidentSignal:
     access_partition_id: str
     rendered_page: bytes | None = None
     rendered_page_mime_type: str | None = None
+    operator_url: str | None = None
 
     def __post_init__(self) -> None:
         for field, maximum in (
@@ -130,6 +131,15 @@ class IncidentSignal:
             if not isinstance(self.rendered_page, bytes) or not self.rendered_page:
                 raise ValueError("rendered_page must be non-empty bytes")
             _text(self.rendered_page_mime_type, "rendered_page_mime_type", 256)
+        if self.operator_url is not None:
+            url = _text(self.operator_url, "operator_url", 4_096)
+            parsed = urlparse(url)
+            if (
+                parsed.scheme != "https"
+                or not parsed.hostname
+                or parsed.hostname.casefold() in {"localhost", "127.0.0.1", "::1"}
+            ):
+                raise ValueError("operator_url must be an external HTTPS URL")
 
 
 @dataclass(frozen=True)
@@ -298,8 +308,9 @@ class IncidentManager:
                            incident_id, fingerprint, first_tick_id, last_tick_id,
                            lane_id, source, profile_ref, stage, incident_type,
                            severity, state, safe_summary, access_partition_id,
-                           occurrence_count, first_detected_at, last_detected_at
-                       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'open', ?, ?, 1, ?, ?)""",
+                           operator_url, occurrence_count, first_detected_at,
+                           last_detected_at
+                       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'open', ?, ?, ?, 1, ?, ?)""",
                     (
                         incident_id,
                         fingerprint,
@@ -313,6 +324,7 @@ class IncidentManager:
                         signal.severity,
                         signal.safe_summary,
                         signal.access_partition_id,
+                        signal.operator_url,
                         now,
                         now,
                     ),
@@ -342,6 +354,7 @@ class IncidentManager:
                        SET last_tick_id = ?, lane_id = ?, severity = ?,
                            safe_summary = ?, occurrence_count = occurrence_count + 1,
                            last_detected_at = ?, state = ?,
+                           operator_url = COALESCE(?, operator_url),
                            resolved_at = CASE WHEN ? = 'open' THEN NULL ELSE resolved_at END,
                            resolution_execution_id = CASE
                                WHEN ? = 'open' THEN NULL ELSE resolution_execution_id END
@@ -353,6 +366,7 @@ class IncidentManager:
                         signal.safe_summary,
                         now,
                         next_state,
+                        signal.operator_url,
                         next_state,
                         next_state,
                         incident_id,
@@ -640,17 +654,7 @@ class IncidentManager:
         finally:
             conn.close()
 
-    def request_observation(
-        self, incident_id: str, *, public_operator_url: str
-    ) -> str:
-        url = _text(public_operator_url, "public_operator_url", 4_096)
-        parsed = urlparse(url)
-        if (
-            parsed.scheme != "https"
-            or not parsed.hostname
-            or parsed.hostname.casefold() in {"localhost", "127.0.0.1", "::1"}
-        ):
-            raise ObservationGateError("operator URL must be an external HTTPS URL")
+    def request_observation(self, incident_id: str) -> str:
         conn = self._connect()
         try:
             row = self._row(conn, incident_id)
@@ -658,6 +662,11 @@ class IncidentManager:
                 raise ObservationGateError("incident must be acknowledged first")
             if row["incident_type"] not in _BROWSER_INCIDENTS:
                 raise ObservationGateError("incident does not allow browser observation")
+            if row["operator_url"] is None:
+                raise ObservationGateError(
+                    "incident has no agent-browser external operator URL"
+                )
+            url = str(row["operator_url"])
             request_id = _stable_id("observation-request", incident_id)
             conn.execute(
                 """INSERT OR IGNORE INTO service_incident_observations (

@@ -6,17 +6,21 @@ and deterministic supervisor never import browser or source adapters.
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
+import tempfile
 import threading
 import urllib.request
 from collections.abc import Callable, Mapping
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 from . import env as env_config
 from . import normalize
@@ -69,6 +73,18 @@ _PERMANENT_ERRORS = frozenset(
         "budget_exhausted",
     }
 )
+_RENDERED_PAGE_ERRORS = frozenset(
+    {
+        "auth_required",
+        "captcha_required",
+        "checkpoint_required",
+        "cloudflare_challenge",
+        "rate_limited",
+    }
+)
+_MAX_ACQUIRED_MEDIA_BYTES = 524_288
+_MAX_ACQUIRED_MEDIA_ITEM_BYTES = 262_144
+_MAX_RENDERED_PAGE_BYTES = 524_288
 _BOUNDED_REDDIT_ITEM_LIMIT = 3
 _BOUNDED_REDDIT_FALLBACK_TIMEOUT_SECONDS = 20
 _ACCESS_METHOD_BY_ADAPTER = {
@@ -402,6 +418,115 @@ def _sanitize(value: Any) -> Any:
     return str(value)[:512]
 
 
+def _external_operator_url(raw: Mapping[str, Any]) -> str | None:
+    value = raw.get("operator_url")
+    if not isinstance(value, str) or not value.strip() or len(value) > 4_096:
+        return None
+    parsed = urlparse(value)
+    if (
+        parsed.scheme != "https"
+        or not parsed.hostname
+        or parsed.hostname.casefold() in {"localhost", "127.0.0.1", "::1"}
+    ):
+        return None
+    return value
+
+
+def _capture_rendered_page(raw: dict[str, Any]) -> None:
+    """Capture the current agent-browser tab without requesting a Guac lease."""
+    if raw.get("rendered_page_base64") or raw.get("error_type") not in _RENDERED_PAGE_ERRORS:
+        return
+    session = raw.get("session")
+    if not isinstance(session, str) or not _PROFILE_ID.fullmatch(session):
+        return
+    try:
+        with tempfile.TemporaryDirectory(prefix="last30days-rendered-page-") as root:
+            output = Path(root) / "page.jpg"
+            completed = subprocess.run(
+                [
+                    "agent-browser",
+                    "--json",
+                    "--session",
+                    session,
+                    "screenshot",
+                    str(output),
+                    "--screenshot-format",
+                    "jpeg",
+                    "--screenshot-quality",
+                    "60",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=15,
+                encoding="utf-8",
+                errors="replace",
+            )
+            if completed.returncode != 0 or not output.is_file():
+                return
+            content = output.read_bytes()
+            if not content or len(content) > _MAX_RENDERED_PAGE_BYTES:
+                return
+            raw["rendered_page_base64"] = base64.b64encode(content).decode("ascii")
+            raw["rendered_page_mime_type"] = "image/jpeg"
+    except (OSError, subprocess.SubprocessError):
+        return
+
+
+def _materialized_media(
+    metadata: Mapping[str, Any],
+    fetcher: Callable[[str], tuple[bytes, str] | None] | None,
+) -> list[contracts.AcquiredMedia]:
+    if fetcher is None:
+        return []
+    raw_media = metadata.get("media")
+    if not isinstance(raw_media, list):
+        return []
+    output: list[contracts.AcquiredMedia] = []
+    for candidate in raw_media[:16]:
+        if not isinstance(candidate, Mapping):
+            continue
+        kind = str(candidate.get("kind") or "")
+        if kind == "image":
+            media_kind = "image"
+            source_url = candidate.get("url")
+        elif kind in {"video", "video_thumbnail"}:
+            media_kind = "video_thumbnail"
+            source_url = candidate.get("preview_url") or (
+                candidate.get("url") if kind == "video_thumbnail" else None
+            )
+        else:
+            continue
+        if not isinstance(source_url, str):
+            continue
+        parsed = urlparse(source_url)
+        if parsed.scheme != "https" or not parsed.hostname:
+            continue
+        fetched = fetcher(source_url)
+        if fetched is None:
+            continue
+        content, observed_mime_type = fetched
+        mime_type = str(candidate.get("mime_type") or observed_mime_type)
+        try:
+            output.append(
+                contracts.AcquiredMedia.from_dict(
+                    {
+                        "source_url": source_url,
+                        "content_base64": base64.b64encode(content).decode("ascii"),
+                        "mime_type": mime_type,
+                        "media_kind": media_kind,
+                        "alt_text": (
+                            str(candidate["alt_text"])
+                            if candidate.get("alt_text")
+                            else None
+                        ),
+                    }
+                )
+            )
+        except contracts.ContractValidationError:
+            continue
+    return output
+
+
 def _retry_class(error_code: str) -> contracts.RetryClass:
     if error_code in _OPERATOR_ERRORS:
         return contracts.RetryClass.OPERATOR
@@ -458,7 +583,10 @@ def _failure_signature(
 
 
 def _normalized_items(
-    request: contracts.AcquisitionWorkRequest, raw_items: list[dict[str, Any]]
+    request: contracts.AcquisitionWorkRequest,
+    raw_items: list[dict[str, Any]],
+    *,
+    media_fetcher: Callable[[str], tuple[bytes, str] | None] | None = None,
 ) -> list[contracts.AcquiredItem]:
     if request.adapter == "linkedin_profile_agent_browser":
         items: list[contracts.AcquiredItem] = []
@@ -476,6 +604,10 @@ def _normalized_items(
                         "author": raw.get("author"),
                         "published_at": None,
                         "metadata": metadata,
+                        "media": [
+                            value.to_dict()
+                            for value in _materialized_media(metadata, media_fetcher)
+                        ],
                     }
                 )
             )
@@ -512,6 +644,10 @@ def _normalized_items(
                     "author": item.author,
                     "published_at": item.published_at,
                     "metadata": metadata,
+                    "media": [
+                        value.to_dict()
+                        for value in _materialized_media(metadata, media_fetcher)
+                    ],
                 }
             )
         )
@@ -570,6 +706,7 @@ def execute_work(
     now = clock or (lambda: datetime.now(timezone.utc))
     observed_at = now().astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
     network_count = 0
+    media_urlopen: Callable[..., Any] | None = None
     try:
         source_policy = load_service_source_policy(config)
         source_policy.access_order(request.source)
@@ -609,6 +746,7 @@ def execute_work(
                     raise RuntimeError("network request budget exhausted")
             return original_urlopen(*args, **kwargs)
 
+        media_urlopen = bounded_urlopen
         urllib.request.urlopen = bounded_urlopen
         try:
             raw = adapter(request, config)
@@ -620,6 +758,8 @@ def execute_work(
             }
         finally:
             urllib.request.urlopen = original_urlopen
+        if isinstance(raw, dict):
+            _capture_rendered_page(raw)
         if network_exhausted:
             raw = {
                 "items": [],
@@ -654,8 +794,43 @@ def execute_work(
     raw_items = raw.get("items")
     if not isinstance(raw_items, list):
         raw_items = []
+    remaining_media_bytes = _MAX_ACQUIRED_MEDIA_BYTES
+
+    def fetch_media(source_url: str) -> tuple[bytes, str] | None:
+        nonlocal remaining_media_bytes
+        if (
+            media_urlopen is None
+            or network_count >= request.network_request_limit
+            or remaining_media_bytes <= 0
+        ):
+            return None
+        maximum = min(_MAX_ACQUIRED_MEDIA_ITEM_BYTES, remaining_media_bytes)
+        try:
+            source_request = urllib.request.Request(
+                source_url,
+                headers={"User-Agent": "last30days-media-fetch/1"},
+            )
+            with media_urlopen(
+                source_request,
+                timeout=min(10, request.wall_timeout_seconds),
+            ) as response:
+                content = response.read(maximum + 1)
+                mime_type = str(
+                    response.headers.get("Content-Type", "application/octet-stream")
+                ).split(";", 1)[0]
+        except (OSError, RuntimeError, TimeoutError, ValueError):
+            return None
+        if not content or len(content) > maximum:
+            return None
+        remaining_media_bytes -= len(content)
+        return content, mime_type
+
     try:
-        items = _normalized_items(request, raw_items)
+        items = _normalized_items(
+            request,
+            raw_items,
+            media_fetcher=fetch_media,
+        )
     except (TypeError, ValueError, contracts.ContractValidationError):
         items = []
         raw = {
@@ -754,6 +929,20 @@ def execute_work(
             "item_count": len(items),
             "cost_cents": cost_cents,
             "diagnostics": diagnostics,
+            **(
+                {"operator_url": operator_url}
+                if (operator_url := _external_operator_url(raw)) is not None
+                else {}
+            ),
+            **(
+                {
+                    "rendered_page_base64": raw["rendered_page_base64"],
+                    "rendered_page_mime_type": raw["rendered_page_mime_type"],
+                }
+                if raw.get("rendered_page_base64")
+                and raw.get("rendered_page_mime_type")
+                else {}
+            ),
             "network_request_count": network_count,
             "attempted_count": observed_count,
             "observed_count": observed_count,

@@ -9250,3 +9250,76 @@ Next Bounded Action:
   diff and build/install/rollback artifact, then request an explicit bounded
   T08 human/live packet. Keep install, user config, live sources,
   notifications, Guac, recurrence, push, tag, publication, and release closed.
+
+## Turn 148 | 2026-08-04
+
+Focus: close Plan 0023's deterministic production media, rendered-page, and
+operator-route bridge before exact candidate review and T08.
+
+Authority Consulted:
+
+- Plan 0023 V1/C05; Roadmap P07; Runbook Turn 147; planning, documentation,
+  validation, Git, goal, Graphiti, roadmap/runbook, and architecture policies;
+  the agent-browser, TDD, and codebase-design skill instructions; current
+  CodeGraph structure and direct edited-file readback.
+
+Decisions And Changes:
+
+- added bounded typed image and video-thumbnail bytes to worker results and
+  decoded them into the existing content-addressed tick artifact path, with an
+  aggregate 524288-byte binary-evidence envelope;
+- captured problematic rendered agent-browser pages on the current session
+  without requesting remote view or a Guacamole observation lease;
+- persisted only direct external HTTPS operator routes on incidents and made
+  acknowledgment-gated observation return that stored route; caller-supplied,
+  localhost, and loopback links now fail closed;
+- required an absolute user-scoped artifact root and allowed deployments to
+  supply a code-owned provider registry while user config only selects
+  registered adapter types;
+- advanced the unreleased service 0.3.0 candidate to database schema 14 and
+  synchronized its generated Go catalog, installer, runtime manifest,
+  configuration reference, and changelog.
+
+Validation Evidence:
+
+- TDD recorded six initial seam failures plus separate aggregate-evidence and
+  partial-result screenshot RED/GREEN cases; the final focused
+  contract/worker/runner set passes 59/59;
+- the complete Python suite exits zero, all Go packages pass, Python compiles,
+  both JSON schemas parse, `git diff --check` passes, and the authority audit
+  passes 8/8;
+- three byte-identical service builds produce
+  `dist/service/last30days-service-0.3.0.tar.gz` at SHA-256
+  `4f8a92db987b15c7de4d16bf966743198f55b4c6e610413aa93f299340e908d6`;
+- read-only installed-runtime postflight remains 0.2.29/schema 12/ready, and
+  the 42 collection specifications remain disabled. No user config, source,
+  notification, Guac lease, install, timer, remote, or recipient was touched.
+
+State Movement:
+
+- Plan 0023 remains Version 1 and advances `C05 -> C06`;
+- `t08_candidate_review_pending -> exact_candidate_review_pending`; the local
+  production carriage gap is closed, while independent review, install and
+  rollback proof, user-config readback, live T08, and closeout remain open.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the active runtime instruction explicitly prohibited
+  delegation. Independent evaluation was therefore unavailable and is not
+  represented as passed.
+
+Graphiti Write Status:
+
+- provider readiness passed. The initial episode remains `running` as job
+  `44b0d8e8-f171-4e43-9ac3-60c6e8ee97cd`; final review then changed the
+  artifact digest, so correction episode `Plan 0023 C06 final artifact
+  correction` was queued behind it as job
+  `ea998210-8dca-44eb-9d43-06b1457294e2`. The correction explicitly
+  supersedes the earlier in-slice digest.
+
+Next Bounded Action:
+
+- independently review the coherent local C06 candidate commit and its
+  reproducible build/install/rollback artifact, then ask for separately
+  bounded T08 human/live authority. Keep install, user config, live sources,
+  notifications, Guac, recurrence, push, tag, publication, and release closed.

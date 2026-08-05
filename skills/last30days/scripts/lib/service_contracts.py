@@ -7,6 +7,8 @@ implementation details.
 
 from __future__ import annotations
 
+import base64
+import binascii
 import hashlib
 import json
 import re
@@ -15,6 +17,7 @@ from datetime import datetime, timezone
 from enum import StrEnum
 from pathlib import Path
 from typing import Any, ClassVar, Mapping
+from urllib.parse import urlparse
 
 
 SCHEMA_VERSION = 1
@@ -25,6 +28,7 @@ SCHEMA_CATALOG_PATH = (
     / f"service-contracts-v{SCHEMA_VERSION}.json"
 )
 SCHEMA_CATALOG_SHA256 = hashlib.sha256(SCHEMA_CATALOG_PATH.read_bytes()).hexdigest()
+MAX_ACQUISITION_BINARY_EVIDENCE_BYTES = 524_288
 FORBIDDEN_LEDGER_FIELDS = frozenset(
     {
         "access_token",
@@ -1466,6 +1470,58 @@ class AcquisitionWorkRequest:
 
 
 @dataclass(frozen=True)
+class AcquiredMedia:
+    """Bounded binary media carried across the isolated worker boundary."""
+
+    source_url: str
+    content_base64: str
+    mime_type: str
+    media_kind: str
+    alt_text: str | None
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> AcquiredMedia:
+        fields = frozenset(
+            {"source_url", "content_base64", "mime_type", "media_kind", "alt_text"}
+        )
+        _require_exact_fields(payload, required=fields)
+        encoded = _require_bounded_string(
+            payload["content_base64"], "content_base64", 699_052
+        )
+        try:
+            content = base64.b64decode(encoded, validate=True)
+        except (binascii.Error, ValueError) as exc:
+            raise ContractValidationError("content_base64 must be valid base64") from exc
+        if not content or len(content) > 524_288:
+            raise ContractValidationError(
+                "decoded media content must contain between 1 and 524288 bytes"
+            )
+        media_kind = _require_bounded_string(
+            payload["media_kind"], "media_kind", 64
+        )
+        if media_kind not in {"image", "video_thumbnail"}:
+            raise ContractValidationError("media_kind is unsupported")
+        return cls(
+            source_url=_require_bounded_string(
+                payload["source_url"], "source_url", 4096
+            ),
+            content_base64=encoded,
+            mime_type=_require_bounded_string(payload["mime_type"], "mime_type", 256),
+            media_kind=media_kind,
+            alt_text=_require_optional_string(payload["alt_text"], "alt_text"),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "source_url": self.source_url,
+            "content_base64": self.content_base64,
+            "mime_type": self.mime_type,
+            "media_kind": self.media_kind,
+            "alt_text": self.alt_text,
+        }
+
+
+@dataclass(frozen=True)
 class AcquiredItem:
     """One normalized, sanitized content item returned by a source worker."""
 
@@ -1476,6 +1532,7 @@ class AcquiredItem:
     author: str | None
     published_at: str | None
     metadata: dict[str, Any]
+    media: list[AcquiredMedia]
 
     @classmethod
     def from_dict(cls, payload: Mapping[str, Any]) -> AcquiredItem:
@@ -1490,7 +1547,10 @@ class AcquiredItem:
                 "metadata",
             }
         )
-        _require_exact_fields(payload, required=fields)
+        _require_exact_fields(payload, required=fields, optional=frozenset({"media"}))
+        raw_media = payload.get("media", [])
+        if not isinstance(raw_media, list) or len(raw_media) > 16:
+            raise ContractValidationError("media must be a bounded array")
         return cls(
             source_native_id=_require_bounded_string(
                 payload["source_native_id"], "source_native_id", 512
@@ -1503,10 +1563,11 @@ class AcquiredItem:
                 payload["published_at"], "published_at"
             ),
             metadata=_validate_json_object(payload["metadata"], "metadata"),
+            media=[AcquiredMedia.from_dict(value) for value in raw_media],
         )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "source_native_id": self.source_native_id,
             "url": self.url,
             "title": self.title,
@@ -1515,6 +1576,9 @@ class AcquiredItem:
             "published_at": self.published_at,
             "metadata": dict(self.metadata),
         }
+        if self.media:
+            payload["media"] = [value.to_dict() for value in self.media]
+        return payload
 
 
 @dataclass(frozen=True)
@@ -1538,6 +1602,9 @@ class AcquisitionWorkResult:
     item_count: int
     cost_cents: int
     diagnostics: dict[str, Any]
+    operator_url: str | None = None
+    rendered_page: bytes | None = None
+    rendered_page_mime_type: str | None = None
     network_request_count: int | None = None
     attempted_count: int | None = None
     observed_count: int | None = None
@@ -1571,6 +1638,9 @@ class AcquisitionWorkResult:
                 "diagnostics",
             }
         )
+        evidence_fields = frozenset(
+            {"operator_url", "rendered_page_base64", "rendered_page_mime_type"}
+        )
         observability_fields = frozenset(
             {
                 "network_request_count",
@@ -1583,7 +1653,7 @@ class AcquisitionWorkResult:
         _require_exact_fields(
             payload,
             required=fields,
-            optional=observability_fields,
+            optional=observability_fields | evidence_fields,
         )
         try:
             status = AcquisitionStatus(payload["status"])
@@ -1596,6 +1666,15 @@ class AcquisitionWorkResult:
         if not isinstance(raw_items, list) or len(raw_items) > 10_000:
             raise ContractValidationError("items must be a bounded array")
         items = [AcquiredItem.from_dict(item) for item in raw_items]
+        binary_evidence_bytes = sum(
+            len(base64.b64decode(media.content_base64, validate=True))
+            for item in items
+            for media in item.media
+        )
+        if binary_evidence_bytes > MAX_ACQUISITION_BINARY_EVIDENCE_BYTES:
+            raise ContractValidationError(
+                "aggregate binary evidence exceeds the 524288-byte limit"
+            )
         item_count = _require_integer_between(
             payload["item_count"], "item_count", 0, 10_000
         )
@@ -1675,6 +1754,51 @@ class AcquisitionWorkResult:
             raise ContractValidationError(
                 "non-success results require a retry classification"
             )
+        operator_url = payload.get("operator_url")
+        if operator_url is not None:
+            operator_url = _require_bounded_string(operator_url, "operator_url", 4096)
+            parsed = urlparse(operator_url)
+            if (
+                parsed.scheme != "https"
+                or not parsed.hostname
+                or parsed.hostname.casefold() in {"localhost", "127.0.0.1", "::1"}
+            ):
+                raise ContractValidationError(
+                    "operator_url must be an external HTTPS URL"
+                )
+            if status is AcquisitionStatus.SUCCEEDED:
+                raise ContractValidationError(
+                    "succeeded results cannot carry an operator URL"
+                )
+        encoded_page = payload.get("rendered_page_base64")
+        page_mime = payload.get("rendered_page_mime_type")
+        if (encoded_page is None) != (page_mime is None):
+            raise ContractValidationError(
+                "rendered page bytes and MIME type must be supplied together"
+            )
+        rendered_page = None
+        if encoded_page is not None:
+            encoded_page = _require_bounded_string(
+                encoded_page, "rendered_page_base64", 699_052
+            )
+            try:
+                rendered_page = base64.b64decode(encoded_page, validate=True)
+            except (binascii.Error, ValueError) as exc:
+                raise ContractValidationError(
+                    "rendered_page_base64 must be valid base64"
+                ) from exc
+            if not rendered_page or len(rendered_page) > 524_288:
+                raise ContractValidationError(
+                    "rendered page must contain between 1 and 524288 bytes"
+                )
+            binary_evidence_bytes += len(rendered_page)
+            if binary_evidence_bytes > MAX_ACQUISITION_BINARY_EVIDENCE_BYTES:
+                raise ContractValidationError(
+                    "aggregate binary evidence exceeds the 524288-byte limit"
+                )
+            page_mime = _require_bounded_string(
+                page_mime, "rendered_page_mime_type", 256
+            )
         if retry_after is not None and retry_class not in {
             RetryClass.RATE_LIMIT,
             RetryClass.TRANSIENT,
@@ -1715,6 +1839,9 @@ class AcquisitionWorkResult:
             diagnostics=_validate_json_object(
                 payload["diagnostics"], "diagnostics"
             ),
+            operator_url=operator_url,
+            rendered_page=rendered_page,
+            rendered_page_mime_type=page_mime,
             network_request_count=network_request_count,
             attempted_count=attempted_count,
             observed_count=observed_count,
@@ -1752,6 +1879,13 @@ class AcquisitionWorkResult:
                     "rejected_count": self.rejected_count,
                 }
             )
+        if self.operator_url is not None:
+            payload["operator_url"] = self.operator_url
+        if self.rendered_page is not None:
+            payload["rendered_page_base64"] = base64.b64encode(
+                self.rendered_page
+            ).decode("ascii")
+            payload["rendered_page_mime_type"] = self.rendered_page_mime_type
         return payload
 
 

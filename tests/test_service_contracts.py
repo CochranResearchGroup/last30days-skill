@@ -1,5 +1,7 @@
 """Behavioral tests for the versioned intelligence-service contracts."""
 
+import base64
+
 import pytest
 
 from lib import service_contracts as contracts
@@ -168,6 +170,55 @@ def test_acquisition_work_result_round_trips_sanitized_items_and_retry_state():
     result = contracts.AcquisitionWorkResult.from_dict(payload)
 
     assert result.to_dict() == payload
+
+
+def test_acquisition_work_result_rejects_aggregate_binary_evidence_over_limit():
+    content = base64.b64encode(b"x" * 262_145).decode("ascii")
+    payload = {
+        "schema_version": 1,
+        "work_id": "work-binary-limit",
+        "job_id": "job-binary-limit",
+        "lease_generation": 1,
+        "source": "facebook",
+        "adapter": "facebook_agent_browser",
+        "adapter_version": "1",
+        "status": "succeeded",
+        "safe_error_code": None,
+        "retry_class": "none",
+        "retry_after_seconds": None,
+        "observed_at": "2026-08-04T12:00:00Z",
+        "fetched_at": "2026-08-04T12:00:01Z",
+        "items": [
+            {
+                "source_native_id": "post-001",
+                "url": "https://facebook.example/posts/1",
+                "title": "Bounded media",
+                "text": "Two individually valid artifacts exceed the envelope.",
+                "author": None,
+                "published_at": None,
+                "metadata": {},
+                "media": [
+                    {
+                        "source_url": f"https://media.example/{index}.jpg",
+                        "content_base64": content,
+                        "mime_type": "image/jpeg",
+                        "media_kind": "image",
+                        "alt_text": None,
+                    }
+                    for index in range(2)
+                ],
+            }
+        ],
+        "item_count": 1,
+        "cost_cents": 0,
+        "diagnostics": {},
+    }
+
+    with pytest.raises(
+        contracts.ContractValidationError,
+        match="aggregate binary evidence",
+    ):
+        contracts.AcquisitionWorkResult.from_dict(payload)
 
 
 def test_acquisition_work_result_round_trips_exact_observability_counts():
@@ -485,7 +536,7 @@ def test_schema_catalog_is_the_golden_contract_for_every_v1_envelope():
     assert catalog["compatibility"] == {
         "product": "last30days",
         "service_api": {"min": 1, "max": 1},
-        "database_schema": {"min": 13, "max": 13},
+        "database_schema": {"min": 14, "max": 14},
     }
     assert set(catalog["contracts"]) == {
         "query_request",
@@ -597,8 +648,8 @@ def test_service_info_round_trips_dynamic_runtime_capabilities():
         "mcp_adapter_version": "4.0.1",
         "mcp_supported_service_api_min": 1,
         "mcp_supported_service_api_max": 1,
-        "mcp_supported_database_schema_min": 13,
-        "mcp_supported_database_schema_max": 13,
+        "mcp_supported_database_schema_min": 14,
+        "mcp_supported_database_schema_max": 14,
         "compatibility_state": "compatible",
         "status": "ready",
         "capabilities": ["cache_query", "lexical_search", "semantic_search"],

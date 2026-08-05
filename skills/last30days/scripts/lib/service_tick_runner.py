@@ -9,6 +9,7 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 from .service_tick_anomalies import AnomalyMonitor, AnomalyRule
 from .service_tick_analysis import (
@@ -167,6 +168,7 @@ class ProviderResult:
     page_signals: tuple[str, ...] = ()
     rendered_page: bytes | None = None
     rendered_page_mime_type: str | None = None
+    operator_url: str | None = None
     outcome_counts: dict[str, int] | None = None
 
     def __post_init__(self) -> None:
@@ -185,6 +187,15 @@ class ProviderResult:
             _text(self.safe_error_code, "safe_error_code", 64)
         if self.rendered_page is not None and not self.rendered_page_mime_type:
             raise ValueError("rendered page bytes require a MIME type")
+        if self.operator_url is not None:
+            _text(self.operator_url, "operator_url", 4_096)
+            parsed = urlparse(self.operator_url)
+            if (
+                parsed.scheme != "https"
+                or not parsed.hostname
+                or parsed.hostname.casefold() in {"localhost", "127.0.0.1", "::1"}
+            ):
+                raise ValueError("operator URL must be an external HTTPS URL")
         counts = self.outcome_counts
         if counts is None:
             counts = {
@@ -213,11 +224,11 @@ class ProviderResult:
     def success(
         cls, *, items: tuple[CollectedItem, ...], usage: Mapping[str, object]
     ) -> ProviderResult:
-        return cls("success", items, dict(usage))
+        return cls(status="success", items=items, usage=dict(usage))
 
     @classmethod
     def empty(cls, *, usage: Mapping[str, object]) -> ProviderResult:
-        return cls("empty", (), dict(usage))
+        return cls(status="empty", items=(), usage=dict(usage))
 
     @classmethod
     def failure(
@@ -229,16 +240,18 @@ class ProviderResult:
         page_signals: tuple[str, ...] = (),
         rendered_page: bytes | None = None,
         rendered_page_mime_type: str | None = None,
+        operator_url: str | None = None,
     ) -> ProviderResult:
         return cls(
-            "failure",
-            (),
-            dict(usage),
-            failure_class,
-            safe_error_code,
-            page_signals,
-            rendered_page,
-            rendered_page_mime_type,
+            status="failure",
+            items=(),
+            usage=dict(usage),
+            failure_class=failure_class,
+            safe_error_code=safe_error_code,
+            page_signals=page_signals,
+            rendered_page=rendered_page,
+            rendered_page_mime_type=rendered_page_mime_type,
+            operator_url=operator_url,
         )
 
 
@@ -355,6 +368,7 @@ class TickRunner:
             "safe_error_code": result.safe_error_code,
             "page_signals": list(result.page_signals),
             "rendered_page": rendered_page,
+            "operator_url": result.operator_url,
             "outcome_counts": result.outcome_counts,
         }
 
@@ -448,6 +462,7 @@ class TickRunner:
             rendered_page_mime_type=(
                 rendered.get("mime_type") if isinstance(rendered, Mapping) else None
             ),
+            operator_url=payload.get("operator_url"),
             outcome_counts=dict(payload.get("outcome_counts", {})),
         )
 
@@ -1479,6 +1494,7 @@ class TickRunner:
                 access_partition_id=str(lane["access_partition_id"]),
                 rendered_page=result.rendered_page,
                 rendered_page_mime_type=result.rendered_page_mime_type,
+                operator_url=result.operator_url,
             )
         )
         try:

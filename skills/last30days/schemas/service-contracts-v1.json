@@ -5,7 +5,7 @@
   "compatibility": {
     "product": "last30days",
     "service_api": {"min": 1, "max": 1},
-    "database_schema": {"min": 13, "max": 13}
+    "database_schema": {"min": 14, "max": 14}
   },
   "contracts": {
     "tick_request": {
@@ -725,11 +725,36 @@
               "text": {"type": "string", "minLength": 1, "maxLength": 65536},
               "author": {"type": ["string", "null"]},
               "published_at": {"type": ["string", "null"]},
-              "metadata": {"type": "object"}
+              "metadata": {"type": "object"},
+              "media": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "source_url",
+                    "content_base64",
+                    "mime_type",
+                    "media_kind",
+                    "alt_text"
+                  ],
+                  "properties": {
+                    "source_url": {"type": "string", "minLength": 1, "maxLength": 4096},
+                    "content_base64": {"type": "string", "minLength": 1, "maxLength": 699052, "contentEncoding": "base64"},
+                    "mime_type": {"type": "string", "minLength": 1, "maxLength": 256},
+                    "media_kind": {"type": "string", "enum": ["image", "video_thumbnail"]},
+                    "alt_text": {"type": ["string", "null"]}
+                  }
+                }
+              }
             }
           }
         },
         "item_count": {"type": "integer", "minimum": 0, "maximum": 10000},
+        "operator_url": {"type": "string", "format": "uri", "minLength": 1, "maxLength": 4096},
+        "rendered_page_base64": {"type": "string", "minLength": 1, "maxLength": 699052, "contentEncoding": "base64"},
+        "rendered_page_mime_type": {"type": "string", "minLength": 1, "maxLength": 256},
         "network_request_count": {
           "type": "integer",
           "minimum": 0,

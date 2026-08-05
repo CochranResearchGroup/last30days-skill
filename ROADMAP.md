@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 1/C05; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 1/C06; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -773,13 +773,15 @@ Current State:
   records five terminal one-attempt receipts, seven accepted items, verified
   post-terminal reveal commitments, and 20% hidden class/range accuracy. C76
   accepts terminal independent review after one documented Roadmap authority
-  repair and exact bounded recheck. Plan 0023/C05 now has a deterministically
-  validated service-0.3.0/schema-13 candidate whose staged provider results,
-  raw-first replay, terminal-lane recovery, and durable snapshot
-  reconstruction close T07 without a duplicate source call. The installed
-  runtime remains 0.2.29/schema 12; candidate review, install/rollback,
-  user-config readback, live T08 acceptance, recurrence, and release actions
-  remain closed.
+  repair and exact bounded recheck. Plan 0023/C06 now has a deterministically
+  validated service-0.3.0/schema-14 candidate whose staged provider results,
+  raw-first replay, terminal-lane recovery, durable snapshot reconstruction,
+  typed image/video-thumbnail carriage, programmatic rendered-page capture,
+  and acknowledgment-gated external agent-browser route close the local T07
+  bridge without a duplicate source call or Guac observation lease. The
+  installed runtime remains 0.2.29/schema 12; independent candidate review,
+  install/rollback, user-config readback, live T08 acceptance, recurrence, and
+  release actions remain closed.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.

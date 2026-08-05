@@ -2,11 +2,17 @@
 
 from __future__ import annotations
 
+import base64
 from datetime import datetime
 
 from . import service_contracts as contracts
 from .service_tick_adapters import AdapterRegistry, AdapterSpec
-from .service_tick_runner import CollectedItem, ProviderContext, ProviderResult
+from .service_tick_runner import (
+    CollectedItem,
+    CollectedMedia,
+    ProviderContext,
+    ProviderResult,
+)
 
 
 _ADAPTERS = {
@@ -104,6 +110,18 @@ class AcquisitionWorkerTickAdapter:
                 text=item.text,
                 author=item.author,
                 published_at=item.published_at,
+                media=tuple(
+                    CollectedMedia(
+                        source_url=media.source_url,
+                        content=base64.b64decode(
+                            media.content_base64, validate=True
+                        ),
+                        mime_type=media.mime_type,
+                        media_kind=media.media_kind,
+                        alt_text=media.alt_text,
+                    )
+                    for media in item.media
+                ),
                 metadata=dict(item.metadata),
             )
             for item in result.items
@@ -146,6 +164,9 @@ class AcquisitionWorkerTickAdapter:
                 ),
                 safe_error_code=result.safe_error_code,
                 page_signals=tuple(result.diagnostics.get("page_signals") or ()),
+                operator_url=result.operator_url,
+                rendered_page=result.rendered_page,
+                rendered_page_mime_type=result.rendered_page_mime_type,
                 outcome_counts=outcome_counts,
             )
         if result.status is contracts.AcquisitionStatus.SUCCEEDED:
@@ -162,6 +183,9 @@ class AcquisitionWorkerTickAdapter:
             failure_class=_failure_class(result),
             safe_error_code=result.safe_error_code or "source_error",
             page_signals=tuple(result.diagnostics.get("page_signals") or ()),
+            operator_url=result.operator_url,
+            rendered_page=result.rendered_page,
+            rendered_page_mime_type=result.rendered_page_mime_type,
             outcome_counts=outcome_counts,
         )
 
