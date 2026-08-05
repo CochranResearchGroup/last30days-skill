@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 2/C20; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 2/C21; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -836,7 +836,11 @@ Current State:
   is green at C19. C20 binds exact commit `9442be9`, reproducible artifact
   `b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2`,
   schema-15 isolated lifecycle proof, and receipt 0044 for the sole bounded
-  recheck; every real/live and recurrence gate remains closed.
+  recheck. C21 records terminal PASS with no remaining finding at receipt
+  0045. The sanitized preflight prerequisite is locally accepted; Plan 0023
+  remains OPEN at the explicit human gate for exact real install, sanitized
+  user-config preflight/readback, and separately gated manual T08. Recurrence
+  remains prohibited; every real/live gate remains closed.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.

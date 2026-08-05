@@ -10131,3 +10131,54 @@ Next Bounded Action:
 - commit C20/receipt 0044, submit exact commit/artifact/receipt to the existing
   evaluator, and stop after its sole terminal result without crossing any real
   or recurrence gate.
+
+## Turn 164 | 2026-08-05
+
+Focus: reconcile the sole C17 recheck terminal PASS and close the local
+sanitized-preflight prerequisite at the human gate.
+
+Authority Consulted:
+
+- Plan 0023 V2/C20, Roadmap P07, Runbook Turn 163; evaluator terminal PASS,
+  exact commits/artifact/manifest, receipts 0044/0045, and Manual Acceptance
+  Gate authority.
+
+Decisions And Changes:
+
+- accepted the consolidated local repair with no remaining finding;
+- created terminal review receipt 0045 and advanced current authority to C21;
+- kept Plan 0023 OPEN because installed/runtime/user-config/live T08 proof does
+  not exist and was not authorized;
+- prohibited recurrence until one manual T08 tick is separately accepted.
+
+Validation Evidence:
+
+- independent replay passed missing OCR, missing sidecar, control-character,
+  nonnumeric-port, and out-of-range-port rejection with zero readiness/state;
+- the reviewer passed 36 focused tests, verified all 128 manifest entries and
+  embedded manifest, reproduced two identical builds, matched artifact and
+  manifest hashes, and accepted lifecycle receipt 0044;
+- worktree was clean at reviewed evidence commit `ee1b897`; no real/live,
+  remote, notification, Guac, cost, timer, push, tag, or release action ran.
+
+State Movement:
+
+- Plan 0023 advances `C20 -> C21`;
+- `t08_preflight_exact_recheck_pending -> t08_preflight_locally_accepted_human_gate`.
+
+Subagent Status And Reconciliation:
+
+- the existing evaluator returned terminal PASS and its bounded recheck is
+  complete. No further review/rework slot remains under C16/C17.
+
+Graphiti Write Status:
+
+- terminal local outcome is eligible for one corrected compact write to
+  policy group `last30days_skill_main`, source-backed by Plan C21 and receipts
+  0044/0045; repo-native artifacts remain operational authority.
+
+Next Bounded Action:
+
+- stop at the human gate. A successor authorization must name exact install,
+  sanitized real-config preflight/readback, and separately bounded manual T08
+  scope. Do not schedule a timer.

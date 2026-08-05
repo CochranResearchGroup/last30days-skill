@@ -1,0 +1,37 @@
+{
+  "artifact": {
+    "archive_manifest_entries_verified": 128,
+    "runtime_artifact_sha256": "b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2",
+    "runtime_manifest_sha256": "da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514",
+    "service_version": "0.3.0"
+  },
+  "closed_gates_confirmed": [
+    "real_installation",
+    "user_config_access_or_mutation",
+    "live_provider_execution",
+    "real_notification",
+    "guacamole_observation_lease",
+    "timer_or_schedule",
+    "push_tag_or_release",
+    "paid_call_or_ceiling_change"
+  ],
+  "evidence_commit": "ee1b8977f19908ec58b9431d8662b87274c98422",
+  "findings": [],
+  "implementation_commit": "9442be934e27231ad1f3bf3233a8c9d2db59132c",
+  "plan": "0023",
+  "review": {
+    "analysis_adapter_admission": "passed",
+    "artifact_and_package": "passed",
+    "closed_gate_compliance": "passed",
+    "focused_matrix_passed": 36,
+    "notification_readiness_calls_on_rejection": 0,
+    "observation_authority_admission": "passed",
+    "reproducible_builds": "passed",
+    "reviewer": "/root/p0023_c06_review",
+    "state_writes_on_rejection": 0,
+    "worktree_clean": true
+  },
+  "schema_version": 1,
+  "status": "terminal_pass",
+  "verified_at": "2026-08-05T03:22:46-05:00"
+}

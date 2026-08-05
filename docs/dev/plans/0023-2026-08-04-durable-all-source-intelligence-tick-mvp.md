@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C20 is the current authority.
+Checkpoint P0023-C21 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1890,3 +1890,56 @@ Next action:
 
 - commit this evidence checkpoint and receipt, then send the exact successor
   to the existing evaluator for the sole terminal recheck.
+
+### Checkpoint P0023-C21 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `t08_preflight_exact_recheck_pending -> t08_preflight_locally_accepted_human_gate`.
+
+Progress classification:
+
+- `outcome_progress`; the sole independent recheck returned terminal PASS with
+  no remaining finding, accepting the complete local sanitized-preflight
+  prerequisite.
+
+Independent acceptance evidence:
+
+- both uninstalled enabled analysis-adapter cases independently raised
+  `AnalysisAdapterError` before readiness with zero database/artifact state;
+- control-character, nonnumeric-port, and out-of-range-port observation URLs
+  independently raised `TickConfigError` before readiness with zero state;
+- the evaluator confirmed runtime assembly passes the exact admitted analysis
+  registry object into `TickRunner`;
+- the 36-test adversarial matrix, all 128 archive manifest entries, embedded
+  manifest, two fresh byte-identical builds, exact artifact/manifest hashes,
+  schema-15 lifecycle receipt, SQLite integrity, clean worktree, and every
+  closed gate passed;
+- durable terminal review receipt:
+  `docs/dev/notes/0045-service-0.3.0-preflight-rework-independent-review-receipt.json`.
+
+Accepted local outcome:
+
+- exact install candidate remains implementation commit `9442be9`, artifact
+  SHA-256 `b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2`;
+- the Manual Acceptance Gate now has a locally accepted, side-effect-free,
+  sanitized config/readiness preflight prerequisite;
+- this does not prove or authorize the real installed candidate, real
+  user-scoped configuration, real transport readiness, live provider behavior,
+  real notification delivery, or the manual T08 outcome.
+
+Authority classification:
+
+- `human_gate`; the local C13-C21 packet is complete. Plan 0023 remains OPEN.
+  The next action requires explicit authority to install the exact candidate,
+  read the real user-scoped config through sanitized preflight, and then admit
+  one bounded manual T08 tick under separately reviewed live ceilings. Timer
+  scheduling remains prohibited until T08 is accepted.
+
+Next action:
+
+- stop. Seek one reviewed human authorization packet for exact candidate
+  install, sanitized real-config preflight/readback, and a separately gated
+  bounded manual T08 tick; do not schedule recurrence.
