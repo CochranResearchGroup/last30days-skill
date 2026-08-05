@@ -4,7 +4,12 @@ from __future__ import annotations
 
 import json
 
-from lib.service_tick_observation import AgentBrowserObservationTransport
+import pytest
+
+from lib.service_tick_observation import (
+    AgentBrowserObservationTransport,
+    ObservationTransportError,
+)
 
 
 class Response:
@@ -71,9 +76,20 @@ def test_agent_browser_transport_resolves_route_then_posts_view_takeover():
             {
                 "success": True,
                 "data": {
-                    "status": "ready",
+                    "status": "accepted",
+                    "takeoverStatus": "accepted",
+                    "takeoverRequested": True,
+                    "reconnectRequested": True,
+                    "browserProcessPreserved": True,
+                    "browserId": "browser-x-1",
+                    "sessionName": "last30days-facebook",
+                    "streamId": "stream-rdp-1",
+                    "provider": "rdp_gateway",
+                    "openMode": "external",
+                    "providerMode": "provider_single_view",
                     "viewerLeaseId": "viewer-lease-1",
-                    "externalUrl": "https://guac.example.test/client/fresh",
+                    "lastViewerEvent": "takeover_requested",
+                    "serviceEventId": "viewer-takeover-event-1",
                 },
             }
         )
@@ -89,7 +105,7 @@ def test_agent_browser_transport_resolves_route_then_posts_view_takeover():
     )
 
     assert lease.viewer_lease_id == "viewer-lease-1"
-    assert lease.public_operator_url == "https://guac.example.test/client/fresh"
+    assert lease.public_operator_url == "https://guac.example.test/client/stored"
     assert [request.get_method() for request, _ in requests] == [
         "GET",
         "GET",
@@ -111,3 +127,83 @@ def test_agent_browser_transport_resolves_route_then_posts_view_takeover():
             "openMode": "external",
         },
     }
+
+
+@pytest.mark.parametrize(
+    ("field", "invalid"),
+    [
+        ("status", "ready"),
+        ("browserProcessPreserved", False),
+        ("browserId", "browser-x-other"),
+        ("sessionName", "other-session"),
+        ("streamId", "stream-rdp-other"),
+        ("provider", "other-provider"),
+        ("openMode", "iframe"),
+        ("viewerLeaseId", ""),
+    ],
+)
+def test_agent_browser_transport_rejects_unproven_takeover_identity(field, invalid):
+    takeover = {
+        "status": "accepted",
+        "takeoverStatus": "accepted",
+        "takeoverRequested": True,
+        "reconnectRequested": True,
+        "browserProcessPreserved": True,
+        "browserId": "browser-x-1",
+        "sessionName": "last30days-facebook",
+        "streamId": "stream-rdp-1",
+        "provider": "rdp_gateway",
+        "openMode": "external",
+        "viewerLeaseId": "viewer-lease-1",
+        "lastViewerEvent": "takeover_requested",
+        "serviceEventId": "viewer-takeover-event-1",
+    }
+    takeover[field] = invalid
+    responses = iter(
+        [
+            {
+                "success": True,
+                "data": {
+                    "browsers": [
+                        {
+                            "id": "browser-x-1",
+                            "activeSessionIds": ["last30days-facebook"],
+                            "viewStreams": [
+                                {
+                                    "id": "stream-rdp-1",
+                                    "provider": "rdp_gateway",
+                                    "readiness": {"state": "ready"},
+                                    "externalUrl": (
+                                        "https://guac.example.test/client/stored"
+                                    ),
+                                }
+                            ],
+                        }
+                    ]
+                },
+            },
+            {
+                "success": True,
+                "data": {
+                    "sessions": [
+                        {
+                            "id": "last30days-facebook",
+                            "browserIds": ["browser-x-1"],
+                        }
+                    ]
+                },
+            },
+            {"success": True, "data": takeover},
+        ]
+    )
+
+    transport = AgentBrowserObservationTransport(
+        "http://127.0.0.1:4848",
+        urlopen=lambda _request, *, timeout: Response(next(responses)),
+    )
+
+    with pytest.raises(ObservationTransportError):
+        transport.acquire(
+            incident_id="incident-1",
+            public_operator_url="https://guac.example.test/client/stored",
+        )

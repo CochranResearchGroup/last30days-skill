@@ -43,23 +43,6 @@ def _records(payload: Mapping[str, object], name: str) -> list[Mapping[str, obje
     return [value for value in values if isinstance(value, Mapping)]
 
 
-def _nested_text(payload: object, name: str) -> str | None:
-    if isinstance(payload, Mapping):
-        value = payload.get(name)
-        if isinstance(value, str) and value.strip():
-            return value.strip()
-        for child in payload.values():
-            found = _nested_text(child, name)
-            if found is not None:
-                return found
-    elif isinstance(payload, Sequence) and not isinstance(payload, (str, bytes)):
-        for child in payload:
-            found = _nested_text(child, name)
-            if found is not None:
-                return found
-    return None
-
-
 class AgentBrowserObservationTransport:
     """Resolve one retained stream, then request agent-browser `view_takeover`."""
 
@@ -236,13 +219,36 @@ class AgentBrowserObservationTransport:
         )
         if response.get("success") is not True:
             raise ObservationTransportError("agent-browser view_takeover failed")
-        viewer_lease_id = _nested_text(response.get("data", response), "viewerLeaseId")
-        external_url = _external_url(response.get("data", response))
-        if viewer_lease_id is None or external_url is None:
+        data = response.get("data", response)
+        if not isinstance(data, Mapping):
             raise ObservationTransportError(
-                "agent-browser view_takeover omitted lease or external route proof"
+                "agent-browser view_takeover response data must be an object"
+            )
+        viewer_lease_id = data.get("viewerLeaseId")
+        expected = {
+            "status": "accepted",
+            "takeoverStatus": "accepted",
+            "takeoverRequested": True,
+            "reconnectRequested": True,
+            "browserProcessPreserved": True,
+            "browserId": browser_id,
+            "sessionName": session_name,
+            "streamId": stream_id,
+            "provider": provider,
+            "openMode": "external",
+            "lastViewerEvent": "takeover_requested",
+        }
+        if (
+            not isinstance(viewer_lease_id, str)
+            or not viewer_lease_id.strip()
+            or any(data.get(field) != value for field, value in expected.items())
+            or not isinstance(data.get("serviceEventId"), str)
+            or not str(data["serviceEventId"]).strip()
+        ):
+            raise ObservationTransportError(
+                "agent-browser view_takeover omitted accepted identity or lease proof"
             )
         return ObservationLease(
-            viewer_lease_id=viewer_lease_id,
-            public_operator_url=external_url,
+            viewer_lease_id=viewer_lease_id.strip(),
+            public_operator_url=public_operator_url,
         )

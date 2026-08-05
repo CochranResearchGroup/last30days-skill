@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import base64
 import hashlib
-import ipaddress
 import json
 import os
 import re
@@ -18,7 +17,6 @@ import sys
 import tempfile
 import threading
 import time
-import urllib.error
 import urllib.request
 from collections.abc import Callable, Mapping
 from datetime import datetime, timezone
@@ -29,6 +27,7 @@ from urllib.parse import urljoin, urlparse
 from . import env as env_config
 from . import normalize
 from . import service_contracts as contracts
+from . import service_tick_http
 from .service_worker import (
     COLLECTION_ACCESS_METHOD_ADAPTERS,
     PROFILE_SOURCE_ADAPTERS,
@@ -107,9 +106,6 @@ _ACCESS_METHOD_BY_ADAPTER = {
 }
 
 
-class _NoMediaRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        return None
 _REDDIT_ADAPTER_VARIANT_BY_METHOD = {
     "keyless": "reddit_keyless",
     "agent_browser": "reddit_agent_browser",
@@ -712,7 +708,7 @@ def execute_work(
     *,
     adapters: Mapping[str, Adapter] | None = None,
     clock: Callable[[], datetime] | None = None,
-    media_opener: Callable[..., Any] | None = None,
+    media_transport: service_tick_http.MediaTransport | None = None,
     address_resolver: Callable[..., Any] | None = None,
     monotonic_clock: Callable[[], float] | None = None,
 ) -> contracts.AcquisitionWorkResult:
@@ -816,36 +812,14 @@ def execute_work(
         raw_items = []
     remaining_media_bytes = _MAX_ACQUIRED_MEDIA_BYTES
     media_error_code: str | None = None
-    active_media_opener = media_opener or urllib.request.build_opener(
-        _NoMediaRedirect()
-    ).open
-
-    def validate_media_url(source_url: str) -> None:
-        parsed = urlparse(source_url)
-        if (
-            parsed.scheme != "https"
-            or not parsed.hostname
-            or parsed.username is not None
-            or parsed.password is not None
-            or parsed.fragment
-        ):
-            raise ValueError("unsafe media URL")
-        hostname = parsed.hostname.rstrip(".")
-        try:
-            addresses = [ipaddress.ip_address(hostname)]
-        except ValueError:
-            resolved = resolver(
-                hostname,
-                parsed.port or 443,
-                type=socket.SOCK_STREAM,
-            )
-            addresses = []
-            for result in resolved:
-                sockaddr = result[4]
-                if isinstance(sockaddr, tuple) and sockaddr:
-                    addresses.append(ipaddress.ip_address(str(sockaddr[0])))
-        if not addresses or any(not address.is_global for address in addresses):
-            raise ValueError("unsafe media destination")
+    media_deadline = started_monotonic + request.wall_timeout_seconds
+    active_media_transport = (
+        media_transport
+        or service_tick_http.DeadlinePinnedMediaTransport(
+            resolver=resolver,
+            monotonic_clock=monotonic,
+        )
+    )
 
     def fetch_media(source_url: str) -> tuple[bytes, str] | None:
         nonlocal remaining_media_bytes, media_error_code
@@ -857,65 +831,44 @@ def execute_work(
         maximum = min(_MAX_ACQUIRED_MEDIA_ITEM_BYTES, remaining_media_bytes)
         current_url = source_url
         for redirect_ordinal in range(_MAX_MEDIA_REDIRECTS + 1):
-            remaining_wall_seconds = request.wall_timeout_seconds - (
-                monotonic() - started_monotonic
-            )
-            if remaining_wall_seconds <= 0:
-                media_error_code = "wall_time_budget_exhausted"
-                return None
-            try:
-                validate_media_url(current_url)
-            except (OSError, ValueError):
-                media_error_code = "unsafe_media_url"
-                return None
             if network_count >= request.network_request_limit:
                 media_error_code = "network_budget_exhausted"
                 return None
-            source_request = urllib.request.Request(
-                current_url,
-                headers={"User-Agent": "last30days-media-fetch/1"},
-            )
             try:
-                reserve_network_request()
-                try:
-                    response = active_media_opener(
-                        source_request,
-                        timeout=min(10, remaining_wall_seconds),
-                    )
-                except urllib.error.HTTPError as exc:
-                    if 300 <= exc.code < 400:
-                        response = exc
-                    else:
-                        raise
-                with response:
-                    status = getattr(response, "status", None)
-                    if status is None and hasattr(response, "getcode"):
-                        status = response.getcode()
-                    if isinstance(status, int) and 300 <= status < 400:
-                        location = response.headers.get("Location")
-                        if not isinstance(location, str) or not location.strip():
-                            return None
-                        if redirect_ordinal >= _MAX_MEDIA_REDIRECTS:
-                            media_error_code = "media_redirect_limit_exceeded"
-                            return None
-                        current_url = urljoin(current_url, location.strip())
-                        continue
-                    final_url = (
-                        response.geturl()
-                        if hasattr(response, "geturl")
-                        else current_url
-                    )
-                    if final_url != current_url:
-                        media_error_code = "unsafe_media_url"
-                        return None
-                    content = response.read(maximum + 1)
-                    mime_type = str(
-                        response.headers.get(
-                            "Content-Type", "application/octet-stream"
-                        )
-                    ).split(";", 1)[0]
-            except (OSError, RuntimeError, TimeoutError, urllib.error.URLError):
+                response = active_media_transport.get(
+                    current_url,
+                    deadline=media_deadline,
+                    maximum_bytes=maximum,
+                    before_connect=reserve_network_request,
+                )
+            except service_tick_http.MediaDeadlineExceeded:
+                media_error_code = "wall_time_budget_exhausted"
                 return None
+            except service_tick_http.UnsafeMediaDestination:
+                media_error_code = "unsafe_media_url"
+                return None
+            except RuntimeError:
+                if network_exhausted:
+                    media_error_code = "network_budget_exhausted"
+                return None
+            except OSError:
+                return None
+            status = response.status
+            if 300 <= status < 400:
+                location = response.headers.get("location")
+                if not isinstance(location, str) or not location.strip():
+                    return None
+                if redirect_ordinal >= _MAX_MEDIA_REDIRECTS:
+                    media_error_code = "media_redirect_limit_exceeded"
+                    return None
+                current_url = urljoin(current_url, location.strip())
+                continue
+            if status >= 400:
+                return None
+            content = response.content
+            mime_type = str(
+                response.headers.get("content-type", "application/octet-stream")
+            ).split(";", 1)[0]
             if not content or len(content) > maximum:
                 return None
             remaining_media_bytes -= len(content)

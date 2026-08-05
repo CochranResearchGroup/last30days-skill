@@ -282,7 +282,7 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "dd7c79304735a5b77aa87b7d4cc58bce315221b57701fe1503897038e7402010",
+      "sha256": "527286d2586f11edfa8d3d97fb41b811b0a2bd74a1212023bad02f0827e5baed",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
@@ -416,6 +416,11 @@
       "source": "skills/last30days/scripts/lib/service_tick_builtin_adapters.py"
     },
     {
+      "path": "scripts/lib/service_tick_http.py",
+      "sha256": "aa5641929253cf93abae8f3c595c7a1ce4ba1251b939f369b62debe67f8b3277",
+      "source": "skills/last30days/scripts/lib/service_tick_http.py"
+    },
+    {
       "path": "scripts/lib/service_tick_incidents.py",
       "sha256": "43697357898abb7a5ccdd543102f529e380f2c2e142d44a71ec77d2c40305890",
       "source": "skills/last30days/scripts/lib/service_tick_incidents.py"
@@ -432,7 +437,7 @@
     },
     {
       "path": "scripts/lib/service_tick_observation.py",
-      "sha256": "18177f5d0451f51d0108f00f5e02b1ca620443116199b68f5838a458b26c5121",
+      "sha256": "e26ff0b5e99b11039e75cb426c1aa4f58828dcc92a2c519cb5963bc7afcfe058",
       "source": "skills/last30days/scripts/lib/service_tick_observation.py"
     },
     {

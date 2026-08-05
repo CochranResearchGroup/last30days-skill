@@ -11,6 +11,12 @@ from pathlib import Path
 from lib import service_contracts as contracts
 from lib import service_acquisition_worker
 from lib.service_acquisition_worker import execute_work, load_profile_config
+from lib.service_tick_http import (
+    DeadlinePinnedMediaTransport,
+    MediaDeadlineExceeded,
+    PinnedMediaResponse,
+    UnsafeMediaDestination,
+)
 
 
 def _request(**overrides):
@@ -79,17 +85,16 @@ def test_worker_preserves_operator_failure_type_without_browser_leases():
 def test_worker_fetches_bounded_image_bytes_into_the_typed_item_contract():
     image = b"small-image-bytes"
 
-    class Response:
-        headers = {"Content-Type": "image/jpeg"}
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *_args):
-            return False
-
-        def read(self, _limit=-1):
-            return image
+    class Transport:
+        def get(self, _url, *, deadline, maximum_bytes, before_connect):
+            assert deadline > 0
+            assert maximum_bytes >= len(image)
+            before_connect()
+            return PinnedMediaResponse(
+                status=200,
+                headers={"content-type": "image/jpeg"},
+                content=image,
+            )
 
     def fake_adapter(_request, _config):
         return {
@@ -118,10 +123,7 @@ def test_worker_fetches_bounded_image_bytes_into_the_typed_item_contract():
         _request(network_request_limit=2),
         {},
         adapters={"x_agent_browser": fake_adapter},
-        address_resolver=lambda *_args, **_kwargs: [
-            (2, 1, 6, "", ("93.184.216.34", 443))
-        ],
-        media_opener=lambda *_args, **_kwargs: Response(),
+        media_transport=Transport(),
     )
 
     assert result.status is contracts.AcquisitionStatus.SUCCEEDED
@@ -155,38 +157,25 @@ def test_worker_rejects_private_media_destinations_before_network():
             ]
         }
 
-    media_calls = []
+    socket_calls = []
+    transport = DeadlinePinnedMediaTransport(
+        socket_factory=lambda *_args: socket_calls.append(True),
+    )
     result = execute_work(
         _request(network_request_limit=2),
         {},
         adapters={"x_agent_browser": fake_adapter},
-        media_opener=lambda *_args, **_kwargs: media_calls.append(True),
+        media_transport=transport,
     )
 
     assert result.status is contracts.AcquisitionStatus.PARTIAL
     assert result.safe_error_code == "unsafe_media_url"
     assert result.network_request_count == 0
     assert result.items[0].media == []
-    assert media_calls == []
+    assert socket_calls == []
 
 
 def test_worker_rejects_redirects_to_private_media_destinations():
-    class RedirectResponse:
-        status = 302
-        headers = {"Location": "https://127.0.0.1/private.jpg"}
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *_args):
-            return False
-
-        def read(self, _limit=-1):
-            return b""
-
-        def geturl(self):
-            return "https://cdn.example.test/start.jpg"
-
     def fake_adapter(_request, _config):
         return {
             "items": [
@@ -209,23 +198,35 @@ def test_worker_rejects_redirects_to_private_media_destinations():
         }
 
     media_calls = []
+
+    class Transport:
+        def get(self, url, *, deadline, maximum_bytes, before_connect):
+            del deadline, maximum_bytes
+            media_calls.append(url)
+            if url == "https://127.0.0.1/private.jpg":
+                raise UnsafeMediaDestination("unsafe media destination")
+            before_connect()
+            return PinnedMediaResponse(
+                status=302,
+                headers={"location": "https://127.0.0.1/private.jpg"},
+                content=b"",
+            )
+
     result = execute_work(
         _request(network_request_limit=2),
         {},
         adapters={"x_agent_browser": fake_adapter},
-        address_resolver=lambda *_args, **_kwargs: [
-            (2, 1, 6, "", ("93.184.216.34", 443))
-        ],
-        media_opener=lambda *_args, **_kwargs: (
-            media_calls.append(True) or RedirectResponse()
-        ),
+        media_transport=Transport(),
     )
 
     assert result.status is contracts.AcquisitionStatus.PARTIAL
     assert result.safe_error_code == "unsafe_media_url"
     assert result.network_request_count == 1
     assert result.items[0].media == []
-    assert media_calls == [True]
+    assert media_calls == [
+        "https://cdn.example.test/start.jpg",
+        "https://127.0.0.1/private.jpg",
+    ]
 
 
 def test_worker_stops_media_fetches_at_the_remaining_wall_budget():
@@ -274,29 +275,186 @@ def test_worker_stops_media_fetches_at_the_remaining_wall_budget():
             ]
         }
 
-    monotonic_values = iter((100.0, 100.25, 101.1))
-    timeouts = []
+    deadlines = []
 
-    def open_media(request, *, timeout):
-        timeouts.append(timeout)
-        return MediaResponse(request.full_url)
+    class Transport:
+        def get(self, url, *, deadline, maximum_bytes, before_connect):
+            del maximum_bytes
+            deadlines.append(deadline)
+            if len(deadlines) > 1:
+                raise MediaDeadlineExceeded("media wall deadline exhausted")
+            before_connect()
+            return PinnedMediaResponse(
+                status=200,
+                headers={"content-type": "image/jpeg"},
+                content=MediaResponse(url).read(),
+            )
 
     result = execute_work(
         _request(network_request_limit=3, wall_timeout_seconds=1),
         {},
         adapters={"x_agent_browser": fake_adapter},
-        address_resolver=lambda *_args, **_kwargs: [
-            (2, 1, 6, "", ("93.184.216.34", 443))
-        ],
-        media_opener=open_media,
-        monotonic_clock=lambda: next(monotonic_values),
+        media_transport=Transport(),
+        monotonic_clock=lambda: 100.0,
     )
 
     assert result.status is contracts.AcquisitionStatus.PARTIAL
     assert result.safe_error_code == "wall_time_budget_exhausted"
     assert result.network_request_count == 1
     assert len(result.items[0].media) == 1
-    assert timeouts == [0.75]
+    assert deadlines == [101.0, 101.0]
+
+
+def test_worker_does_not_connect_when_dns_consumes_the_wall_deadline():
+    now = [100.0]
+    socket_calls = []
+
+    def fake_adapter(_request, _config):
+        return {
+            "items": [
+                {
+                    "id": "dns-wall-budget-media",
+                    "text": "An item whose media DNS consumes the tick deadline.",
+                    "url": "https://example.test/dns-wall-budget-media",
+                    "date": "2026-07-23",
+                    "metadata": {
+                        "media": [
+                            {
+                                "kind": "image",
+                                "url": "https://cdn.example.test/one.jpg",
+                                "mime_type": "image/jpeg",
+                            }
+                        ]
+                    },
+                }
+            ]
+        }
+
+    def resolve_after_deadline(*_args, **_kwargs):
+        now[0] = 101.1
+        return [(2, 1, 6, "", ("93.184.216.34", 443))]
+
+    transport = DeadlinePinnedMediaTransport(
+        resolver=resolve_after_deadline,
+        socket_factory=lambda *_args: socket_calls.append(True),
+        monotonic_clock=lambda: now[0],
+    )
+    result = execute_work(
+        _request(network_request_limit=2, wall_timeout_seconds=1),
+        {},
+        adapters={"x_agent_browser": fake_adapter},
+        media_transport=transport,
+        monotonic_clock=lambda: now[0],
+    )
+
+    assert result.status is contracts.AcquisitionStatus.PARTIAL
+    assert result.safe_error_code == "wall_time_budget_exhausted"
+    assert result.network_request_count == 0
+    assert result.items[0].media == []
+    assert socket_calls == []
+
+
+def test_worker_reapplies_pinned_transport_to_each_redirect_hop():
+    image = b"redirected-image"
+
+    def fake_adapter(_request, _config):
+        return {
+            "items": [
+                {
+                    "id": "redirected-pinned-media",
+                    "text": "An item whose image uses one safe redirect.",
+                    "url": "https://example.test/redirected-pinned-media",
+                    "date": "2026-07-23",
+                    "metadata": {
+                        "media": [
+                            {
+                                "kind": "image",
+                                "url": "https://cdn.example.test/start.jpg",
+                                "mime_type": "image/jpeg",
+                            }
+                        ]
+                    },
+                }
+            ]
+        }
+
+    class Transport:
+        def __init__(self):
+            self.calls = []
+
+        def get(self, url, *, deadline, maximum_bytes, before_connect):
+            self.calls.append((url, deadline, maximum_bytes))
+            before_connect()
+            if url.endswith("/start.jpg"):
+                return PinnedMediaResponse(
+                    status=302,
+                    headers={"location": "https://media.example.test/final.jpg"},
+                    content=b"",
+                )
+            return PinnedMediaResponse(
+                status=200,
+                headers={"content-type": "image/jpeg"},
+                content=image,
+            )
+
+    transport = Transport()
+    result = execute_work(
+        _request(network_request_limit=3, wall_timeout_seconds=1),
+        {},
+        adapters={"x_agent_browser": fake_adapter},
+        media_transport=transport,
+        monotonic_clock=lambda: 100.0,
+    )
+
+    assert result.status is contracts.AcquisitionStatus.SUCCEEDED
+    assert result.network_request_count == 2
+    assert base64.b64decode(result.items[0].media[0].content_base64) == image
+    assert [call[0] for call in transport.calls] == [
+        "https://cdn.example.test/start.jpg",
+        "https://media.example.test/final.jpg",
+    ]
+    assert {call[1] for call in transport.calls} == {101.0}
+
+
+def test_worker_keeps_the_item_when_pinned_media_connection_fails():
+    def fake_adapter(_request, _config):
+        return {
+            "items": [
+                {
+                    "id": "unavailable-media",
+                    "text": "An item whose optional image host is unavailable.",
+                    "url": "https://example.test/unavailable-media",
+                    "date": "2026-07-23",
+                    "metadata": {
+                        "media": [
+                            {
+                                "kind": "image",
+                                "url": "https://cdn.example.test/unavailable.jpg",
+                                "mime_type": "image/jpeg",
+                            }
+                        ]
+                    },
+                }
+            ]
+        }
+
+    class Transport:
+        def get(self, _url, *, deadline, maximum_bytes, before_connect):
+            del deadline, maximum_bytes
+            before_connect()
+            raise OSError("connection unavailable")
+
+    result = execute_work(
+        _request(network_request_limit=2),
+        {},
+        adapters={"x_agent_browser": fake_adapter},
+        media_transport=Transport(),
+    )
+
+    assert result.status is contracts.AcquisitionStatus.SUCCEEDED
+    assert result.safe_error_code is None
+    assert result.network_request_count == 1
+    assert result.items[0].media == []
 
 
 def test_worker_captures_problem_page_through_agent_browser_without_guac_lease(
