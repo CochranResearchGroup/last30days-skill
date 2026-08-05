@@ -392,7 +392,7 @@
     },
     {
       "path": "scripts/lib/service_tick.py",
-      "sha256": "d020a3416cc64339d5ac90d5419a2f6baa11432071d216d749036cff5a4583b6",
+      "sha256": "e65e12b3a0ba41d08a2b6fa8ad308e716182028aae5096ad92a0ac02c95d9a21",
       "source": "skills/last30days/scripts/lib/service_tick.py"
     },
     {
@@ -452,7 +452,7 @@
     },
     {
       "path": "scripts/lib/service_tick_runtime.py",
-      "sha256": "ca7572ff0ca48b9bc5f0e9ccac623563c25c08cce031466a94a810c8f089b7fd",
+      "sha256": "7d329c627698ad8dbd4deb0ebdcb60e883b9d98ad433568ec00654467b40bdc3",
       "source": "skills/last30days/scripts/lib/service_tick_runtime.py"
     },
     {

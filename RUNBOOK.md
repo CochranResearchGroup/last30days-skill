@@ -9982,3 +9982,99 @@ Next Bounded Action:
 
 - drive both findings through focused RED/GREEN tests, complete candidate
   validation, rebuild/lifecycle proof, and one exact bounded re-review.
+
+## Turn 161 | 2026-08-05
+
+Focus: implement the complete C17 false-ready repair through adversarial TDD.
+
+Authority Consulted:
+
+- Plan 0023 V2/C17, Roadmap P07, Runbook Turn 160; CodeGraph source and blast
+  radius for preflight, runtime assembly, `TickRunner`, both adapter
+  registries, and observation validation.
+
+Decisions And Changes:
+
+- added the installed analysis registry as an explicit preflight/runtime
+  assembly dependency and passed the exact resolved object into `TickRunner`;
+- validated only enabled OCR and semantic-sidecar stages against their exact
+  declared capabilities;
+- rejected C0/DEL characters and forced port parsing/range admission in the
+  shared observation validator before readiness;
+- refreshed the runtime manifest after packaged-source changes.
+
+Validation Evidence:
+
+- five new cases failed before implementation and pass afterward: missing OCR,
+  missing sidecar, nonnumeric port, port 70000, and embedded newline;
+- every rejection proves zero readiness calls and no database/artifact paths;
+- the runtime test proves the runner holds the exact injected analysis
+  registry;
+- 28 focused preflight/runtime tests, 52 coordinator/runtime/runner tests, and
+  60 tick/package/lifecycle tests pass.
+
+State Movement:
+
+- Plan 0023 advances `C17 -> C18`;
+- `t08_preflight_consolidated_rework_active -> t08_preflight_rework_validation_active`.
+
+Subagent Status And Reconciliation:
+
+- no implementation delegation. The existing evaluator remains idle until a
+  fresh exact commit, artifact, and receipt are available for the sole recheck.
+
+Graphiti Write Status:
+
+- no terminal write while complete validation and re-review remain pending.
+
+Next Bounded Action:
+
+- run full repository validation, commit this exact repair, reproducibly
+  rebuild it, prove isolated lifecycle behavior, and bind the successor
+  receipt before re-review.
+
+## Turn 162 | 2026-08-05
+
+Focus: complete primary validation of the C18 consolidated rework candidate.
+
+Authority Consulted:
+
+- Plan 0023 V2/C18, Roadmap P07, Runbook Turn 161; full Python/Go/package,
+  compilation, schema/manifest, diff, plan-authority, and goal-plan surfaces.
+
+Decisions And Changes:
+
+- accepted the complete consolidated repair as locally commit-ready;
+- classified a root-level Go invocation and one guessed schema filename as
+  command-location mistakes, then reran both from canonical locations;
+- made no implementation expansion after the focused repair turned green.
+
+Validation Evidence:
+
+- 2,535 Python tests collected; the full suite exits zero with 2,528 passed,
+  7 skipped, and 6 subtests passed;
+- all Go packages pass from `mcp/`;
+- full compileall, runtime-manifest and shipped-schema JSON parsing, focused
+  package/lifecycle tests, `git diff --check`, and plan-authority audit pass;
+- the plan-authority audit reports Plan 0023 alone, C19/Turn 162, and zero
+  issues after this checkpoint.
+
+State Movement:
+
+- Plan 0023 advances `C18 -> C19`;
+- `t08_preflight_rework_validation_active -> t08_preflight_rework_commit_ready`.
+
+Subagent Status And Reconciliation:
+
+- no implementation delegation. The exact-candidate evaluator remains idle
+  until commit, artifact, lifecycle, and receipt identities are immutable.
+
+Graphiti Write Status:
+
+- no terminal write before the exact re-review result.
+
+Next Bounded Action:
+
+- commit this exact candidate, rebuild it twice, perform only isolated
+  temporary-XDG lifecycle proof, bind the successor receipt, and request the
+  one exact bounded re-review.

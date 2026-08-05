@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C17 is the current authority.
+Checkpoint P0023-C19 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1760,3 +1760,82 @@ Next action:
 - drive both findings RED then GREEN, run the complete candidate validation,
   and bind a fresh exact commit/artifact/lifecycle receipt before the one
   bounded re-review.
+
+### Checkpoint P0023-C18 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `t08_preflight_consolidated_rework_active -> t08_preflight_rework_validation_active`.
+
+Progress classification:
+
+- `blocker_reduction`; both independently reproduced false-ready paths now
+  fail deterministically before readiness or state creation.
+
+TDD and implementation evidence:
+
+- five adversarial cases first failed: enabled uninstalled OCR, enabled
+  uninstalled semantic-sidecar, nonnumeric observation port, port 70000, and
+  an embedded observation URL control character;
+- the runtime now resolves one exact installed analysis registry, validates
+  every enabled OCR/semantic-sidecar adapter against it during state-free
+  admission, and passes that same registry object to `TickRunner`;
+- the shared observation validator rejects C0/DEL control characters and
+  evaluates the parsed port, converting malformed/out-of-range authorities
+  into `TickConfigError` before notification readiness;
+- regressions assert zero readiness calls and absence of database/artifact
+  state for every repaired preflight rejection;
+- 28 focused preflight/runtime tests, 52 coordinator/runtime/runner tests, and
+  the 60-test tick/package/lifecycle matrix pass after manifest refresh.
+
+Authority classification:
+
+- `inherited_authority`; this is the complete C17 implementation packet. Full
+  repository validation, exact commit, reproducible build, isolated lifecycle
+  evidence, and the one exact re-review remain authorized. All real/live and
+  recurrence gates remain closed.
+
+Next action:
+
+- run the complete Python/Go/compile/diff/authority validation, commit the
+  exact repair, rebuild twice, and produce a successor lifecycle receipt.
+
+### Checkpoint P0023-C19 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `t08_preflight_rework_validation_active -> t08_preflight_rework_commit_ready`.
+
+Progress classification:
+
+- `outcome_progress`; the consolidated repair now passes every local
+  implementation, package, and authority validation surface.
+
+Complete validation evidence:
+
+- the full repository suite exits zero with 2,535 tests collected: 2,528
+  passed and 7 intentionally skipped, with 6 subtests passed;
+- all Go packages pass from the `mcp/` module root;
+- full Python compilation, runtime-manifest and both shipped schema JSON
+  parses, `git diff --check`, the deterministic plan-authority audit, and the
+  current goal-plan reconciliation pass;
+- the initial root-level `go test ./...` and a guessed schema path were invalid
+  validation invocations, not product failures; both were immediately rerun
+  from their canonical module/file locations and passed;
+- no user-scoped configuration, installed runtime, provider, notification,
+  Guac, timer, paid service, or remote state was accessed or changed.
+
+Authority classification:
+
+- `inherited_authority`; the exact local repair is ready to commit. Only
+  reproducible build, isolated lifecycle proof, receipt binding, and the one
+  bounded re-review remain before returning to the human gate.
+
+Next action:
+
+- commit this exact candidate, rebuild it twice, execute only temporary-XDG
+  fake-manager lifecycle proof, and bind a successor receipt before re-review.

@@ -13,6 +13,7 @@ import pytest
 from lib import service_contracts as contracts
 from lib.service_tick_builtin_adapters import build_acquisition_adapter_registry
 from lib.service_tick_adapters import AdapterRegistry
+from lib.service_tick_analysis import default_analysis_adapter_registry
 from lib.service_tick_notifications import (
     CommandReceipt,
     build_notification_transports,
@@ -299,6 +300,14 @@ def test_runtime_accepts_an_explicit_installed_provider_registry_and_absolute_ar
     config = {
         "query": {"embedding_space": "local-hash-v1"},
         "artifacts": {"root": str(tmp_path / "artifacts")},
+        "analysis": {
+            "ocr_enabled": True,
+            "ocr_adapter_type": "provider_output_ocr_v1",
+            "semantic_sidecars_enabled": True,
+            "semantic_sidecar_adapter_type": (
+                "provider_output_semantic_sidecar_v1"
+            ),
+        },
         "notifications": {
             "transports": [
                 {
@@ -318,15 +327,18 @@ def test_runtime_accepts_an_explicit_installed_provider_registry_and_absolute_ar
     }
     config_path.write_text(json.dumps(config), encoding="utf-8")
     registry = AdapterRegistry()
+    analysis_registry = default_analysis_adapter_registry()
 
     runtime = build_tick_runtime(
         tmp_path / "research.db",
         config_path=config_path,
         adapter_registry=registry,
+        analysis_registry=analysis_registry,
     )
 
     assert runtime.runner.registry is registry
     assert runtime.coordinator.adapter_registry is registry
+    assert runtime.runner.analysis_registry is analysis_registry
     assert isinstance(
         runtime.runner.incidents.observation_transport,
         AgentBrowserObservationTransport,
@@ -339,6 +351,7 @@ def test_runtime_accepts_an_explicit_installed_provider_registry_and_absolute_ar
             tmp_path / "relative.db",
             config_path=config_path,
             adapter_registry=registry,
+            analysis_registry=analysis_registry,
         )
 
 

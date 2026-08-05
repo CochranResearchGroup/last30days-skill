@@ -227,10 +227,20 @@ def _validate_observation_config(
         "observation.service_base_url",
         4_096,
     )
-    parsed = urlparse(service_base_url)
+    if any(
+        ord(character) < 32 or ord(character) == 127
+        for character in service_base_url
+    ):
+        raise TickConfigError("observation.service_base_url is invalid")
+    try:
+        parsed = urlparse(service_base_url)
+        port = parsed.port
+    except ValueError as exc:
+        raise TickConfigError("observation.service_base_url is invalid") from exc
     if (
         parsed.scheme not in {"http", "https"}
         or not parsed.hostname
+        or (port is not None and not 1 <= port <= 65_535)
         or parsed.username is not None
         or parsed.password is not None
         or parsed.query

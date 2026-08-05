@@ -9,6 +9,7 @@ import pytest
 from lib import service_contracts as contracts
 from lib import service_tick_runtime
 from lib.service_tick import TickConfigError, TickCoordinator
+from lib.service_tick_analysis import AnalysisAdapterError
 from lib.service_tick_builtin_adapters import build_acquisition_adapter_registry
 from lib.service_tick_notifications import CommandReceipt
 from lib.service_tick_incidents import NotificationPreflightError
@@ -344,3 +345,79 @@ def test_preflight_rejects_invalid_observation_endpoint_before_readiness(tmp_pat
         )
 
     assert commands.calls == []
+
+
+@pytest.mark.parametrize(
+    ("enabled_field", "adapter_field", "capability"),
+    [
+        ("ocr_enabled", "ocr_adapter_type", "ocr"),
+        (
+            "semantic_sidecars_enabled",
+            "semantic_sidecar_adapter_type",
+            "semantic_sidecar",
+        ),
+    ],
+)
+def test_preflight_rejects_enabled_uninstalled_analysis_adapters_without_effects(
+    tmp_path,
+    enabled_field,
+    adapter_field,
+    capability,
+):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config["analysis"][enabled_field] = True
+    config["analysis"][adapter_field] = "not_installed_analysis"
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    commands = ReadyCommands()
+
+    with pytest.raises(
+        AnalysisAdapterError,
+        match=(
+            "analysis adapter is not installed: "
+            f"not_installed_analysis/{capability}"
+        ),
+    ):
+        service_tick_runtime.preflight_tick_runtime(
+            _request(),
+            config_path=config_path,
+            worker=object(),
+            command_runner=commands,
+        )
+
+    assert commands.calls == []
+    assert not (tmp_path / "research.db").exists()
+    assert not (tmp_path / "operator-artifacts").exists()
+
+
+@pytest.mark.parametrize(
+    "service_base_url",
+    [
+        "https://agent-browser.example.invalid:notaport",
+        "https://agent-browser.example.invalid:70000",
+        "https://agent-browser.example.invalid/retained\nstream",
+    ],
+)
+def test_preflight_rejects_malformed_observation_authority_without_effects(
+    tmp_path,
+    service_base_url,
+):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config["observation"]["service_base_url"] = service_base_url
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    commands = ReadyCommands()
+
+    with pytest.raises(TickConfigError, match="observation.service_base_url"):
+        service_tick_runtime.preflight_tick_runtime(
+            _request(),
+            config_path=config_path,
+            worker=object(),
+            command_runner=commands,
+        )
+
+    assert commands.calls == []
+    assert not (tmp_path / "research.db").exists()
+    assert not (tmp_path / "operator-artifacts").exists()

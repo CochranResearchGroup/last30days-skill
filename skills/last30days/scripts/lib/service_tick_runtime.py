@@ -22,6 +22,10 @@ from .service_tick import (
     _validate_observation_config,
 )
 from .service_tick_adapters import AdapterRegistry
+from .service_tick_analysis import (
+    AnalysisAdapterRegistry,
+    default_analysis_adapter_registry,
+)
 from .service_tick_builtin_adapters import build_acquisition_adapter_registry
 from .service_tick_incidents import IncidentManager, NotificationPreflightError
 from .service_tick_media import (
@@ -63,17 +67,36 @@ class TickRuntime:
 
 def _validate_runtime_config(
     config: Mapping[str, object],
+    *,
+    analysis_registry: AnalysisAdapterRegistry,
 ) -> tuple[Mapping[str, object], Mapping[str, object], object]:
     query = config.get("query")
     if not isinstance(query, Mapping) or query.get("embedding_space") != "local-hash-v1":
         raise RuntimeError("installed runtime supports embedding_space local-hash-v1")
     artifacts_config = config.get("artifacts")
+    analysis_config = config.get("analysis")
     notifications_config = config.get("notifications")
     observation_config = _validate_observation_config(config)
-    if not isinstance(artifacts_config, Mapping) or not isinstance(
-        notifications_config, Mapping
+    if (
+        not isinstance(artifacts_config, Mapping)
+        or not isinstance(analysis_config, Mapping)
+        or not isinstance(notifications_config, Mapping)
     ):
-        raise RuntimeError("tick artifact/notification configuration is incomplete")
+        raise RuntimeError(
+            "tick artifact/analysis/notification configuration is incomplete"
+        )
+    for enabled_field, adapter_field, capability in (
+        ("ocr_enabled", "ocr_adapter_type", "ocr"),
+        (
+            "semantic_sidecars_enabled",
+            "semantic_sidecar_adapter_type",
+            "semantic_sidecar",
+        ),
+    ):
+        if analysis_config.get(enabled_field) is True:
+            analysis_registry.require(
+                str(analysis_config.get(adapter_field)), capability=capability
+            )
     artifact_root_value = artifacts_config.get("root")
     if not isinstance(artifact_root_value, str) or not artifact_root_value.strip():
         raise RuntimeError("tick artifact root is required")
@@ -94,12 +117,23 @@ def _runtime_registry(*, worker, adapter_registry: AdapterRegistry | None) -> Ad
     return build_acquisition_adapter_registry(active_worker)
 
 
+def _runtime_analysis_registry(
+    analysis_registry: AnalysisAdapterRegistry | None,
+) -> AnalysisAdapterRegistry:
+    if analysis_registry is not None and not isinstance(
+        analysis_registry, AnalysisAdapterRegistry
+    ):
+        raise TypeError("analysis_registry must be an AnalysisAdapterRegistry")
+    return analysis_registry or default_analysis_adapter_registry()
+
+
 def preflight_tick_runtime(
     request: contracts.TickRequest,
     *,
     config_path: Path | None = None,
     worker=None,
     adapter_registry: AdapterRegistry | None = None,
+    analysis_registry: AnalysisAdapterRegistry | None = None,
     command_runner: CommandRunner = _run_command,
 ) -> dict[str, object]:
     """Validate one prospective manual tick without creating runtime state."""
@@ -110,7 +144,11 @@ def preflight_tick_runtime(
         request,
         registry,
     )
-    _, notifications_config, _ = _validate_runtime_config(config)
+    active_analysis_registry = _runtime_analysis_registry(analysis_registry)
+    _, notifications_config, _ = _validate_runtime_config(
+        config,
+        analysis_registry=active_analysis_registry,
+    )
 
     raw_transports = _array(
         notifications_config.get("transports"), "notification transports"
@@ -240,6 +278,7 @@ def build_tick_runtime(
     config_path: Path | None = None,
     worker=None,
     adapter_registry: AdapterRegistry | None = None,
+    analysis_registry: AnalysisAdapterRegistry | None = None,
     command_runner: CommandRunner = _run_command,
     clock: Callable[[], datetime] | None = None,
 ) -> TickRuntime:
@@ -251,8 +290,12 @@ def build_tick_runtime(
         raise RuntimeError(f"unable to read tick configuration: {config_file}") from exc
     if not isinstance(config, Mapping):
         raise RuntimeError("tick configuration must be an object")
+    active_analysis_registry = _runtime_analysis_registry(analysis_registry)
     artifacts_config, notifications_config, observation_config = (
-        _validate_runtime_config(config)
+        _validate_runtime_config(
+            config,
+            analysis_registry=active_analysis_registry,
+        )
     )
     artifact_root_value = artifacts_config["root"]
     artifact_root = Path(artifact_root_value).expanduser()
@@ -289,6 +332,7 @@ def build_tick_runtime(
         incidents=incidents,
         snapshots=snapshots,
         notification_transports=transports,
+        analysis_registry=active_analysis_registry,
         clock=clock,
     )
     coordinator = TickCoordinator(
