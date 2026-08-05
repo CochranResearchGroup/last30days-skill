@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 2/C19; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 2/C20; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -832,9 +832,11 @@ Current State:
   single authorized consolidated repair is now locally GREEN: state-free
   admission shares the exact installed analysis registry with the runner and
   rejects malformed observation authorities before readiness. Full validation,
-  exact artifact/lifecycle evidence, and the one bounded re-review remain. The
   complete Python, Go, compilation, package, JSON, diff, and authority matrix
-  is green at C19; every real/live and recurrence gate remains closed.
+  is green at C19. C20 binds exact commit `9442be9`, reproducible artifact
+  `b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2`,
+  schema-15 isolated lifecycle proof, and receipt 0044 for the sole bounded
+  recheck; every real/live and recurrence gate remains closed.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.

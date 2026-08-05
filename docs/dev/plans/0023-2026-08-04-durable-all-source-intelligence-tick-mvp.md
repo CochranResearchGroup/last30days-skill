@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C19 is the current authority.
+Checkpoint P0023-C20 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1839,3 +1839,54 @@ Next action:
 
 - commit this exact candidate, rebuild it twice, execute only temporary-XDG
   fake-manager lifecycle proof, and bind a successor receipt before re-review.
+
+### Checkpoint P0023-C20 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `t08_preflight_rework_commit_ready -> t08_preflight_exact_recheck_pending`.
+
+Progress classification:
+
+- `outcome_progress`; the complete consolidated repair is committed,
+  reproducibly packaged, and isolated-lifecycle proven for the sole recheck.
+
+Exact successor evidence:
+
+- implementation commit:
+  `9442be934e27231ad1f3bf3233a8c9d2db59132c`;
+- two independent temporary builds and the repository artifact are
+  byte-identical at SHA-256
+  `b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2`;
+- runtime-manifest SHA-256 is
+  `da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514`;
+- temporary-XDG/fake-manager proof installed synthetic 0.2.29 ready, upgraded
+  to exact 0.3.0 ready, rolled back to 0.2.29 ready, and rolled forward to
+  exact 0.3.0 ready with schema 15 and SQLite integrity `ok`;
+- durable successor receipt:
+  `docs/dev/notes/0044-service-0.3.0-c19-preflight-rework-candidate-receipt.json`.
+
+Recheck contract:
+
+- the existing independent evaluator must recheck only the exact implementation
+  commit, artifact hash, manifest, receipt 0044, and C17 terminal findings;
+- verify installed enabled analysis-adapter admission, strict observation
+  authority rejection before readiness, zero rejection effects, exact shared
+  registry use, package identity/lifecycle evidence, and closed-gate
+  compliance;
+- this is the single recheck authorized by C16/C17. Return one terminal PASS or
+  FAIL; no further implementation or recheck is authorized without new human
+  direction.
+
+Authority classification:
+
+- `inherited_authority`; exact read-only recheck is the last local action. All
+  real install/config/live, notification, Guac, recurrence, remote, cost, and
+  ceiling gates remain human-gated.
+
+Next action:
+
+- commit this evidence checkpoint and receipt, then send the exact successor
+  to the existing evaluator for the sole terminal recheck.

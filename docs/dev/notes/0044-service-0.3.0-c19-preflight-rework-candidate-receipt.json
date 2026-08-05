@@ -1,0 +1,68 @@
+{
+  "artifact": {
+    "contract_sha256": "d3362ef9edc1e8e58f76d4a5a5ed5375fbc51e39169da1f84714584165f4efd8",
+    "reproducible_build_count": 2,
+    "runtime_artifact_sha256": "b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2",
+    "runtime_manifest_sha256": "da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514",
+    "service_version": "0.3.0"
+  },
+  "hard_stops": [
+    "real_installation",
+    "user_config_access_or_mutation",
+    "live_provider_execution",
+    "real_notification_send",
+    "guacamole_observation_lease",
+    "timer_or_schedule",
+    "push_tag_or_release",
+    "paid_call_or_ceiling_change"
+  ],
+  "installed_state_postflight": {
+    "checked": false,
+    "reason": "real installed-runtime and user-scoped state remain outside the C17 consolidated local rework",
+    "state_changed": false
+  },
+  "isolated_lifecycle": {
+    "current_release": "releases/0.3.0",
+    "database_integrity": "ok",
+    "database_schema_version": 15,
+    "final_readiness": "ready",
+    "initial_readiness": "ready",
+    "initial_version": "0.2.29",
+    "previous_release": "releases/0.2.29",
+    "rollback_readiness": "ready",
+    "rollback_version": "0.2.29",
+    "roll_forward_readiness": "ready",
+    "roll_forward_version": "0.3.0",
+    "test_environment": "temporary XDG roots and fake user manager",
+    "upgrade_readiness": "ready",
+    "upgrade_version": "0.3.0"
+  },
+  "plan": "0023",
+  "preflight_contract": {
+    "config_read_count": 1,
+    "database_or_artifact_writes": 0,
+    "enabled_analysis_adapters_require_installed_capability": true,
+    "malformed_observation_authority_rejected_before_readiness": true,
+    "notification_readiness_calls_on_admission_failure": 0,
+    "notification_send_count": 0,
+    "provider_execution_count": 0,
+    "raw_operator_particulars_emitted": 0,
+    "readiness_mode": "sequential_stop_after_first_ready",
+    "runtime_and_runner_share_analysis_registry": true,
+    "tick_identity_matches_enqueue": true
+  },
+  "repo_commit": "9442be934e27231ad1f3bf3233a8c9d2db59132c",
+  "schema_version": 1,
+  "status": "passed",
+  "validation": {
+    "compileall": "passed",
+    "full_go_packages": "passed",
+    "full_python_subtests_passed": 6,
+    "full_python_tests_collected": 2535,
+    "full_python_tests_passed": 2528,
+    "full_python_tests_skipped": 7,
+    "goal_planning_audit": "passed",
+    "plan_authority_audit": "passed"
+  },
+  "verified_at": "2026-08-05T03:18:06-05:00"
+}

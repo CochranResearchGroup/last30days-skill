@@ -10078,3 +10078,56 @@ Next Bounded Action:
 - commit this exact candidate, rebuild it twice, perform only isolated
   temporary-XDG lifecycle proof, bind the successor receipt, and request the
   one exact bounded re-review.
+
+## Turn 163 | 2026-08-05
+
+Focus: bind the exact C19 repair commit to reproducible packaging and isolated
+lifecycle evidence for the sole terminal recheck.
+
+Authority Consulted:
+
+- Plan 0023 V2/C19, Roadmap P07, Runbook Turn 162; exact commit `9442be9`,
+  builder, installer, candidate artifact, temporary-XDG fake-manager readbacks,
+  and receipt 0044.
+
+Decisions And Changes:
+
+- committed the complete repair as
+  `9442be934e27231ad1f3bf3233a8c9d2db59132c`;
+- built from that commit twice in independent temporary outputs and once at
+  the repository artifact path, with byte-identical results;
+- exercised install/upgrade/rollback/roll-forward only in disposable XDG
+  roots with a fake user manager; no real installation or config was read;
+- created receipt 0044 and reserved the evaluator for the exact sole recheck.
+
+Validation Evidence:
+
+- artifact SHA-256:
+  `b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2`;
+- runtime-manifest SHA-256:
+  `da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514`;
+- synthetic 0.2.29 install, exact 0.3.0 upgrade, 0.2.29 rollback, and exact
+  0.3.0 roll-forward all diagnosed `ready`;
+- schema remained 15 and SQLite integrity was `ok`;
+- receipt:
+  `docs/dev/notes/0044-service-0.3.0-c19-preflight-rework-candidate-receipt.json`.
+
+State Movement:
+
+- Plan 0023 advances `C19 -> C20`;
+- `t08_preflight_rework_commit_ready -> t08_preflight_exact_recheck_pending`.
+
+Subagent Status And Reconciliation:
+
+- no implementation delegation. The existing evaluator may perform only the
+  exact read-only C17 findings recheck and must return one terminal result.
+
+Graphiti Write Status:
+
+- no terminal write before the recheck establishes the local outcome.
+
+Next Bounded Action:
+
+- commit C20/receipt 0044, submit exact commit/artifact/receipt to the existing
+  evaluator, and stop after its sole terminal result without crossing any real
+  or recurrence gate.
