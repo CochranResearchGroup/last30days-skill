@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C26 is the current authority.
+Checkpoint P0023-C28 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2242,3 +2242,109 @@ Next action:
 
 - commit receipt 0046/C26 evidence and send exact identities to the existing
   evaluator. Stop before real install until its terminal result is reconciled.
+
+### Checkpoint P0023-C27 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `phase_a_rollback_independent_review_pending -> phase_a_rollback_consolidated_rework_active`.
+
+Progress classification:
+
+- `blocker_reduction`; the single C23 independent review returned terminal
+  FAIL with two exact fail-closed findings before any real mutation.
+
+Independent findings:
+
+- installer readiness computes the selected release's runtime-manifest digest
+  but does not compare it with the running service's reported digest, allowing
+  a missing or arbitrary runtime identity to produce a false readiness receipt;
+- failed rollback and failed-upgrade recovery issue a non-checking stop before
+  database restoration, so a failed stop can permit live SQLite replacement
+  and WAL/SHM removal.
+
+Single consolidated rework:
+
+- require the service-info runtime-manifest digest to equal the selected
+  immutable release digest before readiness can be recorded;
+- require a successful manager stop before every recovery database restore;
+  when stop fails, leave the database and selector pair at the last safely
+  reached release/database state;
+- add adversarial manifest-mismatch and rollback/upgrade recovery-stop tests,
+  then rerun the complete validation and exact historical replay matrix;
+- this consumes the one C23 review/rework cycle. No second review or expanded
+  repair surface is admitted; the terminal recheck must cover this one exact
+  consolidated successor.
+
+Authority classification:
+
+- `inherited_authority`; the rework is exactly the bounded C23 review response
+  and remains repo-only, provider-free, cost-free, and reversible. Real install,
+  user-config preflight, providers, sends, Guac, T08, timers, remote actions,
+  and ceiling changes remain closed.
+
+Next action:
+
+- drive the three adversarial cases RED/GREEN, validate the exact successor,
+  bind a replacement receipt, and request the sole terminal recheck before
+  resuming the already-authorized Phase A install.
+
+### Checkpoint P0023-C28 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `phase_a_rollback_consolidated_rework_active -> phase_a_rollback_recheck_candidate_ready`.
+
+Progress classification:
+
+- `outcome_progress`; the single consolidated rework is GREEN across its
+  adversarial cases, complete repository validation, exact historical replay,
+  and untouched real installed-state readback.
+
+Resolved findings:
+
+- readiness now rejects missing or mismatched service-info
+  `runtime_manifest_sha256` before writing a receipt;
+- rollback and failed-upgrade recovery require a successful manager stop
+  before selector or database restoration;
+- the current database snapshot is committed to owner-private release-bound
+  rollback state before the risky transition, so stop failure preserves both
+  the last safely reached release/database pair and the displaced pair's exact
+  recoverable database rather than discarding it.
+
+Validation evidence:
+
+- the three exact reviewer cases first failed and now pass; all 11 lifecycle
+  installer tests and all 21 lifecycle/package/install/release/MCP tests pass;
+- the complete Python suite collects 2,542 tests and exits zero; all Go module
+  packages pass; Python compilation, installer shell syntax, artifact hashes,
+  `git diff --check`, and plan-authority audit pass;
+- exact artifacts replay 0.2.29/schema 12 -> 0.3.0/schema 15 -> exact
+  0.2.29/schema-12 database -> exact 0.3.0/schema-15 database; both logical
+  dumps match their pre-transition states, integrity is `ok`, and both
+  release-bound snapshot/metadata pairs are mode 0600;
+- installer SHA-256 is
+  `91de23cd3c71839d45eab25d5a7d4999ea36fc298514924b7feab2ffd4a75161`;
+  the accepted runtime artifact and manifest remain unchanged at
+  `b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2`
+  and `da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514`;
+- fresh read-only real diagnose remains exact active 0.2.29/schema 12 ready,
+  current 0.2.29, previous 0.2.28, and SQLite integrity `ok`.
+
+Authority classification:
+
+- `inherited_authority`; the C27 repair is complete and no second rework is
+  admitted. The exact immutable successor and replacement receipt must receive
+  the sole terminal recheck before the already-authorized real Phase A install
+  can resume. Every config/provider/send/Guac/T08/timer/remote/cost gate stays
+  closed.
+
+Next action:
+
+- commit the exact installer/tests/docs successor, bind replacement receipt
+  0047 to that commit and all immutable evidence, and obtain the terminal
+  recheck. Stop before real mutation unless it passes.

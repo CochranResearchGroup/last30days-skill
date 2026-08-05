@@ -612,6 +612,9 @@ def readiness(
                     == actual_database_schema
                 ),
                 "contract_sha256": header_digest == contract_sha,
+                "runtime_manifest_sha256": (
+                    payload.get("runtime_manifest_sha256") == manifest_sha
+                ),
                 "status": payload.get("status") == "ready",
             }
             if not all(checks.values()):
@@ -831,6 +834,15 @@ def main() -> None:
         except (OSError, RuntimeError, sqlite3.Error) as exc:
             fail(f"unable to snapshot current database before rollback: {exc}")
         try:
+            commit_rollback_state(
+                service_root,
+                current_name,
+                displaced_snapshot,
+            )
+        except (SystemExit, OSError, RuntimeError, sqlite3.Error) as exc:
+            displaced_snapshot.unlink(missing_ok=True)
+            fail(f"unable to preserve current database before rollback: {exc}")
+        try:
             manager_command(manager, "stop", UNIT_NAME)
             restore_database(target_snapshot, database_path)
             atomic_symlink(current_link, f"releases/{previous_name}")
@@ -843,13 +855,8 @@ def main() -> None:
                 args.timeout,
                 receipt_path,
             )
-            commit_rollback_state(
-                service_root,
-                current_name,
-                displaced_snapshot,
-            )
         except (SystemExit, OSError, RuntimeError, sqlite3.Error) as failure:
-            manager_command(manager, "stop", UNIT_NAME, check=False)
+            manager_command(manager, "stop", UNIT_NAME)
             atomic_symlink(current_link, f"releases/{current_name}")
             atomic_symlink(previous_link, f"releases/{previous_name}")
             try:
@@ -901,6 +908,15 @@ def main() -> None:
             pending_database_snapshot = snapshot_database(database_path, service_root)
         except (OSError, RuntimeError, sqlite3.Error) as exc:
             fail(f"unable to snapshot current database before upgrade: {exc}")
+        try:
+            commit_rollback_state(
+                service_root,
+                old_current,
+                pending_database_snapshot,
+            )
+        except (SystemExit, OSError, RuntimeError, sqlite3.Error) as exc:
+            pending_database_snapshot.unlink(missing_ok=True)
+            fail(f"unable to preserve current database before upgrade: {exc}")
     try:
         if old_current is not None and old_current != version:
             atomic_symlink(previous_link, f"releases/{old_current}")
@@ -915,12 +931,6 @@ def main() -> None:
             args.timeout,
             receipt_path,
         )
-        if pending_database_snapshot is not None and old_current is not None:
-            commit_rollback_state(
-                service_root,
-                old_current,
-                pending_database_snapshot,
-            )
     except (SystemExit, OSError, RuntimeError, sqlite3.Error) as failure:
         if old_current is None:
             manager_command(manager, "stop", UNIT_NAME, check=False)
@@ -928,7 +938,7 @@ def main() -> None:
             receipt_path.unlink(missing_ok=True)
             remove_release(release)
             fail(f"initial install failed readiness: {failure}")
-        manager_command(manager, "stop", UNIT_NAME, check=False)
+        manager_command(manager, "stop", UNIT_NAME)
         atomic_symlink(current_link, f"releases/{old_current}")
         atomic_symlink(
             previous_link,

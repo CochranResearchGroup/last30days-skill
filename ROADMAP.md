@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 2/C26; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 2/C28; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -852,7 +852,15 @@ Current State:
   Python/Go/lifecycle/compile/shell/diff/authority matrix. C26 binds exact
   commit `8d649e2`, installer hash, unchanged artifacts, exact historical
   replay, real read-only diagnose, and receipt 0046 for one independent review.
-  Real install/restart and every live/recurrence gate stay closed.
+  That review returned terminal FAIL before real mutation: readiness did not
+  compare the running runtime-manifest identity, and recovery database restore
+  could proceed after an unconfirmed stop. C27 opens the one authorized
+  consolidated rework with adversarial manifest and failed-stop tests. C28
+  records those cases GREEN, 11 lifecycle and 21 affected integration tests,
+  the complete Python/Go/shell/compile/diff/authority matrix, exact historical
+  rollback/roll-forward replay, and unchanged real 0.2.29/schema-12 readback.
+  The exact successor now awaits its sole terminal recheck. Real install/
+  restart and every config/live/recurrence gate stay closed.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -1022,10 +1030,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- obtain one fresh independent review of the exact Plan 0023/C16 candidate,
-  artifact, and receipt 0043. Keep real installation, user-config
-  access or mutation, live sources, notification sends, Guac, recurrence,
-  push, publication, release, paid calls, and ceiling changes closed.
+- commit and bind the exact Plan 0023/C28 consolidated rollback successor and
+  replacement receipt, then obtain its sole terminal recheck. Keep real
+  installation, user-config access or mutation, live
+  sources, notification sends, Guac, recurrence, push, publication, release,
+  paid calls, and ceiling changes closed.
 
 ## Goal-Compatible Plan Conversion
 

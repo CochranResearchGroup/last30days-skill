@@ -10445,3 +10445,104 @@ Next Bounded Action:
 
 - commit C26/receipt 0046, submit exact commit/installer/artifacts/receipt for
   independent review, and stop before any real Phase A mutation.
+
+## Turn 170 | 2026-08-05
+
+Focus: reconcile the C26 terminal review and open its one exact consolidated
+rollback rework without touching the real service.
+
+Authority Consulted:
+
+- Plan 0023 V2/C23/C26; Roadmap P07; Runbook Turn 169; terminal independent
+  review of commit `8d649e2` and receipt 0046.
+
+Decisions And Changes:
+
+- accepted terminal FAIL on missing runtime-manifest comparison and unchecked
+  recovery stops;
+- opened one consolidated repo-only rework for those two findings and their
+  three adversarial cases;
+- retained the accepted runtime artifact identity and every real/config/live/
+  T08/timer gate while tests and installer machinery are revised.
+
+Validation Evidence:
+
+- reviewer independently matched exact commit, installer, artifact, historical
+  artifact, and receipt identities;
+- its 8 lifecycle tests, 15 focused integration tests, and exact schema
+  `12 -> 15 -> 12 -> 15` replay passed outside the two terminal findings;
+- worktree was clean and the real 0.2.29/schema-12 service remained untouched.
+
+State Movement:
+
+- Plan 0023 advances `C26 -> C27`;
+- `phase_a_rollback_independent_review_pending -> phase_a_rollback_consolidated_rework_active`.
+
+Subagent Status And Reconciliation:
+
+- the existing evaluator returned one consolidated terminal result and remains
+  reserved for the exact successor recheck; no implementation delegation.
+
+Graphiti Write Status:
+
+- no write while consolidated repair and terminal recheck remain incomplete.
+
+Next Bounded Action:
+
+- drive adversarial manifest and recovery-stop tests RED/GREEN, validate the
+  exact successor, bind a replacement receipt, and obtain the sole terminal
+  recheck before any real Phase A mutation.
+
+## Turn 171 | 2026-08-05
+
+Focus: complete and validate the single C27 consolidated rollback rework.
+
+Authority Consulted:
+
+- Plan 0023 V2/C27; Roadmap P07; Runbook Turn 170; terminal review findings;
+  lifecycle, package, release, MCP, full-suite, exact-artifact, and installed
+  read-only evidence surfaces.
+
+Decisions And Changes:
+
+- bound readiness to the running service's reported runtime-manifest digest;
+- made both recovery database restores conditional on successful manager stop;
+- persisted the displaced database before each risky transition so a failed
+  recovery stop cannot discard the other release/database pair;
+- made no runtime artifact, user config, provider, notification, Guac, T08,
+  timer, remote, paid, or ceiling change.
+
+Validation Evidence:
+
+- three reviewer cases went RED then GREEN; 11/11 lifecycle and 21/21 affected
+  lifecycle/package/install/release/MCP tests pass;
+- all 2,542 collected Python tests exit zero and all Go module packages pass;
+- compileall, `bash -n`, exact hashes, `git diff --check`, and deterministic
+  plan-authority audit pass;
+- exact 0.2.29 and 0.3.0 artifacts replay schema `12 -> 15 -> 12 -> 15` with
+  rollback and roll-forward logical dumps identical, integrity `ok`, and both
+  rollback states mode 0600;
+- working-tree installer SHA-256 is
+  `91de23cd3c71839d45eab25d5a7d4999ea36fc298514924b7feab2ffd4a75161`;
+  runtime artifact/manifest hashes are unchanged;
+- fresh real diagnose remains active exact 0.2.29/schema12 ready, current
+  0.2.29, previous 0.2.28, integrity `ok`, with no mutation.
+
+State Movement:
+
+- Plan 0023 advances `C27 -> C28`;
+- `phase_a_rollback_consolidated_rework_active -> phase_a_rollback_recheck_candidate_ready`.
+
+Subagent Status And Reconciliation:
+
+- implementation remained primary-owned. The existing evaluator is reserved
+  only for the exact immutable terminal recheck.
+
+Graphiti Write Status:
+
+- no write before immutable candidate binding and terminal recheck.
+
+Next Bounded Action:
+
+- commit the exact C28 successor, bind replacement receipt 0047, and obtain
+  the sole terminal recheck before any real Phase A mutation.

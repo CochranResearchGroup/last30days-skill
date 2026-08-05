@@ -34,6 +34,7 @@ log = Path(os.environ["FAKE_MANAGER_LOG"])
 with log.open("a", encoding="utf-8") as handle:
     handle.write(" ".join(args) + "\\n")
 pid_path = Path(os.environ["FAKE_MANAGER_PID"])
+stop_count_path = Path(os.environ["FAKE_MANAGER_STOP_COUNT"])
 service_root = Path(os.environ["XDG_DATA_HOME"]) / "last30days" / "service"
 
 def stop():
@@ -54,6 +55,10 @@ def stop():
 
 command = next((arg for arg in args if arg in {"restart", "start", "stop", "status"}), None)
 if command == "stop":
+    stop_count = int(stop_count_path.read_text()) + 1 if stop_count_path.exists() else 1
+    stop_count_path.write_text(str(stop_count))
+    if str(stop_count) == os.environ.get("FAKE_MANAGER_FAIL_STOP_CALL"):
+        raise SystemExit(1)
     stop()
 elif command in {"restart", "start"}:
     stop()
@@ -118,7 +123,10 @@ connection.close()
 contract = hashlib.sha256(
     (release / "schemas/service-contracts-v1.json").read_bytes()
 ).hexdigest()
-manifest = hashlib.sha256((release / "runtime-manifest.json").read_bytes()).hexdigest()
+manifest = os.environ.get(
+    "FAKE_SCHEMA_SERVICE_MANIFEST_SHA256",
+    hashlib.sha256((release / "runtime-manifest.json").read_bytes()).hexdigest(),
+)
 payload = json.dumps({
     "service_version": version,
     "database_schema_version": supported,
@@ -182,6 +190,7 @@ def _environment(tmp_path: Path) -> dict[str, str]:
         "LAST30DAYS_SYSTEMCTL": str(fake_manager),
         "FAKE_MANAGER_LOG": str(tmp_path / "manager.log"),
         "FAKE_MANAGER_PID": str(tmp_path / "manager.pid"),
+        "FAKE_MANAGER_STOP_COUNT": str(tmp_path / "manager-stop-count"),
         "FAKE_SCHEMA_SERVICE": str(fake_schema_service),
     }
 
@@ -244,8 +253,15 @@ def _run(
     *,
     artifact: Path | None = None,
     check: bool = True,
+    service_timeout: int = 8,
 ) -> subprocess.CompletedProcess[str]:
-    arguments = ["bash", str(INSTALLER), command, "--timeout", "8"]
+    arguments = [
+        "bash",
+        str(INSTALLER),
+        command,
+        "--timeout",
+        str(service_timeout),
+    ]
     if artifact is not None:
         arguments.extend(["--artifact", str(artifact)])
     return subprocess.run(
@@ -516,6 +532,7 @@ def test_schema_upgrade_failure_restores_pre_migration_database(tmp_path):
             "upgrade",
             artifact=candidate_artifact,
             check=False,
+            service_timeout=2,
         )
 
         assert failed.returncode != 0
@@ -529,6 +546,156 @@ def test_schema_upgrade_failure_restores_pre_migration_database(tmp_path):
         ).fetchall() == [("schema-12",)]
         assert connection.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
         connection.close()
+    finally:
+        _stop(env)
+
+
+def test_runtime_manifest_mismatch_fails_initial_install_without_receipt(tmp_path):
+    env = {
+        **_environment(tmp_path),
+        "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps({CURRENT_VERSION: 15}),
+        "FAKE_SCHEMA_SERVICE_MANIFEST_SHA256": "0" * 64,
+    }
+    artifact = _artifact(tmp_path, CURRENT_VERSION)
+    service_root = Path(env["XDG_DATA_HOME"]) / "last30days" / "service"
+    try:
+        failed = _run(
+            env,
+            "install",
+            artifact=artifact,
+            check=False,
+            service_timeout=2,
+        )
+
+        assert failed.returncode != 0
+        assert "runtime_manifest_sha256" in failed.stderr
+        assert not (service_root / "current").exists()
+        assert not (service_root / "previous").exists()
+        assert not (service_root / "readiness.json").exists()
+        assert list((service_root / "releases").iterdir()) == []
+    finally:
+        _stop(env)
+
+
+def test_upgrade_recovery_stop_failure_does_not_restore_database(tmp_path):
+    env = {
+        **_environment(tmp_path),
+        "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps(
+            {"0.2.29": 12, CURRENT_VERSION: 15}
+        ),
+    }
+    previous_artifact = _artifact(tmp_path, "0.2.29")
+    candidate_artifact = _artifact(tmp_path, CURRENT_VERSION)
+    service_root = Path(env["XDG_DATA_HOME"]) / "last30days" / "service"
+    db_path = Path(env["XDG_DATA_HOME"]) / "last30days/research.db"
+    try:
+        _run(env, "install", artifact=previous_artifact)
+        connection = sqlite3.connect(db_path)
+        connection.execute("CREATE TABLE release_sentinel (value TEXT PRIMARY KEY)")
+        connection.execute("INSERT INTO release_sentinel VALUES ('schema-12')")
+        connection.commit()
+        connection.close()
+
+        failed = _run(
+            {
+                **env,
+                "FAKE_SCHEMA_SERVICE_UNHEALTHY_VERSION": CURRENT_VERSION,
+                "FAKE_MANAGER_FAIL_STOP_CALL": "1",
+            },
+            "upgrade",
+            artifact=candidate_artifact,
+            check=False,
+            service_timeout=2,
+        )
+
+        assert failed.returncode != 0
+        assert "user manager command failed (stop" in failed.stderr
+        assert (service_root / "current").readlink() == Path(
+            f"releases/{CURRENT_VERSION}"
+        )
+        assert (service_root / "previous").readlink() == Path("releases/0.2.29")
+        connection = sqlite3.connect(db_path)
+        assert connection.execute(
+            "SELECT MAX(version) FROM schema_version"
+        ).fetchone()[0] == 15
+        assert connection.execute(
+            "SELECT value FROM release_sentinel"
+        ).fetchall() == [("schema-12",)]
+        connection.close()
+        rollback_snapshot = service_root / "rollback-states/0.2.29/research.db"
+        snapshot_connection = sqlite3.connect(rollback_snapshot)
+        assert snapshot_connection.execute(
+            "SELECT MAX(version) FROM schema_version"
+        ).fetchone()[0] == 12
+        assert snapshot_connection.execute(
+            "SELECT value FROM release_sentinel"
+        ).fetchall() == [("schema-12",)]
+        snapshot_connection.close()
+    finally:
+        _stop(env)
+
+
+def test_rollback_recovery_stop_failure_does_not_restore_displaced_database(
+    tmp_path,
+):
+    env = {
+        **_environment(tmp_path),
+        "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps(
+            {"0.2.29": 12, CURRENT_VERSION: 15}
+        ),
+    }
+    previous_artifact = _artifact(tmp_path, "0.2.29")
+    candidate_artifact = _artifact(tmp_path, CURRENT_VERSION)
+    service_root = Path(env["XDG_DATA_HOME"]) / "last30days" / "service"
+    db_path = Path(env["XDG_DATA_HOME"]) / "last30days/research.db"
+    try:
+        _run(env, "install", artifact=previous_artifact)
+        connection = sqlite3.connect(db_path)
+        connection.execute("CREATE TABLE release_sentinel (value TEXT PRIMARY KEY)")
+        connection.execute("INSERT INTO release_sentinel VALUES ('schema-12')")
+        connection.commit()
+        connection.close()
+        _run(env, "upgrade", artifact=candidate_artifact)
+        connection = sqlite3.connect(db_path)
+        connection.execute("INSERT INTO release_sentinel VALUES ('schema-15')")
+        connection.commit()
+        connection.close()
+
+        failed = _run(
+            {
+                **env,
+                "FAKE_MANAGER_FAIL_VERSION": "0.2.29",
+                "FAKE_MANAGER_FAIL_STOP_CALL": "2",
+            },
+            "rollback",
+            check=False,
+        )
+
+        assert failed.returncode != 0
+        assert "user manager command failed (stop" in failed.stderr
+        assert (service_root / "current").readlink() == Path("releases/0.2.29")
+        assert (service_root / "previous").readlink() == Path(
+            f"releases/{CURRENT_VERSION}"
+        )
+        connection = sqlite3.connect(db_path)
+        assert connection.execute(
+            "SELECT MAX(version) FROM schema_version"
+        ).fetchone()[0] == 12
+        assert connection.execute(
+            "SELECT value FROM release_sentinel ORDER BY value"
+        ).fetchall() == [("schema-12",)]
+        connection.close()
+        rollback_snapshot = (
+            service_root / f"rollback-states/{CURRENT_VERSION}/research.db"
+        )
+        snapshot_connection = sqlite3.connect(rollback_snapshot)
+        assert snapshot_connection.execute(
+            "SELECT MAX(version) FROM schema_version"
+        ).fetchone()[0] == 15
+        assert snapshot_connection.execute(
+            "SELECT value FROM release_sentinel ORDER BY value"
+        ).fetchall() == [("schema-12",), ("schema-15",)]
+        snapshot_connection.close()
     finally:
         _stop(env)
 
