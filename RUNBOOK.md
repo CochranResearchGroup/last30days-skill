@@ -9934,3 +9934,51 @@ Next Bounded Action:
 - commit C16/receipt 0043, then request the exact independent review. Stop
   after its terminal result; do not cross real install/config/live or
   recurrence gates.
+
+## Turn 160 | 2026-08-05
+
+Focus: reconcile the C16 independent terminal FAIL and open its one allowed
+consolidated local rework packet.
+
+Authority Consulted:
+
+- Plan 0023 V2/C16, Roadmap P07, Runbook Turn 159; exact evaluator terminal
+  report and the shared preflight/runtime adapter and observation paths.
+
+Decisions And Changes:
+
+- accepted both independently reproduced false-ready paths as blocking;
+- opened C17 under C16's explicit one-rework/one-recheck allowance;
+- bounded the repair to installed OCR/semantic-sidecar admission and strict
+  observation endpoint validation before notification readiness;
+- retained every real install, user-config, provider, send, Guac, recurrence,
+  push, release, paid-call, and ceiling gate.
+
+Validation Evidence:
+
+- the evaluator reproduced `status=ready` for an enabled uninstalled OCR
+  adapter even though enqueue then failed after creating state;
+- the evaluator reproduced `status=ready` and one readiness invocation for
+  both a nonnumeric observation port and port 70000;
+- exact candidate identity, reproducible builds, archive manifest, broader
+  tests, isolated lifecycle, and closed-gate compliance otherwise passed.
+
+State Movement:
+
+- Plan 0023 advances `C16 -> C17`;
+- `t08_preflight_independent_review_pending -> t08_preflight_consolidated_rework_active`.
+
+Subagent Status And Reconciliation:
+
+- the existing read-only evaluator returned terminal FAIL and is reserved for
+  the exact consolidated successor only; no implementation was delegated.
+
+Graphiti Write Status:
+
+- no terminal memory write while rework is active. The corrected
+  `last30days_skill_main` closeout remains due after the bounded re-review.
+
+Next Bounded Action:
+
+- drive both findings through focused RED/GREEN tests, complete candidate
+  validation, rebuild/lifecycle proof, and one exact bounded re-review.

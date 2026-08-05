@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C16 is the current authority.
+Checkpoint P0023-C17 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1706,3 +1706,57 @@ Next action:
 
 - commit this evidence checkpoint, then send exact commit/artifact/receipt 0043
   to the existing read-only evaluator. Stop after its terminal result.
+
+### Checkpoint P0023-C17 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `t08_preflight_independent_review_pending -> t08_preflight_consolidated_rework_active`.
+
+Progress classification:
+
+- `validation_failure`; the independent evaluator returned one terminal FAIL
+  containing two reproducible false-ready admission defects.
+
+Terminal review evidence:
+
+- an enabled `ocr_adapter_type` absent from the installed analysis registry
+  passed preflight, while the same request failed only after enqueue created a
+  database and artifact directory; preflight therefore did not share the
+  runner's complete deterministic adapter admission;
+- observation endpoints with a nonnumeric port or port 70000 passed preflight
+  and invoked notification readiness because the shared URL validator never
+  evaluated `parsed.port`;
+- exact commit, artifact, manifest, reproducible build, package contents,
+  focused/full validation, isolated lifecycle, and all closed authority gates
+  otherwise passed review.
+
+Consolidated rework contract:
+
+- validate every enabled OCR and semantic-sidecar adapter against the exact
+  installed analysis registry in the state-free path used by preflight and
+  runtime assembly;
+- reject observation URL control characters, malformed ports, and ports
+  outside 1..65535 before notification readiness;
+- add regressions proving each rejection performs zero readiness calls and
+  creates zero state;
+- refresh the manifest, rebuild the exact artifact, regenerate isolated
+  lifecycle evidence, and submit only that successor for the single bounded
+  re-review authorized by C16;
+- no interface expansion, real install, user-config access or mutation,
+  provider work, notification send, Guac, recurrence, push, publication,
+  release, paid call, or ceiling change is authorized.
+
+Authority classification:
+
+- `inherited_authority`; C16 explicitly allowed one consolidated rework and
+  exact re-review. This checkpoint consumes that rework slot and does not
+  reopen implementation scope beyond the two terminal findings.
+
+Next action:
+
+- drive both findings RED then GREEN, run the complete candidate validation,
+  and bind a fresh exact commit/artifact/lifecycle receipt before the one
+  bounded re-review.
