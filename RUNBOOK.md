@@ -10182,3 +10182,56 @@ Next Bounded Action:
 - stop at the human gate. A successor authorization must name exact install,
   sanitized real-config preflight/readback, and separately bounded manual T08
   scope. Do not schedule a timer.
+
+## Turn 165 | 2026-08-05
+
+Focus: activate the operator-authorized Phase A and stop safely on an installed
+database-schema/readiness mismatch before mutation.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0023 V2/C21; Roadmap P07; Runbook Turn 164; exact
+  candidate artifact/manifest hashes; installer `diagnose` and service status.
+
+Decisions And Changes:
+
+- interpreted `ok go` as authorization for the previously reviewed Phase A:
+  exact candidate install, rollback preservation, sanitized real-config and
+  sequential transport-readiness preflight, then stop before live T08;
+- verified candidate identity before mutation;
+- did not install or restart after `diagnose` failed on
+  `database_schema_version`;
+- opened one read-only diagnostic packet under the plan's schema-ambiguity hard
+  stop.
+
+Validation Evidence:
+
+- artifact SHA-256 remains
+  `b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2`;
+- runtime-manifest SHA-256 remains
+  `da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514`;
+- the user service is active on selected version 0.2.29;
+- installer `diagnose` exited nonzero with `service readiness mismatch:
+  database_schema_version`;
+- no Phase A mutation or config read has occurred.
+
+State Movement:
+
+- Plan 0023 advances `C21 -> C22`;
+- `t08_preflight_locally_accepted_human_gate -> phase_a_preinstall_diagnostic_active`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the bounded read-only installed-state reconciliation is on the
+  critical path and requires no delegated exploration.
+
+Graphiti Write Status:
+
+- no write while installed-state truth is unresolved; repo-native evidence is
+  controlling.
+
+Next Bounded Action:
+
+- reconcile current/previous release identity, readiness receipt, live service
+  info, database schema, and integrity without mutation. Do not install,
+  restart, read user config, or cross any live/T08/timer gate meanwhile.

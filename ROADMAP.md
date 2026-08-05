@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 2/C21; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 2/C22; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -840,7 +840,11 @@ Current State:
   0045. The sanitized preflight prerequisite is locally accepted; Plan 0023
   remains OPEN at the explicit human gate for exact real install, sanitized
   user-config preflight/readback, and separately gated manual T08. Recurrence
-  remains prohibited; every real/live gate remains closed.
+  remains prohibited. The operator authorized the reviewed install/preflight
+  Phase A at C22, but pre-mutation `diagnose` failed closed on an installed
+  database-schema/readiness mismatch. One read-only installed-state diagnostic
+  is active; install/restart and every live/recurrence gate remain closed until
+  that mismatch is reconciled.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.

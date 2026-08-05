@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C21 is the current authority.
+Checkpoint P0023-C22 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1943,3 +1943,62 @@ Next action:
 - stop. Seek one reviewed human authorization packet for exact candidate
   install, sanitized real-config preflight/readback, and a separately gated
   bounded manual T08 tick; do not schedule recurrence.
+
+### Checkpoint P0023-C22 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `t08_preflight_locally_accepted_human_gate -> phase_a_preinstall_diagnostic_active`.
+
+Progress classification:
+
+- `blocker_reduction`; the operator's `ok go` explicitly authorizes the
+  reviewed Phase A packet, and the required pre-mutation readback has exposed
+  an installed-state mismatch before any mutation.
+
+Authorized Phase A:
+
+- install exact implementation commit `9442be9` / service artifact SHA-256
+  `b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2`;
+- preserve an identified rollback release;
+- read the real user-scoped tick config only through sanitized `tick
+  preflight`, including configured sequential notification readiness without
+  sends;
+- stop before providers, notification sends, Guac, crash/replay, manual T08,
+  timers, push, publication, release, paid calls, or ceiling changes.
+
+Pre-mutation evidence and hard stop:
+
+- candidate artifact and runtime-manifest hashes match the independently
+  accepted C20/C21 identities;
+- `last30days.service` is active and its selected release reports version
+  0.2.29;
+- installer `diagnose` failed closed with `service readiness mismatch:
+  database_schema_version`;
+- no installation, upgrade, restart, config preflight, provider, send, Guac,
+  timer, or remote action has run under Phase A;
+- Plan 0023's schema-ambiguity stop prohibits install until the current
+  release, rollback, readiness receipt, live service info, database schema,
+  and SQLite integrity are reconciled.
+
+Execution bounds:
+
+- one read-only installed-state diagnostic packet; no restart or repair;
+- if exact installed/rollback identity or database integrity cannot be proven,
+  stop and return one consolidated finding before any install;
+- if reconciled safely, checkpoint the exact preflight state before invoking
+  the already-authorized one-attempt installer upgrade.
+
+Authority classification:
+
+- `inherited_authority`; read-only diagnosis of the explicitly authorized
+  installation target stays inside Phase A. Repair, rollback, restart, or
+  bypass of readiness validation is not authorized.
+
+Next action:
+
+- read back current/previous release links and versions, sanitized readiness
+  receipt and live service info, and database schema/integrity; then either
+  clear the install admission or stop on the exact mismatch.
