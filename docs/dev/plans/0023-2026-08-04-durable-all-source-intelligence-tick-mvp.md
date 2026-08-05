@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C22 is the current authority.
+Checkpoint P0023-C23 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2002,3 +2002,85 @@ Next action:
 - read back current/previous release links and versions, sanitized readiness
   receipt and live service info, and database schema/integrity; then either
   clear the install admission or stop on the exact mismatch.
+
+### Checkpoint P0023-C23 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `phase_a_preinstall_diagnostic_active -> phase_a_transactional_rollback_repair_active`.
+
+Progress classification:
+
+- `validation_failure`; installed state is internally healthy, but exact
+  historical lifecycle replay disproves the accepted candidate's real rollback
+  claim and blocks the authorized upgrade.
+
+Read-only installed-state reconciliation:
+
+- current is exact release 0.2.29, previous is exact release 0.2.28, and the
+  current runtime-manifest SHA-256 is
+  `32bff26cf96a277a1c3d9bdf59c5fcc0ed7235eeb744dcad5cdcb11e2d22902a`;
+- readiness receipt, live service-info, and database all agree on schema 12;
+  SQLite integrity is `ok` and 62 documents remain present;
+- current installer `diagnose` fails because it compares the selected old
+  release to its own hard-coded candidate schema 15, not the actual selected
+  database schema;
+- the repo's exact historical 0.2.29 artifact matches SHA-256
+  `b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d`.
+
+Exact historical lifecycle finding:
+
+- a disposable-XDG proof installed the exact 0.2.29 artifact ready at schema
+  12 and upgraded the exact accepted 0.3.0 artifact ready at schema 15;
+- current-installer rollback failed closed and restored 0.3.0 ready;
+- historical-installer rollback also failed because exact 0.2.29 rejects a
+  database newer than its supported schema 12;
+- final disposable state was restored to 0.3.0/schema 15 with SQLite integrity
+  `ok`; no real installed state was mutated;
+- receipts 0041/0044 used synthetic old-version artifacts built from current
+  schema-15 code, so their rollback result does not prove the exact installed
+  0.2.29 rollback required by the Manual Acceptance Gate.
+
+Bounded successor repair:
+
+- make installer readiness compare service-info to the selected database's
+  actual schema rather than a candidate-global constant;
+- before schema-changing upgrade, create an owner-private, SQLite-consistent
+  rollback snapshot bound to the previous release;
+- rollback must stop the service, atomically restore the matching database
+  snapshot, switch release selectors, and restart/read back the exact previous
+  release; it must retain the displaced current database as the inverse
+  roll-forward snapshot;
+- failed upgrade or rollback must restore release selectors and the exact
+  matching database snapshot before restarting the original release;
+- add adversarial lifecycle tests for exact schema 12 -> 15 upgrade, rollback,
+  roll-forward, failed rollback recovery, snapshot integrity/mode, and
+  release/snapshot mismatch rejection;
+- implementation attempts: 2; independent review/rework cycles: 1; one
+  consolidated terminal result before any real install.
+
+Owned scope and gates:
+
+- owned runtime machinery: `service/scripts/install.sh` and focused lifecycle
+  tests; documentation/receipts only as evidence;
+- the accepted 0.3.0 runtime artifact remains unchanged because the installer
+  is repo-side lifecycle machinery, not an archive payload;
+- real install/restart/rollback, user-config preflight, providers, sends, Guac,
+  crash/replay, manual T08, timers, remote actions, paid calls, and ceiling
+  changes remain closed until the successor repair passes exact independent
+  review.
+
+Authority classification:
+
+- `inherited_authority`; transactional rollback is an explicit prerequisite of
+  the operator-authorized Phase A and remains inside the approved repo, user,
+  service, data class, and zero-provider/zero-cost envelope. The hard stop ends
+  the unsafe install attempt, not the approved install/rollback objective.
+
+Next action:
+
+- drive the exact schema-transition lifecycle through RED/GREEN tests, validate
+  the installer broadly, and submit one immutable successor for independent
+  review before reconsidering real upgrade admission.

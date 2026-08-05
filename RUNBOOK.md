@@ -10235,3 +10235,61 @@ Next Bounded Action:
 - reconcile current/previous release identity, readiness receipt, live service
   info, database schema, and integrity without mutation. Do not install,
   restart, read user config, or cross any live/T08/timer gate meanwhile.
+
+## Turn 166 | 2026-08-05
+
+Focus: reconcile the Phase A installed-state mismatch and open the bounded
+transactional rollback repair required before real upgrade.
+
+Authority Consulted:
+
+- Plan 0023 V2/C22; Roadmap P07; Runbook Turn 165; exact installed links,
+  receipts, service-info, database; exact historical 0.2.29 artifact and
+  installer commit `dfefca5`; current installer; disposable-XDG replay.
+
+Decisions And Changes:
+
+- classified the initial `diagnose` mismatch as installer version skew rather
+  than installed database corruption;
+- rejected the prior rollback proof as non-representative after exact
+  historical replay failed both current and historical rollback paths;
+- kept the real service untouched and derived one source-only transactional
+  database-snapshot/rollback successor under standing Phase A authority;
+- bounded implementation to two attempts and one independent review plus at
+  most one consolidated rework.
+
+Validation Evidence:
+
+- current/previous are exact 0.2.29/0.2.28; receipt, service-info, and database
+  agree on schema 12; SQLite integrity is `ok`; 62 documents remain;
+- exact 0.2.29 artifact SHA-256 is
+  `b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d`;
+- disposable exact 0.2.29 installed ready/schema 12 and exact 0.3.0 upgraded
+  ready/schema 15;
+- current rollback failed closed and restored 0.3.0; historical rollback also
+  failed because 0.2.29 rejects newer schema; final disposable database
+  remained schema 15/integrity `ok`;
+- no real installation, restart, config read, provider, send, Guac, timer, or
+  remote action occurred.
+
+State Movement:
+
+- Plan 0023 advances `C22 -> C23`;
+- `phase_a_preinstall_diagnostic_active -> phase_a_transactional_rollback_repair_active`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no implementation delegation is authorized and the primary
+  owns the critical lifecycle path. The existing evaluator is reserved for the
+  exact immutable successor only.
+
+Graphiti Write Status:
+
+- no memory write while rollback truth is under repair; repo-native evidence
+  remains controlling.
+
+Next Bounded Action:
+
+- implement exact schema-transition snapshot/restore semantics through TDD,
+  run full lifecycle and repository validation, and obtain one independent
+  terminal review before any real upgrade or config preflight.
