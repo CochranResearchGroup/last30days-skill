@@ -10396,3 +10396,52 @@ Next Bounded Action:
 
 - commit exact source/tests/docs, create a durable exact-lifecycle receipt, and
   obtain one independent terminal review before any real service mutation.
+
+## Turn 169 | 2026-08-05
+
+Focus: bind the immutable C25 transactional rollback candidate and exact replay
+receipt for one independent review.
+
+Authority Consulted:
+
+- Plan 0023 V2/C25; Roadmap P07; Runbook Turn 168; exact commit/hashes;
+  candidate receipt 0046; post-commit real read-only diagnose.
+
+Decisions And Changes:
+
+- committed installer/tests/docs as exact commit `8d649e2`;
+- created receipt 0046 binding installer hash, unchanged runtime artifact,
+  exact historical rollback artifact/installer, full validation, replay, and
+  untouched real installed state;
+- opened the single C23 review and retained every real/live gate.
+
+Validation Evidence:
+
+- installer SHA-256 is
+  `fd175e0d9ece34c82d8a4bd76c0137f89ee708d55b12a586fa81094862a2c0cd`;
+- runtime artifact SHA-256 remains
+  `b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2`;
+- exact 0.2.29 artifact SHA-256 is
+  `b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d`;
+- post-commit real diagnose reports active 0.2.29/schema12 ready; no mutation;
+- receipt 0046 is the durable review input.
+
+State Movement:
+
+- Plan 0023 advances `C25 -> C26`;
+- `phase_a_rollback_candidate_commit_ready -> phase_a_rollback_independent_review_pending`.
+
+Subagent Status And Reconciliation:
+
+- primary implementation/validation is complete. The existing evaluator is
+  reserved for one exact read-only terminal review with one consolidated
+  result and no implementation delegation.
+
+Graphiti Write Status:
+
+- no memory write before independent outcome.
+
+Next Bounded Action:
+
+- commit C26/receipt 0046, submit exact commit/installer/artifacts/receipt for
+  independent review, and stop before any real Phase A mutation.

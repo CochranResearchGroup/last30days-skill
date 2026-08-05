@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C25 is the current authority.
+Checkpoint P0023-C26 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2188,3 +2188,57 @@ Next action:
 - commit the exact installer/tests/docs, bind exact commit and replay evidence
   in a machine-readable receipt, then request the one bounded independent
   terminal review.
+
+### Checkpoint P0023-C26 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `phase_a_rollback_candidate_commit_ready -> phase_a_rollback_independent_review_pending`.
+
+Progress classification:
+
+- `outcome_progress`; the exact transactional installer successor is committed
+  and bound to durable exact-historical replay and real installed-state
+  readback evidence.
+
+Exact candidate evidence:
+
+- implementation/docs commit:
+  `8d649e2e9374180a7024bda3112feb7650b6b9fe`;
+- installer SHA-256:
+  `fd175e0d9ece34c82d8a4bd76c0137f89ee708d55b12a586fa81094862a2c0cd`;
+- accepted runtime artifact remains SHA-256
+  `b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2`;
+- exact historical rollback source is artifact SHA-256
+  `b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d`
+  and installer commit `dfefca5`;
+- durable candidate receipt:
+  `docs/dev/notes/0046-service-transactional-database-rollback-candidate-receipt.json`;
+- post-commit real read-only diagnose still reports active exact
+  0.2.29/schema12 ready with no installed-state change.
+
+Independent review contract:
+
+- verify actual-schema readiness is strict rather than a downgrade bypass;
+- verify SQLite backup consistency, release/digest/schema/integrity/permission
+  binding, stop-before-restore, WAL/SHM containment, selector+database atomic
+  recovery, inverse roll-forward, retention, and unsafe-path rejection;
+- replay successful schema 12 -> 15 rollback/roll-forward plus failed upgrade,
+  failed rollback, and mismatched snapshot cases;
+- verify exact commit/installer/artifact/receipt identities, full validation,
+  untouched real state, and all closed gates;
+- maximum independent review/rework cycles: 1; return one consolidated terminal
+  PASS or FAIL; no edits, real mutation, user-config read, live action, or
+  implementation delegation is authorized.
+
+Authority classification:
+
+- `inherited_authority`; one exact read-only independent review is the last
+  local gate before reconsidering the already-authorized real Phase A upgrade.
+
+Next action:
+
+- commit receipt 0046/C26 evidence and send exact identities to the existing
+  evaluator. Stop before real install until its terminal result is reconciled.
