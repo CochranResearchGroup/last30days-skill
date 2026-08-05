@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sqlite3
 from datetime import datetime, timedelta, timezone
 
 import pytest
@@ -12,6 +13,7 @@ from lib.service_tick_incidents import (
     NotificationExhaustedError,
     NotificationPreflightError,
     ObservationGateError,
+    ObservationLease,
     classify_provider_issue,
 )
 from lib.service_tick_media import (
@@ -38,6 +40,21 @@ class FixtureTransport:
         if not self.succeeds:
             raise RuntimeError("fixture delivery failure")
         return f"delivery:{self.transport_id}:1"
+
+
+class FixtureObservationTransport:
+    def __init__(self):
+        self.calls = []
+
+    def acquire(self, *, incident_id, public_operator_url):
+        self.calls.append((incident_id, public_operator_url))
+        ordinal = len(self.calls)
+        return ObservationLease(
+            viewer_lease_id=f"viewer-lease-fresh-{ordinal}",
+            public_operator_url=(
+                f"https://guac.example.test/client/fresh-session-{ordinal}"
+            ),
+        )
 
 
 @pytest.mark.parametrize(
@@ -106,6 +123,7 @@ def test_browser_incident_persists_exact_page_then_notifies_by_sequential_failov
 
 def test_incidents_deduplicate_resolve_exactly_and_gate_external_observation(tmp_path):
     db_path = tmp_path / "research.db"
+    observation_transport = FixtureObservationTransport()
     manager = IncidentManager(
         db_path,
         MediaDerivativePublisher(
@@ -113,6 +131,7 @@ def test_incidents_deduplicate_resolve_exactly_and_gate_external_observation(tmp
             ContentAddressedArtifactStore(tmp_path / "artifacts"),
             clock=lambda: NOW,
         ),
+        observation_transport=observation_transport,
         clock=lambda: NOW,
     )
     signal = IncidentSignal(
@@ -137,10 +156,23 @@ def test_incidents_deduplicate_resolve_exactly_and_gate_external_observation(tmp
     assert repeated.occurrence_count == 2
     with pytest.raises(ObservationGateError, match="acknowledged"):
         manager.request_observation(first.incident_id)
+    assert observation_transport.calls == []
     manager.acknowledge(first.incident_id, actor_ref="operator-ref:primary")
     assert manager.request_observation(first.incident_id) == (
-        "https://guac.example.test/client/session-1"
+        "https://guac.example.test/client/fresh-session-1"
     )
+    assert observation_transport.calls == [
+        (first.incident_id, "https://guac.example.test/client/session-1")
+    ]
+    assert manager.request_observation(first.incident_id) == (
+        "https://guac.example.test/client/fresh-session-2"
+    )
+    assert len(observation_transport.calls) == 2
+    conn = sqlite3.connect(db_path)
+    assert conn.execute(
+        "SELECT viewer_lease_id FROM service_incident_observations"
+    ).fetchone() == ("viewer-lease-fresh-2",)
+    conn.close()
     resolved = manager.resolve(
         first.incident_id,
         successful_execution_id="provider-attempt-recovered",

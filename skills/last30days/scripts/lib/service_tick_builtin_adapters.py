@@ -156,7 +156,11 @@ class AcquisitionWorkerTickAdapter:
         }
         if items:
             return ProviderResult(
-                status="success",
+                status=(
+                    "partial"
+                    if result.status is contracts.AcquisitionStatus.PARTIAL
+                    else "success"
+                ),
                 items=items,
                 usage=usage,
                 failure_class=(

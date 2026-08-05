@@ -2068,6 +2068,10 @@ END;
     14: """
 ALTER TABLE service_incidents ADD COLUMN operator_url TEXT;
 """,
+    15: """
+ALTER TABLE service_incident_observations ADD COLUMN viewer_lease_id TEXT;
+ALTER TABLE service_incident_observations ADD COLUMN lease_acquired_at TEXT;
+""",
 }
 
 

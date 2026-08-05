@@ -17,6 +17,7 @@ from lib.service_tick_notifications import (
     CommandReceipt,
     build_notification_transports,
 )
+from lib.service_tick_observation import AgentBrowserObservationTransport
 from lib.service_tick_runner import ProviderContext
 from lib.service_tick_runtime import build_tick_runtime, default_tick_config_path
 from service import build_parser
@@ -254,6 +255,7 @@ def test_builtin_adapter_bridge_preserves_media_and_agent_browser_incident_evide
         "x_agent_browser", source="x", capability="collect"
     ).collect(_context())
 
+    assert partial.status == "partial"
     assert partial.items[0].media[0].content == b"image-bytes"
     assert partial.operator_url == "https://guac.example.test/client/session-2"
     assert partial.rendered_page == b"rendered-partial-auth-page"
@@ -309,6 +311,10 @@ def test_runtime_accepts_an_explicit_installed_provider_registry_and_absolute_ar
                 }
             ]
         },
+        "observation": {
+            "adapter_type": "agent_browser_service",
+            "service_base_url": "http://127.0.0.1:4848",
+        },
     }
     config_path.write_text(json.dumps(config), encoding="utf-8")
     registry = AdapterRegistry()
@@ -321,6 +327,10 @@ def test_runtime_accepts_an_explicit_installed_provider_registry_and_absolute_ar
 
     assert runtime.runner.registry is registry
     assert runtime.coordinator.adapter_registry is registry
+    assert isinstance(
+        runtime.runner.incidents.observation_transport,
+        AgentBrowserObservationTransport,
+    )
 
     config["artifacts"]["root"] = "relative-artifacts"
     config_path.write_text(json.dumps(config), encoding="utf-8")

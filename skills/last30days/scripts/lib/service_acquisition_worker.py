@@ -8,19 +8,23 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import ipaddress
 import json
 import os
 import re
+import socket
 import subprocess
 import sys
 import tempfile
 import threading
+import time
+import urllib.error
 import urllib.request
 from collections.abc import Callable, Mapping
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import urljoin, urlparse
 
 from . import env as env_config
 from . import normalize
@@ -71,6 +75,9 @@ _PERMANENT_ERRORS = frozenset(
         "validator_failed",
         "network_budget_exhausted",
         "budget_exhausted",
+        "unsafe_media_url",
+        "wall_time_budget_exhausted",
+        "media_redirect_limit_exceeded",
     }
 )
 _RENDERED_PAGE_ERRORS = frozenset(
@@ -87,6 +94,7 @@ _MAX_ACQUIRED_MEDIA_ITEM_BYTES = 262_144
 _MAX_RENDERED_PAGE_BYTES = 524_288
 _BOUNDED_REDDIT_ITEM_LIMIT = 3
 _BOUNDED_REDDIT_FALLBACK_TIMEOUT_SECONDS = 20
+_MAX_MEDIA_REDIRECTS = 3
 _ACCESS_METHOD_BY_ADAPTER = {
     "x_agent_browser": "agent_browser",
     "facebook_agent_browser": "agent_browser",
@@ -97,6 +105,11 @@ _ACCESS_METHOD_BY_ADAPTER = {
     "reddit_agent_browser": "agent_browser",
     "reddit_scrapecreators": "scrapecreators",
 }
+
+
+class _NoMediaRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
 _REDDIT_ADAPTER_VARIANT_BY_METHOD = {
     "keyless": "reddit_keyless",
     "agent_browser": "reddit_agent_browser",
@@ -699,14 +712,29 @@ def execute_work(
     *,
     adapters: Mapping[str, Adapter] | None = None,
     clock: Callable[[], datetime] | None = None,
+    media_opener: Callable[..., Any] | None = None,
+    address_resolver: Callable[..., Any] | None = None,
+    monotonic_clock: Callable[[], float] | None = None,
 ) -> contracts.AcquisitionWorkResult:
     """Execute one adapter and return a proposal; never mutate service state."""
     adapter_registry = adapters or _DEFAULT_ADAPTERS
     adapter = adapter_registry.get(request.adapter)
     now = clock or (lambda: datetime.now(timezone.utc))
+    monotonic = monotonic_clock or time.monotonic
+    started_monotonic = monotonic()
+    resolver = address_resolver or socket.getaddrinfo
     observed_at = now().astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
     network_count = 0
-    media_urlopen: Callable[..., Any] | None = None
+    network_lock = threading.Lock()
+    network_exhausted = False
+
+    def reserve_network_request() -> None:
+        nonlocal network_count, network_exhausted
+        with network_lock:
+            network_count += 1
+            if network_count > request.network_request_limit:
+                network_exhausted = True
+                raise RuntimeError("network request budget exhausted")
     try:
         source_policy = load_service_source_policy(config)
         source_policy.access_order(request.source)
@@ -734,19 +762,11 @@ def execute_work(
         }
     else:
         original_urlopen = urllib.request.urlopen
-        network_lock = threading.Lock()
-        network_exhausted = False
 
         def bounded_urlopen(*args, **kwargs):
-            nonlocal network_count, network_exhausted
-            with network_lock:
-                network_count += 1
-                if network_count > request.network_request_limit:
-                    network_exhausted = True
-                    raise RuntimeError("network request budget exhausted")
+            reserve_network_request()
             return original_urlopen(*args, **kwargs)
 
-        media_urlopen = bounded_urlopen
         urllib.request.urlopen = bounded_urlopen
         try:
             raw = adapter(request, config)
@@ -795,35 +815,113 @@ def execute_work(
     if not isinstance(raw_items, list):
         raw_items = []
     remaining_media_bytes = _MAX_ACQUIRED_MEDIA_BYTES
+    media_error_code: str | None = None
+    active_media_opener = media_opener or urllib.request.build_opener(
+        _NoMediaRedirect()
+    ).open
+
+    def validate_media_url(source_url: str) -> None:
+        parsed = urlparse(source_url)
+        if (
+            parsed.scheme != "https"
+            or not parsed.hostname
+            or parsed.username is not None
+            or parsed.password is not None
+            or parsed.fragment
+        ):
+            raise ValueError("unsafe media URL")
+        hostname = parsed.hostname.rstrip(".")
+        try:
+            addresses = [ipaddress.ip_address(hostname)]
+        except ValueError:
+            resolved = resolver(
+                hostname,
+                parsed.port or 443,
+                type=socket.SOCK_STREAM,
+            )
+            addresses = []
+            for result in resolved:
+                sockaddr = result[4]
+                if isinstance(sockaddr, tuple) and sockaddr:
+                    addresses.append(ipaddress.ip_address(str(sockaddr[0])))
+        if not addresses or any(not address.is_global for address in addresses):
+            raise ValueError("unsafe media destination")
 
     def fetch_media(source_url: str) -> tuple[bytes, str] | None:
-        nonlocal remaining_media_bytes
-        if (
-            media_urlopen is None
-            or network_count >= request.network_request_limit
-            or remaining_media_bytes <= 0
-        ):
+        nonlocal remaining_media_bytes, media_error_code
+        if network_count >= request.network_request_limit:
+            media_error_code = "network_budget_exhausted"
+            return None
+        if remaining_media_bytes <= 0:
             return None
         maximum = min(_MAX_ACQUIRED_MEDIA_ITEM_BYTES, remaining_media_bytes)
-        try:
+        current_url = source_url
+        for redirect_ordinal in range(_MAX_MEDIA_REDIRECTS + 1):
+            remaining_wall_seconds = request.wall_timeout_seconds - (
+                monotonic() - started_monotonic
+            )
+            if remaining_wall_seconds <= 0:
+                media_error_code = "wall_time_budget_exhausted"
+                return None
+            try:
+                validate_media_url(current_url)
+            except (OSError, ValueError):
+                media_error_code = "unsafe_media_url"
+                return None
+            if network_count >= request.network_request_limit:
+                media_error_code = "network_budget_exhausted"
+                return None
             source_request = urllib.request.Request(
-                source_url,
+                current_url,
                 headers={"User-Agent": "last30days-media-fetch/1"},
             )
-            with media_urlopen(
-                source_request,
-                timeout=min(10, request.wall_timeout_seconds),
-            ) as response:
-                content = response.read(maximum + 1)
-                mime_type = str(
-                    response.headers.get("Content-Type", "application/octet-stream")
-                ).split(";", 1)[0]
-        except (OSError, RuntimeError, TimeoutError, ValueError):
-            return None
-        if not content or len(content) > maximum:
-            return None
-        remaining_media_bytes -= len(content)
-        return content, mime_type
+            try:
+                reserve_network_request()
+                try:
+                    response = active_media_opener(
+                        source_request,
+                        timeout=min(10, remaining_wall_seconds),
+                    )
+                except urllib.error.HTTPError as exc:
+                    if 300 <= exc.code < 400:
+                        response = exc
+                    else:
+                        raise
+                with response:
+                    status = getattr(response, "status", None)
+                    if status is None and hasattr(response, "getcode"):
+                        status = response.getcode()
+                    if isinstance(status, int) and 300 <= status < 400:
+                        location = response.headers.get("Location")
+                        if not isinstance(location, str) or not location.strip():
+                            return None
+                        if redirect_ordinal >= _MAX_MEDIA_REDIRECTS:
+                            media_error_code = "media_redirect_limit_exceeded"
+                            return None
+                        current_url = urljoin(current_url, location.strip())
+                        continue
+                    final_url = (
+                        response.geturl()
+                        if hasattr(response, "geturl")
+                        else current_url
+                    )
+                    if final_url != current_url:
+                        media_error_code = "unsafe_media_url"
+                        return None
+                    content = response.read(maximum + 1)
+                    mime_type = str(
+                        response.headers.get(
+                            "Content-Type", "application/octet-stream"
+                        )
+                    ).split(";", 1)[0]
+            except (OSError, RuntimeError, TimeoutError, urllib.error.URLError):
+                return None
+            if not content or len(content) > maximum:
+                return None
+            remaining_media_bytes -= len(content)
+            return content, mime_type
+        media_error_code = "media_redirect_limit_exceeded"
+        return None
 
     try:
         items = _normalized_items(
@@ -838,6 +936,13 @@ def execute_work(
             "error_type": "validator_failed",
             "diagnostics": {"failure_stage": "normalization"},
         }
+    if media_error_code is not None and not raw.get("error_type"):
+        raw["error_type"] = media_error_code
+        diagnostics = raw.get("diagnostics")
+        if not isinstance(diagnostics, dict):
+            diagnostics = {}
+            raw["diagnostics"] = diagnostics
+        diagnostics["failure_stage"] = "media_fetch"
     error_code = _safe_error_code(raw.get("error_type"))
     if error_code is None and raw.get("error"):
         error_code = "source_error"

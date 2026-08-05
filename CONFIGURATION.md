@@ -43,7 +43,7 @@ The service release lives under
 `$XDG_DATA_HOME/last30days/service/releases/<version>`, independently of any
 installed Agent Skill. The managed unit resolves the atomic `current` selector
 through a stable launcher. A successful install records the loaded service
-version, contract digest, schema 14, and runtime-manifest digest in an
+version, contract digest, schema 15, and runtime-manifest digest in an
 owner-readable readiness receipt. Skill-first installation remains a
 compatibility path during the migration; refreshing a frozen Skill copy is no
 longer the service upgrade contract.
@@ -112,6 +112,26 @@ as paid API adapters, and user config may select only adapter types already in
 that registry. Configuration never loads an executable, module, or arbitrary
 callable.
 
+Configure that explicit observation action in the same user-scoped document,
+never in repo data:
+
+```json
+{
+  "observation": {
+    "adapter_type": "agent_browser_service",
+    "service_base_url": "http://127.0.0.1:4848"
+  }
+}
+```
+
+This endpoint must expose agent-browser's service API. It is not an operator
+handoff URL. Normal collection does not call it. After a browser incident is
+persisted, notified, explicitly acknowledged, and explicitly observed, the
+runtime resolves the stored external route against one ready agent-browser
+stream and posts the code-owned `view_takeover` action. Only the fresh external
+HTTPS URL returned with a viewer-lease ID is handed to the human; the lease ID
+is retained in the user-scoped incident database.
+
 Enabled image analysis stages also select installed adapter types. The current
 deterministic bridge names `provider_output_ocr_v1` and
 `provider_output_semantic_sidecar_v1`; these accept only bounded typed outputs
@@ -131,6 +151,14 @@ view or acquiring a Guacamole observation lease. Deterministic fixtures prove
 media, OCR/sidecar, and screenshot carriage. The manual acceptance packet must
 still prove those paths for every enabled production adapter; no recurring
 schedule is enabled meanwhile.
+
+Media retrieval is HTTPS-only. Each destination and redirect is resolved and
+rejected before the next request when any address is private, loopback,
+link-local, reserved, or otherwise non-global. Every redirect consumes the
+provider network ceiling, and every fetch timeout is capped by the tick's
+remaining monotonic wall budget. A rejected or budget-exhausted media fetch is
+a typed partial outcome: already normalized source evidence remains queryable
+while the affected lane closes truthfully.
 
 `analysis.anomaly_rules` is optional. Each rule names one of `yield_count`,
 `rejection_rate`, `latency_seconds`, or `missing_media_rate`, a `low` or `high`
@@ -846,7 +874,7 @@ Use `service/scripts/install.sh upgrade --artifact <artifact>` for a new
 semantic service version. The installer verifies every payload SHA-256, stages
 an immutable release, records the old `current` target as `previous`, switches
 atomically, and restarts once. It accepts the upgrade only when the service
-reports the expected version, exact contract digest, and schema 14. A failed
+reports the expected version, exact contract digest, and schema 15. A failed
 upgrade restores the prior selectors, restarts, and proves the old release
 ready. Use `service/scripts/install.sh rollback` to swap the current and
 previous verified releases deliberately; `start`, `stop`, `status`, and

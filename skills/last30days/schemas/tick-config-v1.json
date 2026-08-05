@@ -110,6 +110,20 @@
         }
       }
     },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter_type", "service_base_url"],
+      "properties": {
+        "adapter_type": {"const": "agent_browser_service"},
+        "service_base_url": {
+          "type": "string",
+          "pattern": "^https?://",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    },
     "query": {
       "type": "object",
       "additionalProperties": false,

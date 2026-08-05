@@ -172,17 +172,17 @@ class ProviderResult:
     outcome_counts: dict[str, int] | None = None
 
     def __post_init__(self) -> None:
-        if self.status not in {"success", "empty", "failure"}:
+        if self.status not in {"success", "partial", "empty", "failure"}:
             raise ValueError("provider result status is unsupported")
         normalized = _usage(self.usage)
         object.__setattr__(self, "usage", normalized)
-        if self.status == "success" and not self.items:
-            raise ValueError("successful provider result must contain items")
-        if self.status != "success" and self.items:
-            raise ValueError("non-success provider result cannot contain items")
+        if self.status in {"success", "partial"} and not self.items:
+            raise ValueError("successful or partial provider result must contain items")
+        if self.status not in {"success", "partial"} and self.items:
+            raise ValueError("empty or failed provider result cannot contain items")
         if normalized["items"] != len(self.items):
             raise ValueError("provider item usage does not match result items")
-        if self.status == "failure":
+        if self.status in {"partial", "failure"}:
             _text(self.failure_class, "failure_class", 64)
             _text(self.safe_error_code, "safe_error_code", 64)
         if self.rendered_page is not None and not self.rendered_page_mime_type:
@@ -922,7 +922,7 @@ class TickRunner:
         media_work: list[tuple[CollectedMedia, str]] = []
         conn.execute("BEGIN IMMEDIATE")
         try:
-            if observed.status == "success":
+            if observed.status in {"success", "partial"}:
                 entries, media_work = self._publish_raw(
                     conn,
                     tick=tick,
@@ -932,12 +932,22 @@ class TickRunner:
                     attempt_id=attempt_id,
                     emit_event=emit_raw_event,
                 )
+            attempt_state = observed.status
+            if observed.status == "partial":
+                incident_type = classify_provider_issue(
+                    observed.safe_error_code, observed.page_signals
+                )
+                attempt_state = (
+                    "blocked_human"
+                    if incident_type in _BLOCKING_INCIDENTS
+                    else "failure"
+                )
             conn.execute(
                 """UPDATE service_tick_provider_attempts
                    SET state = ?, failure_class = ?, outcome_counts_json = ?,
                        completed_at = ? WHERE provider_attempt_id = ?""",
                 (
-                    observed.status,
+                    attempt_state,
                     observed.failure_class,
                     _canonical_json(observed.outcome_counts),
                     _now(self.clock)[1],
@@ -1670,7 +1680,7 @@ class TickRunner:
                 final_entries = attempt_entries
                 final_media_work = attempt_media_work
                 if (
-                    result.status != "failure"
+                    result.status in {"success", "empty"}
                     and classify_provider_issue(
                         result.safe_error_code, result.page_signals
                     )
@@ -1765,15 +1775,21 @@ class TickRunner:
         conn = self._connect()
         try:
             conn.execute("BEGIN IMMEDIATE")
-            if final_result.status == "success":
+            if final_result.status in {"success", "partial"}:
                 entries = final_entries
                 media_work = final_media_work
-                lane_state = "success"
+                lane_state = (
+                    "success"
+                    if final_result.status == "success"
+                    else "blocked_human"
+                    if incident_type in _BLOCKING_INCIDENTS
+                    else "failure"
+                )
                 self._stage(
                     conn,
                     tick_id=tick["tick_id"],
                     stage_name="collection",
-                    state="success",
+                    state=lane_state,
                     attempt_id=attempt_id,
                     lane_id=lane["lane_id"],
                 )

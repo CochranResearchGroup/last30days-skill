@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C06 is the current authority.
+Checkpoint P0023-C07 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1064,3 +1064,73 @@ Next action:
 - independently review the exact local candidate commit and reproducible
   build/install/rollback artifact, then request explicit bounded T08 human/live
   authorization. Timer design remains a separate successor after T08.
+
+### Checkpoint P0023-C07 | 2026-08-05
+
+Plan version: 1
+
+State transition:
+
+- `exact_candidate_review_pending -> bounded_rework_recheck_pending`.
+
+Independent review result:
+
+- the evaluator verified the exact `7b51c5f` commit and original 0.3.0
+  artifact, then returned `FAIL` with two blockers, one high finding, and one
+  medium finding;
+- typed worker `partial` results were being converted to provider `success`,
+  so blocking authentication could falsely terminalize the lane successfully;
+- the observation gate returned a cached external URL without asking
+  agent-browser for `view_takeover` or retaining a viewer-lease ID;
+- media fetching admitted private/non-global destinations and unsafe redirects;
+  per-media timeouts also ignored the tick's remaining monotonic wall budget.
+
+Owned rework:
+
+- preserve typed partial provider results, publish their raw evidence first,
+  and terminalize the provider attempt/lane as `blocked_human` for exact
+  CAPTCHA, Cloudflare, blocked-rate-limit, and reauthentication incidents;
+- resolve an acknowledged explicit observation request through the browser's
+  `activeSessionIds` and the service session inventory to exactly one ready
+  agent-browser stream, post code-owned `view_takeover`, return only the fresh
+  external HTTPS route from its successful response, and retain the
+  viewer-lease ID in user-scoped database schema 15;
+- validate every media destination and redirect as external HTTPS with only
+  global resolved addresses, account for each request, and cap its timeout by
+  the tick's remaining monotonic wall budget;
+- keep the agent-browser service endpoint and all operator particulars in the
+  user-scoped tick document. No ordinary acquisition path requests a viewer
+  lease.
+
+Validation evidence:
+
+- each review finding recorded a focused RED before its GREEN implementation;
+- the combined worker, incident, observation, runner, runtime, migration,
+  contract, lifecycle, temporal, and package matrix passes; all Go packages
+  pass against generated schema-15 compatibility data;
+- the complete repository Python suite exits zero, runtime packaging is
+  reproducible, migration 14 to 15 preserves legacy observation rows, and
+  `git diff --check` passes;
+- no installed runtime, real user config, live source, real notification,
+  Guac lease, schedule, timer, remote, or recipient was touched by rework.
+
+Review and loop accounting:
+
+- this is Plan 0023's single allowed consolidated review/rework cycle. The
+  same evaluator must recheck the rebuilt exact candidate; no second rework
+  cycle is authorized by this checkpoint.
+
+Authority classification:
+
+- `human_gate`; deterministic rework is validated. A local exact candidate
+  commit, reproducible artifact, isolated install/rollback proof, and evaluator
+  recheck are authorized next. Real installation, user-config readback or
+  mutation, live providers, real notifications, Guac observation, recurrence,
+  push, tag, publication, release, paid calls, and ceiling increases remain
+  closed.
+
+Next action:
+
+- bind the rework into one exact local commit, rebuild and hash the service
+  artifact, repeat isolated install/rollback/roll-forward proof, and send that
+  exact state to the same evaluator. T08 remains closed until recheck passes.

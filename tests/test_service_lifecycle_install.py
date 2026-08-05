@@ -202,7 +202,7 @@ def test_clean_install_uses_independent_current_release_and_receipt(tmp_path):
         )
         assert not (service_root / "previous").exists()
         assert receipt["service_version"] == CURRENT_VERSION
-        assert receipt["database_schema_version"] == 14
+        assert receipt["database_schema_version"] == 15
         assert receipt["service_status"] == "ready"
         assert receipt == json.loads(
             (service_root / "readiness.json").read_text(encoding="utf-8")
@@ -231,7 +231,7 @@ def test_clean_install_uses_independent_current_release_and_receipt(tmp_path):
             )
             .execute("SELECT MAX(version) FROM schema_version")
             .fetchone()[0]
-            == 14
+            == 15
         )
         diagnosed = json.loads(_run(env, "diagnose").stdout)
         assert diagnosed["service_version"] == CURRENT_VERSION
@@ -290,7 +290,7 @@ def test_upgrade_manual_rollback_and_failed_upgrade_restore_state(tmp_path):
         ).fetchone()[0] == 1
         assert connection.execute(
             "SELECT MAX(version) FROM schema_version"
-        ).fetchone()[0] == 14
+        ).fetchone()[0] == 15
         assert connection.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
         after_dump = "\n".join(connection.iterdump())
         connection.close()

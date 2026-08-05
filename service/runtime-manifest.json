@@ -7,12 +7,12 @@
     },
     {
       "path": "schemas/service-contracts-v1.json",
-      "sha256": "6ba3fc8b12832d57feca813ea7eeed578a105c2541f5bc5898413c5752838081",
+      "sha256": "d3362ef9edc1e8e58f76d4a5a5ed5375fbc51e39169da1f84714584165f4efd8",
       "source": "skills/last30days/schemas/service-contracts-v1.json"
     },
     {
       "path": "schemas/tick-config-v1.json",
-      "sha256": "7da98f4eb3472f15ad71d2a2af432ff2ab169f82faefa8ab4c135d125cc33a15",
+      "sha256": "6eae0d5ea18a377a24b553d92788ed320879d01e14142cdea63dbb42ae4bdc85",
       "source": "skills/last30days/schemas/tick-config-v1.json"
     },
     {
@@ -282,7 +282,7 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "844e77bd862d2c096d8126282e2a33e8f0124a083665f8dfeebe1af91e576ff4",
+      "sha256": "dd7c79304735a5b77aa87b7d4cc58bce315221b57701fe1503897038e7402010",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
@@ -412,12 +412,12 @@
     },
     {
       "path": "scripts/lib/service_tick_builtin_adapters.py",
-      "sha256": "29bbdec36a4ef14c41e3472caf7f39614dc54974b8ff96ebd52c589c69882ee3",
+      "sha256": "8dbe0c54c7f95f053135d7d2a38de217162399e4e5af02df94a81f3e0361e666",
       "source": "skills/last30days/scripts/lib/service_tick_builtin_adapters.py"
     },
     {
       "path": "scripts/lib/service_tick_incidents.py",
-      "sha256": "6fa0f48fe73fa8ab34ef399eaa160f98fcae116dceb66bc4548181c6824f9e56",
+      "sha256": "43697357898abb7a5ccdd543102f529e380f2c2e142d44a71ec77d2c40305890",
       "source": "skills/last30days/scripts/lib/service_tick_incidents.py"
     },
     {
@@ -431,18 +431,23 @@
       "source": "skills/last30days/scripts/lib/service_tick_notifications.py"
     },
     {
+      "path": "scripts/lib/service_tick_observation.py",
+      "sha256": "18177f5d0451f51d0108f00f5e02b1ca620443116199b68f5838a458b26c5121",
+      "source": "skills/last30days/scripts/lib/service_tick_observation.py"
+    },
+    {
       "path": "scripts/lib/service_tick_query.py",
       "sha256": "8fe174ad7d6dc91f3215b83719c58e44b289b4b591c50898100dfb8201b4b4ca",
       "source": "skills/last30days/scripts/lib/service_tick_query.py"
     },
     {
       "path": "scripts/lib/service_tick_runner.py",
-      "sha256": "39f320d567b23d3021240f73df5c190e739a630bbf441e262e8c384e1904a0a4",
+      "sha256": "6e2e1d2c218b16b59564d267817c98fc0613d10987919636caa7a944bc983b32",
       "source": "skills/last30days/scripts/lib/service_tick_runner.py"
     },
     {
       "path": "scripts/lib/service_tick_runtime.py",
-      "sha256": "97b4a6c91e79b42988e799169d1896246ace3c2999198a94b06f166f324c2cf2",
+      "sha256": "dcfec4ce9094c31a7e6eb2007977f5b0235ce2684c51fa6fea9b8ed555dfcc0e",
       "source": "skills/last30days/scripts/lib/service_tick_runtime.py"
     },
     {
@@ -627,7 +632,7 @@
     },
     {
       "path": "scripts/store.py",
-      "sha256": "6e0cc3ee147883b9516548003c791d43c3a69ad59cf229df98e165490feab9a5",
+      "sha256": "17d4f291cd4bf64c258f78c9b37d25c2cacf85eb04046b916ba011cbdb2217bb",
       "source": "skills/last30days/scripts/store.py"
     }
   ],

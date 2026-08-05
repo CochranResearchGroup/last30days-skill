@@ -169,6 +169,29 @@ class DeliveryReceipt:
     delivery_ref: str
 
 
+@dataclass(frozen=True)
+class ObservationLease:
+    viewer_lease_id: str
+    public_operator_url: str
+
+    def __post_init__(self) -> None:
+        _text(self.viewer_lease_id, "viewer_lease_id", 256)
+        url = _text(self.public_operator_url, "public_operator_url", 4_096)
+        parsed = urlparse(url)
+        if (
+            parsed.scheme != "https"
+            or not parsed.hostname
+            or parsed.hostname.casefold() in {"localhost", "127.0.0.1", "::1"}
+        ):
+            raise ValueError("public_operator_url must be an external HTTPS URL")
+
+
+class ObservationTransport(Protocol):
+    def acquire(
+        self, *, incident_id: str, public_operator_url: str
+    ) -> ObservationLease: ...
+
+
 class NotificationTransport(Protocol):
     transport_id: str
 
@@ -195,10 +218,12 @@ class IncidentManager:
         db_path: Path,
         media: MediaDerivativePublisher,
         *,
+        observation_transport: ObservationTransport | None = None,
         clock: Clock | None = None,
     ) -> None:
         self.db_path = Path(db_path)
         self.media = media
+        self.observation_transport = observation_transport
         self.clock = clock or (lambda: datetime.now(timezone.utc))
         store.init_db(self.db_path)
 
@@ -667,23 +692,65 @@ class IncidentManager:
                     "incident has no agent-browser external operator URL"
                 )
             url = str(row["operator_url"])
-            request_id = _stable_id("observation-request", incident_id)
-            conn.execute(
-                """INSERT OR IGNORE INTO service_incident_observations (
-                       observation_request_id, incident_id, public_operator_url,
-                       requested_at
-                   ) VALUES (?, ?, ?, ?)""",
-                (request_id, incident_id, url, _now(self.clock)),
+        finally:
+            conn.close()
+
+        if self.observation_transport is None:
+            raise ObservationGateError(
+                "agent-browser observation transport is not configured"
             )
-            existing = conn.execute(
-                """SELECT public_operator_url FROM service_incident_observations
-                   WHERE incident_id = ?""",
+        try:
+            lease = self.observation_transport.acquire(
+                incident_id=incident_id,
+                public_operator_url=url,
+            )
+        except Exception as exc:
+            raise ObservationGateError(
+                "agent-browser observation lease acquisition failed"
+            ) from exc
+        if not isinstance(lease, ObservationLease):
+            raise ObservationGateError(
+                "agent-browser observation transport returned an invalid lease"
+            )
+
+        request_id = _stable_id("observation-request", incident_id)
+        now = _now(self.clock)
+        conn = self._connect()
+        try:
+            conn.execute("BEGIN IMMEDIATE")
+            row = self._row(conn, incident_id)
+            if row["state"] != "acknowledged":
+                raise ObservationGateError(
+                    "incident acknowledgement changed before lease persistence"
+                )
+            conn.execute(
+                """INSERT INTO service_incident_observations (
+                       observation_request_id, incident_id, public_operator_url,
+                       requested_at, viewer_lease_id, lease_acquired_at
+                   ) VALUES (?, ?, ?, ?, ?, ?)
+                   ON CONFLICT(incident_id) DO UPDATE SET
+                       public_operator_url = excluded.public_operator_url,
+                       requested_at = excluded.requested_at,
+                       viewer_lease_id = excluded.viewer_lease_id,
+                       lease_acquired_at = excluded.lease_acquired_at""",
+                (
+                    request_id,
+                    incident_id,
+                    lease.public_operator_url,
+                    now,
+                    lease.viewer_lease_id,
+                    now,
+                ),
+            )
+            persisted = conn.execute(
+                """SELECT public_operator_url, viewer_lease_id
+                   FROM service_incident_observations WHERE incident_id = ?""",
                 (incident_id,),
-            ).fetchone()[0]
-            if existing != url:
-                raise ObservationGateError("observation URL is already immutable")
+            ).fetchone()
+            if persisted is None or persisted["viewer_lease_id"] is None:
+                raise ObservationGateError("viewer lease was not persisted")
             conn.commit()
-            return url
+            return str(persisted["public_operator_url"])
         except Exception:
             conn.rollback()
             raise

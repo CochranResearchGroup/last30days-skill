@@ -40,7 +40,7 @@ def test_v8_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 14
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 15
     assert conn.execute("SELECT name FROM topics").fetchone()[0] == "Existing Topic"
     tables = {
         row[0]
@@ -233,7 +233,7 @@ def test_v8_migration_backfills_an_immutable_current_document_version(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 14
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 15
     version = conn.execute(
         """SELECT v.document_id, v.content_hash, v.access_partition_id,
                   v.system_from, v.system_to
@@ -336,6 +336,7 @@ def test_concurrent_initializers_publish_each_schema_version_once(tmp_path):
         (12, 1),
         (13, 1),
         (14, 1),
+        (15, 1),
     ]
     conn.close()
 
@@ -345,7 +346,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     store.init_db(db_path)
     monkeypatch.setitem(
         store.MIGRATIONS,
-        15,
+        16,
         """
         CREATE TABLE should_be_rolled_back (id INTEGER PRIMARY KEY);
         THIS IS NOT VALID SQL;
@@ -359,7 +360,72 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'should_be_rolled_back'"
     ).fetchone() is None
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 14
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 15
+    conn.close()
+
+
+def test_v15_migration_preserves_observation_and_adds_viewer_lease_proof(tmp_path):
+    db_path = tmp_path / "v14-observation.db"
+    conn = sqlite3.connect(db_path)
+    conn.executescript(store.SCHEMA_V1)
+    conn.executescript(store.SCHEMA_V1_DEFAULTS)
+    for version in range(2, 15):
+        conn.executescript(store.MIGRATIONS[version])
+        conn.execute("INSERT INTO schema_version(version) VALUES (?)", (version,))
+    conn.execute(
+        """INSERT INTO service_incidents (
+               incident_id, fingerprint, first_tick_id, last_tick_id, lane_id,
+               source, profile_ref, stage, incident_type, severity, state,
+               safe_summary, access_partition_id, occurrence_count,
+               first_detected_at, last_detected_at, operator_url
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            "incident-legacy",
+            "fingerprint-legacy",
+            "tick-1",
+            "tick-1",
+            "lane-1",
+            "x",
+            "profile:x",
+            "collection",
+            "reauthentication_required",
+            "critical",
+            "acknowledged",
+            "Authentication is required.",
+            "profile:x",
+            1,
+            "2026-08-04T12:00:00Z",
+            "2026-08-04T12:00:00Z",
+            "https://guac.example.test/client/legacy",
+        ),
+    )
+    conn.execute(
+        """INSERT INTO service_incident_observations (
+               observation_request_id, incident_id, public_operator_url,
+               requested_at
+           ) VALUES (?, ?, ?, ?)""",
+        (
+            "observation-legacy",
+            "incident-legacy",
+            "https://guac.example.test/client/legacy",
+            "2026-08-04T12:01:00Z",
+        ),
+    )
+    conn.commit()
+    conn.close()
+
+    store.init_db(db_path)
+
+    conn = sqlite3.connect(db_path)
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 15
+    assert conn.execute(
+        """SELECT public_operator_url, viewer_lease_id, lease_acquired_at
+           FROM service_incident_observations"""
+    ).fetchone() == (
+        "https://guac.example.test/client/legacy",
+        None,
+        None,
+    )
     conn.close()
 
 
@@ -380,7 +446,7 @@ def test_applied_v3_database_receives_replay_and_supervisor_schema(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 14
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 15
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'index_documents'"
     ).fetchone()[0] == "index_documents"

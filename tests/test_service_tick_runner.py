@@ -527,7 +527,7 @@ def test_manual_tick_runs_every_lane_raw_first_and_publishes_one_degraded_snapsh
         "events",
         "execution_attempts",
     }
-    assert completed.versions["database_schema"] == "14"
+    assert completed.versions["database_schema"] == "15"
     assert completed.versions["embedding_space"] == "fixture-space-v1"
     assert snapshots.current().tick_id == completed.tick_id
     results = snapshots.query("revenue chart", access_partitions=("public",))
@@ -562,6 +562,69 @@ def test_manual_tick_runs_every_lane_raw_first_and_publishes_one_degraded_snapsh
     assert conn.execute(
         "SELECT COUNT(*) FROM collection_specs WHERE enabled = 1"
     ).fetchone()[0] == 0
+    conn.close()
+
+
+def test_partial_provider_evidence_publishes_raw_before_blocking_the_lane(tmp_path):
+    def partial(_context):
+        return ProviderResult(
+            status="partial",
+            items=(
+                CollectedItem(
+                    source_native_id="x-partial-1",
+                    url="https://x.example.test/x-partial-1",
+                    title="Evidence before authentication interruption",
+                    text="The provider returned this item before requiring a human.",
+                    author="Example",
+                    published_at="2026-08-03T10:00:00Z",
+                ),
+            ),
+            failure_class="authentication",
+            safe_error_code="auth_required",
+            operator_url="https://guac.example.test/client/session-partial",
+            usage=_usage(items=1),
+        )
+
+    coordinator, _, db_path, _, _, _ = _coordinator(
+        tmp_path,
+        [
+            {
+                "service_id": "x",
+                "source": "x",
+                "providers": [
+                    _provider("browser", "fixture_partial", "profile:x")
+                ],
+            }
+        ],
+        [_target("x", partition="private:x")],
+        [
+            AdapterSpec(
+                "fixture_partial",
+                frozenset({"collect"}),
+                None,
+                partial,
+                "fixture:runner:partial",
+            )
+        ],
+    )
+
+    receipt = coordinator.enqueue_tick(
+        _request("2026-08-03T00:00:00Z", "2026-08-04T00:00:00Z")
+    )
+
+    assert receipt.state is contracts.TickState.COMPLETE_DEGRADED
+    assert receipt.lanes[0].state.value == "blocked_human"
+    assert len(receipt.source_version_ids) == 1
+    conn = sqlite3.connect(db_path)
+    assert conn.execute(
+        "SELECT state FROM service_tick_provider_attempts"
+    ).fetchone() == ("blocked_human",)
+    assert conn.execute(
+        "SELECT state FROM service_tick_stages WHERE stage_name = 'collection'"
+    ).fetchone() == ("blocked_human",)
+    assert conn.execute(
+        "SELECT COUNT(*) FROM service_tick_events WHERE event_type = 'raw_published'"
+    ).fetchone() == (1,)
     conn.close()
 
 

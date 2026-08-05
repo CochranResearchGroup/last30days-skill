@@ -9323,3 +9323,71 @@ Next Bounded Action:
   reproducible build/install/rollback artifact, then ask for separately
   bounded T08 human/live authority. Keep install, user config, live sources,
   notifications, Guac, recurrence, push, tag, publication, and release closed.
+
+## Turn 149 | 2026-08-05
+
+Focus: reconcile the independent C06 `FAIL` and execute Plan 0023's one
+authorized consolidated review/rework cycle.
+
+Authority Consulted:
+
+- Plan 0023 V1/C06, Roadmap P07, Runbook Turn 148, validation, Git,
+  documentation, goal, reconciliation, and architecture policies; the TDD and
+  agent-browser skill instructions; CodeGraph structure and exact edited-file
+  readback.
+
+Decisions And Changes:
+
+- preserved worker `partial` results through the provider bridge and raw-first
+  publisher, while exact human-blocking incidents now terminalize provider
+  attempts, stages, and lanes as `blocked_human`;
+- replaced cached observation handoff with a user-configured, code-owned
+  agent-browser service transport that resolves the browser's active session
+  from service inventory and then one ready retained stream, posts
+  `view_takeover`, persists the returned viewer-lease ID, and returns only the
+  response's fresh external HTTPS route;
+- advanced the unreleased candidate to database schema 15 with a migration
+  that preserves existing observation rows and adds viewer-lease proof;
+- made media retrieval HTTPS-only with resolved global-address admission,
+  redirect-by-redirect validation and accounting, and request timeouts bounded
+  by the remaining monotonic tick wall budget;
+- removed the superseded uncommitted C06 lifecycle receipt. No stale artifact
+  digest is carried forward as current evidence.
+
+Validation Evidence:
+
+- every evaluator finding began with a focused failing test and now passes;
+  the combined affected matrix passes, including runtime package and lifecycle
+  rollback tests;
+- the complete repository Python suite exits zero; all Go packages pass;
+  migration 14 to 15 preserves legacy observation data; `git diff --check`
+  passes;
+- no installed runtime, real user config, live provider, real notification,
+  Guac lease, timer, schedule, external recipient, or remote was touched.
+
+State Movement:
+
+- Plan 0023 remains Version 1 and advances `C06 -> C07`;
+- `exact_candidate_review_pending -> bounded_rework_recheck_pending`; T08 and
+  every live or recurrence action remain closed.
+
+Subagent Status And Reconciliation:
+
+- the fresh read-only evaluator verified the exact C06 commit/artifact and
+  returned `FAIL` with two blockers, one high, and one medium finding. Its
+  report is fully reconciled into this single rework; the same evaluator is
+  retained for exact-candidate recheck.
+
+Graphiti Write Status:
+
+- not yet updated for C07. The earlier C06 correction remains historical;
+  write one compact superseding episode only after the rebuilt candidate and
+  evaluator recheck are exact.
+
+Next Bounded Action:
+
+- create the exact local rework commit, rebuild and hash the 0.3.0 artifact,
+  repeat isolated install/rollback/roll-forward proof, and request the same
+  evaluator recheck. Do not install, read or mutate real user config, call live
+  providers, send notifications, acquire Guac, enable recurrence, push, tag,
+  publish, release, raise ceilings, or spend paid budget.

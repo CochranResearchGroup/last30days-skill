@@ -76,7 +76,7 @@ def test_worker_preserves_operator_failure_type_without_browser_leases():
     assert "secret-route" not in str(serialized)
 
 
-def test_worker_fetches_bounded_image_bytes_into_the_typed_item_contract(monkeypatch):
+def test_worker_fetches_bounded_image_bytes_into_the_typed_item_contract():
     image = b"small-image-bytes"
 
     class Response:
@@ -90,12 +90,6 @@ def test_worker_fetches_bounded_image_bytes_into_the_typed_item_contract(monkeyp
 
         def read(self, _limit=-1):
             return image
-
-    monkeypatch.setattr(
-        service_acquisition_worker.urllib.request,
-        "urlopen",
-        lambda *_args, **_kwargs: Response(),
-    )
 
     def fake_adapter(_request, _config):
         return {
@@ -124,6 +118,10 @@ def test_worker_fetches_bounded_image_bytes_into_the_typed_item_contract(monkeyp
         _request(network_request_limit=2),
         {},
         adapters={"x_agent_browser": fake_adapter},
+        address_resolver=lambda *_args, **_kwargs: [
+            (2, 1, 6, "", ("93.184.216.34", 443))
+        ],
+        media_opener=lambda *_args, **_kwargs: Response(),
     )
 
     assert result.status is contracts.AcquisitionStatus.SUCCEEDED
@@ -133,6 +131,172 @@ def test_worker_fetches_bounded_image_bytes_into_the_typed_item_contract(monkeyp
     assert base64.b64decode(media.content_base64) == image
     assert media.media_kind == "image"
     assert media.alt_text == "A rendered chart"
+
+
+def test_worker_rejects_private_media_destinations_before_network():
+    def fake_adapter(_request, _config):
+        return {
+            "items": [
+                {
+                    "id": "private-media",
+                    "text": "An item with an unsafe media destination.",
+                    "url": "https://example.test/private-media",
+                    "date": "2026-07-23",
+                    "metadata": {
+                        "media": [
+                            {
+                                "kind": "image",
+                                "url": "https://127.0.0.1/private.jpg",
+                                "mime_type": "image/jpeg",
+                            }
+                        ]
+                    },
+                }
+            ]
+        }
+
+    media_calls = []
+    result = execute_work(
+        _request(network_request_limit=2),
+        {},
+        adapters={"x_agent_browser": fake_adapter},
+        media_opener=lambda *_args, **_kwargs: media_calls.append(True),
+    )
+
+    assert result.status is contracts.AcquisitionStatus.PARTIAL
+    assert result.safe_error_code == "unsafe_media_url"
+    assert result.network_request_count == 0
+    assert result.items[0].media == []
+    assert media_calls == []
+
+
+def test_worker_rejects_redirects_to_private_media_destinations():
+    class RedirectResponse:
+        status = 302
+        headers = {"Location": "https://127.0.0.1/private.jpg"}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def read(self, _limit=-1):
+            return b""
+
+        def geturl(self):
+            return "https://cdn.example.test/start.jpg"
+
+    def fake_adapter(_request, _config):
+        return {
+            "items": [
+                {
+                    "id": "redirect-media",
+                    "text": "An item whose media redirects to a private host.",
+                    "url": "https://example.test/redirect-media",
+                    "date": "2026-07-23",
+                    "metadata": {
+                        "media": [
+                            {
+                                "kind": "image",
+                                "url": "https://cdn.example.test/start.jpg",
+                                "mime_type": "image/jpeg",
+                            }
+                        ]
+                    },
+                }
+            ]
+        }
+
+    media_calls = []
+    result = execute_work(
+        _request(network_request_limit=2),
+        {},
+        adapters={"x_agent_browser": fake_adapter},
+        address_resolver=lambda *_args, **_kwargs: [
+            (2, 1, 6, "", ("93.184.216.34", 443))
+        ],
+        media_opener=lambda *_args, **_kwargs: (
+            media_calls.append(True) or RedirectResponse()
+        ),
+    )
+
+    assert result.status is contracts.AcquisitionStatus.PARTIAL
+    assert result.safe_error_code == "unsafe_media_url"
+    assert result.network_request_count == 1
+    assert result.items[0].media == []
+    assert media_calls == [True]
+
+
+def test_worker_stops_media_fetches_at_the_remaining_wall_budget():
+    class MediaResponse:
+        status = 200
+        headers = {"Content-Type": "image/jpeg"}
+
+        def __init__(self, url):
+            self.url = url
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def read(self, _limit=-1):
+            return b"bounded-image"
+
+        def geturl(self):
+            return self.url
+
+    def fake_adapter(_request, _config):
+        return {
+            "items": [
+                {
+                    "id": "wall-budget-media",
+                    "text": "An item with two media references.",
+                    "url": "https://example.test/wall-budget-media",
+                    "date": "2026-07-23",
+                    "metadata": {
+                        "media": [
+                            {
+                                "kind": "image",
+                                "url": "https://cdn.example.test/one.jpg",
+                                "mime_type": "image/jpeg",
+                            },
+                            {
+                                "kind": "image",
+                                "url": "https://cdn.example.test/two.jpg",
+                                "mime_type": "image/jpeg",
+                            },
+                        ]
+                    },
+                }
+            ]
+        }
+
+    monotonic_values = iter((100.0, 100.25, 101.1))
+    timeouts = []
+
+    def open_media(request, *, timeout):
+        timeouts.append(timeout)
+        return MediaResponse(request.full_url)
+
+    result = execute_work(
+        _request(network_request_limit=3, wall_timeout_seconds=1),
+        {},
+        adapters={"x_agent_browser": fake_adapter},
+        address_resolver=lambda *_args, **_kwargs: [
+            (2, 1, 6, "", ("93.184.216.34", 443))
+        ],
+        media_opener=open_media,
+        monotonic_clock=lambda: next(monotonic_values),
+    )
+
+    assert result.status is contracts.AcquisitionStatus.PARTIAL
+    assert result.safe_error_code == "wall_time_budget_exhausted"
+    assert result.network_request_count == 1
+    assert len(result.items[0].media) == 1
+    assert timeouts == [0.75]
 
 
 def test_worker_captures_problem_page_through_agent_browser_without_guac_lease(

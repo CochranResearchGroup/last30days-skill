@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Tick partial-result, observation, and media safety.** Worker results that
+  contain publishable items plus a blocking browser issue now retain their raw
+  evidence while the provider attempt and lane terminalize `blocked_human`.
+  Explicit acknowledged observation resolves one ready agent-browser stream,
+  requests `view_takeover`, persists the returned viewer-lease ID, and returns
+  only the fresh external HTTPS route from that response. Media fetching now
+  rejects non-global destinations and unsafe redirects before the next
+  request, counts every redirect, and caps each request by the remaining
+  monotonic wall budget.
+
 - **Durable X profile planning.** The X adapter now passes its resolved
   user-scoped profile ID to agent-browser's no-launch access planner as the
   explicit runtime profile before validating the returned selection. Ambient
@@ -32,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Durable all-source tick foundation.** Service 0.3.0 introduces database
-  schema 14, the versioned user-scoped `tick-config-v1.json` contract, and a
+  schema 15, the versioned user-scoped `tick-config-v1.json` contract, and a
   two-call durable tick seam. Enqueueing freezes an exact interval, sanitized
   config digest, enabled lanes, provider order, expected stages, and aggregate
   and provider ceilings. Expired execution leases create a bounded recovery

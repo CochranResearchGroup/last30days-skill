@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 1/C06; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 1/C07; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -773,15 +773,20 @@ Current State:
   records five terminal one-attempt receipts, seven accepted items, verified
   post-terminal reveal commitments, and 20% hidden class/range accuracy. C76
   accepts terminal independent review after one documented Roadmap authority
-  repair and exact bounded recheck. Plan 0023/C06 now has a deterministically
-  validated service-0.3.0/schema-14 candidate whose staged provider results,
+  repair and exact bounded recheck. Plan 0023/C07 records the exact C06
+  evaluator `FAIL` and the single allowed bounded rework. The validated
+  service-0.3.0/schema-15 candidate now preserves typed partial evidence while
+  blocking human-gated lanes, obtains and persists an agent-browser viewer
+  lease only after acknowledged explicit observation, rejects private or
+  unsafe media redirects, and applies remaining monotonic wall time to every
+  media request. Its staged provider results,
   raw-first replay, terminal-lane recovery, durable snapshot reconstruction,
   typed image/video-thumbnail carriage, programmatic rendered-page capture,
   and acknowledgment-gated external agent-browser route close the local T07
   bridge without a duplicate source call or Guac observation lease. The
-  installed runtime remains 0.2.29/schema 12; independent candidate review,
-  install/rollback, user-config readback, live T08 acceptance, recurrence, and
-  release actions remain closed.
+  installed runtime remains 0.2.29/schema 12; exact rebuild, isolated
+  install/rollback proof, same-evaluator recheck, user-config readback, live
+  T08 acceptance, recurrence, and release actions remain closed.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -951,10 +956,10 @@ Active Plan:
 
 Next Bounded Action:
 
-- review Plan 0023 as the design freeze. When implementation is explicitly
-  opened, begin T01 contracts without live source work, user-config mutation,
-  notifications, Guac observation, recurrence, push, tag, publication, or
-  release.
+- bind Plan 0023/C07 rework into an exact local commit and artifact, repeat
+  isolated install/rollback/roll-forward proof, and obtain the same evaluator's
+  bounded recheck. Keep live source work, user-config mutation, notifications,
+  Guac observation, recurrence, push, tag, publication, and release closed.
 
 ## Goal-Compatible Plan Conversion
 

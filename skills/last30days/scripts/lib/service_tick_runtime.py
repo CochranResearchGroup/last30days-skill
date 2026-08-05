@@ -24,6 +24,7 @@ from .service_tick_notifications import (
     _run_command,
     build_notification_transports,
 )
+from .service_tick_observation import AgentBrowserObservationTransport
 from .service_tick_query import TickSnapshotPublisher
 from .service_tick_runner import TickRunner
 
@@ -73,6 +74,7 @@ def build_tick_runtime(
         raise RuntimeError("installed runtime supports embedding_space local-hash-v1")
     artifacts_config = config.get("artifacts")
     notifications_config = config.get("notifications")
+    observation_config = config.get("observation")
     if not isinstance(artifacts_config, Mapping) or not isinstance(
         notifications_config, Mapping
     ):
@@ -97,7 +99,24 @@ def build_tick_runtime(
         ContentAddressedArtifactStore(artifact_root),
         clock=clock,
     )
-    incidents = IncidentManager(db_path, media, clock=clock)
+    observation_transport = None
+    if observation_config is not None:
+        if not isinstance(observation_config, Mapping):
+            raise RuntimeError("tick observation configuration must be an object")
+        if set(observation_config) != {"adapter_type", "service_base_url"}:
+            raise RuntimeError("tick observation configuration fields are invalid")
+        if observation_config.get("adapter_type") != "agent_browser_service":
+            raise RuntimeError("tick observation adapter is not installed")
+        service_base_url = observation_config.get("service_base_url")
+        if not isinstance(service_base_url, str) or not service_base_url.strip():
+            raise RuntimeError("agent-browser service_base_url is required")
+        observation_transport = AgentBrowserObservationTransport(service_base_url)
+    incidents = IncidentManager(
+        db_path,
+        media,
+        observation_transport=observation_transport,
+        clock=clock,
+    )
     snapshots = TickSnapshotPublisher(
         db_path,
         LocalHashEmbeddingProvider(),

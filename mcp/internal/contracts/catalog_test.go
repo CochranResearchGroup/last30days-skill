@@ -42,8 +42,8 @@ func TestGeneratedCatalogIsCurrent(t *testing.T) {
 	if ProductIdentity != "last30days" ||
 		ServiceAPIMin != 1 ||
 		ServiceAPIMax != 1 ||
-		DatabaseSchemaMin != 14 ||
-		DatabaseSchemaMax != 14 {
+		DatabaseSchemaMin != 15 ||
+		DatabaseSchemaMax != 15 {
 		t.Fatal("generated compatibility facts drifted")
 	}
 }
