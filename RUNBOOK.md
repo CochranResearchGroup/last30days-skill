@@ -10546,3 +10546,50 @@ Next Bounded Action:
 
 - commit the exact C28 successor, bind replacement receipt 0047, and obtain
   the sole terminal recheck before any real Phase A mutation.
+
+## Turn 172 | 2026-08-05
+
+Focus: bind the immutable consolidated rollback successor for its sole
+terminal recheck.
+
+Authority Consulted:
+
+- Plan 0023 V2/C28; Roadmap P07; Runbook Turn 171; exact commit and hashes;
+  replacement receipt 0047; post-commit real read-only diagnose.
+
+Decisions And Changes:
+
+- committed the exact manifest/readiness and recovery-stop successor as
+  `1a53f67`;
+- bound its full validation, exact historical replay, unchanged artifacts,
+  reviewer finding closure, and untouched real state in receipt 0047;
+- consumed no new implementation/rework cycle and kept every real/live gate.
+
+Validation Evidence:
+
+- installer SHA-256 is
+  `91de23cd3c71839d45eab25d5a7d4999ea36fc298514924b7feab2ffd4a75161`;
+- runtime artifact/manifest and exact historical artifact hashes remain
+  unchanged;
+- receipt 0047 records 11 lifecycle tests, 21 affected tests, 2,542 collected
+  full-suite tests at exit zero, all Go packages, exact replay, and real
+  0.2.29/schema12 readiness.
+
+State Movement:
+
+- Plan 0023 advances `C28 -> C29`;
+- `phase_a_rollback_recheck_candidate_ready -> phase_a_rollback_terminal_recheck_pending`.
+
+Subagent Status And Reconciliation:
+
+- the existing evaluator is assigned one exact read-only terminal recheck;
+  no implementation delegation or further rework is authorized.
+
+Graphiti Write Status:
+
+- no write before terminal result and real Phase A reconciliation.
+
+Next Bounded Action:
+
+- commit C29/receipt 0047, submit exact identities to the evaluator, and stop
+  before real mutation until terminal PASS is reconciled.

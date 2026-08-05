@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 2/C28; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 2/C29; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -859,7 +859,8 @@ Current State:
   records those cases GREEN, 11 lifecycle and 21 affected integration tests,
   the complete Python/Go/shell/compile/diff/authority matrix, exact historical
   rollback/roll-forward replay, and unchanged real 0.2.29/schema-12 readback.
-  The exact successor now awaits its sole terminal recheck. Real install/
+  C29 binds immutable commit `1a53f67`, installer hash, unchanged artifacts,
+  and replacement receipt 0047 for the sole terminal recheck. Real install/
   restart and every config/live/recurrence gate stay closed.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
@@ -1030,8 +1031,8 @@ Active Plan:
 
 Next Bounded Action:
 
-- commit and bind the exact Plan 0023/C28 consolidated rollback successor and
-  replacement receipt, then obtain its sole terminal recheck. Keep real
+- obtain the sole terminal recheck of exact Plan 0023/C29 commit `1a53f67` and
+  receipt 0047. Keep real
   installation, user-config access or mutation, live
   sources, notification sends, Guac, recurrence, push, publication, release,
   paid calls, and ceiling changes closed.

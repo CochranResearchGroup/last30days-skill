@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C28 is the current authority.
+Checkpoint P0023-C29 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2348,3 +2348,53 @@ Next action:
 - commit the exact installer/tests/docs successor, bind replacement receipt
   0047 to that commit and all immutable evidence, and obtain the terminal
   recheck. Stop before real mutation unless it passes.
+
+### Checkpoint P0023-C29 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `phase_a_rollback_recheck_candidate_ready -> phase_a_rollback_terminal_recheck_pending`.
+
+Progress classification:
+
+- `outcome_progress`; the one consolidated successor is immutable and bound
+  to a machine-readable replacement receipt for the sole terminal recheck.
+
+Exact candidate evidence:
+
+- implementation/docs commit:
+  `1a53f67e9dbc67023b47cfa8b20c632f7eee2b10`;
+- installer SHA-256:
+  `91de23cd3c71839d45eab25d5a7d4999ea36fc298514924b7feab2ffd4a75161`;
+- accepted runtime artifact and manifest remain
+  `b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2`
+  and `da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514`;
+- exact historical 0.2.29 artifact remains
+  `b623e4c95c577356758b7745f105cb887ddd420e1d950ab6040ce298dbbaa17d`;
+- replacement candidate receipt:
+  `docs/dev/notes/0047-service-transactional-rollback-recheck-candidate-receipt.json`.
+
+Terminal recheck contract:
+
+- reproduce rejection of missing/mismatched running manifest identity;
+- reproduce rollback and failed-upgrade recovery stop failures and prove no
+  unsafe database restore, selector swap, WAL/SHM removal, or displaced-state
+  loss occurs after the failed stop;
+- recheck normal schema 12 -> 15 rollback/roll-forward, failed upgrade,
+  failed rollback, package/release/MCP compatibility, exact hashes, full-suite
+  evidence, receipt binding, untouched real state, and all closed gates;
+- no rework remains. Return one terminal PASS or FAIL; FAIL is a hard stop
+  requiring new operator direction before real installation.
+
+Authority classification:
+
+- `inherited_authority`; terminal read-only recheck is the final C23 local
+  gate. Real install/restart/rollback and every config/provider/send/Guac/T08/
+  timer/remote/cost action remain closed until PASS is reconciled.
+
+Next action:
+
+- commit receipt 0047/C29 evidence and submit the exact immutable identities
+  to the existing evaluator. Stop before real mutation until terminal result.
