@@ -1,0 +1,46 @@
+{
+  "artifact": {
+    "contract_sha256": "d3362ef9edc1e8e58f76d4a5a5ed5375fbc51e39169da1f84714584165f4efd8",
+    "reproducible_build_count": 2,
+    "runtime_artifact_sha256": "8217c994d54cbba2ced9b65261ce3149caff1ed86e4006f75ab0cca1a00ff92b",
+    "runtime_manifest_sha256": "b1b46c2e94953a3769c086b13339307bd8cbeaffe72a3e20c2d9e5ccdc15b4a9",
+    "service_version": "0.3.0"
+  },
+  "hard_stops": [
+    "real_installation",
+    "user_config_mutation",
+    "live_provider_execution",
+    "real_notification",
+    "guacamole_observation_lease",
+    "timer_or_schedule",
+    "push_tag_or_release"
+  ],
+  "installed_state_postflight": {
+    "collection_specs": 42,
+    "database_schema_version": 12,
+    "enabled_specs": 0,
+    "service_version": "0.2.29",
+    "state_changed": false
+  },
+  "isolated_lifecycle": {
+    "current_release": "releases/0.3.0",
+    "database_integrity": "ok",
+    "database_schema_version": 15,
+    "final_readiness": "ready",
+    "initial_version": "0.2.29",
+    "manager_status": "active (running)",
+    "previous_release": "releases/0.2.29",
+    "rollback_readiness": "ready",
+    "rollback_version": "0.2.29",
+    "roll_forward_readiness": "ready",
+    "roll_forward_version": "0.3.0",
+    "test_environment": "temporary XDG roots and fake user manager",
+    "upgrade_readiness": "ready",
+    "upgrade_version": "0.3.0"
+  },
+  "plan": "0023",
+  "repo_commit": "4f1e642dfcaae8aeff5ff8b475b447a08b67fef5",
+  "schema_version": 1,
+  "status": "passed",
+  "verified_at": "2026-08-05T01:11:08-05:00"
+}
