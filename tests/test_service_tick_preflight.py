@@ -1,0 +1,346 @@
+"""Side-effect-free sanitized admission proof for the manual T08 tick."""
+
+from __future__ import annotations
+
+import json
+
+import pytest
+
+from lib import service_contracts as contracts
+from lib import service_tick_runtime
+from lib.service_tick import TickConfigError, TickCoordinator
+from lib.service_tick_builtin_adapters import build_acquisition_adapter_registry
+from lib.service_tick_notifications import CommandReceipt
+from lib.service_tick_incidents import NotificationPreflightError
+from service import build_parser
+
+
+def _write_config(path) -> None:
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "config_revision": "preflight-1",
+                "services": [
+                    {
+                        "service_id": "sensitive-service-id",
+                        "source": "x",
+                        "providers": [
+                            {
+                                "provider_id": "sensitive-provider-id",
+                                "adapter_type": "x_agent_browser",
+                                "resource_keys": ["browser:profile:sensitive"],
+                                "fallback_on": ["transient"],
+                                "credential_ref": "credential-ref:sensitive",
+                                "limits": {
+                                    "attempts": 1,
+                                    "network_requests": 7,
+                                    "wall_seconds": 30,
+                                    "items": 3,
+                                    "cost_cents": 0,
+                                    "model_tokens": 0,
+                                },
+                            }
+                        ],
+                    }
+                ],
+                "targets": [
+                    {
+                        "target_id": "sensitive-target-id",
+                        "service_id": "sensitive-service-id",
+                        "surface_kind": "topic",
+                        "selector": {
+                            "query": "operator-sensitive query",
+                            "profile_id": "sensitive-profile",
+                        },
+                        "access_partition_id": "profile:sensitive",
+                        "retention_class": "durable",
+                        "enabled": True,
+                    }
+                ],
+                "tick": {
+                    "timezone": "UTC",
+                    "lateness_seconds": 86400,
+                    "aggregate_limits": {
+                        "attempts": 1,
+                        "network_requests": 7,
+                        "wall_seconds": 30,
+                        "items": 3,
+                        "cost_cents": 0,
+                        "model_tokens": 0,
+                    },
+                },
+                "artifacts": {
+                    "root": str(path.parent / "operator-artifacts"),
+                    "retention_days": 30,
+                    "encryption_adapter": None,
+                },
+                "analysis": {
+                    "ocr_enabled": True,
+                    "ocr_adapter_type": "provider_output_ocr_v1",
+                    "semantic_sidecars_enabled": True,
+                    "semantic_sidecar_adapter_type": (
+                        "provider_output_semantic_sidecar_v1"
+                    ),
+                },
+                "notifications": {
+                    "transports": [
+                        {
+                            "transport_id": "sensitive-transport-id",
+                            "adapter_type": "slack_receipts",
+                            "credential_ref": "credential-ref:ops",
+                            "routing": {
+                                "workspace": "sensitive-workspace",
+                                "channel_ref": "sensitive-recipient",
+                            },
+                        }
+                    ],
+                    "reminder_seconds": 3600,
+                },
+                "observation": {
+                    "adapter_type": "agent_browser_service",
+                    "service_base_url": "https://agent-browser.example.invalid",
+                },
+                "query": {
+                    "embedding_space": "local-hash-v1",
+                    "fusion_version": "rrf-v1",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
+def _request():
+    return contracts.TickRequest.from_dict(
+        {
+            "schema_version": 1,
+            "schedule_id": "manual-default",
+            "interval_from": "2026-08-03T00:00:00Z",
+            "interval_to": "2026-08-04T00:00:00Z",
+            "trigger": "manual",
+        }
+    )
+
+
+class ReadyCommands:
+    def __init__(self) -> None:
+        self.calls = []
+
+    def __call__(self, argv, *, input_text=None, timeout_seconds=30):
+        self.calls.append((tuple(argv), input_text, timeout_seconds))
+        return CommandReceipt(0, "{}", "")
+
+
+class FailoverCommands:
+    def __init__(self, *, fallback_ready: bool) -> None:
+        self.calls = []
+        self.fallback_ready = fallback_ready
+
+    def __call__(self, argv, *, input_text=None, timeout_seconds=30):
+        self.calls.append((tuple(argv), input_text, timeout_seconds))
+        if argv[0] == "slack-receipts":
+            return CommandReceipt(1, "", "unavailable")
+        if argv[0] == "gws":
+            return CommandReceipt(0 if self.fallback_ready else 1, "{}", "")
+        raise AssertionError(f"unexpected readiness command: {argv}")
+
+
+def _add_email_fallback(config_path) -> None:
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config["notifications"]["transports"].append(
+        {
+            "transport_id": "sensitive-fallback-transport-id",
+            "adapter_type": "gws_email",
+            "credential_ref": "credential-ref:gws",
+            "routing": {
+                "recipient": "sensitive-email@example.invalid",
+                "subject_prefix": "sensitive subject",
+            },
+        }
+    )
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+
+
+def test_preflight_returns_sanitized_ready_manifest_without_state_writes(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    commands = ReadyCommands()
+
+    receipt = service_tick_runtime.preflight_tick_runtime(
+        _request(),
+        config_path=config_path,
+        worker=object(),
+        command_runner=commands,
+    )
+
+    assert receipt["status"] == "ready"
+    assert receipt["config_revision"] == "preflight-1"
+    assert receipt["schedule_id"] == "manual-default"
+    assert receipt["lane_manifest"][0]["target_id_digest"].startswith("sha256:")
+    assert receipt["lane_manifest"][0]["providers"][0]["adapter_type"] == (
+        "x_agent_browser"
+    )
+    assert receipt["notification_transports"] == [
+        {
+            "ordinal": 0,
+            "transport_id_digest": receipt["notification_transports"][0][
+                "transport_id_digest"
+            ],
+            "adapter_type": "slack_receipts",
+            "routing_digest": receipt["notification_transports"][0][
+                "routing_digest"
+            ],
+            "readiness": "ready",
+        }
+    ]
+    assert len(commands.calls) == 1
+    assert "mcp" not in commands.calls[0][0]
+    encoded = json.dumps(receipt, sort_keys=True)
+    for sensitive in (
+        "operator-sensitive query",
+        "sensitive-service-id",
+        "sensitive-provider-id",
+        "sensitive-target-id",
+        "sensitive-transport-id",
+        "sensitive-fallback-transport-id",
+        "sensitive-profile",
+        "profile:sensitive",
+        "browser:profile:sensitive",
+        "credential-ref:sensitive",
+        "credential-ref:ops",
+        "operator-artifacts",
+        "sensitive-workspace",
+        "sensitive-recipient",
+        "agent-browser.example.invalid",
+    ):
+        assert sensitive not in encoded
+    assert not (tmp_path / "research.db").exists()
+    assert not (tmp_path / "operator-artifacts").exists()
+
+
+def test_preflight_and_enqueue_share_exact_tick_config_and_lane_identity(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    registry = build_acquisition_adapter_registry(object())
+    request = _request()
+
+    preflight = service_tick_runtime.preflight_tick_runtime(
+        request,
+        config_path=config_path,
+        adapter_registry=registry,
+        command_runner=ReadyCommands(),
+    )
+    enqueued = TickCoordinator(
+        tmp_path / "research.db",
+        config_path=config_path,
+        adapter_registry=registry,
+    ).enqueue_tick(request)
+
+    assert preflight["tick_id"] == enqueued.tick_id
+    assert preflight["config_revision"] == enqueued.config_revision
+    assert preflight["config_digest"] == enqueued.config_digest
+    assert [lane["lane_id"] for lane in preflight["lane_manifest"]] == [
+        lane.lane_id for lane in enqueued.lanes
+    ]
+
+
+def test_service_cli_exposes_side_effect_free_tick_preflight():
+    args = build_parser().parse_args(
+        [
+            "tick",
+            "preflight",
+            "--interval-from",
+            "2026-08-03T00:00:00Z",
+            "--interval-to",
+            "2026-08-04T00:00:00Z",
+            "--config",
+            "/tmp/tick-config-v1.json",
+        ]
+    )
+
+    assert args.tick_action == "preflight"
+    assert args.schedule_id == "manual-default"
+    assert args.config == "/tmp/tick-config-v1.json"
+    assert not hasattr(args, "db")
+
+
+def test_preflight_checks_notification_readiness_in_sequential_failover_order(
+    tmp_path,
+):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    _add_email_fallback(config_path)
+    commands = FailoverCommands(fallback_ready=True)
+
+    receipt = service_tick_runtime.preflight_tick_runtime(
+        _request(),
+        config_path=config_path,
+        worker=object(),
+        command_runner=commands,
+    )
+
+    assert [item["readiness"] for item in receipt["notification_transports"]] == [
+        "unavailable",
+        "ready",
+    ]
+    assert [call[0][0] for call in commands.calls] == ["slack-receipts", "gws"]
+    encoded = json.dumps(receipt, sort_keys=True)
+    assert "sensitive-email@example.invalid" not in encoded
+    assert "sensitive subject" not in encoded
+
+
+def test_preflight_fails_closed_when_notification_chain_is_unavailable(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    _add_email_fallback(config_path)
+
+    with pytest.raises(
+        NotificationPreflightError,
+        match="no configured notification transport passed readiness",
+    ):
+        service_tick_runtime.preflight_tick_runtime(
+            _request(),
+            config_path=config_path,
+            worker=object(),
+            command_runner=FailoverCommands(fallback_ready=False),
+        )
+
+
+def test_preflight_stops_readiness_checks_after_first_ready_transport(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    _add_email_fallback(config_path)
+    commands = ReadyCommands()
+
+    receipt = service_tick_runtime.preflight_tick_runtime(
+        _request(),
+        config_path=config_path,
+        worker=object(),
+        command_runner=commands,
+    )
+
+    assert [item["readiness"] for item in receipt["notification_transports"]] == [
+        "ready",
+        "not_checked",
+    ]
+    assert len(commands.calls) == 1
+
+
+def test_preflight_rejects_invalid_observation_endpoint_before_readiness(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config["observation"]["service_base_url"] = "file:///tmp/not-a-service"
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    commands = ReadyCommands()
+
+    with pytest.raises(TickConfigError, match="observation.service_base_url"):
+        service_tick_runtime.preflight_tick_runtime(
+            _request(),
+            config_path=config_path,
+            worker=object(),
+            command_runner=commands,
+        )
+
+    assert commands.calls == []

@@ -128,9 +128,11 @@ This endpoint must expose agent-browser's service API. It is not an operator
 handoff URL. Normal collection does not call it. After a browser incident is
 persisted, notified, explicitly acknowledged, and explicitly observed, the
 runtime resolves the stored external route against one ready agent-browser
-stream and posts the code-owned `view_takeover` action. Only the fresh external
-HTTPS URL returned with a viewer-lease ID is handed to the human; the lease ID
-is retained in the user-scoped incident database.
+stream and posts the code-owned `view_takeover` action. Agent-browser returns
+accepted takeover identity and viewer-lease metadata, not a new route. Only
+after that proof passes does the runtime hand the human the already-validated
+external HTTPS route retained from the ready stream; the lease ID is retained
+in the user-scoped incident database.
 
 Enabled image analysis stages also select installed adapter types. The current
 deterministic bridge names `provider_output_ocr_v1` and
@@ -178,7 +180,29 @@ They are attempted sequentially in document order. Notification payloads
 contain safe incident metadata and a protected artifact reference, never the
 rendered page bytes or authentication material.
 
-Run one explicit interval manually with:
+Before a gated manual run, validate the exact prospective interval and print a
+sanitized admission manifest with:
+
+```bash
+python3 ~/.agents/skills/last30days/scripts/service.py tick preflight \
+  --interval-from 2026-08-03T00:00:00Z \
+  --interval-to 2026-08-04T00:00:00Z
+```
+
+`tick preflight` reads the user-scoped config once and uses the same config
+digest, tick identity, adapter registry, enabled-lane expansion, provider
+order, normalization proofs, resource ceilings, and notification adapter order
+as `tick enqueue`. It performs only ordered non-message notification readiness
+checks and stops after the first ready transport. Its JSON contains digests in
+place of selectors, access partitions, resource keys, routing values,
+credential references, artifact paths, observation endpoints, and recipient
+particulars. It creates no database, artifact directory, provider attempt,
+incident, message, observation lease, collection specification, or timer. An
+invalid config, missing normalization proof, invalid notification adapter, or
+fully unavailable notification chain fails before source work.
+
+Run the same explicit interval manually only after the preflight's
+`config_digest`, `tick_id`, and bounded manifest have been reviewed:
 
 ```bash
 python3 ~/.agents/skills/last30days/scripts/service.py tick enqueue \
@@ -193,9 +217,10 @@ python3 ~/.agents/skills/last30days/scripts/service.py tick incident observe \
   INCIDENT_ID
 ```
 
-These commands use the user-scoped database/config defaults unless `--db` or
-`--config` is supplied. `tick enqueue` is manual-only: it does not create,
-resume, or enable a collection spec or timer.
+These commands use the user-scoped database/config defaults unless their
+documented `--db` or `--config` option is supplied. `tick preflight` has no
+database option because it is state-free. `tick enqueue` is manual-only: it
+does not create, resume, or enable a collection spec or timer.
 `tick incident observe` accepts no URL from the caller. It returns only the
 external HTTPS agent-browser operator URL stored with an acknowledged browser
 incident; localhost and loopback links fail closed. Screenshot bytes remain a

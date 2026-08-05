@@ -9766,3 +9766,116 @@ Next Bounded Action:
 
 - commit C13 and run the first `tick preflight` public-interface RED/GREEN
   cycle. Keep every human/live and recurrence gate closed.
+
+## Turn 157 | 2026-08-05
+
+Focus: implement the side-effect-free sanitized T08 preflight seam and repair
+the observation-config admission mismatch exposed by its first tracer.
+
+Authority Consulted:
+
+- Plan 0023 V2/C13, Roadmap P07, Runbook Turn 156; current coordinator,
+  runtime, CLI, notification, observation, schema, and packaging source through
+  CodeGraph; TDD and deep-module guidance; planning, validation, and goal
+  policy.
+
+Decisions And Changes:
+
+- added `preflight_tick_runtime` and `tick preflight` with interval/config
+  arguments and deliberately no database option;
+- extracted one shared load/digest/tick-ID/lane-admission path used by both
+  preflight and enqueue;
+- returned only safe adapter/limit/fallback values plus digests for selectors,
+  config-defined identities, access partitions, resource keys, and routing;
+- checked notification readiness sequentially and without sending, stopping
+  after the first ready transport and failing closed when none are ready;
+- corrected optional observation-field admission and centralized strict
+  HTTP(S) endpoint validation before readiness or state work;
+- documented the command and corrected stale observation-route wording.
+
+Validation Evidence:
+
+- five distinct public-interface RED/GREEN findings are recorded in C14;
+- 6/6 focused preflight behaviors pass and the combined coordinator/runtime/
+  preflight set passes 33/33;
+- the broader 83-test tick/package/lifecycle matrix passed after manifest
+  refresh;
+- the first complete suite reached 100% with only the deterministic authority
+  audit rejecting Turn 156's noncanonical section names. This latest turn now
+  contains the required headings; a fresh full run remains required before
+  committing the candidate.
+
+State Movement:
+
+- Plan 0023 advances `C13 -> C14`;
+- `t08_sanitized_preflight_active -> t08_preflight_validation_active`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary implemented and inspected the one shared seam.
+  The existing read-only evaluator remains reserved for the exact committed
+  candidate after primary validation and lifecycle proof.
+
+Graphiti Write Status:
+
+- no new write during implementation. The earlier group-name correction to
+  `last30days_skill_main` remains due at material candidate closeout.
+
+Next Bounded Action:
+
+- run fresh full Python/Go/compile/diff/authority validation, commit the exact
+  candidate, reproducibly rebuild it, and prove isolated lifecycle behavior.
+  Keep every real install/config/live and recurrence gate closed.
+
+## Turn 158 | 2026-08-05
+
+Focus: finish primary validation of the C13/C14 sanitized preflight candidate
+and make one exact commit ready for build/lifecycle proof.
+
+Authority Consulted:
+
+- Plan 0023 V2/C14, Roadmap P07, Runbook Turn 157; current test, package,
+  manifest, compile, Go, authority-audit, and goal-audit surfaces.
+
+Decisions And Changes:
+
+- accepted the first fresh full-suite failure as a real deterministic defect:
+  backward wall-clock movement between worker start and finish could violate
+  the receipt's own timestamp ordering;
+- added a RED/GREEN regression and clamped terminal fetch time to the observed
+  time when the wall clock moves backward;
+- refreshed the runtime manifest again after that packaged-source change;
+- made no further interface expansion and crossed no real/live gate.
+
+Validation Evidence:
+
+- 7 preflight behaviors and the clock-rollback regression pass;
+- the complete repository Python suite passes 2,523 tests with 7 skipped and 6
+  subtests passed;
+- all Go packages pass;
+- full Python compilation, runtime-manifest and tick-schema JSON parsing,
+  `git diff --check`, plan-authority audit, and goal-planning audit pass;
+- 2,530 current Python test nodes were collected, matching the 2,523 passed
+  plus 7 intentionally skipped results.
+
+State Movement:
+
+- Plan 0023 advances `C14 -> C15`;
+- `t08_preflight_validation_active -> t08_preflight_candidate_commit_ready`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; primary validation is complete. The existing read-only
+  evaluator remains reserved until the exact commit, artifact, lifecycle
+  receipt, and evidence checkpoint are immutable.
+
+Graphiti Write Status:
+
+- no new write; the corrected `last30days_skill_main` closeout remains due
+  after independent review establishes the terminal local result.
+
+Next Bounded Action:
+
+- commit the exact candidate, build it twice, run isolated upgrade/rollback/
+  roll-forward, and bind the exact hashes and receipt before independent
+  review. Keep real install/config/live and recurrence gates closed.

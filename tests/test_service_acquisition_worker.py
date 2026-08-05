@@ -3,6 +3,7 @@
 import io
 import base64
 import json
+from datetime import datetime, timezone
 from types import SimpleNamespace
 import sys
 
@@ -571,6 +572,29 @@ def test_worker_normalizes_publishable_items_into_the_versioned_result():
     assert result.diagnostics["attempted_access_methods"] == ["agent_browser"]
     assert result.diagnostics["selected_access_method"] == "agent_browser"
     assert result.diagnostics["adapter_variant"] == "x_agent_browser"
+
+
+def test_worker_receipt_remains_valid_when_wall_clock_moves_backward():
+    timestamps = iter(
+        (
+            datetime(2026, 8, 5, 12, 0, tzinfo=timezone.utc),
+            datetime(2026, 8, 5, 11, 59, tzinfo=timezone.utc),
+        )
+    )
+
+    result = execute_work(
+        _request(),
+        {},
+        adapters={
+            "x_agent_browser": lambda _request, _config: {
+                "items": [],
+                "diagnostics": {"accepted_count": 0},
+            }
+        },
+        clock=lambda: next(timestamps),
+    )
+
+    assert result.fetched_at == result.observed_at
 
 
 def test_worker_emits_exact_request_and_outcome_counts():

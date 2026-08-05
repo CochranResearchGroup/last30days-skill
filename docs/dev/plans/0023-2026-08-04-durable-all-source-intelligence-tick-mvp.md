@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C13 is the current authority.
+Checkpoint P0023-C15 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1534,3 +1534,125 @@ Next action:
 - commit C13, then run one public-interface RED/GREEN tracer for `tick
   preflight`. Keep the real install/config/live-T08 and every recurrence gate
   closed.
+
+### Checkpoint P0023-C14 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `t08_sanitized_preflight_active -> t08_preflight_validation_active`.
+
+Progress classification:
+
+- `blocker_reduction`; the public preflight seam is implemented and its first
+  RED/GREEN cycles exposed and repaired a previously hidden observation-config
+  admission mismatch.
+
+Owned changes:
+
+- add `preflight_tick_runtime` and public `service.py tick preflight` without a
+  database option;
+- share one pure config-load, config-digest, tick-identity, adapter-admission,
+  and lane-expansion path with `enqueue_tick`;
+- emit only tick/config identity, lane IDs, config-defined identity digests,
+  adapter types, normalization-proof refs, fallback classes, resource-key
+  digests, provider/aggregate limits, routing digests, and ordered readiness
+  states;
+- perform sequential non-message notification readiness, stopping after the
+  first ready transport and failing closed when the chain is unavailable;
+- admit optional `observation` config through the canonical loader and validate
+  its installed adapter plus strict HTTP(S) endpoint before any readiness or
+  state work;
+- document the preflight workflow and correct the observation handoff text to
+  the actual retained-route/takeover-metadata contract.
+
+TDD evidence:
+
+- public tracer failed because `preflight_tick_runtime` did not exist, then
+  passed with a sanitized ready manifest and zero database/artifact creation;
+- the first observation-bearing config failed because the canonical loader
+  rejected `observation` even though runtime assembly and the schema accepted
+  it; optional-field admission was separated from required fields and passed;
+- CLI parsing failed because `preflight` was not a tick action, then passed
+  with interval/config arguments and no database option;
+- a sensitive-identifier fixture failed because raw target/provider/transport
+  IDs were exposed; those config-defined identities now publish only digests;
+- an invalid `file:` observation endpoint incorrectly passed readiness, then
+  failed before readiness through shared strict observation validation.
+
+Validation evidence:
+
+- 6/6 focused preflight behaviors pass;
+- the combined coordinator/runtime/preflight set passes 33/33;
+- the broader tick, runner, incidents, observation, media HTTP, runtime
+  package, and lifecycle matrix passed after manifest refresh;
+- one complete-suite run reached 100% with one expected authority-audit failure
+  because latest Turn 156 lacked the auditor's literal `Decisions And Changes`
+  and `Validation Evidence` headings; this Turn 157 supplies those fields, so a
+  fresh complete run is required before commit.
+
+Authority classification:
+
+- `inherited_authority`; all work is deterministic repo implementation and
+  sanitized documentation under C13. No real install, config, provider,
+  notification-send, Guac, recurrence, push, publication, release, or paid
+  boundary was crossed.
+
+Next action:
+
+- refresh the exact runtime manifest, run the complete Python and Go suites,
+  compile/diff audits, then commit and reproducibly rebuild the changed 0.3.0
+  candidate before isolated lifecycle proof and independent review.
+
+### Checkpoint P0023-C15 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `t08_preflight_validation_active -> t08_preflight_candidate_commit_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; the sanitized preflight prerequisite and the full-suite
+  clock-rollback integrity defect are both deterministically closed.
+
+Final local implementation evidence:
+
+- seven preflight tests cover sanitized ready output, no state writes, exact
+  enqueue identity parity, CLI shape, sequential fallback, readiness
+  exhaustion, stop-after-first-ready, and invalid observation admission;
+- a separate RED/GREEN worker regression proves backward wall-clock movement
+  cannot produce a self-invalidating `fetched_at < observed_at` receipt;
+- the complete repository Python suite passes 2,523 tests with 7 skipped and 6
+  subtests passed;
+- all Go packages pass;
+- full Python compilation, manifest/schema JSON parsing, diff hygiene, the
+  plan-authority audit, and the goal-planning audit pass;
+- runtime manifest hashes are refreshed for every changed packaged module.
+
+Candidate scope:
+
+- changed runtime files are `service.py`, `service_tick.py`,
+  `service_tick_runtime.py`, and `service_acquisition_worker.py`, plus the
+  refreshed runtime manifest;
+- `CONFIGURATION.md` and focused tests are the only non-policy companion
+  surfaces;
+- no database migration or service-contract version change is required: the
+  preflight is state-free and the observation field already exists in the
+  shipped config schema.
+
+Authority classification:
+
+- `inherited_authority`; local implementation and validation are complete.
+  Reproducible build, isolated lifecycle proof, evidence checkpoint, and one
+  fresh read-only independent review remain inside C13. Real install,
+  user-config, providers, notification sends, Guac, recurrence, push,
+  publication, release, paid calls, and ceiling changes remain closed.
+
+Next action:
+
+- commit this exact candidate, rebuild twice, prove isolated 0.2.29 upgrade,
+  rollback, and roll-forward, then bind hashes/receipts before independent
+  review.

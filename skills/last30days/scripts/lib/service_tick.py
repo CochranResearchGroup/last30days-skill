@@ -9,6 +9,7 @@ from collections.abc import Callable, Mapping, Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 import store
 
@@ -31,9 +32,11 @@ _CONFIG_FIELDS = frozenset(
         "artifacts",
         "analysis",
         "notifications",
+        "observation",
         "query",
     }
 )
+_REQUIRED_CONFIG_FIELDS = _CONFIG_FIELDS - {"observation"}
 _ZERO_USAGE = {
     "attempts": 0,
     "network_requests": 0,
@@ -204,6 +207,37 @@ def _validate_limits(value: object, field: str, *, provider: bool) -> None:
         minimum=0,
         maximum=100_000_000,
     )
+
+
+def _validate_observation_config(
+    config: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    raw_observation = config.get("observation")
+    if raw_observation is None:
+        return None
+    observation = _exact_fields(
+        raw_observation,
+        "observation",
+        required=frozenset({"adapter_type", "service_base_url"}),
+    )
+    if observation["adapter_type"] != "agent_browser_service":
+        raise TickConfigError("observation.adapter_type is not installed")
+    service_base_url = _bounded_text(
+        observation["service_base_url"],
+        "observation.service_base_url",
+        4_096,
+    )
+    parsed = urlparse(service_base_url)
+    if (
+        parsed.scheme not in {"http", "https"}
+        or not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise TickConfigError("observation.service_base_url is invalid")
+    return observation
 
 
 def _validate_config_shape(config: Mapping[str, Any]) -> None:
@@ -452,6 +486,8 @@ def _validate_config_shape(config: Mapping[str, Any]) -> None:
         maximum=31_536_000,
     )
 
+    _validate_observation_config(config)
+
     query = _exact_fields(
         config["query"],
         "query",
@@ -487,7 +523,7 @@ def _load_config(path: Path) -> tuple[dict[str, Any], str, str]:
     except (OSError, json.JSONDecodeError) as exc:
         raise TickConfigError(f"unable to load tick config: {path}") from exc
     config = _object(payload, "tick config")
-    missing = sorted(_CONFIG_FIELDS - config.keys())
+    missing = sorted(_REQUIRED_CONFIG_FIELDS - config.keys())
     unknown = sorted(config.keys() - _CONFIG_FIELDS)
     if missing:
         raise TickConfigError(f"tick config missing fields: {', '.join(missing)}")
@@ -603,6 +639,31 @@ def _expand_lanes(
     return tuple(
         sorted(lanes, key=lambda lane: (lane["service_id"], lane["target_id"]))
     )
+
+
+def _prepare_tick(
+    config_path: Path,
+    request: contracts.TickRequest,
+    adapter_registry: AdapterRegistry,
+) -> tuple[dict[str, Any], str, str, str, tuple[dict[str, Any], ...]]:
+    """Load once and derive the immutable identity shared by preflight/enqueue."""
+    if not isinstance(request, contracts.TickRequest):
+        raise TypeError("request must be a TickRequest")
+    config, config_revision, config_digest = _load_config(config_path)
+    identity = {
+        "schedule_id": request.schedule_id,
+        "interval_from": request.interval_from,
+        "interval_to": request.interval_to,
+        "config_revision": config_revision,
+        "config_digest": config_digest,
+    }
+    tick_id = _stable_id("tick", identity)
+    lanes = _expand_lanes(
+        config,
+        tick_id=tick_id,
+        adapter_registry=adapter_registry,
+    )
+    return config, config_revision, config_digest, tick_id, lanes
 
 
 def _lane_stage_names(config: Mapping[str, Any]) -> tuple[str, ...]:
@@ -769,19 +830,10 @@ class TickCoordinator:
         return conn
 
     def enqueue_tick(self, request: contracts.TickRequest) -> contracts.TickReceipt:
-        if not isinstance(request, contracts.TickRequest):
-            raise TypeError("request must be a TickRequest")
-        config, config_revision, config_digest = _load_config(self.config_path)
-        identity = {
-            "schedule_id": request.schedule_id,
-            "interval_from": request.interval_from,
-            "interval_to": request.interval_to,
-            "config_revision": config_revision,
-            "config_digest": config_digest,
-        }
-        tick_id = _stable_id("tick", identity)
-        lanes = _expand_lanes(
-            config, tick_id=tick_id, adapter_registry=self.adapter_registry
+        config, config_revision, config_digest, tick_id, lanes = _prepare_tick(
+            self.config_path,
+            request,
+            self.adapter_registry,
         )
         now = _timestamp(self.clock)
 

@@ -719,7 +719,8 @@ def execute_work(
     monotonic = monotonic_clock or time.monotonic
     started_monotonic = monotonic()
     resolver = address_resolver or socket.getaddrinfo
-    observed_at = now().astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    observed_time = now().astimezone(timezone.utc)
+    observed_at = observed_time.isoformat().replace("+00:00", "Z")
     network_count = 0
     network_lock = threading.Lock()
     network_exhausted = False
@@ -915,7 +916,8 @@ def execute_work(
     retry_after = raw.get("retry_after_seconds")
     if not isinstance(retry_after, int) or isinstance(retry_after, bool):
         retry_after = None
-    fetched_at = now().astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    fetched_time = max(now().astimezone(timezone.utc), observed_time)
+    fetched_at = fetched_time.isoformat().replace("+00:00", "Z")
     diagnostics = _sanitize(raw.get("diagnostics") or {})
     if not isinstance(diagnostics, dict):
         diagnostics = {}

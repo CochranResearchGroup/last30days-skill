@@ -42,7 +42,11 @@ from lib.service_runtime import (
     build_acquisition_runtime,
 )
 from lib.service_tick import TickConfigError, TickCoordinator
-from lib.service_tick_runtime import build_tick_runtime, default_tick_config_path
+from lib.service_tick_runtime import (
+    build_tick_runtime,
+    default_tick_config_path,
+    preflight_tick_runtime,
+)
 
 
 def _default_socket_path() -> Path:
@@ -337,8 +341,23 @@ def _collection(args: argparse.Namespace) -> int:
 
 
 def _tick(args: argparse.Namespace) -> int:
-    db_path = Path(args.db) if args.db else _default_db_path()
     config_path = Path(args.config) if args.config else default_tick_config_path()
+    if args.tick_action == "preflight":
+        payload = preflight_tick_runtime(
+            contracts.TickRequest.from_dict(
+                {
+                    "schema_version": contracts.SCHEMA_VERSION,
+                    "schedule_id": args.schedule_id,
+                    "interval_from": args.interval_from,
+                    "interval_to": args.interval_to,
+                    "trigger": "manual",
+                }
+            ),
+            config_path=config_path,
+        )
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+    db_path = Path(args.db) if args.db else _default_db_path()
     _prepare_private_data_path(db_path)
     if args.tick_action == "get":
         coordinator = TickCoordinator(db_path, config_path=config_path)
@@ -610,6 +629,15 @@ def build_parser() -> argparse.ArgumentParser:
     tick_enqueue.add_argument("--config")
     tick_enqueue.add_argument("--db")
     tick_enqueue.set_defaults(handler=_tick)
+    tick_preflight = tick_subparsers.add_parser(
+        "preflight",
+        help="Validate and sanitize one prospective tick without creating state",
+    )
+    tick_preflight.add_argument("--interval-from", required=True)
+    tick_preflight.add_argument("--interval-to", required=True)
+    tick_preflight.add_argument("--schedule-id", default="manual-default")
+    tick_preflight.add_argument("--config")
+    tick_preflight.set_defaults(handler=_tick)
     tick_get = tick_subparsers.add_parser("get", help="Read one durable tick receipt")
     tick_get.add_argument("tick_id")
     tick_get.add_argument("--config")
