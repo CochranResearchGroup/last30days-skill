@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C07 is the current authority.
+Checkpoint P0023-C08 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -1134,3 +1134,72 @@ Next action:
 - bind the rework into one exact local commit, rebuild and hash the service
   artifact, repeat isolated install/rollback/roll-forward proof, and send that
   exact state to the same evaluator. T08 remains closed until recheck passes.
+
+### Checkpoint P0023-C08 | 2026-08-05
+
+Plan version: 1
+
+State transition:
+
+- `bounded_rework_recheck_pending -> failed_recheck_human_gate`.
+
+Progress classification:
+
+- `regression`; exact comparison with the real agent-browser response contract
+  disproved the observation fixture, and deterministic deadline testing found
+  that DNS resolution can outlive the media wall budget. The candidate is
+  stopped even though one original finding and the isolated lifecycle proof
+  are accepted.
+
+Exact candidate evidence:
+
+- implementation commit
+  `4f1e642dfcaae8aeff5ff8b475b447a08b67fef5`, evidence commit
+  `8f222d94f1ea1566c9567cfb966b46ac2ff506a7`, and service artifact SHA-256
+  `8217c994d54cbba2ced9b65261ce3149caff1ed86e4006f75ab0cca1a00ff92b`
+  were the evaluator's exact review state;
+- `docs/dev/notes/0039-service-0.3.0-candidate-install-rollback-receipt.json`
+  proves two byte-identical builds and an isolated 0.2.29 to 0.3.0 upgrade,
+  rollback, and roll-forward at schema 15. Read-only postflight leaves the real
+  installation unchanged at 0.2.29/schema 12 with 42/42 specs disabled;
+- the evaluator confirmed the packaged runtime files are byte-identical to the
+  reviewed workspace and ran 70 focused tests successfully. Those results do
+  not override the failed contract review.
+
+Independent recheck result:
+
+- terminal `FAIL`; only the typed-partial/raw-first terminal-state finding is
+  closed;
+- the code correctly resolves the browser's active session and ready stream,
+  calls `view_takeover`, and obtains `viewerLeaseId`, but requires an
+  `externalUrl` in that action's response. Agent-browser's actual
+  `ServiceViewTakeoverData` returns takeover metadata and the lease ID without
+  an external route, so the handoff fails closed instead of returning and
+  persisting the already-resolved direct route;
+- media validation computes remaining wall time before DNS resolution and
+  passes that stale value to the opener even when resolution consumes the
+  deadline;
+- resolved global-address admission and redirect checks reject simple private
+  destinations, but the later urllib connection performs a second unpinned
+  resolution, leaving DNS rebinding open.
+
+Review and loop accounting:
+
+- C07 consumed Plan 0023 version 1's single authorized consolidated
+  review/rework cycle. This failed recheck is terminal for that candidate; no
+  second remediation or evaluator loop is authorized under version 1.
+
+Authority classification:
+
+- `human_gate`; T08, installation, user-config readback or mutation, live
+  providers, real notifications, Guac observation, recurrence, push, tag,
+  publication, release, paid calls, and ceiling increases remain closed. A
+  bounded Plan 0023 version 2 successor requires explicit approval because it
+  follows failure at the configured review/rework bound.
+
+Next action or stop reason:
+
+- stop candidate 0.3.0. If explicitly approved, open Plan 0023 version 2 with
+  one bounded packet owning only actual-contract observation handoff and a
+  deadline-aware, destination-pinned media transport, with fresh independent
+  review bounds. Do not repair either seam under C07/C08 authority.

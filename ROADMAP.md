@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 1/C07; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 1/C08; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -773,20 +773,25 @@ Current State:
   records five terminal one-attempt receipts, seven accepted items, verified
   post-terminal reveal commitments, and 20% hidden class/range accuracy. C76
   accepts terminal independent review after one documented Roadmap authority
-  repair and exact bounded recheck. Plan 0023/C07 records the exact C06
-  evaluator `FAIL` and the single allowed bounded rework. The validated
-  service-0.3.0/schema-15 candidate now preserves typed partial evidence while
-  blocking human-gated lanes, obtains and persists an agent-browser viewer
-  lease only after acknowledged explicit observation, rejects private or
-  unsafe media redirects, and applies remaining monotonic wall time to every
-  media request. Its staged provider results,
+  repair and exact bounded recheck. Plan 0023/C08 records the same evaluator's
+  terminal `FAIL` after the single C07 rework. Exact commit `4f1e642`, evidence
+  commit `8f222d9`, and artifact
+  `8217c994d54cbba2ced9b65261ce3149caff1ed86e4006f75ab0cca1a00ff92b`
+  preserve typed partial evidence and correctly block human-gated lanes, so
+  that original finding is closed. The candidate is nevertheless stopped:
+  agent-browser `view_takeover` returns a viewer lease without the external URL
+  invented by the fixture, DNS latency can consume the wall deadline before a
+  stale timeout reaches urllib, and the validated address is not pinned across
+  urllib's second resolution. Its staged provider results,
   raw-first replay, terminal-lane recovery, durable snapshot reconstruction,
   typed image/video-thumbnail carriage, programmatic rendered-page capture,
-  and acknowledgment-gated external agent-browser route close the local T07
-  bridge without a duplicate source call or Guac observation lease. The
-  installed runtime remains 0.2.29/schema 12; exact rebuild, isolated
-  install/rollback proof, same-evaluator recheck, user-config readback, live
-  T08 acceptance, recurrence, and release actions remain closed.
+  and acknowledgment-gated external agent-browser route remain useful local
+  T07 foundations, but they do not close the real observation/media bridge.
+  The exact rebuild and isolated install/rollback/roll-forward proof passed;
+  the installed runtime remains 0.2.29/schema 12. C07's sole review/rework
+  cycle is exhausted, so any version-2 repair requires explicit approval while
+  user-config readback, live T08 acceptance, recurrence, and release actions
+  remain closed.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -956,10 +961,12 @@ Active Plan:
 
 Next Bounded Action:
 
-- bind Plan 0023/C07 rework into an exact local commit and artifact, repeat
-  isolated install/rollback/roll-forward proof, and obtain the same evaluator's
-  bounded recheck. Keep live source work, user-config mutation, notifications,
-  Guac observation, recurrence, push, tag, publication, and release closed.
+- stop the rejected Plan 0023 version 1/C08 candidate. Obtain explicit approval
+  before opening a version-2 packet limited to actual-contract observation
+  handoff and a deadline-aware, destination-pinned media transport with fresh
+  review bounds. Keep installation, live source work, user-config mutation,
+  notifications, Guac observation, recurrence, push, tag, publication, and
+  release closed.
 
 ## Goal-Compatible Plan Conversion
 

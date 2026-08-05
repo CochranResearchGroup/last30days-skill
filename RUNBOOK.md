@@ -9391,3 +9391,76 @@ Next Bounded Action:
   evaluator recheck. Do not install, read or mutate real user config, call live
   providers, send notifications, acquire Guac, enable recurrence, push, tag,
   publish, release, raise ceilings, or spend paid budget.
+
+## Turn 150 | 2026-08-05
+
+Focus: bind the exact C07 candidate and lifecycle proof, reconcile the terminal
+independent recheck, and stop Plan 0023 version 1 at its configured review
+bound.
+
+Authority Consulted:
+
+- Plan 0023 V1/C07, Roadmap P07, Runbook Turn 149, planning, validation,
+  documentation, goal-execution, roadmap/runbook, and closeout policies; the
+  repo policy selector's guardrail to preserve mature local policy; the
+  agent-browser skill and actual agent-browser service contract.
+
+Decisions And Changes:
+
+- committed the bounded rework as `4f1e642`, produced the same service artifact
+  twice at SHA-256
+  `8217c994d54cbba2ced9b65261ce3149caff1ed86e4006f75ab0cca1a00ff92b`,
+  and committed its lifecycle receipt as `8f222d9`;
+- proved the exact artifact in temporary XDG roots with a fake user manager:
+  0.2.29 installed, 0.3.0/schema 15 ready, rollback to 0.2.29 ready, and
+  roll-forward to 0.3.0 ready with database integrity `ok`;
+- confirmed read-only that the real installation remains 0.2.29/schema 12 and
+  all 42 specs remain disabled;
+- accepted the same evaluator's exact terminal `FAIL`. The partial-result
+  defect is closed, but the observation fixture invents an external URL absent
+  from agent-browser's actual `view_takeover` response, DNS resolution may
+  consume the wall deadline before the opener receives a stale timeout, and
+  the validated address is not pinned against DNS rebinding;
+- stopped candidate 0.3.0 and made no second repair because C07 consumed the
+  one authorized review/rework cycle.
+
+Validation Evidence:
+
+- primary validation: complete repository Python suite passed, all Go packages
+  passed, Python compileall and `git diff --check` passed, two artifact builds
+  were byte-identical, isolated lifecycle proof passed, and the receipt is
+  valid JSON;
+- independent validation: exact candidate/evidence commits and artifact hash
+  matched, packaged runtime files matched the workspace, 70 focused tests
+  passed, and the evaluator still returned terminal `FAIL` on the three open
+  contract/security findings;
+- no real install, user-config mutation, live provider, real notification,
+  Guac lease, timer, schedule, external recipient, remote, tag, or release was
+  touched.
+
+State Movement:
+
+- Plan 0023 remains Version 1 and advances `C07 -> C08`;
+- `bounded_rework_recheck_pending -> failed_recheck_human_gate`; T08 and every
+  live or recurrence action remain closed.
+
+Subagent Status And Reconciliation:
+
+- the same independent evaluator completed the exact bounded recheck at
+  terminal `FAIL`. Its full finding set is accepted without further optimizer
+  loop: one original finding closed, observation not closed, media destination
+  safety partially closed, and wall-time safety not closed across DNS latency.
+
+Graphiti Write Status:
+
+- pending one compact C08 superseding episode after this canonical checkpoint
+  is committed; no earlier C06/C07 memory is treated as current authority.
+
+Next Bounded Action:
+
+- stop Plan 0023 version 1 candidate 0.3.0. Explicit approval is required to
+  open version 2 with one bounded packet limited to actual-contract observation
+  handoff and a deadline-aware, destination-pinned media transport plus fresh
+  independent-review bounds. Do not repair under C07/C08 or cross any existing
+  live, install, config, notification, Guac, recurrence, publication, or cost
+  gate.
