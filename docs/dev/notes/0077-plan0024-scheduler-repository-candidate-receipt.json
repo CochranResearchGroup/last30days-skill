@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0024-scheduler-repository-candidate-0077",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0024",
+    "checkpoint": "P0024-C04",
+    "classification": "inherited_authority"
+  },
+  "candidate": {
+    "service_version": "0.3.5",
+    "database_schema": 16,
+    "runtime_manifest_sha256": "8d438421c57239ac2f59e9929bf60f6cd809dd5ac702647fe0153caa40213083",
+    "contract_catalog_sha256": "fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1",
+    "tick_config_schema_sha256": "775d7d069548939fc98176608345208d844ddfbc3e0cc5aae47f77050ebaffdc"
+  },
+  "validation": {
+    "python": "2559 passed, 7 skipped, 6 subtests passed",
+    "go": "all packages passed",
+    "compileall": "passed",
+    "json": "passed",
+    "diff_check": "passed",
+    "runtime_manifest_refreshed": true
+  },
+  "contract": {
+    "strict_optional_schedule": true,
+    "disabled_inert": true,
+    "latest_boundary_only": true,
+    "durable_advance_before_enqueue": true,
+    "live_lease_wait": true,
+    "expired_lease_successor_attempt": true,
+    "fail_closed_pause": true,
+    "sanitized_status": true,
+    "only_existing_tick_enqueue_path": true
+  },
+  "live_mutation_performed": false,
+  "private_config_read_or_changed": false,
+  "installed_runtime_changed": false,
+  "next_action": "commit exact candidate, reproduce artifact, prove lifecycle and rollback, then closed-world verify before disabled install"
+}

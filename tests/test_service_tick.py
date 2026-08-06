@@ -4,13 +4,14 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
 
 from lib import service_contracts as contracts
 from lib.service_tick import TickConfigError, TickCoordinator, TickIntegrityError
+from lib.service_tick_schedule import TickScheduleCoordinator
 from lib.service_tick_adapters import (
     AdapterRegistry,
     AdapterSpec,
@@ -147,6 +148,561 @@ def test_enqueue_receipt_preserves_configured_target_order(tmp_path):
     assert [lane.service_id for lane in receipt.lanes] == ["z-source", "a-source"]
 
 
+def test_tick_config_accepts_exact_optional_schedule(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["tick"]["schedule"] = {
+        "enabled": False,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+    }
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    receipt = TickCoordinator(
+        tmp_path / "research.db", config_path=config_path, clock=lambda: NOW
+    ).enqueue_tick(
+        contracts.TickRequest.from_dict(
+            {
+                "schema_version": 1,
+                "schedule_id": "manual-default",
+                "interval_from": "2026-08-03T00:00:00Z",
+                "interval_to": "2026-08-04T00:00:00Z",
+                "trigger": "manual",
+            }
+        )
+    )
+
+    assert receipt.state is contracts.TickState.QUEUED
+
+
+@pytest.mark.parametrize(
+    ("schedule_patch", "message"),
+    [
+        ({"unexpected": True}, "unknown fields: unexpected"),
+        ({"enabled": "yes"}, "enabled must be boolean"),
+        ({"interval_seconds": 899}, "interval_seconds must be between"),
+        ({"anchor_seconds": 86_400}, "anchor_seconds must be between"),
+    ],
+)
+def test_tick_config_rejects_malformed_schedule_before_state(
+    tmp_path, schedule_patch, message
+):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    schedule = {
+        "enabled": False,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+    }
+    schedule.update(schedule_patch)
+    payload["tick"]["schedule"] = schedule
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+    db_path = tmp_path / "research.db"
+
+    with pytest.raises(TickConfigError, match=message):
+        TickScheduleCoordinator(
+            db_path,
+            tick_coordinator=TickCoordinator(
+                db_path, config_path=config_path, clock=lambda: NOW
+            ),
+            config_path=config_path,
+            clock=lambda: NOW,
+        )
+
+    conn = sqlite3.connect(db_path)
+    try:
+        assert conn.execute("SELECT COUNT(*) FROM service_ticks").fetchone()[0] == 0
+        assert conn.execute(
+            "SELECT COUNT(*) FROM service_tick_schedules"
+        ).fetchone()[0] == 0
+    finally:
+        conn.close()
+
+
+def test_disabled_tick_schedule_reports_inert_status(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["tick"]["schedule"] = {
+        "enabled": False,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+    }
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+    tick_coordinator = TickCoordinator(
+        tmp_path / "research.db", config_path=config_path, clock=lambda: NOW
+    )
+
+    status = TickScheduleCoordinator(
+        tmp_path / "research.db",
+        tick_coordinator=tick_coordinator,
+        config_path=config_path,
+        clock=lambda: NOW,
+    ).poll()
+
+    assert status == {
+        "schema_version": 1,
+        "enabled": False,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+        "state": "disabled",
+        "next_boundary": None,
+        "last_boundary": None,
+        "last_tick_id": None,
+        "last_tick_state": None,
+        "runtime_error": None,
+    }
+
+
+def test_enabled_tick_schedule_admits_latest_due_boundary_once(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["tick"]["schedule"] = {
+        "enabled": True,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+    }
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+    tick_coordinator = TickCoordinator(
+        tmp_path / "research.db", config_path=config_path, clock=lambda: NOW
+    )
+    schedule = TickScheduleCoordinator(
+        tmp_path / "research.db",
+        tick_coordinator=tick_coordinator,
+        config_path=config_path,
+        clock=lambda: NOW,
+    )
+
+    first = schedule.poll()
+    repeated = schedule.poll()
+    receipt = tick_coordinator.get_tick(str(first["last_tick_id"]))
+
+    assert repeated == first
+    assert first == {
+        "schema_version": 1,
+        "enabled": True,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+        "state": "active",
+        "next_boundary": "2026-08-05T00:00:00Z",
+        "last_boundary": "2026-08-04T00:00:00Z",
+        "last_tick_id": receipt.tick_id,
+        "last_tick_state": "queued",
+        "runtime_error": None,
+    }
+    assert receipt.interval_from == "2026-08-03T00:00:00Z"
+    assert receipt.interval_to == "2026-08-04T00:00:00Z"
+    assert receipt.trigger is contracts.TickTrigger.TIMER
+    assert len(receipt.execution_attempt_ids) == 1
+    conn = sqlite3.connect(tmp_path / "research.db")
+    try:
+        assert conn.execute(
+            """SELECT event_type FROM service_tick_schedule_events
+               WHERE schedule_id = 'daily-default' ORDER BY sequence"""
+        ).fetchall() == [("initialized",), ("admitted",), ("tick_bound",)]
+    finally:
+        conn.close()
+
+
+def test_tick_schedule_waits_for_live_recovery_lease(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["tick"]["schedule"] = {
+        "enabled": True,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+    }
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+    db_path = tmp_path / "research.db"
+    tick_coordinator = TickCoordinator(
+        db_path, config_path=config_path, clock=lambda: NOW
+    )
+    schedule = TickScheduleCoordinator(
+        db_path,
+        tick_coordinator=tick_coordinator,
+        config_path=config_path,
+        clock=lambda: NOW,
+    )
+    admitted = schedule.poll()
+    tick_id = str(admitted["last_tick_id"])
+    lease_expires_at = (NOW + timedelta(minutes=5)).isoformat().replace(
+        "+00:00", "Z"
+    )
+    conn = sqlite3.connect(db_path)
+    try:
+        conn.execute(
+            """UPDATE service_tick_attempts
+               SET state = 'running', lease_expires_at = ?
+               WHERE tick_id = ?""",
+            (lease_expires_at, tick_id),
+        )
+        conn.execute(
+            "UPDATE service_ticks SET state = 'collecting' WHERE tick_id = ?",
+            (tick_id,),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+    recovered = TickScheduleCoordinator(
+        db_path,
+        tick_coordinator=TickCoordinator(
+            db_path, config_path=config_path, clock=lambda: NOW
+        ),
+        config_path=config_path,
+        clock=lambda: NOW,
+    ).poll()
+
+    assert recovered["state"] == "recovery_waiting"
+    assert recovered["last_tick_id"] == tick_id
+    assert recovered["last_tick_state"] == "collecting"
+    assert len(tick_coordinator.get_tick(tick_id).execution_attempt_ids) == 1
+
+
+def test_tick_schedule_recovers_expired_lease_before_new_boundary(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["tick"]["schedule"] = {
+        "enabled": True,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+    }
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+    db_path = tmp_path / "research.db"
+    first_coordinator = TickCoordinator(
+        db_path, config_path=config_path, clock=lambda: NOW
+    )
+    first = TickScheduleCoordinator(
+        db_path,
+        tick_coordinator=first_coordinator,
+        config_path=config_path,
+        clock=lambda: NOW,
+    ).poll()
+    tick_id = str(first["last_tick_id"])
+    conn = sqlite3.connect(db_path)
+    try:
+        before_stage_ids = {
+            row[0]
+            for row in conn.execute(
+                "SELECT stage_id FROM service_tick_stages WHERE tick_id = ?",
+                (tick_id,),
+            ).fetchall()
+        }
+        attempt_id = conn.execute(
+            """SELECT execution_attempt_id FROM service_tick_attempts
+               WHERE tick_id = ? ORDER BY attempt DESC LIMIT 1""",
+            (tick_id,),
+        ).fetchone()[0]
+        conn.execute(
+            """UPDATE service_tick_attempts
+               SET state = 'running', started_at = '2026-08-04T12:00:00Z',
+                   lease_owner = 'worker-crashed', lease_generation = 1,
+                   lease_expires_at = '2026-08-04T12:00:30Z'
+               WHERE execution_attempt_id = ?""",
+            (attempt_id,),
+        )
+        conn.execute(
+            "UPDATE service_ticks SET state = 'collecting' WHERE tick_id = ?",
+            (tick_id,),
+        )
+        conn.execute(
+            """UPDATE service_tick_stages
+               SET state = 'running', execution_attempt_id = ?,
+                   started_at = '2026-08-04T12:00:00Z'
+               WHERE tick_id = ? AND stage_name = 'collection'""",
+            (attempt_id, tick_id),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+    restarted_at = datetime(2026, 8, 4, 12, 1, tzinfo=timezone.utc)
+    restarted_coordinator = TickCoordinator(
+        db_path, config_path=config_path, clock=lambda: restarted_at
+    )
+
+    recovered_status = TickScheduleCoordinator(
+        db_path,
+        tick_coordinator=restarted_coordinator,
+        config_path=config_path,
+        clock=lambda: restarted_at,
+    ).poll()
+    recovered = restarted_coordinator.get_tick(tick_id)
+
+    assert recovered_status["last_tick_id"] == tick_id
+    assert recovered_status["last_boundary"] == "2026-08-04T00:00:00Z"
+    assert len(recovered.execution_attempt_ids) == 2
+    conn = sqlite3.connect(db_path)
+    try:
+        assert {
+            row[0]
+            for row in conn.execute(
+                "SELECT stage_id FROM service_tick_stages WHERE tick_id = ?",
+                (tick_id,),
+            ).fetchall()
+        } == before_stage_ids
+        assert conn.execute(
+            """SELECT event_type FROM service_tick_schedule_events
+               WHERE schedule_id = 'daily-default' ORDER BY sequence DESC LIMIT 1"""
+        ).fetchone()[0] == "resumed"
+    finally:
+        conn.close()
+
+
+def test_tick_schedule_pauses_when_bound_config_is_replaced(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["tick"]["schedule"] = {
+        "enabled": True,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+    }
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+    db_path = tmp_path / "research.db"
+    first_coordinator = TickCoordinator(
+        db_path, config_path=config_path, clock=lambda: NOW
+    )
+    first = TickScheduleCoordinator(
+        db_path,
+        tick_coordinator=first_coordinator,
+        config_path=config_path,
+        clock=lambda: NOW,
+    ).poll()
+    payload["config_revision"] = "config-002"
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    replaced = TickScheduleCoordinator(
+        db_path,
+        tick_coordinator=TickCoordinator(
+            db_path, config_path=config_path, clock=lambda: NOW
+        ),
+        config_path=config_path,
+        clock=lambda: NOW,
+    ).poll()
+
+    assert replaced["state"] == "paused"
+    assert replaced["runtime_error"] == "schedule_config_replaced"
+    assert replaced["last_tick_id"] == first["last_tick_id"]
+    assert len(
+        first_coordinator.get_tick(str(first["last_tick_id"])).execution_attempt_ids
+    ) == 1
+
+
+def test_disabling_an_existing_tick_schedule_persists_pause_without_new_tick(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["tick"]["schedule"] = {
+        "enabled": True,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+    }
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+    db_path = tmp_path / "research.db"
+    first_coordinator = TickCoordinator(
+        db_path, config_path=config_path, clock=lambda: NOW
+    )
+    first = TickScheduleCoordinator(
+        db_path,
+        tick_coordinator=first_coordinator,
+        config_path=config_path,
+        clock=lambda: NOW,
+    ).poll()
+    payload["config_revision"] = "config-002"
+    payload["tick"]["schedule"]["enabled"] = False
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    disabled = TickScheduleCoordinator(
+        db_path,
+        tick_coordinator=TickCoordinator(
+            db_path, config_path=config_path, clock=lambda: NOW
+        ),
+        config_path=config_path,
+        clock=lambda: NOW,
+    ).poll()
+
+    conn = sqlite3.connect(db_path)
+    try:
+        row = conn.execute(
+            """SELECT enabled, state, last_tick_id
+               FROM service_tick_schedules WHERE schedule_id = 'daily-default'"""
+        ).fetchone()
+        tick_count = conn.execute("SELECT COUNT(*) FROM service_ticks").fetchone()[0]
+        last_event = conn.execute(
+            """SELECT event_type FROM service_tick_schedule_events
+               WHERE schedule_id = 'daily-default' ORDER BY sequence DESC LIMIT 1"""
+        ).fetchone()[0]
+    finally:
+        conn.close()
+
+    assert disabled["enabled"] is False
+    assert disabled["state"] == "paused"
+    assert disabled["last_tick_id"] == first["last_tick_id"]
+    assert row == (0, "paused", first["last_tick_id"])
+    assert tick_count == 1
+    assert last_event == "paused"
+
+
+def test_replacing_schedule_identity_pauses_without_admitting_second_tick(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["tick"]["schedule"] = {
+        "enabled": True,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+    }
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+    db_path = tmp_path / "research.db"
+    first = TickScheduleCoordinator(
+        db_path,
+        tick_coordinator=TickCoordinator(
+            db_path, config_path=config_path, clock=lambda: NOW
+        ),
+        config_path=config_path,
+        clock=lambda: NOW,
+    ).poll()
+    payload["config_revision"] = "config-002"
+    payload["tick"]["schedule"]["schedule_id"] = "daily-replacement"
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    replacement = TickScheduleCoordinator(
+        db_path,
+        tick_coordinator=TickCoordinator(
+            db_path, config_path=config_path, clock=lambda: NOW
+        ),
+        config_path=config_path,
+        clock=lambda: NOW,
+    ).poll()
+
+    conn = sqlite3.connect(db_path)
+    try:
+        enabled_count = conn.execute(
+            "SELECT COUNT(*) FROM service_tick_schedules WHERE enabled = 1"
+        ).fetchone()[0]
+        tick_count = conn.execute("SELECT COUNT(*) FROM service_ticks").fetchone()[0]
+    finally:
+        conn.close()
+
+    assert replacement["schedule_id"] == "daily-replacement"
+    assert replacement["enabled"] is False
+    assert replacement["state"] == "paused"
+    assert replacement["runtime_error"] == "schedule_config_replaced"
+    assert replacement["last_tick_id"] == first["last_tick_id"]
+    assert enabled_count == 0
+    assert tick_count == 1
+
+
+def test_tick_schedule_skips_catchup_fanout_to_latest_completed_boundary(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["tick"]["schedule"] = {
+        "enabled": True,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+    }
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+    db_path = tmp_path / "research.db"
+    current = [NOW]
+    tick_coordinator = TickCoordinator(
+        db_path, config_path=config_path, clock=lambda: current[0]
+    )
+    schedule = TickScheduleCoordinator(
+        db_path,
+        tick_coordinator=tick_coordinator,
+        config_path=config_path,
+        clock=lambda: current[0],
+    )
+    first = schedule.poll()
+    conn = sqlite3.connect(db_path)
+    try:
+        conn.execute(
+            "UPDATE service_ticks SET state = 'complete' WHERE tick_id = ?",
+            (first["last_tick_id"],),
+        )
+        conn.execute(
+            """UPDATE service_tick_attempts
+               SET state = 'complete', completed_at = '2026-08-04T12:01:00Z'
+               WHERE tick_id = ?""",
+            (first["last_tick_id"],),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+    current[0] = datetime(2026, 8, 7, 12, 0, tzinfo=timezone.utc)
+
+    latest = schedule.poll()
+    receipt = tick_coordinator.get_tick(str(latest["last_tick_id"]))
+
+    assert latest["last_boundary"] == "2026-08-07T00:00:00Z"
+    assert latest["next_boundary"] == "2026-08-08T00:00:00Z"
+    assert receipt.interval_from == "2026-08-06T00:00:00Z"
+    assert receipt.interval_to == "2026-08-07T00:00:00Z"
+
+
+def test_tick_schedule_pauses_after_enqueue_failure_without_retry_loop(tmp_path):
+    class BrokenRunner:
+        def __init__(self):
+            self.calls = 0
+
+        def run(self, tick_id):
+            assert tick_id
+            self.calls += 1
+            raise RuntimeError("fixture runner failed")
+
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["tick"]["schedule"] = {
+        "enabled": True,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+    }
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+    db_path = tmp_path / "research.db"
+    runner = BrokenRunner()
+    schedule = TickScheduleCoordinator(
+        db_path,
+        tick_coordinator=TickCoordinator(
+            db_path,
+            config_path=config_path,
+            clock=lambda: NOW,
+            runner=runner,
+        ),
+        config_path=config_path,
+        clock=lambda: NOW,
+    )
+
+    with pytest.raises(RuntimeError, match="fixture runner failed"):
+        schedule.poll()
+    first_status = schedule.status()
+    repeated_status = schedule.poll()
+
+    assert first_status["state"] == "paused"
+    assert first_status["runtime_error"] == "tick_enqueue_failed"
+    assert repeated_status == first_status
+    assert runner.calls == 1
+
+
 def test_enqueue_tick_freezes_interval_config_and_enabled_lanes(tmp_path):
     config_path = tmp_path / "tick-config-v1.json"
     _write_config(config_path)
@@ -195,7 +751,7 @@ def test_tick_contracts_are_published_in_the_golden_catalog():
         "trigger": "manual",
     }
 
-    assert catalog["compatibility"]["database_schema"] == {"min": 15, "max": 15}
+    assert catalog["compatibility"]["database_schema"] == {"min": 16, "max": 16}
     assert {
         "tick_request",
         "tick_lane_receipt",
@@ -224,6 +780,14 @@ def test_user_scoped_tick_config_schema_is_packaged_without_operator_particulars
         "analysis",
         "notifications",
         "query",
+    ]
+    schedule = schema["properties"]["tick"]["properties"]["schedule"]
+    assert schedule["additionalProperties"] is False
+    assert schedule["required"] == [
+        "enabled",
+        "schedule_id",
+        "interval_seconds",
+        "anchor_seconds",
     ]
     assert "@eric" not in serialized
     assert "ecochran76@gmail.com" not in serialized

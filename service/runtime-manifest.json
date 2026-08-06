@@ -2,17 +2,17 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "027a61167f091a427fa7844dcac0c5141bafbcbdcadc7e04a93578147ab956f2",
+      "sha256": "d5d1d767be9218f02ebda081a83a2b2fede85055e910e5a94a09329966486fcc",
       "source": "service/VERSION"
     },
     {
       "path": "schemas/service-contracts-v1.json",
-      "sha256": "995de758ff8096c0ef1578b51eb9b46197c6f42dadc1080f5055a8d137e12262",
+      "sha256": "fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1",
       "source": "skills/last30days/schemas/service-contracts-v1.json"
     },
     {
       "path": "schemas/tick-config-v1.json",
-      "sha256": "6eae0d5ea18a377a24b553d92788ed320879d01e14142cdea63dbb42ae4bdc85",
+      "sha256": "775d7d069548939fc98176608345208d844ddfbc3e0cc5aae47f77050ebaffdc",
       "source": "skills/last30days/schemas/tick-config-v1.json"
     },
     {
@@ -287,12 +287,12 @@
     },
     {
       "path": "scripts/lib/service_app.py",
-      "sha256": "aab7d5bf8ca2160a125310e125881028cabbdf5b9578f64cff34ff8a2b1229eb",
+      "sha256": "b779f0b67b9bf6f17724082f3ca8abbc4d8ad39865627f45d94328653f37c9e4",
       "source": "skills/last30days/scripts/lib/service_app.py"
     },
     {
       "path": "scripts/lib/service_client.py",
-      "sha256": "6664ea0cab6d5d5efd053b1b172d0865e6c9545c92845586fb0ef2044ed73c43",
+      "sha256": "6ba6fbaaacc3874e4808a97d99231e4da8f0c4946c7000871f23b5cbc356f078",
       "source": "skills/last30days/scripts/lib/service_client.py"
     },
     {
@@ -322,7 +322,7 @@
     },
     {
       "path": "scripts/lib/service_http.py",
-      "sha256": "895a1d1f3cb0500d303a74b465c774423a21de64335e2a1263b2952765883e83",
+      "sha256": "8cc980ce0047868981d160a8d40f89a664c4cbcc1cae9c25e340307ff9c34463",
       "source": "skills/last30days/scripts/lib/service_http.py"
     },
     {
@@ -367,7 +367,7 @@
     },
     {
       "path": "scripts/lib/service_runtime.py",
-      "sha256": "fccd19448174649ab6a93037a6d255549406434289d3e2760f6b8bc8f502cbbd",
+      "sha256": "6bf85bd5d47f6ee41daf14da969c77862047717b7faed1229c22a8e69af1793b",
       "source": "skills/last30days/scripts/lib/service_runtime.py"
     },
     {
@@ -392,7 +392,7 @@
     },
     {
       "path": "scripts/lib/service_tick.py",
-      "sha256": "5db0a4791c3cb4ccca07cf6881ed8716cfade0e6456cd2a8016b6c16e8afaeab",
+      "sha256": "9a70093a4e869956cd49adce249fe0f431f98de0dfc3fa824f0b979721e97370",
       "source": "skills/last30days/scripts/lib/service_tick.py"
     },
     {
@@ -454,6 +454,11 @@
       "path": "scripts/lib/service_tick_runtime.py",
       "sha256": "7d329c627698ad8dbd4deb0ebdcb60e883b9d98ad433568ec00654467b40bdc3",
       "source": "skills/last30days/scripts/lib/service_tick_runtime.py"
+    },
+    {
+      "path": "scripts/lib/service_tick_schedule.py",
+      "sha256": "5e79de3ec5351afa3d8d05be9fd63c79db8ebdcfe0ab93fb5c3a00fb033deff0",
+      "source": "skills/last30days/scripts/lib/service_tick_schedule.py"
     },
     {
       "path": "scripts/lib/service_worker.py",
@@ -632,16 +637,16 @@
     },
     {
       "path": "scripts/service.py",
-      "sha256": "93110dbb1d3fb312b611f0d4614642775ebff2d2177b01790191d76d1e12f917",
+      "sha256": "5cb06eee4baabfa3f159d66de0096b9bba657de63b99b984f87a23b620c1f1b3",
       "source": "skills/last30days/scripts/service.py"
     },
     {
       "path": "scripts/store.py",
-      "sha256": "17d4f291cd4bf64c258f78c9b37d25c2cacf85eb04046b916ba011cbdb2217bb",
+      "sha256": "87210579644ec2f3b2817cb89014dc582c4778f72a5f1c12ee1b3b103d5c4c2f",
       "source": "skills/last30days/scripts/store.py"
     }
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.4"
+  "service_version": "0.3.5"
 }

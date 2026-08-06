@@ -11988,3 +11988,62 @@ Next Bounded Action:
 
 - commit C03/receipt 0076, re-read implementation/TDD/validation policy, and
   begin S02 with public-interface red tests while all live gates remain closed.
+
+## Turn 199 | 2026-08-06
+
+Focus: implement and fully validate the deterministic recurring tick scheduler
+repository candidate without crossing an install or live gate.
+
+Authority Consulted:
+
+- Plan 0024 version 3/C03, Roadmap P08, Runbook Turn 198; TDD and codebase-
+  design skills; implementation, validation, documentation, versioning,
+  branch/commit, goal, and roadmap/runbook policies; the resolved design
+  finding ledger.
+
+Decisions And Changes:
+
+- added strict optional `tick.schedule` validation and schema-16 durable
+  schedule state/events;
+- added one `TickScheduleCoordinator` and service-owned `TickScheduleLoop`
+  whose only provider-work path is the existing timer-triggered tick enqueue;
+- implemented aligned UTC boundary admission, at-most-latest catch-up,
+  durable advancement before provider work, live-lease wait, expired-lease
+  successor recovery, config-drift/replacement and runtime-failure pause;
+- exposed a copied, exact-field schedule status through the CLI/API and health
+  path; documented the new config and bumped the service patch to 0.3.5;
+- made no installed-runtime, private-config, timer, provider, model,
+  notification, or user-data mutation.
+
+Validation Evidence:
+
+- public-interface RED/GREEN cases cover schedule configuration, boundary and
+  recovery semantics, events, fail-closed behavior, loop lifecycle, status,
+  HTTP/client/CLI, and isolated service-process construction;
+- `uv run pytest` passes 2,559 tests with 7 skipped and 6 subtests in 120.00s;
+- `go test ./...` passes all MCP packages;
+- compileall, schema JSON parsing, runtime-manifest regeneration, contract
+  generation, and `git diff --check` pass;
+- receipt 0077 binds service 0.3.5/schema16 and runtime manifest
+  `8d438421c57239ac2f59e9929bf60f6cd809dd5ac702647fe0153caa40213083`.
+
+State Movement:
+
+- Plan 0024 advances version `3 -> 4` and `C03 -> C04`;
+- `design_accepted_scheduler_tdd_ready -> scheduler_repository_candidate_ready`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned` for implementation under the accepted serialized critical
+  path; no delegated code was integrated and the one accepted review finding
+  remains resolved.
+
+Graphiti Write Status:
+
+- deferred to installed or terminal Plan 0024 closeout.
+
+Next Bounded Action:
+
+- commit C04/receipt 0077, reproducibly build the exact service 0.3.5
+  candidate, prove isolated lifecycle/rollback behavior, and obtain the
+  reserved closed-world exact-candidate verification before disabled install.

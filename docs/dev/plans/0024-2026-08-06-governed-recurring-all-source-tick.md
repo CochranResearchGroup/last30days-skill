@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P08
 Date: 2026-08-06
-Plan version: 3
+Plan version: 4
 Predecessor: Plan 0023 version 20/checkpoint P0023-C52
 
 ## Stable Goal
@@ -34,6 +34,13 @@ and fail-closed pause controls without creating a second acquisition path.
   daemon constructs no tick scheduler or tick recovery loop;
 - the existing recurring `CollectionCoordinator` is a predecessor per-spec
   refresh-job scheduler and must not be reused as a second all-source path.
+- S02 now has a repository candidate for service 0.3.5/schema16: strict
+  optional schedule config, durable schedule state/events, one coordinator and
+  service-owned loop, sanitized status, and restart/recovery behavior all pass
+  focused and complete validation without any live, private-config, install,
+  timer, provider, or notification mutation;
+- S03 remains gated on an exact committed artifact, reproducible build,
+  lifecycle/rollback proof, and closed-world candidate verification.
 
 ## Product Decision
 
@@ -265,7 +272,7 @@ truthfully enabled or fail-closed paused; all legacy specs remain disabled;
 the accepted finding ledger is reconciled; Graphiti memory is durable; and the
 terminal chain is pushed to origin main.
 
-Checkpoint P0024-C03 is the current authority.
+Checkpoint P0024-C04 is the current authority.
 
 ### Checkpoint P0024-C01 | 2026-08-06
 
@@ -429,3 +436,56 @@ Next action:
 
 - commit C03/receipt 0076, re-read implementation/TDD/validation policy, and
   begin S02 with failing public-interface config and schedule tests only.
+
+### Checkpoint P0024-C04 | 2026-08-06
+
+Plan version: 4
+
+State transition:
+
+- `design_accepted_scheduler_tdd_ready -> scheduler_repository_candidate_ready`.
+
+Progress classification:
+
+- `outcome_progress`; S02 implements acceptance criteria 1-7 in repository
+  code and tests while preserving every install, private-config, and live gate.
+
+Validation evidence:
+
+- public-interface RED/GREEN tests cover strict optional config, disabled
+  inertness, aligned latest-boundary admission, no catch-up fanout, state/event
+  idempotency, live-lease waiting, expired-lease attempt N+1 recovery, config
+  drift/replacement pause, enqueue failure pause, status sanitization, loop
+  lifecycle, API/CLI, and isolated daemon construction;
+- the complete Python suite passes 2,559 tests with 7 skipped and 6 subtests;
+- all Go packages pass after regenerating the schema-16 contract catalog;
+- compile, JSON, runtime-manifest regeneration, and `git diff --check` pass;
+- runtime manifest SHA-256 is
+  `8d438421c57239ac2f59e9929bf60f6cd809dd5ac702647fe0153caa40213083`.
+
+Subagent status and reconciliation:
+
+- `not_spawned` for S02 implementation because the accepted plan assigns the
+  overlapping config/migration/runtime path to one primary owner; the earlier
+  evaluator's accepted finding remains resolved and no delegated code exists.
+
+Review disposition summary:
+
+- the closed-world ledger remains one accepted/resolved design finding and
+  zero unresolved blocking findings; no new broad discovery is authorized.
+
+Graphiti write status:
+
+- deferred to installed or terminal closeout so the repository checkpoint
+  remains the authority during candidate and live gates.
+
+Authority classification:
+
+- `inherited_authority`; S03 exact-candidate work is the next bounded packet
+  inside the unchanged daily cadence, systems, mutation classes, and ceilings.
+
+Next action:
+
+- commit C04/receipt 0077, build service 0.3.5 twice from that exact commit,
+  prove lifecycle/rollback behavior, and run the one closed-world exact-
+  candidate verification before any install or private-config mutation.

@@ -1,5 +1,6 @@
 """Subprocess lifecycle and no-network proof for the local service."""
 
+import json
 import os
 import stat
 import sqlite3
@@ -115,6 +116,7 @@ sys.meta_path.insert(0, _BlockedAcquisitionImports())
         **os.environ,
         "PYTHONPATH": os.pathsep.join([str(canary_dir), str(SCRIPTS)]),
         "LAST30DAYS_TEST_NETWORK_VIOLATION": str(violation_path),
+        "LAST30DAYS_CONFIG_DIR": str(tmp_path / "empty-config"),
     }
     process = subprocess.Popen(
         [
@@ -212,6 +214,143 @@ sys.meta_path.insert(0, _BlockedAcquisitionImports())
     assert stat.S_IMODE(runtime_dir.joinpath("last30days").stat().st_mode) == 0o700
     assert stat.S_IMODE(data_dir.stat().st_mode) == 0o700
     assert stat.S_IMODE(db_path.stat().st_mode) == 0o600
+
+
+def test_service_constructs_disabled_tick_schedule_without_tick_work(tmp_path):
+    runtime_dir = tmp_path / "runtime"
+    data_dir = tmp_path / "data"
+    config_dir = tmp_path / "config"
+    config_dir.mkdir()
+    db_path = data_dir / "research.db"
+    socket_path = runtime_dir / "last30days" / "service.sock"
+    config_path = config_dir / "tick-config-v1.json"
+    config_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "config_revision": "disabled-schedule-1",
+                "services": [
+                    {
+                        "service_id": "reddit",
+                        "source": "reddit",
+                        "providers": [
+                            {
+                                "provider_id": "reddit-keyless",
+                                "adapter_type": "reddit_keyless",
+                                "resource_keys": ["network:reddit"],
+                                "fallback_on": ["transient"],
+                                "limits": {
+                                    "attempts": 1,
+                                    "network_requests": 10,
+                                    "wall_seconds": 30,
+                                    "items": 3,
+                                    "cost_cents": 0,
+                                    "model_tokens": 0,
+                                },
+                            }
+                        ],
+                    }
+                ],
+                "targets": [
+                    {
+                        "target_id": "reddit-topic",
+                        "service_id": "reddit",
+                        "surface_kind": "topic",
+                        "selector": {"topic": "OpenAI"},
+                        "access_partition_id": "public",
+                        "retention_class": "durable",
+                        "enabled": True,
+                    }
+                ],
+                "tick": {
+                    "timezone": "UTC",
+                    "lateness_seconds": 86_400,
+                    "aggregate_limits": {
+                        "attempts": 1,
+                        "network_requests": 10,
+                        "wall_seconds": 30,
+                        "items": 3,
+                        "cost_cents": 0,
+                        "model_tokens": 0,
+                    },
+                    "schedule": {
+                        "enabled": False,
+                        "schedule_id": "daily-default",
+                        "interval_seconds": 86_400,
+                        "anchor_seconds": 0,
+                    },
+                },
+                "artifacts": {
+                    "root": str(tmp_path / "artifacts"),
+                    "retention_days": 30,
+                    "encryption_adapter": None,
+                },
+                "analysis": {
+                    "ocr_enabled": False,
+                    "ocr_adapter_type": None,
+                    "semantic_sidecars_enabled": False,
+                    "semantic_sidecar_adapter_type": None,
+                },
+                "notifications": {
+                    "transports": [
+                        {
+                            "transport_id": "ops",
+                            "adapter_type": "gws_email",
+                            "credential_ref": "credential-ref:test",
+                            "routing": {"recipient": "operator@example.test"},
+                        }
+                    ],
+                    "reminder_seconds": 3600,
+                },
+                "query": {
+                    "embedding_space": "local-hash-v1",
+                    "fusion_version": "rrf-v1",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    env = {
+        **os.environ,
+        "PYTHONPATH": str(SCRIPTS),
+        "LAST30DAYS_CONFIG_DIR": str(config_dir),
+    }
+    process = subprocess.Popen(
+        [
+            sys.executable,
+            str(SERVICE),
+            "serve",
+            "--socket",
+            str(socket_path),
+            "--db",
+            str(db_path),
+        ],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    client = ServiceClient(socket_path)
+    try:
+        _wait_ready(client, process)
+        status = client.tick_schedule_status()
+        conn = sqlite3.connect(db_path)
+        counts = conn.execute(
+            """SELECT
+                 (SELECT COUNT(*) FROM service_tick_schedules),
+                 (SELECT COUNT(*) FROM service_ticks)"""
+        ).fetchone()
+        conn.close()
+    finally:
+        process.terminate()
+        _, stderr = process.communicate(timeout=8)
+
+    assert process.returncode == 0, stderr
+    assert status["schedule_id"] == "daily-default"
+    assert status["enabled"] is False
+    assert status["state"] == "disabled"
+    assert counts == (0, 0)
 
 
 def test_service_help_does_not_require_runtime_environment():

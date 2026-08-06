@@ -40,6 +40,10 @@ class DueScheduler(Protocol):
     def enqueue_due(self, *, limit: int = 10): ...
 
 
+class TickScheduler(Protocol):
+    def poll(self) -> dict[str, object]: ...
+
+
 class AssessmentBackend(Protocol):
     def run_once(self, *, worker_id: str): ...
 
@@ -141,6 +145,58 @@ class AcquisitionLoop:
         cancel = getattr(self.runner, "cancel_active_work", None)
         if callable(cancel):
             cancel()
+        if self._thread is not None:
+            self._thread.join(timeout=timeout)
+
+
+class TickScheduleLoop:
+    """Poll one durable tick schedule independently from listener/acquisition work."""
+
+    def __init__(
+        self,
+        scheduler: TickScheduler,
+        *,
+        interval_seconds: float = 30.0,
+        error_seconds: float = 1.0,
+    ) -> None:
+        if interval_seconds <= 0 or error_seconds <= 0:
+            raise ValueError("loop delays must be positive")
+        self.scheduler = scheduler
+        self.interval_seconds = interval_seconds
+        self.error_seconds = error_seconds
+        self.last_error_code: str | None = None
+        self.last_status: dict[str, object] | None = None
+        self._stop_event = threading.Event()
+        self._thread: threading.Thread | None = None
+
+    @property
+    def is_alive(self) -> bool:
+        return self._thread is not None and self._thread.is_alive()
+
+    def start(self) -> None:
+        if self.is_alive:
+            return
+        self._stop_event.clear()
+        self._thread = threading.Thread(
+            target=self._run,
+            name="last30days-tick-schedule",
+            daemon=True,
+        )
+        self._thread.start()
+
+    def _run(self) -> None:
+        while not self._stop_event.is_set():
+            try:
+                self.last_status = self.scheduler.poll()
+                self.last_error_code = None
+                delay = self.interval_seconds
+            except Exception:
+                self.last_error_code = "tick_schedule_loop_failure"
+                delay = self.error_seconds
+            self._stop_event.wait(delay)
+
+    def stop(self, *, timeout: float = 5.0) -> None:
+        self._stop_event.set()
         if self._thread is not None:
             self._thread.join(timeout=timeout)
 

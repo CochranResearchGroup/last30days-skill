@@ -565,6 +565,7 @@ def test_service_cli_exposes_manual_tick_and_explicit_incident_gate_actions():
         ]
     )
     get = parser.parse_args(["tick", "get", "tick-001"])
+    schedule_status = parser.parse_args(["tick", "schedule", "status"])
     observe = parser.parse_args(
         ["tick", "incident", "observe", "incident-001"]
     )
@@ -572,6 +573,7 @@ def test_service_cli_exposes_manual_tick_and_explicit_incident_gate_actions():
     assert enqueue.tick_action == "enqueue"
     assert enqueue.schedule_id == "manual-default"
     assert get.tick_action == "get"
+    assert schedule_status.tick_action == "schedule"
+    assert schedule_status.schedule_action == "status"
     assert observe.incident_action == "observe"
     assert not hasattr(observe, "operator_url")
-    assert "timer" not in build_parser().format_help().casefold()

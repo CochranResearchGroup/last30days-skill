@@ -60,6 +60,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Governed recurring all-source tick.** Service 0.3.5/database schema 16 adds
+  one optional service-owned UTC schedule to `tick-config-v1.json`. The daemon
+  admits only the latest completed boundary through the existing durable tick
+  coordinator, advances schedule state before execution, waits for live
+  recovery leases, reuses the existing expired-lease successor attempt, and
+  pauses on config drift or enqueue failure. `tick schedule status` and
+  `GET /v1/tick-schedule` expose only sanitized cadence and last/next tick
+  state. An absent or disabled schedule creates no tick work; no systemd or
+  per-source timer is added.
+
 - **Local source-grounded image analysis.** Service 0.3.3 adds a PATH-gated
   `tesseract_cli_v1` OCR adapter and a deterministic
   `source_grounded_semantic_sidecar_v1` adapter. The sidecar uses only source

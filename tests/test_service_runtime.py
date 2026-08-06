@@ -11,6 +11,7 @@ from lib.service_runtime import (
     AcquisitionLoop,
     AssessmentLoop,
     EnrichmentLoop,
+    TickScheduleLoop,
     build_acquisition_runtime,
 )
 
@@ -170,6 +171,31 @@ def test_acquisition_loop_cancels_active_work_before_join():
 
     assert runner.cancelled is True
     assert loop.is_alive is False
+
+
+def test_tick_schedule_loop_polls_independently_and_stops_cleanly():
+    class Scheduler:
+        def __init__(self):
+            self.called = threading.Event()
+
+        def poll(self):
+            self.called.set()
+            return {"state": "ready"}
+
+    scheduler = Scheduler()
+    loop = TickScheduleLoop(
+        scheduler,
+        interval_seconds=0.01,
+        error_seconds=0.01,
+    )
+
+    loop.start()
+    assert scheduler.called.wait(1)
+    loop.stop(timeout=1)
+
+    assert loop.is_alive is False
+    assert loop.last_error_code is None
+    assert loop.last_status == {"state": "ready"}
 
 
 def test_assessment_loop_is_independent_and_stoppable():

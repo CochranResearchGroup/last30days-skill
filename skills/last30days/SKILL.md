@@ -14,8 +14,8 @@ user-invocable: true
 
 The installed `last30days` Intelligence Service is the product authority. This
 Skill is a least-privilege MCP client for discovery, querying, and synthesis.
-The service owns source access, durable jobs, policy, retries, evidence,
-indexes, and publication.
+The service owns source access, durable jobs, governed cadence, policy,
+retries, evidence, indexes, and publication.
 
 ## Ordinary research path
 

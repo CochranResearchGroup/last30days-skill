@@ -39,6 +39,7 @@ from lib.service_runtime import (
     AssessmentLoop,
     EnrichmentLoop,
     GraphProjectionLoop,
+    TickScheduleLoop,
     build_acquisition_runtime,
 )
 from lib.service_tick import TickConfigError, TickCoordinator
@@ -47,6 +48,7 @@ from lib.service_tick_runtime import (
     default_tick_config_path,
     preflight_tick_runtime,
 )
+from lib.service_tick_schedule import TickScheduleCoordinator
 
 
 def _default_socket_path() -> Path:
@@ -95,6 +97,17 @@ def _serve(args: argparse.Namespace) -> int:
         acquisition.runner,
         due_scheduler=acquisition.collection_coordinator,
     )
+    tick_schedule = None
+    tick_schedule_loop = None
+    tick_config_path = default_tick_config_path()
+    if tick_config_path.is_file():
+        tick_runtime = build_tick_runtime(db_path, config_path=tick_config_path)
+        tick_schedule = TickScheduleCoordinator(
+            db_path,
+            tick_coordinator=tick_runtime.coordinator,
+            config_path=tick_config_path,
+        )
+        tick_schedule_loop = TickScheduleLoop(tick_schedule)
     assessment_loop = None
     assessment_enabled = os.getenv(
         "LAST30DAYS_APP_INTELLIGENCE_ASSESSMENT", ""
@@ -187,8 +200,15 @@ def _serve(args: argparse.Namespace) -> int:
         collection_coordinator=acquisition.collection_coordinator,
         graph_projection_enabled=graph_loop is not None,
         maintenance_enabled=bool(shutil.which(codex_path)),
+        tick_schedule_status=(tick_schedule.status if tick_schedule else None),
         runtime_error=lambda: (
-            acquisition_loop.last_error_code
+            (
+                tick_schedule.status().get("runtime_error")
+                if tick_schedule is not None
+                else None
+            )
+            or (tick_schedule_loop.last_error_code if tick_schedule_loop else None)
+            or acquisition_loop.last_error_code
             or enrichment_loop.last_error_code
             or (assessment_loop.last_error_code if assessment_loop else None)
             or (graph_loop.last_error_code if graph_loop else None)
@@ -209,6 +229,8 @@ def _serve(args: argparse.Namespace) -> int:
         daemon=True,
     )
     thread.start()
+    if tick_schedule_loop is not None:
+        tick_schedule_loop.start()
     acquisition_loop.start()
     enrichment_loop.start()
     if assessment_loop is not None:
@@ -220,6 +242,8 @@ def _serve(args: argparse.Namespace) -> int:
             if not thread.is_alive():
                 raise RuntimeError("service listener stopped unexpectedly")
     finally:
+        if tick_schedule_loop is not None:
+            tick_schedule_loop.stop(timeout=5)
         if graph_loop is not None:
             graph_loop.stop(timeout=5)
         if assessment_loop is not None:
@@ -247,6 +271,22 @@ def _status(args: argparse.Namespace) -> int:
                     "message": str(exc),
                 },
                 sort_keys=True,
+            )
+        )
+        return 1
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def _tick_schedule_status(args: argparse.Namespace) -> int:
+    socket_path = Path(args.socket) if args.socket else _default_socket_path()
+    client = ServiceClient(socket_path, timeout=args.timeout)
+    try:
+        payload = client.tick_schedule_status()
+    except ServiceClientError as exc:
+        print(
+            json.dumps(
+                {"status": "unavailable", "message": str(exc)}, sort_keys=True
             )
         )
         return 1
@@ -643,6 +683,18 @@ def build_parser() -> argparse.ArgumentParser:
     tick_get.add_argument("--config")
     tick_get.add_argument("--db")
     tick_get.set_defaults(handler=_tick)
+    tick_schedule = tick_subparsers.add_parser(
+        "schedule", help="Read the service-owned recurring tick status"
+    )
+    schedule_subparsers = tick_schedule.add_subparsers(
+        dest="schedule_action", required=True
+    )
+    schedule_status = schedule_subparsers.add_parser(
+        "status", help="Read sanitized cadence and last/next boundary state"
+    )
+    schedule_status.add_argument("--socket")
+    schedule_status.add_argument("--timeout", type=float, default=2.0)
+    schedule_status.set_defaults(handler=_tick_schedule_status)
     tick_incident = tick_subparsers.add_parser(
         "incident",
         help="Read or explicitly advance a persisted human incident gate",

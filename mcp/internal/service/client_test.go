@@ -184,7 +184,7 @@ func TestClientHandshakeCompatibilityMatrix(t *testing.T) {
 		{"contract schema", func(p map[string]any) { p["contract_schema_version"] = 2 }, servicecontracts.CatalogSHA256, compatibilityContractSchemaUnsupported},
 		{"contract body", func(p map[string]any) { p["contract_sha256"] = strings.Repeat("b", 64) }, servicecontracts.CatalogSHA256, compatibilityContractDigestMismatch},
 		{"contract header", func(map[string]any) {}, "stale", compatibilityContractDigestMismatch},
-		{"database schema", func(p map[string]any) { p["database_schema_version"] = 16 }, servicecontracts.CatalogSHA256, compatibilityDatabaseSchemaUnsupported},
+		{"database schema", func(p map[string]any) { p["database_schema_version"] = 17 }, servicecontracts.CatalogSHA256, compatibilityDatabaseSchemaUnsupported},
 		{"runtime manifest", func(p map[string]any) { p["runtime_manifest_sha256"] = nil }, servicecontracts.CatalogSHA256, compatibilityRuntimeManifestInvalid},
 		{"malformed", func(p map[string]any) {
 			p["product"] = map[string]any{"private": "do not expose"}

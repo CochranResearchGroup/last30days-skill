@@ -46,7 +46,35 @@
           "minimum": 0,
           "maximum": 604800
         },
-        "aggregate_limits": {"$ref": "#/$defs/limits"}
+        "aggregate_limits": {"$ref": "#/$defs/limits"},
+        "schedule": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "enabled",
+            "schedule_id",
+            "interval_seconds",
+            "anchor_seconds"
+          ],
+          "properties": {
+            "enabled": {"type": "boolean"},
+            "schedule_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "interval_seconds": {
+              "type": "integer",
+              "minimum": 900,
+              "maximum": 604800
+            },
+            "anchor_seconds": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 604799
+            }
+          }
+        }
       }
     },
     "artifacts": {

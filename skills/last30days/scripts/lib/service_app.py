@@ -119,6 +119,7 @@ class CacheQueryApplication:
         collection_coordinator: CollectionCoordinator | None = None,
         graph_projection_enabled: bool = False,
         maintenance_enabled: bool = False,
+        tick_schedule_status: Callable[[], Mapping[str, object]] | None = None,
         runtime_error: Callable[[], str | None] | None = None,
         clock: Callable[[], datetime] | None = None,
         fresh_seconds: int = DEFAULT_FRESH_SECONDS,
@@ -135,6 +136,21 @@ class CacheQueryApplication:
         self.collection_coordinator = collection_coordinator
         self.graph_projection_enabled = graph_projection_enabled
         self.maintenance_enabled = maintenance_enabled
+        self._tick_schedule_status = tick_schedule_status or (
+            lambda: {
+                "schema_version": contracts.SCHEMA_VERSION,
+                "enabled": False,
+                "schedule_id": None,
+                "interval_seconds": None,
+                "anchor_seconds": None,
+                "state": "disabled",
+                "next_boundary": None,
+                "last_boundary": None,
+                "last_tick_id": None,
+                "last_tick_state": None,
+                "runtime_error": None,
+            }
+        )
         self.runtime_error = runtime_error or (lambda: None)
         self.clock = clock or (lambda: datetime.now(timezone.utc))
         self.fresh_seconds = fresh_seconds
@@ -254,6 +270,28 @@ class CacheQueryApplication:
             "schema_version": contracts.SCHEMA_VERSION,
             "database_schema_version": schema_version,
         }
+
+    def tick_schedule_status(self) -> dict[str, object]:
+        """Return the exact sanitized recurring-tick status surface."""
+        status = dict(self._tick_schedule_status())
+        allowed = frozenset(
+            {
+                "schema_version",
+                "enabled",
+                "schedule_id",
+                "interval_seconds",
+                "anchor_seconds",
+                "state",
+                "next_boundary",
+                "last_boundary",
+                "last_tick_id",
+                "last_tick_state",
+                "runtime_error",
+            }
+        )
+        if status.keys() != allowed:
+            raise RuntimeError("tick schedule status fields are invalid")
+        return status
 
     def service_info(self) -> contracts.ServiceInfo:
         index = self._index_info()
@@ -1251,6 +1289,7 @@ def initialize_application(
     collection_coordinator: CollectionCoordinator | None = None,
     graph_projection_enabled: bool = False,
     maintenance_enabled: bool = False,
+    tick_schedule_status: Callable[[], Mapping[str, object]] | None = None,
     runtime_error: Callable[[], str | None] | None = None,
 ) -> CacheQueryApplication:
     """Initialize schema once and return the transport-independent application."""
@@ -1270,5 +1309,6 @@ def initialize_application(
         collection_coordinator=collection_coordinator,
         graph_projection_enabled=graph_projection_enabled,
         maintenance_enabled=maintenance_enabled,
+        tick_schedule_status=tick_schedule_status,
         runtime_error=runtime_error,
     )

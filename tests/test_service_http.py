@@ -67,6 +67,21 @@ class StubApplication:
             }
         )
 
+    def tick_schedule_status(self):
+        return {
+            "schema_version": 1,
+            "enabled": False,
+            "schedule_id": None,
+            "interval_seconds": None,
+            "anchor_seconds": None,
+            "state": "disabled",
+            "next_boundary": None,
+            "last_boundary": None,
+            "last_tick_id": None,
+            "last_tick_state": None,
+            "runtime_error": None,
+        }
+
     def query(self, request):
         return contracts.QueryResponse.from_dict(
             {
@@ -153,6 +168,7 @@ def test_unix_service_exposes_health_and_capabilities_with_private_socket(tmp_pa
         client = ServiceClient(socket_path)
 
         assert client.health()["status"] == "ready"
+        assert client.tick_schedule_status()["state"] == "disabled"
         info = client.service_info()
         assert info.status is contracts.ServiceStatus.READY
         assert info.product == "last30days"

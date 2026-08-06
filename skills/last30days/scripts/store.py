@@ -2072,6 +2072,47 @@ ALTER TABLE service_incidents ADD COLUMN operator_url TEXT;
 ALTER TABLE service_incident_observations ADD COLUMN viewer_lease_id TEXT;
 ALTER TABLE service_incident_observations ADD COLUMN lease_acquired_at TEXT;
 """,
+    16: """
+CREATE TABLE service_tick_schedules (
+    schedule_id TEXT PRIMARY KEY,
+    config_digest TEXT NOT NULL,
+    interval_seconds INTEGER NOT NULL,
+    anchor_seconds INTEGER NOT NULL,
+    enabled INTEGER NOT NULL CHECK (enabled IN (0, 1)),
+    state TEXT NOT NULL,
+    next_boundary TEXT NOT NULL,
+    last_boundary TEXT,
+    last_tick_id TEXT REFERENCES service_ticks(tick_id),
+    last_tick_state TEXT,
+    last_error_code TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+
+CREATE TABLE service_tick_schedule_events (
+    event_id TEXT PRIMARY KEY,
+    schedule_id TEXT NOT NULL REFERENCES service_tick_schedules(schedule_id),
+    sequence INTEGER NOT NULL,
+    event_type TEXT NOT NULL,
+    boundary TEXT,
+    tick_id TEXT REFERENCES service_ticks(tick_id),
+    payload_json TEXT NOT NULL,
+    occurred_at TEXT NOT NULL,
+    UNIQUE (schedule_id, sequence)
+);
+
+CREATE TRIGGER service_tick_schedule_events_immutable_update
+BEFORE UPDATE ON service_tick_schedule_events
+BEGIN
+    SELECT RAISE(ABORT, 'service tick schedule event is immutable');
+END;
+
+CREATE TRIGGER service_tick_schedule_events_immutable_delete
+BEFORE DELETE ON service_tick_schedule_events
+BEGIN
+    SELECT RAISE(ABORT, 'service tick schedule event is immutable');
+END;
+""",
 }
 
 

@@ -351,6 +351,7 @@ def _validate_config_shape(config: Mapping[str, Any]) -> None:
         config["tick"],
         "tick",
         required=frozenset({"timezone", "lateness_seconds", "aggregate_limits"}),
+        optional=frozenset({"schedule"}),
     )
     _bounded_text(tick["timezone"], "tick.timezone", 128)
     _integer(
@@ -360,6 +361,29 @@ def _validate_config_shape(config: Mapping[str, Any]) -> None:
         maximum=604_800,
     )
     _validate_limits(tick["aggregate_limits"], "tick.aggregate_limits", provider=False)
+    if "schedule" in tick:
+        schedule = _exact_fields(
+            tick["schedule"],
+            "tick.schedule",
+            required=frozenset(
+                {"enabled", "schedule_id", "interval_seconds", "anchor_seconds"}
+            ),
+        )
+        if not isinstance(schedule["enabled"], bool):
+            raise TickConfigError("tick.schedule.enabled must be boolean")
+        _bounded_text(schedule["schedule_id"], "tick.schedule.schedule_id", 128)
+        interval_seconds = _integer(
+            schedule["interval_seconds"],
+            "tick.schedule.interval_seconds",
+            minimum=900,
+            maximum=604_800,
+        )
+        _integer(
+            schedule["anchor_seconds"],
+            "tick.schedule.anchor_seconds",
+            minimum=0,
+            maximum=interval_seconds - 1,
+        )
 
     artifacts = _exact_fields(
         config["artifacts"],

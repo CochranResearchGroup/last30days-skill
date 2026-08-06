@@ -3,12 +3,12 @@ package contracts
 
 const (
 	SchemaVersion = 1
-	CatalogSHA256 = "995de758ff8096c0ef1578b51eb9b46197c6f42dadc1080f5055a8d137e12262"
+	CatalogSHA256 = "fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1"
 	ProductIdentity = "last30days"
 	ServiceAPIMin = 1
 	ServiceAPIMax = 1
-	DatabaseSchemaMin = 15
-	DatabaseSchemaMax = 15
+	DatabaseSchemaMin = 16
+	DatabaseSchemaMax = 16
 )
 
 var QueryRequestFields = []string{"filters", "freshness_policy", "max_chars", "profile_id", "query", "request_id", "response_mode", "schema_version", "top_k", "wait_ms"}

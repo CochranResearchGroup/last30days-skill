@@ -536,7 +536,7 @@ def test_schema_catalog_is_the_golden_contract_for_every_v1_envelope():
     assert catalog["compatibility"] == {
         "product": "last30days",
         "service_api": {"min": 1, "max": 1},
-        "database_schema": {"min": 15, "max": 15},
+        "database_schema": {"min": 16, "max": 16},
     }
     assert set(catalog["contracts"]) == {
         "query_request",
@@ -648,8 +648,8 @@ def test_service_info_round_trips_dynamic_runtime_capabilities():
         "mcp_adapter_version": "4.0.1",
         "mcp_supported_service_api_min": 1,
         "mcp_supported_service_api_max": 1,
-        "mcp_supported_database_schema_min": 15,
-        "mcp_supported_database_schema_max": 15,
+        "mcp_supported_database_schema_min": 16,
+        "mcp_supported_database_schema_max": 16,
         "compatibility_state": "compatible",
         "status": "ready",
         "capabilities": ["cache_query", "lexical_search", "semantic_search"],

@@ -35,7 +35,7 @@ checkout, build and install its independently versioned artifact with:
 ```bash
 bash service/scripts/build-runtime.sh
 bash service/scripts/install.sh install \
-  --artifact dist/service/last30days-service-0.3.2.tar.gz
+  --artifact dist/service/last30days-service-0.3.5.tar.gz
 bash service/scripts/install.sh diagnose
 ```
 
@@ -43,7 +43,7 @@ The service release lives under
 `$XDG_DATA_HOME/last30days/service/releases/<version>`, independently of any
 installed Agent Skill. The managed unit resolves the atomic `current` selector
 through a stable launcher. A successful install records the loaded service
-version, contract digest, schema 15, and runtime-manifest digest in an
+version, contract digest, schema 16, and runtime-manifest digest in an
 owner-readable readiness receipt. Skill-first installation remains a
 compatibility path during the migration; refreshing a frozen Skill copy is no
 longer the service upgrade contract.
@@ -96,10 +96,56 @@ the config affects only a newly enqueued tick; it does not rewrite an existing
 tick. `tick.lateness_seconds` bounds how long a distinct queued interval may
 wait behind the singleton active tick; after that bound it terminalizes as
 `missed_due_to_overlap` with an exact coverage gap. A notification chain is
-required for unattended preflight, but transport
-order and all routing particulars remain user configuration. The runtime does
-not schedule recurrence from this document in the current MVP; timer work is a
-separate successor after a bounded manual all-source tick is accepted.
+required for unattended preflight, but transport order and all routing
+particulars remain user configuration.
+
+An optional strict `tick.schedule` object enables one service-owned UTC
+cadence through the same durable tick interface:
+
+```json
+{
+  "tick": {
+    "timezone": "UTC",
+    "lateness_seconds": 86400,
+    "aggregate_limits": {
+      "attempts": 5,
+      "network_requests": 250,
+      "wall_seconds": 600,
+      "items": 15,
+      "cost_cents": 0,
+      "model_tokens": 0
+    },
+    "schedule": {
+      "enabled": false,
+      "schedule_id": "daily-default",
+      "interval_seconds": 86400,
+      "anchor_seconds": 0
+    }
+  }
+}
+```
+
+The enclosing document still requires services, targets, artifact, analysis,
+notification, and query fields defined by the canonical schema. An absent
+schedule is disabled. The first supported production cadence is 86,400 seconds
+anchored at Unix-epoch second zero (midnight UTC). The daemon
+admits only the latest completed boundary within `lateness_seconds`, never a
+catch-up fanout, and advances durable schedule state before invoking the tick.
+Restart recovery waits for a live execution lease, then uses the existing
+successor-attempt contract after expiry while preserving boundary, tick, lane,
+stage, staged-result, and budget identities. Config-digest/cadence drift or an
+enqueue failure pauses the schedule fail-closed. No systemd timer, per-source
+timer, or legacy collection-spec enablement is created.
+
+Read the sanitized installed state without admitting work:
+
+```bash
+python3 skills/last30days/scripts/service.py tick schedule status
+```
+
+The corresponding owner-private API is `GET /v1/tick-schedule`. Both expose
+only enablement, schedule/cadence, last and next boundary, last tick ID/state,
+and a safe runtime error code.
 
 The installed acquisition bridge currently declares the source-specific
 adapter types `x_agent_browser`, `facebook_agent_browser`,
@@ -914,7 +960,7 @@ Use `service/scripts/install.sh upgrade --artifact <artifact>` for a new
 semantic service version. The installer verifies every payload SHA-256, stages
 an immutable release, records the old `current` target as `previous`, switches
 atomically, and restarts once. It accepts the upgrade only when the service
-reports the expected version, exact contract digest, and schema 15. A failed
+reports the expected version, exact contract digest, and schema 16. A failed
 upgrade restores the prior selectors, restarts, and proves the old release
 ready. Use `service/scripts/install.sh rollback` to swap the current and
 previous verified releases deliberately; `start`, `stop`, `status`, and

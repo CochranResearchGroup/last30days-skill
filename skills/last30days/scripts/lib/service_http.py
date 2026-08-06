@@ -31,6 +31,8 @@ class ServiceApplication(Protocol):
 
     def service_info(self) -> contracts.ServiceInfo: ...
 
+    def tick_schedule_status(self) -> dict[str, object]: ...
+
     def job(self, job_id: str) -> contracts.JobRecord: ...
 
     def resume_job(self, job_id: str) -> contracts.JobRecord: ...
@@ -186,6 +188,9 @@ class _RequestHandler(BaseHTTPRequestHandler):
                         self.application.service_info().to_dict()
                     ),
                 )
+                return
+            if self.path == "/v1/tick-schedule":
+                self._write_json(200, self.application.tick_schedule_status())
                 return
             if self.path in {"/v1/capabilities", "/v1/sources"}:
                 info = self.application.service_info().to_dict()

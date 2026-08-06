@@ -510,6 +510,34 @@ def test_service_discovery_degrades_when_acquisition_loop_reports_failure(tmp_pa
     assert app.service_info().status is contracts.ServiceStatus.DEGRADED
 
 
+def test_tick_schedule_status_is_exposed_read_only(tmp_path):
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    expected = {
+        "schema_version": 1,
+        "enabled": True,
+        "schedule_id": "daily-default",
+        "interval_seconds": 86_400,
+        "anchor_seconds": 0,
+        "state": "ready",
+        "next_boundary": "2026-08-05T00:00:00Z",
+        "last_boundary": "2026-08-04T00:00:00Z",
+        "last_tick_id": "tick-001",
+        "last_tick_state": "complete_degraded",
+        "runtime_error": None,
+    }
+    app = CacheQueryApplication(
+        db_path,
+        FakeRetriever([]),
+        tick_schedule_status=lambda: expected,
+    )
+
+    observed = app.tick_schedule_status()
+    observed["state"] = "mutated"
+
+    assert app.tick_schedule_status() == expected
+
+
 def test_job_poll_uses_typed_reader_and_rejects_unsafe_ids(tmp_path):
     class Reader:
         def get_job(self, job_id):
