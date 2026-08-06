@@ -1,0 +1,143 @@
+{
+  "authority": {
+    "live_at_this_checkpoint": false,
+    "requires_explicit_operator_approval": true,
+    "requires_terminal_independent_review": true
+  },
+  "ceilings": {
+    "aggregate": {
+      "attempts": 5,
+      "cost_cents": 0,
+      "items": 15,
+      "model_tokens": 0,
+      "network_requests": 250,
+      "wall_seconds": 600
+    },
+    "each_lane": {
+      "attempts": 1,
+      "cost_cents": 0,
+      "items": 3,
+      "model_tokens": 0,
+      "network_requests": 50,
+      "wall_seconds": 120
+    },
+    "paid_fallback": false,
+    "retry": false
+  },
+  "candidate_validation": {
+    "focused_tick_tests_passed": 86,
+    "json_parse": "passed",
+    "sanitized_diff_check": "passed",
+    "worktree_diff_check": "passed"
+  },
+  "closed_gates": [
+    "enqueue_or_provider_execution_before_explicit_operator_approval",
+    "timer_or_schedule",
+    "guacamole_lease_or_human_observation",
+    "paid_provider_or_model_call",
+    "ceiling_change",
+    "real_rollback",
+    "push_tag_publication_or_release"
+  ],
+  "crash_replay": {
+    "accepted_deterministic_proof": "Plan0023-C06 result-staged and between-lanes same-tick replay proof",
+    "live_fault_injection": false,
+    "unexpected_process_crash": "hard_stop_without_second_enqueue"
+  },
+  "execution": {
+    "command_shape": "installed last30days-service tick enqueue with the exact accepted interval and default schedule identity",
+    "concurrency": 1,
+    "global_failure_action": "stop",
+    "maximum_enqueue_invocations": 1,
+    "monitoring": "read-only tick and database inspection during and after the single synchronous runner",
+    "source_local_terminal_action": "continue_to_next_serial_lane_when_global_invariants_hold"
+  },
+  "hard_stops": [
+    "installed version, runtime manifest, readiness, schema, integrity, rollback identity, config file digest, sanitized config digest, or tick identity differs",
+    "any existing tick, queued or running attempt, enabled collection specification, enabled timer or schedule, or Guacamole lease appears before enqueue",
+    "provider or resource admission differs from the accepted sanitized preflight",
+    "a second attempt, retry, paid fallback, model call, or any per-lane or aggregate ceiling breach is attempted",
+    "a source-local condition is misclassified as a global success or a global integrity condition is misclassified as source-local",
+    "an incident is missing its protected rendered-page evidence when the provider supplied a problematic browser page",
+    "incident notification does not follow configured sequential primary-then-fallback semantics or sends without an incident",
+    "human observation is requested without stopping at the separate Guacamole acknowledgment gate",
+    "the process crashes, durable state cannot be reconstructed, snapshot promotion is non-terminal, or another enqueue would be required",
+    "a timer, schedule, push, publication, release, real rollback, or user-config mutation would be required"
+  ],
+  "identity": {
+    "config_digest": "sha256:99099343b91d9c5be9ed06e431ecc30acf1f6f34b39a2cecc3dfafdc9885cc06",
+    "config_file_sha256": "66b81392f8ab8092d5af2757a4764ddb0944e6a0aa212de0f375906a6412ba98",
+    "interval_from": "2026-08-04T00:00:00Z",
+    "interval_to": "2026-08-05T00:00:00Z",
+    "runtime_manifest_sha256": "da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514",
+    "schedule_id": "manual-default",
+    "service_version": "0.3.0",
+    "tick_id": "tick-86197f5c709f942e4639bd2c362938bb"
+  },
+  "incidents": {
+    "guacamole": "not_authorized; stop for a separate operator acknowledgment and observation gate",
+    "human_link_requirement": "only an external agent-browser Guacamole URL after a separately authorized lease; never a local link",
+    "notification_scope_if_live_packet_is_approved": "send only for a durable incident, using configured sequential primary then fallback",
+    "problem_page_evidence": "protected screenshot and rendered-page artifact, available through governed artifact retrieval",
+    "signals": [
+      "captcha",
+      "cloudflare_challenge_or_block",
+      "rate_limit_warning_or_block",
+      "reauthentication_required"
+    ]
+  },
+  "lane_controller": {
+    "count": 5,
+    "execution_order_lane_ids": [
+      "tick-lane-64b555e9ef84810a4439bfcb055a1b37",
+      "tick-lane-d7069ba1bfe23300486bab74cbf9eb77",
+      "tick-lane-b6a32d79ec50ed0cc35443069cc7363b",
+      "tick-lane-e6f4ece111c54b63d40472b368bf3a8f",
+      "tick-lane-20b9704d71eaa3ba7324624de1f67061"
+    ],
+    "shared_browser_resource_serialized": true
+  },
+  "plan": "0023",
+  "postflight": [
+    "read the terminal tick receipt and reconstruct tick, lane, stage, provider, budget, event, incident, artifact, derivative, and snapshot joins",
+    "prove every lane has exactly one truthful terminal and actual budgets remain within the packet ceilings",
+    "prove protected problematic-page artifacts and sequential notification outcomes for every incident that occurred",
+    "prove raw-first evidence, OCR, semantic sidecards, catalog entries, access metadata, lexical projection, semantic projection, and terminal snapshot relationships are internally consistent",
+    "prove complete or complete_degraded coverage and freshness metadata matches actual source-local outcomes",
+    "prove database and active-index integrity and preserve the installed rollback identity",
+    "prove zero enabled specifications, schedules, timers, unacknowledged Guacamole leases, paid calls, pushes, publications, and releases",
+    "obtain independent terminal receipt review before Plan 0023 can close"
+  ],
+  "prestate": {
+    "active_attempts": 0,
+    "collection_specifications": 42,
+    "database_integrity": "ok",
+    "database_schema_version": 15,
+    "document_count": 62,
+    "embedding_count": 62,
+    "enabled_collection_specifications": 0,
+    "index_version": "index-d4b3c45667cc2f635c557b85",
+    "rollback_database_integrity": "ok",
+    "rollback_database_schema_version": 12,
+    "rollback_release": "releases/0.2.29",
+    "service_active": true,
+    "service_ticks": 0,
+    "enabled_timers_or_schedules": 0
+  },
+  "privacy": {
+    "raw_credentials_in_packet": false,
+    "raw_user_config_review_required": false,
+    "repo_particulars": "digests, counts, opaque durable identities, safe adapter behavior, and source-authority references only"
+  },
+  "review": {
+    "allowed_actions": "read-only repository, installed-state, and sanitized-receipt inspection",
+    "must_not_read": "raw owner-private config or credentials",
+    "required_result": "terminal_pass or terminal_fail before operator approval may be requested",
+    "reviewer": "/root/p0023_c06_review",
+    "status": "pending"
+  },
+  "schema": "last30days.manual-t08-live-packet.v1",
+  "status": "review_pending",
+  "timer_admission": false,
+  "verified_at": "2026-08-05T20:47:53-05:00"
+}

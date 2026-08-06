@@ -10844,3 +10844,64 @@ Next Bounded Action:
 - prepare one review-only T08 packet bound to the accepted config/tick IDs,
   ceilings, serial resource order, incidents/notifications/Guac, crash/replay,
   and zero schedules. Obtain explicit human approval before enqueue.
+
+## Turn 178 | 2026-08-05
+
+Focus: freeze the exact manual T08 packet for independent review without live
+execution.
+
+Authority Consulted:
+
+- Plan 0023 V2/C34, receipt 0051, accepted C06 deterministic crash/replay
+  evidence, installed tick enqueue/runner behavior, and operator-approved
+  incident escalation and separate Guacamole observation boundary.
+
+Decisions And Changes:
+
+- created sanitized packet 0052 bound to exact installed/config/tick digests,
+  the accepted Aug 4-5 interval, five serial lane identities, and per-lane plus
+  aggregate ceilings;
+- selected one enqueue maximum, no retry, no paid fallback, no live fault
+  injection, and a hard stop on unexpected process crash;
+- required protected screenshots and rendered-page artifacts for problematic
+  browser pages and configured sequential notification only for a durable
+  incident;
+- kept Guacamole behind a separate acknowledgment/observation gate and bound
+  any later human route to an external agent-browser URL rather than a local
+  link;
+- kept the raw owner-private config out of reviewer and repository scope.
+
+Validation Evidence:
+
+- packet identities match receipt 0051 and installed 0.3.0 manifest evidence;
+- exact ceilings remain one attempt/50 requests/3 items/120 seconds/zero cost/
+  zero model tokens per lane and 5/250/15/600/0/0 aggregate;
+- current prestate remains expressed as 42 specifications, zero enabled, zero
+  ticks/active attempts/timers, schema 15 integrity `ok`, and 62 documents plus
+  62 embeddings;
+- fresh installed and database readbacks confirm that prestate, and the focused
+  deterministic tick matrix passes 86 tests;
+- packet itself authorizes no enqueue, provider, send, Guac, timer, rollback,
+  push, publication, release, spend, or ceiling change.
+
+State Movement:
+
+- Plan 0023 advances `C34 -> C35`;
+- `phase_a_sanitized_preflight_accepted_t08_human_gate -> t08_live_packet_review_pending`.
+
+Subagent Status And Reconciliation:
+
+- existing independent reviewer `/root/p0023_c06_review` is assigned terminal
+  read-only PASS/FAIL after the packet candidate commit; no raw user config or
+  live action enters review scope.
+
+Graphiti Write Status:
+
+- deferred until the human-gate packet has terminal review and a durable
+  closeout decision.
+
+Next Bounded Action:
+
+- commit packet 0052 and obtain terminal independent review. If it passes,
+  record the reviewed gate and request explicit operator approval; do not
+  enqueue in the same turn.

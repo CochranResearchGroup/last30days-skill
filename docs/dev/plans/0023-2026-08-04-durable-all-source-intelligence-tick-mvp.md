@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C34 is the current authority.
+Checkpoint P0023-C35 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2675,3 +2675,68 @@ Next action:
   attempt/request/item/wall/model/cost ceilings, per-lane receipt stops,
   incident/notification/Guac gates, crash/replay proof, and zero schedules;
   obtain explicit human approval before any provider or send action.
+
+### Checkpoint P0023-C35 | 2026-08-05
+
+Plan version: 3
+
+State transition:
+
+- `phase_a_sanitized_preflight_accepted_t08_human_gate -> t08_live_packet_review_pending`.
+
+Progress classification:
+
+- `blocker_reduction`; one sanitized, review-only manual T08 packet now binds
+  the accepted installed/config/tick identities to exact live ceilings,
+  serial execution, incident escalation, crash handling, and postflight proof.
+
+Packet authority and boundaries:
+
+- durable packet:
+  `docs/dev/notes/0052-manual-t08-live-packet.json`;
+- the packet authorizes no current live action. It requires terminal
+  independent review and a later explicit operator approval before its single
+  enqueue can occur;
+- five lanes remain serial with one provider attempt each, 50 governed
+  requests, three items, 120 wall seconds, zero cost, and zero model tokens per
+  lane; aggregate ceilings remain 5/250/15/600/0/0 with no retry or paid
+  fallback;
+- accepted deterministic C06 crash/replay evidence satisfies the recovery
+  prerequisite. T08 injects no crash; an unexpected live process crash is a
+  hard stop with no second enqueue;
+- CAPTCHA, Cloudflare, rate-limit, and reauthentication incidents require a
+  protected screenshot and rendered-page artifact plus user-configured
+  sequential notification. A notification is permitted only for an actual
+  durable incident if the live packet is later approved;
+- Guacamole remains a separate acknowledgment/observation gate. No lease is
+  admitted by this packet; any later human link must be the external
+  agent-browser URL, never a local link;
+- timer/schedule, real rollback, paid/model calls, ceiling changes, push,
+  publication, tag, and release remain closed.
+
+Privacy reconciliation:
+
+- the packet contains digests, safe counts, opaque durable identities, and
+  behavioral constraints only. The reviewer must not read raw owner-private
+  config or credentials, and the repository contains no selector, profile,
+  access, routing, recipient, artifact-root, observation-endpoint, or
+  credential particulars.
+
+Validation evidence:
+
+- fresh read-only state matches packet prestate: active/ready 0.3.0, schema 15
+  integrity `ok`, 62 documents/62 embeddings, 42 specifications with zero
+  enabled, zero ticks/active attempts, and no last30days timer;
+- packet JSON parse, sanitized-diff scan, and worktree diff check pass;
+- focused deterministic tick matrix passes 86 tests.
+
+Authority classification:
+
+- `inherited_authority`; C34's next bounded action permits packet preparation
+  and read-only independent review. It does not consume the T08 human gate.
+
+Next action:
+
+- commit the exact packet candidate and obtain one terminal independent
+  PASS/FAIL. On PASS, record the reviewed human gate and request explicit
+  operator authorization; do not enqueue in the review turn.

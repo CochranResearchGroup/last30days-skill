@@ -982,9 +982,12 @@ Active Plan:
   recovery/replay, and a manual acceptance gate. It explicitly excludes timer
   enablement. Checkpoint C04 validates the deterministic provider, evidence,
   media/analysis, incident, catalog, query, and reconstructable-receipt join.
-  The active implementation boundary is now the T07 provider/raw crash seam:
-  interrupted work must resume from a durable result without another source
-  call before any install or live T08 packet can open.
+  The T07 provider/raw crash seam and Phase A install/config preflight are now
+  accepted. Checkpoint C35 is the current review-only boundary: one sanitized
+  T08 live packet binds the exact preflighted tick to serial lane ceilings,
+  incident escalation, no-retry crash handling, postflight reconstruction, and
+  zero schedules. It authorizes no live action pending terminal independent
+  review and explicit operator approval.
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the closed predecessor authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
@@ -1050,11 +1053,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- prepare one review-only manual T08 packet bound to Plan 0023/C34's accepted
-  tick/config identities and exact current ceilings; obtain explicit human
-  approval before provider execution or notification sends. Keep real rollback,
-  sources, notification sends, Guac, recurrence, push, publication, release,
-  paid calls, and ceiling changes closed.
+- independently review Plan 0023/C35's exact manual T08 packet. On terminal
+  PASS, record its human gate and request explicit operator approval before a
+  single provider execution or incident-only notification send. Keep real
+  rollback, Guac, recurrence, push, publication, release, paid calls, retries,
+  and ceiling changes closed.
 
 ## Goal-Compatible Plan Conversion
 
