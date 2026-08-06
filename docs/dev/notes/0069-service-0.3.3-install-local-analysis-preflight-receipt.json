@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "receipt_id": "service-0.3.3-install-local-analysis-preflight-0069",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0023",
+    "checkpoint": "P0023-C48",
+    "classification": "inherited_authority"
+  },
+  "install": {
+    "operation": "upgrade",
+    "artifact_sha256": "37ce68ccd083d9cfec72d7521c2ab16e524a2a291386f8fae68087814becc847",
+    "service_version": "0.3.3",
+    "service_status": "ready",
+    "runtime_manifest_sha256": "c3006593040b88a640cfbca79e28bdac6aa83e0c0e3a53ce35f7ba649fa19a31",
+    "contract_sha256": "d3362ef9edc1e8e58f76d4a5a5ed5375fbc51e39169da1f84714584165f4efd8",
+    "database_schema_version": 15,
+    "current_release": "releases/0.3.3",
+    "previous_release": "releases/0.3.2"
+  },
+  "postinstall": {
+    "database_integrity": "ok",
+    "document_count": 62,
+    "embedding_count": 62,
+    "active_index": "index-d4b3c45667cc2f635c557b85",
+    "tick_count": 2,
+    "active_tick_attempt_count": 0,
+    "collection_spec_count": 42,
+    "enabled_collection_spec_count": 0,
+    "last30days_timer_present": false
+  },
+  "rollback": {
+    "release": "releases/0.3.2",
+    "database_schema_version": 15,
+    "directory_mode": "0700",
+    "database_mode": "0600",
+    "metadata_mode": "0600",
+    "database_sha256": "57831e916e7ee32cffeb18be63621472686c716784233ae1654bf1668c62a986",
+    "metadata_sha256": "9724f19106c7a34dd2bbef9b820ccbef33cb835bf473fc986cafbaf2caf8c55b"
+  },
+  "private_config_revision": {
+    "config_revision": "p0023-c48-local-analysis-v1",
+    "ocr_adapter_type": "tesseract_cli_v1",
+    "semantic_sidecar_adapter_type": "source_grounded_semantic_sidecar_v1",
+    "file_sha256": "d1741db268a26f67308f6df1ea4df9181bb7763e0458d3000ac98813e98e4ab3",
+    "directory_mode": "0700",
+    "file_mode": "0600",
+    "other_fields_changed": false
+  },
+  "preflight": {
+    "status": "ready",
+    "tick_id": "tick-325e83a6d4df894d074a0b87563ef499",
+    "interval_from": "2026-08-05T00:00:00Z",
+    "interval_to": "2026-08-06T00:00:00Z",
+    "schedule_id": "manual-default",
+    "config_revision": "p0023-c48-local-analysis-v1",
+    "config_digest": "sha256:d6b8d75653d542bed2714fa375292ce7ec24a10f73e8c3a52ff74071e867596f",
+    "lane_order": ["reddit", "youtube", "x", "facebook", "linkedin"],
+    "aggregate_limits": {
+      "attempts": 5,
+      "network_requests": 250,
+      "items": 15,
+      "wall_seconds": 600,
+      "cost_cents": 0,
+      "model_tokens": 0
+    },
+    "state_created": false
+  },
+  "cumulative_provider_attempts": {
+    "consumed": 10,
+    "ceiling": 50,
+    "next_packet_maximum": 15
+  },
+  "next_action": "enqueue the exact local-analysis recheck once and monitor it to a truthful terminal state",
+  "private_config_content_recorded": false,
+  "timers_enabled": false
+}

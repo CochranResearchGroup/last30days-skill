@@ -3505,3 +3505,68 @@ Next action:
 - commit C47/receipt 0068, transactionally install exact 0.3.3, verify rollback
   state, revise only the private analysis selectors/revision, and preflight the
   resulting identity once without enqueueing.
+
+### Checkpoint P0023-C48 | 2026-08-06
+
+Plan version: 16
+
+State transition:
+
+- `exact_0_3_3_local_analysis_candidate_install_ready -> exact_0_3_3_local_analysis_tick_ready`.
+
+Progress classification:
+
+- `outcome_progress`; exact 0.3.3 is installed ready, the private config has
+  only the two local-analysis selectors plus revision changed, and one
+  state-free sanitized preflight admits the bounded recheck identity.
+
+Owned changes:
+
+- consume one transactional upgrade and preserve exact 0.3.2 rollback state;
+- patch only `config_revision`, `analysis.ocr_adapter_type`, and
+  `analysis.semantic_sidecar_adapter_type` in the owner-private config;
+- run one installed preflight for the unchanged Aug 5-6 window without
+  enqueueing or creating tick state.
+
+Validation evidence:
+
+- installed service is ready 0.3.3/schema15 with exact manifest
+  `c3006593040b88a640cfbca79e28bdac6aa83e0c0e3a53ce35f7ba649fa19a31`;
+- SQLite integrity is `ok`, current index remains 62/62, both prior terminal
+  ticks remain, and no tick attempt is active;
+- current/previous selectors are 0.3.3/0.3.2; rollback DB digest
+  `57831e91...a986` agrees with private metadata and all modes are exact;
+- config directory/file remain 0700/0600 and the sanitized selectors are
+  `tesseract_cli_v1` plus `source_grounded_semantic_sidecar_v1`;
+- preflight is ready at tick `tick-325e83a6d4df894d074a0b87563ef499`
+  under exact 5/250/15/600/zero/zero limits, and a read-only get confirms the
+  identity was not created;
+- 42 collection specs remain disabled and no last30days timer exists.
+
+Remaining acceptance criteria:
+
+- execute the exact recheck once and prove successful immutable OCR and
+  semantic derivatives while reconstructing lanes, budgets, catalog, snapshot,
+  hybrid retrieval, and runtime invariants;
+- run the reserved fresh independent final evaluation and reconcile its
+  closed-world findings before push.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the install/config/preflight unit was serialized and primary-
+  owned. Final independent evaluation remains reserved.
+
+Graphiti write status:
+
+- deferred until live derivative proof terminalizes.
+
+Authority classification:
+
+- `inherited_authority`; the next packet raises cumulative provider attempts
+  only to 15 of 50 and changes no source, identity, paid provider/model, timer,
+  ceiling, audience, or human route.
+
+Next action:
+
+- commit C48/receipt 0069, enqueue tick
+  `tick-325e83a6d4df894d074a0b87563ef499` once, and monitor read-only to terminal.

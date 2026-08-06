@@ -11574,3 +11574,49 @@ Next Bounded Action:
 
 - commit C47/0068, install exact 0.3.3, then revise only private analysis
   selectors/revision and preflight once without enqueueing.
+
+## Turn 191 | 2026-08-06
+
+Focus: install exact service 0.3.3 and admit the bounded local-analysis recheck.
+
+Authority Consulted:
+
+- Plan 0023 C47; Roadmap P07; Runbook Turn 190; receipt 0068; install,
+  rollback, config, validation, and goal policies.
+
+Decisions And Changes:
+
+- consumed one transactional upgrade and retained 0.3.2 as rollback authority;
+- changed only the private config revision and two analysis selector values;
+- ran one sanitized preflight and created no tick state.
+
+Validation Evidence:
+
+- installed status is ready 0.3.3/schema15 with exact manifest
+  `c3006593...9a31`, current/previous 0.3.3/0.3.2, integrity `ok`, 62/62 index,
+  two terminal ticks, and zero active attempts;
+- rollback DB `57831e91...a986` matches its metadata at exact private modes;
+- config remains 0700/0600 and preflight admits
+  `tick-325e83a6d4df894d074a0b87563ef499` at unchanged source order and
+  5/250/15/600/zero/zero limits;
+- 42 collection specs remain disabled, no timer exists, and read-only tick get
+  proves preflight created no state.
+
+State Movement:
+
+- Plan 0023 advances `C47 -> C48` and version `15 -> 16`;
+- `exact_0_3_3_local_analysis_candidate_install_ready -> exact_0_3_3_local_analysis_tick_ready`.
+
+Subagent Status And Reconciliation:
+
+- no delegation; final independent evaluation remains reserved for the
+  terminal live receipt.
+
+Graphiti Write Status:
+
+- deferred until successful derivatives are terminal and reconstructable.
+
+Next Bounded Action:
+
+- commit C48/0069, enqueue the exact recheck once, and monitor it read-only to
+  terminal state.
