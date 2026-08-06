@@ -54,7 +54,7 @@ failure into a false account-authentication diagnosis.
 ## Dependencies And Owned Surfaces
 
 - Authority: `ROADMAP.md`, this plan, `RUNBOOK.md`, and
-  `docs/dev/notes/2026-07-26-post-reboot-fresh-session-handoff.md`.
+  `docs/dev/notes/0058-2026-07-26-post-reboot-fresh-session-handoff.md`.
 - Runtime dependencies: installed last30days service, canonical agent-browser
   profile, Guacamole/XRDP infrastructure, and current operator authorization.
 - Expected writes: runtime route/browser state only after authorization,

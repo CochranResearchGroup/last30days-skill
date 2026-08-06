@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 8
+Plan version: 9
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C40 is the current authority.
+Checkpoint P0023-C41 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -3013,7 +3013,7 @@ Approval-granularity correction:
 - the goal draft is not yet approved. No install, preflight, provider, send,
   Guac lease, timer, or push is authorized merely by this checkpoint;
 - durable fresh-agent routing note:
-  `docs/dev/notes/2026-08-06-plan0023-goal-worthy-tick-handoff.md`.
+  `docs/dev/notes/0062-2026-08-06-plan0023-goal-worthy-tick-handoff.md`.
 
 Authority classification:
 
@@ -3027,3 +3027,70 @@ Next action:
   ask for the exact goal-level approval recorded in the handoff. If approved,
   execute autonomously within it through manual-tick acceptance and push while
   keeping timers disabled.
+
+### Checkpoint P0023-C41 | 2026-08-06
+
+Plan version: 9
+
+State transition:
+
+- `goal_worthy_tick_authority_draft_awaiting_operator_approval -> goal_worthy_tick_authority_approved_install_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; the operator explicitly directs execution of the C40
+  handoff, activating its exact end-to-end standing authority after fresh
+  state reconciliation.
+
+Owned changes:
+
+- adopt the selected shared `notes-and-memories` policy at local policy 0017;
+- migrate all seven legacy prose notes to unique serial-plus-date names
+  0056-0062 and bind the Plan 0023 handoff at note 0062;
+- preserve receipt/evidence packet names as serial-first schema-bound artifacts;
+- prepare one exact transactional 0.3.1 upgrade, postinstall proof, and
+  side-effect-free sanitized preflight as the next critical-path unit.
+
+Validation evidence:
+
+- `origin/main...HEAD` is 0 behind/36 ahead after fresh fetch;
+- installed service is active/ready 0.3.0/schema 15 with exact baseline
+  manifest, SQLite integrity `ok`, 62 documents/62 embeddings, zero ticks and
+  zero active attempts;
+- 42 collection specifications exist and zero are enabled; no `last30days`
+  timer exists;
+- owner-private config remains 0700/0600 with the accepted file digest, and no
+  config content was printed or copied;
+- reviewed 0.3.1 artifact, manifest, and packet 0052 hashes match C38-C40.
+- 14 focused selector audit tests pass; the selector's `--active-only` policy
+  audit passes with all seven prose notes conforming, and the repo authority
+  audit passes at Plan 0023/C41 and Runbook Turn 184.
+
+Remaining acceptance criteria:
+
+- acceptance criteria 1-16 remain pending current installed/manual-tick proof;
+  criteria 14 and deterministic candidate behavior retain the accepted prior
+  evidence but will be rebound in the terminal review.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; system-level multi-agent policy does not authorize delegation
+  for this turn, so the primary orchestrator retains the single critical path.
+
+Graphiti write status:
+
+- pending after this checkpoint commit; the repo-native plan/runbook/note
+  authorities remain primary.
+
+Authority classification:
+
+- `inherited_authority`; the operator's `Execute` direction activates the
+  exact C40 goal packet. Ordinary install, restart, preflight, bounded manual
+  tick, deterministic repair, review, and final push no longer require
+  successor micro-approval inside the stated systems and cumulative ceilings.
+
+Next action:
+
+- commit the policy/note migration and authority checkpoint, then execute one
+  exact transactional 0.3.1 upgrade, prove postinstall and rollback state, and
+  run one sanitized preflight before the first manual tick.

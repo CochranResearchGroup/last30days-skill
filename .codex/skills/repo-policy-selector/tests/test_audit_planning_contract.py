@@ -138,6 +138,42 @@ class PlanningContractAuditTests(unittest.TestCase):
         self.assertTrue(report["applicable"])
         self.assertTrue(report["ok"], report["problems"])
 
+    def test_notes_policy_requires_serial_plus_date_markdown_names(self):
+        root = self.make_repo(("notes-and-memories",))
+        notes = root / "docs/dev/notes"
+        notes.mkdir(parents=True)
+        (notes / "2026-08-06-handoff.md").write_text("# Handoff\n", encoding="utf-8")
+
+        report = self.audit.audit_repo(root)
+
+        self.assertTrue(report["applicable"])
+        self.assertFalse(report["ok"])
+        self.assertTrue(any("serial-plus-date" in item for item in report["problems"]))
+
+    def test_notes_policy_accepts_unique_serial_plus_date_markdown_names(self):
+        root = self.make_repo(("notes-and-memories",))
+        notes = root / "docs/dev/notes"
+        notes.mkdir(parents=True)
+        (notes / "0001-2026-08-06-handoff.md").write_text("# Handoff\n", encoding="utf-8")
+        (notes / "0002-machine-receipt.json").write_text("{}\n", encoding="utf-8")
+
+        report = self.audit.audit_repo(root)
+
+        self.assertTrue(report["ok"], report["problems"])
+        self.assertEqual(report["notes"][0]["file"], "0001-2026-08-06-handoff.md")
+
+    def test_notes_policy_rejects_reused_markdown_serials(self):
+        root = self.make_repo(("notes-and-memories",))
+        notes = root / "docs/dev/notes"
+        notes.mkdir(parents=True)
+        (notes / "0001-2026-08-05-first.md").write_text("# First\n", encoding="utf-8")
+        (notes / "0001-2026-08-06-second.md").write_text("# Second\n", encoding="utf-8")
+
+        report = self.audit.audit_repo(root)
+
+        self.assertFalse(report["ok"])
+        self.assertTrue(any("serial 0001 is reused" in item for item in report["problems"]))
+
     def test_roadmap_contract_requires_wiring_but_allows_non_turn_sections(self):
         root = self.make_repo(("planning-discipline", "roadmap-runbook-governance"))
         plans = root / "docs/dev/plans"

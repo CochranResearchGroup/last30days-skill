@@ -1,4 +1,4 @@
-# Policy Adoption | 2026-07-15
+# Note 0056 | Policy Adoption | 2026-07-15
 
 ## Source
 

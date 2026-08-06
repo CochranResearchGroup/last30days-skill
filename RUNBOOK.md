@@ -1937,7 +1937,7 @@ Authority Consulted:
 
 Decisions And Changes:
 
-- Added `docs/dev/notes/2026-07-26-post-reboot-fresh-session-handoff.md`.
+- Added `docs/dev/notes/0058-2026-07-26-post-reboot-fresh-session-handoff.md`.
 - Kept closed Plans 0010 and 0011 closed; broad follow-on implementation
   requires a successor plan.
 - Prioritized one serialized social-source reboot canary before additional
@@ -6439,7 +6439,7 @@ Authority Consulted:
 Decisions And Changes:
 
 - added
-  `docs/dev/notes/2026-08-01-timed-polling-service-replan-handoff.md` with
+  `docs/dev/notes/0060-2026-08-01-timed-polling-service-replan-handoff.md` with
   startup order, authority, live truth, source classifications, commands,
   hard stops, skills, and the next bounded planning packet;
 - preserved the completed campaign and kept recurring schedule enablement
@@ -7541,7 +7541,7 @@ Decisions And Changes:
 - pushed `main` through `b913b68` to the public `origin`; upstream remains
   push-disabled;
 - created
-  `docs/dev/notes/2026-08-02-plan0018-v22-fresh-agent-handoff.md` with authority
+  `docs/dev/notes/0061-2026-08-02-plan0018-v22-fresh-agent-handoff.md` with authority
   order, startup checks, live state, remaining gate, hard stops, and suggested
   skills. No source, spec, installed runtime, or memory job was mutated.
 
@@ -11160,7 +11160,7 @@ Decisions And Changes:
 - recorded explicitly that the broad goal is awaiting approval and authorizes
   no current runtime or external mutation;
 - wrote fresh-agent handoff
-  `docs/dev/notes/2026-08-06-plan0023-goal-worthy-tick-handoff.md`.
+  `docs/dev/notes/0062-2026-08-06-plan0023-goal-worthy-tick-handoff.md`.
 
 Validation Evidence:
 
@@ -11195,3 +11195,66 @@ Next Bounded Action:
 - fresh session begins read-only, then asks once for the exact goal-level
   authority in the handoff. On approval, execute through manual-tick acceptance
   and push without reopening granular gates; keep timers disabled.
+
+## Turn 184 | 2026-08-06
+
+Focus: activate Plan 0023's goal-worthy standing authority and adopt serial
+prose-note governance before the first runtime mutation.
+
+Authority Consulted:
+
+- operator instruction to execute note 0062; Plan 0023 C36-C40; Roadmap P07;
+  Runbook Turn 183; receipts 0052-0055; fresh Git, service, SQLite, collection,
+  timer, config-mode/digest, artifact, and manifest readbacks; installed
+  `repo-policy-selector` catalog/profile/module output; planning, policy,
+  notes/memories, goal, Git, validation, documentation, and roadmap/runbook
+  policies.
+
+Decisions And Changes:
+
+- classified `Execute` as explicit approval of the exact C40 end-to-end goal
+  packet and retained its hard stops and cumulative 50-provider-attempt ceiling;
+- adopted shared `notes-and-memories` as local policy 0017 with the repo-local
+  distinction between prose notes and schema-bound machine receipts;
+- migrated seven legacy prose notes to unique serial-plus-date names 0056-0062
+  and updated their durable references;
+- kept timer admission outside this goal and prepared the reviewed 0.3.1
+  transactional upgrade as the next critical-path mutation.
+
+Validation Evidence:
+
+- fresh fetch leaves `main` 0 behind/36 ahead with a clean pre-migration tree;
+- installed active/ready 0.3.0/schema15, exact baseline manifest, integrity
+  `ok`, 62/62 index, zero ticks/active attempts, 42 specs/zero enabled, and no
+  `last30days` timer;
+- owner-private config modes/digest and reviewed 0.3.1 artifact, manifest, and
+  packet hashes match C40 without reading or copying private content;
+- selector recommends `repo-product-engineering` in `patch-missing` mode and
+  includes `notes-and-memories`; goal-only planning-contract audit passes.
+- 14 focused selector audit tests, the selector's active-only policy audit,
+  the repo authority audit, and `git diff --check` pass after migration.
+- retained `docs/dev/plans/0013-2026-07-26-youtube-transcript-media-acceptance.md`
+  and `docs/dev/plans/0017-2026-07-26-canonical-profile-selection-regression.md`
+  as pre-existing `PLANNED` authorities; neither is activated or executed by
+  this P07 slice.
+
+State Movement:
+
+- Plan 0023 advances `C40 -> C41` and version `8 -> 9`;
+- `goal_worthy_tick_authority_draft_awaiting_operator_approval -> goal_worthy_tick_authority_approved_install_ready`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; system-level multi-agent policy does not authorize delegation
+  for this turn, and the primary retains the serialized critical path.
+
+Graphiti Write Status:
+
+- pending after the checkpoint commit; plan, runbook, policy, and note 0062 are
+  the source authorities.
+
+Next Bounded Action:
+
+- commit this policy/migration checkpoint, transactionally install exact
+  service 0.3.1, verify readiness/integrity/rollback identity, then run one
+  side-effect-free sanitized preflight before manual T08 execution.

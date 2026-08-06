@@ -1,4 +1,4 @@
-# Fresh-agent handoff | Plan 0018 V22/C54
+# Note 0061 | Fresh-agent handoff | Plan 0018 V22/C54
 
 Date: 2026-08-02  
 Repository: `/home/ecochran76/workspace.local/last30days-skill`  
@@ -27,7 +27,7 @@ Read these in order before proposing or executing anything:
 7. current Git, installed-service, SQLite, and collection-spec readbacks.
 
 The older
-`docs/dev/notes/2026-08-01-timed-polling-service-replan-handoff.md` is durable
+`docs/dev/notes/0060-2026-08-01-timed-polling-service-replan-handoff.md` is durable
 history, not current authority.
 
 ## Current verified state

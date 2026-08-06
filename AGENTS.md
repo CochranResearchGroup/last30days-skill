@@ -111,6 +111,7 @@ Read and follow:
 - `docs/dev/policies/0014-upstream-fork-maintenance.md`
 - `docs/dev/policies/0015-goal-execution-governance.md`
 - `docs/dev/policies/0016-parallel-plan-design.md`
+- `docs/dev/policies/0017-notes-and-memories.md`
 - `docs/dev/policies/0018-architecture-guardrails.md`
 - `docs/dev/policies/0019-documentation-change-control.md`
 - `docs/dev/policies/0020-multi-agent-reconciliation.md`

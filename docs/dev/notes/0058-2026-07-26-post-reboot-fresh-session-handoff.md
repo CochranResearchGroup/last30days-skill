@@ -1,4 +1,4 @@
-# Post-Reboot Fresh-Session Handoff
+# Note 0058 | Post-Reboot Fresh-Session Handoff
 
 Date: 2026-07-26
 

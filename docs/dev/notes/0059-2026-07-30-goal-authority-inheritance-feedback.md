@@ -1,4 +1,4 @@
-# Goal Authority Inheritance Feedback | 2026-07-30
+# Note 0059 | Goal Authority Inheritance Feedback | 2026-07-30
 
 ## Policy Source
 
