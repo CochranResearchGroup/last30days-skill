@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Ordinary tick-head retrieval.** Service 0.3.4 routes ordinary queries to
+  the atomically promoted terminal tick snapshot when one exists. Access,
+  source, and time filters run before independent channel retrieval; responses
+  expose the snapshot's terminal coverage/freshness plus each result's access
+  partition, matching channels, and provenance. Installations without a
+  promoted tick head retain the legacy cache fallback.
+
 - **Retained social-browser acquisition.** Service 0.3.2 reuses a healthy
   same-profile browser for ordinary acquisition when it exposes writable CDP
   control, even if that browser does not satisfy a separately configured RDP

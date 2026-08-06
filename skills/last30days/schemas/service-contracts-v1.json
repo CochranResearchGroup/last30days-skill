@@ -416,7 +416,8 @@
         "job_id": {"type": ["string", "null"]},
         "diagnostics_available": {"type": "boolean"},
         "truncated": {"type": "boolean"},
-        "next_cursor": {"type": ["string", "null"]}
+        "next_cursor": {"type": ["string", "null"]},
+        "tick_snapshot": {"type": "object"}
       }
     },
     "service_info": {
@@ -562,6 +563,27 @@
         "fetched_at": {"type": "string", "minLength": 1},
         "acquisition_id": {"type": "string", "minLength": 1},
         "content_hash": {"type": "string", "minLength": 1},
+        "access_partition_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "matching_channels": {
+          "type": "array",
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "lexical_source",
+              "source_alt_text",
+              "ocr",
+              "semantic_source",
+              "semantic_sidecar",
+              "catalog"
+            ]
+          }
+        },
+        "provenance": {"type": "object"},
         "media": {
           "type": "array",
           "maxItems": 16,

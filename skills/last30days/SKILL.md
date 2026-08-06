@@ -27,6 +27,9 @@ Follow this order for every ordinary request:
    call another product operation.
 3. For a current research question, call `query` with the user's topic.
    Prefer `response_mode=brief` and `freshness_policy=prefer_cache`.
+   When `tick_snapshot` is present, cite only its returned evidence and retain
+   each result's matching channels, provenance, and access partition; the
+   snapshot coverage and interval/promotion fields are the freshness authority.
 4. Use `freshness_policy=cache_only` whenever the user prohibits external work
    or asks only what the service already knows.
 5. If the result is stale or missing and the user asked for fresh research,

@@ -505,6 +505,41 @@ class TickSnapshotPublisher:
         finally:
             conn.close()
 
+    def current_metadata(self) -> dict[str, object]:
+        """Return the promoted head's exact terminal coverage and freshness."""
+        conn = self._connect()
+        try:
+            row = conn.execute(
+                """SELECT s.*, t.interval_from, t.interval_to, t.state AS tick_state
+                   FROM service_tick_query_head AS h
+                   JOIN service_tick_query_snapshots AS s
+                     ON s.snapshot_id = h.snapshot_id
+                   JOIN service_ticks AS t ON t.tick_id = s.tick_id
+                   WHERE h.singleton_id = 1"""
+            ).fetchone()
+            if row is None:
+                raise KeyError("ordinary query head is not initialized")
+            completeness = dict(json.loads(row["completeness_json"]))
+            return {
+                "snapshot_id": str(row["snapshot_id"]),
+                "tick_id": str(row["tick_id"]),
+                "state": str(row["state"]),
+                "tick_state": str(row["tick_state"]),
+                "embedding_space": str(row["embedding_space"]),
+                "fusion_version": str(row["fusion_version"]),
+                "completeness": completeness,
+                "coverage_gaps": sorted(
+                    service
+                    for service, state in completeness.items()
+                    if state not in {"success", "empty"}
+                ),
+                "interval_from": str(row["interval_from"]),
+                "interval_to": str(row["interval_to"]),
+                "promoted_at": str(row["promoted_at"]),
+            }
+        finally:
+            conn.close()
+
     def query(
         self,
         query: str,
@@ -512,6 +547,7 @@ class TickSnapshotPublisher:
         access_partitions: Sequence[str],
         sources: Sequence[str] | None = None,
         published_after: str | None = None,
+        published_before: str | None = None,
         limit: int = 20,
     ) -> tuple[QueryResult, ...]:
         query_text = _text(query, "query", 4_096)
@@ -544,6 +580,9 @@ class TickSnapshotPublisher:
             if published_after is not None:
                 predicates.append("published_at >= ?")
                 parameters.append(published_after)
+            if published_before is not None:
+                predicates.append("published_at <= ?")
+                parameters.append(published_before)
             rows = conn.execute(
                 "SELECT * FROM service_tick_query_entries WHERE "
                 + " AND ".join(predicates),

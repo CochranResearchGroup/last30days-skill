@@ -2,12 +2,12 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "a0dc8325e2fbe558e09bf7d61260ca378151b0a3f875dd8b46ecd3693e34c10b",
+      "sha256": "027a61167f091a427fa7844dcac0c5141bafbcbdcadc7e04a93578147ab956f2",
       "source": "service/VERSION"
     },
     {
       "path": "schemas/service-contracts-v1.json",
-      "sha256": "d3362ef9edc1e8e58f76d4a5a5ed5375fbc51e39169da1f84714584165f4efd8",
+      "sha256": "995de758ff8096c0ef1578b51eb9b46197c6f42dadc1080f5055a8d137e12262",
       "source": "skills/last30days/schemas/service-contracts-v1.json"
     },
     {
@@ -287,7 +287,7 @@
     },
     {
       "path": "scripts/lib/service_app.py",
-      "sha256": "2d4b4ddf624c1bf705589e7b896f33dd0a4db2cefa91c93b44758c158222a84a",
+      "sha256": "aab7d5bf8ca2160a125310e125881028cabbdf5b9578f64cff34ff8a2b1229eb",
       "source": "skills/last30days/scripts/lib/service_app.py"
     },
     {
@@ -302,7 +302,7 @@
     },
     {
       "path": "scripts/lib/service_contracts.py",
-      "sha256": "89105bcc4e0dba3d5bbb54879768a65a700be1d2278c6fbe129b483d5259e0f7",
+      "sha256": "eb5325ec02aef1215592db1c66c0669fec371a39b8e0975fa484c10f5ab1356a",
       "source": "skills/last30days/scripts/lib/service_contracts.py"
     },
     {
@@ -442,7 +442,7 @@
     },
     {
       "path": "scripts/lib/service_tick_query.py",
-      "sha256": "8fe174ad7d6dc91f3215b83719c58e44b289b4b591c50898100dfb8201b4b4ca",
+      "sha256": "7ca050e1502f27acf0690c091cc384ec6b4bdbc6c725b50c14633a0987359064",
       "source": "skills/last30days/scripts/lib/service_tick_query.py"
     },
     {
@@ -643,5 +643,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.3"
+  "service_version": "0.3.4"
 }

@@ -18,7 +18,9 @@ from . import service_contracts as contracts
 from .service_collection import CollectionCoordinator, CollectionSpec
 from .service_intelligence_contracts import TaskContractRegistry
 from .service_knowledge import TemporalKnowledgeQuery
+from .service_retrieval import LocalHashEmbeddingProvider
 from .service_supervisor import InvalidTransitionError
+from .service_tick_query import TickSnapshotPublisher
 
 
 SERVICE_VERSION = os.environ.get("LAST30DAYS_SERVICE_VERSION", "0.2.27")
@@ -68,6 +70,21 @@ class RetrievalSnapshot(Protocol):
     evidence: list[contracts.EvidenceItem]
 
 
+class TickQueryBackend(Protocol):
+    def current_metadata(self) -> dict[str, object]: ...
+
+    def query(
+        self,
+        query: str,
+        *,
+        access_partitions: Sequence[str],
+        sources: Sequence[str] | None = None,
+        published_after: str | None = None,
+        published_before: str | None = None,
+        limit: int = 20,
+    ) -> Sequence[object]: ...
+
+
 class RefreshScheduler(Protocol):
     def ensure_refresh(self, request: contracts.QueryRequest) -> str | None: ...
 
@@ -92,6 +109,7 @@ class CacheQueryApplication:
         db_path: Path,
         retriever: RetrievalBackend,
         *,
+        tick_snapshots: TickQueryBackend | None = None,
         refresh_scheduler: RefreshScheduler | None = None,
         job_reader: JobReader | None = None,
         acquisition_sources: Sequence[str] = (),
@@ -107,6 +125,7 @@ class CacheQueryApplication:
     ):
         self.db_path = Path(db_path)
         self.retriever = retriever
+        self.tick_snapshots = tick_snapshots
         self.refresh_scheduler = refresh_scheduler
         self.job_reader = job_reader
         self.acquisition_sources = tuple(sorted(set(acquisition_sources)))
@@ -1029,13 +1048,37 @@ class CacheQueryApplication:
         snippet_chars = min(
             1024, max(128, request.max_chars // max(1, request.top_k))
         )
-        snapshot = self.retriever.search_snapshot(
-            request.query,
-            sources=sources,
-            top_k=request.top_k,
-            snippet_chars=snippet_chars,
-        )
-        evidence = snapshot.evidence
+        tick_snapshot = None
+        evidence = None
+        index_version = None
+        if self.tick_snapshots is not None:
+            try:
+                tick_snapshot = self.tick_snapshots.current_metadata()
+            except KeyError:
+                tick_snapshot = None
+            if tick_snapshot is not None:
+                results = self.tick_snapshots.query(
+                    request.query,
+                    access_partitions=self._access_partitions(request.profile_id),
+                    sources=sources,
+                    published_after=request.filters.get("published_after"),
+                    published_before=request.filters.get("published_before"),
+                    limit=request.top_k,
+                )
+                evidence = [
+                    self._tick_evidence_item(result, tick_snapshot)
+                    for result in results
+                ]
+                index_version = str(tick_snapshot["snapshot_id"])
+        if evidence is None:
+            snapshot = self.retriever.search_snapshot(
+                request.query,
+                sources=sources,
+                top_k=request.top_k,
+                snippet_chars=snippet_chars,
+            )
+            evidence = snapshot.evidence
+            index_version = snapshot.index_version
         cache_status = self._cache_status(evidence)
         if self.refresh_scheduler is not None:
             cache_status = self.refresh_scheduler.cache_status(
@@ -1076,7 +1119,7 @@ class CacheQueryApplication:
         payload: dict[str, object] = {
             "schema_version": contracts.SCHEMA_VERSION,
             "request_id": request.request_id,
-            "index_version": snapshot.index_version,
+            "index_version": index_version,
             "cache_status": cache_status.value,
             "generated_at": self.clock()
             .astimezone(timezone.utc)
@@ -1089,6 +1132,8 @@ class CacheQueryApplication:
             "truncated": truncated,
             "next_cursor": None,
         }
+        if tick_snapshot is not None:
+            payload["tick_snapshot"] = tick_snapshot
         bounded_evidence, brief, truncated = self._enforce_exact_budget(
             payload,
             bounded_evidence,
@@ -1099,6 +1144,98 @@ class CacheQueryApplication:
         payload["brief"] = brief
         payload["truncated"] = truncated
         return contracts.QueryResponse.from_dict(payload)
+
+    def _tick_evidence_item(
+        self, result: object, snapshot: Mapping[str, object]
+    ) -> contracts.EvidenceItem:
+        provenance = dict(getattr(result, "provenance"))
+        entry_id = str(getattr(result, "entry_id"))
+        partition = str(getattr(result, "access_partition_id"))
+        row = None
+        conn = self._connect()
+        try:
+            row = conn.execute(
+                """SELECT v.*, r.source_native_id, r.canonical_url
+                   FROM service_source_versions AS v
+                   JOIN service_source_records AS r ON r.record_id = v.record_id
+                   WHERE v.version_id = ? AND v.access_partition_id = ?""",
+                (entry_id, partition),
+            ).fetchone()
+        finally:
+            conn.close()
+        text = str(getattr(result, "text"))
+        channels = list(getattr(result, "matching_channels"))
+        lexical = any(
+            channel in {"lexical_source", "source_alt_text", "ocr"}
+            for channel in channels
+        )
+        semantic = any(
+            channel in {"semantic_source", "semantic_sidecar"}
+            for channel in channels
+        )
+        graph = "catalog" in channels
+        promoted_at = str(snapshot["promoted_at"])
+        fallback_hash = "sha256:" + hashlib.sha256(text.encode()).hexdigest()
+        return contracts.EvidenceItem.from_dict(
+            {
+                "schema_version": contracts.SCHEMA_VERSION,
+                "evidence_id": entry_id,
+                "document_id": entry_id,
+                "source": str(getattr(result, "source")),
+                "source_native_id": (
+                    str(row["source_native_id"])
+                    if row is not None
+                    else str(provenance.get("source_native_id") or entry_id)
+                ),
+                "url": (
+                    str(row["canonical_url"])
+                    if row is not None
+                    else str(
+                        provenance.get("url")
+                        or provenance.get("source_url")
+                        or f"urn:last30days:evidence:{entry_id}"
+                    )
+                ),
+                "title": (
+                    str(row["title"])
+                    if row is not None
+                    else str(provenance.get("title") or text.splitlines()[0])
+                ),
+                "snippet": text,
+                "author": str(row["author"]) if row is not None and row["author"] else None,
+                "published_at": (
+                    str(row["published_at"])
+                    if row is not None and row["published_at"]
+                    else provenance.get("published_at")
+                ),
+                "fetched_at": (
+                    str(row["observed_at"])
+                    if row is not None
+                    else promoted_at
+                ),
+                "acquisition_id": (
+                    str(row["provider_attempt_id"])
+                    if row is not None
+                    else str(snapshot["tick_id"])
+                ),
+                "content_hash": (
+                    str(row["content_hash"])
+                    if row is not None
+                    else fallback_hash
+                ),
+                "scores": {
+                    "lexical": 1.0 if lexical else 0.0,
+                    "semantic": 1.0 if semantic else 0.0,
+                    "graph": 1.0 if graph else 0.0,
+                    "recency": 0.0,
+                    "fused": min(1.0, max(0.0, float(getattr(result, "score")))),
+                },
+                "media": [],
+                "access_partition_id": partition,
+                "matching_channels": channels,
+                "provenance": provenance,
+            }
+        )
 
 
 def initialize_application(
@@ -1121,6 +1258,9 @@ def initialize_application(
     return CacheQueryApplication(
         db_path,
         retriever,
+        tick_snapshots=TickSnapshotPublisher(
+            db_path, LocalHashEmbeddingProvider()
+        ),
         refresh_scheduler=refresh_scheduler,
         job_reader=job_reader,
         acquisition_sources=acquisition_sources,

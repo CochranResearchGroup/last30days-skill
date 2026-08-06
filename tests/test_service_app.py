@@ -48,6 +48,54 @@ class FakeRefreshScheduler:
         return fallback
 
 
+class FakeTickSnapshots:
+    def __init__(self):
+        self.calls = []
+
+    def current_metadata(self):
+        return {
+            "snapshot_id": "tick-snapshot-001",
+            "tick_id": "tick-001",
+            "state": "promoted",
+            "embedding_space": "local-hash-v1",
+            "fusion_version": "rrf-v1",
+            "completeness": {"youtube": "success", "facebook": "failure"},
+            "coverage_gaps": ["facebook"],
+            "interval_from": "2026-08-05T00:00:00Z",
+            "interval_to": "2026-08-06T00:00:00Z",
+            "promoted_at": "2026-08-06T12:00:00Z",
+        }
+
+    def query(self, query, **kwargs):
+        self.calls.append({"query": query, **kwargs})
+        return (
+            SimpleNamespace(
+                entry_id="version-youtube-001",
+                source="youtube",
+                access_partition_id="public",
+                text="ChatGPT Voice launch thumbnail",
+                matching_channels=(
+                    "lexical_source",
+                    "source_alt_text",
+                    "ocr",
+                    "semantic_sidecar",
+                ),
+                score=0.05,
+                provenance={
+                    "version_id": "version-youtube-001",
+                    "source_native_id": "video-001",
+                    "url": "https://youtube.test/watch?v=video-001",
+                    "title": "ChatGPT Voice",
+                    "published_at": "2026-08-06T10:00:00Z",
+                    "matching_entries": {
+                        "ocr": ["ocr-001"],
+                        "semantic_sidecar": ["sidecar-001"],
+                    },
+                },
+            ),
+        )
+
+
 def test_topic_actions_are_service_owned_and_refresh_is_durable(tmp_path):
     db_path = tmp_path / "research.db"
     ServiceStore(db_path).initialize()
@@ -101,6 +149,61 @@ def _request(**overrides):
     }
     values.update(overrides)
     return contracts.QueryRequest.from_dict(values)
+
+
+def test_ordinary_query_uses_promoted_tick_head_with_filter_first_provenance(
+    tmp_path,
+):
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    legacy = FakeRetriever([])
+    tick_snapshots = FakeTickSnapshots()
+    app = CacheQueryApplication(
+        db_path,
+        legacy,
+        tick_snapshots=tick_snapshots,
+        clock=lambda: datetime(2026, 8, 6, 12, 5, tzinfo=timezone.utc),
+    )
+
+    response = app.query(
+        _request(
+            profile_id="last30days-facebook",
+            query="ChatGPT Voice",
+            filters={
+                "sources": ["youtube"],
+                "published_after": "2026-08-05T00:00:00Z",
+                "published_before": "2026-08-07T00:00:00Z",
+            },
+        )
+    )
+
+    assert legacy.calls == []
+    assert tick_snapshots.calls == [
+        {
+            "query": "ChatGPT Voice",
+            "access_partitions": (
+                "public",
+                "profile:last30days-facebook",
+            ),
+            "sources": ["youtube"],
+            "published_after": "2026-08-05T00:00:00Z",
+            "published_before": "2026-08-07T00:00:00Z",
+            "limit": 8,
+        }
+    ]
+    assert response.index_version == "tick-snapshot-001"
+    assert response.tick_snapshot == tick_snapshots.current_metadata()
+    assert response.evidence[0].access_partition_id == "public"
+    assert response.evidence[0].matching_channels == [
+        "lexical_source",
+        "source_alt_text",
+        "ocr",
+        "semantic_sidecar",
+    ]
+    assert response.evidence[0].provenance["matching_entries"] == {
+        "ocr": ["ocr-001"],
+        "semantic_sidecar": ["sidecar-001"],
+    }
 
 
 def test_warm_cache_query_returns_bounded_evidence_without_refresh(tmp_path):

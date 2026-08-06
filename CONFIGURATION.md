@@ -763,6 +763,14 @@ service_launcher="${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30
 "$service_launcher" job <job-id> --resume
 ```
 
+When a durable tick head has been promoted, ordinary `query` responses use
+that coherent terminal snapshot rather than the legacy document index. The
+response `index_version` is the tick snapshot ID, `tick_snapshot` carries exact
+terminal coverage and interval/promotion freshness, and each evidence item
+exposes its authorized `access_partition_id`, `matching_channels`, and
+provenance. Profile queries include public plus only that named profile
+partition; source and published-time filters are applied before retrieval.
+
 Use `job <job-id> --resume` only after the human action recorded by an
 `awaiting_operator` job is complete. The service returns that same bounded job
 to `queued`, preserves its attempt count and event history, and rejects resume

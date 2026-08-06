@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 17
+Plan version: 18
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C49 is the current authority.
+Checkpoint P0023-C50 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -3642,3 +3642,77 @@ Next action:
 
 - commit C49/receipt 0070, run the full suite and exact runtime audits, then
   open the one fresh independent closed-world evaluation.
+
+### Checkpoint P0023-C50 | 2026-08-06
+
+Plan version: 18
+
+State transition:
+
+- `live_derivative_and_hybrid_query_proof_complete -> ordinary_query_tick_head_rework_candidate_ready`.
+
+Progress classification:
+
+- `accepted_review_finding_rework`; the single fresh evaluator accepted the
+  live raw/OCR/semantic evidence but found that ordinary service clients still
+  queried the predecessor immutable corpus head instead of the atomically
+  promoted terminal tick head.
+
+Accepted finding and owned repair:
+
+- accept one critical finding: receipt 0070 exercised `TickSnapshotPublisher`
+  internally, while the production `CacheQueryApplication` had no caller path
+  to that head;
+- inject the tick snapshot query backend into ordinary service initialization,
+  retain legacy retrieval only when no promoted tick exists, and apply source,
+  publication-time, and access-partition constraints before ranking;
+- extend the additive response contract with tick coverage/freshness metadata
+  plus per-result access partition, matching channels, and provenance;
+- cut exact patch candidate 0.3.4 and preserve every live-source, cost, timer,
+  identity, and human-interaction boundary.
+
+Validation evidence:
+
+- the public-interface regression test first failed because
+  `CacheQueryApplication` did not accept a tick snapshot backend, then passed
+  after the minimal production wiring;
+- focused service application, tick-query, contracts, HTTP, process, product,
+  runtime-package, lifecycle, release, MCP integration, and Go tests pass;
+- service contract SHA-256 is
+  `995de758ff8096c0ef1578b51eb9b46197c6f42dadc1080f5055a8d137e12262`;
+- runtime manifest SHA-256 is
+  `43a27d9f3900d5e09538dbff028043660c6608caae4a9ebcf83a5cc954d6c843`;
+- two independent builds of service 0.3.4 match artifact SHA-256
+  `bd3e98f17c038934686afe8d90b468cfa717de262910183efb631ef0d6040113`.
+
+Remaining acceptance criteria:
+
+- install exact 0.3.4, verify current/previous identity, readiness, SQLite,
+  rollback, private config, disabled specifications, and absent timer;
+- prove through the installed ordinary CLI that public and selected-profile
+  requests use the promoted tick snapshot, expose coverage/freshness and
+  provenance, and cannot cross profile partitions;
+- reconcile the evaluator's closed-world finding, run final full validation,
+  persist compact Graphiti closeout memory, and push origin main.
+
+Subagent status and reconciliation:
+
+- the one reserved evaluator returned `FAIL` with exactly the accepted ordinary
+  query-path finding and no other finding; no second evaluator or
+  implementation subagent will be opened in this single review/rework loop.
+
+Graphiti write status:
+
+- deferred until installed ordinary-client proof resolves the accepted
+  finding.
+
+Authority classification:
+
+- `inherited_authority`; routing the ordinary client to the already-approved
+  promoted tick head is necessary to satisfy acceptance criteria 12-13 and
+  changes no external acquisition or recurrence authority.
+
+Next action:
+
+- commit C50/receipt 0071, transactionally install exact 0.3.4, and run the
+  installed public/profile/cross-profile ordinary query proof.

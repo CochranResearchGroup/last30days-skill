@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0023-ordinary-query-tick-head-rework-candidate-0071",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0023",
+    "checkpoint": "P0023-C50",
+    "classification": "inherited_authority"
+  },
+  "independent_review": {
+    "outcome": "FAIL",
+    "accepted_findings": 1,
+    "other_findings": 0,
+    "critical_finding": "ordinary service clients still queried the predecessor corpus head; only an internal test caller reached the promoted terminal tick head",
+    "accepted_live_evidence": "raw evidence, OCR, deterministic semantic sidecars, atomic promotion, and internal partition-correct query results"
+  },
+  "repair": {
+    "service_version": "0.3.4",
+    "ordinary_query_backend": "promoted_tick_snapshot_when_present",
+    "legacy_fallback": "only_when_no_promoted_tick_head",
+    "filter_first": [
+      "access_partition",
+      "source",
+      "published_after",
+      "published_before"
+    ],
+    "response_additions": [
+      "tick_snapshot",
+      "access_partition_id",
+      "matching_channels",
+      "provenance"
+    ]
+  },
+  "candidate": {
+    "service_contract_sha256": "995de758ff8096c0ef1578b51eb9b46197c6f42dadc1080f5055a8d137e12262",
+    "runtime_manifest_sha256": "43a27d9f3900d5e09538dbff028043660c6608caae4a9ebcf83a5cc954d6c843",
+    "artifact_sha256": "bd3e98f17c038934686afe8d90b468cfa717de262910183efb631ef0d6040113",
+    "reproducible_build": true
+  },
+  "validation": {
+    "tdd_red": "CacheQueryApplication rejected the tick snapshot dependency",
+    "tdd_green": true,
+    "focused_python": "pass",
+    "go": "pass",
+    "diff_check": "pass"
+  },
+  "live_boundaries": {
+    "source_attempts": 0,
+    "provider_cost_cents": 0,
+    "model_tokens": 0,
+    "human_interaction_requested": false,
+    "timers_enabled": false
+  },
+  "next_action": "install exact 0.3.4 and prove public, selected-profile, and cross-profile ordinary queries against the promoted tick head"
+}

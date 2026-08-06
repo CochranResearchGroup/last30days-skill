@@ -12,7 +12,7 @@ import binascii
 import hashlib
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import StrEnum
 from pathlib import Path
@@ -965,6 +965,9 @@ class EvidenceItem:
     content_hash: str
     scores: dict[str, float]
     media: list[dict[str, Any]]
+    access_partition_id: str | None = None
+    matching_channels: list[str] = field(default_factory=list)
+    provenance: dict[str, Any] = field(default_factory=dict)
 
     CONTRACT_NAME: ClassVar[str] = "evidence_item"
 
@@ -972,7 +975,7 @@ class EvidenceItem:
     def from_dict(cls, payload: Mapping[str, Any]) -> EvidenceItem:
         if not isinstance(payload, Mapping):
             raise ContractValidationError("evidence item must be an object")
-        fields = frozenset(
+        required = frozenset(
             {
                 "schema_version",
                 "evidence_id",
@@ -988,14 +991,37 @@ class EvidenceItem:
                 "acquisition_id",
                 "content_hash",
                 "scores",
-                "media",
             }
         )
         _require_exact_fields(
             payload,
-            required=fields - {"media"},
-            optional=frozenset({"media"}),
+            required=required,
+            optional=frozenset(
+                {
+                    "media",
+                    "access_partition_id",
+                    "matching_channels",
+                    "provenance",
+                }
+            ),
         )
+        raw_channels = payload.get("matching_channels", [])
+        matching_channels = _require_string_list(raw_channels, "matching_channels")
+        allowed_channels = {
+            "lexical_source",
+            "source_alt_text",
+            "ocr",
+            "semantic_source",
+            "semantic_sidecar",
+            "catalog",
+        }
+        if len(matching_channels) > 16 or len(matching_channels) != len(
+            set(matching_channels)
+        ) or (
+            set(matching_channels) - allowed_channels
+        ):
+            raise ContractValidationError("matching_channels is invalid")
+        access_partition_id = payload.get("access_partition_id")
         return cls(
             schema_version=_validate_schema_version(payload["schema_version"]),
             evidence_id=_require_non_empty_string(
@@ -1026,10 +1052,21 @@ class EvidenceItem:
             ),
             scores=_validate_scores(payload["scores"]),
             media=_validate_media(payload.get("media", [])),
+            access_partition_id=(
+                _require_bounded_string(
+                    access_partition_id, "access_partition_id", 256
+                )
+                if access_partition_id is not None
+                else None
+            ),
+            matching_channels=matching_channels,
+            provenance=_validate_json_object(
+                payload.get("provenance", {}), "provenance"
+            ),
         )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "schema_version": self.schema_version,
             "evidence_id": self.evidence_id,
             "document_id": self.document_id,
@@ -1046,6 +1083,13 @@ class EvidenceItem:
             "scores": dict(self.scores),
             "media": [dict(asset) for asset in self.media],
         }
+        if self.access_partition_id is not None:
+            payload["access_partition_id"] = self.access_partition_id
+        if self.matching_channels:
+            payload["matching_channels"] = list(self.matching_channels)
+        if self.provenance:
+            payload["provenance"] = dict(self.provenance)
+        return payload
 
 
 @dataclass(frozen=True)
@@ -1063,6 +1107,7 @@ class QueryResponse:
     diagnostics_available: bool
     truncated: bool
     next_cursor: str | None
+    tick_snapshot: dict[str, Any] | None = None
 
     CONTRACT_NAME: ClassVar[str] = "query_response"
 
@@ -1085,7 +1130,11 @@ class QueryResponse:
                 "next_cursor",
             }
         )
-        _require_exact_fields(payload, required=fields)
+        _require_exact_fields(
+            payload,
+            required=fields,
+            optional=frozenset({"tick_snapshot"}),
+        )
         try:
             cache_status = CacheStatus(payload["cache_status"])
         except (TypeError, ValueError) as exc:
@@ -1119,10 +1168,15 @@ class QueryResponse:
             next_cursor=_require_optional_string(
                 payload["next_cursor"], "next_cursor"
             ),
+            tick_snapshot=(
+                _validate_json_object(payload["tick_snapshot"], "tick_snapshot")
+                if payload.get("tick_snapshot") is not None
+                else None
+            ),
         )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "schema_version": self.schema_version,
             "request_id": self.request_id,
             "index_version": self.index_version,
@@ -1135,6 +1189,9 @@ class QueryResponse:
             "truncated": self.truncated,
             "next_cursor": self.next_cursor,
         }
+        if self.tick_snapshot is not None:
+            payload["tick_snapshot"] = dict(self.tick_snapshot)
+        return payload
 
 
 @dataclass(frozen=True)

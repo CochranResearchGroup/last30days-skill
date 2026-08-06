@@ -11672,3 +11672,55 @@ Next Bounded Action:
 
 - commit C49/0070, run full repository/runtime audits, and submit the exact
   accepted ledger to one fresh independent evaluator.
+
+## Turn 193 | 2026-08-06
+
+Focus: reconcile the single independent-review finding and cut the ordinary
+query tick-head repair candidate.
+
+Authority Consulted:
+
+- Plan 0023 C49; Roadmap P07; Runbook Turn 192; receipt 0070; the evaluator's
+  closed-world result; query-contract, architecture, TDD, validation, and goal
+  policies.
+
+Decisions And Changes:
+
+- accepted the evaluator's one critical finding and no other finding: internal
+  tick-head query proof did not establish the production ordinary client path;
+- injected the promoted tick snapshot backend into ordinary service
+  initialization and retained predecessor retrieval only when no promoted tick
+  exists;
+- added filter-first source/time/partition handling and additive
+  coverage/freshness, matching-channel, partition, and provenance fields;
+- cut exact service 0.3.4 without a source attempt, timer, model call, spend,
+  identity mutation, or human route.
+
+Validation Evidence:
+
+- the regression test failed first on the absent application seam and is now
+  green;
+- focused Python service/MCP/lifecycle tests and the complete Go package tests
+  pass;
+- contract `995de758...2262`, manifest `43a27d9f...c843`, and two matching
+  0.3.4 artifacts `bd3e98f1...0113` are exact.
+
+State Movement:
+
+- Plan 0023 advances `C49 -> C50` and version `17 -> 18`;
+- `live_derivative_and_hybrid_query_proof_complete -> ordinary_query_tick_head_rework_candidate_ready`.
+
+Subagent Status And Reconciliation:
+
+- the only reserved independent evaluator returned one accepted critical
+  finding and no other finding; implementation rework is primary-owned and no
+  second evaluator will be opened.
+
+Graphiti Write Status:
+
+- deferred until exact installed ordinary-client proof.
+
+Next Bounded Action:
+
+- commit C50/0071, install exact service 0.3.4, verify lifecycle invariants,
+  and run installed public/profile/cross-profile ordinary queries.
