@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 12
+Plan version: 13
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C44 is the current authority.
+Checkpoint P0023-C45 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -3302,3 +3302,66 @@ Next action:
 - commit exact candidate receipt 0065, install the exact 0.3.2 artifact once,
   verify current/previous/integrity state, and run one sanitized preflight for
   the Aug 5-6 UTC interval without enqueueing in the install checkpoint.
+
+### Checkpoint P0023-C45 | 2026-08-06
+
+Plan version: 13
+
+State transition:
+
+- `exact_0_3_2_candidate_install_ready -> exact_0_3_2_installed_distinct_tick_ready`.
+
+Progress classification:
+
+- `outcome_progress`; exact service 0.3.2 is installed ready with retained
+  corpus/tick integrity, private rollback state for 0.3.1, and one successful
+  sanitized preflight for a distinct Aug 5-6 manual identity.
+
+Owned changes:
+
+- invoke one transactional upgrade for exact artifact SHA-256
+  `662d3d96e4ce44feac8bc0eaab45510ba2837cdc1c0c26e30dc5ea7b97281599`;
+- preserve exact 0.3.1 as previous release and private schema-15 rollback state;
+- run one installed sanitized preflight for Aug 5-6 without creating tick state;
+- bind installed and preflight evidence in receipt 0066.
+
+Validation evidence:
+
+- installed service is ready 0.3.2/schema 15 with exact manifest
+  `b39026f4b22143d47cb4bb85b872b41f83b6300c0786e6c1748f3d87bc453678`;
+- SQLite integrity is `ok`; the active index remains 62 documents/62 current
+  embeddings at `index-d4b3c45667cc2f635c557b85`; the first terminal tick is
+  retained and no tick attempt is active;
+- current/previous selectors are `releases/0.3.2`/`releases/0.3.1`; rollback
+  directory/database/metadata modes are 0700/0600/0600 and the database digest
+  matches its metadata;
+- preflight is ready for tick `tick-cadca8a0af0c0ef7167535b911c2535e`
+  in accepted five-source order and exact 5/250/15/600/zero/zero limits;
+- 42 collection specifications remain disabled and no last30days timer exists.
+
+Remaining acceptance criteria:
+
+- execute the exact distinct manual tick once, then reconstruct all lanes,
+  budgets, evidence, media, derivatives, incidents, notifications, catalog,
+  snapshot, query behavior, and current runtime invariants;
+- successful OCR and semantic sidecars remain open.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; installation and preflight were serialized primary-owned
+  operations. Final independent evaluation remains pending.
+
+Graphiti write status:
+
+- deferred until the second tick reaches a terminal state.
+
+Authority classification:
+
+- `inherited_authority`; the distinct five-attempt packet would bring the
+  cumulative maximum to 10 of 50 and crosses no human/scope/cost/timer gate.
+
+Next action:
+
+- commit C45/receipt 0066, enqueue tick
+  `tick-cadca8a0af0c0ef7167535b911c2535e` exactly once, and monitor it read-only
+  until terminal.

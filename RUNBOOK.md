@@ -11424,3 +11424,52 @@ Next Bounded Action:
 
 - commit candidate 0065, transactionally install exact service 0.3.2, verify
   installed identity/integrity/rollback, and preflight Aug 5-6 without enqueue.
+
+## Turn 188 | 2026-08-06
+
+Focus: install exact service 0.3.2 and admit one distinct bounded manual tick.
+
+Authority Consulted:
+
+- Plan 0023 C44; Roadmap P07; Runbook Turn 187; receipt 0065; exact artifact
+  and manifest; installed lifecycle, SQLite, collection, rollback, timer, and
+  sanitized preflight readbacks.
+
+Decisions And Changes:
+
+- consumed one transactional upgrade for exact service 0.3.2 and retained
+  0.3.1 as previous rollback authority;
+- ran one and only one installed sanitized preflight for Aug 5-6 and created no
+  tick state;
+- preserved disabled collection specs, absent timers, private config, zero
+  cost/model budget, and the cumulative 50-attempt ceiling.
+
+Validation Evidence:
+
+- installed ready 0.3.2/schema15, exact manifest `b39026f4...453678`, SQLite
+  integrity `ok`, active 62/62 index, one retained terminal tick, zero active
+  attempts;
+- current/previous selectors 0.3.2/0.3.1 and private rollback DB digest/modes
+  agree with metadata;
+- preflight tick `tick-cadca8a0af0c0ef7167535b911c2535e` is ready in exact
+  Reddit/YouTube/X/Facebook/LinkedIn order and 5/250/15/600/zero/zero limits;
+- 42 specs/zero enabled and no last30days timer remain exact.
+
+State Movement:
+
+- Plan 0023 advances `C44 -> C45` and version `12 -> 13`;
+- `exact_0_3_2_candidate_install_ready -> exact_0_3_2_installed_distinct_tick_ready`.
+
+Subagent Status And Reconciliation:
+
+- no delegation; final independent evaluation remains pending after terminal
+  receipt reconstruction.
+
+Graphiti Write Status:
+
+- deferred until the second tick terminalizes.
+
+Next Bounded Action:
+
+- commit C45/0066, enqueue the exact Aug 5-6 identity once, and monitor it
+  read-only through terminal state.

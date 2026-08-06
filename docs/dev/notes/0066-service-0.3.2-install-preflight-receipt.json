@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "receipt_id": "service-0.3.2-install-preflight-0066",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0023",
+    "checkpoint": "P0023-C45",
+    "classification": "inherited_authority"
+  },
+  "install": {
+    "operation": "upgrade",
+    "artifact_sha256": "662d3d96e4ce44feac8bc0eaab45510ba2837cdc1c0c26e30dc5ea7b97281599",
+    "service_version": "0.3.2",
+    "service_status": "ready",
+    "runtime_manifest_sha256": "b39026f4b22143d47cb4bb85b872b41f83b6300c0786e6c1748f3d87bc453678",
+    "contract_sha256": "d3362ef9edc1e8e58f76d4a5a5ed5375fbc51e39169da1f84714584165f4efd8",
+    "database_schema_version": 15,
+    "current_release": "releases/0.3.2",
+    "previous_release": "releases/0.3.1"
+  },
+  "postinstall": {
+    "database_integrity": "ok",
+    "document_count": 62,
+    "embedding_count": 62,
+    "active_index": "index-d4b3c45667cc2f635c557b85",
+    "tick_count": 1,
+    "active_tick_attempt_count": 0,
+    "collection_spec_count": 42,
+    "enabled_collection_spec_count": 0,
+    "last30days_timer_present": false
+  },
+  "rollback": {
+    "release": "releases/0.3.1",
+    "database_schema_version": 15,
+    "directory_mode": "0700",
+    "database_mode": "0600",
+    "metadata_mode": "0600",
+    "database_sha256": "84e0809ffaad35e49c43637a4c26eade11ef4e85ee177f9f7f560e42ad7e25d5",
+    "metadata_sha256": "9e215fd3ec2f23dd22e6aec851d6e48e6cc29d55fd2f09a4d443ec2988f8e64f"
+  },
+  "preflight": {
+    "status": "ready",
+    "tick_id": "tick-cadca8a0af0c0ef7167535b911c2535e",
+    "interval_from": "2026-08-05T00:00:00Z",
+    "interval_to": "2026-08-06T00:00:00Z",
+    "schedule_id": "manual-default",
+    "config_revision": "p0023-c33-plan0018-v28",
+    "config_digest": "sha256:99099343b91d9c5be9ed06e431ecc30acf1f6f34b39a2cecc3dfafdc9885cc06",
+    "lane_order": [
+      "reddit",
+      "youtube",
+      "x",
+      "facebook",
+      "linkedin"
+    ],
+    "aggregate_limits": {
+      "attempts": 5,
+      "network_requests": 250,
+      "items": 15,
+      "wall_seconds": 600,
+      "cost_cents": 0,
+      "model_tokens": 0
+    },
+    "notification_readiness": [
+      "slack_receipts:ready",
+      "gws_email:not_checked"
+    ],
+    "state_created": false
+  },
+  "cumulative_provider_attempts": {
+    "consumed": 5,
+    "ceiling": 50,
+    "next_packet_maximum": 10
+  },
+  "next_action": "enqueue the exact distinct Aug 5-6 manual tick once and monitor it to a truthful terminal state",
+  "private_config_content_recorded": false,
+  "timers_enabled": false
+}
