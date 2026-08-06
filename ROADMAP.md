@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 2/C32; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 2/C33; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.2.29/schema 12 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -873,7 +873,11 @@ Current State:
   C32 because the required user-scoped `tick-config-v1.json` is absent. No
   config content, readiness call, provider, send, state, Guac, or timer action
   occurred; installed 0.3.0 and exact rollback remain healthy. Creating the
-  missing operator-particular document is a new human gate.
+  missing operator-particular document is a new human gate. The operator then
+  explicitly approved deriving it from Plan 0018 Version 28: the exact five
+  accepted targets/methods/profiles/budgets plus the agreed default-workspace
+  Slack `@eric` -> GWS self-email sequence. C33 admits only that owner-private
+  materialization and sanitized preflight; T08 and recurrence remain closed.
 - The remaining bullets in this Current State block preserve chronological
   implementation history; version phrases such as "installed" or "now" are
   scoped to their historical checkpoint and do not override the first bullet.
@@ -1043,9 +1047,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- obtain explicit authority and exact values for the missing owner-private
-  user tick config, or authority to derive a reviewed draft from named existing
-  user profiles/acceptance targets. Keep real rollback, live
+- materialize the exact Plan 0023/C33 owner-private config derived from Plan
+  0018 Version 28, validate it, and run one installed sanitized preflight with
+  sequential non-message readiness. Keep real rollback, live
   sources, notification sends, Guac, recurrence, push, publication, release,
   paid calls, and ceiling changes closed.
 

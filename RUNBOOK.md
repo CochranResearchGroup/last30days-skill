@@ -10738,3 +10738,53 @@ Next Bounded Action:
 - obtain exact user config values or explicit authority to derive a reviewed
   user-scoped draft, then create it owner-private and rerun sanitized preflight.
   T08 and recurrence remain separately closed.
+
+## Turn 176 | 2026-08-05
+
+Focus: bind explicit authority for the missing user config to an exact Plan
+0018 Version-28 derivation.
+
+Authority Consulted:
+
+- operator approval; Plan 0023 V2/C32; Plan 0018 V28/C73-C76; receipt 0039 and
+  its five exact spec artifacts; current tick schema/runtime/config docs;
+  Slack Receipts read-only workspace catalog and notification adapter code.
+
+Decisions And Changes:
+
+- fixed five exact enabled tick targets from the accepted Plan 0018 packet,
+  preserving selectors, access profiles, methods, serial ordering, and zero-
+  cost/model ceilings while translating LinkedIn `profile_url` to tick `url`;
+- fixed the already-approved Slack default workspace/`@eric` primary and GWS
+  self-email fallback without any message send;
+- selected only installed acquisition/OCR/sidecard adapters, local-hash/RRF,
+  owner-private artifact storage, and documented observation machinery;
+- admitted one owner-private config creation plus one sanitized preflight; kept
+  enqueue/provider/send/Guac/T08/timer/remote/cost gates closed.
+
+Validation Evidence:
+
+- Plan 0018 receipt 0039 fixes five lanes, exact selectors, `default` versus
+  `last30days-facebook`, one/50/120/3 lane limits, and 5/250/600/15 aggregate;
+- installed adapter registry declares each translated adapter with non-zero
+  normalization proof; tick adapter accepts topic/url plus profile/depth;
+- Slack Receipts read-only workspace catalog identifies exact workspace
+  `default`; no Slack or GWS write occurred.
+
+State Movement:
+
+- Plan 0023 advances `C32 -> C33`;
+- `phase_a_sanitized_preflight_config_missing -> phase_a_user_config_derivation_authorized`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; derivation and user mutation remain primary-owned.
+
+Graphiti Write Status:
+
+- no write until config materialization and sanitized preflight are proven.
+
+Next Bounded Action:
+
+- commit C33, create the owner-private config at mode 0600, validate exact
+  derivation/schema, run one sanitized preflight, and stop on any mismatch.

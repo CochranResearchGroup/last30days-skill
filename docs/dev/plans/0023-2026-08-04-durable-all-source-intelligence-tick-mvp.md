@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C32 is the current authority.
+Checkpoint P0023-C33 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2556,3 +2556,66 @@ Next action:
   values (or authority to derive a reviewed draft from named existing user
   profiles/acceptance targets). Then create only the owner-private user config
   and rerun sanitized preflight; keep T08 and every live/timer gate separate.
+
+### Checkpoint P0023-C33 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `phase_a_sanitized_preflight_config_missing -> phase_a_user_config_derivation_authorized`.
+
+Progress classification:
+
+- `blocker_reduction`; the operator explicitly authorizes deriving and
+  materializing the missing owner-private tick configuration from Plan 0018's
+  accepted Version-28 five-source target packet.
+
+Exact derivation contract:
+
+- retain Plan 0018's five services and order: Reddit, YouTube, X, Facebook,
+  LinkedIn; use the `OpenAI` topic for the first four and the exact OpenAI
+  company profile URL for LinkedIn, translated from collection
+  `profile_url` to the tick adapter's accepted `url` selector field;
+- retain the accepted access methods as installed adapter types:
+  `reddit_keyless`, `youtube_ytdlp`, `x_agent_browser`,
+  `facebook_agent_browser`, and `linkedin_profile_agent_browser`;
+- retain `default` for public lanes and exact `last30days-facebook` for X,
+  Facebook, and LinkedIn; public/authenticated access partitions remain
+  distinct and all five derived targets are enabled only in this manual tick
+  config, not as recurring collection specifications;
+- retain per-lane ceilings of one attempt, 50 requests, 120 seconds, three
+  items, zero cost, and zero model tokens; aggregate ceilings remain
+  5/250/600/15/zero/zero with serial shared-browser resource identity;
+- use the installed OCR and provider-output semantic-sidecar adapters, local
+  hash embedding space and RRF v1, an owner-private user artifact root with
+  30-day retention and no unavailable encryption adapter, and the documented
+  local agent-browser service endpoint used only after the incident
+  acknowledgment/observation gate;
+- configure notifications sequentially as explicitly approved: Slack Receipts
+  workspace `default` to `@eric`, then GWS self-email to the approved user
+  address. Credential fields are stable references only; no token, cookie,
+  password, lease, or raw credential enters the document or repository.
+
+Execution bounds and gates:
+
+- one owner-private file materialization at the default XDG path, directory
+  mode 0700 and file mode 0600; one bounded correction is allowed only for a
+  deterministic schema/admission defect before live work;
+- validate JSON/schema and run one installed sanitized preflight for the same
+  Aug 4-5 UTC interval; accept only a redacted manifest whose configured
+  transport order and readiness are explicit;
+- do not enqueue a tick, run providers, send a notification, acquire Guac,
+  create an incident/artifact/timer, read raw credentials, push, publish,
+  release, spend, or change ceilings.
+
+Authority classification:
+
+- `human_gate`; the operator's explicit approval is consumed for this exact
+  user-config mutation and derivation. It does not authorize T08 or recurrence.
+
+Next action:
+
+- commit C33, materialize the exact owner-private config with safe modes,
+  validate it against installed code/schema, run sanitized preflight once, and
+  stop on any admission/readiness mismatch or side effect.
