@@ -15,7 +15,6 @@ ROADMAP_LANE_HEADING_PREFIX_RE = re.compile(r"^##\s+P\d+")
 RUNBOOK_TURN_RE = re.compile(r"^##\s+Turn\s+\d+\s+\|\s+\d{4}-\d{2}-\d{2}$")
 RUNBOOK_TURN_HEADING_PREFIX_RE = re.compile(r"^##\s+Turn\b", re.IGNORECASE)
 PLAN_FILE_RE = re.compile(r"^\d{4}-\d{4}-\d{2}-\d{2}-[a-z0-9-]+\.md$")
-NOTE_FILE_RE = re.compile(r"^(\d{4})-\d{4}-\d{2}-\d{2}-[a-z0-9-]+\.md$")
 PLAN_STATE_RE = re.compile(r"(?im)^(?:state|status)\s*:\s*(PLANNED|OPEN|CLOSED|CANCELLED)\s*$")
 ROADMAP_LANE_RE = re.compile(r"(?im)^(?:roadmap|lane|phase)\s*:\s*(P\d{2})\b")
 CURRENT_STATE_RE = re.compile(r"(?im)^##\s+Current State\s*$|^(?:current state)\s*:", re.MULTILINE)
@@ -27,13 +26,35 @@ GOAL_BOUND_PATTERNS = {
         r"(?im)^checkpoint_interval\s*:\s*[1-9]\d*\s+.*(?:minute|hour|slice|token|turn|context)"
     ),
 }
+GOAL_CONTROL_PATTERNS = {
+    "authorization_gate": re.compile(r"(?im)^authorization_gate\s*:\s*significant_departure_only\s*$"),
+    "retry_budget_mode": re.compile(r"(?im)^retry_budget_mode\s*:\s*renewable_execution_window\s*$"),
+    "review_discovery_passes": re.compile(r"(?im)^review_discovery_passes\s*:\s*1\s*$"),
+    "review_verification_mode": re.compile(r"(?im)^review_verification_mode\s*:\s*closed_world\s*$"),
+}
 GOAL_CHECKPOINT_FIELD_TOKENS = {
+    "authority_classification",
     "plan_version",
     "state_transition",
     "progress_classification",
     "evidence",
     "subagent_status",
     "next_action_or_stop_reason",
+    "review_disposition_summary",
+}
+GOAL_REVIEW_FINDING_FIELDS = {
+    "confidence",
+    "consequence",
+    "criterion",
+    "evidence",
+    "reproducer",
+    "suggested_disposition",
+}
+GOAL_REVIEW_DISPOSITIONS = {
+    "blocking",
+    "needs_evidence",
+    "nonblocking_backlog",
+    "rejected",
 }
 
 
@@ -71,6 +92,7 @@ def audit_goal_execution_contract(root: Path) -> dict:
     for policy_path in policy_paths:
         text = read_text(policy_path)
         missing_bounds = [name for name, pattern in GOAL_BOUND_PATTERNS.items() if not pattern.search(text)]
+        missing_controls = [name for name, pattern in GOAL_CONTROL_PATTERNS.items() if not pattern.search(text)]
         fields_match = re.search(r"(?im)^checkpoint_record_fields\s*:\s*(.+)$", text)
         fields = {
             field.strip()
@@ -78,17 +100,40 @@ def audit_goal_execution_contract(root: Path) -> dict:
             if field.strip()
         } if fields_match else set()
         missing_fields = sorted(GOAL_CHECKPOINT_FIELD_TOKENS - fields)
+        finding_fields_match = re.search(r"(?im)^review_finding_fields\s*:\s*(.+)$", text)
+        finding_fields = {
+            field.strip()
+            for field in re.split(r"[,|]", finding_fields_match.group(1))
+            if field.strip()
+        } if finding_fields_match else set()
+        missing_finding_fields = sorted(GOAL_REVIEW_FINDING_FIELDS - finding_fields)
+        dispositions_match = re.search(r"(?im)^review_disposition_values\s*:\s*(.+)$", text)
+        dispositions = {
+            disposition.strip()
+            for disposition in re.split(r"[,|]", dispositions_match.group(1))
+            if disposition.strip()
+        } if dispositions_match else set()
+        missing_dispositions = sorted(GOAL_REVIEW_DISPOSITIONS - dispositions)
         if "## Local Goal Bounds" not in text:
             problems.append(f"goal policy missing Local Goal Bounds section: {policy_path.name}")
         for name in missing_bounds:
             problems.append(f"goal policy missing concrete bound {name}: {policy_path.name}")
+        for name in missing_controls:
+            problems.append(f"goal policy missing or invalid control {name}: {policy_path.name}")
         for name in missing_fields:
             problems.append(f"goal policy missing checkpoint field {name}: {policy_path.name}")
+        for name in missing_finding_fields:
+            problems.append(f"goal policy missing review finding field {name}: {policy_path.name}")
+        for name in missing_dispositions:
+            problems.append(f"goal policy missing review disposition {name}: {policy_path.name}")
         policies.append(
             {
                 "path": str(policy_path),
                 "missing_bounds": missing_bounds,
+                "missing_controls": missing_controls,
                 "missing_checkpoint_fields": missing_fields,
+                "missing_review_finding_fields": missing_finding_fields,
+                "missing_review_dispositions": missing_dispositions,
             }
         )
 
@@ -106,7 +151,6 @@ def planning_contracts(root: Path) -> tuple[dict[str, bool], dict[str, bool]]:
     available = {
         "planning_discipline": bool(list(policy_dir.glob("*planning-discipline.md"))) if policy_dir.exists() else False,
         "roadmap_runbook_governance": bool(list(policy_dir.glob("*roadmap-runbook-governance.md"))) if policy_dir.exists() else False,
-        "notes_and_memories": bool(list(policy_dir.glob("*notes-and-memories.md"))) if policy_dir.exists() else False,
     }
     agents_text = read_text(root / "AGENTS.md") or read_text(root / "AGENT.MD")
     policy_wired = bool(
@@ -128,37 +172,32 @@ def audit_repo(
     roadmap_path: str | Path | None = None,
     runbook_path: str | Path | None = None,
     plans_dir_path: str | Path | None = None,
-    notes_dir_path: str | Path | None = None,
     active_only: bool = False,
     force: bool = False,
 ) -> dict:
     roadmap = resolve_repo_path(root, roadmap_path, "ROADMAP.md")
     runbook = resolve_repo_path(root, runbook_path, "RUNBOOK.md")
     plans_dir = resolve_repo_path(root, plans_dir_path, "docs/dev/plans")
-    notes_dir = resolve_repo_path(root, notes_dir_path, "docs/dev/notes")
     available_contracts, contracts = planning_contracts(root)
     planning_applicable = contracts["planning_discipline"] or contracts["roadmap_runbook_governance"]
-    notes_applicable = contracts["notes_and_memories"]
     roadmap_applicable = contracts["roadmap_runbook_governance"] or force
 
     problems: list[str] = []
     report: dict[str, object] = {
         "repo_root": str(root),
-        "applicable": planning_applicable or notes_applicable or force,
+        "applicable": planning_applicable or force,
         "available_contracts": available_contracts,
         "adopted_contracts": contracts,
         "audit_scope": "active" if active_only else "all",
         "roadmap_path": str(roadmap),
         "runbook_path": str(runbook),
         "plans_dir": str(plans_dir),
-        "notes_dir": str(notes_dir),
         "plans": [],
-        "notes": [],
         "excluded_closed_plans": [],
         "excluded_unclassified_plans": [],
     }
 
-    if not planning_applicable and not notes_applicable and not force:
+    if not planning_applicable and not force:
         goal_contract = audit_goal_execution_contract(root)
         goal_problems = goal_contract["problems"]
         assert isinstance(goal_problems, list)
@@ -174,7 +213,7 @@ def audit_repo(
         problems.append("missing ROADMAP.md")
     if roadmap_applicable and not runbook_text:
         problems.append("missing RUNBOOK.md")
-    if (planning_applicable or force) and not plans_dir.exists():
+    if not plans_dir.exists():
         problems.append(f"missing plans directory: {plans_dir}")
 
     roadmap_headings = [
@@ -204,7 +243,7 @@ def audit_repo(
         problems.append("RUNBOOK.md has headings that do not match '## Turn N | YYYY-MM-DD'")
     report["runbook_turns"] = runbook_turns
 
-    if (planning_applicable or force) and plans_dir.exists():
+    if plans_dir.exists():
         for plan_path in sorted(plans_dir.glob("*.md")):
             entry = {
                 "file": plan_path.name,
@@ -266,36 +305,6 @@ def audit_repo(
             ):
                 problems.append(f"OPEN roadmap lane missing actionable plan coverage: {lane_id}")
 
-    if notes_applicable:
-        if not notes_dir.exists():
-            problems.append(f"missing notes directory: {notes_dir}")
-        else:
-            serials: dict[str, str] = {}
-            for note_path in sorted(notes_dir.glob("*.md")):
-                match = NOTE_FILE_RE.match(note_path.name)
-                entry = {
-                    "file": note_path.name,
-                    "path": str(note_path),
-                    "filename_ok": bool(match),
-                }
-                if match is None:
-                    problems.append(
-                        "note filename does not match deterministic serial-plus-date "
-                        f"pattern: {note_path.name}"
-                    )
-                else:
-                    serial = match.group(1)
-                    if serial in serials:
-                        problems.append(
-                            f"note serial {serial} is reused by "
-                            f"{serials[serial]} and {note_path.name}"
-                        )
-                    else:
-                        serials[serial] = note_path.name
-                notes = report["notes"]
-                assert isinstance(notes, list)
-                notes.append(entry)
-
     report["ok"] = not problems
     report["problems"] = problems
     goal_contract = audit_goal_execution_contract(root)
@@ -318,7 +327,6 @@ def main() -> int:
     parser.add_argument("--roadmap-path")
     parser.add_argument("--runbook-path")
     parser.add_argument("--plans-dir")
-    parser.add_argument("--notes-dir")
     args = parser.parse_args()
 
     root = Path(args.repo_root).resolve()
@@ -327,7 +335,6 @@ def main() -> int:
         roadmap_path=args.roadmap_path,
         runbook_path=args.runbook_path,
         plans_dir_path=args.plans_dir,
-        notes_dir_path=args.notes_dir,
         active_only=args.active_only,
         force=args.force,
     )

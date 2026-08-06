@@ -65,12 +65,39 @@ class GoalExecutionContractAuditTests(unittest.TestCase):
                 max_review_rework_cycles: 1
                 max_hardening_checkpoints: 2
                 checkpoint_interval: 3 slices or 60 minutes
-                checkpoint_record_fields: plan_version, state_transition, progress_classification, evidence, subagent_status, next_action_or_stop_reason
+                authorization_gate: significant_departure_only
+                retry_budget_mode: renewable_execution_window
+                review_discovery_passes: 1
+                review_verification_mode: closed_world
+                review_finding_fields: criterion, evidence, consequence, reproducer, confidence, suggested_disposition
+                review_disposition_values: blocking | nonblocking_backlog | rejected | needs_evidence
+                checkpoint_record_fields: plan_version, state_transition, progress_classification, evidence, subagent_status, authority_classification, review_disposition_summary, next_action_or_stop_reason
             """)
         )
 
         self.assertTrue(report["applicable"])
         self.assertTrue(report["ok"], report["problems"])
+
+    def test_goal_contract_requires_authority_and_review_convergence_controls(self):
+        report = self.audit.audit_goal_execution_contract(
+            self.make_repo("""
+                # Policy | Goal Execution Governance
+
+                ## Local Goal Bounds
+
+                max_work_unit_attempts: 2
+                max_review_rework_cycles: 1
+                max_hardening_checkpoints: 2
+                checkpoint_interval: 3 slices or 60 minutes
+                checkpoint_record_fields: plan_version, state_transition, progress_classification, evidence, subagent_status, next_action_or_stop_reason
+            """)
+        )
+
+        self.assertFalse(report["ok"])
+        self.assertTrue(any("authorization_gate" in problem for problem in report["problems"]))
+        self.assertTrue(any("review_verification_mode" in problem for problem in report["problems"]))
+        self.assertTrue(any("suggested_disposition" in problem for problem in report["problems"]))
+        self.assertTrue(any("nonblocking_backlog" in problem for problem in report["problems"]))
 
 
 class PlanningContractAuditTests(unittest.TestCase):
@@ -137,42 +164,6 @@ class PlanningContractAuditTests(unittest.TestCase):
 
         self.assertTrue(report["applicable"])
         self.assertTrue(report["ok"], report["problems"])
-
-    def test_notes_policy_requires_serial_plus_date_markdown_names(self):
-        root = self.make_repo(("notes-and-memories",))
-        notes = root / "docs/dev/notes"
-        notes.mkdir(parents=True)
-        (notes / "2026-08-06-handoff.md").write_text("# Handoff\n", encoding="utf-8")
-
-        report = self.audit.audit_repo(root)
-
-        self.assertTrue(report["applicable"])
-        self.assertFalse(report["ok"])
-        self.assertTrue(any("serial-plus-date" in item for item in report["problems"]))
-
-    def test_notes_policy_accepts_unique_serial_plus_date_markdown_names(self):
-        root = self.make_repo(("notes-and-memories",))
-        notes = root / "docs/dev/notes"
-        notes.mkdir(parents=True)
-        (notes / "0001-2026-08-06-handoff.md").write_text("# Handoff\n", encoding="utf-8")
-        (notes / "0002-machine-receipt.json").write_text("{}\n", encoding="utf-8")
-
-        report = self.audit.audit_repo(root)
-
-        self.assertTrue(report["ok"], report["problems"])
-        self.assertEqual(report["notes"][0]["file"], "0001-2026-08-06-handoff.md")
-
-    def test_notes_policy_rejects_reused_markdown_serials(self):
-        root = self.make_repo(("notes-and-memories",))
-        notes = root / "docs/dev/notes"
-        notes.mkdir(parents=True)
-        (notes / "0001-2026-08-05-first.md").write_text("# First\n", encoding="utf-8")
-        (notes / "0001-2026-08-06-second.md").write_text("# Second\n", encoding="utf-8")
-
-        report = self.audit.audit_repo(root)
-
-        self.assertFalse(report["ok"])
-        self.assertTrue(any("serial 0001 is reused" in item for item in report["problems"]))
 
     def test_roadmap_contract_requires_wiring_but_allows_non_turn_sections(self):
         root = self.make_repo(("planning-discipline", "roadmap-runbook-governance"))
