@@ -35,7 +35,7 @@ checkout, build and install its independently versioned artifact with:
 ```bash
 bash service/scripts/build-runtime.sh
 bash service/scripts/install.sh install \
-  --artifact dist/service/last30days-service-0.3.0.tar.gz
+  --artifact dist/service/last30days-service-0.3.1.tar.gz
 bash service/scripts/install.sh diagnose
 ```
 
@@ -81,6 +81,8 @@ sanitized placeholders.
 The document defines generic services, targets, ordered provider chains,
 resource keys and ceilings, artifact policy, OCR and semantic-sidecar stages,
 deterministic anomaly rules, notification transports, and query/index versions.
+Enabled targets execute serially in their array order; sanitized preflight and
+durable tick receipts preserve that same order.
 Adapter types must resolve through the installed adapter registry and carry a
 non-zero stable-fixture or bounded-canary normalization proof. Credential and
 routing fields are references only: cookies, tokens, raw credentials,

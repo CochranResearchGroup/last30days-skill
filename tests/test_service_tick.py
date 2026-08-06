@@ -114,6 +114,39 @@ def _write_config(path) -> None:
     )
 
 
+def test_enqueue_receipt_preserves_configured_target_order(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    first_service = payload["services"][0]
+    first_service["service_id"] = "z-source"
+    second_service = json.loads(json.dumps(first_service))
+    second_service["service_id"] = "a-source"
+    payload["services"] = [first_service, second_service]
+    first_target = payload["targets"][0]
+    first_target.update({"target_id": "z-target", "service_id": "z-source"})
+    second_target = json.loads(json.dumps(first_target))
+    second_target.update({"target_id": "a-target", "service_id": "a-source"})
+    payload["targets"] = [first_target, second_target]
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    receipt = TickCoordinator(
+        tmp_path / "research.db", config_path=config_path, clock=lambda: NOW
+    ).enqueue_tick(
+        contracts.TickRequest.from_dict(
+            {
+                "schema_version": 1,
+                "schedule_id": "manual-default",
+                "interval_from": "2026-08-03T00:00:00Z",
+                "interval_to": "2026-08-04T00:00:00Z",
+                "trigger": "manual",
+            }
+        )
+    )
+
+    assert [lane.service_id for lane in receipt.lanes] == ["z-source", "a-source"]
+
+
 def test_enqueue_tick_freezes_interval_config_and_enabled_lanes(tmp_path):
     config_path = tmp_path / "tick-config-v1.json"
     _write_config(config_path)

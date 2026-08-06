@@ -646,9 +646,23 @@ def _expand_lanes(
         )
     if not lanes:
         raise TickConfigError("tick config must enable at least one target")
-    return tuple(
-        sorted(lanes, key=lambda lane: (lane["service_id"], lane["target_id"]))
-    )
+    return tuple(order_lanes_by_target_config(lanes, config))
+
+
+def order_lanes_by_target_config(
+    lanes: Sequence[Any], config: Mapping[str, Any]
+) -> list[Any]:
+    """Return durable lanes in the immutable user-configured target order."""
+    enabled_target_ids = [
+        target["target_id"] for target in config["targets"] if target["enabled"]
+    ]
+    lane_target_ids = [lane["target_id"] for lane in lanes]
+    if set(lane_target_ids) != set(enabled_target_ids):
+        raise TickIntegrityError("frozen lanes do not match enabled target order")
+    target_ordinals = {
+        target_id: ordinal for ordinal, target_id in enumerate(enabled_target_ids)
+    }
+    return sorted(lanes, key=lambda lane: target_ordinals[lane["target_id"]])
 
 
 def _prepare_tick(
@@ -1291,6 +1305,7 @@ class TickCoordinator:
             raise TickIntegrityError("frozen config is not canonical JSON") from exc
         if _digest(frozen_config) != tick["config_digest"]:
             raise TickIntegrityError("frozen config digest does not match")
+        lanes = order_lanes_by_target_config(lanes, frozen_config)
         for lane in lanes:
             try:
                 service = json.loads(lane["service_config_json"])

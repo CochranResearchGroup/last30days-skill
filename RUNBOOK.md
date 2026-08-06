@@ -10958,3 +10958,61 @@ Next Bounded Action:
 - commit receipt 0053, finish one TDD target-order repair, build and review an
   exact patch-version candidate, and rework packet 0052. Stop before install,
   restart, providers, sends, Guac, timer, push, publication, or release.
+
+## Turn 180 | 2026-08-05
+
+Focus: repair frozen target ordering behind the existing durable tick
+interface.
+
+Authority Consulted:
+
+- Plan 0023 C36, terminal review receipt 0053, Plan 0018 V28 configured order,
+  CodeGraph call and blast-radius evidence for `_expand_lanes`,
+  `TickCoordinator.get_tick`, and `TickRunner.run`, TDD and deep-module skills,
+  version/release policy, and user-facing configuration authority.
+
+Decisions And Changes:
+
+- added one shared `order_lanes_by_target_config` implementation that retains
+  enabled target-array order and fails closed on durable/config divergence;
+- applied it to sanitized preflight expansion, durable receipt construction,
+  and runner execution without changing the external tick interface;
+- added one RED/GREEN public behavior at a time for receipt, preflight, and
+  actual provider invocation order, using intentionally non-lexicographic
+  fixture IDs;
+- versioned the consumer-visible fix as service 0.3.1, refreshed its explicit
+  runtime manifest, and synchronized CHANGELOG/CONFIGURATION/version tests;
+- kept the installed 0.3.0 service and all live/external gates untouched.
+
+Validation Evidence:
+
+- each new behavior fails in the prior lexicographic order and passes after
+  its minimal implementation; combined order behaviors pass;
+- focused tick matrix: 88 passed; code/version/reproducible-package matrix:
+  45 passed;
+- initial full suite: 2,536 passed, 7 skipped, one plan-version audit failure;
+  direct audit and focused audit test pass after synchronizing the plan header;
+- terminal complete suite passes 2,537 tests with seven skipped and six
+  subtests passed; reproducible artifact hash remains pending at this
+  checkpoint.
+
+State Movement:
+
+- Plan 0023 advances `C36 -> C37`;
+- `t08_live_packet_review_failed_order_repair_ready -> target_order_repair_candidate_ready`.
+
+Subagent Status And Reconciliation:
+
+- no new subagent is spawned; the existing reviewer remains idle until the
+  exact candidate and reworked packet are committed. CodeGraph exploration is
+  primary-owned as required.
+
+Graphiti Write Status:
+
+- deferred until terminal candidate review; repo artifacts remain authority.
+
+Next Bounded Action:
+
+- commit the exact 0.3.1 candidate, build and hash its reproducible artifact,
+  then rework packet 0052 and obtain one final
+  independent review. Stop before install, restart, T08, or any external gate.

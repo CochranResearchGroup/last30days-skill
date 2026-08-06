@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 2
+Plan version: 5
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C36 is the current authority.
+Checkpoint P0023-C37 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2796,3 +2796,58 @@ Next action:
 - commit the terminal FAIL receipt, complete one TDD target-order repair,
   validate and build an exact patch-version candidate, then rework packet 0052
   for one final independent review. Stop before install, restart, or live work.
+
+### Checkpoint P0023-C37 | 2026-08-05
+
+Plan version: 5
+
+State transition:
+
+- `t08_live_packet_review_failed_order_repair_ready -> target_order_repair_candidate_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; service 0.3.1 now preserves immutable enabled-target
+  array order through preflight, enqueue receipts, provider execution, and
+  replay behind the existing tick interface.
+
+Owned changes:
+
+- replace `_expand_lanes`' lexicographic sort with one shared
+  `order_lanes_by_target_config` invariant over the frozen config;
+- apply the same invariant when constructing durable receipts and before the
+  runner invokes any provider, failing closed if durable lanes diverge from
+  enabled targets;
+- add public-interface behavioral tests whose intentionally non-lexicographic
+  targets prove receipt, sanitized preflight, and actual adapter invocation
+  order;
+- bump the independently installable runtime to patch version 0.3.1, refresh
+  its explicit manifest, document enabled-target array order in
+  `CONFIGURATION.md`, and record the operator-visible fix in `CHANGELOG.md`;
+- add no flag, database/schema migration, target field, provider, retry,
+  concurrency, external effect, timer, or ceiling.
+
+Validation evidence:
+
+- TDD tracer bullets each fail lexicographically before implementation and
+  pass after the minimal repair: enqueue receipt, preflight, and runner order;
+- all three order behaviors pass together; the focused tick matrix passes
+  88 tests and the code/version/reproducible-package matrix passes 45 tests;
+- the first complete-suite pass reaches 2,536 passed/7 skipped with only the
+  plan-version authority audit failing; synchronizing the plan header from V2
+  to V5 makes the direct authority audit and its focused test pass;
+- terminal complete suite passes 2,537 tests with seven skipped and six
+  subtests passed; reproducible artifact build remains the next validation
+  step before candidate review.
+
+Authority classification:
+
+- `inherited_authority`; this is the single bounded repo-only remediation
+  allowed by C36. No installed runtime or external system is modified.
+
+Next action:
+
+- commit the exact 0.3.1 candidate, build and hash its reproducible artifact,
+  then rework packet 0052 with the reviewed
+  baseline/candidate receipts and correct C05 citation. Stop before install,
+  restart, or T08.

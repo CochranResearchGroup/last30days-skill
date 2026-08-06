@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Config-owned tick lane order.** Service 0.3.1 preserves the frozen enabled
+  target-array order through sanitized preflight, durable receipts, execution,
+  and replay instead of re-sorting lanes by service ID. This keeps bounded
+  manual ticks aligned with their reviewed user-scoped execution packet without
+  adding a new flag, schema field, retry, or scheduling behavior.
+
 - **Tick partial-result, observation, and media safety.** Worker results that
   contain publishable items plus a blocking browser issue now retain their raw
   evidence while the provider attempt and lane terminalize `blocked_human`.

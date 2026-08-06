@@ -37,6 +37,7 @@ from .service_tick_media import (
     SemanticSidecar,
 )
 from .service_tick_query import CatalogMember, SnapshotEntry, TickSnapshotPublisher
+from .service_tick import order_lanes_by_target_config
 
 
 Clock = Callable[[], datetime]
@@ -2009,7 +2010,8 @@ class TickRunner:
                 tick = conn.execute(
                     "SELECT * FROM service_ticks WHERE tick_id = ?", (tick_id,)
                 ).fetchone()
-                analysis = json.loads(tick["config_json"])["analysis"]
+                frozen_config = json.loads(tick["config_json"])
+                analysis = frozen_config["analysis"]
                 if analysis["ocr_enabled"]:
                     self.analysis_registry.require(
                         str(analysis["ocr_adapter_type"]), capability="ocr"
@@ -2028,6 +2030,7 @@ class TickRunner:
                        WHERE tick_id = ? ORDER BY service_id, target_id""",
                     (tick_id,),
                 ).fetchall()
+                lanes = order_lanes_by_target_config(lanes, frozen_config)
                 conn.commit()
             finally:
                 conn.close()

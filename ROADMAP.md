@@ -983,11 +983,11 @@ Active Plan:
   enablement. Checkpoint C04 validates the deterministic provider, evidence,
   media/analysis, incident, catalog, query, and reconstructable-receipt join.
   The T07 provider/raw crash seam and Phase A install/config preflight are now
-  accepted. Checkpoint C36 records terminal independent FAIL for the first T08
-  packet: the installed runner executes lexicographic lane order rather than
-  Plan 0018 V28's frozen configured order. One repo-only TDD repair and packet
-  rework is open; install, live providers, incident sends, Guac, and timers
-  remain closed.
+  accepted. Checkpoint C37 repairs the first T08 review's critical finding in
+  candidate service 0.3.1: frozen target-array order now governs preflight,
+  receipts, execution, and replay through one shared invariant. Terminal suite,
+  exact artifact build, packet rework, and independent review remain; install,
+  live providers, incident sends, Guac, and timers stay closed.
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the closed predecessor authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
@@ -1053,11 +1053,12 @@ Active Plan:
 
 Next Bounded Action:
 
-- complete Plan 0023/C36's one bounded target-order repair, build and review an
-  exact patch-version candidate, and rework packet 0052 with explicit receipt/
-  artifact bindings plus the correct C05 recovery citation. Stop before
-  install/restart, provider execution, incident sends, Guac, recurrence, push,
-  publication, release, paid calls, retries, or ceiling changes.
+- finish Plan 0023/C37's terminal full-suite validation, commit and build the
+  exact 0.3.1 artifact, then rework packet 0052 with explicit baseline/
+  candidate receipt and artifact bindings plus the correct C05 recovery
+  citation. Obtain one final independent review; stop before install/restart,
+  providers, sends, Guac, recurrence, push, publication, release, paid calls,
+  retries, or ceiling changes.
 
 ## Goal-Compatible Plan Conversion
 

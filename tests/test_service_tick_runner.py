@@ -313,6 +313,7 @@ def test_manual_tick_runs_every_lane_raw_first_and_publishes_one_degraded_snapsh
     db_path = tmp_path / "research.db"
     config_path = tmp_path / "tick-config-v1.json"
     _write_config(config_path)
+    call_order = []
     sidecar = SemanticSidecar(
         literal_description="A line chart rises from left to right.",
         observable_entities=("line chart",),
@@ -326,7 +327,8 @@ def test_manual_tick_runs_every_lane_raw_first_and_publishes_one_degraded_snapsh
         input_refs=("image", "ocr", "alt-text"),
     )
 
-    def success(_context):
+    def success(context):
+        call_order.append(context.service_id)
         return ProviderResult.success(
             items=(
                 CollectedItem(
@@ -364,7 +366,8 @@ def test_manual_tick_runs_every_lane_raw_first_and_publishes_one_degraded_snapsh
             },
         )
 
-    def empty(_context):
+    def empty(context):
+        call_order.append(context.service_id)
         return ProviderResult.empty(
             usage={
                 "attempts": 1,
@@ -376,7 +379,8 @@ def test_manual_tick_runs_every_lane_raw_first_and_publishes_one_degraded_snapsh
             }
         )
 
-    def captcha(_context):
+    def captcha(context):
+        call_order.append(context.service_id)
         return ProviderResult.failure(
             failure_class="challenge",
             safe_error_code="captcha_required",
@@ -435,6 +439,7 @@ def test_manual_tick_runs_every_lane_raw_first_and_publishes_one_degraded_snapsh
     repeated = coordinator.enqueue_tick(request)
 
     assert completed == repeated
+    assert call_order == ["web", "reddit", "x"]
     assert completed.state is contracts.TickState.COMPLETE_DEGRADED
     assert {lane.service_id: lane.state.value for lane in completed.lanes} == {
         "reddit": "empty",

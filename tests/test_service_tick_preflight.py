@@ -246,6 +246,41 @@ def test_preflight_and_enqueue_share_exact_tick_config_and_lane_identity(tmp_pat
     ]
 
 
+def test_preflight_preserves_configured_target_order(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    first_service = payload["services"][0]
+    first_service["service_id"] = "z-source"
+    second_service = json.loads(json.dumps(first_service))
+    second_service["service_id"] = "a-source"
+    payload["services"] = [first_service, second_service]
+    first_target = payload["targets"][0]
+    first_target.update({"target_id": "z-target", "service_id": "z-source"})
+    second_target = json.loads(json.dumps(first_target))
+    second_target.update({"target_id": "a-target", "service_id": "a-source"})
+    payload["targets"] = [first_target, second_target]
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+    registry = build_acquisition_adapter_registry(object())
+    request = _request()
+
+    preflight = service_tick_runtime.preflight_tick_runtime(
+        request,
+        config_path=config_path,
+        adapter_registry=registry,
+        command_runner=ReadyCommands(),
+    )
+    enqueued = TickCoordinator(
+        tmp_path / "research.db",
+        config_path=config_path,
+        adapter_registry=registry,
+    ).enqueue_tick(request)
+
+    assert [lane["lane_id"] for lane in preflight["lane_manifest"]] == [
+        lane.lane_id for lane in enqueued.lanes
+    ]
+
+
 def test_service_cli_exposes_side_effect_free_tick_preflight():
     args = build_parser().parse_args(
         [
