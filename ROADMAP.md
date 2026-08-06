@@ -983,10 +983,11 @@ Active Plan:
   enablement. Checkpoint C04 validates the deterministic provider, evidence,
   media/analysis, incident, catalog, query, and reconstructable-receipt join.
   The T07 provider/raw crash seam and Phase A install/config preflight are now
-  accepted. Checkpoint C39 records terminal independent PASS for the exact
-  0.3.1 target-order repair, artifact, receipts, and reworked packet. One exact
-  transactional install plus postinstall sanitized preflight is now the human
-  gate; T08, incident sends, Guac, and timers remain later and closed.
+  accepted. Checkpoint C40 preserves terminal independent PASS for the exact
+  0.3.1 repair while correcting approval granularity: the next authority must
+  be one goal-worthy packet covering install through independently accepted
+  manual tick and final push under the cumulative ceiling. That goal is drafted
+  but not yet approved; timers remain a separate later goal.
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the closed predecessor authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
@@ -1052,11 +1053,12 @@ Active Plan:
 
 Next Bounded Action:
 
-- obtain explicit operator approval for Plan 0023/C39's exact one-invocation
-  0.3.1 transactional upgrade, postinstall readback, and one sanitized
-  preflight, with restoration to exact 0.3.0 only on transition/preflight
-  failure. Stop before T08, providers, sends, Guac, recurrence, push,
-  publication, release, paid calls, retries, or ceiling changes.
+- verify Plan 0023/C40's fresh handoff state and ask once for its exact
+  goal-level first-MVP tick authority. If approved, continue under standing
+  authority through install, bounded manual tick, deterministic repair,
+  independent acceptance, and final push. Keep human interaction, new scope/
+  credentials/data classes, paid spend, cumulative-ceiling increase, and timer
+  enablement as the only later gates.
 
 ## Goal-Compatible Plan Conversion
 

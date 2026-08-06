@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 7
+Plan version: 8
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C39 is the current authority.
+Checkpoint P0023-C40 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2984,3 +2984,46 @@ Next action:
 - stop and request explicit approval for only the exact one-install,
   postinstall-readback, one-sanitized-preflight packet above. On success stop at
   the separate T08 human gate; do not enqueue in the install turn.
+
+### Checkpoint P0023-C40 | 2026-08-06
+
+Plan version: 8
+
+State transition:
+
+- `candidate_review_pass_install_human_gate -> goal_worthy_tick_authority_draft_awaiting_operator_approval`.
+
+Progress classification:
+
+- `blocker_reduction`; the operator rejects install/preflight/T08
+  micro-approvals and requires one goal-worthy standing-authority packet for
+  end-to-end first-MVP tick completion.
+
+Approval-granularity correction:
+
+- C39's exact install packet remains reviewed evidence but is no longer the
+  recommended approval unit;
+- draft one stable objective covering reviewed runtime install/reconciliation,
+  bounded manual tick execution, deterministic repair/revalidation,
+  independent terminal review, and final push inside the existing cumulative
+  50-provider-attempt ceiling;
+- genuine human interaction, new credential/source/data class, paid spending,
+  the cumulative ceiling, material objective expansion, and timer admission
+  remain the only intended approval/escalation boundaries;
+- the goal draft is not yet approved. No install, preflight, provider, send,
+  Guac lease, timer, or push is authorized merely by this checkpoint;
+- durable fresh-agent routing note:
+  `docs/dev/notes/2026-08-06-plan0023-goal-worthy-tick-handoff.md`.
+
+Authority classification:
+
+- `human_gate`; the operator has specified the required approval granularity
+  but has not yet explicitly approved the drafted goal. The next session must
+  ask once at goal level, not repeat component gates.
+
+Next action:
+
+- begin read-only, reconcile current Git/runtime/config/artifact authority, and
+  ask for the exact goal-level approval recorded in the handoff. If approved,
+  execute autonomously within it through manual-tick acceptance and push while
+  keeping timers disabled.
