@@ -11374,3 +11374,53 @@ Next Bounded Action:
 - commit C43, version/build/install the exact repair successor, run one
   sanitized preflight for a distinct interval, and only then consume a second
   five-attempt packet within the cumulative ceiling.
+
+## Turn 187 | 2026-08-06
+
+Focus: cut a reproducible service 0.3.2 candidate for the retained-browser
+acquisition repair before live installation.
+
+Authority Consulted:
+
+- Plan 0023 C43; Roadmap P07; Runbook Turn 186; service versioning, commit,
+  validation, documentation, goal, and architecture policies; runtime builder,
+  explicit release tests, package boundary, and lifecycle tests.
+
+Decisions And Changes:
+
+- used a patch release because installed acquisition behavior changes without
+  changing the API, schema, config contract, or timer boundary;
+- refreshed the canonical manifest, built exact service 0.3.2 twice, and
+  updated explicit version assertions plus the operator build example;
+- preserved the exact candidate and test evidence in receipt 0065 before the
+  live upgrade.
+
+Validation Evidence:
+
+- manifest SHA-256 `b39026f4...453678` and both artifact builds SHA-256
+  `662d3d96...81599` match;
+- focused browser/config and Facebook/LinkedIn/worker/runtime suites remain
+  green at 140 passed/3 skipped; version/package/lifecycle/product tests pass
+  21/21;
+- no user config, provider, notification, browser, Guac, or timer mutation was
+  performed in candidate construction.
+
+State Movement:
+
+- Plan 0023 advances `C43 -> C44` and version `11 -> 12`;
+- `first_manual_tick_complete_degraded_browser_repair_validated -> exact_0_3_2_candidate_install_ready`.
+
+Subagent Status And Reconciliation:
+
+- no delegation; final independent evaluation remains pending after installed
+  outcome reconstruction.
+
+Graphiti Write Status:
+
+- deferred until installed readback and the bounded recheck establish current
+  operational evidence.
+
+Next Bounded Action:
+
+- commit candidate 0065, transactionally install exact service 0.3.2, verify
+  installed identity/integrity/rollback, and preflight Aug 5-6 without enqueue.

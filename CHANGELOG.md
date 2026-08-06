@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Retained social-browser acquisition.** Service 0.3.2 reuses a healthy
+  same-profile browser for ordinary acquisition when it exposes writable CDP
+  control, even if that browser does not satisfy a separately configured RDP
+  human-observation route. This prevents duplicate-profile launch conflicts
+  while keeping Guacamole acquisition behind the incident observation gate.
+
 - **Config-owned tick lane order.** Service 0.3.1 preserves the frozen enabled
   target-array order through sanitized preflight, durable receipts, execution,
   and replay instead of re-sorting lanes by service ID. This keeps bounded

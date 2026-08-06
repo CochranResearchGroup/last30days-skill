@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 11
+Plan version: 12
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C43 is the current authority.
+Checkpoint P0023-C44 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -3239,3 +3239,66 @@ Next action:
 - checkpoint C43, version and build an exact service successor containing the
   browser repair, transactionally install it, and run one sanitized preflight
   for a distinct bounded interval before any second enqueue.
+
+### Checkpoint P0023-C44 | 2026-08-06
+
+Plan version: 12
+
+State transition:
+
+- `first_manual_tick_complete_degraded_browser_repair_validated -> exact_0_3_2_candidate_install_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; the retained-browser repair is bound into a
+  reproducible exact service 0.3.2 artifact with explicit version, manifest,
+  package, lifecycle, and regression validation.
+
+Owned changes:
+
+- advance only the independently installed service patch version 0.3.1 to
+  0.3.2; change no service API, database schema, user config, provider/model,
+  source, ceiling, schedule, or observation gate;
+- refresh the canonical runtime manifest and build the exact artifact twice;
+- update the explicit release-version assertions and operator build example;
+- preserve candidate identity and validation in receipt 0065.
+
+Validation evidence:
+
+- runtime manifest SHA-256 is
+  `b39026f4b22143d47cb4bb85b872b41f83b6300c0786e6c1748f3d87bc453678`;
+- both service 0.3.2 builds have SHA-256
+  `662d3d96e4ce44feac8bc0eaab45510ba2837cdc1c0c26e30dc5ea7b97281599`;
+- 25 focused X/config tests pass with one skip; 115 Facebook/LinkedIn/
+  worker/runtime tests pass with two skips; 21 version/package/lifecycle/
+  product-surface tests pass;
+- the version-pinning tests first rejected the 0.3.2 bump while still
+  expecting 0.3.1, then passed after the explicit contract update.
+
+Remaining acceptance criteria:
+
+- install exact 0.3.2, verify readiness/integrity/rollback identity, run one
+  sanitized distinct-interval preflight, then consume at most one second
+  five-attempt tick packet before reconstructing the new terminal outcome;
+- successful OCR and semantic sidecars remain open.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; candidate construction and deterministic validation remain
+  one overlapping critical path. Final independent evaluation remains pending.
+
+Graphiti write status:
+
+- deferred until installed readback and the bounded recheck establish current
+  operational evidence.
+
+Authority classification:
+
+- `inherited_authority`; this patch artifact is the bounded C43 successor and
+  exact transactional install is ordinary work under the approved goal.
+
+Next action:
+
+- commit exact candidate receipt 0065, install the exact 0.3.2 artifact once,
+  verify current/previous/integrity state, and run one sanitized preflight for
+  the Aug 5-6 UTC interval without enqueueing in the install checkpoint.

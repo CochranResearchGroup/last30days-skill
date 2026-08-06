@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "receipt_id": "service-0.3.2-retained-browser-candidate-0065",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0023",
+    "checkpoint": "P0023-C44",
+    "classification": "inherited_authority"
+  },
+  "candidate": {
+    "service_version": "0.3.2",
+    "implementation_commit": "dd678b2",
+    "runtime_manifest_sha256": "b39026f4b22143d47cb4bb85b872b41f83b6300c0786e6c1748f3d87bc453678",
+    "artifact": "dist/service/last30days-service-0.3.2.tar.gz",
+    "artifact_sha256": "662d3d96e4ce44feac8bc0eaab45510ba2837cdc1c0c26e30dc5ea7b97281599",
+    "artifact_format": "last30days-service-runtime-v1",
+    "database_schema": 15,
+    "reproducible_build_sha256": "662d3d96e4ce44feac8bc0eaab45510ba2837cdc1c0c26e30dc5ea7b97281599"
+  },
+  "behavior": {
+    "change": "normal social acquisition reuses a healthy same-profile retained owner with writable CDP control even when a separate RDP human-view route is incompatible",
+    "public_interface_changed": false,
+    "schema_changed": false,
+    "config_changed": false,
+    "timer_changed": false,
+    "guac_acquisition_allowed": false
+  },
+  "validation": [
+    {
+      "command": "uv run pytest tests/test_agent_browser_config.py tests/test_x_browser.py -q",
+      "result": "25 passed, 1 skipped"
+    },
+    {
+      "command": "uv run pytest tests/test_facebook.py tests/test_linkedin.py tests/test_service_acquisition_worker.py tests/test_service_tick_runtime.py -q",
+      "result": "115 passed, 2 skipped"
+    },
+    {
+      "command": "uv run pytest tests/test_release_versions.py tests/test_service_runtime_package.py tests/test_service_lifecycle_install.py tests/test_service_product_surface.py -q",
+      "result": "21 passed"
+    },
+    {
+      "command": "two deterministic service/scripts/build-runtime.sh builds",
+      "result": "matching artifact SHA-256"
+    }
+  ],
+  "install_authorized": true,
+  "installed_at_receipt_time": false,
+  "cumulative_provider_attempts": {
+    "consumed": 5,
+    "ceiling": 50
+  },
+  "next_action": "transactionally upgrade exact artifact, verify installed identity/readiness/integrity/rollback, then run one sanitized preflight for a distinct interval",
+  "private_config_content_recorded": false,
+  "timers_enabled": false
+}
