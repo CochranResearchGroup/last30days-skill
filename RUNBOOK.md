@@ -11889,3 +11889,55 @@ Next Bounded Action:
 
 - commit Plan 0024/C01 and receipt 0074 after planning/goal audits, then run
   one fresh independent drift-discovery review before code or timer mutation.
+
+## Turn 197 | 2026-08-06
+
+Focus: adjudicate the fresh design review and repair the restart-recovery
+identity contradiction before implementation.
+
+Authority Consulted:
+
+- Plan 0024 version 1/C01; Roadmap P08; Runbook Turn 196; receipt 0074; the
+  evaluator's evidence-shaped finding; CodeGraph source for
+  `_ensure_execution_attempt()`, `TickCoordinator.enqueue_tick()`, and
+  `TickRunner._claim()`; the single review/rework bound.
+
+Decisions And Changes:
+
+- accepted the evaluator's only critical finding and no noncritical finding;
+- preserved existing runner behavior: an unexpired running lease is never
+  reclaimed, while expiry creates deterministic successor attempt N+1;
+- revised recovery to preserve schedule boundary, tick, lane, and durable
+  stage IDs, wait while the lease is live, and resume through the existing
+  successor-attempt path before any new due boundary;
+- did not widen runtime write surfaces, cadence, live ceilings, provider work,
+  or timer authority.
+
+Validation Evidence:
+
+- CodeGraph proves the coordinator returns an unexpired running attempt but
+  the runner claims only queued attempts, making the former C01 wording
+  impossible without an unplanned runner seam;
+- after expiry, the coordinator resets only running stages, preserves staged
+  results, expires attempt N, and queues deterministic attempt N+1;
+- plan criteria 4-5 now match those existing recovery semantics and explicitly
+  prevent runner invocation while the prior lease remains live.
+
+State Movement:
+
+- Plan 0024 advances version `1 -> 2` and `C01 -> C02`;
+- `design_freeze_awaiting_independent_review -> design_rework_awaiting_closed_world_verification`.
+
+Subagent Status And Reconciliation:
+
+- `/root/plan0024_design_review` returned one accepted critical finding and no
+  other finding; the same evaluator will verify only this closed ledger.
+
+Graphiti Write Status:
+
+- deferred until design acceptance or a terminal stop.
+
+Next Bounded Action:
+
+- commit C02/receipt 0075 and obtain closed-world verification from the same
+  evaluator before S02 code or any runtime mutation.

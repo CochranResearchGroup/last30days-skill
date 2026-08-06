@@ -1085,7 +1085,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0024-2026-08-06-governed-recurring-all-source-tick.md`
-  version 1/C01 is the sole actionable P08 plan. It adds one config-driven
+  version 2/C02 is the sole actionable P08 plan. It adds one config-driven
   service-owned scheduler and durable state, permits at most one automatic
   activation tick and five provider attempts (cumulative maximum 20/50), and
   forbids per-source/systemd timers, legacy spec enablement, catch-up fanout,
@@ -1100,8 +1100,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- commit Plan 0024/C01 and receipt 0074, pass planning/goal audits, and run one
-  fresh independent design review before implementation or timer mutation.
+- commit Plan 0024/C02 and receipt 0075, then obtain closed-world verification
+  from the same design evaluator before implementation or timer mutation.
 
 ## Goal-Compatible Plan Conversion
 

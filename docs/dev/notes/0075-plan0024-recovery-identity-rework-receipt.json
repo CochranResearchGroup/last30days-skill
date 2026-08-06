@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0024-recovery-identity-rework-0075",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0024",
+    "checkpoint": "P0024-C02",
+    "classification": "inherited_authority",
+    "review_cycle": 1,
+    "rework_cycle": 1
+  },
+  "review": {
+    "evaluator": "/root/plan0024_design_review",
+    "critical_findings": 1,
+    "noncritical_findings": 0,
+    "accepted_findings": 1,
+    "rejected_findings": 0,
+    "unresolved_findings": 1
+  },
+  "accepted_finding": {
+    "criterion": "acceptance criterion 5 and unchanged-runner product decision",
+    "evidence": "an unexpired running attempt cannot be claimed by TickRunner._claim; after expiry _ensure_execution_attempt creates deterministic successor attempt N+1",
+    "consequence": "the version-1 same-execution-attempt recovery contract was impossible within the frozen architecture",
+    "reproducer": "enqueue a timer tick, retain a running attempt, reconstruct, and re-enqueue before and after lease expiry",
+    "confidence": "high",
+    "disposition": "accepted_and_reworked"
+  },
+  "reworked_contract": {
+    "stable_identities": [
+      "schedule_boundary",
+      "tick_id",
+      "lane_id",
+      "stage_id"
+    ],
+    "live_lease_action": "wait_without_runner_invocation",
+    "expired_lease_action": "existing_successor_execution_attempt",
+    "new_boundary_blocked_until_recovery": true,
+    "runner_change_authorized": false,
+    "live_ceiling_changed": false
+  },
+  "next_action": "same-evaluator closed-world verification before S02 implementation"
+}

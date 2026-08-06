@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P08
 Date: 2026-08-06
-Plan version: 1
+Plan version: 2
 Predecessor: Plan 0023 version 20/checkpoint P0023-C52
 
 ## Stable Goal
@@ -48,9 +48,12 @@ The first supported schedule is one daily UTC schedule anchored at midnight.
 The scheduler may admit only the latest completed boundary, never fan out a
 catch-up backlog. On first activation it may enqueue that latest boundary only
 when it is within the frozen tick lateness bound. It then advances durable
-state to the next boundary before another admission. A restart resumes an
-incomplete timer tick by its existing identity before considering a new due
-boundary.
+state to the next boundary before another admission. A restart recovers an
+incomplete timer tick by the same boundary, tick, and durable stage identities
+before considering a new due boundary. While its execution lease is live, the
+scheduler reports recovery waiting and does not call the runner. After lease
+expiry it re-enqueues the same immutable request and permits the coordinator's
+existing durable successor-attempt semantics.
 
 ## Scope
 
@@ -140,7 +143,10 @@ activation seeds at most that boundary if its age is within
 records a sanitized stale-skip event. Once a boundary is admitted, durable
 state advances before the provider run. Repeated polls or restarts return the
 same tick identity and never duplicate provider work. If a timer tick is
-incomplete, recovery runs it before another due interval is considered.
+incomplete, recovery waits for an unexpired lease or uses the existing
+successor execution-attempt mechanism after expiry before another due interval
+is considered. Completed stage IDs and staged provider results remain durable;
+only interrupted running stages reset to pending under the existing contract.
 
 ## Work Graph
 
@@ -217,10 +223,16 @@ Stop and pause/avoid activation on:
 3. UTC cadence/anchor calculation is deterministic across restart and permits
    at most the latest completed boundary within the lateness window.
 4. Schedule state advances durably before provider execution; poll/restart
-   replay cannot duplicate a boundary, tick, attempt, budget event, evidence,
-   artifact, derivative, notification, or snapshot promotion.
-5. An incomplete timer tick resumes by the same tick/attempt/stage identities
-   before a new due boundary is admitted.
+   replay cannot duplicate a boundary or tick, reclaim an unexpired execution
+   attempt, or duplicate a budget event, provider effect, evidence, artifact,
+   derivative, notification, or snapshot promotion. A successor execution
+   attempt is allowed only through the existing expired-lease recovery path.
+5. An incomplete timer tick recovers by the same boundary, tick, lane, and
+   durable stage IDs before a new due boundary is admitted. While the latest
+   attempt lease is live, schedule status is recovery-waiting and the runner is
+   not invoked; after expiry the coordinator may expire attempt N, reset only
+   interrupted running stages, and create durable queued attempt N+1 while
+   reusing completed stages and staged provider results.
 6. Singleton overlap preserves Plan 0023's queued/lateness and
    `missed_due_to_overlap` semantics with an exact coverage receipt.
 7. Service health and read-only CLI/API status expose only schedule ID,
@@ -253,7 +265,7 @@ truthfully enabled or fail-closed paused; all legacy specs remain disabled;
 the accepted finding ledger is reconciled; Graphiti memory is durable; and the
 terminal chain is pushed to origin main.
 
-Checkpoint P0024-C01 is the current authority.
+Checkpoint P0024-C02 is the current authority.
 
 ### Checkpoint P0024-C01 | 2026-08-06
 
@@ -305,3 +317,66 @@ Next action:
 - commit C01/receipt 0074, run planning/goal audits, and submit the frozen plan
   plus current runtime evidence to one fresh independent evaluator before code
   or timer mutation.
+
+### Checkpoint P0024-C02 | 2026-08-06
+
+Plan version: 2
+
+State transition:
+
+- `design_freeze_awaiting_independent_review -> design_rework_awaiting_closed_world_verification`.
+
+Progress classification:
+
+- `outcome_progress`; the single authorized design-rework cycle resolves an
+  implementation-blocking recovery-identity contradiction before S02.
+
+Validation evidence:
+
+- the fresh evaluator returned one critical finding and no noncritical
+  findings;
+- CodeGraph confirms `_ensure_execution_attempt()` preserves a live running
+  attempt until lease expiry, expires it after that boundary, resets only
+  running stages, and creates deterministic `tick-attempt` N+1;
+- CodeGraph also confirms `TickRunner._claim()` accepts only a queued attempt,
+  so invoking the runner against an unexpired running attempt raises
+  `tick does not have a queued execution attempt`;
+- the stable tick ID derives from schedule, interval, and config identity, and
+  durable stage IDs derive from tick/scope/stage rather than execution attempt.
+
+Subagent status and reconciliation:
+
+- `/root/plan0024_design_review` completed the one broad S01 discovery pass;
+  the same evaluator is reserved only for closed-world verification of this
+  accepted finding, not a new discovery cycle.
+
+Review disposition summary:
+
+- accepted critical finding: criterion 5 and the frozen architecture
+  incorrectly required stable execution-attempt identity even though existing
+  recovery necessarily waits for a live lease and creates attempt N+1 after
+  expiry;
+- consequence: the original freeze could not recover an interrupted timer
+  tick within its stated unchanged-runner boundary;
+- reproducer: enqueue a timer tick, retain a running attempt, reconstruct, and
+  re-enqueue before and after lease expiry;
+- confidence: high;
+- disposition: accepted and repaired by preserving boundary/tick/lane/stage
+  identity, explicitly allowing only the existing expired-lease successor
+  attempt, and forbidding runner invocation while the prior lease is live;
+- noncritical findings: none; unresolved accepted findings: one pending the
+  same evaluator's closed-world verification.
+
+Graphiti write status:
+
+- deferred until closed-world design acceptance or a terminal stop.
+
+Authority classification:
+
+- `inherited_authority`; this is the single bounded correction inside S01 and
+  does not widen cadence, live ceilings, owned runtime path, or side effects.
+
+Next action:
+
+- validate and commit C02/receipt 0075, then return only this accepted finding
+  to the same evaluator for closed-world verification before S02 code.
