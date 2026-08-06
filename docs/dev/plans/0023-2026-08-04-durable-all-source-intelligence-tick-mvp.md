@@ -3570,3 +3570,75 @@ Next action:
 
 - commit C48/receipt 0069, enqueue tick
   `tick-325e83a6d4df894d074a0b87563ef499` once, and monitor read-only to terminal.
+
+### Checkpoint P0023-C49 | 2026-08-06
+
+Plan version: 17
+
+State transition:
+
+- `exact_0_3_3_local_analysis_tick_ready -> live_derivative_and_hybrid_query_proof_complete`.
+
+Progress classification:
+
+- `goal_outcome`; the exact installed recheck now proves durable raw evidence,
+  successful OCR, successful deterministic semantic sidecars, atomic promoted
+  hybrid retrieval, partition filtering, and bounded terminal accounting.
+
+Owned changes:
+
+- enqueue the exact preflighted identity once with no retry;
+- reconstruct source attempts, budgets, evidence, media, derivative states,
+  incidents, notifications, catalog, snapshot, and version receipts;
+- exercise the promoted tick query head read-only for public and profile
+  partitions, projecting only source/partition/channel evidence.
+
+Validation evidence:
+
+- tick `tick-325e83a6d4df894d074a0b87563ef499` is
+  `complete_degraded`: Reddit empty, YouTube/X/LinkedIn success at 3/3/1, and
+  Facebook alone transient failure;
+- five attempts consumed 18 requests, seven items, 164 wall seconds, zero
+  cost, and zero model tokens; cumulative attempts are 15 of 50;
+- seven source versions and seven durable media artifacts produced 14 immutable
+  derivatives: five OCR successes, two truthful OCR-empty receipts, seven
+  semantic-sidecar successes, and zero derivative failures;
+- derivative versions are exact Tesseract 5.3.4 and deterministic-local
+  source-grounded-v1; source alt text and OCR derivative IDs are retained as
+  sidecar input references;
+- promoted snapshot `tick-snapshot-c5fb9c4bae4ef203d5a2de6c1495780c`
+  contains 26 entries spanning lexical source, source alt text, OCR, and
+  semantic sidecars; catalog is truthfully empty because no exact duplicates
+  joined;
+- public retrieval returns three partition-correct results and fuses all four
+  channels; profile retrieval returns two X results with alt-text and sidecar
+  channels only;
+- no incident, notification, anomaly, human handoff, Guac request, spend, model
+  call, or timer mutation occurred.
+
+Remaining acceptance criteria:
+
+- run full repository validation and installed runtime/config/timer readbacks;
+- submit the exact closed-world candidate and receipt ledger to one fresh
+  independent evaluator, reconcile any accepted finding within the single
+  review/rework loop, write durable Graphiti memory, and push origin main.
+
+Subagent status and reconciliation:
+
+- `not_spawned` for implementation/live work; the policy-required evaluator is
+  now the only reserved independent subagent task.
+
+Graphiti write status:
+
+- ready after final validation and independent acceptance establish the
+  accepted closeout state.
+
+Authority classification:
+
+- `inherited_authority`; the tick consumed the exact admitted packet and
+  crossed no hard gate.
+
+Next action:
+
+- commit C49/receipt 0070, run the full suite and exact runtime audits, then
+  open the one fresh independent closed-world evaluation.

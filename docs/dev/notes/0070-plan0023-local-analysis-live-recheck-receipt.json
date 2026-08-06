@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0023-local-analysis-live-recheck-0070",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0023",
+    "checkpoint": "P0023-C49",
+    "classification": "inherited_authority"
+  },
+  "tick": {
+    "tick_id": "tick-325e83a6d4df894d074a0b87563ef499",
+    "execution_attempt_id": "tick-attempt-06b604a5b9800758d908441b30700030",
+    "state": "complete_degraded",
+    "interval_from": "2026-08-05T00:00:00Z",
+    "interval_to": "2026-08-06T00:00:00Z",
+    "schedule_id": "manual-default",
+    "config_revision": "p0023-c48-local-analysis-v1",
+    "config_digest": "sha256:d6b8d75653d542bed2714fa375292ce7ec24a10f73e8c3a52ff74071e867596f"
+  },
+  "lanes": [
+    {"service_id": "reddit", "state": "empty", "accepted": 0},
+    {"service_id": "youtube", "state": "success", "accepted": 3},
+    {"service_id": "x", "state": "success", "accepted": 3},
+    {"service_id": "facebook", "state": "failure", "failure_class": "transient", "accepted": 0},
+    {"service_id": "linkedin", "state": "success", "accepted": 1}
+  ],
+  "budget": {
+    "attempts": 5,
+    "network_requests": 18,
+    "items": 7,
+    "wall_seconds": 164,
+    "cost_cents": 0,
+    "model_tokens": 0,
+    "cumulative_provider_attempts": 15,
+    "cumulative_ceiling": 50
+  },
+  "durable_outcome": {
+    "source_versions": 7,
+    "media_artifacts": 7,
+    "derivative_receipts": 14,
+    "ocr_success": 5,
+    "ocr_empty": 2,
+    "ocr_failure": 0,
+    "semantic_sidecar_success": 7,
+    "semantic_sidecar_failure": 0,
+    "derivative_versions": "deterministic_local:source-grounded-v1,tesseract:5.3.4",
+    "catalog_clusters": 0,
+    "anomaly_results": 0,
+    "incidents": 0,
+    "notifications": 0,
+    "snapshot_id": "tick-snapshot-c5fb9c4bae4ef203d5a2de6c1495780c",
+    "snapshot_digest": "sha256:c5fb9c4bae4ef203d5a2de6c1495780ce463000fe838ca6018c85d32b08042ee",
+    "snapshot_entries": 26,
+    "head_promoted": true
+  },
+  "hybrid_query": {
+    "public_result_count": 3,
+    "public_matching_channels": ["lexical_source", "source_alt_text", "ocr", "semantic_sidecar"],
+    "profile_result_count": 2,
+    "profile_matching_channels": ["source_alt_text", "semantic_sidecar"],
+    "partition_filtering": "exact"
+  },
+  "runtime": {
+    "service_version": "0.3.3",
+    "database_schema_version": 15,
+    "provider_cost_cents": 0,
+    "model_tokens": 0,
+    "human_interaction_requested": false,
+    "guacamole_requested": false,
+    "timers_enabled": false
+  },
+  "goal_gate": "successful durable raw evidence, OCR, semantic sidecars, promoted hybrid snapshot, and partition-filtered retrieval are live-proven",
+  "next_action": "run full validation and one fresh independent closed-world evaluation before final closeout and origin push",
+  "private_config_content_recorded": false
+}
