@@ -156,23 +156,80 @@ def shared_profile_owner(
     *,
     expected_profile_id: str,
 ) -> dict[str, Any] | None:
-    """Resolve a live retained owner from broker-provided shared-acquisition hints."""
+    """Resolve a live retained owner suitable for automated acquisition.
+
+    Human-view requirements can make an otherwise healthy same-profile browser
+    incompatible with the requested RDP route. Acquisition may still reuse that
+    owner when it exposes writable CDP control; observation remains a separate
+    incident-gated concern.
+    """
     decision = access_plan.get("decision")
     reuse = decision.get("profileReuse") if isinstance(decision, dict) else {}
-    if not isinstance(reuse, dict) or reuse.get("recommendedAction") != "reuse_existing_browser":
-        return None
-
-    shared = reuse.get("sharedAcquisition")
-    if not isinstance(shared, dict) or shared.get("mode") != "tab_new":
-        return None
-    browser_id = str(shared.get("browserId") or reuse.get("reusableBrowserId") or "")
-    session_name = str(shared.get("sessionName") or reuse.get("reusableSessionName") or "")
-    if not browser_id or not session_name:
+    if not isinstance(reuse, dict):
         return None
 
     browsers = service_state.get("browsers")
     sessions = service_state.get("sessions")
     tabs = service_state.get("tabs")
+    if not isinstance(browsers, dict) or not isinstance(sessions, dict):
+        return None
+
+    browser_id = ""
+    session_name = ""
+    shared = reuse.get("sharedAcquisition")
+    if (
+        reuse.get("recommendedAction") == "reuse_existing_browser"
+        and isinstance(shared, dict)
+        and shared.get("mode") == "tab_new"
+    ):
+        browser_id = str(
+            shared.get("browserId") or reuse.get("reusableBrowserId") or ""
+        )
+        session_name = str(
+            shared.get("sessionName") or reuse.get("reusableSessionName") or ""
+        )
+    else:
+        for candidate_id in reuse.get("sameProfileLiveBrowserIds") or ():
+            candidate_id = str(candidate_id or "")
+            candidate = browsers.get(candidate_id)
+            if not isinstance(candidate, dict) or candidate.get("health") != "ready":
+                continue
+            observed_profile = str(
+                candidate.get("profileId") or candidate.get("runtimeProfile") or ""
+            )
+            if observed_profile and observed_profile != expected_profile_id:
+                continue
+            streams = candidate.get("viewStreams") or ()
+            if not any(
+                isinstance(stream, dict)
+                and stream.get("provider") == "cdp_screencast"
+                and stream.get("controlInput") == "cdp_input"
+                and stream.get("readOnly") is not True
+                for stream in streams
+            ):
+                continue
+            for candidate_session in reuse.get("activeLeaseSessionIds") or ():
+                session = sessions.get(str(candidate_session))
+                if isinstance(session, dict) and candidate_id in (
+                    session.get("browserIds") or ()
+                ):
+                    browser_id = candidate_id
+                    session_name = str(candidate_session)
+                    break
+            if not session_name:
+                for candidate_session, session in sessions.items():
+                    if isinstance(session, dict) and candidate_id in (
+                        session.get("browserIds") or ()
+                    ):
+                        browser_id = candidate_id
+                        session_name = str(candidate_session)
+                        break
+            if browser_id and session_name:
+                break
+
+    if not browser_id or not session_name:
+        return None
+
     browser = browsers.get(browser_id) if isinstance(browsers, dict) else None
     session = sessions.get(session_name) if isinstance(sessions, dict) else None
     if not isinstance(browser, dict) or browser.get("health") != "ready":

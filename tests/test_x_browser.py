@@ -539,6 +539,73 @@ class XBrowserAcquisitionTests(TestCase):
         self.assertEqual("x", workspace.target_id)
         self.assertEqual(2, len(recorder.calls))
 
+    def test_acquisition_reuses_cdp_owner_when_human_view_route_is_incompatible(self):
+        from lib import x_browser
+
+        plan = {
+            "selectedProfile": {"id": "last30days-facebook"},
+            "decision": {
+                "manualActionRequired": False,
+                "profileReuse": {
+                    "recommendedAction": "wait_for_profile_lease",
+                    "activeLeaseSessionIds": ["stored-last30days-social"],
+                    "sameProfileLiveBrowserIds": [
+                        "session:stored-last30days-social"
+                    ],
+                    "sharedAcquisition": {
+                        "mode": None,
+                        "browserId": None,
+                        "sessionName": None,
+                    },
+                },
+            },
+        }
+        status = {
+            "service_state": {
+                "sessions": {
+                    "stored-last30days-social": {
+                        "profileId": "last30days-facebook",
+                        "browserIds": ["session:stored-last30days-social"],
+                        "tabIds": ["target:x"],
+                    },
+                },
+                "browsers": {
+                    "session:stored-last30days-social": {
+                        "profileId": "last30days-facebook",
+                        "health": "ready",
+                        "viewStreams": [
+                            {
+                                "provider": "cdp_screencast",
+                                "controlInput": "cdp_input",
+                                "readOnly": False,
+                            }
+                        ],
+                    },
+                },
+                "tabs": {"target:x": {"targetId": "x", "url": "https://x.com/home"}},
+            },
+        }
+        recorder = RecordingCliClient([plan, status])
+        recorder._client._invoke = recorder.invoke
+
+        with patch.object(x_browser.agent_browser_config, "record_access_plan"):
+            workspace = recorder._client.acquire_workspace(
+                x_browser.BrowserWorkspaceRequest(
+                    profile_id="last30days-facebook",
+                    session_name="last30days-facebook",
+                    browser_build="stealthcdp_chromium",
+                    view_provider="rdp_gateway",
+                    control_input_provider="manual_attached_desktop",
+                    timeout=45,
+                )
+            )
+
+        self.assertEqual("session:stored-last30days-social", workspace.browser_id)
+        self.assertEqual("stored-last30days-social", workspace.session_name)
+        self.assertEqual("x", workspace.target_id)
+        self.assertEqual("not_required", workspace.operator_visible_state)
+        self.assertEqual(2, len(recorder.calls))
+
     def test_shared_owner_prefers_direct_external_guacamole_url(self):
         from lib import x_browser
 

@@ -147,6 +147,55 @@ class AgentBrowserConfigTests(unittest.TestCase):
         self.assertEqual("last30days-facebook", owner["session_name"])
         self.assertEqual("x", owner["target_id"])
 
+    def test_incompatible_human_route_reuses_only_writable_cdp_owner(self):
+        plan = {
+            "decision": {
+                "profileReuse": {
+                    "recommendedAction": "wait_for_profile_lease",
+                    "activeLeaseSessionIds": ["stored-social"],
+                    "sameProfileLiveBrowserIds": ["browser:social"],
+                }
+            }
+        }
+        state = {
+            "sessions": {
+                "stored-social": {
+                    "browserIds": ["browser:social"],
+                    "tabIds": ["target:x"],
+                }
+            },
+            "browsers": {
+                "browser:social": {
+                    "profileId": "last30days-facebook",
+                    "health": "ready",
+                    "viewStreams": [
+                        {
+                            "provider": "cdp_screencast",
+                            "controlInput": "cdp_input",
+                            "readOnly": False,
+                        }
+                    ],
+                }
+            },
+            "tabs": {"target:x": {"targetId": "x"}},
+        }
+
+        owner = agent_browser_config.shared_profile_owner(
+            plan,
+            state,
+            expected_profile_id="last30days-facebook",
+        )
+        self.assertEqual("browser:social", owner["browser_id"])
+
+        state["browsers"]["browser:social"]["viewStreams"][0]["readOnly"] = True
+        self.assertIsNone(
+            agent_browser_config.shared_profile_owner(
+                plan,
+                state,
+                expected_profile_id="last30days-facebook",
+            )
+        )
+
     def test_shared_acquisition_route_uses_authoritative_access_plan_hints(self):
         route = agent_browser_config.shared_acquisition_route(
             access_plan(),

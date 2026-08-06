@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 10
+Plan version: 11
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C42 is the current authority.
+Checkpoint P0023-C43 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -3162,3 +3162,80 @@ Next action:
 - invoke one installed `tick enqueue` for tick
   `tick-86197f5c709f942e4639bd2c362938bb`, monitor read-only, and stop only on a
   named human/scope/ceiling/integrity hard boundary.
+
+### Checkpoint P0023-C43 | 2026-08-06
+
+Plan version: 11
+
+State transition:
+
+- `exact_0_3_1_installed_preflight_pass_t08_ready -> first_manual_tick_complete_degraded_browser_repair_validated`.
+
+Progress classification:
+
+- `outcome_progress` and `blocker_reduction`; the first exact five-lane tick
+  terminalized truthfully, published durable evidence and a promoted hybrid
+  snapshot, and exposed one deterministic acquisition/observation coupling
+  defect now covered by a red/green repair.
+
+Owned changes:
+
+- preserve the terminal Aug 4-5 tick as immutable receipt 0064 at five of the
+  cumulative 50 provider attempts;
+- classify Reddit as healthy empty, YouTube as success with three durable
+  source versions and media assets, and X/Facebook/LinkedIn as source-local
+  `agent_browser_error` failures with no challenge page signals;
+- retain six immutable derivative failure receipts because the configured
+  provider-output bridges received no typed OCR or semantic output;
+- repair only normal workspace acquisition so a healthy same-profile retained
+  owner with writable CDP control wins over an incompatible RDP/manual human-
+  view posture; do not launch a duplicate browser or acquire Guac.
+
+Validation evidence:
+
+- tick `tick-86197f5c709f942e4639bd2c362938bb` is
+  `complete_degraded`; five provider attempts consumed 14 governed requests,
+  three items, 29 wall seconds, zero cost, and zero model tokens;
+- raw publication precedes derivatives and terminal completion; snapshot
+  `tick-snapshot-778e75383840326e01b5e978f1852594` is promoted with three
+  lexical-source and three source-alt-text entries;
+- zero CAPTCHA, Cloudflare, rate-limit, or reauthentication signals, zero
+  incident/notification records, and zero Guac requests are exact;
+- read-only agent-browser state shows a ready worker, queue depth zero, six
+  ready browser records, and all three failed social jobs rejected for the
+  same retained-profile lease while the healthy owner exposed writable CDP;
+- the public-interface tracer failed on the unexpected `remote-view open`,
+  then passed after the repair; 25 focused X/config tests pass with one skip,
+  and 115 Facebook/LinkedIn/worker/runtime tests pass with two skips.
+
+Remaining acceptance criteria:
+
+- build, install, and preflight the exact repair successor; execute one
+  distinct bounded interval and reconstruct the resulting lanes, incidents,
+  derivatives, catalog, retrieval, budgets, and terminal state;
+- successful OCR and semantic sidecars remain unproven. The immutable failures
+  are truthful but do not by themselves satisfy the goal's successful
+  derivative outcome.
+
+Subagent status and reconciliation:
+
+- `not_spawned` for diagnosis and implementation because CodeGraph and the
+  shared browser seam are one critical path. Reserve the policy-required fresh
+  independent evaluator for the final exact candidate and terminal receipt.
+
+Graphiti write status:
+
+- deferred to the next durable installed/recheck checkpoint so the memory
+  records the accepted repair outcome rather than an intermediate diff.
+
+Authority classification:
+
+- `inherited_authority`; this is the first bounded deterministic successor
+  under the approved goal. It changes no source, credential, tenant, audience,
+  paid provider/model, ceiling, timer, or human-observation gate.
+
+Next action:
+
+- checkpoint C43, version and build an exact service successor containing the
+  browser repair, transactionally install it, and run one sanitized preflight
+  for a distinct bounded interval before any second enqueue.

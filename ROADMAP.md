@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 10/C42; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 11/C43; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.3.0/schema 15 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -1052,9 +1052,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- execute Plan 0023/C42's approved goal packet through the bounded manual tick,
-  deterministic repair if needed,
-  independent acceptance, and final push. Keep human interaction, new scope/
+- version, build, transactionally install, and preflight Plan 0023/C43's
+  validated retained-browser repair, then execute one distinct bounded manual
+  interval before independent acceptance and final push. Keep human interaction, new scope/
   credentials/data classes, paid spend, cumulative-ceiling increase, and timer
   enablement as the only later gates.
 

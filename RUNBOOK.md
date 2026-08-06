@@ -11315,3 +11315,62 @@ Next Bounded Action:
 - commit receipt 0063 and C42, then execute exactly one installed manual tick
   enqueue for the frozen identity and monitor it read-only through a truthful
   terminal state or named hard stop.
+
+## Turn 186 | 2026-08-06
+
+Focus: terminalize and reconstruct the first Plan 0023 manual tick, then repair
+the deterministic retained-browser acquisition defect without opening Guac.
+
+Authority Consulted:
+
+- approved goal note 0062; Plan 0023 C42 and acceptance criteria; Roadmap P07;
+  Runbook Turn 185; goal, CodeGraph, architecture, TDD, browser, validation,
+  documentation, and closeout policies; installed tick receipt and read-only
+  agent-browser control-plane state.
+
+Decisions And Changes:
+
+- accepted the first tick's `complete_degraded` state as truthful but not final
+  goal completion;
+- classified the three social failures as one deterministic lease-routing
+  defect: a healthy retained same-profile CDP owner existed, while acquisition
+  demanded the incompatible RDP/manual observation route and attempted a
+  duplicate launch;
+- added one public-interface red/green tracer and one fail-closed CDP-control
+  hardening test; normal acquisition now reuses only a healthy writable CDP
+  owner and leaves human RDP observation incident-gated;
+- preserved the provider-output OCR/semantic failures as immutable evidence
+  and kept successful derivative proof open.
+
+Validation Evidence:
+
+- receipt 0064 binds one tick, five attempts, 14 requests, three source
+  versions/assets, six independent derivative failures, zero incidents/sends/
+  Guac, and one promoted local-hash/RRF snapshot;
+- retained browser status shows worker Ready, queue depth zero, six ready
+  browser rows, a healthy `stored-last30days-social` CDP owner, and three exact
+  profile-lease-conflict jobs;
+- the new tracer first failed on an unexpected `remote-view open` and then
+  passed; focused browser/config and Facebook/LinkedIn/worker/runtime suites
+  pass 25+115 tests with three skips total.
+
+State Movement:
+
+- Plan 0023 advances `C42 -> C43` and version `10 -> 11`;
+- `exact_0_3_1_installed_preflight_pass_t08_ready -> first_manual_tick_complete_degraded_browser_repair_validated`.
+
+Subagent Status And Reconciliation:
+
+- no exploration or implementation delegation; final independent evaluation
+  remains reserved for the exact installed successor and reconstructed receipt.
+
+Graphiti Write Status:
+
+- deferred until the installed repair and bounded recheck establish the next
+  accepted operational state.
+
+Next Bounded Action:
+
+- commit C43, version/build/install the exact repair successor, run one
+  sanitized preflight for a distinct interval, and only then consume a second
+  five-attempt packet within the cumulative ceiling.

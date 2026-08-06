@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0023-first-manual-tick-diagnosis-0064",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0023",
+    "checkpoint": "P0023-C43",
+    "classification": "inherited_authority",
+    "goal_thread_id": "019fd731-3e33-79e3-9eca-00714a48f3e1"
+  },
+  "tick": {
+    "tick_id": "tick-86197f5c709f942e4639bd2c362938bb",
+    "execution_attempt_id": "tick-attempt-7ea1e2986475e471dc68a124d3d4e23f",
+    "state": "complete_degraded",
+    "interval_from": "2026-08-04T00:00:00Z",
+    "interval_to": "2026-08-05T00:00:00Z",
+    "config_revision": "p0023-c33-plan0018-v28",
+    "config_digest": "sha256:99099343b91d9c5be9ed06e431ecc30acf1f6f34b39a2cecc3dfafdc9885cc06",
+    "configured_order": [
+      "reddit",
+      "youtube",
+      "x",
+      "facebook",
+      "linkedin"
+    ],
+    "lane_states": {
+      "reddit": "empty",
+      "youtube": "success",
+      "x": "failure",
+      "facebook": "failure",
+      "linkedin": "failure"
+    },
+    "budget_consumed": {
+      "attempts": 5,
+      "network_requests": 14,
+      "items": 3,
+      "wall_seconds": 29,
+      "cost_cents": 0,
+      "model_tokens": 0
+    },
+    "cumulative_goal_attempts": {
+      "consumed": 5,
+      "ceiling": 50
+    },
+    "durable_counts": {
+      "provider_attempts": 5,
+      "source_versions": 3,
+      "media_assets": 3,
+      "derivatives": 6,
+      "incidents": 0,
+      "notifications": 0,
+      "catalog_clusters": 0
+    },
+    "derivative_states": {
+      "ocr": {
+        "success": 0,
+        "failure": 3,
+        "version": "provider_output_ocr_v1:failure-v1",
+        "safe_error_code": "analysisoutputmissing"
+      },
+      "semantic_sidecar": {
+        "success": 0,
+        "failure": 3,
+        "version": "provider_output_semantic_sidecar_v1:failure-v1",
+        "safe_error_code": "analysisoutputmissing"
+      }
+    },
+    "snapshot": {
+      "snapshot_id": "tick-snapshot-778e75383840326e01b5e978f1852594",
+      "digest": "sha256:778e75383840326e01b5e978f1852594afb22e6e35c24cb6a612a8ffb757274a",
+      "state": "promoted",
+      "head_promoted": true,
+      "embedding_space": "local-hash-v1",
+      "embedding_dimension": 256,
+      "fusion_version": "rrf-v1",
+      "entry_count": 6
+    }
+  },
+  "incident_classification": {
+    "page_signal_count": 0,
+    "rendered_page_count": 0,
+    "operator_url_count": 0,
+    "captcha_cloudflare_rate_limit_or_reauth_observed": false,
+    "durable_incident_required": false,
+    "guac_requested_or_acquired": false
+  },
+  "diagnosis": {
+    "browser_runtime": {
+      "control_plane_worker_state": "Ready",
+      "queue_depth": 0,
+      "ready_browser_records": 6,
+      "failed_social_job_count": 3,
+      "safe_error_class": "profile_lease_conflict",
+      "retained_profile_owner": "stored-last30days-social",
+      "retained_owner_health": "ready",
+      "retained_owner_control": "cdp_screencast/cdp_input",
+      "requested_human_view_control": "rdp_gateway/manual_attached_desktop",
+      "finding": "normal acquisition treated the incompatible human-view route as a reason to launch instead of reusing the writable same-profile CDP owner"
+    },
+    "analysis": {
+      "finding": "the configured provider-output adapters correctly fail when acquisition providers return media bytes without bounded typed OCR or semantic outputs",
+      "classification": "truthful_independent_derivative_failure",
+      "repair_in_this_packet": false
+    }
+  },
+  "repair": {
+    "scope": [
+      "skills/last30days/scripts/lib/agent_browser_config.py",
+      "tests/test_agent_browser_config.py",
+      "tests/test_x_browser.py"
+    ],
+    "behavior": "reuse a healthy same-profile retained owner for normal acquisition only when it exposes writable CDP screencast control, while keeping human RDP observation separate",
+    "interface_expansion": false,
+    "duplicate_browser_launch_allowed": false,
+    "red": {
+      "command": "uv run pytest tests/test_x_browser.py::XBrowserAcquisitionTests::test_acquisition_reuses_cdp_owner_when_human_view_route_is_incompatible -q",
+      "result": "1 failed",
+      "failure": "unexpected remote-view open launch"
+    },
+    "green": [
+      {
+        "command": "uv run pytest tests/test_x_browser.py::XBrowserAcquisitionTests::test_acquisition_reuses_cdp_owner_when_human_view_route_is_incompatible -q",
+        "result": "1 passed"
+      },
+      {
+        "command": "uv run pytest tests/test_agent_browser_config.py tests/test_x_browser.py -q",
+        "result": "25 passed, 1 skipped"
+      },
+      {
+        "command": "uv run pytest tests/test_facebook.py tests/test_linkedin.py tests/test_service_acquisition_worker.py tests/test_service_tick_runtime.py -q",
+        "result": "115 passed, 2 skipped"
+      }
+    ]
+  },
+  "next_action": "checkpoint the terminal tick and validated browser repair, build and transactionally install an exact successor, then run one sanitized preflight before a distinct bounded manual interval",
+  "timers_enabled": false,
+  "private_config_content_recorded": false
+}
