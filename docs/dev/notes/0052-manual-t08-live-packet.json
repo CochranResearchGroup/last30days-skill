@@ -1,9 +1,34 @@
 {
   "authority": {
+    "candidate_install_at_this_checkpoint": false,
     "live_at_this_checkpoint": false,
-    "requires_explicit_operator_approval": true,
+    "requires_explicit_install_approval": true,
+    "requires_explicit_t08_approval_after_fresh_candidate_preflight": true,
     "requires_terminal_independent_review": true
   },
+  "candidate": {
+    "build_receipt": "docs/dev/notes/0054-service-0.3.1-target-order-candidate-receipt.json",
+    "build_receipt_sha256": "60410c7146faf438dbdc0b6e64ba453e047d9ec3c3303350e54c54cf646e5421",
+    "implementation_commit": "51b4401ccf0cab50df2165e41fd64e6d439dfddc",
+    "installer_sha256": "91de23cd3c71839d45eab25d5a7d4999ea36fc298514924b7feab2ffd4a75161",
+    "runtime_artifact_sha256": "54e53ca8a1bb3172edb14cb66909dc2028d2d80e8b8906bc4064dbf92b981fe5",
+    "runtime_manifest_sha256": "6e105eecbd3b1fcd84a48cbf9d4d5a73b6789fe91b3ad715c539568436d64504",
+    "service_version": "0.3.1"
+  },
+  "candidate_validation": {
+    "complete_suite_passed": 2537,
+    "complete_suite_skipped": 7,
+    "complete_suite_subtests_passed": 6,
+    "focused_tick_tests_passed": 88,
+    "order_tracer_bullets": [
+      "enqueue_receipt_red_then_green",
+      "sanitized_preflight_red_then_green",
+      "provider_execution_red_then_green"
+    ],
+    "runtime_package_tests_passed": 45,
+    "runtime_reproducible": true
+  },
+  "checkpoint": "P0023-C38",
   "ceilings": {
     "aggregate": {
       "attempts": 5,
@@ -24,28 +49,22 @@
     "paid_fallback": false,
     "retry": false
   },
-  "candidate_validation": {
-    "focused_tick_tests_passed": 86,
-    "json_parse": "passed",
-    "sanitized_diff_check": "passed",
-    "worktree_diff_check": "passed"
-  },
   "closed_gates": [
-    "enqueue_or_provider_execution_before_explicit_operator_approval",
+    "candidate_install_or_restart_before_explicit_operator_approval",
+    "enqueue_or_provider_execution_before_fresh_candidate_preflight_and_explicit_t08_approval",
     "timer_or_schedule",
     "guacamole_lease_or_human_observation",
     "paid_provider_or_model_call",
     "ceiling_change",
-    "real_rollback",
     "push_tag_publication_or_release"
   ],
   "crash_replay": {
-    "accepted_deterministic_proof": "Plan0023-C06 result-staged and between-lanes same-tick replay proof",
+    "accepted_deterministic_proof": "Plan0023-C05 result-staged and between-lanes same-tick replay proof",
     "live_fault_injection": false,
     "unexpected_process_crash": "hard_stop_without_second_enqueue"
   },
   "execution": {
-    "command_shape": "installed last30days-service tick enqueue with the exact accepted interval and default schedule identity",
+    "command_shape": "installed last30days-service tick enqueue with the exact freshly preflighted interval and default schedule identity",
     "concurrency": 1,
     "global_failure_action": "stop",
     "maximum_enqueue_invocations": 1,
@@ -53,31 +72,23 @@
     "source_local_terminal_action": "continue_to_next_serial_lane_when_global_invariants_hold"
   },
   "hard_stops": [
-    "installed version, runtime manifest, readiness, schema, integrity, rollback identity, config file digest, sanitized config digest, or tick identity differs",
+    "candidate artifact, manifest, installer, implementation commit, or reviewed receipt differs",
+    "installed transition is attempted without separate explicit operator approval",
+    "postinstall version, runtime manifest, readiness, schema, integrity, rollback identity, corpus, or index differs from its approved transition packet",
+    "fresh candidate preflight config file digest, sanitized config digest, tick identity, lane identities, lane order, provider admission, limits, or notification order differs",
     "any existing tick, queued or running attempt, enabled collection specification, enabled timer or schedule, or Guacamole lease appears before enqueue",
-    "provider or resource admission differs from the accepted sanitized preflight",
     "a second attempt, retry, paid fallback, model call, or any per-lane or aggregate ceiling breach is attempted",
     "a source-local condition is misclassified as a global success or a global integrity condition is misclassified as source-local",
-    "an incident is missing its protected rendered-page evidence when the provider supplied a problematic browser page",
+    "an incident is missing protected screenshot and rendered-page evidence when the provider supplied a problematic browser page",
     "incident notification does not follow configured sequential primary-then-fallback semantics or sends without an incident",
     "human observation is requested without stopping at the separate Guacamole acknowledgment gate",
     "the process crashes, durable state cannot be reconstructed, snapshot promotion is non-terminal, or another enqueue would be required",
-    "a timer, schedule, push, publication, release, real rollback, or user-config mutation would be required"
+    "a timer, schedule, push, publication, release, user-config mutation, or ceiling change would be required"
   ],
-  "identity": {
-    "config_digest": "sha256:99099343b91d9c5be9ed06e431ecc30acf1f6f34b39a2cecc3dfafdc9885cc06",
-    "config_file_sha256": "66b81392f8ab8092d5af2757a4764ddb0944e6a0aa212de0f375906a6412ba98",
-    "interval_from": "2026-08-04T00:00:00Z",
-    "interval_to": "2026-08-05T00:00:00Z",
-    "runtime_manifest_sha256": "da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514",
-    "schedule_id": "manual-default",
-    "service_version": "0.3.0",
-    "tick_id": "tick-86197f5c709f942e4639bd2c362938bb"
-  },
   "incidents": {
     "guacamole": "not_authorized; stop for a separate operator acknowledgment and observation gate",
     "human_link_requirement": "only an external agent-browser Guacamole URL after a separately authorized lease; never a local link",
-    "notification_scope_if_live_packet_is_approved": "send only for a durable incident, using configured sequential primary then fallback",
+    "notification_scope_if_t08_is_later_approved": "send only for a durable incident, using configured sequential primary then fallback",
     "problem_page_evidence": "protected screenshot and rendered-page artifact, available through governed artifact retrieval",
     "signals": [
       "captcha",
@@ -86,28 +97,53 @@
       "reauthentication_required"
     ]
   },
+  "installed_baseline": {
+    "implementation_commit": "1a53f67e9dbc67023b47cfa8b20c632f7eee2b10",
+    "install_receipt": "docs/dev/notes/0049-service-0.3.0-transactional-install-receipt.json",
+    "install_receipt_sha256": "99ecca5ca7c507dfe3b3683b397011b31e76a056077cec7bad22f955f0c85f07",
+    "installer_sha256": "91de23cd3c71839d45eab25d5a7d4999ea36fc298514924b7feab2ffd4a75161",
+    "runtime_artifact_sha256": "b0f3cbb6d05c183983fc33d7510057b768573a61f20fb1e5aeb7a308bfc890f2",
+    "runtime_manifest_sha256": "da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514",
+    "service_active": true,
+    "service_version": "0.3.0",
+    "status": "ready",
+    "transactional_review_receipt": "docs/dev/notes/0048-service-transactional-rollback-recheck-independent-review-receipt.json",
+    "transactional_review_receipt_sha256": "748f41eceb7c084dd33461c935d4d9bf67e51787707afc14d88280fd4b3443c8"
+  },
   "lane_controller": {
-    "count": 5,
-    "execution_order_lane_ids": [
-      "tick-lane-64b555e9ef84810a4439bfcb055a1b37",
-      "tick-lane-d7069ba1bfe23300486bab74cbf9eb77",
+    "configured_execution_order_lane_ids": [
       "tick-lane-b6a32d79ec50ed0cc35443069cc7363b",
+      "tick-lane-20b9704d71eaa3ba7324624de1f67061",
       "tick-lane-e6f4ece111c54b63d40472b368bf3a8f",
-      "tick-lane-20b9704d71eaa3ba7324624de1f67061"
+      "tick-lane-64b555e9ef84810a4439bfcb055a1b37",
+      "tick-lane-d7069ba1bfe23300486bab74cbf9eb77"
     ],
+    "count": 5,
+    "order_authority": "Plan0018-V28 receipt 0039",
     "shared_browser_resource_serialized": true
   },
   "plan": "0023",
   "postflight": [
     "read the terminal tick receipt and reconstruct tick, lane, stage, provider, budget, event, incident, artifact, derivative, and snapshot joins",
-    "prove every lane has exactly one truthful terminal and actual budgets remain within the packet ceilings",
+    "prove configured lane order and exactly one truthful terminal per lane with actual budgets inside packet ceilings",
     "prove protected problematic-page artifacts and sequential notification outcomes for every incident that occurred",
     "prove raw-first evidence, OCR, semantic sidecards, catalog entries, access metadata, lexical projection, semantic projection, and terminal snapshot relationships are internally consistent",
     "prove complete or complete_degraded coverage and freshness metadata matches actual source-local outcomes",
-    "prove database and active-index integrity and preserve the installed rollback identity",
+    "prove database and active-index integrity and preserve the approved rollback identity",
     "prove zero enabled specifications, schedules, timers, unacknowledged Guacamole leases, paid calls, pushes, publications, and releases",
     "obtain independent terminal receipt review before Plan 0023 can close"
   ],
+  "preflight_basis": {
+    "candidate_preflight_status": "not_run_requires_install_approval_first",
+    "config_digest": "sha256:99099343b91d9c5be9ed06e431ecc30acf1f6f34b39a2cecc3dfafdc9885cc06",
+    "config_file_sha256": "66b81392f8ab8092d5af2757a4764ddb0944e6a0aa212de0f375906a6412ba98",
+    "interval_from": "2026-08-04T00:00:00Z",
+    "interval_to": "2026-08-05T00:00:00Z",
+    "preflight_receipt": "docs/dev/notes/0051-service-0.3.0-user-config-preflight-receipt.json",
+    "preflight_receipt_sha256": "42c6f2956732d976375d7dbaa7a2f37f751ec8422eb0ea9961e3eb4ee72761b7",
+    "schedule_id": "manual-default",
+    "tick_id": "tick-86197f5c709f942e4639bd2c362938bb"
+  },
   "prestate": {
     "active_attempts": 0,
     "collection_specifications": 42,
@@ -116,28 +152,63 @@
     "document_count": 62,
     "embedding_count": 62,
     "enabled_collection_specifications": 0,
+    "enabled_timers_or_schedules": 0,
     "index_version": "index-d4b3c45667cc2f635c557b85",
-    "rollback_database_integrity": "ok",
-    "rollback_database_schema_version": 12,
-    "rollback_release": "releases/0.2.29",
-    "service_active": true,
-    "service_ticks": 0,
-    "enabled_timers_or_schedules": 0
+    "service_ticks": 0
   },
   "privacy": {
     "raw_credentials_in_packet": false,
     "raw_user_config_review_required": false,
     "repo_particulars": "digests, counts, opaque durable identities, safe adapter behavior, and source-authority references only"
   },
+  "receipt_bindings": {
+    "failed_packet_review": {
+      "path": "docs/dev/notes/0053-manual-t08-live-packet-independent-review-receipt.json",
+      "sha256": "e5b4482d7e81095fbe3ef29072669580ec6be4c58c25209733f8576c97de8b73"
+    },
+    "source_authority": [
+      {
+        "path": "docs/dev/notes/0039-blinded-yield-canary-plan.json",
+        "sha256": "8d459c9ea249fdc1912d41c921cbd923671321b775ea0ad08b6d98c2dcc48b03"
+      },
+      {
+        "path": "docs/dev/notes/0039-blinded-yield-specs/reddit.json",
+        "sha256": "636a9e2a1935b24f8ea6fd23b35e89b3f9edc66aaa2601aa1716c055c497382e"
+      },
+      {
+        "path": "docs/dev/notes/0039-blinded-yield-specs/youtube.json",
+        "sha256": "86f5a991773e4494db1c3d02c92a0350bf4636cb9b7875fb1abc848ae4f7fc26"
+      },
+      {
+        "path": "docs/dev/notes/0039-blinded-yield-specs/x.json",
+        "sha256": "de60bab24212c5134e8f040c94406bfdc1826c56fc223527c3f2efab814eee50"
+      },
+      {
+        "path": "docs/dev/notes/0039-blinded-yield-specs/facebook.json",
+        "sha256": "0caf79ce512666dc72a77c6e68613a5d056dfbd5e0bf6c4636e5d7fec68e4122"
+      },
+      {
+        "path": "docs/dev/notes/0039-blinded-yield-specs/linkedin.json",
+        "sha256": "69f977c7647300e6ca90766e5c736c5acf0d161457cd9eb99f62de6a800f72c6"
+      }
+    ]
+  },
   "review": {
-    "allowed_actions": "read-only repository, installed-state, and sanitized-receipt inspection",
+    "allowed_actions": "read-only repository, artifact, installed-state, and sanitized-receipt inspection",
     "must_not_read": "raw owner-private config or credentials",
-    "required_result": "terminal_pass or terminal_fail before operator approval may be requested",
+    "required_result": "terminal_pass or terminal_fail before install approval may be requested",
     "reviewer": "/root/p0023_c06_review",
     "status": "pending"
   },
-  "schema": "last30days.manual-t08-live-packet.v1",
-  "status": "review_pending",
+  "schema": "last30days.manual-t08-live-packet.v2",
+  "status": "candidate_review_pending",
   "timer_admission": false,
-  "verified_at": "2026-08-05T20:47:53-05:00"
+  "transition_sequence": [
+    "terminal independent PASS for exact 0.3.1 candidate and this packet",
+    "separate explicit operator approval for one exact install transition",
+    "postinstall readback and one side-effect-free sanitized candidate preflight",
+    "separate explicit operator approval for one manual T08 enqueue",
+    "independent terminal T08 receipt review"
+  ],
+  "verified_at": "2026-08-05"
 }

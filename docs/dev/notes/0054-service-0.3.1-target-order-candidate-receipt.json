@@ -1,0 +1,71 @@
+{
+  "candidate": {
+    "archive_entries": 129,
+    "implementation_commit": "51b4401ccf0cab50df2165e41fd64e6d439dfddc",
+    "installer_sha256": "91de23cd3c71839d45eab25d5a7d4999ea36fc298514924b7feab2ffd4a75161",
+    "runtime_artifact_sha256": "54e53ca8a1bb3172edb14cb66909dc2028d2d80e8b8906bc4064dbf92b981fe5",
+    "runtime_manifest_sha256": "6e105eecbd3b1fcd84a48cbf9d4d5a73b6789fe91b3ad715c539568436d64504",
+    "service_version": "0.3.1"
+  },
+  "change": {
+    "database_schema_changed": false,
+    "external_interface_changed": false,
+    "new_config_field": false,
+    "ordering_contract": "enabled targets retain frozen array order through preflight, receipt, execution, and replay",
+    "retry_or_timer_changed": false
+  },
+  "closed_gates": [
+    "install_or_restart",
+    "real_rollback",
+    "user_config_access_or_mutation",
+    "candidate_preflight",
+    "live_provider_execution",
+    "notification_send",
+    "guacamole_lease_or_observation",
+    "timer_or_schedule",
+    "paid_call_or_ceiling_change",
+    "push_tag_publication_or_release"
+  ],
+  "installed_baseline": {
+    "active": true,
+    "database_integrity": "ok",
+    "database_schema_version": 15,
+    "document_count": 62,
+    "embedding_count": 62,
+    "index_version": "index-d4b3c45667cc2f635c557b85",
+    "runtime_manifest_sha256": "da005555f45fc86a54013821900049cca7320df4d8966930f8fee9c1d167b514",
+    "service_ticks": 0,
+    "service_version": "0.3.0",
+    "status": "ready"
+  },
+  "plan": "0023",
+  "schema_version": 1,
+  "side_effects": {
+    "guacamole_leases": 0,
+    "notification_sends": 0,
+    "provider_attempts": 0,
+    "service_restarts": 0,
+    "state_writes": 0,
+    "tick_rows_created": 0,
+    "timers_created": 0
+  },
+  "status": "candidate_ready_not_installed",
+  "validation": {
+    "authority_audit": "passed",
+    "complete_suite": {
+      "passed": 2537,
+      "skipped": 7,
+      "subtests_passed": 6
+    },
+    "focused_tick_tests_passed": 88,
+    "order_tracer_bullets": {
+      "enqueue_receipt": "red_then_green",
+      "provider_execution": "red_then_green",
+      "sanitized_preflight": "red_then_green"
+    },
+    "runtime_package_tests_passed": 45,
+    "runtime_reproducible": true,
+    "worktree_clean_at_build": true
+  },
+  "verified_at": "2026-08-05"
+}

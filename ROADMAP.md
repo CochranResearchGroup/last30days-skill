@@ -983,11 +983,11 @@ Active Plan:
   enablement. Checkpoint C04 validates the deterministic provider, evidence,
   media/analysis, incident, catalog, query, and reconstructable-receipt join.
   The T07 provider/raw crash seam and Phase A install/config preflight are now
-  accepted. Checkpoint C37 repairs the first T08 review's critical finding in
-  candidate service 0.3.1: frozen target-array order now governs preflight,
-  receipts, execution, and replay through one shared invariant. Terminal suite,
-  exact artifact build, packet rework, and independent review remain; install,
-  live providers, incident sends, Guac, and timers stay closed.
+  accepted. Checkpoint C38 binds the committed 0.3.1 target-order repair,
+  reproducible artifact, exact baseline/candidate receipts, and reworked T08
+  packet for one final independent review. Install remains a separate next
+  human gate followed by fresh preflight; T08, incident sends, Guac, and timers
+  remain later and closed.
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the closed predecessor authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
@@ -1053,12 +1053,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- finish Plan 0023/C37's terminal full-suite validation, commit and build the
-  exact 0.3.1 artifact, then rework packet 0052 with explicit baseline/
-  candidate receipt and artifact bindings plus the correct C05 recovery
-  citation. Obtain one final independent review; stop before install/restart,
-  providers, sends, Guac, recurrence, push, publication, release, paid calls,
-  retries, or ceiling changes.
+- obtain Plan 0023/C38's final independent PASS/FAIL for the exact 0.3.1
+  candidate and reworked packet. On PASS, request explicit operator approval
+  only for one install transition and postinstall sanitized preflight. Stop
+  before install/restart, providers, sends, Guac, recurrence, push,
+  publication, release, paid calls, retries, or ceiling changes.
 
 ## Goal-Compatible Plan Conversion
 

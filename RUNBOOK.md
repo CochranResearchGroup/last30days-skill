@@ -11016,3 +11016,66 @@ Next Bounded Action:
 - commit the exact 0.3.1 candidate, build and hash its reproducible artifact,
   then rework packet 0052 and obtain one final
   independent review. Stop before install, restart, T08, or any external gate.
+
+## Turn 181 | 2026-08-05
+
+Focus: bind the exact 0.3.1 artifact and reworked manual T08 packet for final
+independent review.
+
+Authority Consulted:
+
+- Plan 0023 C37, receipts 0039/0048/0049/0051/0053, exact candidate commit,
+  runtime manifest/build contract, fresh installed-state readback, and the
+  three accepted findings from the first packet review.
+
+Decisions And Changes:
+
+- built service 0.3.1 from exact commit `51b4401`, producing artifact SHA
+  `54e53ca8a1bb3172edb14cb66909dc2028d2d80e8b8906bc4064dbf92b981fe5`
+  and manifest SHA
+  `6e105eecbd3b1fcd84a48cbf9d4d5a73b6789fe91b3ad715c539568436d64504`;
+- created candidate receipt 0054 and reworked packet 0052 to bind exact source,
+  baseline review/install/preflight, prior FAIL, candidate build, installer,
+  artifact, manifest, config, tick, and lane-order evidence;
+- corrected replay authority to C05 and set the configured opaque lane order to
+  the accepted Reddit, YouTube, X, Facebook, LinkedIn sequence;
+- split gates truthfully: final review first, explicit 0.3.1 install approval
+  second, postinstall readback plus fresh sanitized candidate preflight third,
+  and separately approved T08 fourth. Guac and timer remain later gates.
+
+Validation Evidence:
+
+- terminal complete suite: 2,537 passed, 7 skipped, 6 subtests passed;
+- artifact is reproducible, contains 129 canonical entries, and embeds the
+  byte-identical committed runtime manifest;
+- receipt 0054 SHA is
+  `60410c7146faf438dbdc0b6e64ba453e047d9ec3c3303350e54c54cf646e5421`;
+  packet 0052 SHA is
+  `2895084f69cb339df3a72b0a92119123adcf7621a84b838e78f3b7e07b7131a0`;
+- every bound receipt/spec hash matches current repository bytes;
+- fresh installed readback remains active/ready 0.3.0/schema15/integrity
+  `ok`/62 documents/62 embeddings with zero ticks/active attempts and unchanged
+  owner-private config digest;
+- no install, restart, candidate preflight, provider, notification, Guac,
+  timer, remote, paid, or release action occurs.
+
+State Movement:
+
+- Plan 0023 advances `C37 -> C38`;
+- `target_order_repair_candidate_ready -> exact_candidate_and_packet_review_pending`.
+
+Subagent Status And Reconciliation:
+
+- existing reviewer `/root/p0023_c06_review` is assigned one terminal read-only
+  review only after the exact C38 commit; raw user config and live actions stay
+  out of scope.
+
+Graphiti Write Status:
+
+- deferred until final candidate review resolves the bounded remediation.
+
+Next Bounded Action:
+
+- commit C38, obtain terminal independent PASS/FAIL, and on PASS request
+  explicit authority only for one exact 0.3.1 install plus postinstall
+  sanitized preflight. Do not install, restart, or enqueue in the review turn.

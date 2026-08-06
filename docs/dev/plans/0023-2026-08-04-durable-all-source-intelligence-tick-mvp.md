@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 5
+Plan version: 6
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C37 is the current authority.
+Checkpoint P0023-C38 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2851,3 +2851,72 @@ Next action:
   then rework packet 0052 with the reviewed
   baseline/candidate receipts and correct C05 citation. Stop before install,
   restart, or T08.
+
+### Checkpoint P0023-C38 | 2026-08-05
+
+Plan version: 6
+
+State transition:
+
+- `target_order_repair_candidate_ready -> exact_candidate_and_packet_review_pending`.
+
+Progress classification:
+
+- `blocker_reduction`; the exact committed 0.3.1 repair, reproducible artifact,
+  candidate receipt, and reworked manual T08 packet now close all three C36
+  findings and are ready for the single final independent review.
+
+Exact candidate evidence:
+
+- implementation commit:
+  `51b4401ccf0cab50df2165e41fd64e6d439dfddc`;
+- service version 0.3.1; artifact SHA-256
+  `54e53ca8a1bb3172edb14cb66909dc2028d2d80e8b8906bc4064dbf92b981fe5`;
+  runtime-manifest SHA-256
+  `6e105eecbd3b1fcd84a48cbf9d4d5a73b6789fe91b3ad715c539568436d64504`;
+  reviewed installer SHA-256
+  `91de23cd3c71839d45eab25d5a7d4999ea36fc298514924b7feab2ffd4a75161`;
+- artifact contains 129 canonical entries and its embedded manifest is
+  byte-identical to the committed manifest;
+- candidate receipt:
+  `docs/dev/notes/0054-service-0.3.1-target-order-candidate-receipt.json`,
+  SHA-256
+  `60410c7146faf438dbdc0b6e64ba453e047d9ec3c3303350e54c54cf646e5421`.
+
+Packet rework:
+
+- packet 0052 advances to schema v2/status `candidate_review_pending`, SHA-256
+  `2895084f69cb339df3a72b0a92119123adcf7621a84b838e78f3b7e07b7131a0`;
+- it explicitly binds Plan 0018 V28 receipt/spec hashes, transactional review
+  receipt 0048, installed-transition receipt 0049, sanitized preflight receipt
+  0051, terminal FAIL receipt 0053, candidate receipt 0054, baseline and
+  candidate implementation/artifact/manifest/installer identities;
+- configured lane order is now the five opaque IDs corresponding to the
+  accepted Reddit, YouTube, X, Facebook, LinkedIn sequence;
+- recovery citation is corrected to C05;
+- the accepted 0.3.0 preflight is only a baseline. Packet review cannot
+  authorize live work: exact 0.3.1 installation requires separate operator
+  approval, followed by postinstall proof and one fresh sanitized preflight;
+  T08 then requires another explicit operator approval;
+- incident-only sequential sends remain inside later T08 approval; Guac remains
+  a still-later acknowledgment/observation gate; timer admission remains false.
+
+Fresh readback:
+
+- installed 0.3.0 remains active/ready at schema 15, integrity `ok`, 62/62,
+  exact old manifest, zero ticks/active attempts, and unchanged owner-private
+  config file digest. No install, restart, preflight, provider, send, Guac, or
+  timer action occurs in C38.
+
+Authority classification:
+
+- `inherited_authority`; candidate build, packet rework, and read-only final
+  review consume the one bounded C36 remediation cycle. Installation and T08
+  remain explicit human gates.
+
+Next action:
+
+- commit C38/receipts and obtain terminal independent PASS/FAIL for that exact
+  commit, artifact, and packet. On PASS, request explicit approval only for one
+  0.3.1 install transition plus postinstall sanitized preflight; do not install
+  or enqueue in the review turn.
