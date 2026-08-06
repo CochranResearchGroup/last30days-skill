@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0024-terminal-verification-graphiti-pending-0084",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0024",
+    "checkpoint": "P0024-C11",
+    "classification": "inherited_authority",
+    "plan_state": "open",
+    "remaining_gate": "graphiti_write_pending"
+  },
+  "candidate": {
+    "implementation_commit": "2e05b5168ee54269e945cd010fa40a241b118315",
+    "artifact_sha256": "efcbec6c58e96703fff5728251194e539fc5a96903fea11c0074348ae30eea8f",
+    "runtime_manifest_sha256": "8d438421c57239ac2f59e9929bf60f6cd809dd5ac702647fe0153caa40213083",
+    "contract_sha256": "fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1"
+  },
+  "installed": {
+    "service_version": "0.3.5",
+    "database_schema_version": 16,
+    "status": "ready",
+    "rollback_service_version": "0.3.4",
+    "rollback_database_schema_version": 15,
+    "sqlite_integrity": "ok"
+  },
+  "schedule": {
+    "enabled": true,
+    "state": "ready",
+    "schedule_id": "daily-default",
+    "interval_seconds": 86400,
+    "anchor_seconds": 0,
+    "last_boundary": "2026-08-06T00:00:00Z",
+    "next_boundary": "2026-08-07T00:00:00Z",
+    "last_tick_id": "tick-45a6e9177b0e2fb5dc7c16d1f4abdc3e",
+    "last_tick_state": "complete_degraded",
+    "runtime_error": null,
+    "event_count": 3,
+    "event_types": ["initialized", "admitted", "tick_bound"]
+  },
+  "live_tick": {
+    "execution_attempts": 1,
+    "provider_attempts": 5,
+    "cumulative_provider_attempts": 20,
+    "requests": 15,
+    "accepted_items": 7,
+    "wall_seconds": 162,
+    "cost": 0,
+    "model_tokens": 0,
+    "source_versions": 7,
+    "artifacts": 4,
+    "derivatives": 8,
+    "incidents": 0,
+    "notifications": 0,
+    "provider_outcomes": {
+      "reddit": {"state": "empty", "accepted_items": 0},
+      "youtube": {"state": "success", "accepted_items": 3},
+      "x": {"state": "success", "accepted_items": 3},
+      "facebook": {"state": "transient_failure", "accepted_items": 0},
+      "linkedin": {"state": "success", "accepted_items": 1}
+    }
+  },
+  "restart_idempotency": {
+    "post_install_restarts_consumed": 2,
+    "timer_ticks": 1,
+    "execution_attempts": 1,
+    "tick_provider_attempts": 5,
+    "total_provider_attempts": 20,
+    "active_attempts": 0,
+    "duplicate_work": false
+  },
+  "ordinary_query": {
+    "snapshot_id": "tick-snapshot-7f32e443802945c7e0c7feab2dbcf6ae",
+    "cache_status": "fresh",
+    "evidence_count": 3,
+    "partitions": ["public"],
+    "matching_channels": ["semantic_sidecar"],
+    "coverage_gaps": ["facebook"],
+    "provenance_present": true
+  },
+  "closeout_guards": {
+    "config_sha256": "1f5b5ab78642fb1ef0fae0bfc36eb3d7c655a25551975d5ea348b1a211af9d25",
+    "collection_specs": 42,
+    "enabled_collection_specs": 0,
+    "systemd_timer_present": false,
+    "daily_schedule_enabled": true
+  },
+  "independent_verification": {
+    "mode": "closed_world",
+    "result": "VERIFIED",
+    "findings": 0,
+    "unresolved_accepted_findings": 0,
+    "critical_remediation_regressions": 0
+  },
+  "validation": {
+    "python": "2559 passed, 7 skipped, 6 subtests passed",
+    "go": "all packages passed",
+    "compileall": "passed",
+    "plan_authority_audit": "passed",
+    "goal_governance_audit": "passed"
+  },
+  "graphiti": {
+    "group_id": "last30days_skill_main",
+    "status": "graphiti_write_pending",
+    "attempts": [
+      {
+        "job_id": "94a73e5c-d4eb-4aa7-8c89-eedb42c5cdb9",
+        "timeout_seconds": 120,
+        "status": "timed_out"
+      },
+      {
+        "job_id": "870b71f9-2bc3-4441-ad9f-30854836a3c1",
+        "timeout_seconds": 240,
+        "status": "timed_out"
+      }
+    ],
+    "exact_episode_lookup_count": 0,
+    "intended_episode_name": "Plan 0024 governed recurring all-source tick closeout 2026-08-06",
+    "source_description": "Plan 0024 terminal repo and installed runtime evidence"
+  },
+  "next_action": "push C11 and receipt 0084; retry one compact Graphiti write after provider recovery, then close Plan 0024 and P08 only after exact episode readback"
+}

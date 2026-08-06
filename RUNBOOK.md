@@ -12349,3 +12349,70 @@ Next Bounded Action:
 
 - commit C10/receipt 0083, verify it independently, then run final validation,
   write Graphiti closeout memory, close Plan 0024/P08, and push origin main.
+
+## Turn 206 | 2026-08-06
+
+Focus: terminally verify the recurring timer outcome and reconcile the durable-
+memory closeout gate.
+
+Authority Consulted:
+
+- Plan 0024 version 10/C10, Roadmap P08, Runbook Turn 205, receipt 0083;
+  policies 0005, 0012, 0013, 0015, 0019, and 0022; the reserved evaluator's
+  closed-world result; current repo, installed schedule, SQLite, and ordinary-
+  query readbacks.
+
+Decisions And Changes:
+
+- accepted the evaluator's `VERIFIED` terminal result with zero findings after
+  primary complete-tree and current-runtime validation;
+- retained the daily schedule enabled/ready because all recurrence, budget,
+  restart, query, rollback, spec, timer, and safety guards remain passing;
+- attempted the required compact Graphiti closeout episode twice within the
+  bounded window; both jobs timed out and exact duplicate detection found no
+  durable episode;
+- preserved Plan 0024/P08 as OPEN and recorded `graphiti_write_pending`, rather
+  than weakening the explicit Graphiti definition-of-done gate or claiming a
+  terminal state that current evidence does not support.
+
+Validation Evidence:
+
+- independent evaluator: `VERIFIED`, zero findings, zero unresolved accepted
+  findings, and no critical remediation regression;
+- primary complete suite: 2,559 Python tests passed, 7 skipped, 6 subtests;
+  all Go MCP packages passed; compileall passed;
+- current live proof remains one timer tick, one execution attempt, five tick
+  provider attempts, 20 cumulative attempts, seven accepted items, zero cost/
+  model use, zero active attempts, zero incidents/notifications, and the same
+  fresh promoted public snapshot after restart;
+- schedule remains enabled/ready for Aug 7 with no runtime error; SQLite is
+  `ok`, 42 specs remain disabled, and no systemd timer exists;
+- Graphiti jobs `94a73e5c-d4eb-4aa7-8c89-eedb42c5cdb9` and
+  `870b71f9-2bc3-4441-ad9f-30854836a3c1` timed out; exact lookup in
+  `last30days_skill_main` returned zero episodes.
+
+State Movement:
+
+- Plan 0024 advances version `10 -> 11` and `C10 -> C11`;
+- `restart_proof_complete_awaiting_terminal_verification -> terminal_evidence_verified_graphiti_write_pending`;
+- Roadmap P08 remains OPEN with Graphiti durability as its sole closure gate.
+
+Subagent Status And Reconciliation:
+
+- `/root/plan0024_design_review` completed the reserved read-only terminal
+  verification; the primary accepted its zero-finding evidence after current-
+  state validation and made all closeout/pending-gate decisions.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; intended episode records the repo path, P08/Plan
+  0024 verified service 0.3.5/schema16 daily recurrence outcome, exact commit/
+  artifact/live-receipt authorities, enabled Aug 7 boundary, truthful Facebook
+  coverage gap, and the durable-memory-only remaining gate.
+
+Next Bounded Action:
+
+- commit C11/receipt 0084 and push the exact implementation/evidence chain to
+  origin main. At the next non-trivial closeout after Graphiti recovery, retry
+  one compact episode and close Plan 0024/P08 only after exact readback; observe
+  the next ordinary daily boundary without changing cadence or ceilings.

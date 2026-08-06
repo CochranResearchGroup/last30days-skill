@@ -1072,20 +1072,25 @@ pause controls.
 
 Current State:
 
-- Plan 0023/P07 are terminally closed with installed service 0.3.4/schema15,
-  compatible MCP 4.0.1, and one promoted `complete_degraded` manual tick;
-- three ticks are terminal, zero are active, no timer-owned tick exists, all 42
-  legacy collection specs are disabled, and no last30days systemd timer exists;
-- the accepted tick contract already supports `trigger=timer`, singleton
-  overlap/lateness, recovery, raw-first evidence, derivatives, terminal query
-  promotion, and exact receipts, but the service constructs no tick scheduler;
-- operator `ok go` explicitly opens this separate recurrence objective under
-  Plan 0024's exact daily cadence and live ceilings.
+- exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
+  rollback retained and the reviewed contract/runtime hashes current;
+- one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,
+  which terminalized `complete_degraded` at five attempts, 15 requests, seven
+  accepted items, 162 wall seconds, zero cost, and zero model use;
+- restart two preserved the same boundary, tick, execution attempt, five
+  provider attempts, three schedule events, and promoted ordinary-query
+  snapshot with no duplicate work; Aug 7 is the exact next boundary;
+- 42 legacy collection specs remain disabled, no last30days systemd timer
+  exists, SQLite is healthy, and the daily schedule is enabled/ready;
+- independent terminal verification and the complete Python/Go/compile and
+  governance validation pass with zero unresolved findings; two bounded
+  Graphiti writes timed out and no exact durable episode exists, making
+  `graphiti_write_pending` the only remaining Plan/P08 closure gate.
 
 Active Plan:
 
 - `docs/dev/plans/0024-2026-08-06-governed-recurring-all-source-tick.md`
-  version 10/C10 is the sole actionable P08 plan. It adds one config-driven
+  version 11/C11 is the sole actionable P08 plan. It adds one config-driven
   service-owned scheduler and durable state, permits at most one automatic
   activation tick and five provider attempts (cumulative maximum 20/50), and
   forbids per-source/systemd timers, legacy spec enablement, catch-up fanout,
@@ -1100,7 +1105,9 @@ Active Plan:
   SQLite healthy, and zero schedule/timer effects. The exact private daily
   schedule admitted one terminal `complete_degraded` Aug 5-6 tick at exactly
   20/50 cumulative attempts and promoted its snapshot. Restart two proves no
-  duplicate work and exact Aug 7 continuity; terminal verification remains.
+  duplicate work and exact Aug 7 continuity. Terminal verification is
+  `VERIFIED` with zero findings; only durable Graphiti episode readback remains
+  before closure.
 
 Dependencies:
 
@@ -1111,9 +1118,11 @@ Dependencies:
 
 Next Bounded Action:
 
-- begin S02 with public-interface failing tests for strict schedule config,
-  deterministic UTC boundaries, durable recovery, loop construction, and
-  sanitized status; keep install, private config, and timer mutation closed.
+- push exact C11/receipt 0084 to origin main, then retry one compact Graphiti
+  write at the next non-trivial closeout after provider recovery and close
+  Plan 0024/P08 only after exact episode readback. Meanwhile observe the next
+  ordinary daily boundary; any cadence, source, provider, ceiling, or timer-
+  architecture change requires separately classified authority.
 
 ## Goal-Compatible Plan Conversion
 

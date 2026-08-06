@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P08
 Date: 2026-08-06
-Plan version: 10
+Plan version: 11
 Predecessor: Plan 0023 version 20/checkpoint P0023-C52
 
 ## Stable Goal
@@ -63,8 +63,14 @@ and fail-closed pause controls without creating a second acquisition path.
   schedule is ready for Aug 7 and S06's final restart proof;
 - restart two preserves exactly that boundary, tick, one execution attempt,
   five provider attempts, three schedule events, promoted snapshot, config
-  hash, and ordinary query result with no duplicate work; terminal independent
-  receipt verification, Graphiti, closeout validation, and origin push remain.
+  hash, and ordinary query result with no duplicate work;
+- terminal independent receipt verification returned `VERIFIED` with zero
+  findings, the complete Python/Go/compile and governance validation passes,
+  and the live daily schedule remains enabled/ready for Aug 7;
+- two bounded Graphiti writes timed out and exact duplicate detection found no
+  durable episode, so repo policy requires `graphiti_write_pending`; durable
+  Graphiti memory is the sole remaining definition-of-done gate before Plan
+  0024/P08 may close, while the verified implementation chain is ready to push.
 
 ## Product Decision
 
@@ -296,7 +302,7 @@ truthfully enabled or fail-closed paused; all legacy specs remain disabled;
 the accepted finding ledger is reconciled; Graphiti memory is durable; and the
 terminal chain is pushed to origin main.
 
-Checkpoint P0024-C10 is the current authority.
+Checkpoint P0024-C11 is the current authority.
 
 ### Checkpoint P0024-C01 | 2026-08-06
 
@@ -833,3 +839,68 @@ Next action:
 - commit C10/receipt 0083, obtain read-only closed-world terminal receipt
   verification, then run final validation, write compact Graphiti memory, close
   P08/Plan 0024, commit terminal receipt, and push exact origin main.
+
+### Checkpoint P0024-C11 | 2026-08-06
+
+Plan version: 11
+
+State transition:
+
+- `restart_proof_complete_awaiting_terminal_verification -> terminal_evidence_verified_graphiti_write_pending`.
+
+Progress classification:
+
+- `outcome_progress`; independent terminal verification and complete current-
+  tree validation close every code, installed-runtime, live-tick, restart,
+  receipt, and accepted-finding criterion, leaving only the external Graphiti
+  durability gate.
+
+Validation evidence:
+
+- the reserved evaluator returned `VERIFIED` with zero findings and zero
+  unresolved accepted findings against the exact timer tick, attempt/provider
+  counts, degraded lane outcomes, budget use, evidence/artifact/derivative
+  counts, promoted snapshot, restart identity, schedule continuity, installed
+  hashes, SQLite/spec/timer guards, and unchanged reviewed runtime code;
+- `uv run pytest` passes 2,559 tests with 7 skipped and 6 subtests; all Go MCP
+  packages pass; compileall, plan-authority, goal-governance, JSON, and diff
+  checks pass;
+- installed service 0.3.5/schema16 remains active/ready and the one daily
+  schedule remains enabled/ready for Aug 7 with no runtime error, duplicate
+  tick, duplicate attempt, duplicate provider work, incident, or notification;
+- Graphiti provider readiness passed, but job
+  `94a73e5c-d4eb-4aa7-8c89-eedb42c5cdb9` timed out at 120 seconds and bounded
+  successor job `870b71f9-2bc3-4441-ad9f-30854836a3c1` timed out at 240
+  seconds; exact episode lookup in `last30days_skill_main` returned no match.
+
+Subagent status and reconciliation:
+
+- `/root/plan0024_design_review` completed the reserved final closed-world
+  receipt verification read-only; the primary accepts its zero-finding result
+  after independently validating the complete current tree and current live
+  state.
+
+Review disposition summary:
+
+- accepted findings: one; resolved: one; unresolved: zero; terminal closed-
+  world findings: zero; critical remediation regressions: zero.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; intended episode: repository path, P08/Plan 0024
+  terminal verified service 0.3.5/schema16 recurrence outcome, commit/artifact/
+  live-receipt authorities, enabled Aug 7 next boundary, truthful Facebook
+  coverage gap, and Graphiti durability as the only remaining closeout gate.
+
+Authority classification:
+
+- `inherited_authority`; one future bounded Graphiti retry after provider
+  recovery and subsequent Plan/P08 closeout remain inside the unchanged goal,
+  but the two-attempt write window is exhausted for this checkpoint.
+
+Next action:
+
+- commit receipt 0084 and this pending-gate checkpoint, push the exact chain to
+  origin main, then at the next non-trivial closeout retry one compact Graphiti
+  write; close Plan 0024/P08 only after exact episode readback succeeds. Observe
+  the next ordinary daily boundary without changing cadence or live ceilings.
