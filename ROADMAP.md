@@ -65,6 +65,9 @@ P07 Service-First Software Productization
   ├──> makes MCP the primary agent/application contract
   ├──> composes P01-P06 behind deterministic software authority
   └──> reduces Skills to optional least-privilege clients
+
+P08 Governed Recurring All-Source Tick
+  └──> schedules only the terminal tick unit accepted by P07/Plan 0023
 ```
 
 P03 discovery and bounded source experiments may proceed alongside P01, but
@@ -128,14 +131,16 @@ successor plans without reopening Plans 0010 or 0011:
 7. `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
    is closed at its terminally accepted version 28/C76 product transition.
 8. `docs/dev/plans/0023-2026-08-04-durable-all-source-intelligence-tick-mvp.md`
-   is the open successor for one durable manual all-source intelligence tick;
-   recurring scheduling remains outside its acceptance boundary.
+   is closed at its terminal manual all-source tick and ordinary-query proof.
+9. `docs/dev/plans/0024-2026-08-06-governed-recurring-all-source-tick.md`
+   is the open recurrence successor whose only new behavior is service-owned,
+   cadence-aligned enqueueing of that exact accepted tick unit.
 
 The 2026-07-29 architecture direction made Plan 0018 the governing successor
 after Plan 0014's terminal timer result. Plan 0018 is now `CLOSED` at its
 independently accepted version 28/C76 service-product and source-evidence
-boundary. Plan 0023 is `OPEN` as the bounded successor that must prove one
-complete manual tick before any timer decision. Plans 0013 and 0017 remain
+boundary. Plan 0023 and P07 are `CLOSED`; Plan 0024/P08 is `OPEN` under the
+operator's explicit timer-enablement authority. Plans 0013 and 0017 remain
 planned and outside this transition critical path; Plans 0015 and 0016 are
 closed foundations.
 
@@ -1053,12 +1058,50 @@ Active Plan:
 
 Next Bounded Action:
 
-- push Plan 0023/C52's exact terminal chain to origin main. A future timer
-  proposal must first open a separately governed roadmap lane and plan using
-  this exact tick unit without a second execution path.
-  Keep human interaction,
-  new scope/credentials/data classes, paid provider/model use, cumulative-
-  ceiling increase, and timer enablement as later gates.
+- preserve P07/Plan 0023 as closed predecessor authority; execute the separately
+  governed P08/Plan 0024 recurrence lane without reopening this plan.
+
+## P08 | Governed Recurring All-Source Tick
+
+State: OPEN
+
+Objective: enable one service-owned daily UTC schedule that calls only the
+durable all-source tick accepted by Plan 0023, then prove one bounded automatic
+tick, restart-safe deduplication, next-boundary continuity, and fail-closed
+pause controls.
+
+Current State:
+
+- Plan 0023/P07 are terminally closed with installed service 0.3.4/schema15,
+  compatible MCP 4.0.1, and one promoted `complete_degraded` manual tick;
+- three ticks are terminal, zero are active, no timer-owned tick exists, all 42
+  legacy collection specs are disabled, and no last30days systemd timer exists;
+- the accepted tick contract already supports `trigger=timer`, singleton
+  overlap/lateness, recovery, raw-first evidence, derivatives, terminal query
+  promotion, and exact receipts, but the service constructs no tick scheduler;
+- operator `ok go` explicitly opens this separate recurrence objective under
+  Plan 0024's exact daily cadence and live ceilings.
+
+Active Plan:
+
+- `docs/dev/plans/0024-2026-08-06-governed-recurring-all-source-tick.md`
+  version 1/C01 is the sole actionable P08 plan. It adds one config-driven
+  service-owned scheduler and durable state, permits at most one automatic
+  activation tick and five provider attempts (cumulative maximum 20/50), and
+  forbids per-source/systemd timers, legacy spec enablement, catch-up fanout,
+  cost/model use, Guacamole observation, or a second acquisition path.
+
+Dependencies:
+
+- consumes P07/Plan 0023's terminal tick, installed lifecycle, rollback,
+  immutable evidence, incident, derivative, and ordinary-query contracts;
+- preserves P02's legacy scheduler only as historical evidence, not as the
+  recurrence implementation for this lane.
+
+Next Bounded Action:
+
+- commit Plan 0024/C01 and receipt 0074, pass planning/goal audits, and run one
+  fresh independent design review before implementation or timer mutation.
 
 ## Goal-Compatible Plan Conversion
 

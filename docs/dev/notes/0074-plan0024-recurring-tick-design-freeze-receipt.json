@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0024-recurring-tick-design-freeze-0074",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0024",
+    "checkpoint": "P0024-C01",
+    "classification": "human_gate",
+    "operator_instruction": "ok go"
+  },
+  "baseline": {
+    "repository_head": "895d460ebad2ec14f75d6e6027b43371dd2e4fbe",
+    "service_version": "0.3.4",
+    "database_schema_version": 15,
+    "sqlite_integrity": "ok",
+    "ticks": 3,
+    "active_ticks": 0,
+    "timer_ticks": 0,
+    "collection_specs": 42,
+    "enabled_collection_specs": 0,
+    "systemd_timers": 0,
+    "cumulative_provider_attempts": 15,
+    "cumulative_ceiling": 50
+  },
+  "private_config_sanitized": {
+    "revision": "p0023-c48-local-analysis-v1",
+    "timezone": "UTC",
+    "lateness_seconds": 86400,
+    "enabled_targets": 5,
+    "services": 5,
+    "notification_transports": 2,
+    "aggregate_limits": {
+      "attempts": 5,
+      "network_requests": 250,
+      "items": 15,
+      "wall_seconds": 600,
+      "cost_cents": 0,
+      "model_tokens": 0
+    }
+  },
+  "design": {
+    "schedule_owner": "service",
+    "deep_interface": "TickCoordinator.enqueue_tick",
+    "trigger": "timer",
+    "cadence_seconds": 86400,
+    "anchor_seconds": 0,
+    "catchup_limit": 1,
+    "systemd_timer": false,
+    "legacy_collection_specs_enabled": false,
+    "live_proof_timer_ticks_max": 1,
+    "live_provider_attempts_max": 5,
+    "cumulative_provider_attempts_max": 20,
+    "provider_cost_cents": 0,
+    "model_tokens": 0
+  },
+  "codegraph": {
+    "files": 342,
+    "nodes": 8957,
+    "edges": 20139,
+    "finding": "the service daemon has only legacy per-spec due scheduling; tick runtime is manual-only"
+  },
+  "policy_selector": {
+    "repo_purpose": "product-engineering",
+    "execution_bias": "balanced",
+    "recommended_profile": "repo-product-engineering",
+    "recommendation_mode": "already-aligned"
+  },
+  "next_action": "commit and independently review the frozen successor before implementation or timer mutation",
+  "private_config_content_recorded": false
+}

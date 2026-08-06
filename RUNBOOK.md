@@ -11830,3 +11830,62 @@ Next Bounded Action:
 
 - commit terminal receipt 0073 and push exact origin main. A recurring timer
   requires a new plan and is not enabled here.
+
+## Turn 196 | 2026-08-06
+
+Focus: open and freeze the separately governed recurring all-source tick
+successor after the operator's `ok go` authorization.
+
+Authority Consulted:
+
+- terminal Plan 0023/C52 and Roadmap P07; operator `ok go`; selector profile
+  `repo-product-engineering`; planning, goal, validation, roadmap/runbook,
+  architecture, documentation, branch, commit, and review policies; current
+  installed service/config/SQLite/spec/timer readbacks; CodeGraph structure.
+- `docs/dev/plans/0024-2026-08-06-governed-recurring-all-source-tick.md`
+  version 1/C01 is the sole active implementation authority.
+
+Decisions And Changes:
+
+- opened Roadmap P08 and Plan 0024 as the sole actionable recurrence authority
+  without reopening terminal P07/Plan 0023;
+- selected one service-owned daily UTC scheduler whose only execution path is
+  `TickCoordinator.enqueue_tick(TickRequest(trigger=timer))`;
+- froze durable schedule state, schema-16 migration, at-most-one latest-boundary
+  admission, pending-tick recovery, sanitized status, fail-closed pause, and
+  backward-compatible absent/disabled configuration;
+- bounded live proof to one automatic tick, five new provider attempts, a
+  cumulative maximum of 20/50, zero cost/model use, one candidate install, and
+  two post-install restarts; all 42 legacy specs and systemd timers remain off.
+
+Validation Evidence:
+
+- origin/main and the pre-plan worktree agree at `895d460e`; installed service
+  0.3.4/schema15 and MCP 4.0.1 are ready, SQLite is `ok`, all three ticks are
+  terminal, and no timer tick or active attempt exists;
+- CodeGraph is healthy at 342 files, 8,957 nodes, and 20,139 edges and proves
+  the daemon has no tick scheduler while the accepted coordinator already
+  supports the timer trigger;
+- receipt 0074 records only sanitized baseline/config/design facts and no
+  private config content.
+
+State Movement:
+
+- Roadmap P08 and Plan 0024 version 1/C01 advance
+  `p08_unplanned -> design_freeze_awaiting_independent_review`;
+- P07/Plan 0023 remain terminally closed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned` during construction because plan architecture, bounds, and
+  canonical wiring were one critical path; one fresh independent design
+  evaluator is reserved after the C01 commit and audits.
+
+Graphiti Write Status:
+
+- deferred until independent design acceptance or a terminal stop.
+
+Next Bounded Action:
+
+- commit Plan 0024/C01 and receipt 0074 after planning/goal audits, then run
+  one fresh independent drift-discovery review before code or timer mutation.
