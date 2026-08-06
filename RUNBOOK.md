@@ -12095,3 +12095,52 @@ Next Bounded Action:
 
 - commit C05/receipt 0078 and obtain closed-world verification of the exact
   candidate before any disabled install.
+
+## Turn 201 | 2026-08-06
+
+Focus: close the S03 exact-candidate review gate and prepare the single
+disabled install.
+
+Authority Consulted:
+
+- Plan 0024 version 5/C05, Roadmap P08, Runbook Turn 200, receipts 0077-0078;
+  exact commit/artifact/manifest evidence; evaluator closed-world result;
+  validation and goal-governance policy.
+
+Decisions And Changes:
+
+- accepted the evaluator's `VERIFIED` result with no finding and no critical
+  regression;
+- closed the goal-level review ledger at one accepted/resolved design finding
+  and zero unresolved findings;
+- authorized only the already-planned S04 upgrade while the schedule remains
+  absent/disabled; activation and provider work remain closed.
+
+Validation Evidence:
+
+- evaluator inspected exact commit `2e05b51` and matching artifact/manifest;
+- 86 focused tests passed under its read-only verification, including the
+  repaired lease-recovery semantics, disabled/config-drift/catch-up/status,
+  process, migration, lifecycle/rollback, and package surfaces;
+- evaluator confirms the runner remains unchanged and the coordinator's only
+  provider-work call is the existing tick enqueue.
+
+State Movement:
+
+- Plan 0024 advances version `5 -> 6` and `C05 -> C06`;
+- `exact_candidate_awaiting_closed_world_verification -> exact_candidate_verified_disabled_install_ready`.
+
+Subagent Status And Reconciliation:
+
+- `/root/plan0024_design_review` is terminal; no writes were made and its
+  evidence is accepted by the primary without opening another review cycle.
+
+Graphiti Write Status:
+
+- deferred to installed or terminal Plan 0024 closeout.
+
+Next Bounded Action:
+
+- commit C06/receipt 0079, perform the one exact disabled upgrade, and verify
+  installed identity, rollback, database, zero schedule/tick effects, disabled
+  legacy specs, and absent systemd timer before private config activation.

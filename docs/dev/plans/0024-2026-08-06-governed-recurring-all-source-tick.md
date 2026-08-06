@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P08
 Date: 2026-08-06
-Plan version: 5
+Plan version: 6
 Predecessor: Plan 0023 version 20/checkpoint P0023-C52
 
 ## Stable Goal
@@ -45,7 +45,10 @@ and fail-closed pause controls without creating a second acquisition path.
   service 0.3.5 artifact SHA-256
   `efcbec6c58e96703fff5728251194e539fc5a96903fea11c0074348ae30eea8f`
   reproducibly, and isolated package/lifecycle/rollback tests pass; only the
-  reserved closed-world candidate verification remains before S04.
+  reserved closed-world candidate verification remains before S04;
+- that evaluator has now returned `VERIFIED` with zero closed-world findings,
+  zero unresolved accepted findings, and zero critical remediation regressions;
+  S04's one exact disabled install is ready.
 
 ## Product Decision
 
@@ -277,7 +280,7 @@ truthfully enabled or fail-closed paused; all legacy specs remain disabled;
 the accepted finding ledger is reconciled; Graphiti memory is durable; and the
 terminal chain is pushed to origin main.
 
-Checkpoint P0024-C05 is the current authority.
+Checkpoint P0024-C06 is the current authority.
 
 ### Checkpoint P0024-C01 | 2026-08-06
 
@@ -547,3 +550,52 @@ Next action:
 - commit C05/receipt 0078 and request the reserved closed-world verification
   of exact commit/artifact; proceed to disabled install only on verified zero-
   blocker evidence.
+
+### Checkpoint P0024-C06 | 2026-08-06
+
+Plan version: 6
+
+State transition:
+
+- `exact_candidate_awaiting_closed_world_verification -> exact_candidate_verified_disabled_install_ready`.
+
+Progress classification:
+
+- `outcome_progress`; S03 is terminally verified and the exact S04 install is
+  the next bounded mutation under standing authority.
+
+Validation evidence:
+
+- `/root/plan0024_design_review` returned `VERIFIED` with zero closed-world
+  findings after inspecting exact commit `2e05b51`, receipt 0078, and the
+  matching artifact and manifest hashes;
+- the evaluator re-ran 86 focused recovery, disabled/config-drift/catch-up,
+  status, process, migration, schema-16 lifecycle/rollback, and package tests;
+- the sole enqueue seam, durable advancement, live-lease wait, expired-lease
+  recovery, and unchanged runner all verified.
+
+Subagent status and reconciliation:
+
+- evaluator terminal; its read-only evidence is accepted by the primary, no
+  files were modified, and no additional evaluator or review cycle is open.
+
+Review disposition summary:
+
+- accepted findings: one; resolved: one; unresolved: zero; closed-world new
+  findings: zero; critical remediation regressions: zero.
+
+Graphiti write status:
+
+- deferred to installed or terminal closeout.
+
+Authority classification:
+
+- `inherited_authority`; S04 is the one exact candidate install explicitly
+  named by Plan 0024 and must keep the schedule absent/disabled.
+
+Next action:
+
+- commit C06/receipt 0079, verify the private config has no schedule object by
+  a whitelisted readback, transactionally upgrade exact artifact `efcbec6...`,
+  and prove service 0.3.5/schema16 ready, rollback retained, SQLite healthy,
+  zero new schedule rows/ticks, 42 specs disabled, and no systemd timer.
