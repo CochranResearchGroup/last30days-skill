@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0024-first-live-timer-tick-0082",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0024",
+    "checkpoint": "P0024-C09",
+    "classification": "inherited_authority"
+  },
+  "schedule": {
+    "schedule_id": "daily-default",
+    "enabled": true,
+    "state": "ready",
+    "interval_seconds": 86400,
+    "anchor_seconds": 0,
+    "last_boundary": "2026-08-06T00:00:00Z",
+    "next_boundary": "2026-08-07T00:00:00Z",
+    "runtime_error": null
+  },
+  "tick": {
+    "tick_id": "tick-45a6e9177b0e2fb5dc7c16d1f4abdc3e",
+    "execution_attempt_id": "tick-attempt-e80d7836e14cf6080c7b349e44ebad02",
+    "trigger": "timer",
+    "interval_from": "2026-08-05T00:00:00Z",
+    "interval_to": "2026-08-06T00:00:00Z",
+    "config_revision": "p0024-c08-daily-schedule-v1",
+    "state": "complete_degraded",
+    "provider_attempts": 5,
+    "source_versions": 7,
+    "artifacts": 4,
+    "derivatives": 8,
+    "incidents": 0,
+    "notifications": 0
+  },
+  "lane_outcomes": {
+    "reddit": "empty",
+    "youtube": "success",
+    "x": "success",
+    "facebook": "failure_transient",
+    "linkedin": "success"
+  },
+  "aggregate_consumed": {
+    "attempts": 5,
+    "network_requests": 15,
+    "items": 7,
+    "wall_seconds": 162,
+    "cost_cents": 0,
+    "model_tokens": 0
+  },
+  "ordinary_query": {
+    "snapshot_id": "tick-snapshot-7f32e443802945c7e0c7feab2dbcf6ae",
+    "cache_status": "fresh",
+    "tick_state": "complete_degraded",
+    "coverage_gaps": ["facebook"],
+    "evidence_count": 3,
+    "partitions": ["public"],
+    "matching_channels": ["semantic_sidecar"],
+    "provenance_present": true
+  },
+  "closeout_guards": {
+    "timer_ticks": 1,
+    "active_attempts": 0,
+    "cumulative_provider_attempts": 20,
+    "cumulative_ceiling": 50,
+    "collection_specs": 42,
+    "enabled_collection_specs": 0,
+    "systemd_timer_present": false,
+    "sqlite_integrity": "ok"
+  },
+  "next_action": "second and final restart durability proof without duplicate work"
+}

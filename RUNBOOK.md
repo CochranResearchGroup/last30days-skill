@@ -12243,3 +12243,60 @@ Next Bounded Action:
 
 - commit C08/receipt 0081, use activation restart one of two, and monitor at
   most one timer tick and five new attempts to truthful terminal state.
+
+## Turn 204 | 2026-08-06
+
+Focus: execute and monitor the one authorized timer-owned all-source tick to
+truthful terminal state.
+
+Authority Consulted:
+
+- Plan 0024 version 8/C08, Roadmap P08, Runbook Turn 203, receipt 0081; exact
+  activation config, installed status, schedule/tick/provider/budget/stage,
+  snapshot, ordinary-query, spec, timer, and SQLite readbacks.
+
+Decisions And Changes:
+
+- consumed activation restart one of two and admitted only the latest completed
+  Aug 5-6 UTC boundary through the service-owned scheduler;
+- monitored each of five source lanes and stopped admission at exactly the
+  20/50 cumulative provider-attempt ceiling;
+- accepted Facebook's transient provider failure as truthful degraded coverage,
+  not a hard failure, because the lane, terminal state, and promoted snapshot
+  all preserve the exact failure and no hidden retry occurred;
+- confirmed the tick receipt's top-level coverage array represents missed
+  intervals while the promoted ordinary snapshot carries exact source coverage.
+
+Validation Evidence:
+
+- exactly one timer tick, one execution attempt, and five new provider attempts
+  exist; the terminal tick is `complete_degraded` with Reddit empty, YouTube/X/
+  LinkedIn success, and Facebook transient failure;
+- consumption is 5/15/7/162 with zero cost/model, producing seven source
+  versions, four artifacts, eight derivatives, no incident/notification, and a
+  promoted snapshot;
+- a live ordinary cache-only query selects snapshot `tick-snapshot-7f32...`,
+  reports only Facebook as the coverage gap, and returns three public results
+  with semantic-sidecar matching and provenance;
+- schedule is enabled/ready for Aug 7 with the exact Aug 6 boundary and terminal
+  tick identity; SQLite is `ok`, active attempts are zero, 42 specs stay
+  disabled, and no systemd timer exists.
+
+State Movement:
+
+- Plan 0024 advances version `8 -> 9` and `C08 -> C09`;
+- `private_config_activation_restart_ready -> live_timer_tick_terminal_restart_proof_ready`.
+
+Subagent Status And Reconciliation:
+
+- no live delegation; primary-owned monitoring preserved the exact ceilings
+  and reconciled the coverage surfaces before accepting terminalization.
+
+Graphiti Write Status:
+
+- deferred until final restart and closeout.
+
+Next Bounded Action:
+
+- commit C09/receipt 0082, use restart two of two, and prove no duplicate
+  boundary/tick/attempt/provider work plus exact Aug 7 continuity.

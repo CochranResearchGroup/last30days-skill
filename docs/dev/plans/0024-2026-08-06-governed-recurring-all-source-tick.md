@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P08
 Date: 2026-08-06
-Plan version: 8
+Plan version: 9
 Predecessor: Plan 0023 version 20/checkpoint P0023-C52
 
 ## Stable Goal
@@ -56,7 +56,11 @@ and fail-closed pause controls without creating a second acquisition path.
 - the private config now has only the authorized revision and exact enabled
   daily schedule addition; JSON, mode, zero-cost/model limits, sanitized
   preflight, and zero pre-restart schedule/timer state pass, so the first
-  activation restart is ready.
+  activation restart is ready;
+- activation restart one admitted exactly one Aug 5-6 timer tick, which
+  terminalized `complete_degraded` with 7 items, one attempt, five provider
+  attempts, zero cost/model use, and a promoted ordinary-query snapshot; the
+  schedule is ready for Aug 7 and S06's final restart proof.
 
 ## Product Decision
 
@@ -288,7 +292,7 @@ truthfully enabled or fail-closed paused; all legacy specs remain disabled;
 the accepted finding ledger is reconciled; Graphiti memory is durable; and the
 terminal chain is pushed to origin main.
 
-Checkpoint P0024-C08 is the current authority.
+Checkpoint P0024-C09 is the current authority.
 
 ### Checkpoint P0024-C01 | 2026-08-06
 
@@ -710,3 +714,63 @@ Next action:
 - commit C08/receipt 0081, perform activation restart one of two, then monitor
   schedule/tick/attempt/budget/provider state until truthful terminalization or
   the first hard stop, never exceeding one timer tick or 20/50 attempts.
+
+### Checkpoint P0024-C09 | 2026-08-06
+
+Plan version: 9
+
+State transition:
+
+- `private_config_activation_restart_ready -> live_timer_tick_terminal_restart_proof_ready`.
+
+Progress classification:
+
+- `outcome_progress`; S05 proves the exact service-owned timer path through one
+  bounded terminal tick and ordinary-query promotion.
+
+Validation evidence:
+
+- activation restart one admitted exactly tick
+  `tick-45a6e9177b0e2fb5dc7c16d1f4abdc3e` for Aug 5-6 UTC, trigger timer,
+  config revision `p0024-c08-daily-schedule-v1`, with one execution attempt;
+- provider outcomes are Reddit empty, YouTube success/3, X success/3,
+  Facebook transient failure/0, and LinkedIn success/1; terminal state is
+  truthful `complete_degraded`;
+- aggregate consumption is 5 attempts, 15 requests, 7 items, 162 wall seconds,
+  zero cost, and zero model tokens; cumulative provider attempts are exactly
+  20/50 and no sixth attempt exists;
+- four artifacts, eight derivatives, seven source versions, zero incidents,
+  zero notifications, and snapshot
+  `tick-snapshot-7f32e443802945c7e0c7feab2dbcf6ae` are durable;
+- ordinary cache-only query uses that exact fresh snapshot, reports Facebook
+  as the sole coverage gap, returns three public results with semantic-sidecar
+  matching and source-grounded provenance;
+- schedule status is enabled/ready, last boundary Aug 6, next boundary Aug 7,
+  exact last tick/state, and no runtime error; SQLite is `ok`, zero attempts
+  remain active, 42 specs remain disabled, and no systemd timer exists.
+
+Subagent status and reconciliation:
+
+- no subagent during live execution; the primary monitored every lane and
+  adjudicated the top-level receipt coverage field against the promoted
+  snapshot's exact completeness rather than treating it as an interval gap.
+
+Review disposition summary:
+
+- accepted/resolved finding ledger remains closed; no live blocking finding
+  exists and the Facebook source-local failure is represented truthfully.
+
+Graphiti write status:
+
+- deferred until S06 restart and terminal closeout.
+
+Authority classification:
+
+- `inherited_authority`; restart two of two is the named durability proof and
+  may not admit another boundary or provider attempt.
+
+Next action:
+
+- commit C09/receipt 0082, perform the second/final post-install restart, then
+  prove the same boundary/tick/attempt/snapshot, zero duplicate provider work,
+  exact Aug 7 next boundary, ordinary-query continuity, and enabled schedule.
