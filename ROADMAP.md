@@ -1085,7 +1085,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0024-2026-08-06-governed-recurring-all-source-tick.md`
-  version 4/C04 is the sole actionable P08 plan. It adds one config-driven
+  version 5/C05 is the sole actionable P08 plan. It adds one config-driven
   service-owned scheduler and durable state, permits at most one automatic
   activation tick and five provider attempts (cumulative maximum 20/50), and
   forbids per-source/systemd timers, legacy spec enablement, catch-up fanout,
@@ -1093,8 +1093,9 @@ Active Plan:
 
 - S02's service 0.3.5/schema16 repository candidate passes the complete
   Python and Go suites plus compile/schema/manifest checks without live or
-  private-config mutation; S03 exact artifact, lifecycle, rollback, and
-  closed-world verification remain before disabled install.
+  private-config mutation; S03 exact commit `2e05b51` produces byte-identical
+  artifact hash `efcbec6c58e9...`, and isolated lifecycle/rollback proof passes.
+  Closed-world exact-candidate verification remains before disabled install.
 
 Dependencies:
 

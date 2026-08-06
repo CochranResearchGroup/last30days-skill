@@ -12047,3 +12047,51 @@ Next Bounded Action:
 - commit C04/receipt 0077, reproducibly build the exact service 0.3.5
   candidate, prove isolated lifecycle/rollback behavior, and obtain the
   reserved closed-world exact-candidate verification before disabled install.
+
+## Turn 200 | 2026-08-06
+
+Focus: cut and prove the exact reproducible service 0.3.5 candidate before
+independent closed-world verification.
+
+Authority Consulted:
+
+- Plan 0024 version 4/C04, Roadmap P08, Runbook Turn 199, receipt 0077; release,
+  lifecycle, validation, commit, and goal-governance policy; exact committed
+  runtime manifest and build scripts.
+
+Decisions And Changes:
+
+- bound S03 to implementation commit `2e05b5168ee54269e945cd010fa40a241b118315`;
+- built the artifact independently in two temporary directories with epoch
+  zero and retained the same deterministic artifact under `dist/service`;
+- kept the actual install, private config, timer loop, and provider work closed
+  pending exact-candidate verification.
+
+Validation Evidence:
+
+- all three artifact copies have SHA-256
+  `efcbec6c58e96703fff5728251194e539fc5a96903fea11c0074348ae30eea8f`;
+- the archive contains service 0.3.5, runtime manifest, schema-16 contracts,
+  and the new schedule coordinator;
+- 15 isolated runtime-package and lifecycle tests pass, including transactional
+  migration, rollback, roll-forward, status, and diagnosis checks;
+- C04's full suite and contract evidence bind the same exact code commit.
+
+State Movement:
+
+- Plan 0024 advances version `4 -> 5` and `C04 -> C05`;
+- `scheduler_repository_candidate_ready -> exact_candidate_awaiting_closed_world_verification`.
+
+Subagent Status And Reconciliation:
+
+- no implementation delegation; the existing evaluator is reserved for one
+  closed-world exact-candidate pass only, with no new broad discovery.
+
+Graphiti Write Status:
+
+- deferred to installed or terminal Plan 0024 closeout.
+
+Next Bounded Action:
+
+- commit C05/receipt 0078 and obtain closed-world verification of the exact
+  candidate before any disabled install.

@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P08
 Date: 2026-08-06
-Plan version: 4
+Plan version: 5
 Predecessor: Plan 0023 version 20/checkpoint P0023-C52
 
 ## Stable Goal
@@ -40,7 +40,12 @@ and fail-closed pause controls without creating a second acquisition path.
   focused and complete validation without any live, private-config, install,
   timer, provider, or notification mutation;
 - S03 remains gated on an exact committed artifact, reproducible build,
-  lifecycle/rollback proof, and closed-world candidate verification.
+  lifecycle/rollback proof, and closed-world candidate verification;
+- exact commit `2e05b5168ee54269e945cd010fa40a241b118315` builds
+  service 0.3.5 artifact SHA-256
+  `efcbec6c58e96703fff5728251194e539fc5a96903fea11c0074348ae30eea8f`
+  reproducibly, and isolated package/lifecycle/rollback tests pass; only the
+  reserved closed-world candidate verification remains before S04.
 
 ## Product Decision
 
@@ -272,7 +277,7 @@ truthfully enabled or fail-closed paused; all legacy specs remain disabled;
 the accepted finding ledger is reconciled; Graphiti memory is durable; and the
 terminal chain is pushed to origin main.
 
-Checkpoint P0024-C04 is the current authority.
+Checkpoint P0024-C05 is the current authority.
 
 ### Checkpoint P0024-C01 | 2026-08-06
 
@@ -489,3 +494,56 @@ Next action:
 - commit C04/receipt 0077, build service 0.3.5 twice from that exact commit,
   prove lifecycle/rollback behavior, and run the one closed-world exact-
   candidate verification before any install or private-config mutation.
+
+### Checkpoint P0024-C05 | 2026-08-06
+
+Plan version: 5
+
+State transition:
+
+- `scheduler_repository_candidate_ready -> exact_candidate_awaiting_closed_world_verification`.
+
+Progress classification:
+
+- `outcome_progress`; S03 now has one immutable code commit, byte-reproducible
+  service artifact, and isolated lifecycle/rollback proof.
+
+Validation evidence:
+
+- exact candidate commit is
+  `2e05b5168ee54269e945cd010fa40a241b118315`;
+- two clean temporary builds and the retained `dist/service` build have the
+  identical artifact SHA-256
+  `efcbec6c58e96703fff5728251194e539fc5a96903fea11c0074348ae30eea8f`;
+- `tests/test_service_runtime_package.py` and
+  `tests/test_service_lifecycle_install.py` pass 15 tests against the exact
+  candidate surfaces, including migration, upgrade, rollback, roll-forward,
+  status, and diagnosis behavior;
+- the prior C04 complete Python, Go, compile, JSON, manifest, and diff results
+  bind the same code commit.
+
+Subagent status and reconciliation:
+
+- implementation remains primary-owned; the existing evaluator may inspect
+  only the exact candidate against the accepted closed ledger and critical
+  regressions introduced by the resolved recovery finding.
+
+Review disposition summary:
+
+- broad discovery remains consumed; one accepted/resolved finding and zero
+  unresolved blockers are the closed-world input.
+
+Graphiti write status:
+
+- deferred until installed or terminal closeout.
+
+Authority classification:
+
+- `inherited_authority`; exact-candidate verification is a named S03 gate and
+  performs no install, private-config, or live mutation.
+
+Next action:
+
+- commit C05/receipt 0078 and request the reserved closed-world verification
+  of exact commit/artifact; proceed to disabled install only on verified zero-
+  blocker evidence.
