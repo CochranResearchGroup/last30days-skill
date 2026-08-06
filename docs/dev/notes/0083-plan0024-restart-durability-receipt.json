@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0024-restart-durability-0083",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0024",
+    "checkpoint": "P0024-C10",
+    "classification": "inherited_authority"
+  },
+  "installed": {
+    "service_version": "0.3.5",
+    "database_schema_version": 16,
+    "status": "ready",
+    "contract_sha256": "fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1",
+    "runtime_manifest_sha256": "8d438421c57239ac2f59e9929bf60f6cd809dd5ac702647fe0153caa40213083"
+  },
+  "schedule_after_restart": {
+    "enabled": true,
+    "state": "ready",
+    "schedule_id": "daily-default",
+    "interval_seconds": 86400,
+    "anchor_seconds": 0,
+    "last_boundary": "2026-08-06T00:00:00Z",
+    "next_boundary": "2026-08-07T00:00:00Z",
+    "last_tick_id": "tick-45a6e9177b0e2fb5dc7c16d1f4abdc3e",
+    "last_tick_state": "complete_degraded",
+    "runtime_error": null,
+    "event_count": 3,
+    "event_types": ["initialized", "admitted", "tick_bound"]
+  },
+  "idempotency": {
+    "timer_ticks_before": 1,
+    "timer_ticks_after": 1,
+    "execution_attempts_before": 1,
+    "execution_attempts_after": 1,
+    "tick_provider_attempts_before": 5,
+    "tick_provider_attempts_after": 5,
+    "total_provider_attempts_before": 20,
+    "total_provider_attempts_after": 20,
+    "active_attempts_after": 0,
+    "duplicate_work": false
+  },
+  "ordinary_query_after_restart": {
+    "snapshot_id": "tick-snapshot-7f32e443802945c7e0c7feab2dbcf6ae",
+    "cache_status": "fresh",
+    "evidence_count": 3,
+    "partitions": ["public"],
+    "matching_channels": ["semantic_sidecar"],
+    "coverage_gaps": ["facebook"],
+    "provenance_present": true
+  },
+  "closeout_guards": {
+    "config_sha256": "1f5b5ab78642fb1ef0fae0bfc36eb3d7c655a25551975d5ea348b1a211af9d25",
+    "sqlite_integrity": "ok",
+    "collection_specs": 42,
+    "enabled_collection_specs": 0,
+    "systemd_timer_present": false,
+    "daily_schedule_enabled": true
+  },
+  "next_action": "independent closed-world terminal receipt verification, Graphiti, final validation, closeout, and origin push"
+}

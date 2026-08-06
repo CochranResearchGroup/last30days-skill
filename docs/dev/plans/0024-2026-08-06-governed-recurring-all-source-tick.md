@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P08
 Date: 2026-08-06
-Plan version: 9
+Plan version: 10
 Predecessor: Plan 0023 version 20/checkpoint P0023-C52
 
 ## Stable Goal
@@ -60,7 +60,11 @@ and fail-closed pause controls without creating a second acquisition path.
 - activation restart one admitted exactly one Aug 5-6 timer tick, which
   terminalized `complete_degraded` with 7 items, one attempt, five provider
   attempts, zero cost/model use, and a promoted ordinary-query snapshot; the
-  schedule is ready for Aug 7 and S06's final restart proof.
+  schedule is ready for Aug 7 and S06's final restart proof;
+- restart two preserves exactly that boundary, tick, one execution attempt,
+  five provider attempts, three schedule events, promoted snapshot, config
+  hash, and ordinary query result with no duplicate work; terminal independent
+  receipt verification, Graphiti, closeout validation, and origin push remain.
 
 ## Product Decision
 
@@ -292,7 +296,7 @@ truthfully enabled or fail-closed paused; all legacy specs remain disabled;
 the accepted finding ledger is reconciled; Graphiti memory is durable; and the
 terminal chain is pushed to origin main.
 
-Checkpoint P0024-C09 is the current authority.
+Checkpoint P0024-C10 is the current authority.
 
 ### Checkpoint P0024-C01 | 2026-08-06
 
@@ -774,3 +778,58 @@ Next action:
 - commit C09/receipt 0082, perform the second/final post-install restart, then
   prove the same boundary/tick/attempt/snapshot, zero duplicate provider work,
   exact Aug 7 next boundary, ordinary-query continuity, and enabled schedule.
+
+### Checkpoint P0024-C10 | 2026-08-06
+
+Plan version: 10
+
+State transition:
+
+- `live_timer_tick_terminal_restart_proof_ready -> restart_proof_complete_awaiting_terminal_verification`.
+
+Progress classification:
+
+- `outcome_progress`; S06's restart/idempotency and ordinary-query continuity
+  criteria are proven against current installed state.
+
+Validation evidence:
+
+- restart two of two returns installed service 0.3.5/schema16 active/ready with
+  the exact reviewed contract and manifest hashes;
+- schedule remains enabled/ready with Aug 6 last boundary, Aug 7 next boundary,
+  exact last tick/state, and no runtime error;
+- timer ticks remain one, execution attempts for the tick remain one, active
+  attempts remain zero, total provider attempts remain 20 and the tick's five,
+  schedule events remain exactly initialized/admitted/tick-bound, and the query
+  head remains `tick-snapshot-7f32...`;
+- ordinary cache-only query after restart remains fresh on that exact snapshot,
+  returns three public results with semantic-sidecar matching/provenance, and
+  reports Facebook as the sole coverage gap;
+- config hash remains `1f5b5ab...f9d25`, SQLite is `ok`, 42 specs remain
+  disabled, no systemd timer exists, and the service-owned schedule is enabled.
+
+Subagent status and reconciliation:
+
+- no live delegation; the existing evaluator is reserved only for final
+  closed-world receipt verification against this exact evidence, not discovery.
+
+Review disposition summary:
+
+- the accepted finding ledger remains one resolved/zero unresolved; final
+  verification may identify only receipt mismatch or critical regression from
+  the bounded live proof.
+
+Graphiti write status:
+
+- pending terminal verification so memory cannot outrank an unverified receipt.
+
+Authority classification:
+
+- `inherited_authority`; terminal verification, Graphiti closeout, final tests,
+  plan closure, and standard origin push are all named remaining S06 work.
+
+Next action:
+
+- commit C10/receipt 0083, obtain read-only closed-world terminal receipt
+  verification, then run final validation, write compact Graphiti memory, close
+  P08/Plan 0024, commit terminal receipt, and push exact origin main.

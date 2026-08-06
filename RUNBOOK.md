@@ -12300,3 +12300,52 @@ Next Bounded Action:
 
 - commit C09/receipt 0082, use restart two of two, and prove no duplicate
   boundary/tick/attempt/provider work plus exact Aug 7 continuity.
+
+## Turn 205 | 2026-08-06
+
+Focus: prove restart-safe recurrence identity and ordinary-query continuity.
+
+Authority Consulted:
+
+- Plan 0024 version 9/C09, Roadmap P08, Runbook Turn 204, receipt 0082; the
+  second/final restart gate and current installed schedule, tick, attempt,
+  provider, event, snapshot, query, config, SQLite, spec, and timer readbacks.
+
+Decisions And Changes:
+
+- consumed restart two of two only after the live tick was terminal and its
+  S05 receipt committed;
+- accepted the restart only because no boundary, tick, attempt, provider work,
+  event, or snapshot was duplicated and the next boundary stayed Aug 7;
+- retained the daily schedule enabled because every current closeout guard is
+  passing; final independent receipt verification remains fail-closed.
+
+Validation Evidence:
+
+- installed 0.3.5/schema16 is active/ready at exact reviewed hashes;
+- one timer tick, one execution attempt, five tick provider attempts, 20 total
+  provider attempts, zero active attempts, and three schedule events remain;
+- schedule is enabled/ready with exact Aug 6/Aug 7 boundaries, terminal tick
+  identity/state, and no runtime error;
+- SQLite is `ok`, config hash is unchanged, 42 specs stay disabled, no systemd
+  timer exists, and the ordinary query selects the unchanged fresh promoted
+  snapshot with exact degraded coverage, partition, channel, and provenance.
+
+State Movement:
+
+- Plan 0024 advances version `9 -> 10` and `C09 -> C10`;
+- `live_timer_tick_terminal_restart_proof_ready -> restart_proof_complete_awaiting_terminal_verification`.
+
+Subagent Status And Reconciliation:
+
+- no live delegation; existing evaluator is reserved for one final read-only
+  closed-world terminal receipt verification.
+
+Graphiti Write Status:
+
+- pending terminal verification.
+
+Next Bounded Action:
+
+- commit C10/receipt 0083, verify it independently, then run final validation,
+  write Graphiti closeout memory, close Plan 0024/P08, and push origin main.
