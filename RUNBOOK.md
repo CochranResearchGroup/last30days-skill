@@ -11258,3 +11258,60 @@ Next Bounded Action:
 - commit this policy/migration checkpoint, transactionally install exact
   service 0.3.1, verify readiness/integrity/rollback identity, then run one
   side-effect-free sanitized preflight before manual T08 execution.
+
+## Turn 185 | 2026-08-06
+
+Focus: transactionally install exact service 0.3.1 and bind the fresh sanitized
+manual-tick identity before any provider execution.
+
+Authority Consulted:
+
+- Plan 0023 C41; Roadmap P07; Runbook Turn 184; receipts 0048-0055; exact
+  installer/artifact/manifest hashes; installed links/readiness; SQLite,
+  collection, timer, config-mode/digest, and rollback-state readbacks; goal,
+  validation, Git, documentation, and roadmap/runbook policies.
+
+Decisions And Changes:
+
+- consumed one and only one reviewed transactional installer invocation for
+  exact service 0.3.1;
+- retained exact 0.3.0 as previous release with private schema-15 rollback
+  state and performed no rollback;
+- ran exactly one side-effect-free installed 0.3.1 preflight for the accepted
+  Aug 4-5 interval and stored sanitized receipt 0063;
+- preserved the configured Reddit, YouTube, X, Facebook, LinkedIn order and
+  kept every schedule/timer disabled.
+
+Validation Evidence:
+
+- installed active/ready 0.3.1/schema15 and exact reviewed manifest; SQLite
+  integrity `ok`, active 62/62 index unchanged, zero ticks/active attempts;
+- current/previous links `releases/0.3.1`/`releases/0.3.0`; rollback metadata
+  and database digest match at modes 0700/0600/0600;
+- preflight `ready` reproduces config digest, tick ID, five opaque lane IDs in
+  configured order, exact aggregate/per-lane ceilings, normalization proofs,
+  and sequential Slack-then-GWS transport readiness without exposing private
+  routing or credentials;
+- 42 specifications/zero enabled and no `last30days` timer remain true.
+
+State Movement:
+
+- Plan 0023 advances `C41 -> C42` and version `9 -> 10`;
+- `goal_worthy_tick_authority_approved_install_ready -> exact_0_3_1_installed_preflight_pass_t08_ready`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; system-level multi-agent policy does not authorize delegation,
+  and the live tick remains one serialized critical path.
+
+Graphiti Write Status:
+
+- C41 episode job `81b9b8b1-60df-430c-bf11-fb8430484f3d` queued in
+  `last30days_skill_main`; avoid an overlapping C42 episode before terminal
+  live-tick state is known.
+
+Next Bounded Action:
+
+- commit receipt 0063 and C42, then execute exactly one installed manual tick
+  enqueue for the frozen identity and monitor it read-only through a truthful
+  terminal state or named hard stop.

@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 9/C41; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 10/C42; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.3.0/schema 15 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -983,11 +983,10 @@ Active Plan:
   enablement. Checkpoint C04 validates the deterministic provider, evidence,
   media/analysis, incident, catalog, query, and reconstructable-receipt join.
   The T07 provider/raw crash seam and Phase A install/config preflight are now
-  accepted. Checkpoint C41 records explicit approval of C40's goal-worthy
-  packet covering install through independently accepted manual tick and final
-  push under the cumulative ceiling. The next critical-path unit is the exact
-  0.3.1 transactional install and sanitized preflight; timers remain a separate
-  later goal.
+  accepted. Checkpoint C42 records exact transactional installation of reviewed
+  service 0.3.1 and a matching side-effect-free sanitized preflight. The next
+  critical-path unit is the single bounded manual tick and terminal receipt
+  reconstruction; timers remain a separate later goal.
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the closed predecessor authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
@@ -1053,8 +1052,8 @@ Active Plan:
 
 Next Bounded Action:
 
-- execute Plan 0023/C41's approved goal packet through the exact 0.3.1 install,
-  sanitized preflight, bounded manual tick, deterministic repair if needed,
+- execute Plan 0023/C42's approved goal packet through the bounded manual tick,
+  deterministic repair if needed,
   independent acceptance, and final push. Keep human interaction, new scope/
   credentials/data classes, paid spend, cumulative-ceiling increase, and timer
   enablement as the only later gates.

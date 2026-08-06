@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 9
+Plan version: 10
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C41 is the current authority.
+Checkpoint P0023-C42 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -3094,3 +3094,71 @@ Next action:
 - commit the policy/note migration and authority checkpoint, then execute one
   exact transactional 0.3.1 upgrade, prove postinstall and rollback state, and
   run one sanitized preflight before the first manual tick.
+
+### Checkpoint P0023-C42 | 2026-08-06
+
+Plan version: 10
+
+State transition:
+
+- `goal_worthy_tick_authority_approved_install_ready -> exact_0_3_1_installed_preflight_pass_t08_ready`.
+
+Progress classification:
+
+- `outcome_progress`; the exact reviewed service 0.3.1 is transactionally
+  installed and one sanitized candidate preflight reconstructs the accepted
+  five-lane identity, configured order, ceilings, and notification readiness
+  without creating tick state.
+
+Owned changes:
+
+- invoke the reviewed installer exactly once for artifact
+  `54e53ca8a1bb3172edb14cb66909dc2028d2d80e8b8906bc4064dbf92b981fe5`;
+- retain 0.3.0 as the previous release with a private, integrity-bound schema-15
+  rollback snapshot;
+- run one side-effect-free preflight for the frozen Aug 4-5 UTC interval and
+  preserve sanitized receipt 0063.
+
+Validation evidence:
+
+- installed service is active/ready 0.3.1 with exact manifest
+  `6e105eecbd3b1fcd84a48cbf9d4d5a73b6789fe91b3ad715c539568436d64504`,
+  schema 15, integrity `ok`, active index
+  `index-d4b3c45667cc2f635c557b85`, and 62 documents/62 current embeddings;
+- current/previous links are `releases/0.3.1` and `releases/0.3.0`; rollback
+  state modes are 0700/0600/0600 and its database digest matches metadata;
+- preflight returns `ready`, accepted config digest and tick ID, lane order
+  Reddit/YouTube/X/Facebook/LinkedIn, exact 5/250/15/600/zero/zero aggregate
+  limits, Slack ready then GWS email not-checked, and no private particulars;
+- zero ticks/active attempts, 42 specs/zero enabled, and no `last30days` timer
+  remain true after preflight.
+
+Remaining acceptance criteria:
+
+- execute the one bounded manual tick, monitor every lane/stage/budget and any
+  durable incident, then reconstruct raw evidence, derivatives, catalog,
+  hybrid snapshot, coverage, final state, and closeout invariants for terminal
+  independent review.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; system-level multi-agent policy does not authorize delegation,
+  and the live tick is the plan's serialized critical path.
+
+Graphiti write status:
+
+- C41 episode job `81b9b8b1-60df-430c-bf11-fb8430484f3d` was queued in
+  `last30days_skill_main`; C42 will be included in the next terminal checkpoint
+  memory rather than creating overlapping episodes.
+
+Authority classification:
+
+- `inherited_authority`; install and preflight are ordinary steps inside the
+  approved C41 goal packet, and the matching sanitized identity makes the
+  single manual enqueue ready under the same standing authority.
+
+Next action:
+
+- invoke one installed `tick enqueue` for tick
+  `tick-86197f5c709f942e4639bd2c362938bb`, monitor read-only, and stop only on a
+  named human/scope/ceiling/integrity hard boundary.

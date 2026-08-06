@@ -1,0 +1,97 @@
+{
+  "candidate": {
+    "implementation_commit": "51b4401ccf0cab50df2165e41fd64e6d439dfddc",
+    "installer_sha256": "91de23cd3c71839d45eab25d5a7d4999ea36fc298514924b7feab2ffd4a75161",
+    "runtime_artifact_sha256": "54e53ca8a1bb3172edb14cb66909dc2028d2d80e8b8906bc4064dbf92b981fe5",
+    "runtime_manifest_sha256": "6e105eecbd3b1fcd84a48cbf9d4d5a73b6789fe91b3ad715c539568436d64504",
+    "service_version": "0.3.1"
+  },
+  "closed_gates": [
+    "second_enqueue_or_retry",
+    "guacamole_lease_or_human_observation",
+    "timer_or_schedule",
+    "paid_provider_or_model_call",
+    "ceiling_change",
+    "new_source_credential_or_data_class"
+  ],
+  "install": {
+    "attempts": 1,
+    "contract_sha256": "d3362ef9edc1e8e58f76d4a5a5ed5375fbc51e39169da1f84714584165f4efd8",
+    "current_release": "releases/0.3.1",
+    "database_integrity": "ok",
+    "database_schema_version": 15,
+    "document_count": 62,
+    "embedding_count": 62,
+    "index_version": "index-d4b3c45667cc2f635c557b85",
+    "previous_release": "releases/0.3.0",
+    "service_status": "ready"
+  },
+  "plan": "0023",
+  "preflight": {
+    "aggregate_limits": {
+      "attempts": 5,
+      "cost_cents": 0,
+      "items": 15,
+      "model_tokens": 0,
+      "network_requests": 250,
+      "wall_seconds": 600
+    },
+    "config_digest": "sha256:99099343b91d9c5be9ed06e431ecc30acf1f6f34b39a2cecc3dfafdc9885cc06",
+    "config_file_sha256": "66b81392f8ab8092d5af2757a4764ddb0944e6a0aa212de0f375906a6412ba98",
+    "config_revision": "p0023-c33-plan0018-v28",
+    "interval_from": "2026-08-04T00:00:00Z",
+    "interval_to": "2026-08-05T00:00:00Z",
+    "lane_ids_in_order": [
+      "tick-lane-b6a32d79ec50ed0cc35443069cc7363b",
+      "tick-lane-20b9704d71eaa3ba7324624de1f67061",
+      "tick-lane-e6f4ece111c54b63d40472b368bf3a8f",
+      "tick-lane-64b555e9ef84810a4439bfcb055a1b37",
+      "tick-lane-d7069ba1bfe23300486bab74cbf9eb77"
+    ],
+    "notification_transports": [
+      {
+        "adapter_type": "slack_receipts",
+        "ordinal": 0,
+        "readiness": "ready"
+      },
+      {
+        "adapter_type": "gws_email",
+        "ordinal": 1,
+        "readiness": "not_checked"
+      }
+    ],
+    "provider_order": [
+      "reddit_keyless",
+      "youtube_ytdlp",
+      "x_agent_browser",
+      "facebook_agent_browser",
+      "linkedin_profile_agent_browser"
+    ],
+    "schedule_id": "manual-default",
+    "side_effect_free": true,
+    "status": "ready",
+    "tick_id": "tick-86197f5c709f942e4639bd2c362938bb"
+  },
+  "rollback_state": {
+    "database_mode": "0600",
+    "database_schema_version": 15,
+    "database_sha256": "cb3bbbb4cbe4b7f47d7fe45b65be8ea4c27f4d979171c92a7e57cc9e90cb26dc",
+    "directory_mode": "0700",
+    "integrity": "ok",
+    "metadata_digest_matches_database": true,
+    "metadata_mode": "0600",
+    "release": "releases/0.3.0"
+  },
+  "schema_version": 1,
+  "side_effects_before_enqueue": {
+    "active_tick_attempts": 0,
+    "enabled_collection_specifications": 0,
+    "guacamole_leases_created": 0,
+    "last30days_timers": 0,
+    "notification_sends": 0,
+    "provider_attempts": 0,
+    "service_ticks": 0
+  },
+  "status": "passed",
+  "verified_at": "2026-08-06T13:20:59Z"
+}
