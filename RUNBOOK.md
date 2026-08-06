@@ -10905,3 +10905,56 @@ Next Bounded Action:
 - commit packet 0052 and obtain terminal independent review. If it passes,
   record the reviewed gate and request explicit operator approval; do not
   enqueue in the same turn.
+
+## Turn 179 | 2026-08-05
+
+Focus: adjudicate terminal independent FAIL for the first manual T08 packet.
+
+Authority Consulted:
+
+- Plan 0023 C33-C35, Plan 0018 V28's exact five-target order, packet 0052,
+  receipts 0049/0051, C05/C06 recovery and media authorities, installed runner
+  ordering behavior, and terminal reviewer evidence.
+
+Decisions And Changes:
+
+- accepted the critical order finding: configured order is Reddit, YouTube, X,
+  Facebook, LinkedIn, while the installed runner sorts Facebook, LinkedIn,
+  Reddit, X, YouTube;
+- accepted the missing explicit receipt/artifact bindings and incorrect C06
+  crash/replay citation; the correct deterministic recovery authority is C05;
+- retained reviewer PASS for ceilings, incident-only sequential notification,
+  protected screenshot/rendered-page evidence, external-only Guac gating,
+  source-local/global semantics, privacy, and closed gates;
+- opened one repo-only TDD remediation and packet rework under the configured
+  single review/rework cycle. No installed or external state is admitted.
+
+Validation Evidence:
+
+- reviewer terminal FAIL binds exact commit `88c3a509`, packet SHA
+  `c94992f779f680ca945c2c49a9408ba6ce2cbeeb55c22b25d90b841523c7bb24`,
+  and 86 passing focused tick tests;
+- CodeGraph confirms `_expand_lanes`, receipt construction, and runner
+  selection sort lexicographically instead of retaining frozen target order;
+- receipt 0053 records three accepted findings, all passed areas, reviewer
+  privacy, and zero live side effects.
+
+State Movement:
+
+- Plan 0023 advances `C35 -> C36`;
+- `t08_live_packet_review_pending -> t08_live_packet_review_failed_order_repair_ready`.
+
+Subagent Status And Reconciliation:
+
+- existing reviewer returned terminal FAIL; the primary independently accepted
+  all three findings against current plan and CodeGraph evidence.
+
+Graphiti Write Status:
+
+- deferred until the bounded remediation reaches terminal review or blocks.
+
+Next Bounded Action:
+
+- commit receipt 0053, finish one TDD target-order repair, build and review an
+  exact patch-version candidate, and rework packet 0052. Stop before install,
+  restart, providers, sends, Guac, timer, push, publication, or release.

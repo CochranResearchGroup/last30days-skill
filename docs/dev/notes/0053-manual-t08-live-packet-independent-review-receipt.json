@@ -1,0 +1,62 @@
+{
+  "accepted_findings": [
+    {
+      "class": "critical",
+      "finding": "The installed runtime orders lanes lexicographically, while Plan 0018 V28 and Plan 0023 C33 require the configured five-target order.",
+      "required_action": "Repair preflight, durable receipt, and execution ordering before another packet review."
+    },
+    {
+      "class": "material",
+      "finding": "Packet 0052 does not bind the accepted install and preflight receipts or all reviewed artifact identities explicitly.",
+      "required_action": "Bind exact receipt paths and implementation, installer, artifact, manifest, config, and tick identities in the reworked packet."
+    },
+    {
+      "class": "material",
+      "finding": "Packet 0052 attributes result-staged and between-lanes replay proof to C06 instead of C05.",
+      "required_action": "Correct the durable recovery authority citation."
+    }
+  ],
+  "closed_gates_confirmed": [
+    "live_provider_execution",
+    "notification_send",
+    "guacamole_lease_or_observation",
+    "timer_or_schedule",
+    "user_config_access_or_mutation",
+    "install_restart_or_real_rollback",
+    "paid_call_or_ceiling_change",
+    "push_tag_publication_or_release"
+  ],
+  "packet_commit": "88c3a509dee5dea4149c51e061da14502d82609d",
+  "packet_path": "docs/dev/notes/0052-manual-t08-live-packet.json",
+  "packet_sha256": "c94992f779f680ca945c2c49a9408ba6ce2cbeeb55c22b25d90b841523c7bb24",
+  "passed_checks": [
+    "identity hashes and opaque lane identities reconstruct",
+    "per-lane and aggregate ceilings match accepted authority",
+    "incident-only sequential notification semantics",
+    "protected screenshot and rendered-page evidence",
+    "external-only separately gated Guacamole observation",
+    "source-local and global failure machinery",
+    "privacy and closed-gate compliance"
+  ],
+  "plan": "0023",
+  "primary_validation": {
+    "focused_tick_tests_passed": 86
+  },
+  "review": {
+    "files_mutated": 0,
+    "raw_user_config_read": false,
+    "reviewer": "/root/p0023_c06_review",
+    "terminal_result": "fail"
+  },
+  "schema_version": 1,
+  "side_effects": {
+    "guacamole_leases": 0,
+    "notification_sends": 0,
+    "provider_attempts": 0,
+    "state_writes": 0,
+    "tick_rows_created": 0,
+    "timers_created": 0
+  },
+  "status": "terminal_fail",
+  "verified_at": "2026-08-05"
+}

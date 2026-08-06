@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C35 is the current authority.
+Checkpoint P0023-C36 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2740,3 +2740,59 @@ Next action:
 - commit the exact packet candidate and obtain one terminal independent
   PASS/FAIL. On PASS, record the reviewed human gate and request explicit
   operator authorization; do not enqueue in the review turn.
+
+### Checkpoint P0023-C36 | 2026-08-05
+
+Plan version: 4
+
+State transition:
+
+- `t08_live_packet_review_pending -> t08_live_packet_review_failed_order_repair_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; terminal independent review rejects packet 0052 before
+  live work and identifies one deterministic runtime contract mismatch plus
+  two bounded evidence defects.
+
+Terminal review result:
+
+- reviewer `/root/p0023_c06_review` returns terminal FAIL for exact commit
+  `88c3a509dee5dea4149c51e061da14502d82609d` and packet SHA-256
+  `c94992f779f680ca945c2c49a9408ba6ce2cbeeb55c22b25d90b841523c7bb24`;
+- the critical accepted finding is that installed preflight/receipt/execution
+  order is lexicographic while Plan 0018 V28 and C33 require frozen config
+  order: Reddit, YouTube, X, Facebook, LinkedIn;
+- packet 0052 must bind receipt 0049, receipt 0051, and exact implementation,
+  installer, runtime artifact/manifest, config, and tick identities;
+- result-staged and between-lanes replay proof belongs to C05, not C06;
+- ceilings, incident-only sequential notification, protected screenshots and
+  rendered-page evidence, separate external-URL Guac gate, source-local/global
+  failure handling, privacy, and all closed gates otherwise pass;
+- durable review receipt:
+  `docs/dev/notes/0053-manual-t08-live-packet-independent-review-receipt.json`.
+
+Bounded successor:
+
+- one TDD remediation may preserve target-array order through the existing
+  public preflight, enqueue receipt, and runner interfaces, then build a new
+  exact runtime candidate. It adds no flag, schema field, source, credential,
+  external effect, cost, retry, concurrency, or ceiling;
+- one reworked packet may correct the receipt/artifact bindings and C05
+  citation. It requires a new terminal independent review before any install
+  or live human gate can open;
+- installation/restart and T08 remain separate human gates; no installed
+  runtime is modified by this successor.
+
+Authority classification:
+
+- `inherited_authority`; the accepted goal and one configured review/rework
+  cycle cover this deterministic repo-only repair. It preserves the same
+  interface, target order, systems, data class, ceilings, and fail-closed
+  boundary.
+
+Next action:
+
+- commit the terminal FAIL receipt, complete one TDD target-order repair,
+  validate and build an exact patch-version candidate, then rework packet 0052
+  for one final independent review. Stop before install, restart, or live work.

@@ -983,11 +983,11 @@ Active Plan:
   enablement. Checkpoint C04 validates the deterministic provider, evidence,
   media/analysis, incident, catalog, query, and reconstructable-receipt join.
   The T07 provider/raw crash seam and Phase A install/config preflight are now
-  accepted. Checkpoint C35 is the current review-only boundary: one sanitized
-  T08 live packet binds the exact preflighted tick to serial lane ceilings,
-  incident escalation, no-retry crash handling, postflight reconstruction, and
-  zero schedules. It authorizes no live action pending terminal independent
-  review and explicit operator approval.
+  accepted. Checkpoint C36 records terminal independent FAIL for the first T08
+  packet: the installed runner executes lexicographic lane order rather than
+  Plan 0018 V28's frozen configured order. One repo-only TDD repair and packet
+  rework is open; install, live providers, incident sends, Guac, and timers
+  remain closed.
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the closed predecessor authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
@@ -1053,11 +1053,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- independently review Plan 0023/C35's exact manual T08 packet. On terminal
-  PASS, record its human gate and request explicit operator approval before a
-  single provider execution or incident-only notification send. Keep real
-  rollback, Guac, recurrence, push, publication, release, paid calls, retries,
-  and ceiling changes closed.
+- complete Plan 0023/C36's one bounded target-order repair, build and review an
+  exact patch-version candidate, and rework packet 0052 with explicit receipt/
+  artifact bindings plus the correct C05 recovery citation. Stop before
+  install/restart, provider execution, incident sends, Guac, recurrence, push,
+  publication, release, paid calls, retries, or ceiling changes.
 
 ## Goal-Compatible Plan Conversion
 
