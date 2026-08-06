@@ -1,0 +1,73 @@
+{
+  "config": {
+    "config_digest": "sha256:99099343b91d9c5be9ed06e431ecc30acf1f6f34b39a2cecc3dfafdc9885cc06",
+    "config_file_sha256": "66b81392f8ab8092d5af2757a4764ddb0944e6a0aa212de0f375906a6412ba98",
+    "directory_mode": "0700",
+    "file_mode": "0600",
+    "particulars_stored_in_repo": false,
+    "raw_credentials_present": false,
+    "service_count": 5,
+    "source_authority": "Plan0018-V28 receipt 0039",
+    "target_count": 5
+  },
+  "derivation": {
+    "aggregate_limits_match_source": true,
+    "notification_order_matches_operator_approval": true,
+    "provider_limits_match_source": true,
+    "selector_and_profile_identities_match_source": true,
+    "translated_selector_fields_admitted_by_installed_adapter": true
+  },
+  "installed_state_postflight": {
+    "artifact_root_created": false,
+    "current_release": "releases/0.3.0",
+    "database_integrity": "ok",
+    "database_schema_version": 15,
+    "document_count": 62,
+    "previous_release": "releases/0.2.29",
+    "readiness": "ready",
+    "rollback_state_preserved": true,
+    "service_active": true
+  },
+  "plan": "0023",
+  "preflight": {
+    "aggregate_limits_redacted_readback": true,
+    "config_particulars_exposed": false,
+    "exit_code": 0,
+    "interval_from": "2026-08-04T00:00:00Z",
+    "interval_to": "2026-08-05T00:00:00Z",
+    "lane_count": 5,
+    "normalization_proof_count": 5,
+    "notification_transports": [
+      {
+        "adapter_type": "slack_receipts",
+        "ordinal": 0,
+        "readiness": "ready",
+        "routing_digest": "sha256:7cf5fe55f4718c1c054669d5f8b96edb49b7cd7ee1936ab144594d3aedeb003b",
+        "transport_id_digest": "sha256:393fa0438546edbf55e0c8511f49363ca129a260849a121173f90c846a4f1406"
+      },
+      {
+        "adapter_type": "gws_email",
+        "ordinal": 1,
+        "readiness": "not_checked",
+        "routing_digest": "sha256:0fefe2fd388c6cb6e319db7ac094d23ca48b65e2489b98c43f36b662e61221f8",
+        "transport_id_digest": "sha256:3643e1c11780e17d26aaaf0b344144b06aca2323b0b59941e78b370539c778b7"
+      }
+    ],
+    "schedule_id": "manual-default",
+    "status": "ready",
+    "tick_id": "tick-86197f5c709f942e4639bd2c362938bb"
+  },
+  "schema_version": 1,
+  "side_effects": {
+    "guacamole_leases": 0,
+    "notification_readiness_calls": 1,
+    "notification_sends": 0,
+    "provider_attempts": 0,
+    "state_writes": 0,
+    "tick_rows_created": 0,
+    "timers_created": 0
+  },
+  "standalone_json_schema_validator": "not_installed_not_claimed",
+  "status": "passed",
+  "verified_at": "2026-08-05T20:35:41-05:00"
+}

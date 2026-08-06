@@ -10755,8 +10755,8 @@ Decisions And Changes:
 - fixed five exact enabled tick targets from the accepted Plan 0018 packet,
   preserving selectors, access profiles, methods, serial ordering, and zero-
   cost/model ceilings while translating LinkedIn `profile_url` to tick `url`;
-- fixed the already-approved Slack default workspace/`@eric` primary and GWS
-  self-email fallback without any message send;
+- fixed the already-approved sequential primary/fallback notification policy
+  while retaining all routing and recipient particulars only in user config;
 - selected only installed acquisition/OCR/sidecard adapters, local-hash/RRF,
   owner-private artifact storage, and documented observation machinery;
 - admitted one owner-private config creation plus one sanitized preflight; kept
@@ -10764,12 +10764,12 @@ Decisions And Changes:
 
 Validation Evidence:
 
-- Plan 0018 receipt 0039 fixes five lanes, exact selectors, `default` versus
-  `last30days-facebook`, one/50/120/3 lane limits, and 5/250/600/15 aggregate;
+- Plan 0018 receipt 0039 and its five artifacts fix exact lanes, selectors,
+  access profiles, methods, lane limits, and aggregate ceilings;
 - installed adapter registry declares each translated adapter with non-zero
   normalization proof; tick adapter accepts topic/url plus profile/depth;
-- Slack Receipts read-only workspace catalog identifies exact workspace
-  `default`; no Slack or GWS write occurred.
+- Slack Receipts read-only catalog confirms the configured primary workspace;
+  no routing particular is added to repo evidence and no Slack/GWS write occurs.
 
 State Movement:
 
@@ -10788,3 +10788,59 @@ Next Bounded Action:
 
 - commit C33, create the owner-private config at mode 0600, validate exact
   derivation/schema, run one sanitized preflight, and stop on any mismatch.
+
+## Turn 177 | 2026-08-05
+
+Focus: materialize and accept the derived owner-private tick config through
+installed sanitized preflight.
+
+Authority Consulted:
+
+- Plan 0023 V2/C33; Plan 0018 V28 receipt/spec artifacts; installed 0.3.0
+  config/preflight code and schema; operator-approved notification order;
+  Slack Receipts read-only workspace readiness machinery.
+
+Decisions And Changes:
+
+- created one default-XDG user config, directory 0700/file 0600, containing
+  exact derived particulars and stable credential references but no raw secret;
+- kept the config content out of the repository and retained only safe digests,
+  counts, adapter classes, readiness states, and source-authority references;
+- ran one installed preflight for Aug 4-5 UTC; stopped before enqueue and every
+  provider/send/Guac/T08/timer action.
+
+Validation Evidence:
+
+- standard JSON/derivation checks pass; optional `jsonschema` is unavailable
+  and not claimed; installed preflight authoritatively passes schema and
+  adapter admission;
+- sanitized config digest is
+  `sha256:99099343b91d9c5be9ed06e431ecc30acf1f6f34b39a2cecc3dfafdc9885cc06`;
+  tick ID is `tick-86197f5c709f942e4639bd2c362938bb`;
+- five lanes and five normalization proofs pass; primary readiness is ready,
+  fallback is sequentially not checked, and no send occurs;
+- exact tick-row count is zero, artifact root absent, provider/send/Guac/timer
+  counts zero; installed 0.3.0/schema15/integrity/62-document state and exact
+  rollback remain healthy;
+- receipt 0051 contains no user routing, selector, profile, address, artifact,
+  observation, or credential particulars.
+
+State Movement:
+
+- Plan 0023 advances `C33 -> C34`;
+- `phase_a_user_config_derivation_authorized -> phase_a_sanitized_preflight_accepted_t08_human_gate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; user config derivation and sanitized proof are primary-owned.
+
+Graphiti Write Status:
+
+- candidate durable memory only after the T08 human-gate packet is reconciled;
+  repo plan/receipt remain operational authority.
+
+Next Bounded Action:
+
+- prepare one review-only T08 packet bound to the accepted config/tick IDs,
+  ceilings, serial resource order, incidents/notifications/Guac, crash/replay,
+  and zero schedules. Obtain explicit human approval before enqueue.

@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C33 is the current authority.
+Checkpoint P0023-C34 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2573,29 +2573,21 @@ Progress classification:
 
 Exact derivation contract:
 
-- retain Plan 0018's five services and order: Reddit, YouTube, X, Facebook,
-  LinkedIn; use the `OpenAI` topic for the first four and the exact OpenAI
-  company profile URL for LinkedIn, translated from collection
-  `profile_url` to the tick adapter's accepted `url` selector field;
-- retain the accepted access methods as installed adapter types:
-  `reddit_keyless`, `youtube_ytdlp`, `x_agent_browser`,
-  `facebook_agent_browser`, and `linkedin_profile_agent_browser`;
-- retain `default` for public lanes and exact `last30days-facebook` for X,
-  Facebook, and LinkedIn; public/authenticated access partitions remain
-  distinct and all five derived targets are enabled only in this manual tick
-  config, not as recurring collection specifications;
-- retain per-lane ceilings of one attempt, 50 requests, 120 seconds, three
-  items, zero cost, and zero model tokens; aggregate ceilings remain
-  5/250/600/15/zero/zero with serial shared-browser resource identity;
+- retain the exact five-service order, selector/profile/access identities,
+  access methods, target bounds, and packet ceilings from Plan 0018 V28
+  receipt 0039 and its five artifacts; translate only fields required by the
+  current tick adapter contract and keep the actual values user-scoped;
+- all five derived targets are enabled only in this manual tick config, not as
+  recurring collection specifications; shared browser resources remain serial;
 - use the installed OCR and provider-output semantic-sidecar adapters, local
   hash embedding space and RRF v1, an owner-private user artifact root with
   30-day retention and no unavailable encryption adapter, and the documented
   local agent-browser service endpoint used only after the incident
   acknowledgment/observation gate;
-- configure notifications sequentially as explicitly approved: Slack Receipts
-  workspace `default` to `@eric`, then GWS self-email to the approved user
-  address. Credential fields are stable references only; no token, cookie,
-  password, lease, or raw credential enters the document or repository.
+- configure the explicitly approved sequential primary/fallback notification
+  transports; exact workspace, recipient, address, subject, and credential
+  references remain only in the user config. No token, cookie, password,
+  lease, routing particular, or raw credential enters repository data.
 
 Execution bounds and gates:
 
@@ -2619,3 +2611,67 @@ Next action:
 - commit C33, materialize the exact owner-private config with safe modes,
   validate it against installed code/schema, run sanitized preflight once, and
   stop on any admission/readiness mismatch or side effect.
+
+### Checkpoint P0023-C34 | 2026-08-05
+
+Plan version: 2
+
+State transition:
+
+- `phase_a_user_config_derivation_authorized -> phase_a_sanitized_preflight_accepted_t08_human_gate`.
+
+Progress classification:
+
+- `outcome_progress`; the owner-private derived config is materialized and the
+  installed sanitized preflight passes with exact five-lane admission,
+  normalization proofs, bounded resources, and sequential notification
+  readiness while creating no tick or live side effect.
+
+Accepted config/preflight evidence:
+
+- the default XDG config directory is mode 0700 and config file mode 0600;
+  file SHA-256 is
+  `66b81392f8ab8092d5af2757a4764ddb0944e6a0aa212de0f375906a6412ba98`
+  and sanitized config digest is
+  `sha256:99099343b91d9c5be9ed06e431ecc30acf1f6f34b39a2cecc3dfafdc9885cc06`;
+- standard-library JSON/derivation checks pass; the optional standalone
+  `jsonschema` package is absent and is not claimed. Installed preflight is the
+  authoritative schema, adapter, analysis, selector, limit, and notification
+  admission check;
+- preflight for the Aug 4-5 UTC interval exits zero with tick identity
+  `tick-86197f5c709f942e4639bd2c362938bb`, five lanes, five non-zero
+  normalization proofs, exact aggregate-limit readback, and no exposure of
+  selectors, profiles, access partitions, resources, routing, recipients,
+  credentials, artifact path, or observation endpoint;
+- the primary transport passes one non-message readiness check; the configured
+  fallback is truthfully `not_checked` because sequential readiness stops at
+  the first ready transport. No notification send occurs;
+- exact tick-row count is zero, configured artifact root remains absent,
+  provider attempts/sends/Guac/timers are zero, and installed postflight
+  remains active 0.3.0/schema15/integrity `ok`/62 documents with exact 0.2.29
+  rollback preserved;
+- durable sanitized receipt:
+  `docs/dev/notes/0051-service-0.3.0-user-config-preflight-receipt.json`.
+
+Privacy reconciliation:
+
+- current services, targets/selectors/profiles, partitions, provider/resource/
+  credential references, artifact/observation paths, and notification routing
+  particulars exist only in the owner-private user document. Repository
+  evidence retains only source-authority references, counts, safe adapter
+  classes, digests, readiness states, and zero-side-effect proof.
+
+Authority classification:
+
+- `human_gate`; the approved Phase A install and sanitized user-config
+  preflight are complete. Manual T08 still requires a separately reviewed and
+  explicitly approved live packet with current ceilings; timer scheduling is
+  not admitted by T08 and remains a later successor.
+
+Next action:
+
+- stop before enqueue. Prepare one review-only T08 packet bound to the accepted
+  tick/config identities, exact five lanes, serial browser/resource semantics,
+  attempt/request/item/wall/model/cost ceilings, per-lane receipt stops,
+  incident/notification/Guac gates, crash/replay proof, and zero schedules;
+  obtain explicit human approval before any provider or send action.
