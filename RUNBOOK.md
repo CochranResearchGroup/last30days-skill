@@ -11941,3 +11941,50 @@ Next Bounded Action:
 
 - commit C02/receipt 0075 and obtain closed-world verification from the same
   evaluator before S02 code or any runtime mutation.
+
+## Turn 198 | 2026-08-06
+
+Focus: close the Plan 0024 design ledger and authorize test-first scheduler
+implementation.
+
+Authority Consulted:
+
+- Plan 0024 version 2/C02; Roadmap P08; Runbook Turn 197; receipt 0075;
+  evaluator closed-world verification of commit `77b6779`; planning and goal
+  audits.
+
+Decisions And Changes:
+
+- accepted the same evaluator's `VERIFIED / RESOLVED` result;
+- closed the only accepted finding with no noncritical, rejected, other, or
+  unresolved findings;
+- consumed the single goal-level review/rework cycle and opened only S02's
+  repository implementation/test surfaces;
+- retained closed gates on candidate install, private config mutation, source
+  work, timer activation, restart, and live proof.
+
+Validation Evidence:
+
+- the verifier confirms stable boundary/tick/lane/stage identity, live-lease
+  waiting, expired-lease attempt N+1, completed-stage/staged-result reuse, and
+  recovery-before-new-boundary are coherent with the unchanged runner;
+- plan-authority, active-plan, goal-governance, JSON, and diff audits pass.
+
+State Movement:
+
+- Plan 0024 advances version `2 -> 3` and `C02 -> C03`;
+- `design_rework_awaiting_closed_world_verification -> design_accepted_scheduler_tdd_ready`.
+
+Subagent Status And Reconciliation:
+
+- `/root/plan0024_design_review` is terminal after one discovery pass and one
+  closed-world verification; zero accepted blocking findings remain.
+
+Graphiti Write Status:
+
+- deferred to installed or terminal closeout.
+
+Next Bounded Action:
+
+- commit C03/receipt 0076, re-read implementation/TDD/validation policy, and
+  begin S02 with public-interface red tests while all live gates remain closed.

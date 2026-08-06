@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P08
 Date: 2026-08-06
-Plan version: 2
+Plan version: 3
 Predecessor: Plan 0023 version 20/checkpoint P0023-C52
 
 ## Stable Goal
@@ -265,7 +265,7 @@ truthfully enabled or fail-closed paused; all legacy specs remain disabled;
 the accepted finding ledger is reconciled; Graphiti memory is durable; and the
 terminal chain is pushed to origin main.
 
-Checkpoint P0024-C02 is the current authority.
+Checkpoint P0024-C03 is the current authority.
 
 ### Checkpoint P0024-C01 | 2026-08-06
 
@@ -380,3 +380,52 @@ Next action:
 
 - validate and commit C02/receipt 0075, then return only this accepted finding
   to the same evaluator for closed-world verification before S02 code.
+
+### Checkpoint P0024-C03 | 2026-08-06
+
+Plan version: 3
+
+State transition:
+
+- `design_rework_awaiting_closed_world_verification -> design_accepted_scheduler_tdd_ready`.
+
+Progress classification:
+
+- `outcome_progress`; S01 is independently accepted with a closed finding
+  ledger and S02 may begin without live config, install, or timer mutation.
+
+Validation evidence:
+
+- the same evaluator returned `VERIFIED / RESOLVED` against commit `77b6779`;
+- stable boundary/tick/lane/stage identity, live-lease recovery waiting,
+  expired-lease successor attempt N+1, completed-stage/staged-result reuse, and
+  recovery-before-new-boundary are all explicit;
+- plan-authority, active-plan, goal-governance, JSON, and diff audits pass at
+  C02.
+
+Subagent status and reconciliation:
+
+- `/root/plan0024_design_review` completed discovery and the one closed-world
+  verification; it is terminal and no further S01 reviewer is authorized.
+
+Review disposition summary:
+
+- critical findings discovered: one; accepted: one; resolved: one;
+- noncritical findings: zero; rejected findings: zero; unresolved accepted
+  blocking findings: zero;
+- the single goal-level review/rework cycle is consumed.
+
+Graphiti write status:
+
+- deferred to installed or terminal Plan 0024 closeout so derived memory does
+  not outrank the active repo authority.
+
+Authority classification:
+
+- `inherited_authority`; S02 is the next packet inside the unchanged operator-
+  approved objective and frozen implementation surfaces.
+
+Next action:
+
+- commit C03/receipt 0076, re-read implementation/TDD/validation policy, and
+  begin S02 with failing public-interface config and schedule tests only.
