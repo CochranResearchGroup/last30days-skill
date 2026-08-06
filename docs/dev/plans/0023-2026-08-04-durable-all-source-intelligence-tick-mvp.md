@@ -1,9 +1,9 @@
 # Plan 0023 | Durable all-source intelligence tick MVP
 
-State: OPEN
+State: CLOSED
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 19
+Plan version: 20
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C51 is the current authority.
+Checkpoint P0023-C52 is the terminal authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -3793,3 +3793,70 @@ Next action:
 
 - commit C51/receipt 0072, run final full validation and audits, then record
   terminal closeout and push origin main.
+
+### Checkpoint P0023-C52 | 2026-08-06
+
+Plan version: 20
+
+State transition:
+
+- `installed_ordinary_query_finding_resolved -> plan0023_terminal_complete`.
+
+Progress classification:
+
+- `goal_complete`; every Plan 0023 acceptance outcome is implemented,
+  installed, live-proven, independently evaluated, reconciled, and queryable
+  through ordinary clients under the original bounds.
+
+Terminal evidence:
+
+- tick `tick-325e83a6d4df894d074a0b87563ef499` remains an exact
+  `complete_degraded` outcome: Reddit empty, YouTube/X/LinkedIn successful at
+  3/3/1 items, and Facebook alone transiently failed;
+- seven immutable source versions and seven media artifacts produced 14
+  derivative receipts: five OCR successes, two truthful OCR-empty results,
+  seven deterministic semantic sidecars, and zero derivative failures;
+- promoted snapshot `tick-snapshot-c5fb9c4bae4ef203d5a2de6c1495780c`
+  contains 26 entries and is now the installed ordinary CLI/MCP query head,
+  with exact coverage, freshness, partition, channel, and provenance fields;
+- installed service 0.3.4/schema15 and MCP 4.0.1 are compatible; SQLite,
+  rollback, config privacy, disabled collection specifications, absent timers,
+  and zero active ticks/attempts are verified;
+- the one independent evaluation returned a single critical ordinary-client
+  finding and no other finding; the bounded rework resolved it through direct
+  installed CLI and MCP proof, leaving zero unresolved findings;
+- final validation passes 2,542 Python tests with seven intentional skips and
+  six subtests, every Go package, active-plan and goal-governance policy
+  audits, plan authority audit, JSON validation, and diff checks.
+
+Acceptance disposition:
+
+- criteria 1-16 and the manual acceptance gate are accepted for the bounded
+  MVP; Facebook's transient lane is preserved as a declared coverage gap and
+  does not become an all-success claim;
+- Roadmap P07 closes with this plan rather than remaining open without an
+  actionable successor;
+- recurring timer enablement, an unattended recurrence, any new credential or
+  paid provider/model route, and public release/tagging remain explicitly
+  outside this closed plan.
+
+Subagent status and reconciliation:
+
+- terminal; one evaluator, one accepted finding, one primary-owned rework,
+  zero remaining findings, and no second review loop.
+
+Graphiti write status:
+
+- compact source-backed closeout episode completed and is visible in group
+  `last30days_skill_main` as `fe2dfd66-a6bb-4163-8367-494c98110c97` under
+  job `74cc3bce-d991-4de9-91ba-10b290e4eab7`.
+
+Authority classification:
+
+- `terminal_closeout`; no further Plan 0023 action is authorized or needed.
+
+Next action:
+
+- push the exact terminal chain to origin main. Any recurring-timer proposal
+  must begin by opening a separately governed roadmap lane and successor plan,
+  preserving this exact tick unit and its safeguards.

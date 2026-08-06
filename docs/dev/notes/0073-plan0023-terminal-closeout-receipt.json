@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0023-terminal-closeout-0073",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0023",
+    "checkpoint": "P0023-C52",
+    "classification": "terminal_closeout"
+  },
+  "plan": {
+    "version": 20,
+    "state": "CLOSED",
+    "roadmap_p07_state": "CLOSED",
+    "outcome": "plan0023_terminal_complete"
+  },
+  "accepted_tick": {
+    "tick_id": "tick-325e83a6d4df894d074a0b87563ef499",
+    "state": "complete_degraded",
+    "successful_services": [
+      "youtube",
+      "x",
+      "linkedin"
+    ],
+    "empty_services": [
+      "reddit"
+    ],
+    "coverage_gaps": [
+      "facebook"
+    ],
+    "accepted_items": 7,
+    "source_versions": 7,
+    "media_artifacts": 7,
+    "derivative_receipts": 14,
+    "derivative_failures": 0,
+    "snapshot_id": "tick-snapshot-c5fb9c4bae4ef203d5a2de6c1495780c",
+    "snapshot_entries": 26
+  },
+  "installed": {
+    "service_version": "0.3.4",
+    "previous_version": "0.3.3",
+    "database_schema_version": 15,
+    "mcp_adapter_version": "4.0.1",
+    "compatibility_state": "compatible",
+    "sqlite_integrity": "ok",
+    "active_ticks": 0,
+    "active_attempts": 0,
+    "collection_specs": 42,
+    "enabled_collection_specs": 0,
+    "timers_enabled": false
+  },
+  "independent_review": {
+    "initial_outcome": "FAIL",
+    "accepted_findings": 1,
+    "resolved_findings": 1,
+    "unresolved_findings": 0,
+    "other_findings": 0,
+    "resolution_evidence": "installed CLI and fresh MCP use the promoted tick head with public, selected-profile, and cross-profile filter-first proof"
+  },
+  "validation": {
+    "python_passed": 2542,
+    "python_skipped": 7,
+    "python_subtests_passed": 6,
+    "go": "pass",
+    "plan_authority_audit": "pass",
+    "active_planning_contract_audit": "pass",
+    "goal_governance_audit": "pass",
+    "json": "pass",
+    "diff_check": "pass"
+  },
+  "graphiti": {
+    "group_id": "last30days_skill_main",
+    "name": "Plan 0023 terminal all-source tick and ordinary query head",
+    "job_id": "74cc3bce-d991-4de9-91ba-10b290e4eab7",
+    "episode_uuid": "fe2dfd66-a6bb-4163-8367-494c98110c97",
+    "status": "completed"
+  },
+  "remaining_gate": "recurring timer enablement requires a separately opened roadmap lane and governed successor plan",
+  "next_action": "push exact terminal chain to origin main"
+}

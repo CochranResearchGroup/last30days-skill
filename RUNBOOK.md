@@ -11774,3 +11774,59 @@ Next Bounded Action:
 
 - commit C51/0072, run the complete suite and audits, persist compact Graphiti
   closeout memory, close the plan, and push origin main.
+
+## Turn 195 | 2026-08-06
+
+Focus: validate and close Plan 0023 after the installed ordinary-query repair.
+
+Authority Consulted:
+
+- Plan 0023 C51; Roadmap P07; Runbook Turn 194; receipts 0070-0072; installed
+  service/MCP/runtime state; full Python/Go validation; selector-skill active
+  and goal-governance audits; plan-authority audit; Graphiti closeout policy.
+
+Decisions And Changes:
+
+- reconciled the single accepted evaluator finding as resolved and retained a
+  closed-world ledger with zero other or unresolved findings;
+- accepted the bounded manual tick as `complete_degraded`, preserving
+  Facebook's transient coverage gap rather than relabeling it all-success;
+- submitted one compact source-backed Graphiti closeout episode;
+- closed Plan 0023 and P07 while keeping recurring timer enablement outside
+  their authority and available only through a separately opened roadmap lane
+  and plan.
+
+Validation Evidence:
+
+- 2,542 Python tests pass with seven intentional skips and six subtests; every
+  Go MCP package passes;
+- plan-authority, active-plan, and goal-governance audits pass, with no missing
+  bounds, controls, findings, dispositions, or checkpoint fields;
+- installed service 0.3.4/MCP 4.0.1, query snapshot, partition proof, SQLite,
+  rollback, config privacy, 42 disabled specs, zero active tick attempts, and
+  absent timer remain exact;
+- Graphiti completed job `74cc3bce-d991-4de9-91ba-10b290e4eab7` as visible
+  episode `fe2dfd66-a6bb-4163-8367-494c98110c97` in group
+  `last30days_skill_main`.
+
+State Movement:
+
+- Plan 0023 advances `C51 -> C52`, version `19 -> 20`, and `OPEN -> CLOSED`;
+- Roadmap P07 advances `OPEN -> CLOSED` with no orphaned actionable lane;
+- `installed_ordinary_query_finding_resolved -> plan0023_terminal_complete`.
+
+Subagent Status And Reconciliation:
+
+- terminal; the single review/rework loop is reconciled with zero unresolved
+  findings and no successor evaluator.
+
+Graphiti Write Status:
+
+- completed and visible; the source-backed episode is the derived recall surface, while
+  Plan 0023, receipts, Roadmap, Runbook, installed readbacks, and Git remain
+  authoritative.
+
+Next Bounded Action:
+
+- commit terminal receipt 0073 and push exact origin main. A recurring timer
+  requires a new plan and is not enabled here.

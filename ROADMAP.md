@@ -712,7 +712,7 @@ Active Plan:
 
 ## P07 | Service-First Software Productization
 
-State: OPEN
+State: CLOSED
 
 Objective: complete the transition from a Skill package with supporting
 scripts to independently installed intelligence software whose durable service
@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 19/C51; Plan 0018 is closed at its
+- P07 is terminally closed by Plan 0023 version 20/C52. Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.3.0/schema 15 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -974,7 +974,7 @@ indexes or stochastic workers authoritative.
 Active Plan:
 
 - `docs/dev/plans/0023-2026-08-04-durable-all-source-intelligence-tick-mvp.md`
-  is the sole actionable successor. It freezes the manual all-source tick as
+  is the terminally closed manual-tick authority. It freezes the manual all-source tick as
   the first MVP: config-driven services and targets, raw-first durable
   evidence, terminal lane/stage accounting, incidents and notification
   failover, protected rendered-page artifacts, OCR and semantic image
@@ -985,8 +985,9 @@ Active Plan:
   The T07 provider/raw crash seam and Phase A install/config preflight are now
   accepted. Checkpoint C42 records exact transactional installation of reviewed
   service 0.3.1 and a matching side-effect-free sanitized preflight. The next
-  critical-path unit is the single bounded manual tick and terminal receipt
-  reconstruction; timers remain a separate later goal.
+  terminal 0.3.4 result proves the bounded manual tick, derivative pipeline,
+  promoted ordinary-query head, and exact receipt reconstruction. Timers remain
+  a separate later goal requiring a new governed plan.
 - `docs/dev/plans/0018-2026-07-29-service-first-software-product-transition.md`
   is the closed predecessor authority. Service distribution, MCP compatibility,
   client-Skill redesign, timer ownership, durable publication/indexing, and
@@ -1052,9 +1053,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- commit Plan 0023/C51's installed ordinary-query proof, run final full
-  validation and audits, persist compact closeout memory, close the plan, and
-  push exact origin main. Timer enablement remains a separately governed plan.
+- push Plan 0023/C52's exact terminal chain to origin main. A future timer
+  proposal must first open a separately governed roadmap lane and plan using
+  this exact tick unit without a second execution path.
   Keep human interaction,
   new scope/credentials/data classes, paid provider/model use, cumulative-
   ceiling increase, and timer enablement as later gates.
