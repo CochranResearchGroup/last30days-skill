@@ -136,16 +136,21 @@ after that proof passes does the runtime hand the human the already-validated
 external HTTPS route retained from the ready stream; the lease ID is retained
 in the user-scoped incident database.
 
-Enabled image analysis stages also select installed adapter types. The current
-deterministic bridge names `provider_output_ocr_v1` and
-`provider_output_semantic_sidecar_v1`; these accept only bounded typed outputs
-returned by an acquisition provider. Set `analysis.ocr_adapter_type` and
-`analysis.semantic_sidecar_adapter_type` to those names when the corresponding
-stage is enabled, or to another installed analysis adapter supplied by the
-deployment. Set the adapter field to `null` when its stage is disabled. A
-missing or invalid installed adapter fails preflight before source work. Media
-can still publish when an individual derivative fails; the derivative receives
-an immutable failure receipt and the terminal tick is degraded.
+Enabled image analysis stages also select installed adapter types. The bridge
+names `provider_output_ocr_v1` and
+`provider_output_semantic_sidecar_v1` accept only bounded typed outputs returned
+by an acquisition provider. A deployment with the `tesseract` executable on
+the service subprocess `PATH` may instead select `tesseract_cli_v1` for local,
+zero-provider OCR. The deterministic
+`source_grounded_semantic_sidecar_v1` adapter uses only source alt text and the
+completed OCR output; it records no inferred visual entities, relationships,
+actions, or context and makes no model call. Set `analysis.ocr_adapter_type`
+and `analysis.semantic_sidecar_adapter_type` to installed names when the
+corresponding stage is enabled. Set the adapter field to `null` when its stage
+is disabled. A missing, off-PATH, broken, or invalid installed adapter fails
+preflight before source work. Media can still publish when an individual
+derivative fails; the derivative receives an immutable failure receipt and the
+terminal tick is degraded.
 
 The source-worker bridge carries bounded fetched bytes for images and video
 thumbnails into the content-addressed artifact path. On authentication,

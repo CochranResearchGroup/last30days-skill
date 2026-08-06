@@ -1052,9 +1052,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- commit Plan 0023/C46's exact second-tick receipt, then add and install the
-  narrow local OCR and deterministic source-grounded semantic-sidecar adapters
-  needed for one bounded derivative-success recheck. Keep human interaction,
+- commit Plan 0023/C47's exact 0.3.3 candidate, install it transactionally,
+  revise only the private analysis selectors/revision, and preflight one
+  bounded derivative-success recheck. Keep human interaction,
   new scope/credentials/data classes, paid provider/model use, cumulative-
   ceiling increase, and timer enablement as later gates.
 

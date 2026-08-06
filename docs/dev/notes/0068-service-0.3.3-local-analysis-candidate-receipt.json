@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "receipt_id": "service-0.3.3-local-analysis-candidate-0068",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0023",
+    "checkpoint": "P0023-C47",
+    "classification": "inherited_authority"
+  },
+  "candidate": {
+    "service_version": "0.3.3",
+    "runtime_manifest_sha256": "c3006593040b88a640cfbca79e28bdac6aa83e0c0e3a53ce35f7ba649fa19a31",
+    "artifact": "dist/service/last30days-service-0.3.3.tar.gz",
+    "artifact_sha256": "37ce68ccd083d9cfec72d7521c2ab16e524a2a291386f8fae68087814becc847",
+    "artifact_format": "last30days-service-runtime-v1",
+    "database_schema": 15,
+    "reproducible_build_sha256": "37ce68ccd083d9cfec72d7521c2ab16e524a2a291386f8fae68087814becc847"
+  },
+  "behavior": {
+    "ocr_adapter_type": "tesseract_cli_v1",
+    "ocr_admission": "PATH-visible executable plus successful version probe",
+    "semantic_sidecar_adapter_type": "source_grounded_semantic_sidecar_v1",
+    "semantic_inputs": ["source_alt_text", "completed_local_ocr"],
+    "visual_inference_allowed": false,
+    "provider_or_model_call": false,
+    "public_api_changed": false,
+    "schema_changed": false,
+    "timer_changed": false
+  },
+  "tdd": {
+    "red": [
+      "default_analysis_adapter_registry rejected the which injection seam",
+      "MediaAnalysisInput lacked completed-OCR propagation"
+    ],
+    "green": "local adapter unit tests plus runner/runtime/preflight and release/package/lifecycle/product suites pass"
+  },
+  "local_probe": {
+    "tesseract_version": "5.3.4",
+    "adapter_state": "success",
+    "semantic_model_provider_label": "deterministic_local",
+    "provider_cost_cents": 0,
+    "model_tokens": 0
+  },
+  "install_authorized": true,
+  "installed_at_receipt_time": false,
+  "cumulative_provider_attempts": {
+    "consumed": 10,
+    "ceiling": 50
+  },
+  "next_action": "transactionally install exact service 0.3.3, verify installed identity and rollback, revise only the private analysis selectors and revision, then run one sanitized preflight without enqueueing",
+  "private_config_content_recorded": false,
+  "timers_enabled": false
+}

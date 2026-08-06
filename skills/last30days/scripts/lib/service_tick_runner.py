@@ -1189,6 +1189,7 @@ class TickRunner:
                         detected_language=proposed_ocr.detected_language,
                         regions=proposed_ocr.regions,
                     )
+                    analysis_input = analysis_input.with_ocr(proposed_ocr)
                     observed_states["ocr"].append(ocr_receipt.state)
                     text = "\n".join(region.text for region in proposed_ocr.regions)
                     if text:

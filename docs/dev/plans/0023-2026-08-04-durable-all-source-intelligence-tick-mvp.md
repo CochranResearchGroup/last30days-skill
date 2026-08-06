@@ -3436,3 +3436,72 @@ Next action:
 
 - commit C46/receipt 0067, then implement the smallest local-analysis seam and
   public-interface red/green tests before building another exact patch release.
+
+### Checkpoint P0023-C47 | 2026-08-06
+
+Plan version: 15
+
+State transition:
+
+- `retained_browser_live_proven_derivative_success_open -> exact_0_3_3_local_analysis_candidate_install_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; successful local derivative production is now bound
+  into a reproducible exact patch candidate behind the existing typed analysis
+  boundary.
+
+Owned changes:
+
+- add PATH-gated `tesseract_cli_v1` OCR with bounded TSV parsing and a strict
+  version probe;
+- add `source_grounded_semantic_sidecar_v1`, limited to source alt text and the
+  completed local OCR output, with no inferred visual facts or model call;
+- propagate the completed OCR value to the semantic adapter within the existing
+  media pipeline;
+- document the two installed selector values and off-PATH failure behavior;
+- advance only the service patch version to 0.3.3, refresh the exact manifest,
+  and build twice reproducibly.
+
+Validation evidence:
+
+- public-interface tests first failed because the registry had no PATH/version
+  injection seam and `MediaAnalysisInput` had no completed-OCR propagation;
+- unit, runner, runtime, preflight, release, package, lifecycle, and product-
+  surface suites pass;
+- a local real-executable probe resolves Tesseract 5.3.4 and produces a typed
+  OCR result plus deterministic sidecar at zero provider/model usage;
+- runtime manifest SHA-256 is
+  `c3006593040b88a640cfbca79e28bdac6aa83e0c0e3a53ce35f7ba649fa19a31`;
+- two service artifacts match SHA-256
+  `37ce68ccd083d9cfec72d7521c2ab16e524a2a291386f8fae68087814becc847`.
+
+Remaining acceptance criteria:
+
+- install exact 0.3.3, verify current/previous/integrity/readiness, revise only
+  the private analysis selectors and config revision, and run one sanitized
+  preflight without enqueueing;
+- execute one bounded recheck, prove successful immutable OCR and semantic
+  derivatives, reconstruct retrieval/runtime invariants, and obtain the fresh
+  independent final evaluation.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; implementation, tests, and reproducible build remained one
+  overlapping critical path. Final independent evaluation remains reserved.
+
+Graphiti write status:
+
+- deferred until installed live derivative proof.
+
+Authority classification:
+
+- `inherited_authority`; local zero-provider analysis is the smallest repair
+  satisfying the approved OCR/semantic outcome and crosses none of the named
+  live, identity, cost, ceiling, timer, or human gates.
+
+Next action:
+
+- commit C47/receipt 0068, transactionally install exact 0.3.3, verify rollback
+  state, revise only the private analysis selectors/revision, and preflight the
+  resulting identity once without enqueueing.

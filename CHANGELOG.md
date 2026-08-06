@@ -53,6 +53,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Local source-grounded image analysis.** Service 0.3.3 adds a PATH-gated
+  `tesseract_cli_v1` OCR adapter and a deterministic
+  `source_grounded_semantic_sidecar_v1` adapter. The sidecar uses only source
+  alt text plus completed local OCR, records no inferred visual facts, and
+  consumes no provider cost or model tokens. Missing or broken Tesseract
+  remains a preflight failure when that adapter is selected.
+
 - **Durable all-source tick foundation.** Service 0.3.0 introduces database
   schema 15, the versioned user-scoped `tick-config-v1.json` contract, and a
   two-call durable tick seam. Enqueueing freezes an exact interval, sanitized

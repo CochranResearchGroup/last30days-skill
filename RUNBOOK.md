@@ -11524,3 +11524,53 @@ Next Bounded Action:
 
 - commit C46/0067, then implement and test the smallest local OCR and
   deterministic semantic-sidecar adapters without new provider/model spend.
+
+## Turn 190 | 2026-08-06
+
+Focus: cut the exact local-analysis repair candidate for the remaining
+successful-derivative gate.
+
+Authority Consulted:
+
+- Plan 0023 C46; Roadmap P07; Runbook Turn 189; architecture, TDD,
+  documentation, versioning, validation, and goal policies.
+
+Decisions And Changes:
+
+- kept OCR/semantic execution behind the installed analysis registry rather
+  than adding analysis work to acquisition providers;
+- made Tesseract admission depend on the service subprocess PATH and a
+  successful bounded version probe;
+- limited deterministic semantic output to source alt text and completed OCR,
+  with explicit uncertainty and no inferred visual facts;
+- cut exact service 0.3.3 because runtime behavior changed without API/schema
+  expansion.
+
+Validation Evidence:
+
+- two public-interface tests failed first on the absent registry and OCR-flow
+  seams, then passed after the minimal implementation;
+- focused analysis, runner, runtime, preflight, release/package/lifecycle, and
+  product tests pass;
+- a real Tesseract 5.3.4 probe succeeds locally at zero provider/model usage;
+- manifest `c3006593...9a31` and both artifacts
+  `37ce68cc...c847` are exact and reproducible.
+
+State Movement:
+
+- Plan 0023 advances `C46 -> C47` and version `14 -> 15`;
+- `retained_browser_live_proven_derivative_success_open -> exact_0_3_3_local_analysis_candidate_install_ready`.
+
+Subagent Status And Reconciliation:
+
+- no delegation; final independent evaluation remains reserved for installed
+  live evidence.
+
+Graphiti Write Status:
+
+- deferred until successful immutable derivatives are live-proven.
+
+Next Bounded Action:
+
+- commit C47/0068, install exact 0.3.3, then revise only private analysis
+  selectors/revision and preflight once without enqueueing.
