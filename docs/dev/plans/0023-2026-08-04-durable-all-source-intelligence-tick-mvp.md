@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 6
+Plan version: 7
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C38 is the current authority.
+Checkpoint P0023-C39 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -2920,3 +2920,67 @@ Next action:
   commit, artifact, and packet. On PASS, request explicit approval only for one
   0.3.1 install transition plus postinstall sanitized preflight; do not install
   or enqueue in the review turn.
+
+### Checkpoint P0023-C39 | 2026-08-05
+
+Plan version: 7
+
+State transition:
+
+- `exact_candidate_and_packet_review_pending -> candidate_review_pass_install_human_gate`.
+
+Progress classification:
+
+- `outcome_progress`; terminal independent review passes the exact 0.3.1
+  candidate and reworked packet with all three C36 findings closed and no
+  critical finding.
+
+Terminal review evidence:
+
+- reviewer `/root/p0023_c06_review` passes exact packet/docs commit
+  `6893717e503a700426f68df8633c12075eb8f8b8`, implementation commit
+  `51b4401ccf0cab50df2165e41fd64e6d439dfddc`, artifact/manifest/installer,
+  receipt 0054, packet 0052, installed baseline, and every bound receipt/spec
+  identity;
+- Plan 0018 V28 order is proven through preflight, receipt reconstruction,
+  execution, and replay; receipt/artifact bindings and the C05 citation pass;
+- fresh review runs 88 focused tick tests and seven package/release tests; a
+  fresh build reproduces the exact 0.3.1 artifact with 129 entries and exact
+  embedded manifest;
+- privacy, exact ceilings, incident-only sequential notification, protected
+  rendered-page screenshots, separate external-only Guac gate, install then
+  fresh-preflight then T08 gates, and timer exclusion pass;
+- durable review receipt:
+  `docs/dev/notes/0055-service-0.3.1-target-order-independent-review-receipt.json`.
+
+Proposed install/preflight approval scope:
+
+- one exact transactional `upgrade` using the reviewed 0.3.1 artifact and
+  installer; maximum one installer invocation;
+- preflight requires active/ready installed 0.3.0 with exact manifest, schema
+  15 integrity `ok`, 62/62 corpus/index, zero ticks/active attempts, 42 specs/
+  zero enabled, no timer, and unchanged owner-private config file digest;
+- after install, require active/ready exact 0.3.1/manifest/schema15, unchanged
+  corpus/index/integrity, exact 0.3.0 previous-release and rollback-state proof,
+  then one sanitized preflight for the accepted Aug 4-5 interval;
+- candidate preflight must preserve the exact config digest, tick ID, five
+  configured lane identities/order, normalization proofs, ceilings, and
+  sequential transport readiness without exposing user particulars or creating
+  state;
+- on transition/readiness or candidate-preflight failure, permit only the
+  reviewed transactional restoration/one rollback to exact 0.3.0 followed by
+  integrity/readiness proof, then stop;
+- no user-config mutation, enqueue, provider, notification send, Guac, timer,
+  paid/model call, push, publication, tag, release, or ceiling change.
+
+Authority classification:
+
+- `human_gate`; repository implementation, artifact, and review are complete.
+  Installing/restarting 0.3.1 and its bounded rollback contingency require the
+  operator's explicit approval. T08 remains a separate later approval.
+
+Next action:
+
+- stop and request explicit approval for only the exact one-install,
+  postinstall-readback, one-sanitized-preflight packet above. On success stop at
+  the separate T08 human gate; do not enqueue in the install turn.

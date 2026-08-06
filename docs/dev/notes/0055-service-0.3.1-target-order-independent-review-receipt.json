@@ -1,0 +1,64 @@
+{
+  "candidate": {
+    "implementation_commit": "51b4401ccf0cab50df2165e41fd64e6d439dfddc",
+    "installer_sha256": "91de23cd3c71839d45eab25d5a7d4999ea36fc298514924b7feab2ffd4a75161",
+    "runtime_artifact_sha256": "54e53ca8a1bb3172edb14cb66909dc2028d2d80e8b8906bc4064dbf92b981fe5",
+    "runtime_manifest_sha256": "6e105eecbd3b1fcd84a48cbf9d4d5a73b6789fe91b3ad715c539568436d64504",
+    "service_version": "0.3.1"
+  },
+  "closed_gates_confirmed": [
+    "install_restart_or_real_rollback",
+    "candidate_preflight",
+    "live_provider_execution",
+    "notification_send",
+    "guacamole_lease_or_observation",
+    "timer_or_schedule",
+    "paid_call_or_ceiling_change",
+    "push_tag_publication_or_release"
+  ],
+  "findings": [],
+  "packet": {
+    "commit": "6893717e503a700426f68df8633c12075eb8f8b8",
+    "path": "docs/dev/notes/0052-manual-t08-live-packet.json",
+    "sha256": "2895084f69cb339df3a72b0a92119123adcf7621a84b838e78f3b7e07b7131a0"
+  },
+  "plan": "0023",
+  "prior_findings": {
+    "c05_recovery_citation": "closed",
+    "configured_lane_order": "closed",
+    "receipt_and_artifact_bindings": "closed"
+  },
+  "review": {
+    "artifact_entries": 129,
+    "artifact_reproduced_exactly": true,
+    "focused_tick_tests_passed": 88,
+    "package_and_release_tests_passed": 7,
+    "privacy": "passed",
+    "prohibited_actions": 0,
+    "reviewer": "/root/p0023_c06_review",
+    "terminal_result": "pass"
+  },
+  "reviewed_contracts": {
+    "configured_order": "passed",
+    "exact_ceilings": "passed",
+    "external_only_guacamole_gate": "passed",
+    "incident_only_sequential_notification": "passed",
+    "install_then_fresh_preflight_then_t08_gates": "passed",
+    "protected_rendered_page_screenshot": "passed",
+    "receipt_bindings": "passed",
+    "replay_order": "passed",
+    "timer_exclusion": "passed"
+  },
+  "schema_version": 1,
+  "side_effects": {
+    "guacamole_leases": 0,
+    "notification_sends": 0,
+    "provider_attempts": 0,
+    "service_restarts": 0,
+    "state_writes": 0,
+    "tick_rows_created": 0,
+    "timers_created": 0
+  },
+  "status": "terminal_pass",
+  "verified_at": "2026-08-05"
+}

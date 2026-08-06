@@ -11079,3 +11079,58 @@ Next Bounded Action:
 - commit C38, obtain terminal independent PASS/FAIL, and on PASS request
   explicit authority only for one exact 0.3.1 install plus postinstall
   sanitized preflight. Do not install, restart, or enqueue in the review turn.
+
+## Turn 182 | 2026-08-05
+
+Focus: accept final independent candidate review and stop at the 0.3.1 install
+human gate.
+
+Authority Consulted:
+
+- Plan 0023 C38, exact packet/docs and implementation commits, artifacts and
+  receipt hashes, terminal reviewer evidence, install/rollback contract, and
+  the still-separate T08/Guac/timer gates.
+
+Decisions And Changes:
+
+- accepted terminal independent PASS with no critical findings and all three
+  first-review defects closed;
+- froze the next proposed packet to one exact transactional 0.3.1 upgrade,
+  postinstall integrity/readiness/rollback readback, and one side-effect-free
+  sanitized preflight for the accepted interval;
+- included reviewed automatic restoration/one rollback to exact 0.3.0 only on
+  transition/readiness or candidate-preflight failure;
+- kept user-config mutation, T08 enqueue, providers, incident sends, Guac,
+  timer, paid/model, push, publication, tag, release, and ceiling changes out
+  of the proposed install approval.
+
+Validation Evidence:
+
+- reviewer matches exact commits and every requested artifact, manifest,
+  installer, packet, candidate, baseline, receipt, and spec identity;
+- configured Plan 0018 order passes preflight, receipt, execution, and replay;
+- fresh reviewer validation passes 88 focused tick tests plus seven package/
+  release tests and reproduces the exact 129-entry artifact and manifest;
+- privacy, ceilings, incident evidence/notification, Guac separation, staged
+  install/preflight/T08 approvals, and timer exclusion pass;
+- receipt 0055 records terminal PASS and zero prohibited actions.
+
+State Movement:
+
+- Plan 0023 advances `C38 -> C39`;
+- `exact_candidate_and_packet_review_pending -> candidate_review_pass_install_human_gate`.
+
+Subagent Status And Reconciliation:
+
+- existing reviewer terminal PASS is accepted after primary exact-hash and
+  current-state checks; no unresolved finding remains.
+
+Graphiti Write Status:
+
+- deferred until install/preflight outcome; repo authorities remain sufficient.
+
+Next Bounded Action:
+
+- stop and request explicit operator approval for the exact C39 install/
+  postinstall/preflight packet. If approved, stop again at the separate T08
+  gate regardless of success.
