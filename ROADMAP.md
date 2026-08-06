@@ -1052,11 +1052,11 @@ Active Plan:
 
 Next Bounded Action:
 
-- commit Plan 0023/C45's exact installed/preflight receipt, then execute one
-  distinct bounded Aug 5-6 manual
-  interval before independent acceptance and final push. Keep human interaction, new scope/
-  credentials/data classes, paid spend, cumulative-ceiling increase, and timer
-  enablement as the only later gates.
+- commit Plan 0023/C46's exact second-tick receipt, then add and install the
+  narrow local OCR and deterministic source-grounded semantic-sidecar adapters
+  needed for one bounded derivative-success recheck. Keep human interaction,
+  new scope/credentials/data classes, paid provider/model use, cumulative-
+  ceiling increase, and timer enablement as later gates.
 
 ## Goal-Compatible Plan Conversion
 

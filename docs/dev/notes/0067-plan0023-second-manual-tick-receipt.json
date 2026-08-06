@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0023-second-manual-tick-0067",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0023",
+    "checkpoint": "P0023-C46",
+    "classification": "inherited_authority"
+  },
+  "tick": {
+    "tick_id": "tick-cadca8a0af0c0ef7167535b911c2535e",
+    "execution_attempt_id": "tick-attempt-ecd6f569b2029f747c694fb6876d6de3",
+    "state": "complete_degraded",
+    "interval_from": "2026-08-05T00:00:00Z",
+    "interval_to": "2026-08-06T00:00:00Z",
+    "schedule_id": "manual-default",
+    "config_revision": "p0023-c33-plan0018-v28",
+    "config_digest": "sha256:99099343b91d9c5be9ed06e431ecc30acf1f6f34b39a2cecc3dfafdc9885cc06"
+  },
+  "lanes": [
+    {"service_id": "reddit", "state": "empty", "accepted": 0},
+    {"service_id": "youtube", "state": "success", "accepted": 3},
+    {"service_id": "x", "state": "success", "accepted": 3},
+    {"service_id": "facebook", "state": "failure", "failure_class": "transient", "accepted": 0},
+    {"service_id": "linkedin", "state": "success", "accepted": 1}
+  ],
+  "budget": {
+    "attempts": 5,
+    "network_requests": 14,
+    "items": 7,
+    "wall_seconds": 207,
+    "cost_cents": 0,
+    "model_tokens": 0,
+    "cumulative_provider_attempts": 10,
+    "cumulative_ceiling": 50
+  },
+  "durable_outcome": {
+    "source_versions": 7,
+    "media_artifacts": 3,
+    "derivative_receipts": 6,
+    "successful_ocr_derivatives": 0,
+    "successful_semantic_sidecars": 0,
+    "catalog_clusters": 0,
+    "anomaly_results": 0,
+    "incidents": 0,
+    "notifications": 0,
+    "snapshot_id": "tick-snapshot-9e48cf4e7d38e321c7d6466582c0f8c7",
+    "head_promoted": true
+  },
+  "repair_proof": {
+    "retained_browser_reuse": "live_proven",
+    "x_transition": "failure_to_success",
+    "linkedin_transition": "failure_to_success",
+    "facebook_state": "source_local_transient_failure",
+    "human_interaction_requested": false,
+    "guacamole_requested": false
+  },
+  "remaining_gate": "install locally executable OCR and deterministic source-grounded semantic-sidecar adapters, revise only their private adapter selectors, and prove successful immutable derivatives in one bounded recheck",
+  "private_config_content_recorded": false,
+  "timers_enabled": false
+}

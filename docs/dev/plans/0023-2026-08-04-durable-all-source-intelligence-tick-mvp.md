@@ -3365,3 +3365,74 @@ Next action:
 - commit C45/receipt 0066, enqueue tick
   `tick-cadca8a0af0c0ef7167535b911c2535e` exactly once, and monitor it read-only
   until terminal.
+
+### Checkpoint P0023-C46 | 2026-08-06
+
+Plan version: 14
+
+State transition:
+
+- `exact_0_3_2_installed_distinct_tick_ready -> retained_browser_live_proven_derivative_success_open`.
+
+Progress classification:
+
+- `outcome_progress`; the bounded second tick proves the retained-browser
+  acquisition repair live for X and LinkedIn while preserving the remaining
+  derivative-success gate as explicit rather than treating immutable failure
+  receipts as completion.
+
+Owned changes:
+
+- enqueue the exact preflighted Aug 5-6 identity once and monitor it read-only;
+- reconstruct all five lanes, aggregate budgets, evidence/media/derivative
+  counts, incidents, notifications, catalog, and promoted snapshot;
+- retain the six provider-output derivative failures as immutable evidence;
+- open one bounded deterministic local-analysis successor without adding a
+  source, credential, tenant, paid provider/model, timer, ceiling, or human
+  observation route.
+
+Validation evidence:
+
+- tick `tick-cadca8a0af0c0ef7167535b911c2535e` terminalized
+  `complete_degraded` after five attempts, 14 requests, seven items, 207 wall
+  seconds, zero cost, and zero model tokens;
+- Reddit is empty; YouTube/X/LinkedIn succeeded with 3/3/1 accepted items;
+  Facebook alone failed transiently;
+- seven source versions and three media artifacts are durable; snapshot
+  `tick-snapshot-9e48cf4e7d38e321c7d6466582c0f8c7` promoted successfully;
+- no incident, notification, anomaly, catalog cluster, human handoff, or Guac
+  request occurred;
+- X and LinkedIn moved from the first tick's profile-lease failure to success,
+  proving the 0.3.2 retained-owner repair live;
+- all six OCR/semantic derivative records remain failures because the selected
+  provider-output bridges received no typed output.
+
+Remaining acceptance criteria:
+
+- add installed local OCR and deterministic source-grounded semantic-sidecar
+  adapters behind the existing analysis boundary, test them red/green, build
+  and install an exact successor, revise only the private analysis selectors,
+  and prove successful immutable derivatives in one bounded recheck;
+- reconstruct hybrid retrieval and current runtime/timer invariants, then run
+  the reserved independent final evaluation.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; implementation remains one CodeGraph-backed critical path.
+  The policy-required fresh evaluator remains reserved for the final installed
+  candidate and reconstructed terminal receipt.
+
+Graphiti write status:
+
+- deferred until the local-analysis successor is installed and live-proven.
+
+Authority classification:
+
+- `inherited_authority`; this is the deterministic repair needed to satisfy
+  the already-approved raw/OCR/semantic outcome. It changes no live-source,
+  identity, provider/model-spend, ceiling, timer, or human-interaction gate.
+
+Next action:
+
+- commit C46/receipt 0067, then implement the smallest local-analysis seam and
+  public-interface red/green tests before building another exact patch release.
