@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P08
 Date: 2026-08-06
-Plan version: 7
+Plan version: 8
 Predecessor: Plan 0023 version 20/checkpoint P0023-C52
 
 ## Stable Goal
@@ -52,7 +52,11 @@ and fail-closed pause controls without creating a second acquisition path.
 - exact service 0.3.5/schema16 is now installed active/ready with 0.3.4/schema15
   rollback retained; config hash/modes, three ticks, zero active attempts, zero
   schedule rows/events/timer ticks, 42 disabled specs, and absent systemd timer
-  are unchanged, so S05 activation is ready.
+  are unchanged, so S05 activation is ready;
+- the private config now has only the authorized revision and exact enabled
+  daily schedule addition; JSON, mode, zero-cost/model limits, sanitized
+  preflight, and zero pre-restart schedule/timer state pass, so the first
+  activation restart is ready.
 
 ## Product Decision
 
@@ -284,7 +288,7 @@ truthfully enabled or fail-closed paused; all legacy specs remain disabled;
 the accepted finding ledger is reconciled; Graphiti memory is durable; and the
 terminal chain is pushed to origin main.
 
-Checkpoint P0024-C07 is the current authority.
+Checkpoint P0024-C08 is the current authority.
 
 ### Checkpoint P0024-C01 | 2026-08-06
 
@@ -657,3 +661,52 @@ Next action:
   daily-default schedule, run a sanitized no-state preflight, restart once to
   load activation, and monitor at most one timer tick and five new provider
   attempts to truthful terminal state or the first hard stop.
+
+### Checkpoint P0024-C08 | 2026-08-06
+
+Plan version: 8
+
+State transition:
+
+- `installed_disabled_activation_ready -> private_config_activation_restart_ready`.
+
+Progress classification:
+
+- `outcome_progress`; the exact activation config is validated and bound
+  before any recurring state or provider work exists.
+
+Validation evidence:
+
+- whitelisted readback shows only config revision
+  `p0024-c08-daily-schedule-v1` and schedule ID `daily-default`, enabled true,
+  interval 86,400, and anchor zero;
+- config JSON parses, file mode remains 0600, and its new SHA-256 is
+  `1f5b5ab78642fb1ef0fae0bfc36eb3d7c655a25551975d5ea348b1a211af9d25`;
+- installed preflight validates the exact Aug 5-6 boundary with aggregate
+  limits 5/250/15/600/zero cost/zero model and creates no state;
+- schedule rows and timer ticks remain zero; total provider attempts remain
+  15/50 before activation.
+
+Subagent status and reconciliation:
+
+- no subagent; the primary made and verified the private edit without reading
+  or recording selectors, credentials, profiles, routing, or recipients.
+
+Review disposition summary:
+
+- unchanged: one accepted/resolved finding and zero unresolved findings.
+
+Graphiti write status:
+
+- deferred until live or terminal closeout.
+
+Authority classification:
+
+- `inherited_authority`; the first activation restart and one bounded timer
+  tick are explicitly authorized by the operator's Plan 0024 gate.
+
+Next action:
+
+- commit C08/receipt 0081, perform activation restart one of two, then monitor
+  schedule/tick/attempt/budget/provider state until truthful terminalization or
+  the first hard stop, never exceeding one timer tick or 20/50 attempts.

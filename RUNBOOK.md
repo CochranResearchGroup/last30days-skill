@@ -12195,3 +12195,51 @@ Next Bounded Action:
 - commit C07/receipt 0080, revise only the private revision and exact daily
   schedule, preflight without state, then use the first post-install restart
   to admit at most one automatic tick under the frozen 20/50 ceiling.
+
+## Turn 203 | 2026-08-06
+
+Focus: bind the exact private daily schedule addition and no-state preflight
+before live activation.
+
+Authority Consulted:
+
+- Plan 0024 version 7/C07, Roadmap P08, Runbook Turn 202, receipt 0080; the
+  operator-authorized private schedule fields, first-restart gate, and frozen
+  source ceilings.
+
+Decisions And Changes:
+
+- changed only config revision to `p0024-c08-daily-schedule-v1` and added exact
+  enabled schedule `daily-default` at 86,400 seconds/anchor zero;
+- did not read or record private selectors, profiles, credentials, partitions,
+  notification routes, recipients, artifact paths, or observation endpoints;
+- kept the service running without reload while validating the new file so no
+  schedule row, timer tick, or provider effect could occur before checkpoint.
+
+Validation Evidence:
+
+- config JSON parses, mode remains 0600, and hash is `1f5b5ab...f9d25`;
+- whitelisted readback matches the exact authorized schedule;
+- installed no-state preflight validates the Aug 5-6 interval and aggregate
+  limits 5/250/15/600/zero cost/zero model;
+- database remains at zero schedule rows and zero timer ticks with 15/50 total
+  provider attempts.
+
+State Movement:
+
+- Plan 0024 advances version `7 -> 8` and `C07 -> C08`;
+- `installed_disabled_activation_ready -> private_config_activation_restart_ready`.
+
+Subagent Status And Reconciliation:
+
+- no subagent; the private mutation and sanitized readback remained with the
+  primary critical-path owner.
+
+Graphiti Write Status:
+
+- deferred to live or terminal Plan 0024 closeout.
+
+Next Bounded Action:
+
+- commit C08/receipt 0081, use activation restart one of two, and monitor at
+  most one timer tick and five new attempts to truthful terminal state.

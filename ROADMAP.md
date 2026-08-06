@@ -1085,7 +1085,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0024-2026-08-06-governed-recurring-all-source-tick.md`
-  version 7/C07 is the sole actionable P08 plan. It adds one config-driven
+  version 8/C08 is the sole actionable P08 plan. It adds one config-driven
   service-owned scheduler and durable state, permits at most one automatic
   activation tick and five provider attempts (cumulative maximum 20/50), and
   forbids per-source/systemd timers, legacy spec enablement, catch-up fanout,
@@ -1097,7 +1097,8 @@ Active Plan:
   artifact hash `efcbec6c58e9...`, and isolated lifecycle/rollback proof passes.
   Closed-world exact-candidate verification is `VERIFIED` with zero findings.
   Exact service 0.3.5/schema16 is installed disabled with rollback retained,
-  SQLite healthy, and zero schedule/timer effects; bounded activation is next.
+  SQLite healthy, and zero schedule/timer effects. The exact private daily
+  schedule addition passes sanitized preflight; activation restart is next.
 
 Dependencies:
 

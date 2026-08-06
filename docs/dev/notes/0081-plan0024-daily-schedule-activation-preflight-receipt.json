@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0024-daily-schedule-activation-preflight-0081",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0024",
+    "checkpoint": "P0024-C08",
+    "classification": "inherited_authority"
+  },
+  "config": {
+    "config_revision": "p0024-c08-daily-schedule-v1",
+    "sha256": "1f5b5ab78642fb1ef0fae0bfc36eb3d7c655a25551975d5ea348b1a211af9d25",
+    "file_mode": "0600",
+    "schedule": {
+      "enabled": true,
+      "schedule_id": "daily-default",
+      "interval_seconds": 86400,
+      "anchor_seconds": 0
+    }
+  },
+  "preflight": {
+    "interval_from": "2026-08-05T00:00:00Z",
+    "interval_to": "2026-08-06T00:00:00Z",
+    "aggregate_limits": {
+      "attempts": 5,
+      "network_requests": 250,
+      "items": 15,
+      "wall_seconds": 600,
+      "cost_cents": 0,
+      "model_tokens": 0
+    },
+    "state_created": false
+  },
+  "preactivation_state": {
+    "schedule_rows": 0,
+    "timer_ticks": 0,
+    "provider_attempts_consumed": 15,
+    "provider_attempts_ceiling": 50,
+    "activation_maximum": 20
+  },
+  "private_config_content_recorded": false,
+  "next_action": "first post-install restart and at most one automatic timer tick"
+}
