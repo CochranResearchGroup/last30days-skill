@@ -721,7 +721,7 @@ least-privilege agent clients.
 
 Current State:
 
-- Current authority is Plan 0023 version 18/C50; Plan 0018 is closed at its
+- Current authority is Plan 0023 version 19/C51; Plan 0018 is closed at its
   terminally accepted version 28/C76 predecessor boundary. Installed service
   0.3.0/schema 15 is ready with 62 documents, 62 current-version embeddings, active index
   `index-d4b3c45667cc2f635c557b85`, rollback 0.2.28, and all 42 specifications
@@ -1052,9 +1052,9 @@ Active Plan:
 
 Next Bounded Action:
 
-- commit Plan 0023/C50's exact ordinary-query repair candidate, install 0.3.4,
-  and prove the installed public/profile/cross-profile ordinary client path
-  against the promoted terminal tick head before final validation and push.
+- commit Plan 0023/C51's installed ordinary-query proof, run final full
+  validation and audits, persist compact closeout memory, close the plan, and
+  push exact origin main. Timer enablement remains a separately governed plan.
   Keep human interaction,
   new scope/credentials/data classes, paid provider/model use, cumulative-
   ceiling increase, and timer enablement as later gates.

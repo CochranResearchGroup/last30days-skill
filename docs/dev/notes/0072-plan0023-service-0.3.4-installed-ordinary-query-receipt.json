@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0023-service-0.3.4-installed-ordinary-query-0072",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0023",
+    "checkpoint": "P0023-C51",
+    "classification": "inherited_authority"
+  },
+  "installed": {
+    "service_version": "0.3.4",
+    "previous_version": "0.3.3",
+    "database_schema_version": 15,
+    "status": "ready",
+    "service_contract_sha256": "995de758ff8096c0ef1578b51eb9b46197c6f42dadc1080f5055a8d137e12262",
+    "runtime_manifest_sha256": "43a27d9f3900d5e09538dbff028043660c6608caae4a9ebcf83a5cc954d6c843",
+    "rollback_database_sha256": "873718a70b768d49eb49ab58fa7a0a92ad8afdc31ebe73cb992d49b4bd3e6f9e",
+    "config_sha256": "d1741db268a26f67308f6df1ea4df9181bb7763e0458d3000ac98813e98e4ab3",
+    "config_directory_mode": "0700",
+    "config_file_mode": "0600"
+  },
+  "durable_state": {
+    "sqlite_integrity": "ok",
+    "ticks": 3,
+    "active_ticks": 0,
+    "active_attempts": 0,
+    "collection_specs": 42,
+    "enabled_collection_specs": 0,
+    "query_head": "tick-snapshot-c5fb9c4bae4ef203d5a2de6c1495780c",
+    "timers_enabled": false
+  },
+  "ordinary_query_proof": {
+    "public": {
+      "query": "ChatGPT Voice",
+      "index_version": "tick-snapshot-c5fb9c4bae4ef203d5a2de6c1495780c",
+      "tick_id": "tick-325e83a6d4df894d074a0b87563ef499",
+      "tick_state": "complete_degraded",
+      "coverage_gaps": [
+        "facebook"
+      ],
+      "evidence_count": 3,
+      "partitions": [
+        "public"
+      ],
+      "matching_channels": [
+        "lexical_source",
+        "source_alt_text",
+        "ocr",
+        "semantic_sidecar"
+      ]
+    },
+    "selected_profile": {
+      "query": "Image Revenue",
+      "source": "x",
+      "profile": "last30days-facebook",
+      "evidence_count": 2,
+      "partitions": [
+        "profile:last30days-facebook"
+      ]
+    },
+    "cross_profile": {
+      "query": "Image Revenue",
+      "source": "x",
+      "profile": "another-profile",
+      "evidence_count": 0
+    }
+  },
+  "mcp": {
+    "adapter_version": "4.0.1",
+    "compatibility_state": "compatible",
+    "service_version": "0.3.4",
+    "contract_sha256": "995de758ff8096c0ef1578b51eb9b46197c6f42dadc1080f5055a8d137e12262",
+    "cache_only_query_snapshot": "tick-snapshot-c5fb9c4bae4ef203d5a2de6c1495780c",
+    "cache_only_query_evidence_count": 3
+  },
+  "review_finding": {
+    "accepted": 1,
+    "resolved": 1,
+    "unresolved": 0,
+    "other_findings": 0
+  },
+  "live_boundaries": {
+    "source_attempts": 0,
+    "provider_cost_cents": 0,
+    "model_tokens": 0,
+    "human_interaction_requested": false,
+    "timers_enabled": false
+  },
+  "next_action": "run final full validation and close Plan 0023 before origin push"
+}

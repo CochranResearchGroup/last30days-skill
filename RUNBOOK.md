@@ -11724,3 +11724,53 @@ Next Bounded Action:
 
 - commit C50/0071, install exact service 0.3.4, verify lifecycle invariants,
   and run installed public/profile/cross-profile ordinary queries.
+
+## Turn 194 | 2026-08-06
+
+Focus: install exact service 0.3.4 and resolve the evaluator's ordinary-client
+finding through the actual CLI and MCP paths.
+
+Authority Consulted:
+
+- Plan 0023 C50; Roadmap P07; Runbook Turn 193; receipt 0071; exact candidate
+  artifact/manifest/contract; installed service, database, rollback, config,
+  collection, timer, CLI, and MCP readbacks.
+
+Decisions And Changes:
+
+- consumed one transactional upgrade and retained exact 0.3.3 rollback state;
+- rebuilt and registered MCP adapter 4.0.1 against the new additive contract;
+- used only `cache_only` read paths for public, selected-profile,
+  cross-profile, and MCP proof.
+
+Validation Evidence:
+
+- service 0.3.4/schema15 is ready at exact contract `995de758...2262` and
+  manifest `43a27d9f...c843`, with 0.3.3 selected as previous;
+- SQLite is `ok`, all three ticks are terminal, zero attempts are active, 42
+  specs are disabled, config remains private and digest-stable, rollback
+  database matches metadata, and no timer exists;
+- public CLI and fresh MCP both return promoted snapshot `tick-snapshot-c5fb...`
+  with the exact degraded coverage and raw/alt/OCR/semantic provenance;
+- the selected X profile returns two exact-profile results and an unrelated
+  profile returns zero.
+
+State Movement:
+
+- Plan 0023 advances `C50 -> C51` and version `18 -> 19`;
+- `ordinary_query_tick_head_rework_candidate_ready -> installed_ordinary_query_finding_resolved`.
+
+Subagent Status And Reconciliation:
+
+- no further agent was opened; the primary resolved the sole accepted finding
+  against installed production callers, leaving zero unresolved or other
+  findings.
+
+Graphiti Write Status:
+
+- ready after final complete validation.
+
+Next Bounded Action:
+
+- commit C51/0072, run the complete suite and audits, persist compact Graphiti
+  closeout memory, close the plan, and push origin main.

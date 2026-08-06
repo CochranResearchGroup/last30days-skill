@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P07
 Date: 2026-08-04
-Plan version: 18
+Plan version: 19
 Predecessor: Plan 0018 version 28/checkpoint P0018-C76
 
 ## Stable Goal
@@ -614,7 +614,7 @@ acceptance tick all pass current deterministic and independent review evidence;
 the installed runtime and rollback are identified; every schedule remains
 disabled; and the next timer decision is represented only as a separate gate.
 
-Checkpoint P0023-C50 is the current authority.
+Checkpoint P0023-C51 is the current authority.
 
 ### Checkpoint P0023-C01 | 2026-08-04
 
@@ -3716,3 +3716,80 @@ Next action:
 
 - commit C50/receipt 0071, transactionally install exact 0.3.4, and run the
   installed public/profile/cross-profile ordinary query proof.
+
+### Checkpoint P0023-C51 | 2026-08-06
+
+Plan version: 19
+
+State transition:
+
+- `ordinary_query_tick_head_rework_candidate_ready -> installed_ordinary_query_finding_resolved`.
+
+Progress classification:
+
+- `goal_outcome`; the exact installed CLI and fresh installed MCP now use the
+  promoted terminal tick head and expose its coverage/freshness and evidence
+  provenance under filter-first partition enforcement.
+
+Owned actions:
+
+- transactionally install exact service 0.3.4 with 0.3.3 retained as rollback;
+- rebuild and register MCP adapter 4.0.1 against the exact changed service
+  contract digest;
+- run read-only cache-only public, selected-profile, cross-profile, and MCP
+  queries without acquisition or refresh.
+
+Validation evidence:
+
+- installed service is ready at 0.3.4/schema15 with exact contract
+  `995de758...2262`, runtime manifest `43a27d9f...c843`, and selectors
+  current/previous 0.3.4/0.3.3;
+- SQLite integrity is `ok`, three ticks are terminal, zero ticks or attempts
+  are active, all 42 collection specifications are disabled, and the only
+  query head is `tick-snapshot-c5fb...5780c`;
+- rollback database SHA-256 `873718a7...6f9e` matches its owner-private state
+  metadata; config digest remains `d1741db2...ab3` at directory/file modes
+  0700/0600; no last30days timer exists;
+- installed public query `ChatGPT Voice` returns the promoted tick snapshot,
+  three public results, exact `complete_degraded` coverage with Facebook as the
+  sole gap, and lexical/alt/OCR/semantic matching channels plus provenance;
+- selected profile `last30days-facebook`, source X, returns two results only
+  from `profile:last30days-facebook`; the identical query under
+  `another-profile` returns zero results;
+- a fresh stdio MCP handshake is compatible at adapter 4.0.1/service 0.3.4,
+  and its cache-only query returns the same promoted snapshot, three public
+  results, and all four matching channels.
+
+Accepted-finding reconciliation:
+
+- `resolved`; the evaluator's only finding was the absent ordinary-client
+  caller path. The installed CLI and MCP are now direct production callers of
+  the promoted head, while profile isolation is proven through the same API.
+  No unaccepted or additional finding exists in the closed-world ledger.
+
+Remaining acceptance criteria:
+
+- run the final full repository, package, policy, authority, installed-runtime,
+  and diff validation; persist compact Graphiti memory; close Plan 0023 and
+  push exact origin main.
+
+Subagent status and reconciliation:
+
+- no second evaluator or implementation subagent was opened; the single
+  review/rework loop is complete and the primary has reconciled its exact
+  accepted finding against installed evidence.
+
+Graphiti write status:
+
+- ready after final full validation establishes the terminal closeout state.
+
+Authority classification:
+
+- `inherited_authority`; exact install and ordinary-client verification were
+  already named by C50 and created no external-source, timer, cost, model,
+  identity, or human interaction.
+
+Next action:
+
+- commit C51/receipt 0072, run final full validation and audits, then record
+  terminal closeout and push origin main.
