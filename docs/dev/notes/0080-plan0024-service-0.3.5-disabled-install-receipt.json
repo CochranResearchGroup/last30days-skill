@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0024-service-0.3.5-disabled-install-0080",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0024",
+    "checkpoint": "P0024-C07",
+    "classification": "inherited_authority"
+  },
+  "installed": {
+    "service_version": "0.3.5",
+    "database_schema_version": 16,
+    "status": "ready",
+    "contract_sha256": "fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1",
+    "runtime_manifest_sha256": "8d438421c57239ac2f59e9929bf60f6cd809dd5ac702647fe0153caa40213083",
+    "artifact_sha256": "efcbec6c58e96703fff5728251194e539fc5a96903fea11c0074348ae30eea8f",
+    "current_release": "releases/0.3.5",
+    "previous_release": "releases/0.3.4"
+  },
+  "rollback": {
+    "release": "releases/0.3.4",
+    "database_schema_version": 15,
+    "database_sha256": "873718a70b768d49eb49ab58fa7a0a92ad8afdc31ebe73cb992d49b4bd3e6f9e"
+  },
+  "preinstall_config": {
+    "schedule_present": false,
+    "schedule_enabled": false,
+    "sha256": "d1741db268a26f67308f6df1ea4df9181bb7763e0458d3000ac98813e98e4ab3",
+    "directory_mode": "0700",
+    "file_mode": "0600"
+  },
+  "postinstall_state": {
+    "service_active": true,
+    "sqlite_integrity": "ok",
+    "ticks": 3,
+    "active_attempts": 0,
+    "schedule_rows": 0,
+    "schedule_events": 0,
+    "timer_ticks": 0,
+    "collection_specs": 42,
+    "enabled_collection_specs": 0,
+    "systemd_timer_present": false,
+    "schedule_status": "disabled"
+  },
+  "live_source_attempts_added": 0,
+  "private_config_content_recorded": false,
+  "next_action": "add exact daily schedule and revision, preflight without state, then activation restart and one automatic tick"
+}

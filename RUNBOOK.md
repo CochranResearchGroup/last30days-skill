@@ -12144,3 +12144,54 @@ Next Bounded Action:
 - commit C06/receipt 0079, perform the one exact disabled upgrade, and verify
   installed identity, rollback, database, zero schedule/tick effects, disabled
   legacy specs, and absent systemd timer before private config activation.
+
+## Turn 202 | 2026-08-06
+
+Focus: transactionally install exact service 0.3.5 with recurrence disabled
+and prove zero scheduler/source side effects.
+
+Authority Consulted:
+
+- Plan 0024 version 6/C06, Roadmap P08, Runbook Turn 201, receipts 0078-0079;
+  reviewed artifact and installed preflight readbacks; the exact S04 mutation
+  gate and rollback requirements.
+
+Decisions And Changes:
+
+- confirmed the private config had no schedule object through an exact-field
+  readback without exposing private content;
+- consumed the one authorized transactional upgrade from 0.3.4/schema15 to
+  exact 0.3.5/schema16;
+- retained 0.3.4/schema15 as the transactional rollback target and did not
+  mutate config, enable a timer, or admit source work.
+
+Validation Evidence:
+
+- artifact, installed manifest, and installed contract match reviewed hashes;
+- installed service is active/ready at 0.3.5/schema16, current points to 0.3.5,
+  previous and rollback state bind 0.3.4/schema15 with exact database hash;
+- SQLite is `ok`; three ticks, zero active attempts, zero schedule rows/events,
+  zero timer ticks, and 42 specs/zero enabled remain exact;
+- private config hash remains `d1741db2...4ab3`, directories/database/receipt
+  retain owner-private modes, schedule status is disabled/null, and no
+  last30days systemd timer exists.
+
+State Movement:
+
+- Plan 0024 advances version `6 -> 7` and `C06 -> C07`;
+- `exact_candidate_verified_disabled_install_ready -> installed_disabled_activation_ready`.
+
+Subagent Status And Reconciliation:
+
+- not run during installation; primary installed-state readbacks match the
+  evaluator-approved candidate.
+
+Graphiti Write Status:
+
+- deferred to live or terminal Plan 0024 closeout.
+
+Next Bounded Action:
+
+- commit C07/receipt 0080, revise only the private revision and exact daily
+  schedule, preflight without state, then use the first post-install restart
+  to admit at most one automatic tick under the frozen 20/50 ceiling.

@@ -3,7 +3,7 @@
 State: OPEN
 Roadmap: P08
 Date: 2026-08-06
-Plan version: 6
+Plan version: 7
 Predecessor: Plan 0023 version 20/checkpoint P0023-C52
 
 ## Stable Goal
@@ -48,7 +48,11 @@ and fail-closed pause controls without creating a second acquisition path.
   reserved closed-world candidate verification remains before S04;
 - that evaluator has now returned `VERIFIED` with zero closed-world findings,
   zero unresolved accepted findings, and zero critical remediation regressions;
-  S04's one exact disabled install is ready.
+  S04's one exact disabled install is ready;
+- exact service 0.3.5/schema16 is now installed active/ready with 0.3.4/schema15
+  rollback retained; config hash/modes, three ticks, zero active attempts, zero
+  schedule rows/events/timer ticks, 42 disabled specs, and absent systemd timer
+  are unchanged, so S05 activation is ready.
 
 ## Product Decision
 
@@ -280,7 +284,7 @@ truthfully enabled or fail-closed paused; all legacy specs remain disabled;
 the accepted finding ledger is reconciled; Graphiti memory is durable; and the
 terminal chain is pushed to origin main.
 
-Checkpoint P0024-C06 is the current authority.
+Checkpoint P0024-C07 is the current authority.
 
 ### Checkpoint P0024-C01 | 2026-08-06
 
@@ -599,3 +603,57 @@ Next action:
   a whitelisted readback, transactionally upgrade exact artifact `efcbec6...`,
   and prove service 0.3.5/schema16 ready, rollback retained, SQLite healthy,
   zero new schedule rows/ticks, 42 specs disabled, and no systemd timer.
+
+### Checkpoint P0024-C07 | 2026-08-06
+
+Plan version: 7
+
+State transition:
+
+- `exact_candidate_verified_disabled_install_ready -> installed_disabled_activation_ready`.
+
+Progress classification:
+
+- `outcome_progress`; S04 installed the exact candidate without admitting
+  schedule or source work and proved the rollback and unchanged-state gates.
+
+Validation evidence:
+
+- preinstall whitelisted config readback was `schedule_present=false` and
+  `schedule_enabled=false`; artifact hash matched receipt 0078;
+- installed diagnose reports service 0.3.5, schema16, ready, contract
+  `fe8727fb...f1`, and runtime manifest `8d438421...083`;
+- current is `releases/0.3.5`, previous is `releases/0.3.4`, and rollback state
+  binds schema15 database hash `873718a7...e6f9`;
+- service is active, SQLite integrity is `ok`, config hash remains
+  `d1741db2...4ab3`, modes remain 0700/0600, ticks remain three, active
+  attempts zero, schedule rows/events zero, timer ticks zero, and legacy specs
+  42 total/zero enabled;
+- installed schedule status is sanitized disabled/null and no last30days
+  systemd timer exists.
+
+Subagent status and reconciliation:
+
+- no subagent ran during the install; exact installed identity was verified by
+  the primary and matches the terminal evaluator's candidate hashes.
+
+Review disposition summary:
+
+- unchanged: one accepted/resolved finding and zero unresolved findings.
+
+Graphiti write status:
+
+- deferred until live or terminal closeout.
+
+Authority classification:
+
+- `inherited_authority`; the operator's `ok go` explicitly authorizes the
+  exact private schedule addition, activation restart, one automatic tick, and
+  leaving the accepted schedule enabled within the frozen ceilings.
+
+Next action:
+
+- commit C07/receipt 0080, revise only the private config revision plus exact
+  daily-default schedule, run a sanitized no-state preflight, restart once to
+  load activation, and monitor at most one timer tick and five new provider
+  attempts to truthful terminal state or the first hard stop.
