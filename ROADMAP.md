@@ -1159,9 +1159,10 @@ Current State:
 Open Plan:
 
 - `docs/dev/plans/0025-2026-08-07-facebook-agent-browser-timeout-remediation.md`
-  version 1/C01 is the active authority. It permits only operation-level
-  diagnosis, a narrow regression-backed adapter repair, one reviewed candidate
-  install if required, and one bounded live Facebook proof.
+  version 2/C02 is the active authority. It proves the inactive retained
+  Facebook target fails `Page.enable`, and permits only the regression-backed
+  fresh-target repair, one reviewed candidate install, and one bounded live
+  Facebook proof.
 
 Dependencies:
 
@@ -1172,8 +1173,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- time the bounded tab-select/auth-read sequence, identify the exact stalled
-  operation, then add the red regression before changing implementation.
+- install exact service 0.3.6 with 0.3.5 rollback retained, verify installed
+  hashes/readiness, then run the one bounded live Facebook proof.
 
 ## Goal-Compatible Plan Conversion
 

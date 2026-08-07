@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0025-facebook-timeout-diagnosis-candidate-0086",
+  "plan": "0025",
+  "checkpoint": "P0025-C02",
+  "date": "2026-08-07",
+  "diagnosis": {
+    "failure": "CDP command timed out: Page.enable",
+    "scope": "inactive retained Facebook target only",
+    "tab_list_seconds": 8,
+    "changed_budget_probe_seconds": 35.44,
+    "other_retained_tab_restore_seconds": 8,
+    "root_cause": "Facebook treated an inactive retained target as reusable without proving its page domain responsive",
+    "falsified": [
+      "whole agent-browser service unavailable",
+      "canonical profile absent",
+      "shared browser process unavailable",
+      "remote-view route unavailable",
+      "installation drift as the immediate failure"
+    ]
+  },
+  "mitigation": {
+    "service_version": "0.3.6",
+    "database_schema_version": 16,
+    "behavior": "require an active Facebook target before reuse; otherwise open a fresh target in the same browser and consolidate same-site duplicates",
+    "new_browser_process": false,
+    "new_profile": false,
+    "auth_or_quality_gate_weakened": false
+  },
+  "validation": {
+    "regression_red": "1 failed",
+    "focused_green": "179 passed, 3 skipped",
+    "compileall": "passed",
+    "plan_authority_audit": "passed",
+    "diff_check": "passed",
+    "artifact": "dist/service/last30days-service-0.3.6.tar.gz",
+    "artifact_sha256": "96d0f916ff1a2492090a2d4bbf6e1bb15ca0f7d944ea7c5ff5245d8604b532b1"
+  },
+  "runtime_effects": {
+    "installed": false,
+    "live_facebook_attempts": 0,
+    "schedule_changed": false
+  },
+  "next_action": "commit the exact candidate, install with 0.3.5 rollback retained, then run the one bounded live Facebook proof"
+}

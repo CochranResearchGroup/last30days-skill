@@ -12553,3 +12553,60 @@ Next Bounded Action:
 
 - time the one bounded tab-select/auth-read sequence, prove the exact stalled
   operation, then add a red regression before implementing the mitigation.
+
+## Turn 209 | 2026-08-07
+
+Focus: prove the exact Facebook target failure and produce the regression-
+backed service 0.3.6 candidate.
+
+Authority Consulted:
+
+- P09/Plan 0025 version 1/C01; current agent-browser session/browser/tab state;
+  CodeGraph source and blast-radius readbacks; policies 0007-0013, 0015, 0018,
+  and 0019; current tests, service runtime manifest, and release contracts.
+
+Decisions And Changes:
+
+- accepted `CDP command timed out: Page.enable` at 35.44 seconds as the exact
+  lower-level failure after the same target reproduced the adapter's 30-second
+  timeout and the other retained tab restored normally;
+- rejected whole-service, missing-profile, route-unavailable, and immediate
+  installation-drift hypotheses because current service/browser/profile/route
+  evidence stayed ready while only the retained Facebook target failed;
+- added a regression at the real CLI adapter seam and observed it fail before
+  implementation;
+- changed Facebook only to require an active target for reuse; an inactive
+  retained target causes a fresh tab in the same browser/profile, followed by
+  same-site consolidation and unchanged auth evaluation;
+- advanced the service candidate to 0.3.6 and aligned its manifest, changelog,
+  configuration example, and release assertions.
+
+Validation Evidence:
+
+- regression red: one failed; regression green: passed;
+- focused source/runtime suite: 179 passed, 3 skipped;
+- compileall, plan-authority audit, deterministic runtime build, manifest, and
+  diff checks pass;
+- artifact `dist/service/last30days-service-0.3.6.tar.gz` SHA-256 is
+  `96d0f916ff1a2492090a2d4bbf6e1bb15ca0f7d944ea7c5ff5245d8604b532b1`;
+- receipt 0086 records zero installation, schedule, or live-source effects.
+
+State Movement:
+
+- Plan 0025 advances version `1 -> 2` and `C01 -> C02`;
+- `facebook_timeout_diagnosis_active -> exact_candidate_ready_for_install`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary owns the exact tightly coupled diagnostic,
+  implementation, candidate, install, and live-proof path.
+
+Graphiti Write Status:
+
+- deferred until installed/live validation makes the incident resolution
+  durable; current repo authorities and receipt 0086 preserve the candidate.
+
+Next Bounded Action:
+
+- commit the candidate, install exact 0.3.6 with 0.3.5 rollback retained, prove
+  installed hashes/readiness, then run the one bounded live Facebook proof.

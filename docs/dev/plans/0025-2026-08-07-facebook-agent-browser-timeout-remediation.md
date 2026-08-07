@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P09
-Plan version: 1
+Plan version: 2
 Date: 2026-08-07
 
 ## Objective
@@ -161,3 +161,64 @@ Next action:
 
 - time the single bounded tab-select/auth-read sequence, identify the exact
   stall, then add a red regression before implementing the mitigation.
+
+### Checkpoint P0025-C02 | 2026-08-07
+
+Plan version: 2
+
+State transition:
+
+- `facebook_timeout_diagnosis_active -> exact_candidate_ready_for_install`.
+
+Progress classification:
+
+- `outcome_progress`; the exact target-level failure is proven, a regression
+  went red, the narrow mitigation is implemented, and the reviewed 0.3.6
+  artifact passes focused validation.
+
+Diagnosis:
+
+- a 30-second reproduction selected the inactive retained Facebook tab but did
+  not return; evaluation on that target also did not return within the cap;
+- the changed-budget probe returned after 35.44 seconds with
+  `CDP command timed out: Page.enable`;
+- restoring the retained LinkedIn tab succeeded in about eight seconds, while
+  service status, tab enumeration, profile selection, and remote-view runtime
+  remained ready;
+- therefore the failure is the stale inactive Facebook target, with the
+  adapter's 30-second clamp masking agent-browser's eventual Page-domain error.
+
+Implementation:
+
+- Facebook auth inspection now reuses a site target only when Facebook is
+  already active; otherwise it opens a fresh target inside the same retained
+  browser/profile, re-enumerates, consolidates same-site duplicates, and then
+  evaluates auth state;
+- the shared helper retains its previous default for X, LinkedIn, Reddit, and
+  other callers; no browser, profile, route, credential, schema, cadence,
+  retry, cost, or quality-gate behavior changes;
+- service version advances 0.3.5 to 0.3.6 and the runtime manifest,
+  configuration example, changelog, and release assertions agree.
+
+Validation evidence:
+
+- exact new regression first failed and then passed;
+- focused Facebook/LinkedIn/X/Reddit/source-log/release/runtime-package/worker/
+  tick validation passes 179 tests with three skips;
+- compileall, plan-authority audit, manifest/build verification, and diff check
+  pass;
+- deterministic artifact
+  `dist/service/last30days-service-0.3.6.tar.gz` has SHA-256
+  `96d0f916ff1a2492090a2d4bbf6e1bb15ca0f7d944ea7c5ff5245d8604b532b1`;
+- receipt 0086 records the diagnosis, candidate, validation, and zero live
+  source/install effects.
+
+Authority classification:
+
+- `inherited_authority`; exact candidate install, rollback preservation, and
+  the one bounded Facebook proof remain inside the approved goal and plan.
+
+Next action:
+
+- commit the exact candidate, install 0.3.6 with 0.3.5 rollback retained, prove
+  installed hashes/readiness, then consume the one live Facebook attempt.

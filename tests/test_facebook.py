@@ -198,6 +198,10 @@ class FacebookCliAdapterTests(unittest.TestCase):
             side_effect=[
                 {"tabs": [{"index": 0, "active": True, "url": "https://x.com/home"}]},
                 {},
+                {"tabs": [
+                    {"index": 0, "active": False, "url": "https://x.com/home"},
+                    {"index": 1, "active": True, "url": "https://www.facebook.com/"},
+                ]},
                 {"authenticated_dom": True, "has_c_user": True, "has_xs": True},
             ],
         ) as invoke:
@@ -207,6 +211,55 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual(
             ["--session", "shared-social", "tab", "new", "https://www.facebook.com/"],
             invoke.call_args_list[1].args[0],
+        )
+
+    def test_auth_inspection_replaces_inactive_facebook_target_before_page_enable(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="shared-social",
+        )
+        initial_tabs = {"tabs": [
+            {
+                "index": 0,
+                "active": False,
+                "url": "https://www.facebook.com/search/top/?q=OpenAI",
+            },
+            {"index": 1, "active": True, "url": "https://www.linkedin.com/feed/"},
+        ]}
+        refreshed_tabs = {"tabs": [
+            {
+                "index": 0,
+                "active": False,
+                "url": "https://www.facebook.com/search/top/?q=OpenAI",
+            },
+            {"index": 1, "active": False, "url": "https://www.linkedin.com/feed/"},
+            {"index": 2, "active": True, "url": "https://www.facebook.com/"},
+        ]}
+        with mock.patch.object(
+            client,
+            "_invoke",
+            side_effect=[
+                initial_tabs,
+                {},
+                refreshed_tabs,
+                {},
+                {"authenticated_dom": True, "has_c_user": True, "has_xs": True},
+            ],
+        ) as invoke:
+            auth = client.inspect_auth(workspace)
+
+        self.assertTrue(auth.authenticated)
+        self.assertEqual(
+            [
+                ["--session", "shared-social", "tab", "list"],
+                ["--session", "shared-social", "tab", "new", "https://www.facebook.com/"],
+                ["--session", "shared-social", "tab", "list"],
+                ["--session", "shared-social", "tab", "close", "0"],
+                ["--session", "shared-social", "eval", "--stdin"],
+            ],
+            [call.args[0] for call in invoke.call_args_list],
         )
 
     def test_wait_action_is_local_and_bounded(self):

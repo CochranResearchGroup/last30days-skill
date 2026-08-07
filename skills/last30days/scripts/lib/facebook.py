@@ -558,9 +558,23 @@ class CliAgentBrowserClient:
         )
 
     def inspect_auth(self, workspace: BrowserWorkspace) -> FacebookAuthState:
-        if not self.prepare_site_tab(workspace, "facebook.com", consolidate=True):
+        if not self.prepare_site_tab(
+            workspace,
+            "facebook.com",
+            consolidate=True,
+            require_active=True,
+        ):
             self.act(workspace, BrowserAction("new_tab", value="https://www.facebook.com/"))
-            self._prepared_sites.add((workspace.session_name, "facebook.com"))
+            if not self.prepare_site_tab(
+                workspace,
+                "facebook.com",
+                consolidate=True,
+                require_active=True,
+            ):
+                raise FacebookScraperFailure(
+                    "agent_browser_error",
+                    "agent-browser did not expose the new active Facebook tab",
+                )
         raw = self.evaluate(workspace, AUTH_SCRIPT)
         return FacebookAuthState(
             authenticated=bool(raw.get("authenticated_dom")),
@@ -649,8 +663,9 @@ class CliAgentBrowserClient:
         hostname: str,
         *,
         consolidate: bool = False,
+        require_active: bool = False,
     ) -> bool:
-        """Select a retained site tab and optionally close only same-site duplicates."""
+        """Select a usable site tab and optionally close same-site duplicates."""
         cache_key = (workspace.session_name, hostname)
         if cache_key in self._prepared_sites:
             return True
@@ -665,7 +680,14 @@ class CliAgentBrowserClient:
         ]
         if not matches:
             return False
-        selected = next((tab for tab in matches if tab.get("active")), matches[-1])
+        active = next((tab for tab in matches if tab.get("active")), None)
+        if require_active and active is None:
+            _log(
+                f"Retained {hostname} targets are inactive; "
+                "opening a fresh target before page-domain evaluation"
+            )
+            return False
+        selected = active or matches[-1]
         try:
             selected_index = int(selected.get("index"))
         except (TypeError, ValueError):
