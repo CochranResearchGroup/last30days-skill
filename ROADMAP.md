@@ -1165,16 +1165,20 @@ Current State:
   predecessor close timed out before page evaluation; S07 defers and bounds
   cleanup after page evidence so cleanup cannot mask a useful result.
 - S07 repeated C04's post-query evaluation timeout even on a fresh direct query
-  tab. S08 built and validated offline service 0.3.11, which authenticates a
-  fresh home target and navigates that same target to the query. Further
-  install/live work remains human-gated.
+  tab. S08 built service 0.3.11 with same-target navigation. After explicit
+  operator approval, S09 installed it and consumed one proof; Facebook returned
+  `checkpoint_required` during fresh-target authentication before navigation.
+- Installed 0.3.11 is ready and the daily schedule is unchanged, but the
+  repaired navigation path remains live-unproven. Agent-browser remote-control
+  readiness is also blocked by duplicate-profile pressure and workstation-
+  payload drift, so no operator handoff is currently claimed ready.
 
 Open Plan:
 
 - `docs/dev/plans/0025-2026-08-07-facebook-agent-browser-timeout-remediation.md`
-  version 13/C13 is the active authority. Installed 0.3.10 remains ready;
-  deterministic service 0.3.11 is the validated offline candidate. Install and
-  live proof remain a human gate.
+  version 14/C14 is the active authority. Installed 0.3.11 is ready with 0.3.10
+  retained for rollback. Facebook checkpoint handling and agent-browser
+  remote-view drift remediation are a new human gate.
 
 Dependencies:
 
@@ -1185,8 +1189,10 @@ Dependencies:
 
 Next Bounded Action:
 
-- await explicit authority to install exact service 0.3.11 with 0.3.10 rollback
-  retained and run one zero-cost canonical-profile Facebook proof.
+- preserve installed 0.3.11 and await explicit authority for a separate
+  agent-browser remote-view repair plus literal Facebook checkpoint packet;
+  only after operator completion may one post-checkpoint verification be
+  derived.
 
 ## Goal-Compatible Plan Conversion
 

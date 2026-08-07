@@ -13075,3 +13075,68 @@ Next Bounded Action:
 
 - await explicit authority for exact 0.3.11 install with 0.3.10 rollback
   retained and one zero-cost canonical-profile Facebook proof.
+
+## Turn 219 | 2026-08-07
+
+Focus: consume the explicitly approved 0.3.11 install/live packet and stop at
+Facebook's new checkpoint gate.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0025 version 13/C13; exact artifact and rollback
+  readbacks; diagnosing-bugs and agent-browser operating skills; policies 0001,
+  0012, 0013, 0015, and 0019.
+
+Decisions And Changes:
+
+- reverified clean origin state, exact candidate hashes, focused regressions,
+  installed 0.3.10 readiness, 0.3.10 rollback presence, schedule, database,
+  spec, attempt, and timer invariants;
+- installed exact service 0.3.11 and verified source, installed manifest,
+  schema16, service health, and retained 0.3.10 rollback;
+- consumed exactly one zero-cost Facebook proof on the canonical profile;
+- stopped before navigation when fresh-target auth returned a Facebook
+  checkpoint; no retry, checkpoint automation, or schedule change occurred;
+- inspected only retained agent-browser and remote-view readiness. The browser
+  remains ready, but doctor forbids a ready handoff claim until duplicate-
+  profile pressure and workstation-payload drift are repaired.
+
+Validation Evidence:
+
+- installed service 0.3.11/schema16 is ready with runtime-manifest SHA-256
+  `f9668856d90517159c7f6e8384420df4384e6379b188a9c57fb98d93f9669196`;
+- work `p0025-facebook-live-20260807-06` returned
+  `awaiting_operator/checkpoint_required`, operator retry class, 26.789 seconds,
+  one network action, zero cost, zero candidates/items;
+- operations: service 0.232/2.840s, auth tab new/list 8.011/7.820s, auth eval
+  7.853s; navigation, page readback, extraction, and cleanup did not run;
+- post-proof: `daily-default` enabled/ready for Aug 8 UTC; SQLite `ok`; 42 specs,
+  zero enabled; all execution/provider attempts terminal; no systemd timer;
+- remote-view doctor reports top-level ready but
+  `remoteControl.status=needs_browser_launch_prerequisites` with issue codes
+  `install_service_duplicate_profile_pressure` and
+  `install_workstation_payload_partial_or_drifted`.
+
+State Movement:
+
+- `offline_same_target_candidate_ready -> installed_candidate_ready -> facebook_checkpoint_human_gate`;
+- Plan 0025 advances version `13 -> 14`, checkpoint `C13 -> C14`, remaining
+  `OPEN`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; primary owns install, proof, readback, and adjudication.
+
+Graphiti Write Status:
+
+- one compact blocker episode completed in one attempt as job
+  `17547a66-8b12-43e1-85d3-a789b715730c`, episode
+  `70bded68-6ab8-474c-89d8-c01cf321accc`, in `last30days_skill_main`;
+- direct grouped readback found the exact episode. The durable blocker is
+  recorded, while no successful Facebook repair is claimed.
+
+Next Bounded Action:
+
+- preserve installed 0.3.11 and request explicit authority for separate
+  agent-browser remote-view drift repair plus literal Facebook checkpoint
+  interaction; only then derive one post-checkpoint verification proof.

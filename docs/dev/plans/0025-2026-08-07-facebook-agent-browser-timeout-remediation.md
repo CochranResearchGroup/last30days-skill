@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P09
-Plan version: 13
+Plan version: 14
 Date: 2026-08-07
 
 ## Objective
@@ -14,7 +14,8 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
 
 ## Current State
 
-- Installed service 0.3.10/schema16 is ready and the service-owned
+- Installed service 0.3.11/schema16 is ready with 0.3.10 retained for rollback,
+  and the service-owned
   `daily-default` schedule remains enabled/ready for the Aug 8 UTC boundary.
 - The inactive-target repair and extraction retry repair are validated. The
   first live proof reached Facebook and accepted one post; the second proved a
@@ -22,11 +23,17 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
 - S07 work `p0025-facebook-live-20260807-05` removed cleanup from the critical
   path and authenticated on a fresh target, but direct creation of a query tab
   again timed out at its first page-state evaluation after 30.039 seconds.
-- This repeats C04's post-query evaluation invariant at the configured bound.
-  Further live work is human-gated. Offline S08 now supplies exact service
-  0.3.11, using the only live-proven path that reached extraction: create and
-  evaluate a fresh home target for auth, then navigate that same known-healthy
-  target to the query. The candidate is built and validated but not installed.
+- The operator approved exact install plus one proof. Work
+  `p0025-facebook-live-20260807-06` acquired the canonical retained browser and
+  all five service/tab/auth-evaluation operations returned, but Facebook
+  presented a checkpoint before query navigation. The worker stopped
+  `awaiting_operator/checkpoint_required` after 26.789 seconds with one network
+  action, zero candidates, and zero cost; the navigation fix remains live-
+  unproven and no retry is permitted.
+- Agent-browser service state still reports the retained browser ready, but the
+  remote-view doctor reports `needs_browser_launch_prerequisites` because of
+  duplicate-profile pressure and workstation-payload drift. No operator handoff
+  is claimed ready and no unrelated agent-browser repair is authorized.
 - Plan version 4's `human_gate` classification is superseded by C05 after a
   current policy reread: renewable work windows are not consumable approval
   tokens when blocker reduction is proven and the approved envelope is
@@ -40,11 +47,11 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
   implementation;
 - repair only the Facebook/shared agent-browser command behavior that current
   evidence proves faulty;
-- preserve the installed 0.3.10 service while building one reviewed offline
-  0.3.11 candidate;
-- prepare one offline S08 regression-backed candidate; do not install it or run
-  another Facebook proof without explicit operator authority after the repeated
-  post-query evaluation invariant;
+- preserve installed 0.3.11 and retained 0.3.10 rollback after the explicitly
+  authorized S09 install/live packet;
+- stop after the consumed proof on checkpoint/manual-interaction or any new
+  critical failure; do not retry, automate the checkpoint, or repair unrelated
+  agent-browser installation drift;
 - preserve and verify daily schedule, disabled legacy specs, database
   integrity, browser/profile reuse, zero cost/model use, and next-boundary
   continuity.
@@ -64,10 +71,11 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
 - The active user goal, `diagnose, plan a mitigation, execute`, remains standing
   authority for ordinary offline diagnosis, code/test/docs changes, and
   deterministic candidate preparation inside this existing source boundary.
-- C11 classifies another installation or live Facebook proof as a `human_gate`
-  after the repeated post-query evaluation invariant. Exact 0.3.11 may not be
-  installed and no Facebook command may run without explicit operator
-  authority.
+- The operator's `ok go` explicitly authorized exact 0.3.11 installation and
+  one zero-cost canonical-profile proof; S09 consumed both effects.
+- The observed Facebook checkpoint is a new `human_gate`. Manual checkpoint
+  interaction and agent-browser workstation-drift repair remain explicit non-
+  goals and require separate operator direction; no proof retry is inherited.
 - Stop before any login, checkpoint, consent, challenge, new credential,
   duplicate browser/profile lane, destructive cleanup, paid request, external
   communication, or change to the daily schedule.
@@ -107,17 +115,18 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
 | S06 fresh targets | Fresh auth/query targets and one live proof | C04 blocker | Facebook adapter/tests/version plus governed runtime evidence | C08 cleanup blocker recorded |
 | S07 deferred cleanup | Page evidence before bounded best-effort consolidation | C08 blocker | Facebook adapter/tests/version plus governed runtime evidence | success closes P09; cleanup cannot mask result |
 | S08 same-target navigation | Fresh auth target then same-target query navigation | C11 repeated invariant | offline Facebook adapter/tests/version only | candidate ready; install/live remain human-gated |
+| S09 approved install/live | Install 0.3.11 and consume one zero-cost proof | C13 plus operator approval | installed service and governed browser evidence | success closes P09; checkpoint or critical failure hard-stops |
 
 - Critical-path owner: primary agent; active-agent concurrency is one and no
   subagent is authorized or needed.
 - S08 offline maximum implementation attempts: 1.
 - S08 offline maximum review/rework cycles: 1.
-- S08 live Facebook source attempts: 0 until explicit operator authority.
+- S09 install attempts: 1, consumed successfully.
+- S09 live Facebook source attempts: 1, consumed at `checkpoint_required`.
 - Maximum diagnostic browser interaction: one tab-select/auth-read sequence,
   restoring the prior active tab when safe.
-- The repeated post-query evaluation timeout is a `human_gate`; no install that
-  would affect the scheduled source lane and no live Facebook command may run
-  until explicit operator authority.
+- No additional Facebook request, checkpoint interaction, or agent-browser
+  workstation repair is authorized after the S09 hard stop.
 
 ## Validation Commands
 
@@ -706,3 +715,68 @@ Next action:
 
 - await explicit operator authority for exact 0.3.11 install with 0.3.10
   rollback retained and one zero-cost canonical-profile Facebook proof.
+
+### Checkpoint P0025-C14 | 2026-08-07
+
+Plan version: 14
+
+State transition:
+
+- `offline_same_target_candidate_ready -> installed_candidate_ready -> facebook_checkpoint_human_gate`.
+
+Progress classification:
+
+- `blocker_reduction`; exact 0.3.11 is installed and all adapter operations
+  before navigation returned without timeout, but Facebook's checkpoint stopped
+  the proof before the repaired navigation/extraction path could be evaluated.
+
+Implementation and live evidence:
+
+- operator `ok go` approved exact 0.3.11 install with 0.3.10 rollback and one
+  zero-cost canonical-profile Facebook proof;
+- installed diagnose is ready service 0.3.11/schema16 with runtime-manifest
+  SHA-256 `f9668856d90517159c7f6e8384420df4384e6379b188a9c57fb98d93f9669196`;
+- work `p0025-facebook-live-20260807-06` returned
+  `awaiting_operator/checkpoint_required`, retry class `operator`, duration
+  26.789 seconds, one network action, zero cost, and zero candidates/items;
+- service calls returned in 0.232/2.840 seconds, fresh auth tab new/list in
+  8.011/7.820 seconds, and auth evaluation in 7.853 seconds. Query navigation,
+  page-state evaluation, extraction, and cleanup did not run;
+- failure signature is
+  `sha256:290fb56f81d28e5773d1193902945baa0f6ce83d738fbc53b808913cc45e1d4e`;
+- post-proof service/schedule/database/spec/attempt/timer invariants pass:
+  `daily-default` remains enabled/ready for Aug 8 UTC, SQLite integrity is
+  `ok`, all 42 legacy specs remain disabled, all tick attempts are terminal,
+  and no last30days systemd timer exists.
+
+Operator handoff evidence:
+
+- retained browser `session:stored-last30days-social` remains ready on profile
+  `last30days-facebook`, and service state reports visible Facebook windows;
+- remote-view doctor top-level status is ready, but its single-route
+  `remoteControl.status` is `needs_browser_launch_prerequisites` with
+  `install_service_duplicate_profile_pressure` and
+  `install_workstation_payload_partial_or_drifted` issues;
+- policy therefore forbids claiming a ready operator handoff or attempting
+  checkpoint interaction until that separate runtime scope is reviewed.
+
+Authority classification:
+
+- `human_gate`; the single approved proof is consumed. Clearing Facebook's
+  checkpoint requires literal operator interaction, and preparing a trustworthy
+  handoff first requires separately authorized agent-browser workstation drift
+  remediation. Neither effect is inherited from S09.
+
+Durable-memory status:
+
+- one compact blocker episode completed in one attempt in
+  `last30days_skill_main`: job `17547a66-8b12-43e1-85d3-a789b715730c`, episode
+  `70bded68-6ab8-474c-89d8-c01cf321accc`;
+- direct grouped readback found the exact episode. This records the durable
+  blocker without claiming the Facebook repair is proven.
+
+Next action:
+
+- preserve installed 0.3.11 and request explicit authority for the separate
+  remote-view repair plus manual Facebook checkpoint packet; after literal
+  operator completion, derive one bounded post-checkpoint verification proof.

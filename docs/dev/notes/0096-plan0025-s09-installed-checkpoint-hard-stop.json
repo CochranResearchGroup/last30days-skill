@@ -1,0 +1,91 @@
+{
+  "receipt_type": "plan0025_s09_installed_checkpoint_hard_stop_v1",
+  "recorded_at": "2026-08-07",
+  "plan": "0025",
+  "roadmap": "P09",
+  "checkpoint": "P0025-C14",
+  "authority": {
+    "install_and_one_live_proof": "explicit_operator_approval_ok_go",
+    "checkpoint_interaction": "human_gate",
+    "agent_browser_workstation_repair": "scope_expansion"
+  },
+  "installed": {
+    "service_version": "0.3.11",
+    "database_schema_version": 16,
+    "status": "ready",
+    "runtime_manifest_sha256": "f9668856d90517159c7f6e8384420df4384e6379b188a9c57fb98d93f9669196",
+    "rollback_release": "0.3.10"
+  },
+  "live_proof": {
+    "work_id": "p0025-facebook-live-20260807-06",
+    "job_id": "p0025-facebook-live-20260807-06",
+    "source": "facebook",
+    "profile_id": "last30days-facebook",
+    "adapter": "facebook_agent_browser_v1",
+    "status": "awaiting_operator",
+    "safe_error_code": "checkpoint_required",
+    "retry_class": "operator",
+    "duration_ms": 26789,
+    "attempted_count": 0,
+    "observed_count": 0,
+    "accepted_count": 0,
+    "rejected_count": 0,
+    "network_actions": 1,
+    "cost_cents": 0,
+    "browser_operations": [
+      {"operation": "service", "duration_ms": 232, "status": "ok"},
+      {"operation": "service", "duration_ms": 2840, "status": "ok"},
+      {"operation": "tab", "duration_ms": 8011, "status": "ok"},
+      {"operation": "tab", "duration_ms": 7820, "status": "ok"},
+      {"operation": "eval", "duration_ms": 7853, "status": "ok"}
+    ],
+    "query_navigation_attempted": false,
+    "page_state_evaluation_attempted": false,
+    "extraction_attempted": false,
+    "cleanup_attempted": false,
+    "failure_stage": "adapter_result",
+    "failure_signature": "sha256:290fb56f81d28e5773d1193902945baa0f6ce83d738fbc53b808913cc45e1d4e"
+  },
+  "remote_view": {
+    "retained_browser_id": "session:stored-last30days-social",
+    "retained_browser_health": "ready",
+    "doctor_status": "ready",
+    "remote_control_status": "needs_browser_launch_prerequisites",
+    "remote_control_ready": false,
+    "issues": [
+      "install_service_duplicate_profile_pressure",
+      "install_workstation_payload_partial_or_drifted"
+    ],
+    "operator_handoff_claimed_ready": false
+  },
+  "preserved_invariants": {
+    "schedule_id": "daily-default",
+    "schedule_enabled": true,
+    "schedule_state": "ready",
+    "next_boundary": "2026-08-08T00:00:00Z",
+    "database_integrity": "ok",
+    "legacy_collection_specs_total": 42,
+    "legacy_collection_specs_enabled": 0,
+    "nonterminal_provider_attempts": 0,
+    "nonterminal_execution_attempts": 0,
+    "last30days_systemd_timer_present": false,
+    "new_browser_or_profile": false,
+    "paid_or_model_use": false,
+    "schedule_change": false
+  },
+  "graphiti": {
+    "group_id": "last30days_skill_main",
+    "job_id": "17547a66-8b12-43e1-85d3-a789b715730c",
+    "status_at_closeout": "completed",
+    "current_stage_at_closeout": "completed",
+    "declared_timeout_seconds": 120,
+    "processing_elapsed_seconds_at_readback": 233.975,
+    "episode_uuid": "70bded68-6ab8-474c-89d8-c01cf321accc",
+    "episode_visible_in_group": true,
+    "exact_readback_found": true,
+    "success_claimed": true,
+    "duplicate_retry_submitted": false
+  },
+  "classification": "installed_candidate_checkpoint_human_gate",
+  "next_action": "Preserve installed 0.3.11; require separate authority for agent-browser remote-view drift remediation and literal Facebook checkpoint interaction before one post-checkpoint verification proof."
+}
