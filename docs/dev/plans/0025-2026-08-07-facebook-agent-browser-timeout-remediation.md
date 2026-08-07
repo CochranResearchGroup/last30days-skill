@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P09
-Plan version: 3
+Plan version: 4
 Date: 2026-08-07
 
 ## Objective
@@ -275,3 +275,62 @@ Next action:
 - prove the mixed dated-post/undated-action-card retry defect red, stop retrying
   once any extracted candidate has a parseable timestamp, publish the exact
   successor candidate, then consume the final bounded live proof.
+
+### Checkpoint P0025-C04 | 2026-08-07
+
+Plan version: 4
+
+State transition:
+
+- `live_blocker_reduced_performance_rework_active -> execution_window_exhausted_navigation_target_blocked`.
+
+Progress classification:
+
+- `blocked_after_blocker_reduction`; service 0.3.7 is installed and its
+  extraction retry fix is validated, but the final permitted live proof found
+  a distinct post-navigation stale-target timeout and did not satisfy live
+  acceptance.
+
+Evidence:
+
+- installed 0.3.7/schema16 is ready; its runtime-manifest digest is
+  `576312fbe761419368dee7c8f0a67f9c1af6be032d5281039984a0139a893b15`;
+- final work `p0025-facebook-live-20260807-02` reused the canonical retained
+  browser/profile; service planning took 0.227/2.834 seconds, tab selection
+  8.394 seconds, and authentication evaluation 8.054 seconds;
+- query navigation returned successfully in 16.243 seconds, but the immediate
+  page-state evaluation timed out at 30.042 seconds, producing failed/transient
+  `agent_browser_timeout`, zero candidates, and zero cost;
+- `_navigate` currently calls `prepare_site_tab(... consolidate=True)` and
+  chooses `navigate` whenever any active Facebook target exists. The proof
+  falsifies the assumption that an active target remains page-domain healthy
+  after a prior run.
+- compact Graphiti job `ccad7cf1-ea9b-407a-ae95-84c9db741f17` timed out after
+  120 seconds during node resolution and returned no episode UUID; receipts
+  0087-0088 remain the durable source authority and Graphiti readback is
+  pending.
+
+Hard stop and remaining remedy:
+
+- both cumulative live attempts, both implementation attempts, and the one
+  review/rework cycle are consumed. No third live read or implementation is
+  authorized by this execution window;
+- the narrow successor hypothesis is to regression-test an active-but-stale
+  retained search target and always create/consolidate a fresh Facebook query
+  target after auth, instead of navigating the authenticated retained target;
+- Plan 0025 remains `OPEN`. Renewing exactly one implementation attempt and one
+  final live proof requires explicit operator direction because it expands the
+  frozen cumulative bounds.
+
+Authority classification:
+
+- `human_gate`; diagnosis and current-window execution are complete,
+  but expanding the exhausted implementation/live-effect caps is a new
+  cumulative authority decision.
+
+Next action:
+
+- preserve installed 0.3.7 and all schedule/identity/cost invariants, complete
+  offline and installed-state audit, preserve the Graphiti timeout receipt,
+  and wait for explicit authority before the fresh-query-target successor
+  attempt.

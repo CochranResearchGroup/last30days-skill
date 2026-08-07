@@ -1156,13 +1156,17 @@ Current State:
   live proof, reached the requested search, and accepted one post, but its
   redundant extraction retries exhausted the 120-second worker wall budget;
 - Plan 0025 bounds one regression-backed rework and one remaining live proof.
+- that proof is now consumed: auth and navigation commands returned, but the
+  immediate post-navigation page-state evaluation timed out at 30.042 seconds;
+  Plan 0025 remains open with its cumulative implementation/live caps exhausted.
 
 Open Plan:
 
 - `docs/dev/plans/0025-2026-08-07-facebook-agent-browser-timeout-remediation.md`
-  version 3/C03 is the active authority. It preserves the proven fresh-target
-  repair and permits only the mixed-candidate extraction retry fix, one exact
-  successor candidate install, and one final bounded live Facebook proof.
+  version 4/C04 is the active authority. Service 0.3.7 is installed, the final
+  permitted proof found an active-but-stale post-navigation target, and no
+  further implementation or live attempt is authorized without operator
+  renewal of the frozen cumulative bounds.
 
 Dependencies:
 
@@ -1173,9 +1177,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- add the mixed-candidate retry regression, stop once any extracted candidate
-  has a usable timestamp, validate and install the successor candidate, then
-  consume the final bounded live Facebook proof.
+- await explicit authority for exactly one fresh-query-target implementation
+  attempt and one final bounded live proof; preserve installed 0.3.7 and the
+  unchanged daily schedule in the meantime.
 
 ## Goal-Compatible Plan Conversion
 

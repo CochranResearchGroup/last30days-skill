@@ -12664,3 +12664,64 @@ Next Bounded Action:
 - add and observe the mixed dated-post/undated-action-card regression red,
   implement the one-condition early exit, validate/install the successor, then
   consume the final bounded live proof.
+
+## Turn 211 | 2026-08-07
+
+Focus: install service 0.3.7, consume the final bounded Facebook proof, and
+freeze the exact remaining blocker.
+
+Authority Consulted:
+
+- P09/Plan 0025 version 3/C03; exact 0.3.7 artifact and installed readback;
+  final worker result with sanitized command timings; CodeGraph navigation
+  flow; current schedule, database, and retained release state.
+
+Decisions And Changes:
+
+- installed exact 0.3.7 with 0.3.6 retained for rollback and verified service
+  ready on schema16 plus the new runtime-manifest digest;
+- consumed the second and final cumulative live proof only after the red/green
+  extraction regression and focused validation passed;
+- rejected completion because final work failed transiently with
+  `agent_browser_timeout` at the immediate post-navigation page-state eval;
+- classified the remaining defect as active-but-stale query-target reuse:
+  auth eval succeeded, query navigation returned, and only the following eval
+  timed out; `_navigate` chooses current-target navigation solely from active
+  same-site presence;
+- froze further implementation and Facebook reads because the two
+  implementation attempts, one rework cycle, and two live attempts are spent.
+
+Validation Evidence:
+
+- installed 0.3.7 readiness digest
+  `576312fbe761419368dee7c8f0a67f9c1af6be032d5281039984a0139a893b15`;
+- final work `p0025-facebook-live-20260807-02`: service commands 0.227/2.834s,
+  tab 8.394s, auth eval 8.054s, navigation 16.243s, post-navigation eval
+  timed out at 30.042s; failed/transient, zero candidates, one network action,
+  zero cost;
+- schedule remains `daily-default`, enabled/ready, next boundary Aug 8 UTC;
+  SQLite integrity remains `ok`; no browser/profile/cadence/credential/cost
+  expansion occurred.
+- the complete Python suite exits 0; all Go MCP packages pass; compileall,
+  release/runtime-package checks, JSON validation, plan-authority audit, and
+  diff checks pass.
+
+State Movement:
+
+- `live_blocker_reduced_performance_rework_active -> execution_window_exhausted_navigation_target_blocked`;
+- Plan 0025 advances version `3 -> 4` and `C03 -> C04`, remaining `OPEN`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; multi-agent delegation was not authorized.
+
+Graphiti Write Status:
+
+- compact blocker job `ccad7cf1-ea9b-407a-ae95-84c9db741f17` timed out at 120
+  seconds during node resolution with no episode UUID. No success is claimed;
+  receipts 0087-0088 remain authoritative and Graphiti readback is pending.
+
+Next Bounded Action:
+
+- request explicit renewal for one regression-backed fresh-query-target fix and
+  one final live proof; do not interact with Facebook before that authority.

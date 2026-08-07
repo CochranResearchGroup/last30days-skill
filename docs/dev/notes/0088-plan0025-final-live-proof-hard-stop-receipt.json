@@ -1,0 +1,83 @@
+{
+  "receipt_type": "plan0025_final_live_proof_hard_stop_v1",
+  "recorded_at": "2026-08-07",
+  "plan": "0025",
+  "roadmap": "P09",
+  "checkpoint": "P0025-C04",
+  "installed_candidate": {
+    "service_version": "0.3.7",
+    "service_status": "ready",
+    "database_schema_version": 16,
+    "contract_sha256": "fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1",
+    "runtime_manifest_sha256": "576312fbe761419368dee7c8f0a67f9c1af6be032d5281039984a0139a893b15",
+    "rollback_release": "0.3.6"
+  },
+  "final_live_proof": {
+    "work_id": "p0025-facebook-live-20260807-02",
+    "job_id": "p0025-facebook-live-20260807-02",
+    "source": "facebook",
+    "profile_id": "last30days-facebook",
+    "adapter": "facebook_agent_browser_v1",
+    "status": "failed",
+    "safe_error_code": "agent_browser_timeout",
+    "retry_class": "transient",
+    "attempted_count": 0,
+    "observed_count": 0,
+    "accepted_count": 0,
+    "network_actions": 1,
+    "cost_units": 0,
+    "browser_operations": [
+      {"operation": "service", "duration_ms": 227, "status": "ok"},
+      {"operation": "service", "duration_ms": 2834, "status": "ok"},
+      {"operation": "tab", "duration_ms": 8394, "status": "ok"},
+      {"operation": "eval", "duration_ms": 8054, "status": "ok"},
+      {"operation": "open", "duration_ms": 16243, "status": "ok"},
+      {"operation": "eval", "duration_ms": 30042, "status": "timed_out"}
+    ],
+    "failure_stage": "adapter_result",
+    "failure_signature": "sha256:36ddf4f62c169d984017dffa2caa440af19b90ccc4f84d4f53782157ab7b791c"
+  },
+  "diagnosis": "The retained Facebook target was active and passed auth evaluation, but became unresponsive to Page-domain evaluation after query navigation. FacebookScraper._navigate reuses any active same-site target instead of opening a fresh query target.",
+  "classification": "execution_window_exhausted_navigation_target_blocked",
+  "consumed_bounds": {
+    "implementation_attempts": 2,
+    "review_rework_cycles": 1,
+    "live_facebook_attempts": 2
+  },
+  "remaining_hypothesis": "After auth succeeds, always open the query in a fresh target within the same retained browser/profile, then consolidate the prior Facebook target before page-state evaluation.",
+  "authority_gate": "Explicit operator renewal is required for one additional implementation attempt and one additional live Facebook proof.",
+  "graphiti": {
+    "group_id": "last30days_skill_main",
+    "name": "Plan 0025 C04 Facebook active-target hard stop",
+    "job_id": "ccad7cf1-ea9b-407a-ae95-84c9db741f17",
+    "status": "timed_out",
+    "timeout_seconds": 120,
+    "current_stage": "timed_out",
+    "last_processing_stage": "graphiti_resolving_nodes",
+    "episode_uuid": null,
+    "readback": "pending"
+  },
+  "validation": {
+    "full_python_suite": "exit_0",
+    "go_mcp_packages": "passed",
+    "compileall": "passed",
+    "release_and_runtime_package": "passed",
+    "plan_authority_audit": "passed",
+    "json_validation": "passed",
+    "diff_check": "passed"
+  },
+  "preserved_invariants": {
+    "schedule_id": "daily-default",
+    "schedule_enabled": true,
+    "schedule_state": "ready",
+    "next_boundary": "2026-08-08T00:00:00Z",
+    "database_integrity": "ok",
+    "legacy_collection_specs_total": 42,
+    "legacy_collection_specs_enabled": 0,
+    "last30days_systemd_timer_present": false,
+    "new_browser_or_profile": false,
+    "credential_or_auth_effect": false,
+    "paid_or_model_effect": false,
+    "schedule_change": false
+  }
+}
