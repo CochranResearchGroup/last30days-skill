@@ -9,13 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Stale retained Facebook targets.** Service 0.3.6 no longer treats an
+- **Bounded retained Facebook extraction.** Service 0.3.7 no longer treats an
   inactive Facebook tab in the shared social browser as proof that its CDP page
   domain is responsive. Facebook authentication opens a fresh target in the
   same retained profile/browser, then consolidates same-site duplicates before
-  evaluation. This avoids repeated pre-render `agent_browser_timeout` failures
-  from stale targets without launching another browser or weakening auth and
-  page-quality gates.
+  evaluation. Once any extracted candidate has a parseable timestamp, the
+  adapter also avoids repeating costly paired browser reads merely because a
+  different action card is still undated. Sanitized command timing and verified
+  search-page signals make the bounded result diagnosable without retaining
+  page content. Together these changes avoid stale-target and wall-budget
+  failures without launching another browser or weakening auth and page-quality
+  gates.
 
 - **Ordinary tick-head retrieval.** Service 0.3.4 routes ordinary queries to
   the atomically promoted terminal tick snapshot when one exists. Access,

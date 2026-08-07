@@ -1152,17 +1152,17 @@ Current State:
   seconds;
 - service and remote-view runtime checks are ready/converged; workstation
   payload provenance drift is visible but not proven causal;
-- a deterministic current-state assertion against the latest Facebook result
-  is red, and Plan 0025 bounds one diagnostic browser sequence, two
-  implementation attempts, and one post-validation live Facebook proof.
+- installed service 0.3.6 eliminated the stale-target `Page.enable` timeout in
+  live proof, reached the requested search, and accepted one post, but its
+  redundant extraction retries exhausted the 120-second worker wall budget;
+- Plan 0025 bounds one regression-backed rework and one remaining live proof.
 
 Open Plan:
 
 - `docs/dev/plans/0025-2026-08-07-facebook-agent-browser-timeout-remediation.md`
-  version 2/C02 is the active authority. It proves the inactive retained
-  Facebook target fails `Page.enable`, and permits only the regression-backed
-  fresh-target repair, one reviewed candidate install, and one bounded live
-  Facebook proof.
+  version 3/C03 is the active authority. It preserves the proven fresh-target
+  repair and permits only the mixed-candidate extraction retry fix, one exact
+  successor candidate install, and one final bounded live Facebook proof.
 
 Dependencies:
 
@@ -1173,8 +1173,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- install exact service 0.3.6 with 0.3.5 rollback retained, verify installed
-  hashes/readiness, then run the one bounded live Facebook proof.
+- add the mixed-candidate retry regression, stop once any extracted candidate
+  has a usable timestamp, validate and install the successor candidate, then
+  consume the final bounded live Facebook proof.
 
 ## Goal-Compatible Plan Conversion
 

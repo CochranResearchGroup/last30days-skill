@@ -775,6 +775,30 @@ Comment as Example User"""
         self.assertEqual("2026-07-13", result["items"][0]["date"])
         sleep.assert_called_once_with(1.0)
 
+    def test_scraper_does_not_retry_when_another_post_has_a_timestamp(self):
+        undated_action_card = {
+            "candidate_source": "action_card",
+            "author": "Garden Lab",
+            "author_url": "https://www.facebook.com/gardenlab",
+            "media_urls": ["https://www.facebook.com/photo/?fbid=1&set=pcb.123456789"],
+            "timestamp": "Garden Lab, view story",
+            "text": "Garden Lab tested a robotic lawn mower with useful navigation and safety notes.",
+        }
+        dated_post = fixture("mixed_search.json")["candidates"][0]
+        client = FakeAgentBrowserClient(candidates=[undated_action_card, dated_post])
+
+        with mock.patch("lib.facebook.time.sleep") as sleep:
+            result = make_scraper(client).search(
+                "robotic lawn mower", "2026-06-15", "2026-07-15"
+            )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual("2026-07-10", result["items"][0]["date"])
+        self.assertEqual(["facebook_search_page"], result["diagnostics"]["page_signals"])
+        self.assertEqual(1, result["diagnostics"]["command_count"])
+        self.assertEqual("snapshot", result["diagnostics"]["browser_operations"][0]["operation"])
+        sleep.assert_not_called()
+
     def test_all_rejected_returns_quality_summary(self):
         raw = fixture("mixed_search.json")["candidates"][1:]
         client = FakeAgentBrowserClient(candidates=raw)

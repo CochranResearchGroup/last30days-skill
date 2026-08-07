@@ -971,7 +971,7 @@ class FacebookScraper:
             ]
             if not action_cards or any(
                 _parse_facebook_date(str(candidate.get("timestamp") or ""), self.now)[0]
-                for candidate in action_cards
+                for candidate in extracted
             ):
                 return extracted
             if attempt < 2:
@@ -1045,6 +1045,25 @@ class FacebookScraper:
                 "target_id": workspace.target_id,
                 "route_id": workspace.route_id,
             }
+        diagnostic_data = diagnostics.as_dict()
+        command_timings = getattr(self.client, "command_timings", [])
+        if isinstance(command_timings, list):
+            operations = [
+                {
+                    "operation": str(entry.get("operation") or "unknown")[:64],
+                    "duration_ms": max(0, int(entry.get("duration_ms") or 0)),
+                    "status": str(entry.get("status") or "unknown")[:32],
+                }
+                for entry in command_timings[-12:]
+                if isinstance(entry, dict)
+            ]
+            diagnostic_data["command_count"] = len(command_timings)
+            diagnostic_data["browser_operations"] = operations
+        diagnostic_data["page_signals"] = (
+            ["facebook_search_page"]
+            if page.url and _page_matches_query(page, self._topic)
+            else []
+        )
         result: dict[str, Any] = {
             "items": items,
             "error": error,
@@ -1054,7 +1073,7 @@ class FacebookScraper:
             "profile": self.request.profile_id,
             "session": self.request.session_name,
             "workspace": workspace_data,
-            "diagnostics": diagnostics.as_dict(),
+            "diagnostics": diagnostic_data,
             "from_date": from_date,
             "to_date": to_date,
         }

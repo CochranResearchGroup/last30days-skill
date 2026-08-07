@@ -12610,3 +12610,57 @@ Next Bounded Action:
 
 - commit the candidate, install exact 0.3.6 with 0.3.5 rollback retained, prove
   installed hashes/readiness, then run the one bounded live Facebook proof.
+
+## Turn 210 | 2026-08-07
+
+Focus: classify the first installed-service live proof and renew one bounded
+same-incident rework window.
+
+Authority Consulted:
+
+- P09/Plan 0025 version 2/C02; installed service 0.3.6 readback; exact live
+  worker result and retained browser tab inventory; Facebook extraction source
+  and tests; goal-execution, validation, release, and closeout policies.
+
+Decisions And Changes:
+
+- accepted the live result as blocker reduction, not completion: the original
+  `agent_browser_timeout` is gone and one post passed quality gates, but the
+  worker returned `partial/wall_time_budget_exhausted` after 120.923 seconds;
+- preserved the fresh-target repair and rejected retry fanout, new browser,
+  changed schedule, weakened quality gates, or a larger wall budget;
+- identified the source-owned performance defect: extraction repeats an
+  expensive paired browser read for undated action cards even when a different
+  candidate already supplies a parseable post timestamp;
+- advanced Plan 0025 to version 3/C03 and consumed its one review/rework cycle;
+  cumulative live proof capacity is two, with attempt 1 consumed and exactly
+  one successor remaining after offline validation.
+
+Validation Evidence:
+
+- installed 0.3.6/schema16 ready with 0.3.5 rollback retained;
+- work `p0025-facebook-live-20260807-01`: requested/final Facebook Recent-post
+  URL agreed, attempted/observed 17, accepted 1, network actions 1, cost 0;
+- final tab inventory contains one active Facebook target plus the retained X
+  and LinkedIn targets, with no duplicate Facebook tab;
+- schedule identity/next boundary and SQLite integrity remain unchanged/okay.
+
+State Movement:
+
+- `exact_candidate_ready_for_install -> live_blocker_reduced_performance_rework_active`;
+- Plan 0025 advances version `2 -> 3` and `C02 -> C03`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; multi-agent delegation is not authorized for this turn.
+
+Graphiti Write Status:
+
+- deferred until the terminal installed/live validation result; repo artifacts
+  retain the intermediate evidence.
+
+Next Bounded Action:
+
+- add and observe the mixed dated-post/undated-action-card regression red,
+  implement the one-condition early exit, validate/install the successor, then
+  consume the final bounded live proof.

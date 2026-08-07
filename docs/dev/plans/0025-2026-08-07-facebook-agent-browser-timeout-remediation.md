@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P09
-Plan version: 2
+Plan version: 3
 Date: 2026-08-07
 
 ## Objective
@@ -39,7 +39,8 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
 - repair only the Facebook/shared agent-browser command behavior that current
   evidence proves faulty;
 - build and install one reviewed service candidate if runtime code changes;
-- run at most one bounded live Facebook proof after offline validation;
+- run at most two cumulative bounded live Facebook proofs after offline
+  validation; the first has been consumed and one successor proof remains;
 - preserve and verify daily schedule, disabled legacy specs, database
   integrity, browser/profile reuse, zero cost/model use, and next-boundary
   continuity.
@@ -75,9 +76,10 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
    open a duplicate profile lane or weaken auth/page/quality validation.
 4. Focused Facebook, worker, provider, config, and source-log tests pass; wider
    validation is proportional to the touched runtime surface.
-5. One bounded live Facebook proof returns a rendered Facebook page signal and
-   does not return `agent_browser_timeout`; any accepted items still pass the
-   existing quality gate.
+5. The terminal bounded live Facebook proof returns verified search-page
+   navigation plus DOM candidate/item evidence, does not return
+   `agent_browser_timeout` or exhaust the worker wall budget, and any accepted
+   items still pass the existing quality gate.
 6. Installed service readback, schedule identity/cadence/next boundary,
    database integrity, disabled legacy specs, zero cost/model use, and absence
    of a last30days systemd timer remain unchanged except for the reviewed
@@ -99,7 +101,8 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
   subagent is authorized or needed.
 - Maximum implementation attempts: 2.
 - Maximum review/rework cycles: 1.
-- Maximum live Facebook source attempts: 1 after offline validation.
+- Maximum cumulative live Facebook source attempts: 2 after offline
+  validation; attempt 1 is consumed and exactly one successor remains.
 - Maximum diagnostic browser interaction: one tab-select/auth-read sequence,
   restoring the prior active tab when safe.
 - Any repeated identical timeout after the one mitigation attempt is a hard
@@ -222,3 +225,53 @@ Next action:
 
 - commit the exact candidate, install 0.3.6 with 0.3.5 rollback retained, prove
   installed hashes/readiness, then consume the one live Facebook attempt.
+
+### Checkpoint P0025-C03 | 2026-08-07
+
+Plan version: 3
+
+State transition:
+
+- `exact_candidate_ready_for_install -> live_blocker_reduced_performance_rework_active`.
+
+Progress classification:
+
+- `blocker_reduction`; installed service 0.3.6 eliminated the original stale-
+  target `Page.enable` timeout and returned a quality-gated Facebook item, but
+  redundant extraction retries exhausted the worker's 120-second wall budget.
+
+Evidence:
+
+- installed 0.3.6 is ready on schema 16 with 0.3.5 retained for rollback;
+- live work `p0025-facebook-live-20260807-01` reused the canonical retained
+  browser/profile, opened and consolidated one fresh Facebook target,
+  authenticated, reached the requested Recent-post search URL, observed 17
+  candidates, and accepted one item;
+- the result no longer reports `agent_browser_timeout`; it terminalized
+  `partial` with `wall_time_budget_exhausted` after 120.923 seconds, one
+  network action, zero cost/model use, and no duplicate Facebook tab;
+- source inspection shows `_extract` retries the paired snapshot/evaluate up to
+  three times whenever an undated action card remains, even when another
+  extracted post already has a valid timestamp.
+
+Changed assumption and renewed bound:
+
+- replacing the stale target was necessary but not sufficient for a terminal
+  in-budget result; the one permitted review/rework cycle is now active;
+- the cumulative live-attempt bound advances from one to two, with attempt 1
+  consumed and exactly one successor permitted only after a red regression and
+  offline validation; all other effect, identity, cost, and schedule bounds
+  remain unchanged.
+
+Authority classification:
+
+- `inherited_authority`; the regression-backed performance repair, successor
+  candidate install, and final bounded proof remain inside the user's active
+  diagnosis/mitigation/execution goal and do not add a source, identity, cost,
+  credential, cadence, or retry-fanout effect.
+
+Next action:
+
+- prove the mixed dated-post/undated-action-card retry defect red, stop retrying
+  once any extracted candidate has a parseable timestamp, publish the exact
+  successor candidate, then consume the final bounded live proof.

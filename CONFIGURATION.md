@@ -35,7 +35,7 @@ checkout, build and install its independently versioned artifact with:
 ```bash
 bash service/scripts/build-runtime.sh
 bash service/scripts/install.sh install \
-  --artifact dist/service/last30days-service-0.3.6.tar.gz
+  --artifact dist/service/last30days-service-0.3.7.tar.gz
 bash service/scripts/install.sh diagnose
 ```
 

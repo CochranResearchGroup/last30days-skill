@@ -1,0 +1,76 @@
+{
+  "receipt_type": "plan0025_facebook_first_live_proof_and_rework_candidate_v1",
+  "recorded_at": "2026-08-07",
+  "plan": "0025",
+  "roadmap": "P09",
+  "checkpoint": "P0025-C03",
+  "first_live_proof": {
+    "work_id": "p0025-facebook-live-20260807-01",
+    "job_id": "p0025-facebook-live-20260807-01",
+    "installed_service_version": "0.3.6",
+    "source": "facebook",
+    "profile_id": "last30days-facebook",
+    "adapter": "facebook_agent_browser_v1",
+    "status": "partial",
+    "safe_error_code": "wall_time_budget_exhausted",
+    "duration_ms": 120923,
+    "attempted_count": 17,
+    "observed_count": 17,
+    "accepted_count": 1,
+    "rejected_count": 16,
+    "network_actions": 1,
+    "cost_units": 0,
+    "original_safe_error_absent": "agent_browser_timeout",
+    "render_evidence": [
+      "authenticated Facebook DOM",
+      "requested and final Recent-post search URL matched",
+      "one quality-gated post accepted"
+    ],
+    "retained_target_readback": {
+      "facebook_targets": 1,
+      "facebook_active": true,
+      "duplicate_facebook_target": false,
+      "retained_other_targets": ["x", "linkedin"]
+    }
+  },
+  "classification": "blocker_reduction_not_completion",
+  "changed_assumption": "Fresh-target replacement removed the Page.enable timeout but was insufficient for an in-budget terminal result because extraction retried paired browser reads for undated action cards after another post already supplied a valid timestamp.",
+  "rework_candidate": {
+    "service_version": "0.3.7",
+    "artifact": "dist/service/last30days-service-0.3.7.tar.gz",
+    "artifact_sha256": "9d196a8a78dc1586ac6940eabee2b5c1ac39a0ed52fd4292e5910f19686d7789",
+    "implementation": "Stop extraction retrying once any extracted candidate has a parseable timestamp; retain the existing retry when no candidate has one; add sanitized command timing and verified search-page diagnostics.",
+    "red_regression": {
+      "test": "FacebookCandidateQualityTests.test_scraper_does_not_retry_when_another_post_has_a_timestamp",
+      "observed_failure": "Expected sleep not called; called twice"
+    },
+    "focused_validation": {
+      "result": "passed",
+      "files": [
+        "tests/test_facebook.py",
+        "tests/test_linkedin.py",
+        "tests/test_x_browser.py",
+        "tests/test_reddit_browser.py",
+        "tests/test_source_log_visibility.py",
+        "tests/test_service_worker.py",
+        "tests/test_service_tick_runner.py",
+        "tests/test_release_versions.py",
+        "tests/test_service_runtime_package.py"
+      ],
+      "compileall": "passed",
+      "diff_check": "passed"
+    }
+  },
+  "preserved_invariants": {
+    "schedule_id": "daily-default",
+    "schedule_enabled": true,
+    "schedule_state": "ready",
+    "next_boundary": "2026-08-08T00:00:00Z",
+    "database_integrity": "ok",
+    "new_browser_or_profile": false,
+    "credential_or_auth_effect": false,
+    "paid_or_model_effect": false,
+    "schedule_change": false
+  },
+  "remaining_effect_bound": "Install exact 0.3.7 with rollback retained, then run exactly one final bounded Facebook live proof."
+}
