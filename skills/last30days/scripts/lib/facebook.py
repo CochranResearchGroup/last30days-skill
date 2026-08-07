@@ -558,23 +558,17 @@ class CliAgentBrowserClient:
         )
 
     def inspect_auth(self, workspace: BrowserWorkspace) -> FacebookAuthState:
+        self.act(workspace, BrowserAction("new_tab", value="https://www.facebook.com/"))
         if not self.prepare_site_tab(
             workspace,
             "facebook.com",
             consolidate=True,
             require_active=True,
         ):
-            self.act(workspace, BrowserAction("new_tab", value="https://www.facebook.com/"))
-            if not self.prepare_site_tab(
-                workspace,
-                "facebook.com",
-                consolidate=True,
-                require_active=True,
-            ):
-                raise FacebookScraperFailure(
-                    "agent_browser_error",
-                    "agent-browser did not expose the new active Facebook tab",
-                )
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "agent-browser did not expose the new active Facebook tab",
+            )
         raw = self.evaluate(workspace, AUTH_SCRIPT)
         return FacebookAuthState(
             authenticated=bool(raw.get("authenticated_dom")),
@@ -667,7 +661,7 @@ class CliAgentBrowserClient:
     ) -> bool:
         """Select a usable site tab and optionally close same-site duplicates."""
         cache_key = (workspace.session_name, hostname)
-        if cache_key in self._prepared_sites:
+        if cache_key in self._prepared_sites and not consolidate and not require_active:
             return True
         raw = self._invoke(
             ["--session", workspace.session_name, "tab", "list"],

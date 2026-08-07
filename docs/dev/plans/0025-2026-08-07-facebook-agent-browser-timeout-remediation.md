@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P09
-Plan version: 6
+Plan version: 7
 Date: 2026-08-07
 
 ## Objective
@@ -426,3 +426,52 @@ Next action:
 
 - commit the exact candidate, install 0.3.8 with rollback retained, verify
   installed hashes/readiness/invariants, then consume the single S06 proof.
+
+### Checkpoint P0025-C07 | 2026-08-07
+
+Plan version: 7
+
+State transition:
+
+- `fresh_query_target_candidate_ready -> collection_target_lifecycle_candidate_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; closed-world review accepted and remediated one critical
+  regression before live proof: the prior failed query could leave an active
+  but stale target that the next collection would reuse during auth.
+
+Accepted finding and remediation:
+
+- criterion: S06 must remove active-target reuse from the full collection path,
+  not only query navigation;
+- reproducer: active Facebook target made `inspect_auth` issue `tab list` then
+  `eval` instead of `tab new`; the new regression failed on that exact command;
+- consequence: a run following C04 could time out during auth before reaching
+  the new query-target logic;
+- disposition: `blocking`, high confidence, resolved in the one allowed S06
+  review/rework cycle;
+- auth now unconditionally creates a fresh Facebook home target, requires it
+  active, consolidates same-site predecessors, then evaluates auth. Consolidated
+  preparation bypasses the site cache so the subsequent fresh query target is
+  also enumerated and consolidated rather than falsely accepted from cache.
+
+Validation evidence:
+
+- active-auth-target regression red then green; full Facebook suite passes;
+- focused cross-source/worker/tick/source-log suite, compileall, release/runtime-
+  package/authority suite, and diff check pass;
+- deterministic artifact `dist/service/last30days-service-0.3.9.tar.gz` has
+  SHA-256 `2b613e8a60fa66ed0aee7e96608a741c6878cb6a0bdf2fd632f3ea3eaaf0b848`;
+- 0.3.8 was installed as an intermediate candidate but received no live proof;
+  0.3.7 remains its rollback until exact 0.3.9 installation.
+
+Authority classification:
+
+- `inherited_authority`; this is the one S06 closed-world rework, with the live
+  proof still unconsumed and every source/identity/cost/schedule bound unchanged.
+
+Next action:
+
+- commit/install exact 0.3.9 with 0.3.8 rollback retained, verify installed
+  readbacks, then consume the single S06 live proof.

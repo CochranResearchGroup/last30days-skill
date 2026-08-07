@@ -1165,9 +1165,9 @@ Current State:
 Open Plan:
 
 - `docs/dev/plans/0025-2026-08-07-facebook-agent-browser-timeout-remediation.md`
-  version 6/C06 is the active authority. The red/green fresh-query-target
-  repair is packaged as deterministic service 0.3.8; S06 permits only exact
-  candidate commit/install and one terminal bounded live proof.
+  version 7/C07 is the active authority. Closed-world review extended target
+  freshness across auth and query, packaged as deterministic service 0.3.9;
+  S06 permits only exact candidate commit/install and one terminal live proof.
 
 Dependencies:
 
@@ -1178,7 +1178,7 @@ Dependencies:
 
 Next Bounded Action:
 
-- commit/install exact service 0.3.8 with 0.3.7 rollback retained, verify the
+- commit/install exact service 0.3.9 with 0.3.8 rollback retained, verify the
   installed digest and invariants, then consume the single terminal proof.
 
 ## Goal-Compatible Plan Conversion

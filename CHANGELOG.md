@@ -9,11 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Fresh Facebook query targets.** Service 0.3.8 no longer treats an
+- **Fresh Facebook collection targets.** Service 0.3.9 no longer treats an
   inactive Facebook tab in the shared social browser as proof that its CDP page
   domain is responsive. Facebook authentication opens a fresh target in the
   same retained profile/browser, then consolidates same-site duplicates before
-  evaluation. Every query now also opens and verifies a fresh target before
+  evaluation. Every collection starts authentication on a fresh target, and
+  every query also opens and verifies a fresh target before
   page-state evaluation instead of navigating an authenticated target that may
   have become Page-domain stale after a prior run. Once any extracted candidate
   has a parseable timestamp, the adapter avoids repeating costly paired browser

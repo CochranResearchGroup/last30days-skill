@@ -12833,3 +12833,55 @@ Next Bounded Action:
 
 - commit/install exact 0.3.8 with 0.3.7 rollback retained, prove installed
   readiness and invariants, then consume the single S06 live proof.
+
+## Turn 214 | 2026-08-07
+
+Focus: resolve the accepted collection-start stale-target finding before live
+proof and produce exact service 0.3.9.
+
+Authority Consulted:
+
+- Plan 0025 version 6/C06; closed-world S06 acceptance criteria; CodeGraph auth,
+  query, prepare-site cache, and CLI action paths; current focused/runtime tests.
+
+Decisions And Changes:
+
+- accepted one blocking finding: query freshness alone was insufficient because
+  C04 could leave an active stale target that the next run reused for auth;
+- added the active-auth-target regression and observed it red on `tab list`
+  instead of the required first `tab new`;
+- made each collection start auth on a fresh target, consolidate prior Facebook
+  targets, then evaluate; query already creates a second fresh target and
+  consolidates the auth target before page-state evaluation;
+- changed consolidated/require-active preparation to bypass the site cache so
+  topology changes cannot be accepted from stale adapter state;
+- advanced the reviewed candidate 0.3.8 to 0.3.9. Installed 0.3.8 received no
+  Facebook live proof; the single S06 proof remains available.
+
+Validation Evidence:
+
+- active-auth-target regression red then green; full Facebook file passes;
+- focused Facebook/LinkedIn/X/Reddit/source-log/worker/tick suite passes with
+  three skips; compileall passes;
+- release/runtime-package/authority suite passes 15 tests; diff check passes;
+- artifact `dist/service/last30days-service-0.3.9.tar.gz` SHA-256 is
+  `2b613e8a60fa66ed0aee7e96608a741c6878cb6a0bdf2fd632f3ea3eaaf0b848`;
+- receipt 0091 records the accepted finding, rework, and zero live effect.
+
+State Movement:
+
+- `fresh_query_target_candidate_ready -> collection_target_lifecycle_candidate_ready`;
+- Plan 0025 advances version `6 -> 7` and `C06 -> C07`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary performed closed-world review and adjudication.
+
+Graphiti Write Status:
+
+- deferred to terminal S06 live outcome; no speculative candidate write.
+
+Next Bounded Action:
+
+- commit/install exact 0.3.9 with 0.3.8 rollback retained, prove invariants,
+  then consume the single S06 live proof.

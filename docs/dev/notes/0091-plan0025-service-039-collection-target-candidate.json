@@ -1,0 +1,44 @@
+{
+  "receipt_type": "plan0025_service_0_3_9_collection_target_candidate_v1",
+  "recorded_at": "2026-08-07",
+  "plan": "0025",
+  "roadmap": "P09",
+  "checkpoint": "P0025-C07",
+  "review": {
+    "mode": "closed_world",
+    "criterion": "Remove active-target reuse from the full Facebook collection path.",
+    "finding": "A prior failed query can leave an active Page-domain-stale target that the next collection reuses during authentication.",
+    "confidence": "high",
+    "disposition": "blocking_resolved",
+    "rework_cycle": "1_of_1"
+  },
+  "regression": {
+    "test": "FacebookCliAdapterTests.test_auth_inspection_replaces_active_facebook_target_before_page_enable",
+    "red": "expected first command tab new, observed tab list",
+    "green": "passed"
+  },
+  "implementation": [
+    "Authentication always creates and verifies a fresh Facebook home target before Page-domain evaluation.",
+    "Query navigation always creates and verifies a fresh Recent-post target before page-state evaluation.",
+    "Consolidated or require-active site preparation bypasses cached topology and closes prior same-site targets."
+  ],
+  "service_version": "0.3.9",
+  "artifact": "dist/service/last30days-service-0.3.9.tar.gz",
+  "artifact_sha256": "2b613e8a60fa66ed0aee7e96608a741c6878cb6a0bdf2fd632f3ea3eaaf0b848",
+  "validation": {
+    "facebook_file": "passed_with_one_live_smoke_skip",
+    "cross_source_worker_tick_suite": "passed_with_three_skips",
+    "release_runtime_authority_suite": "15_passed",
+    "compileall": "passed",
+    "diff_check": "passed"
+  },
+  "effects": {
+    "intermediate_0_3_8_installed": true,
+    "live_facebook_request": false,
+    "schedule_change": false,
+    "credential_or_auth_change": false,
+    "new_browser_or_profile": false,
+    "paid_or_model_use": false
+  },
+  "remaining_bound": "Install exact 0.3.9 with rollback retained, then run the single S06 zero-cost Facebook proof."
+}
