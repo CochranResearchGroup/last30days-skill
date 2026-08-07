@@ -1063,7 +1063,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: OPEN
+State: CLOSED
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1083,14 +1083,20 @@ Current State:
 - 42 legacy collection specs remain disabled, no last30days systemd timer
   exists, SQLite is healthy, and the daily schedule is enabled/ready;
 - independent terminal verification and the complete Python/Go/compile and
-  governance validation pass with zero unresolved findings; two bounded
-  Graphiti writes timed out and no exact durable episode exists, making
-  `graphiti_write_pending` the only remaining Plan/P08 closure gate.
+  governance validation pass with zero unresolved findings;
+- Graphiti episode `539db5b5-4d0e-4470-a81c-68f5826ed14c` is durable and passes
+  UUID, grouped, exact-metadata, and fact-search readback;
+- the next ordinary Aug 6-7 timer tick also terminalized `complete_degraded`
+  with one execution attempt, five provider attempts, seven items, zero cost/
+  model use, a promoted snapshot, zero incidents/notifications, and a truthful
+  Facebook lane failure; the schedule is ready for Aug 8 and lifetime provider
+  attempts are 25/50. The activation proof itself stopped exactly at 20/50;
+  this is the distinct first ordinary steady-state boundary.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0024-2026-08-06-governed-recurring-all-source-tick.md`
-  version 11/C11 is the sole actionable P08 plan. It adds one config-driven
+  version 12/C12 is the terminal P08 authority. It adds one config-driven
   service-owned scheduler and durable state, permits at most one automatic
   activation tick and five provider attempts (cumulative maximum 20/50), and
   forbids per-source/systemd timers, legacy spec enablement, catch-up fanout,
@@ -1106,8 +1112,8 @@ Active Plan:
   schedule admitted one terminal `complete_degraded` Aug 5-6 tick at exactly
   20/50 cumulative attempts and promoted its snapshot. Restart two proves no
   duplicate work and exact Aug 7 continuity. Terminal verification is
-  `VERIFIED` with zero findings; only durable Graphiti episode readback remains
-  before closure.
+  `VERIFIED` with zero findings, durable Graphiti readback passes, and the next
+  ordinary daily boundary proves continued service-owned recurrence.
 
 Dependencies:
 
@@ -1118,11 +1124,10 @@ Dependencies:
 
 Next Bounded Action:
 
-- push exact C11/receipt 0084 to origin main, then retry one compact Graphiti
-  write at the next non-trivial closeout after provider recovery and close
-  Plan 0024/P08 only after exact episode readback. Meanwhile observe the next
-  ordinary daily boundary; any cadence, source, provider, ceiling, or timer-
-  architecture change requires separately classified authority.
+- preserve P08/Plan 0024 as closed installed authority and observe the daily
+  schedule through ordinary operations. Any cadence, source, provider,
+  ceiling, notification, or timer-architecture change must enter a separately
+  governed successor plan with current runtime evidence.
 
 ## Goal-Compatible Plan Conversion
 

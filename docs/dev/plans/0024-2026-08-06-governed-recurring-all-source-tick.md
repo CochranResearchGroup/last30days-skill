@@ -1,9 +1,9 @@
 # Plan 0024 | Governed recurring all-source tick
 
-State: OPEN
+State: CLOSED
 Roadmap: P08
 Date: 2026-08-06
-Plan version: 11
+Plan version: 12
 Predecessor: Plan 0023 version 20/checkpoint P0023-C52
 
 ## Stable Goal
@@ -67,10 +67,15 @@ and fail-closed pause controls without creating a second acquisition path.
 - terminal independent receipt verification returned `VERIFIED` with zero
   findings, the complete Python/Go/compile and governance validation passes,
   and the live daily schedule remains enabled/ready for Aug 7;
-- two bounded Graphiti writes timed out and exact duplicate detection found no
-  durable episode, so repo policy requires `graphiti_write_pending`; durable
-  Graphiti memory is the sole remaining definition-of-done gate before Plan
-  0024/P08 may close, while the verified implementation chain is ready to push.
+- bounded successor Graphiti job `a88f9a96-25b6-4449-9566-96bd079bf007`
+  completed and episode `539db5b5-4d0e-4470-a81c-68f5826ed14c` passes UUID,
+  grouped, exact-metadata, and fact-search readback;
+- the next ordinary Aug 6-7 UTC boundary also completed through the same daily
+  schedule with one execution attempt, five provider attempts, seven items,
+  zero cost/model use, a promoted snapshot, no incidents/notifications, and a
+  truthful Facebook lane failure; the schedule is ready for Aug 8 and the
+  lifetime provider-attempt count is 25/50;
+- every Plan 0024 definition-of-done gate is satisfied and P08 may close.
 
 ## Product Decision
 
@@ -302,7 +307,7 @@ truthfully enabled or fail-closed paused; all legacy specs remain disabled;
 the accepted finding ledger is reconciled; Graphiti memory is durable; and the
 terminal chain is pushed to origin main.
 
-Checkpoint P0024-C11 is the current authority.
+Checkpoint P0024-C12 is the terminal authority.
 
 ### Checkpoint P0024-C01 | 2026-08-06
 
@@ -904,3 +909,73 @@ Next action:
   origin main, then at the next non-trivial closeout retry one compact Graphiti
   write; close Plan 0024/P08 only after exact episode readback succeeds. Observe
   the next ordinary daily boundary without changing cadence or live ceilings.
+
+### Checkpoint P0024-C12 | 2026-08-06
+
+Plan version: 12
+
+State transition:
+
+- `terminal_evidence_verified_graphiti_write_pending -> plan0024_terminal_complete`.
+
+Progress classification:
+
+- `outcome_progress`; durable Graphiti verification closes the only remaining
+  definition-of-done gate, and the next ordinary daily boundary independently
+  demonstrates steady-state recurrence beyond the activation/restart proof.
+
+Validation evidence:
+
+- Graphiti runtime doctor, MCP/DB/Inspector ingress, provider readiness, and the
+  `last30days_skill_main` queue are healthy; exact preflight found no duplicate;
+- job `a88f9a96-25b6-4449-9566-96bd079bf007` completed in one attempt with
+  episode UUID `539db5b5-4d0e-4470-a81c-68f5826ed14c`;
+- `get_episode`, grouped `get_episodes`, exact `find_episodes`, and focused
+  `search_memory_facts` all return that episode and its Plan 0024 facts;
+- the ordinary Aug 6-7 UTC timer tick
+  `tick-a59bba7014ea3ee8c00fcbcba11d4b61` terminalized
+  `complete_degraded` with one execution attempt, five provider attempts, 17
+  requests, seven items, 173 wall seconds, zero cost/model use, seven source
+  versions, six artifacts, 12 derivatives, zero incidents, zero notifications,
+  and promoted snapshot `tick-snapshot-6107d338b2093b430b580257a553be05`;
+- lane states are Reddit empty, YouTube/X/LinkedIn success, and Facebook
+  failure; schedule status is enabled/ready with Aug 7 last boundary, Aug 8
+  next boundary, exact last tick/state, and no runtime error;
+- direct SQLite readback reports 25 lifetime provider attempts: the activation
+  proof stopped exactly at its 20/50 ceiling, and this distinct next-boundary
+  steady-state tick added exactly five within the standing 50-attempt ceiling;
+- installed service remains 0.3.5/schema16 ready at the reviewed contract and
+  runtime-manifest hashes; code is unchanged from C11's complete Python/Go/
+  compile and independent terminal verification;
+- SQLite integrity is `ok`, active tick attempts are zero, all 42 legacy
+  collection specs remain disabled, and no last30days systemd timer exists.
+
+Subagent status and reconciliation:
+
+- no subagent ran in this bounded successor; the primary performed Graphiti
+  duplicate/write/readback verification and current installed-state readback.
+
+Review disposition summary:
+
+- accepted findings: one; resolved: one; unresolved: zero; terminal closed-
+  world findings: zero; no new code or critical regression surface exists.
+
+Graphiti write status:
+
+- `completed_and_verified`; episode
+  `539db5b5-4d0e-4470-a81c-68f5826ed14c` is durable in
+  `last30days_skill_main` and source-anchors the repository, P08/Plan 0024,
+  commit/receipt authorities, installed outcome, and next operational state.
+
+Authority classification:
+
+- `human_gate`; the operator's successor `ok go` authorizes the named
+  bounded Graphiti retry, exact readback, ordinary-boundary observation,
+  Plan/P08 closeout, and standard origin push without widening runtime scope.
+
+Next action:
+
+- commit receipt 0085 and terminal C12/P08 state, push exact origin main, then
+  preserve the daily schedule as steady-state installed capability. Any change
+  to cadence, sources, providers, ceilings, notification behavior, or timer
+  architecture requires a new governed plan and authority classification.

@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0024-terminal-closeout-0085",
+  "recorded_date": "2026-08-06",
+  "authority": {
+    "plan": "0024",
+    "checkpoint": "P0024-C12",
+    "classification": "human_gate",
+    "plan_state": "closed",
+    "roadmap_lane": "P08",
+    "roadmap_state": "closed"
+  },
+  "repository": {
+    "path": "/home/ecochran76/workspace.local/last30days-skill",
+    "pre_closeout_commit": "b7f747db64215d18915a36b140ab886291d8e3b7",
+    "implementation_commit": "2e05b5168ee54269e945cd010fa40a241b118315",
+    "artifact_sha256": "efcbec6c58e96703fff5728251194e539fc5a96903fea11c0074348ae30eea8f"
+  },
+  "installed": {
+    "service_version": "0.3.5",
+    "database_schema_version": 16,
+    "status": "ready",
+    "contract_sha256": "fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1",
+    "runtime_manifest_sha256": "8d438421c57239ac2f59e9929bf60f6cd809dd5ac702647fe0153caa40213083"
+  },
+  "graphiti": {
+    "group_id": "last30days_skill_main",
+    "job_id": "a88f9a96-25b6-4449-9566-96bd079bf007",
+    "job_status": "completed",
+    "attempt_count": 1,
+    "episode_uuid": "539db5b5-4d0e-4470-a81c-68f5826ed14c",
+    "episode_name": "Plan 0024 governed recurring all-source tick closeout 2026-08-06",
+    "source_description": "Plan 0024 terminal repo and installed runtime evidence",
+    "uuid_readback": true,
+    "grouped_readback": true,
+    "exact_metadata_readback": true,
+    "fact_search_readback": true
+  },
+  "ordinary_daily_tick": {
+    "tick_id": "tick-a59bba7014ea3ee8c00fcbcba11d4b61",
+    "state": "complete_degraded",
+    "trigger": "timer",
+    "interval_from": "2026-08-06T00:00:00Z",
+    "interval_to": "2026-08-07T00:00:00Z",
+    "schedule_id": "daily-default",
+    "execution_attempt_count": 1,
+    "provider_attempt_count": 5,
+    "cumulative_provider_attempt_count": 25,
+    "standing_provider_attempt_ceiling": 50,
+    "activation_proof_terminal_count": 20,
+    "attempt_scope_classification": "first ordinary steady-state boundary after the bounded activation proof",
+    "budget": {
+      "network_requests": 17,
+      "accepted_items": 7,
+      "wall_seconds": 173,
+      "cost_cents": 0,
+      "model_tokens": 0
+    },
+    "lane_states": {
+      "reddit": "empty",
+      "youtube": "success",
+      "x": "success",
+      "facebook": "failure",
+      "linkedin": "success"
+    },
+    "source_version_count": 7,
+    "artifact_count": 6,
+    "derivative_count": 12,
+    "incident_count": 0,
+    "notification_count": 0,
+    "head_promoted": true,
+    "snapshot_id": "tick-snapshot-6107d338b2093b430b580257a553be05",
+    "top_level_coverage_gaps": []
+  },
+  "schedule_after_ordinary_tick": {
+    "enabled": true,
+    "state": "ready",
+    "schedule_id": "daily-default",
+    "interval_seconds": 86400,
+    "anchor_seconds": 0,
+    "last_boundary": "2026-08-07T00:00:00Z",
+    "next_boundary": "2026-08-08T00:00:00Z",
+    "last_tick_id": "tick-a59bba7014ea3ee8c00fcbcba11d4b61",
+    "last_tick_state": "complete_degraded",
+    "runtime_error": null
+  },
+  "current_guards": {
+    "sqlite_integrity": "ok",
+    "active_tick_attempts": 0,
+    "collection_specs": 42,
+    "enabled_collection_specs": 0,
+    "systemd_timer_present": false
+  },
+  "prior_terminal_verification": {
+    "result": "VERIFIED",
+    "findings": 0,
+    "unresolved_accepted_findings": 0,
+    "python": "2559 passed, 7 skipped, 6 subtests passed",
+    "go": "all packages passed",
+    "compileall": "passed"
+  },
+  "definition_of_done": {
+    "implementation_installed": true,
+    "activation_tick_proven": true,
+    "restart_idempotency_proven": true,
+    "next_boundary_continuity_proven": true,
+    "ordinary_snapshot_promotion_proven": true,
+    "daily_schedule_enabled": true,
+    "legacy_specs_disabled": true,
+    "systemd_timer_absent": true,
+    "accepted_finding_ledger_closed": true,
+    "graphiti_durable": true,
+    "terminal_chain_ready_to_push": true
+  },
+  "next_action": "preserve the enabled daily schedule as steady-state installed capability; require a separately governed successor for material changes"
+}

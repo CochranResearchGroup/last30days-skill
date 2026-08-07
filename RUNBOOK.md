@@ -12416,3 +12416,79 @@ Next Bounded Action:
   origin main. At the next non-trivial closeout after Graphiti recovery, retry
   one compact episode and close Plan 0024/P08 only after exact readback; observe
   the next ordinary daily boundary without changing cadence or ceilings.
+
+## Turn 207 | 2026-08-06
+
+Focus: satisfy the durable Graphiti gate, observe the next ordinary daily
+boundary, and close Plan 0024/P08.
+
+Authority Consulted:
+
+- Plan 0024 version 11/C11, Roadmap P08, Runbook Turn 206, receipt 0084;
+  Graphiti discovery skill; policies 0001, 0005, 0007, 0009, 0010, 0012, 0013,
+  0019, and 0022; current Graphiti queue/provider and installed service/schedule
+  readbacks.
+
+Decisions And Changes:
+
+- ran duplicate-safe Graphiti preflight only after doctor, provider readiness,
+  queue idleness, exact metadata, and focused repo-group discovery passed;
+- wrote one compact atomic episode, waited for terminal completion, and
+  accepted it only after UUID, grouped, exact metadata, and fact-search
+  verification all passed;
+- observed the next ordinary daily boundary read-only; it used the same
+  service-owned schedule, promoted its snapshot, terminalized truthfully
+  degraded, and left the schedule ready for Aug 8;
+- reconciled the cumulative-attempt boundary explicitly: the activation proof
+  stopped at 20/50, while the user-approved next ordinary-boundary observation
+  added one distinct five-attempt steady-state tick for a current 25/50 total;
+- closed Plan 0024 and Roadmap P08 because the durable-memory-only remaining
+  gate and the terminal origin-push preparation are now satisfied.
+
+Validation Evidence:
+
+- Graphiti job `a88f9a96-25b6-4449-9566-96bd079bf007` completed in one attempt
+  with episode `539db5b5-4d0e-4470-a81c-68f5826ed14c`; direct, grouped, exact,
+  and search readbacks all succeed in `last30days_skill_main`;
+- ordinary tick `tick-a59bba7014ea3ee8c00fcbcba11d4b61` covers Aug 6-7 UTC,
+  is `complete_degraded`, and consumed one execution attempt, five provider
+  attempts, 17 requests, seven items, 173 wall seconds, zero cost, and zero
+  model tokens;
+- it persisted seven source versions, six artifacts, 12 derivatives, promoted
+  snapshot `tick-snapshot-6107d338b2093b430b580257a553be05`, and created zero
+  incidents or notifications; Facebook failed while Reddit was empty and
+  YouTube/X/LinkedIn succeeded;
+- schedule status is enabled/ready with Aug 7 last boundary, Aug 8 next
+  boundary, exact last tick/state, and no runtime error;
+- direct SQLite readback reports exactly 25 total provider attempts and five
+  for the Aug 6-7 tick;
+- installed service remains 0.3.5/schema16 ready at contract
+  `fe8727fb...f1` and runtime manifest `8d438421...083`; code is unchanged from
+  C11's complete Python/Go/compile and independent zero-finding verification;
+- SQLite integrity is `ok`, active tick attempts are zero, all 42 legacy specs
+  remain disabled, and no last30days systemd timer exists.
+
+State Movement:
+
+- Plan 0024 advances version `11 -> 12`, `C11 -> C12`, and `OPEN -> CLOSED`;
+- `terminal_evidence_verified_graphiti_write_pending -> plan0024_terminal_complete`;
+- Roadmap P08 advances `OPEN -> CLOSED`.
+
+Subagent Status And Reconciliation:
+
+- no subagent ran; the primary owned the bounded Graphiti successor, live
+  read-only observation, terminal adjudication, docs, receipt, validation,
+  commit, and push.
+
+Graphiti Write Status:
+
+- `completed_and_verified`; durable episode
+  `539db5b5-4d0e-4470-a81c-68f5826ed14c` source-anchors the Plan 0024 outcome
+  and next operational state in `last30days_skill_main`.
+
+Next Bounded Action:
+
+- commit receipt 0085 and terminal Plan/P08 authorities, push exact origin
+  main, then treat the enabled daily schedule as steady-state installed
+  capability. Open a separately governed successor before changing cadence,
+  sources, providers, ceilings, notifications, or timer architecture.
