@@ -12492,3 +12492,64 @@ Next Bounded Action:
   main, then treat the enabled daily schedule as steady-state installed
   capability. Open a separately governed successor before changing cadence,
   sources, providers, ceilings, notifications, or timer architecture.
+
+## Turn 208 | 2026-08-07
+
+Focus: diagnose the repeated pre-render Facebook timeout and open its bounded
+remediation successor.
+
+Authority Consulted:
+
+- user goal `diagnose, plan a mitigation, execute`; closed P08/Plan 0024;
+  current `main`/`origin/main`; policies 0001, 0005, 0007-0010, 0012-0019,
+  0022, and 0023; diagnosing-bugs, agent-browser, and Graphiti discovery
+  skills; current installed service, schedule, SQLite, and retained browser
+  readbacks.
+
+Decisions And Changes:
+
+- established a fast red-capable assertion against the latest persisted
+  Facebook provider result; it exits 1 on `agent_browser_timeout`;
+- ranked five falsifiable causes, with fixed per-command timeout, retained-tab
+  consolidation, and active-tab evaluation currently ahead of installation
+  drift or session aliasing;
+- opened P09/Plan 0025 instead of reopening closed P08 because the accepted
+  recurrence authority requires a separately governed provider change;
+- bounded execution to one diagnostic tab-select/auth-read sequence, two
+  implementation attempts, and one post-validation live Facebook proof, with
+  no new browser/profile, auth interaction, source, credential, cost, retry
+  fanout, cadence, or notification behavior.
+
+Validation Evidence:
+
+- clean starting `main` and `origin/main` at `21ba32d`;
+- installed service 0.3.5/schema16 ready; daily schedule enabled/ready with Aug
+  7 last boundary, Aug 8 next boundary, and no runtime error;
+- latest Facebook attempt is transient `agent_browser_timeout`, 38 seconds,
+  zero page signals, no rendered page; four consecutive attempts share that
+  timeout class after one preceding browser error;
+- retained `stored-last30days-social` browser is viable on profile
+  `last30days-facebook`, and read-only tab enumeration succeeds in about eight
+  seconds;
+- Graphiti doctor is healthy and focused repo-group discovery returned prior
+  route and Plan 0023/0024 history as advisory evidence.
+
+State Movement:
+
+- Roadmap P09 and Plan 0025 version 1/C01 move `PLANNED -> OPEN`;
+- `p08_steady_state_facebook_gap -> facebook_timeout_diagnosis_active`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; current policy and the tightly coupled runtime/code critical
+  path keep active-agent concurrency at one.
+
+Graphiti Write Status:
+
+- deferred until the diagnosis becomes a validated implementation outcome or
+  durable blocker; no speculative memory write.
+
+Next Bounded Action:
+
+- time the one bounded tab-select/auth-read sequence, prove the exact stalled
+  operation, then add a red regression before implementing the mitigation.

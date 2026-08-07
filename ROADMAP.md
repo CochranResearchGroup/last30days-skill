@@ -68,6 +68,9 @@ P07 Service-First Software Productization
 
 P08 Governed Recurring All-Source Tick
   └──> schedules only the terminal tick unit accepted by P07/Plan 0023
+
+P09 Facebook Agent-Browser Timeout Remediation
+  └──> repairs the truthful Facebook gap observed by P08 without changing its schedule
 ```
 
 P03 discovery and bounded source experiments may proceed alongside P01, but
@@ -133,16 +136,17 @@ successor plans without reopening Plans 0010 or 0011:
 8. `docs/dev/plans/0023-2026-08-04-durable-all-source-intelligence-tick-mvp.md`
    is closed at its terminal manual all-source tick and ordinary-query proof.
 9. `docs/dev/plans/0024-2026-08-06-governed-recurring-all-source-tick.md`
-   is the open recurrence successor whose only new behavior is service-owned,
-   cadence-aligned enqueueing of that exact accepted tick unit.
+   is closed at its terminal service-owned daily recurrence proof.
+10. `docs/dev/plans/0025-2026-08-07-facebook-agent-browser-timeout-remediation.md`
+    is the open bounded successor for the repeated pre-render Facebook timeout.
 
 The 2026-07-29 architecture direction made Plan 0018 the governing successor
 after Plan 0014's terminal timer result. Plan 0018 is now `CLOSED` at its
 independently accepted version 28/C76 service-product and source-evidence
-boundary. Plan 0023 and P07 are `CLOSED`; Plan 0024/P08 is `OPEN` under the
-operator's explicit timer-enablement authority. Plans 0013 and 0017 remain
-planned and outside this transition critical path; Plans 0015 and 0016 are
-closed foundations.
+boundary. Plans 0023/P07 and 0024/P08 are `CLOSED`; Plan 0025/P09 is `OPEN`
+under the operator's explicit diagnosis, mitigation, and execution authority.
+Plans 0013 and 0017 remain planned and outside this transition critical path;
+Plans 0015 and 0016 are closed foundations.
 
 ## P00 | Productized Content Service MVP
 
@@ -1128,6 +1132,48 @@ Next Bounded Action:
   schedule through ordinary operations. Any cadence, source, provider,
   ceiling, notification, or timer-architecture change must enter a separately
   governed successor plan with current runtime evidence.
+
+## P09 | Facebook Agent-Browser Timeout Remediation
+
+State: OPEN
+
+Objective: diagnose and repair the repeated Facebook `agent_browser_timeout`
+that occurs before rendered-page evidence, while preserving P08's accepted
+daily schedule, source set, browser identity, cost posture, and fail-closed
+quality controls.
+
+Current State:
+
+- the latest five Facebook attempts are one `agent_browser_error` followed by
+  four `agent_browser_timeout` results; the latest took 38 seconds with zero
+  page signals and no rendered page;
+- the retained canonical browser/profile is viable and still contains a
+  Facebook search tab, while a read-only tab inventory takes about eight
+  seconds;
+- service and remote-view runtime checks are ready/converged; workstation
+  payload provenance drift is visible but not proven causal;
+- a deterministic current-state assertion against the latest Facebook result
+  is red, and Plan 0025 bounds one diagnostic browser sequence, two
+  implementation attempts, and one post-validation live Facebook proof.
+
+Open Plan:
+
+- `docs/dev/plans/0025-2026-08-07-facebook-agent-browser-timeout-remediation.md`
+  version 1/C01 is the active authority. It permits only operation-level
+  diagnosis, a narrow regression-backed adapter repair, one reviewed candidate
+  install if required, and one bounded live Facebook proof.
+
+Dependencies:
+
+- consumes P08/Plan 0024's installed service-owned daily tick and must leave
+  that recurrence contract unchanged;
+- reuses the canonical `last30days-facebook` profile and retained shared
+  browser without creating another browser or profile lane.
+
+Next Bounded Action:
+
+- time the bounded tab-select/auth-read sequence, identify the exact stalled
+  operation, then add the red regression before changing implementation.
 
 ## Goal-Compatible Plan Conversion
 
