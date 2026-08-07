@@ -1,0 +1,36 @@
+{
+  "receipt_type": "plan0025_service_0_3_10_deferred_cleanup_candidate_v1",
+  "recorded_at": "2026-08-07",
+  "plan": "0025",
+  "roadmap": "P09",
+  "checkpoint": "P0025-C10",
+  "regression": {
+    "test": "FacebookNavigationAndAuthTests.test_cleanup_timeout_does_not_mask_valid_query_result",
+    "red": "expected two preparation calls, observed one pre-read call",
+    "green": "passed_with_valid_item_preserved"
+  },
+  "implementation": [
+    "Auth and query target verification do not synchronously consolidate predecessors.",
+    "Cleanup runs after page extraction and quality evidence exists.",
+    "Predecessor close uses a five-second per-close cap and cleanup failures cannot replace a valid provider result."
+  ],
+  "service_version": "0.3.10",
+  "artifact": "dist/service/last30days-service-0.3.10.tar.gz",
+  "artifact_sha256": "900a886cf9974c7f3c3402f63acaf2707787a20d99b1fdd586e1e65226632d69",
+  "validation": {
+    "facebook_file": "passed_with_one_live_smoke_skip",
+    "cross_source_worker_tick_suite": "passed_with_three_skips",
+    "release_runtime_authority_suite": "15_passed",
+    "compileall": "passed",
+    "diff_check": "passed"
+  },
+  "effects": {
+    "service_install": false,
+    "live_facebook_request": false,
+    "schedule_change": false,
+    "credential_or_auth_change": false,
+    "new_browser_or_profile": false,
+    "paid_or_model_use": false
+  },
+  "remaining_bound": "Install exact 0.3.10 with rollback retained, then run the single S07 zero-cost Facebook proof."
+}

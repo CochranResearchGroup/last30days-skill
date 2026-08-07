@@ -1161,13 +1161,16 @@ Current State:
 - policy reread supersedes the overconservative C04 human-gate classification:
   S06 is one renewable same-envelope successor with one implementation and one
   zero-cost live proof.
+- S06 fresh auth/query targets succeeded through query creation, but synchronous
+  predecessor close timed out before page evaluation; S07 defers and bounds
+  cleanup after page evidence so cleanup cannot mask a useful result.
 
 Open Plan:
 
 - `docs/dev/plans/0025-2026-08-07-facebook-agent-browser-timeout-remediation.md`
-  version 7/C07 is the active authority. Closed-world review extended target
-  freshness across auth and query, packaged as deterministic service 0.3.9;
-  S06 permits only exact candidate commit/install and one terminal live proof.
+  version 10/C10 is the active authority. Deferred/bounded cleanup is packaged
+  as deterministic service 0.3.10; S07 permits only exact commit/install and
+  one terminal live proof.
 
 Dependencies:
 
@@ -1178,8 +1181,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- commit/install exact service 0.3.9 with 0.3.8 rollback retained, verify the
-  installed digest and invariants, then consume the single terminal proof.
+- commit/install exact service 0.3.10 with 0.3.9 rollback retained, verify the
+  installed digest/invariants, then consume the single S07 terminal proof.
 
 ## Goal-Compatible Plan Conversion
 

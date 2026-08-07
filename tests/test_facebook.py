@@ -234,7 +234,6 @@ class FacebookCliAdapterTests(unittest.TestCase):
             side_effect=[
                 {},
                 refreshed_tabs,
-                {},
                 {"authenticated_dom": True, "has_c_user": True, "has_xs": True},
             ],
         ) as invoke:
@@ -245,7 +244,6 @@ class FacebookCliAdapterTests(unittest.TestCase):
             [
                 ["--session", "shared-social", "tab", "new", "https://www.facebook.com/"],
                 ["--session", "shared-social", "tab", "list"],
-                ["--session", "shared-social", "tab", "close", "0"],
                 ["--session", "shared-social", "eval", "--stdin"],
             ],
             [call.args[0] for call in invoke.call_args_list],
@@ -609,12 +607,40 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         self.assertIsNone(result["error_type"])
         self.assertEqual("new_tab", client.actions[0].operation)
         self.assertNotIn("navigate", [action.operation for action in client.actions])
-        client.prepare_site_tab.assert_called_once_with(
-            client.workspace,
-            "facebook.com",
-            consolidate=True,
-            require_active=True,
+        self.assertEqual(2, client.prepare_site_tab.call_count)
+        client.prepare_site_tab.assert_has_calls([
+            mock.call(
+                client.workspace,
+                "facebook.com",
+                consolidate=False,
+                require_active=True,
+            ),
+            mock.call(
+                client.workspace,
+                "facebook.com",
+                consolidate=True,
+                require_active=True,
+                close_timeout=5,
+                ignore_close_failures=True,
+            ),
+        ])
+
+    def test_cleanup_timeout_does_not_mask_valid_query_result(self):
+        client = FakeAgentBrowserClient()
+        client.prepare_site_tab = mock.Mock(side_effect=[
+            True,
+            facebook.FacebookScraperFailure(
+                "agent_browser_timeout", "predecessor tab did not close"
+            ),
+        ])
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
         )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(1, len(result["items"]))
+        self.assertEqual(2, client.prepare_site_tab.call_count)
 
     def test_recent_posts_filter_does_not_require_switch_click(self):
         client = FakeAgentBrowserClient(snapshots=[

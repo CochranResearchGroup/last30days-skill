@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Fresh Facebook collection targets.** Service 0.3.9 no longer treats an
+- **Fresh Facebook collection targets.** Service 0.3.10 no longer treats an
   inactive Facebook tab in the shared social browser as proof that its CDP page
   domain is responsive. Facebook authentication opens a fresh target in the
   same retained profile/browser, then consolidates same-site duplicates before
@@ -20,7 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   has a parseable timestamp, the adapter avoids repeating costly paired browser
   reads merely because a different action card is still undated. Sanitized
   command timing and verified search-page signals make the bounded result
-  diagnosable without retaining page content. Together these changes avoid
+  diagnosable without retaining page content. Same-site cleanup now runs only
+  after page extraction, uses short per-close bounds, and cannot turn valid
+  page evidence into a provider failure. Together these changes avoid
   stale-target and wall-budget failures without launching another browser or
   weakening auth and page-quality gates.
 

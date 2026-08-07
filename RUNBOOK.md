@@ -12885,3 +12885,97 @@ Next Bounded Action:
 
 - commit/install exact 0.3.9 with 0.3.8 rollback retained, prove invariants,
   then consume the single S06 live proof.
+
+## Turn 215 | 2026-08-07
+
+Focus: consume the S06 proof and isolate the remaining cleanup-stage timeout.
+
+Authority Consulted:
+
+- Plan 0025 version 7/C07; installed 0.3.9 readback; exact sanitized worker
+  result; pre-proof schedule/database/spec/attempt/timer invariants.
+
+Decisions And Changes:
+
+- installed exact 0.3.9 ready on schema16 with 0.3.8 rollback retained;
+- consumed the one S06 proof after all offline/install gates passed;
+- rejected completion but accepted blocker reduction: fresh auth succeeded and
+  fresh query creation/listing succeeded; the only timeout was predecessor-tab
+  close before page-state evaluation;
+- closed S06 without retry and derived S07 under standing same-envelope
+  authority, moving cleanup after page evidence and bounding it best-effort.
+
+Validation Evidence:
+
+- work `p0025-facebook-live-20260807-04`: auth target new/list/old-close/eval
+  9.028/8.470/8.561/8.332s; query new/list 8.372/8.083s; predecessor close
+  timed out at 30.035s; failed/transient, zero candidates, one request, zero cost;
+- no login/checkpoint, browser/profile, credential, schedule, paid/model, or
+  database effect occurred.
+
+State Movement:
+
+- `collection_target_lifecycle_candidate_ready -> synchronous_cleanup_timeout_blocked -> deferred_cleanup_successor_ready`;
+- Plan 0025 advances versions `7 -> 8 -> 9`, checkpoints `C07 -> C08 -> C09`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; primary retains the one adapter lifecycle critical path.
+
+Graphiti Write Status:
+
+- terminal write remains deferred; receipt 0092 preserves the live result.
+
+Next Bounded Action:
+
+- add cleanup-order/containment regressions red, implement S07, validate/install
+  once, then consume its single proof.
+
+## Turn 216 | 2026-08-07
+
+Focus: implement deferred contained Facebook tab cleanup and package 0.3.10.
+
+Authority Consulted:
+
+- Plan 0025 version 9/C09; C08 timing ledger; CodeGraph scraper lifecycle and
+  CLI preparation paths; focused source/worker/tick/release/runtime tests.
+
+Decisions And Changes:
+
+- added a regression requiring one critical-path verification and one post-
+  extraction cleanup call, with cleanup timeout unable to mask a valid item;
+- observed it red at one call, then made auth/query preparation nonconsolidating
+  and invoked cleanup only after page evidence;
+- bounded predecessor close at five seconds and contained both list and close
+  failures as sanitized diagnostics/logs while retaining the active query tab;
+- advanced the candidate from installed 0.3.9 to deterministic 0.3.10. No live
+  Facebook request ran in this implementation packet.
+
+Validation Evidence:
+
+- cleanup containment and navigation regressions pass; full Facebook file
+  passes with one live-smoke skip;
+- focused cross-source/worker/tick/source-log suite passes with three skips;
+  compileall passes;
+- release/runtime-package/authority suite passes 15 tests; diff check passes;
+- artifact `dist/service/last30days-service-0.3.10.tar.gz` SHA-256 is
+  `900a886cf9974c7f3c3402f63acaf2707787a20d99b1fdd586e1e65226632d69`;
+- receipt 0093 records candidate and zero live effect.
+
+State Movement:
+
+- `deferred_cleanup_successor_ready -> deferred_cleanup_candidate_ready`;
+- Plan 0025 advances version `9 -> 10`, checkpoint `C09 -> C10`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; primary owns the lifecycle patch and proof.
+
+Graphiti Write Status:
+
+- deferred to terminal live outcome.
+
+Next Bounded Action:
+
+- commit/install exact 0.3.10 with 0.3.9 rollback retained, prove invariants,
+  then consume the single S07 proof.

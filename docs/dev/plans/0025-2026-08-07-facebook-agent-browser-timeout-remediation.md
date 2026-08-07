@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P09
-Plan version: 7
+Plan version: 10
 Date: 2026-08-07
 
 ## Objective
@@ -14,18 +14,18 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
 
 ## Current State
 
-- Installed service 0.3.7/schema16 is ready and the service-owned
+- Installed service 0.3.9/schema16 is ready and the service-owned
   `daily-default` schedule remains enabled/ready for the Aug 8 UTC boundary.
 - The inactive-target repair and extraction retry repair are validated. The
   first live proof reached Facebook and accepted one post; the second proved a
   narrower active-but-stale target failure after auth and navigation.
-- Final work `p0025-facebook-live-20260807-02` returned transient
-  `agent_browser_timeout`: auth evaluation succeeded in 8.054 seconds,
-  navigation returned in 16.243 seconds, and immediate page-state evaluation
-  timed out in 30.042 seconds.
-- Code authority shows `_navigate` reuses any active Facebook target. The next
-  bounded successor opens each query in a fresh target inside the same retained
-  browser/profile, then consolidates the prior same-site target.
+- S06 work `p0025-facebook-live-20260807-04` proved fresh auth and query targets
+  work, but returned transient `agent_browser_timeout` while synchronously
+  closing the inactive auth target before query page-state evaluation.
+- Exact timings show auth target new/list/old-close/eval all returned; query
+  target new/list returned; the next `tab close` timed out at 30.035 seconds.
+  S07 therefore moves consolidation off the critical page-read path and bounds
+  it best-effort after extraction.
 - Plan version 4's `human_gate` classification is superseded by C05 after a
   current policy reread: renewable work windows are not consumable approval
   tokens when blocker reduction is proven and the approved envelope is
@@ -40,7 +40,7 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
 - repair only the Facebook/shared agent-browser command behavior that current
   evidence proves faulty;
 - build and install one reviewed service candidate if runtime code changes;
-- run exactly one additional bounded live Facebook proof after the S06 red/
+- run exactly one additional bounded live Facebook proof after the S07 red/
   green regression, candidate validation, and installed readback; prior proofs
   remain historical evidence and are not replayed;
 - preserve and verify daily schedule, disabled legacy specs, database
@@ -101,18 +101,19 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
 | S03 candidate | Reviewed build/install with rollback retained | S02 | version/release artifacts and installed user service | installed readback matches candidate |
 | S04 live proof | One bounded Facebook attempt and invariant readback | S03 | governed runtime evidence only | acceptance passes or hard stop |
 | S05 closeout | Terminal authorities, receipt, memory, commit/push | S04 | plan/roadmap/runbook/notes/Graphiti | exact readbacks agree |
-| S06 fresh query target | Red regression, one candidate/install, one terminal live proof | C04 blocker | Facebook adapter/tests/version plus governed runtime evidence | success closes P09; same-stage failure hard-stops |
+| S06 fresh targets | Fresh auth/query targets and one live proof | C04 blocker | Facebook adapter/tests/version plus governed runtime evidence | C08 cleanup blocker recorded |
+| S07 deferred cleanup | Page evidence before bounded best-effort consolidation | C08 blocker | Facebook adapter/tests/version plus governed runtime evidence | success closes P09; cleanup cannot mask result |
 
 - Critical-path owner: primary agent; active-agent concurrency is one and no
   subagent is authorized or needed.
-- S06 maximum implementation attempts: 1.
-- S06 maximum review/rework cycles: 1.
-- S06 maximum live Facebook source attempts: 1 after offline and installed
+- S07 maximum implementation attempts: 1.
+- S07 maximum review/rework cycles: 1.
+- S07 maximum live Facebook source attempts: 1 after offline and installed
   validation.
 - Maximum diagnostic browser interaction: one tab-select/auth-read sequence,
   restoring the prior active tab when safe.
-- Any `agent_browser_timeout` at the same post-navigation page-state stage in
-  the S06 proof is a terminal hard stop, not permission for retry fanout.
+- Any new critical-path `agent_browser_timeout` in the S07 proof is a terminal
+  hard stop, not permission for retry fanout.
 
 ## Validation Commands
 
@@ -475,3 +476,116 @@ Next action:
 
 - commit/install exact 0.3.9 with 0.3.8 rollback retained, verify installed
   readbacks, then consume the single S06 live proof.
+
+### Checkpoint P0025-C08 | 2026-08-07
+
+Plan version: 8
+
+State transition:
+
+- `collection_target_lifecycle_candidate_ready -> synchronous_cleanup_timeout_blocked`.
+
+Progress classification:
+
+- `blocker_reduction`; the S06 live proof eliminated auth and query target
+  reuse from the failing path and isolated the remaining timeout to synchronous
+  predecessor-tab cleanup before page evidence.
+
+Evidence:
+
+- installed 0.3.9/schema16 ready; rollback 0.3.8 retained; schedule, database,
+  disabled-spec, nonterminal-attempt, timer, identity, and zero-cost invariants
+  passed before the proof;
+- work `p0025-facebook-live-20260807-04` reused the canonical browser/profile,
+  authenticated without login/checkpoint, and began `fresh_query_tab` strategy;
+- command timings: service 0.264/2.830s; auth `tab new` 9.028s, list 8.470s,
+  predecessor close 8.561s, eval 8.332s; query `tab new` 8.372s, list 8.083s;
+  query-predecessor close timed out at 30.035s;
+- result failed/transient `agent_browser_timeout`, zero candidates, one opaque
+  network action, zero cost. No page-state evaluation was attempted.
+
+Authority classification:
+
+- `inherited_authority`; the failed S06 packet is closed and its evidence may
+  seed a bounded same-envelope successor under policy 0015.
+
+Next action:
+
+- derive S07 so fresh target verification precedes page evidence without
+  synchronous cleanup, then perform bounded best-effort cleanup after extraction.
+
+### Checkpoint P0025-C09 | 2026-08-07
+
+Plan version: 9
+
+State transition:
+
+- `synchronous_cleanup_timeout_blocked -> deferred_cleanup_successor_ready`.
+
+Progress classification:
+
+- `outcome_progress`; S07 has a tight deterministic seam and a bounded remedy
+  for the exact cleanup-stage failure without weakening page/auth/item gates.
+
+Changed assumption, controller, and bounds:
+
+- changed assumption: same-site consolidation is not safe on the critical path
+  merely because the fresh active target is healthy; closing an inactive
+  predecessor can block independently;
+- primary agent owns one implementation attempt, one review/rework cycle, and
+  one zero-cost live proof after offline/install validation;
+- auth/query target verification uses `consolidate=False`; page-state and
+  extraction run first; final cleanup re-enumerates, keeps the active query
+  target, gives each predecessor close a short bound, records failures, and
+  never converts useful page/item evidence into a provider failure;
+- stop on auth/checkpoint, page mismatch, quality failure, new browser/profile,
+  credential/schedule/cost change, or any new critical-path timeout.
+
+Authority classification:
+
+- `inherited_authority`; S07 changes only cleanup ordering and containment
+  inside the same approved Facebook/browser/profile/zero-cost envelope. C08
+  showed verified blocker reduction, not repetition of the same invariant.
+
+Next action:
+
+- add regressions proving pre-read consolidation is absent and cleanup timeout
+  cannot mask an otherwise valid result, then implement the bounded lifecycle.
+
+### Checkpoint P0025-C10 | 2026-08-07
+
+Plan version: 10
+
+State transition:
+
+- `deferred_cleanup_successor_ready -> deferred_cleanup_candidate_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; the exact cleanup failure is regression-locked and the
+  deterministic 0.3.10 candidate removes synchronous close from the critical
+  auth/query/page-read path.
+
+Implementation and evidence:
+
+- new regression first failed because cleanup ran only once pre-read and no
+  contained post-extraction cleanup call existed;
+- auth and query target verification now use `consolidate=False`; page-state,
+  snapshot/evaluation, and quality processing occur before cleanup;
+- final cleanup re-enumerates the active query target, closes predecessors with
+  a five-second per-close cap, and catches/logs listing or close failures without
+  changing a valid provider result;
+- focused Facebook/cross-source/worker/tick/source-log tests, compileall,
+  release/runtime/authority tests, and diff check pass;
+- artifact `dist/service/last30days-service-0.3.10.tar.gz` has SHA-256
+  `900a886cf9974c7f3c3402f63acaf2707787a20d99b1fdd586e1e65226632d69`.
+
+Authority classification:
+
+- `inherited_authority`; commit/install and one S07 live proof remain inside the
+  frozen successor; no live attempt has occurred since C08.
+
+Next action:
+
+- commit/install exact 0.3.10 with 0.3.9 rollback retained, verify installed
+  invariants, then consume the single S07 proof.

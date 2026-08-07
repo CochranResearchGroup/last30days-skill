@@ -1,0 +1,56 @@
+{
+  "receipt_type": "plan0025_s06_cleanup_timeout_v1",
+  "recorded_at": "2026-08-07",
+  "plan": "0025",
+  "roadmap": "P09",
+  "checkpoints": ["P0025-C08", "P0025-C09"],
+  "installed": {
+    "service_version": "0.3.9",
+    "database_schema_version": 16,
+    "status": "ready",
+    "runtime_manifest_sha256": "7344ecf246ef9cd866c8951466f14effa7a2362e291d6064ee4347bb99763f99",
+    "rollback_release": "0.3.8"
+  },
+  "live_proof": {
+    "work_id": "p0025-facebook-live-20260807-04",
+    "status": "failed",
+    "safe_error_code": "agent_browser_timeout",
+    "retry_class": "transient",
+    "attempted_count": 0,
+    "accepted_count": 0,
+    "network_actions": 1,
+    "cost_cents": 0,
+    "operations_ms": [
+      "service:264:ok",
+      "service:2830:ok",
+      "auth_tab_new:9028:ok",
+      "auth_tab_list:8470:ok",
+      "auth_predecessor_close:8561:ok",
+      "auth_eval:8332:ok",
+      "query_tab_new:8372:ok",
+      "query_tab_list:8083:ok",
+      "query_predecessor_close:30035:timed_out"
+    ],
+    "failure_stage": "adapter_result",
+    "failure_signature": "sha256:36ddf4f62c169d984017dffa2caa440af19b90ccc4f84d4f53782157ab7b791c"
+  },
+  "diagnosis": "Fresh auth and query targets work. Synchronous consolidation closes the inactive auth target before page-state evaluation, and that close can independently time out and mask all useful page evidence.",
+  "successor": {
+    "packet": "S07",
+    "implementation_attempts": 1,
+    "review_rework_cycles": 1,
+    "live_facebook_attempts": 1,
+    "strategy": "Verify fresh targets without pre-read consolidation; after extraction, re-enumerate and close predecessors with short per-close bounds while treating cleanup failure as diagnostic, not provider failure."
+  },
+  "authority_classification": "inherited_authority",
+  "preserved_invariants": {
+    "schedule_id": "daily-default",
+    "next_boundary": "2026-08-08T00:00:00Z",
+    "legacy_specs_enabled": 0,
+    "nonterminal_provider_attempts": 0,
+    "database_integrity": "ok",
+    "new_browser_or_profile": false,
+    "credential_or_schedule_change": false,
+    "paid_or_model_use": false
+  }
+}

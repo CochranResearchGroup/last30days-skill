@@ -562,7 +562,7 @@ class CliAgentBrowserClient:
         if not self.prepare_site_tab(
             workspace,
             "facebook.com",
-            consolidate=True,
+            consolidate=False,
             require_active=True,
         ):
             raise FacebookScraperFailure(
@@ -658,6 +658,8 @@ class CliAgentBrowserClient:
         *,
         consolidate: bool = False,
         require_active: bool = False,
+        close_timeout: int | None = None,
+        ignore_close_failures: bool = False,
     ) -> bool:
         """Select a usable site tab and optionally close same-site duplicates."""
         cache_key = (workspace.session_name, hostname)
@@ -701,10 +703,18 @@ class CliAgentBrowserClient:
                 if index != selected_index:
                     duplicate_indexes.append(index)
             for index in sorted(duplicate_indexes, reverse=True):
-                self._invoke(
-                    ["--session", workspace.session_name, "tab", "close", str(index)],
-                    timeout=min(self.timeout, 30),
-                )
+                try:
+                    self._invoke(
+                        ["--session", workspace.session_name, "tab", "close", str(index)],
+                        timeout=min(self.timeout, close_timeout or 30),
+                    )
+                except FacebookScraperFailure as exc:
+                    if not ignore_close_failures:
+                        raise
+                    _log(
+                        f"Best-effort close skipped Facebook tab index={index}: "
+                        f"{_redact(str(exc))}"
+                    )
         self._prepared_sites.add(cache_key)
         return True
 
@@ -863,6 +873,7 @@ class FacebookScraper:
 
             page = self._navigate(workspace, topic)
             if page.no_results:
+                self._best_effort_cleanup(workspace)
                 diagnostics.duration_ms = _elapsed_ms(started)
                 return self._result([], None, None, workspace, page, diagnostics, from_date, to_date)
 
@@ -876,6 +887,8 @@ class FacebookScraper:
                 if self.scroll_wait:
                     time.sleep(self.scroll_wait)
                 raw_candidates.extend(self._extract(workspace))
+
+            self._best_effort_cleanup(workspace)
 
             if not raw_candidates:
                 raise FacebookScraperFailure(
@@ -917,7 +930,7 @@ class FacebookScraper:
         if callable(prepare_site_tab) and not prepare_site_tab(
             workspace,
             "facebook.com",
-            consolidate=True,
+            consolidate=False,
             require_active=True,
         ):
             raise FacebookScraperFailure(
@@ -950,6 +963,25 @@ class FacebookScraper:
                 f"Facebook Recent-posts filter did not apply for query {topic!r}: {page.url}",
             )
         return page
+
+    def _best_effort_cleanup(self, workspace: BrowserWorkspace) -> None:
+        prepare_site_tab = getattr(self.client, "prepare_site_tab", None)
+        if not callable(prepare_site_tab):
+            return
+        try:
+            prepared = prepare_site_tab(
+                workspace,
+                "facebook.com",
+                consolidate=True,
+                require_active=True,
+                close_timeout=5,
+                ignore_close_failures=True,
+            )
+        except FacebookScraperFailure as exc:
+            _log(f"Best-effort Facebook tab cleanup did not complete: {_redact(str(exc))}")
+            return
+        if not prepared:
+            _log("Best-effort Facebook tab cleanup found no active query target")
 
     def _extract(self, workspace: BrowserWorkspace) -> list[dict[str, Any]]:
         extracted: list[dict[str, Any]] = []
