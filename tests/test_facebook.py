@@ -577,6 +577,24 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual(["new_tab", "wait"], [action.operation for action in client.actions[:2]])
         self.assertIn("filters=", client.actions[0].value)
 
+    def test_query_navigation_does_not_reuse_an_active_facebook_target(self):
+        client = FakeAgentBrowserClient()
+        client.prepare_site_tab = mock.Mock(return_value=True)
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual("new_tab", client.actions[0].operation)
+        self.assertNotIn("navigate", [action.operation for action in client.actions])
+        client.prepare_site_tab.assert_called_once_with(
+            client.workspace,
+            "facebook.com",
+            consolidate=True,
+            require_active=True,
+        )
+
     def test_recent_posts_filter_does_not_require_switch_click(self):
         client = FakeAgentBrowserClient(snapshots=[
             facebook.BrowserSnapshot(refs={"e1": {"role": "combobox", "name": "Search Facebook"}}),

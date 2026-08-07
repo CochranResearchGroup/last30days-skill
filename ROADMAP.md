@@ -1155,18 +1155,19 @@ Current State:
 - installed service 0.3.6 eliminated the stale-target `Page.enable` timeout in
   live proof, reached the requested search, and accepted one post, but its
   redundant extraction retries exhausted the 120-second worker wall budget;
-- Plan 0025 bounds one regression-backed rework and one remaining live proof.
 - that proof is now consumed: auth and navigation commands returned, but the
   immediate post-navigation page-state evaluation timed out at 30.042 seconds;
-  Plan 0025 remains open with its cumulative implementation/live caps exhausted.
+  Plan 0025 remains open with the exact active-target reuse blocker;
+- policy reread supersedes the overconservative C04 human-gate classification:
+  S06 is one renewable same-envelope successor with one implementation and one
+  zero-cost live proof.
 
 Open Plan:
 
 - `docs/dev/plans/0025-2026-08-07-facebook-agent-browser-timeout-remediation.md`
-  version 4/C04 is the active authority. Service 0.3.7 is installed, the final
-  permitted proof found an active-but-stale post-navigation target, and no
-  further implementation or live attempt is authorized without operator
-  renewal of the frozen cumulative bounds.
+  version 6/C06 is the active authority. The red/green fresh-query-target
+  repair is packaged as deterministic service 0.3.8; S06 permits only exact
+  candidate commit/install and one terminal bounded live proof.
 
 Dependencies:
 
@@ -1177,9 +1178,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- await explicit authority for exactly one fresh-query-target implementation
-  attempt and one final bounded live proof; preserve installed 0.3.7 and the
-  unchanged daily schedule in the meantime.
+- commit/install exact service 0.3.8 with 0.3.7 rollback retained, verify the
+  installed digest and invariants, then consume the single terminal proof.
 
 ## Goal-Compatible Plan Conversion
 

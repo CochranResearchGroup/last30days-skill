@@ -1,0 +1,33 @@
+{
+  "receipt_type": "plan0025_service_0_3_8_fresh_query_target_candidate_v1",
+  "recorded_at": "2026-08-07",
+  "plan": "0025",
+  "roadmap": "P09",
+  "checkpoint": "P0025-C06",
+  "service_version": "0.3.8",
+  "artifact": "dist/service/last30days-service-0.3.8.tar.gz",
+  "artifact_sha256": "2575b1266a37666fc270a3e5d3fffda64313fc49c933243984bf62f5e887f90c",
+  "regression": {
+    "test": "FacebookNavigationAndAuthTests.test_query_navigation_does_not_reuse_an_active_facebook_target",
+    "red": "expected new_tab, observed navigate",
+    "green": "passed"
+  },
+  "implementation": "Facebook query navigation always creates a fresh target, waits, requires that target active, and consolidates prior facebook.com targets before page-state evaluation. Authentication target reuse is unchanged.",
+  "validation": {
+    "facebook_file": "passed_with_one_live_smoke_skip",
+    "cross_source_worker_tick_suite": "passed_with_three_skips",
+    "release_runtime_authority_suite": "15_passed",
+    "compileall": "passed",
+    "plan_authority_audit": "passed",
+    "diff_check": "passed"
+  },
+  "effects": {
+    "service_install": false,
+    "live_facebook_request": false,
+    "schedule_change": false,
+    "credential_or_auth_change": false,
+    "new_browser_or_profile": false,
+    "paid_or_model_use": false
+  },
+  "next_bound": "Commit and install exact 0.3.8 with 0.3.7 rollback retained, then run one S06 zero-cost Facebook proof."
+}

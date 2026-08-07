@@ -12725,3 +12725,111 @@ Next Bounded Action:
 
 - request explicit renewal for one regression-backed fresh-query-target fix and
   one final live proof; do not interact with Facebook before that authority.
+
+## Turn 212 | 2026-08-07
+
+Focus: correct the C04 authority classification and activate one bounded fresh-
+query-target successor under the standing goal.
+
+Authority Consulted:
+
+- active goal `diagnose, plan a mitigation, execute`; Plan 0025 version 4/C04;
+  policies 0001, 0012, 0013, and 0015 reread in the current turn; current clean
+  worktree/origin, installed 0.3.7, schedule readback, and CodeGraph navigation
+  structure.
+
+Decisions And Changes:
+
+- superseded C04's `human_gate` as overconservative: policy 0015 explicitly
+  defines attempt bounds as renewable execution windows after blocker reduction
+  and preserves standing authority for ordinary same-envelope successors;
+- classified S06 `inherited_authority` because it changes only query-tab
+  selection inside the same source, retained browser/profile, zero-cost,
+  read-only acquisition and preserves every named stop and quality gate;
+- froze one implementation attempt, one review/rework cycle, and one live proof;
+  the proof cannot run before red/green regression, candidate validation, and
+  exact installed readback;
+- retained C04/receipt 0088 as historical evidence and added receipt 0089 as
+  the explicit authority correction rather than rewriting the prior event.
+
+Validation Evidence:
+
+- clean `main` equals `origin/main` at `bbb9de4` before S06;
+- installed service 0.3.7/schema16 ready with runtime-manifest digest
+  `576312fbe761419368dee7c8f0a67f9c1af6be032d5281039984a0139a893b15`;
+- `daily-default` remains enabled/ready for Aug 8 UTC with no runtime error;
+- C04 timings distinguish the next defect: auth eval 8.054s and navigation
+  16.243s succeeded; only immediate page-state eval timed out at 30.042s.
+
+State Movement:
+
+- `execution_window_exhausted_navigation_target_blocked -> fresh_query_target_successor_ready`;
+- Plan 0025 advances version `4 -> 5` and `C04 -> C05`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; delegation is not authorized and the critical path is one
+  tightly coupled adapter/test/install/proof sequence.
+
+Graphiti Write Status:
+
+- C04 timeout remains truthfully pending; terminal S06 closeout will make one
+  duplicate-safe compact write and require exact UUID readback.
+
+Next Bounded Action:
+
+- add the active-target navigation regression and observe it red before changing
+  `_navigate`, then implement fresh query-target navigation.
+
+## Turn 213 | 2026-08-07
+
+Focus: regression-lock active-target reuse and produce exact service 0.3.8.
+
+Authority Consulted:
+
+- P09/Plan 0025 version 5/C05; CodeGraph `_navigate`, `act`, and test-seam
+  readbacks; current Facebook, cross-source, worker, tick, release, and runtime-
+  package tests.
+
+Decisions And Changes:
+
+- added the navigation-seam regression and observed the exact red result:
+  expected `new_tab`, observed `navigate` under an active target;
+- changed `_navigate` to create a fresh Recent-post query tab unconditionally,
+  then require it active and consolidate same-site predecessors before page-
+  state evaluation;
+- preserved active-target reuse only for authentication inspection and retained
+  all auth, checkpoint, page-match, recent-filter, and item-quality gates;
+- advanced the exact candidate to service 0.3.8 and refreshed its manifest,
+  changelog, configuration example, and release assertions.
+
+Validation Evidence:
+
+- new regression red then green; full Facebook file passes with one live smoke
+  skip;
+- focused Facebook/LinkedIn/X/Reddit/source-log/worker/tick suite passes with
+  three skips; compileall and plan-authority audit pass;
+- release/runtime-package/authority suite passes 15 tests; diff check passes;
+- artifact `dist/service/last30days-service-0.3.8.tar.gz` SHA-256 is
+  `2575b1266a37666fc270a3e5d3fffda64313fc49c933243984bf62f5e887f90c`;
+- receipt 0090 records zero install, schedule, credential, cost, or live-source
+  effects.
+
+State Movement:
+
+- `fresh_query_target_successor_ready -> fresh_query_target_candidate_ready`;
+- Plan 0025 advances version `5 -> 6` and `C05 -> C06`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the single adapter/test/install/proof critical path remains
+  primary-owned.
+
+Graphiti Write Status:
+
+- deferred to terminal S06 outcome to avoid a speculative candidate episode.
+
+Next Bounded Action:
+
+- commit/install exact 0.3.8 with 0.3.7 rollback retained, prove installed
+  readiness and invariants, then consume the single S06 live proof.

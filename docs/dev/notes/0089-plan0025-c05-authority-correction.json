@@ -1,0 +1,39 @@
+{
+  "receipt_type": "plan0025_c05_authority_correction_v1",
+  "recorded_at": "2026-08-07",
+  "plan": "0025",
+  "roadmap": "P09",
+  "checkpoint": "P0025-C05",
+  "supersedes_authority_only": "P0025-C04 human_gate",
+  "preserves_c04_runtime_evidence": true,
+  "authority_classification": "inherited_authority",
+  "policy_basis": "Policy 0015 treats bounded hard stops as renewable execution windows after blocker reduction when the approved goal, systems, identity, data class, effect type, cost ceiling, and safety controls remain unchanged.",
+  "changed_assumption": "An active authenticated Facebook target is not necessarily Page-domain healthy after query navigation; auth may reuse a proven active target, but each query should use a fresh target.",
+  "successor": {
+    "packet": "S06",
+    "implementation_attempts": 1,
+    "review_rework_cycles": 1,
+    "live_facebook_attempts": 1,
+    "cost_cents": 0,
+    "browser_profile": "last30days-facebook",
+    "browser_reuse": "session:stored-last30days-social",
+    "stop_on": [
+      "login_or_checkpoint",
+      "consent_or_challenge",
+      "new_browser_or_profile",
+      "schedule_or_credential_change",
+      "paid_or_model_use",
+      "same_stage_agent_browser_timeout"
+    ]
+  },
+  "current_state": {
+    "commit": "bbb9de4b71d24c1a3bddbafd0df0889091effc59",
+    "origin_matches": true,
+    "service_version": "0.3.7",
+    "database_schema_version": 16,
+    "service_status": "ready",
+    "schedule_id": "daily-default",
+    "schedule_state": "ready",
+    "next_boundary": "2026-08-08T00:00:00Z"
+  }
+}
