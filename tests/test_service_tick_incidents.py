@@ -66,6 +66,7 @@ class FixtureObservationTransport:
         ("rate_limit_detected", (), "rate_limit_warning"),
         ("rate_limited", (), "rate_limit_blocked"),
         ("auth_required", (), "reauthentication_required"),
+        ("operator_ingress_unavailable", (), "reauthentication_required"),
         ("empty", (), None),
     ],
 )
@@ -100,6 +101,7 @@ def test_browser_incident_persists_exact_page_then_notifies_by_sequential_failov
             access_partition_id="profile:social-primary",
             rendered_page=rendered_page,
             rendered_page_mime_type="image/png",
+            operator_url="https://guac.example.test/client/manual-auth",
         )
     )
     first = FixtureTransport("ops-primary", succeeds=False)
@@ -118,6 +120,9 @@ def test_browser_incident_persists_exact_page_then_notifies_by_sequential_failov
     assert "guacamole" not in serialized_payload
     assert second.payloads[0]["protected_artifact_ref"] == (
         incident.protected_artifact_ref
+    )
+    assert second.payloads[0]["operator_url"] == (
+        "https://guac.example.test/client/manual-auth"
     )
 
 

@@ -9,6 +9,7 @@ import subprocess
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from email.message import EmailMessage
+from urllib.parse import urlparse
 
 
 @dataclass(frozen=True)
@@ -45,17 +46,44 @@ def _receipt_ref(prefix: str, value: object) -> str:
 
 
 def _safe_message(payload: Mapping[str, object]) -> str:
-    return "\n".join(
-        (
-            f"last30days incident {payload['incident_id']}",
-            f"kind: {payload['notification_kind']}",
-            f"type: {payload['incident_type']}",
-            f"severity: {payload['severity']}",
-            f"source/stage: {payload['source']} / {payload['stage']}",
-            f"summary: {payload['safe_summary']}",
-            f"protected artifact: {payload.get('protected_artifact_ref') or 'none'}",
-        )
-    )
+    lines = [
+        f"last30days incident {payload['incident_id']}",
+        f"kind: {payload['notification_kind']}",
+        f"type: {payload['incident_type']}",
+        f"severity: {payload['severity']}",
+        f"source/stage: {payload['source']} / {payload['stage']}",
+        f"summary: {payload['safe_summary']}",
+        f"protected artifact: {payload.get('protected_artifact_ref') or 'none'}",
+    ]
+    browser_incidents = {
+        "captcha_required",
+        "cloudflare_challenge",
+        "rate_limit_blocked",
+        "reauthentication_required",
+    }
+    if payload["incident_type"] in browser_incidents:
+        if payload["notification_kind"] == "resolved":
+            lines.append("manual action: none; browser incident resolved")
+        else:
+            operator_url = str(payload.get("operator_url") or "")
+            parsed = urlparse(operator_url)
+            is_external_https = (
+                parsed.scheme == "https"
+                and bool(parsed.hostname)
+                and parsed.hostname.casefold() not in {"localhost", "127.0.0.1", "::1"}
+            )
+            if is_external_https:
+                lines.extend(
+                    (
+                        "manual action: Open the operator link and complete the manual browser check.",
+                        f"operator link: {operator_url}",
+                    )
+                )
+            else:
+                lines.append(
+                    "manual action: Browser intervention is required, but the operator link is unavailable."
+                )
+    return "\n".join(lines)
 
 
 class SlackReceiptsTransport:

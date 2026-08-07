@@ -16,6 +16,7 @@ from lib.service_tick_adapters import AdapterRegistry
 from lib.service_tick_analysis import default_analysis_adapter_registry
 from lib.service_tick_notifications import (
     CommandReceipt,
+    _safe_message,
     build_notification_transports,
 )
 from lib.service_tick_observation import AgentBrowserObservationTransport
@@ -415,6 +416,7 @@ def test_notification_factory_uses_fixed_adapter_machinery_and_configured_routin
             "stage": "collection",
             "safe_summary": "Human verification is required.",
             "protected_artifact_ref": "objects/protected/ref",
+            "operator_url": "https://guac.example.test/client/manual-auth",
         }
     )
 
@@ -424,7 +426,57 @@ def test_notification_factory_uses_fixed_adapter_machinery_and_configured_routin
     assert '"workspace":"default"' in mcp_input
     assert '"channel_ref":"recipient-ref:operator"' in mcp_input
     assert '"idempotency_key":"incident-001:detected:1"' in mcp_input
+    assert "Open the operator link and complete the manual browser check" in mcp_input
+    assert "https://guac.example.test/client/manual-auth" in mcp_input
     assert "credential-ref:ops" not in mcp_input
+
+
+@pytest.mark.parametrize(
+    "operator_url",
+    (
+        "http://guac.example.test/client/manual-auth",
+        "https://localhost/client/manual-auth",
+        "https://127.0.0.1/client/manual-auth",
+    ),
+)
+def test_browser_notification_never_renders_an_unsafe_operator_link(operator_url):
+    message = _safe_message(
+        {
+            "incident_id": "incident-unsafe-link",
+            "notification_kind": "detected",
+            "notification_sequence": 1,
+            "incident_type": "reauthentication_required",
+            "severity": "critical",
+            "source": "facebook",
+            "stage": "collection",
+            "safe_summary": "Manual authentication is required.",
+            "protected_artifact_ref": None,
+            "operator_url": operator_url,
+        }
+    )
+
+    assert operator_url not in message
+    assert "operator link is unavailable" in message
+
+
+def test_resolved_browser_notification_does_not_repeat_a_stale_operator_link():
+    message = _safe_message(
+        {
+            "incident_id": "incident-resolved",
+            "notification_kind": "resolved",
+            "notification_sequence": 3,
+            "incident_type": "captcha_required",
+            "severity": "critical",
+            "source": "facebook",
+            "stage": "collection",
+            "safe_summary": "The browser session recovered.",
+            "protected_artifact_ref": None,
+            "operator_url": "https://guac.example.test/client/stale",
+        }
+    )
+
+    assert "https://guac.example.test/client/stale" not in message
+    assert "browser incident resolved" in message
 
 
 def test_production_manual_runtime_executes_without_creating_a_schedule(tmp_path):

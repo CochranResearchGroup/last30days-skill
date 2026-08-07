@@ -49,6 +49,7 @@ _ISSUE_CODES = {
     "rate_limit_blocked": "rate_limit_blocked",
     "auth_required": "reauthentication_required",
     "profile_mismatch": "reauthentication_required",
+    "operator_ingress_unavailable": "reauthentication_required",
     "reauthentication_required": "reauthentication_required",
     "provider_degraded": "provider_degraded",
 }
@@ -557,6 +558,7 @@ class IncidentManager:
                 "stage": incident["stage"],
                 "safe_summary": incident["safe_summary"],
                 "protected_artifact_ref": incident["protected_artifact_ref"],
+                "operator_url": incident["operator_url"],
             }
         finally:
             conn.close()

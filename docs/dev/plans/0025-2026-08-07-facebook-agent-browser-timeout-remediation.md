@@ -1,8 +1,8 @@
 # Plan 0025 | Facebook agent-browser timeout remediation
 
-State: OPEN
+State: CANCELLED
 Roadmap: P09
-Plan version: 14
+Plan version: 15
 Date: 2026-08-07
 
 ## Objective
@@ -14,6 +14,11 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
 
 ## Current State
 
+- Plan 0025 is cancelled as superseded by P10/Plan 0026. Its bounded live proof
+  reached `checkpoint_required` rather than `agent_browser_timeout`, exhausting
+  the timeout-remediation packet at a human gate. The operator's successor
+  request authorizes routine reauthentication handoff and notification work;
+  that work is governed only by Plan 0026 and does not reopen a Facebook proof.
 - Installed service 0.3.11/schema16 is ready with 0.3.10 retained for rollback,
   and the service-owned
   `daily-default` schedule remains enabled/ready for the Aug 8 UTC boundary.
@@ -780,3 +785,28 @@ Next action:
 - preserve installed 0.3.11 and request explicit authority for the separate
   remote-view repair plus manual Facebook checkpoint packet; after literal
   operator completion, derive one bounded post-checkpoint verification proof.
+
+### Checkpoint P0025-C15 | 2026-08-07
+
+Plan version: 15
+
+State transition:
+
+- `facebook_checkpoint_human_gate -> superseded_by_routine_handoff_plan`.
+
+Progress classification:
+
+- `outcome_progress`; the timeout packet terminalized at a checkpoint rather
+  than a timeout, and its new operator-handoff requirement now has a distinct
+  successor plan with explicit communication and browser-readiness authority.
+
+Authority classification:
+
+- `scope_expansion`; the user's recurring Slack reauthentication request
+  expands beyond P09's explicit notification and workstation-repair non-goals.
+
+Terminal decision:
+
+- Plan 0025 and Roadmap P09 are `CANCELLED` as superseded by P10/Plan 0026.
+- No additional Facebook source attempt is inherited.
+- P0025-C15 is the terminal authority for Plan 0025.

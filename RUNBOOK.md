@@ -13140,3 +13140,125 @@ Next Bounded Action:
 - preserve installed 0.3.11 and request explicit authority for separate
   agent-browser remote-view drift repair plus literal Facebook checkpoint
   interaction; only then derive one post-checkpoint verification proof.
+
+## Turn 220 | 2026-08-07
+
+Focus: convert recurring browser authentication expiry into a governed
+agent-browser plus Slack Receipts operator workflow.
+
+Authority Consulted:
+
+- operator requirement for routine manual reauthentication messages through
+  agent-browser to default-tenant Slack `@eric`; current Plan 0025/C14 evidence;
+  repo policy selector; policies 0001, 0007, 0009, 0010, 0013, 0015, 0019, and
+  0022; agent-browser handoff rules; current Slack Receipts and Last30Days
+  runtime readbacks.
+
+Decisions And Changes:
+
+- opened roadmap P10 and Plan 0026 version 1/C01 as a successor rather than
+  widening the Facebook timeout repair plan silently;
+- confirmed the private config already routes Slack Receipts first to
+  `default/@eric` with hourly reminders and email fallback, so no recipient
+  mutation is currently required;
+- confirmed Slack Receipts default tenant is enabled, credential-ready, live,
+  and passes explicit-outbound workspace verification;
+- bounded the workflow to verified external HTTPS links, retained-profile
+  reuse, one candidate/install/reconciliation/test message, and zero Facebook
+  source retries before literal operator checkpoint completion.
+
+Validation Evidence:
+
+- clean `main` and `origin/main` at `4fa36fb` before planning;
+- policy selector reports `repo-product-engineering/already-aligned` with no
+  validation problems;
+- CodeGraph index is healthy at 343 files, 9,020 nodes, and 20,416 edges;
+- CodeGraph shows incident URL storage and hourly notification machinery exist,
+  while `_safe_message` and `IncidentManager.notify` omit the link;
+- agent-browser requires remote-control doctor readiness and
+  `operatorVisible.state=ready` before an authentication handoff claim.
+
+State Movement:
+
+- roadmap P10 and Plan 0026 move `PLANNED -> OPEN` at C01; P08 remains closed
+  and P09 remains open at its manual Facebook gate.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; primary owns the tightly coupled implementation/runtime
+  critical path.
+
+Graphiti Write Status:
+
+- deferred until a validated implementation outcome or durable blocker.
+
+Next Bounded Action:
+
+- write red tests for safe notification link carriage and on-demand Facebook
+  handoff preparation, then implement the smallest shared contract change.
+
+## Turn 221 | 2026-08-07
+
+Focus: implement, install, and validate recurring browser reauthentication
+notifications to default-tenant Slack `@eric`.
+
+Authority Consulted:
+
+- operator recurring-handoff request; Plan 0026/C01; repo planning,
+  validation, integration, documentation, and closeout policies;
+  agent-browser remote-view handoff rules; Slack Receipts delivery contract.
+
+Decisions And Changes:
+
+- carried validated operator URLs into incident delivery and added safe manual
+  action/link rendering with no stale resolution or unsafe local route;
+- added on-demand retained-browser handoff preparation for Facebook, guarded by
+  doctor-ready remote control plus visible-ready external HTTPS readback;
+- preserved auth/checkpoint notification without a link when handoff readiness
+  is unavailable;
+- reconciled Plan 0025/P09 as cancelled and superseded so Plan 0026/P10 is the
+  sole active authority;
+- refreshed agent-browser workstation payload and converged its dashboard;
+  preserved all retained/unrelated sessions when only non-actionable duplicate
+  profile warnings remained;
+- installed immutable service 0.3.13 after one adjudicated fallback rework;
+  retained 0.3.12 and 0.3.11 for rollback;
+- sent exactly one labeled resolved/no-action Slack validation to
+  `default/@eric`; no Facebook source retry or login interaction occurred.
+
+Validation Evidence:
+
+- full Python suite exits zero; focused Facebook/incident/runtime tests,
+  compileall, release/package/authority audits, build, and diff checks pass;
+- installed service 0.3.13/schema16 ready; runtime-manifest SHA-256
+  `88c516db666a2c5ca2323d5f1e0fe4ae1fba679f0d31b76e366b61938241074b`;
+- artifact SHA-256
+  `ed30f51432fa369a425c595c7a320ba1876d9bad44773b5ab6d24a845275b866`;
+- `daily-default` ready for `2026-08-08T00:00:00Z`; SQLite integrity `ok`;
+- Slack Receipts delivery reference
+  `slack-receipts:sha256:4cb4078685bcd3551ac49bc17cb9d24a58432e7a140c0b4ca50681056c392287`;
+- remote control remains `needs_browser_launch_prerequisites` solely on
+  duplicate-profile warnings with zero readiness-impacting candidates.
+
+State Movement:
+
+- P09/Plan 0025 `OPEN -> CANCELLED` as superseded;
+- P10/Plan 0026 version `1 -> 3`, C01 -> C03, remains `OPEN` at the exact
+  agent-browser live-link readiness blocker.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary owned the coupled implementation/runtime path.
+
+Graphiti Write Status:
+
+- one compact Plan 0026 episode completed in one attempt as job
+  `34078b91-01cc-4773-8e4f-bb1abb89b0fa`, episode
+  `67a26f70-a3ae-401d-adcf-d83d5acc61c1`, in `last30days_skill_main`.
+
+Next Bounded Action:
+
+- correct agent-browser duplicate-profile readiness adjudication without
+  closing retained or unrelated sessions, verify `remoteControl.status=ready`,
+  then let the next real incident supply the operator link; do not retry
+  Facebook before literal operator completion.

@@ -180,7 +180,7 @@ def test_current_repository_authority_passes() -> None:
     assert report["issues"] == []
     assert report["active_plan_count"] == 1
     assert report["active_plans"] == [
-        "docs/dev/plans/0025-2026-08-07-facebook-agent-browser-timeout-remediation.md"
+        "docs/dev/plans/0026-2026-08-07-recurring-browser-reauthentication-notifications.md"
     ]
     assert report["campaign_plan_count"] == 0
 

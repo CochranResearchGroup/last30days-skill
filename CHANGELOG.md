@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Routine browser reauthentication handoff.** Service 0.3.13 turns recurring
+  Facebook login and checkpoint failures into actionable browser-incident
+  notifications. It reuses the retained profile and opens an operator view only
+  after `agent-browser doctor remote-view` and `operatorVisible.state=ready`
+  both pass, then carries only the resulting external HTTPS URL through the
+  existing deduplicated notification chain. Detected incidents and hourly
+  reminders request the manual browser action; resolution notices omit the
+  stale link. Localhost, loopback, non-HTTPS, and unready routes fail closed.
+
 - **Fresh Facebook collection targets.** Service 0.3.11 no longer treats an
   inactive Facebook tab in the shared social browser as proof that its CDP page
   domain is responsive. Every collection opens and evaluates a fresh Facebook

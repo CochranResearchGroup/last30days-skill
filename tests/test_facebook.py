@@ -127,6 +127,100 @@ class FacebookAvailabilityTests(unittest.TestCase):
 
 
 class FacebookCliAdapterTests(unittest.TestCase):
+    def test_prepare_operator_handoff_requires_doctor_and_visible_ready_proof(self):
+        client = facebook.CliAgentBrowserClient(timeout=5, job_timeout_ms=120_000)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="stored-last30days-social",
+            target_id="target-1",
+            operator_visible_state="not_required",
+        )
+        opened = {
+            "browserId": "browser-1",
+            "sessionName": "stored-last30days-social",
+            "targetId": "target-1",
+            "routeId": "route-1",
+            "operatorVisible": {
+                "state": "ready",
+                "browserId": "browser-1",
+                "sessionName": "stored-last30days-social",
+                "targetId": "target-1",
+                "routeId": "route-1",
+                "externalUrl": "https://operator.example/guacamole/client-1",
+            },
+        }
+
+        with mock.patch.object(
+            client,
+            "_invoke",
+            side_effect=[{"status": "ready", "remoteControl": {"status": "ready"}}, opened],
+        ) as invoke:
+            prepared = client.prepare_operator_handoff(workspace, request())
+
+        self.assertEqual("ready", prepared.operator_visible_state)
+        self.assertEqual(
+            "https://operator.example/guacamole/client-1", prepared.operator_url
+        )
+        self.assertEqual(["doctor", "remote-view"], invoke.call_args_list[0].args[0])
+        command = invoke.call_args_list[1].args[0]
+        self.assertIn("remote-view", command)
+        self.assertEqual("browser-1", command[command.index("--browser-id") + 1])
+        self.assertEqual(
+            "stored-last30days-social",
+            command[command.index("--session-name") + 1],
+        )
+
+    def test_prepare_operator_handoff_stops_when_remote_control_is_not_ready(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="stored-last30days-social",
+            operator_visible_state="not_required",
+        )
+        with mock.patch.object(
+            client,
+            "_invoke",
+            return_value={
+                "status": "ready",
+                "remoteControl": {"status": "needs_browser_launch_prerequisites"},
+            },
+        ) as invoke, self.assertRaisesRegex(
+            facebook.FacebookScraperFailure, "remote control is not ready"
+        ):
+            client.prepare_operator_handoff(workspace, request())
+
+        self.assertEqual(1, invoke.call_count)
+
+    @mock.patch.object(
+        facebook.CliAgentBrowserClient,
+        "_invoke",
+    )
+    def test_prepare_operator_handoff_rejects_nonready_or_local_routes(self, invoke):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="stored-last30days-social",
+            operator_visible_state="not_required",
+        )
+        invoke.side_effect = [
+            {"status": "ready", "remoteControl": {"status": "ready"}},
+            {
+                "browserId": "browser-1",
+                "operatorVisible": {
+                    "state": "ready",
+                    "externalUrl": "https://localhost/client/manual-auth",
+                },
+            },
+        ]
+
+        with self.assertRaisesRegex(
+            facebook.FacebookScraperFailure, "ready external operator handoff"
+        ):
+            client.prepare_operator_handoff(workspace, request())
+
     def test_access_plan_receives_the_requested_remote_view_transport(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         plan = access_plan(shared_owner=("browser-1", "shared-social"))
@@ -559,6 +653,60 @@ class FacebookCliAdapterTests(unittest.TestCase):
 
 
 class FacebookNavigationAndAuthTests(unittest.TestCase):
+    def test_checkpoint_prepares_missing_operator_handoff_on_demand(self):
+        state = fixture("checkpoint.json")
+        client = FakeAgentBrowserClient(auth=facebook.FacebookAuthState(**state["auth"]))
+        client.workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="stored-last30days-social",
+            target_id="target-1",
+            operator_visible_state="not_required",
+        )
+        ready = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="stored-last30days-social",
+            target_id="target-1",
+            route_id="route-1",
+            operator_url="https://operator.example/guacamole/client-1",
+            operator_visible_state="ready",
+        )
+        client.prepare_operator_handoff = mock.Mock(return_value=ready)
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual("checkpoint_required", result["error_type"])
+        self.assertEqual(ready.operator_url, result["operator_url"])
+        client.prepare_operator_handoff.assert_called_once_with(
+            client.workspace, request()
+        )
+
+    def test_checkpoint_still_notifies_when_operator_handoff_is_not_ready(self):
+        state = fixture("checkpoint.json")
+        client = FakeAgentBrowserClient(auth=facebook.FacebookAuthState(**state["auth"]))
+        client.workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="stored-last30days-social",
+            operator_visible_state="not_required",
+        )
+        client.prepare_operator_handoff = mock.Mock(
+            side_effect=facebook.FacebookScraperFailure(
+                "operator_ingress_unavailable",
+                "agent-browser remote control is not ready for manual authentication",
+            )
+        )
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual("checkpoint_required", result["error_type"])
+        self.assertNotIn("operator_url", result)
+
     def test_logged_out_fixture_returns_auth_required_with_operator_url(self):
         state = fixture("logged_out.json")
         client = FakeAgentBrowserClient(auth=facebook.FacebookAuthState(**state["auth"]))

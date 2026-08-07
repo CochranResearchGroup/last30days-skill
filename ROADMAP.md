@@ -138,13 +138,17 @@ successor plans without reopening Plans 0010 or 0011:
 9. `docs/dev/plans/0024-2026-08-06-governed-recurring-all-source-tick.md`
    is closed at its terminal service-owned daily recurrence proof.
 10. `docs/dev/plans/0025-2026-08-07-facebook-agent-browser-timeout-remediation.md`
-    is the open bounded successor for the repeated pre-render Facebook timeout.
+    is cancelled after its bounded proof reached a Facebook checkpoint rather
+    than the repeated pre-render timeout.
+11. `docs/dev/plans/0026-2026-08-07-recurring-browser-reauthentication-notifications.md`
+    is the open successor for verified routine browser handoff and notification.
 
 The 2026-07-29 architecture direction made Plan 0018 the governing successor
 after Plan 0014's terminal timer result. Plan 0018 is now `CLOSED` at its
 independently accepted version 28/C76 service-product and source-evidence
-boundary. Plans 0023/P07 and 0024/P08 are `CLOSED`; Plan 0025/P09 is `OPEN`
-under the operator's explicit diagnosis, mitigation, and execution authority.
+boundary. Plans 0023/P07 and 0024/P08 are `CLOSED`; Plan 0025/P09 is
+`CANCELLED` as superseded; Plan 0026/P10 is `OPEN` under the operator's
+explicit recurring handoff and Slack-notification authority.
 Plans 0013 and 0017 remain planned and outside this transition critical path;
 Plans 0015 and 0016 are closed foundations.
 
@@ -1135,7 +1139,7 @@ Next Bounded Action:
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 
-State: OPEN
+State: CANCELLED
 
 Objective: diagnose and repair the repeated Facebook `agent_browser_timeout`
 that occurs before rendered-page evidence, while preserving P08's accepted
@@ -1143,6 +1147,10 @@ daily schedule, source set, browser identity, cost posture, and fail-closed
 quality controls.
 
 Current State:
+
+- cancelled as superseded by P10/Plan 0026 after the bounded P09 proof reached
+  `checkpoint_required` instead of `agent_browser_timeout`; P09 grants no
+  further Facebook retry and routine handoff is governed only by P10;
 
 - the latest five Facebook attempts are one `agent_browser_error` followed by
   four `agent_browser_timeout` results; the latest took 38 seconds with zero
@@ -1193,6 +1201,44 @@ Next Bounded Action:
   agent-browser remote-view repair plus literal Facebook checkpoint packet;
   only after operator completion may one post-checkpoint verification be
   derived.
+
+## P10 | Recurring Browser Reauthentication Notifications
+
+State: OPEN
+
+Objective: treat browser authentication expiry as an ordinary governed
+operating state by preparing a verified agent-browser handoff and sending the
+operator a safe actionable link through the configured notification chain.
+
+Current State:
+
+- service 0.3.13/schema16 is installed ready and now carries safe external
+  operator links through the existing incident/reminder/resolution chain;
+- default-tenant Slack `@eric` delivery is proven by one labeled validation
+  receipt, while schedule, database, rollback, and zero-cost invariants hold;
+- agent-browser payload/runtime drift reconciled, but remote control remains
+  fail-closed on duplicate-profile warnings despite zero readiness-impacting
+  candidates; no live link or Facebook retry is claimed.
+
+Open Plan:
+
+- `docs/dev/plans/0026-2026-08-07-recurring-browser-reauthentication-notifications.md`
+  version 3/C03 is the active authority. The workflow and Slack route are
+  installed; current live-link activation remains blocked on strict
+  agent-browser remote-control readiness.
+
+Dependencies:
+
+- preserves P08's daily schedule and consumes P09's verified Facebook
+  checkpoint evidence without retrying Facebook acquisition;
+- uses child-owned Slack Receipts and the canonical agent-browser
+  `last30days-facebook` retained profile/browser lane.
+
+Next Bounded Action:
+
+- repair agent-browser duplicate-profile readiness adjudication without
+  closing retained or unrelated sessions; require remote control ready before
+  allowing the next real incident to publish its link.
 
 ## Goal-Compatible Plan Conversion
 

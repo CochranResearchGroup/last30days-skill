@@ -1,0 +1,57 @@
+{
+  "receipt_type": "plan0026_recurring_browser_reauthentication_notifications_v1",
+  "recorded_at": "2026-08-07",
+  "plan": "0026",
+  "roadmap": "P10",
+  "checkpoint": "P0026-C03",
+  "installed": {
+    "service_version": "0.3.13",
+    "database_schema_version": 16,
+    "status": "ready",
+    "runtime_manifest_sha256": "88c516db666a2c5ca2323d5f1e0fe4ae1fba679f0d31b76e366b61938241074b",
+    "artifact_sha256": "ed30f51432fa369a425c595c7a320ba1876d9bad44773b5ab6d24a845275b866",
+    "rollback_releases": ["0.3.12", "0.3.11"]
+  },
+  "notification": {
+    "transport": "slack_receipts",
+    "workspace": "default",
+    "channel_ref": "@eric",
+    "validation_kind": "resolved_no_action_test",
+    "validation_message_count": 1,
+    "delivery_ref": "slack-receipts:sha256:4cb4078685bcd3551ac49bc17cb9d24a58432e7a140c0b4ca50681056c392287",
+    "reminder_seconds": 3600,
+    "unsafe_or_local_link_emitted": false
+  },
+  "agent_browser": {
+    "workstation_payload_refreshed": true,
+    "dashboard_runtime_converged": true,
+    "remote_control_status": "needs_browser_launch_prerequisites",
+    "remote_control_ready": false,
+    "remaining_issue": "service_duplicate_profile_pressure",
+    "readiness_impacting_candidates": 0,
+    "retained_or_unrelated_session_closed": false,
+    "operator_link_claimed_ready": false
+  },
+  "validation": {
+    "full_python_suite_exit_code": 0,
+    "focused_suites": "passed",
+    "compileall": "passed",
+    "planning_authority_audit": "passed_one_active_plan",
+    "database_integrity": "ok",
+    "schedule_id": "daily-default",
+    "schedule_state": "ready",
+    "next_boundary": "2026-08-08T00:00:00Z",
+    "facebook_source_retries": 0,
+    "paid_or_model_use": false
+  },
+  "graphiti": {
+    "group_id": "last30days_skill_main",
+    "job_id": "34078b91-01cc-4773-8e4f-bb1abb89b0fa",
+    "status_at_closeout": "completed",
+    "attempt_count": 1,
+    "episode_uuid": "67a26f70-a3ae-401d-adcf-d83d5acc61c1",
+    "exact_readback_found": true
+  },
+  "classification": "installed_notification_ready_live_link_gate_blocked",
+  "next_action": "Repair agent-browser duplicate-profile readiness adjudication without closing retained or unrelated sessions; require remoteControl.status=ready before the next real incident publishes a link."
+}

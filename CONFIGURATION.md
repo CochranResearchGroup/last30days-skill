@@ -35,7 +35,7 @@ checkout, build and install its independently versioned artifact with:
 ```bash
 bash service/scripts/build-runtime.sh
 bash service/scripts/install.sh install \
-  --artifact dist/service/last30days-service-0.3.11.tar.gz
+  --artifact dist/service/last30days-service-0.3.13.tar.gz
 bash service/scripts/install.sh diagnose
 ```
 
@@ -278,6 +278,18 @@ does not create, resume, or enable a collection spec or timer.
 external HTTPS agent-browser operator URL stored with an acknowledged browser
 incident; localhost and loopback links fail closed. Screenshot bytes remain a
 protected artifact and are never included in notifications.
+
+Authentication and checkpoint incidents also use the configured sequential
+notification transports for routine operator handoff. Before publishing a
+link, the Facebook adapter reuses its retained profile, requires
+`agent-browser doctor remote-view` to report ready remote control, opens the
+operator view, and requires `operatorVisible.state=ready`. Detected incidents
+and bounded reminders include the resulting external HTTPS link and explicit
+manual action; resolution notices omit the previous link. Unready, localhost,
+loopback, and non-HTTPS routes produce an intervention-required notice without
+a link. Transport routing remains private user-scoped configuration; for
+example, Slack Receipts may resolve `workspace=default` and `channel_ref=@eric`
+at delivery time without committing a tenant, channel, or DM identifier.
 
 `publish` and `mutate_live_source_config` always require an explicit approval
 record from a configured operator. Approval authorizes only the named action;

@@ -121,7 +121,9 @@ interpretation. Do not turn mention volume into an unsupported ranking.
   without claiming a healthy fresh run.
 - stale or cache miss without refresh authority - report what is available and
   offer one governed refresh.
-- `awaiting_operator` - report the service-provided action and stop.
+- `awaiting_operator` - report the service-provided action and external HTTPS
+  operator link, if present, then stop. Never substitute a localhost, loopback,
+  non-HTTPS, or otherwise diagnostic browser URL.
 - terminal failure - report the safe error code and retained evidence; do not
   reconstruct the failed workflow.
 - service unavailable - report unavailability and offer, but do not

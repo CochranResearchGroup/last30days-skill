@@ -311,6 +311,9 @@ class FacebookScraperFailure(RuntimeError):
 
 class AgentBrowserClient(Protocol):
     def acquire_workspace(self, request: BrowserWorkspaceRequest) -> BrowserWorkspace: ...
+    def prepare_operator_handoff(
+        self, workspace: BrowserWorkspace, request: BrowserWorkspaceRequest
+    ) -> BrowserWorkspace: ...
     def inspect_auth(self, workspace: BrowserWorkspace) -> FacebookAuthState: ...
     def snapshot(self, workspace: BrowserWorkspace) -> BrowserSnapshot: ...
     def act(self, workspace: BrowserWorkspace, action: BrowserAction) -> BrowserState: ...
@@ -554,6 +557,86 @@ class CliAgentBrowserClient:
                 opened.get("displayAllocationId") or visible.get("displayAllocationId") or ""
             ),
             operator_url=_operator_url(opened),
+            operator_visible_state=visible_state,
+        )
+
+    def prepare_operator_handoff(
+        self,
+        workspace: BrowserWorkspace,
+        request: BrowserWorkspaceRequest,
+    ) -> BrowserWorkspace:
+        """Expose the retained browser only after remote-control readiness proof."""
+        doctor = self._invoke(
+            ["doctor", "remote-view"], timeout=min(request.timeout, 30)
+        )
+        remote_control = (
+            doctor.get("remoteControl")
+            if isinstance(doctor.get("remoteControl"), dict)
+            else {}
+        )
+        if remote_control.get("status") != "ready":
+            raise FacebookScraperFailure(
+                "operator_ingress_unavailable",
+                "agent-browser remote control is not ready for manual authentication",
+            )
+
+        command = [
+            "--session", workspace.session_name,
+            "remote-view", "open", request.start_url,
+            "--browser-id", workspace.browser_id,
+            "--browser-build", request.browser_build,
+            "--browser-host", request.browser_host,
+            "--view-stream-provider", request.view_provider,
+            "--control-input-provider", request.control_input_provider,
+            "--display-isolation", request.display_isolation,
+            "--session-name", workspace.session_name,
+            "--service-name", request.service_name,
+            "--agent-name", request.agent_name,
+            "--task-name", request.task_name,
+            "--job-timeout-ms", str(self.job_timeout_ms),
+        ]
+        opened = self._invoke(
+            command,
+            timeout=max(request.timeout, (self.job_timeout_ms + 999) // 1000 + 5),
+        )
+        visible = (
+            opened.get("operatorVisible")
+            if isinstance(opened.get("operatorVisible"), dict)
+            else {}
+        )
+        visible_state = str(visible.get("state") or "missing")
+        operator_url = _operator_url(opened)
+        parsed = urlsplit(operator_url)
+        external_https = (
+            parsed.scheme == "https"
+            and bool(parsed.hostname)
+            and parsed.hostname.casefold() not in {"localhost", "127.0.0.1", "::1"}
+        )
+        if visible_state != "ready" or not external_https:
+            raise FacebookScraperFailure(
+                "operator_ingress_unavailable",
+                "agent-browser did not provide a ready external operator handoff",
+            )
+        observed_profile = str(
+            opened.get("profileId") or visible.get("profileId") or workspace.profile_id
+        )
+        if observed_profile != workspace.profile_id:
+            raise FacebookScraperFailure(
+                "profile_mismatch",
+                f"agent-browser opened profile {observed_profile!r}, not {workspace.profile_id!r}",
+            )
+        return BrowserWorkspace(
+            profile_id=observed_profile,
+            browser_id=str(opened.get("browserId") or visible.get("browserId") or workspace.browser_id),
+            session_name=str(opened.get("sessionName") or visible.get("sessionName") or workspace.session_name),
+            target_id=str(opened.get("targetId") or visible.get("targetId") or workspace.target_id),
+            route_id=str(opened.get("routeId") or visible.get("routeId") or workspace.route_id),
+            display_allocation_id=str(
+                opened.get("displayAllocationId")
+                or visible.get("displayAllocationId")
+                or workspace.display_allocation_id
+            ),
+            operator_url=operator_url,
             operator_visible_state=visible_state,
         )
 
@@ -853,14 +936,20 @@ class FacebookScraper:
                 f"authenticated={auth.authenticated} login_form={auth.login_form} checkpoint={auth.checkpoint}"
             )
             if auth.checkpoint:
+                workspace = self._prepare_operator_handoff(workspace)
                 raise FacebookScraperFailure(
                     "checkpoint_required",
                     "Facebook requires an operator checkpoint",
                     operator_url=workspace.operator_url,
                 )
             if not auth.authenticated:
+                workspace = self._prepare_operator_handoff(workspace)
                 ingress_probe = getattr(self.client, "operator_ingress_ready", None)
-                if callable(ingress_probe) and not ingress_probe(workspace.operator_url):
+                if (
+                    workspace.operator_url
+                    and callable(ingress_probe)
+                    and not ingress_probe(workspace.operator_url)
+                ):
                     raise FacebookScraperFailure(
                         "operator_ingress_unavailable",
                         "Facebook operator handoff URL is unavailable",
@@ -921,6 +1010,28 @@ class FacebookScraper:
                 operator_url=exc.operator_url,
             )
 
+    def _prepare_operator_handoff(
+        self, workspace: BrowserWorkspace
+    ) -> BrowserWorkspace:
+        if workspace.operator_visible_state == "ready" and workspace.operator_url:
+            return workspace
+        prepare = getattr(self.client, "prepare_operator_handoff", None)
+        if not callable(prepare):
+            return workspace
+        try:
+            return prepare(workspace, self.request)
+        except FacebookScraperFailure as exc:
+            if exc.error_type not in {
+                "operator_ingress_unavailable",
+                "route_stale",
+            }:
+                raise
+            _log(
+                "Operator handoff unavailable; preserving the source auth incident "
+                f"without a link: {_redact(str(exc))}"
+            )
+            return workspace
+
     def _navigate(self, workspace: BrowserWorkspace, topic: str) -> FacebookPageState:
         recent_search_url = _search_url(topic, recent=True)
         _log(f"Navigating query={topic!r} strategy=fresh_authenticated_target")
@@ -930,14 +1041,16 @@ class FacebookScraper:
 
         _log(f"Navigation readback requested={recent_search_url!r} final={page.url!r}")
         if page.checkpoint:
+            prepared = self._prepare_operator_handoff(workspace)
             raise FacebookScraperFailure(
                 "checkpoint_required", "Facebook checkpoint appeared during search navigation",
-                operator_url=workspace.operator_url,
+                operator_url=prepared.operator_url,
             )
         if page.login_page:
+            prepared = self._prepare_operator_handoff(workspace)
             raise FacebookScraperFailure(
                 "auth_required", "Facebook session became logged out during search navigation",
-                operator_url=workspace.operator_url,
+                operator_url=prepared.operator_url,
             )
         if page.error_page:
             raise FacebookScraperFailure("search_unavailable", "Facebook returned an error page")
