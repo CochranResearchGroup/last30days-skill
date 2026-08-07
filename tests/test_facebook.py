@@ -581,22 +581,22 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual("operator_ingress_unavailable", result["error_type"])
         self.assertNotIn("operator_url", result)
 
-    def test_home_page_after_both_navigation_strategies_is_rejected(self):
+    def test_home_page_after_same_target_navigation_is_rejected(self):
         state = fixture("authenticated_home.json")
         client = FakeAgentBrowserClient(page=state["page"], candidates=[])
         result = make_scraper(client).search("robotic lawn mower", "2026-06-15", "2026-07-15")
         self.assertEqual("navigation_mismatch", result["error_type"])
         self.assertEqual([], result["items"])
-        self.assertIn("new_tab", [action.operation for action in client.actions])
+        self.assertIn("navigate", [action.operation for action in client.actions])
 
-    def test_query_navigation_opens_verified_recent_url_directly(self):
+    def test_query_navigation_uses_verified_recent_url_on_fresh_auth_target(self):
         client = FakeAgentBrowserClient()
         result = make_scraper(client).search("robotic lawn mower", "2026-06-15", "2026-07-15")
         self.assertIsNone(result["error_type"])
-        self.assertEqual(["new_tab", "wait"], [action.operation for action in client.actions[:2]])
+        self.assertEqual(["navigate", "wait"], [action.operation for action in client.actions[:2]])
         self.assertIn("filters=", client.actions[0].value)
 
-    def test_query_navigation_does_not_reuse_an_active_facebook_target(self):
+    def test_query_navigation_reuses_the_fresh_authenticated_facebook_target(self):
         client = FakeAgentBrowserClient()
         client.prepare_site_tab = mock.Mock(return_value=True)
 
@@ -605,34 +605,22 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         )
 
         self.assertIsNone(result["error_type"])
-        self.assertEqual("new_tab", client.actions[0].operation)
-        self.assertNotIn("navigate", [action.operation for action in client.actions])
-        self.assertEqual(2, client.prepare_site_tab.call_count)
-        client.prepare_site_tab.assert_has_calls([
-            mock.call(
-                client.workspace,
-                "facebook.com",
-                consolidate=False,
-                require_active=True,
-            ),
-            mock.call(
-                client.workspace,
-                "facebook.com",
-                consolidate=True,
-                require_active=True,
-                close_timeout=5,
-                ignore_close_failures=True,
-            ),
-        ])
+        self.assertEqual("navigate", client.actions[0].operation)
+        self.assertNotIn("new_tab", [action.operation for action in client.actions])
+        client.prepare_site_tab.assert_called_once_with(
+            client.workspace,
+            "facebook.com",
+            consolidate=True,
+            require_active=True,
+            close_timeout=5,
+            ignore_close_failures=True,
+        )
 
     def test_cleanup_timeout_does_not_mask_valid_query_result(self):
         client = FakeAgentBrowserClient()
-        client.prepare_site_tab = mock.Mock(side_effect=[
-            True,
-            facebook.FacebookScraperFailure(
-                "agent_browser_timeout", "predecessor tab did not close"
-            ),
-        ])
+        client.prepare_site_tab = mock.Mock(side_effect=facebook.FacebookScraperFailure(
+            "agent_browser_timeout", "predecessor tab did not close"
+        ))
 
         result = make_scraper(client).search(
             "robotic lawn mower", "2026-06-15", "2026-07-15"
@@ -640,7 +628,7 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
 
         self.assertIsNone(result["error_type"])
         self.assertEqual(1, len(result["items"]))
-        self.assertEqual(2, client.prepare_site_tab.call_count)
+        self.assertEqual(1, client.prepare_site_tab.call_count)
 
     def test_recent_posts_filter_does_not_require_switch_click(self):
         client = FakeAgentBrowserClient(snapshots=[

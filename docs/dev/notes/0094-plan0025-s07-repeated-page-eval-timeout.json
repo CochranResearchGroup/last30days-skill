@@ -1,0 +1,50 @@
+{
+  "receipt_type": "plan0025_s07_repeated_page_eval_timeout_v1",
+  "recorded_at": "2026-08-07",
+  "plan": "0025",
+  "roadmap": "P09",
+  "checkpoints": ["P0025-C11", "P0025-C12"],
+  "installed": {
+    "service_version": "0.3.10",
+    "database_schema_version": 16,
+    "status": "ready",
+    "runtime_manifest_sha256": "39e8d5ae20576541cf803f924583abe80391626bd4e2bb7f26dd2781a0e1bba4",
+    "rollback_release": "0.3.9"
+  },
+  "live_proof": {
+    "work_id": "p0025-facebook-live-20260807-05",
+    "status": "failed",
+    "safe_error_code": "agent_browser_timeout",
+    "retry_class": "transient",
+    "attempted_count": 0,
+    "accepted_count": 0,
+    "network_actions": 1,
+    "cost_cents": 0,
+    "operations_ms": [
+      "service:257:ok",
+      "service:2735:ok",
+      "auth_tab_new:8256:ok",
+      "auth_tab_list:8500:ok",
+      "auth_eval:8213:ok",
+      "query_tab_new:8172:ok",
+      "query_tab_list:8186:ok",
+      "page_state_eval:30039:timed_out"
+    ],
+    "cleanup_attempted": false,
+    "extraction_attempted": false,
+    "failure_signature": "sha256:36ddf4f62c169d984017dffa2caa440af19b90ccc4f84d4f53782157ab7b791c"
+  },
+  "repeated_invariant": "Post-query PAGE_STATE_SCRIPT evaluation timed out in both C04 and S07.",
+  "human_gate": "No additional service install affecting the scheduled lane and no live Facebook command without explicit operator authority.",
+  "offline_successor": {
+    "packet": "S08",
+    "implementation_attempts": 1,
+    "review_rework_cycles": 1,
+    "live_attempts": 0,
+    "hypothesis": "Create and auth-evaluate a fresh home target, then navigate that same known-healthy target to the query rather than creating a direct query tab."
+  },
+  "authority": {
+    "offline_candidate": "inherited_authority",
+    "install_and_live": "human_gate"
+  }
+}

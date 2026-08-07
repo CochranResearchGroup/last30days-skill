@@ -923,20 +923,9 @@ class FacebookScraper:
 
     def _navigate(self, workspace: BrowserWorkspace, topic: str) -> FacebookPageState:
         recent_search_url = _search_url(topic, recent=True)
-        prepare_site_tab = getattr(self.client, "prepare_site_tab", None)
-        _log(f"Navigating query={topic!r} strategy=fresh_query_tab")
-        self.client.act(workspace, BrowserAction("new_tab", value=recent_search_url))
+        _log(f"Navigating query={topic!r} strategy=fresh_authenticated_target")
+        self.client.act(workspace, BrowserAction("navigate", value=recent_search_url))
         self.client.act(workspace, BrowserAction("wait", value="2000"))
-        if callable(prepare_site_tab) and not prepare_site_tab(
-            workspace,
-            "facebook.com",
-            consolidate=False,
-            require_active=True,
-        ):
-            raise FacebookScraperFailure(
-                "agent_browser_error",
-                "Fresh Facebook query target was not active after navigation",
-            )
         page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
 
         _log(f"Navigation readback requested={recent_search_url!r} final={page.url!r}")

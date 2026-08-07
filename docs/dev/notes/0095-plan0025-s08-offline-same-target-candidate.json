@@ -1,0 +1,49 @@
+{
+  "receipt_type": "plan0025_s08_offline_same_target_candidate_v1",
+  "recorded_at": "2026-08-07",
+  "plan": "0025",
+  "roadmap": "P09",
+  "checkpoint": "P0025-C13",
+  "candidate": {
+    "service_version": "0.3.11",
+    "artifact": "dist/service/last30days-service-0.3.11.tar.gz",
+    "artifact_sha256": "24233313875a388c848701e362d17744b05c6aa6ec52301b02846be907b4745b",
+    "runtime_manifest_sha256": "f9668856d90517159c7f6e8384420df4384e6379b188a9c57fb98d93f9669196",
+    "installed": false
+  },
+  "regression": {
+    "red": [
+      "query navigation observed new_tab instead of navigate",
+      "critical-path prepare_site_tab converted cleanup timeout into provider failure"
+    ],
+    "green": [
+      "query uses same fresh authenticated target",
+      "query navigation does not create a separate target",
+      "post-extraction cleanup timeout does not mask a valid item"
+    ]
+  },
+  "validation": {
+    "focused_python": "passed",
+    "full_python": "passed",
+    "mcp_go": "passed",
+    "compileall": "passed",
+    "artifact_build": "passed"
+  },
+  "installed_readback": {
+    "service_version": "0.3.10",
+    "database_schema_version": 16,
+    "service_status": "ready",
+    "runtime_manifest_sha256": "39e8d5ae20576541cf803f924583abe80391626bd4e2bb7f26dd2781a0e1bba4"
+  },
+  "effects": {
+    "service_install": false,
+    "live_facebook_command": false,
+    "cost_cents": 0,
+    "schedule_changed": false
+  },
+  "authority": {
+    "offline_candidate": "complete_under_inherited_authority",
+    "install_and_live": "human_gate"
+  },
+  "next_action": "Await explicit operator authority to install exact 0.3.11 with 0.3.10 rollback retained and run one zero-cost canonical-profile Facebook proof."
+}

@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P09
-Plan version: 10
+Plan version: 13
 Date: 2026-08-07
 
 ## Objective
@@ -14,18 +14,19 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
 
 ## Current State
 
-- Installed service 0.3.9/schema16 is ready and the service-owned
+- Installed service 0.3.10/schema16 is ready and the service-owned
   `daily-default` schedule remains enabled/ready for the Aug 8 UTC boundary.
 - The inactive-target repair and extraction retry repair are validated. The
   first live proof reached Facebook and accepted one post; the second proved a
   narrower active-but-stale target failure after auth and navigation.
-- S06 work `p0025-facebook-live-20260807-04` proved fresh auth and query targets
-  work, but returned transient `agent_browser_timeout` while synchronously
-  closing the inactive auth target before query page-state evaluation.
-- Exact timings show auth target new/list/old-close/eval all returned; query
-  target new/list returned; the next `tab close` timed out at 30.035 seconds.
-  S07 therefore moves consolidation off the critical page-read path and bounds
-  it best-effort after extraction.
+- S07 work `p0025-facebook-live-20260807-05` removed cleanup from the critical
+  path and authenticated on a fresh target, but direct creation of a query tab
+  again timed out at its first page-state evaluation after 30.039 seconds.
+- This repeats C04's post-query evaluation invariant at the configured bound.
+  Further live work is human-gated. Offline S08 now supplies exact service
+  0.3.11, using the only live-proven path that reached extraction: create and
+  evaluate a fresh home target for auth, then navigate that same known-healthy
+  target to the query. The candidate is built and validated but not installed.
 - Plan version 4's `human_gate` classification is superseded by C05 after a
   current policy reread: renewable work windows are not consumable approval
   tokens when blocker reduction is proven and the approved envelope is
@@ -39,10 +40,11 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
   implementation;
 - repair only the Facebook/shared agent-browser command behavior that current
   evidence proves faulty;
-- build and install one reviewed service candidate if runtime code changes;
-- run exactly one additional bounded live Facebook proof after the S07 red/
-  green regression, candidate validation, and installed readback; prior proofs
-  remain historical evidence and are not replayed;
+- preserve the installed 0.3.10 service while building one reviewed offline
+  0.3.11 candidate;
+- prepare one offline S08 regression-backed candidate; do not install it or run
+  another Facebook proof without explicit operator authority after the repeated
+  post-query evaluation invariant;
 - preserve and verify daily schedule, disabled legacy specs, database
   integrity, browser/profile reuse, zero cost/model use, and next-boundary
   continuity.
@@ -59,12 +61,13 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
 
 ## Authority And Gates
 
-- The active user goal, `diagnose, plan a mitigation, execute`, is standing
-  authority for ordinary diagnosis, code/test/docs changes, candidate install,
-  and one bounded live proof inside this existing source and profile boundary.
-- Policy 0015 classifies the fresh-query-target work as a renewable successor
-  under inherited authority: it changes no system, source, tenant, identity,
-  credential, data class, cost ceiling, schedule, or safety control.
+- The active user goal, `diagnose, plan a mitigation, execute`, remains standing
+  authority for ordinary offline diagnosis, code/test/docs changes, and
+  deterministic candidate preparation inside this existing source boundary.
+- C11 classifies another installation or live Facebook proof as a `human_gate`
+  after the repeated post-query evaluation invariant. Exact 0.3.11 may not be
+  installed and no Facebook command may run without explicit operator
+  authority.
 - Stop before any login, checkpoint, consent, challenge, new credential,
   duplicate browser/profile lane, destructive cleanup, paid request, external
   communication, or change to the daily schedule.
@@ -103,17 +106,18 @@ schedule, source set, credentials, cost posture, or browser identity boundary.
 | S05 closeout | Terminal authorities, receipt, memory, commit/push | S04 | plan/roadmap/runbook/notes/Graphiti | exact readbacks agree |
 | S06 fresh targets | Fresh auth/query targets and one live proof | C04 blocker | Facebook adapter/tests/version plus governed runtime evidence | C08 cleanup blocker recorded |
 | S07 deferred cleanup | Page evidence before bounded best-effort consolidation | C08 blocker | Facebook adapter/tests/version plus governed runtime evidence | success closes P09; cleanup cannot mask result |
+| S08 same-target navigation | Fresh auth target then same-target query navigation | C11 repeated invariant | offline Facebook adapter/tests/version only | candidate ready; install/live remain human-gated |
 
 - Critical-path owner: primary agent; active-agent concurrency is one and no
   subagent is authorized or needed.
-- S07 maximum implementation attempts: 1.
-- S07 maximum review/rework cycles: 1.
-- S07 maximum live Facebook source attempts: 1 after offline and installed
-  validation.
+- S08 offline maximum implementation attempts: 1.
+- S08 offline maximum review/rework cycles: 1.
+- S08 live Facebook source attempts: 0 until explicit operator authority.
 - Maximum diagnostic browser interaction: one tab-select/auth-read sequence,
   restoring the prior active tab when safe.
-- Any new critical-path `agent_browser_timeout` in the S07 proof is a terminal
-  hard stop, not permission for retry fanout.
+- The repeated post-query evaluation timeout is a `human_gate`; no install that
+  would affect the scheduled source lane and no live Facebook command may run
+  until explicit operator authority.
 
 ## Validation Commands
 
@@ -589,3 +593,116 @@ Next action:
 
 - commit/install exact 0.3.10 with 0.3.9 rollback retained, verify installed
   invariants, then consume the single S07 proof.
+
+### Checkpoint P0025-C11 | 2026-08-07
+
+Plan version: 11
+
+State transition:
+
+- `deferred_cleanup_candidate_ready -> repeated_post_query_eval_timeout_hard_stop`.
+
+Progress classification:
+
+- `regression`; S07 removed cleanup from the critical path but a fresh direct
+  query target repeated C04's post-query page-state evaluation timeout.
+
+Evidence:
+
+- installed 0.3.10/schema16 ready with 0.3.9 rollback retained and every pre-
+  proof schedule/database/spec/attempt/timer/cost invariant passing;
+- work `p0025-facebook-live-20260807-05` authenticated without login/checkpoint:
+  service 0.257/2.735s, auth tab new/list/eval 8.256/8.500/8.213s;
+- query tab new/list returned in 8.172/8.186s; immediate page-state eval timed
+  out at 30.039s. No cleanup command or extraction ran;
+- result failed/transient `agent_browser_timeout`, zero candidates, one request,
+  zero cost, same failure signature as earlier adapter-result timeouts.
+
+Authority classification:
+
+- `human_gate`; C04 and S07 now repeat the same post-query evaluation invariant
+  at configured live bounds. No additional install/live effect is inherited.
+
+Next action:
+
+- preserve installed 0.3.10 and prepare only an offline regression-backed
+  candidate based on the one live strategy that previously reached extraction.
+
+### Checkpoint P0025-C12 | 2026-08-07
+
+Plan version: 12
+
+State transition:
+
+- `repeated_post_query_eval_timeout_hard_stop -> offline_same_target_successor_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; live evidence supports one narrower offline hypothesis
+  without crossing the install/live human gate.
+
+Hypothesis and offline bounds:
+
+- C02/S04's first proof reached search extraction after auth created a fresh
+  home target and `_navigate` used `open` on that same target; C04 reused an old
+  retained target, while S07 directly created a query target and both timed out;
+- hypothesis: Facebook's direct query-tab creation path is unreliable for first
+  Page-domain evaluation, while navigating a same-run home target that just
+  passed auth eval preserves a usable page domain;
+- primary owns one offline implementation attempt and one review/rework cycle;
+  regression must require `navigate`, prohibit `new_tab` in `_navigate`, and
+  retain post-extraction best-effort cleanup;
+- no service install, live Facebook command, schedule change, or Graphiti
+  success claim is permitted in this packet.
+
+Authority classification:
+
+- `inherited_authority`; offline code/test/artifact preparation is ordinary
+  implementation inside the active goal. Installation and live validation
+  remain the C11 `human_gate`.
+
+Next action:
+
+- add the same-run auth-target navigation regression red, implement the offline
+  successor, and validate a deterministic candidate for operator review.
+
+### Checkpoint P0025-C13 | 2026-08-07
+
+Plan version: 13
+
+State transition:
+
+- `offline_same_target_successor_ready -> offline_same_target_candidate_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; the repeated live failure is regression-locked and an
+  exact offline candidate implements the only path that previously reached
+  Facebook extraction.
+
+Implementation and evidence:
+
+- the new regression failed because `_navigate` created a separate query tab
+  and performed critical-path target preparation; cleanup failure consequently
+  masked a valid result;
+- service 0.3.11 instead navigates the fresh home target that just passed auth
+  evaluation, performs page-state evaluation directly, and retains bounded
+  best-effort consolidation only after extraction;
+- focused Facebook/worker/tick/source-log/release/runtime/authority tests pass;
+  the complete Python suite, MCP Go suite, compileall, and diff checks pass;
+- artifact `dist/service/last30days-service-0.3.11.tar.gz` has SHA-256
+  `24233313875a388c848701e362d17744b05c6aa6ec52301b02846be907b4745b`;
+- current installed readback remains ready service 0.3.10/schema16 with runtime
+  manifest SHA-256
+  `39e8d5ae20576541cf803f924583abe80391626bd4e2bb7f26dd2781a0e1bba4`.
+
+Authority classification:
+
+- `human_gate`; the offline packet is complete. Installing exact 0.3.11 would
+  affect the scheduled lane, and another live Facebook proof would cross C11's
+  repeated-invariant boundary.
+
+Next action:
+
+- await explicit operator authority for exact 0.3.11 install with 0.3.10
+  rollback retained and one zero-cost canonical-profile Facebook proof.

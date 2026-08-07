@@ -12979,3 +12979,99 @@ Next Bounded Action:
 
 - commit/install exact 0.3.10 with 0.3.9 rollback retained, prove invariants,
   then consume the single S07 proof.
+
+## Turn 217 | 2026-08-07
+
+Focus: record the repeated post-query evaluation hard stop and activate only an
+offline same-target-navigation successor.
+
+Authority Consulted:
+
+- Plan 0025 version 10/C10; installed 0.3.10 readback; exact S07 worker timings;
+  prior S04/C04 live evidence; policy 0015 repeated-invariant human gate.
+
+Decisions And Changes:
+
+- installed 0.3.10 with 0.3.9 rollback and consumed the one S07 proof after all
+  offline/install gates passed;
+- accepted S07 as a repeated critical invariant, not another renewable live
+  window: direct fresh query target creation still timed out on first page eval;
+- froze further install/live effects under `human_gate`;
+- opened offline-only S08 because the first blocker-reduction proof supplies a
+  distinct evidence-backed strategy: fresh home auth target followed by query
+  navigation on that same just-evaluated target.
+
+Validation Evidence:
+
+- work `p0025-facebook-live-20260807-05`: auth new/list/eval all returned;
+  query new/list returned; page-state eval timed out at 30.039s; no cleanup or
+  extraction ran; failed/transient, one request, zero cost;
+- installed service/schedule/database/spec/attempt/timer invariants remained
+  unchanged before the proof; receipt 0094 preserves exact evidence.
+
+State Movement:
+
+- `deferred_cleanup_candidate_ready -> repeated_post_query_eval_timeout_hard_stop -> offline_same_target_successor_ready`;
+- Plan 0025 advances versions `10 -> 11 -> 12`, checkpoints `C10 -> C11 -> C12`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; primary owns offline candidate preparation.
+
+Graphiti Write Status:
+
+- terminal write remains pending; no new success episode is claimed.
+
+Next Bounded Action:
+
+- regression-lock same-run auth-target navigation, build and validate an offline
+  candidate, then stop before install/live pending explicit authority.
+
+## Turn 218 | 2026-08-07
+
+Focus: complete the offline same-target-navigation candidate and stop at the
+repeated-invariant install/live human gate.
+
+Authority Consulted:
+
+- Plan 0025 version 12/C12; receipt 0094; CodeGraph Facebook scraper lifecycle;
+  policies 0012, 0013, and 0015; diagnosing-bugs red/green discipline.
+
+Decisions And Changes:
+
+- added regressions requiring query navigation on the same freshly
+  authenticated target, prohibiting a separate query tab, and containing
+  post-extraction cleanup timeout;
+- observed all three regressions fail against 0.3.10, then changed `_navigate`
+  to use the same target and removed target enumeration from the critical path;
+- advanced source/artifact identity to service 0.3.11 without installing it or
+  issuing a Facebook command.
+
+Validation Evidence:
+
+- focused Facebook/worker/tick/source-log/release/runtime/authority suites pass;
+- complete Python suite, MCP Go suite, and compileall pass;
+- artifact `dist/service/last30days-service-0.3.11.tar.gz` SHA-256 is
+  `24233313875a388c848701e362d17744b05c6aa6ec52301b02846be907b4745b`;
+- installed diagnose remains ready service 0.3.10/schema16 with runtime manifest
+  SHA-256 `39e8d5ae20576541cf803f924583abe80391626bd4e2bb7f26dd2781a0e1bba4`;
+  no last30days systemd timer exists.
+
+State Movement:
+
+- `offline_same_target_successor_ready -> offline_same_target_candidate_ready`;
+- Plan 0025 advances version `12 -> 13`, checkpoint `C12 -> C13`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; primary owns the red/green patch, artifact, and evidence.
+
+Graphiti Write Status:
+
+- terminal live outcome remains pending; no offline candidate is recorded as a
+  successful Facebook repair.
+
+Next Bounded Action:
+
+- await explicit authority for exact 0.3.11 install with 0.3.10 rollback
+  retained and one zero-cost canonical-profile Facebook proof.

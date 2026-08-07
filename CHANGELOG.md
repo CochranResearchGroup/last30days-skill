@@ -9,22 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Fresh Facebook collection targets.** Service 0.3.10 no longer treats an
+- **Fresh Facebook collection targets.** Service 0.3.11 no longer treats an
   inactive Facebook tab in the shared social browser as proof that its CDP page
-  domain is responsive. Facebook authentication opens a fresh target in the
-  same retained profile/browser, then consolidates same-site duplicates before
-  evaluation. Every collection starts authentication on a fresh target, and
-  every query also opens and verifies a fresh target before
-  page-state evaluation instead of navigating an authenticated target that may
-  have become Page-domain stale after a prior run. Once any extracted candidate
-  has a parseable timestamp, the adapter avoids repeating costly paired browser
-  reads merely because a different action card is still undated. Sanitized
-  command timing and verified search-page signals make the bounded result
-  diagnosable without retaining page content. Same-site cleanup now runs only
-  after page extraction, uses short per-close bounds, and cannot turn valid
-  page evidence into a provider failure. Together these changes avoid
-  stale-target and wall-budget failures without launching another browser or
-  weakening auth and page-quality gates.
+  domain is responsive. Every collection opens and evaluates a fresh Facebook
+  home target for authentication, then navigates that same known-responsive
+  target to Recent search instead of creating a separate query target whose
+  first page-state evaluation can stall. Once any extracted candidate has a
+  parseable timestamp, the adapter avoids repeating costly paired browser reads
+  merely because a different action card is still undated. Sanitized command
+  timing and verified search-page signals make the bounded result diagnosable
+  without retaining page content. Same-site cleanup runs only after page
+  extraction, uses short per-close bounds, and cannot turn valid page evidence
+  into a provider failure. Together these changes address stale targets and
+  wall-budget failures without launching another browser or weakening auth and
+  page-quality gates.
 
 - **Ordinary tick-head retrieval.** Service 0.3.4 routes ordinary queries to
   the atomically promoted terminal tick snapshot when one exists. Access,
