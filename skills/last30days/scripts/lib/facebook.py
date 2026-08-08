@@ -696,19 +696,27 @@ class CliAgentBrowserClient:
             and _url_matches_hostname(str(tab.get("url") or ""), "facebook.com")
         ]
         if matches:
-            return self._probe_retained_facebook_auth(workspace, matches)
+            try:
+                return self._probe_retained_facebook_auth(workspace, matches)
+            except FacebookScraperFailure as exc:
+                if exc.error_type != "agent_browser_timeout":
+                    raise
+                _log(
+                    "All retained Facebook targets were unresponsive; "
+                    "inspecting authentication once on a fresh blank target"
+                )
 
-        self.act(workspace, BrowserAction("new_tab", value="https://www.facebook.com/"))
-        if not self.prepare_site_tab(
+        return self._inspect_auth_on_fresh_target(workspace)
+
+    def _inspect_auth_on_fresh_target(
+        self, workspace: BrowserWorkspace
+    ) -> FacebookAuthState:
+        self.act(workspace, BrowserAction("new_tab", value="about:blank"))
+        self.act(
             workspace,
-            "facebook.com",
-            consolidate=False,
-            require_active=True,
-        ):
-            raise FacebookScraperFailure(
-                "agent_browser_error",
-                "agent-browser did not expose the new active Facebook tab",
-            )
+            BrowserAction("navigate", value="https://www.facebook.com/"),
+        )
+
         raw = self._evaluate_auth_probe(workspace)
         auth = _facebook_auth_state(raw)
         if not _facebook_auth_is_explicit(auth):
@@ -1180,9 +1188,26 @@ class FacebookScraper:
     def _navigate(self, workspace: BrowserWorkspace, topic: str) -> FacebookPageState:
         recent_search_url = _search_url(topic, recent=True)
         _log(f"Navigating query={topic!r} strategy=fresh_authenticated_target")
-        self.client.act(workspace, BrowserAction("navigate", value=recent_search_url))
-        self.client.act(workspace, BrowserAction("wait", value="2000"))
-        page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
+        for attempt in range(2):
+            try:
+                self.client.act(
+                    workspace,
+                    BrowserAction("navigate", value=recent_search_url),
+                )
+                self.client.act(workspace, BrowserAction("wait", value="2000"))
+                page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
+                break
+            except FacebookScraperFailure as exc:
+                if attempt > 0 or not _is_navigation_timeout(exc):
+                    raise
+                _log(
+                    "Search target open/read timed out; "
+                    "retrying once on a fresh blank target"
+                )
+                self.client.act(
+                    workspace,
+                    BrowserAction("new_tab", value="about:blank"),
+                )
 
         _log(f"Navigation readback requested={recent_search_url!r} final={page.url!r}")
         if page.checkpoint:
@@ -1982,6 +2007,15 @@ def _cli_error_message(value: str) -> str:
 
 def _elapsed_ms(started: float) -> int:
     return max(0, round((time.monotonic() - started) * 1000))
+
+
+def _is_navigation_timeout(exc: FacebookScraperFailure) -> bool:
+    if exc.error_type == "agent_browser_timeout":
+        return True
+    if exc.error_type != "agent_browser_error":
+        return False
+    message = str(exc).casefold()
+    return "timed out" in message or "timeout" in message or "timed_out" in message
 
 
 def _command_operation(args: list[str]) -> str:

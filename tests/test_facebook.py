@@ -334,8 +334,12 @@ class FacebookCliAdapterTests(unittest.TestCase):
 
         self.assertTrue(auth.authenticated)
         self.assertEqual(
-            ["--session", "shared-social", "tab", "new", "https://www.facebook.com/"],
+            ["--session", "shared-social", "tab", "new", "about:blank"],
             invoke.call_args_list[1].args[0],
+        )
+        self.assertEqual(
+            ["--session", "shared-social", "open", "https://www.facebook.com/"],
+            invoke.call_args_list[2].args[0],
         )
 
     def test_auth_inspection_skips_frozen_target_and_reuses_responsive_retained_target(self):
@@ -416,7 +420,7 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertNotIn("new", [part for command in commands for part in command])
         self.assertFalse(any(command[-2:] == ["tab", "1"] for command in commands))
 
-    def test_auth_inspection_never_converts_frozen_retained_targets_into_login_required(self):
+    def test_auth_inspection_recovers_all_frozen_retained_targets_on_one_fresh_target(self):
         client = facebook.CliAgentBrowserClient(timeout=8)
         workspace = facebook.BrowserWorkspace(
             profile_id="last30days-facebook",
@@ -426,22 +430,35 @@ class FacebookCliAdapterTests(unittest.TestCase):
         tabs = {"tabs": [
             {"index": 0, "active": True, "url": "https://www.facebook.com/"},
         ]}
+        eval_count = 0
 
         def invoke(args, **_kwargs):
+            nonlocal eval_count
             if args[-2:] == ["tab", "list"]:
                 return tabs
             if "eval" in args:
-                raise facebook.FacebookScraperFailure(
-                    "agent_browser_timeout", "retained target did not respond"
-                )
+                eval_count += 1
+                if eval_count == 1:
+                    raise facebook.FacebookScraperFailure(
+                        "agent_browser_timeout", "retained target did not respond"
+                    )
+                return {"authenticated_dom": True, "has_c_user": True}
             return {}
 
-        with mock.patch.object(client, "_invoke", side_effect=invoke), self.assertRaises(
-            facebook.FacebookScraperFailure
-        ) as raised:
-            client.inspect_auth(workspace)
+        with mock.patch.object(client, "_invoke", side_effect=invoke) as invoked:
+            auth = client.inspect_auth(workspace)
 
-        self.assertEqual("agent_browser_timeout", raised.exception.error_type)
+        self.assertTrue(auth.authenticated)
+        commands = [call.args[0] for call in invoked.call_args_list]
+        self.assertIn(
+            ["--session", "shared-social", "tab", "new", "about:blank"],
+            commands,
+        )
+        self.assertIn(
+            ["--session", "shared-social", "open", "https://www.facebook.com/"],
+            commands,
+        )
+        self.assertEqual(2, sum("eval" in command for command in commands))
 
     def test_wait_action_is_local_and_bounded(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
@@ -876,6 +893,159 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
             require_active=True,
             close_timeout=5,
             ignore_close_failures=True,
+        )
+
+    def test_query_navigation_timeout_recovers_once_on_a_fresh_blank_target(self):
+        class TimeoutOnceClient(FakeAgentBrowserClient):
+            def __init__(self):
+                super().__init__()
+                self.navigation_attempts = 0
+
+            def act(self, workspace, action):
+                if action.operation == "navigate":
+                    self.navigation_attempts += 1
+                    if self.navigation_attempts == 1:
+                        self.actions.append(action)
+                        raise facebook.FacebookScraperFailure(
+                            "agent_browser_error",
+                            "Operation timed out. The page may still be loading or the element may not exist.",
+                        )
+                return super().act(workspace, action)
+
+        client = TimeoutOnceClient()
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(
+            ["navigate", "new_tab", "navigate", "wait"],
+            [action.operation for action in client.actions[:4]],
+        )
+        self.assertEqual("about:blank", client.actions[1].value)
+        self.assertEqual(client.actions[0].value, client.actions[2].value)
+
+    def test_query_navigation_non_timeout_failure_does_not_open_a_recovery_target(self):
+        class DisconnectedClient(FakeAgentBrowserClient):
+            def act(self, workspace, action):
+                if action.operation == "navigate":
+                    self.actions.append(action)
+                    raise facebook.FacebookScraperFailure(
+                        "agent_browser_error", "browser connection closed"
+                    )
+                return super().act(workspace, action)
+
+        client = DisconnectedClient()
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual("agent_browser_error", result["error_type"])
+        self.assertEqual(["navigate"], [action.operation for action in client.actions])
+
+    def test_repeated_query_navigation_timeout_stops_after_one_fresh_target(self):
+        class AlwaysTimeoutClient(FakeAgentBrowserClient):
+            def act(self, workspace, action):
+                if action.operation == "navigate":
+                    self.actions.append(action)
+                    raise facebook.FacebookScraperFailure(
+                        "agent_browser_timeout", "agent-browser operation timed out after 30s"
+                    )
+                return super().act(workspace, action)
+
+        client = AlwaysTimeoutClient()
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual("agent_browser_timeout", result["error_type"])
+        self.assertEqual(
+            ["navigate", "new_tab", "navigate"],
+            [action.operation for action in client.actions],
+        )
+        self.assertEqual("about:blank", client.actions[1].value)
+
+    def test_page_state_timeout_replays_open_and_read_once_on_a_fresh_target(self):
+        class PageStateTimeoutOnceClient(FakeAgentBrowserClient):
+            def __init__(self):
+                super().__init__()
+                self.page_state_evaluations = 0
+
+            def evaluate(self, workspace, script):
+                if script == facebook.PAGE_STATE_SCRIPT:
+                    self.page_state_evaluations += 1
+                    if self.page_state_evaluations == 1:
+                        raise facebook.FacebookScraperFailure(
+                            "agent_browser_timeout",
+                            "agent-browser operation timed out after 20s",
+                        )
+                return super().evaluate(workspace, script)
+
+        client = PageStateTimeoutOnceClient()
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(2, client.page_state_evaluations)
+        self.assertEqual(
+            ["navigate", "wait", "new_tab", "navigate", "wait"],
+            [action.operation for action in client.actions[:5]],
+        )
+        self.assertEqual("about:blank", client.actions[2].value)
+        self.assertEqual(client.actions[0].value, client.actions[3].value)
+
+    def test_repeated_page_state_timeout_stops_after_one_fresh_target(self):
+        class PageStateAlwaysTimeoutClient(FakeAgentBrowserClient):
+            def __init__(self):
+                super().__init__()
+                self.page_state_evaluations = 0
+
+            def evaluate(self, workspace, script):
+                if script == facebook.PAGE_STATE_SCRIPT:
+                    self.page_state_evaluations += 1
+                    raise facebook.FacebookScraperFailure(
+                        "agent_browser_timeout",
+                        "agent-browser operation timed out after 20s",
+                    )
+                return super().evaluate(workspace, script)
+
+        client = PageStateAlwaysTimeoutClient()
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual("agent_browser_timeout", result["error_type"])
+        self.assertEqual(2, client.page_state_evaluations)
+        self.assertEqual(
+            ["navigate", "wait", "new_tab", "navigate", "wait"],
+            [action.operation for action in client.actions],
+        )
+
+    def test_page_state_non_timeout_failure_does_not_open_a_recovery_target(self):
+        class PageStateDisconnectedClient(FakeAgentBrowserClient):
+            def evaluate(self, workspace, script):
+                if script == facebook.PAGE_STATE_SCRIPT:
+                    raise facebook.FacebookScraperFailure(
+                        "agent_browser_error", "browser connection closed"
+                    )
+                return super().evaluate(workspace, script)
+
+        client = PageStateDisconnectedClient()
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual("agent_browser_error", result["error_type"])
+        self.assertEqual(
+            ["navigate", "wait"],
+            [action.operation for action in client.actions],
         )
 
     def test_dated_dom_extraction_does_not_require_accessibility_snapshot(self):

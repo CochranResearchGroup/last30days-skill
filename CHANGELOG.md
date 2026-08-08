@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook post-navigation readback recovery.** Service 0.3.23 treats the
+  initial query-page state evaluation as part of the bounded search open/read
+  attempt. A timeout replays that whole attempt exactly once on a fresh
+  `about:blank` target in the same retained browser and profile; a repeated
+  timeout or any non-timeout failure remains terminal.
+
+- **All-frozen Facebook auth-target recovery.** Service 0.3.22 opens one fresh
+  `about:blank` target in the same retained browser and profile when every
+  retained Facebook target times out during bounded authentication inspection.
+  The fresh target must still produce explicit authenticated, login, or
+  checkpoint evidence; non-timeout failures remain terminal.
+
+- **Bounded Facebook navigation recovery.** Service 0.3.21 retries a timed-out
+  authenticated search navigation exactly once on a fresh `about:blank` target
+  in the same retained browser and profile. Non-timeout failures do not retry,
+  a repeated timeout stops terminally, and no retained tab is closed.
+
 - **Responsive retained Facebook target selection.** Service 0.3.20 probes
   retained Facebook tabs under short command deadlines, skips frozen targets,
   and accepts explicit authenticated DOM or retained `c_user` evidence before

@@ -1204,7 +1204,7 @@ Next Bounded Action:
 
 ## P11 | Facebook Governed Tick Navigation Recovery
 
-State: OPEN
+State: CLOSED
 
 Objective: complete Facebook through the ordinary governed manual tick after
 explicit authentication when the selected retained target freezes during query
@@ -1218,16 +1218,23 @@ Current State:
   target, then navigation job `r198316` timed out after 25.787 seconds;
 - the queue released and later browser commands succeeded. No auth incident,
   notification, browser launch, or tab close occurred.
+- installed service 0.3.23 now recovers one frozen navigation, an all-frozen
+  retained auth set, and one post-navigation page-state timeout inside the
+  retained browser/profile;
+- final manual tick `tick-771c7a87e4a65636047b83b478a0bd0e`
+  completed the Facebook browser path, observed 18 candidates, and rejected all
+  18 under the unchanged post-quality gate. It remained zero-cost with no human
+  incident or notification, and retained PID 96078 stayed live.
 
-Open Plan:
+Closed Plan:
 
 - `docs/dev/plans/0027-2026-08-08-facebook-governed-tick-navigation-recovery.md`
-  version 1/C01 is the active authority.
+  version 4/C04 is the terminal authority.
 
 Next Bounded Action:
 
-- add one red navigation-recovery contract before any additional manual tick;
-  do not wait for a natural schedule boundary or replay the same blocker.
+- stop manual browser-recovery proof ticks. Keep the quality gate unchanged;
+  any future Facebook yield tuning is a separate product packet.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 

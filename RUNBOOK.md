@@ -13450,3 +13450,73 @@ Next Bounded Action:
 
 - push the completed repair and exact blocker evidence. Do not run another
   Facebook or all-source tick until a bounded navigation-recovery change exists.
+
+## Turn 225 | 2026-08-08
+
+Focus: prove bounded Facebook target recovery through the governed manual tick,
+close P11, and prepare the immutable release history for push.
+
+Authority Consulted:
+
+- operator direction to repair, keep proof ticks manual until proven, and avoid
+  natural-time waiting; Plan 0027 versions 1-4; repo planning, validation,
+  documentation, roadmap/runbook, integration, and closeout policies;
+  agent-browser retained-browser, remote-view, and no-duplicate-profile rules.
+
+Decisions And Changes:
+
+- added one-shot same-browser fresh-target recovery for query navigation,
+  all-frozen retained auth inspection, and initial post-navigation page-state
+  evaluation timeouts;
+- preserved explicit auth/checkpoint handling, non-timeout terminal behavior,
+  repeated-timeout fail-closed behavior, the exact retained profile/PID, and the
+  no-tab-close contract;
+- built and installed immutable successors 0.3.21, 0.3.22, and 0.3.23 only
+  after each distinct red/green blocker; never retried the same build and never
+  waited for a timer boundary;
+- consumed three distinct preflight-predicted manual ticks. The first localized
+  all-frozen auth selection, the second proved auth/navigation recovery and
+  localized page-state timeout, and the third proved the entire browser path;
+- left the existing content-quality gate unchanged after the terminal proof
+  observed 18 candidates and rejected all 18.
+
+Validation Evidence:
+
+- full Python suite: 2,589 passed, seven skipped, six subtests passed; focused
+  Facebook, release, runtime-package, plan-authority, deterministic artifact,
+  and patch checks pass;
+- service 0.3.23 artifact SHA-256
+  `a121a458dcf44f0fbb975eccaf5763984e88de586bc8a37ee7f0655452e0390e`;
+  installed service 0.3.23/schema16 is ready with runtime-manifest SHA-256
+  `f1ba57fc8e2405ea96a280d70915860ab7932a8cc21ed521ee5c30b02a6d4173`;
+- terminal manual tick `tick-771c7a87e4a65636047b83b478a0bd0e`
+  promoted snapshot `tick-snapshot-cc7a22ba47a2654e1758a435bb7b5600`,
+  consumed five attempts, 14 requests, seven items, 103 wall seconds, zero cost,
+  and zero model tokens, with no incident or notification;
+- Facebook attempt `provider-attempt-1b41ffe16ab6105b377de4fe9c4ec471`
+  is `quality_gate_failed/policy`, with 18 observed and 18 rejected candidates;
+  all bounded post-fallback navigate/evaluate/extract/scroll jobs succeeded;
+- remote control and many-to-many stayed ready with no issues; retained browser
+  PID 96078 remained live and ready, and later LinkedIn collection succeeded.
+
+State Movement:
+
+- P11/Plan 0027 version `1 -> 4`, `OPEN -> CLOSED` at C04; installed runtime
+  `0.3.20 -> 0.3.23` without a schema, cadence, provider, cost, or notification
+  routing change.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary completed and independently verified the full
+  serialized critical path.
+
+Graphiti Write Status:
+
+- no write; the terminal plan, roadmap, this runbook, durable tick receipts,
+  browser jobs, artifact, and installed readbacks are the source-backed
+  authorities.
+
+Next Bounded Action:
+
+- stop manual proof ticks and push the scoped repository history. Treat future
+  Facebook quality-yield tuning as a separate product packet.
