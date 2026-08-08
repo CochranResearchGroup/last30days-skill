@@ -13262,3 +13262,191 @@ Next Bounded Action:
   closing retained or unrelated sessions, verify `remoteControl.status=ready`,
   then let the next real incident supply the operator link; do not retry
   Facebook before literal operator completion.
+
+## Turn 222 | 2026-08-07
+
+Focus: repair the false Facebook CAPTCHA/login notice and resume only the
+affected collection lane.
+
+Authority Consulted:
+
+- operator repair-and-resume instruction; Plan 0026/C03-C08; repo planning,
+  validation, documentation, roadmap/runbook, and closeout policies;
+  agent-browser remote-view readiness and retained-profile boundaries.
+
+Decisions And Changes:
+
+- corrected `checkpoint_required` classification to the existing
+  `reauthentication_required` gate while preserving literal CAPTCHA handling;
+- proved the reported page was authenticated and traced the false positive to
+  incidental two-factor-authentication text in a Meta help conversation;
+- gated checkpoint body text on missing authenticated DOM while preserving
+  checkpoint URL/form fail-closed evidence;
+- made Facebook extraction direct-DOM-first and retained accessibility
+  snapshot enrichment only for otherwise undated action cards;
+- installed immutable service successors through 0.3.17 without changing
+  database schema, schedule cadence, source set, paid/model posture, or private
+  routing.
+
+Validation Evidence:
+
+- full Python suite and focused Facebook, incident, runner, release, and
+  runtime-package suites pass; `git diff --check` passes;
+- installed service 0.3.17/schema16 is ready; artifact SHA-256
+  `d47aa6e23d433ac044fbc25073296e0775cb4d5c8da5823824e36ef2e14d8826`;
+  runtime-manifest SHA-256
+  `a3218e755a31c97edbe220d65b665d6d6008db3d52f1ffa3b5ea81e2158392d3`;
+- post-repair Facebook-only packets created zero incidents and zero
+  notifications, so the false login alert did not recur;
+- terminal tick `tick-eabcf915652f86a91dff60f9b29ce562` ran one zero-cost
+  Facebook attempt and failed later with `agent_browser_timeout` after 70
+  seconds; SQLite integrity remains `ok`, and the daily schedule remains ready
+  for `2026-08-09T00:00:00Z`.
+
+State Movement:
+
+- Plan 0026 version `3 -> 8`; false authentication alert is repaired and the
+  lane resumed past auth, but the plan remains `OPEN` at the distinct later
+  collection-timeout checkpoint.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary owned the coupled repo/runtime packet.
+
+Graphiti Write Status:
+
+- no new write; repo plan, roadmap, runbook, receipts, and installed readbacks
+  are the durable authority for this still-open packet.
+
+Next Bounded Action:
+
+- diagnose the exact later agent-browser operation before any further Facebook
+  retry. Do not request another login and do not close any retained browser.
+
+## Turn 223 | 2026-08-08
+
+Focus: finish the Facebook false-login repair by selecting a responsive
+retained target, install the exact successor, and resume one bounded proof.
+
+Authority Consulted:
+
+- operator repair-and-resume instruction; Plan 0026/C10-C12; repo planning,
+  validation, documentation, roadmap/runbook, integration, and closeout
+  policies; agent-browser installed-runtime and retained-profile boundaries.
+
+Decisions And Changes:
+
+- proved a retained Facebook search target is authenticated while several
+  other visible retained Facebook targets are CDP-frozen;
+- changed authentication inspection to probe retained targets under short
+  command deadlines, skip frozen targets, accept explicit authenticated DOM or
+  `c_user` evidence, and return a typed browser failure instead of a false
+  login notice when no target responds;
+- open a fresh Facebook target only when no retained Facebook target exists;
+- disabled duplicate-tab consolidation after search so routine collection does
+  not close operator-retained tabs;
+- built and installed immutable service 0.3.20, then consumed one bounded
+  zero-cost Facebook proof.
+
+Validation Evidence:
+
+- full suite: 2,583 passed, 7 skipped, 6 subtests passed; focused Facebook,
+  release, runtime-package, and plan-authority tests, compileall, deterministic
+  build, and patch checks pass;
+- artifact SHA-256
+  `e7de7efa624dc6f7bdbb46431eb768412774f94b3e0b41cc14e785b3808b5837`;
+  installed runtime-manifest SHA-256
+  `2ff48ec18f10652bbb4250428b19654f45034b30e85a3366babf623fafe3dd69`;
+- work `p0026-facebook-live-20260808-01` inspected authenticated state in 466
+  ms, navigated the verified Recent-posts URL, extracted 12 candidates, and
+  completed in 33.051 seconds with no auth/checkpoint/CAPTCHA notice and no
+  browser timeout. Zero candidates passed the content quality gate;
+- retained PID 96078 remained live with eight tabs and active index 5 before
+  and after proof; no retained tab was closed;
+- service 0.3.20/schema16 and daily schedule are ready; SQLite is `ok`; 42
+  legacy specs remain disabled; nonterminal attempts and Last30Days timers are
+  zero.
+
+State Movement:
+
+- Plan 0026/P10 version `10 -> 12`, `OPEN -> CLOSED` at C12.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary completed and independently verified the full
+  critical path.
+
+Graphiti Write Status:
+
+- one compact closeout write was attempted as job
+  `b99e4bfa-08c2-4ffc-b88e-db51714e2704`; it timed out after the explicit
+  120-second bound before creating an episode UUID. No retry was submitted;
+  this runbook, Plan 0026/C12, and installed readbacks remain authoritative.
+
+Next Bounded Action:
+
+- stop. Allow the governed daily schedule to run service 0.3.20; future manual
+  auth messaging remains conditional on explicit evidence from a responsive
+  target.
+
+## Turn 224 | 2026-08-08
+
+Focus: replace natural-time waiting with one explicit governed manual tick,
+then preserve its Facebook navigation blocker before repository push.
+
+Authority Consulted:
+
+- operator direction to keep proof manual and not wait for a natural schedule
+  boundary; Plan 0026/C12; Plan 0024's manual tick interface; repo planning,
+  runtime, validation, documentation, and git policies.
+
+Decisions And Changes:
+
+- ran a no-state preflight for the distinct completed interval
+  `2026-08-07T15:00:00Z` to `2026-08-08T15:00:00Z` with manual schedule ID
+  `manual-p0026-post-repair`;
+- admitted exactly predicted tick
+  `tick-848f61b8a22d7e603c7e473c16ba5fdf` instead of waiting for Aug 9;
+- accepted the durable top-level result as `complete_degraded` and rejected the
+  earlier direct-proof-only claim as insufficient for governed Facebook
+  reliability;
+- opened successor P11/Plan 0027 for the newly localized post-auth navigation
+  blocker. No same-signature tick retry was attempted.
+
+Validation Evidence:
+
+- preflight was `ready` with five attempts, 250 requests, 15 items, 600 wall
+  seconds, zero cost, and zero model-token limits;
+- the terminal tick consumed five attempts, 14 requests, seven items, 66 wall
+  seconds, zero cost, and zero model tokens; YouTube, X, and LinkedIn succeeded,
+  Reddit was empty, and Facebook failed transiently;
+- snapshot `tick-snapshot-62723818c63989277fb0964641640fd6` was promoted with
+  one execution attempt, five provider attempts, three artifacts, six
+  derivatives, seven source versions, zero incidents, zero notifications, and
+  zero active attempts after completion;
+- Facebook operations show service acquisition succeeded, two frozen tab
+  switches failed under 3-second bounds, a third switch and 500 ms auth eval
+  succeeded, then query `open` failed after 25.787 seconds as
+  `agent_browser_error/transient`;
+- agent-browser job `r198316` failed cleanly and released the queue; later tab,
+  eval, and LinkedIn navigation jobs succeeded. PID 96078 and all eight tabs
+  remain live.
+
+State Movement:
+
+- P10/Plan 0026 remains closed for truthful auth classification; P11/Plan 0027
+  opens at version 1/C01 for governed-tick navigation recovery.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary ran and verified the exact manual packet.
+
+Graphiti Write Status:
+
+- no write; the new blocker is source-backed by the durable tick receipt,
+  provider result, Plan 0027, and this runbook.
+
+Next Bounded Action:
+
+- push the completed repair and exact blocker evidence. Do not run another
+  Facebook or all-source tick until a bounded navigation-recovery change exists.

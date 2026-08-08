@@ -171,6 +171,7 @@ class ProviderResult:
     rendered_page_mime_type: str | None = None
     operator_url: str | None = None
     outcome_counts: dict[str, int] | None = None
+    browser_operations: tuple[dict[str, object], ...] = ()
 
     def __post_init__(self) -> None:
         if self.status not in {"success", "partial", "empty", "failure"}:
@@ -220,6 +221,25 @@ class ProviderResult:
         ):
             raise ValueError("provider outcome counts are inconsistent")
         object.__setattr__(self, "outcome_counts", normalized_counts)
+        if len(self.browser_operations) > 12:
+            raise ValueError("provider browser operation evidence exceeds the bound")
+        for operation in self.browser_operations:
+            if not isinstance(operation, dict) or not operation:
+                raise ValueError("provider browser operation evidence must be objects")
+            if set(operation) - {"operation", "status", "duration_ms", "error_type"}:
+                raise ValueError("provider browser operation evidence has unknown fields")
+            _text(operation.get("operation"), "browser operation", 64)
+            if operation.get("status") not in {"ok", "failed", "timed_out"}:
+                raise ValueError("provider browser operation status is unsupported")
+            duration_ms = operation.get("duration_ms")
+            if (
+                isinstance(duration_ms, bool)
+                or not isinstance(duration_ms, int)
+                or not 0 <= duration_ms <= 600_000
+            ):
+                raise ValueError("provider browser operation duration is invalid")
+            if operation.get("error_type") is not None:
+                _text(operation.get("error_type"), "browser operation error type", 64)
 
     @classmethod
     def success(
@@ -371,6 +391,7 @@ class TickRunner:
             "rendered_page": rendered_page,
             "operator_url": result.operator_url,
             "outcome_counts": result.outcome_counts,
+            "browser_operations": list(result.browser_operations),
         }
 
     def _restore_provider_result(self, payload: Mapping[str, object]) -> ProviderResult:
@@ -465,6 +486,7 @@ class TickRunner:
             ),
             operator_url=payload.get("operator_url"),
             outcome_counts=dict(payload.get("outcome_counts", {})),
+            browser_operations=tuple(payload.get("browser_operations", ())),
         )
 
     def _event(

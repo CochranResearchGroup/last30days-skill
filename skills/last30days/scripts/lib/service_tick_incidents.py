@@ -40,7 +40,9 @@ _BROWSER_INCIDENTS = frozenset(
 _ISSUE_CODES = {
     "captcha": "captcha_required",
     "captcha_required": "captcha_required",
-    "checkpoint_required": "captcha_required",
+    # A provider security checkpoint is an authentication intervention, not
+    # evidence that a CAPTCHA is present. Keep true CAPTCHA signals distinct.
+    "checkpoint_required": "reauthentication_required",
     "cloudflare": "cloudflare_challenge",
     "cloudflare_challenge": "cloudflare_challenge",
     "rate_limit_warning": "rate_limit_warning",

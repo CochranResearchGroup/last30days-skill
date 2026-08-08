@@ -61,7 +61,7 @@ class FixtureObservationTransport:
     ("safe_error_code", "page_signals", "expected"),
     [
         ("captcha_required", (), "captcha_required"),
-        ("checkpoint_required", (), "captcha_required"),
+        ("checkpoint_required", (), "reauthentication_required"),
         ("navigation_failed", ("cloudflare_challenge",), "cloudflare_challenge"),
         ("rate_limit_detected", (), "rate_limit_warning"),
         ("rate_limited", (), "rate_limit_blocked"),

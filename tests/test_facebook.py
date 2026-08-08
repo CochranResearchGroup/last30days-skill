@@ -127,6 +127,35 @@ class FacebookAvailabilityTests(unittest.TestCase):
 
 
 class FacebookCliAdapterTests(unittest.TestCase):
+    def test_evaluate_orders_inner_job_timeout_before_subprocess_deadline(self):
+        client = facebook.CliAgentBrowserClient(timeout=30)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="last30days-facebook",
+        )
+        with mock.patch.object(client, "_invoke", return_value={"result": {}}) as invoke:
+            client.evaluate(workspace, "document.title")
+
+        command = invoke.call_args.args[0]
+        inner_ms = int(command[command.index("--job-timeout-ms") + 1])
+        outer_seconds = invoke.call_args.kwargs["timeout"]
+        self.assertEqual(20_000, inner_ms)
+        self.assertGreater(outer_seconds * 1000, inner_ms)
+        self.assertGreaterEqual(outer_seconds * 1000 - inner_ms, 5_000)
+
+    def test_extract_script_does_not_rescan_every_ancestor_subtree(self):
+        self.assertNotIn("parent.querySelectorAll(actionSelector)", facebook.EXTRACT_SCRIPT)
+
+    def test_checkpoint_text_is_gated_by_missing_authenticated_dom(self):
+        for script in (facebook.AUTH_SCRIPT, facebook.PAGE_STATE_SCRIPT):
+            self.assertIn("const authenticatedDom", script)
+            self.assertIn(
+                "checkpointPath || checkpointForm || (!authenticatedDom && checkpointBody)",
+                script,
+            )
+            self.assertNotIn("two-factor authentication", script)
+
     def test_prepare_operator_handoff_requires_doctor_and_visible_ready_proof(self):
         client = facebook.CliAgentBrowserClient(timeout=5, job_timeout_ms=120_000)
         workspace = facebook.BrowserWorkspace(
@@ -290,6 +319,9 @@ class FacebookCliAdapterTests(unittest.TestCase):
             client,
             "_invoke",
             side_effect=[
+                {"tabs": [
+                    {"index": 0, "active": True, "url": "https://x.com/home"},
+                ]},
                 {},
                 {"tabs": [
                     {"index": 0, "active": False, "url": "https://x.com/home"},
@@ -303,47 +335,57 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertTrue(auth.authenticated)
         self.assertEqual(
             ["--session", "shared-social", "tab", "new", "https://www.facebook.com/"],
-            invoke.call_args_list[0].args[0],
+            invoke.call_args_list[1].args[0],
         )
 
-    def test_auth_inspection_replaces_inactive_facebook_target_before_page_enable(self):
-        client = facebook.CliAgentBrowserClient(timeout=5)
+    def test_auth_inspection_skips_frozen_target_and_reuses_responsive_retained_target(self):
+        client = facebook.CliAgentBrowserClient(timeout=8)
         workspace = facebook.BrowserWorkspace(
             profile_id="last30days-facebook",
             browser_id="browser-1",
             session_name="shared-social",
         )
-        refreshed_tabs = {"tabs": [
+        retained_tabs = {"tabs": [
             {
-                "index": 0,
+                "index": 5,
                 "active": False,
                 "url": "https://www.facebook.com/search/top/?q=OpenAI",
             },
-            {"index": 1, "active": False, "url": "https://www.linkedin.com/feed/"},
-            {"index": 2, "active": True, "url": "https://www.facebook.com/"},
+            {"index": 7, "active": True, "url": "https://www.facebook.com/"},
         ]}
+
+        eval_count = 0
+
+        def invoke(args, **_kwargs):
+            nonlocal eval_count
+            if args[-2:] == ["tab", "list"]:
+                return retained_tabs
+            if "eval" in args:
+                eval_count += 1
+                if eval_count == 1:
+                    raise facebook.FacebookScraperFailure(
+                        "agent_browser_timeout", "retained target did not respond"
+                    )
+                return {"authenticated_dom": True, "has_c_user": True}
+            return {}
+
         with mock.patch.object(
             client,
             "_invoke",
-            side_effect=[
-                {},
-                refreshed_tabs,
-                {"authenticated_dom": True, "has_c_user": True, "has_xs": True},
-            ],
+            side_effect=invoke,
         ) as invoke:
             auth = client.inspect_auth(workspace)
 
         self.assertTrue(auth.authenticated)
-        self.assertEqual(
-            [
-                ["--session", "shared-social", "tab", "new", "https://www.facebook.com/"],
-                ["--session", "shared-social", "tab", "list"],
-                ["--session", "shared-social", "eval", "--stdin"],
-            ],
-            [call.args[0] for call in invoke.call_args_list],
+        commands = [call.args[0] for call in invoke.call_args_list]
+        self.assertNotIn("new", [part for command in commands for part in command])
+        self.assertIn(
+            ["--session", "shared-social", "--job-timeout-ms", "3000", "tab", "5"],
+            commands,
         )
+        self.assertEqual(2, sum("eval" in command for command in commands))
 
-    def test_auth_inspection_replaces_active_facebook_target_before_page_enable(self):
+    def test_auth_inspection_reuses_active_facebook_target_before_page_enable(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         workspace = facebook.BrowserWorkspace(
             profile_id="last30days-facebook",
@@ -370,10 +412,36 @@ class FacebookCliAdapterTests(unittest.TestCase):
             auth = client.inspect_auth(workspace)
 
         self.assertTrue(auth.authenticated)
-        self.assertEqual(
-            ["--session", "shared-social", "tab", "new", "https://www.facebook.com/"],
-            invoked.call_args_list[0].args[0],
+        commands = [call.args[0] for call in invoked.call_args_list]
+        self.assertNotIn("new", [part for command in commands for part in command])
+        self.assertFalse(any(command[-2:] == ["tab", "1"] for command in commands))
+
+    def test_auth_inspection_never_converts_frozen_retained_targets_into_login_required(self):
+        client = facebook.CliAgentBrowserClient(timeout=8)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="shared-social",
         )
+        tabs = {"tabs": [
+            {"index": 0, "active": True, "url": "https://www.facebook.com/"},
+        ]}
+
+        def invoke(args, **_kwargs):
+            if args[-2:] == ["tab", "list"]:
+                return tabs
+            if "eval" in args:
+                raise facebook.FacebookScraperFailure(
+                    "agent_browser_timeout", "retained target did not respond"
+                )
+            return {}
+
+        with mock.patch.object(client, "_invoke", side_effect=invoke), self.assertRaises(
+            facebook.FacebookScraperFailure
+        ) as raised:
+            client.inspect_auth(workspace)
+
+        self.assertEqual("agent_browser_timeout", raised.exception.error_type)
 
     def test_wait_action_is_local_and_bounded(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
@@ -543,6 +611,52 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual("browser-1", workspace.browser_id)
         self.assertEqual("shared-social", workspace.session_name)
         self.assertEqual("not_required", workspace.operator_visible_state)
+        self.assertEqual(2, invoke.call_count)
+
+    def test_ready_retained_browser_without_rdp_stream_defers_operator_handoff(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        status = {
+            "service_state": {
+                "sessions": {
+                    "last30days-facebook": {
+                        "profileId": "",
+                        "browserIds": ["session:last30days-facebook"],
+                        "tabIds": ["target:t1"],
+                    },
+                },
+                "browsers": {
+                    "session:last30days-facebook": {
+                        "profileId": "",
+                        "health": "ready",
+                        "viewStreams": [
+                            {
+                                "id": "cdp-screencast",
+                                "provider": "cdp_screencast",
+                                "url": "ws://127.0.0.1/example",
+                            },
+                        ],
+                    },
+                },
+                "tabs": {
+                    "target:t1": {
+                        "targetId": "t1",
+                        "url": "https://www.facebook.com/",
+                    },
+                },
+            },
+        }
+        with mock.patch.object(
+            client, "_invoke", side_effect=[access_plan(), status]
+        ) as invoke, mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ):
+            workspace = client.acquire_workspace(request())
+
+        self.assertEqual("session:last30days-facebook", workspace.browser_id)
+        self.assertEqual("last30days-facebook", workspace.session_name)
+        self.assertEqual("t1", workspace.target_id)
+        self.assertEqual("not_required", workspace.operator_visible_state)
+        self.assertEqual("", workspace.operator_url)
         self.assertEqual(2, invoke.call_count)
 
     def test_wrong_profile_on_requested_session_uses_profile_scoped_lane(self):
@@ -758,10 +872,54 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         client.prepare_site_tab.assert_called_once_with(
             client.workspace,
             "facebook.com",
-            consolidate=True,
+            consolidate=False,
             require_active=True,
             close_timeout=5,
             ignore_close_failures=True,
+        )
+
+    def test_dated_dom_extraction_does_not_require_accessibility_snapshot(self):
+        client = FakeAgentBrowserClient()
+        client.snapshot_and_evaluate = mock.Mock(
+            side_effect=facebook.FacebookScraperFailure(
+                "agent_browser_timeout", "interactive snapshot timed out"
+            )
+        )
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(1, len(result["items"]))
+        client.snapshot_and_evaluate.assert_not_called()
+
+    def test_undated_dom_candidates_survive_snapshot_timeout(self):
+        candidates = [
+            {
+                "candidate_source": "action_card",
+                "url": "https://www.facebook.com/example/posts/1",
+                "text": "robotic lawn mower field note",
+                "author": "Example",
+                "timestamp": "",
+                "engagement": {},
+                "media": [],
+            }
+        ]
+        client = FakeAgentBrowserClient(candidates=candidates)
+        client.snapshot_and_evaluate = mock.Mock(
+            side_effect=facebook.FacebookScraperFailure(
+                "agent_browser_timeout", "interactive snapshot timed out"
+            )
+        )
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertNotEqual("agent_browser_timeout", result["error_type"])
+        client.snapshot_and_evaluate.assert_called_once_with(
+            client.workspace, facebook.EXTRACT_SCRIPT
         )
 
     def test_cleanup_timeout_does_not_mask_valid_query_result(self):
@@ -961,7 +1119,6 @@ Comment as Example User"""
         client = FakeAgentBrowserClient(
             candidates=[candidate],
             snapshots=[
-                facebook.BrowserSnapshot(),
                 facebook.BrowserSnapshot(
                     text='- link "2 days ago" [ref=e7]\n'
                     '- button "Actions for this post by Garden Lab" [ref=e8]'

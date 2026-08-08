@@ -76,6 +76,7 @@ def _result(
     media=False,
     operator_url=None,
     rendered_page=None,
+    diagnostics=None,
 ):
     items = (
         [
@@ -127,7 +128,9 @@ def _result(
             "items": items,
             "item_count": len(items),
             "cost_cents": 0,
-            "diagnostics": {"failure_stage": "authentication"} if error else {},
+            "diagnostics": diagnostics or (
+                {"failure_stage": "authentication"} if error else {}
+            ),
             **({"operator_url": operator_url} if operator_url else {}),
             **(
                 {
@@ -213,6 +216,35 @@ def test_builtin_adapter_bridge_preserves_worker_outcome_counts():
         "accepted": 1,
         "rejected": 2,
     }
+
+
+def test_builtin_adapter_bridge_preserves_bounded_browser_operation_evidence():
+    worker = FixtureWorker(
+        lambda request: _result(
+            request,
+            status="failed",
+            error="agent_browser_timeout",
+            retry="transient",
+            diagnostics={
+                "browser_operations": [
+                    {
+                        "operation": "eval",
+                        "status": "timed_out",
+                        "duration_ms": 20_012,
+                        "url": "https://private.example/secret",
+                    }
+                ]
+            },
+        )
+    )
+
+    result = build_acquisition_adapter_registry(worker).require(
+        "facebook_agent_browser", source="facebook", capability="collect"
+    ).collect(_context("facebook_agent_browser", "facebook"))
+
+    assert result.browser_operations == (
+        {"operation": "eval", "status": "timed_out", "duration_ms": 20_012},
+    )
 
 
 def test_builtin_adapter_bridge_preserves_media_and_agent_browser_incident_evidence():

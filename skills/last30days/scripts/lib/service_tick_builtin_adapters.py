@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 from datetime import datetime
+from collections.abc import Mapping
 
 from . import service_contracts as contracts
 from .service_tick_adapters import AdapterRegistry, AdapterSpec
@@ -61,6 +62,40 @@ def _wall_seconds(result: contracts.AcquisitionWorkResult) -> int:
     observed = datetime.fromisoformat(result.observed_at.replace("Z", "+00:00"))
     fetched = datetime.fromisoformat(result.fetched_at.replace("Z", "+00:00"))
     return max(1, int((fetched - observed).total_seconds()))
+
+
+def _browser_operations(
+    diagnostics: Mapping[str, object],
+) -> tuple[dict[str, object], ...]:
+    raw_operations = diagnostics.get("browser_operations")
+    if not isinstance(raw_operations, list):
+        return ()
+    operations: list[dict[str, object]] = []
+    for raw in raw_operations[:12]:
+        if not isinstance(raw, Mapping):
+            continue
+        operation = raw.get("operation")
+        status = raw.get("status")
+        duration_ms = raw.get("duration_ms")
+        if (
+            not isinstance(operation, str)
+            or not 0 < len(operation) <= 64
+            or status not in {"ok", "failed", "timed_out"}
+            or isinstance(duration_ms, bool)
+            or not isinstance(duration_ms, int)
+            or not 0 <= duration_ms <= 600_000
+        ):
+            continue
+        sanitized: dict[str, object] = {
+            "operation": operation,
+            "status": status,
+            "duration_ms": duration_ms,
+        }
+        error_type = raw.get("error_type")
+        if isinstance(error_type, str) and 0 < len(error_type) <= 64:
+            sanitized["error_type"] = error_type
+        operations.append(sanitized)
+    return tuple(operations)
 
 
 class AcquisitionWorkerTickAdapter:
@@ -154,6 +189,7 @@ class AcquisitionWorkerTickAdapter:
                 0 if result.rejected_count is None else int(result.rejected_count)
             ),
         }
+        browser_operations = _browser_operations(result.diagnostics)
         if items:
             return ProviderResult(
                 status=(
@@ -172,6 +208,7 @@ class AcquisitionWorkerTickAdapter:
                 rendered_page=result.rendered_page,
                 rendered_page_mime_type=result.rendered_page_mime_type,
                 outcome_counts=outcome_counts,
+                browser_operations=browser_operations,
             )
         if result.status is contracts.AcquisitionStatus.SUCCEEDED:
             return ProviderResult(
@@ -179,6 +216,7 @@ class AcquisitionWorkerTickAdapter:
                 items=(),
                 usage=usage,
                 outcome_counts=outcome_counts,
+                browser_operations=browser_operations,
             )
         return ProviderResult(
             status="failure",
@@ -191,6 +229,7 @@ class AcquisitionWorkerTickAdapter:
             rendered_page=result.rendered_page,
             rendered_page_mime_type=result.rendered_page_mime_type,
             outcome_counts=outcome_counts,
+            browser_operations=browser_operations,
         )
 
 

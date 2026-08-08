@@ -1181,7 +1181,7 @@ Current State:
   readiness is also blocked by duplicate-profile pressure and workstation-
   payload drift, so no operator handoff is currently claimed ready.
 
-Open Plan:
+Closed Plan:
 
 - `docs/dev/plans/0025-2026-08-07-facebook-agent-browser-timeout-remediation.md`
   version 14/C14 is the active authority. Installed 0.3.11 is ready with 0.3.10
@@ -1202,9 +1202,36 @@ Next Bounded Action:
   only after operator completion may one post-checkpoint verification be
   derived.
 
-## P10 | Recurring Browser Reauthentication Notifications
+## P11 | Facebook Governed Tick Navigation Recovery
 
 State: OPEN
+
+Objective: complete Facebook through the ordinary governed manual tick after
+explicit authentication when the selected retained target freezes during query
+navigation.
+
+Current State:
+
+- manual tick `tick-848f61b8a22d7e603c7e473c16ba5fdf` completed
+  `complete_degraded` with seven items and zero cost/model use;
+- Facebook skipped two frozen targets and proved authentication on a responsive
+  target, then navigation job `r198316` timed out after 25.787 seconds;
+- the queue released and later browser commands succeeded. No auth incident,
+  notification, browser launch, or tab close occurred.
+
+Open Plan:
+
+- `docs/dev/plans/0027-2026-08-08-facebook-governed-tick-navigation-recovery.md`
+  version 1/C01 is the active authority.
+
+Next Bounded Action:
+
+- add one red navigation-recovery contract before any additional manual tick;
+  do not wait for a natural schedule boundary or replay the same blocker.
+
+## P10 | Recurring Browser Reauthentication Notifications
+
+State: CLOSED
 
 Objective: treat browser authentication expiry as an ordinary governed
 operating state by preparing a verified agent-browser handoff and sending the
@@ -1212,20 +1239,23 @@ operator a safe actionable link through the configured notification chain.
 
 Current State:
 
-- service 0.3.13/schema16 is installed ready and now carries safe external
+- service 0.3.13/schema16 is installed ready and carries safe external
   operator links through the existing incident/reminder/resolution chain;
 - default-tenant Slack `@eric` delivery is proven by one labeled validation
   receipt, while schedule, database, rollback, and zero-cost invariants hold;
-- agent-browser payload/runtime drift reconciled, but remote control remains
-  fail-closed on duplicate-profile warnings despite zero readiness-impacting
-  candidates; no live link or Facebook retry is claimed.
+- installed service 0.3.20/schema16 repairs checkpoint taxonomy,
+  authenticated-feed false positives, direct-first DOM extraction, command
+  timeout layering, deferred operator-view acquisition, and frozen retained-tab
+  selection. The final proof navigated and extracted without a human incident
+  or browser timeout, then returned a truthful content-quality result.
+- the later governed manual tick confirmed false auth remained repaired but
+  exposed a successor query-navigation timeout now owned by P11/Plan 0027.
 
 Open Plan:
 
 - `docs/dev/plans/0026-2026-08-07-recurring-browser-reauthentication-notifications.md`
-  version 3/C03 is the active authority. The workflow and Slack route are
-  installed; current live-link activation remains blocked on strict
-  agent-browser remote-control readiness.
+  version 12/C12 is closed with service 0.3.20 installed and the bounded
+  Facebook proof complete.
 
 Dependencies:
 
@@ -1236,9 +1266,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- repair agent-browser duplicate-profile readiness adjudication without
-  closing retained or unrelated sessions; require remote control ready before
-  allowing the next real incident to publish its link.
+- let the normal daily schedule consume service 0.3.20. Treat a future login or
+  checkpoint notice as valid only when a bounded responsive probe supplies
+  explicit human-gate evidence.
 
 ## Goal-Compatible Plan Conversion
 

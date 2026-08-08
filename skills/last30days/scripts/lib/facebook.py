@@ -58,13 +58,19 @@ AUTH_SCRIPT = r"""
   const cookieNames = new Set(document.cookie.split(";").map((part) => part.split("=", 1)[0].trim()));
   const loginForm = Boolean(document.querySelector('input[name="email"], input[name="pass"], form[action*="login"]'));
   const search = document.querySelector('[aria-label="Search Facebook"], input[placeholder="Search Facebook"]');
-  const checkpoint = /checkpoint|security check|confirm your identity|two-factor authentication/i.test(`${location.href}\n${body}`);
+  const authenticatedDom = Boolean(search) && !loginForm;
+  const checkpointPath = /\/(?:checkpoint|two_step_verification)(?:\/|$)/i.test(location.pathname);
+  const checkpointForm = Boolean(document.querySelector(
+    'form[action*="checkpoint"], form[action*="two_step_verification"], [data-testid*="checkpoint"]'
+  ));
+  const checkpointBody = /security check|required to confirm your identity|enter (?:the|your) (?:security )?code/i.test(body);
+  const checkpoint = checkpointPath || checkpointForm || (!authenticatedDom && checkpointBody);
   return {
     url: location.href,
     title: document.title,
     login_form: loginForm,
     checkpoint,
-    authenticated_dom: Boolean(search) && !loginForm && !checkpoint,
+    authenticated_dom: authenticatedDom && !checkpoint,
     has_c_user: cookieNames.has("c_user"),
     has_xs: cookieNames.has("xs")
   };
@@ -76,6 +82,13 @@ PAGE_STATE_SCRIPT = r"""
   const clean = (value) => String(value || "").replace(/\s+/g, " ").trim();
   const body = clean(document.body?.innerText || "").slice(0, 20000);
   const search = document.querySelector('[aria-label="Search Facebook"], input[placeholder="Search Facebook"]');
+  const loginPage = Boolean(document.querySelector('input[name="email"], input[name="pass"], form[action*="login"]'));
+  const authenticatedDom = Boolean(search) && !loginPage;
+  const checkpointPath = /\/(?:checkpoint|two_step_verification)(?:\/|$)/i.test(location.pathname);
+  const checkpointForm = Boolean(document.querySelector(
+    'form[action*="checkpoint"], form[action*="two_step_verification"], [data-testid*="checkpoint"]'
+  ));
+  const checkpointBody = /security check|required to confirm your identity|enter (?:the|your) (?:security )?code/i.test(body);
   const heading = Array.from(document.querySelectorAll('h1, h2, [role="heading"]'))
     .map((node) => clean(node.innerText || node.textContent))
     .find((text) => /search|result/i.test(text)) || "";
@@ -88,8 +101,8 @@ PAGE_STATE_SCRIPT = r"""
     query_value: clean(search?.value || search?.textContent || ""),
     has_search_filters: /posts|recent posts|people|groups|pages/i.test(filterText),
     no_results: /no results|we didn't find|couldn't find|try different keywords/i.test(body),
-    login_page: Boolean(document.querySelector('input[name="email"], input[name="pass"], form[action*="login"]')),
-    checkpoint: /checkpoint|security check|confirm your identity|two-factor authentication/i.test(`${location.href} ${body}`),
+    login_page: loginPage,
+    checkpoint: checkpointPath || checkpointForm || (!authenticatedDom && checkpointBody),
     error_page: /something went wrong|this content isn't available|temporarily unavailable/i.test(body)
   };
 })()
@@ -102,12 +115,20 @@ EXTRACT_SCRIPT = r"""
   if (!main) return {url: location.href, title: document.title, candidates: []};
   const actionSelector = '[aria-label^="Actions for this post by "]';
   const actionNodes = Array.from(main.querySelectorAll(actionSelector));
+  const actionOwnerCounts = new Map();
+  for (const action of actionNodes) {
+    let cursor = action;
+    while (cursor.parentElement && main.contains(cursor.parentElement)) {
+      cursor = cursor.parentElement;
+      actionOwnerCounts.set(cursor, (actionOwnerCounts.get(cursor) || 0) + 1);
+    }
+  }
   const rootForAction = (action) => {
     let root = action;
     let cursor = action;
     while (cursor.parentElement && main.contains(cursor.parentElement)) {
       const parent = cursor.parentElement;
-      if (parent.querySelectorAll(actionSelector).length !== 1) break;
+      if (actionOwnerCounts.get(parent) !== 1) break;
       root = parent;
       cursor = parent;
     }
@@ -236,6 +257,26 @@ class FacebookAuthState:
     has_c_user: bool = False
     has_xs: bool = False
     url: str = ""
+
+
+def _facebook_auth_state(raw: dict[str, Any]) -> FacebookAuthState:
+    login_form = bool(raw.get("login_form"))
+    checkpoint = bool(raw.get("checkpoint"))
+    has_c_user = bool(raw.get("has_c_user"))
+    return FacebookAuthState(
+        authenticated=(bool(raw.get("authenticated_dom")) or has_c_user)
+        and not login_form
+        and not checkpoint,
+        login_form=login_form,
+        checkpoint=checkpoint,
+        has_c_user=has_c_user,
+        has_xs=bool(raw.get("has_xs")),
+        url=str(raw.get("url") or ""),
+    )
+
+
+def _facebook_auth_is_explicit(auth: FacebookAuthState) -> bool:
+    return auth.authenticated or auth.login_form or auth.checkpoint
 
 
 @dataclass(frozen=True)
@@ -433,7 +474,10 @@ class CliAgentBrowserClient:
                     sessions, request.session_name, selected_profile
                 )
 
-        if browser and _has_ready_operator_stream(browser, request.view_provider):
+        if browser:
+            # A ready retained CDP browser is sufficient for ordinary collection.
+            # The requested operator stream is prepared later, on demand, only
+            # after authentication or checkpoint inspection requires a human.
             stream = _ready_operator_stream(browser, request.view_provider)
             return BrowserWorkspace(
                 profile_id=request.profile_id,
@@ -442,7 +486,7 @@ class CliAgentBrowserClient:
                 target_id=target_id,
                 route_id=str(stream.get("id") or ""),
                 operator_url=_operator_url(stream),
-                operator_visible_state="ready",
+                operator_visible_state="ready" if stream else "not_required",
             )
 
         decision = access_plan.get("decision") if isinstance(access_plan, dict) else {}
@@ -641,6 +685,19 @@ class CliAgentBrowserClient:
         )
 
     def inspect_auth(self, workspace: BrowserWorkspace) -> FacebookAuthState:
+        listed = self._invoke(
+            ["--session", workspace.session_name, "tab", "list"],
+            timeout=min(self.timeout, 10),
+        )
+        tabs = listed.get("tabs") if isinstance(listed.get("tabs"), list) else []
+        matches = [
+            tab for tab in tabs
+            if isinstance(tab, dict)
+            and _url_matches_hostname(str(tab.get("url") or ""), "facebook.com")
+        ]
+        if matches:
+            return self._probe_retained_facebook_auth(workspace, matches)
+
         self.act(workspace, BrowserAction("new_tab", value="https://www.facebook.com/"))
         if not self.prepare_site_tab(
             workspace,
@@ -652,15 +709,90 @@ class CliAgentBrowserClient:
                 "agent_browser_error",
                 "agent-browser did not expose the new active Facebook tab",
             )
-        raw = self.evaluate(workspace, AUTH_SCRIPT)
-        return FacebookAuthState(
-            authenticated=bool(raw.get("authenticated_dom")),
-            login_form=bool(raw.get("login_form")),
-            checkpoint=bool(raw.get("checkpoint")),
-            has_c_user=bool(raw.get("has_c_user")),
-            has_xs=bool(raw.get("has_xs")),
-            url=str(raw.get("url") or ""),
+        raw = self._evaluate_auth_probe(workspace)
+        auth = _facebook_auth_state(raw)
+        if not _facebook_auth_is_explicit(auth):
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "Facebook authentication state remained ambiguous on a responsive target",
+            )
+        return auth
+
+    def _probe_retained_facebook_auth(
+        self,
+        workspace: BrowserWorkspace,
+        matches: list[dict[str, Any]],
+    ) -> FacebookAuthState:
+        """Use bounded probes to skip frozen retained targets without claiming logout."""
+        def tab_index(tab: dict[str, Any]) -> int:
+            try:
+                return int(tab.get("index"))
+            except (TypeError, ValueError):
+                return -1
+
+        candidates = sorted(
+            (tab for tab in matches if tab_index(tab) >= 0),
+            key=lambda tab: (0 if tab.get("active") else 1, -tab_index(tab)),
+        )[:8]
+        saw_responsive_ambiguous = False
+        for tab in candidates:
+            index = tab_index(tab)
+            try:
+                if not tab.get("active"):
+                    self._invoke(
+                        [
+                            "--session",
+                            workspace.session_name,
+                            "--job-timeout-ms",
+                            "3000",
+                            "tab",
+                            str(index),
+                        ],
+                        timeout=min(self.timeout, 8),
+                    )
+                auth = _facebook_auth_state(self._evaluate_auth_probe(workspace))
+            except FacebookScraperFailure as exc:
+                _log(
+                    f"Skipping unresponsive retained Facebook tab index={index}: "
+                    f"{exc.error_type}"
+                )
+                continue
+            if _facebook_auth_is_explicit(auth):
+                self._prepared_sites.add((workspace.session_name, "facebook.com"))
+                return auth
+            saw_responsive_ambiguous = True
+
+        if saw_responsive_ambiguous:
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "Responsive retained Facebook targets did not expose explicit authentication evidence",
+            )
+        raise FacebookScraperFailure(
+            "agent_browser_timeout",
+            "No retained Facebook target responded to bounded authentication inspection",
         )
+
+    def _evaluate_auth_probe(self, workspace: BrowserWorkspace) -> dict[str, Any]:
+        outer_timeout = min(self.timeout, 8)
+        inner_timeout_ms = min(
+            self.job_timeout_ms,
+            3_000,
+            max(250, (outer_timeout - 2) * 1_000),
+        )
+        raw = self._invoke(
+            [
+                "--session",
+                workspace.session_name,
+                "--job-timeout-ms",
+                str(inner_timeout_ms),
+                "eval",
+                "--stdin",
+            ],
+            timeout=outer_timeout,
+            input_text=AUTH_SCRIPT,
+        )
+        result = raw.get("result") if isinstance(raw.get("result"), dict) else raw
+        return result if isinstance(result, dict) else {"value": result}
 
     def snapshot(self, workspace: BrowserWorkspace) -> BrowserSnapshot:
         raw = self._invoke(
@@ -802,9 +934,22 @@ class CliAgentBrowserClient:
         return True
 
     def evaluate(self, workspace: BrowserWorkspace, script: str) -> dict[str, Any]:
+        outer_timeout = min(self.timeout, 25)
+        inner_timeout_ms = min(
+            self.job_timeout_ms,
+            20_000,
+            max(1_000, (outer_timeout - 5) * 1_000),
+        )
         raw = self._invoke(
-            ["--session", workspace.session_name, "eval", "--stdin"],
-            timeout=min(self.timeout, 30),
+            [
+                "--session",
+                workspace.session_name,
+                "--job-timeout-ms",
+                str(inner_timeout_ms),
+                "eval",
+                "--stdin",
+            ],
+            timeout=outer_timeout,
             input_text=script,
         )
         result = raw.get("result") if isinstance(raw.get("result"), dict) else raw
@@ -1074,7 +1219,7 @@ class FacebookScraper:
             prepared = prepare_site_tab(
                 workspace,
                 "facebook.com",
-                consolidate=True,
+                consolidate=False,
                 require_active=True,
                 close_timeout=5,
                 ignore_close_failures=True,
@@ -1087,10 +1232,32 @@ class FacebookScraper:
 
     def _extract(self, workspace: BrowserWorkspace) -> list[dict[str, Any]]:
         extracted: list[dict[str, Any]] = []
+        paired_read = getattr(self.client, "snapshot_and_evaluate", None)
+        paired_timeout_fallback = False
         for attempt in range(3):
-            paired_read = getattr(self.client, "snapshot_and_evaluate", None)
-            if callable(paired_read):
-                snapshot, raw = paired_read(workspace, EXTRACT_SCRIPT)
+            if attempt == 0:
+                # The DOM extractor normally carries its own timestamp evidence.
+                # Avoid making the substantially heavier accessibility snapshot
+                # a prerequisite for the ordinary successful path.
+                snapshot = BrowserSnapshot()
+                raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
+            elif callable(paired_read):
+                try:
+                    snapshot, raw = paired_read(workspace, EXTRACT_SCRIPT)
+                except FacebookScraperFailure as exc:
+                    if exc.error_type != "agent_browser_timeout":
+                        raise
+                    _log(
+                        "Timed-out accessibility snapshot; falling back to the "
+                        "same-target DOM extraction read"
+                    )
+                    paired_read = None
+                    paired_timeout_fallback = True
+                    snapshot = BrowserSnapshot()
+                    raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
+            elif paired_timeout_fallback:
+                snapshot = BrowserSnapshot()
+                raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
             else:
                 snapshot = self.client.snapshot(workspace)
                 raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)

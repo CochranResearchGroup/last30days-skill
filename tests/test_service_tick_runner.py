@@ -570,6 +570,36 @@ def test_manual_tick_runs_every_lane_raw_first_and_publishes_one_degraded_snapsh
     conn.close()
 
 
+def test_provider_result_round_trip_preserves_bounded_browser_operations(tmp_path):
+    db_path = tmp_path / "research.db"
+    artifacts = ContentAddressedArtifactStore(tmp_path / "artifacts")
+    media = MediaDerivativePublisher(db_path, artifacts, clock=lambda: NOW)
+    runner = TickRunner(
+        db_path,
+        AdapterRegistry(),
+        media=media,
+        incidents=IncidentManager(db_path, media, clock=lambda: NOW),
+        snapshots=TickSnapshotPublisher(db_path, FixtureEmbedding(), clock=lambda: NOW),
+        notification_transports=(),
+        clock=lambda: NOW,
+    )
+    result = ProviderResult(
+        status="empty",
+        items=(),
+        usage=_usage(),
+        browser_operations=(
+            {"operation": "eval", "status": "timed_out", "duration_ms": 20_012},
+        ),
+    )
+
+    payload = runner._serialize_provider_result(
+        result, access_partition_id="private:facebook"
+    )
+    restored = runner._restore_provider_result(payload)
+
+    assert restored.browser_operations == result.browser_operations
+
+
 def test_partial_provider_evidence_publishes_raw_before_blocking_the_lane(tmp_path):
     def partial(_context):
         return ProviderResult(

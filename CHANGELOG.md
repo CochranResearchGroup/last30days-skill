@@ -9,6 +9,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Responsive retained Facebook target selection.** Service 0.3.20 probes
+  retained Facebook tabs under short command deadlines, skips frozen targets,
+  and accepts explicit authenticated DOM or retained `c_user` evidence before
+  collection. An unresponsive or ambiguous target now returns a typed browser
+  failure instead of becoming a false login/checkpoint notice. Routine cleanup
+  preserves the operator's other retained tabs.
+
+- **Deferred Facebook operator-view acquisition.** Service 0.3.19 reuses a
+  ready retained Facebook browser for ordinary CDP collection even when the
+  requested RDP/Guacamole stream has not been prepared. External operator view
+  acquisition remains on demand and runs only after authentication or
+  checkpoint inspection proves that a human action is required.
+
+- **Facebook command timeout layering.** Service 0.3.18 gives extraction
+  evaluation a 20-second cancellation-safe agent-browser job deadline inside a
+  25-second subprocess deadline. The daemon now releases its serialized queue
+  before the caller exits. Extraction precomputes action-card ancestor
+  ownership instead of repeatedly scanning every ancestor subtree, and durable
+  provider results retain only bounded operation names, outcomes, error types,
+  and timings for later diagnosis.
+
+- **Direct-first Facebook extraction.** Service 0.3.17 uses the active search
+  target's DOM extractor before requesting an accessibility snapshot. Dated DOM
+  candidates now complete without the heavier snapshot path; snapshot-assisted
+  timestamp recovery remains bounded to otherwise undated action cards.
+
+- **Facebook extraction snapshot fallback.** Service 0.3.16 falls back to the
+  same active target's DOM extraction when agent-browser's paired accessibility
+  snapshot times out. The fallback is read-only and timeout-specific; malformed,
+  failed, or timed-out DOM evaluation still terminates the provider attempt.
+
+- **Authenticated Facebook checkpoint false positives.** Service 0.3.15 no
+  longer treats help-chat or ordinary feed text about two-factor authentication
+  as proof of a blocking checkpoint. Both authentication and search-page probes
+  now require a checkpoint URL/form, or checkpoint-specific body evidence while
+  the authenticated Facebook search control is absent.
+
+- **Truthful Facebook checkpoint alerts.** Service 0.3.14 keeps explicit
+  Facebook security checkpoints distinct from true CAPTCHA detections. A
+  checkpoint now enters the existing `reauthentication_required` human gate,
+  so Slack asks for the manual browser check without claiming that a CAPTCHA
+  is present; literal CAPTCHA signals remain `captcha_required`.
+
 - **Routine browser reauthentication handoff.** Service 0.3.13 turns recurring
   Facebook login and checkpoint failures into actionable browser-incident
   notifications. It reuses the retained profile and opens an operator view only

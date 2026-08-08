@@ -35,7 +35,7 @@ checkout, build and install its independently versioned artifact with:
 ```bash
 bash service/scripts/build-runtime.sh
 bash service/scripts/install.sh install \
-  --artifact dist/service/last30days-service-0.3.13.tar.gz
+  --artifact dist/service/last30days-service-0.3.17.tar.gz
 bash service/scripts/install.sh diagnose
 ```
 
@@ -478,9 +478,12 @@ LAST30DAYS_YOUTUBE_BROWSER_FALLBACK=auto
 # LAST30DAYS_YOUTUBE_BROWSER_VIEW_PROVIDER=rdp_gateway
 # LAST30DAYS_YOUTUBE_BROWSER_TIMEOUT=75
 
-# Shared per-request control-plane timeout for every agent-browser-backed
-# source. This is separate from the subprocess timeout above; when unset, each
-# source's configured browser timeout is converted to milliseconds.
+# Shared maximum control-plane timeout for agent-browser-backed sources. This
+# is separate from the subprocess timeout above; individual read operations
+# may use a shorter cancellation-safe deadline. Facebook extraction uses at
+# most 20 seconds inside a caller deadline with at least five seconds of grace.
+# When unset, each source's configured browser timeout is converted to
+# milliseconds before operation-specific caps are applied.
 # LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS=120000
 # Shared display policy for all agent-browser-backed sources. Existing source
 # defaults remain in effect when unset.
