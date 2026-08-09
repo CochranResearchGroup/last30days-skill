@@ -108,7 +108,8 @@ Authority classification:
 
 Graphiti write status:
 
-- predecessor terminal write pending after its durable commit.
+- predecessor terminal write job `a0434981-fa1f-451d-838e-39f908205545`
+  timed out once during node resolution after 90 seconds and was not retried.
 
 Next action:
 

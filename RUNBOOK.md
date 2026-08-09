@@ -14711,3 +14711,55 @@ Next Bounded Action:
 - commit and push this coherent repair and receipt slice. At or after
   `2026-08-09T19:20:00Z`, Plan 0033 may run one guarded Facebook-only proof;
   do not wait for the natural scheduler or retry Plan 0032's result.
+
+## Turn 246 | 2026-08-09
+
+Focus: bind the Facebook hard-timeout cleanup to a durable commit, attempt the
+required compact memory write once, and publish the coherent closeout.
+
+Authority Consulted:
+
+- Plan 0032/C04, Plan 0033/C01, commit/push, Graphiti, validation, and turn
+  closeout policies; current worktree and origin/main ancestry.
+
+Decisions And Changes:
+
+- committed the repair and primary receipts as
+  `4e282e9 fix facebook tab cleanup across worker timeouts`;
+- ran one compact Graphiti write only after the provider readiness probe
+  passed; job `a0434981-fa1f-451d-838e-39f908205545` timed out during node
+  resolution after 90 seconds and reported `retryable=false`, so it was not
+  retried;
+- made no browser, provider, schedule, service, or other live-runtime change.
+
+Validation Evidence:
+
+- origin/main remained `76a4467e5c11d399ee7cbf91baf9eee9f7902f12` before
+  publication and was an ancestor of the local main branch;
+- the implementation commit contains the already-passed 2,620-test closeout,
+  reproducible 0.3.34 artifact, installed-runtime manifests, and exact live
+  proof/tab receipts recorded in Turn 245;
+- this receipt-only follow-up changes no product code.
+
+State Movement:
+
+- Plan 0032 remains terminal `CANCELLED`; Plan 0033 remains the sole active
+  manual qualification authority at C01;
+- Facebook remains acquisition-configured and service-ready but not
+  routine-qualified; the live browser remains consolidated to four intentional
+  tabs with one Facebook tab.
+
+Subagent Status And Reconciliation:
+
+- none; the primary completed the serialized closeout.
+
+Graphiti Write Status:
+
+- one non-retryable timed-out job:
+  `a0434981-fa1f-451d-838e-39f908205545`; no duplicate write was queued.
+
+Next Bounded Action:
+
+- commit this receipt, push both commits to origin/main, verify the remote tip
+  and clean worktree, then leave Plan 0033 for one guarded manual proof at or
+  after `2026-08-09T19:20:00Z` without waiting for the natural scheduler.

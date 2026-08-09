@@ -286,7 +286,10 @@ Authority classification:
 
 Graphiti write status:
 
-- pending one compact source-backed write after the durable commit.
+- one compact source-backed write was queued as job
+  `a0434981-fa1f-451d-838e-39f908205545` after provider readiness passed, then
+  timed out once during node resolution after 90 seconds; it is non-retryable,
+  so no duplicate write was attempted.
 
 Next action:
 
