@@ -1320,9 +1320,18 @@ Current State:
   and left one new duplicate, which was manually reconverged. Plan 0032 now
   owned 0.3.34 parent-side timeout cleanup and closed unsuccessfully for live
   qualification;
-- installed 0.3.34/schema16 is ready, SQLite is `ok`, Facebook is
-  acquisition-ready, and `daily-default` is unchanged. Offline validation does
-  not routine-qualify Facebook; Plan 0033 owns one later guarded manual proof;
+- 0.3.35 installed exact-target replacement and a cumulative adapter budget.
+  Its sole proof terminated in six seconds instead of the 120-second worker
+  wall, but failed before Facebook page work because retained-owner selection
+  ignored a live browser `cdpEndpoint` when its optional screencast viewer was
+  unavailable and attempted an unnecessary remote-view launch;
+- 0.3.36 repaired that acquisition decision while preserving exact alias,
+  reciprocal-owner, ready-browser, and Facebook-target gates. Installed
+  0.3.37/schema16 also types replacement-home-navigation timeouts consistently.
+  Installed pure-function readback selects browser
+  `session:last30days-facebook` and target
+  `1D0EE09568AB75971C4850E7D89783F4`; Facebook remains manual and not
+  routine-qualified because no second proof was authorized;
 - no logout, CAPTCHA, checkpoint, or rate-limit state will be induced. Ticks
   remain manual until a later guarded successor proof satisfies the content
   acceptance contract.
@@ -1330,7 +1339,7 @@ Current State:
 Open Plan:
 
 - `docs/dev/plans/0033-2026-08-09-facebook-034-manual-qualification.md`
-  version 1/C01 is the active authority; Plan 0031 closed successfully and
+  version 3/C03 is the active authority; Plan 0031 closed successfully and
   Plans 0029/0030/0032 closed or cancelled unsuccessfully for live proof.
 
 Dependencies:
@@ -1341,9 +1350,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- at or after `2026-08-09T19:20:00Z`, run Plan 0033's fresh no-launch guards
-  and, only if they pass, one matching Facebook-only preflight/enqueue pair.
-  Do not wait for the natural scheduler or retry a terminal result.
+- keep ticks manual. A later checkpoint may run one separately guarded
+  Facebook-only proof against installed 0.3.37; do not retry tick
+  `tick-b5aa065db0a567dd5e29e3851d1b1858` or wait for the natural scheduler.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 

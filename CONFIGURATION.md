@@ -308,10 +308,19 @@ adapter does not reproduce the page, retry the request, or attempt to clear the
 limit.
 Facebook navigation proof uses bounded layout-free page reads. If the retained
 search target does not answer Runtime evaluation before its worker deadline,
-the adapter may continue only when agent-browser's active-tab inventory proves
-the exact requested Facebook search URL, query, and Recent-posts filter. It
-does not open another recovery tab in that case; content and rate-limit
-classification remain deferred to the ordinary bounded extraction read.
+agent-browser's active-tab inventory is diagnostic only, even when it proves
+the exact requested Facebook search URL, query, and Recent-posts filter. The
+adapter opens one blank successor target, closes the exact unresponsive
+predecessor, and replays navigation/readback once. A repeated authentication
+or navigation failure stops as `facebook_target_unresponsive`; a 75-second
+cumulative adapter budget preserves time for bounded same-site cleanup before
+the 120-second worker wall.
+When a retained session's historical profile label is `default`, Facebook may
+reuse it only when the configured alias maps to exactly one ready browser,
+active ownership is reciprocal and unambiguous, a Facebook target already
+exists, and writable CDP is evidenced by the browser's live `cdpEndpoint` or a
+ready CDP stream. Optional screencast-viewer availability is not a browser
+launch prerequisite.
 `tick incident observe` accepts no URL from the caller. It returns only the
 external HTTPS agent-browser operator URL stored with an acknowledged browser
 incident; localhost and loopback links fail closed. Screenshot bytes remain a
@@ -616,6 +625,7 @@ Reddit, X, Facebook, and LinkedIn browser failures are typed so operator action 
 | `navigation_mismatch` | The site did not reach the exact requested query/filter state; no items are emitted. |
 | `extraction_empty` | A verified search page contained no candidate cards. |
 | `quality_gate_failed` | Candidates existed, but none were canonical, dated, relevant posts. |
+| `facebook_target_unresponsive` | The retained Facebook target and its one exact replacement did not answer bounded CDP reads; stop without retry. |
 | `search_unavailable` | X rendered a temporary error page instead of results. |
 
 # X authentication (one option only)

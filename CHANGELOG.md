@@ -9,6 +9,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook replacement-navigation classification.** Service 0.3.37 applies
+  the same `facebook_target_unresponsive` classification when the one exact
+  replacement target times out during its initial Facebook navigation as when
+  its subsequent authentication read times out. This closes the final generic
+  timeout seam without adding a target, provider attempt, or retry.
+
+- **Facebook retained-owner CDP reuse.** Service 0.3.36 reuses the exact
+  reciprocal owner of the configured Facebook session when its ready browser
+  exposes a live `cdpEndpoint`, even if the optional CDP screencast viewer is
+  unavailable. Profile alias, one-browser ownership, health, session
+  reciprocity, and an existing Facebook target remain mandatory. This keeps
+  acquisition on the already-running browser instead of attempting an
+  unnecessary remote-view launch; it does not weaken authentication probing
+  or launch a second provider attempt.
+
+- **Facebook rendered-target recovery.** Service 0.3.35 treats a painted
+  Facebook page whose target no longer answers CDP Runtime reads as a target
+  failure, not a slow render or logout. It opens one blank successor, closes
+  the exact predecessor immediately, and retries the navigation/read once.
+  A repeated authentication or navigation failure is typed
+  `facebook_target_unresponsive` with its failure stage. A 75-second
+  cumulative adapter budget leaves the parent worker enough time for the
+  existing non-masking 30-second same-site cleanup. The repair does not retry
+  a provider attempt, close the retained browser, touch unrelated tabs, or
+  change schedule, schema, limits, cost, model, or notification behavior.
+
 - **Facebook hard-timeout tab containment.** Service 0.3.34 runs one
   provider-scoped, non-masking same-site cleanup after the isolated Facebook
   worker is killed and reaped at its hard wall deadline. The durable provider

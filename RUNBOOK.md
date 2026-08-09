@@ -14763,3 +14763,91 @@ Next Bounded Action:
 - commit this receipt, push both commits to origin/main, verify the remote tip
   and clean worktree, then leave Plan 0033 for one guarded manual proof at or
   after `2026-08-09T19:20:00Z` without waiting for the natural scheduler.
+
+## Turn 247 | 2026-08-09
+
+Focus: repair rendered Facebook target recovery, consume one governed manual
+proof, diagnose its distinct acquisition failure, and install the bounded
+retained-owner successor without retrying the proof.
+
+Authority Consulted:
+
+- Plan 0033/C01-C03; planning, documentation, release, validation, browser,
+  goal-execution, commit/push, and turn-closeout policies; diagnosing-bugs,
+  agent-browser, and repo-policy-selector skill instructions; current service,
+  database, schedule, agent-browser doctor, browser, tab, challenge, and queue
+  readbacks.
+
+Decisions And Changes:
+
+- released 0.3.35 with exact active-Facebook-target replacement, immediate
+  predecessor closure, typed `facebook_target_unresponsive` authentication and
+  navigation failures, failure-stage diagnostics, and a 75-second cumulative
+  adapter budget that leaves the parent cleanup envelope intact;
+- refreshed agent-browser's prescribed noninteractive workstation payload
+  after its manifest detected executable provenance drift. The immediate
+  dashboard restart probe was transiently unreadable; the next doctor passed
+  with zero issues, installed/converged workstation state, and remote control
+  ready;
+- rejected a no-effect preflight collision with predecessor tick
+  `tick-c9a6b9e9e30d22fbe01328ab1e7ee6d8`, then consumed exactly one fresh
+  Facebook-only preflight/enqueue pair. No retry or fallback occurred;
+- diagnosed the six-second provider failure as retained-owner selection, not
+  Facebook content acquisition: the ready browser had a live local
+  `cdpEndpoint`, but its optional screencast viewer was unavailable, so the
+  adapter attempted and failed an unnecessary remote-view launch;
+- released and installed 0.3.36 so exact alias/owner reuse accepts the live
+  browser endpoint while retaining all ownership, health, target, and auth
+  safeguards;
+- closeout review found and repaired the adjacent replacement-home-navigation
+  classification seam. Immutable release discipline produced installed
+  0.3.37 rather than overwriting 0.3.36. No second live proof was run.
+
+Validation Evidence:
+
+- the sole effect-bearing proof is tick
+  `tick-b5aa065db0a567dd5e29e3851d1b1858`, lane
+  `tick-lane-ee71797f06ddfb474e2515458840fbff`, execution attempt
+  `tick-attempt-00d9c50d77c3233d8ca086e2547fe4e4`, and provider attempt
+  `provider-attempt-1a06176af35b4e729bd95914bcaacc16`;
+- provider result digest
+  `sha256:83feb7467975c300d24fe7187ea99d68a9893abdf69ea42732077eb0f1716355`
+  is transient `agent_browser_error`, six wall seconds, one request, zero
+  items/cost/model tokens, counts `0/0/0/0`, empty rejection counts and page
+  signals, two successful service reads, and one failed remote-view operation;
+- the final full suite passed 2,625 tests with 7 skips and 6 subtests; focused
+  Facebook, worker, release, runtime-package, and authority suites also passed;
+- two 0.3.37 artifacts are byte-identical at SHA-256
+  `d1344ed74b8ac3d9ee277fc676dc17e8967f79404701363aee1d7801701a82b3`;
+- installed 0.3.37/schema16 is ready with contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`
+  and runtime-manifest SHA-256
+  `43e95736825389d6840c79d49be9864123ef71238a3f9eddb0fc52035889cc91`;
+- installed retained-owner readback selects browser
+  `session:last30days-facebook`, session `last30days-facebook`, and target
+  `1D0EE09568AB75971C4850E7D89783F4`; agent-browser executable SHA-256 is
+  `01965e35f09883522ca281fcd66657a6d8d372dcda8797eca7fe260c6f8b4c9b`.
+
+State Movement:
+
+- Plan 0033 advances `C01 -> C03`, version `1 -> 3`, and remains `OPEN`;
+- Facebook remains manual and not routine-qualified because the consumed
+  proof never reached page acquisition; installed 0.3.37 owns the repaired
+  next state.
+
+Subagent Status And Reconciliation:
+
+- none; the serialized proof and two bounded repair slices remained with the
+  primary agent.
+
+Graphiti Write Status:
+
+- pending one compact source-backed write after repository validation and the
+  durable implementation commit.
+
+Next Bounded Action:
+
+- verify final browser/tab/database/schedule state, run repository closeout,
+  commit and push the coherent repair/receipt slice, and attempt one compact
+  Graphiti write. Do not run another Facebook tick; a later separately guarded
+  checkpoint may test installed 0.3.37 manually.

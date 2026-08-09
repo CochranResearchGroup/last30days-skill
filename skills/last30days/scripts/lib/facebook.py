@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
+import math
 from pathlib import Path
 import re
 import shutil
@@ -32,6 +33,8 @@ DEPTH_CONFIG = {
     "deep": {"results": 30, "scrolls": 4, "timeout": 120},
 }
 
+MAX_RUN_BUDGET_SECONDS = 75
+
 ERROR_TYPES = {
     "agent_browser_missing",
     "profile_mismatch",
@@ -44,6 +47,7 @@ ERROR_TYPES = {
     "search_unavailable",
     "extraction_empty",
     "quality_gate_failed",
+    "facebook_target_unresponsive",
     "agent_browser_timeout",
     "agent_browser_error",
 }
@@ -452,6 +456,7 @@ class FacebookRunDiagnostics:
     accepted_count: int = 0
     duration_ms: int = 0
     rate_limit_reason: str = ""
+    failure_stage: str = ""
 
     def as_dict(self) -> dict[str, Any]:
         result = {
@@ -462,6 +467,8 @@ class FacebookRunDiagnostics:
         }
         if self.rate_limit_reason:
             result["rate_limit_reason"] = self.rate_limit_reason
+        if self.failure_stage:
+            result["failure_stage"] = self.failure_stage
         return result
 
 
@@ -507,6 +514,16 @@ class CliAgentBrowserClient:
             raise ValueError("agent-browser job timeout must be positive")
         self.command_timings: list[dict[str, Any]] = []
         self._prepared_sites: set[tuple[str, str]] = set()
+        self._run_deadline: float | None = None
+
+    def begin_run_budget(self, timeout: int) -> None:
+        """Bound cumulative adapter work so parent timeout cleanup still runs."""
+        self._run_deadline = time.monotonic() + max(
+            1, min(timeout, MAX_RUN_BUDGET_SECONDS)
+        )
+
+    def end_run_budget(self) -> None:
+        self._run_deadline = None
 
     def acquire_workspace(
         self,
@@ -858,17 +875,40 @@ class CliAgentBrowserClient:
                     "inspecting authentication once on a fresh blank target"
                 )
 
-        return self._inspect_auth_on_fresh_target(workspace)
-
-    def _inspect_auth_on_fresh_target(
-        self, workspace: BrowserWorkspace
-    ) -> FacebookAuthState:
-        self.act(
+        return self._inspect_auth_on_fresh_target(
             workspace,
-            BrowserAction("new_tab", value="https://www.facebook.com/"),
+            replace_existing=bool(matches),
         )
 
-        raw = self._evaluate_auth_probe(workspace, fresh_target=True)
+    def _inspect_auth_on_fresh_target(
+        self,
+        workspace: BrowserWorkspace,
+        *,
+        replace_existing: bool = False,
+    ) -> FacebookAuthState:
+        if replace_existing:
+            if not self.replace_active_site_target(workspace, "facebook.com"):
+                raise FacebookScraperFailure(
+                    "facebook_target_unresponsive",
+                    "Could not replace the unresponsive retained Facebook target",
+                )
+
+        try:
+            self.act(
+                workspace,
+                BrowserAction(
+                    "navigate" if replace_existing else "new_tab",
+                    value="https://www.facebook.com/",
+                ),
+            )
+            raw = self._evaluate_auth_probe(workspace, fresh_target=True)
+        except FacebookScraperFailure as exc:
+            if replace_existing and exc.error_type == "agent_browser_timeout":
+                raise FacebookScraperFailure(
+                    "facebook_target_unresponsive",
+                    "Facebook replacement target did not respond to bounded authentication inspection",
+                ) from exc
+            raise
         auth = _facebook_auth_state(raw)
         if not _facebook_auth_is_explicit(auth):
             raise FacebookScraperFailure(
@@ -1097,6 +1137,55 @@ class CliAgentBrowserClient:
         self._prepared_sites.add(cache_key)
         return True
 
+    def replace_active_site_target(
+        self,
+        workspace: BrowserWorkspace,
+        hostname: str,
+    ) -> bool:
+        """Open one blank successor and close only the active wedged site target."""
+        listed = self._invoke(
+            ["--session", workspace.session_name, "tab", "list"],
+            timeout=min(self.timeout, 10),
+        )
+        tabs = listed.get("tabs") if isinstance(listed.get("tabs"), list) else []
+        matches = [
+            tab
+            for tab in tabs
+            if isinstance(tab, dict)
+            and _url_matches_hostname(str(tab.get("url") or ""), hostname)
+        ]
+        active = next((tab for tab in matches if tab.get("active")), None)
+        predecessor = active or (matches[-1] if matches else None)
+        if not isinstance(predecessor, dict):
+            return False
+        try:
+            predecessor_index = int(predecessor.get("index"))
+        except (TypeError, ValueError):
+            return False
+
+        self._invoke(
+            ["--session", workspace.session_name, "tab", "new", "about:blank"],
+            timeout=min(self.timeout, 30),
+        )
+        try:
+            self._invoke(
+                [
+                    "--session",
+                    workspace.session_name,
+                    "tab",
+                    "close",
+                    str(predecessor_index),
+                ],
+                timeout=min(self.timeout, 30),
+            )
+        except FacebookScraperFailure as exc:
+            raise FacebookScraperFailure(
+                "facebook_target_unresponsive",
+                "The unresponsive Facebook predecessor target could not be closed",
+            ) from exc
+        self._prepared_sites.discard((workspace.session_name, hostname))
+        return True
+
     def evaluate(self, workspace: BrowserWorkspace, script: str) -> dict[str, Any]:
         outer_timeout = min(self.timeout, 25)
         inner_timeout_ms = min(
@@ -1165,22 +1254,33 @@ class CliAgentBrowserClient:
         timeout: int,
         input_text: str | None = None,
     ) -> dict[str, Any]:
-        cmd = ["agent-browser", "--json", *args]
         started = time.monotonic()
+        effective_timeout = timeout
+        if self._run_deadline is not None:
+            remaining = self._run_deadline - started
+            if remaining <= 0:
+                self._record_timing(args, started, "budget_exhausted")
+                raise FacebookScraperFailure(
+                    "agent_browser_timeout",
+                    "Facebook adapter run budget was exhausted",
+                )
+            effective_timeout = max(1, min(timeout, math.ceil(remaining)))
+        cmd = ["agent-browser", "--json", *args]
         try:
             result = subprocess.run(
                 cmd,
                 input=input_text,
                 capture_output=True,
                 text=True,
-                timeout=timeout,
+                timeout=effective_timeout,
                 encoding="utf-8",
                 errors="replace",
             )
         except subprocess.TimeoutExpired as exc:
             self._record_timing(args, started, "timed_out")
             raise FacebookScraperFailure(
-                "agent_browser_timeout", f"agent-browser operation timed out after {timeout}s"
+                "agent_browser_timeout",
+                f"agent-browser operation timed out after {effective_timeout}s",
             ) from exc
         except OSError as exc:
             self._record_timing(args, started, "failed")
@@ -1258,7 +1358,11 @@ class FacebookScraper:
         diagnostics = FacebookRunDiagnostics()
         workspace: BrowserWorkspace | None = None
         page = FacebookPageState(url="", title="")
+        begin_run_budget = getattr(self.client, "begin_run_budget", None)
+        if callable(begin_run_budget):
+            begin_run_budget(self.request.timeout)
         try:
+            diagnostics.failure_stage = "workspace_acquisition"
             _log(f"Acquiring agent-browser workspace profile={self.request.profile_id!r}")
             workspace = self.client.acquire_workspace(self.request)
             _log(
@@ -1266,6 +1370,7 @@ class FacebookScraper:
                 f"profile={workspace.profile_id!r} browser={workspace.browser_id!r} "
                 f"operator_visible={workspace.operator_visible_state}"
             )
+            diagnostics.failure_stage = "authentication"
             auth = self.client.inspect_auth(workspace)
             _log(
                 "Authentication inspected "
@@ -1302,13 +1407,16 @@ class FacebookScraper:
                     operator_url=workspace.operator_url,
                 )
 
+            diagnostics.failure_stage = "navigation"
             page = self._navigate(workspace, topic)
             if page.no_results:
                 diagnostics.duration_ms = _elapsed_ms(started)
+                diagnostics.failure_stage = ""
                 return self._result([], None, None, workspace, page, diagnostics, from_date, to_date)
 
             if self.initial_wait:
                 time.sleep(self.initial_wait)
+            diagnostics.failure_stage = "extraction"
             raw_candidates = self._extract(workspace)
             for _ in range(max(0, self.scrolls)):
                 if len(raw_candidates) >= self.limit:
@@ -1322,6 +1430,7 @@ class FacebookScraper:
                 raise FacebookScraperFailure(
                     "extraction_empty", "Verified Facebook search page contained no candidate cards"
                 )
+            diagnostics.failure_stage = "quality_gate"
             items = self._quality_gate(raw_candidates, topic, from_date, to_date, diagnostics)
             diagnostics.duration_ms = _elapsed_ms(started)
             _log(
@@ -1340,6 +1449,7 @@ class FacebookScraper:
                     from_date,
                     to_date,
                 )
+            diagnostics.failure_stage = ""
             return self._result(items, None, None, workspace, page, diagnostics, from_date, to_date)
         except FacebookScraperFailure as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
@@ -1351,6 +1461,9 @@ class FacebookScraper:
                 operator_url=exc.operator_url,
             )
         finally:
+            end_run_budget = getattr(self.client, "end_run_budget", None)
+            if callable(end_run_budget):
+                end_run_budget()
             if workspace is not None:
                 self._best_effort_cleanup(workspace)
 
@@ -1401,7 +1514,10 @@ class FacebookScraper:
                         identity_page.url
                     )
                 if attempt > 0:
-                    raise
+                    raise FacebookScraperFailure(
+                        "facebook_target_unresponsive",
+                        "Facebook replacement target did not respond to bounded navigation readback",
+                    ) from exc
                 if identity_matches:
                     _log(
                         "Search page Runtime read timed out; active tab identity "
@@ -1413,10 +1529,26 @@ class FacebookScraper:
                         "Search target open/read timed out; "
                         "retrying once on a fresh blank target"
                     )
-                self.client.act(
-                    workspace,
-                    BrowserAction("new_tab", value="about:blank"),
-                )
+                replace_target = getattr(self.client, "replace_active_site_target", None)
+                if not callable(replace_target):
+                    raise FacebookScraperFailure(
+                        "facebook_target_unresponsive",
+                        "Facebook client cannot replace the unresponsive target",
+                    ) from exc
+                try:
+                    replaced = replace_target(workspace, "facebook.com")
+                except FacebookScraperFailure as replacement_exc:
+                    if replacement_exc.error_type == "facebook_target_unresponsive":
+                        raise
+                    raise FacebookScraperFailure(
+                        "facebook_target_unresponsive",
+                        "Facebook target replacement did not complete",
+                    ) from replacement_exc
+                if not replaced:
+                    raise FacebookScraperFailure(
+                        "facebook_target_unresponsive",
+                        "No active Facebook target was available for bounded replacement",
+                    ) from exc
 
         _log(f"Navigation readback requested={recent_search_url!r} final={page.url!r}")
         if page.rate_limited:
@@ -2224,7 +2356,7 @@ def _exact_retained_default_owner(
         owner_session_name = session_name
     else:
         return None
-    has_ready_cdp = any(
+    has_ready_cdp = bool(str(browser.get("cdpEndpoint") or "").strip()) or any(
         isinstance(stream, dict)
         and stream.get("provider") == "cdp_screencast"
         and isinstance(stream.get("readiness"), dict)
