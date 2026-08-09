@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P13
-Plan version: 1
+Plan version: 2
 Date: 2026-08-09
 Predecessor: Plan 0034 version 3/checkpoint P0034-C03
 
