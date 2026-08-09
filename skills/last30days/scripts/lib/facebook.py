@@ -113,7 +113,58 @@ EXTRACT_SCRIPT = r"""
   const clean = (value) => String(value || "").replace(/[ \t]+/g, " ").trim();
   const main = document.querySelector('[role="main"]') || document.querySelector('main');
   if (!main) return {url: location.href, title: document.title, candidates: []};
-  const actionSelector = '[aria-label^="Actions for this post by "]';
+  const labelClean = (value) => String(value || "")
+    .replace(/\u034f/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const renderedGlyphText = (node) => {
+    if (!node) return "";
+    const bounds = node.getBoundingClientRect?.();
+    const leaves = Array.from(node.querySelectorAll("*")).filter(
+      (element) => !element.children.length &&
+        String(element.textContent || "").replace(/\u034f/g, "").length
+    );
+    if (!bounds || !leaves.length) {
+      return labelClean(node.innerText || node.textContent || "");
+    }
+    const glyphs = leaves.map((element) => {
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      return {
+        text: String(element.textContent || "").replace(/\u034f/g, ""),
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        display: style.display,
+        visibility: style.visibility,
+        opacity: Number.parseFloat(style.opacity || "1"),
+      };
+    }).filter((glyph) =>
+      glyph.text && glyph.right > glyph.left && glyph.bottom > glyph.top &&
+      glyph.display !== "none" && glyph.visibility !== "hidden" &&
+      glyph.opacity !== 0 && glyph.left >= bounds.left - 1 &&
+      glyph.right <= bounds.right + 1 && glyph.top >= bounds.top - 1 &&
+      glyph.bottom <= bounds.bottom + 1
+    );
+    if (!glyphs.length) return labelClean(node.innerText || node.textContent || "");
+    glyphs.sort((left, right) =>
+      Math.abs(left.top - right.top) > 2
+        ? left.top - right.top
+        : left.left - right.left
+    );
+    return labelClean(glyphs.map((glyph) => glyph.text).join(""));
+  };
+  const isTimestampLabel = (value) => {
+    const label = labelClean(value);
+    return /^(?:just now|now|today|yesterday)(?: at \d{1,2}:\d{2} [AP]M)?$/i.test(label) ||
+      /^\d+\s*[mhdwy]$/i.test(label) ||
+      /^(?:about )?\d+\s+(?:minutes?|hours?|days?|weeks?|months?|years?) ago$/i.test(label) ||
+      /^(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?) \d{1,2}(?:, \d{4})?(?: at \d{1,2}:\d{2} [AP]M)?$/i.test(label);
+  };
+  const isSponsoredLabel = (value) =>
+    /^(?:ad|sponsored|paid partnership)$/i.test(labelClean(value));
+  const actionSelector = '[aria-label^="Actions for this post"]';
   const actionNodes = Array.from(main.querySelectorAll(actionSelector));
   const actionOwnerCounts = new Map();
   for (const action of actionNodes) {
@@ -134,9 +185,15 @@ EXTRACT_SCRIPT = r"""
     }
     return root;
   };
-  const actionRoots = actionNodes.map((action) => ({action, node: rootForAction(action)}));
+  const actionRoots = actionNodes.map((action) => ({
+    action,
+    node: action.closest('[role="article"], div[aria-posinset]') || rootForAction(action),
+  }));
   const fallbackNodes = Array.from(main.querySelectorAll('[role="article"], div[aria-posinset]'))
-    .filter((node) => !node.querySelector(actionSelector));
+    .filter((node) =>
+      !node.querySelector(actionSelector) &&
+      !actionRoots.some(({node: root}) => root.contains(node))
+    );
   const nodes = [
     ...actionRoots.map(({action, node}, index) => ({action, node, source: "action_card", index})),
     ...fallbackNodes.map((node) => ({action: null, node, source: "semantic_fallback"})),
@@ -157,11 +214,18 @@ EXTRACT_SCRIPT = r"""
     if (!text) continue;
     const anchors = Array.from(node.querySelectorAll('a[href]'));
     const permalink = anchors.find((a) => /\/posts\/|\/permalink(?:\.php|\/)|story_fbid=|\/groups\/[^/]+\/posts\//.test(a.href || ""));
-    const timestamp = anchors.find((a) => a.querySelector('abbr, time') || a.getAttribute('aria-label') || a.getAttribute('data-utime'));
+    const timestamp = anchors.find((a) =>
+      a.querySelector('abbr, time') || a.getAttribute('data-utime') ||
+      isTimestampLabel(a.getAttribute('title')) ||
+      isTimestampLabel(a.getAttribute('aria-label')) ||
+      isTimestampLabel(renderedGlyphText(a))
+    );
     const actionLabel = action?.getAttribute("aria-label") || "";
     const actionAuthor = actionLabel.match(/^Actions for this post by (.+)$/)?.[1] || "";
-    const authorNode = anchors.find((a) => clean(a.innerText || a.textContent) === clean(actionAuthor)) ||
-      node.querySelector('h2 a, h3 a, strong a, a[role="link"]');
+    const authorNode = (actionAuthor
+      ? anchors.find((a) => clean(a.innerText || a.textContent) === clean(actionAuthor))
+      : null) ||
+      node.querySelector('h2 a, h3 a, [role="heading"] a, strong a, a[role="link"]');
     const timestampNode = timestamp?.querySelector('abbr, time') || timestamp;
     const url = permalink?.href || "";
     const key = source === "action_card"
@@ -172,7 +236,10 @@ EXTRACT_SCRIPT = r"""
     candidates.push({
       text,
       url,
-      author: clean(actionAuthor || authorNode?.innerText || authorNode?.textContent || ""),
+      author: clean(
+        actionAuthor || authorNode?.innerText || authorNode?.textContent ||
+        authorNode?.getAttribute?.("aria-label") || ""
+      ),
       author_url: authorNode?.href || "",
       media_urls: anchors
         .map((anchor) => anchor.href || "")
@@ -196,15 +263,17 @@ EXTRACT_SCRIPT = r"""
       ].filter((asset) => asset.url),
       action_label: actionLabel,
       candidate_source: source,
-      timestamp: clean(
+      timestamp: labelClean(
         timestampNode?.getAttribute?.("datetime") ||
         timestampNode?.getAttribute?.("data-utime") ||
-        timestampNode?.getAttribute?.("aria-label") ||
         timestampNode?.getAttribute?.("title") ||
-        timestampNode?.innerText || timestampNode?.textContent || ""
+        (isTimestampLabel(timestampNode?.getAttribute?.("aria-label"))
+          ? timestampNode?.getAttribute?.("aria-label") : "") ||
+        renderedGlyphText(timestampNode)
       ),
       is_comment: source === "semantic_fallback" && Boolean(node.parentElement?.closest?.('[role="article"]')),
-      sponsored: /(^|\n)\s*(sponsored|paid partnership)\s*($|\n)/i.test(text),
+      sponsored: anchors.some((a) => isSponsoredLabel(renderedGlyphText(a))) ||
+        /(^|\n)\s*(sponsored|paid partnership)\s*($|\n)/i.test(text),
       engagement: {
         likes: count(text, "likes?"),
         comments: count(text, "comments?"),
@@ -379,7 +448,7 @@ class CliAgentBrowserClient:
         access_plan: dict[str, Any] | None = None,
         target_service_id: str | None = None,
     ) -> BrowserWorkspace:
-        target_id = target_service_id or request.target_service_id
+        requested_target_service_id = target_service_id or request.target_service_id
         if access_plan is None:
             access_plan = self._invoke(
                 [
@@ -387,7 +456,7 @@ class CliAgentBrowserClient:
                     "--service-name", request.service_name,
                     "--agent-name", request.agent_name,
                     "--task-name", request.task_name,
-                    "--target-service-id", target_id,
+                    "--target-service-id", requested_target_service_id,
                     "--url", request.start_url,
                     "--browser-build", request.browser_build,
                     "--browser-host", request.browser_host,
@@ -401,16 +470,17 @@ class CliAgentBrowserClient:
         if not selected_profile:
             raise FacebookScraperFailure(
                 "auth_required",
-                f"agent-browser has no authenticated profile registered for {target_id}",
+                "agent-browser has no authenticated profile registered for "
+                f"{requested_target_service_id}",
             )
         if selected_profile != request.profile_id:
             raise FacebookScraperFailure(
                 "profile_mismatch",
-                f"agent-browser selected {target_id} profile "
+                f"agent-browser selected {requested_target_service_id} profile "
                 f"{selected_profile!r}, not {request.profile_id!r}",
             )
         try:
-            agent_browser_config.record_access_plan(access_plan, target_id)
+            agent_browser_config.record_access_plan(access_plan, requested_target_service_id)
         except OSError as exc:
             _log(f"Could not record user-scoped agent-browser configuration: {_redact(str(exc))}")
 
@@ -455,8 +525,23 @@ class CliAgentBrowserClient:
         browser_id = ""
         target_id = ""
         launch_session_name = request.session_name
+        owner_session_name = request.session_name
 
-        if isinstance(session, dict):
+        aliased_owner = _exact_retained_default_owner(
+            session_name=request.session_name,
+            selected_profile=selected_profile,
+            target_service_id=requested_target_service_id,
+            sessions=sessions,
+            browsers=browsers,
+            tabs=tabs,
+        )
+        if aliased_owner:
+            browser = aliased_owner["browser"]
+            browser_id = aliased_owner["browser_id"]
+            target_id = aliased_owner["target_id"]
+            owner_session_name = aliased_owner["session_name"]
+
+        if isinstance(session, dict) and browser is None:
             observed_profile = str(session.get("profileId") or "")
             if not observed_profile or observed_profile == selected_profile:
                 browser_ids = session.get("browserIds") or []
@@ -482,7 +567,7 @@ class CliAgentBrowserClient:
             return BrowserWorkspace(
                 profile_id=request.profile_id,
                 browser_id=browser_id,
-                session_name=request.session_name,
+                session_name=owner_session_name,
                 target_id=target_id,
                 route_id=str(stream.get("id") or ""),
                 operator_url=_operator_url(stream),
@@ -711,13 +796,12 @@ class CliAgentBrowserClient:
     def _inspect_auth_on_fresh_target(
         self, workspace: BrowserWorkspace
     ) -> FacebookAuthState:
-        self.act(workspace, BrowserAction("new_tab", value="about:blank"))
         self.act(
             workspace,
-            BrowserAction("navigate", value="https://www.facebook.com/"),
+            BrowserAction("new_tab", value="https://www.facebook.com/"),
         )
 
-        raw = self._evaluate_auth_probe(workspace)
+        raw = self._evaluate_auth_probe(workspace, fresh_target=True)
         auth = _facebook_auth_state(raw)
         if not _facebook_auth_is_explicit(auth):
             raise FacebookScraperFailure(
@@ -741,7 +825,7 @@ class CliAgentBrowserClient:
         candidates = sorted(
             (tab for tab in matches if tab_index(tab) >= 0),
             key=lambda tab: (0 if tab.get("active") else 1, -tab_index(tab)),
-        )[:8]
+        )[:2]
         saw_responsive_ambiguous = False
         for tab in candidates:
             index = tab_index(tab)
@@ -756,7 +840,7 @@ class CliAgentBrowserClient:
                             "tab",
                             str(index),
                         ],
-                        timeout=min(self.timeout, 8),
+                            timeout=min(self.timeout, 15),
                     )
                 auth = _facebook_auth_state(self._evaluate_auth_probe(workspace))
             except FacebookScraperFailure as exc:
@@ -780,11 +864,16 @@ class CliAgentBrowserClient:
             "No retained Facebook target responded to bounded authentication inspection",
         )
 
-    def _evaluate_auth_probe(self, workspace: BrowserWorkspace) -> dict[str, Any]:
-        outer_timeout = min(self.timeout, 8)
+    def _evaluate_auth_probe(
+        self,
+        workspace: BrowserWorkspace,
+        *,
+        fresh_target: bool = False,
+    ) -> dict[str, Any]:
+        outer_timeout = min(self.timeout, 45 if fresh_target else 15)
         inner_timeout_ms = min(
             self.job_timeout_ms,
-            3_000,
+            30_000 if fresh_target else 3_000,
             max(250, (outer_timeout - 2) * 1_000),
         )
         raw = self._invoke(
@@ -1767,8 +1856,21 @@ def _parse_facebook_date(value: str, now: datetime) -> tuple[str | None, Literal
     lowered = raw.casefold()
     if lowered in {"just now", "now"}:
         return now.date().isoformat(), "med"
-    if lowered == "yesterday":
+    if re.fullmatch(r"yesterday(?:\s+at\s+\d{1,2}:\d{2}\s+[ap]m)?", lowered):
         return (now - timedelta(days=1)).date().isoformat(), "med"
+    if re.fullmatch(r"today(?:\s+at\s+\d{1,2}:\d{2}\s+[ap]m)?", lowered):
+        return now.date().isoformat(), "med"
+    shorthand = re.fullmatch(r"(\d+)\s*([mhdwy])", lowered)
+    if shorthand:
+        amount = int(shorthand.group(1))
+        delta = {
+            "m": timedelta(minutes=amount),
+            "h": timedelta(hours=amount),
+            "d": timedelta(days=amount),
+            "w": timedelta(weeks=amount),
+            "y": timedelta(days=365 * amount),
+        }[shorthand.group(2)]
+        return (now - delta).date().isoformat(), "med"
     article_relative = re.fullmatch(
         r"(?:about\s+)?an?\s+(minute|hour|day|week|month|year)\s+ago", lowered
     )
@@ -1882,19 +1984,119 @@ def _clean_engagement(raw: dict[str, Any]) -> dict[str, int]:
     return cleaned
 
 
-def _select_target_id(session: dict[str, Any], tabs: Any) -> str:
+def _select_target_id(
+    session: dict[str, Any], tabs: Any, target_service_id: str = "facebook"
+) -> str:
     tab_ids = session.get("tabIds") or []
     if not isinstance(tabs, dict):
         return ""
     for tab_id in tab_ids:
         tab = tabs.get(tab_id)
-        if isinstance(tab, dict) and "facebook.com" in str(tab.get("url") or ""):
+        if isinstance(tab, dict) and _is_target_service_url(
+            str(tab.get("url") or ""), target_service_id
+        ):
             return str(tab.get("targetId") or str(tab_id).removeprefix("target:"))
     if tab_ids:
         tab = tabs.get(tab_ids[0])
         if isinstance(tab, dict):
             return str(tab.get("targetId") or str(tab_ids[0]).removeprefix("target:"))
     return ""
+
+
+def _is_target_service_url(url: str, target_service_id: str) -> bool:
+    hostname = (urlsplit(url).hostname or "").lower()
+    service_hosts = {
+        "facebook": ("facebook.com",),
+        "x": ("x.com", "twitter.com"),
+        "linkedin": ("linkedin.com",),
+    }
+    return any(
+        hostname == suffix or hostname.endswith(f".{suffix}")
+        for suffix in service_hosts.get(target_service_id, ())
+    )
+
+
+def _exact_retained_default_owner(
+    *,
+    session_name: str,
+    selected_profile: str,
+    target_service_id: str,
+    sessions: Any,
+    browsers: Any,
+    tabs: Any,
+) -> dict[str, Any] | None:
+    """Reuse a target-bearing retained session whose profile label drifted to default.
+
+    This compatibility path is intentionally narrower than ordinary same-profile
+    reuse: the configured session and selected profile must have the same name,
+    the alias must point to exactly one ready browser with writable CDP, and a live
+    tab for the requested service must already exist. When that browser is owned
+    by a different active session, exactly one reciprocal owner is required.
+    Authentication is still probed before any navigation or extraction.
+    """
+    if session_name != selected_profile:
+        return None
+    if not isinstance(sessions, dict) or not isinstance(browsers, dict):
+        return None
+    session = sessions.get(session_name)
+    if not isinstance(session, dict) or str(session.get("profileId") or "") != "default":
+        return None
+    browser_ids = session.get("browserIds")
+    if not isinstance(browser_ids, list) or len(browser_ids) != 1:
+        return None
+    browser_id = str(browser_ids[0] or "")
+    if not browser_id:
+        return None
+    browser = browsers.get(browser_id)
+    if (
+        not isinstance(browser, dict)
+        or browser.get("health") != "ready"
+        or str(browser.get("profileId") or browser.get("runtimeProfile") or "")
+        != "default"
+    ):
+        return None
+    canonical_browser_id = f"session:{session_name}"
+    active_sessions = browser.get("activeSessionIds")
+    owner_session_name = ""
+    if isinstance(active_sessions, list):
+        reciprocal_owners = []
+        for active_session_name in active_sessions:
+            active_session_name = str(active_session_name or "")
+            active_session = sessions.get(active_session_name)
+            if (
+                active_session_name
+                and isinstance(active_session, dict)
+                and browser_id in (active_session.get("browserIds") or ())
+            ):
+                reciprocal_owners.append(active_session_name)
+        if len(reciprocal_owners) != 1:
+            return None
+        owner_session_name = reciprocal_owners[0]
+    elif browser_id == canonical_browser_id:
+        owner_session_name = session_name
+    else:
+        return None
+    has_ready_cdp = any(
+        isinstance(stream, dict)
+        and stream.get("provider") == "cdp_screencast"
+        and isinstance(stream.get("readiness"), dict)
+        and stream["readiness"].get("state") == "ready"
+        for stream in browser.get("viewStreams") or ()
+    )
+    if not has_ready_cdp:
+        return None
+    owner_session = sessions.get(owner_session_name)
+    target_id = _select_target_id(session, tabs, target_service_id)
+    if not target_id and isinstance(owner_session, dict):
+        target_id = _select_target_id(owner_session, tabs, target_service_id)
+    if not target_id:
+        return None
+    return {
+        "browser": browser,
+        "browser_id": browser_id,
+        "session_name": owner_session_name,
+        "target_id": target_id,
+    }
 
 
 def _url_matches_hostname(url: str, hostname: str) -> bool:

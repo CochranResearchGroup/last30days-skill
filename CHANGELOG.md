@@ -9,6 +9,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook live post extraction and retained-session acquisition.** Service
+  0.3.28 models both
+  author-named organic cards and generic ad cards from the current authenticated
+  Facebook search layout. It selects timestamp anchors by date-shaped evidence,
+  reconstructs human-visible timestamp and ad labels from rendered glyph
+  geometry, accepts current compact and `Yesterday at <clock>` date labels, and
+  keeps ads explicitly rejected. When agent-browser reports the exact configured
+  retained session as profile `default`, the scraper reuses its browser only if
+  the alias points to exactly one healthy ready-CDP browser, exactly one active
+  session reciprocally owns that browser, and the alias or owner already owns a
+  tab for the requested service; ambiguous and unrelated owners remain
+  fail-closed,
+  and the normal authentication probe still runs before navigation. Governed
+  provider receipts now preserve only bounded per-reason rejection counts
+  alongside existing aggregate counts and browser-operation evidence, so a
+  future zero-yield result is diagnosable without retaining private page
+  content. No schedule, provider, credential, schema, cost, or notification
+  migration is required. Authentication inspection tries at most two retained
+  Facebook targets before recovery, creates the fresh Facebook target in one
+  command. Retained tab switches and auth reads keep their 3-second worker
+  limits but receive 15-second process bounds so serialized queue wait cannot
+  outlive the caller; only a genuinely fresh auth target receives a bounded
+  30-second job/45-second process deadline. This leaves enough of the existing
+  120-second provider budget for navigation and extraction even after another
+  social source used the shared retained browser.
+
 - **Facebook post-navigation readback recovery.** Service 0.3.23 treats the
   initial query-page state evaluation as part of the bounded search open/read
   attempt. A timeout replays that whole attempt exactly once on a fresh

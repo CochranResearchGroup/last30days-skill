@@ -98,6 +98,24 @@ def _browser_operations(
     return tuple(operations)
 
 
+def _rejection_counts(diagnostics: Mapping[str, object]) -> dict[str, int]:
+    raw_counts = diagnostics.get("rejection_counts")
+    if not isinstance(raw_counts, Mapping):
+        return {}
+    counts: dict[str, int] = {}
+    for raw_reason, raw_count in list(raw_counts.items())[:32]:
+        if (
+            not isinstance(raw_reason, str)
+            or not 0 < len(raw_reason) <= 64
+            or isinstance(raw_count, bool)
+            or not isinstance(raw_count, int)
+            or not 0 <= raw_count <= 1_000_000
+        ):
+            continue
+        counts[raw_reason] = raw_count
+    return counts
+
+
 class AcquisitionWorkerTickAdapter:
     def __init__(self, worker, *, adapter: str, adapter_version: str) -> None:
         self.worker = worker
@@ -190,6 +208,7 @@ class AcquisitionWorkerTickAdapter:
             ),
         }
         browser_operations = _browser_operations(result.diagnostics)
+        rejection_counts = _rejection_counts(result.diagnostics)
         if items:
             return ProviderResult(
                 status=(
@@ -209,6 +228,7 @@ class AcquisitionWorkerTickAdapter:
                 rendered_page_mime_type=result.rendered_page_mime_type,
                 outcome_counts=outcome_counts,
                 browser_operations=browser_operations,
+                rejection_counts=rejection_counts,
             )
         if result.status is contracts.AcquisitionStatus.SUCCEEDED:
             return ProviderResult(
@@ -217,6 +237,7 @@ class AcquisitionWorkerTickAdapter:
                 usage=usage,
                 outcome_counts=outcome_counts,
                 browser_operations=browser_operations,
+                rejection_counts=rejection_counts,
             )
         return ProviderResult(
             status="failure",
@@ -230,6 +251,7 @@ class AcquisitionWorkerTickAdapter:
             rendered_page_mime_type=result.rendered_page_mime_type,
             outcome_counts=outcome_counts,
             browser_operations=browser_operations,
+            rejection_counts=rejection_counts,
         )
 
 

@@ -600,6 +600,36 @@ def test_provider_result_round_trip_preserves_bounded_browser_operations(tmp_pat
     assert restored.browser_operations == result.browser_operations
 
 
+def test_provider_result_round_trip_preserves_bounded_rejection_counts(tmp_path):
+    db_path = tmp_path / "research.db"
+    artifacts = ContentAddressedArtifactStore(tmp_path / "artifacts")
+    media = MediaDerivativePublisher(db_path, artifacts, clock=lambda: NOW)
+    runner = TickRunner(
+        db_path,
+        AdapterRegistry(),
+        media=media,
+        incidents=IncidentManager(db_path, media, clock=lambda: NOW),
+        snapshots=TickSnapshotPublisher(db_path, FixtureEmbedding(), clock=lambda: NOW),
+        notification_transports=(),
+        clock=lambda: NOW,
+    )
+    result = ProviderResult(
+        status="failure",
+        items=(),
+        failure_class="policy",
+        safe_error_code="quality_gate_failed",
+        usage=_usage(),
+        rejection_counts={"missing_date": 5, "kind_unknown": 3},
+    )
+
+    payload = runner._serialize_provider_result(
+        result, access_partition_id="private:facebook"
+    )
+    restored = runner._restore_provider_result(payload)
+
+    assert restored.rejection_counts == result.rejection_counts
+
+
 def test_partial_provider_evidence_publishes_raw_before_blocking_the_lane(tmp_path):
     def partial(_context):
         return ProviderResult(

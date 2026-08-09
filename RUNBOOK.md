@@ -13520,3 +13520,551 @@ Next Bounded Action:
 
 - stop manual proof ticks and push the scoped repository history. Treat future
   Facebook quality-yield tuning as a separate product packet.
+
+## Turn 226 | 2026-08-08
+
+Focus: correct the Facebook readiness claim and open a live-content-model repair
+packet after the governed scraper rejected every observed candidate.
+
+Authority Consulted:
+
+- operator clarification that 18 observed and 18 rejected means the Facebook
+  scraper is not working; standing Facebook repair goal; Plan 0027/C04;
+  repo planning, goal, validation, documentation, roadmap/runbook, architecture,
+  git, and closeout policies; agent-browser retained-session rules.
+
+Decisions And Changes:
+
+- rejected browser-path completion as end-to-end scraper acceptance;
+- opened P12/Plan 0028 at
+  `docs/dev/plans/0028-2026-08-08-facebook-live-content-model-and-scraper-repair.md`
+  to inspect the authenticated live site, define one scrapable post and its
+  exclusions, preserve exact rejection diagnostics, and repair the adapter
+  against a red live-shape regression;
+- retained the manual-tick rule: no natural-time wait and no same-build retry;
+- prohibited browser/profile duplication, restart, tab closure, auth
+  automation, cost/model use, and quality weakening to manufacture yield.
+
+Validation Evidence:
+
+- repository `main` and `origin/main` are clean and identical at
+  `5f89e516d10e1aeb2e45a2d242a71de318b93f62` before this planning slice;
+- remote control and viewer prerequisites are ready with no issues;
+- `session:last30days-facebook` is viable on authenticated target
+  `EB92F4E3322D3DC8F8077D42806D8CF4`, titled
+  `(20+) OpenAI - Search Results | Facebook`;
+- current planning audit passes; the policy selector reports the repository
+  already aligned to the product-engineering profile with no validation gaps.
+
+State Movement:
+
+- P11/Plan 0027 remains closed as browser-recovery history; P12/Plan 0028 opens
+  at version 1/C01 for live content modeling and actual scraper acceptance.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary owns the serialized live-inspection,
+  extractor, installed-runtime, and manual-proof path.
+
+Graphiti Write Status:
+
+- no write yet; Plan 0028, this runbook, live browser readbacks, and the future
+  privacy-safe evidence artifact are the current source-backed authorities.
+
+Next Bounded Action:
+
+- inventory representative live Facebook result/post structures through the
+  retained session and compare them with current extractor candidates and exact
+  rejection reasons before changing code.
+
+## Turn 227 | 2026-08-08
+
+Focus: establish the live Facebook post model, reproduce the exact quality
+failure, and prove a narrow working-tree candidate on the unchanged page.
+
+Authority Consulted:
+
+- Plan 0028/C01; operator definition of scraper repair; agent-browser retained-
+  session and no-duplicate-profile rules; repo architecture, validation,
+  documentation, planning, goal, and roadmap/runbook policies.
+
+Decisions And Changes:
+
+- opened one fresh tab in retained browser PID 96078 after four old Facebook
+  targets timed out on bounded selection; no browser/profile was launched and
+  no tab was closed;
+- recorded a privacy-safe structural content contract in
+  `docs/dev/notes/0098-plan0028-facebook-live-content-contract.md`;
+- added red-first contracts for current action-card selection, rendered-glyph
+  timestamp labels, compact/current date parsing, and durable rejection counts;
+- repaired timestamp anchor selection, visible glyph reconstruction, current
+  relative-date parsing, and generic ad-card classification;
+- carried bounded per-reason rejection counts through the governed provider
+  result serialization instead of discarding them.
+
+Validation Evidence:
+
+- pre-repair live loop: five candidates, zero accepted; `missing_date=5`,
+  `kind_unknown=3`, `missing_permalink=3`, `missing_author=3`, `off_topic=3`;
+- candidate live loop on the same page: five candidates, two accepted posts,
+  three ads explicitly rejected under the unchanged safety gate;
+- focused `tests/test_facebook.py`, `tests/test_service_tick_runtime.py`, and
+  `tests/test_service_tick_runner.py` pass.
+
+State Movement:
+
+- P12/Plan 0028 advances `C01 -> C02`, version `1 -> 2`, and remains `OPEN`;
+  direct adapter semantics are proven, while installed/runtime/tick acceptance
+  remains outstanding.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary ran and verified the live red/green loop.
+
+Graphiti Write Status:
+
+- no write yet; Plan 0028, the structural note, tests, and live readback are
+  the current source-backed authorities.
+
+Next Bounded Action:
+
+- validate broadly, update immutable version/changelog surfaces, install the
+  successor, and run exactly one new preflight-predicted manual proof tick. Do
+  not commit or push until the Facebook lane meets end-to-end acceptance.
+
+## Turn 228 | 2026-08-08
+
+Focus: repair the governed client's retained-session acquisition after the
+first content successor failed before reaching Facebook.
+
+Authority Consulted:
+
+- Plan 0028/C02; operator statement that a transport-only result is still a
+  broken scraper; agent-browser retained-browser and no-duplicate rules; repo
+  architecture, validation, versioning, planning, and roadmap/runbook policies.
+
+Decisions And Changes:
+
+- classified the 0.3.24 manual result as non-acceptance: Facebook observed and
+  accepted zero because acquisition failed `route_stale` before content;
+- localized the mismatch to agent-browser service metadata: the exact retained
+  session and canonical browser ID were healthy and authenticated but labeled
+  profile `default`, while access-plan selected `last30days-facebook`;
+- added a narrow compatibility path requiring exact configured session name,
+  exact `session:<name>` browser ID, healthy ready-CDP control, and an existing
+  tab for the requested service; the ordinary authentication probe remains
+  mandatory, and unrelated profile/browser mismatches remain isolated;
+- did not close a tab, launch another browser/profile, retry 0.3.24, wait for a
+  timer, change cadence, send a notification, or consume cost/model authority.
+
+Validation Evidence:
+
+- red-first acquisition regression failed because the old client issued a
+  third remote-view command; it and the existing wrong-profile guard now pass;
+- focused Facebook, agent-browser configuration, X, and LinkedIn suites pass;
+- working-tree live Facebook run reused the retained session, observed five
+  candidates, accepted two in-range posts, explicitly rejected three ads, and
+  returned no error; output retained only aggregate counters.
+
+State Movement:
+
+- P12/Plan 0028 advances `C02 -> C03`, version `2 -> 3`, remains `OPEN`, and
+  service source advances `0.3.24 -> 0.3.25` for a distinct immutable proof.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary completed the serialized acquisition repair.
+
+Graphiti Write Status:
+
+- no write yet; Plan 0028, the privacy-safe content note, tests, and exact live
+  aggregate readback remain current authorities.
+
+Next Bounded Action:
+
+- build/install immutable 0.3.25, obtain a fresh zero-state preflight, and
+  consume exactly one manual tick. Accept only Facebook success with at least
+  one post or verified genuine no-results evidence.
+
+## Turn 229 | 2026-08-08
+
+Focus: adjudicate the installed 0.3.25 manual proof failure and open the one
+bounded review/rework cycle allowed by Plan 0028.
+
+Authority Consulted:
+
+- Plan 0028/C03 and its review/rework bound; installed 0.3.25 tick/provider
+  receipts; goal, planning, validation, and roadmap/runbook policies; operator
+  requirement that transport without scraped Facebook content is failure.
+
+Decisions And Changes:
+
+- did not accept, close, commit, push, or retry 0.3.25 after Facebook failed
+  before observing content;
+- adjudicated one blocking finding: retained authentication inspection probes
+  up to eight known-frozen Facebook tabs, consuming most of the provider wall
+  budget, then gives the fresh-target recovery only eight seconds to evaluate;
+- authorized the existing plan's single review/rework cycle to cap retained
+  probes and lengthen only the fresh auth deadline while preserving the
+  120-second provider, zero-cost, manual-only, retained-browser bounds;
+- set a terminal stop on repeating the same invariant in the distinct successor.
+
+Validation Evidence:
+
+- reproducible 0.3.25 artifact SHA-256
+  `f32e7f1433f2b145189e2e65b1d475a21a8b7edd666fd4ef1d4e9e3876ee07c0`;
+  installed service ready on schema 16 and manifest SHA-256
+  `f347e09788c5aedd7fe8efc2d5433a0da0d09a7f36336b95a05e268778474878`;
+- full 2,602-test collection and all focused/audit/compile/patch checks pass;
+- tick `tick-a070c5b89c0d9b94a8f1708635b49357` is `complete_degraded`,
+  snapshot `tick-snapshot-500bdce5d18423915462778a3402540c`,
+  with five attempts, 14 requests, four items, 263 seconds, zero cost/model
+  tokens, zero incidents, and zero notifications;
+- Facebook attempt `provider-attempt-4262c1862ff1f05b3adfbf19acd03ecc`
+  is transient `agent_browser_timeout`, zero observed/accepted, after eight
+  retained-tab timeouts and one fresh-target auth-evaluation timeout;
+- retained PID 96078 remains ready; no browser/profile duplication or tab close.
+
+State Movement:
+
+- P12/Plan 0028 advances `C03 -> C04`, version `3 -> 4`, remains `OPEN`, and
+  consumes its single bounded review/rework cycle; 0.3.25 is not retried.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary read and adjudicated the durable evidence.
+
+Graphiti Write Status:
+
+- no write yet; the installed receipts and Plan 0028/C04 are current authority.
+
+Next Bounded Action:
+
+- implement red-first bounded auth-probe rework as 0.3.26, validate/install it,
+  and consume one fresh manual tick. Stop if the same invariant repeats.
+
+## Turn 230 | 2026-08-08
+
+Focus: reproduce the auth-probe rework against the exact post-tick browser state
+and remove the newly localized redundant navigation wait.
+
+Authority Consulted:
+
+- Plan 0028/C04 accepted review finding and unchanged review/rework bounds;
+  retained browser operation-only evidence; goal/planning checkpoint rules.
+
+Decisions And Changes:
+
+- capped retained Facebook auth candidates from eight to two and reserved a
+  15-second inner/20-second outer deadline for the fresh target only;
+- withheld 0.3.26 versioning/install after the exact live reproduction still
+  failed before content;
+- localized that failure to the separate 30-second Facebook navigation after a
+  fresh `about:blank` target had already been created successfully;
+- refined the same accepted finding to create the fresh Facebook target in one
+  `tab new <url>` command, eliminating the redundant blocking `open` operation.
+
+Validation Evidence:
+
+- new cap/deadline regressions and broad Facebook/X/LinkedIn suites pass;
+- live operation sequence: service status ready, tab list ready, two retained
+  selections timed out, fresh-tab creation succeeded, separate navigation
+  timed out at 30 seconds; zero candidates/items and no cost/notification;
+- retained PID 96078 stayed ready; no browser/profile launch or tab close.
+
+State Movement:
+
+- P12/Plan 0028 advances `C04 -> C05`, version `4 -> 5`, remains `OPEN`; the
+  one review/rework cycle remains active and 0.3.25 remains non-retriable.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary ran the exact post-tick reproduction.
+
+Graphiti Write Status:
+
+- no write; Plan 0028/C05 and the operation-only live result are authoritative.
+
+Next Bounded Action:
+
+- prove a one-command fresh Facebook target under red/green tests and the exact
+  live state before producing or installing 0.3.26.
+
+## Turn 231 | 2026-08-08
+
+Focus: close the accepted auth-recovery finding in the working tree and prove
+Facebook yield against the exact post-tick retained-browser state.
+
+Authority Consulted:
+
+- Plan 0028/C05 and its closed-world review finding; installed 0.3.25 failure
+  sequence; unchanged manual, browser-lifecycle, cost, and provider bounds.
+
+Decisions And Changes:
+
+- replaced fresh `about:blank` creation plus separate blocking Facebook `open`
+  with one `tab new https://www.facebook.com/` command;
+- retained the two-target probe cap, ordinary short retained-target probes,
+  extended fresh-only auth deadline, explicit auth/checkpoint gate, and all
+  unrelated-profile fail-closed behavior;
+- promoted the proven working-tree rework to service source 0.3.26; no installed
+  successor or manual tick has yet been consumed.
+
+Validation Evidence:
+
+- single-command regression failed red on the old two-call sequence and passes
+  with prior cap/deadline/auth and broad browser-source suites;
+- exact post-tick live run: retained session/profile contract reused; two old
+  probes bounded; one fresh target created/navigated; three candidates observed,
+  two in-range posts accepted, one ad rejected, no error;
+- privacy-safe browser operations completed in about 91 seconds inside the
+  120-second provider limit; no browser/profile launch, tab close, cost/model
+  use, incident, or notification.
+
+State Movement:
+
+- P12/Plan 0028 advances `C05 -> C06`, version `5 -> 6`, remains `OPEN`; the
+  accepted review finding is working-tree-remediated pending installed proof.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary completed closed-world remediation verification.
+
+Graphiti Write Status:
+
+- no write; Plan 0028/C06, tests, and live aggregate/operation evidence control.
+
+Next Bounded Action:
+
+- fully validate, reproducibly build/install 0.3.26, preflight a new tick, and
+  consume exactly one manual proof. Stop without push on Facebook non-acceptance.
+
+## Turn 232 | 2026-08-08
+
+Focus: adjudicate the installed 0.3.26 terminal proof and hand the remaining
+sequential browser-liveness blocker to agent-browser investigation.
+
+Authority Consulted:
+
+- Plan 0028/C06 terminal stop condition; installed 0.3.26 and durable tick/
+  provider receipts; current agent-browser status; operator rule that zero
+  observed/accepted Facebook content is scraper failure.
+
+Decisions And Changes:
+
+- rejected the 0.3.26 tick as non-acceptance and stopped the repair loop after
+  the same fresh-target auth-eval invariant repeated in installed execution;
+- did not retry 0.3.26, create 0.3.27, commit, push, close the plan, close tabs,
+  restart/duplicate the browser, send a notification, or consume cost/models;
+- localized ownership to agent-browser shared-session/job/target liveness after
+  a long X operation and wrote privacy-safe note 0099 for that investigation.
+
+Validation Evidence:
+
+- reproducible artifact SHA-256
+  `cdc1e5266ad3330aec33f61b3a43bb939374c0cfc79b8ab85ab3368e8d4681f4`;
+  installed 0.3.26/schema16 ready, manifest SHA-256
+  `189680b97f4c5ca9b838a4ea1e960dcc95c169f275fb2a11fd3684926253d982`;
+- full 2,602-test collection and all focused/audit/compile/patch checks pass;
+- manual tick `tick-d08819fc38346ad98f8eb070267d1076`, snapshot
+  `tick-snapshot-7980f5f33d8452d0cbce3293688afe0a`: five attempts,
+  14 requests, four items, 215 seconds, zero cost/model tokens, incidents, or
+  notifications;
+- X: 84 seconds, 16 observed/rejected, `quality_gate_failed`; Facebook attempt
+  `provider-attempt-3b81211ca0a73be9481fa6262d1b59f8`: fresh-target creation
+  succeeded, 20-second auth eval timed out, zero observed/accepted;
+- agent-browser 0.28.0 SHA-256
+  `266103ec1e05c2cd216bbffbcc49610abf998be5dce1032265f94f180d786e76`;
+  retained PID 96078 remains ready with writable CDP and 15 tabs.
+
+State Movement:
+
+- P12/Plan 0028 advances `C06 -> C07`, version `6 -> 7`, remains open but
+  execution-blocked on agent-browser; installed service remains 0.3.26.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary verified the full installed evidence chain.
+
+Graphiti Write Status:
+
+- no write; Plan 0028/C07, note 0099, durable receipts, and runtime readbacks
+  are sufficient source-backed authorities.
+
+Next Bounded Action:
+
+- agent-browser investigates note 0099. Resume Plan 0028 only after sequential
+  X-to-fresh-Facebook evaluation liveness is repaired and proven; then build a
+  distinct successor and consume one manual proof, with no natural-time wait.
+
+## Turn 233 | 2026-08-08
+
+Focus: resume Plan 0028 with a bounded retained-owner/deadline repair and bind
+the changed live-browser state before packaging.
+
+Authority Consulted:
+
+- operator direction to repair and resume immediately with manual ticks and no
+  natural-time wait; Plan 0028/C07 and note 0099; planning, worktree, branch,
+  commit, versioning, validation, documentation, and roadmap/runbook policies;
+  current Last30Days and agent-browser worktrees and service projections.
+
+Decisions And Changes:
+
+- added fail-closed resolution from the configured default-profile alias to
+  exactly one reciprocal active owner of its one ready CDP browser;
+- return that actual owner session for subsequent browser commands, while
+  rejecting ambiguous, unrelated, multi-browser, non-ready, or targetless
+  shapes;
+- retained the fresh auth job timeout at 15 seconds and expanded only its outer
+  process timeout from 20 to 30 seconds;
+- advanced the candidate to service 0.3.27 and refreshed its runtime manifest;
+- observed that previously retained PID 96078 and its Facebook projection have
+  disappeared outside this repair. The current daemon has no Facebook browser
+  or tab; no browser was opened or closed during the read-only check.
+
+Validation Evidence:
+
+- red tests reproduced both the alias fallthrough and old deadline; the new
+  exact alias, ambiguity, canonical-owner, and deadline tests pass;
+- all 73 Facebook tests pass with one intentional skip; `git diff --check`
+  passes;
+- a fresh service-status readback contains zero `last30days-facebook`,
+  `plan0058`, `session:plan0058`, or Facebook-tab records, and OS PID 96078 is
+  absent.
+
+State Movement:
+
+- P12/Plan 0028 advances `C07 -> C08`, version `7 -> 8`, remains `OPEN`; service
+  0.3.27 is an uninstalled candidate pending broad validation and manual proof.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary performed the serialized diagnosis and repair.
+
+Graphiti Write Status:
+
+- no write yet; Plan 0028/C08, tests, cross-repo note 0098, and current runtime
+  readbacks remain authoritative.
+
+Next Bounded Action:
+
+- complete broad validation, reproducibly build/install 0.3.27, preflight zero
+  live Facebook ownership, then consume one immediate manual acceptance tick.
+
+## Turn 234 | 2026-08-08
+
+Focus: reject the installed 0.3.27 manual proof, distinguish queue wait from
+worker timeout, and encode the live-proven queue-aware bounds in 0.3.28.
+
+Authority Consulted:
+
+- Plan 0028/C08 acceptance and no-same-build-retry rules; installed service,
+  tick/provider results, agent-browser job ledger and current retained browser;
+  operator direction for immediate manual proof without natural-time wait.
+
+Decisions And Changes:
+
+- rejected `tick-03e16c06ddb98a3c27b5a9cc7309b115` because Facebook
+  failed transiently with zero observed/accepted candidates;
+- did not retry 0.3.27 and did not accept X's independent quality failure;
+- preserved 3-second worker limits for retained tab switching and auth reads but
+  expanded their process bounds from 8 to 15 seconds, matching exact live queue
+  delay without prolonging worker ownership;
+- expanded only genuinely fresh auth from a 15-second job / 30-second process
+  bound to 30/45 seconds, retaining the provider's 120-second hard wall;
+- advanced the candidate to 0.3.28 and refreshed its runtime manifest.
+
+Validation Evidence:
+
+- installed 0.3.27 artifact SHA-256 is
+  `9012951d7532878a72c55a08cfd840dad74b5739c2e73ad69fc4d5a08f502e0b`;
+  runtime-manifest SHA-256 is
+  `e9137cf62801455c644f88576648ae5f9b3157f51e74242ee3bac8d395c48aa8`;
+- the rejected tick used five attempts, 14 requests, four items, 267 seconds,
+  zero cost/model tokens, and zero incidents/notifications;
+- Facebook attempt `provider-attempt-68396a7e2dd3b230ec7ec04c2e9b5608`
+  recorded successful access-plan/status/list/fresh-target operations, two
+  caller tab timeouts, and a 15-second worker eval timeout; agent-browser later
+  showed both tab jobs succeeded after those callers exited;
+- exact post-tick retained-tab diagnostic succeeded authenticated (`c_user` and
+  authenticated DOM, no login/checkpoint) in 10.5 seconds plus 8.4 seconds with
+  15-second caller bounds;
+- all 74 Facebook tests pass with one intentional skip; patch checks pass.
+
+State Movement:
+
+- P12/Plan 0028 advances `C08 -> C09`, version `8 -> 9`, remains `OPEN`;
+  installed 0.3.27 is non-accepted and 0.3.28 is uninstalled pending full proof.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary ran and adjudicated the complete evidence path.
+
+Graphiti Write Status:
+
+- no write yet; Plan 0028/C09 and durable receipts remain authoritative.
+
+Next Bounded Action:
+
+- fully validate, reproducibly build/install 0.3.28, preflight a distinct manual
+  tick, and accept only Facebook success or verified genuine empty content.
+
+## Turn 235 | 2026-08-08
+
+Focus: accept installed Facebook scraping, close Plan 0028/P12, and prepare the
+scoped commit/push.
+
+Authority Consulted:
+
+- Plan 0028/C09 acceptance criteria; installed 0.3.28 and its preflight/tick/
+  provider receipts; current agent-browser owner projection; validation,
+  documentation, planning, commit/push, and turn-closeout policies.
+
+Decisions And Changes:
+
+- accepted Facebook attempt
+  `provider-attempt-5e5205b623e52dfd122dbbf2e4e668af` as the required
+  end-to-end proof: `success`, 19 observed, two accepted, 17 rejected;
+- closed Plan 0028 version 10/C10 and Roadmap P12 without weakening any post,
+  provenance, date, ad, topic, cost, schedule, or notification safeguard;
+- retained exact bounded Facebook rejection counts in the durable provider
+  result and recorded the queue-wait contract resolution in note 0099;
+- classified X attempt `provider-attempt-5f7f2c4d9547e12a42e8377557e836d4`
+  as separate nonblocking backlog: 17 observed/rejected, all `out_of_range`,
+  `quality_gate_failed`;
+- did not rerun 0.3.27, wait for natural time, send notifications, close tabs,
+  or create another browser.
+
+Validation Evidence:
+
+- reproducible 0.3.28 artifact SHA-256
+  `d2718d01e4c1f0a0c431557008b23e4d5cb5d2294cdbea7a7588ce1e460e20d7`;
+  installed runtime ready on schema 16 with manifest SHA-256
+  `2e9b01c6ccc191bec6f749edc3005cb0d07b36b3957fe77bc2c3c99085bd7440`;
+- complete suite: 2,600 passed, seven skipped, six subtests passed; compile,
+  reproducible build, package/version, plan-authority, and patch checks pass;
+- tick `tick-f273eb12d642b31d49a7f12959b93b87`: five attempts,
+  16 requests, six items, 259 seconds, zero cost/model tokens, incidents, or
+  notifications; Facebook used three requests and 108 seconds;
+- every recorded Facebook browser operation succeeded; PID 63205 remains ready
+  on `session:last30days-facebook`, canonical profile, with 17 tabs.
+
+State Movement:
+
+- P12/Plan 0028 advances `C09 -> C10`, version `9 -> 10`, and `OPEN -> CLOSED`;
+  installed service 0.3.28 is the accepted runtime.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary independently verified all terminal evidence.
+
+Graphiti Write Status:
+
+- pending one compact source-backed closeout memory after the repository commit
+  is available as a durable identity.
+
+Next Bounded Action:
+
+- rerun closeout audits, commit/push the Last30Days slice, reconcile the
+  agent-browser note-only worktree, then write the compact Graphiti memory.

@@ -147,6 +147,15 @@ class FacebookCliAdapterTests(unittest.TestCase):
     def test_extract_script_does_not_rescan_every_ancestor_subtree(self):
         self.assertNotIn("parent.querySelectorAll(actionSelector)", facebook.EXTRACT_SCRIPT)
 
+    def test_extract_script_models_current_action_cards_and_rendered_glyph_time(self):
+        self.assertIn(
+            "const actionSelector = '[aria-label^=\"Actions for this post\"]'",
+            facebook.EXTRACT_SCRIPT,
+        )
+        self.assertIn("const renderedGlyphText", facebook.EXTRACT_SCRIPT)
+        self.assertIn("isTimestampLabel(renderedGlyphText(a))", facebook.EXTRACT_SCRIPT)
+        self.assertIn("isSponsoredLabel(renderedGlyphText(a))", facebook.EXTRACT_SCRIPT)
+
     def test_checkpoint_text_is_gated_by_missing_authenticated_dom(self):
         for script in (facebook.AUTH_SCRIPT, facebook.PAGE_STATE_SCRIPT):
             self.assertIn("const authenticatedDom", script)
@@ -323,10 +332,6 @@ class FacebookCliAdapterTests(unittest.TestCase):
                     {"index": 0, "active": True, "url": "https://x.com/home"},
                 ]},
                 {},
-                {"tabs": [
-                    {"index": 0, "active": False, "url": "https://x.com/home"},
-                    {"index": 1, "active": True, "url": "https://www.facebook.com/"},
-                ]},
                 {"authenticated_dom": True, "has_c_user": True, "has_xs": True},
             ],
         ) as invoke:
@@ -334,13 +339,16 @@ class FacebookCliAdapterTests(unittest.TestCase):
 
         self.assertTrue(auth.authenticated)
         self.assertEqual(
-            ["--session", "shared-social", "tab", "new", "about:blank"],
+            [
+                "--session",
+                "shared-social",
+                "tab",
+                "new",
+                "https://www.facebook.com/",
+            ],
             invoke.call_args_list[1].args[0],
         )
-        self.assertEqual(
-            ["--session", "shared-social", "open", "https://www.facebook.com/"],
-            invoke.call_args_list[2].args[0],
-        )
+        self.assertIn("eval", invoke.call_args_list[2].args[0])
 
     def test_auth_inspection_skips_frozen_target_and_reuses_responsive_retained_target(self):
         client = facebook.CliAgentBrowserClient(timeout=8)
@@ -451,14 +459,120 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertTrue(auth.authenticated)
         commands = [call.args[0] for call in invoked.call_args_list]
         self.assertIn(
-            ["--session", "shared-social", "tab", "new", "about:blank"],
+            [
+                "--session",
+                "shared-social",
+                "tab",
+                "new",
+                "https://www.facebook.com/",
+            ],
             commands,
+        )
+        self.assertFalse(any("open" in command for command in commands))
+        self.assertEqual(2, sum("eval" in command for command in commands))
+
+    def test_auth_inspection_caps_frozen_retained_targets_before_fresh_probe(self):
+        client = facebook.CliAgentBrowserClient(timeout=30)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="shared-social",
+        )
+        tabs = {
+            "tabs": [
+                {
+                    "index": index,
+                    "active": False,
+                    "url": f"https://www.facebook.com/search/top/?q=OpenAI&n={index}",
+                }
+                for index in range(8)
+            ]
+        }
+
+        def invoke(args, **_kwargs):
+            if args[-2:] == ["tab", "list"]:
+                return tabs
+            if "tab" in args and args[-1].isdigit():
+                raise facebook.FacebookScraperFailure(
+                    "agent_browser_timeout", "retained target did not respond"
+                )
+            if "eval" in args:
+                return {"authenticated_dom": True, "has_c_user": True}
+            return {}
+
+        with mock.patch.object(client, "_invoke", side_effect=invoke) as invoked:
+            auth = client.inspect_auth(workspace)
+
+        self.assertTrue(auth.authenticated)
+        commands = [call.args[0] for call in invoked.call_args_list]
+        retained_selections = [
+            call
+            for call in invoked.call_args_list
+            if "tab" in call.args[0] and call.args[0][-1].isdigit()
+        ]
+        self.assertEqual(2, len(retained_selections))
+        self.assertTrue(
+            all(call.kwargs["timeout"] == 15 for call in retained_selections)
         )
         self.assertIn(
-            ["--session", "shared-social", "open", "https://www.facebook.com/"],
+            [
+                "--session",
+                "shared-social",
+                "tab",
+                "new",
+                "https://www.facebook.com/",
+            ],
             commands,
         )
-        self.assertEqual(2, sum("eval" in command for command in commands))
+
+    def test_fresh_auth_probe_gets_extended_bounded_deadlines(self):
+        client = facebook.CliAgentBrowserClient(timeout=45, job_timeout_ms=120_000)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="shared-social",
+        )
+
+        with mock.patch.object(client, "act") as act, mock.patch.object(
+            client,
+            "_invoke",
+            return_value={"authenticated_dom": True, "has_c_user": True},
+        ) as invoke:
+            auth = client._inspect_auth_on_fresh_target(workspace)
+
+        self.assertTrue(auth.authenticated)
+        command = invoke.call_args.args[0]
+        self.assertEqual("30000", command[command.index("--job-timeout-ms") + 1])
+        self.assertEqual(45, invoke.call_args.kwargs["timeout"])
+        self.assertGreaterEqual(
+            invoke.call_args.kwargs["timeout"] * 1000
+            - int(command[command.index("--job-timeout-ms") + 1]),
+            10_000,
+        )
+        act.assert_called_once_with(
+            workspace,
+            facebook.BrowserAction("new_tab", value="https://www.facebook.com/"),
+        )
+
+    def test_retained_auth_probe_gets_queue_aware_outer_grace(self):
+        client = facebook.CliAgentBrowserClient(timeout=45, job_timeout_ms=120_000)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="shared-social",
+        )
+
+        with mock.patch.object(
+            client,
+            "_invoke",
+            return_value={"authenticated_dom": True, "has_c_user": True},
+        ) as invoke:
+            result = client._evaluate_auth_probe(workspace)
+
+        self.assertTrue(result["authenticated_dom"])
+        command = invoke.call_args.args[0]
+        self.assertEqual("3000", command[command.index("--job-timeout-ms") + 1])
+        self.assertEqual(15, invoke.call_args.kwargs["timeout"])
 
     def test_wait_action_is_local_and_bounded(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
@@ -675,6 +789,152 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual("not_required", workspace.operator_visible_state)
         self.assertEqual("", workspace.operator_url)
         self.assertEqual(2, invoke.call_count)
+
+    def test_exact_retained_session_with_default_profile_alias_is_reused(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        status = {
+            "service_state": {
+                "sessions": {
+                    "last30days-facebook": {
+                        "profileId": "default",
+                        "browserIds": ["session:last30days-facebook"],
+                        "tabIds": ["target:facebook"],
+                    },
+                },
+                "browsers": {
+                    "session:last30days-facebook": {
+                        "profileId": "default",
+                        "health": "ready",
+                        "activeSessionIds": ["last30days-facebook"],
+                        "viewStreams": [
+                            {
+                                "id": "cdp-screencast",
+                                "provider": "cdp_screencast",
+                                "readiness": {"state": "ready"},
+                            },
+                        ],
+                    },
+                },
+                "tabs": {
+                    "target:facebook": {
+                        "targetId": "facebook",
+                        "url": "https://www.facebook.com/search/posts?q=OpenAI",
+                    },
+                },
+            },
+        }
+
+        with mock.patch.object(
+            client, "_invoke", side_effect=[access_plan(), status]
+        ) as invoke, mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ):
+            workspace = client.acquire_workspace(request())
+
+        self.assertEqual("session:last30days-facebook", workspace.browser_id)
+        self.assertEqual("last30days-facebook", workspace.session_name)
+        self.assertEqual("facebook", workspace.target_id)
+        self.assertEqual("last30days-facebook", workspace.profile_id)
+        self.assertEqual(2, invoke.call_count)
+
+    def test_exact_default_profile_alias_forwards_to_retained_owner_session(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        status = {
+            "service_state": {
+                "sessions": {
+                    "last30days-facebook": {
+                        "profileId": "default",
+                        "browserIds": ["session:plan0058"],
+                        "tabIds": ["target:facebook"],
+                    },
+                    "plan0058": {
+                        "profileId": "default",
+                        "browserIds": ["session:plan0058"],
+                        "tabIds": ["target:facebook"],
+                    },
+                },
+                "browsers": {
+                    "session:plan0058": {
+                        "profileId": "default",
+                        "health": "ready",
+                        "activeSessionIds": ["plan0058"],
+                        "viewStreams": [
+                            {
+                                "id": "cdp-screencast",
+                                "provider": "cdp_screencast",
+                                "readiness": {"state": "ready"},
+                            },
+                        ],
+                    },
+                },
+                "tabs": {
+                    "target:facebook": {
+                        "targetId": "facebook",
+                        "url": "https://www.facebook.com/search/posts?q=OpenAI",
+                    },
+                },
+            },
+        }
+
+        with mock.patch.object(
+            client, "_invoke", side_effect=[access_plan(), status]
+        ) as invoke, mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ):
+            workspace = client.acquire_workspace(request())
+
+        self.assertEqual("session:plan0058", workspace.browser_id)
+        self.assertEqual("plan0058", workspace.session_name)
+        self.assertEqual("facebook", workspace.target_id)
+        self.assertEqual("last30days-facebook", workspace.profile_id)
+        self.assertEqual(2, invoke.call_count)
+
+    def test_default_profile_alias_rejects_ambiguous_active_owners(self):
+        sessions = {
+            "last30days-facebook": {
+                "profileId": "default",
+                "browserIds": ["session:plan0058"],
+                "tabIds": ["target:facebook"],
+            },
+            "plan0058": {
+                "profileId": "default",
+                "browserIds": ["session:plan0058"],
+            },
+            "other-owner": {
+                "profileId": "default",
+                "browserIds": ["session:plan0058"],
+            },
+        }
+        browsers = {
+            "session:plan0058": {
+                "profileId": "default",
+                "health": "ready",
+                "activeSessionIds": ["plan0058", "other-owner"],
+                "viewStreams": [
+                    {
+                        "provider": "cdp_screencast",
+                        "readiness": {"state": "ready"},
+                    },
+                ],
+            },
+        }
+        tabs = {
+            "target:facebook": {
+                "targetId": "facebook",
+                "url": "https://www.facebook.com/",
+            },
+        }
+
+        self.assertIsNone(
+            facebook._exact_retained_default_owner(
+                session_name="last30days-facebook",
+                selected_profile="last30days-facebook",
+                target_service_id="facebook",
+                sessions=sessions,
+                browsers=browsers,
+                tabs=tabs,
+            )
+        )
 
     def test_wrong_profile_on_requested_session_uses_profile_scoped_lane(self):
         client = facebook.CliAgentBrowserClient(timeout=5, job_timeout_ms=120_000)
@@ -1168,6 +1428,49 @@ class FacebookCandidateQualityTests(unittest.TestCase):
             ("2026-07-15", "med"),
             facebook._parse_facebook_date("about an hour ago", NOW),
         )
+
+    def test_current_rendered_shorthand_and_yesterday_clock_dates_resolve(self):
+        self.assertEqual(
+            ("2026-07-14", "med"),
+            facebook._parse_facebook_date("20h", NOW),
+        )
+        self.assertEqual(
+            ("2026-07-14", "med"),
+            facebook._parse_facebook_date("Yesterday at 7:00 AM", NOW),
+        )
+
+    def test_live_shape_candidate_with_rendered_timestamp_passes_quality_gate(self):
+        candidate = {
+            "candidate_source": "action_card",
+            "action_label": "Actions for this post by Example Research",
+            "author": "Example Research",
+            "author_url": "https://www.facebook.com/example-research",
+            "media_urls": [
+                "https://www.facebook.com/photo/?fbid=1001&set=pcb.2002"
+            ],
+            "timestamp": "20h",
+            "text": (
+                "Example Research shared a detailed OpenAI systems field note "
+                "with enough substantive content for the post quality gate."
+            ),
+            "engagement": {"likes": 3, "comments": 1, "shares": 0},
+        }
+        page = dict(fixture("mixed_search.json")["page"])
+        page.update(
+            {
+                "url": facebook._search_url("OpenAI"),
+                "title": "OpenAI - Search Results | Facebook",
+                "heading": "Search results for OpenAI",
+                "query_value": "OpenAI",
+            }
+        )
+        client = FakeAgentBrowserClient(page=page, candidates=[candidate])
+
+        result = make_scraper(client).search("OpenAI", "2026-07-14", "2026-07-15")
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(1, len(result["items"]))
+        self.assertEqual("2026-07-14", result["items"][0]["date"])
 
     def test_accessibility_snapshot_pairs_obfuscated_timestamp_with_author(self):
         snapshot = '''

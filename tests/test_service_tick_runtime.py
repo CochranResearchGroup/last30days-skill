@@ -247,6 +247,32 @@ def test_builtin_adapter_bridge_preserves_bounded_browser_operation_evidence():
     )
 
 
+def test_builtin_adapter_bridge_preserves_bounded_rejection_counts():
+    worker = FixtureWorker(
+        lambda request: _result(
+            request,
+            status="failed",
+            error="quality_gate_failed",
+            retry="content",
+            diagnostics={
+                "rejection_counts": {
+                    "missing_date": 5,
+                    "kind_unknown": 3,
+                }
+            },
+        )
+    )
+
+    result = build_acquisition_adapter_registry(worker).require(
+        "facebook_agent_browser", source="facebook", capability="collect"
+    ).collect(_context("facebook_agent_browser", "facebook"))
+
+    assert result.rejection_counts == {
+        "missing_date": 5,
+        "kind_unknown": 3,
+    }
+
+
 def test_builtin_adapter_bridge_preserves_media_and_agent_browser_incident_evidence():
     success_worker = FixtureWorker(lambda request: _result(request, media=True))
     success = build_acquisition_adapter_registry(success_worker).require(

@@ -172,6 +172,7 @@ class ProviderResult:
     operator_url: str | None = None
     outcome_counts: dict[str, int] | None = None
     browser_operations: tuple[dict[str, object], ...] = ()
+    rejection_counts: dict[str, int] | None = None
 
     def __post_init__(self) -> None:
         if self.status not in {"success", "partial", "empty", "failure"}:
@@ -240,6 +241,20 @@ class ProviderResult:
                 raise ValueError("provider browser operation duration is invalid")
             if operation.get("error_type") is not None:
                 _text(operation.get("error_type"), "browser operation error type", 64)
+        rejection_counts = self.rejection_counts or {}
+        if len(rejection_counts) > 32:
+            raise ValueError("provider rejection count evidence exceeds the bound")
+        normalized_rejections: dict[str, int] = {}
+        for reason, count in rejection_counts.items():
+            _text(reason, "provider rejection reason", 64)
+            if (
+                isinstance(count, bool)
+                or not isinstance(count, int)
+                or not 0 <= count <= 1_000_000
+            ):
+                raise ValueError("provider rejection count is invalid")
+            normalized_rejections[reason] = count
+        object.__setattr__(self, "rejection_counts", normalized_rejections)
 
     @classmethod
     def success(
@@ -392,6 +407,7 @@ class TickRunner:
             "operator_url": result.operator_url,
             "outcome_counts": result.outcome_counts,
             "browser_operations": list(result.browser_operations),
+            "rejection_counts": result.rejection_counts,
         }
 
     def _restore_provider_result(self, payload: Mapping[str, object]) -> ProviderResult:
@@ -487,6 +503,7 @@ class TickRunner:
             operator_url=payload.get("operator_url"),
             outcome_counts=dict(payload.get("outcome_counts", {})),
             browser_operations=tuple(payload.get("browser_operations", ())),
+            rejection_counts=dict(payload.get("rejection_counts", {})),
         )
 
     def _event(

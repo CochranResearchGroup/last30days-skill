@@ -1233,8 +1233,49 @@ Closed Plan:
 
 Next Bounded Action:
 
-- stop manual browser-recovery proof ticks. Keep the quality gate unchanged;
-  any future Facebook yield tuning is a separate product packet.
+- preserve Plan 0027 as browser-recovery history. P12/Plan 0028 owns the
+  disproven scraper-yield claim and must define live scrapable content before
+  changing extraction or quality semantics.
+
+## P12 | Facebook Live Content Model And Scraper Repair
+
+State: CLOSED
+
+Objective: define scrapable Facebook post content against the current retained,
+authenticated site and repair the governed adapter until it accepts real posts
+or proves a genuine empty result.
+
+Current State:
+
+- installed service 0.3.28/schema16 is ready with reproducible artifact SHA-256
+  `d2718d01e4c1f0a0c431557008b23e4d5cb5d2294cdbea7a7588ce1e460e20d7`;
+- governed manual tick `tick-f273eb12d642b31d49a7f12959b93b87`
+  accepts Facebook: 19 observed, two accepted, 17 rejected, with exact bounded
+  rejection counters and every browser operation successful;
+- the authenticated canonical owner remains ready as PID 63205 on
+  `session:last30days-facebook` with 17 tabs; no duplicate owner or tab closure
+  occurred;
+- complete validation passes with 2,600 tests, seven skips, six subtests, and
+  reproducible build/install, manifest, authority, compile, and patch checks;
+- X's separate 17-of-17 `out_of_range` quality rejection remains truthful
+  nonblocking backlog and leaves the aggregate tick `complete_degraded` without
+  weakening Facebook acceptance.
+
+Closed Plan:
+
+- `docs/dev/plans/0028-2026-08-08-facebook-live-content-model-and-scraper-repair.md`
+  version 10/C10 is the terminal accepted authority.
+
+Dependencies:
+
+- consumes P11's retained-browser recovery and P08's governed manual-tick path;
+- preserves the canonical authenticated profile, zero-cost posture, recurring
+  schedule, and no-browser-lifecycle-mutation boundary.
+
+Closeout:
+
+- commit and push the accepted Plan 0028 slice. Treat X date-quality repair as
+  a separate successor only if the operator prioritizes it.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 
