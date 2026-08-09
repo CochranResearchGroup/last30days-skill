@@ -15126,3 +15126,57 @@ Next Bounded Action:
 - publish this guard checkpoint, enqueue the exact preflight once, and poll
   only tick `tick-527ad0a718cb64e9f362f4921cbd2498`. Stop after its terminal
   receipt; no retry or fallback.
+
+## Turn 252 | 2026-08-09
+
+Focus: adjudicate the sole Plan 0035 proof and convert its exact failure into a
+bounded deterministic repair rather than another blind provider attempt.
+
+Authority Consulted:
+
+- Plan 0035/C02-C03; Plan 0036/C01; current receipt operation ledger; retained
+  session and raw CDP readbacks; planning, debugging, browser, validation,
+  documentation, CodeGraph, goal, and Git policies.
+
+Decisions And Changes:
+
+- closed Plan 0035 unsuccessfully for content qualification after exactly one
+  provider attempt and preserved the enabled daily schedule unchanged;
+- separated two diagnostics: unscoped explicit CDP attachment encounters a
+  default-profile lock, but the exact production session route succeeds and
+  is therefore not proven contaminated;
+- reproduced the exact session inventory three consecutive times at 8.4-8.8
+  seconds and opened Plan 0036 to widen only that read-only allowance from 10
+  to 20 seconds under the existing 75-second cumulative run budget;
+- added a red regression that fails `20 != 10`. No production, installed
+  runtime, browser, tab, or schedule mutation occurred.
+
+Validation Evidence:
+
+- tick `tick-527ad0a718cb64e9f362f4921cbd2498`; provider
+  `provider-attempt-746e9438cb50a275aa04bd6572bcc74c`; 26 seconds, one request,
+  zero candidates/items/cost/model use, safe code `agent_browser_timeout`;
+- operation ledger: service 716ms, service 4,252ms, tab timeout 10,025ms;
+- raw CDP retained Facebook target live; exact session inventory returns four
+  intended tabs with Facebook active;
+- focused red command: `uv run pytest tests/test_facebook.py -k
+  auth_tab_inventory_allows_observed_service_latency -q` fails as expected.
+
+State Movement:
+
+- Plan 0035 `OPEN -> CLOSED` at version 3/C03; Plan 0036 opens at version 1/C01
+  as the sole active plan; P13 remains `OPEN` and routine readiness remains
+  false.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary owns the serialized diagnosis and repair.
+
+Graphiti Write Status:
+
+- deferred until the installed repair outcome is source-backed.
+
+Next Bounded Action:
+
+- implement the narrow timeout repair, add cumulative-clamp coverage, and run
+  focused then canonical validation before any new provider attempt.

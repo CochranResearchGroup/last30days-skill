@@ -34,6 +34,7 @@ DEPTH_CONFIG = {
 }
 
 MAX_RUN_BUDGET_SECONDS = 75
+TAB_INVENTORY_TIMEOUT_SECONDS = 20
 
 ERROR_TYPES = {
     "agent_browser_missing",
@@ -862,7 +863,7 @@ class CliAgentBrowserClient:
     def inspect_auth(self, workspace: BrowserWorkspace) -> FacebookAuthState:
         listed = self._invoke(
             ["--session", workspace.session_name, "tab", "list"],
-            timeout=min(self.timeout, 10),
+            timeout=min(self.timeout, TAB_INVENTORY_TIMEOUT_SECONDS),
         )
         tabs = listed.get("tabs") if isinstance(listed.get("tabs"), list) else []
         matches = [

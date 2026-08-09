@@ -1,8 +1,8 @@
 # Plan 0035 | Facebook Routine Automation Qualification
 
-State: OPEN
+State: CLOSED
 Roadmap: P13
-Plan version: 2
+Plan version: 3
 Date: 2026-08-09
 Predecessor: Plan 0034 version 3/checkpoint P0034-C03
 
@@ -238,3 +238,79 @@ Next action:
 - enqueue `tick-527ad0a718cb64e9f362f4921cbd2498` exactly once with the
   matching interval, schedule ID, and `--service facebook`; poll only its
   durable receipt and do not retry.
+
+### Checkpoint P0035-C03 | 2026-08-09
+
+Plan version: 3
+
+State transition:
+
+- `live_effect_ready -> tab_inventory_latency_blocker`.
+
+Progress classification:
+
+- `blocker_discovery`; the sole post-0.3.38 proof ruled out content success
+  and isolated the failure before page evaluation to the session tab inventory.
+
+Owned changes:
+
+- enqueued the exact C02 tick once and wrote one terminal provider receipt;
+  no retry, schedule/config mutation, browser lifecycle change, challenge
+  action, cost, or model use occurred.
+
+Validation evidence:
+
+- tick `tick-527ad0a718cb64e9f362f4921cbd2498`, execution attempt
+  `tick-attempt-c71b2211114969b15919fe2679175443`, and provider attempt
+  `provider-attempt-746e9438cb50a275aa04bd6572bcc74c` ended
+  `complete_degraded` with safe code `agent_browser_timeout` after 26 seconds;
+- the provider used one request and persisted zero observed, accepted,
+  rejected, or quality-rejected candidates, zero items, zero cost, and zero
+  model tokens. It emitted no auth, CAPTCHA, checkpoint, rate-limit, page, or
+  operator-handoff signal;
+- its operation ledger is `service=ok/716ms`, `service=ok/4252ms`, then
+  `tab=timed_out/10025ms`, proving the 10-second tab inventory deadline failed
+  before Facebook DOM inspection;
+- after termination, raw CDP discovery returned the intended Facebook target
+  immediately. The exact `--session last30days-facebook tab list` command
+  then succeeded four times without mutation; three consecutive measured
+  probes took 8.4-8.8 seconds each, leaving inadequate jitter margin under the
+  installed 10-second adapter deadline;
+- an unscoped `--cdp` diagnostic separately failed because `shared-social`
+  held the default runtime-profile lock. That is not treated as proof of the
+  session-scoped tick failure because the exact session command remained
+  correctly routed and responsive;
+- `daily-default` remains configured with Facebook enabled. Recurrence is
+  configured but not content-qualified, so routine usability is still false.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary ran the effect and independent read-only CDP and
+  session diagnostics.
+
+Authority classification:
+
+- `inherited_authority`; receipt adjudication and read-only diagnosis remained
+  inside the C02 effect boundary. The plan's one provider attempt is exhausted.
+
+Review disposition summary:
+
+- `blocking=1`: the fixed 10-second read-only inventory deadline is too close
+  to the observed 8.4-8.8-second service latency;
+- `rejected=1`: default-profile lock contamination is not yet accepted as the
+  tick cause because exact session routing now succeeds;
+- `needs_evidence=0`, `nonblocking_backlog=0`.
+
+Graphiti write status:
+
+- deferred to the bounded repair successor after its source-backed closeout.
+
+Remaining acceptance criteria:
+
+- criteria 3-5 are not satisfied. Plan 0036 owns the deterministic inventory
+  budget repair, installed convergence, and a separately governed proof.
+
+Next action:
+
+- close this one-attempt authority and open Plan 0036. Do not retry the tick or
+  change the existing recurring schedule.

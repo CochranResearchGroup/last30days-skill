@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook retained-session inventory latency.** Service 0.3.39 gives the
+  read-only authenticated-session tab inventory up to 20 seconds after an
+  installed proof timed out at 10,025 milliseconds and three exact-session
+  diagnostics completed in 8.4-8.8 seconds. The independent 75-second
+  cumulative adapter budget still clamps the command, and no retry, browser
+  launch, profile reassignment, or schedule change is introduced.
+
 - **Facebook recovery-budget preservation.** Service 0.3.38 bounds the
   navigation-only page-state probe separately from extraction, opens its sole
   recovery target directly at the verified Facebook URL, and defers exact

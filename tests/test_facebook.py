@@ -222,6 +222,43 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertIn("run budget", str(raised.exception))
         run.assert_not_called()
 
+    def test_auth_tab_inventory_allows_observed_service_latency(self):
+        client = facebook.CliAgentBrowserClient(timeout=45)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="last30days-facebook",
+        )
+        auth = facebook.FacebookAuthState(authenticated=True, has_c_user=True)
+
+        with mock.patch.object(client, "_invoke", return_value={"tabs": []}) as invoke, mock.patch.object(
+            client, "_inspect_auth_on_fresh_target", return_value=auth
+        ):
+            observed = client.inspect_auth(workspace)
+
+        self.assertEqual(auth, observed)
+        self.assertEqual(20, invoke.call_args.kwargs["timeout"])
+
+    def test_tab_inventory_allowance_remains_clamped_by_run_budget(self):
+        client = facebook.CliAgentBrowserClient(timeout=45)
+        client._run_deadline = 17.1
+        completed = subprocess.CompletedProcess(
+            args=[],
+            returncode=0,
+            stdout='{"success": true, "data": {"tabs": []}}',
+            stderr="",
+        )
+
+        with mock.patch.object(facebook.time, "monotonic", side_effect=[10.0, 10.1]), mock.patch.object(
+            facebook.subprocess, "run", return_value=completed
+        ) as run:
+            client._invoke(
+                ["--session", "last30days-facebook", "tab", "list"],
+                timeout=facebook.TAB_INVENTORY_TIMEOUT_SECONDS,
+            )
+
+        self.assertEqual(8, run.call_args.kwargs["timeout"])
+
     def test_replace_active_site_target_opens_successor_then_closes_exact_predecessor(self):
         client = facebook.CliAgentBrowserClient(timeout=30)
         workspace = facebook.BrowserWorkspace(

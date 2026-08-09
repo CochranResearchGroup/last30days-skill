@@ -1277,13 +1277,14 @@ Closeout:
 - commit and push the accepted Plan 0028 slice. Treat X date-quality repair as
   a separate successor only if the operator prioritizes it.
 
-## P13 | Facebook Safe Manual Qualification
+## P13 | Facebook Routine Automation Qualification
 
 State: OPEN
 
-Objective: qualify the repaired Facebook adapter for routine attended use with
-a source-scoped governed manual proof and explicit fail-closed handling for an
-organically encountered temporary block or action-frequency limit.
+Objective: qualify the repaired Facebook adapter for recurring unattended use
+through the existing governed daily schedule, with bounded manual proof and
+explicit fail-closed handling for authentication, challenge, rate-limit, and
+content-integrity states.
 
 Current State:
 
@@ -1351,15 +1352,22 @@ Current State:
   same coordinator/runner path as manual enqueue, so accepted content will
   qualify the existing recurring path without a schedule mutation or natural
   boundary wait;
+- Plan 0035's sole tick ended before page inspection when a session tab
+  inventory operation reached its fixed 10-second deadline at 10,025
+  milliseconds. Three exact read-only repetitions succeeded in 8.4-8.8
+  seconds, proving insufficient jitter margin while Facebook remained live;
+- Plan 0036 owns a narrow 20-second read-only inventory allowance under the
+  unchanged cumulative 75-second adapter budget, installed convergence, and
+  one separately guarded content proof;
 - no logout, CAPTCHA, checkpoint, or rate-limit state will be induced. Ticks
   remain manual until a later guarded successor proof satisfies the content
   acceptance contract.
 
 Active Plan:
 
-- `docs/dev/plans/0035-2026-08-09-facebook-routine-automation-qualification.md`
-  owns one bounded post-repair proof and the resulting routine-automation
-  decision.
+- `docs/dev/plans/0036-2026-08-09-facebook-tab-inventory-latency-repair.md`
+  owns the deterministic latency repair, installed convergence, and one
+  bounded routine-automation proof.
 
 Closed Repair Plan:
 
@@ -1367,6 +1375,9 @@ Closed Repair Plan:
   closed at version 3/C03 after installing service 0.3.38. Plan 0033 closed at
   version 5/C05 with the exact three-attempt blocker; any later live proof
   remains a separate human gate with a new explicit attempt ceiling.
+- `docs/dev/plans/0035-2026-08-09-facebook-routine-automation-qualification.md`
+  closed at version 3/C03 after its one authorized tick isolated the inventory
+  deadline blocker without accepted content.
 
 Dependencies:
 
@@ -1376,9 +1387,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- keep ticks manual. A later checkpoint may run one separately guarded
-  Facebook-only proof against installed 0.3.38; do not retry any Plan 0033 tick
-  or wait for the natural scheduler.
+- implement and install Plan 0036's bounded read-only inventory repair, then
+  run one fresh guarded Facebook-only proof without waiting for natural time.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 
