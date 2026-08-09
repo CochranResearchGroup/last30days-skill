@@ -14936,3 +14936,79 @@ Next Bounded Action:
   closeout only if ready, commit and push this documentation/receipt slice,
   then stop. Plan 0034's offline regression is the next recommended packet;
   do not run another Facebook tick without a new explicit attempt ceiling.
+
+## Turn 249 | 2026-08-09
+
+Focus: reproduce Plan 0033's two Facebook target-loss traces, preserve recovery
+budget, install service 0.3.38, and close the offline-only Plan 0034 packet.
+
+Authority Consulted:
+
+- Plan 0034/C01-C03; planning, graph-memory, CodeGraph, worktree, commit/push,
+  release, validation, documentation, roadmap/runbook, goal-execution, and
+  closeout policies; diagnosing-bugs, agent-browser, and repo-policy-selector
+  skill instructions; current Git, service, database, schedule, doctor,
+  browser, tab, challenge, queue, and direct read-only CDP evidence.
+
+Decisions And Changes:
+
+- independently decoded all three Plan 0033 operation timelines instead of
+  executing another deterministic/provider attempt. The final operation had
+  only three or four seconds because the 75-second cumulative adapter deadline
+  was nearly spent;
+- added red-capable regressions for retained auth followed by page-state loss,
+  and replacement auth followed by a starved later query open;
+- released 0.3.38 with a separate 12-second navigation-only page-state probe,
+  direct-at-final-URL successor opening, no redundant local post-open wait,
+  and deferred exact same-site consolidation through guaranteed cleanup;
+- preserved every owner/profile/auth/challenge/rate-limit/query/filter,
+  one-successor, typed-terminal, wall, and one-final-target gate;
+- committed and pushed implementation commit `90316f5`, installed the exact
+  artifact, and synchronized the frozen installed Skill copy;
+- ran one direct read-only CDP evaluation on the already-active Facebook home
+  tab. It returned `readyState=complete`, authenticated DOM, and `c_user`; it
+  did not navigate, open, close, or invoke a provider.
+
+Validation Evidence:
+
+- both regressions failed before implementation with the expected
+  `agent_browser_timeout`/`facebook_target_unresponsive` shapes and pass after
+  repair; focused adapter/worker/cleanup/tick/release/runtime/authority suites
+  pass;
+- the canonical suite passes 2,629 tests, 7 skips, and 6 subtests;
+- three 0.3.38 artifacts are byte-identical at SHA-256
+  `401a4f2d14d1cc977d2f4e14681ba3b61456432b3762814213a0d0e83e4ef5be`;
+- installed 0.3.38/schema16 is ready at runtime-manifest SHA-256
+  `99b2e4c1db862a99855430929d82d5ae5bc5ae092332cf035299e8b337da59b4`
+  and contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
+- source/Skill/service Facebook hashes agree at
+  `5f4dd38aad442d3c501af6d648c36f3a703f9c3663f7347888d9264420adc53e`;
+- both current/rollback SQLite checks are `ok`; `daily-default` remains
+  enabled/ready at 86,400 seconds, next boundary `2026-08-10T00:00:00Z`;
+- PID 63205 remains ready with four live tabs, exactly one Facebook target,
+  zero challenges, zero queue depth, and zero lease waiters;
+- remote control is ready and effective `installReady=true`. The raw install
+  doctor remains false solely for two duplicate-profile warnings with zero
+  candidates and zero readiness-impacting candidates.
+
+State Movement:
+
+- Plan 0034 advances `C01 -> C03`, version `1 -> 3`, and `OPEN -> CLOSED`;
+  P13 returns to `PLANNED` because no live content proof ran and Facebook
+  remains manual/not routine-qualified pending a new human-gated plan.
+
+Subagent Status And Reconciliation:
+
+- none; the complete packet remained serialized with the primary agent.
+
+Graphiti Write Status:
+
+- provider readiness passed and one closeout episode queued as job
+  `341c2a09-0cd5-40d8-acee-eb5a4da6650a` in `last30days_skill_main`.
+
+Next Bounded Action:
+
+- commit and push this closeout slice, verify the remote tip and clean
+  worktree, then stop. Any live Facebook proof requires a new explicit
+  attempt ceiling; do not retry a Plan 0033 tick.

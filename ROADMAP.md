@@ -1279,7 +1279,7 @@ Closeout:
 
 ## P13 | Facebook Safe Manual Qualification
 
-State: OPEN
+State: PLANNED
 
 Objective: qualify the repaired Facebook adapter for routine attended use with
 a source-scoped governed manual proof and explicit fail-closed handling for an
@@ -1337,6 +1337,12 @@ Current State:
   `facebook_target_unresponsive` result after 83-84 seconds each. All used one
   request with zero candidates, cost, model use, quality rejections, page
   signals, or auth/challenge/rate-limit evidence;
+- Plan 0034 reproduced both terminal traces as deterministic budget failures.
+  Installed 0.3.38 bounds navigation-only page-state evaluation, opens one
+  recovery target directly at the verified URL, removes the redundant local
+  wait, and defers same-site duplicate closure to guaranteed cleanup. The
+  canonical suite passes 2,629 tests; a read-only direct CDP probe confirms the
+  retained Facebook home target is complete and authenticated;
 - final cleanup leaves PID 63205 ready with four intentional live tabs and one
   Facebook home target. Facebook remains manual and not routine-qualified;
   the three-attempt ceiling is exhausted and no fourth tick is authorized;
@@ -1344,12 +1350,12 @@ Current State:
   remain manual until a later guarded successor proof satisfies the content
   acceptance contract.
 
-Open Plan:
+Closed Repair Plan:
 
 - `docs/dev/plans/0034-2026-08-09-facebook-post-navigation-target-loss-repair.md`
-  version 1/C01 is the active offline repair authority. Plan 0033 closed at
-  version 5/C05 with the exact three-attempt blocker; any later live proof is
-  a separate human gate with a new explicit attempt ceiling.
+  closed at version 3/C03 after installing service 0.3.38. Plan 0033 closed at
+  version 5/C05 with the exact three-attempt blocker; any later live proof
+  remains a separate human gate with a new explicit attempt ceiling.
 
 Dependencies:
 
@@ -1360,8 +1366,8 @@ Dependencies:
 Next Bounded Action:
 
 - keep ticks manual. A later checkpoint may run one separately guarded
-  Facebook-only proof against installed 0.3.37; do not retry tick
-  `tick-b5aa065db0a567dd5e29e3851d1b1858` or wait for the natural scheduler.
+  Facebook-only proof against installed 0.3.38; do not retry any Plan 0033 tick
+  or wait for the natural scheduler.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 

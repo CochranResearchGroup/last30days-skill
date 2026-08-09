@@ -1,8 +1,8 @@
 # Plan 0034 | Facebook Post-Navigation Target Loss Repair
 
-State: OPEN
+State: CLOSED
 Roadmap: P13
-Plan version: 2
+Plan version: 3
 Date: 2026-08-09
 Predecessor: Plan 0033 version 5/checkpoint P0033-C05
 
@@ -142,3 +142,72 @@ Authority classification:
 Next action:
 
 - implement the minimum adapter changes and turn both regressions green.
+
+### Checkpoint P0034-C03 | 2026-08-09
+
+Plan version: 3
+
+State transition:
+
+- `deterministic_red_proven -> repaired_installed_closed`.
+
+Progress classification:
+
+- `outcome_progress`; both installed failure shapes now have red-capable
+  regressions and a bounded green successor.
+
+Repair and validation evidence:
+
+- service 0.3.38 gives navigation-only page-state reads a 12-second outer and
+  three-second inner bound, opens the sole successor directly at its verified
+  Facebook URL, removes the redundant local post-open wait, and leaves exact
+  same-site predecessor closure to guaranteed cleanup;
+- the two regressions failed before implementation with the observed
+  three/four-second remaining-budget shapes and pass after repair;
+- focused Facebook/worker/cleanup/tick/release/runtime/authority suites pass;
+  the canonical suite passes 2,629 tests with 7 skips and 6 subtests;
+- three independently produced artifacts are byte-identical at SHA-256
+  `401a4f2d14d1cc977d2f4e14681ba3b61456432b3762814213a0d0e83e4ef5be`;
+- installed 0.3.38/schema16 is ready at runtime-manifest SHA-256
+  `99b2e4c1db862a99855430929d82d5ae5bc5ae092332cf035299e8b337da59b4`
+  and contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
+- worktree, installed Skill, and installed service Facebook sources match at
+  SHA-256 `5f4dd38aad442d3c501af6d648c36f3a703f9c3663f7347888d9264420adc53e`;
+- a direct read-only CDP evaluation on the retained Facebook home target
+  returned `readyState=complete`, authenticated DOM and `c_user` evidence;
+  no provider tick, navigation, target open/close, or browser lifecycle action
+  occurred;
+- PID 63205 remains ready with four live tabs, exactly one Facebook target,
+  zero challenges, and zero queue/lease wait depth. Both current/rollback
+  SQLite quick checks are `ok`; `daily-default` remains enabled/ready at
+  86,400 seconds with next boundary `2026-08-10T00:00:00Z`.
+
+Doctor interpretation:
+
+- raw install doctor remains false solely for two duplicate-profile-pressure
+  warnings with zero candidates and zero readiness-impacting candidates;
+- remote-view doctor preserves that raw warning while reporting effective
+  `installReady=true` and `remoteControl.status=ready` with no issues.
+
+Subagent status and reconciliation:
+
+- none; diagnosis, implementation, installation, and verification remained
+  serialized with the primary agent.
+
+Authority classification:
+
+- `inherited_authority` is consumed for the offline repair/install packet;
+  `human_gate` remains mandatory for any later Facebook provider tick.
+
+Graphiti write status:
+
+- provider readiness passed and one compact source-backed closeout episode was
+  queued as job `341c2a09-0cd5-40d8-acee-eb5a4da6650a` in
+  `last30days_skill_main`.
+
+Next action:
+
+- keep Facebook manual. A later live proof needs a newly recorded operator
+  attempt ceiling; do not infer qualification from offline or direct-CDP
+  evidence and do not retry any Plan 0033 tick.
