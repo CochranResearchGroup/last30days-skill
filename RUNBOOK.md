@@ -14842,8 +14842,12 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending one compact source-backed write after repository validation and the
-  durable implementation commit.
+- after commit `3fd2b66`, the required provider readiness probe returned
+  `degraded` with a 10-second Codex app-server `TimeoutError`; no memory job was
+  queued. Pending episode summary: Plan 0033/C03 repaired exact Facebook target
+  replacement and retained-owner CDP reuse, installed 0.3.37, preserved one
+  no-retry failed acquisition receipt, and left Facebook manual pending a
+  separately guarded proof.
 
 Next Bounded Action:
 

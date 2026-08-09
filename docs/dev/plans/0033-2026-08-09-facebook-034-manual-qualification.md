@@ -227,8 +227,10 @@ Authority classification:
 
 Graphiti write status:
 
-- deferred until the repaired installed runtime and durable Git closeout are
-  exact; no live-result retry is permitted.
+- provider readiness returned `degraded` after a 10-second Codex app-server
+  `TimeoutError`; no memory job was queued. The compact Plan 0033/C03 repair,
+  no-retry proof, and installed 0.3.37 state remain pending for the next
+  healthy non-trivial closeout.
 
 Next action:
 
