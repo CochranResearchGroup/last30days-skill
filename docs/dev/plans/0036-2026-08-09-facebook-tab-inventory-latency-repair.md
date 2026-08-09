@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P13
-Plan version: 1
+Plan version: 2
 Date: 2026-08-09
 Predecessor: Plan 0035 version 3/checkpoint P0035-C03
 
@@ -149,6 +149,81 @@ Next action:
 
 - implement the narrow timeout change, prove the cumulative clamp, and run the
   focused regression before broader validation.
+
+### Checkpoint P0036-C02 | 2026-08-09
+
+Plan version: 2
+
+State transition:
+
+- `deterministic_repair_ready -> installed_live_guard_ready`.
+
+Progress classification:
+
+- `outcome_progress`; the narrow repair is committed, fully validated,
+  installed, synchronized, and re-read from the current runtime.
+
+Owned changes:
+
+- introduced `TAB_INVENTORY_TIMEOUT_SECONDS=20` only for the authentication
+  session inventory call; retained `_invoke()`'s cumulative-budget clamp;
+- versioned and installed service 0.3.39, refreshed the deterministic runtime
+  manifest, and synchronized the frozen installed Skill copy;
+- no provider, browser, tab, profile, challenge, or schedule effect occurred.
+
+Validation evidence:
+
+- red regression failed `20 != 10` before implementation; both the selected
+  timeout and remaining-run-budget clamp regressions pass afterward;
+- focused Facebook, release/runtime, authority, and source-log suites pass;
+  canonical validation passes 2,631 tests, 7 skips, and 6 subtests;
+- implementation commit `4ee8972` is pushed to `origin/main`;
+- artifact `last30days-service-0.3.39.tar.gz` has SHA-256
+  `fbfa1bbc9a1727372d6d96b8fcadb14aa72eb40f344bd554841fe5c73023858e`;
+- installed 0.3.39/schema16 is ready at runtime-manifest SHA-256
+  `6093ddc3231692ebb1d72d3d1869a7226fac0a61f10be0c9766e80ac48848bae`
+  and contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
+- source, installed Skill, and installed service Facebook files are identical
+  at SHA-256
+  `0851bda99d1c57ad0ceac50f40cb6df0f93b153d00708f02aece2a337c46955e`;
+- current and 0.3.38 rollback SQLite quick checks are `ok`;
+  `daily-default` remains enabled/ready at 86,400 seconds with next boundary
+  `2026-08-10T00:00:00Z`;
+- retained PID 63205 is ready with `lastError=null`, four intended tabs, and
+  one active Facebook home target. An unrelated lifecycle-only dashboard job
+  uses no browser/profile; queue depth and profile-lease waiters are zero.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary independently ran every validation and runtime
+  readback.
+
+Authority classification:
+
+- `inherited_authority`; source, artifact, install, and sync are the exact C01
+  repair packet and consume no provider attempt.
+
+Review disposition summary:
+
+- `blocking=0`, `rejected=0`, `needs_evidence=0`,
+  `nonblocking_backlog=0` for the deterministic repair;
+- routine content qualification remains the sole outstanding gate.
+
+Graphiti write status:
+
+- deferred until the live proof reaches a terminal source-backed outcome.
+
+Remaining acceptance criteria:
+
+- criteria 5-6 require one fresh preflight, one provider result, and final
+  schedule/browser/database readbacks.
+
+Next action:
+
+- publish this installed checkpoint, run fresh guards and a new distinct
+  Facebook-only preflight, then enqueue that exact tick once without waiting
+  for the natural scheduler.
 
 ## Stop Rules
 

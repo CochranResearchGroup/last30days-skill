@@ -15180,3 +15180,60 @@ Next Bounded Action:
 
 - implement the narrow timeout repair, add cumulative-clamp coverage, and run
   focused then canonical validation before any new provider attempt.
+
+## Turn 253 | 2026-08-09
+
+Focus: implement, validate, publish, and install the bounded session-inventory
+latency repair before crossing a new Facebook provider boundary.
+
+Authority Consulted:
+
+- Plan 0036/C01-C02; release, validation, install, skill-sync, Git, browser,
+  database, schedule, and goal policies; current source, artifact, installed
+  runtime, retained-session, and service readbacks.
+
+Decisions And Changes:
+
+- changed only the authentication tab inventory allowance from 10 to 20
+  seconds and added a regression proving the existing cumulative 75-second
+  deadline still clamps it;
+- released and installed service 0.3.39 and synchronized the installed Skill;
+- preserved the browser, its four tabs, the daily schedule, challenges,
+  profiles, current database, and rollback database;
+- treated an unrelated lifecycle-only dashboard job as nonblocking because it
+  owns no browser or profile and queue/lease pressure is zero.
+
+Validation Evidence:
+
+- focused repair/release/runtime/authority/source-log tests pass; canonical
+  suite: 2,631 passed, 7 skipped, 6 subtests passed;
+- commit `4ee8972` is on local and `origin/main`;
+- artifact SHA-256 `fbfa1bbc9a1727372d6d96b8fcadb14aa72eb40f344bd554841fe5c73023858e`;
+- installed 0.3.39/schema16 ready; manifest SHA-256
+  `6093ddc3231692ebb1d72d3d1869a7226fac0a61f10be0c9766e80ac48848bae`;
+  contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
+- all three Facebook adapter copies share SHA-256
+  `0851bda99d1c57ad0ceac50f40cb6df0f93b153d00708f02aece2a337c46955e`;
+- both SQLite quick checks `ok`; daily schedule unchanged and ready; PID 63205
+  ready with one Facebook target; zero challenges, queue depth, and profile
+  lease waiters.
+
+State Movement:
+
+- Plan 0036 advances `C01 -> C02`, version `1 -> 2`, and remains `OPEN` at the
+  new live guard; P13 remains `OPEN` and routine readiness remains unproven.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary independently verified the implementation and
+  installed state.
+
+Graphiti Write Status:
+
+- deferred until the terminal live outcome.
+
+Next Bounded Action:
+
+- publish C02, run a new distinct Facebook-only preflight after final guards,
+  enqueue it once, and adjudicate only that durable receipt.
