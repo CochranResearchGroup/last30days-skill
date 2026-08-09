@@ -1328,19 +1328,28 @@ Current State:
 - 0.3.36 repaired that acquisition decision while preserving exact alias,
   reciprocal-owner, ready-browser, and Facebook-target gates. Installed
   0.3.37/schema16 also types replacement-home-navigation timeouts consistently.
-  Installed pure-function readback selects browser
-  `session:last30days-facebook` and target
-  `1D0EE09568AB75971C4850E7D89783F4`; Facebook remains manual and not
-  routine-qualified because no second proof was authorized;
+  A newly authorized three-attempt window then reached Facebook through the
+  retained owner on every tick but produced no extraction: ticks
+  `tick-6533102fc41c30e1227efceb3c1352d3`,
+  `tick-ee4ebcb380a4afab75ab0860e14f2a32`, and
+  `tick-55cdd0111fa36439694ae4c661bd7cfc` ended as two
+  `agent_browser_timeout` results and one
+  `facebook_target_unresponsive` result after 83-84 seconds each. All used one
+  request with zero candidates, cost, model use, quality rejections, page
+  signals, or auth/challenge/rate-limit evidence;
+- final cleanup leaves PID 63205 ready with four intentional live tabs and one
+  Facebook home target. Facebook remains manual and not routine-qualified;
+  the three-attempt ceiling is exhausted and no fourth tick is authorized;
 - no logout, CAPTCHA, checkpoint, or rate-limit state will be induced. Ticks
   remain manual until a later guarded successor proof satisfies the content
   acceptance contract.
 
 Open Plan:
 
-- `docs/dev/plans/0033-2026-08-09-facebook-034-manual-qualification.md`
-  version 3/C03 is the active authority; Plan 0031 closed successfully and
-  Plans 0029/0030/0032 closed or cancelled unsuccessfully for live proof.
+- `docs/dev/plans/0034-2026-08-09-facebook-post-navigation-target-loss-repair.md`
+  version 1/C01 is the active offline repair authority. Plan 0033 closed at
+  version 5/C05 with the exact three-attempt blocker; any later live proof is
+  a separate human gate with a new explicit attempt ceiling.
 
 Dependencies:
 

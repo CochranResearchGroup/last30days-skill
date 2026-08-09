@@ -180,7 +180,7 @@ def test_current_repository_authority_passes() -> None:
     assert report["issues"] == []
     assert report["active_plan_count"] == 1
     assert report["active_plans"] == [
-        "docs/dev/plans/0033-2026-08-09-facebook-034-manual-qualification.md"
+        "docs/dev/plans/0034-2026-08-09-facebook-post-navigation-target-loss-repair.md"
     ]
     assert report["campaign_plan_count"] == 0
 

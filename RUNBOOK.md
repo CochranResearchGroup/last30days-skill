@@ -14855,3 +14855,84 @@ Next Bounded Action:
   commit and push the coherent repair/receipt slice, and attempt one compact
   Graphiti write. Do not run another Facebook tick; a later separately guarded
   checkpoint may test installed 0.3.37 manually.
+
+## Turn 248 | 2026-08-09
+
+Focus: resume Facebook qualification under a newly authorized three-attempt
+ceiling, execute the attempts immediately on distinct closed intervals, and
+adjudicate the resulting target-loss blocker.
+
+Authority Consulted:
+
+- Plan 0033/C03-C05; planning, goal-execution, documentation, browser,
+  validation, commit/push, roadmap/runbook, and turn-closeout policies;
+  diagnosing-bugs, agent-browser, and repo-policy-selector skill instructions;
+  current installed service, databases, schedule, doctors, browser, tabs,
+  challenges, queue, and retained memory safeguards.
+
+Decisions And Changes:
+
+- recorded the operator's explicit authority for up to three new Facebook-only
+  manual attempts, superseding C03's checkpoint-local no-second-proof boundary;
+- used three distinct fully closed 24-hour intervals and matching preflights;
+  each predicted one Facebook lane/provider/attempt with 50 requests, 120 wall
+  seconds, three items, and zero cost/model use;
+- executed all three ticks serially and stopped at the exact attempt ceiling;
+  no same-tick retry, fallback, natural scheduler wait, browser close, login,
+  logout, MFA, CAPTCHA/checkpoint interaction, or fourth tick occurred;
+- treated one intermediate degraded browser read as inconclusive after a
+  sequential detailed read returned the same PID ready with `lastError=null`,
+  a ready CDP stream, one live Facebook target, and only closed predecessor
+  handles. Fresh guards then passed before attempt three;
+- closed Plan 0033 with the terminal typed blocker and opened Plan 0034 for an
+  offline-only deterministic post-navigation target-loss repair. A later live
+  proof remains a separate human gate.
+
+Validation Evidence:
+
+- tick `tick-6533102fc41c30e1227efceb3c1352d3`, execution
+  `tick-attempt-6340cc7d9750a9dfc29869584e4ebf72`, provider
+  `provider-attempt-94143dedb9602c74c4af1eb14082a7be`: transient
+  `agent_browser_timeout`, 83 wall seconds, one request;
+- tick `tick-ee4ebcb380a4afab75ab0860e14f2a32`, execution
+  `tick-attempt-eb36e207ac68962474976d421cf3b2a4`, provider
+  `provider-attempt-89bc548a46c6bac53f81fdb5fca793e1`: transient
+  `facebook_target_unresponsive`, 84 wall seconds, one request;
+- tick `tick-55cdd0111fa36439694ae4c661bd7cfc`, execution
+  `tick-attempt-868995e4837cbaa22a49258307ec92dc`, provider
+  `provider-attempt-0ae6046304b7826f18e711e9627ea314`: transient
+  `agent_browser_timeout`, 83 wall seconds, one request;
+- every result has outcome counts `0/0/0/0`, zero items/cost/model tokens,
+  empty rejection counts and page signals, and no operator handoff, auth,
+  CAPTCHA, checkpoint, rate-limit, or quality-rejection evidence;
+- final service 0.3.37/schema16 and Facebook acquisition readiness are ready;
+  both SQLite quick checks are `ok`; `daily-default` remains enabled/ready at
+  86,400 seconds with next boundary `2026-08-10T00:00:00Z`;
+- browser PID 63205 is ready with `lastError=null`, four live tabs consisting
+  of one Facebook home target plus X, LinkedIn, and preview, and zero active
+  challenges. Closed predecessor handles did not become live tab growth.
+
+State Movement:
+
+- Plan 0033 advances `C03 -> C05`, version `3 -> 5`, and `OPEN -> CLOSED` with
+  the exact typed blocker;
+- `docs/dev/plans/0034-2026-08-09-facebook-post-navigation-target-loss-repair.md`
+  opens at version 1/C01 for offline repair; P13 remains `OPEN` and Facebook
+  remains manual and not routine-qualified.
+
+Subagent Status And Reconciliation:
+
+- none; the primary executed and adjudicated the effect boundaries serially.
+
+Graphiti Write Status:
+
+- the 10-second provider readiness probe passed, and one compact source-backed
+  episode was queued as job `9fb0552f-5cb3-42d4-95f5-fc26a44c3ae5` in
+  `last30days_skill_main`; no duplicate write was queued.
+
+Next Bounded Action:
+
+- run deterministic planning/patch validation, attempt the compact Graphiti
+  closeout only if ready, commit and push this documentation/receipt slice,
+  then stop. Plan 0034's offline regression is the next recommended packet;
+  do not run another Facebook tick without a new explicit attempt ceiling.
