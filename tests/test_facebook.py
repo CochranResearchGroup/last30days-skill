@@ -102,6 +102,14 @@ class FakeAgentBrowserClient:
             return {"url": self.page["url"], "title": self.page["title"], "candidates": self.candidates}
         raise AssertionError("unexpected script")
 
+    def evaluate_navigation_state(self, workspace, script):
+        return self.evaluate(workspace, script)
+
+    def open_fresh_site_target(self, workspace, hostname, url):
+        self.closed_site_targets.append(hostname)
+        self.act(workspace, facebook.BrowserAction("new_tab", value=url))
+        return True
+
     def replace_active_site_target(self, workspace, hostname):
         self.closed_site_targets.append(hostname)
         self.act(workspace, facebook.BrowserAction("new_tab", value="about:blank"))
@@ -133,6 +141,73 @@ class FacebookAvailabilityTests(unittest.TestCase):
 
 
 class FacebookCliAdapterTests(unittest.TestCase):
+    def test_observed_replacement_auth_then_later_open_keeps_recovery_budget(self):
+        class ObservedAuthRecoveryClient(facebook.CliAgentBrowserClient):
+            def __init__(self):
+                super().__init__(timeout=45, job_timeout_ms=120_000)
+                self.remaining = 75
+                self.auth_evaluations = 0
+
+            def _consume(self, seconds):
+                if seconds > self.remaining:
+                    raise facebook.FacebookScraperFailure(
+                        "agent_browser_timeout",
+                        f"observed operation exceeded remaining {self.remaining}s budget",
+                    )
+                self.remaining -= seconds
+
+            def _invoke(self, args, *, timeout, input_text=None):
+                if args[-2:] == ["tab", "list"]:
+                    self._consume(3 if self.auth_evaluations == 0 else 9)
+                    return {"tabs": [{
+                        "index": 0,
+                        "active": True,
+                        "url": "https://www.facebook.com/",
+                    }]}
+                if "eval" in args:
+                    self.auth_evaluations += 1
+                    if self.auth_evaluations == 1:
+                        self._consume(15)
+                        raise facebook.FacebookScraperFailure(
+                            "agent_browser_timeout",
+                            "retained target did not respond",
+                        )
+                    self._consume(9)
+                    return {
+                        "authenticated_dom": True,
+                        "has_c_user": True,
+                        "has_xs": True,
+                    }
+                if args[-3:-1] == ["tab", "new"]:
+                    self._consume(9)
+                    return {"url": args[-1]}
+                if len(args) >= 3 and args[-3:-1] == ["tab", "close"]:
+                    self._consume(9)
+                    return {}
+                if "open" in args:
+                    self._consume(17 if args[-1] == "https://www.facebook.com/" else 15)
+                    return {"url": args[-1]}
+                return {}
+
+        client = ObservedAuthRecoveryClient()
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="shared-social",
+        )
+
+        auth = client.inspect_auth(workspace)
+        client.act(
+            workspace,
+            facebook.BrowserAction(
+                "navigate",
+                value=facebook._search_url("robotic lawn mower", recent=True),
+            ),
+        )
+
+        self.assertTrue(auth.authenticated)
+        self.assertGreaterEqual(client.remaining, 15)
+
     def test_run_budget_exhaustion_stops_before_another_browser_command(self):
         client = facebook.CliAgentBrowserClient(timeout=30)
         client._run_deadline = 10.0
@@ -188,6 +263,21 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual(20_000, inner_ms)
         self.assertGreater(outer_seconds * 1000, inner_ms)
         self.assertGreaterEqual(outer_seconds * 1000 - inner_ms, 5_000)
+
+    def test_navigation_evaluation_preserves_one_recovery_reserve(self):
+        client = facebook.CliAgentBrowserClient(timeout=45, job_timeout_ms=120_000)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="shared-social",
+        )
+        with mock.patch.object(client, "_invoke", return_value={"result": {}}) as invoke:
+            client.evaluate_navigation_state(workspace, facebook.PAGE_STATE_SCRIPT)
+
+        command = invoke.call_args.args[0]
+        self.assertEqual("3000", command[command.index("--job-timeout-ms") + 1])
+        self.assertEqual(12, invoke.call_args.kwargs["timeout"])
+
 
     def test_extract_script_does_not_rescan_every_ancestor_subtree(self):
         self.assertNotIn("parent.querySelectorAll(actionSelector)", facebook.EXTRACT_SCRIPT)
@@ -542,14 +632,17 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertTrue(auth.authenticated)
         commands = [call.args[0] for call in invoked.call_args_list]
         self.assertIn(
-            ["--session", "shared-social", "tab", "new", "about:blank"],
+            [
+                "--session",
+                "shared-social",
+                "tab",
+                "new",
+                "https://www.facebook.com/",
+            ],
             commands,
         )
-        self.assertIn(
-            ["--session", "shared-social", "tab", "close", "0"],
-            commands,
-        )
-        self.assertTrue(any("open" in command for command in commands))
+        self.assertFalse(any("close" in command for command in commands))
+        self.assertFalse(any("open" in command for command in commands))
         self.assertEqual(2, sum("eval" in command for command in commands))
 
     def test_replacement_auth_timeout_is_typed_as_target_unresponsive(self):
@@ -590,8 +683,30 @@ class FacebookCliAdapterTests(unittest.TestCase):
         )
 
         with mock.patch.object(
-            client, "replace_active_site_target", return_value=True
-        ), mock.patch.object(client, "act", side_effect=timeout):
+            client, "open_fresh_site_target", return_value=True
+        ), mock.patch.object(client, "_evaluate_auth_probe", side_effect=timeout):
+            with self.assertRaises(facebook.FacebookScraperFailure) as raised:
+                client._inspect_auth_on_fresh_target(
+                    workspace,
+                    replace_existing=True,
+                )
+
+        self.assertEqual("facebook_target_unresponsive", raised.exception.error_type)
+
+    def test_successor_open_timeout_is_typed_as_target_unresponsive(self):
+        client = facebook.CliAgentBrowserClient(timeout=30)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="shared-social",
+        )
+        timeout = facebook.FacebookScraperFailure(
+            "agent_browser_timeout", "successor open did not respond"
+        )
+
+        with mock.patch.object(
+            client, "open_fresh_site_target", side_effect=timeout
+        ):
             with self.assertRaises(facebook.FacebookScraperFailure) as raised:
                 client._inspect_auth_on_fresh_target(
                     workspace,
@@ -646,13 +761,16 @@ class FacebookCliAdapterTests(unittest.TestCase):
             all(call.kwargs["timeout"] == 15 for call in retained_selections)
         )
         self.assertIn(
-            ["--session", "shared-social", "tab", "new", "about:blank"],
+            [
+                "--session",
+                "shared-social",
+                "tab",
+                "new",
+                "https://www.facebook.com/",
+            ],
             commands,
         )
-        self.assertIn(
-            ["--session", "shared-social", "tab", "close", "7"],
-            commands,
-        )
+        self.assertFalse(any("close" in command for command in commands))
 
     def test_fresh_auth_probe_gets_extended_bounded_deadlines(self):
         client = facebook.CliAgentBrowserClient(timeout=45, job_timeout_ms=120_000)
@@ -1220,6 +1338,88 @@ class FacebookCliAdapterTests(unittest.TestCase):
 
 
 class FacebookNavigationAndAuthTests(unittest.TestCase):
+    def test_observed_retained_eval_timeout_recovers_within_adapter_budget(self):
+        class ObservedNavigationRecoveryClient(FakeAgentBrowserClient):
+            def __init__(self):
+                super().__init__()
+                self.remaining = 75
+                self.navigation_evaluations = 0
+
+            def _consume(self, seconds):
+                if seconds > self.remaining:
+                    raise facebook.FacebookScraperFailure(
+                        "agent_browser_timeout",
+                        f"observed operation exceeded remaining {self.remaining}s budget",
+                    )
+                self.remaining -= seconds
+
+            def acquire_workspace(self, workspace_request):
+                self._consume(3)
+                return super().acquire_workspace(workspace_request)
+
+            def inspect_auth(self, workspace):
+                self._consume(18)
+                return super().inspect_auth(workspace)
+
+            def act(self, workspace, action):
+                if action.operation == "navigate":
+                    self._consume(15)
+                elif action.operation == "wait":
+                    self._consume(2)
+                return super().act(workspace, action)
+
+            def evaluate(self, workspace, script):
+                if script == facebook.PAGE_STATE_SCRIPT:
+                    self.navigation_evaluations += 1
+                    if self.navigation_evaluations == 1:
+                        self._consume(25)
+                        raise facebook.FacebookScraperFailure(
+                            "agent_browser_timeout",
+                            "retained query target did not respond",
+                        )
+                    self._consume(8)
+                elif script == facebook.EXTRACT_SCRIPT:
+                    self._consume(8)
+                return super().evaluate(workspace, script)
+
+            def evaluate_navigation_state(self, workspace, script):
+                self.navigation_evaluations += 1
+                self._consume(10 if self.navigation_evaluations == 1 else 8)
+                if self.navigation_evaluations == 1:
+                    raise facebook.FacebookScraperFailure(
+                        "agent_browser_timeout",
+                        "retained query target did not respond",
+                    )
+                return dict(self.page)
+
+            def inspect_active_page(self, workspace):
+                self._consume(9)
+                return dict(self.page)
+
+            def replace_active_site_target(self, workspace, hostname):
+                self._consume(9)
+                return super().replace_active_site_target(workspace, hostname)
+
+            def open_fresh_site_target(self, workspace, hostname, url):
+                self._consume(10)
+                self.closed_site_targets.append(hostname)
+                super().act(workspace, facebook.BrowserAction("new_tab", value=url))
+                return True
+
+        client = ObservedNavigationRecoveryClient()
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(2, client.navigation_evaluations)
+        self.assertGreaterEqual(client.remaining, 3)
+        self.assertEqual(
+            ["navigate", "new_tab"],
+            [action.operation for action in client.actions[:2]],
+        )
+
     def test_auth_rate_limit_stops_without_handoff_or_navigation(self):
         client = FakeAgentBrowserClient(
             auth=facebook.FacebookAuthState(
@@ -1266,7 +1466,7 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
             result["diagnostics"]["rate_limit_reason"],
         )
         self.assertEqual(
-            ["navigate", "wait"], [action.operation for action in client.actions]
+            ["navigate"], [action.operation for action in client.actions]
         )
         client.prepare_operator_handoff.assert_not_called()
 
@@ -1295,7 +1495,7 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
             "temporary_block", result["diagnostics"]["rate_limit_reason"]
         )
         self.assertEqual(
-            ["navigate", "wait"], [action.operation for action in client.actions]
+            ["navigate"], [action.operation for action in client.actions]
         )
         client.prepare_operator_handoff.assert_not_called()
 
@@ -1387,7 +1587,7 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         client = FakeAgentBrowserClient()
         result = make_scraper(client).search("robotic lawn mower", "2026-06-15", "2026-07-15")
         self.assertIsNone(result["error_type"])
-        self.assertEqual(["navigate", "wait"], [action.operation for action in client.actions[:2]])
+        self.assertEqual(["navigate"], [action.operation for action in client.actions[:1]])
         self.assertIn("filters=", client.actions[0].value)
 
     def test_query_navigation_reuses_the_fresh_authenticated_facebook_target(self):
@@ -1410,7 +1610,7 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
             ignore_close_failures=True,
         )
 
-    def test_query_navigation_timeout_recovers_once_on_a_fresh_blank_target(self):
+    def test_query_navigation_timeout_recovers_once_on_a_fresh_query_target(self):
         class TimeoutOnceClient(FakeAgentBrowserClient):
             def __init__(self):
                 super().__init__()
@@ -1435,11 +1635,10 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
 
         self.assertIsNone(result["error_type"])
         self.assertEqual(
-            ["navigate", "new_tab", "navigate", "wait"],
-            [action.operation for action in client.actions[:4]],
+            ["navigate", "new_tab"],
+            [action.operation for action in client.actions[:2]],
         )
-        self.assertEqual("about:blank", client.actions[1].value)
-        self.assertEqual(client.actions[0].value, client.actions[2].value)
+        self.assertEqual(client.actions[0].value, client.actions[1].value)
 
     def test_query_navigation_non_timeout_failure_does_not_open_a_recovery_target(self):
         class DisconnectedClient(FakeAgentBrowserClient):
@@ -1470,6 +1669,13 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
                     )
                 return super().act(workspace, action)
 
+            def open_fresh_site_target(self, workspace, hostname, url):
+                self.actions.append(facebook.BrowserAction("new_tab", value=url))
+                raise facebook.FacebookScraperFailure(
+                    "agent_browser_timeout",
+                    "agent-browser successor operation timed out after 30s",
+                )
+
         client = AlwaysTimeoutClient()
         client.prepare_site_tab = mock.Mock(return_value=True)
 
@@ -1480,10 +1686,10 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual("facebook_target_unresponsive", result["error_type"])
         self.assertEqual("navigation", result["diagnostics"]["failure_stage"])
         self.assertEqual(
-            ["navigate", "new_tab", "navigate"],
+            ["navigate", "new_tab"],
             [action.operation for action in client.actions],
         )
-        self.assertEqual("about:blank", client.actions[1].value)
+        self.assertEqual(client.actions[0].value, client.actions[1].value)
         client.prepare_site_tab.assert_called_once_with(
             client.workspace,
             "facebook.com",
@@ -1493,7 +1699,7 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
             ignore_close_failures=True,
         )
 
-    def test_page_state_timeout_replays_open_and_read_once_on_a_fresh_target(self):
+    def test_page_state_timeout_reads_once_on_a_fresh_query_target(self):
         class PageStateTimeoutOnceClient(FakeAgentBrowserClient):
             def __init__(self):
                 super().__init__()
@@ -1518,11 +1724,10 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         self.assertIsNone(result["error_type"])
         self.assertEqual(2, client.page_state_evaluations)
         self.assertEqual(
-            ["navigate", "wait", "new_tab", "navigate", "wait"],
-            [action.operation for action in client.actions[:5]],
+            ["navigate", "new_tab"],
+            [action.operation for action in client.actions[:2]],
         )
-        self.assertEqual("about:blank", client.actions[2].value)
-        self.assertEqual(client.actions[0].value, client.actions[3].value)
+        self.assertEqual(client.actions[0].value, client.actions[1].value)
 
     def test_page_state_timeout_with_matching_tab_identity_uses_fresh_target(self):
         class PageStateTimeoutWithTabIdentityClient(FakeAgentBrowserClient):
@@ -1553,13 +1758,12 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
 
         self.assertIsNone(result["error_type"])
         self.assertEqual(2, client.page_state_evaluations)
-        self.assertEqual(1, client.tab_identity_reads)
+        self.assertEqual(0, client.tab_identity_reads)
         self.assertEqual(
-            ["navigate", "wait", "new_tab", "navigate", "wait"],
-            [action.operation for action in client.actions[:5]],
+            ["navigate", "new_tab"],
+            [action.operation for action in client.actions[:2]],
         )
-        self.assertEqual("about:blank", client.actions[2].value)
-        self.assertEqual(client.actions[0].value, client.actions[3].value)
+        self.assertEqual(client.actions[0].value, client.actions[1].value)
 
     def test_repeated_page_state_timeout_stops_after_one_fresh_target(self):
         class PageStateAlwaysTimeoutClient(FakeAgentBrowserClient):
@@ -1587,7 +1791,7 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual(2, client.page_state_evaluations)
         self.assertEqual(["facebook.com"], client.closed_site_targets)
         self.assertEqual(
-            ["navigate", "wait", "new_tab", "navigate", "wait"],
+            ["navigate", "new_tab"],
             [action.operation for action in client.actions],
         )
 
@@ -1608,7 +1812,7 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
 
         self.assertEqual("agent_browser_error", result["error_type"])
         self.assertEqual(
-            ["navigate", "wait"],
+            ["navigate"],
             [action.operation for action in client.actions],
         )
 

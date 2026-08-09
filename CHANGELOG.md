@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook recovery-budget preservation.** Service 0.3.38 bounds the
+  navigation-only page-state probe separately from extraction, opens its sole
+  recovery target directly at the verified Facebook URL, and defers exact
+  same-site duplicate closure to the existing guaranteed cleanup. This removes
+  the redundant blank-target navigation, identity inventory read, second open,
+  and local post-open wait that exhausted the 75-second adapter budget in three
+  observed attempts. Owner/profile, explicit-auth, challenge, rate-limit,
+  query/filter, one-successor, typed-terminal, parent-wall, and one-final-target
+  gates remain unchanged. No live Facebook tick is part of this release.
+
 - **Facebook replacement-navigation classification.** Service 0.3.37 applies
   the same `facebook_target_unresponsive` classification when the one exact
   replacement target times out during its initial Facebook navigation as when

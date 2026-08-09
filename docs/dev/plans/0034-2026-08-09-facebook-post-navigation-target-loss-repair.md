@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P13
-Plan version: 1
+Plan version: 2
 Date: 2026-08-09
 Predecessor: Plan 0033 version 5/checkpoint P0033-C05
 
@@ -101,3 +101,44 @@ Next action:
 
 - create the red-capable deterministic regression from the three provider
   operation sequences before reading or changing adapter implementation.
+
+### Checkpoint P0034-C02 | 2026-08-09
+
+Plan version: 2
+
+State transition:
+
+- `offline_repair_ready -> deterministic_red_proven`.
+
+Evidence:
+
+- the retained-owner/evaluation-loss regression exhausted its remaining three
+  seconds while the legacy blank-target replacement was still starting;
+- the replacement-auth/later-open regression reproduced the installed trace's
+  four-second remainder and failed the later query open;
+- both regressions failed before implementation with the expected
+  `facebook_target_unresponsive`/`agent_browser_timeout` shapes.
+
+Decision:
+
+- bound navigation page-state evaluation separately from extraction;
+- open a recovery successor directly at its intended Facebook URL and defer
+  predecessor consolidation to the existing guaranteed same-site cleanup;
+- remove the redundant post-`open` local wait because `agent-browser open`
+  already owns page-load waiting.
+
+Safety preservation:
+
+- exact owner/profile, explicit auth, challenge, rate-limit, query/filter, and
+  typed terminal gates remain mandatory;
+- cleanup still retains one active Facebook target and closes only same-site
+  duplicates; no browser close or live provider effect is authorized.
+
+Authority classification:
+
+- `inherited_authority` for the bounded offline repair and installation;
+  `human_gate` remains unchanged for any later Facebook provider tick.
+
+Next action:
+
+- implement the minimum adapter changes and turn both regressions green.
