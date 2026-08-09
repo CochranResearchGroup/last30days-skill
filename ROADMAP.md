@@ -1277,6 +1277,52 @@ Closeout:
 - commit and push the accepted Plan 0028 slice. Treat X date-quality repair as
   a separate successor only if the operator prioritizes it.
 
+## P13 | Facebook Safe Manual Qualification
+
+State: OPEN
+
+Objective: qualify the repaired Facebook adapter for routine attended use with
+a source-scoped governed manual proof and explicit fail-closed handling for an
+organically encountered temporary block or action-frequency limit.
+
+Current State:
+
+- installed 0.3.30 adds source-scoped manual ticks, bounded organic rate-limit
+  classification, and exact active-tab identity fallback when post-navigation
+  Runtime evaluation is unavailable; its preflight predicts exactly one
+  Facebook lane;
+- the one authorized 0.3.29 qualification tick stopped fail-closed after two
+  post-navigation page-state eval timeouts, with zero observed candidates and
+  no auth, checkpoint, CAPTCHA, or rate-limit signal;
+- both a five-second diagnostic and a 20-second production read-only Runtime
+  evaluation of the existing search page timed out. The tested successor
+  therefore proves navigation from exact URL/query/filter identity and defers
+  content classification to extraction without treating URL state as auth or
+  rate-limit proof;
+- 0.3.30 is installed ready on schema 16; browser PID 63205 remains viable with
+  18 tabs, and the sole successor tick is gated until
+  `2026-08-09T04:48:46Z`;
+- no logout, CAPTCHA, checkpoint, or rate-limit state will be induced for
+  testing. Any successor live proof still requires offline tests, exact install,
+  ready ownership, and a new 60-minute gap from the failed attempt.
+
+Open Plan:
+
+- `docs/dev/plans/0029-2026-08-08-facebook-safe-manual-qualification.md`
+  version 3/C03 is the active authority.
+
+Dependencies:
+
+- consumes P12's accepted content model and P08's governed manual tick;
+- preserves P10's human reauthentication workflow, the existing recurring
+  schedule, canonical retained browser/profile, and zero-cost posture.
+
+Next Bounded Action:
+
+- after the explicit safety gap, recheck installed/browser readiness and run at
+  most one 0.3.30 Facebook-only manual tick. Do not wait for the natural
+  schedule, bypass the gap, or retry a failed successor attempt.
+
 ## P10 | Recurring Browser Reauthentication Notifications
 
 State: CLOSED

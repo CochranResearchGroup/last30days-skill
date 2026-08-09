@@ -163,6 +163,29 @@ def _add_email_fallback(config_path) -> None:
     config_path.write_text(json.dumps(config), encoding="utf-8")
 
 
+def _add_second_service(config_path, *, enabled: bool = True) -> None:
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    service = json.loads(json.dumps(config["services"][0]))
+    service["service_id"] = "second-service"
+    service["providers"][0]["provider_id"] = "second-provider"
+    target = json.loads(json.dumps(config["targets"][0]))
+    target.update(
+        {
+            "target_id": "second-target",
+            "service_id": "second-service",
+            "access_partition_id": "profile:second",
+            "enabled": enabled,
+        }
+    )
+    config["services"].append(service)
+    config["targets"].append(target)
+    config["tick"]["aggregate_limits"] = {
+        key: value * 2
+        for key, value in config["tick"]["aggregate_limits"].items()
+    }
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+
+
 def test_preflight_returns_sanitized_ready_manifest_without_state_writes(tmp_path):
     config_path = tmp_path / "tick-config-v1.json"
     _write_config(config_path)
@@ -246,6 +269,96 @@ def test_preflight_and_enqueue_share_exact_tick_config_and_lane_identity(tmp_pat
     ]
 
 
+def test_service_scoped_preflight_and_enqueue_freeze_same_narrow_identity(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    _add_second_service(config_path)
+    registry = build_acquisition_adapter_registry(object())
+    request = _request()
+
+    full = service_tick_runtime.preflight_tick_runtime(
+        request,
+        config_path=config_path,
+        adapter_registry=registry,
+        command_runner=ReadyCommands(),
+    )
+    scoped = service_tick_runtime.preflight_tick_runtime(
+        request,
+        config_path=config_path,
+        adapter_registry=registry,
+        command_runner=ReadyCommands(),
+        service_ids=("second-service",),
+    )
+    enqueued = TickCoordinator(
+        tmp_path / "research.db",
+        config_path=config_path,
+        adapter_registry=registry,
+        service_ids=("second-service",),
+    ).enqueue_tick(request)
+
+    assert len(full["lane_manifest"]) == 2
+    assert len(scoped["lane_manifest"]) == 1
+    assert scoped["tick_id"] == enqueued.tick_id
+    assert scoped["config_digest"] == enqueued.config_digest
+    assert scoped["config_digest"] != full["config_digest"]
+    assert scoped["tick_id"] != full["tick_id"]
+    assert scoped["aggregate_limits"] == {
+        "attempts": 1,
+        "network_requests": 7,
+        "wall_seconds": 30,
+        "items": 3,
+        "cost_cents": 0,
+        "model_tokens": 0,
+    }
+    assert [lane["lane_id"] for lane in scoped["lane_manifest"]] == [
+        lane.lane_id for lane in enqueued.lanes
+    ]
+
+
+@pytest.mark.parametrize(
+    ("service_ids", "message"),
+    [
+        (("missing-service",), "unknown service"),
+        (("sensitive-service-id", "sensitive-service-id"), "duplicate service"),
+    ],
+)
+def test_service_scoped_preflight_rejects_invalid_selection_without_readiness(
+    tmp_path, service_ids, message
+):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    commands = ReadyCommands()
+
+    with pytest.raises(TickConfigError, match=message):
+        service_tick_runtime.preflight_tick_runtime(
+            _request(),
+            config_path=config_path,
+            worker=object(),
+            command_runner=commands,
+            service_ids=service_ids,
+        )
+
+    assert commands.calls == []
+
+
+def test_service_scoped_preflight_rejects_service_without_enabled_target(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    _add_second_service(config_path, enabled=False)
+    commands = ReadyCommands()
+
+    with pytest.raises(TickConfigError, match="no enabled target"):
+        service_tick_runtime.preflight_tick_runtime(
+            _request(),
+            config_path=config_path,
+            worker=object(),
+            command_runner=commands,
+            service_ids=("second-service",),
+        )
+
+    assert commands.calls == []
+
+
 def test_preflight_preserves_configured_target_order(tmp_path):
     config_path = tmp_path / "tick-config-v1.json"
     _write_config(config_path)
@@ -299,6 +412,25 @@ def test_service_cli_exposes_side_effect_free_tick_preflight():
     assert args.schedule_id == "manual-default"
     assert args.config == "/tmp/tick-config-v1.json"
     assert not hasattr(args, "db")
+
+
+def test_service_cli_exposes_repeatable_manual_service_scope():
+    args = build_parser().parse_args(
+        [
+            "tick",
+            "preflight",
+            "--interval-from",
+            "2026-08-03T00:00:00Z",
+            "--interval-to",
+            "2026-08-04T00:00:00Z",
+            "--service",
+            "facebook",
+            "--service",
+            "x",
+        ]
+    )
+
+    assert args.service_ids == ["facebook", "x"]
 
 
 def test_preflight_checks_notification_readiness_in_sequential_failover_order(

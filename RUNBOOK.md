@@ -14068,3 +14068,203 @@ Next Bounded Action:
 
 - rerun closeout audits, commit/push the Last30Days slice, reconcile the
   agent-browser note-only worktree, then write the compact Graphiti memory.
+
+## Turn 236 | 2026-08-08
+
+Focus: open safe manual Facebook qualification without inducing authentication
+or provider-limit failures.
+
+Authority Consulted:
+
+- operator request to plan and execute the usability upgrades with testing and
+  to avoid logout, CAPTCHA provocation, or rate-limit risk; Plan 0028/C10;
+  current installed runtime/database/config; repository planning, goal,
+  CodeGraph, validation, documentation, worktree, and integration policies.
+
+Decisions And Changes:
+
+- opened P13/Plan 0029 to add a Facebook-only governed manual tick selector and
+  explicit fail-closed temporary-block/action-frequency classification;
+- established
+  `docs/dev/plans/0029-2026-08-08-facebook-safe-manual-qualification.md`
+  version 1/C01 as the active execution authority;
+- retained the service-owned daily schedule unchanged and bounded live work to
+  at most one post-install Facebook-only tick after offline validation,
+  unambiguous browser readiness, and a 60-minute gap from the last attempt;
+- prohibited logout, cookie/session manipulation, credential interaction,
+  artificial challenge/rate-limit generation, retry, browser lifecycle work,
+  tab closure, notification tests, cost/models, and increased provider limits;
+- selected no subagent because selector identity, scheduler invariants, and the
+  Facebook classifier form one serialized critical path.
+
+Validation Evidence:
+
+- repository `main` and `origin/main` match at
+  `24474f62e5e11f1c51d5ab5adf0f0933764dce91` before this plan-only change;
+- installed 0.3.28/schema16 and Facebook acquisition report ready;
+- current config keeps `daily-default` enabled at 86,400 seconds and Facebook
+  at one attempt, 50 requests, 120 seconds, three items, zero cost/model;
+- the last accepted Facebook attempt began at `2026-08-09T01:29:46Z`;
+- CodeGraph traces manual preflight/enqueue through `_prepare_tick` and
+  `_expand_lanes`; the scheduler constructs the ordinary unscoped runtime;
+- policy selection returns `repo-product-engineering`, fully installed, with no
+  missing recommended module.
+
+State Movement:
+
+- P13/Plan 0029 opens at version 1/C01; no source, browser, installed runtime,
+  schedule, database, notification, or external recipient was mutated.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary owns the critical path.
+
+Graphiti Write Status:
+
+- deferred until validated implementation or a durable blocker.
+
+Next Bounded Action:
+
+- add red selector/identity and Facebook rate-limit classification tests, then
+  implement the bounded behavior without running Facebook.
+
+## Turn 237 | 2026-08-08
+
+Focus: consume the one safe Facebook-only 0.3.29 qualification tick, preserve
+the browser, and localize its zero-observed timeout for the bounded rework.
+
+Authority Consulted:
+
+- operator direction to execute the upgrades without logout, CAPTCHA
+  provocation, or rate-limit risk; Plan 0029/C01; current installed service,
+  tick/provider/database receipts; agent-browser no-launch ownership and
+  remote-control doctors; planning, validation, documentation, and roadmap/
+  runbook policies; CodeGraph navigation/eval flow.
+
+Decisions And Changes:
+
+- implemented and installed 0.3.29 with repeatable manual `--service` scope,
+  frozen scoped identity/budgets, and fail-closed Facebook temporary-block and
+  action-frequency classification;
+- repaired the source-free agent-browser workstation payload before the live
+  gate; the refresh preserved the retained Facebook browser PID and tabs;
+- consumed exactly one Facebook-only tick after a matching installed preflight
+  and more than a 60-minute gap; did not retry its failed provider attempt;
+- classified the failure as a bounded navigation-readback blocker: two search
+  opens succeeded and their two page-state evals timed out at 25 seconds before
+  any candidate was observed;
+- advanced Plan 0029 to version 2/C02 for one bounded layout-free navigation
+  readback rework. No new tick is authorized until a new 60-minute gap.
+
+Validation Evidence:
+
+- complete repository suite passed before installation; focused Facebook/tick,
+  package/version, compile, reproducible build, planning-audit, and patch checks
+  passed; 0.3.29 artifact SHA-256 is
+  `2571b0e3129b67107623cb7a91579e3c1b0cf590b0c2079c43a2ebd369ee771b`;
+- installed 0.3.29/schema16 is ready; contract SHA-256 is
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
+  runtime-manifest SHA-256 is
+  `a19715668f81cee4cb06a405d6e22055aeff6ed39ffedf90436651aa128352f5`;
+- installed preflight and enqueue agree on tick
+  `tick-b870ef9c5dc3be015c7ddce04b6d74f4`, one Facebook lane/provider,
+  one attempt, 50 requests, 120 seconds, three items, zero cost/model;
+- attempt `provider-attempt-6c22811abf9a8f99f8e65e25917b5542`
+  consumed one request and 111 seconds, returned `agent_browser_timeout`, and
+  observed/accepted/rejected zero/zero/zero;
+- `daily-default` remains enabled/ready at 86,400 seconds and database quick
+  check is `ok`; browser PID 63205 remains ready and route-attached with 18
+  valid tabs. No tab/browser was closed and no login, CAPTCHA, checkpoint, or
+  rate-limit signal was observed;
+- agent-browser doctors now report no issues, runtime convergence ready, and
+  `remoteControl.installDoctorReady=true`, `installReady=true`, status ready.
+
+State Movement:
+
+- P13/Plan 0029 advances `C01 -> C02`, version `1 -> 2`, remains `OPEN`;
+  0.3.29 is installed but its live qualification is rejected.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary independently implemented, ran, and adjudicated
+  the entire critical path.
+
+Graphiti Write Status:
+
+- deferred until the bounded rework is validated or a durable stop is reached.
+
+Next Bounded Action:
+
+- add red page-state bounded-read tests, remove layout-forcing full-DOM reads,
+  and run one read-only evaluation against the existing search page; no new
+  navigation, scroll, tab closure, browser lifecycle action, or tick.
+
+## Turn 238 | 2026-08-08
+
+Focus: install the bounded Facebook navigation-readback successor without
+consuming its safety-gated live proof.
+
+Authority Consulted:
+
+- Plan 0029/C02; operator no-logout/no-CAPTCHA/no-rate-limit boundary; current
+  installed service, database, schedule, preflight, agent-browser ownership,
+  validation, planning, documentation, and closeout policies.
+
+Decisions And Changes:
+
+- confirmed that both a five-second diagnostic and 20-second production
+  read-only Runtime evaluation of the already-open Facebook search page time
+  out without navigation or other page mutation;
+- implemented 0.3.30 so a post-navigation eval timeout may accept only exact
+  active-tab topic query and recent-filter identity, avoid unnecessary fresh-
+  tab recovery, and defer all content auth/checkpoint/rate-limit inspection to
+  extraction;
+- retained the existing fail-closed recovery on identity mismatch and did not
+  weaken the live requirement for accepted content or a genuine typed empty
+  result;
+- installed the exact reproducible artifact and retained releases 0.3.28,
+  0.3.29, and 0.3.30. No live tick was run because the new 60-minute gap does
+  not expire until `2026-08-09T04:48:46Z`.
+
+Validation Evidence:
+
+- focused Facebook/tick/runtime/package/version/install tests pass; complete
+  suite, compile, patch check, both planning audits, and two independent builds
+  pass;
+- canonical artifact SHA-256 is
+  `56bde95e7e707f07e94f8cf2149e28bd647358129390e7c67cfc0d0c677c5290`;
+- installed 0.3.30/schema16 is ready with contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`
+  and runtime-manifest SHA-256
+  `d762fd55a3b080dc3da36da528843199338e416a7b7503bf494bb80f07d6bcad`;
+- database quick check is `ok`; `daily-default` remains enabled/ready at
+  86,400 seconds; installed Facebook-only preflight remains tick
+  `tick-b870ef9c5dc3be015c7ddce04b6d74f4` with one attempt, 50 requests,
+  120 seconds, three items, and zero cost/model budget;
+- agent-browser install doctor reports no issues and converged runtime;
+  browser PID 63205 remains viable with 18 tabs. No browser/tab was opened or
+  closed during this successor rework and installation;
+- `npx skills add . -g -y` refreshed the frozen `last30days` and
+  `repo-policy-selector` copies across supported hosts; its only reported
+  failures were the two truthful PromptScript global-install unsupported
+  results.
+
+State Movement:
+
+- P13/Plan 0029 advances `C02 -> C03`, version `2 -> 3`, remains `OPEN`;
+  installed 0.3.30 is offline-qualified but not yet live-qualified.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary independently implemented and verified the
+  serialized successor.
+
+Graphiti Write Status:
+
+- deferred until the repository commit provides a durable identity.
+
+Next Bounded Action:
+
+- after `2026-08-09T04:48:46Z`, recheck service and retained browser readiness,
+  then run at most one 0.3.30 Facebook-only manual tick. Do not wait for the
+  natural scheduler, bypass the 60-minute gap, or retry a failed tick.

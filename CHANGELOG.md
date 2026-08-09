@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook navigation readback fallback.** Service 0.3.30 no longer makes a
+  responsive Facebook search target's Runtime evaluation a prerequisite for
+  collection. Navigation state reads now use bounded, layout-free DOM text and
+  capped structural surfaces. If that read still reaches its cancellation-safe
+  deadline, the adapter accepts only an exact active-tab URL/title/query/filter
+  identity from agent-browser's tab inventory, opens no recovery tab, and
+  defers content, rate-limit, and candidate inspection to the existing
+  extraction stage. A mismatched identity or non-timeout browser failure
+  remains terminal.
+
+- **Source-scoped manual ticks and Facebook rate-limit safety.** Service 0.3.29
+  adds a repeatable manual-only `tick preflight/enqueue --service SERVICE_ID`
+  selector. It can only disable already-enabled targets, narrows aggregate
+  limits to the selected lanes, binds scope into the frozen config/tick
+  identity, and leaves scheduler-created ticks all-source. Invalid, duplicate,
+  empty, or disabled selections fail before provider work. Facebook now
+  recognizes structurally bounded temporary-block and action-frequency-limit
+  surfaces during authentication, navigation, or extraction and stops as
+  `rate_limit_detected` without recovery navigation or an authentication
+  handoff. Durable diagnostics retain only a stable reason signal, not page
+  content.
+
 - **Facebook live post extraction and retained-session acquisition.** Service
   0.3.28 models both
   author-named organic cards and generic ad cards from the current authenticated

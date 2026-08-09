@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import os
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -17,6 +17,7 @@ from .service_tick import (
     _array,
     _bounded_text,
     _digest,
+    _load_config,
     _object,
     _prepare_tick,
     _validate_observation_config,
@@ -135,6 +136,7 @@ def preflight_tick_runtime(
     adapter_registry: AdapterRegistry | None = None,
     analysis_registry: AnalysisAdapterRegistry | None = None,
     command_runner: CommandRunner = _run_command,
+    service_ids: Sequence[str] = (),
 ) -> dict[str, object]:
     """Validate one prospective manual tick without creating runtime state."""
     config_file = Path(config_path or default_tick_config_path())
@@ -143,6 +145,7 @@ def preflight_tick_runtime(
         config_file,
         request,
         registry,
+        service_ids=service_ids,
     )
     active_analysis_registry = _runtime_analysis_registry(analysis_registry)
     _, notifications_config, _ = _validate_runtime_config(
@@ -281,6 +284,7 @@ def build_tick_runtime(
     analysis_registry: AnalysisAdapterRegistry | None = None,
     command_runner: CommandRunner = _run_command,
     clock: Callable[[], datetime] | None = None,
+    service_ids: Sequence[str] = (),
 ) -> TickRuntime:
     """Assemble one manual-only tick from installed code and user config."""
     config_file = Path(config_path or default_tick_config_path())
@@ -290,6 +294,8 @@ def build_tick_runtime(
         raise RuntimeError(f"unable to read tick configuration: {config_file}") from exc
     if not isinstance(config, Mapping):
         raise RuntimeError("tick configuration must be an object")
+    if service_ids:
+        _load_config(config_file, service_ids=service_ids)
     active_analysis_registry = _runtime_analysis_registry(analysis_registry)
     artifacts_config, notifications_config, observation_config = (
         _validate_runtime_config(
@@ -341,5 +347,6 @@ def build_tick_runtime(
         adapter_registry=registry,
         runner=runner,
         clock=clock,
+        service_ids=service_ids,
     )
     return TickRuntime(coordinator=coordinator, runner=runner, snapshots=snapshots)

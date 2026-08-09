@@ -47,6 +47,9 @@ ERROR_TYPES = {
     "agent_browser_timeout",
     "agent_browser_error",
 }
+RATE_LIMIT_REASONS = frozenset(
+    {"temporary_block", "action_frequency_limit", "unspecified"}
+)
 
 RECENT_POSTS_FILTER = (
     "eyJyZWNlbnRfcG9zdHM6MCI6IntcIm5hbWVcIjpcInJlY2VudF9wb3N0c1wiLFwiYXJnc1wiOlwiXCJ9In0="
@@ -54,7 +57,8 @@ RECENT_POSTS_FILTER = (
 
 AUTH_SCRIPT = r"""
 (() => {
-  const body = (document.body?.innerText || "").slice(0, 12000);
+  const surface = document.querySelector('[role="dialog"], [role="main"], main') || document.body;
+  const body = String(surface?.textContent || "").slice(0, 40000);
   const cookieNames = new Set(document.cookie.split(";").map((part) => part.split("=", 1)[0].trim()));
   const loginForm = Boolean(document.querySelector('input[name="email"], input[name="pass"], form[action*="login"]'));
   const search = document.querySelector('[aria-label="Search Facebook"], input[placeholder="Search Facebook"]');
@@ -65,12 +69,23 @@ AUTH_SCRIPT = r"""
   ));
   const checkpointBody = /security check|required to confirm your identity|enter (?:the|your) (?:security )?code/i.test(body);
   const checkpoint = checkpointPath || checkpointForm || (!authenticatedDom && checkpointBody);
+  const headings = Array.from(document.querySelectorAll('h1, h2, [role="heading"]'))
+    .slice(0, 64)
+    .map((node) => String(node.textContent || "").replace(/\s+/g, " ").trim());
+  const hasPostActions = Boolean(document.querySelector('[aria-label^="Actions for this post"]'));
+  const temporaryBlockHeading = headings.some((text) =>
+    /^(?:you(?:['\u2019]re| are) )?temporarily blocked[.!]?$/i.test(text)
+  );
+  const frequencyLimitCopy = /we limit how often you can (?:post|comment|do other things)|to prevent any misuse, we limit how often/i.test(body);
+  const rateLimited = temporaryBlockHeading || (frequencyLimitCopy && !hasPostActions);
   return {
     url: location.href,
     title: document.title,
     login_form: loginForm,
     checkpoint,
-    authenticated_dom: authenticatedDom && !checkpoint,
+    authenticated_dom: authenticatedDom && !checkpoint && !rateLimited,
+    rate_limited: rateLimited,
+    rate_limit_reason: temporaryBlockHeading ? "temporary_block" : (rateLimited ? "action_frequency_limit" : ""),
     has_c_user: cookieNames.has("c_user"),
     has_xs: cookieNames.has("xs")
   };
@@ -80,7 +95,8 @@ AUTH_SCRIPT = r"""
 PAGE_STATE_SCRIPT = r"""
 (() => {
   const clean = (value) => String(value || "").replace(/\s+/g, " ").trim();
-  const body = clean(document.body?.innerText || "").slice(0, 20000);
+  const surface = document.querySelector('[role="dialog"], [role="main"], main') || document.body;
+  const body = clean(String(surface?.textContent || "").slice(0, 40000)).slice(0, 20000);
   const search = document.querySelector('[aria-label="Search Facebook"], input[placeholder="Search Facebook"]');
   const loginPage = Boolean(document.querySelector('input[name="email"], input[name="pass"], form[action*="login"]'));
   const authenticatedDom = Boolean(search) && !loginPage;
@@ -89,11 +105,19 @@ PAGE_STATE_SCRIPT = r"""
     'form[action*="checkpoint"], form[action*="two_step_verification"], [data-testid*="checkpoint"]'
   ));
   const checkpointBody = /security check|required to confirm your identity|enter (?:the|your) (?:security )?code/i.test(body);
-  const heading = Array.from(document.querySelectorAll('h1, h2, [role="heading"]'))
-    .map((node) => clean(node.innerText || node.textContent))
-    .find((text) => /search|result/i.test(text)) || "";
-  const filterText = Array.from(document.querySelectorAll('[role="tab"], [role="button"], a'))
-    .map((node) => clean(node.innerText || node.textContent)).join(" ");
+  const headings = Array.from(document.querySelectorAll('h1, h2, [role="heading"]'))
+    .slice(0, 64)
+    .map((node) => clean(node.textContent));
+  const heading = headings.find((text) => /search|result/i.test(text)) || "";
+  const hasPostActions = Boolean(document.querySelector('[aria-label^="Actions for this post"]'));
+  const temporaryBlockHeading = headings.some((text) =>
+    /^(?:you(?:['\u2019]re| are) )?temporarily blocked[.!]?$/i.test(text)
+  );
+  const frequencyLimitCopy = /we limit how often you can (?:post|comment|do other things)|to prevent any misuse, we limit how often/i.test(body);
+  const rateLimited = temporaryBlockHeading || (frequencyLimitCopy && !hasPostActions);
+  const filterText = Array.from(document.querySelectorAll('[role="tab"], a[href*="/search/"]'))
+    .slice(0, 64)
+    .map((node) => clean(node.textContent)).join(" ").slice(0, 12000);
   return {
     url: location.href,
     title: document.title,
@@ -103,6 +127,8 @@ PAGE_STATE_SCRIPT = r"""
     no_results: /no results|we didn't find|couldn't find|try different keywords/i.test(body),
     login_page: loginPage,
     checkpoint: checkpointPath || checkpointForm || (!authenticatedDom && checkpointBody),
+    rate_limited: rateLimited,
+    rate_limit_reason: temporaryBlockHeading ? "temporary_block" : (rateLimited ? "action_frequency_limit" : ""),
     error_page: /something went wrong|this content isn't available|temporarily unavailable/i.test(body)
   };
 })()
@@ -112,7 +138,19 @@ EXTRACT_SCRIPT = r"""
 (() => {
   const clean = (value) => String(value || "").replace(/[ \t]+/g, " ").trim();
   const main = document.querySelector('[role="main"]') || document.querySelector('main');
-  if (!main) return {url: location.href, title: document.title, candidates: []};
+  const surface = document.querySelector('[role="dialog"]') || main || document.body;
+  const body = String(surface?.textContent || "").slice(0, 40000).replace(/\s+/g, " ").trim().slice(0, 20000);
+  const headings = Array.from(document.querySelectorAll('h1, h2, [role="heading"]'))
+    .slice(0, 64)
+    .map((node) => String(node.textContent || "").replace(/\s+/g, " ").trim());
+  const hasPostActions = Boolean(document.querySelector('[aria-label^="Actions for this post"]'));
+  const temporaryBlockHeading = headings.some((text) =>
+    /^(?:you(?:['\u2019]re| are) )?temporarily blocked[.!]?$/i.test(text)
+  );
+  const frequencyLimitCopy = /we limit how often you can (?:post|comment|do other things)|to prevent any misuse, we limit how often/i.test(body);
+  const rateLimited = temporaryBlockHeading || (frequencyLimitCopy && !hasPostActions);
+  const rateLimitReason = temporaryBlockHeading ? "temporary_block" : (rateLimited ? "action_frequency_limit" : "");
+  if (!main) return {url: location.href, title: document.title, candidates: [], rate_limited: rateLimited, rate_limit_reason: rateLimitReason};
   const labelClean = (value) => String(value || "")
     .replace(/\u034f/g, "")
     .replace(/\s+/g, " ")
@@ -281,7 +319,7 @@ EXTRACT_SCRIPT = r"""
       }
     });
   }
-  return {url: location.href, title: document.title, candidates};
+  return {url: location.href, title: document.title, candidates, rate_limited: rateLimited, rate_limit_reason: rateLimitReason};
 })()
 """
 
@@ -325,6 +363,8 @@ class FacebookAuthState:
     checkpoint: bool = False
     has_c_user: bool = False
     has_xs: bool = False
+    rate_limited: bool = False
+    rate_limit_reason: str = ""
     url: str = ""
 
 
@@ -332,20 +372,29 @@ def _facebook_auth_state(raw: dict[str, Any]) -> FacebookAuthState:
     login_form = bool(raw.get("login_form"))
     checkpoint = bool(raw.get("checkpoint"))
     has_c_user = bool(raw.get("has_c_user"))
+    rate_limited = bool(raw.get("rate_limited"))
+    rate_limit_reason = str(raw.get("rate_limit_reason") or "")
     return FacebookAuthState(
         authenticated=(bool(raw.get("authenticated_dom")) or has_c_user)
         and not login_form
-        and not checkpoint,
+        and not checkpoint
+        and not rate_limited,
         login_form=login_form,
         checkpoint=checkpoint,
         has_c_user=has_c_user,
         has_xs=bool(raw.get("has_xs")),
+        rate_limited=rate_limited,
+        rate_limit_reason=(
+            rate_limit_reason
+            if rate_limit_reason in RATE_LIMIT_REASONS
+            else ("unspecified" if rate_limited else "")
+        ),
         url=str(raw.get("url") or ""),
     )
 
 
 def _facebook_auth_is_explicit(auth: FacebookAuthState) -> bool:
-    return auth.authenticated or auth.login_form or auth.checkpoint
+    return auth.authenticated or auth.login_form or auth.checkpoint or auth.rate_limited
 
 
 @dataclass(frozen=True)
@@ -377,6 +426,8 @@ class FacebookPageState:
     no_results: bool = False
     login_page: bool = False
     checkpoint: bool = False
+    rate_limited: bool = False
+    rate_limit_reason: str = ""
     error_page: bool = False
 
 
@@ -400,23 +451,39 @@ class FacebookRunDiagnostics:
     rejection_counts: Counter[str] = field(default_factory=Counter)
     accepted_count: int = 0
     duration_ms: int = 0
+    rate_limit_reason: str = ""
 
     def as_dict(self) -> dict[str, Any]:
-        return {
+        result = {
             "candidate_counts": dict(self.candidate_counts),
             "rejection_counts": dict(self.rejection_counts),
             "accepted_count": self.accepted_count,
             "duration_ms": self.duration_ms,
         }
+        if self.rate_limit_reason:
+            result["rate_limit_reason"] = self.rate_limit_reason
+        return result
 
 
 class FacebookScraperFailure(RuntimeError):
-    def __init__(self, error_type: str, message: str, *, operator_url: str = "") -> None:
+    def __init__(
+        self,
+        error_type: str,
+        message: str,
+        *,
+        operator_url: str = "",
+        reason_code: str = "",
+    ) -> None:
         if error_type not in ERROR_TYPES:
             error_type = "agent_browser_error"
         super().__init__(message)
         self.error_type = error_type
         self.operator_url = operator_url
+        self.reason_code = (
+            reason_code
+            if reason_code in RATE_LIMIT_REASONS
+            else ("unspecified" if error_type == "rate_limit_detected" else "")
+        )
 
 
 class AgentBrowserClient(Protocol):
@@ -1052,6 +1119,33 @@ class CliAgentBrowserClient:
         result = raw.get("result") if isinstance(raw.get("result"), dict) else raw
         return result if isinstance(result, dict) else {"value": result}
 
+    def inspect_active_page(self, workspace: BrowserWorkspace) -> dict[str, Any]:
+        """Read active page identity without requiring Runtime evaluation."""
+        raw = self._invoke(
+            ["--session", workspace.session_name, "tab", "list"],
+            timeout=min(self.timeout, 15),
+        )
+        tabs = raw.get("tabs") if isinstance(raw.get("tabs"), list) else []
+        active = next(
+            (tab for tab in tabs if isinstance(tab, dict) and tab.get("active")),
+            None,
+        )
+        if not isinstance(active, dict):
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "agent-browser did not report an active tab for navigation readback",
+            )
+        url = str(active.get("url") or "")
+        title = str(active.get("title") or "")
+        query_value = (parse_qs(urlsplit(url).query).get("q") or [""])[0]
+        return {
+            "url": url,
+            "title": title,
+            "heading": title,
+            "query_value": query_value,
+            "has_search_filters": _recent_filter_active(url),
+        }
+
     def operator_ingress_ready(self, operator_url: str) -> bool:
         if not operator_url:
             return False
@@ -1177,6 +1271,12 @@ class FacebookScraper:
                 "Authentication inspected "
                 f"authenticated={auth.authenticated} login_form={auth.login_form} checkpoint={auth.checkpoint}"
             )
+            if auth.rate_limited:
+                raise FacebookScraperFailure(
+                    "rate_limit_detected",
+                    "Facebook reported a temporary activity limit",
+                    reason_code=auth.rate_limit_reason,
+                )
             if auth.checkpoint:
                 workspace = self._prepare_operator_handoff(workspace)
                 raise FacebookScraperFailure(
@@ -1246,6 +1346,8 @@ class FacebookScraper:
             return self._result(items, None, None, workspace, page, diagnostics, from_date, to_date)
         except FacebookScraperFailure as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
+            if exc.error_type == "rate_limit_detected":
+                diagnostics.rate_limit_reason = exc.reason_code
             _log(f"Failed stage error_type={exc.error_type} message={exc}")
             return self._result(
                 [], exc.error_type, str(exc), workspace, page, diagnostics, from_date, to_date,
@@ -1287,7 +1389,21 @@ class FacebookScraper:
                 page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
                 break
             except FacebookScraperFailure as exc:
-                if attempt > 0 or not _is_navigation_timeout(exc):
+                if not _is_navigation_timeout(exc):
+                    raise
+                identity_read = getattr(self.client, "inspect_active_page", None)
+                if callable(identity_read):
+                    identity_page = _page_state(identity_read(workspace))
+                    if _page_matches_query(identity_page, topic) and _recent_filter_active(
+                        identity_page.url
+                    ):
+                        _log(
+                            "Search page Runtime read timed out; active tab identity "
+                            "proved the requested query and deferred content inspection"
+                        )
+                        page = identity_page
+                        break
+                if attempt > 0:
                     raise
                 _log(
                     "Search target open/read timed out; "
@@ -1299,6 +1415,12 @@ class FacebookScraper:
                 )
 
         _log(f"Navigation readback requested={recent_search_url!r} final={page.url!r}")
+        if page.rate_limited:
+            raise FacebookScraperFailure(
+                "rate_limit_detected",
+                "Facebook reported a temporary activity limit during search",
+                reason_code=page.rate_limit_reason,
+            )
         if page.checkpoint:
             prepared = self._prepare_operator_handoff(workspace)
             raise FacebookScraperFailure(
@@ -1376,6 +1498,12 @@ class FacebookScraper:
                 snapshot = self.client.snapshot(workspace)
                 raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
             candidates = raw.get("candidates") or []
+            if raw.get("rate_limited") is True:
+                raise FacebookScraperFailure(
+                    "rate_limit_detected",
+                    "Facebook reported a temporary activity limit during extraction",
+                    reason_code=str(raw.get("rate_limit_reason") or ""),
+                )
             extracted = [candidate for candidate in candidates if isinstance(candidate, dict)]
             _merge_accessible_timestamps(extracted, snapshot.text, self.now)
             action_cards = [
@@ -1472,11 +1600,14 @@ class FacebookScraper:
             ]
             diagnostic_data["command_count"] = len(command_timings)
             diagnostic_data["browser_operations"] = operations
-        diagnostic_data["page_signals"] = (
-            ["facebook_search_page"]
-            if page.url and _page_matches_query(page, self._topic)
-            else []
-        )
+        page_signals = []
+        if page.url and _page_matches_query(page, self._topic):
+            page_signals.append("facebook_search_page")
+        if diagnostics.rate_limit_reason:
+            page_signals.append(
+                f"facebook_rate_limit_{diagnostics.rate_limit_reason}"
+            )
+        diagnostic_data["page_signals"] = page_signals
         result: dict[str, Any] = {
             "items": items,
             "error": error,
@@ -1623,8 +1754,21 @@ def _page_state(raw: dict[str, Any]) -> FacebookPageState:
     fields["title"] = str(fields.get("title") or "")
     fields["heading"] = str(fields.get("heading") or "")
     fields["query_value"] = str(fields.get("query_value") or "")
-    for key in ("has_search_filters", "no_results", "login_page", "checkpoint", "error_page"):
+    for key in (
+        "has_search_filters",
+        "no_results",
+        "login_page",
+        "checkpoint",
+        "rate_limited",
+        "error_page",
+    ):
         fields[key] = bool(fields.get(key))
+    reason = str(fields.get("rate_limit_reason") or "")
+    fields["rate_limit_reason"] = (
+        reason
+        if reason in RATE_LIMIT_REASONS
+        else ("unspecified" if fields["rate_limited"] else "")
+    )
     return FacebookPageState(**fields)
 
 

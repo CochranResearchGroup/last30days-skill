@@ -382,6 +382,7 @@ def _collection(args: argparse.Namespace) -> int:
 
 def _tick(args: argparse.Namespace) -> int:
     config_path = Path(args.config) if args.config else default_tick_config_path()
+    service_ids = tuple(getattr(args, "service_ids", ()))
     if args.tick_action == "preflight":
         payload = preflight_tick_runtime(
             contracts.TickRequest.from_dict(
@@ -394,6 +395,7 @@ def _tick(args: argparse.Namespace) -> int:
                 }
             ),
             config_path=config_path,
+            service_ids=service_ids,
         )
         print(json.dumps(payload, indent=2, sort_keys=True))
         return 0
@@ -404,7 +406,9 @@ def _tick(args: argparse.Namespace) -> int:
         response = coordinator.get_tick(args.tick_id)
         payload = response.to_dict()
     elif args.tick_action == "enqueue":
-        runtime = build_tick_runtime(db_path, config_path=config_path)
+        runtime = build_tick_runtime(
+            db_path, config_path=config_path, service_ids=service_ids
+        )
         response = runtime.coordinator.enqueue_tick(
             contracts.TickRequest.from_dict(
                 {
@@ -656,7 +660,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     tick = subparsers.add_parser(
         "tick",
-        help="Run or inspect one durable manual all-source tick",
+        help="Run or inspect one durable manual tick",
     )
     tick_subparsers = tick.add_subparsers(dest="tick_action", required=True)
     tick_enqueue = tick_subparsers.add_parser(
@@ -666,6 +670,13 @@ def build_parser() -> argparse.ArgumentParser:
     tick_enqueue.add_argument("--interval-from", required=True)
     tick_enqueue.add_argument("--interval-to", required=True)
     tick_enqueue.add_argument("--schedule-id", default="manual-default")
+    tick_enqueue.add_argument(
+        "--service",
+        dest="service_ids",
+        action="append",
+        default=[],
+        help="run only already-enabled targets for this service; repeatable",
+    )
     tick_enqueue.add_argument("--config")
     tick_enqueue.add_argument("--db")
     tick_enqueue.set_defaults(handler=_tick)
@@ -676,6 +687,13 @@ def build_parser() -> argparse.ArgumentParser:
     tick_preflight.add_argument("--interval-from", required=True)
     tick_preflight.add_argument("--interval-to", required=True)
     tick_preflight.add_argument("--schedule-id", default="manual-default")
+    tick_preflight.add_argument(
+        "--service",
+        dest="service_ids",
+        action="append",
+        default=[],
+        help="validate only already-enabled targets for this service; repeatable",
+    )
     tick_preflight.add_argument("--config")
     tick_preflight.set_defaults(handler=_tick)
     tick_get = tick_subparsers.add_parser("get", help="Read one durable tick receipt")

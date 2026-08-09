@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "972a9c6a1771b41e90862a8f4dbc84dfb2aa9f5e6763333825037eff70694d64",
+      "sha256": "6c40f0551041cf01b1e9a466a23a97c9843ec496d052f5bdf9fba491149b2029",
       "source": "service/VERSION"
     },
     {
@@ -92,7 +92,7 @@
     },
     {
       "path": "scripts/lib/facebook.py",
-      "sha256": "5f15a021b678e2c369de75d3518b3c3df919ce07ab47808b189da1bb77ccf3a8",
+      "sha256": "e75190e180b5626800291d41ca3738f6df0b93bcf0655f4723d888fa6a0598b1",
       "source": "skills/last30days/scripts/lib/facebook.py"
     },
     {
@@ -392,7 +392,7 @@
     },
     {
       "path": "scripts/lib/service_tick.py",
-      "sha256": "9a70093a4e869956cd49adce249fe0f431f98de0dfc3fa824f0b979721e97370",
+      "sha256": "dcc5ece2d2df3a3978be337e8d3fe42fc2ad38e435fa9e44b9d3118e515750e2",
       "source": "skills/last30days/scripts/lib/service_tick.py"
     },
     {
@@ -452,7 +452,7 @@
     },
     {
       "path": "scripts/lib/service_tick_runtime.py",
-      "sha256": "7d329c627698ad8dbd4deb0ebdcb60e883b9d98ad433568ec00654467b40bdc3",
+      "sha256": "be5cc6dfc15877c09daf3e283cbca1cc60dd9f0715bb1eeee673467ad7a03f3e",
       "source": "skills/last30days/scripts/lib/service_tick_runtime.py"
     },
     {
@@ -637,7 +637,7 @@
     },
     {
       "path": "scripts/service.py",
-      "sha256": "5cb06eee4baabfa3f159d66de0096b9bba657de63b99b984f87a23b620c1f1b3",
+      "sha256": "34789bedf30572125e3c436d891fa0da16e8c4e3ae1230e3fb624fafb818798d",
       "source": "skills/last30days/scripts/service.py"
     },
     {
@@ -648,5 +648,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.28"
+  "service_version": "0.3.30"
 }

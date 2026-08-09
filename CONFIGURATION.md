@@ -254,6 +254,33 @@ incident, message, observation lease, collection specification, or timer. An
 invalid config, missing normalization proof, invalid notification adapter, or
 fully unavailable notification chain fails before source work.
 
+To qualify or diagnose one already-enabled service without exercising every
+configured provider, add the same repeatable `--service SERVICE_ID` selector to
+both commands:
+
+```bash
+python3 ~/.agents/skills/last30days/scripts/service.py tick preflight \
+  --interval-from 2026-08-03T00:00:00Z \
+  --interval-to 2026-08-04T00:00:00Z \
+  --schedule-id manual-facebook-check \
+  --service facebook
+
+python3 ~/.agents/skills/last30days/scripts/service.py tick enqueue \
+  --interval-from 2026-08-03T00:00:00Z \
+  --interval-to 2026-08-04T00:00:00Z \
+  --schedule-id manual-facebook-check \
+  --service facebook
+```
+
+The value is the configured `service_id`, not an arbitrary source alias. The
+selector can only disable work: it retains already-enabled targets for the
+named services, disables all other targets in the frozen tick snapshot, and
+narrows aggregate ceilings to those selected lanes. Unknown, duplicate, empty,
+or currently disabled service selections fail closed. Selection is part of the
+config digest and tick identity, so an all-source tick and a source-scoped tick
+for the same interval cannot collide. The recurring scheduler never supplies
+this manual-only selector and remains all-source.
+
 Run the same explicit interval manually only after the preflight's
 `config_digest`, `tick_id`, and bounded manifest have been reviewed:
 
@@ -274,6 +301,17 @@ These commands use the user-scoped database/config defaults unless their
 documented `--db` or `--config` option is supplied. `tick preflight` has no
 database option because it is state-free. `tick enqueue` is manual-only: it
 does not create, resume, or enable a collection spec or timer.
+For Facebook, an organically encountered temporary-block or action-frequency
+surface stops as `rate_limit_detected` without navigation recovery or an
+authentication handoff. Only a bounded stable reason signal is retained; the
+adapter does not reproduce the page, retry the request, or attempt to clear the
+limit.
+Facebook navigation proof uses bounded layout-free page reads. If the retained
+search target does not answer Runtime evaluation before its worker deadline,
+the adapter may continue only when agent-browser's active-tab inventory proves
+the exact requested Facebook search URL, query, and Recent-posts filter. It
+does not open another recovery tab in that case; content and rate-limit
+classification remain deferred to the ordinary bounded extraction read.
 `tick incident observe` accepts no URL from the caller. It returns only the
 external HTTPS agent-browser operator URL stored with an acknowledged browser
 incident; localhost and loopback links fail closed. Screenshot bytes remain a

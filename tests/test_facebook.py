@@ -165,6 +165,44 @@ class FacebookCliAdapterTests(unittest.TestCase):
             )
             self.assertNotIn("two-factor authentication", script)
 
+    def test_rate_limit_scripts_require_structural_block_surface(self):
+        for script in (facebook.AUTH_SCRIPT, facebook.PAGE_STATE_SCRIPT):
+            self.assertIn("rate_limited", script)
+            self.assertIn("rate_limit_reason", script)
+            self.assertIn("!hasPostActions", script)
+        self.assertIn("rate_limited", facebook.EXTRACT_SCRIPT)
+        self.assertIn("rate_limit_reason", facebook.EXTRACT_SCRIPT)
+
+    def test_page_state_scripts_bound_layout_free_surface_reads(self):
+        for script in (
+            facebook.AUTH_SCRIPT,
+            facebook.PAGE_STATE_SCRIPT,
+            facebook.EXTRACT_SCRIPT,
+        ):
+            self.assertIn("surface?.textContent", script)
+            self.assertIn(".slice(0, 40000)", script)
+            self.assertNotIn("document.body?.innerText", script)
+
+        self.assertIn(".slice(0, 64)", facebook.PAGE_STATE_SCRIPT)
+        self.assertNotIn(
+            "'[role=\"tab\"], [role=\"button\"], a'",
+            facebook.PAGE_STATE_SCRIPT,
+        )
+
+    def test_rate_limited_auth_is_explicit_and_overrides_cookie_evidence(self):
+        auth = facebook._facebook_auth_state(
+            {
+                "authenticated_dom": True,
+                "has_c_user": True,
+                "rate_limited": True,
+                "rate_limit_reason": "temporary_block",
+            }
+        )
+
+        self.assertFalse(auth.authenticated)
+        self.assertTrue(auth.rate_limited)
+        self.assertTrue(facebook._facebook_auth_is_explicit(auth))
+
     def test_prepare_operator_handoff_requires_doctor_and_visible_ready_proof(self):
         client = facebook.CliAgentBrowserClient(timeout=5, job_timeout_ms=120_000)
         workspace = facebook.BrowserWorkspace(
@@ -1044,6 +1082,85 @@ class FacebookCliAdapterTests(unittest.TestCase):
 
 
 class FacebookNavigationAndAuthTests(unittest.TestCase):
+    def test_auth_rate_limit_stops_without_handoff_or_navigation(self):
+        client = FakeAgentBrowserClient(
+            auth=facebook.FacebookAuthState(
+                authenticated=False,
+                rate_limited=True,
+                rate_limit_reason="temporary_block",
+            )
+        )
+        client.prepare_operator_handoff = mock.Mock()
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual("rate_limit_detected", result["error_type"])
+        self.assertEqual(
+            "temporary_block", result["diagnostics"]["rate_limit_reason"]
+        )
+        self.assertEqual(
+            ["facebook_rate_limit_temporary_block"],
+            result["diagnostics"]["page_signals"],
+        )
+        self.assertEqual([], client.actions)
+        client.prepare_operator_handoff.assert_not_called()
+
+    def test_navigation_rate_limit_stops_without_recovery_or_handoff(self):
+        page = dict(fixture("mixed_search.json")["page"])
+        page.update(
+            {
+                "rate_limited": True,
+                "rate_limit_reason": "action_frequency_limit",
+            }
+        )
+        client = FakeAgentBrowserClient(page=page)
+        client.prepare_operator_handoff = mock.Mock()
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual("rate_limit_detected", result["error_type"])
+        self.assertEqual(
+            "action_frequency_limit",
+            result["diagnostics"]["rate_limit_reason"],
+        )
+        self.assertEqual(
+            ["navigate", "wait"], [action.operation for action in client.actions]
+        )
+        client.prepare_operator_handoff.assert_not_called()
+
+    def test_empty_extraction_rate_limit_stops_without_scroll_or_retry(self):
+        class RateLimitedExtractionClient(FakeAgentBrowserClient):
+            def evaluate(self, workspace, script):
+                if script == facebook.EXTRACT_SCRIPT:
+                    return {
+                        "url": self.page["url"],
+                        "title": self.page["title"],
+                        "candidates": [],
+                        "rate_limited": True,
+                        "rate_limit_reason": "temporary_block",
+                    }
+                return super().evaluate(workspace, script)
+
+        client = RateLimitedExtractionClient()
+        client.prepare_operator_handoff = mock.Mock()
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual("rate_limit_detected", result["error_type"])
+        self.assertEqual(
+            "temporary_block", result["diagnostics"]["rate_limit_reason"]
+        )
+        self.assertEqual(
+            ["navigate", "wait"], [action.operation for action in client.actions]
+        )
+        client.prepare_operator_handoff.assert_not_called()
+
     def test_checkpoint_prepares_missing_operator_handoff_on_demand(self):
         state = fixture("checkpoint.json")
         client = FakeAgentBrowserClient(auth=facebook.FacebookAuthState(**state["auth"]))
@@ -1258,6 +1375,37 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         )
         self.assertEqual("about:blank", client.actions[2].value)
         self.assertEqual(client.actions[0].value, client.actions[3].value)
+
+    def test_page_state_timeout_accepts_active_tab_identity_without_recovery_tab(self):
+        class PageStateTimeoutWithTabIdentityClient(FakeAgentBrowserClient):
+            def __init__(self):
+                super().__init__()
+                self.page_state_evaluations = 0
+                self.tab_identity_reads = 0
+
+            def evaluate(self, workspace, script):
+                if script == facebook.PAGE_STATE_SCRIPT:
+                    self.page_state_evaluations += 1
+                    raise facebook.FacebookScraperFailure(
+                        "agent_browser_timeout",
+                        "agent-browser operation timed out after 20s",
+                    )
+                return super().evaluate(workspace, script)
+
+            def inspect_active_page(self, workspace):
+                self.tab_identity_reads += 1
+                return dict(self.page)
+
+        client = PageStateTimeoutWithTabIdentityClient()
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(1, client.page_state_evaluations)
+        self.assertEqual(1, client.tab_identity_reads)
+        self.assertNotIn("new_tab", [action.operation for action in client.actions])
 
     def test_repeated_page_state_timeout_stops_after_one_fresh_target(self):
         class PageStateAlwaysTimeoutClient(FakeAgentBrowserClient):

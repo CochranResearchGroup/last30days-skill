@@ -551,7 +551,76 @@ def _freeze_non_secret(value: object) -> object:
     return value
 
 
-def _load_config(path: Path) -> tuple[dict[str, Any], str, str]:
+def _scope_manual_services(
+    config: dict[str, Any], service_ids: Sequence[str]
+) -> dict[str, Any]:
+    """Return a fail-closed, budget-narrowed config for manual service scope."""
+    if not service_ids:
+        return config
+    selected = [
+        _bounded_text(service_id, "manual service selector", 128)
+        for service_id in service_ids
+    ]
+    if len(set(selected)) != len(selected):
+        raise TickConfigError("manual service selector contains duplicate service")
+    services = {
+        _bounded_text(service.get("service_id"), f"services[{index}].service_id"): service
+        for index, raw_service in enumerate(_array(config["services"], "services"))
+        for service in [_object(raw_service, f"services[{index}]")]
+    }
+    unknown = sorted(set(selected) - services.keys())
+    if unknown:
+        raise TickConfigError(
+            f"manual service selector contains unknown service: {', '.join(unknown)}"
+        )
+    enabled_service_ids = {
+        _bounded_text(target.get("service_id"), f"targets[{index}].service_id")
+        for index, raw_target in enumerate(_array(config["targets"], "targets"))
+        for target in [_object(raw_target, f"targets[{index}]")]
+        if target.get("enabled") is True
+    }
+    without_target = sorted(set(selected) - enabled_service_ids)
+    if without_target:
+        raise TickConfigError(
+            "manual service selector has no enabled target: "
+            + ", ".join(without_target)
+        )
+
+    selected_set = set(selected)
+    scoped_targets: list[dict[str, Any]] = []
+    selected_limits = {field: 0 for field in _LIMIT_FIELDS}
+    for index, raw_target in enumerate(_array(config["targets"], "targets")):
+        target = dict(_object(raw_target, f"targets[{index}]"))
+        enabled = target.get("enabled") is True
+        service_id = _bounded_text(
+            target.get("service_id"), f"targets[{index}].service_id"
+        )
+        target["enabled"] = enabled and service_id in selected_set
+        scoped_targets.append(target)
+        if not target["enabled"]:
+            continue
+        for provider_index, raw_provider in enumerate(
+            _array(services[service_id].get("providers"), "providers")
+        ):
+            provider = _object(raw_provider, f"providers[{provider_index}]")
+            limits = _object(provider.get("limits"), "provider limits")
+            for field in _LIMIT_FIELDS:
+                selected_limits[field] += int(limits[field])
+
+    tick = dict(_object(config["tick"], "tick"))
+    aggregate = _object(tick.get("aggregate_limits"), "tick.aggregate_limits")
+    tick["aggregate_limits"] = {
+        field: min(int(aggregate[field]), selected_limits[field])
+        for field in _LIMIT_FIELDS
+    }
+    scoped = {**config, "targets": scoped_targets, "tick": tick}
+    _validate_config_shape(scoped)
+    return scoped
+
+
+def _load_config(
+    path: Path, *, service_ids: Sequence[str] = ()
+) -> tuple[dict[str, Any], str, str]:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -574,7 +643,11 @@ def _load_config(path: Path) -> tuple[dict[str, Any], str, str]:
         raise TickConfigError(str(exc)) from exc
     _validate_config_shape(config)
     revision = _bounded_text(config["config_revision"], "config_revision")
-    frozen = _object(_freeze_non_secret(config), "frozen tick config")
+    scoped = _scope_manual_services(config, service_ids)
+    frozen = _object(
+        _freeze_non_secret(scoped),
+        "frozen tick config",
+    )
     return frozen, revision, _digest(frozen)
 
 
@@ -693,11 +766,15 @@ def _prepare_tick(
     config_path: Path,
     request: contracts.TickRequest,
     adapter_registry: AdapterRegistry,
+    *,
+    service_ids: Sequence[str] = (),
 ) -> tuple[dict[str, Any], str, str, str, tuple[dict[str, Any], ...]]:
     """Load once and derive the immutable identity shared by preflight/enqueue."""
     if not isinstance(request, contracts.TickRequest):
         raise TypeError("request must be a TickRequest")
-    config, config_revision, config_digest = _load_config(config_path)
+    config, config_revision, config_digest = _load_config(
+        config_path, service_ids=service_ids
+    )
     identity = {
         "schedule_id": request.schedule_id,
         "interval_from": request.interval_from,
@@ -862,12 +939,14 @@ class TickCoordinator:
         adapter_registry: AdapterRegistry | None = None,
         runner: object | None = None,
         clock: Clock | None = None,
+        service_ids: Sequence[str] = (),
     ) -> None:
         self.db_path = Path(db_path)
         self.config_path = Path(config_path)
         self.adapter_registry = adapter_registry or default_adapter_registry()
         self.runner = runner
         self.clock = clock or (lambda: datetime.now(timezone.utc))
+        self.service_ids = tuple(service_ids)
         store.init_db(self.db_path)
 
     def _connect(self) -> sqlite3.Connection:
@@ -882,6 +961,7 @@ class TickCoordinator:
             self.config_path,
             request,
             self.adapter_registry,
+            service_ids=self.service_ids,
         )
         now = _timestamp(self.clock)
 
