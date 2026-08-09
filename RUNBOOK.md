@@ -14482,3 +14482,57 @@ Next Bounded Action:
 - commit and push this accepted offline slice. At or after
   `2026-08-09T16:19:07Z`, Plan 0032 may run one guarded Facebook-only proof;
   do not wait for the natural scheduler or retry a terminal result.
+
+## Turn 242 | 2026-08-09
+
+Focus: bind the installed Plan 0031 result to durable commit and memory
+receipts, then publish the offline successor slice.
+
+Authority Consulted:
+
+- Plan 0031/C02, Plan 0032/C01, Turn 241, repository commit/push, validation,
+  closeout, roadmap/runbook, and Graphiti policies; current origin/main
+  ancestry and terminal validation receipts.
+
+Decisions And Changes:
+
+- committed the exact fresh-target recovery, service 0.3.32 release identity,
+  tests, plans, receipt note, roadmap, and runbook as `6ffc38a`;
+- preserved Plan 0032 as the sole active authority. No live tick, browser
+  operation, schedule mutation, provider call, cost, or model use occurred;
+- ran the one required compact Graphiti write after provider readiness passed.
+
+Validation Evidence:
+
+- commit `6ffc38a` contains the exact tree that produced artifact SHA-256
+  `fe673ab03c165b3e61a360bb9d801d60e3e90a4c12a307f21e9a99f275eeb82d`
+  and installed runtime-manifest SHA-256
+  `5170c1d37ab280d772bfb9dab17f71bf90aa71d3485be48cd093f9c7f813ea33`;
+- the final suite passed with 2,614 Python tests, 7 skips, 6 subtests, every Go
+  MCP package, compileall, runtime/skill builds, one active plan, zero
+  authority issues, and clean patch checks;
+- origin/main was still `3f71b530997dd6623a7d50fa8bda81ac18650342`
+  immediately before the coherent commit.
+
+State Movement:
+
+- Plan 0031 remains `CLOSED`; Plan 0032 remains `OPEN` at version 1/C01;
+- the offline recovery is durable and ready to publish, while routine Facebook
+  usability remains unproved.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary independently verified the committed tree and
+  installed state.
+
+Graphiti Write Status:
+
+- provider readiness passed; one compact memory for commit `6ffc38a` queued in
+  canonical group `last30days_skill_main` as job
+  `c5e1b76d-05eb-4407-b525-c1e0fdde5e2f`; no duplicate write was attempted.
+
+Next Bounded Action:
+
+- commit this receipt and push both commits to `origin/main`. At or after
+  `2026-08-09T16:19:07Z`, Plan 0032 may execute one guarded manual proof with
+  no retry.

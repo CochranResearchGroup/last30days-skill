@@ -179,7 +179,9 @@ Authority classification:
 
 Graphiti write status:
 
-- pending one compact source-backed attempt after the durable commit.
+- provider readiness passed and one compact source-backed memory for durable
+  commit `6ffc38a` queued in canonical group `last30days_skill_main` as job
+  `c5e1b76d-05eb-4407-b525-c1e0fdde5e2f`; no duplicate write was attempted.
 
 Next action:
 

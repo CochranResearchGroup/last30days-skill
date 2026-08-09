@@ -46,3 +46,9 @@ Source plans: Plan 0030 version 2/C02; Plan 0031 version 2/C02
 Facebook remains manual and not routine-qualified. Plan 0032 owns at most one
 later 0.3.32 proof after `2026-08-09T16:19:07Z`, fresh no-launch guards, and a
 matching preflight. There is no retry authority.
+
+## Durable Memory
+
+Graphiti provider readiness passed. One compact source-backed memory for commit
+`6ffc38a` queued in `last30days_skill_main` as job
+`c5e1b76d-05eb-4407-b525-c1e0fdde5e2f`; no duplicate write was attempted.
