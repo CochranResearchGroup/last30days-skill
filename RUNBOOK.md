@@ -14261,7 +14261,10 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- deferred until the repository commit provides a durable identity.
+- provider readiness passed and one compact source-backed memory for durable
+  implementation commit `2c0009998f059cc7d6263fbece8773821bc1ad3b` queued as
+  job `362d75af-7773-474b-a911-854f9f54f0de` in group `last30days`; no
+  duplicate write was attempted.
 
 Next Bounded Action:
 
