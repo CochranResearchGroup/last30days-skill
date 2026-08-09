@@ -178,8 +178,10 @@ def test_current_repository_authority_passes() -> None:
 
     assert report["status"] == "passed", report
     assert report["issues"] == []
-    assert report["active_plan_count"] == 0
-    assert report["active_plans"] == []
+    assert report["active_plan_count"] == 1
+    assert report["active_plans"] == [
+        "docs/dev/plans/0035-2026-08-09-facebook-routine-automation-qualification.md"
+    ]
     assert report["campaign_plan_count"] == 0
 
 

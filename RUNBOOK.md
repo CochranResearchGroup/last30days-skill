@@ -15012,3 +15012,62 @@ Next Bounded Action:
 - commit and push this closeout slice, verify the remote tip and clean
   worktree, then stop. Any live Facebook proof requires a new explicit
   attempt ceiling; do not retry a Plan 0033 tick.
+
+## Turn 250 | 2026-08-09
+
+Focus: open one bounded post-0.3.38 Facebook content proof and qualify the
+already-enabled recurring Facebook schedule without waiting for natural time.
+
+Authority Consulted:
+
+- active operator goal; Plan 0034/C03; planning, goal-execution, browser,
+  validation, documentation, roadmap/runbook, CodeGraph, worktree,
+  commit/push, release, and Graphiti policies; diagnosing-bugs, agent-browser,
+  and repo-policy-selector skill instructions; current Git, installed service,
+  schedule/config, automatic receipt, browser, target, and doctor readbacks.
+
+Decisions And Changes:
+
+- opened Plan 0035 with one new Facebook-only attempt, 50-request, 120-second,
+  three-item, zero-cost, and zero-model limits and no retry/fallback;
+- established that no schedule activation mutation is needed: authoritative
+  config already enables Facebook in `daily-default`, and the last automatic
+  receipt contains its Facebook lane;
+- used CodeGraph to prove the timer builds a `TIMER` request and calls the same
+  `TickCoordinator.enqueue_tick()` and acquisition adapter path as manual
+  enqueue;
+- preserved a separately observed `shared-social` Facebook browser as
+  out-of-scope. The exact Last30Days owner remains PID 63205 with one Facebook
+  target; no browser or tab was opened, closed, or changed.
+
+Validation Evidence:
+
+- main and origin/main started clean at `f19699c`;
+- installed 0.3.38/schema16 is ready and Facebook is configured,
+  acquisition-ready, and indexed;
+- `daily-default` is enabled/ready at 86,400 seconds with next boundary
+  `2026-08-10T00:00:00Z`; automatic tick
+  `tick-88908a5a463045adb990489902772baa` included Facebook before the 0.3.38
+  repair and ended that lane in failure;
+- retained owner `session:last30days-facebook`, PID 63205, is ready with four
+  live tabs and exactly one Facebook home target; effective remote control is
+  ready and the raw doctor warning remains nonblocking duplicate pressure.
+
+State Movement:
+
+- P13 moves `PLANNED -> OPEN`; Plan 0035 opens at version 1/C01 and is the sole
+  active plan.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary owns the serialized effect boundary.
+
+Graphiti Write Status:
+
+- deferred until the live packet reaches a durable terminal state.
+
+Next Bounded Action:
+
+- validate and publish the authority checkpoint, then run fresh guards and one
+  matching Facebook-only preflight/enqueue pair. Stop after its terminal
+  receipt; do not wait for the natural scheduler or infer a second attempt.

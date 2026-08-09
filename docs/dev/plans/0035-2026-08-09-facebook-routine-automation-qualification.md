@@ -1,0 +1,174 @@
+# Plan 0035 | Facebook Routine Automation Qualification
+
+State: OPEN
+Roadmap: P13
+Plan version: 1
+Date: 2026-08-09
+Predecessor: Plan 0034 version 3/checkpoint P0034-C03
+
+## Objective
+
+Prove installed service 0.3.38 can acquire accepted Facebook content through
+one bounded governed manual tick, then qualify the already-enabled
+`daily-default` schedule as the recurring automated Facebook path without
+waiting for the next natural boundary.
+
+## Current State
+
+- service 0.3.38/schema16 is installed ready and reports Facebook configured,
+  acquisition-ready, and indexed;
+- `daily-default` is already enabled and ready at an 86,400-second UTC cadence;
+  its frozen config contains one enabled Facebook target and the scheduler
+  calls the same `TickCoordinator.enqueue_tick()` path as manual enqueue;
+- the latest automatic tick at the 2026-08-09 UTC boundary included Facebook
+  but failed before the 0.3.38 repair, so recurrence is configured but Facebook
+  content capability is not qualified;
+- retained browser `session:last30days-facebook`, PID 63205, is ready with one
+  Facebook home target plus X, LinkedIn, and preview targets. A separate
+  `shared-social` browser also exposes a Facebook tab, but the exact Last30Days
+  owner remains unambiguous and remote-view readiness classifies the retained
+  duplicate pressure as nonblocking with zero readiness-impacting candidates;
+- Plan 0034 installed deterministic repairs for the two Plan 0033 target-loss
+  traces and directly proved the retained Facebook home target has complete,
+  authenticated DOM state. No post-repair provider tick has run.
+
+## Scope
+
+- bind one new operator-authorized Facebook-only attempt to a distinct fully
+  closed interval and matching preflight;
+- preserve one provider attempt, 50 network requests, 120 wall seconds, three
+  items, zero cost, and zero model-token limits;
+- require current service, SQLite, schedule, browser, exact-owner, target,
+  challenge, queue, lease, and remote-control guards before enqueue;
+- execute the one manual tick through the installed coordinator/runner and
+  adjudicate its durable provider receipt against the accepted-content model;
+- if and only if accepted Facebook content is persisted with coherent
+  provenance and no safety signal, leave the existing `daily-default` schedule
+  enabled and record Facebook as routine automated; no schedule mutation is
+  needed because Facebook is already an enabled target;
+- close with exact runtime, database, browser, schedule, Git, and receipt
+  evidence.
+
+## Non-Goals
+
+- no second provider attempt, same-tick retry, provider fallback, natural-time
+  wait, cadence/config/limit change, browser process close, unrelated-tab
+  cleanup, logout/login, MFA, CAPTCHA/checkpoint interaction, cookie mutation,
+  intentional rate-limit generation, private content dump, cost, or model use;
+- no claim that configured recurrence alone proves usable scraping;
+- no weakening of exact owner/profile/target, auth, challenge, rate-limit,
+  quality, provenance, or one-final-Facebook-target gates.
+
+## Acceptance Criteria
+
+1. Fresh guards prove installed 0.3.38/schema16 ready; both SQLite databases
+   `ok`; `daily-default` enabled/ready at 86,400 seconds; exact retained owner
+   PID 63205 ready with one Facebook target; zero active challenges, queue
+   depth, and profile-lease waiters; and effective remote control ready.
+2. One matching preflight predicts exactly one Facebook lane, provider, and
+   attempt with limits 50 requests, 120 wall seconds, three items, zero cost,
+   and zero model tokens for a distinct fully closed interval.
+3. The tick runs once and returns one terminal provider result. Routine
+   qualification requires `success` or `partial` with at least one accepted
+   post, a canonical Facebook permalink, in-window publication time, coherent
+   observed/accepted/rejected counts, persisted source version/sighting/index
+   evidence, and no auth, CAPTCHA, checkpoint, rate-limit, integrity, or
+   quality-only-zero-yield signal.
+4. After success, the authoritative config still has Facebook enabled under
+   `daily-default`, the schedule remains enabled/ready with the same cadence
+   and next boundary, and CodeGraph-backed source evidence confirms timer and
+   manual triggers converge on `TickCoordinator.enqueue_tick()` and the same
+   adapter registry.
+5. Browser cleanup preserves PID 63205 and one Last30Days Facebook target;
+   databases remain `ok`; queue and lease pressure return to zero; plan,
+   roadmap, runbook, receipt, Git, and runtime agree.
+
+## Definition Of Done
+
+- criteria 1-5 have exact IDs, counters, timestamps, hashes, and current
+  readbacks;
+- P13 closes only if accepted Facebook content proves the installed adapter
+  and the existing daily schedule remains ready; otherwise the one-attempt
+  blocker is preserved and recurrence is not described as usable;
+- the coherent closeout is committed and pushed to `origin/main` and one
+  compact Graphiti episode is attempted after provider readiness.
+
+## Execution Bounds
+
+- primary agent owns one serialized preflight/enqueue/adjudication packet;
+- maximum work-unit attempts: one live Facebook provider attempt;
+- maximum review/rework cycles: one closed-world receipt verification;
+- maximum consecutive hardening-only checkpoints: zero;
+- hard stop on failed guard, owner ambiguity, auth/challenge/rate-limit signal,
+  nonzero cost/model use, unexpected tab growth, timeout/integrity/quality-only
+  zero yield, or any need to mutate the schedule/config/browser lifecycle;
+- no subagent is used; the deterministic runner remains bounded by the frozen
+  tick contract and the primary independently inspects the durable outcome.
+
+## Owned Write Surfaces
+
+- one new tick/provider receipt in the installed current database;
+- this plan, P13 in `ROADMAP.md`, `RUNBOOK.md`, the deterministic authority
+  test while the plan is active, and one bounded closeout note if needed.
+
+### Checkpoint P0035-C01 | 2026-08-09
+
+Plan version: 1
+
+State transition:
+
+- `post_repair_manual_gate -> bounded_routine_qualification_ready`.
+
+Progress classification:
+
+- `outcome_progress`; the new authority binds the first post-0.3.38 content
+  proof and recognizes that recurring Facebook configuration already exists.
+
+Owned changes:
+
+- opened and wired Plan 0035; no provider, browser, schedule, or configuration
+  mutation has occurred.
+
+Validation evidence:
+
+- main and `origin/main` both began at `f19699c` with a clean worktree;
+- installed status is ready at 0.3.38/schema16; `daily-default` is enabled and
+  ready with next boundary `2026-08-10T00:00:00Z`;
+- the 2026-08-09 automatic receipt contains one Facebook lane, proving the
+  schedule currently includes Facebook, while CodeGraph shows timer admission
+  calls the same `TickCoordinator.enqueue_tick()` used by manual enqueue;
+- retained owner PID 63205 is ready with four live tabs and one Facebook home
+  target; effective remote control is ready.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary owns the serialized effect boundary.
+
+Authority classification:
+
+- `human_gate`; the operator's active goal authorizes one new bounded
+  Facebook-only post-repair proof and routine automation qualification.
+
+Review disposition summary:
+
+- no open review findings; configured recurrence is accepted only as setup
+  evidence, not as content-success evidence.
+
+Graphiti write status:
+
+- deferred until the effect-bearing packet reaches a durable terminal state.
+
+Remaining acceptance criteria:
+
+- criteria 1-5 require fresh guards, the one live receipt, and closeout.
+
+Next action:
+
+- commit and push this authority checkpoint, then run fresh guards and the one
+  matching Facebook-only preflight/enqueue pair if every guard passes.
+
+## Stop Rules
+
+Stop immediately on any execution-bound violation. One failed provider result
+is terminal for this plan; diagnose from its durable receipt but do not infer a
+second attempt or schedule/browser mutation.

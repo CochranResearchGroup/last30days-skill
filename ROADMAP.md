@@ -1279,7 +1279,7 @@ Closeout:
 
 ## P13 | Facebook Safe Manual Qualification
 
-State: PLANNED
+State: OPEN
 
 Objective: qualify the repaired Facebook adapter for routine attended use with
 a source-scoped governed manual proof and explicit fail-closed handling for an
@@ -1346,9 +1346,20 @@ Current State:
 - final cleanup leaves PID 63205 ready with four intentional live tabs and one
   Facebook home target. Facebook remains manual and not routine-qualified;
   the three-attempt ceiling is exhausted and no fourth tick is authorized;
+- Plan 0035 is the newly authorized one-attempt post-0.3.38 qualification.
+  `daily-default` already contains an enabled Facebook target and calls the
+  same coordinator/runner path as manual enqueue, so accepted content will
+  qualify the existing recurring path without a schedule mutation or natural
+  boundary wait;
 - no logout, CAPTCHA, checkpoint, or rate-limit state will be induced. Ticks
   remain manual until a later guarded successor proof satisfies the content
   acceptance contract.
+
+Active Plan:
+
+- `docs/dev/plans/0035-2026-08-09-facebook-routine-automation-qualification.md`
+  owns one bounded post-repair proof and the resulting routine-automation
+  decision.
 
 Closed Repair Plan:
 
