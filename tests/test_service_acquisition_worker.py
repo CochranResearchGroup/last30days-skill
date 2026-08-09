@@ -9,6 +9,8 @@ import sys
 
 from pathlib import Path
 
+import pytest
+
 from lib import service_contracts as contracts
 from lib import service_acquisition_worker
 from lib.service_acquisition_worker import execute_work, load_profile_config
@@ -738,6 +740,45 @@ def test_facebook_adapter_constrains_search_to_the_admitted_item_limit(monkeypat
 
     assert observed["LAST30DAYS_FACEBOOK_MAX_RESULTS"] == "3"
     assert result["_network_request_count"] == 1
+
+
+@pytest.mark.parametrize(
+    ("wall_timeout_seconds", "configured_timeout", "expected_timeout"),
+    [
+        (120, None, "105"),
+        (90, "999", "75"),
+        (120, "45", "45"),
+    ],
+)
+def test_facebook_adapter_reserves_parent_cleanup_time(
+    monkeypatch,
+    wall_timeout_seconds,
+    configured_timeout,
+    expected_timeout,
+):
+    from lib import facebook
+
+    observed = {}
+
+    def search(*_args, **kwargs):
+        observed.update(kwargs["config"])
+        return {"items": []}
+
+    monkeypatch.setattr(facebook, "search_facebook", search)
+    config = {}
+    if configured_timeout is not None:
+        config["LAST30DAYS_FACEBOOK_TIMEOUT"] = configured_timeout
+
+    service_acquisition_worker._facebook_adapter(
+        _request(
+            source="facebook",
+            adapter="facebook_agent_browser",
+            wall_timeout_seconds=wall_timeout_seconds,
+        ),
+        config,
+    )
+
+    assert observed["LAST30DAYS_FACEBOOK_TIMEOUT"] == expected_timeout
 
 
 def test_reddit_adapter_variant_follows_exact_access_method_provenance():

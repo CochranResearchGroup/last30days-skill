@@ -29,11 +29,11 @@ from .relevance import token_overlap_relevance as _compute_relevance
 
 DEPTH_CONFIG = {
     "quick": {"results": 8, "scrolls": 1, "timeout": 45},
-    "default": {"results": 16, "scrolls": 2, "timeout": 75},
+    "default": {"results": 16, "scrolls": 2, "timeout": 105},
     "deep": {"results": 30, "scrolls": 4, "timeout": 120},
 }
 
-MAX_RUN_BUDGET_SECONDS = 75
+MAX_RUN_BUDGET_SECONDS = 105
 TAB_INVENTORY_TIMEOUT_SECONDS = 20
 
 ERROR_TYPES = {
@@ -506,11 +506,6 @@ class AgentBrowserClient(Protocol):
     def evaluate_navigation_state(
         self, workspace: BrowserWorkspace, script: str
     ) -> dict[str, Any]: ...
-    def open_fresh_site_target(
-        self, workspace: BrowserWorkspace, hostname: str, url: str
-    ) -> bool: ...
-
-
 class CliAgentBrowserClient:
     """Typed adapter for the installed agent-browser JSON CLI."""
 
@@ -896,16 +891,19 @@ class CliAgentBrowserClient:
         successor_opened = False
         try:
             if replace_existing:
-                successor_opened = self.open_fresh_site_target(
+                successor_opened = self.replace_active_site_target(
                     workspace,
                     "facebook.com",
-                    "https://www.facebook.com/",
                 )
                 if not successor_opened:
                     raise FacebookScraperFailure(
                         "facebook_target_unresponsive",
                         "Could not open a successor for the unresponsive retained Facebook target",
                     )
+                self.act(
+                    workspace,
+                    BrowserAction("navigate", value="https://www.facebook.com/"),
+                )
             if not successor_opened:
                 self.act(
                     workspace,
@@ -1155,7 +1153,7 @@ class CliAgentBrowserClient:
         """Open one blank successor and close only the active wedged site target."""
         listed = self._invoke(
             ["--session", workspace.session_name, "tab", "list"],
-            timeout=min(self.timeout, 10),
+            timeout=min(self.timeout, TAB_INVENTORY_TIMEOUT_SECONDS),
         )
         tabs = listed.get("tabs") if isinstance(listed.get("tabs"), list) else []
         matches = [
@@ -1193,25 +1191,6 @@ class CliAgentBrowserClient:
                 "facebook_target_unresponsive",
                 "The unresponsive Facebook predecessor target could not be closed",
             ) from exc
-        self._prepared_sites.discard((workspace.session_name, hostname))
-        return True
-
-    def open_fresh_site_target(
-        self,
-        workspace: BrowserWorkspace,
-        hostname: str,
-        url: str,
-    ) -> bool:
-        """Open a successor at its final URL; cleanup owns duplicate closure."""
-        if not _url_matches_hostname(url, hostname):
-            raise FacebookScraperFailure(
-                "agent_browser_error",
-                f"Refusing to open {hostname} recovery target at a different site",
-            )
-        self._invoke(
-            ["--session", workspace.session_name, "tab", "new", url],
-            timeout=min(self.timeout, 30),
-        )
         self._prepared_sites.discard((workspace.session_name, hostname))
         return True
 
@@ -1548,14 +1527,12 @@ class FacebookScraper:
     def _navigate(self, workspace: BrowserWorkspace, topic: str) -> FacebookPageState:
         recent_search_url = _search_url(topic, recent=True)
         _log(f"Navigating query={topic!r} strategy=fresh_authenticated_target")
-        successor_at_query = False
         for attempt in range(2):
             try:
-                if not successor_at_query:
-                    self.client.act(
-                        workspace,
-                        BrowserAction("navigate", value=recent_search_url),
-                    )
+                self.client.act(
+                    workspace,
+                    BrowserAction("navigate", value=recent_search_url),
+                )
                 navigation_read = getattr(
                     self.client,
                     "evaluate_navigation_state",
@@ -1572,31 +1549,9 @@ class FacebookScraper:
                         "Facebook replacement target did not respond to bounded navigation readback",
                     ) from exc
                 _log(
-                    "Search target open/read timed out; retrying once on a "
-                    "fresh target opened directly at the verified query URL"
+                    "Search target open/read timed out; retiring its renderer "
+                    "before one bounded successor navigation"
                 )
-                open_successor = getattr(
-                    self.client,
-                    "open_fresh_site_target",
-                    None,
-                )
-                if callable(open_successor):
-                    try:
-                        successor_at_query = bool(
-                            open_successor(
-                                workspace,
-                                "facebook.com",
-                                recent_search_url,
-                            )
-                        )
-                    except FacebookScraperFailure as replacement_exc:
-                        raise FacebookScraperFailure(
-                            "facebook_target_unresponsive",
-                            "Facebook target successor did not open",
-                        ) from replacement_exc
-                    if successor_at_query:
-                        continue
-
                 replace_target = getattr(
                     self.client,
                     "replace_active_site_target",
@@ -1621,8 +1576,6 @@ class FacebookScraper:
                         "facebook_target_unresponsive",
                         "No active Facebook target was available for bounded replacement",
                     ) from exc
-                successor_at_query = False
-
         _log(f"Navigation readback requested={recent_search_url!r} final={page.url!r}")
         if page.rate_limited:
             raise FacebookScraperFailure(

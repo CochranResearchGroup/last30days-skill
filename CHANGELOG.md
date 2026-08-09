@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook renderer-isolating recovery.** Service 0.3.40 replaces a frozen
+  Facebook target with `about:blank`, closes the exact predecessor, and only
+  then navigates the successor to Facebook. This prevents Chromium from
+  reusing the same stalled same-site renderer observed when 0.3.39 left the
+  predecessor alive. The default Facebook adapter allowance is 105 seconds
+  beneath the unchanged 120-second parent worker boundary, preserving room
+  for the bounded replacement sequence and cleanup. Recovery remains limited
+  to one successor and never restarts the browser or profile.
+
 - **Facebook retained-session inventory latency.** Service 0.3.39 gives the
   read-only authenticated-session tab inventory up to 20 seconds after an
   installed proof timed out at 10,025 milliseconds and three exact-session

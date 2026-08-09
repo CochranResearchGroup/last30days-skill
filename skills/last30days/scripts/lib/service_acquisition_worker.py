@@ -205,6 +205,14 @@ def _facebook_adapter(
 
     constrained_config = dict(config)
     constrained_config["LAST30DAYS_FACEBOOK_MAX_RESULTS"] = str(request.item_limit)
+    requested_timeout = int(
+        constrained_config.get("LAST30DAYS_FACEBOOK_TIMEOUT")
+        or facebook.DEPTH_CONFIG[_depth(request.depth)]["timeout"]
+    )
+    parent_bounded_timeout = max(1, request.wall_timeout_seconds - 15)
+    constrained_config["LAST30DAYS_FACEBOOK_TIMEOUT"] = str(
+        min(requested_timeout, parent_bounded_timeout)
+    )
     return _account_opaque_source_request(
         facebook.search_facebook(
             request.query,
