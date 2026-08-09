@@ -8,6 +8,7 @@ from collections.abc import Mapping
 
 from . import service_contracts as contracts
 from .service_tick_adapters import AdapterRegistry, AdapterSpec
+from .service_worker import WorkerExecutionError
 from .service_tick_runner import (
     CollectedItem,
     CollectedMedia,
@@ -44,9 +45,7 @@ def _selector_text(context: ProviderContext) -> str:
     raise ValueError("target selector requires query, topic, url, or handle")
 
 
-def _failure_class(result: contracts.AcquisitionWorkResult) -> str:
-    if result.safe_error_code in {"captcha_required", "checkpoint_required"}:
-        return "challenge"
+def _retry_failure_class(retry_class: contracts.RetryClass) -> str:
     return {
         contracts.RetryClass.OPERATOR: "authentication",
         contracts.RetryClass.RATE_LIMIT: "rate_limit",
@@ -55,7 +54,13 @@ def _failure_class(result: contracts.AcquisitionWorkResult) -> str:
         contracts.RetryClass.PERMANENT: "permanent",
         contracts.RetryClass.TRANSIENT: "transient",
         contracts.RetryClass.NONE: "permanent",
-    }[result.retry_class]
+    }[retry_class]
+
+
+def _failure_class(result: contracts.AcquisitionWorkResult) -> str:
+    if result.safe_error_code in {"captcha_required", "checkpoint_required"}:
+        return "challenge"
+    return _retry_failure_class(result.retry_class)
 
 
 def _wall_seconds(result: contracts.AcquisitionWorkResult) -> int:
@@ -152,7 +157,25 @@ class AcquisitionWorkerTickAdapter:
                 "cost_budget_cents": context.limits["cost_cents"],
             }
         )
-        result = self.worker.run(request)
+        try:
+            result = self.worker.run(request)
+        except WorkerExecutionError as exc:
+            return ProviderResult.failure(
+                failure_class=_retry_failure_class(exc.retry_class),
+                safe_error_code=exc.code,
+                usage={
+                    "attempts": 1,
+                    "network_requests": 0,
+                    "wall_seconds": (
+                        context.limits["wall_seconds"]
+                        if exc.code == "worker_timeout"
+                        else 0
+                    ),
+                    "items": 0,
+                    "cost_cents": 0,
+                    "model_tokens": 0,
+                },
+            )
         if not isinstance(result, contracts.AcquisitionWorkResult):
             raise TypeError("acquisition worker returned an invalid result")
         items = tuple(

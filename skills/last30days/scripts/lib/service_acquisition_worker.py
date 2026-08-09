@@ -203,13 +203,17 @@ def _facebook_adapter(
 ) -> dict[str, Any]:
     from . import facebook
 
-    return _account_opaque_source_request(facebook.search_facebook(
-        request.query,
-        request.from_date,
-        request.to_date,
-        depth=_depth(request.depth),
-        config=dict(config),
-    ))
+    constrained_config = dict(config)
+    constrained_config["LAST30DAYS_FACEBOOK_MAX_RESULTS"] = str(request.item_limit)
+    return _account_opaque_source_request(
+        facebook.search_facebook(
+            request.query,
+            request.from_date,
+            request.to_date,
+            depth=_depth(request.depth),
+            config=constrained_config,
+        )
+    )
 
 
 def _linkedin_adapter(

@@ -1,8 +1,8 @@
 # Plan 0029 | Facebook Safe Manual Qualification
 
-State: OPEN
+State: CANCELLED
 Roadmap: P13
-Plan version: 3
+Plan version: 4
 Date: 2026-08-08
 Predecessor: Plan 0028 version 10/checkpoint P0028-C10
 
@@ -40,7 +40,15 @@ for an organically encountered Facebook temporary block or frequency limit.
   defers content classification to extraction. It does not infer authenticated
   or rate-limit state from URL identity;
 - the 0.3.30 successor is installed and offline-validated, but its one live
-  qualification tick remains gated until `2026-08-09T04:48:46Z`.
+  qualification tick ran once as
+  `tick-2e63a98ad3b92830bee87e61b07cfdf5` and failed before a typed provider
+  result was staged. It opened one fresh target after two retained-target
+  switch timeouts, navigated, evaluated, and scrolled without any login,
+  checkpoint, CAPTCHA, or rate-limit signal, then collapsed to
+  `workerexecutionerror` with zero observed/accepted/rejected items;
+- criterion 9 was not satisfied and both candidate live-attempt bounds are
+  consumed. This plan is cancelled unsuccessfully; Plan 0030 owns the
+  item-bound execution and typed worker-receipt successor.
 
 ## Scope
 
@@ -331,3 +339,63 @@ Next action:
 - after `2026-08-09T04:48:46Z`, recheck installed service/browser ownership and
   run at most one 0.3.30 Facebook-only manual tick. Do not wait on the natural
   scheduler, bypass the 60-minute gap, or retry a failed successor attempt.
+
+### Checkpoint P0029-C04 | 2026-08-09
+
+Plan version: 4
+
+State transition:
+
+- `successor_installed_acceptance_gated -> live_qualification_rejected`;
+- `OPEN -> CANCELLED`.
+
+Progress classification:
+
+- `validated_blocker`; the sole 0.3.30 successor tick reached authenticated
+  Facebook navigation and extraction work but failed at the isolated worker
+  boundary before it could stage a typed provider result. Criterion 9 remains
+  false and this plan's live bounds are exhausted.
+
+Validation evidence:
+
+- preflight and enqueue agreed on tick
+  `tick-2e63a98ad3b92830bee87e61b07cfdf5`, lane
+  `tick-lane-2666c4eddc6a94664d2f7083050e972d`, one
+  `facebook_agent_browser` attempt, 50 requests, 120 seconds, three items, and
+  zero cost/model budget;
+- execution attempt `tick-attempt-029f02fdf5e58957fa41b58346e90eab`
+  and provider attempt `provider-attempt-296bd9c8c3a600c379f566d7a884dab3`
+  ran once from `2026-08-09T14:14:42Z` through `14:16:32Z`; the tick failed as
+  `workerexecutionerror`, the provider attempt retained failure class
+  `integrity`, and no provider result was staged;
+- retained agent-browser jobs show two bounded three-second tab-switch
+  timeouts, one successful fresh tab, successful authentication/page
+  evaluations, successful navigation, and two successful scrolls. The trace
+  ends before the final extraction read; no logout, login form, checkpoint,
+  CAPTCHA, rate-limit event, incident, notification, fallback, cost, or model
+  use was observed;
+- browser PID 63205 remained ready. Its tab count advanced from 18 to 19
+  because the adapter opened the one fresh recovery target; no browser or tab
+  was closed;
+- `daily-default` remained enabled/ready at 86,400 seconds and SQLite
+  `quick_check` remained `ok`.
+
+Subagent status and reconciliation:
+
+- none; the primary ran and adjudicated the serialized live packet.
+
+Authority classification:
+
+- `inherited_authority`; the single tick was the already-authorized manual
+  proof. No retry or new provider effect was consumed after failure.
+
+Graphiti write status:
+
+- deferred to the durable Plan 0030 successor commit so the superseding
+  evidence can use the canonical `last30days_skill_main` group.
+
+Next action:
+
+- execute Plan 0030's offline item-bound and typed worker-receipt repair. Any
+  future live proof remains manual, requires a fresh 60-minute gap, and cannot
+  retry this 0.3.30 tick.

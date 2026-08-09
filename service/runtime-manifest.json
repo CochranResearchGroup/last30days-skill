@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "6c40f0551041cf01b1e9a466a23a97c9843ec496d052f5bdf9fba491149b2029",
+      "sha256": "43b87933a1eb1e2b53189e6c81aae8ae4b4b745f61df8ad3ef731bb8ff993671",
       "source": "service/VERSION"
     },
     {
@@ -282,7 +282,7 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "72c27599c18f5e47d96f32400e701654e95bd8e0ee444c7ee0cf0c44082dab90",
+      "sha256": "6a9b0fba8665c04e5a4d7557efd89e2d5a9c6721224f12ebf437a475ac80dbe0",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
@@ -412,7 +412,7 @@
     },
     {
       "path": "scripts/lib/service_tick_builtin_adapters.py",
-      "sha256": "c562751d5951fcca4d7f814b58f363d83f11a4f65559097f431b74447ee93b37",
+      "sha256": "b129d3d47e008a3c4f81ab0b07d104365436e5dd4d1297524fcce632dbf7948b",
       "source": "skills/last30days/scripts/lib/service_tick_builtin_adapters.py"
     },
     {
@@ -648,5 +648,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.30"
+  "service_version": "0.3.31"
 }

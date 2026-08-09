@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook tick item-bound execution and typed worker failures.** Service
+  0.3.31 constrains Facebook collection to the item limit already admitted by
+  the governed tick instead of retaining the scraper's broader default result
+  target and unnecessary scroll loop. Isolated-worker boundary failures now
+  become durable provider failures with their existing safe error code and
+  retry class, so a wall timeout is retained as `worker_timeout` rather than
+  collapsing the tick to an opaque `workerexecutionerror`. No provider limit,
+  retry count, schedule, browser lifecycle, schema, cost, or notification
+  behavior is expanded.
+
 - **Facebook navigation readback fallback.** Service 0.3.30 no longer makes a
   responsive Facebook search target's Runtime evaluation a prerequisite for
   collection. Navigation state reads now use bounded, layout-free DOM text and

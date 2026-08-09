@@ -716,6 +716,30 @@ def test_browser_adapters_account_for_one_opaque_source_request(monkeypatch):
     assert [item["_network_request_count"] for item in results] == [1, 1, 1, 1]
 
 
+def test_facebook_adapter_constrains_search_to_the_admitted_item_limit(monkeypatch):
+    from lib import facebook
+
+    observed = {}
+
+    def search(*_args, **kwargs):
+        observed.update(kwargs["config"])
+        return {"items": []}
+
+    monkeypatch.setattr(facebook, "search_facebook", search)
+
+    result = service_acquisition_worker._facebook_adapter(
+        _request(
+            source="facebook",
+            adapter="facebook_agent_browser",
+            item_limit=3,
+        ),
+        {"LAST30DAYS_FACEBOOK_MAX_RESULTS": "99"},
+    )
+
+    assert observed["LAST30DAYS_FACEBOOK_MAX_RESULTS"] == "3"
+    assert result["_network_request_count"] == 1
+
+
 def test_reddit_adapter_variant_follows_exact_access_method_provenance():
     assert service_acquisition_worker._result_adapter_variant(
         "reddit_api",

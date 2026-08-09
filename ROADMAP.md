@@ -1287,7 +1287,7 @@ organically encountered temporary block or action-frequency limit.
 
 Current State:
 
-- installed 0.3.30 adds source-scoped manual ticks, bounded organic rate-limit
+- installed 0.3.30 added source-scoped manual ticks, bounded organic rate-limit
   classification, and exact active-tab identity fallback when post-navigation
   Runtime evaluation is unavailable; its preflight predicts exactly one
   Facebook lane;
@@ -1299,17 +1299,22 @@ Current State:
   therefore proves navigation from exact URL/query/filter identity and defers
   content classification to extraction without treating URL state as auth or
   rate-limit proof;
-- 0.3.30 is installed ready on schema 16; browser PID 63205 remains viable with
-  18 tabs, and the sole successor tick is gated until
-  `2026-08-09T04:48:46Z`;
-- no logout, CAPTCHA, checkpoint, or rate-limit state will be induced for
-  testing. Any successor live proof still requires offline tests, exact install,
-  ready ownership, and a new 60-minute gap from the failed attempt.
+- its sole successor tick failed at the isolated worker boundary after two
+  bounded retained-tab switch timeouts, one fresh target, successful
+  navigation/evaluations, and two scrolls. It staged no provider result and
+  observed zero candidates; Plan 0029 is cancelled unsuccessfully;
+- installed 0.3.31 binds Facebook work to the tick's admitted three-item limit
+  and preserves typed worker failures as provider receipts. It is ready on
+  schema 16; browser PID 63205 remains ready and no 0.3.31 tick has run;
+- no logout, CAPTCHA, checkpoint, or rate-limit state will be induced. Ticks
+  remain manual until a later guarded 0.3.31 proof satisfies the content
+  acceptance contract.
 
 Open Plan:
 
-- `docs/dev/plans/0029-2026-08-08-facebook-safe-manual-qualification.md`
-  version 3/C03 is the active authority.
+- `docs/dev/plans/0030-2026-08-09-facebook-tick-item-bound-worker-receipt-repair.md`
+  version 1/C01 is the active authority; Plan 0029 closed unsuccessfully at
+  version 4/C04.
 
 Dependencies:
 
@@ -1319,9 +1324,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- after the explicit safety gap, recheck installed/browser readiness and run at
-  most one 0.3.30 Facebook-only manual tick. Do not wait for the natural
-  schedule, bypass the gap, or retry a failed successor attempt.
+- commit and push the installed 0.3.31 successor. A later Facebook-only proof
+  must be manual, at least 60 minutes after the failed attempt, and guarded by
+  fresh no-launch service/browser readiness and a matching preflight.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 

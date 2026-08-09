@@ -14271,3 +14271,84 @@ Next Bounded Action:
 - after `2026-08-09T04:48:46Z`, recheck service and retained browser readiness,
   then run at most one 0.3.30 Facebook-only manual tick. Do not wait for the
   natural scheduler, bypass the 60-minute gap, or retry a failed tick.
+
+## Turn 239 | 2026-08-09
+
+Focus: consume the sole 0.3.30 Facebook proof, reject its opaque worker-boundary
+failure, and install an item-bound, receipt-preserving 0.3.31 successor without
+another live attempt.
+
+Authority Consulted:
+
+- operator direction to proceed with manual ticks until proven while avoiding
+  logout, CAPTCHA provocation, and rate-limit risk; Plan 0029/C03; agent-browser
+  safety skill; repository planning, goal, validation, documentation,
+  worktree, integration, closeout, roadmap/runbook, and Graphiti policies;
+  current service, database, tick/provider, schedule, and retained-browser
+  readbacks; CodeGraph worker/adapter/scraper flow.
+
+Decisions And Changes:
+
+- consumed exactly one distinct Facebook-only 0.3.30 manual tick after the
+  safety gap and matching preflight; did not retry it;
+- rejected the tick because it failed as `workerexecutionerror` before a typed
+  provider result was staged, with zero observed/accepted/rejected items;
+- traced the retained browser jobs: two bounded tab-switch timeouts, one fresh
+  recovery target, successful auth/page evaluations and navigation, and two
+  successful scrolls. No login, checkpoint, CAPTCHA, rate-limit event,
+  incident, fallback, notification, cost, or model use was observed;
+- cancelled Plan 0029 unsuccessfully at version 4/C04 because criterion 9 and
+  both candidate attempt bounds were exhausted;
+- opened Plan 0030 version 1/C01 and implemented service 0.3.31 so Facebook
+  honors the tick's admitted item limit and typed worker errors become durable
+  provider failures instead of generic tick-integrity failures;
+- installed exact 0.3.31 while retaining releases 0.3.28-0.3.31. No 0.3.31
+  Facebook tick ran; authenticated ticks remain manual until proven.
+
+Validation Evidence:
+
+- focused Facebook/acquisition-worker/tick-runtime tests pass; the full Python
+  suite, all Go MCP packages, compileall, release/runtime-package/plan audits,
+  and patch checks pass;
+- two independent 0.3.31 builds are byte-identical at SHA-256
+  `298958b365932b0fa811d78f94cb3fa71c1fb305e4ba4820d9a60d8d39a57f34`;
+- installed 0.3.31/schema16 is ready with contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`
+  and runtime-manifest SHA-256
+  `15f389ece20f1a5bf9064adfc64e2c604661d1dc587cd91f9672f72bad3e6edf`;
+- database quick check is `ok`; `daily-default` remains enabled/ready at
+  86,400 seconds with next boundary `2026-08-10T00:00:00Z`;
+- installed 0.3.31 preflight `tick-c945fa29993408df77e3ebf03094322e`
+  predicts exactly lane `tick-lane-fa3a0a2578aa5587d43ebd021164de73`,
+  one Facebook provider/attempt, 50 requests, 120 seconds, three items, and
+  zero cost/model budget;
+- `npx skills add . -g -y` refreshed both frozen Skill copies across supported
+  hosts; the only reported failures were the truthful PromptScript global-skill
+  unsupported results;
+- retained browser `session:last30days-facebook`, PID 63205, remained ready;
+  the failed adapter advanced its tab count from 18 to 19 by opening one fresh
+  target. The repair/install packet opened or closed no browser or tab.
+
+State Movement:
+
+- P13/Plan 0029 advances `C03 -> C04`, version `3 -> 4`, and
+  `OPEN -> CANCELLED` unsuccessfully;
+- P13/Plan 0030 opens at version 1/C01 and remains `OPEN` with installed 0.3.31
+  offline-qualified but not live-qualified.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary independently ran, diagnosed, repaired, and
+  validated the serialized critical path.
+
+Graphiti Write Status:
+
+- pending one compact source-backed write in canonical group
+  `last30days_skill_main` after the durable repository commit.
+
+Next Bounded Action:
+
+- commit and push the 0.3.31 successor and write the Graphiti memory. A later
+  Facebook-only proof must be manual, at
+  least 60 minutes after `2026-08-09T14:16:32Z`, and gated by fresh no-launch
+  readiness plus matching preflight; it must not retry the failed 0.3.30 tick.

@@ -22,6 +22,7 @@ from lib.service_tick_notifications import (
 from lib.service_tick_observation import AgentBrowserObservationTransport
 from lib.service_tick_runner import ProviderContext
 from lib.service_tick_runtime import build_tick_runtime, default_tick_config_path
+from lib.service_worker import WorkerExecutionError
 from service import build_parser
 
 
@@ -340,6 +341,29 @@ def test_builtin_adapter_bridge_maps_operator_auth_to_non_retryable_failure():
     assert result.status == "failure"
     assert result.failure_class == "authentication"
     assert result.safe_error_code == "auth_required"
+
+
+def test_builtin_adapter_bridge_preserves_typed_worker_timeout():
+    def fail(_request):
+        raise WorkerExecutionError("worker_timeout", contracts.RetryClass.TRANSIENT)
+
+    registry = build_acquisition_adapter_registry(FixtureWorker(fail))
+
+    result = registry.require(
+        "facebook_agent_browser", source="facebook", capability="collect"
+    ).collect(_context("facebook_agent_browser", "facebook"))
+
+    assert result.status == "failure"
+    assert result.failure_class == "transient"
+    assert result.safe_error_code == "worker_timeout"
+    assert result.usage == {
+        "attempts": 1,
+        "network_requests": 0,
+        "wall_seconds": 30,
+        "items": 0,
+        "cost_cents": 0,
+        "model_tokens": 0,
+    }
 
 
 def test_default_tick_config_is_always_user_scoped(tmp_path):
