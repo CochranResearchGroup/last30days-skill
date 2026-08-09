@@ -14343,12 +14343,15 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending one compact source-backed write in canonical group
-  `last30days_skill_main` after the durable repository commit.
+- one compact source-backed write was attempted in canonical group
+  `last30days_skill_main` after durable commit
+  `a9b686e64870b3a5325159873453262d75c468e6`;
+- job `3c2bd2c1-9164-417a-8c85-4161d9a62c50` timed out after 300 seconds during
+  edge extraction and returned no episode UUID. Exact post-timeout lookup found
+  no visible episode; no retry or duplicate write was attempted.
 
 Next Bounded Action:
 
-- commit and push the 0.3.31 successor and write the Graphiti memory. A later
-  Facebook-only proof must be manual, at
+- a later Facebook-only proof must be manual, at
   least 60 minutes after `2026-08-09T14:16:32Z`, and gated by fresh no-launch
   readiness plus matching preflight; it must not retry the failed 0.3.30 tick.

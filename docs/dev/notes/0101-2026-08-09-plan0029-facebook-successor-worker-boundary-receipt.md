@@ -45,6 +45,9 @@ Source plans: Plan 0029 version 4/C04; Plan 0030 version 1/C01
   `15f389ece20f1a5bf9064adfc64e2c604661d1dc587cd91f9672f72bad3e6edf`;
 - SQLite quick check is `ok`; releases 0.3.28-0.3.31 are retained; browser PID
   63205 remains ready.
+- the one canonical-group Graphiti write job
+  `3c2bd2c1-9164-417a-8c85-4161d9a62c50` timed out after 300 seconds during
+  edge extraction; exact lookup found no visible episode and no retry ran.
 
 This is an implementation and installed-runtime receipt, not live usability
 acceptance. Facebook ticks remain manual until Plan 0030 criterion 6 is proved.

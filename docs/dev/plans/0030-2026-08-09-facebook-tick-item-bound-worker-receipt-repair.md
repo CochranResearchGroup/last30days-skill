@@ -134,10 +134,15 @@ Authority classification:
 
 Graphiti write status:
 
-- deferred until the validated repository commit exists.
+- attempted once after durable implementation commit
+  `a9b686e64870b3a5325159873453262d75c468e6` in canonical group
+  `last30days_skill_main` as job
+  `3c2bd2c1-9164-417a-8c85-4161d9a62c50`;
+- the job timed out after 300 seconds during edge extraction and returned no
+  episode UUID. An exact name/source lookup found no visible episode, so no
+  retry or duplicate write was attempted.
 
 Next action:
 
-- commit and push the 0.3.31 successor, write the compact source-backed
-  Graphiti memory, then stop. A future manual proof must recheck the 60-minute
-  gap and all no-launch readiness guards.
+- stop this repair packet. A future manual proof must recheck the 60-minute gap
+  and all no-launch readiness guards.
