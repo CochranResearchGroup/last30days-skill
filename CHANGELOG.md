@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook Runtime-timeout fresh-target recovery.** Service 0.3.32 treats an
+  exact active-tab URL/query/filter identity as diagnostic evidence after a
+  post-navigation Runtime timeout, not proof that the same target is safe for
+  extraction. The scraper now uses its existing single `about:blank`
+  fresh-target replay even when identity matches; a successful second
+  page-state read proceeds, while a repeated timeout remains terminal with no
+  third target or attempt. Browser/profile lifecycle, provider limits, scroll
+  depth, schedule, schema, cost, model, and notification behavior are unchanged.
+
 - **Facebook tick item-bound execution and typed worker failures.** Service
   0.3.31 constrains Facebook collection to the item limit already admitted by
   the governed tick instead of retaining the scraper's broader default result

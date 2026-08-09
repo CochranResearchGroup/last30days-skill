@@ -1391,24 +1391,28 @@ class FacebookScraper:
             except FacebookScraperFailure as exc:
                 if not _is_navigation_timeout(exc):
                     raise
+                identity_matches = False
                 identity_read = getattr(self.client, "inspect_active_page", None)
-                if callable(identity_read):
+                if attempt == 0 and callable(identity_read):
                     identity_page = _page_state(identity_read(workspace))
-                    if _page_matches_query(identity_page, topic) and _recent_filter_active(
+                    identity_matches = _page_matches_query(
+                        identity_page, topic
+                    ) and _recent_filter_active(
                         identity_page.url
-                    ):
-                        _log(
-                            "Search page Runtime read timed out; active tab identity "
-                            "proved the requested query and deferred content inspection"
-                        )
-                        page = identity_page
-                        break
+                    )
                 if attempt > 0:
                     raise
-                _log(
-                    "Search target open/read timed out; "
-                    "retrying once on a fresh blank target"
-                )
+                if identity_matches:
+                    _log(
+                        "Search page Runtime read timed out; active tab identity "
+                        "matched, but the unresponsive target still requires one "
+                        "fresh-target retry"
+                    )
+                else:
+                    _log(
+                        "Search target open/read timed out; "
+                        "retrying once on a fresh blank target"
+                    )
                 self.client.act(
                     workspace,
                     BrowserAction("new_tab", value="about:blank"),

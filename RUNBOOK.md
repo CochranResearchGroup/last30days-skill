@@ -14355,3 +14355,130 @@ Next Bounded Action:
 - a later Facebook-only proof must be manual, at
   least 60 minutes after `2026-08-09T14:16:32Z`, and gated by fresh no-launch
   readiness plus matching preflight; it must not retry the failed 0.3.30 tick.
+
+## Turn 240 | 2026-08-09
+
+Focus: consume and reject the sole guarded 0.3.31 Facebook proof, then open a
+bounded offline fresh-target recovery successor without a second live tick.
+
+Authority Consulted:
+
+- operator direction to proceed promptly while preserving manual ticks and no
+  logout/CAPTCHA/rate-limit risk; Plan 0030/C01; agent-browser safety skill;
+  repository planning, goal, validation, documentation, worktree, integration,
+  closeout, roadmap/runbook, and Graphiti policies; current service, database,
+  tick/provider, schedule, and retained-browser readbacks; CodeGraph scraper
+  flow.
+
+Decisions And Changes:
+
+- consumed exactly one 0.3.31 Facebook-only tick after the required safety gap
+  and matching preflight; did not retry it;
+- rejected routine usability because the provider failed transiently as
+  `agent_browser_timeout` with zero observed or accepted items and no quality
+  rejections;
+- isolated the defect: exact URL/query/filter identity after the first Runtime
+  timeout bypassed the existing one-fresh-target recovery and extraction then
+  timed out on the same Runtime-unresponsive target;
+- cancelled Plan 0030 unsuccessfully at version 2/C02 and opened Plan 0031
+  version 1/C01 for an offline-only 0.3.32 repair. No second live tick is in
+  scope.
+
+Validation Evidence:
+
+- tick `tick-c945fa29993408df77e3ebf03094322e`, execution attempt
+  `tick-attempt-8149efb52cbae40fdd25abe725666936`, provider attempt
+  `provider-attempt-2e455d517f8fcf873f0696c79018583e`, and result digest
+  `sha256:064dafeb02fc757c2f571df9d980ba5799692001caefdfecf9072b91b8c2dea0`
+  bind the terminal receipt;
+- the provider used one request, 92 wall seconds, zero items/cost/model tokens,
+  and returned empty rejection counts; there was no fallback, incident,
+  notification, login/checkpoint/CAPTCHA/rate-limit signal, or scroll;
+- retained browser `session:last30days-facebook`, PID 63205, remained ready
+  with the same 19 tabs. Queue and profile lease depths returned to zero.
+
+State Movement:
+
+- P13/Plan 0030 advances `C01 -> C02`, version `1 -> 2`, and
+  `OPEN -> CANCELLED` unsuccessfully;
+- P13/Plan 0031 opens at version 1/C01 and remains `OPEN`.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary owns the serialized receipt-to-repair path.
+
+Graphiti Write Status:
+
+- deferred to Plan 0031's terminal durable checkpoint so one compact write can
+  bind the proof, repair, installation, and remaining live gate.
+
+Next Bounded Action:
+
+- implement the exact-identity fresh-target fallback, validate and install
+  0.3.32 without browser lifecycle work, then commit and push the slice.
+
+## Turn 241 | 2026-08-09
+
+Focus: repair the exact-identity Runtime-timeout fallback, install service
+0.3.32, and preserve the later live proof as a distinct manual gate.
+
+Authority Consulted:
+
+- Plan 0031/C01 and Turn 240; agent-browser safety skill; repository planning,
+  goal, validation, documentation, worktree, integration, closeout,
+  roadmap/runbook, and Graphiti policies; CodeGraph source flow; current
+  service, database, schedule, and retained-browser readbacks.
+
+Decisions And Changes:
+
+- changed `_navigate` so exact active-tab identity after a first page-state
+  Runtime timeout is diagnostic only and cannot bypass the existing one
+  fresh-target replay;
+- changed the disproved identity regression to require one `about:blank` target
+  and a successful second navigation/read while preserving repeated-timeout
+  and non-timeout terminal bounds;
+- released and installed service 0.3.32 without a live tick or any browser
+  navigation/lifecycle command;
+- closed Plan 0031 at version 2/C02 and opened Plan 0032 version 1/C01 for one
+  later guarded manual proof. Facebook remains manual and not routine-qualified.
+
+Validation Evidence:
+
+- focused Facebook/worker/runtime/release/package tests pass; complete Python
+  and Go suites, compileall, plan audit, runtime package, and patch checks pass;
+- two independent 0.3.32 artifacts are byte-identical at SHA-256
+  `fe673ab03c165b3e61a360bb9d801d60e3e90a4c12a307f21e9a99f275eeb82d`;
+- installed 0.3.32/schema16 is ready with contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`
+  and runtime-manifest SHA-256
+  `5170c1d37ab280d772bfb9dab17f71bf90aa71d3485be48cd093f9c7f813ea33`;
+- SQLite is `ok`; releases 0.3.29-0.3.32 are retained; `daily-default` remains
+  enabled/ready at 86,400 seconds with next boundary
+  `2026-08-10T00:00:00Z`; Facebook acquisition is ready;
+- retained Facebook browser PID 63205 remains ready/viable with 19 tabs and
+  queue/profile-lease depths zero. No browser or tab was opened, navigated, or
+  closed by this packet;
+- copied Skill installs were refreshed across supported hosts; only
+  PromptScript's truthful unsupported-global-install results were reported.
+
+State Movement:
+
+- P13/Plan 0031 advances `C01 -> C02`, version `1 -> 2`, and
+  `OPEN -> CLOSED` successfully for its offline objective;
+- P13/Plan 0032 opens at version 1/C01 and remains `OPEN` awaiting the fixed
+  safety boundary.
+
+Subagent Status And Reconciliation:
+
+- no subagent used; the primary independently implemented, validated,
+  installed, and reconciled the serialized critical path.
+
+Graphiti Write Status:
+
+- pending one compact source-backed attempt after the durable commit.
+
+Next Bounded Action:
+
+- commit and push this accepted offline slice. At or after
+  `2026-08-09T16:19:07Z`, Plan 0032 may run one guarded Facebook-only proof;
+  do not wait for the natural scheduler or retry a terminal result.

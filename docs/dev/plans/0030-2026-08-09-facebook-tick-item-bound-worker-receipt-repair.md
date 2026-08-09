@@ -1,8 +1,8 @@
 # Plan 0030 | Facebook Tick Item-Bound And Worker Receipt Repair
 
-State: OPEN
+State: CANCELLED
 Roadmap: P13
-Plan version: 1
+Plan version: 2
 Date: 2026-08-09
 Predecessor: Plan 0029 version 4/checkpoint P0029-C04
 
@@ -25,7 +25,16 @@ authority.
   code and retry class;
 - service 0.3.31 now constrains Facebook search to the admitted item limit and
   maps typed worker-boundary failures into durable provider failures;
-- 0.3.31 is installed ready on schema 16. No 0.3.31 Facebook tick has run.
+- the sole guarded 0.3.31 Facebook tick completed degraded: its provider
+  failed transiently as `agent_browser_timeout` after the first page-state and
+  extraction Runtime reads timed out, with zero observed candidates and no
+  quality rejections;
+- active-tab identity matched the requested query after the first Runtime
+  timeout, but the scraper treated identity as sufficient and ran extraction
+  on the same Runtime-unresponsive target instead of using its one fresh-target
+  recovery;
+- Plan 0031 supersedes this unsuccessful qualification plan with a bounded
+  offline repair. No second live tick is authorized by this plan.
 
 ## Scope
 
@@ -146,3 +155,53 @@ Next action:
 
 - stop this repair packet. A future manual proof must recheck the 60-minute gap
   and all no-launch readiness guards.
+
+### Checkpoint P0030-C02 | 2026-08-09
+
+Plan version: 2
+
+State transition:
+
+- `item_bound_successor_installed_gated -> live_qualification_rejected`;
+- `OPEN -> CANCELLED` unsuccessfully.
+
+Progress classification:
+
+- `validated_learning`; the worker receipt repair succeeded, while the sole
+  live proof isolated a separate Runtime-unresponsive-target recovery defect.
+
+Validation evidence:
+
+- guarded tick `tick-c945fa29993408df77e3ebf03094322e`, execution attempt
+  `tick-attempt-8149efb52cbae40fdd25abe725666936`, and provider attempt
+  `provider-attempt-2e455d517f8fcf873f0696c79018583e` completed after one
+  enqueue and no retry;
+- provider result digest
+  `sha256:064dafeb02fc757c2f571df9d980ba5799692001caefdfecf9072b91b8c2dea0`
+  reports transient `agent_browser_timeout`, one request, 92 wall seconds,
+  zero items/cost/model use, and empty rejection counts;
+- browser work was limited to retained-tab inventory, navigation, and bounded
+  read-only evaluations. No logout, login entry, checkpoint, CAPTCHA,
+  rate-limit event, incident, notification, scroll, browser lifecycle action,
+  or tab-count change occurred; retained browser PID 63205 stayed ready with
+  19 tabs.
+
+Subagent status and reconciliation:
+
+- none; the primary consumed and adjudicated the sole serialized proof.
+
+Authority classification:
+
+- `inherited_authority`; Plan 0031 changes only the offline recovery strategy
+  and does not consume another live effect boundary.
+
+Graphiti write status:
+
+- deferred to the successor's terminal durable checkpoint so one coherent
+  memory can bind the failed proof, repair, installed result, and next gate.
+
+Next action:
+
+- execute Plan 0031's offline fresh-target recovery repair. A later manual
+  proof is distinct, must use fresh no-launch guards, and may not occur before
+  60 minutes after `2026-08-09T15:19:06.946157Z`.

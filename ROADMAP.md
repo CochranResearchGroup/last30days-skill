@@ -1303,18 +1303,26 @@ Current State:
   bounded retained-tab switch timeouts, one fresh target, successful
   navigation/evaluations, and two scrolls. It staged no provider result and
   observed zero candidates; Plan 0029 is cancelled unsuccessfully;
-- installed 0.3.31 binds Facebook work to the tick's admitted three-item limit
-  and preserves typed worker failures as provider receipts. It is ready on
-  schema 16; browser PID 63205 remains ready and no 0.3.31 tick has run;
+- the sole guarded 0.3.31 tick preserved a typed transient
+  `agent_browser_timeout` receipt but accepted zero posts and had no quality
+  rejections. Exact active-tab identity bypassed the one fresh-target recovery,
+  so extraction retried the same Runtime-unresponsive target;
+- Plan 0030 is cancelled unsuccessfully. Plan 0031 closed after installing the
+  bounded 0.3.32 repair that makes the first Runtime timeout use one fresh
+  target; browser PID 63205 remains ready with 19 tabs and no auth, challenge,
+  rate-limit, or lifecycle event occurred;
+- installed 0.3.32/schema16 is ready, SQLite is `ok`, Facebook is
+  acquisition-ready, and `daily-default` is unchanged. Offline validation does
+  not routine-qualify Facebook; Plan 0032 owns one later guarded manual proof;
 - no logout, CAPTCHA, checkpoint, or rate-limit state will be induced. Ticks
   remain manual until a later guarded 0.3.31 proof satisfies the content
   acceptance contract.
 
 Open Plan:
 
-- `docs/dev/plans/0030-2026-08-09-facebook-tick-item-bound-worker-receipt-repair.md`
-  version 1/C01 is the active authority; Plan 0029 closed unsuccessfully at
-  version 4/C04.
+- `docs/dev/plans/0032-2026-08-09-facebook-032-manual-qualification.md`
+  version 1/C01 is the active authority; Plan 0031 closed successfully and
+  Plans 0029/0030 closed unsuccessfully.
 
 Dependencies:
 
@@ -1324,9 +1332,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- commit and push the installed 0.3.31 successor. A later Facebook-only proof
-  must be manual, at least 60 minutes after the failed attempt, and guarded by
-  fresh no-launch service/browser readiness and a matching preflight.
+- at or after `2026-08-09T16:19:07Z`, run Plan 0032's fresh no-launch guards
+  and, only if they pass, one matching Facebook-only preflight/enqueue pair.
+  Do not wait for the natural scheduler or retry a terminal result.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 

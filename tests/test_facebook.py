@@ -1376,7 +1376,7 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual("about:blank", client.actions[2].value)
         self.assertEqual(client.actions[0].value, client.actions[3].value)
 
-    def test_page_state_timeout_accepts_active_tab_identity_without_recovery_tab(self):
+    def test_page_state_timeout_with_matching_tab_identity_uses_fresh_target(self):
         class PageStateTimeoutWithTabIdentityClient(FakeAgentBrowserClient):
             def __init__(self):
                 super().__init__()
@@ -1386,10 +1386,11 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
             def evaluate(self, workspace, script):
                 if script == facebook.PAGE_STATE_SCRIPT:
                     self.page_state_evaluations += 1
-                    raise facebook.FacebookScraperFailure(
-                        "agent_browser_timeout",
-                        "agent-browser operation timed out after 20s",
-                    )
+                    if self.page_state_evaluations == 1:
+                        raise facebook.FacebookScraperFailure(
+                            "agent_browser_timeout",
+                            "agent-browser operation timed out after 20s",
+                        )
                 return super().evaluate(workspace, script)
 
             def inspect_active_page(self, workspace):
@@ -1403,9 +1404,14 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         )
 
         self.assertIsNone(result["error_type"])
-        self.assertEqual(1, client.page_state_evaluations)
+        self.assertEqual(2, client.page_state_evaluations)
         self.assertEqual(1, client.tab_identity_reads)
-        self.assertNotIn("new_tab", [action.operation for action in client.actions])
+        self.assertEqual(
+            ["navigate", "wait", "new_tab", "navigate", "wait"],
+            [action.operation for action in client.actions[:5]],
+        )
+        self.assertEqual("about:blank", client.actions[2].value)
+        self.assertEqual(client.actions[0].value, client.actions[3].value)
 
     def test_repeated_page_state_timeout_stops_after_one_fresh_target(self):
         class PageStateAlwaysTimeoutClient(FakeAgentBrowserClient):
