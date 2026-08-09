@@ -1304,7 +1304,6 @@ class FacebookScraper:
 
             page = self._navigate(workspace, topic)
             if page.no_results:
-                self._best_effort_cleanup(workspace)
                 diagnostics.duration_ms = _elapsed_ms(started)
                 return self._result([], None, None, workspace, page, diagnostics, from_date, to_date)
 
@@ -1318,8 +1317,6 @@ class FacebookScraper:
                 if self.scroll_wait:
                     time.sleep(self.scroll_wait)
                 raw_candidates.extend(self._extract(workspace))
-
-            self._best_effort_cleanup(workspace)
 
             if not raw_candidates:
                 raise FacebookScraperFailure(
@@ -1353,6 +1350,9 @@ class FacebookScraper:
                 [], exc.error_type, str(exc), workspace, page, diagnostics, from_date, to_date,
                 operator_url=exc.operator_url,
             )
+        finally:
+            if workspace is not None:
+                self._best_effort_cleanup(workspace)
 
     def _prepare_operator_handoff(
         self, workspace: BrowserWorkspace
@@ -1459,16 +1459,16 @@ class FacebookScraper:
             prepared = prepare_site_tab(
                 workspace,
                 "facebook.com",
-                consolidate=False,
-                require_active=True,
-                close_timeout=5,
+                consolidate=True,
+                require_active=False,
+                close_timeout=30,
                 ignore_close_failures=True,
             )
         except FacebookScraperFailure as exc:
             _log(f"Best-effort Facebook tab cleanup did not complete: {_redact(str(exc))}")
             return
         if not prepared:
-            _log("Best-effort Facebook tab cleanup found no active query target")
+            _log("Best-effort Facebook tab cleanup found no reusable query target")
 
     def _extract(self, workspace: BrowserWorkspace) -> list[dict[str, Any]]:
         extracted: list[dict[str, Any]] = []

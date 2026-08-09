@@ -92,6 +92,38 @@ def test_runner_times_out_and_returns_only_a_safe_typed_failure():
     assert "time.sleep" not in str(caught.value)
 
 
+def test_runner_times_out_then_runs_cleanup_without_changing_failure():
+    request = _request(wall_timeout_seconds=1)
+    cleaned = []
+    runner = SubprocessAcquisitionRunner(
+        lambda _: [sys.executable, "-c", "import time; time.sleep(10)"],
+        timeout_cleanup=cleaned.append,
+    )
+
+    with pytest.raises(WorkerExecutionError) as caught:
+        runner.run(request)
+
+    assert caught.value.code == "worker_timeout"
+    assert cleaned == [request]
+
+
+def test_timeout_cleanup_failure_does_not_mask_worker_timeout():
+    request = _request(wall_timeout_seconds=1)
+
+    def cleanup(_request):
+        raise RuntimeError("cleanup failed")
+
+    runner = SubprocessAcquisitionRunner(
+        lambda _: [sys.executable, "-c", "import time; time.sleep(10)"],
+        timeout_cleanup=cleanup,
+    )
+
+    with pytest.raises(WorkerExecutionError) as caught:
+        runner.run(request)
+
+    assert caught.value.code == "worker_timeout"
+
+
 def test_timeout_cleanup_never_waits_unbounded_for_child_reaping(monkeypatch):
     waits = []
     threads = []

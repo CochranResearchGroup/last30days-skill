@@ -70,6 +70,7 @@ CommandResolver = Callable[
 EnvironmentResolver = Callable[
     [contracts.AcquisitionWorkRequest], Mapping[str, str]
 ]
+TimeoutCleanup = Callable[[contracts.AcquisitionWorkRequest], None]
 
 
 class SubprocessAcquisitionRunner:
@@ -80,6 +81,7 @@ class SubprocessAcquisitionRunner:
         command_resolver: CommandResolver,
         *,
         environment_resolver: EnvironmentResolver | None = None,
+        timeout_cleanup: TimeoutCleanup | None = None,
         max_output_bytes: int = DEFAULT_MAX_WORK_RESULT_BYTES,
         max_stderr_bytes: int = DEFAULT_MAX_STDERR_BYTES,
     ) -> None:
@@ -87,6 +89,7 @@ class SubprocessAcquisitionRunner:
             raise ValueError("worker output bounds must be positive")
         self.command_resolver = command_resolver
         self.environment_resolver = environment_resolver
+        self.timeout_cleanup = timeout_cleanup
         self.max_output_bytes = max_output_bytes
         self.max_stderr_bytes = max_stderr_bytes
         self._process_lock = threading.Lock()
@@ -121,6 +124,17 @@ class SubprocessAcquisitionRunner:
             processes = tuple(self._processes)
         for process in processes:
             self._kill_process_group(process)
+
+    def _cleanup_after_timeout(
+        self, request: contracts.AcquisitionWorkRequest
+    ) -> None:
+        """Run optional bounded resource cleanup without replacing timeout truth."""
+        if self.timeout_cleanup is None:
+            return
+        try:
+            self.timeout_cleanup(request)
+        except Exception:
+            return
 
     def _read_bounded(
         self,
@@ -238,10 +252,15 @@ class SubprocessAcquisitionRunner:
         with self._process_lock:
             self._processes.add(process)
         try:
-            stdout, _stderr = self._read_bounded(
-                process,
-                timeout_seconds=request.wall_timeout_seconds,
-            )
+            try:
+                stdout, _stderr = self._read_bounded(
+                    process,
+                    timeout_seconds=request.wall_timeout_seconds,
+                )
+            except WorkerExecutionError as exc:
+                if exc.code == "worker_timeout":
+                    self._cleanup_after_timeout(request)
+                raise
         finally:
             with self._process_lock:
                 self._processes.discard(process)

@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "a1462986974c38656961f3cdf981cc8211ece8f7edfddd648e587409df49ff7f",
+      "sha256": "9bfdc0fda10c4841166b035a7c6d794879ec5bb2438c98a5cff8f897e5ccecad",
       "source": "service/VERSION"
     },
     {
@@ -92,7 +92,7 @@
     },
     {
       "path": "scripts/lib/facebook.py",
-      "sha256": "1ecf3670e88da1e55801cae160e468183a8944d9e01c175d8b23d3aa990be58a",
+      "sha256": "c05939a04bfa801d4357c1f9228eb361162d7669665914bb11f016f58a9ce798",
       "source": "skills/last30days/scripts/lib/facebook.py"
     },
     {
@@ -281,6 +281,11 @@
       "source": "skills/last30days/scripts/lib/schema.py"
     },
     {
+      "path": "scripts/lib/service_acquisition_cleanup.py",
+      "sha256": "2f74385e270b9d43814f720b95240559f288cfbd699cef34c497610caba324e7",
+      "source": "skills/last30days/scripts/lib/service_acquisition_cleanup.py"
+    },
+    {
       "path": "scripts/lib/service_acquisition_worker.py",
       "sha256": "6a9b0fba8665c04e5a4d7557efd89e2d5a9c6721224f12ebf437a475ac80dbe0",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
@@ -367,7 +372,7 @@
     },
     {
       "path": "scripts/lib/service_runtime.py",
-      "sha256": "6bf85bd5d47f6ee41daf14da969c77862047717b7faed1229c22a8e69af1793b",
+      "sha256": "1ad8bc47a138bdb451b4ca0458bfd8547b946a4649c9f169a913277070181700",
       "source": "skills/last30days/scripts/lib/service_runtime.py"
     },
     {
@@ -462,7 +467,7 @@
     },
     {
       "path": "scripts/lib/service_worker.py",
-      "sha256": "e8fec9692299162ea82adf1b6ad23853403e2ba2278d99b6ba51073faab1a917",
+      "sha256": "d97464dde2811f08b8a7d4310854670599c73a1dc70235dc1c153b8998163bfc",
       "source": "skills/last30days/scripts/lib/service_worker.py"
     },
     {
@@ -648,5 +653,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.32"
+  "service_version": "0.3.34"
 }

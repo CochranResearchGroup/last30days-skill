@@ -1266,9 +1266,9 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         client.prepare_site_tab.assert_called_once_with(
             client.workspace,
             "facebook.com",
-            consolidate=False,
-            require_active=True,
-            close_timeout=5,
+            consolidate=True,
+            require_active=False,
+            close_timeout=30,
             ignore_close_failures=True,
         )
 
@@ -1333,6 +1333,7 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
                 return super().act(workspace, action)
 
         client = AlwaysTimeoutClient()
+        client.prepare_site_tab = mock.Mock(return_value=True)
 
         result = make_scraper(client).search(
             "robotic lawn mower", "2026-06-15", "2026-07-15"
@@ -1344,6 +1345,14 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
             [action.operation for action in client.actions],
         )
         self.assertEqual("about:blank", client.actions[1].value)
+        client.prepare_site_tab.assert_called_once_with(
+            client.workspace,
+            "facebook.com",
+            consolidate=True,
+            require_active=False,
+            close_timeout=30,
+            ignore_close_failures=True,
+        )
 
     def test_page_state_timeout_replays_open_and_read_once_on_a_fresh_target(self):
         class PageStateTimeoutOnceClient(FakeAgentBrowserClient):
@@ -1518,6 +1527,28 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
 
         self.assertIsNone(result["error_type"])
         self.assertEqual(1, len(result["items"]))
+        self.assertEqual(1, client.prepare_site_tab.call_count)
+
+    def test_cleanup_timeout_does_not_mask_original_query_failure(self):
+        class DisconnectedClient(FakeAgentBrowserClient):
+            def act(self, workspace, action):
+                if action.operation == "navigate":
+                    raise facebook.FacebookScraperFailure(
+                        "agent_browser_error", "browser connection closed"
+                    )
+                return super().act(workspace, action)
+
+        client = DisconnectedClient()
+        client.prepare_site_tab = mock.Mock(side_effect=facebook.FacebookScraperFailure(
+            "agent_browser_timeout", "duplicate target did not close"
+        ))
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual("agent_browser_error", result["error_type"])
+        self.assertIn("browser connection closed", result["error"])
         self.assertEqual(1, client.prepare_site_tab.call_count)
 
     def test_recent_posts_filter_does_not_require_switch_click(self):

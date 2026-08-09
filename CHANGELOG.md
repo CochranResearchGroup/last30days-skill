@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook hard-timeout tab containment.** Service 0.3.34 runs one
+  provider-scoped, non-masking same-site cleanup after the isolated Facebook
+  worker is killed and reaped at its hard wall deadline. The durable provider
+  result and wall accounting remain `worker_timeout`; cleanup does not retry
+  Facebook, navigate content, close the retained browser, or touch unrelated
+  tabs. Facebook close operations use a 30-second command bound to accommodate
+  observed agent-browser broker latency.
+
+- **Facebook retained-tab lifecycle convergence.** Service 0.3.33 performs one
+  best-effort same-site cleanup after every acquired Facebook workspace outcome,
+  including typed failures, and retains exactly one reusable Facebook target.
+  Cleanup failures never mask the provider result. The retained browser process
+  and unrelated service tabs remain untouched; provider limits, retries,
+  schedule, schema, cost, model, and notification behavior are unchanged.
+
 - **Facebook Runtime-timeout fresh-target recovery.** Service 0.3.32 treats an
   exact active-tab URL/query/filter identity as diagnostic evidence after a
   post-navigation Runtime timeout, not proof that the same target is safe for

@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import json
 import os
 import shutil
+import subprocess
 import sys
 import threading
 import time
@@ -13,6 +15,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Callable, Protocol, Sequence
 
+from . import service_contracts as contracts
 from .service_collection import CollectionCoordinator
 from .service_enrichment import EnrichmentService
 from .service_intelligence_contracts import ContentAssessmentQueue
@@ -32,6 +35,49 @@ Clock = Callable[[], datetime]
 
 class JobRunner(Protocol):
     def run_once(self, *, worker_id: str): ...
+
+
+def _cleanup_timed_out_worker(
+    request: contracts.AcquisitionWorkRequest,
+) -> None:
+    """Converge only Facebook tabs after a hard worker kill."""
+    if request.adapter != "facebook_agent_browser" or request.source != "facebook":
+        return
+    session_name = (
+        os.environ.get("LAST30DAYS_FACEBOOK_SESSION") or "last30days-facebook"
+    )
+    browser_id = os.environ.get("LAST30DAYS_FACEBOOK_BROWSER_ID") or (
+        f"session:{session_name}"
+    )
+    scripts_root = Path(__file__).resolve().parents[1]
+    existing = os.environ.get("PYTHONPATH")
+    python_path = str(scripts_root)
+    if existing:
+        python_path = os.pathsep.join((python_path, existing))
+    process = subprocess.Popen(
+        [sys.executable, "-m", "lib.service_acquisition_cleanup"],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        env={**os.environ, "PYTHONPATH": python_path},
+        start_new_session=os.name == "posix",
+    )
+    payload = json.dumps(
+        {
+            "schema_version": 1,
+            "profile_id": request.profile_id,
+            "session_name": session_name,
+            "browser_id": browser_id,
+        },
+        ensure_ascii=False,
+        allow_nan=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+    try:
+        process.communicate(input=payload, timeout=45)
+    except subprocess.TimeoutExpired:
+        SubprocessAcquisitionRunner._kill_and_reap(process)
 
     def cancel_active_work(self) -> None: ...
 
@@ -388,6 +434,7 @@ def build_subprocess_acquisition_worker() -> SubprocessAcquisitionRunner:
     return SubprocessAcquisitionRunner(
         lambda _request: [sys.executable, "-m", "lib.service_acquisition_worker"],
         environment_resolver=environment,
+        timeout_cleanup=_cleanup_timed_out_worker,
     )
 
 

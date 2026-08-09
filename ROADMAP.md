@@ -1309,20 +1309,29 @@ Current State:
   so extraction retried the same Runtime-unresponsive target;
 - Plan 0030 is cancelled unsuccessfully. Plan 0031 closed after installing the
   bounded 0.3.32 repair that makes the first Runtime timeout use one fresh
-  target; browser PID 63205 remains ready with 19 tabs and no auth, challenge,
-  rate-limit, or lifecycle event occurred;
-- installed 0.3.32/schema16 is ready, SQLite is `ok`, Facebook is
+  target;
+- exact inventory found 16 Facebook targets among browser PID 63205's 19 tabs.
+  Facebook cleanup was success-only and disabled same-site consolidation, so
+  Plan 0032 now owns service 0.3.33 lifecycle repair and exact duplicate
+  convergence before the live proof;
+- 0.3.33 converged the live session to one Facebook target, but the sole proof
+  ended as typed `worker_timeout` after 120 seconds with zero observed or
+  quality-rejected candidates. Hard child termination bypassed its `finally`
+  and left one new duplicate, which was manually reconverged. Plan 0032 now
+  owned 0.3.34 parent-side timeout cleanup and closed unsuccessfully for live
+  qualification;
+- installed 0.3.34/schema16 is ready, SQLite is `ok`, Facebook is
   acquisition-ready, and `daily-default` is unchanged. Offline validation does
-  not routine-qualify Facebook; Plan 0032 owns one later guarded manual proof;
+  not routine-qualify Facebook; Plan 0033 owns one later guarded manual proof;
 - no logout, CAPTCHA, checkpoint, or rate-limit state will be induced. Ticks
-  remain manual until a later guarded 0.3.31 proof satisfies the content
+  remain manual until a later guarded successor proof satisfies the content
   acceptance contract.
 
 Open Plan:
 
-- `docs/dev/plans/0032-2026-08-09-facebook-032-manual-qualification.md`
+- `docs/dev/plans/0033-2026-08-09-facebook-034-manual-qualification.md`
   version 1/C01 is the active authority; Plan 0031 closed successfully and
-  Plans 0029/0030 closed unsuccessfully.
+  Plans 0029/0030/0032 closed or cancelled unsuccessfully for live proof.
 
 Dependencies:
 
@@ -1332,7 +1341,7 @@ Dependencies:
 
 Next Bounded Action:
 
-- at or after `2026-08-09T16:19:07Z`, run Plan 0032's fresh no-launch guards
+- at or after `2026-08-09T19:20:00Z`, run Plan 0033's fresh no-launch guards
   and, only if they pass, one matching Facebook-only preflight/enqueue pair.
   Do not wait for the natural scheduler or retry a terminal result.
 

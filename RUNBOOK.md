@@ -14536,3 +14536,178 @@ Next Bounded Action:
 - commit this receipt and push both commits to `origin/main`. At or after
   `2026-08-09T16:19:07Z`, Plan 0032 may execute one guarded manual proof with
   no retry.
+
+## Turn 243 | 2026-08-09
+
+Focus: repair the retained Facebook tab lifecycle before consuming Plan 0032's
+single live qualification attempt.
+
+Authority Consulted:
+
+- Plan 0032/C01, agent-browser retained-profile/tab-handle safety contract,
+  repository planning, browser safety, validation, release, roadmap/runbook,
+  commit, and push policies; current browser/session inventory.
+
+Decisions And Changes:
+
+- revised Plan 0032 to version 2/C02 after exact inventory found 16 Facebook
+  targets among 19 live tabs in retained browser PID 63205;
+- classified the cause as a Facebook adapter lifecycle defect: cleanup runs
+  only on successful paths and requests `consolidate=False`, so timeouts leak
+  targets and successful work preserves duplicates;
+- authorized service 0.3.33 to bind cleanup to every acquired-workspace outcome
+  and close only verified same-site duplicates while retaining one reusable
+  Facebook target, the browser process, and all non-Facebook tabs.
+
+Validation Evidence:
+
+- live inventory: 16 Facebook, one X, one LinkedIn, one preview; 19 total;
+- service readiness alone does not establish routine Facebook usability. The
+  latest live provider receipt remains a typed transient timeout with zero
+  observed, accepted, or rejected candidates.
+
+State Movement:
+
+- Plan 0032 advances `C01 -> C02`, version `1 -> 2`, and remains `OPEN`;
+- the elapsed time boundary is satisfied, but the one live proof remains
+  unconsumed until lifecycle repair, installation, and exact tab convergence.
+
+Subagent Status And Reconciliation:
+
+- none; the repair and browser convergence are one serialized critical path.
+
+Graphiti Write Status:
+
+- deferred until the repaired runtime, exact tab convergence, and live
+  qualification receipt establish a durable terminal outcome.
+
+Next Bounded Action:
+
+- implement and validate 0.3.33, install it, converge the verified Facebook
+  targets from 16 to one, re-read all guards, and then run exactly one manual
+  Facebook proof without retry if every guard passes.
+
+## Turn 244 | 2026-08-09
+
+Focus: execute the single Plan 0032 proof, adjudicate its terminal receipt, and
+contain the hard-worker-timeout tab leak without retrying Facebook.
+
+Authority Consulted:
+
+- Plan 0032/C02, goal-execution, browser safety, validation, release,
+  documentation, roadmap/runbook, and agent-browser retained-tab contracts;
+  fresh installed service, database, schedule, browser, challenge, queue, and
+  lease-wait readbacks.
+
+Decisions And Changes:
+
+- installed service 0.3.33 and converged the retained session from 16 Facebook
+  targets/19 total to one Facebook/four total while preserving X, LinkedIn,
+  preview, and browser PID 63205;
+- refreshed agent-browser 0.28.0's drifted workstation payload through its
+  prescribed noninteractive installer; the final install and remote-view
+  doctors passed with zero issues and remote control ready;
+- consumed exactly one matching Facebook-only preflight/enqueue pair. No
+  second enqueue, fallback, retry, model call, cost, or natural scheduler wait
+  occurred;
+- classified the terminal result as a distinct hard-termination cleanup gap:
+  Python `finally` cannot run after the parent kills an isolated worker at its
+  wall deadline. The one leaked duplicate was manually reconverged.
+
+Validation Evidence:
+
+- preflight/tick `tick-c9a6b9e9e30d22fbe01328ab1e7ee6d8`, lane
+  `tick-lane-7585fee26be08c222491d8dc8f16845d`, execution attempt
+  `tick-attempt-4eac4e2846257f9179a8ddd91428ad18`, and provider attempt
+  `provider-attempt-d666f13ccab3f3e7e5d35ed30a808f29` each ran once;
+- provider result is transient `worker_timeout`, result digest
+  `sha256:2a745df8b8177db430be8f49e7bd5590c7a0f6bde97c3f3fe6b5a41dbf01b95c`,
+  120 wall seconds, zero requests/items/cost/model use, outcome counts
+  attempted/observed/accepted/rejected `0/0/0/0`, and empty rejection counts;
+- terminal tick is `complete_degraded`; no auth, CAPTCHA, checkpoint,
+  rate-limit, or quality rejection was reported;
+- post-cleanup live state is four tabs: one Facebook, one X, one LinkedIn, one
+  preview. Browser PID 63205 is ready; control-plane queue and lease-wait depths
+  are zero.
+
+State Movement:
+
+- Plan 0032 advances `C02 -> C03`, version `2 -> 3`, and remains `OPEN` only
+  for bounded 0.3.34 timeout-containment repair;
+- routine Facebook usability remains unproved and ticks remain manual.
+
+Subagent Status And Reconciliation:
+
+- none; the primary executed and adjudicated the serialized live boundary.
+
+Graphiti Write Status:
+
+- deferred until the 0.3.34 repair and durable closeout commit.
+
+Next Bounded Action:
+
+- implement parent-owned, provider-scoped, non-masking cleanup after hard
+  worker timeout; validate and install 0.3.34; do not run another live proof.
+
+## Turn 245 | 2026-08-09
+
+Focus: validate, install, and close the hard-timeout containment repair, then
+open the one bounded successor proof without consuming it.
+
+Authority Consulted:
+
+- Plan 0032/C03, Plan 0033/C01, release/versioning, validation/closeout,
+  roadmap/runbook, source-isolation, commit, and push policies; current
+  installed service, database, schedule, browser, tab, and Skill readbacks.
+
+Decisions And Changes:
+
+- kept Facebook acquisition code out of the long-lived service parent by
+  invoking cleanup through a second source-owned subprocess with a 45-second
+  host bound after the timed-out child is killed and reaped;
+- made the cleanup request exact and capped at 4,096 bytes; it carries only
+  profile/session/browser identities, closes only same-site Facebook
+  duplicates, retains one reusable target, and uses measured 30-second browser
+  command bounds;
+- released and installed service 0.3.34, synchronized copied Skills, cancelled
+  Plan 0032 unsuccessfully for live qualification, and opened Plan 0033 for one
+  later guarded proof. No second live tick occurred.
+
+Validation Evidence:
+
+- 2,620 Python tests passed with 7 skips and 6 subtests; all Go MCP packages,
+  compileall, source-isolation, release/runtime-package/authority, and patch
+  checks passed;
+- two artifacts are byte-identical at SHA-256
+  `f1c3043abec18df159f46f8af75b7c4e619b5d4e7bef090de60315f6e59873ad`;
+- installed 0.3.34/schema16 is ready with contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`
+  and runtime-manifest SHA-256
+  `e2d31ce5c6d9d5257eea3317deaa96901aae7737cdb04142c3ff1bc57a0d3231`;
+- SQLite quick check is `ok`; `daily-default` remains enabled/ready at 86,400
+  seconds with next boundary `2026-08-10T00:00:00Z`;
+- browser PID 63205 remains ready with four live tabs: one Facebook, one X, one
+  LinkedIn, one preview. Waiting profile-lease jobs are zero;
+- copied `last30days` and `repo-policy-selector` Skills are refreshed across
+  supported hosts; PromptScript truthfully reports unsupported global install.
+
+State Movement:
+
+- Plan 0032 advances `C03 -> C04` and `OPEN -> CANCELLED` unsuccessfully for
+  live qualification after completing its containment repair;
+- Plan 0033 opens at version 1/C01. P13 remains `OPEN`; Facebook remains manual
+  and not routine-qualified.
+
+Subagent Status And Reconciliation:
+
+- none; the primary completed the serialized repair and current-state audit.
+
+Graphiti Write Status:
+
+- pending one compact source-backed write after the durable commit.
+
+Next Bounded Action:
+
+- commit and push this coherent repair and receipt slice. At or after
+  `2026-08-09T19:20:00Z`, Plan 0033 may run one guarded Facebook-only proof;
+  do not wait for the natural scheduler or retry Plan 0032's result.

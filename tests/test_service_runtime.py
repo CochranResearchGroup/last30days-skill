@@ -1,11 +1,12 @@
 """Runtime wiring keeps acquisition durable, isolated, and independently stoppable."""
 
+import json
 import sys
 import threading
 from datetime import datetime, timezone
 from types import SimpleNamespace
 
-from lib import service_contracts as contracts
+from lib import service_contracts as contracts, service_runtime
 from lib.service_retrieval import HybridRetriever
 from lib.service_runtime import (
     AcquisitionLoop,
@@ -62,6 +63,55 @@ def _query():
             "max_chars": 8192,
             "wait_ms": 0,
         }
+    )
+
+
+def test_hard_timeout_cleanup_is_facebook_only_and_consolidates_same_site(monkeypatch):
+    calls = []
+
+    class Process:
+        def __init__(self, command, **kwargs):
+            calls.append(("start", command, kwargs))
+
+        def communicate(self, *, input, timeout):
+            calls.append(("communicate", json.loads(input), timeout))
+            return b"", b""
+
+    monkeypatch.setattr(service_runtime.subprocess, "Popen", Process)
+    monkeypatch.delenv("LAST30DAYS_FACEBOOK_SESSION", raising=False)
+    monkeypatch.delenv("LAST30DAYS_FACEBOOK_BROWSER_ID", raising=False)
+
+    service_runtime._cleanup_timed_out_worker(
+        SimpleNamespace(
+            adapter="reddit_api", source="reddit", profile_id="default"
+        )
+    )
+    assert calls == []
+
+    service_runtime._cleanup_timed_out_worker(
+        SimpleNamespace(
+            adapter="facebook_agent_browser",
+            source="facebook",
+            profile_id="last30days-facebook",
+        )
+    )
+
+    assert calls[0][0] == "start"
+    assert calls[0][1] == [
+        sys.executable,
+        "-m",
+        "lib.service_acquisition_cleanup",
+    ]
+    assert calls[0][2]["start_new_session"] is (service_runtime.os.name == "posix")
+    assert calls[1] == (
+        "communicate",
+        {
+            "schema_version": 1,
+            "profile_id": "last30days-facebook",
+            "session_name": "last30days-facebook",
+            "browser_id": "session:last30days-facebook",
+        },
+        45,
     )
 
 
