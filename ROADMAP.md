@@ -1359,15 +1359,22 @@ Current State:
 - Plan 0036 owns a narrow 20-second read-only inventory allowance under the
   unchanged cumulative 75-second adapter budget, installed convergence, and
   one separately guarded content proof;
+- Plan 0036 installed that repair as service 0.3.39 and cleared inventory and
+  authentication, but its sole proof exposed a deeper boundary: the rendered
+  Facebook search page is inventory-visible while commands routed into its
+  attached CDP page session do not return;
+- Plan 0037 owns the source-backed agent-browser page-session investigation,
+  installed upstream repair, and only then one new content proof. The exact
+  handoff is pushed in the agent-browser repository at commit `78c088bc`;
 - no logout, CAPTCHA, checkpoint, or rate-limit state will be induced. Ticks
   remain manual until a later guarded successor proof satisfies the content
   acceptance contract.
 
 Active Plan:
 
-- `docs/dev/plans/0036-2026-08-09-facebook-tab-inventory-latency-repair.md`
-  owns the deterministic latency repair, installed convergence, and one
-  bounded routine-automation proof.
+- `docs/dev/plans/0037-2026-08-09-facebook-page-session-cdp-readability.md`
+  owns the upstream target-command repair, installed convergence, and one
+  later bounded routine-automation proof.
 
 Closed Repair Plan:
 
@@ -1378,6 +1385,9 @@ Closed Repair Plan:
 - `docs/dev/plans/0035-2026-08-09-facebook-routine-automation-qualification.md`
   closed at version 3/C03 after its one authorized tick isolated the inventory
   deadline blocker without accepted content.
+- `docs/dev/plans/0036-2026-08-09-facebook-tab-inventory-latency-repair.md`
+  closed at version 3/C03 after installed 0.3.39 cleared inventory and its sole
+  tick isolated the Facebook CDP page-session blocker.
 
 Dependencies:
 
@@ -1387,8 +1397,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- implement and install Plan 0036's bounded read-only inventory repair, then
-  run one fresh guarded Facebook-only proof without waiting for natural time.
+- investigate and repair the Plan 0037 page-session CDP boundary without
+  mutating the retained browser/profile; do not run another provider until the
+  upstream repair is installed and target commands are proven responsive.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 

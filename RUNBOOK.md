@@ -15237,3 +15237,68 @@ Next Bounded Action:
 
 - publish C02, run a new distinct Facebook-only preflight after final guards,
   enqueue it once, and adjudicate only that durable receipt.
+
+## Turn 254 | 2026-08-09
+
+Focus: execute the installed 0.3.39 proof, manually isolate its successor CDP
+failure, and publish an actionable cross-repo agent-browser handoff.
+
+Authority Consulted:
+
+- Plan 0036/C02-C03; Plan 0037/C01; exact preflight/provider/database/browser
+  receipts; diagnosing-bugs, agent-browser, Graphiti discovery, CodeGraph, goal,
+  validation, documentation, Git, and cross-repo policies.
+
+Decisions And Changes:
+
+- ran one new Facebook-only tick immediately through the timer-equivalent
+  coordinator path and did not retry its terminal failure;
+- manually tested the rendered search target through exact session commands,
+  the page WebSocket, and the browser WebSocket instead of inferring a blank
+  page from the provider timeout;
+- proved browser-level CDP and target attachment respond while commands routed
+  into the attached page session do not;
+- published the exact investigation note to agent-browser `main` at commits
+  `039e7a12` and `78c088bc` and opened Plan 0037 as the bounded successor;
+- preserved service, schedule, browser PID, tabs, profile, databases, and zero
+  cost/model posture.
+
+Validation Evidence:
+
+- tick `tick-b80d12af0293fc7bb5d3903c71ac72e1`; provider
+  `provider-attempt-65db1ad398602e6f8c7a259bc47a3e79`; 104 seconds, one
+  request, zero candidates/items/cost/model use, safe code
+  `facebook_target_unresponsive`;
+- inventory and auth eval succeeded; navigation and fresh-successor opening
+  succeeded; both search-target readbacks failed;
+- manual tab inventory reports the rendered Facebook search URL/title;
+  agent-browser eval, snapshot, raw page-WebSocket Runtime evaluation, and raw
+  attached-session Page/Runtime commands do not return within their bounds;
+- browser-WebSocket version, target inventory, and attachment do return;
+- agent-browser 0.28.0 install doctor passes with executable convergence;
+  Graphiti discovery found no exact prior issue; CodeGraph identifies the
+  native evaluate and pending-command paths;
+- post-effect service 0.3.39 and schedule remain ready; PID 63205 remains ready
+  with four tabs and one Facebook target; challenges/queue/lease waiters zero;
+  current and rollback databases `ok`.
+
+State Movement:
+
+- Plan 0036 `OPEN -> CLOSED` at version 3/C03; Plan 0037 opens at version 1/C01
+  as the sole active plan; P13 remains `OPEN` and routine readiness remains
+  false.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary independently executed and diagnosed both repos.
+
+Graphiti Write Status:
+
+- discovery completed in `agent_browser_main`; compact durable write deferred
+  until the upstream repair reaches a stable outcome.
+
+Next Bounded Action:
+
+- inspect the agent-browser native CDP page-session response path and design an
+  isolated regression. Do not mutate the current Facebook browser or enqueue a
+  new provider before installed target-command responsiveness proof.

@@ -1,8 +1,8 @@
 # Plan 0036 | Facebook Tab Inventory Latency Repair
 
-State: OPEN
+State: CLOSED
 Roadmap: P13
-Plan version: 2
+Plan version: 3
 Date: 2026-08-09
 Predecessor: Plan 0035 version 3/checkpoint P0035-C03
 
@@ -224,6 +224,91 @@ Next action:
 - publish this installed checkpoint, run fresh guards and a new distinct
   Facebook-only preflight, then enqueue that exact tick once without waiting
   for the natural scheduler.
+
+### Checkpoint P0036-C03 | 2026-08-09
+
+Plan version: 3
+
+State transition:
+
+- `installed_live_guard_ready -> facebook_page_session_cdp_blocker`.
+
+Progress classification:
+
+- `blocker_discovery`; the repair cleared tab inventory and exposed the next
+  target-scoped CDP failure after successful authentication and navigation.
+
+Owned changes:
+
+- preflighted and enqueued exactly one new Facebook-only tick; performed
+  read-only session, raw page-WebSocket, and browser-WebSocket diagnostics
+  after its terminal failure;
+- published a source-backed investigation note in the agent-browser repository
+  at commits `039e7a12` and `78c088bc`;
+- no provider retry, fallback, schedule mutation, browser close/restart,
+  profile change, challenge action, cost, or model use occurred.
+
+Validation evidence:
+
+- preflight `tick-b80d12af0293fc7bb5d3903c71ac72e1` predicted one lane
+  `tick-lane-0727f106fb198d7b0ff552c9cc7c629a`, one attempt, 50 requests,
+  120 seconds, three items, and zero cost/model use for
+  `[2026-08-08T22:00:00Z, 2026-08-09T22:00:00Z)`;
+- execution `tick-attempt-0aa716a6d8c85b04bf07e8d2225016c8`
+  and provider `provider-attempt-65db1ad398602e6f8c7a259bc47a3e79`
+  ended `complete_degraded`/`facebook_target_unresponsive` after 104 seconds;
+- one request produced zero observed, attempted, accepted, or rejected
+  candidates, zero items, cost, model tokens, quality rejections, page
+  signals, incidents, or auth/challenge/rate-limit signals;
+- result digest is
+  `sha256:d08753a4e782c82b91bf9036eaa1f78feafae145daa6c0d352aca7f19e7683da`;
+- operation ledger: service 254ms ok, service 1,970ms ok, tab 9,142ms ok,
+  auth eval 9,137ms ok, navigation open 15,544ms ok, navigation eval 10,907ms
+  failed, successor tab open 8,893ms ok, successor eval 12,023ms timed out;
+- manual tab inventory returned the rendered Facebook search URL and title in
+  8.3 seconds, but session eval timed out at 25 seconds and snapshot at 30;
+- raw page-WebSocket `Runtime.evaluate` received no response. Browser-WebSocket
+  `Browser.getVersion`, `Target.getTargets`, and `Target.attachToTarget`
+  succeeded, but the attached page session returned neither
+  `Page.getFrameTree` nor trivial `Runtime.evaluate` within 12 seconds;
+- post-effect service 0.3.39 remains ready, PID 63205 remains ready with four
+  intended tabs and one Facebook search target, challenges/queue/lease waiters
+  are zero, both databases are `ok`, and `daily-default` remains enabled and
+  ready with unchanged cadence and next boundary.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary executed and independently diagnosed the packet.
+
+Authority classification:
+
+- `inherited_authority`; the one C02 provider attempt is exhausted. Read-only
+  post-failure diagnostics and the requested agent-browser handoff crossed no
+  new live effect boundary.
+
+Review disposition summary:
+
+- `blocking=1`: the Facebook search page remains inventory-visible but its
+  attached CDP page session does not answer target commands;
+- `rejected=1`: a separate default-profile lock is not the exact session failure
+  because retained-session inventory and browser-level CDP remain responsive;
+- `needs_evidence=0`, `nonblocking_backlog=0`.
+
+Graphiti write status:
+
+- deferred until the durable Plan 0036 closeout and Plan 0037 dependency state
+  are committed.
+
+Remaining acceptance criteria:
+
+- criteria 5-6 failed. Plan 0037 owns the upstream page-session responsiveness
+  repair, installed convergence, and any later fresh content proof.
+
+Next action:
+
+- close this exhausted plan and proceed only through Plan 0037. Do not lengthen
+  the Facebook evaluation timeout or enqueue another provider against the
+  currently unresponsive page-session behavior.
 
 ## Stop Rules
 
