@@ -172,3 +172,69 @@ Next action:
 Stop immediately on any execution-bound violation. One failed provider result
 is terminal for this plan; diagnose from its durable receipt but do not infer a
 second attempt or schedule/browser mutation.
+
+### Checkpoint P0035-C02 | 2026-08-09
+
+Plan version: 2
+
+State transition:
+
+- `bounded_routine_qualification_ready -> live_effect_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; every pre-effect invariant now has a current readback
+  and the prospective tick is distinct, fully closed, and exactly scoped.
+
+Owned changes:
+
+- no runtime mutation; one preflight created no state and predicted the frozen
+  Facebook-only effect boundary.
+
+Validation evidence:
+
+- installed 0.3.38/schema16 is ready with Facebook configured,
+  acquisition-ready, and indexed; runtime manifest is
+  `99b2e4c1db862a99855430929d82d5ae5bc5ae092332cf035299e8b337da59b4`;
+- current and rollback SQLite quick checks are `ok`;
+- `daily-default` remains enabled/ready at 86,400 seconds with next boundary
+  `2026-08-10T00:00:00Z` and no runtime error;
+- browser `session:last30days-facebook`, PID 63205, is ready with
+  `lastError=null`, one Facebook home target and four intentional live tabs;
+  active challenge, queued job, running job, and waiting profile-lease counts
+  are zero at the final guard;
+- preflight `tick-527ad0a718cb64e9f362f4921cbd2498` covers
+  `[2026-08-08T23:00:00Z, 2026-08-09T23:00:00Z)`, predicts exactly lane
+  `tick-lane-091f683ba5da383c3f017c2e4e0c3639`, adapter
+  `facebook_agent_browser`, one attempt, 50 requests, 120 seconds, three
+  items, zero cost, and zero model tokens.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary independently read every guard and owns the
+  single enqueue.
+
+Authority classification:
+
+- `inherited_authority`; the enqueue is the exact bounded effect described by
+  C01 and crosses no new source, tenant, limit, or safety boundary.
+
+Review disposition summary:
+
+- `blocking=0`, `nonblocking_backlog=0`, `rejected=0`, `needs_evidence=0`;
+  the separately owned `shared-social` browser is preserved and excluded.
+
+Graphiti write status:
+
+- deferred until terminal receipt adjudication.
+
+Remaining acceptance criteria:
+
+- execute the one matching enqueue, adjudicate its receipt, and verify
+  post-effect schedule/browser/database state.
+
+Next action:
+
+- enqueue `tick-527ad0a718cb64e9f362f4921cbd2498` exactly once with the
+  matching interval, schedule ID, and `--service facebook`; poll only its
+  durable receipt and do not retry.

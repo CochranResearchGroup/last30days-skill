@@ -15071,3 +15071,58 @@ Next Bounded Action:
 - validate and publish the authority checkpoint, then run fresh guards and one
   matching Facebook-only preflight/enqueue pair. Stop after its terminal
   receipt; do not wait for the natural scheduler or infer a second attempt.
+
+## Turn 251 | 2026-08-09
+
+Focus: freeze the exact one-attempt Facebook effect boundary after current
+service, database, schedule, and browser guards.
+
+Authority Consulted:
+
+- Plan 0035/C01-C02 and the same policy/skill set from Turn 250; installed
+  service 0.3.38, current/rollback databases, `daily-default`, retained browser
+  PID 63205, challenges, jobs, leases, and the prospective preflight.
+
+Decisions And Changes:
+
+- selected the distinct fully closed interval
+  `[2026-08-08T23:00:00Z, 2026-08-09T23:00:00Z)` after confirming the prior
+  three Plan 0033 intervals ended at 18:00, 19:00, and 21:00 UTC;
+- ran one no-state Facebook-only preflight under schedule ID
+  `plan0035-facebook-qualification` and froze its exact tick/lane/limits;
+- observed and preserved unrelated browser activity. The final job read shows
+  zero queued, running, or waiting-profile-lease jobs; no browser lifecycle or
+  schedule/config mutation occurred.
+
+Validation Evidence:
+
+- installed status: 0.3.38/schema16 ready; Facebook configured,
+  acquisition-ready, indexed; both SQLite quick checks `ok`;
+- schedule: enabled/ready, 86,400 seconds, no runtime error, next boundary
+  `2026-08-10T00:00:00Z`;
+- retained browser: `session:last30days-facebook`, PID 63205, ready,
+  `lastError=null`, four live tabs, one Facebook home target; active challenges
+  zero;
+- preflight tick `tick-527ad0a718cb64e9f362f4921cbd2498`, lane
+  `tick-lane-091f683ba5da383c3f017c2e4e0c3639`, one
+  `facebook_agent_browser` provider/attempt, 50 requests, 120 seconds, three
+  items, zero cost/model use.
+
+State Movement:
+
+- Plan 0035 advances `C01 -> C02`, version `1 -> 2`, and remains `OPEN` at the
+  single live effect boundary; P13 remains `OPEN`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary owns and independently verifies the effect.
+
+Graphiti Write Status:
+
+- deferred until the provider result is terminal.
+
+Next Bounded Action:
+
+- publish this guard checkpoint, enqueue the exact preflight once, and poll
+  only tick `tick-527ad0a718cb64e9f362f4921cbd2498`. Stop after its terminal
+  receipt; no retry or fallback.
