@@ -1496,6 +1496,39 @@ Closeout:
   live terminal receipt, no-retry decision, and remaining browser-source
   blocker are recorded there and in RUNBOOK Turn 267.
 
+## P16 | X Agent-Browser Boundary Recovery
+
+State: OPEN
+
+Objective: recover the exact last30days-to-agent-browser X boundary and consume
+at most one tested, profile-safe X acceptance attempt.
+
+Current State:
+
+- clean `main == origin/main` retains Plan 0039's exact failed tick, provider,
+  and fail-closed cache receipts; installed service 0.3.44/schema 16 is ready;
+- the no-launch replay proves profile `last30days-facebook` falsely reports
+  historical browser PID 63205 alive because that PID was reused by Codex;
+  DevTools is unreachable and the stale Chromium lock names the same PID;
+- agent-browser's runtime and lock checks use PID-only liveness, so repair now
+  waits at an explicit cross-repository authority gate. Plan 0040 version
+  2/C02 preserves the unconsumed X attempt.
+
+Active Plan:
+
+- `docs/dev/plans/0040-2026-08-10-x-agent-browser-boundary-recovery.md`
+
+Dependencies:
+
+- consumes P15's stable X identity, exact rejection accounting, source-aware
+  query behavior, and retained failure receipt while preserving P08/P13/P14
+  service, schema, release-lock, and schedule contracts.
+
+Next Bounded Action:
+
+- obtain operator authority for the agent-browser PID-identity/lock repair, or
+  close on the exact cross-repository blocker without consuming the X attempt.
+
 ## P10 | Recurring Browser Reauthentication Notifications
 
 State: CLOSED

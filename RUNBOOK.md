@@ -16059,3 +16059,107 @@ Next Bounded Action:
 
 - none for Plan 0039. Any diagnosis or retry of the retained
   `agent_browser_error` requires a new bounded successor.
+
+## Turn 268 | 2026-08-10
+
+Focus: open the bounded X agent-browser boundary successor and narrow the first
+red replay without consuming another X attempt.
+
+Authority Consulted:
+
+- operator `ok go`,
+  `docs/dev/plans/0040-2026-08-10-x-agent-browser-boundary-recovery.md`,
+  Plan 0039/P15 C04, current Git and installed-service
+  readbacks, retained agent-browser jobs/events/incidents, CodeGraph flow
+  context, and planning, validation, Git, release, closeout, and browser skills.
+
+Decisions And Changes:
+
+- opened Plan 0040/P16 with one serialized diagnostic/repair path, at most one
+  new X-only acceptance tick after validation, and no agent-browser-repo or
+  unrelated runtime mutation;
+- retained service history showed no matching failed agent-browser job at the
+  Plan 0039 tick boundary, so the first red replay targets the X subprocess
+  adapter before accepted browser work;
+- ranked PATH/executable, access-plan arguments, stale shared-profile state, and
+  error-envelope parsing as falsifiable causes to test one prediction at a time.
+
+Validation Evidence:
+
+- clean `main == origin/main` at
+  `bfc7e4369f905c7e36d548c317ee54b8bb976bfa`;
+- installed service diagnose is ready at 0.3.44/schema 16 with unchanged
+  release, runtime-manifest, and contract identities;
+- no X browser/source retry, installation, schedule/database mutation, or
+  retained-resource cleanup occurred.
+
+State Movement:
+
+- Plan 0040/P16 opens at version 1/C01:
+  `installed_terminal_live_blocker -> bounded_boundary_diagnostic`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the current execution instruction keeps this critical path
+  with the primary agent.
+
+Graphiti Write Status:
+
+- pending a validated diagnostic or terminal outcome in
+  `last30days_skill_main`.
+
+Next Bounded Action:
+
+- execute the deterministic adapter replay red and test the ranked hypotheses
+  without consuming the one X acceptance attempt.
+
+## Turn 269 | 2026-08-10
+
+Focus: turn the generic X browser failure into an exact red condition and stop
+at the proven cross-repository repair boundary.
+
+Authority Consulted:
+
+- Plan 0040/P16 C01, retained runtime-profile state and Chromium lock metadata,
+  exact OS PID identity, no-launch agent-browser preflights, agent-browser
+  CodeGraph source, and current scope/effect controls.
+
+Decisions And Changes:
+
+- disproved PATH/executable and access-plan argument hypotheses under the
+  installed service environment;
+- proved profile `last30days-facebook` falsely reports historical browser PID
+  63205 alive because that PID has been reused by Codex, while DevTools port
+  37539 is unreachable and the Chromium lock still names 63205;
+- traced the defect to agent-browser PID-only liveness in runtime status,
+  live-lock rejection, and stale-lock cleanup. No last30days-only change can
+  safely restore the authenticated profile;
+- stopped before cross-repository edits, lock cleanup, browser launch, or the
+  sole X acceptance attempt.
+
+Validation Evidence:
+
+- the no-launch readiness predicate exits 1 with JSON value `false`;
+- exact X access plan, capability preflight, and remote-view dry-run pass;
+- CodeGraph source confirms all three affected agent-browser seams use
+  `kill(pid, 0)` without process identity or DevTools validation.
+
+State Movement:
+
+- Plan 0040 advances version 1/C01 -> version 2/C02 and remains `OPEN` at
+  `confirmed_external_repository_defect`; P16 remains `OPEN` at a human scope
+  gate with the X attempt unconsumed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no parallel work or edits occurred.
+
+Graphiti Write Status:
+
+- pending repair or terminal blocked closeout; current source/runtime evidence
+  remains authoritative.
+
+Next Bounded Action:
+
+- obtain authority to repair and validate agent-browser's managed-profile PID
+  identity/lock handling, then return for the single X acceptance boundary.
