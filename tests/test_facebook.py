@@ -137,6 +137,46 @@ class FacebookAvailabilityTests(unittest.TestCase):
 
 
 class FacebookCliAdapterTests(unittest.TestCase):
+    def test_unresponsive_auth_recovery_prepares_one_query_capture(self):
+        client = facebook.CliAgentBrowserClient(timeout=45, job_timeout_ms=120_000)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="shared-social",
+        )
+        query_url = facebook._search_url("OpenAI", recent=True)
+        tabs = {"tabs": [{"index": 3, "active": True, "url": query_url}]}
+        timeout = facebook.FacebookScraperFailure(
+            "agent_browser_timeout", "retained target did not respond"
+        )
+        capture = {
+            "auth": {"authenticated_dom": True, "has_c_user": True, "has_xs": True},
+            "page": {"url": query_url, "title": "OpenAI - Search Results"},
+            "extraction": {"candidates": [{"text": "OpenAI field report"}]},
+        }
+        client.prepare_query_capture_url(query_url)
+
+        with mock.patch.object(client, "_invoke", return_value=tabs), mock.patch.object(
+            client, "_probe_retained_facebook_auth", side_effect=timeout
+        ), mock.patch.object(
+            client, "replace_active_site_target", return_value=True
+        ), mock.patch.object(client, "act") as act, mock.patch.object(
+            client, "_evaluate_query_capture", return_value=capture
+        ) as evaluate:
+            auth = client.inspect_auth(workspace)
+
+        self.assertTrue(auth.authenticated)
+        act.assert_called_once_with(
+            workspace, facebook.BrowserAction("navigate", value=query_url)
+        )
+        evaluate.assert_called_once_with(workspace)
+        self.assertEqual(capture["page"], client.prepared_query_page(workspace))
+        self.assertEqual(
+            capture["extraction"],
+            client.consume_prepared_query_extraction(workspace),
+        )
+        self.assertIsNone(client.prepared_query_page(workspace))
+
     def test_observed_replacement_auth_then_later_open_keeps_recovery_budget(self):
         class ObservedAuthRecoveryClient(facebook.CliAgentBrowserClient):
             def __init__(self):
@@ -1387,9 +1427,45 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
     def test_search_navigation_uses_post_specific_surface(self):
         parsed = urlsplit(facebook._search_url("OpenAI", recent=True))
 
-        self.assertEqual("www.facebook.com", parsed.hostname)
+        self.assertEqual("m.facebook.com", parsed.hostname)
         self.assertEqual("/search/posts/", parsed.path)
         self.assertTrue(facebook._recent_filter_active(parsed.geturl()))
+
+    def test_prepared_query_capture_avoids_later_target_commands(self):
+        class PreparedCaptureClient(FakeAgentBrowserClient):
+            def __init__(self):
+                super().__init__()
+                self.prepared_url = ""
+                self.capture_consumed = False
+
+            def prepare_query_capture_url(self, url):
+                self.prepared_url = url
+                self.page["url"] = url
+
+            def prepared_query_page(self, workspace):
+                return dict(self.page)
+
+            def consume_prepared_query_extraction(self, workspace):
+                self.capture_consumed = True
+                return {"candidates": list(self.candidates)}
+
+            def act(self, workspace, action):
+                if action.operation in {"navigate", "new_tab"}:
+                    raise AssertionError("prepared capture must avoid later target commands")
+                return super().act(workspace, action)
+
+            def evaluate(self, workspace, script):
+                raise AssertionError("prepared capture must avoid later Runtime evaluation")
+
+        client = PreparedCaptureClient()
+
+        result = make_scraper(client).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(facebook._search_url("robotic lawn mower", recent=True), client.prepared_url)
+        self.assertTrue(client.capture_consumed)
 
     def test_observed_retained_eval_timeout_recovers_within_adapter_budget(self):
         class ObservedNavigationRecoveryClient(FakeAgentBrowserClient):

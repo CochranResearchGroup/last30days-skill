@@ -375,6 +375,123 @@ Next action:
 - commit and push 0.3.41, build/install/sync it, run fresh guards and one
   Facebook-only manual tick for attempt 2.
 
+### Checkpoint P0037-C06 | 2026-08-10
+
+Plan version: 2
+
+State transition:
+
+- `service_0_3_41_candidate_validated -> attempt_2_runtime_channel_blocker`.
+
+Progress classification:
+
+- `later_blocker`; attempt 2 proved post-specific navigation completes but a
+  later Runtime read still cannot fit or respond on the desktop search target.
+
+Attempt evidence:
+
+- tick `tick-e5176a8fc531b4e66ea85a71a1cc1a1b`, execution
+  `tick-attempt-50f713dc4658f0f25f0b76605447bdd8`, provider
+  `provider-attempt-a33d51f782a4824250b83ee637759692`;
+- result digest
+  `sha256:982f2f8fe9e15354ca594e9df90563fd071250796f7bb544c19cef8fdbc5ab86`,
+  `facebook_target_unresponsive`, 110 seconds, one request, zero items/cost/model
+  and no auth/challenge/rate-limit/quality signal;
+- blank replacement, exact close, home navigation/auth eval, and later
+  `/search/posts/` navigation all succeeded; only the navigation-state eval was
+  clamped to the final 6,053 milliseconds and timed out;
+- post-effect inventory showed the correct rendered post-search URL. An
+  independent raw Runtime evaluation still did not respond in 15 seconds, so
+  a clock-only extension is rejected for attempt 3.
+
+Attempt-3 adaptation:
+
+- use the authenticated mobile post-search surface
+  `m.facebook.com/search/posts/`, which is live and redirects unauthenticated
+  callers only to its corresponding login route;
+- on the already-required frozen-target replacement path, navigate the blank
+  successor directly to that query and execute one bounded composite Runtime
+  capture containing authentication, page-state, and extraction results;
+- cache that capture through navigation and first extraction so no later target
+  command is required. Normal responsive retained-target behavior remains
+  unchanged.
+
+Authority classification:
+
+- `inherited_authority`; attempt 2 of 3 is consumed and the final attempt must
+  use this distinct installed adaptation.
+
+Review disposition summary:
+
+- `blocking=1` mobile single-capture candidate not yet implemented,
+  `rejected=1` longer clock alone, `needs_evidence=0`,
+  `nonblocking_backlog=0`.
+
+Remaining acceptance criteria:
+
+- criteria 3 and 5-7.
+
+Next action:
+
+- land red mobile-route and single-capture regressions, implement/version/test
+  the candidate, then consume the third and final governed attempt only after
+  installed convergence.
+
+### Checkpoint P0037-C07 | 2026-08-10
+
+Plan version: 2
+
+State transition:
+
+- `attempt_2_runtime_channel_blocker -> service_0_3_42_candidate_validated`.
+
+Progress classification:
+
+- `implementation_complete`; the final candidate removes every post-capture
+  target command from the frozen-target path rather than extending a deadline.
+
+Owned changes:
+
+- prepared mobile recent-post query URLs are strictly host/path/filter checked;
+- frozen-target authentication recovery performs blank successor, exact close,
+  one mobile query navigation, and one 25-second inner/30-second outer composite
+  capture containing auth, page, and extraction objects;
+- cached page state satisfies navigation validation and cached extraction feeds
+  the existing timestamp merge and quality gate, then is consumed and cleared;
+- run begin/end clears cached state, and ordinary responsive-target behavior
+  retains its existing commands;
+- service version `0.3.41 -> 0.3.42`, manifest, changelog, and release contracts
+  are synchronized.
+
+Validation evidence:
+
+- all three final-candidate regressions failed independently before the change
+  and pass after it;
+- focused Facebook, acquisition-worker, release-version, and runtime-package
+  suites pass;
+- canonical suite passes with `2638 passed, 7 skipped, 6 subtests passed` in
+  156.88 seconds;
+- `git diff --check` passes.
+
+Authority classification:
+
+- `inherited_authority`; attempt 3 remains unconsumed until exact installed
+  convergence and fresh guards pass.
+
+Review disposition summary:
+
+- `blocking=1` install and final proof pending, `rejected=1` clock-only retry,
+  `needs_evidence=0`, `nonblocking_backlog=0`.
+
+Remaining acceptance criteria:
+
+- criteria 3 and 5-7.
+
+Next action:
+
+- commit/push, build/install/sync 0.3.42, run fresh guards, then consume the
+  third and final Facebook-only attempt.
+
 ## Stop Rules
 
 Stop on any execution-bound violation. Do not convert a target-command stall

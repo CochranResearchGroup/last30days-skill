@@ -328,6 +328,15 @@ EXTRACT_SCRIPT = r"""
 })()
 """
 
+QUERY_CAPTURE_SCRIPT = (
+    "(() => {\n"
+    f"const auth = {AUTH_SCRIPT.strip()};\n"
+    f"const page = {PAGE_STATE_SCRIPT.strip()};\n"
+    f"const extraction = {EXTRACT_SCRIPT.strip()};\n"
+    "return {auth, page, extraction};\n"
+    "})()"
+)
+
 
 @dataclass(frozen=True)
 class BrowserWorkspaceRequest:
@@ -517,15 +526,63 @@ class CliAgentBrowserClient:
         self.command_timings: list[dict[str, Any]] = []
         self._prepared_sites: set[tuple[str, str]] = set()
         self._run_deadline: float | None = None
+        self._query_capture_url = ""
+        self._prepared_query_capture: dict[str, Any] | None = None
+        self._prepared_query_capture_session = ""
 
     def begin_run_budget(self, timeout: int) -> None:
         """Bound cumulative adapter work so parent timeout cleanup still runs."""
+        self._prepared_query_capture = None
+        self._prepared_query_capture_session = ""
         self._run_deadline = time.monotonic() + max(
             1, min(timeout, MAX_RUN_BUDGET_SECONDS)
         )
 
     def end_run_budget(self) -> None:
         self._run_deadline = None
+        self._query_capture_url = ""
+        self._prepared_query_capture = None
+        self._prepared_query_capture_session = ""
+
+    def prepare_query_capture_url(self, url: str) -> None:
+        """Arm one post-search capture for frozen-target authentication recovery."""
+        parsed = urlsplit(url)
+        if (
+            parsed.hostname not in {"facebook.com", "www.facebook.com", "m.facebook.com"}
+            or not re.match(r"^/search/posts/?$", parsed.path)
+            or not _recent_filter_active(url)
+        ):
+            raise FacebookScraperFailure(
+                "navigation_mismatch",
+                "Refusing to prepare a non-post or non-recent Facebook query capture",
+            )
+        self._query_capture_url = url
+        self._prepared_query_capture = None
+        self._prepared_query_capture_session = ""
+
+    def prepared_query_page(
+        self, workspace: BrowserWorkspace
+    ) -> dict[str, Any] | None:
+        if (
+            self._prepared_query_capture_session != workspace.session_name
+            or not isinstance(self._prepared_query_capture, dict)
+        ):
+            return None
+        page = self._prepared_query_capture.get("page")
+        return dict(page) if isinstance(page, dict) else None
+
+    def consume_prepared_query_extraction(
+        self, workspace: BrowserWorkspace
+    ) -> dict[str, Any] | None:
+        if (
+            self._prepared_query_capture_session != workspace.session_name
+            or not isinstance(self._prepared_query_capture, dict)
+        ):
+            return None
+        extraction = self._prepared_query_capture.get("extraction")
+        self._prepared_query_capture = None
+        self._prepared_query_capture_session = ""
+        return dict(extraction) if isinstance(extraction, dict) else None
 
     def acquire_workspace(
         self,
@@ -902,14 +959,29 @@ class CliAgentBrowserClient:
                     )
                 self.act(
                     workspace,
-                    BrowserAction("navigate", value="https://www.facebook.com/"),
+                    BrowserAction(
+                        "navigate",
+                        value=self._query_capture_url or "https://www.facebook.com/",
+                    ),
                 )
             if not successor_opened:
                 self.act(
                     workspace,
                     BrowserAction("new_tab", value="https://www.facebook.com/"),
                 )
-            raw = self._evaluate_auth_probe(workspace, fresh_target=True)
+            if replace_existing and self._query_capture_url:
+                capture = self._evaluate_query_capture(workspace)
+                raw_auth = capture.get("auth")
+                if not isinstance(raw_auth, dict):
+                    raise FacebookScraperFailure(
+                        "agent_browser_error",
+                        "Facebook query capture omitted authentication evidence",
+                    )
+                self._prepared_query_capture = capture
+                self._prepared_query_capture_session = workspace.session_name
+                raw = raw_auth
+            else:
+                raw = self._evaluate_auth_probe(workspace, fresh_target=True)
         except FacebookScraperFailure as exc:
             if replace_existing and exc.error_type == "agent_browser_timeout":
                 raise FacebookScraperFailure(
@@ -1005,6 +1077,34 @@ class CliAgentBrowserClient:
         )
         result = raw.get("result") if isinstance(raw.get("result"), dict) else raw
         return result if isinstance(result, dict) else {"value": result}
+
+    def _evaluate_query_capture(
+        self, workspace: BrowserWorkspace
+    ) -> dict[str, Any]:
+        outer_timeout = min(self.timeout, 30)
+        inner_timeout_ms = min(
+            self.job_timeout_ms,
+            25_000,
+            max(1_000, (outer_timeout - 3) * 1_000),
+        )
+        raw = self._invoke(
+            [
+                "--session",
+                workspace.session_name,
+                "--job-timeout-ms",
+                str(inner_timeout_ms),
+                "eval",
+                "--stdin",
+            ],
+            timeout=outer_timeout,
+            input_text=QUERY_CAPTURE_SCRIPT,
+        )
+        result = raw.get("result") if isinstance(raw.get("result"), dict) else raw
+        if not isinstance(result, dict):
+            raise FacebookScraperFailure(
+                "agent_browser_error", "Facebook query capture returned a non-object"
+            )
+        return result
 
     def snapshot(self, workspace: BrowserWorkspace) -> BrowserSnapshot:
         raw = self._invoke(
@@ -1396,6 +1496,9 @@ class FacebookScraper:
         begin_run_budget = getattr(self.client, "begin_run_budget", None)
         if callable(begin_run_budget):
             begin_run_budget(self.request.timeout)
+        prepare_query_capture = getattr(self.client, "prepare_query_capture_url", None)
+        if callable(prepare_query_capture):
+            prepare_query_capture(_search_url(topic, recent=True))
         try:
             diagnostics.failure_stage = "workspace_acquisition"
             _log(f"Acquiring agent-browser workspace profile={self.request.profile_id!r}")
@@ -1527,55 +1630,62 @@ class FacebookScraper:
     def _navigate(self, workspace: BrowserWorkspace, topic: str) -> FacebookPageState:
         recent_search_url = _search_url(topic, recent=True)
         _log(f"Navigating query={topic!r} strategy=fresh_authenticated_target")
-        for attempt in range(2):
-            try:
-                self.client.act(
-                    workspace,
-                    BrowserAction("navigate", value=recent_search_url),
-                )
-                navigation_read = getattr(
-                    self.client,
-                    "evaluate_navigation_state",
-                    self.client.evaluate,
-                )
-                page = _page_state(navigation_read(workspace, PAGE_STATE_SCRIPT))
-                break
-            except FacebookScraperFailure as exc:
-                if not _is_navigation_timeout(exc):
-                    raise
-                if attempt > 0:
-                    raise FacebookScraperFailure(
-                        "facebook_target_unresponsive",
-                        "Facebook replacement target did not respond to bounded navigation readback",
-                    ) from exc
-                _log(
-                    "Search target open/read timed out; retiring its renderer "
-                    "before one bounded successor navigation"
-                )
-                replace_target = getattr(
-                    self.client,
-                    "replace_active_site_target",
-                    None,
-                )
-                if not callable(replace_target):
-                    raise FacebookScraperFailure(
-                        "facebook_target_unresponsive",
-                        "Facebook client cannot replace the unresponsive target",
-                    ) from exc
+        prepared_page = getattr(self.client, "prepared_query_page", None)
+        raw_prepared_page = (
+            prepared_page(workspace) if callable(prepared_page) else None
+        )
+        if isinstance(raw_prepared_page, dict):
+            page = _page_state(raw_prepared_page)
+        else:
+            for attempt in range(2):
                 try:
-                    replaced = replace_target(workspace, "facebook.com")
-                except FacebookScraperFailure as replacement_exc:
-                    if replacement_exc.error_type == "facebook_target_unresponsive":
+                    self.client.act(
+                        workspace,
+                        BrowserAction("navigate", value=recent_search_url),
+                    )
+                    navigation_read = getattr(
+                        self.client,
+                        "evaluate_navigation_state",
+                        self.client.evaluate,
+                    )
+                    page = _page_state(navigation_read(workspace, PAGE_STATE_SCRIPT))
+                    break
+                except FacebookScraperFailure as exc:
+                    if not _is_navigation_timeout(exc):
                         raise
-                    raise FacebookScraperFailure(
-                        "facebook_target_unresponsive",
-                        "Facebook target replacement did not complete",
-                    ) from replacement_exc
-                if not replaced:
-                    raise FacebookScraperFailure(
-                        "facebook_target_unresponsive",
-                        "No active Facebook target was available for bounded replacement",
-                    ) from exc
+                    if attempt > 0:
+                        raise FacebookScraperFailure(
+                            "facebook_target_unresponsive",
+                            "Facebook replacement target did not respond to bounded navigation readback",
+                        ) from exc
+                    _log(
+                        "Search target open/read timed out; retiring its renderer "
+                        "before one bounded successor navigation"
+                    )
+                    replace_target = getattr(
+                        self.client,
+                        "replace_active_site_target",
+                        None,
+                    )
+                    if not callable(replace_target):
+                        raise FacebookScraperFailure(
+                            "facebook_target_unresponsive",
+                            "Facebook client cannot replace the unresponsive target",
+                        ) from exc
+                    try:
+                        replaced = replace_target(workspace, "facebook.com")
+                    except FacebookScraperFailure as replacement_exc:
+                        if replacement_exc.error_type == "facebook_target_unresponsive":
+                            raise
+                        raise FacebookScraperFailure(
+                            "facebook_target_unresponsive",
+                            "Facebook target replacement did not complete",
+                        ) from replacement_exc
+                    if not replaced:
+                        raise FacebookScraperFailure(
+                            "facebook_target_unresponsive",
+                            "No active Facebook target was available for bounded replacement",
+                        ) from exc
         _log(f"Navigation readback requested={recent_search_url!r} final={page.url!r}")
         if page.rate_limited:
             raise FacebookScraperFailure(
@@ -1630,6 +1740,10 @@ class FacebookScraper:
 
     def _extract(self, workspace: BrowserWorkspace) -> list[dict[str, Any]]:
         extracted: list[dict[str, Any]] = []
+        consume_prepared = getattr(
+            self.client, "consume_prepared_query_extraction", None
+        )
+        prepared_raw = consume_prepared(workspace) if callable(consume_prepared) else None
         paired_read = getattr(self.client, "snapshot_and_evaluate", None)
         paired_timeout_fallback = False
         for attempt in range(3):
@@ -1638,7 +1752,11 @@ class FacebookScraper:
                 # Avoid making the substantially heavier accessibility snapshot
                 # a prerequisite for the ordinary successful path.
                 snapshot = BrowserSnapshot()
-                raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
+                raw = (
+                    prepared_raw
+                    if isinstance(prepared_raw, dict)
+                    else self.client.evaluate(workspace, EXTRACT_SCRIPT)
+                )
             elif callable(paired_read):
                 try:
                     snapshot, raw = paired_read(workspace, EXTRACT_SCRIPT)
@@ -1902,7 +2020,7 @@ def _search_url(topic: str, *, recent: bool = False) -> str:
     query = {"q": topic}
     if recent:
         query["filters"] = RECENT_POSTS_FILTER
-    return f"https://www.facebook.com/search/posts/?{urlencode(query)}"
+    return f"https://m.facebook.com/search/posts/?{urlencode(query)}"
 
 
 def _recent_filter_active(value: str) -> bool:

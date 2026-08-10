@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook mobile single-capture recovery.** Service 0.3.42 uses the
+  authenticated `m.facebook.com/search/posts/` surface when a retained desktop
+  target is frozen. Its one replacement navigation performs a single bounded
+  Runtime capture containing authentication, page-state, and extraction data,
+  then reuses that capture through quality gating without another target
+  command. Ordinary responsive retained-target behavior is unchanged; browser
+  restart, profile mutation, retry growth, cost, and model use remain absent.
+
 - **Facebook post-specific search surface.** Service 0.3.41 navigates directly
   to `/search/posts/` with the existing recent-post filter after an installed
   0.3.40 proof showed `/search/top/` rendered the requested results but wedged
