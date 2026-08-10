@@ -15513,8 +15513,9 @@ Graphiti Write Status:
 
 - provider readiness passed and one compact episode was queued in
   `last30days_skill_main` as job
-  `36e1e4a3-9cfc-4bb4-aff4-ef66e1c096b1`; it was still running at this
-  checkpoint and no duplicate write was queued.
+  `36e1e4a3-9cfc-4bb4-aff4-ef66e1c096b1`; it later timed out after 240
+  seconds with no episode UUID and `retryable=false`, so durable ingestion is
+  unconfirmed and no duplicate write was queued.
 
 Next Bounded Action:
 
@@ -15565,8 +15566,9 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- existing closeout job `36e1e4a3-9cfc-4bb4-aff4-ef66e1c096b1` remains in
-  progress; no duplicate episode was queued for this no-effect preflight.
+- existing closeout job `36e1e4a3-9cfc-4bb4-aff4-ef66e1c096b1` timed out
+  after 240 seconds with no episode UUID and `retryable=false`; no duplicate
+  episode was queued for this no-effect preflight.
 
 Next Bounded Action:
 
