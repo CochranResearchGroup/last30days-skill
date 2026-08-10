@@ -1364,8 +1364,11 @@ Current State:
   Facebook search page is inventory-visible while commands routed into its
   attached CDP page session do not return;
 - Plan 0037 owns the source-backed agent-browser page-session investigation,
-  installed upstream repair, and only then one new content proof. The exact
-  handoff is pushed in the agent-browser repository at commit `78c088bc`;
+  and its three adaptive downstream proofs are now exhausted. Installed
+  0.3.40 isolated the renderer, 0.3.41 moved to posts-only search, and 0.3.42
+  reduced recovery to one mobile composite capture; every rendered Facebook
+  search target still stopped answering page-session Runtime commands. The
+  exact upstream handoff is maintained in the agent-browser repository;
 - no logout, CAPTCHA, checkpoint, or rate-limit state will be induced. Ticks
   remain manual until a later guarded successor proof satisfies the content
   acceptance contract.
@@ -1397,9 +1400,11 @@ Dependencies:
 
 Next Bounded Action:
 
-- investigate and repair the Plan 0037 page-session CDP boundary without
-  mutating the retained browser/profile; do not run another provider until the
-  upstream repair is installed and target commands are proven responsive.
+- repair and independently prove the agent-browser Facebook page-session CDP
+  boundary with a disposable authenticated fixture. Plan 0037's three-attempt
+  ceiling is exhausted; do not run another provider or mutate the retained
+  browser/profile until fresh operator authority follows an installed upstream
+  repair.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 

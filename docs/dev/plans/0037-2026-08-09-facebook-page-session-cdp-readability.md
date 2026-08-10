@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P13
-Plan version: 2
+Plan version: 3
 Date: 2026-08-09
 Predecessor: Plan 0036 version 3/checkpoint P0036-C03
 Cross-repo evidence: agent-browser commit `78c088bc`
@@ -15,12 +15,18 @@ prove accepted Facebook content through the existing recurring path.
 
 ## Current State
 
-- Last30Days service 0.3.39 fixed the tab inventory margin and is installed,
-  ready, synchronized, and fully tested;
-- its sole provider proof completed inventory, authentication evaluation,
-  search navigation, and fresh-target opening, then failed because both the
-  original and successor Facebook search page sessions stopped answering CDP
-  target commands;
+- Last30Days service 0.3.42 is installed, ready, synchronized, and fully
+  tested after three distinct adaptive candidates were exercised;
+- service 0.3.40 proved renderer isolation, exact predecessor closure, home
+  navigation, and authentication evaluation, then stalled at the desktop top
+  search navigation command even though the page rendered;
+- service 0.3.41 changed the target to the posts-only search surface; its
+  navigation returned successfully, but the following Runtime evaluation
+  stalled on the rendered page;
+- service 0.3.42 changed the frozen-target path to one mobile query navigation
+  and one composite auth/page/extraction capture. Facebook redirected the
+  mobile URL to the desktop posts route, rendered it, and the single Runtime
+  capture still stalled;
 - browser-level CDP discovery, version, target listing, and attachment remain
   responsive; commands routed into the successfully attached page session do
   not return;
@@ -28,7 +34,8 @@ prove accepted Facebook content through the existing recurring path.
   The exact investigation packet is published at
   `agent-browser/docs/dev/notes/2026-08-09-facebook-search-target-cdp-runtime-stall.md`;
 - `daily-default` remains enabled with Facebook present, but routine scraping
-  is not usable until accepted content is proven.
+  is not usable until accepted content is proven. The three-attempt ceiling is
+  exhausted; no fourth provider execution is authorized by this plan.
 
 ## Scope
 
@@ -491,6 +498,94 @@ Next action:
 
 - commit/push, build/install/sync 0.3.42, run fresh guards, then consume the
   third and final Facebook-only attempt.
+
+### Checkpoint P0037-C08 | 2026-08-10
+
+Plan version: 3
+
+State transition:
+
+- `service_0_3_42_candidate_validated -> attempt_limit_exhausted_upstream_blocker`.
+
+Progress classification:
+
+- `bounded_execution_complete`; all three authorized adaptive attempts were
+  consumed, Facebook accepted-content qualification remains unmet, and no
+  fourth attempt is authorized.
+
+Adaptive evidence:
+
+1. Installed 0.3.40 used a blank successor, exact predecessor close, Facebook
+   home navigation, and auth evaluation before desktop `/search/top/`.
+   Tick `tick-a572e3424d4ca75b9f7bcf1031686c2`, provider
+   `provider-attempt-7fd8386100cbbf5a6d48006bf9ecfe3a`, completed the home
+   and auth operations, then its search navigation reached the 30-second
+   deadline. The rendered search target remained visible afterward.
+2. Installed 0.3.41 changed only to `/search/posts/`. Tick
+   `tick-e5176a8fc531b4e66ea85a71a1cc1a1b`, provider
+   `provider-attempt-a33d51f782a4824250b83ee637759692`, returned successfully
+   from the posts navigation, then its Runtime evaluation exhausted the
+   remaining budget. An independent 15-second raw Runtime probe also received
+   no response, rejecting a clock-only adaptation.
+3. Installed 0.3.42 used `m.facebook.com/search/posts/` and one composite
+   auth/page/extraction capture so no later target command was needed. Tick
+   `tick-a87325ff165fe62787566f5785cde32c`, provider
+   `provider-attempt-556a632cf7e995cfa8c3fbf079200478`, opened the mobile
+   query successfully; Facebook redirected it to the rendered desktop posts
+   route, and the sole composite Runtime call timed out after 30,044 ms.
+
+Terminal receipt:
+
+- final execution `tick-attempt-d211546ca63615ad81310689eea4bae4`, lane
+  `tick-lane-536734a97fb6fb7e2906cc1f855742d1`, result digest
+  `sha256:38afd9666ed249d71bc2af341bbdf3c160edca8f5b9e0dd8c86979e0d8442bc5`;
+- terminal code `facebook_target_unresponsive`, 105 seconds, one request,
+  zero observed/attempted/accepted/rejected items, cost, or model use, and no
+  auth, challenge, CAPTCHA, rate-limit, or quality signal;
+- final operation ledger: service 259 ms ok; service 1,974 ms ok; tab 8,657 ms
+  ok; retained-target eval 11,356 ms failed; replacement inventory 9,369 ms
+  ok; blank target 10,601 ms ok; exact close 9,774 ms ok; mobile query open
+  17,096 ms ok; composite eval 30,044 ms timed out;
+- post-effect PID 63205 remains ready with the four intended tabs, exactly one
+  rendered Facebook posts-search target, zero challenges, and zero active
+  profile leases. `daily-default` remains ready and unchanged, with next due
+  time `2026-08-11T00:00:00Z`.
+
+Manual investigation disposition:
+
+- the primary sent raw `Runtime.evaluate` commands directly to page WebSocket
+  endpoints and attached browser-WebSocket sessions; Facebook did not respond
+  within 15-18 seconds while LinkedIn, X, preview, and a new tab returned;
+- `Page.captureScreenshot` on the Facebook target returned an immediate CDP
+  internal error. Browser discovery, target inventory, and attachment remained
+  responsive, excluding a browser-wide CDP outage and the provider parser;
+- deterministic execution supplied durable receipts, but it was not treated
+  as causal proof. Each next candidate was selected from the preceding
+  operation ledger plus these direct CDP controls.
+
+Authority classification:
+
+- `human_gate`; the inherited attempt limit is exhausted, so a fresh operator
+  ceiling and an upstream
+  agent-browser/Chromium Facebook target-runtime repair are required before
+  another provider proof.
+
+Review disposition summary:
+
+- `blocking=1` Facebook-only page-session Runtime responsiveness,
+  `rejected=1` longer clock alone, `needs_evidence=0`,
+  `nonblocking_backlog=0`.
+
+Remaining acceptance criteria:
+
+- criteria 3 and 5-7 remain unmet; Facebook routine automation is not usable.
+
+Next action:
+
+- reproduce and repair the Facebook search target's page-session Runtime
+  response path in agent-browser with a disposable authenticated fixture. Do
+  not restart or clear the retained profile, and do not enqueue another
+  Last30Days Facebook provider execution under this exhausted authority.
 
 ## Stop Rules
 

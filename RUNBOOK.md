@@ -15302,3 +15302,96 @@ Next Bounded Action:
 - inspect the agent-browser native CDP page-session response path and design an
   isolated regression. Do not mutate the current Facebook browser or enqueue a
   new provider before installed target-command responsiveness proof.
+
+## Turn 255 | 2026-08-10
+
+Focus: use the first two failures in the newly authorized three-attempt window
+to install distinct adaptive Facebook candidates.
+
+Decisions And Changes:
+
+- installed 0.3.40 with blank-successor renderer isolation, exact predecessor
+  close, and a 105-second cumulative budget; attempt 1 cleared home and auth
+  work but timed out at desktop top-search navigation;
+- installed 0.3.41 with the posts-only search route; attempt 2 returned from
+  navigation but stalled on the next Runtime evaluation;
+- rejected a longer-clock-only adaptation after an independent raw Runtime
+  probe also received no response on the rendered posts target;
+- preserved the retained browser/profile, zero-cost posture, recurring
+  schedule, and one-attempt-per-installed-candidate discipline.
+
+Validation Evidence:
+
+- 0.3.40 canonical suite: 2,635 passed, 7 skipped, 6 subtests passed; commit
+  `d492102`, artifact SHA-256
+  `ce06e41ff8f6f07c8c74aaef7d9e4d98ddc1d3253798421f91d3bef93319bb42`;
+- 0.3.41 canonical suite: 2,636 passed, 7 skipped, 6 subtests passed; commit
+  `ee40674`, artifact SHA-256
+  `be2c2197cd2bcec539523e109a4933aa99db867e1af3d34fc485dd4691575941`;
+- attempts 1 and 2 ended `facebook_target_unresponsive` with zero observed,
+  accepted, rejected, cost, model, auth, challenge, rate-limit, or quality
+  signals.
+
+Next Bounded Action:
+
+- install a final mobile single-capture candidate that removes every later
+  target command, then consume the third attempt only after convergence.
+
+## Turn 256 | 2026-08-10
+
+Focus: execute the final adaptive proof and stop exactly at the attempt ceiling.
+
+Authority Consulted:
+
+- Plan 0037/C06-C08; the operator's three-attempt ceiling; exact installed
+  service, provider, database, schedule, and browser receipts; validation,
+  documentation, Git, goal, and cross-repo policies.
+
+Decisions And Changes:
+
+- installed 0.3.42 with strict mobile posts search and one composite
+  auth/page/extraction Runtime capture on frozen-target recovery;
+- consumed the third and final attempt after service, skill, database,
+  schedule, browser, challenge, and lease guards passed;
+- observed Facebook redirect the mobile URL to the rendered desktop posts
+  route, where the sole composite Runtime command timed out after 30,044 ms;
+- declared Facebook not usable, preserved all runtime state, and did not issue
+  a fourth attempt.
+
+Validation Evidence:
+
+- canonical suite: 2,638 passed, 7 skipped, 6 subtests passed; commit
+  `bb52edd`, artifact SHA-256
+  `6e9b270a7893c8e7eb48071b1aded74a2008c183974b65aa107b3ffd4e740369`;
+- installed manifest SHA-256
+  `5ab3f04f5b66a8059a1d19fe57d5c6f4cc75193b485676ff7da1864807e05e5c`;
+- final tick `tick-a87325ff165fe62787566f5785cde32c`, provider
+  `provider-attempt-556a632cf7e995cfa8c3fbf079200478`, result digest
+  `sha256:38afd9666ed249d71bc2af341bbdf3c160edca8f5b9e0dd8c86979e0d8442bc5`;
+- terminal `facebook_target_unresponsive`: 105 seconds, one request, and zero
+  item, cost, model, auth, challenge, rate-limit, or quality counters;
+- post-effect PID 63205 ready with four intended tabs and zero challenges or
+  profile leases; daily schedule ready, unchanged, next due
+  `2026-08-11T00:00:00Z`.
+
+State Movement:
+
+- Plan 0037 advances to version 3/C08 and remains `OPEN` with acceptance
+  criteria 3 and 5-7 unmet; P13 remains `OPEN`; the three-attempt authority is
+  exhausted.
+
+Graphiti Write Status:
+
+- stable cross-repo blocker identified; durable write to be considered after
+  the upstream agent-browser repair so speculation is not stored as resolution.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary implemented, installed, executed, and manually
+  controlled the CDP boundary directly.
+
+Next Bounded Action:
+
+- repair the Facebook page-session Runtime response path upstream with a
+  disposable authenticated fixture. Do not run another downstream provider
+  without an installed repair and fresh operator authority.
