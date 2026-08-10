@@ -55,6 +55,12 @@ prove accepted Facebook content through the existing recurring path.
 - `daily-default` remains enabled with Facebook present, but routine scraping
   is not usable until accepted content is proven. The three-attempt ceiling is
   exhausted; no fourth provider execution is authorized by this plan.
+- a side-effect-free installed 0.3.43 preflight for
+  `[2026-08-09T01:00:00Z, 2026-08-10T01:00:00Z)` is ready as prospective tick
+  `tick-10a32ce87a38790b8894ed9ab2ec2435`: exactly one Facebook lane/provider,
+  one attempt, 50 requests, 120 seconds, three items, and zero cost/model use.
+  A subsequent `tick get` returns `unknown tick`, proving preflight created no
+  durable tick state;
 
 ## Scope
 
@@ -724,6 +730,61 @@ Next action:
   preflight/enqueue packet against installed 0.3.43 and require at least one
   accepted in-window canonical post. Do not wait for natural time or issue an
   unchanged retry.
+
+### Checkpoint P0037-C11 | 2026-08-10
+
+Plan version: 4
+
+State transition:
+
+- `exact_0_3_43_installed_human_gate -> exact_preflight_ready_human_gate`.
+
+Progress classification:
+
+- `outcome_progress`; every no-effect prerequisite for the final acceptance
+  proof is frozen and validated, leaving only the explicit attempt-ceiling gate.
+
+Evidence:
+
+- installed 0.3.43 preflight for the distinct fully closed interval
+  `[2026-08-09T01:00:00Z, 2026-08-10T01:00:00Z)` returned `status=ready`;
+- prospective tick `tick-10a32ce87a38790b8894ed9ab2ec2435`, lane
+  `tick-lane-2182dcad30107c5805888b19a0ff5d39`, exactly one
+  `facebook_agent_browser` provider, one attempt, 50 requests, 120 wall
+  seconds, three items, and zero cost/model tokens;
+- config revision `p0024-c08-daily-schedule-v1` and digest
+  `sha256:e6aba65d3a6d3c430388120fc1e2e9005a4534f622666db71ffc437de5f46706`;
+- immediate `tick get` returned `unknown tick`, proving the preflight created no
+  durable tick, execution, provider, budget, or lease state;
+- no Facebook request, navigation, browser/tab lifecycle operation, schedule
+  mutation, cost, model use, or notification occurred.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary owns the prospective serialized effect boundary.
+
+Authority classification:
+
+- `inherited_authority` covered side-effect-free preflight; `human_gate` still
+  blocks enqueue because it would be provider attempt four after the explicit
+  maximum of three.
+
+Review disposition summary:
+
+- `blocking=0` for preflight, `rejected=1` longer-clock-only retry,
+  `needs_evidence=0`, `nonblocking_backlog=0`.
+
+Remaining acceptance criteria:
+
+- criteria 3, 6, and the post-effect portion of 7 remain bound to the single
+  prospective tick above.
+
+Next action:
+
+- when the operator supplies a fresh attempt ceiling, enqueue exactly
+  `tick-10a32ce87a38790b8894ed9ab2ec2435` once, poll only that tick to terminal,
+  and adjudicate accepted canonical content plus cleanup invariants. Do not
+  wait for the natural scheduler.
 
 ## Stop Rules
 

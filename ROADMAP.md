@@ -1377,6 +1377,10 @@ Current State:
   deadline, and the canonical suite passes 2,638 tests. The schedule,
   databases, and retained four-tab browser are healthy. No fourth provider
   attempt was consumed;
+- installed no-state preflight `tick-10a32ce87a38790b8894ed9ab2ec2435`
+  freezes one Facebook provider/attempt for the distinct closed interval
+  `[2026-08-09T01:00:00Z, 2026-08-10T01:00:00Z)` with zero cost/model use;
+  immediate readback proves it created no durable tick state;
 - no logout, CAPTCHA, checkpoint, or rate-limit state will be induced. Ticks
   remain manual until a later guarded successor proof satisfies the content
   acceptance contract.
@@ -1408,9 +1412,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- prepare one fresh Facebook-only acceptance packet against exact installed
-  service 0.3.43. Enqueue requires a new explicit attempt ceiling because Plan
-  0037's prior maximum of three is exhausted; do not wait for natural time.
+- after a new explicit attempt ceiling, enqueue prospective tick
+  `tick-10a32ce87a38790b8894ed9ab2ec2435` exactly once against installed 0.3.43;
+  do not wait for natural time or derive an unchanged second attempt.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 

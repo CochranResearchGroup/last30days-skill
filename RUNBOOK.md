@@ -15521,3 +15521,55 @@ Next Bounded Action:
 - after a fresh explicit attempt ceiling, run one Facebook-only no-state
   preflight/enqueue pair immediately against installed 0.3.43 and adjudicate
   accepted canonical content plus post-effect schedule/database/browser state.
+
+## Turn 259 | 2026-08-10
+
+Focus: freeze the exact post-repair Facebook acceptance packet without creating
+state or crossing the exhausted provider boundary.
+
+Authority Consulted:
+
+- Plan 0037/C10, installed 0.3.43, current daily configuration, prior three
+  intervals/receipts, provider-attempt ceiling, and no-state preflight contract.
+
+Decisions And Changes:
+
+- selected the distinct fully closed interval
+  `[2026-08-09T01:00:00Z, 2026-08-10T01:00:00Z)` after confirming attempts
+  one through three used starts at 00:00, 00:11, and 00:25 UTC;
+- ran one Facebook-only preflight under schedule ID
+  `plan0037-facebook-post-repair-acceptance` and did not enqueue it;
+- made no Facebook request, navigation, browser/tab lifecycle action,
+  notification, schedule mutation, cost, or model call.
+
+Validation Evidence:
+
+- preflight status is ready for prospective tick
+  `tick-10a32ce87a38790b8894ed9ab2ec2435`, lane
+  `tick-lane-2182dcad30107c5805888b19a0ff5d39`;
+- exactly one `facebook_agent_browser` provider with one attempt, 50 requests,
+  120 wall seconds, three items, zero cost, and zero model tokens;
+- config revision `p0024-c08-daily-schedule-v1`, digest
+  `sha256:e6aba65d3a6d3c430388120fc1e2e9005a4534f622666db71ffc437de5f46706`;
+- immediate `tick get` returned `unknown tick`, proving no durable state was
+  created.
+
+State Movement:
+
+- Plan 0037 advances C10 -> C11 and remains `OPEN`; P13 remains `OPEN` at the
+  exact effect gate.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary owns the prospective one-attempt effect.
+
+Graphiti Write Status:
+
+- existing closeout job `36e1e4a3-9cfc-4bb4-aff4-ef66e1c096b1` remains in
+  progress; no duplicate episode was queued for this no-effect preflight.
+
+Next Bounded Action:
+
+- when a fresh explicit attempt ceiling is supplied, enqueue exactly
+  `tick-10a32ce87a38790b8894ed9ab2ec2435` once and poll it to terminal without
+  waiting for the natural schedule or issuing a second attempt.
