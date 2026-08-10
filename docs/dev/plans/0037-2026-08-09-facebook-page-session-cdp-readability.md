@@ -42,12 +42,16 @@ prove accepted Facebook content through the existing recurring path.
   recovery in 1.482 seconds. A retained-session control then proved the old
   Facebook target remains frozen but now returns typed three-second job
   timeouts; the original active X tab was restored;
-- service 0.3.43 is a validated offline candidate. Shared retained-social
+- service 0.3.43 is installed, ready, and synchronized. Shared retained-social
   navigation now uses a 25-second agent-browser job deadline inside its
   30-second Python subprocess deadline, preserving response and cleanup grace;
   the canonical suite passes 2,638 tests, 7 skips, and 6 subtests, and artifact
   SHA-256 is
-  `53d1d185c44b46a54280cb444c94ec55c0085d81e6194c3a54fcd151259a4bed`;
+  `53d1d185c44b46a54280cb444c94ec55c0085d81e6194c3a54fcd151259a4bed`.
+  Runtime-manifest SHA-256 is
+  `6ce2aff6dd28c4bda730269652acde2729f6caff169c05d4e6e781ce169c7784`,
+  rollback 0.3.42 is preserved, and all three Facebook adapter copies share
+  SHA-256 `2aac057b4c6741a0a9a7695ab410432641239c2efee3b745b87648ac21fb968c`;
 - `daily-default` remains enabled with Facebook present, but routine scraping
   is not usable until accepted content is proven. The three-attempt ceiling is
   exhausted; no fourth provider execution is authorized by this plan.
@@ -660,6 +664,66 @@ Next action:
 - commit and push the validated 0.3.43 candidate, install that exact artifact,
   synchronize the frozen Skill copy, and re-prove runtime convergence. Do not
   enqueue a Facebook provider until a fresh attempt ceiling is explicit.
+
+### Checkpoint P0037-C10 | 2026-08-10
+
+Plan version: 4
+
+State transition:
+
+- `upstream_repair_consumed_candidate_validated -> exact_0_3_43_installed_human_gate`.
+
+Progress classification:
+
+- `outcome_progress`; the exact downstream integration is remotely durable,
+  installed, synchronized, rollback-safe, and ready at the final provider gate.
+
+Evidence:
+
+- commit `3b0df67171aaa031971f56fb8adf9017bbc453e9` is local and on
+  `origin/main`; artifact SHA-256 is
+  `53d1d185c44b46a54280cb444c94ec55c0085d81e6194c3a54fcd151259a4bed`;
+- installed diagnose reports service 0.3.43/schema 16 ready with runtime-manifest
+  SHA-256 `6ce2aff6dd28c4bda730269652acde2729f6caff169c05d4e6e781ce169c7784`;
+  previous resolves to 0.3.42;
+- source, frozen installed Skill, and installed service Facebook adapters share
+  SHA-256 `2aac057b4c6741a0a9a7695ab410432641239c2efee3b745b87648ac21fb968c`;
+- current and rollback SQLite `PRAGMA quick_check` both return `ok`;
+  `daily-default` is enabled/ready at 86,400 seconds with next boundary
+  `2026-08-11T00:00:00Z` and no runtime error;
+- retained browser PID 63205 remains ready with the four intended tabs and X
+  restored active. Remote control is ready and runtime inventory is converged;
+- no provider attempt, schedule/config mutation, browser/tab lifecycle action,
+  cost, or model use occurred during installation.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary installed and independently verified the exact
+  runtime and browser boundary.
+
+Authority classification:
+
+- `inherited_authority` covered exact installation and synchronization;
+  `human_gate` now applies solely to exceeding the consumed three-attempt
+  provider ceiling.
+
+Review disposition summary:
+
+- `blocking=0` for implementation/install, `rejected=1` longer-clock-only
+  retry, `needs_evidence=0`, `nonblocking_backlog=0`.
+
+Remaining acceptance criteria:
+
+- criterion 3 still needs the next successor-search readback; criterion 6 needs
+  accepted Facebook content; criterion 7 needs post-effect schedule, database,
+  and browser readbacks from that same proof.
+
+Next action:
+
+- after a fresh explicit attempt ceiling, derive one Facebook-only no-state
+  preflight/enqueue packet against installed 0.3.43 and require at least one
+  accepted in-window canonical post. Do not wait for natural time or issue an
+  unchanged retry.
 
 ## Stop Rules
 

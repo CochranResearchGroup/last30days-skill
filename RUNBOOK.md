@@ -15459,3 +15459,65 @@ Next Bounded Action:
   frozen Skill copy, and verify service, browser, schedule, and database
   convergence. Do not enqueue Facebook without a fresh explicit attempt
   ceiling.
+
+## Turn 258 | 2026-08-10
+
+Focus: install and converge exact service 0.3.43 while preserving the exhausted
+Facebook provider boundary.
+
+Authority Consulted:
+
+- Plan 0037/C09, commit/push and install policies, exact 0.3.43 artifact,
+  installed service/Skill authorities, daily schedule, current/rollback
+  databases, retained browser, and agent-browser doctors.
+
+Decisions And Changes:
+
+- committed and pushed 0.3.43 at `3b0df67`, installed its exact immutable
+  artifact, retained 0.3.42 as rollback, and synchronized the frozen Skill;
+- accepted PromptScript's reported lack of global-skill support as a
+  host-capability exclusion because the Codex and shared installed copy
+  completed successfully;
+- made no provider request, schedule/config mutation, browser/tab lifecycle
+  change, cost-bearing call, or model call.
+
+Validation Evidence:
+
+- install and diagnose report service 0.3.43/schema 16 ready, runtime-manifest
+  SHA-256 `6ce2aff6dd28c4bda730269652acde2729f6caff169c05d4e6e781ce169c7784`,
+  and contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
+- current resolves to release 0.3.43 and previous to 0.3.42;
+- source, installed Skill, and installed service Facebook adapters share
+  SHA-256 `2aac057b4c6741a0a9a7695ab410432641239c2efee3b745b87648ac21fb968c`;
+- current and rollback SQLite quick checks return `ok`;
+- installed status is ready with Facebook configured, acquisition-ready, and
+  eight indexed documents; `daily-default` is enabled/ready at 86,400 seconds,
+  next boundary `2026-08-11T00:00:00Z`, with no runtime error;
+- retained PID 63205 remains live with exactly four intended tabs and X active;
+  agent-browser remote control is ready and runtime inventory is converged;
+- local and remote commit are both
+  `3b0df67171aaa031971f56fb8adf9017bbc453e9`.
+
+State Movement:
+
+- Plan 0037 advances from C09 to C10 and remains `OPEN`; P13 remains `OPEN`.
+  Implementation and installation are complete; accepted Facebook content is
+  still unproven.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary executed and verified the serialized install.
+
+Graphiti Write Status:
+
+- provider readiness passed and one compact episode was queued in
+  `last30days_skill_main` as job
+  `36e1e4a3-9cfc-4bb4-aff4-ef66e1c096b1`; it was still running at this
+  checkpoint and no duplicate write was queued.
+
+Next Bounded Action:
+
+- after a fresh explicit attempt ceiling, run one Facebook-only no-state
+  preflight/enqueue pair immediately against installed 0.3.43 and adjudicate
+  accepted canonical content plus post-effect schedule/database/browser state.
