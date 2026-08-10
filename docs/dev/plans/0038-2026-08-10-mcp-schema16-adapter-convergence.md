@@ -1,8 +1,8 @@
 # Plan 0038 | MCP Schema-16 Adapter Convergence
 
-State: OPEN
+State: CLOSED
 Roadmap: P14
-Plan version: 2
+Plan version: 3
 Date: 2026-08-10
 Predecessor: Plan 0037 version 5/checkpoint P0037-C12
 
@@ -14,18 +14,19 @@ adapter release identity.
 
 ## Current State
 
-- live `service_info` is ready but returns `contract_digest_mismatch`;
-- installed MCP adapter 4.0.1 advertises database schema range 15-15 while the
-  service and canonical catalog are schema 16 with digest
-  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
-- a fresh checkout build reports schema range 16-16 and `compatible`, proving
-  the defect is stale adapter release/install identity rather than service
-  behavior;
-- commit `2e05b51` advanced the generated adapter contract from schema 15 to 16
-  without advancing MCP manifest version 4.0.1.
-- MCP 4.0.2 is now source-complete with an immutable compatibility-release
-  lock, generator/install fail-closed enforcement, release documentation, and
-  public-interface integration coverage; installed convergence remains.
+- the installed MCP binary is release 4.0.2 at clean source revision
+  `0eabd9950520869de9f6685c0f6c574641f65b20`, SHA-256
+  `4336d24aedf067a54745407b9e8a1dfe2280c0ce1ea17f3f81efef9f8de5ebbc`;
+- a fresh installed process reports ready service 0.3.43/schema 16, adapter
+  4.0.2/schema 16-16, the canonical digest, and
+  `compatibility_state=compatible`;
+- `maintenance_status` succeeds through that fresh installed process, proving
+  the repaired handshake admits a governed operation beyond discovery;
+- adapter processes already attached to running Codex conversations keep their
+  prior 4.0.1 process image until connector/session restart. They were not
+  terminated because other active sessions own them; new processes use 4.0.2;
+- service 0.3.43, `daily-default`, current and rollback databases, browsers,
+  tabs, and acquisition state were not changed by this repair.
 
 ## Scope
 
@@ -179,3 +180,68 @@ Next action:
 
 - run the final candidate gate, commit/push the source slice, install once from
   the clean commit, and verify live discovery plus maintenance admission.
+
+### Checkpoint P0038-C03 | 2026-08-10
+
+Plan version: 3
+
+State transition:
+
+- `validated_4_0_2_install_candidate -> installed_compatible_closed`.
+
+Progress classification:
+
+- `outcome_progress`; the installed adapter and governed maintenance surface
+  now use the exact schema-16 release identity.
+
+Installed and repository evidence:
+
+- implementation commit `0eabd9950520869de9f6685c0f6c574641f65b20` is pushed
+  to `origin/main`;
+- the pre-install binary SHA-256 was
+  `7dfc61af38faa69fbfcc3b2a2adc1cbd87734ed1b7bbea3a7fe3f6ad0c4f735d`;
+- the single authorized install produced SHA-256
+  `4336d24aedf067a54745407b9e8a1dfe2280c0ce1ea17f3f81efef9f8de5ebbc`
+  with adapter 4.0.2 and clean VCS revision `0eabd995`;
+- a fresh installed JSON-RPC process reports `compatible`, the schema-16
+  digest, database range 16-16, ready service 0.3.43, and no RPC error;
+- a fresh installed `maintenance_status` call succeeds and preserves the
+  approval, branch-isolation, evaluation, and failure-signature repair policy;
+- the current conversation's pre-existing connector still reports 4.0.1 until
+  it is reconnected. This is process-lifetime state, not an installed-binary
+  failure, and no other session's adapter process was killed.
+
+Validation evidence:
+
+- the final Python suite passes 2,640 tests with 7 skips and 6 subtests;
+- Go generation, full Go tests, Go vet, touched-Go formatting, planning audits,
+  plan-authority audit, and patch checks pass;
+- service status remains ready at 0.3.43/schema 16; `daily-default` remains
+  enabled/ready with its next boundary `2026-08-11T00:00:00Z`; current and
+  rollback SQLite `quick_check` both return `ok`;
+- Graphiti provider readiness passed. One exact, duplicate-preflighted closeout
+  write was queued as job `8ae1dd76-11a6-48cb-be26-133d409a75ca`, then timed
+  out after 45 seconds during node extraction with `episode_uuid=null` and
+  `retryable=false`; no retry or duplicate was queued.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary owned the serialized release/install boundary.
+
+Authority classification:
+
+- `inherited_authority`; installation and validation stayed inside the
+  operator-requested MCP adapter repair.
+
+Review disposition summary:
+
+- `blocking=0`, `nonblocking_backlog=0`, `rejected=0`, `needs_evidence=0`.
+
+Acceptance result:
+
+- criteria 1-7 pass; Plan 0038 and P14 are closed.
+
+Next action:
+
+- reconnect any already-running Codex MCP connector that must consume adapter
+  4.0.2 immediately; ordinary new connector processes require no intervention.

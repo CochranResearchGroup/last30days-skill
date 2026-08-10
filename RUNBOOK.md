@@ -15757,3 +15757,68 @@ Next Bounded Action:
 
 - run the final candidate gate, checkpoint and push, install 4.0.2 once from
   the clean commit, and verify the live MCP public interface.
+
+## Turn 263 | 2026-08-10
+
+Focus: install, verify, and close the MCP 4.0.2/schema-16 adapter repair.
+
+Authority Consulted:
+
+- operator instruction to fix the MCP adapter issue and Plan 0038/P14 C02;
+- clean implementation commit, installed MCP registration, fresh direct
+  JSON-RPC probes, service/schedule/database readbacks, and Graphiti closeout
+  policy.
+
+Decisions And Changes:
+
+- committed and pushed implementation revision
+  `0eabd9950520869de9f6685c0f6c574641f65b20` before crossing the install
+  boundary;
+- ran `mcp/scripts/install-codex.sh` exactly once, replacing the installed
+  binary and preserving the service, schedule, databases, browsers, tabs, and
+  source acquisition state;
+- did not terminate 17 observed adapter processes because they belong to other
+  active Codex sessions. A connector already running in this conversation
+  therefore retains 4.0.1 until reconnect, while every fresh process uses
+  4.0.2;
+- closed Plan 0038 version 3/C03 and P14 on fresh-process proof.
+
+Validation Evidence:
+
+- installed binary SHA-256 changed from
+  `7dfc61af38faa69fbfcc3b2a2adc1cbd87734ed1b7bbea3a7fe3f6ad0c4f735d`
+  to `4336d24aedf067a54745407b9e8a1dfe2280c0ce1ea17f3f81efef9f8de5ebbc`;
+- installed build metadata reports clean VCS revision `0eabd995`; fresh
+  `service_info` reports adapter 4.0.2, schema 16-16, ready service 0.3.43,
+  canonical digest
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`,
+  and `compatibility_state=compatible`;
+- fresh `maintenance_status` succeeds with authenticated public-partition
+  access and the governed repair policy intact;
+- final Python validation passes 2,640 tests, 7 skips, and 6 subtests; full Go
+  generation/tests/vet, touched-Go formatting, planning and plan-authority
+  audits, and patch checks pass;
+- service remains ready at 0.3.43/schema 16; `daily-default` remains
+  enabled/ready at 86,400 seconds with next boundary
+  `2026-08-11T00:00:00Z`; current and rollback database quick checks are `ok`.
+
+State Movement:
+
+- Plan 0038 moves version 2/C02/OPEN -> version 3/C03/CLOSED; P14 moves OPEN
+  -> CLOSED; all seven acceptance criteria pass.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary owned the serialized release/install boundary.
+
+Graphiti Write Status:
+
+- provider readiness passed and exact metadata preflight found no duplicate;
+- the single closeout job `8ae1dd76-11a6-48cb-be26-133d409a75ca` timed out
+  after 45 seconds during node extraction with `episode_uuid=null` and
+  `retryable=false`; no retry or duplicate was queued.
+
+Next Bounded Action:
+
+- reconnect an already-running Codex MCP connector only when that conversation
+  must consume 4.0.2 immediately. New connector processes are already fixed.

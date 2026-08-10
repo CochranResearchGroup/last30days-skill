@@ -1422,7 +1422,7 @@ Closeout:
 
 ## P14 | MCP Schema-16 Adapter Convergence
 
-State: OPEN
+State: CLOSED
 
 Objective: restore the installed MCP handshake for service schema 16 and make
 future adapter contract changes fail closed unless they receive a new,
@@ -1430,17 +1430,17 @@ explicitly bound adapter release identity.
 
 Current State:
 
-- installed adapter 4.0.1 returns `contract_digest_mismatch` and advertises
-  schema 15-15 against ready service 0.3.43/schema 16;
-- the current source build already advertises schema 16-16 and returns
-  `compatible`, isolating stale release/install identity as the defect;
-- MCP 4.0.2 is source-complete with a compatibility-release lock and
-  generator/installer enforcement; focused validation passes and final full
-  validation plus clean installed convergence remain;
-- Plan 0038 owns a compatibility-release lock, MCP 4.0.2 cut, installed
-  convergence, and a public-interface readback without service or source work.
+- installed adapter 4.0.2 now advertises schema 16-16 and returns `compatible`
+  against ready service 0.3.43/schema 16;
+- the release lock preserves 4.0.1/schema-15 history and binds 4.0.2 to the
+  exact schema-16 catalog digest and service/database ranges;
+- contract generation and installation fail closed on a missing, duplicate,
+  or mismatched current release identity;
+- a fresh installed `maintenance_status` read succeeds. Existing connector
+  processes retain their old process image until session/connector restart;
+  service, schedule, databases, browser state, and acquisition were unchanged.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0038-2026-08-10-mcp-schema16-adapter-convergence.md`
 
@@ -1451,8 +1451,10 @@ Dependencies:
 
 Closeout:
 
-- close only after installed 4.0.2 reports `compatible`, schema 16-16, and a
-  post-discovery maintenance read succeeds.
+- Plan 0038 closed at version 3/C03. Installed binary SHA-256
+  `4336d24aedf067a54745407b9e8a1dfe2280c0ce1ea17f3f81efef9f8de5ebbc`
+  reports adapter 4.0.2, `compatible`, schema 16-16, and admits
+  `maintenance_status` through a fresh process.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 
