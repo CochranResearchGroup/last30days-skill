@@ -16163,3 +16163,71 @@ Next Bounded Action:
 
 - obtain authority to repair and validate agent-browser's managed-profile PID
   identity/lock handling, then return for the single X acceptance boundary.
+
+## Turn 270 | 2026-08-10
+
+Focus: install the validated process-identity repair and close the single X
+acceptance boundary successfully.
+
+Authority Consulted:
+
+- operator `ok go`, Plan 0040/P16 C02, the agent-browser Plan0108 final test
+  receipt, installed Agent Browser and Last30 service readbacks, last30days
+  administration rules, and current planning, validation, documentation, Git,
+  runtime, and effect-boundary policies.
+
+Decisions And Changes:
+
+- installed the tested Agent Browser 0.28.0 candidate and retained the unrelated
+  live browser lane during workstation convergence;
+- replaced stale MCP adapter 4.0.1 with current clean-main adapter 4.0.3 after
+  its schema-16 compatibility mismatch blocked product operations;
+- reconciled the repository-authority fixture to the legitimate zero-active-
+  plan state after P16 closed;
+- ran one exact X-only manual tick after service, access-plan, capability, and
+  attempt-budget preflights passed. No retry, fallback, or other source ran;
+- preserved the retained authenticated browser and made no profile, tab, lock,
+  timer, database-schema, notification, or unrelated resource cleanup change.
+
+Validation Evidence:
+
+- installed Agent Browser SHA-256 is
+  `2bc94df317e2db63e9f2b54532549e5f4de1612619b703c46d2d3da44f8beb79`;
+  runtime convergence and no-launch probes are ready. The sole stable doctor
+  issue is non-readiness-impacting duplicate-profile pressure with zero cleanup
+  candidates;
+- fresh MCP readback is compatible at adapter 4.0.3, service 0.3.44, contract
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`,
+  and database schema 16;
+- tick `tick-be03d32d2431f97155d1ede7defcd11e` completed with provider attempt
+  `provider-attempt-4a74d3bfe541afa2d6f111db56426595`: 16 observed, three
+  accepted, 13 rejected, two network requests, 35 seconds, zero cost/model use,
+  no fallback, incident, or coverage gap;
+- promoted snapshot `tick-snapshot-2fa33fdf48be16b1f1f8bde1011b7e4f`
+  reports `x=success`. Cache-only named-profile retrieval returned the exact
+  three attributed source versions and no refresh job;
+- current and rollback databases return `ok`; `daily-default` remains enabled
+  and ready for `2026-08-11T00:00:00Z`; profile lease state is `available`
+  with zero holders and waiters.
+- the deterministic planning audit and its focused test pass with zero active
+  plans, zero issues, and latest runbook turn 270.
+
+State Movement:
+
+- Plan 0040 version 2/C02 advances to version 3/C03 and `CLOSED` at
+  `terminal_acceptance_success`; roadmap lane P16 is `CLOSED`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary agent owned every install, live-effect,
+  reconciliation, and closeout decision.
+
+Graphiti Write Status:
+
+- pending this durable checkpoint commit, after which one compact source-backed
+  episode will be queued and verified in `last30days_skill_main`.
+
+Next Bounded Action:
+
+- resume ordinary cache-backed operation. Any later X acquisition requires a
+  new governed request and attempt budget.

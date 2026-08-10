@@ -1,8 +1,8 @@
 # Plan 0040 | X Agent-Browser Boundary Recovery
 
-State: OPEN
+State: CLOSED
 Roadmap: P16
-Plan version: 2
+Plan version: 3
 Date: 2026-08-10
 Predecessor: Plan 0039 version 4/checkpoint P0039-C04
 
@@ -14,8 +14,9 @@ or closes on a newly retained terminal source condition without retry.
 
 ## Current State
 
-- local `main`, `origin/main`, and closeout commit
-  `bfc7e4369f905c7e36d548c317ee54b8bb976bfa` align with a clean worktree;
+- local `main` and `origin/main` align at
+  `2acc426c1df9c42a8dfc52fec5e37d603472cc39` with a clean worktree before
+  this terminal documentation checkpoint;
 - installed service 0.3.44/schema 16 is ready at `releases/0.3.44` with runtime
   manifest SHA-256
   `c63fe7e8ae771210f1ab91e9d226d0dcab0187e52094b729be5f9716880465bd`
@@ -29,15 +30,24 @@ or closes on a newly retained terminal source condition without retry.
   failed control-plane action at that tick boundary. The failure therefore
   remains upstream of an accepted service-owned browser operation until a
   red-capable replay proves otherwise;
-- the replay is now red: runtime profile `last30days-facebook` claims
-  `browserAlive=true` for PID 63205 even though that PID belongs to Codex and
-  DevTools port 37539 is unreachable. The retained Chromium `SingletonLock`
-  also names PID 63205;
-- fresh CodeGraph source proves agent-browser runtime and profile-lock checks
-  use `kill(pid, 0)` without process identity or DevTools validation. PID reuse
-  therefore turns a stale authenticated-profile lock into a false live owner.
-  The required repair is in the agent-browser repository, outside this plan's
-  write authority; the X attempt remains unconsumed at a human scope gate.
+- the red replay proved that PID-only liveness had mistaken reused PID 63205
+  for the historical browser. The separately authorized agent-browser repair
+  now binds runtime ownership to process identity and the installed binary
+  SHA-256 is
+  `2bc94df317e2db63e9f2b54532549e5f4de1612619b703c46d2d3da44f8beb79`;
+- the current MCP adapter is 4.0.3 and reports `compatible` with service
+  0.3.44, contract
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`,
+  and database schema 16;
+- the one authorized acceptance attempt completed successfully as tick
+  `tick-be03d32d2431f97155d1ede7defcd11e`, accepted three X items, promoted
+  snapshot `tick-snapshot-2fa33fdf48be16b1f1f8bde1011b7e4f`, and used no
+  retry or provider fallback;
+- cache-only named-profile retrieval returned those exact three source
+  versions from provider attempt
+  `provider-attempt-4a74d3bfe541afa2d6f111db56426595`. Current and rollback
+  databases pass `PRAGMA quick_check`, the recurring schedule is unchanged,
+  and the browser profile lease is available with no holder or waiter.
 
 ## Scope
 
@@ -259,3 +269,84 @@ Next action:
 
 - obtain operator authority for the agent-browser repair, or close P16 at this
   exact external-repository gate without consuming the X attempt.
+
+### Checkpoint P0040-C03 | 2026-08-10
+
+Plan version: 3
+
+State transition:
+
+- `confirmed_external_repository_defect -> terminal_acceptance_success`.
+
+Progress classification:
+
+- `outcome_progress`; the cross-repository process-identity repair is installed
+  and the single retained X acceptance budget reached a successful terminal
+  receipt without retry.
+
+Installed and compatibility evidence:
+
+- the tested agent-browser candidate is installed at version 0.28.0 with
+  binary SHA-256
+  `2bc94df317e2db63e9f2b54532549e5f4de1612619b703c46d2d3da44f8beb79`;
+- workstation payload, dashboard manifest, runtime convergence, and no-launch
+  service probing are ready. The sole stable doctor issue is non-readiness-
+  impacting duplicate-profile pressure with zero cleanup candidates;
+- the supported MCP installer replaced stale adapter 4.0.1 with 4.0.3. Fresh
+  JSON-RPC discovery reports `compatible`, service 0.3.44, service API 1,
+  contract schema 1, database schema 16, and the expected contract digest.
+
+Pre-effect and live acceptance evidence:
+
+- the exact no-launch preflight retained interval
+  `2026-08-01T00:00:00Z..2026-08-10T00:00:00Z`, one X lane, one
+  `x_agent_browser` provider attempt, three-item limit, 50-request and
+  120-second bounds, zero paid/model budget, and no fallback;
+- fresh access planning selected `last30days-facebook`, required no manual
+  action or seeding, reported no profile conflict, and recommended the selected
+  profile. Browser-capability preflight applied the validated WSL
+  stealth-CDP binding with `wouldLaunch=false`;
+- the sole enqueue created tick `tick-be03d32d2431f97155d1ede7defcd11e`.
+  Provider attempt `provider-attempt-4a74d3bfe541afa2d6f111db56426595`
+  succeeded after one attempt, observed 16 items, accepted three, rejected 13,
+  used two network requests and 35 seconds, and produced no incident, coverage
+  gap, fallback, paid cost, or model use;
+- the tick promoted snapshot
+  `tick-snapshot-2fa33fdf48be16b1f1f8bde1011b7e4f` with `x=success`.
+  Cache-only retrieval under `profile:last30days-facebook` returned the same
+  three source versions with acquisition identity bound to the successful
+  provider attempt and created no refresh job.
+
+Operational reconciliation:
+
+- current and 0.3.43 rollback databases each return `ok` from
+  `PRAGMA quick_check`;
+- recurring schedule `daily-default` remains enabled and ready with unchanged
+  next boundary `2026-08-11T00:00:00Z`;
+- the retained authenticated browser remains live and reachable on PID 13177.
+  Its service profile allocation is `available` with zero holders and waiters,
+  so no browser, profile, tab, or lock cleanup was performed;
+- local `main == origin/main` was clean before this documentation update. No
+  service release, database migration, timer change, notification, tag, or
+  unrelated source attempt occurred.
+
+Acceptance disposition:
+
+- criteria 1-8 pass. Plan 0040 and roadmap lane P16 close at the successful
+  one-attempt boundary.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary agent retained the serialized install, live
+  effect, reconciliation, and closeout boundaries.
+
+Graphiti write status:
+
+- pending the durable commit of this checkpoint; repository and installed
+  runtime receipts remain authoritative until the bounded memory write is
+  verified.
+
+Next action:
+
+- return to ordinary cache-backed operation. Any new X acquisition requires a
+  new governed request and budget; this plan cannot be reopened for a retry.

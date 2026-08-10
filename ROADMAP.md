@@ -1498,21 +1498,21 @@ Closeout:
 
 ## P16 | X Agent-Browser Boundary Recovery
 
-State: OPEN
+State: CLOSED
 
 Objective: recover the exact last30days-to-agent-browser X boundary and consume
 at most one tested, profile-safe X acceptance attempt.
 
 Current State:
 
-- clean `main == origin/main` retains Plan 0039's exact failed tick, provider,
-  and fail-closed cache receipts; installed service 0.3.44/schema 16 is ready;
-- the no-launch replay proves profile `last30days-facebook` falsely reports
-  historical browser PID 63205 alive because that PID was reused by Codex;
-  DevTools is unreachable and the stale Chromium lock names the same PID;
-- agent-browser's runtime and lock checks use PID-only liveness, so repair now
-  waits at an explicit cross-repository authority gate. Plan 0040 version
-  2/C02 preserves the unconsumed X attempt.
+- the agent-browser process-identity repair is installed and the stale PID
+  replay now reports the historical browser as non-live;
+- MCP adapter 4.0.3 is compatible with installed service 0.3.44/schema 16;
+- Plan 0040's sole acceptance tick completed successfully with three accepted
+  X items, no retry or fallback, and a promoted named-profile snapshot;
+- current and rollback databases pass integrity checks, the recurring schedule
+  is unchanged, and the authenticated profile remains live with an available
+  lease and no waiter.
 
 Active Plan:
 
@@ -1524,10 +1524,11 @@ Dependencies:
   query behavior, and retained failure receipt while preserving P08/P13/P14
   service, schema, release-lock, and schedule contracts.
 
-Next Bounded Action:
+Closeout:
 
-- obtain operator authority for the agent-browser PID-identity/lock repair, or
-  close on the exact cross-repository blocker without consuming the X attempt.
+- Plan 0040 closed at version 3/C03. The installed identities, single live
+  receipt, cache-only proof, and operational reconciliation are recorded there
+  and in RUNBOOK Turn 270.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 
