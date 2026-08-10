@@ -15980,3 +15980,82 @@ Next Bounded Action:
 
 - verify remote ancestry, commit/push the exact reviewed candidate, then install
   service 0.3.44 and MCP 4.0.3 before consuming the sole X-only tick.
+
+## Turn 267 | 2026-08-10
+
+Focus: install the reviewed Plan 0039 candidate, consume the sole live X
+acceptance tick, and close on its exact terminal result.
+
+Authority Consulted:
+
+- Plan 0039/P15 C03, the one-install/one-tick bounds, current install,
+  validation, documentation, Git, and closeout policies, and fresh
+  agent-browser access/capability preflights.
+
+Decisions And Changes:
+
+- committed and pushed implementation
+  `6a77d4823e43580f677415ecbd1e914110f3fccb` before runtime mutation;
+- the first service installer call failed closed before mutation because the
+  exact artifact flag was absent. The second/final call installed the reviewed
+  0.3.44 artifact; one MCP installer call installed adapter 4.0.3;
+- fresh installed JSON-RPC readback proved compatibility, contract identity,
+  named-profile forwarding, and public-plus-exact-profile access. A historical
+  X cache read selected the source-relevant superseded snapshot before live
+  acceptance, without rewriting its known ordinal-corrupted rows;
+- access planning selected the fresh `last30days-facebook` retained profile,
+  required no manual action, and capability preflight applied a validated
+  stealth-CDP binding without launching. Service preflight fixed exactly one X
+  lane/provider/attempt with a three-item cap and zero paid/model budget;
+- consumed the sole live tick. It ended `complete_degraded` after one transient
+  provider failure, `safe_error_code=agent_browser_error`, zero browser
+  operations/page signals, zero observed items, one request, six seconds, and
+  no fallback. No retry was attempted;
+- a fresh installed cache-only named-profile query selected the newly promoted
+  `x=failure` snapshot, returned zero evidence and `coverage_gaps=["x"]`, and
+  therefore proved the repaired selector does not resurrect stale X evidence.
+
+Validation Evidence:
+
+- pre-install candidate gate: 2,653 Python outcomes, seven skips; full Go
+  tests/vet; generation, compile, release/runtime, format, planning, goal,
+  authority, and diff checks pass;
+- installed service 0.3.44/schema 16 is ready at `releases/0.3.44`; artifact
+  SHA-256 is
+  `1c47b685e4690d64953d10962109b474fa3e3bbf64a0d7aa89614e3a01411138`,
+  runtime-manifest SHA-256 is
+  `c63fe7e8ae771210f1ab91e9d226d0dcab0187e52094b729be5f9716880465bd`,
+  and contract SHA-256 is
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
+- installed MCP binary SHA-256 is
+  `4900af6ba30af06e0a90cf675b0c5d83477b2ef5aaed486bbea9ff878890d08c`;
+- live tick `tick-e15b1ed57efbb0c618253ecd90429295`, provider attempt
+  `provider-attempt-69155789e4000dbd795a7fb1f586e006`, and snapshot
+  `tick-snapshot-6d850a95c831f066294525a3530de61e` retain the terminal
+  evidence;
+- current and rollback `PRAGMA quick_check` return `ok`; `daily-default` is
+  ready with unchanged next boundary; the retained profile lease is available
+  with zero holders/waiters and resource-pressure evidence names zero cleanup
+  candidates.
+
+State Movement:
+
+- Plan 0039 advances version 3/C03 -> version 4/C04 and closes. P15 closes.
+  Criterion 8 uses its planned alternate: exact terminal blocker plus no second
+  attempt; criteria 1-7 and 9 pass.
+
+Subagent Status And Reconciliation:
+
+- `review_complete`; the one fresh read-only reviewer made no edits and the
+  sole review/rework cycle remains exhausted.
+
+Graphiti Write Status:
+
+- provider readiness and duplicate search passed. The sole idempotent closeout
+  job `67993046-7ee8-4d5f-a544-7e5727b33ccb` timed out once during node
+  extraction after 45 seconds, reported `retryable=false`, and was not retried.
+
+Next Bounded Action:
+
+- none for Plan 0039. Any diagnosis or retry of the retained
+  `agent_browser_error` requires a new bounded successor.

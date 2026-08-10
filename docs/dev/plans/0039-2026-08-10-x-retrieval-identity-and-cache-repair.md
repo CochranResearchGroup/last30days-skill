@@ -1,8 +1,8 @@
 # Plan 0039 | X Retrieval Identity And Cache Repair
 
-State: OPEN
+State: CLOSED
 Roadmap: P15
-Plan version: 3
+Plan version: 4
 Date: 2026-08-10
 Predecessor: Plan 0038 version 3/checkpoint P0038-C03
 
@@ -14,27 +14,25 @@ an unrelated source-only tick becomes the ordinary query head.
 
 ## Current State
 
-- the handoff's installed MCP/runtime baseline is current: a fresh 4.0.2
-  process is compatible with ready service 0.3.43/schema 16, the current and
-  rollback databases pass `PRAGMA quick_check`, and `daily-default` is ready;
-- the latest scheduled X lane did not fail rendered-page extraction or
-  authentication: it observed 10 candidates, accepted three, rejected seven,
-  used one request, and reported no auth, challenge, CAPTCHA, rate-limit, or
-  fallback signal;
-- the X browser quality gate emits run-local display IDs (`X1`, `X2`, ...),
-  while durable source identity currently consumes those IDs. Repeated runs
-  therefore collide on `(service_id, source_native_id, access_partition_id)`;
-  retained source records prove current text was attached to older X URLs;
-- the service query contract already accepts `profile_id`, but the MCP query
-  and refresh tools omit it and hard-code `default`, making X evidence stored
-  in `profile:last30days-facebook` unreachable through the public MCP surface;
-- the ordinary query path binds every filtered request to one singleton head.
-  A later Facebook-only tick superseded the prior all-source snapshot, so an X
-  filter returns a miss even though the previous terminal snapshot contains
-  nine authorized X entries;
-- these source-backed defects supersede the handoff's proposed retry-first
-  extractor diagnosis. No X reauthentication or scraper-selector repair is
-  justified by current evidence.
+- implementation commit `6a77d4823e43580f677415ecbd1e914110f3fccb` is
+  pushed to `origin/main`; installed service 0.3.44/schema 16 and MCP adapter
+  4.0.3 report the canonical contract digest and pass fresh-process discovery;
+- stable numeric X status identity, exact raw-candidate rejection accounting,
+  source-aware terminal snapshot selection, public-plus-exact-profile access,
+  and validated query/refresh `profile_id` forwarding are implemented and
+  covered by focused and full regression suites;
+- the sole authorized live X tick `tick-e15b1ed57efbb0c618253ecd90429295`
+  terminated `complete_degraded`: its one provider attempt failed transiently
+  with `safe_error_code=agent_browser_error` before any browser operation or
+  page signal, observed zero candidates, and consumed one network request;
+- no retry was made. The installed cache-only MCP query selected the exact new
+  failed X snapshot `tick-snapshot-6d850a95c831f066294525a3530de61e`,
+  returned zero evidence, and reported `coverage_gaps=["x"]`, proving that the
+  repaired selector does not silently fall back to stale X evidence;
+- current and rollback databases pass `PRAGMA quick_check`; `daily-default`
+  remains ready and unchanged, and the retained browser profile lease is
+  available with no holder or waiter. The remaining live source blocker is
+  recorded without widening this closed implementation plan.
 
 ### Handoff Corrections
 
@@ -331,3 +329,96 @@ Next action:
 
 - verify remote ancestry and candidate cleanliness, commit/push, then install
   the exact service and MCP artifacts before the sole X-only acceptance tick.
+
+### Checkpoint P0039-C04 | 2026-08-10
+
+Plan version: 4
+
+State transition:
+
+- `reviewed_preinstall_candidate -> installed_terminal_live_blocker`.
+
+Progress classification:
+
+- `outcome_progress`; the repaired code, public contract, release identities,
+  installed runtime, and fail-closed cache behavior are accepted. The single
+  live acquisition boundary ended in a retained transient browser blocker.
+
+Install and runtime evidence:
+
+- implementation commit `6a77d4823e43580f677415ecbd1e914110f3fccb`
+  was pushed before installation. The first installer invocation failed closed
+  before mutation because `--artifact` was required; the second and final
+  service invocation installed the reconciled 0.3.44 artifact with SHA-256
+  `1c47b685e4690d64953d10962109b474fa3e3bbf64a0d7aa89614e3a01411138`;
+- installed service readback is ready at 0.3.44/schema 16, release
+  `releases/0.3.44`, runtime-manifest SHA-256
+  `c63fe7e8ae771210f1ab91e9d226d0dcab0187e52094b729be5f9716880465bd`,
+  and contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
+- one MCP install produced adapter 4.0.3 with installed binary SHA-256
+  `4900af6ba30af06e0a90cf675b0c5d83477b2ef5aaed486bbea9ff878890d08c`;
+  fresh JSON-RPC discovery and compatibility readback passed, and a named
+  profile resolved access partitions `public` plus
+  `profile:last30days-facebook`.
+
+Live acceptance evidence:
+
+- browser access planning selected fresh retained profile
+  `last30days-facebook`, recommended `use_selected_profile`, required no manual
+  action, and browser-capability preflight returned `wouldLaunch=false` with a
+  validated stealth-CDP executable binding;
+- the ready X-only service preflight fixed one lane, one `x_agent_browser`
+  provider, one attempt, three items, zero paid/model budget, and interval
+  `2026-08-01T00:00:00Z..2026-08-10T00:00:00Z`;
+- the sole enqueue created tick `tick-e15b1ed57efbb0c618253ecd90429295`.
+  Provider attempt `provider-attempt-69155789e4000dbd795a7fb1f586e006`
+  ended transient failure with `safe_error_code=agent_browser_error`, zero
+  browser operations/page signals, zero observed/accepted/rejected items, one
+  network request, six seconds, and no fallback. No second attempt ran;
+- promoted snapshot `tick-snapshot-6d850a95c831f066294525a3530de61e`
+  records `x=failure`. A fresh installed cache-only named-profile query bound
+  to that exact snapshot, returned a miss with zero evidence and
+  `coverage_gaps=["x"]`; it did not resurrect the older corrupted X rows.
+
+Validation and operational state:
+
+- candidate validation remains 2,653 Python outcomes with seven skips, full Go
+  tests/vet, generated-contract cleanliness, compilation, release/runtime
+  locks, formatting, planning/goal/authority audits, and diff hygiene;
+- current and 0.3.43 rollback databases both return `ok` from
+  `PRAGMA quick_check`; `daily-default` remains ready for its next unchanged
+  boundary; the named browser profile lease is available with zero holders and
+  waiters. Browser resource-pressure reporting names no cleanup candidate, so
+  no unrelated process was changed.
+
+Acceptance disposition:
+
+- criteria 1-7 and 9 pass. Criterion 8 closes through its explicit alternate
+  terminal condition: exact browser-provider blocker retained, no retry, and
+  fail-closed newest-source snapshot behavior proven. Plan 0039 and P15 close;
+  any new live retry or browser-runtime repair requires a successor authority.
+
+Subagent status and reconciliation:
+
+- `review_complete`; the single fresh read-only reviewer made no edits. Its
+  accepted findings were repaired in the sole rework cycle and no later review
+  discovery was opened.
+
+Authority classification:
+
+- `inherited_authority`; one service install, one MCP install, and one
+  live X tick were consumed exactly as bounded. No second tick, schedule
+  mutation, historical rewrite, fallback provider, tag, release, or PR ran.
+
+Graphiti write status:
+
+- provider readiness and duplicate search passed. The one idempotent write job
+  `67993046-7ee8-4d5f-a544-7e5727b33ccb` timed out once during node extraction
+  after 45 seconds and is non-retryable; no second write was queued.
+
+Next action:
+
+- no action remains in this plan. Treat the retained `agent_browser_error` as
+  evidence for a separately authorized browser-runtime diagnostic if live X
+  acquisition is revisited.

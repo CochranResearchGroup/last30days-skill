@@ -1458,7 +1458,7 @@ Closeout:
 
 ## P15 | X Retrieval Identity And Cache Repair
 
-State: OPEN
+State: CLOSED
 
 Objective: make authenticated X collection retain stable status-level
 provenance and remain retrievable through a profile-authorized cache-only MCP
@@ -1466,20 +1466,21 @@ query after unrelated source-only head promotion.
 
 Current State:
 
-- service 0.3.44 and MCP adapter 4.0.3 are validated source candidates: stable
-  status identity, normalization rejection receipts, source-specific terminal
-  snapshot selection, exact metadata binding, partition-safe fallback, and
-  profile-aware MCP query/refresh all pass focused regressions;
-- changed-area Python, Skill/package, release/runtime, Go test/vet, generation,
-  and deterministic artifact gates pass;
-- fresh review findings on raw-candidate accounting, empty-profile handling,
-  docs, multi-source/empty metadata, actual partition isolation, refresh, and
-  defensive URL identity are repaired in the sole rework cycle. The complete
-  2,653-outcome Python gate plus Go/audit/build checks pass;
-- no install or live X attempt has run. Plan 0039 now awaits clean commit/push,
-  then its one-install/one-X-tick acceptance boundary.
+- implementation commit `6a77d4823e43580f677415ecbd1e914110f3fccb`
+  is pushed; service 0.3.44/schema 16 and MCP 4.0.3 are installed, compatible,
+  and bind the canonical contract digest;
+- stable X status identity, exact rejection accounting, source-aware terminal
+  snapshot selection, partition-safe retrieval, and profile-aware query and
+  refresh pass the complete candidate gate and fresh review;
+- the one authorized X tick ended `complete_degraded` with retained
+  `agent_browser_error`, zero browser operations/page signals, and no retry.
+  Its promoted `x=failure` snapshot is the exact cache-only query target, which
+  returns zero evidence plus an X coverage gap instead of stale prior results;
+- runtime, schedule, browser lease, current database, and rollback database
+  closeout readbacks are healthy. Plan 0039 closes at version 4/C04; a future
+  live retry or browser repair is a separately authorized successor.
 
-Open Plan:
+Closed Plan:
 
 - `docs/dev/plans/0039-2026-08-10-x-retrieval-identity-and-cache-repair.md`
 
@@ -1489,10 +1490,11 @@ Dependencies:
   P14's release-lock discipline while preserving schema 16 and the existing
   retained browser/profile lane.
 
-Next Bounded Action:
+Closeout:
 
-- commit/push the reviewed exact candidate, then cross the
-  one-install/one-X-tick acceptance gate.
+- Plan 0039 closed at version 4/C04. The exact implementation, installation,
+  live terminal receipt, no-retry decision, and remaining browser-source
+  blocker are recorded there and in RUNBOOK Turn 267.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 
