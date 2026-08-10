@@ -1279,7 +1279,7 @@ Closeout:
 
 ## P13 | Facebook Routine Automation Qualification
 
-State: OPEN
+State: CLOSED
 
 Objective: qualify the repaired Facebook adapter for recurring unattended use
 through the existing governed daily schedule, with bounded manual proof and
@@ -1377,19 +1377,23 @@ Current State:
   deadline, and the canonical suite passes 2,638 tests. The schedule,
   databases, and retained four-tab browser are healthy. No fourth provider
   attempt was consumed;
-- installed no-state preflight `tick-10a32ce87a38790b8894ed9ab2ec2435`
-  freezes one Facebook provider/attempt for the distinct closed interval
-  `[2026-08-09T01:00:00Z, 2026-08-10T01:00:00Z)` with zero cost/model use;
-  immediate readback proves it created no durable tick state;
-- no logout, CAPTCHA, checkpoint, or rate-limit state will be induced. Ticks
-  remain manual until a later guarded successor proof satisfies the content
-  acceptance contract.
+- newly authorized tick `tick-10a32ce87a38790b8894ed9ab2ec2435`
+  completed through the existing Facebook daily target: five posts observed,
+  two accepted, three rejected, three requests, 32 seconds, zero cost/model
+  use, no fallback, and no auth/challenge/CAPTCHA/rate-limit/integrity signal;
+- both accepted posts carry high-confidence `2026-08-10` dates, canonical
+  permalinks, authors, immutable source/version provenance, and promoted
+  snapshot `tick-snapshot-edacb2efdce06eaf2def9d41607d1c20`;
+- `daily-default` remains enabled/ready at 86,400 seconds with next boundary
+  `2026-08-11T00:00:00Z`; current and rollback databases are healthy, and PID
+  63205 remains ready with exactly four live tabs, one Facebook tab, and no
+  active challenge, job, or lease. Facebook routine automation is qualified.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0037-2026-08-09-facebook-page-session-cdp-readability.md`
-  owns the upstream target-command repair, installed convergence, and one
-  later bounded routine-automation proof.
+  closed at version 5/C12 after the upstream repair, installed convergence,
+  and one bounded routine-automation proof all passed.
 
 Closed Repair Plan:
 
@@ -1410,11 +1414,11 @@ Dependencies:
 - preserves P10's human reauthentication workflow, the existing recurring
   schedule, canonical retained browser/profile, and zero-cost posture.
 
-Next Bounded Action:
+Closeout:
 
-- after a new explicit attempt ceiling, enqueue prospective tick
-  `tick-10a32ce87a38790b8894ed9ab2ec2435` exactly once against installed 0.3.43;
-  do not wait for natural time or derive an unchanged second attempt.
+- retain ordinary `daily-default` operation. Repair the installed MCP
+  adapter's schema-16 compatibility in a separate client-contract maintenance
+  slice; it did not affect the direct installed-service acceptance proof.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 

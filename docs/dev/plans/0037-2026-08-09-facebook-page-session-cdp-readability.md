@@ -1,8 +1,8 @@
 # Plan 0037 | Facebook Page-Session CDP Readability
 
-State: OPEN
+State: CLOSED
 Roadmap: P13
-Plan version: 4
+Plan version: 5
 Date: 2026-08-09
 Predecessor: Plan 0036 version 3/checkpoint P0036-C03
 Cross-repo evidence: agent-browser code commit `5ecb4d62`
@@ -52,15 +52,22 @@ prove accepted Facebook content through the existing recurring path.
   `6ce2aff6dd28c4bda730269652acde2729f6caff169c05d4e6e781ce169c7784`,
   rollback 0.3.42 is preserved, and all three Facebook adapter copies share
   SHA-256 `2aac057b4c6741a0a9a7695ab410432641239c2efee3b745b87648ac21fb968c`;
-- `daily-default` remains enabled with Facebook present, but routine scraping
-  is not usable until accepted content is proven. The three-attempt ceiling is
-  exhausted; no fourth provider execution is authorized by this plan.
-- a side-effect-free installed 0.3.43 preflight for
-  `[2026-08-09T01:00:00Z, 2026-08-10T01:00:00Z)` is ready as prospective tick
-  `tick-10a32ce87a38790b8894ed9ab2ec2435`: exactly one Facebook lane/provider,
-  one attempt, 50 requests, 120 seconds, three items, and zero cost/model use.
-  A subsequent `tick get` returns `unknown tick`, proving preflight created no
-  durable tick state;
+- a fresh explicit one-attempt ceiling authorized exact acceptance tick
+  `tick-10a32ce87a38790b8894ed9ab2ec2435` for
+  `[2026-08-09T01:00:00Z, 2026-08-10T01:00:00Z)`. Its sole
+  `facebook_agent_browser` provider completed in 32 seconds with three network
+  requests, five observed posts, two accepted canonical posts, three rejected
+  candidates, and zero cost or model use;
+- both accepted posts have high-confidence `2026-08-10` dates, canonical
+  Facebook permalinks, authors, immutable source/version IDs, and
+  `agent-browser-dom-v2` provenance. All collection, media, OCR, semantic,
+  lexical-index, semantic-index, and head-promotion stages completed, with no
+  auth, challenge, CAPTCHA, rate-limit, integrity, or incident signal;
+- `daily-default` remains enabled and ready at its unchanged 86,400-second
+  cadence with next boundary `2026-08-11T00:00:00Z`. Current and rollback
+  database quick checks return `ok`; retained PID 63205 is ready with exactly
+  four live tabs and one Facebook search tab, and no active challenge, job, or
+  profile/view lease. Facebook routine scraping is now qualified;
 
 ## Scope
 
@@ -785,6 +792,99 @@ Next action:
   `tick-10a32ce87a38790b8894ed9ab2ec2435` once, poll only that tick to terminal,
   and adjudicate accepted canonical content plus cleanup invariants. Do not
   wait for the natural scheduler.
+
+### Checkpoint P0037-C12 | 2026-08-10
+
+Plan version: 5
+
+State transition:
+
+- `exact_preflight_ready_human_gate -> facebook_routine_qualified_complete`.
+
+Progress classification:
+
+- `outcome_progress`; the repaired installed path returned bounded search-page
+  readback, persisted accepted Facebook evidence, promoted the tick head, and
+  preserved all recurring-runtime invariants.
+
+Authority and execution:
+
+- the operator supplied a fresh explicit ceiling for exactly one attempt;
+- installed MCP discovery reported a schema compatibility mismatch
+  (`adapter 4.0.1` supports database schema 15 while service 0.3.43 uses schema
+  16), so no incompatible MCP product operation followed discovery. The
+  already-authorized direct installed-service compatibility path executed the
+  frozen packet without changing its limits;
+- repeated no-state preflight returned the same tick, lane, config revision,
+  config digest, one-provider manifest, and aggregate limits. The tick was
+  enqueued once and no second attempt was issued.
+
+Acceptance evidence:
+
+- tick `tick-10a32ce87a38790b8894ed9ab2ec2435`, execution
+  `tick-attempt-388895c3e63bc13dbc0fe71a1ca7e981`, lane
+  `tick-lane-2182dcad30107c5805888b19a0ff5d39`, provider attempt
+  `provider-attempt-80d59025d8fa60c4e6a0f0f8dc125fa5`, result digest
+  `sha256:0e0e0da6df6df427b415a68cef211dcb6a96ac15197b700767ee8dad99b2574d`;
+- terminal state `complete`, provider/lane state `success`, five observed and
+  attempted posts, two accepted, three rejected, three network requests, 32
+  wall seconds, zero cost, zero model tokens, no fallback, and no incident;
+- the three rejected candidates carry overlapping fail-closed reasons:
+  `kind_ad=1`, `kind_recommendation=2`, `missing_author=1`, `missing_date=1`,
+  `missing_permalink=3`, `off_topic=1`, `outside_date_range=1`, `sponsored=1`;
+- accepted source versions
+  `source-version-195f8007a99253189cfc6698f3ffb6cd` and
+  `source-version-a182c6cfd77d23962f588ec36046040e` carry high-confidence
+  `2026-08-10` dates, canonical permalinks, authors, content hashes, and
+  authenticated-partition provenance. Snapshot
+  `tick-snapshot-edacb2efdce06eaf2def9d41607d1c20` was promoted;
+- the provider reported `facebook_search_page`, a successful 8.668-second
+  search open, and a successful 2.332-second composite evaluation. Its one
+  intermediate failed tab operation was recovered inside the same bounded
+  attempt and did not create a second provider execution;
+- post-effect service and schedule are ready; both SQLite quick checks return
+  `ok`; PID 63205 remains ready with exactly four live tabs, including one new
+  Facebook successor target, and no active challenge, job, viewer lease, or
+  remote-view acquisition lease.
+- active and goal-only planning audits plus `git diff --check` pass. This repo
+  has no documentation package manifest, so a `docs` package build is not an
+  applicable validation surface.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary executed and independently verified the serialized
+  live boundary.
+
+Authority classification:
+
+- `human_gate_satisfied`; the single new effect stayed within the newly
+  supplied ceiling and all frozen safeguards.
+
+Review disposition summary:
+
+- `blocking=0`, `rejected=1` longer-clock-only retry,
+  `needs_evidence=0`, `nonblocking_backlog=1` installed MCP adapter schema-16
+  compatibility.
+
+Graphiti write status:
+
+- one compact, source-backed closeout write was attempted in
+  `last30days_skill_main` as job
+  `163bdd2f-4f55-49c2-a692-391731defd8c`;
+- the job terminated `timed_out` after 180 seconds while resolving nodes,
+  with `episode_uuid=null`, `retryable=false`, and no warnings;
+- no duplicate or retry was queued. This derived-memory timeout does not
+  weaken the repository, runtime, database, or tick receipts above.
+
+Remaining acceptance criteria:
+
+- none; criteria 1-7 are satisfied.
+
+Next action:
+
+- close P13 and retain ordinary `daily-default` operation. Address MCP adapter
+  schema-16 compatibility as a separate client-contract maintenance slice;
+  it did not affect this direct installed-service acceptance proof.
 
 ## Stop Rules
 

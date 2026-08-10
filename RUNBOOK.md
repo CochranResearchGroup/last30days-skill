@@ -15575,3 +15575,84 @@ Next Bounded Action:
 - when a fresh explicit attempt ceiling is supplied, enqueue exactly
   `tick-10a32ce87a38790b8894ed9ab2ec2435` once and poll it to terminal without
   waiting for the natural schedule or issuing a second attempt.
+
+## Turn 260 | 2026-08-10
+
+Focus: consume one fresh explicit Facebook attempt ceiling and close routine
+automation qualification on current installed evidence.
+
+Authority Consulted:
+
+- operator instruction `ok go`, scoped to one new attempt;
+- Plan 0037/C11, P13, installed service 0.3.43, direct compatibility contract,
+  current/rollback databases, `daily-default`, agent-browser doctors, retained
+  PID/tab inventory, CodeGraph tick flow, and `last30days_skill_main` recall;
+- planning, goal-execution, Graphiti, CodeGraph, worktree, commit/push,
+  validation, documentation, roadmap/runbook, and closeout policies.
+
+Decisions And Changes:
+
+- first product discovery found installed MCP adapter 4.0.1 supports database
+  schema 15 while ready service 0.3.43 uses schema 16. No incompatible MCP
+  product operation followed; the explicitly authorized direct
+  installed-service compatibility path preserved the frozen packet;
+- repeated preflight returned the same exact tick, lane, config digest, one
+  provider, and one-attempt/50-request/120-second/three-item/zero-cost/model
+  limits;
+- enqueued `tick-10a32ce87a38790b8894ed9ab2ec2435` exactly once, polled only
+  that tick, and issued no second attempt or natural-schedule wait;
+- closed Plan 0037 version 5/C12 and P13 after independent post-effect checks.
+
+Validation Evidence:
+
+- execution `tick-attempt-388895c3e63bc13dbc0fe71a1ca7e981`, provider
+  `provider-attempt-80d59025d8fa60c4e6a0f0f8dc125fa5`, result digest
+  `sha256:0e0e0da6df6df427b415a68cef211dcb6a96ac15197b700767ee8dad99b2574d`;
+- tick/provider/lane completed successfully in 32 seconds with three requests,
+  five observed/attempted, two accepted, three rejected, zero cost/model use,
+  no fallback, no incident, and no auth/challenge/CAPTCHA/rate-limit/integrity
+  signal;
+- rejection reasons overlap across the three rejected candidates:
+  `kind_ad=1`, `kind_recommendation=2`, `missing_author=1`, `missing_date=1`,
+  `missing_permalink=3`, `off_topic=1`, `outside_date_range=1`, and
+  `sponsored=1`;
+- accepted versions `source-version-195f8007a99253189cfc6698f3ffb6cd`
+  and `source-version-a182c6cfd77d23962f588ec36046040e` have canonical
+  Facebook permalinks, authors, high-confidence `2026-08-10` dates,
+  `agent-browser-dom-v2` provenance, and authenticated access partition;
+- collection, media, OCR, semantic sidecar, lexical index, semantic index, and
+  head promotion passed; snapshot
+  `tick-snapshot-edacb2efdce06eaf2def9d41607d1c20` is promoted;
+- `daily-default` remains enabled/ready at 86,400 seconds with next boundary
+  `2026-08-11T00:00:00Z` and no runtime error; current and rollback SQLite
+  quick checks return `ok`;
+- PID 63205 remains ready with exactly four live tabs and one Facebook
+  successor search tab; queue depth is zero with no active challenge, job,
+  viewer lease, or remote-view acquisition lease.
+- active and goal-only planning audits and `git diff --check` pass. The repo has
+  no `docs/package.json`, so a docs package build is not an applicable gate.
+
+State Movement:
+
+- Plan 0037 moves C11/OPEN -> version 5/C12/CLOSED; P13 moves OPEN -> CLOSED;
+  the automated Facebook scraping goal is satisfied on the recurring path.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary executed and independently verified the
+  serialized provider boundary.
+
+Graphiti Write Status:
+
+- one compact source-backed closeout write was attempted in
+  `last30days_skill_main` as job
+  `163bdd2f-4f55-49c2-a692-391731defd8c`;
+- the job terminated `timed_out` after 180 seconds while resolving nodes,
+  with `episode_uuid=null`, `retryable=false`, and no warnings;
+- no duplicate or retry was queued. Repository, runtime, database, and exact
+  tick receipts remain authoritative.
+
+Next Bounded Action:
+
+- retain ordinary `daily-default` operation. Repair MCP adapter schema-16
+  compatibility as a separate nonblocking client-contract maintenance slice.
