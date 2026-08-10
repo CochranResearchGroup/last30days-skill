@@ -2,10 +2,10 @@
 
 State: OPEN
 Roadmap: P13
-Plan version: 3
+Plan version: 4
 Date: 2026-08-09
 Predecessor: Plan 0036 version 3/checkpoint P0036-C03
-Cross-repo evidence: agent-browser commit `78c088bc`
+Cross-repo evidence: agent-browser code commit `5ecb4d62`
 
 ## Objective
 
@@ -30,9 +30,24 @@ prove accepted Facebook content through the existing recurring path.
 - browser-level CDP discovery, version, target listing, and attachment remain
   responsive; commands routed into the successfully attached page session do
   not return;
-- agent-browser 0.28.0 and its five live daemons are executable-converged.
+- agent-browser 0.28.0 now carries renderer-side Runtime deadlines,
+  browser-level navigation metadata, response-before-health delivery, and a
+  same-inode CLI identity fast path at code commit `5ecb4d62`; installed
+  executable SHA-256 is
+  `17f393c716f63de5008a25045f1ead0a4377efb7936300c8e1bcce2247d5995b`.
   The exact investigation packet is published at
   `agent-browser/docs/dev/notes/2026-08-09-facebook-search-target-cdp-runtime-stall.md`;
+- disposable installed proof returned a baseline evaluation in 455 ms, a
+  typed infinite-loop failure in 4.546 seconds, and immediate same-target
+  recovery in 1.482 seconds. A retained-session control then proved the old
+  Facebook target remains frozen but now returns typed three-second job
+  timeouts; the original active X tab was restored;
+- service 0.3.43 is a validated offline candidate. Shared retained-social
+  navigation now uses a 25-second agent-browser job deadline inside its
+  30-second Python subprocess deadline, preserving response and cleanup grace;
+  the canonical suite passes 2,638 tests, 7 skips, and 6 subtests, and artifact
+  SHA-256 is
+  `53d1d185c44b46a54280cb444c94ec55c0085d81e6194c3a54fcd151259a4bed`;
 - `daily-default` remains enabled with Facebook present, but routine scraping
   is not usable until accepted content is proven. The three-attempt ceiling is
   exhausted; no fourth provider execution is authorized by this plan.
@@ -586,6 +601,65 @@ Next action:
   response path in agent-browser with a disposable authenticated fixture. Do
   not restart or clear the retained profile, and do not enqueue another
   Last30Days Facebook provider execution under this exhausted authority.
+
+### Checkpoint P0037-C09 | 2026-08-10
+
+Plan version: 4
+
+State transition:
+
+- `attempt_limit_exhausted_upstream_blocker -> upstream_repair_consumed_candidate_validated`.
+
+Progress classification:
+
+- `blocker_reduction`; the upstream renderer, response-delivery, and CLI
+  boundaries are repaired and installed, and Last30Days now preserves an
+  explicit five-second response-and-cleanup interval around navigation.
+
+Evidence:
+
+- agent-browser code commit `5ecb4d62`, installed executable SHA-256
+  `17f393c716f63de5008a25045f1ead0a4377efb7936300c8e1bcce2247d5995b`,
+  ready doctors, and converged runtime inventory;
+- direct retained-session control returned typed three-second timeouts for the
+  already-frozen Facebook target and successfully restored the original X tab;
+- the navigation-deadline regression failed red on the old command shape, then
+  passed with a 25-second inner job and 30-second outer subprocess deadline;
+- the first canonical run found one shared-X expectation still bound to the old
+  command. It was accepted as blocking, corrected, and closed-world
+  verification passed 2,638 tests, 7 skips, and 6 subtests;
+- exact service 0.3.43 artifact SHA-256 is
+  `53d1d185c44b46a54280cb444c94ec55c0085d81e6194c3a54fcd151259a4bed`;
+  no provider attempt, navigation, tab open/close, schedule mutation, cost, or
+  model use occurred in this packet.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; policy and the serialized browser boundary keep this work
+  with the primary agent.
+
+Authority classification:
+
+- `inherited_authority` for implementation, validation, publication, and exact
+  candidate installation; `human_gate` remains for any fourth Facebook
+  provider execution because the operator's three-attempt ceiling is exhausted.
+
+Review disposition summary:
+
+- `blocking=0`, `rejected=1` longer-clock-only retry,
+  `needs_evidence=0`, `nonblocking_backlog=0`.
+
+Remaining acceptance criteria:
+
+- criteria 3 and 5 require exact installed Last30Days convergence; criteria 6
+  and 7 require one newly authorized Facebook content proof and post-effect
+  schedule, database, and browser readbacks.
+
+Next action:
+
+- commit and push the validated 0.3.43 candidate, install that exact artifact,
+  synchronize the frozen Skill copy, and re-prove runtime convergence. Do not
+  enqueue a Facebook provider until a fresh attempt ceiling is explicit.
 
 ## Stop Rules
 

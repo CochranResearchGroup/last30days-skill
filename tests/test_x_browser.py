@@ -356,9 +356,17 @@ class XBrowserAcquisitionTests(TestCase):
 
         self.assertTrue(auth.authenticated)
         self.assertEqual(
-            ["--session", "last30days-facebook", "open", "https://x.com/home"],
+            [
+                "--session",
+                "last30days-facebook",
+                "--job-timeout-ms",
+                "25000",
+                "open",
+                "https://x.com/home",
+            ],
             invoke.call_args_list[2].args[0],
         )
+        self.assertEqual(30, invoke.call_args_list[2].kwargs["timeout"])
         self.assertEqual(4, invoke.call_count)
 
     def test_auth_probe_does_not_reload_an_explicit_login_page(self):

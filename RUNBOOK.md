@@ -15395,3 +15395,67 @@ Next Bounded Action:
 - repair the Facebook page-session Runtime response path upstream with a
   disposable authenticated fixture. Do not run another downstream provider
   without an installed repair and fresh operator authority.
+
+## Turn 257 | 2026-08-10
+
+Focus: consume the installed upstream renderer repair and validate the exact
+Last30Days successor without spending a fourth Facebook provider attempt.
+
+Authority Consulted:
+
+- active goal and exhausted three-attempt ceiling;
+- `docs/dev/plans/0037-2026-08-09-facebook-page-session-cdp-readability.md`;
+- planning, goal-execution, CodeGraph, Graphiti, worktree, release, validation,
+  documentation, roadmap/runbook, and closeout policies;
+- agent-browser code commit `5ecb4d62`, installed executable, live doctors,
+  retained browser inventory, and direct bounded command readbacks.
+
+Decisions And Changes:
+
+- confirmed the upstream candidate is installed and runtime-converged;
+- manually selected the existing Facebook target, issued one read-only bounded
+  evaluation, and restored the original X tab. Both Facebook selection and
+  evaluation returned typed three-second job timeouts, proving the old renderer
+  remains frozen without allowing the caller to hang;
+- added a red/green retained-navigation contract: a 25-second agent-browser job
+  deadline now sits inside the 30-second Python subprocess deadline;
+- advanced the service candidate from 0.3.42 to 0.3.43 and refreshed the
+  deterministic runtime manifest;
+- did not enqueue a provider, navigate, open or close a tab, change the
+  schedule, use a model, or incur cost.
+
+Validation Evidence:
+
+- navigation command-shape regression failed before implementation and passed
+  afterward;
+- focused Facebook, X, release, and runtime-package tests pass;
+- the first canonical run reached 2,637 passes and rejected one stale shared-X
+  command expectation; after adjudication, closed-world canonical verification
+  passes 2,638 tests, 7 skips, and 6 subtests;
+- compileall, goal-only planning audit, manifest validation, and patch checks
+  pass; the active planning audit identified only this plan's previously
+  missing exact filename wiring, which this turn adds;
+- deterministic service artifact
+  `dist/service/last30days-service-0.3.43.tar.gz` has SHA-256
+  `53d1d185c44b46a54280cb444c94ec55c0085d81e6194c3a54fcd151259a4bed`.
+
+State Movement:
+
+- Plan 0037 advances from version 3/C08 to version 4/C09 and remains `OPEN`;
+  P13 remains `OPEN`. Upstream repair and offline integration are validated;
+  installed Last30Days convergence and accepted Facebook content remain.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary owns the serialized browser and install boundary.
+
+Graphiti Write Status:
+
+- deferred until exact 0.3.43 installation reaches a durable terminal state.
+
+Next Bounded Action:
+
+- commit and push the candidate, install the exact artifact, synchronize the
+  frozen Skill copy, and verify service, browser, schedule, and database
+  convergence. Do not enqueue Facebook without a fresh explicit attempt
+  ceiling.

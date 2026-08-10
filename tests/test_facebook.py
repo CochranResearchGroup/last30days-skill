@@ -251,7 +251,14 @@ class FacebookCliAdapterTests(unittest.TestCase):
                 ["--session", "shared-social", "tab", "list"],
                 ["--session", "shared-social", "tab", "new", "about:blank"],
                 ["--session", "shared-social", "tab", "close", "0"],
-                ["--session", "shared-social", "open", "https://www.facebook.com/"],
+                [
+                    "--session",
+                    "shared-social",
+                    "--job-timeout-ms",
+                    "25000",
+                    "open",
+                    "https://www.facebook.com/",
+                ],
             ],
             replacement_commands,
         )
@@ -568,16 +575,24 @@ class FacebookCliAdapterTests(unittest.TestCase):
         )
 
     def test_navigate_action_reuses_current_tab(self):
-        client = facebook.CliAgentBrowserClient(timeout=5)
+        client = facebook.CliAgentBrowserClient(timeout=30, job_timeout_ms=120_000)
         workspace = facebook.BrowserWorkspace(
             profile_id="last30days-facebook", browser_id="browser-1", session_name="shared-social"
         )
         with mock.patch.object(client, "_invoke", return_value={}) as invoke:
             client.act(workspace, facebook.BrowserAction("navigate", value="https://www.facebook.com/"))
         self.assertEqual(
-            ["--session", "shared-social", "open", "https://www.facebook.com/"],
+            [
+                "--session",
+                "shared-social",
+                "--job-timeout-ms",
+                "25000",
+                "open",
+                "https://www.facebook.com/",
+            ],
             invoke.call_args.args[0],
         )
+        self.assertEqual(30, invoke.call_args.kwargs["timeout"])
 
     def test_auth_inspection_opens_facebook_tab_when_shared_owner_has_none(self):
         client = facebook.CliAgentBrowserClient(timeout=5)

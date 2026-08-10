@@ -1369,6 +1369,12 @@ Current State:
   reduced recovery to one mobile composite capture; every rendered Facebook
   search target still stopped answering page-session Runtime commands. The
   exact upstream handoff is maintained in the agent-browser repository;
+- agent-browser code commit `5ecb4d62` is now installed and converged with
+  renderer-side Runtime deadlines, browser-level navigation metadata,
+  response-before-health delivery, and faster same-inode CLI dispatch.
+  Last30Days 0.3.43 is the validated integration candidate: navigation uses a
+  25-second inner job deadline beneath a 30-second outer deadline, and the
+  canonical suite passes 2,638 tests. No fourth provider attempt was consumed;
 - no logout, CAPTCHA, checkpoint, or rate-limit state will be induced. Ticks
   remain manual until a later guarded successor proof satisfies the content
   acceptance contract.
@@ -1400,11 +1406,10 @@ Dependencies:
 
 Next Bounded Action:
 
-- repair and independently prove the agent-browser Facebook page-session CDP
-  boundary with a disposable authenticated fixture. Plan 0037's three-attempt
-  ceiling is exhausted; do not run another provider or mutate the retained
-  browser/profile until fresh operator authority follows an installed upstream
-  repair.
+- install exact service 0.3.43 and synchronize the frozen Skill copy, then
+  prepare one fresh Facebook-only acceptance packet. Enqueue requires a new
+  explicit attempt ceiling because Plan 0037's prior maximum of three is
+  exhausted.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 

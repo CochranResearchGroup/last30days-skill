@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Retained social navigation deadline ordering.** Service 0.3.43 gives
+  navigation through the shared Facebook/X browser adapter an explicit
+  25-second agent-browser job deadline inside its 30-second Python subprocess
+  deadline. The repaired agent-browser worker can now return a typed
+  navigation result and preserve five seconds for response delivery and
+  adapter cleanup instead of racing equal outer and inner clocks. Target URLs,
+  Facebook's one-successor bound, profiles, schedules, cost, and model-use
+  contracts are unchanged.
+
 - **Facebook mobile single-capture recovery.** Service 0.3.42 uses the
   authenticated `m.facebook.com/search/posts/` surface when a retained desktop
   target is frozen. Its one replacement navigation performs a single bounded

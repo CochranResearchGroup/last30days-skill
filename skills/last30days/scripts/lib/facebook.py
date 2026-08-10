@@ -1168,6 +1168,13 @@ class CliAgentBrowserClient:
         elif action.operation == "click":
             args = ["click", action.target]
         elif action.operation == "navigate":
+            outer_timeout = min(self.timeout, 30)
+            inner_timeout_ms = min(
+                self.job_timeout_ms,
+                25_000,
+                max(1_000, (outer_timeout - 5) * 1_000),
+            )
+            prefix.extend(["--job-timeout-ms", str(inner_timeout_ms)])
             args = ["open", action.value]
         elif action.operation == "new_tab":
             args = ["tab", "new", action.value]
