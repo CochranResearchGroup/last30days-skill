@@ -157,6 +157,12 @@ codex mcp get last30days
 go version -m "$HOME/.local/bin/last30days-pp-mcp"
 ```
 
+The installer validates and regenerates the canonical Go contract before it
+builds. Any service-contract compatibility change must advance
+`mcp/manifest.json` and add one exact immutable entry to
+`mcp/compatibility-releases.json`; otherwise generation and installation fail
+closed.
+
 The binary must be enabled at user scope, point at the owner-private service
 socket, report the current repository revision with `modified=false` when the
 checkout is clean, and return cached evidence without creating a refresh job

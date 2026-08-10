@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "last30days-pp-mcp",
   "display_name": "Last30Days",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Discover and query the local cache-backed Last30Days intelligence service without exposing browser or scraper mechanics.",
   "author": {
     "name": "Matt Van Horn",

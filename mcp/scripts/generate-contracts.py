@@ -10,6 +10,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "skills/last30days/schemas/service-contracts-v1.json"
+MANIFEST = ROOT / "mcp/manifest.json"
+RELEASE_LOCK = ROOT / "mcp/compatibility-releases.json"
 OUTPUT = ROOT / "mcp/internal/contracts/catalog_generated.go"
 
 
@@ -17,9 +19,53 @@ def go_strings(values: list[str]) -> str:
     return ", ".join(json.dumps(value) for value in values)
 
 
+def validate_release_lock(
+    *,
+    catalog_raw: bytes,
+    catalog: dict,
+    manifest: dict,
+    release_lock: dict,
+) -> dict:
+    """Bind the current adapter version to exactly one canonical contract."""
+    version = manifest.get("version")
+    releases = release_lock.get("releases")
+    if release_lock.get("schema_version") != 1 or not isinstance(releases, list):
+        raise ValueError("MCP compatibility release lock is invalid")
+    if not isinstance(version, str) or not version.strip():
+        raise ValueError("MCP manifest version is invalid")
+    matches = [
+        release
+        for release in releases
+        if isinstance(release, dict) and release.get("adapter_version") == version
+    ]
+    if len(matches) != 1:
+        raise ValueError(
+            "MCP manifest version must have exactly one compatibility release"
+        )
+    compatibility = catalog["compatibility"]
+    expected = {
+        "adapter_version": version,
+        "contract_schema_version": catalog["schema_version"],
+        "contract_sha256": hashlib.sha256(catalog_raw).hexdigest(),
+        "service_api": compatibility["service_api"],
+        "database_schema": compatibility["database_schema"],
+    }
+    if matches[0] != expected:
+        raise ValueError(
+            "MCP compatibility release does not match the canonical catalog"
+        )
+    return matches[0]
+
+
 def main() -> None:
     raw = CATALOG.read_bytes()
     catalog = json.loads(raw)
+    validate_release_lock(
+        catalog_raw=raw,
+        catalog=catalog,
+        manifest=json.loads(MANIFEST.read_text(encoding="utf-8")),
+        release_lock=json.loads(RELEASE_LOCK.read_text(encoding="utf-8")),
+    )
     compatibility = catalog["compatibility"]
     service_api = compatibility["service_api"]
     database_schema = compatibility["database_schema"]

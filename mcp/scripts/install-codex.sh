@@ -20,6 +20,8 @@ if ! command -v codex >/dev/null 2>&1; then
   exit 2
 fi
 
+python3 "${MCP_ROOT}/scripts/generate-contracts.py"
+
 MCP_VERSION="$(
   python3 -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["version"])' \
     "${MCP_ROOT}/manifest.json"

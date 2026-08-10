@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **MCP schema-16 release identity and installed convergence.** MCP adapter
+  4.0.2 is explicitly bound to the canonical schema-16 catalog digest and
+  service/database compatibility ranges. A checked-in compatibility-release
+  lock now makes generation and Codex installation fail closed when a catalog
+  change reuses an unbound adapter version, preventing a stale binary from
+  sharing the same visible release identity as newer contract source.
+
 - **Retained social navigation deadline ordering.** Service 0.3.43 gives
   navigation through the shared Facebook/X browser adapter an explicit
   25-second agent-browser job deadline inside its 30-second Python subprocess

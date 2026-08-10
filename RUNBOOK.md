@@ -15656,3 +15656,104 @@ Next Bounded Action:
 
 - retain ordinary `daily-default` operation. Repair MCP adapter schema-16
   compatibility as a separate nonblocking client-contract maintenance slice.
+
+## Turn 261 | 2026-08-10
+
+Focus: reproduce and repair the installed MCP schema-16 compatibility drift.
+
+Authority Consulted:
+
+- operator instruction to fix the MCP adapter issue;
+- live MCP discovery, installed and source-built adapter probes, Git history,
+  CodeGraph source/blast-radius evidence, Plan 0038/P14, and current repository
+  policy;
+- repo-policy selector, diagnosing-bugs, TDD, codebase-design, Last30Days
+  maintenance, planning, versioning, validation, documentation, Git, and
+  closeout guidance.
+
+Decisions And Changes:
+
+- reproduced installed 4.0.1 returning `contract_digest_mismatch`, schema
+  15-15, against service 0.3.43/schema 16;
+- proved a fresh checkout build returns `compatible`, schema 16-16;
+- opened
+  `docs/dev/plans/0038-2026-08-10-mcp-schema16-adapter-convergence.md` and P14
+  for a release-lock, 4.0.2 adapter, installed convergence, and public-interface
+  readback. No service, source, schedule, database, or browser mutation is
+  authorized.
+
+Validation Evidence:
+
+- the installed-binary JSON-RPC probe exits 1 with
+  `contract_digest_mismatch`, adapter 4.0.1, and schema 15-15;
+- the same probe against a fresh checkout build exits 0 with `compatible` and
+  schema 16-16;
+- initial active/goal planning audits and `git diff --check` pass.
+
+State Movement:
+
+- `untracked_compatibility_backlog -> reproduced_release_install_drift`;
+  Plan 0038/P14 are `OPEN` at C01.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary owns the compact serialized repair.
+
+Graphiti Write Status:
+
+- pending terminal outcome; no planning-only memory is queued.
+
+Next Bounded Action:
+
+- establish the failing release-lock test, implement the minimal durable fix,
+  validate, install, verify, close, commit, and push.
+
+## Turn 262 | 2026-08-10
+
+Focus: implement and validate the fail-closed MCP 4.0.2 release candidate.
+
+Authority Consulted:
+
+- Plan 0038/P14 C01, the red installed probe, source-built control, canonical
+  contract generator and adapter manifest, CodeGraph blast radius, and current
+  planning/release/validation/documentation/Git policy.
+
+Decisions And Changes:
+
+- advanced the independent MCP manifest from 4.0.1 to 4.0.2;
+- added `mcp/compatibility-releases.json`, preserving 4.0.1/schema-15 history
+  and binding 4.0.2 to the exact schema-16 catalog digest and ranges;
+- made contract generation and Codex installation fail closed unless the
+  manifest has exactly one matching release identity;
+- updated release/integration/manifest/planning tests and the changelog, MCP
+  README, onboarding, Plan 0038, Roadmap P14, and this runbook.
+
+Validation Evidence:
+
+- release-lock tests went red before implementation and now pass exact,
+  missing, duplicate, and mismatched cases;
+- focused Python and Go suites, generator cleanliness, Go vet, touched-Go
+  formatting, both planning audits, plan-authority audit, and patch checks pass;
+- the first full Python run recorded 2,639 passes, 7 skips, and 6 subtests plus
+  one planning-authority fixture mismatch caused by opening Plan 0038. After
+  the fixture correction, the full suite passes 2,640 tests, 7 skips, and 6
+  subtests; full Go tests, Go vet, generator cleanliness, both planning audits,
+  the plan-authority audit, touched-Go formatting, and patch checks pass.
+
+State Movement:
+
+- Plan 0038 advances version 1/C01 -> version 2/C02 and remains `OPEN`; P14
+  remains `OPEN` at the clean-install gate.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the primary owns the compact serialized repair.
+
+Graphiti Write Status:
+
+- pending terminal installed outcome; no intermediate memory is queued.
+
+Next Bounded Action:
+
+- run the final candidate gate, checkpoint and push, install 4.0.2 once from
+  the clean commit, and verify the live MCP public interface.

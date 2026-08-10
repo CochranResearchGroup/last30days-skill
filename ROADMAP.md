@@ -1420,6 +1420,40 @@ Closeout:
   adapter's schema-16 compatibility in a separate client-contract maintenance
   slice; it did not affect the direct installed-service acceptance proof.
 
+## P14 | MCP Schema-16 Adapter Convergence
+
+State: OPEN
+
+Objective: restore the installed MCP handshake for service schema 16 and make
+future adapter contract changes fail closed unless they receive a new,
+explicitly bound adapter release identity.
+
+Current State:
+
+- installed adapter 4.0.1 returns `contract_digest_mismatch` and advertises
+  schema 15-15 against ready service 0.3.43/schema 16;
+- the current source build already advertises schema 16-16 and returns
+  `compatible`, isolating stale release/install identity as the defect;
+- MCP 4.0.2 is source-complete with a compatibility-release lock and
+  generator/installer enforcement; focused validation passes and final full
+  validation plus clean installed convergence remain;
+- Plan 0038 owns a compatibility-release lock, MCP 4.0.2 cut, installed
+  convergence, and a public-interface readback without service or source work.
+
+Active Plan:
+
+- `docs/dev/plans/0038-2026-08-10-mcp-schema16-adapter-convergence.md`
+
+Dependencies:
+
+- consumes P13's exact incompatible discovery receipt and preserves service
+  0.3.43, database schema 16, recurring schedule, and browser state.
+
+Closeout:
+
+- close only after installed 4.0.2 reports `compatible`, schema 16-16, and a
+  post-discovery maintenance read succeeds.
+
 ## P10 | Recurring Browser Reauthentication Notifications
 
 State: CLOSED

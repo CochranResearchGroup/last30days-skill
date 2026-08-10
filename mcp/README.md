@@ -28,6 +28,8 @@ scraper.
 - `internal/manifest/` - MCPB manifest validation
 - `internal/contracts/` - generated compatibility facts from the canonical
   JSON Schema catalog
+- `compatibility-releases.json` - immutable adapter-version bindings to exact
+  canonical catalog digests and supported service/database ranges
 - `internal/engine/` - unlinked legacy source retained temporarily for history
   and release-script migration; it is not reachable from the registered binary
 
@@ -42,6 +44,10 @@ go list -deps ./cmd/last30days-pp-mcp | grep internal/engine
 ```
 
 The last command must return no dependency.
+`go generate` fails closed unless the current manifest version has exactly one
+matching entry in `compatibility-releases.json`. When compatibility facts
+change, add a new adapter release entry and advance `manifest.json`; do not
+rewrite an existing release identity.
 
 ## Runtime
 
