@@ -16231,3 +16231,50 @@ Next Bounded Action:
 
 - resume ordinary cache-backed operation. Any later X acquisition requires a
   new governed request and attempt budget.
+
+## Turn 271 | 2026-08-10
+
+Focus: close the bounded Graphiti persistence attempt without obscuring the
+successful product outcome.
+
+Authority Consulted:
+
+- RUNBOOK Turn 270, Plan 0040/P16 C03, Graphiti provider readiness, exact
+  episode lookup, queued memory job
+  `4d600675-e1ab-499a-b4b6-4dc5855ae8ae`, and the no-duplicate-write rule.
+
+Decisions And Changes:
+
+- attempted one compact source-backed Graphiti write only after commit
+  `2051e46` was pushed;
+- stopped without retry after the job timed out during node extraction and an
+  exact metadata lookup found no visible episode;
+- retained the committed plan, runbook, database, tick, snapshot, and installed
+  runtime receipts as the authoritative closeout evidence.
+
+Validation Evidence:
+
+- provider readiness passed before enqueue;
+- the job reached `graphiti_extracting_nodes`, timed out after its 120-second
+  bound, reported `retryable=false`, and returned no episode UUID;
+- exact lookup by group, episode name, and source description returned zero
+  matches.
+
+State Movement:
+
+- no product or plan state changed. Plan 0040 and P16 remain `CLOSED` at the
+  successful acceptance boundary.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no delegated or parallel memory work occurred.
+
+Graphiti Write Status:
+
+- `timed_out_no_visible_episode`; no retry was queued. Durable repository and
+  runtime evidence remain authoritative.
+
+Stop Reason:
+
+- the product objective is complete. Further memory ingestion would risk a
+  duplicate or expand beyond the bounded closeout attempt.
