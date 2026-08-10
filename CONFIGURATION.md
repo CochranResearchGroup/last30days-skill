@@ -1030,9 +1030,9 @@ previous verified releases deliberately; `start`, `stop`, `status`, and
 `diagnose` provide the remaining lifecycle controls.
 
 The v4 release uses independent artifact versions: Skill/plugin `4.0.0`, MCP
-adapter `4.0.1`, and service `0.2.9`. Upgrade the service first, install the
+adapter `4.0.3`, and service `0.3.44`. Upgrade the service first, install the
 adapter second, and require `service_info` to report
-`compatibility_state=compatible` before updating the optional Skill. Schema 12
+`compatibility_state=compatible` before updating the optional Skill. Schema 16
 needs no migration. A typed incompatibility means one side is stale; it does
 not authorize source credentials or direct Engine work in the ordinary path.
 
@@ -1092,7 +1092,8 @@ never launches the request-scoped research engine or operates a browser.
 read-only and cache-only. The host derives authorized access partitions from
 `profile_id`; clients cannot submit an arbitrary partition list. `default`
 authorizes public evidence only, while a named profile authorizes public plus
-that exact `profile:<id>` partition.
+that exact `profile:<id>` partition. MCP `query` and `refresh` accept the same
+bounded profile selector; omit it to retain the public-only `default`.
 
 When `LAST30DAYS_GRAPHITI_URL` is set, a separate bounded loop sends accepted
 claim/event projections from the SQLite outbox to partition-specific Graphiti

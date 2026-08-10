@@ -533,7 +533,7 @@ def test_worker_normalizes_publishable_items_into_the_versioned_result():
                 {
                     "id": "X1",
                     "text": "A cache-backed intelligence service keeps browser mechanics away.",
-                    "url": "https://x.com/example/status/1",
+                    "url": "https://x.com/example/status/2078123456789012345",
                     "author_handle": "example",
                     "date": "2026-07-23",
                     "engagement": {"likes": 4},
@@ -568,7 +568,10 @@ def test_worker_normalizes_publishable_items_into_the_versioned_result():
     assert result.status is contracts.AcquisitionStatus.SUCCEEDED
     assert result.retry_class is contracts.RetryClass.NONE
     assert result.item_count == 1
-    assert result.items[0].url == "https://x.com/example/status/1"
+    assert result.items[0].source_native_id == "2078123456789012345"
+    assert result.items[0].url == (
+        "https://x.com/example/status/2078123456789012345"
+    )
     assert "cache-backed" in result.items[0].text
     assert result.items[0].metadata["media"][0]["kind"] == "image"
     assert result.diagnostics["attempted_access_methods"] == ["agent_browser"]
@@ -629,6 +632,41 @@ def test_worker_emits_exact_request_and_outcome_counts():
     assert result.observed_count == 3
     assert result.accepted_count == 1
     assert result.rejected_count == 2
+    assert result.diagnostics["rejection_counts"] == {"off_topic": 2}
+
+
+def test_worker_accounts_for_candidates_removed_during_normalization():
+    def fake_adapter(_request, _config):
+        return {
+            "items": [
+                {
+                    "id": f"X{index}",
+                    "source_native_id": str(index),
+                    "text": "A cache service candidate contains enough relevant text.",
+                    "url": f"https://x.com/example/status/{index}",
+                    "date": date,
+                }
+                for index, date in enumerate(
+                    ("2026-07-23", "2026-05-01", "2026-08-01"), start=1
+                )
+            ],
+            "diagnostics": {
+                "candidate_count": 3,
+                "accepted_count": 3,
+                "rejection_counts": {"normalization_filtered": "invalid"},
+            },
+        }
+
+    result = execute_work(
+        _request(),
+        {},
+        adapters={"x_agent_browser": fake_adapter},
+    )
+
+    assert result.observed_count == 3
+    assert result.accepted_count == 1
+    assert result.rejected_count == 2
+    assert result.diagnostics["rejection_counts"] == {"normalization_filtered": 2}
 
 
 def test_worker_does_not_double_count_aggregate_rejected_candidates():

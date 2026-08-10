@@ -505,11 +505,13 @@ class TickSnapshotPublisher:
         finally:
             conn.close()
 
-    def current_metadata(self) -> dict[str, object]:
-        """Return the promoted head's exact terminal coverage and freshness."""
-        conn = self._connect()
-        try:
-            row = conn.execute(
+    @staticmethod
+    def _selected_snapshot_row(
+        conn: sqlite3.Connection,
+        sources: Sequence[str] | None,
+    ) -> sqlite3.Row | None:
+        if not sources:
+            return conn.execute(
                 """SELECT s.*, t.interval_from, t.interval_to, t.state AS tick_state
                    FROM service_tick_query_head AS h
                    JOIN service_tick_query_snapshots AS s
@@ -517,8 +519,36 @@ class TickSnapshotPublisher:
                    JOIN service_ticks AS t ON t.tick_id = s.tick_id
                    WHERE h.singleton_id = 1"""
             ).fetchone()
+        requested = tuple(
+            dict.fromkeys(_text(source, "source", 64) for source in sources)
+        )
+        rows = conn.execute(
+            """SELECT s.*, t.interval_from, t.interval_to, t.state AS tick_state
+               FROM service_tick_query_snapshots AS s
+               JOIN service_ticks AS t ON t.tick_id = s.tick_id
+               WHERE s.state IN ('promoted', 'superseded')
+                 AND s.promoted_at IS NOT NULL
+               ORDER BY s.promoted_at DESC, s.rowid DESC"""
+        ).fetchall()
+        for row in rows:
+            completeness = json.loads(row["completeness_json"])
+            if isinstance(completeness, dict) and all(
+                source in completeness for source in requested
+            ):
+                return row
+        return None
+
+    def current_metadata(
+        self, *, sources: Sequence[str] | None = None
+    ) -> dict[str, object]:
+        """Return exact metadata for the head or newest requested-source snapshot."""
+        conn = self._connect()
+        try:
+            row = self._selected_snapshot_row(conn, sources)
             if row is None:
-                raise KeyError("ordinary query head is not initialized")
+                raise KeyError(
+                    "query snapshot is not initialized for the requested sources"
+                )
             completeness = dict(json.loads(row["completeness_json"]))
             return {
                 "snapshot_id": str(row["snapshot_id"]),
@@ -549,6 +579,7 @@ class TickSnapshotPublisher:
         published_after: str | None = None,
         published_before: str | None = None,
         limit: int = 20,
+        snapshot_id: str | None = None,
     ) -> tuple[QueryResult, ...]:
         query_text = _text(query, "query", 4_096)
         if not access_partitions:
@@ -557,13 +588,24 @@ class TickSnapshotPublisher:
             raise ValueError("limit must be between 1 and 100")
         conn = self._connect()
         try:
-            head = conn.execute(
-                """SELECT h.snapshot_id, s.fusion_version
-                   FROM service_tick_query_head AS h
-                   JOIN service_tick_query_snapshots AS s
-                     ON s.snapshot_id = h.snapshot_id
-                   WHERE h.singleton_id = 1"""
-            ).fetchone()
+            if snapshot_id is None:
+                head = conn.execute(
+                    """SELECT h.snapshot_id, s.fusion_version
+                       FROM service_tick_query_head AS h
+                       JOIN service_tick_query_snapshots AS s
+                         ON s.snapshot_id = h.snapshot_id
+                       WHERE h.singleton_id = 1"""
+                ).fetchone()
+            else:
+                selected_id = _text(snapshot_id, "snapshot_id", 128)
+                head = conn.execute(
+                    """SELECT snapshot_id, fusion_version
+                       FROM service_tick_query_snapshots
+                       WHERE snapshot_id = ?
+                         AND state IN ('promoted', 'superseded')
+                         AND promoted_at IS NOT NULL""",
+                    (selected_id,),
+                ).fetchone()
             if head is None:
                 return ()
             if head["fusion_version"] != "rrf-v1":

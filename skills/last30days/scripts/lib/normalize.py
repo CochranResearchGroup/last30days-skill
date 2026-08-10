@@ -237,8 +237,24 @@ def _normalize_x(
     metadata = dict(item.get("metadata") or {})
     if mentioned:
         metadata["mentioned_handles"] = list(mentioned)
+    parsed_url = urlparse(str(item.get("url") or ""))
+    path_parts = parsed_url.path.strip("/").split("/")
+    status_id = ""
+    if (
+        (parsed_url.hostname or "").casefold()
+        in {"x.com", "www.x.com", "twitter.com", "www.twitter.com"}
+        and len(path_parts) >= 3
+        and path_parts[-2].casefold() == "status"
+        and path_parts[-1].isdigit()
+    ):
+        status_id = path_parts[-1]
     return _source_item(
-        item_id=str(item.get("id") or f"X{index + 1}"),
+        item_id=str(
+            status_id
+            or item.get("source_native_id")
+            or item.get("id")
+            or f"X{index + 1}"
+        ),
         source=source,
         title=text[:140] or f"X post {index + 1}",
         body=text,

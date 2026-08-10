@@ -27,6 +27,10 @@ Follow this order for every ordinary request:
    call another product operation.
 3. For a current research question, call `query` with the user's topic.
    Prefer `response_mode=brief` and `freshness_policy=prefer_cache`.
+   Use `profile_id=default` for public evidence. When the operator has supplied
+   or authorized an exact named profile, pass that profile ID to query or
+   refresh so the service may add only its matching private partition; never
+   invent a profile ID or submit partition names directly.
    When `tick_snapshot` is present, cite only its returned evidence and retain
    each result's matching channels, provenance, and access partition; the
    snapshot coverage and interval/promotion fields are the freshness authority.

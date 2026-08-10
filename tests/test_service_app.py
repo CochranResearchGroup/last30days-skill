@@ -19,12 +19,19 @@ class FakeRetriever:
         self.calls = []
 
     def search_snapshot(
-        self, query, *, sources=None, top_k=8, snippet_chars=320
+        self,
+        query,
+        *,
+        sources=None,
+        access_partitions=None,
+        top_k=8,
+        snippet_chars=320,
     ):
         self.calls.append(
             {
                 "query": query,
                 "sources": sources,
+                "access_partitions": access_partitions,
                 "top_k": top_k,
                 "snippet_chars": snippet_chars,
             }
@@ -51,8 +58,10 @@ class FakeRefreshScheduler:
 class FakeTickSnapshots:
     def __init__(self):
         self.calls = []
+        self.metadata_calls = []
 
-    def current_metadata(self):
+    def current_metadata(self, *, sources=None):
+        self.metadata_calls.append({"sources": sources})
         return {
             "snapshot_id": "tick-snapshot-001",
             "tick_id": "tick-001",
@@ -178,6 +187,7 @@ def test_ordinary_query_uses_promoted_tick_head_with_filter_first_provenance(
     )
 
     assert legacy.calls == []
+    assert tick_snapshots.metadata_calls == [{"sources": ["youtube"]}]
     assert tick_snapshots.calls == [
         {
             "query": "ChatGPT Voice",
@@ -189,10 +199,11 @@ def test_ordinary_query_uses_promoted_tick_head_with_filter_first_provenance(
             "published_after": "2026-08-05T00:00:00Z",
             "published_before": "2026-08-07T00:00:00Z",
             "limit": 8,
+            "snapshot_id": "tick-snapshot-001",
         }
     ]
     assert response.index_version == "tick-snapshot-001"
-    assert response.tick_snapshot == tick_snapshots.current_metadata()
+    assert response.tick_snapshot["snapshot_id"] == "tick-snapshot-001"
     assert response.evidence[0].access_partition_id == "public"
     assert response.evidence[0].matching_channels == [
         "lexical_source",
@@ -263,6 +274,7 @@ def test_warm_cache_query_returns_bounded_evidence_without_refresh(tmp_path):
         {
             "query": "browser acquisition",
             "sources": ["reddit"],
+            "access_partitions": ("public",),
             "top_k": 8,
             "snippet_chars": 1024,
         }

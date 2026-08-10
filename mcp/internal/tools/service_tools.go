@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 
 	mcplib "github.com/mark3labs/mcp-go/mcp"
@@ -18,6 +19,8 @@ import (
 )
 
 const serviceInfoURI = "last30days://capabilities"
+
+var profileIDPattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$`)
 
 // ServiceAPI is the narrow transport seam used by handlers and tests.
 type ServiceAPI interface {
@@ -113,6 +116,12 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 			mcplib.MaxLength(4096),
 		),
 		mcplib.WithString(
+			"profile_id",
+			mcplib.Description("Authorized service profile whose public and private evidence partitions may be queried."),
+			mcplib.MaxLength(128),
+			mcplib.DefaultString("default"),
+		),
+		mcplib.WithString(
 			"freshness_policy",
 			mcplib.Description("Cache policy. cache_only guarantees no acquisition."),
 			mcplib.Enum("prefer_cache", "cache_only", "refresh_if_stale"),
@@ -173,6 +182,12 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 			mcplib.Description("Question or topic to refresh."),
 			mcplib.MinLength(1),
 			mcplib.MaxLength(4096),
+		),
+		mcplib.WithString(
+			"profile_id",
+			mcplib.Description("Authorized service profile to refresh and query."),
+			mcplib.MaxLength(128),
+			mcplib.DefaultString("default"),
 		),
 		mcplib.WithString(
 			"response_mode",
@@ -457,6 +472,16 @@ func queryPayload(args map[string]any, forceRefresh bool) (map[string]any, error
 	if err != nil {
 		return nil, err
 	}
+	profileID := "default"
+	if _, supplied := args["profile_id"]; supplied {
+		profileID, err = requireString(args, "profile_id", 128)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if !profileIDPattern.MatchString(profileID) {
+		return nil, errors.New("profile_id is invalid")
+	}
 	responseMode, err := enumArgument(
 		args,
 		"response_mode",
@@ -513,7 +538,7 @@ func queryPayload(args map[string]any, forceRefresh bool) (map[string]any, error
 	}
 	payload := map[string]any{
 		"schema_version":   servicecontracts.SchemaVersion,
-		"profile_id":       "default",
+		"profile_id":       profileID,
 		"query":            query,
 		"freshness_policy": freshness,
 		"response_mode":    responseMode,

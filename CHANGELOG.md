@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **X evidence identity and profile-aware cache retrieval.** Service 0.3.44
+  derives durable X source identity from the canonical numeric status ID while
+  preserving short display IDs, preventing later runs from attaching new text
+  to an older status URL. Source-filtered queries now use the newest promoted
+  or superseded terminal snapshot whose completeness receipt covers the exact
+  requested sources, while unfiltered queries retain the ordinary singleton
+  head. MCP adapter 4.0.3 validates and forwards `profile_id` on query and
+  refresh so an authorized named profile can retrieve its own partition.
+
 - **MCP schema-16 release identity and installed convergence.** MCP adapter
   4.0.2 is explicitly bound to the canonical schema-16 catalog digest and
   service/database compatibility ranges. A checked-in compatibility-release

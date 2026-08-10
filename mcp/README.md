@@ -6,8 +6,9 @@ user-scoped last30days intelligence service over its private Unix socket.
 The adapter exposes:
 
 - `service_info`
-- `query` (`prefer_cache` by default; `cache_only` prohibits external work)
-- `refresh` (`force_refresh`, durable and idempotent)
+- `query` (`prefer_cache` by default; `cache_only` prohibits external work;
+  optional `profile_id` adds that exact authorized partition to public evidence)
+- `refresh` (`force_refresh`, durable and idempotent; optional `profile_id`)
 - `job_status`
 - `topic`
 - resources `last30days://capabilities`, `last30days://sources`, and

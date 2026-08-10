@@ -15822,3 +15822,161 @@ Next Bounded Action:
 
 - reconnect an already-running Codex MCP connector only when that conversation
   must consume 4.0.2 immediately. New connector processes are already fixed.
+
+## Turn 264 | 2026-08-10
+
+Focus: correct the X retrieval handoff and open the bounded implementation.
+
+Authority Consulted:
+
+- operator handoff and explicit plan/repair/execute instruction;
+- current worktree/origin ancestry, installed MCP/service/schedule/database
+  readbacks, retained tick/provider/snapshot/source receipts, CodeGraph source
+  and blast-radius evidence, and all current repository policies;
+- repo-policy selector, Last30Days maintenance, diagnosing-bugs, TDD,
+  agent-browser, and codebase-design guidance.
+
+Decisions And Changes:
+
+- confirmed the handoff's installed runtime baseline but rejected its proposed
+  extractor/reauth retry: the scheduled X lane observed 10 and accepted three
+  without auth, challenge, source failure, or fallback;
+- isolated three blocking defects: ordinal X source IDs corrupt cross-run
+  provenance, MCP query/refresh cannot select the profile partition, and the
+  singleton latest head hides X after a later Facebook-only promotion;
+- opened
+  `docs/dev/plans/0039-2026-08-10-x-retrieval-identity-and-cache-repair.md`
+  and P15 with one service install, one MCP install, and one X-only acceptance
+  tick as explicit maxima. No live acquisition has been run.
+
+Validation Evidence:
+
+- clean `main` and `origin/main` were aligned at
+  `7d73f62348aa4074b0bcc100dfe45a8a9aa0227f` before this slice;
+- fresh installed adapter 4.0.2 is compatible with ready service 0.3.43/schema
+  16; both current and rollback databases pass `PRAGMA quick_check`;
+- durable receipts prove current X text paired with older canonical URLs via
+  reused `X1`/`X2`/`X3` records, and the current Facebook-only snapshot replaced
+  the immediately prior all-source snapshot for ordinary queries.
+
+State Movement:
+
+- `handoff_retry_hypothesis -> confirmed_identity_partition_head_defects`;
+  Plan 0039/P15 are `OPEN` at C01.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; startup/diagnosis remained on the critical path. A fresh
+  independent review is required after the release candidate is validated.
+
+Graphiti Write Status:
+
+- pending validated outcome; no planning-only episode is queued.
+
+Next Bounded Action:
+
+- write the focused red tests, implement stable identity, source-aware snapshot
+  selection, and MCP profile forwarding, then run the pre-install gate.
+
+## Turn 265 | 2026-08-10
+
+Focus: implement the Plan 0039 X identity, retrieval, and public-contract slice.
+
+Authority Consulted:
+
+- Plan 0039/P15 C01, TDD red receipts, CodeGraph call/blast-radius evidence,
+  canonical service/MCP contracts, and current release/documentation policy.
+
+Decisions And Changes:
+
+- added numeric status-derived X source identity without changing short display
+  IDs, preserved it through normalization, and accounted for candidates removed
+  after browser quality gating;
+- added requested-source snapshot selection over ever-promoted terminal
+  snapshots, exact snapshot-ID query binding, and no fallback past a newer
+  requested-source failure/empty receipt;
+- preserved the singleton ordinary head for unfiltered queries and enforced
+  derived access partitions on both tick-snapshot and legacy retrieval paths;
+- exposed validated `profile_id` on MCP query/refresh, advanced the adapter to
+  4.0.3 and service to 0.3.44 without a schema change, and synchronized Skill,
+  MCP, configuration, changelog, tests, and runtime manifest.
+
+Validation Evidence:
+
+- all three primary regressions were observed red before implementation and
+  now pass, including reordered X results, later Facebook-only promotion,
+  later X failure freshness, exact metadata, profile forwarding, invalid
+  profile rejection, and normalization rejection accounting;
+- focused changed-area and Skill/package Python suites pass; full Go tests and
+  vet pass; contract generation and release/runtime tests pass;
+- deterministic service artifact SHA-256 is
+  `fa0ba9eb4eaa5a4f3f64d7e90db520a579d095de84eba1e1c347bf3bb113b7ab`.
+
+State Movement:
+
+- Plan 0039 advances version 1/C01 -> version 2/C02 and remains `OPEN`; P15
+  remains `OPEN` at fresh-review/full-suite gates.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned` through implementation. One fresh read-only review is required
+  next; the primary retains all write and integration authority.
+
+Graphiti Write Status:
+
+- pending installed terminal outcome; no intermediate episode is queued.
+
+Next Bounded Action:
+
+- run the independent review and full pre-install suite, reconcile at most one
+  blocking cycle, commit/push, then install and run the sole X acceptance tick.
+
+## Turn 266 | 2026-08-10
+
+Focus: reconcile the fresh Plan 0039 review and pass the complete pre-install gate.
+
+Authority Consulted:
+
+- Plan 0039/P15 C02, the fresh read-only reviewer report, current CodeGraph
+  source/blast-radius evidence, and validation/closeout/release policies.
+
+Decisions And Changes:
+
+- accepted/repaired all three blocking findings: exact X candidate totals and
+  dedupe/limit reasons, fail-closed empty profile IDs, and schema-16 docs;
+- supplied multi-source all-of, newer-empty, exact metadata, tick partition,
+  actual legacy SQLite partition, and named-profile refresh regressions;
+- defensively derived X identity from canonical status URLs and corrected the
+  MCP README's public-plus-exact-profile wording;
+- exhausted the single authorized review/rework cycle. No install, source call,
+  browser action, schedule mutation, or database mutation occurred.
+
+Validation Evidence:
+
+- remediation tests went red on missing candidate totals, ordinal X fallback,
+  and empty-profile defaulting, then green;
+- full Python exits zero with 2,653 collected outcomes and seven skips; full Go
+  tests/vet, generation, compile, runtime/release, formatting, planning/goal/
+  authority audits, and diff checks pass;
+- reconciled service artifact SHA-256 is
+  `1c47b685e4690d64953d10962109b474fa3e3bbf64a0d7aa89614e3a01411138`.
+
+State Movement:
+
+- Plan 0039 advances version 2/C02 -> version 3/C03 and remains `OPEN`; P15
+  remains `OPEN` at commit/install/live acceptance.
+
+Subagent Status And Reconciliation:
+
+- `review_complete`; the fresh reviewer made no edits. Disposition is
+  `blocking=3 accepted_repaired`, `nonblocking=2 accepted_repaired`,
+  `needs_evidence=3 supplied`, and `rejected=2 confirmed_no_defect`.
+
+Graphiti Write Status:
+
+- pending installed terminal outcome; no intermediate episode is queued.
+
+Next Bounded Action:
+
+- verify remote ancestry, commit/push the exact reviewed candidate, then install
+  service 0.3.44 and MCP 4.0.3 before consuming the sole X-only tick.

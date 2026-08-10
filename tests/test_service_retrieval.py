@@ -90,6 +90,52 @@ def test_indexes_legacy_findings_idempotently_and_returns_cited_fts_hits(tmp_pat
     )
 
 
+def test_legacy_snapshot_partition_filter_excludes_other_named_profiles(tmp_path):
+    db_path = tmp_path / "partitioned.db"
+    retriever = HybridRetriever(db_path)
+    retriever.initialize()
+    for label in ("public", "profile-a", "profile-b"):
+        _seed_legacy_finding(
+            db_path,
+            source="x",
+            url=f"https://x.example/{label}",
+            title=f"Partition boundary {label}",
+            content=f"partition boundary evidence for {label}",
+        )
+    retriever.index_legacy_findings()
+
+    conn = sqlite3.connect(db_path)
+    rows = conn.execute(
+        "SELECT document_id, canonical_url FROM documents"
+    ).fetchall()
+    by_url = {url: document_id for document_id, url in rows}
+    conn.execute(
+        "UPDATE documents SET access_partition_id = ? WHERE document_id = ?",
+        ("profile:profile-a", by_url["https://x.example/profile-a"]),
+    )
+    conn.execute(
+        "UPDATE documents SET access_partition_id = ? WHERE document_id = ?",
+        ("profile:profile-b", by_url["https://x.example/profile-b"]),
+    )
+    conn.commit()
+    conn.close()
+
+    public = retriever.search_snapshot(
+        "partition boundary", access_partitions=("public",), top_k=10
+    )
+    profile_a = retriever.search_snapshot(
+        "partition boundary",
+        access_partitions=("public", "profile:profile-a"),
+        top_k=10,
+    )
+
+    assert {item.url for item in public.evidence} == {"https://x.example/public"}
+    assert {item.url for item in profile_a.evidence} == {
+        "https://x.example/public",
+        "https://x.example/profile-a",
+    }
+
+
 def test_replay_fixture_reconstructs_published_results_from_recorded_ranker(tmp_path):
     db_path = tmp_path / "replay.db"
     original = HybridRetriever(

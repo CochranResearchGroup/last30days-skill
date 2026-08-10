@@ -207,6 +207,10 @@ class XBrowserSearchTests(TestCase):
             "https://x.com/OpenAI/status/2078123456789012345",
             result["items"][0]["url"],
         )
+        self.assertEqual(
+            "2078123456789012345",
+            result["items"][0]["source_native_id"],
+        )
         self.assertEqual("OpenAI", result["items"][0]["author_handle"])
         self.assertEqual("2026-07-18", result["items"][0]["date"])
         self.assertEqual(1200, result["items"][0]["engagement"]["likes"])
@@ -214,6 +218,129 @@ class XBrowserSearchTests(TestCase):
         self.assertEqual("shared_display", client.requests[0].display_isolation)
         self.assertEqual("https://x.com/home", client.requests[0].start_url)
         self.assertEqual("x", client.requests[0].target_service_id)
+
+    def test_status_identity_is_stable_when_browser_result_order_changes(self):
+        from lib import x_browser
+
+        candidates = [
+            {
+                "text": "OpenAI first status contains enough relevant text for acceptance.",
+                "url": "https://x.com/first/status/2078123456789012345",
+                "author_handle": "first",
+                "timestamp": "2026-07-18T15:30:00.000Z",
+                "engagement": {},
+            },
+            {
+                "text": "OpenAI second status contains enough relevant text for acceptance.",
+                "url": "https://x.com/second/status/2078123456789012346",
+                "author_handle": "second",
+                "timestamp": "2026-07-18T15:31:00.000Z",
+                "engagement": {},
+            },
+        ]
+
+        observed = []
+        for ordered in (candidates, list(reversed(candidates))):
+            client = FakeAgentBrowserClient(candidates=ordered)
+            with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+                result = x_browser.search_x_browser(
+                    "OpenAI",
+                    "2026-06-20",
+                    "2026-07-20",
+                    depth="quick",
+                    config={
+                        "LAST30DAYS_X_BROWSER_PROFILE": "last30days-facebook",
+                        "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                        "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                        "_NOW": NOW,
+                    },
+                )
+            observed.append(
+                {
+                    item["url"]: item["source_native_id"] for item in result["items"]
+                }
+            )
+
+        self.assertEqual(observed[0], observed[1])
+        self.assertEqual(
+            {
+                "https://x.com/first/status/2078123456789012345": "2078123456789012345",
+                "https://x.com/second/status/2078123456789012346": "2078123456789012346",
+            },
+            observed[0],
+        )
+
+    def test_duplicate_canonical_statuses_are_counted_as_rejections(self):
+        from lib import x_browser
+
+        candidates = [
+            {
+                "text": "OpenAI duplicate status contains enough relevant text for acceptance.",
+                "url": url,
+                "author_handle": "example",
+                "timestamp": "2026-07-18T15:30:00.000Z",
+                "engagement": {},
+            }
+            for url in (
+                "https://x.com/example/status/2078123456789012345",
+                "https://twitter.com/example/status/2078123456789012345?ref=duplicate",
+            )
+        ]
+        client = FakeAgentBrowserClient(candidates=candidates)
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.search_x_browser(
+                "OpenAI",
+                "2026-06-20",
+                "2026-07-20",
+                depth="quick",
+                config={
+                    "LAST30DAYS_X_BROWSER_PROFILE": "last30days-facebook",
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertEqual(1, len(result["items"]))
+        self.assertEqual(2, result["diagnostics"]["candidate_count"])
+        self.assertEqual(
+            {"duplicate_status": 1}, result["diagnostics"]["rejection_counts"]
+        )
+
+    def test_result_limit_is_counted_as_a_rejection(self):
+        from lib import x_browser
+
+        client = FakeAgentBrowserClient(
+            candidates=[
+                {
+                    "text": f"OpenAI result {index} contains enough relevant text for acceptance.",
+                    "url": f"https://x.com/example/status/20781234567890123{index:02d}",
+                    "author_handle": "example",
+                    "timestamp": "2026-07-18T15:30:00.000Z",
+                    "engagement": {},
+                }
+                for index in range(9)
+            ]
+        )
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.search_x_browser(
+                "OpenAI",
+                "2026-06-20",
+                "2026-07-20",
+                depth="quick",
+                config={
+                    "LAST30DAYS_X_BROWSER_PROFILE": "last30days-facebook",
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertEqual(8, len(result["items"]))
+        self.assertEqual(9, result["diagnostics"]["candidate_count"])
+        self.assertEqual(
+            {"result_limit": 1}, result["diagnostics"]["rejection_counts"]
+        )
 
     def test_checkpoint_stops_before_navigation_with_a_typed_failure(self):
         from lib import x_browser

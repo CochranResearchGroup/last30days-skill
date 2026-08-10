@@ -1456,6 +1456,44 @@ Closeout:
   reports adapter 4.0.2, `compatible`, schema 16-16, and admits
   `maintenance_status` through a fresh process.
 
+## P15 | X Retrieval Identity And Cache Repair
+
+State: OPEN
+
+Objective: make authenticated X collection retain stable status-level
+provenance and remain retrievable through a profile-authorized cache-only MCP
+query after unrelated source-only head promotion.
+
+Current State:
+
+- service 0.3.44 and MCP adapter 4.0.3 are validated source candidates: stable
+  status identity, normalization rejection receipts, source-specific terminal
+  snapshot selection, exact metadata binding, partition-safe fallback, and
+  profile-aware MCP query/refresh all pass focused regressions;
+- changed-area Python, Skill/package, release/runtime, Go test/vet, generation,
+  and deterministic artifact gates pass;
+- fresh review findings on raw-candidate accounting, empty-profile handling,
+  docs, multi-source/empty metadata, actual partition isolation, refresh, and
+  defensive URL identity are repaired in the sole rework cycle. The complete
+  2,653-outcome Python gate plus Go/audit/build checks pass;
+- no install or live X attempt has run. Plan 0039 now awaits clean commit/push,
+  then its one-install/one-X-tick acceptance boundary.
+
+Open Plan:
+
+- `docs/dev/plans/0039-2026-08-10-x-retrieval-identity-and-cache-repair.md`
+
+Dependencies:
+
+- consumes P08's durable tick/query substrate, P13's installed service, and
+  P14's release-lock discipline while preserving schema 16 and the existing
+  retained browser/profile lane.
+
+Next Bounded Action:
+
+- commit/push the reviewed exact candidate, then cross the
+  one-install/one-X-tick acceptance gate.
+
 ## P10 | Recurring Browser Reauthentication Notifications
 
 State: CLOSED

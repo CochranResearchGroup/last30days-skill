@@ -60,6 +60,7 @@ class RetrievalBackend(Protocol):
         query: str,
         *,
         sources: Sequence[str] | None = None,
+        access_partitions: Sequence[str] | None = None,
         top_k: int = 8,
         snippet_chars: int = 320,
     ) -> RetrievalSnapshot: ...
@@ -71,7 +72,9 @@ class RetrievalSnapshot(Protocol):
 
 
 class TickQueryBackend(Protocol):
-    def current_metadata(self) -> dict[str, object]: ...
+    def current_metadata(
+        self, *, sources: Sequence[str] | None = None
+    ) -> dict[str, object]: ...
 
     def query(
         self,
@@ -82,6 +85,7 @@ class TickQueryBackend(Protocol):
         published_after: str | None = None,
         published_before: str | None = None,
         limit: int = 20,
+        snapshot_id: str | None = None,
     ) -> Sequence[object]: ...
 
 
@@ -1091,7 +1095,7 @@ class CacheQueryApplication:
         index_version = None
         if self.tick_snapshots is not None:
             try:
-                tick_snapshot = self.tick_snapshots.current_metadata()
+                tick_snapshot = self.tick_snapshots.current_metadata(sources=sources)
             except KeyError:
                 tick_snapshot = None
             if tick_snapshot is not None:
@@ -1102,6 +1106,7 @@ class CacheQueryApplication:
                     published_after=request.filters.get("published_after"),
                     published_before=request.filters.get("published_before"),
                     limit=request.top_k,
+                    snapshot_id=str(tick_snapshot["snapshot_id"]),
                 )
                 evidence = [
                     self._tick_evidence_item(result, tick_snapshot)
@@ -1112,6 +1117,7 @@ class CacheQueryApplication:
             snapshot = self.retriever.search_snapshot(
                 request.query,
                 sources=sources,
+                access_partitions=self._access_partitions(request.profile_id),
                 top_k=request.top_k,
                 snippet_chars=snippet_chars,
             )

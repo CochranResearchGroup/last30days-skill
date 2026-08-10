@@ -188,12 +188,14 @@ class XPageState:
 @dataclass
 class XRunDiagnostics:
     rejection_counts: Counter[str] = field(default_factory=Counter)
+    candidate_count: int = 0
     accepted_count: int = 0
     duration_ms: int = 0
 
     def as_dict(self) -> dict[str, Any]:
         return {
             "rejection_counts": dict(self.rejection_counts),
+            "candidate_count": self.candidate_count,
             "accepted_count": self.accepted_count,
             "duration_ms": self.duration_ms,
         }
@@ -363,8 +365,16 @@ class XBrowserScraper:
                 "extraction_empty",
                 "Verified X search page contained no post articles",
             )
-        items = _quality_gate(raw, topic, from_date, to_date, diagnostics)
-        items = _dedupe_items(items)[: self.limit]
+        diagnostics.candidate_count = len(raw)
+        quality_items = _quality_gate(raw, topic, from_date, to_date, diagnostics)
+        deduped_items = _dedupe_items(quality_items)
+        duplicate_count = len(quality_items) - len(deduped_items)
+        if duplicate_count:
+            diagnostics.rejection_counts["duplicate_status"] += duplicate_count
+        result_limit_count = max(0, len(deduped_items) - self.limit)
+        if result_limit_count:
+            diagnostics.rejection_counts["result_limit"] += result_limit_count
+        items = deduped_items[: self.limit]
         diagnostics.duration_ms = round((time.monotonic() - started) * 1000)
         diagnostics.accepted_count = len(items)
         error_type = "quality_gate_failed" if raw and not items else None
@@ -558,6 +568,7 @@ def _quality_gate(
             continue
         items.append({
             "id": f"X{index + 1}",
+            "source_native_id": url.rsplit("/", 1)[-1],
             "text": text[:1000],
             "url": url,
             "author_handle": handle,

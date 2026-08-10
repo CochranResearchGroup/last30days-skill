@@ -161,6 +161,7 @@ func TestCachedQueryBuildsBoundedCacheOnlyContract(t *testing.T) {
 	handler := makeQueryHandler(fake, false)
 	args := map[string]any{
 		"query":            "agent browser profiles",
+		"profile_id":       "last30days-facebook",
 		"freshness_policy": "cache_only",
 		"response_mode":    "brief",
 		"sources":          []any{"x", "youtube", "x"},
@@ -179,6 +180,9 @@ func TestCachedQueryBuildsBoundedCacheOnlyContract(t *testing.T) {
 	}
 	if fake.postBody["freshness_policy"] != "cache_only" {
 		t.Fatalf("freshness = %v", fake.postBody["freshness_policy"])
+	}
+	if fake.postBody["profile_id"] != "last30days-facebook" {
+		t.Fatalf("profile_id = %v", fake.postBody["profile_id"])
 	}
 	filters := fake.postBody["filters"].(map[string]any)
 	if !reflect.DeepEqual(filters["sources"], []string{"x", "youtube"}) {
@@ -207,13 +211,19 @@ func TestRefreshForcesRefreshAndJobStatusEscapesOpaqueID(t *testing.T) {
 	refresh := makeQueryHandler(fake, true)
 	result, err := refresh(
 		context.Background(),
-		callRequest(map[string]any{"query": "OpenAI"}),
+		callRequest(map[string]any{
+			"query":      "OpenAI",
+			"profile_id": "last30days-facebook",
+		}),
 	)
 	if err != nil || result.IsError {
 		t.Fatalf("refresh result = %+v, err = %v", result, err)
 	}
 	if fake.postBody["freshness_policy"] != "force_refresh" {
 		t.Fatalf("refresh freshness = %v", fake.postBody["freshness_policy"])
+	}
+	if fake.postBody["profile_id"] != "last30days-facebook" {
+		t.Fatalf("refresh profile_id = %v", fake.postBody["profile_id"])
 	}
 
 	poll := makeJobStatusHandler(fake)
@@ -238,6 +248,8 @@ func TestHandlersRejectInvalidArgumentsWithoutCallingService(t *testing.T) {
 		{"query": "x", "top_k": float64(1.5)},
 		{"query": "x", "max_chars": float64(100)},
 		{"query": "x", "sources": []any{""}},
+		{"query": "x", "profile_id": ""},
+		{"query": "x", "profile_id": "invalid profile"},
 	}
 	for _, args := range cases {
 		result, err := query(context.Background(), callRequest(args))

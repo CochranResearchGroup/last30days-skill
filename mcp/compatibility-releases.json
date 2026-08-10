@@ -26,6 +26,19 @@
         "min": 16,
         "max": 16
       }
+    },
+    {
+      "adapter_version": "4.0.3",
+      "contract_schema_version": 1,
+      "contract_sha256": "fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1",
+      "service_api": {
+        "min": 1,
+        "max": 1
+      },
+      "database_schema": {
+        "min": 16,
+        "max": 16
+      }
     }
   ]
 }

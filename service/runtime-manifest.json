@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "3c39079cea90506e0220e0a91eb148eb50de4586067f15027881eca39ea0abf9",
+      "sha256": "efe73bac157b12688b1b7f0ce70e79f5e6863ca0d9e57afbd47f34e37ba302ee",
       "source": "service/VERSION"
     },
     {
@@ -162,7 +162,7 @@
     },
     {
       "path": "scripts/lib/normalize.py",
-      "sha256": "bbf82521e35fe8094647159143517adfa989b8f82c87fd66039a6046c4fd42f5",
+      "sha256": "7706ee8406107134a383f40c87e7441ab63c1a0235ccda04d5d88586ff65205e",
       "source": "skills/last30days/scripts/lib/normalize.py"
     },
     {
@@ -287,12 +287,12 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "2678000dae6c2cd058b7a81b23d3d0d8ddde513a1e891d37f04c7038c025e4bc",
+      "sha256": "7344a7ef9c98cc8daf877c10348454bce8a8b93d552ef6782ec3d6372c8011d4",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
       "path": "scripts/lib/service_app.py",
-      "sha256": "b779f0b67b9bf6f17724082f3ca8abbc4d8ad39865627f45d94328653f37c9e4",
+      "sha256": "7f1ea8bb7d755436a3084dcc70df67ee6104d7f0bfe2907e8c903246e11c2a58",
       "source": "skills/last30days/scripts/lib/service_app.py"
     },
     {
@@ -447,7 +447,7 @@
     },
     {
       "path": "scripts/lib/service_tick_query.py",
-      "sha256": "7ca050e1502f27acf0690c091cc384ec6b4bdbc6c725b50c14633a0987359064",
+      "sha256": "9cf0b6049cf3e152a709344f402f65599b5bad0d4a604af96eb3b13ba654e380",
       "source": "skills/last30days/scripts/lib/service_tick_query.py"
     },
     {
@@ -607,7 +607,7 @@
     },
     {
       "path": "scripts/lib/x_browser.py",
-      "sha256": "8419c16dad5768b67ffef39e4c64dd9541dc380fcd36e3eea3b424cfa356de5c",
+      "sha256": "430af70401127916696b291aa68ca432b16eaf82d4a926ea78bf6b2f32f36851",
       "source": "skills/last30days/scripts/lib/x_browser.py"
     },
     {
@@ -653,5 +653,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.43"
+  "service_version": "0.3.44"
 }

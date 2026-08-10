@@ -959,6 +959,30 @@ def execute_work(
         diagnostics = {"failure_stage": "cost_validation"}
     accepted_count = len(items)
     rejected_count = max(0, observed_count - accepted_count)
+    rejection_counts = diagnostics.get("rejection_counts")
+    if not isinstance(rejection_counts, dict):
+        rejection_counts = {}
+        diagnostics["rejection_counts"] = rejection_counts
+    accounted_rejections = sum(
+        value
+        for value in rejection_counts.values()
+        if isinstance(value, int) and not isinstance(value, bool) and value >= 0
+    )
+    normalization_filtered = max(0, rejected_count - accounted_rejections)
+    if normalization_filtered:
+        previous_normalization_filtered = rejection_counts.get(
+            "normalization_filtered"
+        )
+        if (
+            isinstance(previous_normalization_filtered, bool)
+            or not isinstance(previous_normalization_filtered, int)
+            or previous_normalization_filtered < 0
+        ):
+            previous_normalization_filtered = 0
+        rejection_counts["normalization_filtered"] = (
+            previous_normalization_filtered
+            + normalization_filtered
+        )
     failure_stage = ""
     if error_code is not None:
         failure_stage = _safe_failure_stage(diagnostics.get("failure_stage"))
