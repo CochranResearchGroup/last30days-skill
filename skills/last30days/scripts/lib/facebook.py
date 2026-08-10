@@ -1902,7 +1902,7 @@ def _search_url(topic: str, *, recent: bool = False) -> str:
     query = {"q": topic}
     if recent:
         query["filters"] = RECENT_POSTS_FILTER
-    return f"https://www.facebook.com/search/top/?{urlencode(query)}"
+    return f"https://www.facebook.com/search/posts/?{urlencode(query)}"
 
 
 def _recent_filter_active(value: str) -> bool:

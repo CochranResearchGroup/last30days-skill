@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook post-specific search surface.** Service 0.3.41 navigates directly
+  to `/search/posts/` with the existing recent-post filter after an installed
+  0.3.40 proof showed `/search/top/` rendered the requested results but wedged
+  its Runtime channel. Query, filter, authentication, one-successor,
+  extraction, quality, parent-wall, and cleanup gates remain unchanged.
+
 - **Facebook renderer-isolating recovery.** Service 0.3.40 replaces a frozen
   Facebook target with `about:blank`, closes the exact predecessor, and only
   then navigates the successor to Facebook. This prevents Chromium from

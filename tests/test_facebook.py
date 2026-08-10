@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import unittest
 from unittest import mock
+from urllib.parse import urlsplit
 
 from lib import facebook, normalize, pipeline
 
@@ -1383,6 +1384,13 @@ class FacebookCliAdapterTests(unittest.TestCase):
 
 
 class FacebookNavigationAndAuthTests(unittest.TestCase):
+    def test_search_navigation_uses_post_specific_surface(self):
+        parsed = urlsplit(facebook._search_url("OpenAI", recent=True))
+
+        self.assertEqual("www.facebook.com", parsed.hostname)
+        self.assertEqual("/search/posts/", parsed.path)
+        self.assertTrue(facebook._recent_filter_active(parsed.geturl()))
+
     def test_observed_retained_eval_timeout_recovers_within_adapter_budget(self):
         class ObservedNavigationRecoveryClient(FakeAgentBrowserClient):
             def __init__(self):

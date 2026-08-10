@@ -265,6 +265,116 @@ Next action:
 - commit and push the candidate, build and install service 0.3.40, re-prove
   source/artifact/runtime convergence, then run one governed adaptive attempt.
 
+### Checkpoint P0037-C04 | 2026-08-10
+
+Plan version: 2
+
+State transition:
+
+- `service_0_3_40_candidate_validated -> attempt_1_search_surface_blocker`.
+
+Progress classification:
+
+- `later_blocker`; the first adaptive attempt proved renderer-isolating
+  replacement and responsive authentication, then the `/search/top/` surface
+  itself stalled its target command channel.
+
+Attempt evidence:
+
+- installed timer tick `tick-a572e3424d4ca75b9f7bcf1031686c2e`, execution
+  `tick-attempt-66b671aae8c22623c5ea417aba8754c3`, Facebook provider
+  `provider-attempt-7fd8386100cbbf5a6d48006bf9ecfe3a`;
+- result digest
+  `sha256:3cff15cb048c26eae72e823b7b3b534f88dd42f9722b4bedf62f718bbad75593`,
+  `facebook_target_unresponsive`, 111 seconds, one opaque request, zero items,
+  cost, model tokens, auth, challenge, rate-limit, or quality signal;
+- operations completed service access, 20-second inventory, blank successor,
+  exact predecessor close, Facebook-home navigation, and authentication eval;
+  the later search `open` alone timed out at 30,041 milliseconds;
+- exact session inventory then showed a rendered `OpenAI - Search Results`
+  target at the requested URL. Independent raw page-WebSocket
+  `Runtime.evaluate` timed out, while `Page.captureScreenshot` returned an
+  immediate CDP internal error.
+
+Attempt-2 adaptation:
+
+- replace the generic `/search/top/` plus encoded post filter with Facebook's
+  already-supported post-specific `/search/posts/` route while preserving the
+  recent-post filter, query/readback gate, auth, one-successor bound, and
+  extraction/quality contracts;
+- this is a distinct surface adaptation, not an unchanged retry. A red route
+  regression must fail before implementation.
+
+Authority classification:
+
+- `inherited_authority`; attempt 1 of the operator's maximum three is consumed.
+
+Review disposition summary:
+
+- `blocking=1` post-specific surface candidate not yet implemented,
+  `rejected=0`, `needs_evidence=0`, `nonblocking_backlog=0`.
+
+Remaining acceptance criteria:
+
+- criteria 3 and 5-7.
+
+Next action:
+
+- land the red `/search/posts/` contract, version and validate service 0.3.41,
+  wait only for the already-running timer tick to terminate before install,
+  then consume attempt 2 on the distinct installed build.
+
+### Checkpoint P0037-C05 | 2026-08-10
+
+Plan version: 2
+
+State transition:
+
+- `attempt_1_search_surface_blocker -> service_0_3_41_candidate_validated`.
+
+Progress classification:
+
+- `implementation_complete`; the post-specific search route is the only
+  behavioral delta from installed 0.3.40.
+
+Owned changes:
+
+- `_search_url` now emits `https://www.facebook.com/search/posts/` with the
+  unchanged encoded recent-post filter;
+- added a route/host/filter regression that failed on `/search/top/` before
+  implementation;
+- service version `0.3.40 -> 0.3.41`, runtime manifest, changelog, and release
+  contracts are synchronized.
+
+Validation evidence:
+
+- focused Facebook, acquisition-worker, release-version, and runtime-package
+  suites pass;
+- canonical suite passes with `2636 passed, 7 skipped, 6 subtests passed` in
+  126.24 seconds;
+- attempt 1 terminated `complete_degraded`; the daily schedule returned to
+  ready with next boundary `2026-08-11T00:00:00Z` and no runtime error;
+- `git diff --check` passes.
+
+Authority classification:
+
+- `inherited_authority`; attempt 2 remains unconsumed until 0.3.41 is installed
+  and converged.
+
+Review disposition summary:
+
+- `blocking=1` install and attempt-2 proof pending, `rejected=0`,
+  `needs_evidence=0`, `nonblocking_backlog=0`.
+
+Remaining acceptance criteria:
+
+- criteria 3 and 5-7.
+
+Next action:
+
+- commit and push 0.3.41, build/install/sync it, run fresh guards and one
+  Facebook-only manual tick for attempt 2.
+
 ## Stop Rules
 
 Stop on any execution-bound violation. Do not convert a target-command stall
