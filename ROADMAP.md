@@ -1616,15 +1616,15 @@ most one acceptance tick and named-profile cache proof.
 
 Current State:
 
-- Plan 0045/P21 closed at terminal failed acceptance after the same Facebook
-  target-control invariant failed three bounded live packets;
-- browser PID 13177, the exact endpoint, authenticated profile, current build,
-  and three unrelated targets remain live; failed Facebook tabs were removed
-  and the active non-Facebook target evaluates successfully;
-- the operator explicitly authorized Plan 0046's one controlled same-profile,
-  current-build restart. Exact access-plan, capability, database, schedule,
-  build, profile, endpoint, and three-target inventory gates pass; the plan is
-  `restart_ready` and no tick is permitted before runtime smoke.
+- the operator-authorized same-profile/current-build restart succeeded as one
+  replacement browser, PID 83786, on the retained profile and current build;
+- Chrome restored exactly X, LinkedIn, and preview. A fresh Facebook target
+  opened and settled, but read-only evaluation job `r791343` timed out at the
+  exact 10-second worker boundary;
+- fail-closed handling stopped before scroll, provider preflight, or tick and
+  closed only the Facebook target. The three unrelated targets, live browser,
+  databases, schedule, service, and repository remain safe; accepted Facebook
+  evidence and named-profile cache proof remain unmet.
 
 Active Plan:
 
@@ -1637,8 +1637,9 @@ Dependencies:
 
 Next Action:
 
-- perform the one controlled restart, restore exactly the three inventoried
-  unrelated URLs, and require Facebook select/eval/scroll/eval before any tick.
+- Plan 0046 remains open at version 3/C03 with failed runtime smoke and zero
+  provider attempts. Reframe a materially different bounded runtime strategy
+  before any continuation; do not repeat this restart/eval/scroll/tick packet.
 
 ## P21 | Facebook Stale Prepared Extraction Refresh
 

@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P22
-Plan version: 2
+Plan version: 3
 Date: 2026-08-11
 Predecessor: Plan 0045 version 2/checkpoint P0045-C05
 
@@ -20,20 +20,21 @@ named-profile cache evidence.
 - service 0.3.47/schema 16 and agent-browser executable SHA-256
   `76b2779ffc65d85f22817c698732e387dffe9cd4f8225f9aaf6b65bba467d3d1`
   remain installed and source-validated;
-- browser PID 13177 and endpoint
-  `ws://127.0.0.1:38770/devtools/browser/00317084-6844-44c8-b1a3-c63555867ced`
-  remain live on profile `last30days-facebook`; the two failed Facebook tabs
-  were closed and three unrelated targets remain attached;
-- a final browser-preserving daemon handoff returned a successful evaluation
-  from the active preview target, while both the failed tick target and a fresh
-  same-profile Facebook target timed out on target control;
-- the same Facebook CDP input/target-control invariant has failed the Plan 0110
-  live scroll proof and the sole Plan 0044 and Plan 0045 ticks. The configured
-  repeated-no-progress bound therefore requires a human gate before changing
-  browser runtime state;
-- the operator explicitly authorized Plan 0046's one controlled same-profile
-  current-build restart with “ok go”. Accepted Facebook evidence and explicit
-  named-profile cache proof remain unmet.
+- the authorized same-profile/current-build restart succeeded and restored
+  exactly the three inventoried unrelated targets on browser PID 83786,
+  endpoint
+  `ws://127.0.0.1:39488/devtools/browser/c574210a-2ee2-4971-8b25-dee038040b41`,
+  profile `last30days-facebook`, and the current promoted Chromium build;
+- one fresh Facebook target opened and a bounded five-second settle completed,
+  but service job `r791343` timed out the first read-only evaluation after
+  exactly 10,000 milliseconds. The plan stopped before selectorless input,
+  provider preflight, or any tick;
+- cleanup job `r186349` closed only the failed Facebook target. X, LinkedIn,
+  and preview remain attached; the browser, endpoint, profile, and DevTools are
+  live, both databases return `ok`, and `daily-default` is unchanged and ready;
+- Plan 0046 remains open at the failed runtime-smoke gate with its authorized
+  packet exhausted. Accepted Facebook evidence and explicit named-profile
+  cache proof remain unmet.
 
 ## Scope After Human Gate
 
@@ -76,8 +77,8 @@ named-profile cache evidence.
 
 ## Execution Bounds And Gates
 
-- current state is `restart_ready`; the human gate is satisfied only for the
-  exact same-profile/current-build restart and bounded proof in this plan;
+- current state is `runtime_smoke_failed`; the one authorized restart and
+  Facebook evaluation smoke are consumed with no provider attempt;
 - after authorization: one browser restart, one target restoration pass, one
   Facebook target, one scroll smoke, one service preflight, and one tick;
 - stop immediately on auth/challenge/rate evidence, profile or build drift,
@@ -204,6 +205,70 @@ Next action:
 
 - commit this restart-ready checkpoint, then execute exactly one supported
   browser close/restart and restore only the three inventoried target URLs.
+
+### Checkpoint P0046-C03 | 2026-08-11
+
+Plan version: 3
+
+State transition:
+
+- `restart_ready -> runtime_smoke_failed`.
+
+Progress classification:
+
+- `no_progress`; the controlled restart and exact restoration succeeded, but
+  Facebook target control still failed before input or provider work and no
+  acceptance criterion advanced.
+
+Validation evidence:
+
+- close job `r322825` terminated old PID 13177 and endpoint port 38770;
+  remote-view job `r190269` launched one replacement browser on the same
+  retained profile/current promoted build as PID 83786 with endpoint
+  `ws://127.0.0.1:39488/devtools/browser/c574210a-2ee2-4971-8b25-dee038040b41`
+  and route `guacamole:1`;
+- Chrome session restoration recovered exactly the inventoried X, LinkedIn,
+  and preview URLs. Facebook target job `r59050` opened target
+  `D25F9564EFB877A6C4A1E0A2CA66F3EA`, and settle job `r50676` completed;
+- read-only evaluation job `r791343` entered `timed_out` with
+  `Service job timed out after 10000ms`. The hard stop prevented the planned
+  scroll, provider preflight, and tick, so request and provider-attempt counts
+  for this plan are zero;
+- cleanup job `r186349` closed only that Facebook target. Final inventory is
+  exactly X, LinkedIn, and preview; PID 83786, the endpoint, DevTools, and the
+  retained profile remain live. Service 0.3.47/schema 16 is ready, current and
+  rollback SQLite quick checks return `ok`, and `daily-default` remains
+  enabled/ready for `2026-08-12T00:00:00Z`.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Authority classification:
+
+- `inherited_authority`; the operator-authorized restart and smoke were used
+  exactly once. The fail-closed evaluation boundary forbids completing R04 or
+  entering R05 in this plan.
+
+Review disposition summary:
+
+- `blocking=1` Facebook read-only evaluation remains unresponsive after the
+  same-profile/current-build restart; `needs_evidence=2` accepted tick and
+  named-profile cache proof; `rejected=2` scroll after failed eval and provider
+  tick without smoke; `nonblocking_backlog=0`.
+
+Graphiti write status:
+
+- terminal source-backed outcome write is deferred until the repository
+  closeout commit is durable; repository and retained service receipts are
+  authoritative meanwhile.
+
+Next action or stop reason:
+
+- stop this packet and keep the plan open at its explicit failed-smoke gate. Do
+  not repeat the restart, evaluation, scroll, or tick under its exhausted
+  bounds; a materially different, explicitly bounded plan revision or
+  successor packet must own any continuation.
 
 ## Definition Of Done
 

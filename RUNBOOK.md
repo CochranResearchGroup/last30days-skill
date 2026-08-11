@@ -17195,3 +17195,65 @@ Next Bounded Action:
 - commit/push C02, then perform the one supported close/restart, restore only
   the three inventoried targets, and stop before provider work unless the exact
   Facebook select/eval/scroll/eval smoke passes.
+
+## Turn 289 | 2026-08-11
+
+Focus: execute Plan 0046's one authorized browser restart and fail closed on
+the Facebook runtime smoke.
+
+Authority Consulted:
+
+- operator “ok go”, Plan 0046/P22 C02, agent-browser runtime skill, repository
+  goal/validation/closeout policies, and live service/browser receipts.
+
+Decisions And Changes:
+
+- used exactly one supported close/restart on the existing
+  `last30days-facebook` profile and current promoted Chromium build;
+- accepted Chrome's exact restoration of the three inventoried unrelated tabs,
+  then opened one fresh Facebook target and performed only the bounded settle
+  and read-only evaluation permitted before input;
+- stopped when the evaluation timed out, without scroll, provider preflight,
+  tick, retry, alternate build, login, profile mutation, or schedule change;
+- closed only the failed Facebook target and preserved X, LinkedIn, preview,
+  the replacement browser, profile, and remote-view route.
+
+Validation Evidence:
+
+- old close job `r322825` succeeded; replacement remote-view job `r190269`
+  launched PID 83786 at
+  `ws://127.0.0.1:39488/devtools/browser/c574210a-2ee2-4971-8b25-dee038040b41`
+  on profile `last30days-facebook`, route `guacamole:1`, and Chromium
+  `150.0.7835.0+stealthcdp.3676a7503929`;
+- Facebook target job `r59050` and settle job `r50676` succeeded, then
+  evaluation job `r791343` timed out after exactly 10,000 milliseconds before
+  returning page state;
+- cleanup job `r186349` succeeded. Final tab inventory is exactly the original
+  X, LinkedIn, and preview URLs; browser PID 83786 and DevTools remain live;
+- no provider preflight or tick ran. Service 0.3.47/schema 16 remains ready,
+  both current and rollback SQLite quick checks return `ok`, schedule
+  `daily-default` remains enabled/ready for Aug 12 UTC, and source began this
+  packet clean/aligned at `b741b899`.
+
+State Movement:
+
+- Plan 0046 version 3/C03: `restart_ready -> runtime_smoke_failed`;
+- P22 remains `OPEN` at the failed runtime-smoke gate; the accepted evidence
+  and named-profile cache acceptance criteria remain unmet, and the authorized
+  restart packet is exhausted.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- terminal source-backed outcome write waits for the durable closeout commit;
+  repository and service receipts remain authoritative meanwhile.
+
+Stop Reason:
+
+- stop. Plan 0046's restart/eval packet is exhausted, and the same Facebook
+  target-control invariant persists after the runtime replacement. Do not
+  scroll, enqueue a tick, or repeat this packet without a materially different
+  bounded successor strategy.
