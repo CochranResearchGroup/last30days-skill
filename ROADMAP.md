@@ -1605,9 +1605,42 @@ Closeout:
 - Plan 0042 closed at version 4/C04 with a terminal acceptance failure and no
   authorized retry or further autonomous successor at the same invariant.
 
-## P21 | Facebook Stale Prepared Extraction Refresh
+## P22 | Facebook Retained Browser Runtime Recovery
 
 State: OPEN
+
+Objective: after explicit operator authority, perform one controlled restart
+of the retained Facebook browser on its existing profile/current build, prove
+Facebook target and input responsiveness before provider work, then permit at
+most one acceptance tick and named-profile cache proof.
+
+Current State:
+
+- Plan 0045/P21 closed at terminal failed acceptance after the same Facebook
+  target-control invariant failed three bounded live packets;
+- browser PID 13177, the exact endpoint, authenticated profile, current build,
+  and three unrelated targets remain live; failed Facebook tabs were removed
+  and the active non-Facebook target evaluates successfully;
+- Plan 0046 is documentation-only at `awaiting_human_gate`. No restart, target
+  restoration, tick, or other provider effect is currently authorized.
+
+Active Plan:
+
+- `docs/dev/plans/0046-2026-08-11-facebook-retained-browser-runtime-recovery.md`
+
+Dependencies:
+
+- consumes P21's exact terminal receipts and preserves the current service,
+  profile, build, schedule, source, data, and cost boundaries.
+
+Next Action:
+
+- wait for explicit operator authority for one controlled same-profile browser
+  restart; after authorization, require target/input smoke before any tick.
+
+## P21 | Facebook Stale Prepared Extraction Refresh
+
+State: CLOSED
 
 Objective: refresh an empty immediate prepared query extraction after the
 configured settle wait before deciding whether Facebook scrolling is needed,
@@ -1615,21 +1648,21 @@ then prove one installed tick publishes and serves accepted evidence.
 
 Current State:
 
-- Plan 0044's exact installed CDP wheel repair remains green in fake-CDP and
-  real-Chrome e2e tests, but its one live tick exposed the actual upstream
-  stale-read seam;
-- replacement auth recovery captures extraction immediately after navigation;
-  Plan 0045 now refreshes an empty capture after the four-second settle while
-  preserving non-empty and rate-limit single-read paths;
-- focused and expanded source gates pass, and service/release contracts
-  converge at 0.3.47; the full Python, Go, package, authority, and reproducible
-  artifact gates pass;
-- exact pushed commit `6ed4b784` is installed ready/compatible as service
-  0.3.47 with 0.3.46 retained for rollback. Databases, schedule, browser PID,
-  endpoint, profile, and one-attempt preflight are ready; only the sole
-  Facebook-only receipt remains.
+- exact pushed commit `6ed4b784` remains installed ready/compatible as service
+  0.3.47, and its focused stale-empty-capture regression plus all source,
+  package, and runtime gates pass;
+- sole tick `tick-3b374c8eaa1811b8d3eec1bdcec51d37` completed degraded after
+  the replacement page opened and evaluated successfully but selectorless
+  scroll timed out after 30.042 seconds. It consumed one attempt, one request,
+  and 46 wall seconds with zero evidence and was not retried;
+- browser-preserving handoff and a fresh disposable same-profile target proved
+  Facebook target control remains unresponsive while the browser endpoint,
+  profile, unrelated targets, and active preview evaluation remain healthy;
+- the repeated-no-progress bound fired across the Plan 0110 live scroll proof
+  and the sole Plan 0044 and Plan 0045 ticks. Accepted evidence and the named
+  cache proof remain unmet.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0045-2026-08-11-facebook-stale-prepared-extraction-refresh.md`
 
@@ -1640,8 +1673,8 @@ Dependencies:
 
 Next Action:
 
-- consume the one preflighted Facebook-only tick without retry, then require
-  accepted durable evidence and explicit named-profile cache proof.
+- Plan 0046/P22 records the bounded same-profile restart strategy at a human
+  gate. Do not perform it or enqueue another tick without explicit authority.
 
 ## P20 | Agent Browser CDP Input Scroll Repair
 

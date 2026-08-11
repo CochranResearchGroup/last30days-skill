@@ -1,8 +1,8 @@
 # Plan 0045 | Facebook Stale Prepared Extraction Refresh
 
-State: OPEN
+State: CLOSED
 Roadmap: P21
-Plan version: 1
+Plan version: 2
 Date: 2026-08-11
 Predecessor: Plan 0044 version 2/checkpoint P0044-C03
 
@@ -299,3 +299,73 @@ Next action:
 - criteria 1-6 have current test, commit, installed-runtime, tick, cache, and
   state-reconciliation evidence; test volume or installation alone is not
   completion.
+
+### Checkpoint P0045-C05 | 2026-08-11
+
+Plan version: 2
+
+State transition:
+
+- `installed_acceptance_ready -> terminal_live_acceptance_failure`.
+
+Progress classification:
+
+- `no_progress`; the installed stale-capture repair is valid at its focused
+  source seam, but the sole live tick reached the same retained Facebook CDP
+  input failure already observed by the two preceding bounded packets and
+  published no evidence.
+
+Validation evidence:
+
+- sole tick `tick-3b374c8eaa1811b8d3eec1bdcec51d37`, execution
+  `tick-attempt-4510a301db983aee77b148cecbf743bf`, provider attempt
+  `provider-attempt-99c0a0b7cd72cd4ce35803c0a7521686`, and snapshot
+  `tick-snapshot-c5a79d397edba1d170153d43efd90234` completed degraded with
+  one attempt, one request, 46 wall seconds, and zero observed, accepted, or
+  rejected items;
+- retained provider diagnostics report replacement `open` success in 6.543
+  seconds and `eval` success in 0.666 seconds, followed by selectorless
+  `scroll` timing out after 30.042 seconds with safe code
+  `agent_browser_timeout`;
+- the tick was not retried and named-profile cache acceptance was correctly
+  skipped because no durable evidence exists;
+- direct diagnosis proved the browser endpoint and tab inventory remained
+  reachable, but the Facebook target did not answer raw CDP evaluation. A
+  supported daemon handoff preserved browser PID 13177 and the exact endpoint,
+  yet a fresh disposable same-profile Facebook target also timed out on target
+  selection and evaluation;
+- only the failed tick target and disposable diagnostic target were closed.
+  A final supported handoff retained PID 13177, the exact endpoint and three
+  unrelated targets; the active preview target then evaluated successfully,
+  isolating the remaining failure to Facebook target control rather than the
+  browser-wide CDP endpoint or profile lease.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Authority classification:
+
+- `human_gate`; the same Facebook CDP input/target-control invariant has now
+  failed the Plan 0110 live scroll proof and the sole Plan 0044 and Plan 0045
+  ticks. Continuing would cross the configured repeated-no-progress bound and
+  require a browser restart, alternate browser build, or another materially
+  changed runtime strategy.
+
+Review disposition summary:
+
+- `blocking=1` retained Facebook targets become uncontrollable on the current
+  Chromium/CDP path; `needs_evidence=1` accepted installed tick plus named
+  cache proof; `rejected=1` another blind tick or scroll transport retry;
+  `nonblocking_backlog=0`.
+
+Graphiti write status:
+
+- pending one compact source-backed closeout write after the durable Git
+  checkpoint; repository and installed receipts remain authoritative.
+
+Stop reason:
+
+- Plan 0045/P21 closes with acceptance criterion 5 unmet. Do not enqueue
+  another Facebook tick or restart/replace the authenticated browser without
+  explicit authority for the changed runtime strategy.

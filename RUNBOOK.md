@@ -17069,3 +17069,72 @@ Next Bounded Action:
 
 - consume the one Facebook-only tick without retry; on success run only the
   explicit named-profile cache proof and final reconciliation.
+
+## Turn 287 | 2026-08-11
+
+Focus: execute the sole Plan 0045 live gate, diagnose its terminal failure,
+and stop at the repeated-no-progress boundary.
+
+Authority Consulted:
+
+- Plan 0045/P21 C04, goal-execution repeated-failure bounds, validation and
+  handoff policy, installed service/tick receipts, retained agent-browser
+  runtime, and browser-preserving handoff contract.
+
+Decisions And Changes:
+
+- consumed exactly the one preflighted Facebook-only tick and did not retry it;
+- skipped named-profile cache acceptance because the tick published zero
+  evidence;
+- used three supported browser-preserving handoffs to distinguish a poisoned
+  daemon queue from target failure, and opened one disposable same-profile
+  Facebook target for bounded diagnosis;
+- closed only the failed tick Facebook tab and the disposable diagnostic tab,
+  then performed a final handoff that retained the authenticated browser,
+  profile, endpoint, and three unrelated targets;
+- closed Plan 0045/P21 with acceptance unmet and opened documentation-only
+  Plan 0046/P22 at an explicit human gate; it authorizes no runtime action.
+
+Validation Evidence:
+
+- tick `tick-3b374c8eaa1811b8d3eec1bdcec51d37`, execution
+  `tick-attempt-4510a301db983aee77b148cecbf743bf`, provider attempt
+  `provider-attempt-99c0a0b7cd72cd4ce35803c0a7521686`, and snapshot
+  `tick-snapshot-c5a79d397edba1d170153d43efd90234` are terminal
+  `complete_degraded` with one attempt, one request, 46 wall seconds, and zero
+  evidence;
+- provider operations show replacement `open` success, `eval` success, then
+  `scroll` timeout after 30.042 seconds with `agent_browser_timeout`;
+- the original Facebook target failed a five-second raw CDP evaluation. After
+  browser-preserving daemon recovery, a fresh disposable same-profile Facebook
+  target also timed out on target selection and evaluation;
+- final cleanup retained browser PID 13177 and endpoint
+  `ws://127.0.0.1:38770/devtools/browser/00317084-6844-44c8-b1a3-c63555867ced`,
+  reattached three unrelated targets, removed the handoff retry record, and
+  returned `preview` from the active non-Facebook target evaluation.
+
+State Movement:
+
+- Plan 0045 version 2/C05: `OPEN -> CLOSED` at terminal live acceptance
+  failure;
+- P21: `OPEN -> CLOSED`; accepted Facebook evidence and named-profile cache
+  proof remain unmet;
+- Plan 0046/P22: `PLANNED -> OPEN` at `awaiting_human_gate` with no executable
+  browser or provider authority;
+- overall goal: `active -> blocked` because the same Facebook CDP
+  input/target-control invariant failed three bounded live packets.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending one compact source-backed closeout write after the durable Git
+  checkpoint; repository and installed receipts remain authoritative.
+
+Next Bounded Action:
+
+- stop before another tick, browser restart, or build substitution. Explicit
+  authority is required to execute Plan 0046's one controlled same-profile
+  restart; another blind scroll/tick attempt is prohibited.
