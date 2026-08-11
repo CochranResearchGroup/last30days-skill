@@ -17018,3 +17018,54 @@ Next Bounded Action:
 
 - commit and push the exact 0.3.47 candidate, rebuild from that commit, then
   perform one transactional upgrade after fresh preflight.
+
+## Turn 286 | 2026-08-11
+
+Focus: commit, push, install, and preflight exact service 0.3.47.
+
+Authority Consulted:
+
+- Plan 0045/P21 C03, clean Git/reproducible artifact state, transactional
+  installer, installed MCP/service/database/schedule/profile authorities, and
+  the one-attempt live gate.
+
+Decisions And Changes:
+
+- committed and pushed exact source `6ed4b784473b9d2af4d3b153055179183af4ed80`;
+- rebuilt the clean commit and confirmed the same reproducible artifact digest;
+- performed one transactional upgrade to service 0.3.47 and retained 0.3.46 as
+  the previous rollback release;
+- ran fresh service, MCP, database, schedule, browser/profile, and exact tick
+  preflight before permitting the sole provider operation.
+
+Validation Evidence:
+
+- artifact SHA-256 is
+  `7bf1fe1285caf6ae9727f4a9da8460b19d351298a1009363d999fa96b76ba106`;
+- service 0.3.47/MCP 4.0.3 are ready/compatible at schema 16; runtime manifest is
+  `7babaa9ac9045def3826e9bd4563cd94e2806838fcb9b17a567c668342125243`
+  and contract is
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
+- current and rollback databases return `ok`; recurring schedule remains ready
+  for `2026-08-12T00:00:00Z`;
+- retained Facebook browser PID 13177 and endpoint remain ready;
+- `plan-0045-stale-capture-refresh` preflight is `ready` with one attempt,
+  zero cost/model, and unchanged item/request/wall ceilings.
+
+State Movement:
+
+- Plan 0045/P21 advances C03 -> C04 and remains `OPEN` at
+  `installed_acceptance_ready`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred until terminal downstream evidence.
+
+Next Bounded Action:
+
+- consume the one Facebook-only tick without retry; on success run only the
+  explicit named-profile cache proof and final reconciliation.

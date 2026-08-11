@@ -238,6 +238,62 @@ Next action:
 - commit and push the exact 0.3.47 candidate, rebuild from that commit, then run
   fresh install preflight and perform the one transactional upgrade.
 
+### Checkpoint P0045-C04 | 2026-08-11
+
+Plan version: 1
+
+State transition:
+
+- `install_ready_candidate -> installed_acceptance_ready`.
+
+Progress classification:
+
+- `outcome_progress`; exact pushed source is installed as service 0.3.47 and
+  every gate for the sole downstream acceptance tick is ready.
+
+Validation evidence:
+
+- exact commit `6ed4b784473b9d2af4d3b153055179183af4ed80` is pushed to
+  `origin/main`; its clean rebuild retained artifact SHA-256
+  `7bf1fe1285caf6ae9727f4a9da8460b19d351298a1009363d999fa96b76ba106`;
+- transactional upgrade installed `releases/0.3.47`, retained 0.3.46 as
+  previous, and reports ready/compatible with MCP 4.0.3 at schema 16, runtime
+  manifest `7babaa9ac9045def3826e9bd4563cd94e2806838fcb9b17a567c668342125243`,
+  and canonical contract
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
+- current and 0.3.46 rollback databases return `ok`; schedule `daily-default`
+  remains enabled/ready with next boundary `2026-08-12T00:00:00Z`;
+- Facebook browser PID 13177, exact endpoint, profile readiness, and acquisition
+  readiness remain unchanged;
+- preflight for schedule receipt `plan-0045-stale-capture-refresh` is `ready`
+  with one attempt, zero cost/model, three-item, 50-request, and 120-second
+  limits.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Authority classification:
+
+- `inherited_authority`; exact installation and the remaining one Facebook tick
+  are the bounded effects explicitly admitted by this plan.
+
+Review disposition summary:
+
+- `blocking=0` through installed preflight; `needs_evidence=1` terminal tick
+  with accepted evidence and named-profile cache proof; `rejected=0`;
+  `nonblocking_backlog=0`.
+
+Graphiti write status:
+
+- deferred until terminal downstream evidence.
+
+Next action:
+
+- consume the one Facebook-only tick for the closed interval. Stop without
+  retry on any terminal failure; on success, run only the named-profile
+  cache-only proof and final reconciliation.
+
 ## Definition Of Done
 
 - criteria 1-6 have current test, commit, installed-runtime, tick, cache, and

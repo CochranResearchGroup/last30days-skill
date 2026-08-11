@@ -1623,8 +1623,11 @@ Current State:
   preserving non-empty and rate-limit single-read paths;
 - focused and expanded source gates pass, and service/release contracts
   converge at 0.3.47; the full Python, Go, package, authority, and reproducible
-  artifact gates pass. Exact commit/push, one service install, and at most one
-  later Facebook-only receipt remain.
+  artifact gates pass;
+- exact pushed commit `6ed4b784` is installed ready/compatible as service
+  0.3.47 with 0.3.46 retained for rollback. Databases, schedule, browser PID,
+  endpoint, profile, and one-attempt preflight are ready; only the sole
+  Facebook-only receipt remains.
 
 Active Plan:
 
@@ -1637,8 +1640,8 @@ Dependencies:
 
 Next Action:
 
-- commit and push the exact 0.3.47 candidate, rebuild from that commit, then
-  perform the one transactional service upgrade after fresh preflight.
+- consume the one preflighted Facebook-only tick without retry, then require
+  accepted durable evidence and explicit named-profile cache proof.
 
 ## P20 | Agent Browser CDP Input Scroll Repair
 
