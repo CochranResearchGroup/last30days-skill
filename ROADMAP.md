@@ -1574,7 +1574,7 @@ Closeout:
 
 ## P18 | Facebook Combined Capture Deadline Repair
 
-State: OPEN
+State: CLOSED
 
 Objective: allocate the existing 105/120-second Facebook adapter/parent budget
 to the one combined replacement-page capture without adding commands, targets,
@@ -1582,15 +1582,15 @@ retries, or browser/profile effects.
 
 Current State:
 
-- installed service 0.3.45 and MCP 4.0.3 are ready/compatible at schema 16;
-- the latest provider attempt reached the final combined capture after all
-  acquisition and replacement operations succeeded, then failed at 26.708
-  seconds against a 25-second inner/30-second outer deadline;
-- more than 50 seconds of the approved adapter budget remained. Plan 0042 owns
-  an exact 45/50 red/green deadline change, service 0.3.46 candidate gates, one
-  final installed tick, and terminal closeout.
+- exact pushed commit `321a4807` is installed as service 0.3.46 and MCP 4.0.3
+  is ready/compatible at schema 16;
+- the 45/50 deadline change passed all source gates, but the sole installed
+  tick `tick-9262e44d7769b0b0146e7c82cb3d6e38` completed degraded after 54
+  seconds with the final eval failing at 31.810 seconds and zero evidence;
+- the tick was not retried. Databases, recurring schedule, retained profile,
+  installed service, and Git remain safe and reconciled.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0042-2026-08-10-facebook-combined-capture-deadline-repair.md`
 
@@ -1600,11 +1600,10 @@ Dependencies:
   one-successor/single-capture contracts without changing browser ownership or
   parent resource ceilings.
 
-Next Action:
+Closeout:
 
-- commit and push the fully validated service 0.3.46 source, then build and
-  preflight the exact commit artifact before the one supported upgrade.
-  contract, then make the deadline-only repair.
+- Plan 0042 closed at version 4/C04 with a terminal acceptance failure and no
+  authorized retry or further autonomous successor at the same invariant.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 

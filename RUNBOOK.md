@@ -16578,3 +16578,64 @@ Next Bounded Action:
 
 - commit and push service 0.3.46 source, rebuild from that exact commit, then
   perform one supported upgrade after fresh preflight.
+
+## Turn 278 | 2026-08-10
+
+Focus: execute and terminally close the sole Plan 0042 installed acceptance
+attempt.
+
+Authority Consulted:
+
+- Plan 0042/P18 C03, exact pushed commit and artifact, installed service/MCP,
+  current and rollback databases, daily schedule, access plan, retained browser
+  inventory, and the one-attempt/no-successor stop contract.
+
+Decisions And Changes:
+
+- committed and pushed `321a4807df6ff17ff31131ed9c6d2c3ca4c4c681`,
+  rebuilt its exact reproducible artifact, and installed service 0.3.46 once;
+- used the receipt-only schedule identity `plan-0042-facebook-deadline` so the
+  same closed UTC interval did not deduplicate to Plan 0041's terminal tick;
+  the recurring schedule itself was not changed;
+- consumed the one authorized Facebook-only tick and stopped without retry or
+  another successor when it completed degraded with no accepted evidence.
+
+Validation Evidence:
+
+- service 0.3.46 and MCP 4.0.3 are ready/compatible at schema 16 with runtime
+  manifest `9da5958a7e28e2857f533012954f97a8753f98eee8a292efc1e72519335d6e59`
+  and canonical contract
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
+- tick `tick-9262e44d7769b0b0146e7c82cb3d6e38`, execution attempt
+  `tick-attempt-e036042be3c56653f31e40ffcb76a6b1`, provider attempt
+  `provider-attempt-f934b51a1e784cae3f145fa96d9baa4c`, and snapshot
+  `tick-snapshot-bc39e35bb34b9df52e8defb0a05fcb0d` are terminal;
+- the provider consumed one attempt, one network request, 54 wall seconds,
+  zero cost/model tokens/items, and returned `agent_browser_error`; final eval
+  failed at 31.810 seconds after acquisition, tab replacement, and navigation;
+- current and rollback database checks are `ok`; schedule remains ready for
+  `2026-08-12T00:00:00Z`; the retained Facebook results tab is active; local
+  candidate HEAD and `origin/main` were aligned at the installed source commit
+  before closeout-only documentation changes.
+
+State Movement:
+
+- Plan 0042/P18 closes version 4/C04 at `terminal_acceptance_failure`; the
+  authorized repair campaign is exhausted without acceptance.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the installed effect and closeout were primary-owned and
+  serialized.
+
+Graphiti Write Status:
+
+- terminal source-backed episode job
+  `b10af94a-3419-4600-89b4-06c5d9c313d2` was attempted once after a healthy
+  provider preflight and ended `timed_out`/`retryable=false`; no retry was
+  issued, so repo and installed receipts remain authoritative.
+
+Next Bounded Action:
+
+- no autonomous Facebook retry or successor; preserve the exact receipt for a
+  separately authorized investigation.

@@ -1,8 +1,8 @@
 # Plan 0042 | Facebook Combined Capture Deadline Repair
 
-State: OPEN
+State: CLOSED
 Roadmap: P18
-Plan version: 3
+Plan version: 4
 Date: 2026-08-10
 Predecessor: Plan 0041 version 4/checkpoint P0041-C04
 
@@ -224,3 +224,59 @@ Next action:
 
 - commit and push service 0.3.46 source, rebuild the exact commit artifact, and
   perform the one supported upgrade only after fresh preflight.
+
+### Checkpoint P0042-C04 | 2026-08-10
+
+Plan version: 4
+
+State transition:
+
+- `install_ready_candidate -> terminal_acceptance_failure`.
+
+Progress classification:
+
+- `terminal_failure`; the deadline change installed and was exercised, but the
+  sole acceptance tick still ended with a failed combined capture and no
+  durable Facebook evidence.
+
+Validation evidence:
+
+- exact pushed commit `321a4807df6ff17ff31131ed9c6d2c3ca4c4c681`
+  installed once as service 0.3.46; MCP 4.0.3 reports compatible at schema 16
+  and contract digest
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`;
+- sole tick `tick-9262e44d7769b0b0146e7c82cb3d6e38`, attempt
+  `tick-attempt-e036042be3c56653f31e40ffcb76a6b1`, and provider attempt
+  `provider-attempt-f934b51a1e784cae3f145fa96d9baa4c` completed degraded
+  after 54 seconds with zero accepted/observed items, zero cost/model use, no
+  fallback, and no incident;
+- browser operations were service 0.227/3.310 seconds, tab 1.752 seconds,
+  old-target eval failed at 4.617 seconds, tab/new/close 1.767/2.263/1.897
+  seconds, navigation 7.874 seconds, and final eval failed at 31.810 seconds;
+  the typed outcome remained `agent_browser_error`;
+- current and rollback databases return `ok`; service 0.3.46 remains ready,
+  the daily schedule remains enabled/ready for `2026-08-12T00:00:00Z`, and
+  the retained `last30days-facebook` browser still has the Facebook results tab
+  active. Candidate HEAD and `origin/main` were aligned at the installed commit
+  before closeout-only documentation changes.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; no delegated or parallel live work occurred.
+
+Graphiti write status:
+
+- terminal episode job `b10af94a-3419-4600-89b4-06c5d9c313d2` was attempted
+  once and ended `timed_out`/`retryable=false`; it was not retried. Repository
+  and installed receipts remain the durable authorities.
+
+Authority classification:
+
+- `inherited_authority_exhausted`; the one authorized Plan 0042 tick was
+  consumed. No retry or further autonomous successor is allowed at this
+  invariant.
+
+Next action:
+
+- none autonomously; retain the terminal receipt and require a newly scoped
+  investigation before any further Facebook acquisition attempt.
