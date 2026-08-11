@@ -17311,8 +17311,10 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- no new write before the direct-diagnosis repository checkpoint is durable;
-  live receipts and the repository remain authoritative.
+- after pushed diagnosis commit `153009a`, one source-backed memory write was
+  queued as job `2fd1bff1-0ab5-49e6-a8f6-da9d116d40a8` in
+  `last30days_skill_main`; queued status is not persistence proof, so live
+  receipts and the repository remain authoritative.
 
 Stop Reason:
 
