@@ -501,8 +501,10 @@ Review disposition summary:
 
 Graphiti write status:
 
-- no new write before this regression checkpoint is durable; runtime stderr,
-  service trace, and repository state remain authoritative.
+- after pushed diagnosis commit `09adad5`, one source-backed memory write was
+  queued as job `0f1bfdc7-7f1d-4a75-89b6-a53b684439e1` in
+  `last30days_skill_main`; queued status is not persistence proof, so runtime
+  stderr, service trace, and repository state remain authoritative.
 
 Next action or stop reason:
 

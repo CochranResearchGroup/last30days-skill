@@ -17443,8 +17443,10 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- no new write before this regression checkpoint is committed; local stderr,
-  retained service traces, and repository state remain authoritative.
+- provider readiness passed, then one source-backed memory write was queued as
+  job `0f1bfdc7-7f1d-4a75-89b6-a53b684439e1` in `last30days_skill_main` after
+  pushed commit `09adad5`. Queued status is not persistence proof; local
+  stderr, retained service traces, and repository state remain authoritative.
 
 Stop Reason:
 
