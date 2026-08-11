@@ -36,6 +36,8 @@ DEPTH_CONFIG = {
 MAX_RUN_BUDGET_SECONDS = 105
 REMOTE_VIEW_RECONCILIATION_RESERVE_SECONDS = 10
 TAB_INVENTORY_TIMEOUT_SECONDS = 20
+QUERY_CAPTURE_OUTER_TIMEOUT_SECONDS = 50
+QUERY_CAPTURE_INNER_TIMEOUT_MS = 45_000
 
 ERROR_TYPES = {
     "agent_browser_missing",
@@ -1225,11 +1227,11 @@ class CliAgentBrowserClient:
     def _evaluate_query_capture(
         self, workspace: BrowserWorkspace
     ) -> dict[str, Any]:
-        outer_timeout = min(self.timeout, 30)
+        outer_timeout = min(self.timeout, QUERY_CAPTURE_OUTER_TIMEOUT_SECONDS)
         inner_timeout_ms = min(
             self.job_timeout_ms,
-            25_000,
-            max(1_000, (outer_timeout - 3) * 1_000),
+            QUERY_CAPTURE_INNER_TIMEOUT_MS,
+            max(1_000, (outer_timeout - 5) * 1_000),
         )
         raw = self._invoke(
             [

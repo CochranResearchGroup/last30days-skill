@@ -374,6 +374,24 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual("3000", command[command.index("--job-timeout-ms") + 1])
         self.assertEqual(12, invoke.call_args.kwargs["timeout"])
 
+    def test_combined_query_capture_uses_available_adapter_budget(self):
+        client = facebook.CliAgentBrowserClient(timeout=105, job_timeout_ms=105_000)
+        workspace = facebook.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="browser-1",
+            session_name="last30days-facebook",
+        )
+        with mock.patch.object(
+            client,
+            "_invoke",
+            return_value={"result": {"auth": {}, "page": {}, "extraction": {}}},
+        ) as invoke:
+            client._evaluate_query_capture(workspace)
+
+        command = invoke.call_args.args[0]
+        self.assertEqual("45000", command[command.index("--job-timeout-ms") + 1])
+        self.assertEqual(50, invoke.call_args.kwargs["timeout"])
+
 
     def test_extract_script_does_not_rescan_every_ancestor_subtree(self):
         self.assertNotIn("parent.querySelectorAll(actionSelector)", facebook.EXTRACT_SCRIPT)

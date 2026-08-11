@@ -16433,3 +16433,148 @@ Next Bounded Action:
 - commit and push service 0.3.45 source, build the exact commit artifact, then
   run one supported upgrade and one Facebook-only acceptance tick after fresh
   no-launch preflight.
+
+## Turn 275 | 2026-08-10
+
+Focus: close the successful acquisition repair at its terminal capture failure
+and open one bounded deadline successor.
+
+Authority Consulted:
+
+- active goal `repair the tick`, Plan 0041/P17 C03, installed service/MCP,
+  exact tick/provider/browser operation receipts, retained browser probes,
+  CodeGraph capture flow, historical Facebook attempts, and freshly re-read
+  planning, validation, goal, documentation, and roadmap policies.
+
+Decisions And Changes:
+
+- installed exact pushed commit `150b9d7` as service 0.3.45; compatibility and
+  preflight passed before the one authorized Facebook-only tick;
+- stopped without retry when tick `tick-92d7e856aee65413d024ff3cfda47516`
+  completed degraded with provider attempt
+  `provider-attempt-e75eaaddc357798eadf19d9424410881`;
+- classified the result as blocker reduction: the repair eliminated the old
+  remote-view failure and advanced to the final combined capture, which failed
+  at 26.708 seconds against its 25-second inner deadline;
+- closed Plan 0041/P17 and opened Plan 0042/P18 for one changed deadline
+  strategy. This is not a retry of the failed packet and does not add a system,
+  source, profile, data class, command, target, cost, or parent budget.
+
+Validation Evidence:
+
+- service 0.3.45 runtime manifest
+  `2cb15a6ea92fae932e0d657fbc27444219eff867b9ca52feac35ba25f8bcacf8`
+  is installed ready; MCP 4.0.3 is compatible at schema 16;
+- operations: service 0.298/3.513 seconds, tab 1.793 seconds, old-target eval
+  failed at 4.619 seconds, tab/new/close and 8.673-second navigation succeeded,
+  final capture failed at 26.708 seconds; one attempt, zero cost/model use,
+  zero items, no fallback or incident;
+- current and rollback databases were `ok` before effect; schedule remained
+  enabled/ready for `2026-08-12T00:00:00Z`; retained Facebook tab inventory is
+  present, while bounded URL and snapshot target probes time out.
+
+State Movement:
+
+- Plan 0041/P17 closes version 4/C04 at `terminal_acceptance_failure`;
+- Plan 0042/P18 opens version 1/C01 at `bounded_capture_deadline_repair`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no delegation or parallel live work occurred.
+
+Graphiti Write Status:
+
+- pending terminal successor outcome to avoid duplicate intermediate episodes.
+
+Next Bounded Action:
+
+- add the red 45-second inner/50-second outer capture regression, then change
+  only that deadline allocation and re-run focused gates.
+
+## Turn 276 | 2026-08-10
+
+Focus: implement and focus-validate the Plan 0042 capture deadline repair.
+
+Authority Consulted:
+
+- Plan 0042/P18 C01, current planning, validation, release, documentation, Git,
+  closeout, and goal policies, and the canonical Facebook adapter tests.
+
+Decisions And Changes:
+
+- captured the required red proof: the combined capture emitted a 25,000 ms
+  job deadline instead of the required 45,000 ms;
+- changed only that capture boundary to a 45-second inner job inside a
+  50-second outer waiter, retaining the existing 105/120-second adapter and
+  parent limits and adding no command, target, retry, or browser effect;
+- advanced service source and release/configuration contracts to 0.3.46 and
+  refreshed the canonical runtime manifest. No installation occurred.
+
+Validation Evidence:
+
+- the exact deadline test is green at 45/50;
+- expanded Facebook, release, runtime-package, acquisition-worker, Reddit, and
+  tick suites pass with 297 tests plus one expected skip;
+- planning authority remains singular at Plan 0042/P18.
+
+State Movement:
+
+- Plan 0042/P18 advances version 1/C01 -> version 2/C02 and remains `OPEN` at
+  `source_candidate_implemented`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no delegated or parallel work occurred.
+
+Graphiti Write Status:
+
+- pending the terminal installed outcome.
+
+Next Bounded Action:
+
+- run the complete pre-install candidate gate, then commit and push only if it
+  passes.
+
+## Turn 277 | 2026-08-10
+
+Focus: converge the service 0.3.46 install-ready candidate.
+
+Authority Consulted:
+
+- Plan 0042/P18 C02, release and runtime-manifest contracts, full validation,
+  Git integration, and live-effect sequencing policies.
+
+Decisions And Changes:
+
+- completed the full pre-install gate before any runtime mutation;
+- retained the deadline-only implementation and exact release/configuration
+  synchronization after reviewing the bounded diff;
+- produced a reproducible service 0.3.46 artifact from the validated worktree.
+
+Validation Evidence:
+
+- full Python gate: 2,649 passed, seven skipped, six subtests passed;
+- Go test/vet, Python compilation, generated-contract freshness, authority
+  audit, runtime build, and patch hygiene pass;
+- runtime manifest SHA-256:
+  `9da5958a7e28e2857f533012954f97a8753f98eee8a292efc1e72519335d6e59`;
+- service artifact SHA-256:
+  `b0d7d01e5a0cc89afcd142f2828cafe7ab4388c6a9191ac6f3a90fc5fdda8e51`.
+
+State Movement:
+
+- Plan 0042/P18 advances version 2/C02 -> version 3/C03 and remains `OPEN` at
+  `install_ready_candidate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no delegated or parallel agent work occurred.
+
+Graphiti Write Status:
+
+- pending terminal installed evidence.
+
+Next Bounded Action:
+
+- commit and push service 0.3.46 source, rebuild from that exact commit, then
+  perform one supported upgrade after fresh preflight.

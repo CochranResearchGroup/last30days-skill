@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook combined-capture deadline.** Service 0.3.46 gives the existing
+  single combined Facebook query capture a 45-second inner job deadline inside
+  a 50-second outer waiter. The change stays within the existing 105-second
+  adapter and 120-second parent budgets and adds no command, target, retry,
+  browser/profile effect, or source request.
+
 - **Facebook late browser-operation reconciliation.** Service 0.3.45 keeps a
   ten-second reserve inside the bounded Facebook adapter run when remote-view
   acquisition is required. If the CLI waiter returns a typed browser error or

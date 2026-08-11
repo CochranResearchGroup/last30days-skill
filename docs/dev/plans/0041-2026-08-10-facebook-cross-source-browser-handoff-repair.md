@@ -1,8 +1,8 @@
 # Plan 0041 | Facebook Cross-Source Browser Handoff Repair
 
-State: OPEN
+State: CLOSED
 Roadmap: P17
-Plan version: 3
+Plan version: 4
 Date: 2026-08-10
 Predecessor: Plan 0040 version 3/checkpoint P0040-C03
 
@@ -44,6 +44,14 @@ failure at the bounded CLI wait deadline.
   The complete Python suite, Go test/vet, compilation, contract generation,
   release packaging, authority audit, and patch hygiene pass. Installation and
   the one Facebook acceptance effect remain unconsumed;
+- commit `150b9d7b76261630b3bbc97c3ee90ee7d1ff62bc` is pushed and its
+  exact 0.3.45 artifact is installed, ready, and MCP-compatible. The sole
+  Facebook acceptance tick `tick-92d7e856aee65413d024ff3cfda47516`
+  proved acquisition reconciliation but failed later at the combined page
+  capture after 26.708 seconds, with no retry;
+- Plan 0041 therefore closes at its one-attempt terminal boundary. Successor
+  Plan 0042 owns the newly exposed capture-deadline mismatch under the same
+  goal and profile envelope.
 - current no-launch service and access-plan readbacks show one healthy
   `last30days-facebook` browser and recommend `reuse_existing_browser` with no
   manual action. No profile, browser, tab, lock, schedule, or database mutation
@@ -316,3 +324,64 @@ Next action:
 
 - commit and push the validated 0.3.45 source identity, build the exact commit,
   then perform one supported upgrade and one bounded Facebook-only tick.
+
+### Checkpoint P0041-C04 | 2026-08-10
+
+Plan version: 4
+
+State transition:
+
+- `install_ready_candidate -> terminal_acceptance_failure`.
+
+Progress classification:
+
+- `blocker_reduction`; the installed repair removed the remote-view failure
+  and exposed a later, exact combined-capture deadline mismatch, but this
+  packet did not achieve Facebook evidence acceptance.
+
+Validation evidence:
+
+- pushed commit `150b9d7` built artifact SHA-256
+  `4cbad60d7582b8e7089628aa93a1186d1e69e93c122e4985d54326db7647a274`;
+  supported upgrade installed service 0.3.45 with runtime manifest
+  `2cb15a6ea92fae932e0d657fbc27444219eff867b9ca52feac35ba25f8bcacf8`;
+- MCP 4.0.3 reports `compatible`, schema 16, and the canonical contract digest;
+  preflight retained one Facebook provider, one attempt, three items, 120
+  seconds, zero cost/model use, one ready browser, no conflict, and no challenge;
+- the only tick `tick-92d7e856aee65413d024ff3cfda47516`
+  used provider attempt `provider-attempt-e75eaaddc357798eadf19d9424410881`
+  and ended `complete_degraded` after 52 seconds with zero items;
+- operations advanced past acquisition: service 0.298/3.513 seconds, tab
+  inventory 1.793 seconds, stale-target probe failed at 4.619 seconds, exact
+  replacement tab/new/close succeeded, navigation succeeded in 8.673 seconds,
+  then the single combined capture failed at 26.708 seconds against its
+  25-second inner/30-second outer contract;
+- retained tab inventory still identifies the expected active Facebook search
+  URL, but bounded `get url` and `snapshot` probes time out. No retry, browser
+  restart, profile mutation, or cleanup occurred.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; installed proof and diagnosis remained primary-owned.
+
+Authority classification:
+
+- `inherited_authority`; this packet is terminal, while a changed capture-
+  deadline strategy is a bounded successor under the same active goal rather
+  than a retry of this failed instance.
+
+Review disposition summary:
+
+- `blocking=1` combined capture deadline mismatch transferred to Plan 0042;
+  `needs_evidence=1` successor installed acceptance; `rejected=2` earlier
+  causes; `nonblocking_backlog=0`.
+
+Graphiti write status:
+
+- pending the successor terminal outcome so one compact episode can describe
+  the complete repair chain without duplicate intermediate writes.
+
+Next action:
+
+- Plan 0042 tests a 45-second inner/50-second outer single-capture allowance
+  inside the unchanged 105/120-second adapter/parent bounds.

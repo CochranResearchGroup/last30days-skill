@@ -1532,7 +1532,7 @@ Closeout:
 
 ## P17 | Facebook Cross-Source Browser Handoff Repair
 
-State: OPEN
+State: CLOSED
 
 Objective: make the recurring X-to-Facebook sequence reconcile a late-completed
 service operation to the one retained authenticated social browser instead of
@@ -1550,12 +1550,14 @@ Current State:
   status contains the exact ready browser;
 - source now reserves ten seconds for one read-only status reconciliation,
   accepts only an exact ready retained owner, and performs no retry or relaunch;
-- service candidate 0.3.45 passes the complete Python suite (2,648 passed,
-  seven skipped, six passing subtests), Go test/vet, compilation, generation,
-  packaging, authority, and patch gates. Plan 0041 next owns one supported
-  installation and at most one Facebook-only acceptance tick.
+- service 0.3.45 is installed from pushed commit `150b9d7`; the late
+  reconciliation repair moved the sole acceptance attempt past acquisition,
+  retained-browser reuse, tab inventory, target replacement, and navigation;
+- the tick then failed at the 25-second combined capture deadline after 26.708
+  seconds. Plan 0041 closed without retry and transferred only that newly
+  exposed deadline mismatch to P18/Plan 0042.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0041-2026-08-10-facebook-cross-source-browser-handoff-repair.md`
 
@@ -1565,10 +1567,44 @@ Dependencies:
   durable tick, service, schema, release-lock, and schedule contracts while
   preserving the single authenticated social profile lane.
 
+Closeout:
+
+- Plan 0041 closed at version 4/C04 with installed acquisition blocker
+  reduction and an exact terminal capture failure.
+
+## P18 | Facebook Combined Capture Deadline Repair
+
+State: OPEN
+
+Objective: allocate the existing 105/120-second Facebook adapter/parent budget
+to the one combined replacement-page capture without adding commands, targets,
+retries, or browser/profile effects.
+
+Current State:
+
+- installed service 0.3.45 and MCP 4.0.3 are ready/compatible at schema 16;
+- the latest provider attempt reached the final combined capture after all
+  acquisition and replacement operations succeeded, then failed at 26.708
+  seconds against a 25-second inner/30-second outer deadline;
+- more than 50 seconds of the approved adapter budget remained. Plan 0042 owns
+  an exact 45/50 red/green deadline change, service 0.3.46 candidate gates, one
+  final installed tick, and terminal closeout.
+
+Active Plan:
+
+- `docs/dev/plans/0042-2026-08-10-facebook-combined-capture-deadline-repair.md`
+
+Dependencies:
+
+- consumes P17's installed late-acquisition reconciliation and the existing
+  one-successor/single-capture contracts without changing browser ownership or
+  parent resource ceilings.
+
 Next Action:
 
-- commit and push the validated source identity, then install once and consume
-  the sole bounded Facebook acceptance attempt.
+- commit and push the fully validated service 0.3.46 source, then build and
+  preflight the exact commit artifact before the one supported upgrade.
+  contract, then make the deadline-only repair.
 
 ## P10 | Recurring Browser Reauthentication Notifications
 
