@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P22
-Plan version: 1
+Plan version: 2
 Date: 2026-08-11
 Predecessor: Plan 0045 version 2/checkpoint P0045-C05
 
@@ -31,9 +31,9 @@ named-profile cache evidence.
   live scroll proof and the sole Plan 0044 and Plan 0045 ticks. The configured
   repeated-no-progress bound therefore requires a human gate before changing
   browser runtime state;
-- accepted Facebook evidence and explicit named-profile cache proof remain
-  unmet. No tick, restart, replacement build, or provider effect is authorized
-  by opening this plan.
+- the operator explicitly authorized Plan 0046's one controlled same-profile
+  current-build restart with “ok go”. Accepted Facebook evidence and explicit
+  named-profile cache proof remain unmet.
 
 ## Scope After Human Gate
 
@@ -76,7 +76,8 @@ named-profile cache evidence.
 
 ## Execution Bounds And Gates
 
-- current state is `awaiting_human_gate`; plan creation is documentation only;
+- current state is `restart_ready`; the human gate is satisfied only for the
+  exact same-profile/current-build restart and bounded proof in this plan;
 - after authorization: one browser restart, one target restoration pass, one
   Facebook target, one scroll smoke, one service preflight, and one tick;
 - stop immediately on auth/challenge/rate evidence, profile or build drift,
@@ -142,6 +143,67 @@ Next action:
 
 - wait for explicit authority to execute R02-R05; take no further browser or
   provider action meanwhile.
+
+### Checkpoint P0046-C02 | 2026-08-11
+
+Plan version: 2
+
+State transition:
+
+- `awaiting_human_gate -> restart_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; explicit operator authority now covers one controlled
+  restart, and the exact pre-mutation inventory and no-launch browser gate are
+  captured before browser shutdown.
+
+Validation evidence:
+
+- operator response “ok go” satisfies R01 for this plan's exact bounded
+  same-profile/current-build restart; it does not authorize a profile reset,
+  alternate build, login flow, or extra tick;
+- current browser PID 13177 uses profile
+  `/home/ecochran76/.agent-browser/runtime-profiles/last30days-facebook/user-data`,
+  Chromium `150.0.7835.0+stealthcdp.3676a7503929`, endpoint
+  `ws://127.0.0.1:38770/devtools/browser/00317084-6844-44c8-b1a3-c63555867ced`,
+  and installed agent-browser SHA-256
+  `76b2779ffc65d85f22817c698732e387dffe9cd4f8225f9aaf6b65bba467d3d1`;
+- the exact unrelated target inventory is preview
+  `https://previews.ecochran.dyndns.org/a/3afb4a96364a`, LinkedIn
+  `https://www.linkedin.com/company/openai/`, and X
+  `https://x.com/search?q=OpenAI%20since%3A2026-08-10%20until%3A2026-08-11&src=typed_query&f=live`;
+- access-plan selects the exact durable profile, current build,
+  `remote_headed`/`rdp_gateway`/`manual_attached_desktop`, and private display
+  posture with no naming, monitor, seeding, or challenge gate;
+- browser-capability preflight applies validated binding
+  `default-stealthcdp-wsl-native` to the exact promoted executable and reports
+  `wouldLaunch=false`, `preflight=true`; both databases return `ok`, schedule
+  `daily-default` remains enabled/ready, and Git is clean/pushed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Authority classification:
+
+- `inherited_authority`; the explicit human gate covers R02-R04 and at most one
+  later R05 tick only after runtime smoke succeeds.
+
+Review disposition summary:
+
+- `blocking=0` for controlled restart readiness; `needs_evidence=3` restarted
+  runtime convergence, Facebook input smoke, tick/cache acceptance;
+  `rejected=0`; `nonblocking_backlog=0`.
+
+Graphiti write status:
+
+- no new write before runtime outcome; repository checkpoint is authoritative.
+
+Next action:
+
+- commit this restart-ready checkpoint, then execute exactly one supported
+  browser close/restart and restore only the three inventoried target URLs.
 
 ## Definition Of Done
 

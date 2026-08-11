@@ -17140,3 +17140,58 @@ Next Bounded Action:
 - stop before another tick, browser restart, or build substitution. Explicit
   authority is required to execute Plan 0046's one controlled same-profile
   restart; another blind scroll/tick attempt is prohibited.
+
+## Turn 288 | 2026-08-11
+
+Focus: satisfy Plan 0046's human gate and checkpoint exact restart readiness.
+
+Authority Consulted:
+
+- operator “ok go”, Plan 0046/P22 C01, agent-browser runtime skill, repository
+  planning/goal/validation/Git policies, live access-plan and browser-capability
+  preflight, installed service/database/schedule, and retained browser state.
+
+Decisions And Changes:
+
+- interpreted “ok go” narrowly as authority for one same-profile/current-build
+  browser restart, exact three-target restoration, bounded Facebook runtime
+  smoke, and at most one later tick only if the smoke succeeds;
+- rejected profile reset/copy, alternate build, login, reauthentication,
+  schedule mutation, duplicate profile process, and pre-smoke provider work;
+- captured the complete pre-mutation process, endpoint, profile, build,
+  executable, access-plan, capability, database, schedule, and target inventory.
+
+Validation Evidence:
+
+- PID 13177, exact endpoint
+  `ws://127.0.0.1:38770/devtools/browser/00317084-6844-44c8-b1a3-c63555867ced`,
+  profile `last30days-facebook`, Chromium
+  `150.0.7835.0+stealthcdp.3676a7503929`, and installed binary SHA-256
+  `76b2779ffc65d85f22817c698732e387dffe9cd4f8225f9aaf6b65bba467d3d1`
+  converge;
+- exact restorable targets are preview `3afb4a96364a`, LinkedIn OpenAI company,
+  and the closed-interval live X query; no Facebook target remains;
+- access-plan selects the expected durable profile and remote-headed posture
+  without naming, monitor, manual-seeding, or challenge attention;
+- no-launch capability preflight applies the validated WSL-native promoted
+  executable binding; current and rollback databases return `ok`, the daily
+  schedule is enabled/ready, and source is clean/pushed.
+
+State Movement:
+
+- Plan 0046 version 2/C02: `awaiting_human_gate -> restart_ready`;
+- P22 remains `OPEN`; provider acceptance remains prohibited until R04 smoke.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- no new write before runtime outcome; repository checkpoint is authoritative.
+
+Next Bounded Action:
+
+- commit/push C02, then perform the one supported close/restart, restore only
+  the three inventoried targets, and stop before provider work unless the exact
+  Facebook select/eval/scroll/eval smoke passes.

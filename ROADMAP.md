@@ -1621,8 +1621,10 @@ Current State:
 - browser PID 13177, the exact endpoint, authenticated profile, current build,
   and three unrelated targets remain live; failed Facebook tabs were removed
   and the active non-Facebook target evaluates successfully;
-- Plan 0046 is documentation-only at `awaiting_human_gate`. No restart, target
-  restoration, tick, or other provider effect is currently authorized.
+- the operator explicitly authorized Plan 0046's one controlled same-profile,
+  current-build restart. Exact access-plan, capability, database, schedule,
+  build, profile, endpoint, and three-target inventory gates pass; the plan is
+  `restart_ready` and no tick is permitted before runtime smoke.
 
 Active Plan:
 
@@ -1635,8 +1637,8 @@ Dependencies:
 
 Next Action:
 
-- wait for explicit operator authority for one controlled same-profile browser
-  restart; after authorization, require target/input smoke before any tick.
+- perform the one controlled restart, restore exactly the three inventoried
+  unrelated URLs, and require Facebook select/eval/scroll/eval before any tick.
 
 ## P21 | Facebook Stale Prepared Extraction Refresh
 
