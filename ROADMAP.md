@@ -1624,7 +1624,11 @@ Current State:
 - fail-closed handling stopped before scroll, provider preflight, or tick and
   closed only the Facebook target. The three unrelated targets, live browser,
   databases, schedule, service, and repository remain safe; accepted Facebook
-  evidence and named-profile cache proof remain unmet.
+  evidence and named-profile cache proof remain unmet;
+- direct agent-browser inspection now proves the Facebook renderer reaches an
+  “Aw, Snap!” crash with `SIGSEGV`. Browser-level network and target commands
+  continue, but renderer-facing commands hang; agent-browser incorrectly keeps
+  the crashed tab `ready` and records no crash event or incident.
 
 Active Plan:
 
@@ -1637,9 +1641,10 @@ Dependencies:
 
 Next Action:
 
-- Plan 0046 remains open at version 3/C03 with failed runtime smoke and zero
-  provider attempts. Reframe a materially different bounded runtime strategy
-  before any continuation; do not repeat this restart/eval/scroll/tick packet.
+- Plan 0046 remains open at version 4/C04 with the renderer crash diagnosed and
+  zero provider attempts. Repair crash propagation and resolve the promoted
+  Chromium/Facebook `SIGSEGV` before any further tick; do not repeat the
+  exhausted restart/eval/scroll packet.
 
 ## P21 | Facebook Stale Prepared Extraction Refresh
 

@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P22
-Plan version: 3
+Plan version: 4
 Date: 2026-08-11
 Predecessor: Plan 0045 version 2/checkpoint P0045-C05
 
@@ -32,6 +32,15 @@ named-profile cache evidence.
 - cleanup job `r186349` closed only the failed Facebook target. X, LinkedIn,
   and preview remain attached; the browser, endpoint, profile, and DevTools are
   live, both databases return `ok`, and `daily-default` is unchanged and ready;
+- direct agent-browser inspection of one later disposable Facebook target
+  proved the page renderer crashes to Chromium's “Aw, Snap!” surface with
+  `Error code: SIGSEGV`. Browser-level target, network, console, and error
+  commands remain responsive while renderer-facing title, evaluation,
+  accessibility, and page-screenshot commands hang or fail;
+- agent-browser still retains that crashed target as lifecycle `ready` and
+  records no corresponding crash event or incident. The timeout symptom is
+  therefore a renderer crash plus missing target-crash propagation, not a
+  Facebook login, challenge, or network-readiness failure;
 - Plan 0046 remains open at the failed runtime-smoke gate with its authorized
   packet exhausted. Accepted Facebook evidence and explicit named-profile
   cache proof remain unmet.
@@ -270,6 +279,72 @@ Next action or stop reason:
   not repeat the restart, evaluation, scroll, or tick under its exhausted
   bounds; a materially different, explicitly bounded plan revision or
   successor packet must own any continuation.
+
+### Checkpoint P0046-C04 | 2026-08-11
+
+Plan version: 4
+
+State transition:
+
+- `runtime_smoke_failed -> renderer_crash_diagnosed`.
+
+Progress classification:
+
+- `blocker_reduction`; direct visual and CDP-domain evidence narrows the
+  generic target timeout to a Facebook renderer `SIGSEGV` and a separate
+  agent-browser crash-observability gap.
+
+Validation evidence:
+
+- the operator explicitly requested direct inspection through agent-browser;
+  access-plan selected the retained `last30days-facebook` profile/current
+  build and prohibited a duplicate process, so the live browser was reused;
+- one disposable Facebook target
+  `9E9366B2790499B37A715DD70EF889DC` opened and settled. Agent-browser page
+  screenshot failed immediately with `CDP error (Page.captureScreenshot):
+  Internal error`; `get title` and accessibility snapshot timed out at bounded
+  10-second job deadlines, matching the prior evaluation timeout;
+- agent-browser Console and Errors returned successfully with empty collections,
+  while Network returned current successful Facebook CSS, JavaScript, image,
+  XHR, and post-image traffic. This excludes absent connectivity and shows the
+  page reached authenticated search-content loading before failure;
+- because agent-browser's page-screenshot path was itself broken, one ephemeral
+  capture of its confirmed remote display `:10` showed Chromium's “Aw, Snap!”
+  page and exact `Error code: SIGSEGV`. The image was intentionally kept out of
+  Git because it came from an authenticated browser surface;
+- retained service state incorrectly reported the crashed tab lifecycle as
+  `ready`, with no matching event or incident. Closing tab index 3 succeeded,
+  and final inventory again contains exactly the unrelated X, LinkedIn, and
+  preview tabs on live PID 83786.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Authority classification:
+
+- `inherited_authority`; the user's direct inspection request authorized one
+  read-only disposable-tab diagnostic and cleanup, not reload, login, browser
+  substitution, source repair, scroll, provider work, or tick execution.
+
+Review disposition summary:
+
+- `blocking=2` Facebook renderer `SIGSEGV` and missing crash propagation;
+  `needs_evidence=2` accepted tick and named-profile cache proof; `rejected=3`
+  login/challenge explanation, network-readiness explanation, and another tick;
+  `nonblocking_backlog=0`.
+
+Graphiti write status:
+
+- no new write before the direct-diagnosis repository checkpoint is durable;
+  live receipts and the plan checkpoint are authoritative meanwhile.
+
+Next action or stop reason:
+
+- stop at diagnosis. Before any further Facebook tick, a bounded agent-browser
+  repair must surface renderer target crashes immediately and the promoted
+  Chromium/Facebook `SIGSEGV` must be reproduced and resolved without reusing
+  this exhausted browser/tick packet.
 
 ## Definition Of Done
 

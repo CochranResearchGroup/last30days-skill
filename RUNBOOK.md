@@ -17259,3 +17259,63 @@ Stop Reason:
   target-control invariant persists after the runtime replacement. Do not
   scroll, enqueue a tick, or repeat this packet without a materially different
   bounded successor strategy.
+
+## Turn 290 | 2026-08-11
+
+Focus: inspect the failed Facebook target directly through agent-browser and
+identify the visible runtime failure.
+
+Authority Consulted:
+
+- operator request to inspect directly via agent-browser, Plan 0046/P22 C03,
+  agent-browser runtime skill, live access-plan, browser, tab, job, network,
+  event, and incident state.
+
+Decisions And Changes:
+
+- reused the one retained browser because access-plan prohibited a duplicate
+  profile process; opened one disposable Facebook search tab;
+- bounded every renderer-facing diagnostic and did not reload, scroll, log in,
+  mutate the profile, substitute a build, invoke a provider, or run a tick;
+- closed only the disposable crashed Facebook tab after diagnosis and restored
+  the exact X, LinkedIn, and preview inventory.
+
+Validation Evidence:
+
+- target `9E9366B2790499B37A715DD70EF889DC` opened and settled, but agent-browser
+  screenshot returned `Page.captureScreenshot: Internal error`; `get title`
+  and accessibility snapshot then timed out at 10-second worker bounds;
+- Console and Errors remained responsive with empty collections. Network
+  remained responsive and showed current successful Facebook CSS, JavaScript,
+  image, XHR, and search-result media traffic, excluding connectivity or login
+  redirection as the primary failure;
+- one ephemeral capture of agent-browser's confirmed display `:10` showed the
+  active Facebook tab on Chromium's “Aw, Snap!” surface with exact
+  `Error code: SIGSEGV`; no authenticated screenshot was committed;
+- service tabs still labeled the crashed target lifecycle `ready`, and filtered
+  events/incidents contained no matching crash record. This explains why
+  renderer commands time out instead of returning an immediate crash error;
+- tab cleanup succeeded, and final inventory again contains exactly X,
+  LinkedIn, and preview on live browser PID 83786.
+
+State Movement:
+
+- Plan 0046 version 4/C04:
+  `runtime_smoke_failed -> renderer_crash_diagnosed`;
+- P22 remains `OPEN`; no provider attempt occurred and acceptance remains
+  unmet.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- no new write before the direct-diagnosis repository checkpoint is durable;
+  live receipts and the repository remain authoritative.
+
+Stop Reason:
+
+- the immediate problem is a Facebook renderer `SIGSEGV`, compounded by
+  agent-browser failing to propagate target-crash state. Repair and validate
+  those two boundaries before another Facebook tick.
