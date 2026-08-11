@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P22
-Plan version: 4
+Plan version: 6
 Date: 2026-08-11
 Predecessor: Plan 0045 version 2/checkpoint P0045-C05
 
@@ -41,9 +41,24 @@ named-profile cache evidence.
   records no corresponding crash event or incident. The timeout symptom is
   therefore a renderer crash plus missing target-crash propagation, not a
   Facebook login, challenge, or network-readiness failure;
-- Plan 0046 remains open at the failed runtime-smoke gate with its authorized
-  packet exhausted. Accepted Facebook evidence and explicit named-profile
-  cache proof remain unmet.
+- the operator's later Facebook home navigation remains healthy on the same
+  retained profile, PID, build, and CDP path; a renderer evaluation returns
+  `readyState=complete`. Both filtered and unfiltered authenticated
+  `/search/posts/` targets instead reach `SIGSEGV` within 12 seconds before
+  any renderer-facing diagnostic is sent;
+- a disposable clean profile on the same promoted Chromium build remains live,
+  renders Facebook's unauthenticated `Not Found` response for the exact filtered
+  URL, and completes a renderer evaluation. This excludes a generic Chromium,
+  CDP, Facebook-origin, or encoded-filter failure, but does not reproduce the
+  authenticated search workload;
+- retained Chromium stderr identifies the direct renderer failure as Blink
+  `line_breaker.cc:4102` DCHECK aborts. The retained browser PID and endpoint
+  then disappeared during final reconciliation, and a nominal inventory read
+  attached the session name to an already-live default-profile browser before
+  later service churn removed that association;
+- Plan 0046 remains open at `retained_browser_lost_during_reconciliation`.
+  Accepted Facebook evidence and explicit named-profile cache proof remain
+  unmet, and no recovery, provider, or tick is authorized in this checkpoint.
 
 ## Scope After Human Gate
 
@@ -86,8 +101,9 @@ named-profile cache evidence.
 
 ## Execution Bounds And Gates
 
-- current state is `runtime_smoke_failed`; the one authorized restart and
-  Facebook evaluation smoke are consumed with no provider attempt;
+- current state is `retained_browser_lost_during_reconciliation`; the one
+  authorized restart and Facebook evaluation smoke are consumed with no
+  provider attempt;
 - after authorization: one browser restart, one target restoration pass, one
   Facebook target, one scroll smoke, one service preflight, and one tick;
 - stop immediately on auth/challenge/rate evidence, profile or build drift,
@@ -347,6 +363,154 @@ Next action or stop reason:
   repair must surface renderer target crashes immediately and the promoted
   Chromium/Facebook `SIGSEGV` must be reproduced and resolved without reusing
   this exhausted browser/tick packet.
+
+### Checkpoint P0046-C05 | 2026-08-11
+
+Plan version: 5
+
+State transition:
+
+- `renderer_crash_diagnosed -> authenticated_posts_search_crash_isolated`.
+
+Progress classification:
+
+- `blocker_reduction`; the bounded comparison rejects CDP-command, filter,
+  Facebook-origin, and generic-build explanations and isolates the crash to
+  the authenticated posts-search workload on the retained profile.
+
+Validation evidence:
+
+- operator “ok go” authorized the proposed diagnostic matrix: one exact
+  retained-profile search observation without renderer commands, one
+  disposable clean-profile comparison on the same build, and one bounded
+  same-profile unfiltered-search control; it authorized no login, profile
+  clearing/copy, alternate build, provider work, scroll, or tick;
+- current retained browser PID 83786 and endpoint remained live. The operator
+  had navigated the former preview tab to a healthy Facebook home page, so the
+  preserved inventory became X, LinkedIn, and Facebook home;
+- exact filtered-search target `648024C669A0EE9A47F3E07E703156CB`
+  reached Chromium's visible `Aw, Snap!`/`SIGSEGV` surface within 12 seconds
+  before eval, title, accessibility, or page-screenshot commands were issued.
+  This rejects the prior hypothesis that the first renderer command triggered
+  the crash;
+- disposable custom profile `custom:1379949881101400551` launched the same
+  promoted Chromium build as browser PID 30387 on display `:92`. The exact
+  filtered URL rendered unauthenticated `Not Found`, remained live, and
+  returned a successful eval with that body and URL. The browser closed cleanly
+  and its temporary profile directory and ephemeral captures were deleted;
+- retained-profile unfiltered target `17C0F93D4149CD83A384005C615D82B1`
+  also reached visible `SIGSEGV` within 12 seconds before renderer commands,
+  rejecting the encoded recent-posts filter as the trigger;
+- immediately after cleanup, the retained Facebook home tab returned a
+  successful bounded
+  eval with title `(20+) Facebook`, URL `https://www.facebook.com/`, and
+  `readyState=complete` on the same profile, PID, build, and CDP endpoint.
+  X, LinkedIn, and Facebook home were then observed intact; no provider attempt
+  occurred during the matrix.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Authority classification:
+
+- `inherited_authority`; the user's matrix approval covered the exact
+  disposable comparisons and cleanup. Clearing Facebook site data, cloning
+  authenticated state, changing browser builds, or another tick would cross
+  the current boundary.
+
+Review disposition summary:
+
+- `blocking=2` authenticated Facebook posts-search renderer `SIGSEGV` and
+  missing target-crash propagation; `needs_evidence=3` crash dump/root cause,
+  accepted tick, and named-profile cache proof; `rejected=4` first CDP command,
+  encoded filter, generic build/CDP, and Facebook origin as sufficient causes;
+  `nonblocking_backlog=0`.
+
+Graphiti write status:
+
+- no new write before the matrix checkpoint is durable; the repository and
+  retained runtime receipts are authoritative meanwhile.
+
+Next action or stop reason:
+
+- stop before profile or build mutation. The next bounded repair must capture
+  the authenticated search renderer's crash evidence and make agent-browser
+  propagate target crashes immediately. Distinguishing retained Facebook site
+  state from an authenticated search/build interaction requires a separately
+  authorized profile-data or alternate-build experiment.
+
+### Checkpoint P0046-C06 | 2026-08-11
+
+Plan version: 6
+
+State transition:
+
+- `authenticated_posts_search_crash_isolated ->
+  retained_browser_lost_during_reconciliation`.
+
+Progress classification:
+
+- `regression`; stderr resolves the renderer crash mechanism, but the retained
+  browser and its exact session/profile association were lost during final
+  inventory reconciliation, worsening the safe runtime state.
+
+Validation evidence:
+
+- retained-browser stderr
+  `/home/ecochran76/.agent-browser/tmp/chrome-launches/chrome-83786-1786451676608.stderr.log`
+  records repeated renderer FATALs at Blink
+  `third_party/blink/renderer/core/layout/inline/line_breaker.cc:4102`, followed
+  by signal 6 abort handling and crashpad SIGSEGV traces. The two matrix
+  reproductions appear at local times `08:38:32` and `08:42:10`;
+- the same log ends at `08:44:53` with browser PID 83786 reporting
+  `waitpid(...): No child processes`. Process inspection and port inspection
+  then proved PID 83786 absent and CDP port 39488 unbound;
+- a final nominal inventory invocation produced service launch job `r804045`
+  at `13:44:51Z`. Instead of preserving the recorded browser, the service
+  attached `session:last30days-facebook` at `13:44:54Z` to already-live PID
+  65800, endpoint port 38216, and profile `default`, with an active conflict
+  against the default session. This is session/profile routing drift, not a
+  valid Facebook recovery;
+- the retained trace has no matching close job, browser-health event, crash
+  incident, or caller labels for PID 83786. It therefore cannot distinguish
+  browser-process exit from a concurrent control-plane action, nor assign the
+  initiating caller safely;
+- later service activity replaced and removed those transient associations.
+  No restart, profile mutation, browser close, provider attempt, tick, or
+  schedule change was performed after the drift was detected.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Authority classification:
+
+- `inherited_authority`; read-only process, port, service-trace, job, and stderr
+  inspection remained inside diagnosis authority. Reconstructing the retained
+  browser or profile association would be a new runtime mutation and was not
+  attempted.
+
+Review disposition summary:
+
+- `blocking=3` Blink authenticated posts-search crash, missing target-crash
+  propagation, and lost retained browser/session identity;
+  `needs_evidence=3` routing-exit attribution, accepted tick, and named-profile
+  cache proof; `rejected=4` renderer-command trigger, encoded filter, generic
+  build/CDP failure, and a valid Facebook recovery; `nonblocking_backlog=0`.
+
+Graphiti write status:
+
+- no new write before this regression checkpoint is durable; runtime stderr,
+  service trace, and repository state remain authoritative.
+
+Next action or stop reason:
+
+- hard stop before any browser recovery or tick. The next bounded packet must
+  first repair agent-browser's crash propagation and session/profile routing,
+  then prove a retained `last30days-facebook` browser can be reconstructed
+  without attaching the session to `default`. Only after that gate may a
+  separately bounded Chromium-build or Facebook-site-state comparison proceed.
 
 ## Definition Of Done
 

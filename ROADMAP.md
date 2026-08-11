@@ -1628,7 +1628,17 @@ Current State:
 - direct agent-browser inspection now proves the Facebook renderer reaches an
   “Aw, Snap!” crash with `SIGSEGV`. Browser-level network and target commands
   continue, but renderer-facing commands hang; agent-browser incorrectly keeps
-  the crashed tab `ready` and records no crash event or incident.
+  the crashed tab `ready` and records no crash event or incident;
+- a bounded matrix now shows both filtered and unfiltered authenticated
+  `/search/posts/` crash before renderer commands, while Facebook home works on
+  the same retained profile and a clean unauthenticated profile works on the
+  same build. The remaining fault boundary is authenticated posts-search plus
+  retained site state/build interaction, not the filter or generic CDP path;
+- retained Chromium stderr identifies Blink `line_breaker.cc:4102` DCHECK
+  aborts as the direct renderer failure. Final reconciliation then found PID
+  83786 and port 39488 gone, and a nominal inventory read attached the Facebook
+  session name to a default-profile browser. That association was invalid and
+  no recovery was attempted.
 
 Active Plan:
 
@@ -1641,10 +1651,11 @@ Dependencies:
 
 Next Action:
 
-- Plan 0046 remains open at version 4/C04 with the renderer crash diagnosed and
-  zero provider attempts. Repair crash propagation and resolve the promoted
-  Chromium/Facebook `SIGSEGV` before any further tick; do not repeat the
-  exhausted restart/eval/scroll packet.
+- Plan 0046 remains open at version 6/C06 in
+  `retained_browser_lost_during_reconciliation`, with zero provider attempts.
+  Repair crash propagation and session/profile routing before reconstructing
+  the retained browser; profile clearing/copy, alternate-build comparison, and
+  any tick remain behind later bounded gates.
 
 ## P21 | Facebook Stale Prepared Extraction Refresh
 

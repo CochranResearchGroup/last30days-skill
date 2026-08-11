@@ -17321,3 +17321,134 @@ Stop Reason:
 - the immediate problem is a Facebook renderer `SIGSEGV`, compounded by
   agent-browser failing to propagate target-crash state. Repair and validate
   those two boundaries before another Facebook tick.
+
+## Turn 291 | 2026-08-11
+
+Focus: execute the operator-approved Facebook crash diagnostic matrix and
+isolate the renderer fault boundary.
+
+Authority Consulted:
+
+- operator “ok go”, Plan 0046/P22 C04, agent-browser runtime skill, goal and
+  validation policies, live retained browser state, and disposable-profile
+  cleanup requirements.
+
+Decisions And Changes:
+
+- preserved the operator's current X, LinkedIn, and healthy Facebook home tabs
+  on retained PID 83786;
+- bounded the matrix to one filtered-search observation before renderer
+  commands, one same-build disposable clean-profile comparison, one unfiltered
+  retained-profile search, and one home-page eval control;
+- did not reload a crash page, log in, clear/copy profile data, change builds,
+  scroll, invoke a provider, or run a tick;
+- closed both disposable search targets, closed the disposable browser, and
+  deleted its temporary profile and authenticated visual captures.
+
+Validation Evidence:
+
+- filtered target `648024C669A0EE9A47F3E07E703156CB` visibly reached
+  `Aw, Snap!`/`SIGSEGV` within 12 seconds before any eval, title,
+  accessibility, or page-screenshot command, disproving a renderer-command
+  trigger;
+- same-build disposable browser PID 30387 used profile
+  `custom:1379949881101400551` on display `:92`. The exact filtered URL
+  returned unauthenticated `Not Found`, stayed live, and completed a renderer
+  eval; cleanup terminated the process and deleted the temporary profile;
+- unfiltered retained-profile target
+  `17C0F93D4149CD83A384005C615D82B1` also visibly reached `SIGSEGV` within 12
+  seconds, disproving the encoded recent-posts filter as the cause;
+- the operator's existing Facebook home tab then returned title
+  `(20+) Facebook`, URL `https://www.facebook.com/`, and
+  `readyState=complete` through a bounded eval on the same retained profile,
+  browser PID, build, and CDP endpoint;
+- immediately after matrix cleanup, retained inventory was X, LinkedIn, and
+  Facebook home. No provider attempt, service tick, or schedule mutation
+  occurred during the matrix.
+
+State Movement:
+
+- Plan 0046 version 5/C05:
+  `renderer_crash_diagnosed -> authenticated_posts_search_crash_isolated`;
+- P22 remains `OPEN`; accepted Facebook evidence and named-profile cache proof
+  remain unmet.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- no new write before the matrix checkpoint is durable; repository and live
+  runtime receipts remain authoritative.
+
+Stop Reason:
+
+- authenticated Facebook posts search crashes independently of the filter and
+  before renderer commands, while home and a clean unauthenticated page work.
+  Stop before profile/build mutation; capture the renderer crash and repair
+  agent-browser target-crash propagation before another tick.
+
+## Turn 292 | 2026-08-11
+
+Focus: reconcile the retained Facebook runtime after the diagnostic matrix and
+identify the concrete renderer crash mechanism.
+
+Authority Consulted:
+
+- Plan 0046/P22 C05, agent-browser runtime skill, planning, goal, validation,
+  closeout, and documentation policies, live process/port state, service
+  traces, bounded jobs, and Chromium stderr.
+
+Decisions And Changes:
+
+- treated the unexpected Facebook-session/default-browser crossover as a new
+  runtime regression rather than continuing the matrix;
+- performed only process, port, service-state, trace, job, and stderr
+  inspection after detecting drift;
+- did not restart or close any browser, mutate either profile, invoke a
+  provider, run a tick, or change the schedule.
+
+Validation Evidence:
+
+- Chromium stderr for retained PID 83786 records repeated Blink
+  `line_breaker.cc:4102` DCHECK FATALs, signal 6 abort handling, and crashpad
+  SIGSEGV traces. Matrix reproductions are timestamped `08:38:32` and
+  `08:42:10` local time;
+- the log ends at `08:44:53` with `waitpid(...): No child processes`; PID 83786
+  is absent and CDP port 39488 is unbound;
+- service launch job `r804045`, created by the nominal final inventory path at
+  `13:44:51Z`, attached `session:last30days-facebook` to already-live PID
+  65800, port 38216, and profile `default` at `13:44:54Z`. The service reported
+  an active default-profile lease conflict rather than the required retained
+  Facebook identity;
+- no close job, browser-health transition, crash incident, or caller labels
+  explain PID 83786's exit. Later concurrent service activity replaced and
+  removed the transient session association, so attribution remains unknown;
+- accepted Facebook evidence and explicit
+  `profile_id=last30days-facebook` cache proof remain absent. Provider and tick
+  counts for this packet are zero.
+
+State Movement:
+
+- Plan 0046 version 6/C06:
+  `authenticated_posts_search_crash_isolated ->
+  retained_browser_lost_during_reconciliation`;
+- P22 remains `OPEN`; the live runtime regressed even though the crash boundary
+  is narrower.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- no new write before this regression checkpoint is committed; local stderr,
+  retained service traces, and repository state remain authoritative.
+
+Stop Reason:
+
+- the direct Facebook problem is a reproducible Blink layout DCHECK on
+  authenticated posts search, and agent-browser compounds it by neither
+  propagating renderer crashes nor preserving session/profile identity during
+  final inventory reconciliation. Stop before recovery or another tick.
