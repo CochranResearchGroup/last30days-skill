@@ -17130,8 +17130,10 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending one compact source-backed closeout write after the durable Git
-  checkpoint; repository and installed receipts remain authoritative.
+- provider readiness passed and one compact source-backed memory was queued as
+  job `2f581f90-1395-47a7-b020-e1e67c42648e` in
+  `last30days_skill_main`; queued status is not persistence proof, so repository
+  and installed receipts remain authoritative.
 
 Next Bounded Action:
 

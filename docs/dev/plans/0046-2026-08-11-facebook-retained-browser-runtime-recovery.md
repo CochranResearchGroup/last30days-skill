@@ -134,7 +134,9 @@ Review disposition summary:
 
 Graphiti write status:
 
-- pending the durable blocked-state checkpoint.
+- compact blocked-state memory queued as job
+  `2f581f90-1395-47a7-b020-e1e67c42648e`; queued status is not persistence
+  proof.
 
 Next action:
 
