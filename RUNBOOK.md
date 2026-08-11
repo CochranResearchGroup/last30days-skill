@@ -17248,8 +17248,10 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- terminal source-backed outcome write waits for the durable closeout commit;
-  repository and service receipts remain authoritative meanwhile.
+- after pushed outcome commit `a968de4`, one source-backed memory write was
+  queued as job `80d3d5cf-e848-42cf-870c-02a692f3e444` in
+  `last30days_skill_main`; queued status is not persistence proof, so the
+  repository and service receipts remain authoritative.
 
 Stop Reason:
 
