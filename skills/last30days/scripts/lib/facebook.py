@@ -34,6 +34,7 @@ DEPTH_CONFIG = {
 }
 
 MAX_RUN_BUDGET_SECONDS = 105
+REMOTE_VIEW_RECONCILIATION_RESERVE_SECONDS = 10
 TAB_INVENTORY_TIMEOUT_SECONDS = 20
 
 ERROR_TYPES = {
@@ -726,6 +727,10 @@ class CliAgentBrowserClient:
             if isinstance(launch_posture, dict)
             else True
         )
+        reconcile_late_open = (
+            remote_view_recommended
+            and requested_target_service_id == "facebook"
+        )
         if remote_view_recommended:
             cmd = [
                 "--session", launch_session_name,
@@ -761,10 +766,26 @@ class CliAgentBrowserClient:
                 "--task-name", request.task_name,
             ]
 
+        open_timeout = max(
+            request.timeout, (self.job_timeout_ms + 999) // 1000 + 5
+        )
+        if reconcile_late_open and self._run_deadline is not None:
+            remaining_seconds = max(
+                1, int(self._run_deadline - time.monotonic())
+            )
+            open_timeout = min(
+                open_timeout,
+                max(
+                    1,
+                    remaining_seconds
+                    - REMOTE_VIEW_RECONCILIATION_RESERVE_SECONDS,
+                ),
+            )
+
         try:
             opened = self._invoke(
                 cmd,
-                timeout=max(request.timeout, (self.job_timeout_ms + 999) // 1000 + 5),
+                timeout=open_timeout,
             )
         except FacebookScraperFailure as exc:
             newly_selected_lane = not isinstance(
@@ -791,6 +812,26 @@ class CliAgentBrowserClient:
                     cmd,
                     timeout=max(request.timeout, (self.job_timeout_ms + 999) // 1000 + 5),
                 )
+            elif reconcile_late_open and exc.error_type in {
+                "agent_browser_error",
+                "agent_browser_timeout",
+            }:
+                reconciled = self._reconcile_workspace_after_failed_open(
+                    request=request,
+                    access_plan=access_plan,
+                    selected_profile=selected_profile,
+                    target_service_id=requested_target_service_id,
+                    launch_session_name=launch_session_name,
+                )
+                if reconciled is not None:
+                    return reconciled
+                if re.search(
+                    r"route_|display.*(?:stale|unavailable|mismatch)|no .*x11 socket",
+                    str(exc),
+                    re.I,
+                ):
+                    raise FacebookScraperFailure("route_stale", str(exc)) from exc
+                raise
             elif exc.error_type == "agent_browser_error" and re.search(
                 r"route_|display.*(?:stale|unavailable|mismatch)|no .*x11 socket", str(exc), re.I
             ):
@@ -831,6 +872,109 @@ class CliAgentBrowserClient:
             operator_url=_operator_url(opened),
             operator_visible_state=visible_state,
         )
+
+    def _reconcile_workspace_after_failed_open(
+        self,
+        *,
+        request: BrowserWorkspaceRequest,
+        access_plan: dict[str, Any],
+        selected_profile: str,
+        target_service_id: str,
+        launch_session_name: str,
+    ) -> BrowserWorkspace | None:
+        """Accept one late ready browser after the bounded CLI wait fails.
+
+        A service-owned remote-view job can complete after its CLI waiter exits.
+        This read-only reconciliation never relaunches or retries the request; it
+        accepts only a ready browser already attached to the exact selected
+        profile or the narrow retained-default alias compatibility path.
+        """
+        try:
+            status = self._invoke(
+                ["service", "status"],
+                timeout=min(
+                    request.timeout,
+                    REMOTE_VIEW_RECONCILIATION_RESERVE_SECONDS,
+                ),
+            )
+        except FacebookScraperFailure:
+            return None
+
+        state = (
+            status.get("service_state")
+            if isinstance(status.get("service_state"), dict)
+            else status
+        )
+        if not isinstance(state, dict):
+            return None
+        sessions = state.get("sessions")
+        browsers = state.get("browsers")
+        tabs = state.get("tabs")
+        if not isinstance(sessions, dict) or not isinstance(browsers, dict):
+            return None
+
+        shared_owner = agent_browser_config.shared_profile_owner(
+            access_plan,
+            state,
+            expected_profile_id=selected_profile,
+        )
+        if shared_owner:
+            browser = shared_owner["browser"]
+            return _browser_workspace_from_retained_owner(
+                request=request,
+                browser=browser,
+                browser_id=shared_owner["browser_id"],
+                session_name=shared_owner["session_name"],
+                target_id=shared_owner["target_id"],
+            )
+
+        aliased_owner = _exact_retained_default_owner(
+            session_name=request.session_name,
+            selected_profile=selected_profile,
+            target_service_id=target_service_id,
+            sessions=sessions,
+            browsers=browsers,
+            tabs=tabs,
+        )
+        if aliased_owner:
+            return _browser_workspace_from_retained_owner(
+                request=request,
+                browser=aliased_owner["browser"],
+                browser_id=aliased_owner["browser_id"],
+                session_name=aliased_owner["session_name"],
+                target_id=aliased_owner["target_id"],
+            )
+
+        candidate_session_names = dict.fromkeys(
+            (launch_session_name, request.session_name)
+        )
+        for candidate_session_name in candidate_session_names:
+            session = sessions.get(candidate_session_name)
+            if not isinstance(session, dict):
+                continue
+            observed_profile = str(session.get("profileId") or "")
+            if observed_profile != selected_profile:
+                continue
+            for browser_id in session.get("browserIds") or ():
+                browser_id = str(browser_id or "")
+                browser = browsers.get(browser_id)
+                if not isinstance(browser, dict) or browser.get("health") != "ready":
+                    continue
+                browser_profile = str(
+                    browser.get("profileId") or browser.get("runtimeProfile") or ""
+                )
+                if browser_profile != selected_profile:
+                    continue
+                return _browser_workspace_from_retained_owner(
+                    request=request,
+                    browser=browser,
+                    browser_id=browser_id,
+                    session_name=candidate_session_name,
+                    target_id=_select_target_id(
+                        session, tabs, target_service_id
+                    ),
+                )
+        return None
 
     def prepare_operator_handoff(
         self,
@@ -2432,6 +2576,26 @@ def _select_target_id(
         if isinstance(tab, dict):
             return str(tab.get("targetId") or str(tab_ids[0]).removeprefix("target:"))
     return ""
+
+
+def _browser_workspace_from_retained_owner(
+    *,
+    request: BrowserWorkspaceRequest,
+    browser: dict[str, Any],
+    browser_id: str,
+    session_name: str,
+    target_id: str,
+) -> BrowserWorkspace:
+    stream = _ready_operator_stream(browser, request.view_provider)
+    return BrowserWorkspace(
+        profile_id=request.profile_id,
+        browser_id=browser_id,
+        session_name=session_name,
+        target_id=target_id,
+        route_id=str(stream.get("id") or ""),
+        operator_url=_operator_url(stream),
+        operator_visible_state="ready" if stream else "not_required",
+    )
 
 
 def _is_target_service_url(url: str, target_service_id: str) -> bool:

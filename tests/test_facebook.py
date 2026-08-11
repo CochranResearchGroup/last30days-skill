@@ -1185,6 +1185,115 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual("last30days-facebook", workspace.profile_id)
         self.assertEqual(2, invoke.call_count)
 
+    def test_remote_view_failure_reconciles_a_late_ready_retained_browser(self):
+        client = facebook.CliAgentBrowserClient(timeout=40, job_timeout_ms=40_000)
+        client._run_deadline = 50.0
+        initial_status = {
+            "service_state": {
+                "sessions": {},
+                "browsers": {},
+                "tabs": {},
+                "routePool": {},
+            },
+        }
+        late_status = {
+            "service_state": {
+                "sessions": {
+                    "last30days-facebook": {
+                        "profileId": "last30days-facebook",
+                        "browserIds": ["session:last30days-facebook"],
+                        "tabIds": ["target:facebook"],
+                    },
+                },
+                "browsers": {
+                    "session:last30days-facebook": {
+                        "profileId": "last30days-facebook",
+                        "health": "ready",
+                        "activeSessionIds": ["last30days-facebook"],
+                        "cdpEndpoint": (
+                            "ws://127.0.0.1:37539/devtools/browser/example"
+                        ),
+                    },
+                },
+                "tabs": {
+                    "target:facebook": {
+                        "targetId": "facebook",
+                        "url": "https://www.facebook.com/search/posts?q=OpenAI",
+                    },
+                },
+            },
+        }
+        failed_open = facebook.FacebookScraperFailure(
+            "agent_browser_error",
+            "service_state_lock_timeout",
+        )
+
+        with mock.patch.object(
+            facebook.time, "monotonic", return_value=10.0
+        ), mock.patch.object(
+            client,
+            "_invoke",
+            side_effect=[access_plan(), initial_status, failed_open, late_status],
+        ) as invoke, mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ):
+            workspace = client.acquire_workspace(request(timeout=40))
+
+        self.assertEqual("session:last30days-facebook", workspace.browser_id)
+        self.assertEqual("last30days-facebook", workspace.session_name)
+        self.assertEqual("facebook", workspace.target_id)
+        self.assertEqual("last30days-facebook", workspace.profile_id)
+        self.assertEqual(30, invoke.call_args_list[2].kwargs["timeout"])
+        self.assertEqual(["service", "status"], invoke.call_args_list[-1].args[0])
+        self.assertEqual(10, invoke.call_args_list[-1].kwargs["timeout"])
+        self.assertEqual(4, invoke.call_count)
+
+    def test_remote_view_failure_does_not_accept_a_late_wrong_profile(self):
+        client = facebook.CliAgentBrowserClient(timeout=40, job_timeout_ms=40_000)
+        client._run_deadline = 50.0
+        initial_status = {
+            "service_state": {
+                "sessions": {},
+                "browsers": {},
+                "tabs": {},
+                "routePool": {},
+            },
+        }
+        late_status = {
+            "service_state": {
+                "sessions": {
+                    "last30days-facebook": {
+                        "profileId": "default",
+                        "browserIds": ["browser-default"],
+                    },
+                },
+                "browsers": {
+                    "browser-default": {
+                        "profileId": "default",
+                        "health": "ready",
+                    },
+                },
+                "tabs": {},
+            },
+        }
+        failed_open = facebook.FacebookScraperFailure(
+            "agent_browser_error",
+            "service_state_lock_timeout",
+        )
+
+        with mock.patch.object(
+            facebook.time, "monotonic", return_value=10.0
+        ), mock.patch.object(
+            client,
+            "_invoke",
+            side_effect=[access_plan(), initial_status, failed_open, late_status],
+        ), mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ), self.assertRaises(facebook.FacebookScraperFailure) as raised:
+            client.acquire_workspace(request(timeout=40))
+
+        self.assertIs(failed_open, raised.exception)
+
     def test_exact_default_profile_alias_reuses_ready_browser_cdp_endpoint_without_viewer(self):
         sessions = {
             "last30days-facebook": {

@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook late browser-operation reconciliation.** Service 0.3.45 keeps a
+  ten-second reserve inside the bounded Facebook adapter run when remote-view
+  acquisition is required. If the CLI waiter returns a typed browser error or
+  timeout, the adapter performs one read-only service-status reconciliation and
+  accepts only an already-ready browser owned by the exact selected profile or
+  the existing narrow retained-default alias. It does not retry the request,
+  relaunch Chrome, create a duplicate profile lane, or weaken authentication,
+  challenge, rate-limit, and profile checks.
+
 - **X evidence identity and profile-aware cache retrieval.** Service 0.3.44
   derives durable X source identity from the canonical numeric status ID while
   preserving short display IDs, preventing later runs from attaching new text

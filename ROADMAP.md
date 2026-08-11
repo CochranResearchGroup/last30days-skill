@@ -1530,6 +1530,46 @@ Closeout:
   receipt, cache-only proof, and operational reconciliation are recorded there
   and in RUNBOOK Turn 270.
 
+## P17 | Facebook Cross-Source Browser Handoff Repair
+
+State: OPEN
+
+Objective: make the recurring X-to-Facebook sequence reconcile a late-completed
+service operation to the one retained authenticated social browser instead of
+recording a false failure at the CLI wait deadline.
+
+Current State:
+
+- the daily tick's X lane succeeded, then Facebook failed before page
+  inspection after a 39.676-second remote-view operation;
+- the retained browser and authenticated Facebook result page are healthy, so
+  credentials and page usability are not the broken boundary;
+- the first red fixture disproved the default-profile alias hypothesis: that
+  path already returns the X-owned browser. A replacement red replay proved
+  the adapter re-raises a failed remote-view waiter even when the next service
+  status contains the exact ready browser;
+- source now reserves ten seconds for one read-only status reconciliation,
+  accepts only an exact ready retained owner, and performs no retry or relaunch;
+- service candidate 0.3.45 passes the complete Python suite (2,648 passed,
+  seven skipped, six passing subtests), Go test/vet, compilation, generation,
+  packaging, authority, and patch gates. Plan 0041 next owns one supported
+  installation and at most one Facebook-only acceptance tick.
+
+Active Plan:
+
+- `docs/dev/plans/0041-2026-08-10-facebook-cross-source-browser-handoff-repair.md`
+
+Dependencies:
+
+- consumes P16's installed agent-browser identity repair and P08/P13/P14's
+  durable tick, service, schema, release-lock, and schedule contracts while
+  preserving the single authenticated social profile lane.
+
+Next Action:
+
+- commit and push the validated source identity, then install once and consume
+  the sole bounded Facebook acceptance attempt.
+
 ## P10 | Recurring Browser Reauthentication Notifications
 
 State: CLOSED

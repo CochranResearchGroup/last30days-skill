@@ -16278,3 +16278,158 @@ Stop Reason:
 
 - the product objective is complete. Further memory ingestion would risk a
   duplicate or expand beyond the bounded closeout attempt.
+
+## Turn 272 | 2026-08-10
+
+Focus: open the bounded Facebook cross-source handoff repair without consuming
+a new Facebook attempt.
+
+Authority Consulted:
+
+- active operator goal `repair the tick`, Plan 0040/P16 closeout, exact failed
+  tick/provider receipts, current Last30days and agent-browser readbacks,
+  CodeGraph source/test context, Graphiti discovery, and current planning,
+  validation, Git, release, documentation, closeout, and goal policies.
+
+Decisions And Changes:
+
+- opened Plan 0041/P17 with one serialized red/green repair path and at most
+  one Facebook-only acceptance tick after the candidate gate;
+- narrowed the failure to `_exact_retained_default_owner`: it rejects the
+  normal X-to-Facebook transition because the exact retained browser has no
+  Facebook tab yet, despite one reciprocal owner and ready writable CDP;
+- preserved the authenticated profile and all retained browsers/tabs. No live
+  source attempt, install, cleanup, schedule/database mutation, or agent-browser
+  repository change occurred.
+
+Validation Evidence:
+
+- clean `main == origin/main` at
+  `a4c4c85ca05bab3d11ab87c59dd72915c4b84816`;
+- the failed Facebook attempt spent 39.676 seconds in remote-view and retained
+  zero page signals/candidates immediately after X succeeded;
+- current service status has one ready retained social browser and fresh
+  access planning recommends `reuse_existing_browser` with no manual action;
+- CodeGraph is healthy at 345 indexed files, and Graphiti readiness/discovery
+  passed for `last30days_skill_main`.
+
+State Movement:
+
+- Plan 0041/P17 opens at version 1/C01:
+  `daily_facebook_transient_failure -> bounded_cross_source_handoff_repair`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the user did not request delegation and the browser/profile
+  boundary remains a serialized critical path.
+
+Graphiti Write Status:
+
+- discovery completed; a compact source-backed episode is pending a validated
+  repair or terminal outcome.
+
+Next Bounded Action:
+
+- add and run one focused failing regression for an exact X-owned ready-CDP
+  browser with no Facebook target, then make the minimum safe adapter change.
+
+## Turn 273 | 2026-08-10
+
+Focus: falsify the initial alias hypothesis and validate one bounded
+late-completion reconciliation repair in source.
+
+Authority Consulted:
+
+- Plan 0041/P17 C01, current CodeGraph call/impact context, the exact adapter
+  budget and remote-view error contracts, and TDD plus repository validation
+  policy.
+
+Decisions And Changes:
+
+- the first red fixture showed the default-profile alias already returns the
+  X-owned retained browser because target selection falls back to its first
+  tab; that hypothesis is rejected and no alias relaxation was made;
+- replaced it with the exact unhandled case: a remote-view waiter returns
+  `agent_browser_error`, then one service status read exposes the exact ready
+  selected-profile browser;
+- reserved ten seconds inside the cumulative Facebook adapter budget for that
+  single read-only reconciliation. The repair accepts only a ready exact-
+  profile owner or the existing narrow alias, and never retries or relaunches.
+
+Validation Evidence:
+
+- the new regression failed before implementation by re-raising
+  `service_state_lock_timeout` and passed afterward;
+- it proves a 30-second waiter inside a 40-second run, one ten-second status
+  read, exact browser/session/target identity, four adapter calls total, and no
+  second remote-view command;
+- focused Facebook, agent-browser-config, and acquisition-worker tests pass:
+  139 outcomes with one expected skip.
+
+State Movement:
+
+- Plan 0041/P17 advances version 1/C01 -> version 2/C02 and remains `OPEN` at
+  `source_candidate_validated`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no delegation or parallel runtime work occurred.
+
+Graphiti Write Status:
+
+- pending the terminal installed outcome; current source and test receipts are
+  authoritative.
+
+Next Bounded Action:
+
+- bump the independently versioned service, refresh the runtime manifest, and
+  run the complete pre-install candidate gate.
+
+## Turn 274 | 2026-08-10
+
+Focus: converge service 0.3.45 and pass the complete pre-install candidate gate.
+
+Authority Consulted:
+
+- Plan 0041/P17 C02, service version/runtime-manifest authority, contributor
+  release gates, CodeGraph impact, and current Git, validation, documentation,
+  closeout, and goal policies.
+
+Decisions And Changes:
+
+- advanced the independently versioned service to 0.3.45, refreshed the
+  canonical runtime manifest, and documented the operator-visible fix;
+- scoped reconciliation strictly to Facebook after the first full suite proved
+  the shared base client had added an extra read to terminal Reddit failures;
+- updated the current planning-authority fixture for the one active plan and
+  tightened the late direct-session path to require exact session and browser
+  profile labels. No runtime installation or browser effect occurred.
+
+Validation Evidence:
+
+- final complete Python gate: 2,648 passed, seven skipped, six subtests passed;
+- Go `test ./...` and `vet ./...`, Python compileall, contract generation,
+  service runtime build, authority audit, and patch hygiene pass;
+- runtime manifest SHA-256 is
+  `2cb15a6ea92fae932e0d657fbc27444219eff867b9ca52feac35ba25f8bcacf8`;
+  reproducible service artifact SHA-256 is
+  `4cbad60d7582b8e7089628aa93a1186d1e69e93c122e4985d54326db7647a274`.
+
+State Movement:
+
+- Plan 0041/P17 advances version 2/C02 -> version 3/C03 and remains `OPEN` at
+  `install_ready_candidate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; all candidate validation was run by the primary agent.
+
+Graphiti Write Status:
+
+- pending terminal installed evidence; no candidate-only write was queued.
+
+Next Bounded Action:
+
+- commit and push service 0.3.45 source, build the exact commit artifact, then
+  run one supported upgrade and one Facebook-only acceptance tick after fresh
+  no-launch preflight.
