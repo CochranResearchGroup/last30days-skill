@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Facebook prepared-extraction freshness.** Service 0.3.47 preserves the
+  combined replacement-target auth/page/extraction capture when it contains
+  candidates or rate-limit evidence, but refreshes an empty immediate capture
+  after the configured settle wait before deciding whether scrolling is
+  necessary. This prevents stale post-navigation emptiness from forcing a
+  renderer-stalling scroll while retaining the existing non-empty single-read
+  fast path and all parent budgets.
+
 - **Facebook combined-capture deadline.** Service 0.3.46 gives the existing
   single combined Facebook query capture a 45-second inner job deadline inside
   a 50-second outer waiter. The change stays within the existing 105-second

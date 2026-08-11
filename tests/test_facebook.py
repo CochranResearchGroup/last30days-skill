@@ -1609,6 +1609,46 @@ class FacebookNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual(facebook._search_url("robotic lawn mower", recent=True), client.prepared_url)
         self.assertTrue(client.capture_consumed)
 
+    def test_empty_prepared_query_capture_refreshes_after_initial_wait_before_scroll(self):
+        class EmptyPreparedCaptureClient(FakeAgentBrowserClient):
+            def __init__(self):
+                super().__init__()
+                self.prepared_url = ""
+                self.fresh_extraction_reads = 0
+
+            def prepare_query_capture_url(self, url):
+                self.prepared_url = url
+                self.page["url"] = url
+
+            def prepared_query_page(self, workspace):
+                return dict(self.page)
+
+            def consume_prepared_query_extraction(self, workspace):
+                return {"candidates": []}
+
+            def evaluate(self, workspace, script):
+                if script == facebook.EXTRACT_SCRIPT:
+                    self.fresh_extraction_reads += 1
+                return super().evaluate(workspace, script)
+
+            def act(self, workspace, action):
+                if action.operation == "scroll":
+                    raise AssertionError(
+                        "fresh post-wait extraction must run before scrolling"
+                    )
+                return super().act(workspace, action)
+
+        client = EmptyPreparedCaptureClient()
+
+        with mock.patch("lib.facebook.time.sleep") as sleep:
+            result = make_scraper(client, limit=1, initial_wait=4, scrolls=1).search(
+                "robotic lawn mower", "2026-06-15", "2026-07-15"
+            )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(1, client.fresh_extraction_reads)
+        sleep.assert_called_once_with(4)
+
     def test_observed_retained_eval_timeout_recovers_within_adapter_budget(self):
         class ObservedNavigationRecoveryClient(FakeAgentBrowserClient):
             def __init__(self):

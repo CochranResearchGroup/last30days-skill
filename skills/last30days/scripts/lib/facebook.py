@@ -1897,6 +1897,12 @@ class FacebookScraper:
             self.client, "consume_prepared_query_extraction", None
         )
         prepared_raw = consume_prepared(workspace) if callable(consume_prepared) else None
+        prepared_candidates = (
+            prepared_raw.get("candidates") if isinstance(prepared_raw, dict) else None
+        )
+        use_prepared = isinstance(prepared_raw, dict) and (
+            bool(prepared_candidates) or prepared_raw.get("rate_limited") is True
+        )
         paired_read = getattr(self.client, "snapshot_and_evaluate", None)
         paired_timeout_fallback = False
         for attempt in range(3):
@@ -1907,7 +1913,7 @@ class FacebookScraper:
                 snapshot = BrowserSnapshot()
                 raw = (
                     prepared_raw
-                    if isinstance(prepared_raw, dict)
+                    if use_prepared
                     else self.client.evaluate(workspace, EXTRACT_SCRIPT)
                 )
             elif callable(paired_read):

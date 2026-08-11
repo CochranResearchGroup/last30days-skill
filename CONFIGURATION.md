@@ -1030,7 +1030,7 @@ previous verified releases deliberately; `start`, `stop`, `status`, and
 `diagnose` provide the remaining lifecycle controls.
 
 The v4 release uses independent artifact versions: Skill/plugin `4.0.0`, MCP
-adapter `4.0.3`, and service `0.3.46`. Upgrade the service first, install the
+adapter `4.0.3`, and service `0.3.47`. Upgrade the service first, install the
 adapter second, and require `service_info` to report
 `compatibility_state=compatible` before updating the optional Skill. Schema 16
 needs no migration. A typed incompatibility means one side is stale; it does

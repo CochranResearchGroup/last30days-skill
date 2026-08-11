@@ -1605,6 +1605,100 @@ Closeout:
 - Plan 0042 closed at version 4/C04 with a terminal acceptance failure and no
   authorized retry or further autonomous successor at the same invariant.
 
+## P21 | Facebook Stale Prepared Extraction Refresh
+
+State: OPEN
+
+Objective: refresh an empty immediate prepared query extraction after the
+configured settle wait before deciding whether Facebook scrolling is needed,
+then prove one installed tick publishes and serves accepted evidence.
+
+Current State:
+
+- Plan 0044's exact installed CDP wheel repair remains green in fake-CDP and
+  real-Chrome e2e tests, but its one live tick exposed the actual upstream
+  stale-read seam;
+- replacement auth recovery captures extraction immediately after navigation;
+  Plan 0045 now refreshes an empty capture after the four-second settle while
+  preserving non-empty and rate-limit single-read paths;
+- focused and expanded source gates pass, and service/release contracts
+  converge at 0.3.47; the full Python, Go, package, authority, and reproducible
+  artifact gates pass. Exact commit/push, one service install, and at most one
+  later Facebook-only receipt remain.
+
+Active Plan:
+
+- `docs/dev/plans/0045-2026-08-11-facebook-stale-prepared-extraction-refresh.md`
+
+Dependencies:
+
+- preserves P17-P20's acquisition, deadline, retained-browser, and generic
+  scroll contracts; changes only Last30Days prepared extraction freshness.
+
+Next Action:
+
+- commit and push the exact 0.3.47 candidate, rebuild from that commit, then
+  perform the one transactional service upgrade after fresh preflight.
+
+## P20 | Agent Browser CDP Input Scroll Repair
+
+State: CLOSED
+
+Objective: move selectorless page scrolling from renderer JavaScript to
+browser-level CDP input-wheel delivery, then prove one installed Facebook tick
+publishes and serves accepted evidence.
+
+Current State:
+
+- exact agent-browser commit `a954bc95` passed focused, real-Chrome, and
+  canonical Rust gates and installed as SHA-256
+  `76b2779ffc65d85f22817c698732e387dffe9cd4f8225f9aaf6b65bba467d3d1`;
+- the one live tick reached `Input.dispatchMouseEvent`, which the Facebook
+  target did not acknowledge while browser inventory stayed healthy;
+- Last30Days source diagnosis identified the stale empty prepared query capture
+  that forces this unnecessary scroll; P21 now owns the remaining acceptance.
+
+Closed Plan:
+
+- `docs/dev/plans/0044-2026-08-11-agent-browser-cdp-input-scroll-repair.md`
+
+Closeout:
+
+- Plan 0044 closed at version 2/C03 with a valid installed generic scroll
+  repair and a distinct Last30Days upstream stale-read blocker.
+
+## P19 | Agent Browser Eval Budget Propagation Repair
+
+State: CLOSED
+
+Objective: propagate a positive global agent-browser evaluation job deadline
+through both Chromium's renderer and the CDP transport, then prove one installed
+Facebook tick publishes accepted evidence.
+
+Current State:
+
+- exact agent-browser commit `1c1331ef` passed all required gates and installed
+  as SHA-256 `071b7a6e3e58c87f3fd1decaaeb40d691f666a7d8f311894e4f30558c233bbf2`
+  without replacing Facebook browser PID 13177 or its targets;
+- the one bounded tick exercised the repaired evaluation successfully and then
+  stopped on the distinct selectorless scroll failure now owned by P20;
+- the tick is terminal, was not retried, and produced no accepted evidence or
+  cache-success claim.
+
+Closed Plan:
+
+- `docs/dev/plans/0043-2026-08-11-agent-browser-eval-budget-propagation-repair.md`
+
+Dependencies:
+
+- consumed P17-P18 and agent-browser P109 without changing their retained-state
+  contracts.
+
+Closeout:
+
+- Plan 0043 closed at version 3/C03 with verified deadline blocker reduction
+  and a distinct successor scroll owner.
+
 ## P10 | Recurring Browser Reauthentication Notifications
 
 State: CLOSED

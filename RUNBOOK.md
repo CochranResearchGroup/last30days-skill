@@ -16639,3 +16639,382 @@ Next Bounded Action:
 
 - no autonomous Facebook retry or successor; preserve the exact receipt for a
   separately authorized investigation.
+
+## Turn 279 | 2026-08-11
+
+Focus: identify and plan the owning downstream deadline repair after Plan
+0042's terminal Facebook acceptance failure.
+
+Authority Consulted:
+
+- active user goal `repair the tick`, Plan 0042/P18 C04, installed tick and
+  provider receipts, Last30Days maintenance gates, current agent-browser source
+  through CodeGraph, agent-browser Plan 0097/P97, both repos' policy and Git
+  state, and advisory `agent_browser_main` Graphiti discovery.
+
+Decisions And Changes:
+
+- preserved Plan 0042's failed tick as terminal and did not issue another
+  Facebook operation;
+- identified the exact downstream mismatch: agent-browser accepts a positive
+  45-second global job deadline but caps Chromium at 25 seconds and calls a CDP
+  transport fixed at 30 seconds;
+- opened Plan 0043/P19 for a different owning-seam strategy, with one isolated
+  agent-browser worktree, a virtual-time red/green reproducer, one candidate
+  install, and at most one later acceptance tick;
+- left the primary agent-browser architecture branch and its unrelated
+  untracked build directory untouched.
+
+Validation Evidence:
+
+- installed Last30Days service 0.3.46/MCP 4.0.3 remain ready and compatible at
+  schema 16;
+- Graphiti runtime is healthy; focused `agent_browser_main` search returned no
+  source-backed fact that supersedes current CodeGraph/source;
+- current source proves the 25-second renderer cap, 30-second CDP transport,
+  and fixed `send_command` call from `evaluate_with_timeout`;
+- Plan 0097/C05 confirms those limits originated together as renderer
+  termination beneath the fixed transport deadline.
+
+State Movement:
+
+- Plan 0043/P19 opens version 1/C01 at
+  `downstream_deadline_owner_identified`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; all discovery and critical-path work remain primary-owned.
+
+Graphiti Write Status:
+
+- discovery only; defer a new episode until a validated terminal outcome.
+
+Next Bounded Action:
+
+- create an isolated worktree from agent-browser `baaed508`, add the one
+  virtual-time fake-CDP regression, and prove it red before source changes.
+
+## Turn 280 | 2026-08-11
+
+Focus: complete the focused agent-browser deadline propagation repair without
+touching the installed browser or consuming a Facebook attempt.
+
+Authority Consulted:
+
+- Plan 0043/P19 C01, agent-browser Plan 0097/P97, agent-browser Plan 0109/P109,
+  current isolated source, diagnosing-bugs and TDD contracts, and both repos'
+  validation and handoff policies.
+
+Decisions And Changes:
+
+- captured the pre-repair failure at the old fixed 30-second CDP transport
+  boundary;
+- removed the legacy renderer cap and carried one caller-selected budget into
+  both renderer and transport deadlines;
+- replaced the nondeterministic paused-time real-socket test with a pure
+  request-contract regression consumed by the production call, while retaining
+  the immediate fake-CDP integration test.
+
+Validation Evidence:
+
+- a 45,000 ms request now binds renderer timeout 44,750 ms and transport
+  timeout 45,000 ms;
+- a 6,000 ms request retains the 250 ms renderer response grace;
+- the actual `Runtime.evaluate` path sends the renderer deadline;
+- all 35 browser tests passed twice with one test thread.
+
+State Movement:
+
+- Plan 0043/P19 advances version 1/C01 -> version 2/C02 and remains `OPEN` at
+  `focused_dependency_repair_green`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred until terminal installed and downstream evidence.
+
+Next Bounded Action:
+
+- run repository-selected validation and Rust quality gates, commit and build
+  the exact agent-browser candidate, then install it once through the supported
+  browser-preserving handoff.
+
+## Turn 281 | 2026-08-11
+
+Focus: reconcile the installed evaluation repair and open a bounded successor
+for the distinct selectorless page-scroll failure.
+
+Authority Consulted:
+
+- active user goal `repair the tick`, Plan 0043/P19 C02, exact installed
+  agent-browser receipts, exact tick/provider/browser-operation receipts,
+  current source through prior structural CodeGraph inspection, and both repos'
+  planning, goal, validation, closeout, and documentation policies.
+
+Decisions And Changes:
+
+- committed exact agent-browser repair `1c1331ef` and installed executable
+  SHA-256 `071b7a6e3e58c87f3fd1decaaeb40d691f666a7d8f311894e4f30558c233bbf2`
+  through the supported browser-preserving handoff;
+- preserved Facebook browser PID 13177, its exact CDP endpoint, and all six
+  targets;
+- consumed the one Plan 0043 Facebook tick and preserved it terminal without
+  retry when a later selectorless scroll failed;
+- classified the repaired evaluation path as blocker reduction and the scroll
+  failure as a distinct owning seam: `window.scrollBy` through
+  `Runtime.evaluate` while later browser inventory remained responsive;
+- closed Plan 0043/P19 and opened Plan 0044/P20 with one red/green input-wheel
+  repair, one installed candidate, and at most one later Facebook-only tick.
+
+Validation Evidence:
+
+- agent-browser selected validation, formatting, strict production Clippy, 35
+  focused browser tests twice, and the canonical Rust runner passed 1,042
+  parallel-safe tests plus every serialized partition;
+- Last30Days tick `tick-c29795374e8948dfacd36e1fd2cd6b1e`, execution
+  `tick-attempt-a87f59e47b18184c999f280de3029ea6`, provider attempt
+  `provider-attempt-819b212ab93afc5efe1b3f27bfe51d67`, and snapshot
+  `tick-snapshot-8629c4bda88883dc0186f8e921aa483f` are terminal with zero
+  accepted items;
+- operation `r958354` ran for 28.49 seconds and failed exactly with
+  `CDP command timed out: Runtime.evaluate`; a later tab inventory succeeded.
+
+State Movement:
+
+- Plan 0043/P19: version 2/C02 `OPEN` -> version 3/C03 `CLOSED`;
+- Plan 0044/P20: version 1/C01 `OPEN` at
+  `selectorless_scroll_owner_identified`;
+- overall goal remains active because accepted durable Facebook evidence and
+  named-profile cache proof are still unmet.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred until terminal successor evidence; current repo/runtime receipts
+  remain authoritative.
+
+Next Bounded Action:
+
+- add the exact fake-CDP wheel regression red in the isolated agent-browser
+  worktree, implement only selectorless scroll transport, and stop before an
+  install unless all source gates pass.
+
+## Turn 282 | 2026-08-11
+
+Focus: validate, commit, and install the selectorless CDP input-wheel repair
+without replacing the retained Facebook browser.
+
+Authority Consulted:
+
+- Plan 0044/P20 C01, agent-browser Plan 0110/P110, current source and exact
+  browser operation receipt, both repos' validation and installation policies,
+  and the active `repair the tick` goal.
+
+Decisions And Changes:
+
+- captured an exact fake-CDP red regression against the old
+  `Runtime.evaluate` scroll path;
+- changed only selectorless page scroll to `Input.dispatchMouseEvent` type
+  `mouseWheel`; selector-targeted element scroll remains unchanged;
+- used the one focused rework after real Chrome showed that protocol
+  acknowledgement precedes compositor application, moving the wheel point
+  inside the viewport and preserving post-scroll response semantics with a
+  50 ms compositor boundary;
+- committed exact candidate `a954bc95` and installed it once through the
+  supported browser-preserving publisher, then refreshed source-free
+  workstation provenance.
+
+Validation Evidence:
+
+- fake-CDP, all 11 interaction tests, and the existing real-Chrome scroll e2e
+  passed twice;
+- formatting, strict production Clippy, selected validation, patch checks, and
+  the canonical Rust runner passed 1,043 parallel-safe tests with 57 ignored
+  plus every serialized partition;
+- installed executable SHA-256 and workstation manifest both equal
+  `76b2779ffc65d85f22817c698732e387dffe9cd4f8225f9aaf6b65bba467d3d1`;
+- Facebook browser PID 13177 and exact endpoint
+  `ws://127.0.0.1:38770/devtools/browser/00317084-6844-44c8-b1a3-c63555867ced`
+  remained ready across daemon handoff;
+- runtime convergence is `converged`; the only doctor issue is the pre-existing
+  visible duplicate-profile warning with zero candidates and zero
+  readiness-impacting candidates.
+
+State Movement:
+
+- Plan 0044/P20 advances version 1/C01 -> version 1/C02 and remains `OPEN` at
+  `dependency_candidate_installed`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred until terminal downstream evidence.
+
+Next Bounded Action:
+
+- run exact installed Last30Days service, database, schedule, and profile
+  preflight; consume the one Facebook-only tick only if every gate passes.
+
+## Turn 283 | 2026-08-11
+
+Focus: reconcile Plan 0044's one downstream tick and open the owning
+Last30Days stale prepared-extraction repair.
+
+Authority Consulted:
+
+- Plan 0044/P20 C02, exact tick/provider/browser-operation receipts, current
+  `facebook.py`, installed agent-browser state, active goal governance, and
+  planning/validation/closeout policies.
+
+Decisions And Changes:
+
+- ran fully ready service/database/schedule/profile preflight and consumed the
+  one authorized Facebook tick without retry;
+- preserved installed agent-browser commit `a954bc95` because its fake-CDP and
+  real-Chrome scroll contracts remain green;
+- identified the exact Last30Days ordering defect: replacement-target recovery
+  captures auth/page/extraction immediately after navigation, then `search()`
+  sleeps four seconds but consumes the stale empty extraction without a fresh
+  post-wait DOM read;
+- rejected another browser transport variant and closed Plan 0044/P20;
+- opened Plan 0045/P21 for one deterministic empty-prepared-capture fallback,
+  one service release/install candidate, and at most one later acceptance tick.
+
+Validation Evidence:
+
+- tick `tick-877ca3d32b5e6c335d60b585fc631985`, execution
+  `tick-attempt-c993973488088fbd9741f4d9a0728535`, provider attempt
+  `provider-attempt-f707213d4b51646f759db74f02f38799`, snapshot
+  `tick-snapshot-d5cb7ff1f0e49cbce2a1b4de889287e2`, and wheel job `r213109`
+  are terminal;
+- provider result records one navigate success, one eval success, then one
+  30.039-second timed-out scroll with zero observed or accepted candidates;
+- current and rollback databases remain `ok`, schedule `daily-default` remains
+  ready, browser PID 13177 and endpoint remain retained, and no auth/rate
+  incident was created.
+
+State Movement:
+
+- Plan 0044/P20: version 1/C02 `OPEN` -> version 2/C03 `CLOSED`;
+- Plan 0045/P21: version 1/C01 `OPEN` at
+  `stale_prepared_extraction_identified`;
+- overall goal remains active because accepted evidence and named-profile cache
+  proof remain unmet.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred until terminal successor evidence.
+
+Next Bounded Action:
+
+- add the exact empty-prepared-capture regression red, preserve non-empty reuse,
+  and implement only the current DOM fallback after the settle wait.
+
+## Turn 284 | 2026-08-11
+
+Focus: implement and validate the focused stale prepared-extraction repair.
+
+Authority Consulted:
+
+- Plan 0045/P21 C01, exact failed tick ordering, current Facebook adapter and
+  tests, release/versioning authority, and source validation policy.
+
+Decisions And Changes:
+
+- added an exact regression in which the immediate combined query capture is
+  empty but the current post-wait DOM contains candidates;
+- changed only prepared-extraction selection: non-empty candidates and
+  rate-limit evidence remain reusable, while an empty prepared capture falls
+  through to a current `EXTRACT_SCRIPT` read;
+- advanced the independently versioned service, changelog, configuration,
+  release assertions, and runtime manifest to 0.3.47.
+
+Validation Evidence:
+
+- the regression was red because scroll ran before a fresh extraction and now
+  passes with exactly one fresh DOM read;
+- existing non-empty prepared-capture coverage remains green and proves no
+  later target command;
+- all Facebook tests pass with one expected skip; expanded worker, tick,
+  release, package, and authority tests pass;
+- deterministic authority audit reports one active plan, Plan 0045/P21, with
+  zero issues;
+- canonical runtime manifest SHA-256 is
+  `7babaa9ac9045def3826e9bd4563cd94e2806838fcb9b17a567c668342125243`.
+
+State Movement:
+
+- Plan 0045/P21 advances C01 -> C02 and remains `OPEN` at
+  `focused_source_candidate_green`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred until terminal installed/downstream evidence.
+
+Next Bounded Action:
+
+- run the complete pre-install validation and build the reproducible service
+  0.3.47 artifact; do not install unless all gates pass.
+
+## Turn 285 | 2026-08-11
+
+Focus: complete the full pre-install validation for service 0.3.47.
+
+Authority Consulted:
+
+- Plan 0045/P21 C02, repository onboarding gates, release/versioning,
+  validation, Git, package, and authority policies.
+
+Decisions And Changes:
+
+- retained the focused empty-prepared-capture fallback without widening the
+  extraction, scroll, browser, or service contracts;
+- ran every required source/package gate before permitting commit or install;
+- built the runtime artifact twice from the same worktree to prove exact
+  reproducibility.
+
+Validation Evidence:
+
+- full Python gate completed exit 0 across 2,657 collected tests with seven
+  expected skips;
+- Go test/vet, Python compileall, contract generation freshness, authority
+  audit, Skill artifact build, runtime artifact build, and patch hygiene pass;
+- runtime manifest SHA-256:
+  `7babaa9ac9045def3826e9bd4563cd94e2806838fcb9b17a567c668342125243`;
+- reproducible service artifact SHA-256:
+  `7bf1fe1285caf6ae9727f4a9da8460b19d351298a1009363d999fa96b76ba106`.
+
+State Movement:
+
+- Plan 0045/P21 advances C02 -> C03 and remains `OPEN` at
+  `install_ready_candidate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred until terminal installed/downstream evidence.
+
+Next Bounded Action:
+
+- commit and push the exact 0.3.47 candidate, rebuild from that commit, then
+  perform one transactional upgrade after fresh preflight.
