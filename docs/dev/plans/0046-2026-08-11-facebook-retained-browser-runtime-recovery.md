@@ -514,6 +514,96 @@ Next action or stop reason:
   without attaching the session to `default`. Only after that gate may a
   separately bounded Chromium-build or Facebook-site-state comparison proceed.
 
+### Checkpoint P0046-C07 | 2026-08-11
+
+Plan version: 7
+
+State transition:
+
+- `retained_browser_lost_during_reconciliation ->
+  chromium_153_authenticated_search_crash_reproduced`.
+
+Progress classification:
+
+- `blocker_reduction`; the installed Chromium upgrade and exact retained
+  profile routing remove the old build and session-identity uncertainties, but
+  authenticated posts search exposes a second Blink consistency abort before
+  provider acceptance can begin.
+
+Validation evidence:
+
+- install doctor selected ready artifact
+  `153.0.8003.0+stealthcdp.86aec912997e`, Chromium source
+  `6e2a5bb35b050375e5748deb72479cf851950064`, executable SHA-256
+  `17ba663c71256ae0f842c7f22236ba7d4c091d0d6da5f4378d28ea967b38045c`,
+  and passing `navigator.webdriver=false` smoke;
+- live retained PID 39672 resolves to that exact executable and uses only
+  `/home/ecochran76/.agent-browser/runtime-profiles/last30days-facebook/user-data`;
+- no-launch access planning and browser-capability preflight selected profile
+  `last30days-facebook`, browser `session:last30days-facebook`, Chromium 153,
+  authenticated target `facebook`, and the existing holder with no naming,
+  profile-compatibility, or executable mismatch;
+- one filtered posts-search service request opened exact target
+  `5F9E42559ACE9321F29CFF6081924676` through job
+  `http-service-request-tab_new-c1c60416-7b52-4662-968c-6835af036151`.
+  Browser target discovery reached title
+  `(20+) OpenAI - Search Results | Facebook` at the desktop redirected URL;
+- exact-target probe job
+  `http-service-request-probe-530f5410-6761-4c18-b30e-556fbc704e30`
+  timed out after 20 seconds. Retained stderr
+  `/home/ecochran76/.agent-browser/tmp/chrome-launches/chrome-39672-1786492827405.stderr.log`
+  records the corresponding local `20:46:12` renderer FATAL at
+  `third_party/blink/renderer/core/layout/inline/inline_item_result.cc:55`:
+  `DCHECK failed: Length() == shape_result->NumCharacters() (222 vs. 3)`;
+- the new stack reaches `InlineItemResult::CheckConsistency()` immediately
+  after `LineBreaker::HandleOverflow()` calls `BreakText()`. The Chromium 153
+  source no longer contains the former `line_breaker.cc:4102` ordering DCHECK,
+  so the upgrade repaired that exact assertion but did not produce a
+  consistent shape result for this Facebook layout;
+- agent-browser again retained the target as `ready` and emitted only a
+  service-job timeout, not a renderer-crash lifecycle event or browser-scoped
+  crash incident;
+- cleanup job
+  `http-service-request-tab_handle_release-3df5f37a-af22-4d2a-b033-590c1c731727`
+  closed only target `5F9E42559ACE9321F29CFF6081924676`, preserved browser
+  PID 39672 and its session route, and left X, LinkedIn, blank, and new-tab
+  targets live. No provider, tick, cache, schedule, profile-data, or browser
+  process mutation occurred.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Authority classification:
+
+- `inherited_authority`; the operator's explicit Chromium-upgrade retry request
+  authorized one bounded same-profile successor attempt. It did not authorize
+  disabling DCHECKs, copying or clearing the profile, a second browser attempt,
+  or a provider/tick after the renderer gate failed.
+
+Review disposition summary:
+
+- `blocking=2` Chromium 153 `InlineItemResult` shape-length consistency abort
+  and missing agent-browser target-crash propagation; `needs_evidence=2`
+  accepted Facebook evidence and exact named-profile cache proof; `rejected=3`
+  old `line_breaker.cc:4102` as the current crash, profile/executable routing
+  mismatch, and a provider tick after failed renderer acceptance;
+  `nonblocking_backlog=0`.
+
+Graphiti write status:
+
+- no new write before this checkpoint is durable; the repository, exact
+  service jobs, source readback, process identity, and retained stderr remain
+  authoritative.
+
+Next action or stop reason:
+
+- hard stop before another browser target or tick. The next Chromium packet
+  must reproduce and repair the `InlineItemResult` shape-length mismatch with
+  DCHECKs retained, while agent-browser separately gains immediate target-crash
+  propagation. Only after both gates pass may one newly authorized Facebook
+  acceptance attempt proceed.
+
 ## Definition Of Done
 
 - criteria 1-5 have current human-gate, live-runtime, receipt, cache, and

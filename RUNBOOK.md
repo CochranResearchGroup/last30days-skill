@@ -17454,3 +17454,84 @@ Stop Reason:
   authenticated posts search, and agent-browser compounds it by neither
   propagating renderer crashes nor preserving session/profile identity during
   final inventory reconciliation. Stop before recovery or another tick.
+
+## Turn 293 | 2026-08-11
+
+Focus: retry authenticated Facebook posts search once against the installed
+Chromium 153 successor and stop at the renderer acceptance gate.
+
+Authority Consulted:
+
+- operator request to retry after the Chromium upgrade, Plan 0046/P22 C06,
+  agent-browser runtime skill, planning, goal, validation, roadmap/runbook,
+  documentation, git, and closeout policies, installed artifact provenance,
+  live retained profile allocation, and exact service access-plan output.
+- active plan
+  `docs/dev/plans/0046-2026-08-11-facebook-retained-browser-runtime-recovery.md`.
+
+Decisions And Changes:
+
+- treated the upgraded executable and reconstructed exact profile/session route
+  as a bounded successor with a changed assumption, not a retry of the old
+  Chromium 150 packet;
+- required install doctor, live `/proc` executable identity, access plan, and
+  browser-capability preflight before opening one filtered Facebook target;
+- stopped after the exact-target probe timed out and stderr proved a new
+  renderer abort;
+- released only the failed target through its service tab handle, preserving
+  the retained browser process, route, profile, and unrelated targets;
+- did not invoke Facebook acquisition, enqueue a tick, query cache acceptance,
+  mutate profile data, change the schedule, or close the retained browser.
+
+Validation Evidence:
+
+- installed ready artifact is Chromium `153.0.8003.0`, artifact
+  `153.0.8003.0+stealthcdp.86aec912997e`, executable SHA-256
+  `17ba663c71256ae0f842c7f22236ba7d4c091d0d6da5f4378d28ea967b38045c`;
+- retained PID 39672 resolves to that executable and its command line binds
+  only the exact `last30days-facebook` user-data directory;
+- preflight selected the exact authenticated profile, retained browser/session,
+  and Chromium 153 binding with no naming or compatibility warning;
+- tab-open job
+  `http-service-request-tab_new-c1c60416-7b52-4662-968c-6835af036151`
+  created target `5F9E42559ACE9321F29CFF6081924676`, and browser discovery
+  reported `(20+) OpenAI - Search Results | Facebook`;
+- probe job
+  `http-service-request-probe-530f5410-6761-4c18-b30e-556fbc704e30`
+  timed out after 20 seconds. PID 39672 stderr records a local `20:46:12`
+  FATAL at `inline_item_result.cc:55`, where
+  `Length() == shape_result->NumCharacters()` failed `222 vs. 3` from
+  `InlineItemResult::CheckConsistency()` after `LineBreaker::BreakText()`;
+- the old `line_breaker.cc:4102` assertion is absent from the Chromium 153
+  source, proving the upgrade changed the old failure while exposing this next
+  invariant;
+- agent-browser emitted a job-timeout incident but no target-crash lifecycle
+  event. Cleanup job
+  `http-service-request-tab_handle_release-3df5f37a-af22-4d2a-b033-590c1c731727`
+  closed the exact target and preserved PID 39672 plus X, LinkedIn, blank, and
+  new-tab targets.
+
+State Movement:
+
+- Plan 0046 version 7/C07:
+  `retained_browser_lost_during_reconciliation ->
+  chromium_153_authenticated_search_crash_reproduced`;
+- P22 remains `OPEN`; accepted Facebook evidence and named-profile cache proof
+  remain unmet, and provider/tick use for this packet is zero.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- no new write before the checkpoint commit; repository state, service jobs,
+  source readback, process identity, and retained stderr are authoritative.
+
+Stop Reason:
+
+- Chromium 153 repairs the old ordering DCHECK but authenticated Facebook
+  search still aborts on an inconsistent shaped-text result. Stop before
+  another target or tick. Repair this new DCHECK-backed invariant and
+  agent-browser crash propagation before requesting another live acceptance
+  attempt.

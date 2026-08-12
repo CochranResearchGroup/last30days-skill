@@ -1638,7 +1638,15 @@ Current State:
   aborts as the direct renderer failure. Final reconciliation then found PID
   83786 and port 39488 gone, and a nominal inventory read attached the Facebook
   session name to a default-profile browser. That association was invalid and
-  no recovery was attempted.
+  no recovery was attempted;
+- the operator-authorized Chromium successor installed Chromium 153 artifact
+  `153.0.8003.0+stealthcdp.86aec912997e`. Exact preflight and process proof now
+  bind retained profile/session `last30days-facebook` and PID 39672 to that
+  artifact. One filtered authenticated search reached its Facebook title but
+  aborted at a new Blink `inline_item_result.cc:55` consistency DCHECK
+  (`222 vs. 3`); agent-browser again reported only a probe timeout. The exact
+  failed tab was closed, the retained browser and unrelated tabs remain live,
+  and no provider or tick ran.
 
 Active Plan:
 
@@ -1651,11 +1659,11 @@ Dependencies:
 
 Next Action:
 
-- Plan 0046 remains open at version 6/C06 in
-  `retained_browser_lost_during_reconciliation`, with zero provider attempts.
-  Repair crash propagation and session/profile routing before reconstructing
-  the retained browser; profile clearing/copy, alternate-build comparison, and
-  any tick remain behind later bounded gates.
+- Plan 0046 remains open at version 7/C07 in
+  `chromium_153_authenticated_search_crash_reproduced`, with zero provider
+  attempts. Repair the new shape-result consistency failure with DCHECKs
+  retained and add target-crash propagation before another browser acceptance
+  attempt; profile clearing/copy and any tick remain prohibited.
 
 ## P21 | Facebook Stale Prepared Extraction Refresh
 
