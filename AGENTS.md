@@ -117,6 +117,30 @@ Read and follow:
 - `docs/dev/policies/0022-roadmap-runbook-governance.md`
 - `docs/dev/policies/0023-subagent-runtime-governance.md`
 - `docs/dev/policies/0024-preview-artifact-review.md`
+- `docs/dev/policies/0025-policy-management.md`
+- `docs/dev/policies/0026-policy-upgrade-management.md`
+- `docs/dev/policies/0027-policy-adoption-feedback-loop.md`
+- `docs/dev/policies/0028-notes-and-memories.md`
+- `docs/dev/policies/0029-graph-backed-memory-usage.md`
+- `docs/dev/policies/0030-codegraph-usage.md`
+- `docs/dev/policies/0031-planning-discipline.md`
+- `docs/dev/policies/0032-goal-execution-governance.md`
+- `docs/dev/policies/0033-parallel-plan-design.md`
+- `docs/dev/policies/0034-roadmap-runbook-governance.md`
+- `docs/dev/policies/0035-architecture-guardrails.md`
+- `docs/dev/policies/0036-documentation-change-control.md`
+- `docs/dev/policies/0037-git-worktree-hygiene.md`
+- `docs/dev/policies/0038-commit-history-discipline.md`
+- `docs/dev/policies/0039-branch-and-integration-strategy.md`
+- `docs/dev/policies/0040-commit-and-push-cadence.md`
+- `docs/dev/policies/0041-multi-agent-reconciliation.md`
+- `docs/dev/policies/0042-subagent-workflow-optimization.md`
+- `docs/dev/policies/0043-versioning-and-release.md`
+- `docs/dev/policies/0044-turn-closeout.md`
+- `docs/dev/policies/0045-validation-and-handoff.md`
+- `docs/dev/policies/0046-subagent-runtime-governance.md`
+- `docs/dev/policies/0047-preview-artifact-review.md`
+- `docs/dev/policies/0048-upstream-fork-maintenance.md`
 
 ## Scope
 
