@@ -116,6 +116,7 @@ Read and follow:
 - `docs/dev/policies/0021-subagent-workflow-optimization.md`
 - `docs/dev/policies/0022-roadmap-runbook-governance.md`
 - `docs/dev/policies/0023-subagent-runtime-governance.md`
+- `docs/dev/policies/0024-preview-artifact-review.md`
 
 ## Scope
 
