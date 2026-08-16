@@ -17676,3 +17676,53 @@ Next Bounded Action:
   ten, and LinkedIn topic/content search at up to ten. Judge realized volume
   from the durable observed/accepted counts; do not re-enable Reddit or
   Facebook without an explicit operator request.
+
+## Turn 296 | 2026-08-16
+
+Focus: guard one immediate receipt-only X and LinkedIn volume canary.
+
+Authority Consulted:
+
+- operator request to try the increased volume now and report; P08/Plans 0024,
+  0047, and 0048; planning, goal, roadmap/runbook, validation, and closeout
+  policies; installed service, private config, schedule, tick, attempt, and
+  SQLite readbacks.
+
+Decisions And Changes:
+
+- opened bounded successor Plan 0049 for exactly one X attempt and one
+  LinkedIn attempt over the completed Aug 15-16 interval;
+- selected distinct manual schedule identity
+  `plan-0049-x-linkedin-volume-canary` so the canary cannot consume tonight's
+  `daily-default` interval;
+- fixed the terminal condition at the first terminal receipt with no retry,
+  fallback, other source, configuration change, or schedule mutation.
+
+Validation Evidence:
+
+- no-state preflight is `ready` for prospective tick
+  `tick-c4f042016a7f05f7f076fa195c2d6c98`, with exactly X and LinkedIn lanes;
+- each lane permits one attempt, ten items, 50 requests, 120 wall seconds, zero
+  cost, and zero model tokens; aggregate limits are 2/100/20/240;
+- service 0.3.47/schema 16 is active/ready, current SQLite quick check is `ok`,
+  active attempts are zero, and `daily-default` remains ready for
+  `2026-08-17T00:00:00Z` before effect.
+
+State Movement:
+
+- P08 moves `CLOSED -> OPEN`; Plan 0049 opens version 1/C01 at `canary_ready`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- not attempted because no Graphiti write interface is available in this
+  runtime; repo authorities and installed readbacks are authoritative.
+
+Next Bounded Action:
+
+- publish this guard checkpoint, enqueue the exact preflight once, poll only
+  that tick to terminal state, read back both source receipts and scheduler
+  integrity, and stop without retry.

@@ -1071,7 +1071,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: CLOSED
+State: OPEN
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1108,6 +1108,15 @@ Current State:
   profile record. YouTube remains at three, Reddit/Facebook remain disabled,
   and `daily-default` remains enabled/ready for the same Aug 17 UTC boundary.
   Neither private-config transition admitted a tick or provider attempt.
+- the operator then requested one immediate X/LinkedIn test. Plan 0049/C01 has
+  a ready, receipt-only two-lane preflight for the completed Aug 15-16 interval
+  under a distinct manual schedule identity; no provider effect has occurred.
+
+Active Plan:
+
+- `docs/dev/plans/0049-2026-08-16-x-linkedin-volume-live-canary.md`
+  version 1/C01 permits exactly one X attempt and one LinkedIn attempt, then a
+  terminal receipt/report with no retry and no `daily-default` mutation.
 
 Closed Plan:
 
@@ -1150,13 +1159,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- observe the next ordinary boundary with exactly YouTube at three items, X at
-  up to ten, and LinkedIn topic/content search at up to ten. Preserve Plan 0024
-  as the installed scheduler authority, Plan 0047 as the current source-set
-  authority, and Plan 0048 as the current volume/provider authority.
-  Re-enablement or any further cadence, source, provider, ceiling,
-  notification, or timer-architecture change requires current runtime evidence
-  and explicit operator direction where applicable.
+- enqueue Plan 0049's exact two-lane preflight once and stop after its terminal
+  receipt and scheduler-integrity readback. Do not retry or wait for the next
+  ordinary boundary as part of this canary.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 
