@@ -1100,6 +1100,11 @@ Current State:
   Facebook lane failure; the schedule is ready for Aug 8 and lifetime provider
   attempts are 25/50. The activation proof itself stopped exactly at 20/50;
   this is the distinct first ordinary steady-state boundary.
+- on 2026-08-16 the operator temporarily disabled the Reddit and Facebook
+  targets after the productivity review. Owner-private revision
+  `operator-20260816-disable-reddit-facebook-v1` retains exactly YouTube, X,
+  and LinkedIn; `daily-default` remains enabled/ready for the same Aug 17 UTC
+  boundary, and the transition admitted no tick or provider attempt.
 
 Closed Plan:
 
@@ -1109,6 +1114,10 @@ Closed Plan:
   activation tick and five provider attempts (cumulative maximum 20/50), and
   forbids per-source/systemd timers, legacy spec enablement, catch-up fanout,
   cost/model use, Guacamole observation, or a second acquisition path.
+
+- `docs/dev/plans/0047-2026-08-16-temporarily-disable-reddit-facebook-timer-lanes.md`
+  version 1/C01 is the terminal operational successor for the exact temporary
+  two-source pause. Re-enablement remains an explicit operator action.
 
 - S02's service 0.3.5/schema16 repository candidate passes the complete
   Python and Go suites plus compile/schema/manifest checks without live or
@@ -1132,10 +1141,11 @@ Dependencies:
 
 Next Bounded Action:
 
-- preserve P08/Plan 0024 as closed installed authority and observe the daily
-  schedule through ordinary operations. Any cadence, source, provider,
-  ceiling, notification, or timer-architecture change must enter a separately
-  governed successor plan with current runtime evidence.
+- observe the next ordinary boundary with exactly YouTube, X, and LinkedIn.
+  Preserve Plan 0024 as the installed scheduler authority and Plan 0047 as the
+  current source-set authority. Re-enablement or any further cadence, source,
+  provider, ceiling, notification, or timer-architecture change requires
+  current runtime evidence and explicit operator direction where applicable.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 
@@ -1647,6 +1657,11 @@ Current State:
   (`222 vs. 3`); agent-browser again reported only a probe timeout. The exact
   failed tab was closed, the retained browser and unrelated tabs remain live,
   and no provider or tick ran.
+- the later ordinary Aug 15-16 timer completed its Facebook browser operations,
+  observed 11 candidates, and rejected all at the unchanged quality gate. The
+  operator then requested Facebook and Reddit be disabled for now; Plan 0047
+  applied that exact source pause without changing daily cadence or admitting
+  a transition tick.
 
 Active Plan:
 
@@ -1659,11 +1674,11 @@ Dependencies:
 
 Next Action:
 
-- Plan 0046 remains open at version 7/C07 in
-  `chromium_153_authenticated_search_crash_reproduced`, with zero provider
-  attempts. Repair the new shape-result consistency failure with DCHECKs
-  retained and add target-crash propagation before another browser acceptance
-  attempt; profile clearing/copy and any tick remain prohibited.
+- Plan 0046 remains open but operator-paused at version 8/C08 in
+  `facebook_timer_lane_temporarily_disabled`. Do not repair, re-enable, or run
+  another Facebook acceptance attempt until the operator explicitly resumes
+  this lane; when resumed, re-anchor to the latest quality-gate result before
+  choosing browser versus extraction work.
 
 ## P21 | Facebook Stale Prepared Extraction Refresh
 

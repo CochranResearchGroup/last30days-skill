@@ -17535,3 +17535,72 @@ Stop Reason:
   another target or tick. Repair this new DCHECK-backed invariant and
   agent-browser crash propagation before requesting another live acceptance
   attempt.
+
+## Turn 294 | 2026-08-16
+
+Focus: temporarily disable Reddit and Facebook in the service-owned daily tick
+without changing cadence or admitting transition work.
+
+Authority Consulted:
+
+- operator request to disable Reddit and Facebook for now; live productivity
+  review, P08/Plan 0024 recurrence authority, P22/Plan 0046 current state,
+  planning, roadmap/runbook, validation, git, and closeout policies; current
+  owner-private config, schedule row, service, tick, attempt, and SQLite
+  readbacks.
+
+Decisions And Changes:
+
+- opened and closed bounded operational successor Plan 0047 for the exact
+  two-source pause;
+- changed only private config revision to
+  `operator-20260816-disable-reddit-facebook-v1` and target flags Reddit false
+  and Facebook false; YouTube, X, LinkedIn, cadence, selectors, providers,
+  credentials, budgets, notifications, and installed code remain unchanged;
+- the first mechanical flag edit was rejected by exact target-map validation
+  before reload because it selected adjacent targets. Corrected configuration
+  then passed the full strict map and no-state preflight;
+- backed up the live database, stopped the service, bound the existing
+  `daily-default` row to the exact validated new config digest in one guarded
+  transaction, and restarted the service. This satisfies the schedule's
+  fail-closed config-replacement boundary without resetting its last/next
+  boundary or creating a second schedule identity;
+- updated P08, P22, and Plan 0046 to make the temporary operator pause and
+  latest Facebook quality-gate evidence current.
+
+Validation Evidence:
+
+- exact private target map is Reddit false, YouTube true, X true, Facebook
+  false, LinkedIn true; file mode remains 0600;
+- full config preflight is `ready`; enabled-only scoped preflight produces
+  exactly three lanes and limits 3/150/9/360 with zero cost/model; Reddit-only
+  and Facebook-only preflights fail closed because they have no enabled target;
+- full config and bound schedule digest are
+  `sha256:aaefca9f2aaa73faf78c703918fbad819096dcaffb711aea32d14e86cf4cb3af`;
+- service 0.3.47/schema 16 is active/ready; `daily-default` is enabled/ready for
+  `2026-08-17T00:00:00Z` with no runtime error and unchanged last tick;
+- timer ticks remain 11, total provider attempts remain 139, active attempts
+  remain zero, schedule events remain 23, and current plus backup SQLite quick
+  checks return `ok`.
+
+State Movement:
+
+- Plan 0047/P08 closes version 1/C01 at
+  `reddit_facebook_temporarily_disabled`;
+- Plan 0046/P22 advances version 7/C07 -> version 8/C08 and remains `OPEN` but
+  operator-paused at `facebook_timer_lane_temporarily_disabled`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the private-config/runtime transition was serialized and
+  primary-owned.
+
+Graphiti Write Status:
+
+- not attempted because no Graphiti write interface is available in this
+  runtime; repo authorities and installed readbacks are authoritative.
+
+Next Bounded Action:
+
+- let the next ordinary UTC boundary run only YouTube, X, and LinkedIn. Do not
+  re-enable Reddit or Facebook without an explicit operator request.

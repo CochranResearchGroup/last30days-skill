@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P22
-Plan version: 6
+Plan version: 8
 Date: 2026-08-11
 Predecessor: Plan 0045 version 2/checkpoint P0045-C05
 
@@ -17,48 +17,25 @@ named-profile cache evidence.
 
 ## Current State
 
-- service 0.3.47/schema 16 and agent-browser executable SHA-256
-  `76b2779ffc65d85f22817c698732e387dffe9cd4f8225f9aaf6b65bba467d3d1`
-  remain installed and source-validated;
-- the authorized same-profile/current-build restart succeeded and restored
-  exactly the three inventoried unrelated targets on browser PID 83786,
-  endpoint
-  `ws://127.0.0.1:39488/devtools/browser/c574210a-2ee2-4971-8b25-dee038040b41`,
-  profile `last30days-facebook`, and the current promoted Chromium build;
-- one fresh Facebook target opened and a bounded five-second settle completed,
-  but service job `r791343` timed out the first read-only evaluation after
-  exactly 10,000 milliseconds. The plan stopped before selectorless input,
-  provider preflight, or any tick;
-- cleanup job `r186349` closed only the failed Facebook target. X, LinkedIn,
-  and preview remain attached; the browser, endpoint, profile, and DevTools are
-  live, both databases return `ok`, and `daily-default` is unchanged and ready;
-- direct agent-browser inspection of one later disposable Facebook target
-  proved the page renderer crashes to Chromium's “Aw, Snap!” surface with
-  `Error code: SIGSEGV`. Browser-level target, network, console, and error
-  commands remain responsive while renderer-facing title, evaluation,
-  accessibility, and page-screenshot commands hang or fail;
-- agent-browser still retains that crashed target as lifecycle `ready` and
-  records no corresponding crash event or incident. The timeout symptom is
-  therefore a renderer crash plus missing target-crash propagation, not a
-  Facebook login, challenge, or network-readiness failure;
-- the operator's later Facebook home navigation remains healthy on the same
-  retained profile, PID, build, and CDP path; a renderer evaluation returns
-  `readyState=complete`. Both filtered and unfiltered authenticated
-  `/search/posts/` targets instead reach `SIGSEGV` within 12 seconds before
-  any renderer-facing diagnostic is sent;
-- a disposable clean profile on the same promoted Chromium build remains live,
-  renders Facebook's unauthenticated `Not Found` response for the exact filtered
-  URL, and completes a renderer evaluation. This excludes a generic Chromium,
-  CDP, Facebook-origin, or encoded-filter failure, but does not reproduce the
-  authenticated search workload;
-- retained Chromium stderr identifies the direct renderer failure as Blink
-  `line_breaker.cc:4102` DCHECK aborts. The retained browser PID and endpoint
-  then disappeared during final reconciliation, and a nominal inventory read
-  attached the session name to an already-live default-profile browser before
-  later service churn removed that association;
-- Plan 0046 remains open at `retained_browser_lost_during_reconciliation`.
-  Accepted Facebook evidence and explicit named-profile cache proof remain
-  unmet, and no recovery, provider, or tick is authorized in this checkpoint.
+- version 7/C07 preserved the Chromium 153 authenticated-search shape-result
+  crash and missing target-crash propagation as the last controlled browser
+  acceptance evidence;
+- the ordinary Aug 15-16 timer later completed all Facebook browser operations,
+  observed 11 candidates, and rejected all 11 at the unchanged quality gate,
+  primarily for missing dates/permalinks plus off-topic, advertising,
+  sponsored, and author deficiencies. This is blocker-reduction evidence, not
+  accepted Facebook evidence or proof that the renderer fault is permanently
+  repaired;
+- the operator explicitly requested that Facebook and Reddit be disabled for
+  now. Plan 0047 applied only those private target flags and retained the daily
+  UTC cadence plus YouTube, X, and LinkedIn;
+- service 0.3.47/schema 16 is active/ready, SQLite is healthy, and
+  `daily-default` is enabled/ready for `2026-08-17T00:00:00Z`. The transition
+  admitted no tick or provider attempt;
+- Plan 0046 remains open but operator-paused at
+  `facebook_timer_lane_temporarily_disabled`. Accepted Facebook evidence and
+  exact named-profile cache proof remain unmet; no further Facebook browser,
+  provider, tick, or re-enablement action is implied.
 
 ## Scope After Human Gate
 
@@ -101,9 +78,9 @@ named-profile cache evidence.
 
 ## Execution Bounds And Gates
 
-- current state is `retained_browser_lost_during_reconciliation`; the one
-  authorized restart and Facebook evaluation smoke are consumed with no
-  provider attempt;
+- current state is `facebook_timer_lane_temporarily_disabled`; prior browser
+  packets are consumed and further Facebook work waits for explicit operator
+  re-enablement or a new bounded request;
 - after authorization: one browser restart, one target restoration pass, one
   Facebook target, one scroll smoke, one service preflight, and one tick;
 - stop immediately on auth/challenge/rate evidence, profile or build drift,
@@ -603,6 +580,51 @@ Next action or stop reason:
   DCHECKs retained, while agent-browser separately gains immediate target-crash
   propagation. Only after both gates pass may one newly authorized Facebook
   acceptance attempt proceed.
+
+### Checkpoint P0046-C08 | 2026-08-16
+
+Plan version: 8
+
+State transition:
+
+- `chromium_153_authenticated_search_crash_reproduced ->
+  facebook_timer_lane_temporarily_disabled`.
+
+Progress classification:
+
+- `outcome_progress`; the operator-requested recurring-source pause is installed
+  safely, while Facebook acceptance remains unmet.
+
+Validation evidence:
+
+- the Aug 15-16 ordinary timer observed 11 Facebook candidates and rejected all
+  at `quality_gate_failed`, providing current evidence that the latest live
+  blocker differs from C07's browser crash;
+- Plan 0047/C01 disables exactly Facebook and Reddit, retains exactly YouTube,
+  X, and LinkedIn, preserves the next daily boundary, and admits no transition
+  tick or provider attempt;
+- service, schedule, database, backup, and three-lane no-state preflight all
+  pass their exact readbacks.
+
+Authority classification:
+
+- `inherited_authority`; the operator directly requested the source pause.
+  Re-enablement or another Facebook acceptance attempt is not authorized by
+  this checkpoint.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; this was one serialized private-config/runtime transition.
+
+Graphiti write status:
+
+- not attempted because no Graphiti write interface is available in this
+  runtime; repository and live runtime evidence remain authoritative.
+
+Next action or stop reason:
+
+- stop Facebook work while its timer lane is disabled. Resume only on an
+  explicit operator request, re-anchored to the latest quality-gate evidence.
 
 ## Definition Of Done
 
