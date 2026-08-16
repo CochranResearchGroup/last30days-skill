@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
+import json
 import os
+import subprocess
 from types import SimpleNamespace
 from unittest import TestCase, skipUnless
 from unittest.mock import patch
@@ -219,6 +221,91 @@ class XBrowserSearchTests(TestCase):
         self.assertEqual("https://x.com/home", client.requests[0].start_url)
         self.assertEqual("x", client.requests[0].target_service_id)
 
+    def test_short_quote_post_uses_bounded_attached_context_for_quality(self):
+        from lib import x_browser
+
+        harness = f"""
+const status = {{
+  href: "https://x.com/example/status/2078123456789012345",
+  pathname: "/example/status/2078123456789012345"
+}};
+const time = {{
+  closest() {{ return status; }},
+  getAttribute(name) {{
+    return name === "datetime" ? "2026-07-18T15:30:00.000Z" : null;
+  }}
+}};
+const primary = {{innerText: "Worth reading"}};
+const quoted = {{
+  innerText: "OpenAI published detailed Codex guidance for long-running software tasks."
+}};
+const image = {{
+  currentSrc: "https://pbs.twimg.com/media/example.jpg",
+  src: "https://pbs.twimg.com/media/example.jpg",
+  naturalWidth: 1200,
+  naturalHeight: 800,
+  alt: "OpenAI Codex workflow diagram"
+}};
+const article = {{
+  innerText: "Worth reading\\nQuote\\nOpenAI published detailed Codex guidance",
+  querySelector(selector) {{
+    if (selector === "time[datetime]") return time;
+    if (selector === "a[href*=\\"/status/\\"]") return status;
+    if (selector === "[data-testid=\\"tweetText\\"]") return primary;
+    return null;
+  }},
+  querySelectorAll(selector) {{
+    if (selector === "[data-testid=\\"tweetText\\"]") return [primary, quoted];
+    if (selector.includes("tweetPhoto")) return [image];
+    return [];
+  }}
+}};
+const document = {{
+  title: "OpenAI - Search / X",
+  querySelectorAll(selector) {{ return selector === "article" ? [article] : []; }}
+}};
+const location = {{href: "https://x.com/search?q=OpenAI"}};
+const result = {x_browser.EXTRACT_SCRIPT};
+process.stdout.write(JSON.stringify(result));
+"""
+        completed = subprocess.run(
+            ["node", "-e", harness],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        candidates = json.loads(completed.stdout)["candidates"]
+
+        client = FakeAgentBrowserClient(candidates=candidates)
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.search_x_browser(
+                "OpenAI",
+                "2026-06-20",
+                "2026-07-20",
+                depth="quick",
+                config={
+                    "LAST30DAYS_X_BROWSER_PROFILE": "last30days-facebook",
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(1, len(result["items"]))
+        item = result["items"][0]
+        self.assertTrue(item["text"].startswith("Worth reading"))
+        self.assertIn("OpenAI published detailed Codex guidance", item["text"])
+        self.assertEqual(
+            "OpenAI published detailed Codex guidance for long-running software tasks.",
+            item["metadata"]["quoted_text"],
+        )
+        self.assertEqual(
+            ["OpenAI Codex workflow diagram"],
+            item["metadata"]["media_alt_text"],
+        )
+
     def test_status_identity_is_stable_when_browser_result_order_changes(self):
         from lib import x_browser
 
@@ -306,6 +393,17 @@ class XBrowserSearchTests(TestCase):
         self.assertEqual(
             {"duplicate_status": 1}, result["diagnostics"]["rejection_counts"]
         )
+        self.assertEqual(
+            [{
+                "reason": "duplicate_status",
+                "source_native_id": "2078123456789012345",
+                "text_length": len(candidates[1]["text"]),
+                "context_length": 0,
+                "has_quote_context": False,
+                "media_count": 0,
+            }],
+            result["diagnostics"]["rejected_candidates"],
+        )
 
     def test_result_limit_is_counted_as_a_rejection(self):
         from lib import x_browser
@@ -340,6 +438,18 @@ class XBrowserSearchTests(TestCase):
         self.assertEqual(9, result["diagnostics"]["candidate_count"])
         self.assertEqual(
             {"result_limit": 1}, result["diagnostics"]["rejection_counts"]
+        )
+        limited_text = "OpenAI result 8 contains enough relevant text for acceptance."
+        self.assertEqual(
+            [{
+                "reason": "result_limit",
+                "source_native_id": "2078123456789012308",
+                "text_length": len(limited_text),
+                "context_length": 0,
+                "has_quote_context": False,
+                "media_count": 0,
+            }],
+            result["diagnostics"]["rejected_candidates"],
         )
 
     def test_checkpoint_stops_before_navigation_with_a_typed_failure(self):
@@ -388,6 +498,79 @@ class XBrowserSearchTests(TestCase):
         self.assertEqual("quality_gate_failed", result["error_type"])
         self.assertEqual([], result["items"])
         self.assertEqual({"promoted": 1}, result["diagnostics"]["rejection_counts"])
+
+    def test_rejected_articles_emit_bounded_content_free_receipts(self):
+        from lib import x_browser
+
+        short_text = "OpenAI"
+        off_topic_text = (
+            "Google DeepMind changed its leadership structure and operating model."
+        )
+        candidates = [
+            {
+                "text": short_text,
+                "context_text": "",
+                "quoted_text": "",
+                "url": "https://x.com/brief/status/2078123456789012345",
+                "author_handle": "brief",
+                "timestamp": "2026-07-18T15:30:00.000Z",
+                "promoted": False,
+                "engagement": {},
+                "media": [{"kind": "image", "url": "https://example.invalid/a"}],
+            },
+            {
+                "text": off_topic_text,
+                "context_text": "",
+                "quoted_text": "",
+                "url": "https://x.com/fuzzy/status/2078123456789012346",
+                "author_handle": "fuzzy",
+                "timestamp": "2026-07-18T15:31:00.000Z",
+                "promoted": False,
+                "engagement": {},
+                "media": [],
+            },
+        ]
+        client = FakeAgentBrowserClient(candidates=candidates)
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.search_x_browser(
+                "OpenAI",
+                "2026-06-20",
+                "2026-07-20",
+                depth="quick",
+                config={
+                    "LAST30DAYS_X_BROWSER_PROFILE": "last30days-facebook",
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertEqual(
+            [
+                {
+                    "reason": "insufficient_text",
+                    "source_native_id": "2078123456789012345",
+                    "text_length": len(short_text),
+                    "context_length": 0,
+                    "has_quote_context": False,
+                    "media_count": 1,
+                },
+                {
+                    "reason": "off_topic",
+                    "source_native_id": "2078123456789012346",
+                    "text_length": len(off_topic_text),
+                    "context_length": 0,
+                    "has_quote_context": False,
+                    "media_count": 0,
+                },
+            ],
+            result["diagnostics"]["rejected_candidates"],
+        )
+        serialized = json.dumps(result["diagnostics"]["rejected_candidates"])
+        self.assertNotIn(short_text, serialized)
+        self.assertNotIn(off_topic_text, serialized)
+        self.assertNotIn("author_handle", serialized)
+        self.assertNotIn("https://", serialized)
 
     def test_account_restriction_returns_rate_limited_before_navigation(self):
         from lib import x_browser

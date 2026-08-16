@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **X attached-context recovery and rejection receipts.** Service 0.3.50
+  evaluates bounded quoted-post text and meaningful media alt text alongside
+  the outer X post caption, allowing short real posts to pass the existing
+  length and relevance gates when their attached context supplies the evidence.
+  Rejections now include bounded, content-free receipts with the reason,
+  native status ID, text/context lengths, quote presence, and media count so
+  scraper limitations can be distinguished from legitimate quality drops.
+
 - **LinkedIn activity-URN recovery.** Service 0.3.49 traverses each post
   card's bounded React props graph before falling back to the larger React
   fiber graph. This recovers canonical activity URLs for ordinary LinkedIn

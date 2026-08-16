@@ -111,15 +111,47 @@ EXTRACT_SCRIPT = r"""
   url: location.href,
   title: document.title,
   candidates: Array.from(document.querySelectorAll("article")).map((article) => {
+    const clean = (value) => String(value || "").replace(/\s+/g, " ").trim();
     const time = article.querySelector("time[datetime]");
     const status = time?.closest('a[href*="/status/"]') || article.querySelector('a[href*="/status/"]');
-    const text = article.querySelector('[data-testid="tweetText"]')?.innerText || "";
+    const textNodes = Array.from(article.querySelectorAll('[data-testid="tweetText"]'));
+    const text = clean(textNodes[0]?.innerText || "").slice(0, 2000);
+    const quotedText = textNodes.slice(1)
+      .map((node) => clean(node.innerText || ""))
+      .filter(Boolean)
+      .join("\n\n")
+      .slice(0, 2000);
     const metric = (testId) => {
       const node = article.querySelector(`[data-testid="${testId}"]`);
       return String(node?.getAttribute("aria-label") || node?.innerText || "").trim();
     };
+    const media = [
+      ...Array.from(article.querySelectorAll('[data-testid="tweetPhoto"] img, img[src*="pbs.twimg.com/media"]'))
+        .map((image) => ({
+          kind: "image", url: image.currentSrc || image.src || "",
+          preview_url: null, mime_type: null,
+          width: image.naturalWidth || null, height: image.naturalHeight || null,
+          duration_seconds: null, alt_text: clean(image.alt || "") || null
+        })),
+      ...Array.from(article.querySelectorAll("video"))
+        .map((video) => ({
+          kind: "video", url: status?.href || "",
+          preview_url: video.poster || null, mime_type: null,
+          width: video.videoWidth || null, height: video.videoHeight || null,
+          duration_seconds: Number.isFinite(video.duration) ? Math.round(video.duration) : null,
+          alt_text: null
+        }))
+    ].filter((asset) => asset.url);
+    const mediaAltText = [...new Set(media
+      .map((asset) => clean(asset.alt_text || ""))
+      .filter((value) => value && !/^(?:image|photo|video|media)$/i.test(value))
+    )].slice(0, 8);
+    const contextText = [quotedText, ...mediaAltText].filter(Boolean).join("\n").slice(0, 2000);
     return {
       text,
+      context_text: contextText,
+      quoted_text: quotedText,
+      media_alt_text: mediaAltText,
       url: status?.href || "",
       author_handle: (status?.pathname || "").split("/").filter(Boolean)[0] || "",
       timestamp: time?.getAttribute("datetime") || "",
@@ -131,23 +163,7 @@ EXTRACT_SCRIPT = r"""
         bookmarks: metric("bookmark"),
         views: String(article.querySelector('a[href$="/analytics"]')?.innerText || "").trim()
       },
-      media: [
-        ...Array.from(article.querySelectorAll('[data-testid="tweetPhoto"] img, img[src*="pbs.twimg.com/media"]'))
-          .map((image) => ({
-            kind: "image", url: image.currentSrc || image.src || "",
-            preview_url: null, mime_type: null,
-            width: image.naturalWidth || null, height: image.naturalHeight || null,
-            duration_seconds: null, alt_text: image.alt || null
-          })),
-        ...Array.from(article.querySelectorAll("video"))
-          .map((video) => ({
-            kind: "video", url: status?.href || "",
-            preview_url: video.poster || null, mime_type: null,
-            width: video.videoWidth || null, height: video.videoHeight || null,
-            duration_seconds: Number.isFinite(video.duration) ? Math.round(video.duration) : null,
-            alt_text: null
-          }))
-      ].filter((asset) => asset.url)
+      media
     };
   })
 }))()
@@ -188,13 +204,37 @@ class XPageState:
 @dataclass
 class XRunDiagnostics:
     rejection_counts: Counter[str] = field(default_factory=Counter)
+    rejected_candidates: list[dict[str, Any]] = field(default_factory=list)
     candidate_count: int = 0
     accepted_count: int = 0
     duration_ms: int = 0
 
+    def reject(
+        self,
+        reason: str,
+        *,
+        source_native_id: str = "",
+        text_length: int = 0,
+        context_length: int = 0,
+        has_quote_context: bool = False,
+        media_count: int = 0,
+    ) -> None:
+        self.rejection_counts[reason] += 1
+        if len(self.rejected_candidates) >= 32:
+            return
+        self.rejected_candidates.append({
+            "reason": reason,
+            "source_native_id": source_native_id,
+            "text_length": max(0, text_length),
+            "context_length": max(0, context_length),
+            "has_quote_context": has_quote_context,
+            "media_count": max(0, media_count),
+        })
+
     def as_dict(self) -> dict[str, Any]:
         return {
             "rejection_counts": dict(self.rejection_counts),
+            "rejected_candidates": list(self.rejected_candidates),
             "candidate_count": self.candidate_count,
             "accepted_count": self.accepted_count,
             "duration_ms": self.duration_ms,
@@ -367,13 +407,11 @@ class XBrowserScraper:
             )
         diagnostics.candidate_count = len(raw)
         quality_items = _quality_gate(raw, topic, from_date, to_date, diagnostics)
-        deduped_items = _dedupe_items(quality_items)
-        duplicate_count = len(quality_items) - len(deduped_items)
-        if duplicate_count:
-            diagnostics.rejection_counts["duplicate_status"] += duplicate_count
+        deduped_items = _dedupe_items(quality_items, diagnostics)
         result_limit_count = max(0, len(deduped_items) - self.limit)
         if result_limit_count:
-            diagnostics.rejection_counts["result_limit"] += result_limit_count
+            for item in deduped_items[self.limit:]:
+                _record_item_rejection(diagnostics, "result_limit", item)
         items = deduped_items[: self.limit]
         diagnostics.duration_ms = round((time.monotonic() - started) * 1000)
         diagnostics.accepted_count = len(items)
@@ -548,6 +586,10 @@ def _quality_gate(
     for index, raw in enumerate(candidates):
         url = _canonical_status_url(str(raw.get("url") or ""))
         text = re.sub(r"\s+", " ", str(raw.get("text") or "")).strip()
+        context_text = re.sub(
+            r"\s+", " ", str(raw.get("context_text") or "")
+        ).strip()[:2000]
+        evidence_text = f"{text} {context_text}".strip()
         handle = str(raw.get("author_handle") or "").lstrip("@")
         date = _iso_date(str(raw.get("timestamp") or ""))
         reason = None
@@ -555,31 +597,48 @@ def _quality_gate(
             reason = "missing_permalink"
         elif not handle:
             reason = "missing_author"
-        elif len(text) < 30:
+        elif len(evidence_text) < 30:
             reason = "insufficient_text"
         elif raw.get("promoted"):
             reason = "promoted"
         elif not date or not (from_date <= date <= to_date):
             reason = "out_of_range"
-        elif _compute_relevance(topic, text) <= 0:
+        elif _compute_relevance(topic, evidence_text) <= 0:
             reason = "off_topic"
         if reason:
-            diagnostics.rejection_counts[reason] += 1
+            media = raw.get("media")
+            diagnostics.reject(
+                reason,
+                source_native_id=url.rsplit("/", 1)[-1] if url else "",
+                text_length=len(text),
+                context_length=len(context_text),
+                has_quote_context=bool(str(raw.get("quoted_text") or "").strip()),
+                media_count=len(media) if isinstance(media, list) else 0,
+            )
             continue
+        rendered_text = (
+            f"{text}\n\nAttached context: {context_text}" if context_text else text
+        ).strip()[:1000]
         items.append({
             "id": f"X{index + 1}",
             "source_native_id": url.rsplit("/", 1)[-1],
-            "text": text[:1000],
+            "text": rendered_text,
             "url": url,
             "author_handle": handle,
             "date": date,
             "engagement": _normalize_engagement(raw.get("engagement")),
             "why_relevant": "Authenticated X search result",
-            "relevance": _compute_relevance(topic, text),
+            "relevance": _compute_relevance(topic, evidence_text),
             "metadata": {
                 "extraction": "agent-browser-dom-v1",
                 "date_confidence": "high",
                 "media": list(raw.get("media") or [])[:16],
+                "quoted_text": str(raw.get("quoted_text") or "")[:1000],
+                "media_alt_text": [
+                    str(value)[:500]
+                    for value in list(raw.get("media_alt_text") or [])[:8]
+                    if str(value).strip()
+                ],
             },
         })
     return items
@@ -592,16 +651,52 @@ def _canonical_status_url(value: str) -> str | None:
     return f"https://x.com/{match.group(1)}/status/{match.group(2)}"
 
 
-def _dedupe_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _dedupe_items(
+    items: list[dict[str, Any]],
+    diagnostics: XRunDiagnostics | None = None,
+) -> list[dict[str, Any]]:
     seen: set[str] = set()
     deduped = []
     for item in items:
         url = str(item.get("url") or "")
         if not url or url in seen:
+            if diagnostics is not None:
+                _record_item_rejection(diagnostics, "duplicate_status", item)
             continue
         seen.add(url)
         deduped.append(item)
     return deduped
+
+
+def _record_item_rejection(
+    diagnostics: XRunDiagnostics,
+    reason: str,
+    item: dict[str, Any],
+) -> None:
+    metadata = item.get("metadata")
+    metadata = metadata if isinstance(metadata, dict) else {}
+    quoted_text = str(metadata.get("quoted_text") or "").strip()
+    media_alt_text = metadata.get("media_alt_text")
+    media_alt_text = media_alt_text if isinstance(media_alt_text, list) else []
+    context_length = len(
+        " ".join(
+            value
+            for value in [
+                quoted_text,
+                *(str(value).strip() for value in media_alt_text),
+            ]
+            if value
+        )
+    )
+    media = metadata.get("media")
+    diagnostics.reject(
+        reason,
+        source_native_id=str(item.get("source_native_id") or ""),
+        text_length=len(str(item.get("text") or "")),
+        context_length=context_length,
+        has_quote_context=bool(quoted_text),
+        media_count=len(media) if isinstance(media, list) else 0,
+    )
 
 
 def _normalize_engagement(value: Any) -> dict[str, int]:
