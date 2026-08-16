@@ -1071,7 +1071,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: OPEN
+State: CLOSED
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1108,15 +1108,13 @@ Current State:
   profile record. YouTube remains at three, Reddit/Facebook remain disabled,
   and `daily-default` remains enabled/ready for the same Aug 17 UTC boundary.
   Neither private-config transition admitted a tick or provider attempt.
-- the operator then requested one immediate X/LinkedIn test. Plan 0049/C01 has
-  a ready, receipt-only two-lane preflight for the completed Aug 15-16 interval
-  under a distinct manual schedule identity; no provider effect has occurred.
-
-Active Plan:
-
-- `docs/dev/plans/0049-2026-08-16-x-linkedin-volume-live-canary.md`
-  version 1/C01 permits exactly one X attempt and one LinkedIn attempt, then a
-  terminal receipt/report with no retry and no `daily-default` mutation.
+- the operator then requested one immediate X/LinkedIn test. Plan 0049/C02 ran
+  exactly one receipt-only two-lane canary under a distinct manual schedule
+  identity. X accepted five of nine observed; LinkedIn accepted three of 12;
+  eight durable source versions and a 17-entry tick-query snapshot were
+  published. Both providers succeeded; three LinkedIn image semantic-sidecar
+  `analysisoutputmissing` results made the tick `complete_degraded` without
+  changing `daily-default`.
 
 Closed Plan:
 
@@ -1136,6 +1134,11 @@ Closed Plan:
   and LinkedIn capacity. X and LinkedIn each have a ten-item ceiling;
   LinkedIn now uses topic/content search so the lane can return more than one
   company-profile record.
+
+- `docs/dev/plans/0049-2026-08-16-x-linkedin-volume-live-canary.md`
+  version 2/C02 is the terminal live-canary authority: one X and one LinkedIn
+  attempt produced eight accepted records with truthful source-quality and
+  derivative degradation receipts and no recurring-schedule mutation.
 
 - S02's service 0.3.5/schema16 repository candidate passes the complete
   Python and Go suites plus compile/schema/manifest checks without live or
@@ -1159,9 +1162,10 @@ Dependencies:
 
 Next Bounded Action:
 
-- enqueue Plan 0049's exact two-lane preflight once and stop after its terminal
-  receipt and scheduler-integrity readback. Do not retry or wait for the next
-  ordinary boundary as part of this canary.
+- preserve the higher ceilings and observe the next ordinary boundary. Treat
+  missing LinkedIn dates as the primary collection-yield limiter and the three
+  semantic-sidecar output failures as a separate derivative-quality issue; do
+  not retry Plan 0049.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 

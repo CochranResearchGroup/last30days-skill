@@ -1,8 +1,8 @@
 # Plan 0049 | X And LinkedIn Volume Live Canary
 
-State: OPEN
+State: CLOSED
 Roadmap: P08
-Plan version: 1
+Plan version: 2
 Date: 2026-08-16
 
 ## Objective
@@ -18,7 +18,9 @@ failure evidence without consuming or changing the recurring daily schedule.
   `linkedin_agent_browser`;
 - the service and SQLite are healthy, `daily-default` remains ready for the
   Aug 17 UTC boundary, and no provider attempt is active;
-- exact two-lane preflight C01 is ready but has not been enqueued.
+- exact two-lane canary C02 is terminal `complete_degraded`: both providers
+  succeeded, eight source versions are durable, and the degradation is
+  isolated to three LinkedIn image semantic-sidecar failures.
 
 ## Scope
 
@@ -93,3 +95,63 @@ Next action or stop reason:
 - enqueue the exact preflight once, poll only that tick to a terminal receipt,
   read back its two source outcomes and post-effect scheduler invariants, then
   stop without retry.
+
+### Checkpoint P0049-C02 | 2026-08-16
+
+Plan version: 2
+
+State transition:
+
+- `canary_ready -> canary_terminal_complete_degraded`.
+
+Progress classification:
+
+- `outcome_progress`; the higher-volume collection path produced eight
+  accepted records, twice the prior X-three/LinkedIn-one recurring yield, with
+  exact residual quality and derivative failures preserved.
+
+Validation evidence:
+
+- exact tick `tick-c4f042016a7f05f7f076fa195c2d6c98` was enqueued once and
+  terminalized `complete_degraded` in about 125 seconds with exactly two
+  provider attempts, nine network requests, 122 provider wall seconds, zero
+  cost, and zero model tokens;
+- X succeeded in 59 seconds: nine observed, five accepted, four rejected;
+  rejection counts are three `insufficient_text` and one `off_topic`;
+- LinkedIn succeeded in 63 seconds: 12 observed, three accepted, nine
+  rejected; rejection counts are six `missing_date` and three `duplicate`;
+- all eight accepted items have durable source versions/sightings. The
+  promoted tick-query snapshot contains 17 entries: five X lexical entries,
+  three LinkedIn lexical entries, and nine LinkedIn alt-text/OCR/semantic
+  derivative entries;
+- LinkedIn media and OCR stages succeeded, but its semantic-sidecar stage
+  failed because three image derivatives returned safe error code
+  `analysisoutputmissing`; this explains the overall degraded state. X
+  derivative stages were truthfully empty;
+- no incident or notification was created. `daily-default` retains digest
+  `sha256:209dcf64968394b1327a93d31309a51fd3ebbb5ddebbfe2f5235e1dbc39e619e`,
+  its prior tick, and next boundary `2026-08-17T00:00:00Z`; timer ticks remain
+  11 and schedule events remain 23. Service 0.3.47/schema 16 is active/ready,
+  active attempts are zero, and SQLite quick check is `ok`.
+
+Authority classification:
+
+- `inherited_authority`; this was the exact one-attempt live test explicitly
+  requested by the operator.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- not attempted because no Graphiti write interface is available in this
+  runtime; the durable tick receipt, this plan, the runbook, and installed
+  readbacks are authoritative.
+
+Next action or stop reason:
+
+- stop without retry. Keep the ten-item ceilings and observe the next ordinary
+  boundary. Treat missing LinkedIn dates as the primary realized-volume
+  limiter and semantic-sidecar output absence as a separate derivative-quality
+  issue.

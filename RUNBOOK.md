@@ -17726,3 +17726,73 @@ Next Bounded Action:
 - publish this guard checkpoint, enqueue the exact preflight once, poll only
   that tick to terminal state, read back both source receipts and scheduler
   integrity, and stop without retry.
+
+## Turn 297 | 2026-08-16
+
+Focus: execute and report the one-attempt X and LinkedIn volume canary.
+
+Authority Consulted:
+
+- operator request to try the increased volume now and report; Plan 0049/C01;
+  installed service/private config, exact preflight, tick/provider/stage,
+  source-version, tick-query snapshot, incident/notification, schedule, and
+  SQLite readbacks; validation and closeout policies.
+
+Decisions And Changes:
+
+- reproduced the published preflight with the same exact tick, config digest,
+  two lanes, and limits, then enqueued it once;
+- polled only tick `tick-c4f042016a7f05f7f076fa195c2d6c98` to terminal
+  `complete_degraded`; no retry, fallback, other source, config change,
+  schedule mutation, model use, or paid request occurred;
+- closed Plan 0049/P08 after reconciling collection, derivative, query,
+  schedule, database, and service receipts.
+
+Validation Evidence:
+
+- X provider success: nine observed, five accepted, four rejected in 59 wall
+  seconds and one network request; rejections are three insufficient-text and
+  one off-topic;
+- LinkedIn provider success: 12 observed, three accepted, nine rejected in 63
+  wall seconds and eight network requests; rejections are six missing-date and
+  three duplicate;
+- combined result is eight durable source versions/sightings, 122 provider wall
+  seconds, nine network requests, zero cost, and zero model tokens. The
+  promoted tick-query snapshot has 17 entries: eight lexical source entries
+  plus nine LinkedIn derivative entries;
+- overall state is degraded only because three LinkedIn image semantic
+  sidecars returned `analysisoutputmissing`; LinkedIn media/OCR, both source
+  collection stages, lexical/semantic tick indexing, and head promotion
+  succeeded;
+- no incident or notification was created. Service 0.3.47/schema 16 remains
+  active/ready; active attempts are zero and SQLite quick check is `ok`;
+- `daily-default` remains ready with the same config digest, prior tick, and
+  `2026-08-17T00:00:00Z` next boundary; timer ticks remain 11 and schedule
+  events remain 23.
+
+State Movement:
+
+- Plan 0049 advances version 1/C01 -> version 2/C02 and closes at
+  `canary_terminal_complete_degraded`; P08 returns `OPEN -> CLOSED`.
+
+Progress Classification:
+
+- `outcome_progress`; accepted combined yield is eight versus the prior
+  recurring X-three/LinkedIn-one result, while the remaining source-quality
+  and derivative limits are now measured rather than inferred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- not attempted because no Graphiti write interface is available in this
+  runtime; repo authorities and installed readbacks are authoritative.
+
+Next Bounded Action:
+
+- stop without retry. Keep the ten-item ceilings and let the next ordinary
+  boundary run. The best follow-up is to improve LinkedIn date extraction
+  before raising its ceiling again; handle semantic-sidecar output absence as
+  a separate derivative repair.
