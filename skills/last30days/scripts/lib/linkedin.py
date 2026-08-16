@@ -207,7 +207,7 @@ EXTRACT_SCRIPT = r"""
       'time, .update-components-actor__sub-description, .feed-shared-actor__sub-description'
     );
     const timestampText = (text.split("\n").map(clean).find((line) =>
-      /^(?:\d+\s*(?:s|m|h|d|w|mo)|\d+\s+(?:second|minute|hour|day|week|month)s?)(?:\s*•.*)?$/i.test(line)
+      /^(?:now|just now|\d+\s*(?:s|m|h|d|w|mo)|\d+\s+(?:second|minute|hour|day|week|month)s?)(?:\s*•.*)?$/i.test(line)
     ) || "");
     const actionText = Array.from(node.querySelectorAll('button, [aria-label]'))
       .map((item) => `${item.getAttribute('aria-label') || ''} ${item.innerText || ''}`)

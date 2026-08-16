@@ -17796,3 +17796,60 @@ Next Bounded Action:
   boundary run. The best follow-up is to improve LinkedIn date extraction
   before raising its ceiling again; handle semantic-sidecar output absence as
   a separate derivative repair.
+
+## Turn 298 | 2026-08-16
+
+Focus: repair LinkedIn literal-now timestamp extraction before one fresh
+X/LinkedIn canary.
+
+Authority Consulted:
+
+- operator approval to implement the recommended date repair and try again;
+  P08/Plans 0048-0049; diagnosing-bugs and agent-browser skill instructions;
+  planning, goal, roadmap/runbook, versioning, documentation, validation, git,
+  and closeout policies; retained-browser and CodeGraph evidence.
+
+Decisions And Changes:
+
+- opened bounded successor Plan 0050 and service 0.3.48;
+- used a read-only retained-browser snapshot to bind Plan 0049's six
+  `missing_date` rejections to visible literal `now •` card timestamps;
+- reproduced the loss with a Node-backed execution of the actual LinkedIn
+  extraction script, then expanded only its plain-text relative-date fallback
+  from numeric values to the parser's existing `now`/`just now` vocabulary;
+- retained the strict downstream date, relevance, and duplicate gates, all
+  browser behavior and budgets, and the current source/schedule configuration;
+- during diagnosis, the legacy service helper accepted `--help` as an install
+  command and temporarily rendered a working-tree launcher. No provider or
+  tick ran. The immutable 0.3.47 artifact was immediately reinstalled through
+  the transactional installer, restoring the managed launcher and unchanged
+  0.3.47/0.3.46 release links.
+
+Validation Evidence:
+
+- the exact production extraction-script regression failed twice before the
+  change with actual empty timestamp versus expected `now •`, then passed;
+- the complete LinkedIn module passes 28 tests with one intentional skip;
+- CodeGraph reports a healthy index with no pending sync;
+- transactional diagnose reports service 0.3.47/schema 16 ready after launcher
+  recovery. Full service 0.3.48 release gates remain pending.
+
+State Movement:
+
+- P08 moves `CLOSED -> OPEN`; Plan 0050 opens version 1/C01 at
+  `linkedin_literal_now_repair_validated`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending closeout decision; no Graphiti write interface is currently exposed
+  in this runtime.
+
+Next Bounded Action:
+
+- finish service 0.3.48 gates, publish and transactionally install the exact
+  artifact, preflight and enqueue exactly one X/LinkedIn canary, then record
+  its source and schedule receipts and stop without retry.

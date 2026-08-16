@@ -1071,7 +1071,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: CLOSED
+State: OPEN
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1115,6 +1115,17 @@ Current State:
   published. Both providers succeeded; three LinkedIn image semantic-sidecar
   `analysisoutputmissing` results made the tick `complete_degraded` without
   changing `daily-default`.
+- Plan 0050 now owns the bounded repair for the primary LinkedIn collection
+  limiter observed by Plan 0049. Live retained-page evidence and a production
+  extraction-script replay prove literal `now •` timestamps were dropped
+  before the already-capable date parser; the narrow regression is green and
+  service 0.3.48 validation/install plus one fresh X/LinkedIn canary remain.
+
+Active Plan:
+
+- `docs/dev/plans/0050-2026-08-16-linkedin-literal-now-date-repair.md`
+  version 1/C01 owns only the literal-now extraction repair, service 0.3.48
+  release, and one receipt-only X/LinkedIn validation tick.
 
 Closed Plan:
 
@@ -1162,10 +1173,10 @@ Dependencies:
 
 Next Bounded Action:
 
-- preserve the higher ceilings and observe the next ordinary boundary. Treat
-  missing LinkedIn dates as the primary collection-yield limiter and the three
-  semantic-sidecar output failures as a separate derivative-quality issue; do
-  not retry Plan 0049.
+- validate, publish, and transactionally install service 0.3.48, then run the
+  one Plan 0050 canary and report realized yield without retry. Preserve the
+  daily schedule and treat semantic-sidecar output failures as a separate
+  derivative-quality issue.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 

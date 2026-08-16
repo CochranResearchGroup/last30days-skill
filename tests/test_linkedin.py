@@ -1,5 +1,6 @@
 import json
 import os
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 import tempfile
@@ -381,6 +382,56 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
                 "https://linkedin.com/posts/example_activity-7351200000000000000-abcd/?utm_source=share"
             ),
         )
+
+    def test_extractor_preserves_literal_now_timestamp(self):
+        harness = f"""
+const permalink = {{
+  href: "https://www.linkedin.com/feed/update/urn:li:activity:7494766621761183744/",
+  innerText: "", textContent: ""
+}};
+const author = {{
+  href: "https://www.linkedin.com/in/example-author/",
+  innerText: "Example Author", textContent: "Example Author",
+  closest() {{ return this; }}
+}};
+const post = {{
+  innerText: "Feed post\\nExample Author\\nnow •\\nOpenAI update with enough detail",
+  textContent: "",
+  dataset: {{urn: "urn:li:activity:7494766621761183744"}},
+  contains() {{ return false; }},
+  getAttribute(name) {{
+    return name === "data-urn" ? "urn:li:activity:7494766621761183744" : null;
+  }},
+  querySelector() {{ return null; }},
+  querySelectorAll(selector) {{
+    return selector === "a[href]" ? [permalink, author] : [];
+  }}
+}};
+const main = {{
+  querySelectorAll(selector) {{
+    return selector === "main [role=\\"listitem\\"]" ? [post] : [];
+  }}
+}};
+const document = {{
+  title: "Search | LinkedIn",
+  body: {{innerText: post.innerText}},
+  querySelector(selector) {{
+    return selector === "main, [role=\\"main\\"], .scaffold-layout__main" ? main : null;
+  }}
+}};
+const location = {{href: "https://www.linkedin.com/search/results/content/"}};
+const result = {linkedin.EXTRACT_SCRIPT};
+process.stdout.write(JSON.stringify(result));
+"""
+        completed = subprocess.run(
+            ["node", "-e", harness],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        result = json.loads(completed.stdout)
+        self.assertEqual("now •", result["candidates"][0]["timestamp"])
 
     def test_compact_relative_dates(self):
         self.assertEqual(("2026-07-15", "med"), linkedin._parse_linkedin_date("3h • Edited", NOW))

@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **LinkedIn literal-now timestamp extraction.** Service 0.3.48 retains
+  visible `now` and `just now` lines, including LinkedIn's bullet suffix,
+  through the existing plain-text timestamp fallback. This lets the already
+  strict date parser normalize fresh posts instead of rejecting them as
+  `missing_date`; selectors, navigation, relevance, duplicate handling,
+  budgets, source configuration, and derivative processing are unchanged.
+
 - **Facebook prepared-extraction freshness.** Service 0.3.47 preserves the
   combined replacement-target auth/page/extraction capture when it contains
   candidates or rate-limit evidence, but refreshes an empty immediate capture
