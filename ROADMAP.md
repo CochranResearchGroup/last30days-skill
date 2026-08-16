@@ -1071,7 +1071,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: OPEN
+State: CLOSED
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1122,18 +1122,22 @@ Current State:
   source versions and a 25-entry snapshot were published. Three separate
   semantic-sidecar `analysisoutputmissing` results kept the tick
   `complete_degraded` without changing `daily-default`.
-- Plan 0051 is the active bounded successor requested by the operator: install
-  validated service 0.3.50 and run exactly one manual X/LinkedIn tick with
-  temporary 20-item ceilings per lane. The recurring ten-item configuration,
-  Reddit/Facebook pause, and `daily-default` remain outside the mutation.
-
-Active Plan:
-
-- `docs/dev/plans/0051-2026-08-16-x-linkedin-20-post-live-canary.md`
-  version 1/C01 owns the exact install, state-free 20/20 preflight, one enqueue,
-  terminal receipt, and recurring-schedule invariants.
+- Plan 0051 installed validated service 0.3.50 and admitted the operator's
+  exact one-shot X/LinkedIn canary with temporary 20-item ceilings per lane,
+  but neither scraper observed a post. The recurring ten-item configuration,
+  Reddit/Facebook pause, and `daily-default` remained outside the mutation.
+  X failed `auth_required` and
+  LinkedIn failed `operator_ingress_unavailable` after agent-browser replaced
+  the disconnected named-profile browser with a default-profile process that
+  later exited. The tick terminalized `complete_degraded` with zero items;
+  recurring config and `daily-default` remain unchanged.
 
 Closed Plan:
+
+- `docs/dev/plans/0051-2026-08-16-x-linkedin-20-post-live-canary.md`
+  version 2/C02 is the terminal one-shot authority. It proves service 0.3.50
+  installation and exact 20/20 preflight/enqueue bounds, but leaves scraper
+  yield untested because retained browser/profile routing failed first.
 
 - `docs/dev/plans/0050-2026-08-16-linkedin-literal-now-date-repair.md`
   version 2/C02 is the terminal extraction-repair and live acceptance
@@ -1184,9 +1188,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- execute Plan 0051 once: install exact service 0.3.50, preflight and enqueue
-  only the temporary 20/20 X/LinkedIn canary, reconcile the first terminal
-  receipt, and preserve the recurring schedule unchanged.
+- preserve service 0.3.50 and the recurring ten-item ceilings. Before another
+  social tick, restore and prove the exact authenticated
+  `last30days-facebook` browser/profile/route identity; do not retry Plan 0051.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 

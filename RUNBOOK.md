@@ -17996,3 +17996,75 @@ Next Bounded Action:
 - publish this guard checkpoint, install exact service 0.3.50, run the
   state-free 20/20 preflight, enqueue its exact tick once, reconcile the first
   terminal receipt, then close without retry.
+
+## Turn 301 | 2026-08-16
+
+Focus: execute and diagnose the sole X/LinkedIn 20/20 canary.
+
+Authority Consulted:
+
+- operator's explicit one-tick request; Plan 0051/C01; exact build/install,
+  preflight, tick/provider/result, incident/notification, agent-browser trace,
+  service, schedule, config, process, and SQLite readbacks; validation and
+  closeout policies.
+
+Decisions And Changes:
+
+- built artifact SHA-256
+  `c2af7dad58015edc3626db3bef0d9745fb9fcf0c7db5bd0841a7f76ecfdf9c78`
+  and transactionally installed service 0.3.50 with 0.3.48 retained;
+- derived a temporary owner-private config changing only revision, X and
+  LinkedIn item ceilings to 20, and aggregate items to 43; exact source-scoped
+  preflight reduced that to the expected two-lane aggregate of 40;
+- enqueued exact tick `tick-f2163de9362bb74e7da0ce7f525375fe`
+  once and stopped at its first terminal receipt. No retry, fallback, other
+  source, recurring-config mutation, paid request, or model use ran;
+- securely removed the temporary config after terminal evidence collection.
+
+Validation Evidence:
+
+- service 0.3.50/schema 16 is ready with runtime manifest
+  `5caa3062cb4d05bb66c283a3075c61885eecb3b6a55b6a34ffc443679c393cf6`;
+- preflight bound exactly X and LinkedIn, one attempt/20 items each, aggregate
+  2 attempts/100 requests/40 items/240 wall seconds/zero cost and model use;
+- tick terminalized `complete_degraded` after two attempts, two requests, and
+  145 provider wall seconds with zero observed, accepted, or rejected posts;
+- X failed `auth_required` after 96 seconds; LinkedIn failed
+  `operator_ingress_unavailable` after 49 seconds. Two critical reauthentication
+  incidents remain open and both configured Slack detection notifications
+  succeeded;
+- agent-browser trace shows the named social browser's CDP endpoint
+  disconnected during X. Reconciliation attached the session to PID 97392
+  under profile `default`, with blocked compatibility and active lease
+  conflicts, rather than the requested `last30days-facebook` profile. That PID
+  later exited unexpectedly; fresh status contains no live social browser;
+- this is a runtime identity/route failure before extraction, so the repaired
+  X/LinkedIn scrapers and 20-item ceilings were not exercised;
+- `daily-default` retains its exact digest, prior tick, and Aug 17 boundary;
+  timer ticks remain 11, schedule events 23, active attempts zero, SQLite is
+  `ok`, and the recurring private config remains X/LinkedIn ten each with
+  Reddit/Facebook disabled.
+
+State Movement:
+
+- Plan 0051 advances version 1/C01 -> version 2/C02 and closes at
+  `twenty_post_canary_terminal_runtime_blocked`; P08 returns `OPEN -> CLOSED`.
+
+Progress Classification:
+
+- `outcome_progress`; the one authorized attempt completed and localized the
+  blocker before scraper execution without mutating the recurring schedule.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending closeout write; installed and durable runtime receipts remain the
+  current authorities.
+
+Next Bounded Action:
+
+- stop without retry. Restore and prove exact authenticated social
+  browser/profile/route identity before any distinct future 20/20 canary.
