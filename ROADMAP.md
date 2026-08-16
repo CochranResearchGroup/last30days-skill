@@ -1102,9 +1102,12 @@ Current State:
   this is the distinct first ordinary steady-state boundary.
 - on 2026-08-16 the operator temporarily disabled the Reddit and Facebook
   targets after the productivity review. Owner-private revision
-  `operator-20260816-disable-reddit-facebook-v1` retains exactly YouTube, X,
-  and LinkedIn; `daily-default` remains enabled/ready for the same Aug 17 UTC
-  boundary, and the transition admitted no tick or provider attempt.
+  `operator-20260816-increase-x-linkedin-volume-v1` retains exactly YouTube,
+  X, and LinkedIn; X now admits up to ten accepted items, while LinkedIn uses
+  topic/content search and admits up to ten instead of the single company
+  profile record. YouTube remains at three, Reddit/Facebook remain disabled,
+  and `daily-default` remains enabled/ready for the same Aug 17 UTC boundary.
+  Neither private-config transition admitted a tick or provider attempt.
 
 Closed Plan:
 
@@ -1118,6 +1121,12 @@ Closed Plan:
 - `docs/dev/plans/0047-2026-08-16-temporarily-disable-reddit-facebook-timer-lanes.md`
   version 1/C01 is the terminal operational successor for the exact temporary
   two-source pause. Re-enablement remains an explicit operator action.
+
+- `docs/dev/plans/0048-2026-08-16-increase-x-linkedin-tick-volume.md`
+  version 1/C01 is the terminal operational successor for higher recurring X
+  and LinkedIn capacity. X and LinkedIn each have a ten-item ceiling;
+  LinkedIn now uses topic/content search so the lane can return more than one
+  company-profile record.
 
 - S02's service 0.3.5/schema16 repository candidate passes the complete
   Python and Go suites plus compile/schema/manifest checks without live or
@@ -1141,11 +1150,13 @@ Dependencies:
 
 Next Bounded Action:
 
-- observe the next ordinary boundary with exactly YouTube, X, and LinkedIn.
-  Preserve Plan 0024 as the installed scheduler authority and Plan 0047 as the
-  current source-set authority. Re-enablement or any further cadence, source,
-  provider, ceiling, notification, or timer-architecture change requires
-  current runtime evidence and explicit operator direction where applicable.
+- observe the next ordinary boundary with exactly YouTube at three items, X at
+  up to ten, and LinkedIn topic/content search at up to ten. Preserve Plan 0024
+  as the installed scheduler authority, Plan 0047 as the current source-set
+  authority, and Plan 0048 as the current volume/provider authority.
+  Re-enablement or any further cadence, source, provider, ceiling,
+  notification, or timer-architecture change requires current runtime evidence
+  and explicit operator direction where applicable.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 

@@ -17604,3 +17604,75 @@ Next Bounded Action:
 
 - let the next ordinary UTC boundary run only YouTube, X, and LinkedIn. Do not
   re-enable Reddit or Facebook without an explicit operator request.
+
+## Turn 295 | 2026-08-16
+
+Focus: increase recurring X and LinkedIn volume without changing the daily
+cadence or consuming a transition tick.
+
+Authority Consulted:
+
+- operator request for higher X and LinkedIn volume; P08/Plans 0024 and 0047;
+  planning, roadmap/runbook, validation, git, and closeout policies; current
+  owner-private config, provider behavior, schedule, service, tick, attempt,
+  and SQLite readbacks.
+
+Decisions And Changes:
+
+- opened and closed bounded operational successor Plan 0048;
+- raised X's accepted-item ceiling from three to ten while retaining its
+  existing standard-depth `x_agent_browser` adapter;
+- replaced LinkedIn's single-record `linkedin_profile_agent_browser` target
+  with standard-depth `linkedin_agent_browser` topic/content search for
+  `OpenAI`, with an accepted-item ceiling of ten. Previously collected profile
+  evidence remains durable and unchanged;
+- kept YouTube at three items, Reddit/Facebook disabled, daily UTC cadence,
+  browser profile, attempt/request/wall ceilings, notification routes, zero
+  cost, and zero model limits unchanged;
+- backed up the live database, stopped the service, bound the existing
+  `daily-default` row to the exact validated config digest in one guarded
+  transaction, and restarted the service without changing boundary identity;
+- did not enqueue or run a provider operation. The next ordinary timer tick is
+  the first execution of the higher-volume configuration.
+
+Validation Evidence:
+
+- owner-private revision is
+  `operator-20260816-increase-x-linkedin-volume-v1`, mode 0600; exact target
+  map remains Reddit false, YouTube true, X true, Facebook false, LinkedIn
+  true;
+- X-only and LinkedIn-only no-state preflights are each `ready` with one lane,
+  ten items, one attempt, 50 requests, 120 wall seconds, zero cost, and zero
+  model tokens;
+- enabled-source preflight is `ready` with exactly three lanes and aggregate
+  limits 5/250/23/600 with zero cost/model. LinkedIn's manifest names
+  `linkedin_agent_browser`;
+- full config and bound schedule digest are
+  `sha256:209dcf64968394b1327a93d31309a51fd3ebbb5ddebbfe2f5235e1dbc39e619e`;
+- service 0.3.47/schema 16 is active/ready; `daily-default` is enabled/ready for
+  `2026-08-17T00:00:00Z` with no runtime error and unchanged last tick;
+- timer ticks remain 11, total provider attempts remain 139, active attempts
+  remain zero, schedule events remain 23, and current plus backup SQLite quick
+  checks return `ok`.
+
+State Movement:
+
+- Plan 0048/P08 closes version 1/C01 at
+  `higher_volume_x_linkedin_schedule`; Plans 0024 and 0047 remain closed
+  scheduler/source-set authorities.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- not attempted because no Graphiti write interface is available in this
+  runtime; repo authorities and installed readbacks are authoritative.
+
+Next Bounded Action:
+
+- let the next ordinary UTC boundary run YouTube at three items, X at up to
+  ten, and LinkedIn topic/content search at up to ten. Judge realized volume
+  from the durable observed/accepted counts; do not re-enable Reddit or
+  Facebook without an explicit operator request.
