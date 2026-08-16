@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **LinkedIn activity-URN recovery.** Service 0.3.49 traverses each post
+  card's bounded React props graph before falling back to the larger React
+  fiber graph. This recovers canonical activity URLs for ordinary LinkedIn
+  posts whose fiber state previously exhausted the shared traversal budget;
+  sponsored detection, content quality gates, navigation, source budgets, and
+  timer configuration are unchanged.
+
 - **LinkedIn literal-now timestamp extraction.** Service 0.3.48 retains
   visible `now` and `just now` lines, including LinkedIn's bullet suffix,
   through the existing plain-text timestamp fallback. This lets the already

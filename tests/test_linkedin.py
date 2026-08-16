@@ -375,6 +375,74 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
         self.assertIn("steps < 12000", linkedin.EXTRACT_SCRIPT)
         self.assertIn("activityUrn(node)", linkedin.EXTRACT_SCRIPT)
 
+    def test_extractor_prioritizes_runtime_props_over_large_fiber_graph(self):
+        harness = f"""
+const runtimeTree = (depth, leaf) => {{
+  const root = {{}};
+  let level = [root];
+  for (let index = 0; index < depth; index += 1) {{
+    const next = [];
+    for (const node of level) {{
+      node.left = {{}};
+      node.right = {{}};
+      next.push(node.left, node.right);
+    }}
+    level = next;
+  }}
+  level[level.length - 1].value = leaf;
+  return root;
+}};
+const author = {{
+  href: "https://www.linkedin.com/in/example-author/",
+  innerText: "Example Author", textContent: "Example Author",
+  closest() {{ return this; }}
+}};
+const post = {{
+  innerText: "Feed post\\nExample Author\\nnow •\\nOpenAI update with enough detail",
+  textContent: "",
+  dataset: {{}},
+  contains() {{ return false; }},
+  getAttribute() {{ return null; }},
+  querySelector() {{ return null; }},
+  querySelectorAll(selector) {{
+    if (selector === "a[href]") return [author];
+    return [];
+  }}
+}};
+post["__reactFiber$fixture"] = runtimeTree(12, "fiber leaf");
+post["__reactProps$fixture"] = runtimeTree(
+  12,
+  "urn:li:activity:7494833904651243523"
+);
+const main = {{
+  querySelectorAll(selector) {{
+    return selector === "main [role=\\"listitem\\"]" ? [post] : [];
+  }}
+}};
+const document = {{
+  title: "Search | LinkedIn",
+  body: {{innerText: post.innerText}},
+  querySelector(selector) {{
+    return selector === "main, [role=\\"main\\"], .scaffold-layout__main" ? main : null;
+  }}
+}};
+const location = {{href: "https://www.linkedin.com/search/results/content/"}};
+const result = {linkedin.EXTRACT_SCRIPT};
+process.stdout.write(JSON.stringify(result));
+"""
+        completed = subprocess.run(
+            ["node", "-e", harness],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        result = json.loads(completed.stdout)
+        self.assertEqual(
+            "urn:li:activity:7494833904651243523",
+            result["candidates"][0]["urn"],
+        )
+
     def test_canonicalizes_posts_url_and_drops_tracking(self):
         self.assertEqual(
             "https://www.linkedin.com/posts/example_activity-7351200000000000000-abcd/",

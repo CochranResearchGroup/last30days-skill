@@ -163,29 +163,34 @@ EXTRACT_SCRIPT = r"""
     return 0;
   };
   const activityUrn = (node) => {
-    const queue = Object.keys(node)
-      .filter((key) => key.startsWith("__reactFiber") || key.startsWith("__reactProps"))
-      .map((key) => node[key]);
-    const seen = new WeakSet();
-    let cursor = 0;
-    let steps = 0;
-    while (cursor < queue.length && steps < 12000) {
-      const value = queue[cursor++];
-      steps += 1;
-      if (typeof value === "string") {
-        const match = value.match(/urn:li:activity:\d+/);
-        if (match) return match[0];
-        continue;
-      }
-      if ((!value || typeof value !== "object") && typeof value !== "function") continue;
-      if (seen.has(value)) continue;
-      seen.add(value);
-      for (const key of Object.keys(value).slice(0, 120)) {
-        if (key === "return" || key === "_owner") continue;
-        try {
-          queue.push(value[key]);
-        } catch {
-          // React runtime values may expose guarded accessors.
+    const runtimeKeys = Object.keys(node);
+    const groups = [
+      runtimeKeys.filter((key) => key.startsWith("__reactProps")),
+      runtimeKeys.filter((key) => key.startsWith("__reactFiber"))
+    ];
+    for (const keys of groups) {
+      const queue = keys.map((key) => node[key]);
+      const seen = new WeakSet();
+      let cursor = 0;
+      let steps = 0;
+      while (cursor < queue.length && steps < 12000) {
+        const value = queue[cursor++];
+        steps += 1;
+        if (typeof value === "string") {
+          const match = value.match(/urn:li:activity:\d+/);
+          if (match) return match[0];
+          continue;
+        }
+        if ((!value || typeof value !== "object") && typeof value !== "function") continue;
+        if (seen.has(value)) continue;
+        seen.add(value);
+        for (const key of Object.keys(value).slice(0, 120)) {
+          if (key === "return" || key === "_owner") continue;
+          try {
+            queue.push(value[key]);
+          } catch {
+            // React runtime values may expose guarded accessors.
+          }
         }
       }
     }
