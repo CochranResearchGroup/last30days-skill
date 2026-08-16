@@ -17853,3 +17853,83 @@ Next Bounded Action:
 - finish service 0.3.48 gates, publish and transactionally install the exact
   artifact, preflight and enqueue exactly one X/LinkedIn canary, then record
   its source and schedule receipts and stop without retry.
+
+## Turn 299 | 2026-08-16
+
+Focus: install the LinkedIn literal-now repair, run its sole X/LinkedIn live
+canary, and close the operational packet.
+
+Authority Consulted:
+
+- operator approval for the repair and one retry; Plan 0050/C01; exact pushed
+  source, build, install, preflight, tick/provider/result, derivative, snapshot,
+  service, SQLite, and recurring-schedule receipts; validation and closeout
+  policies.
+
+Decisions And Changes:
+
+- built exact service 0.3.48 artifact SHA-256
+  `b2d21c2b077246ce5363bbadd2363fb184a7000f195a53c7132df178e2b3de6f`
+  from pushed commit `c0131e3` and installed it through the transactional
+  runtime with 0.3.47 retained;
+- preflight-bound exactly X and LinkedIn under distinct manual schedule
+  `plan-0050-x-linkedin-date-repair-canary`, then enqueued exact tick
+  `tick-4683d92b8e85ebf68503325d6289a48b` once;
+- stopped at the first terminal receipt. No retry, fallback, other source,
+  config change, recurring-schedule mutation, paid request, or model use ran;
+- closed Plan 0050/P08 after reconciling collection, derivative, query,
+  installed-service, database, and schedule evidence.
+
+Validation Evidence:
+
+- installed service 0.3.48/schema 16 is ready with runtime-manifest SHA-256
+  `af2cd36a8e4188802de5646c8faf4700bcd9cb41fccec3f5aff9fea95a94720a`;
+- tick `tick-4683d92b8e85ebf68503325d6289a48b` terminalized
+  `complete_degraded` after two attempts, 12 requests, 124 provider wall
+  seconds, seven accepted records, zero cost, and zero model tokens;
+- X succeeded with seven observed, four accepted, and three rejected in 51
+  seconds; reasons are one each duplicate-status, insufficient-text, and
+  off-topic;
+- LinkedIn succeeded with ten observed, three accepted, and seven rejected in
+  73 seconds. `missing_date` is zero, versus six in Plan 0049, and one accepted
+  durable result explicitly contains visible `now •` with normalized date
+  `2026-08-16`. Remaining reason counts are three duplicate, four kind-unknown,
+  and four missing-permalink, with overlap between reasons;
+- seven source versions and a 25-entry promoted snapshot are durable. Three
+  LinkedIn semantic sidecars again returned `analysisoutputmissing`, which is
+  the sole reason for overall degradation; collection, media, OCR, indexing,
+  and head promotion succeeded;
+- no incident or notification exists. SQLite quick check is `ok`, active
+  attempts are zero, and service 0.3.48 remains ready;
+- after Plan 0050/P08 closed, the authority audit passes with exactly one
+  active plan and zero issues; the terminal full Python suite passes 2,651
+  tests with seven skips and six subtests;
+- `daily-default` retains digest
+  `sha256:209dcf64968394b1327a93d31309a51fd3ebbb5ddebbfe2f5235e1dbc39e619e`,
+  prior tick, and next boundary `2026-08-17T00:00:00Z`; timer ticks remain 11
+  and schedule events remain 23.
+
+State Movement:
+
+- Plan 0050 advances version 1/C01 -> version 2/C02 and closes at
+  `live_repair_accepted`; P08 returns `OPEN -> CLOSED`.
+
+Progress Classification:
+
+- `outcome_progress`; the live canary proves the date-loss defect is repaired
+  and removes missing-date as this sample's yield limiter, while distinct
+  permalink/type and semantic-sidecar constraints remain explicit.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- not attempted because no Graphiti write interface is available in this
+  runtime; repo authorities and installed receipts are authoritative.
+
+Next Bounded Action:
+
+- publish this closeout and stop without another live attempt. Let the next
+  ordinary boundary run under the unchanged source and schedule configuration.

@@ -1071,7 +1071,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: OPEN
+State: CLOSED
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1115,19 +1115,20 @@ Current State:
   published. Both providers succeeded; three LinkedIn image semantic-sidecar
   `analysisoutputmissing` results made the tick `complete_degraded` without
   changing `daily-default`.
-- Plan 0050 now owns the bounded repair for the primary LinkedIn collection
-  limiter observed by Plan 0049. Live retained-page evidence and a production
-  extraction-script replay prove literal `now •` timestamps were dropped
-  before the already-capable date parser; the narrow regression is green and
-  service 0.3.48 validation/install plus one fresh X/LinkedIn canary remain.
-
-Active Plan:
-
-- `docs/dev/plans/0050-2026-08-16-linkedin-literal-now-date-repair.md`
-  version 1/C01 owns only the literal-now extraction repair, service 0.3.48
-  release, and one receipt-only X/LinkedIn validation tick.
+- Plan 0050 installed service 0.3.48 and ran one fresh two-lane canary. X
+  accepted four of seven observed; LinkedIn accepted three of ten and included
+  one durable visible `now •` result. LinkedIn `missing_date` fell from six to
+  zero; its remaining rejections are duplicate/permalink/type quality. Seven
+  source versions and a 25-entry snapshot were published. Three separate
+  semantic-sidecar `analysisoutputmissing` results kept the tick
+  `complete_degraded` without changing `daily-default`.
 
 Closed Plan:
+
+- `docs/dev/plans/0050-2026-08-16-linkedin-literal-now-date-repair.md`
+  version 2/C02 is the terminal extraction-repair and live acceptance
+  authority. It changes only literal-now retention, installs service 0.3.48,
+  and consumes exactly one receipt-only X/LinkedIn canary.
 
 - `docs/dev/plans/0024-2026-08-06-governed-recurring-all-source-tick.md`
   version 12/C12 is the terminal P08 authority. It adds one config-driven
@@ -1173,10 +1174,10 @@ Dependencies:
 
 Next Bounded Action:
 
-- validate, publish, and transactionally install service 0.3.48, then run the
-  one Plan 0050 canary and report realized yield without retry. Preserve the
-  daily schedule and treat semantic-sidecar output failures as a separate
-  derivative-quality issue.
+- preserve service 0.3.48 and the higher X/LinkedIn ceilings, and observe the
+  next ordinary boundary. Keep Reddit/Facebook disabled. Treat LinkedIn
+  permalink/type quality and semantic-sidecar output as separate possible
+  future work; do not retry Plan 0050.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 
