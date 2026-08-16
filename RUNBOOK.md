@@ -17933,3 +17933,66 @@ Next Bounded Action:
 
 - publish this closeout and stop without another live attempt. Let the next
   ordinary boundary run under the unchanged source and schedule configuration.
+
+## Turn 300 | 2026-08-16
+
+Focus: guard one X/LinkedIn live canary with temporary 20-item ceilings per
+lane.
+
+Authority Consulted:
+
+- operator request to try 20 X posts and 20 LinkedIn posts in a tick; P08 and
+  Plans 0048-0050; agent-browser and repository policy-selector skills;
+  planning, goal, roadmap/runbook, validation, and closeout policies; pushed
+  source, installed service, private config, browser access plans, branch, and
+  SQLite readbacks.
+
+Decisions And Changes:
+
+- opened bounded successor Plan 0051 for exactly one X attempt and one
+  LinkedIn attempt with 20-item ceilings under distinct manual schedule
+  `plan-0051-x-linkedin-20-canary`;
+- wired active plan
+  `docs/dev/plans/0051-2026-08-16-x-linkedin-20-post-live-canary.md` into P08
+  and this runbook turn;
+- kept the owner-private recurring configuration and `daily-default` outside
+  the mutation by requiring a temporary mode-0600 config for this canary;
+- fixed the terminal condition at the first terminal receipt with no retry,
+  fallback, other source, notification send, paid request, or model use.
+
+Validation Evidence:
+
+- branch `main` is clean and synchronized to `origin/main` at pushed commit
+  `97bfe41`; candidate service 0.3.50 already passed full source gates;
+- installed service 0.3.48/schema 16 is ready, SQLite quick check is `ok`, and
+  recurring source flags remain Reddit false, YouTube true, X true, Facebook
+  false, LinkedIn true with X/LinkedIn at ten items;
+- both browser access plans select the authenticated retained social profile,
+  recommend reuse of `session:last30days-facebook`, require no manual action,
+  and report compatible/passed browser capability evidence;
+- repository selector, active planning audit, and goal-only audit pass.
+
+State Movement:
+
+- P08 moves `CLOSED -> OPEN`; Plan 0051 opens version 1/C01 at
+  `twenty_post_canary_ready_for_install`.
+
+Progress Classification:
+
+- `outcome_progress`; the exact live-effect envelope and current runtime
+  prerequisites are frozen before install or provider use.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending closeout decision; repository and installed readbacks are the
+  current authorities.
+
+Next Bounded Action:
+
+- publish this guard checkpoint, install exact service 0.3.50, run the
+  state-free 20/20 preflight, enqueue its exact tick once, reconcile the first
+  terminal receipt, then close without retry.

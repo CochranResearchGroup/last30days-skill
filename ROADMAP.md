@@ -1071,7 +1071,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: CLOSED
+State: OPEN
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1122,6 +1122,16 @@ Current State:
   source versions and a 25-entry snapshot were published. Three separate
   semantic-sidecar `analysisoutputmissing` results kept the tick
   `complete_degraded` without changing `daily-default`.
+- Plan 0051 is the active bounded successor requested by the operator: install
+  validated service 0.3.50 and run exactly one manual X/LinkedIn tick with
+  temporary 20-item ceilings per lane. The recurring ten-item configuration,
+  Reddit/Facebook pause, and `daily-default` remain outside the mutation.
+
+Active Plan:
+
+- `docs/dev/plans/0051-2026-08-16-x-linkedin-20-post-live-canary.md`
+  version 1/C01 owns the exact install, state-free 20/20 preflight, one enqueue,
+  terminal receipt, and recurring-schedule invariants.
 
 Closed Plan:
 
@@ -1174,10 +1184,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- preserve service 0.3.48 and the higher X/LinkedIn ceilings, and observe the
-  next ordinary boundary. Keep Reddit/Facebook disabled. Treat LinkedIn
-  permalink/type quality and semantic-sidecar output as separate possible
-  future work; do not retry Plan 0050.
+- execute Plan 0051 once: install exact service 0.3.50, preflight and enqueue
+  only the temporary 20/20 X/LinkedIn canary, reconcile the first terminal
+  receipt, and preserve the recurring schedule unchanged.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 
