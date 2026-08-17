@@ -51,7 +51,7 @@ _ISSUE_CODES = {
     "rate_limit_blocked": "rate_limit_blocked",
     "auth_required": "reauthentication_required",
     "profile_mismatch": "reauthentication_required",
-    "operator_ingress_unavailable": "reauthentication_required",
+    "operator_ingress_unavailable": "provider_degraded",
     "reauthentication_required": "reauthentication_required",
     "provider_degraded": "provider_degraded",
 }
@@ -67,6 +67,18 @@ def classify_provider_issue(
     if safe_error_code is None:
         return None
     return _ISSUE_CODES.get(safe_error_code)
+
+
+def provider_issue_summary(
+    safe_error_code: str | None, incident_type: str
+) -> str:
+    """Render a bounded summary without overstating provider authentication."""
+    if safe_error_code == "operator_ingress_unavailable":
+        return (
+            "Provider operator ingress was unavailable; authentication state "
+            "was not determined."
+        )
+    return f"Provider reported {incident_type}."
 
 
 def _canonical_json(value: object) -> str:

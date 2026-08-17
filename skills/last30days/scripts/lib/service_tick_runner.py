@@ -30,6 +30,7 @@ from .service_tick_incidents import (
     NotificationExhaustedError,
     NotificationTransport,
     classify_provider_issue,
+    provider_issue_summary,
 )
 from .service_tick_media import (
     MediaDerivativePublisher,
@@ -1541,7 +1542,9 @@ class TickRunner:
                 severity=(
                     "warning" if incident_type == "rate_limit_warning" else "critical"
                 ),
-                safe_summary=f"Provider reported {incident_type}.",
+                safe_summary=provider_issue_summary(
+                    result.safe_error_code, incident_type
+                ),
                 access_partition_id=str(lane["access_partition_id"]),
                 rendered_page=result.rendered_page,
                 rendered_page_mime_type=result.rendered_page_mime_type,

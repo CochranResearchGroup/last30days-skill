@@ -15,6 +15,7 @@ from lib.service_tick_incidents import (
     ObservationGateError,
     ObservationLease,
     classify_provider_issue,
+    provider_issue_summary,
 )
 from lib.service_tick_media import (
     ContentAddressedArtifactStore,
@@ -66,7 +67,7 @@ class FixtureObservationTransport:
         ("rate_limit_detected", (), "rate_limit_warning"),
         ("rate_limited", (), "rate_limit_blocked"),
         ("auth_required", (), "reauthentication_required"),
-        ("operator_ingress_unavailable", (), "reauthentication_required"),
+        ("operator_ingress_unavailable", (), "provider_degraded"),
         ("empty", (), None),
     ],
 )
@@ -74,6 +75,18 @@ def test_provider_issue_classification_is_deterministic(
     safe_error_code, page_signals, expected
 ):
     assert classify_provider_issue(safe_error_code, page_signals) == expected
+
+
+def test_operator_ingress_summary_does_not_claim_authentication_failure():
+    summary = provider_issue_summary(
+        "operator_ingress_unavailable", "provider_degraded"
+    )
+
+    assert summary == (
+        "Provider operator ingress was unavailable; authentication state "
+        "was not determined."
+    )
+    assert "sign in" not in summary.casefold()
 
 
 def test_browser_incident_persists_exact_page_then_notifies_by_sequential_failover(

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Operator-ingress alert classification.** Service 0.3.51 classifies an
+  unavailable Guacamole/dashboard route as `provider_degraded` and states that
+  authentication was not determined. Genuine login-page and checkpoint
+  signals still produce `reauthentication_required`; source configuration,
+  schedules, browser state, and notification transports are unchanged.
+
 - **X attached-context recovery and rejection receipts.** Service 0.3.50
   evaluates bounded quoted-post text and meaningful media alt text alongside
   the outer X post caption, allowing short real posts to pass the existing

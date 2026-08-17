@@ -619,7 +619,7 @@ Reddit, X, Facebook, and LinkedIn browser failures are typed so operator action 
 | `auth_required` | Open the returned current operator URL and sign in to the configured profile. |
 | `checkpoint_required` | Complete the site's security checkpoint in the operator-visible browser. |
 | `rate_limited` | The X account or search lane is restricted; stop and retry after the platform cooldown. |
-| `operator_ingress_unavailable` | Repair public Guacamole/dashboard ingress before retrying authentication. |
+| `operator_ingress_unavailable` | Authentication was not determined. Repair the exact retained browser profile/route and public Guacamole/dashboard ingress before retrying collection. |
 | `profile_mismatch` | The broker-selected target profile differs from the explicit configured profile constraint. |
 | `route_stale` | Refresh or repair current agent-browser route-display service state. |
 | `navigation_mismatch` | The site did not reach the exact requested query/filter state; no items are emitted. |

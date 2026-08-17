@@ -1132,6 +1132,14 @@ Current State:
   later exited. The tick terminalized `complete_degraded` with zero items;
   recurring config and `daily-default` remain unchanged.
 
+Active Plan:
+
+- `docs/dev/plans/0052-2026-08-16-operator-ingress-alert-runtime.md`
+  version 1 repairs only the alert taxonomy that converted
+  `operator_ingress_unavailable` into a false reauthentication claim. It may
+  validate and install service 0.3.51, but it may not run a collection tick,
+  mutate browser state, or change recurring source configuration.
+
 Closed Plan:
 
 - `docs/dev/plans/0051-2026-08-16-x-linkedin-20-post-live-canary.md`

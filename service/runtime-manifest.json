@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "14d1936243d62cfa742e6d396acce4486de812d7b69bb960d5dcd68d4fe3d670",
+      "sha256": "79c8e95f3a51cd0b920c185c74349c59a93b2a20fabffc9c6f507334bfb3642a",
       "source": "service/VERSION"
     },
     {
@@ -427,7 +427,7 @@
     },
     {
       "path": "scripts/lib/service_tick_incidents.py",
-      "sha256": "ad6f1a36352a0478417f7224979abf77b3873c26d43333eaace13587633dfda6",
+      "sha256": "a33a3734ade5f2f4d97567ccf9dd52644eadd047e9514d0af1445f205a463f04",
       "source": "skills/last30days/scripts/lib/service_tick_incidents.py"
     },
     {
@@ -452,7 +452,7 @@
     },
     {
       "path": "scripts/lib/service_tick_runner.py",
-      "sha256": "f23c81d9e7b9cac2862799111126466fd5db970a555bd716e61bdcfe2632d62e",
+      "sha256": "aa246ecc2ee2791164b6a53e7674c2a5b2ffef7023555f2e4cfab8b2e42b7ce2",
       "source": "skills/last30days/scripts/lib/service_tick_runner.py"
     },
     {
@@ -653,5 +653,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.50"
+  "service_version": "0.3.51"
 }

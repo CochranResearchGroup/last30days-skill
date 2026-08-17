@@ -18068,3 +18068,63 @@ Next Bounded Action:
 
 - stop without retry. Restore and prove exact authenticated social
   browser/profile/route identity before any distinct future 20/20 canary.
+
+## Turn 302 | 2026-08-16
+
+Focus: correct the operator-ingress alert taxonomy and upgrade the installed
+runtime without running another collection tick.
+
+Authority Consulted:
+
+- operator request to upgrade the runtime after the Plan 0051 LinkedIn alert
+  diagnosis; `docs/dev/plans/0052-2026-08-16-operator-ingress-alert-runtime.md`;
+  live service and maintenance readbacks; branch, planning, architecture,
+  versioning, validation, and closeout policies.
+
+Decisions And Changes:
+
+- opened bounded Plan 0052 on isolated branch
+  `fix/operator-ingress-alert-runtime` from clean pushed `efb8a84`;
+- changed only `operator_ingress_unavailable` from incident type
+  `reauthentication_required` to existing type `provider_degraded` and added a
+  safe summary that says authentication was not determined;
+- retained genuine `auth_required` and `checkpoint_required` mappings;
+- advanced the independent service version to 0.3.51 and refreshed its exact
+  runtime manifest; no browser, collection, source configuration, schedule,
+  notification transport, database, MCP, or Skill mutation has run.
+
+Validation Evidence:
+
+- focused incident/runner/runtime and release/package validation passes 63
+  tests;
+- the first complete suite exposed only the two expected 0.3.50 test pins;
+  both were advanced to 0.3.51 and await terminal full-suite rerun;
+- two independent candidate builds are byte-identical at artifact SHA-256
+  `1c0144eea45ea7c51387a9b06a25e9812f6b0cba2b610d2ca2f0185ae6bac633`;
+- installed service remains unchanged at 0.3.50/schema 16, ready and compatible
+  with MCP 4.0.3 while candidate validation continues.
+
+State Movement:
+
+- P08 moves `CLOSED -> OPEN`; Plan 0052 opens version 1 at
+  `operator_ingress_alert_runtime_candidate`.
+
+Progress Classification:
+
+- `outcome_progress`; the misleading alert cause is corrected at the exact
+  deterministic classifier while preserving true authentication incidents.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending closeout decision; repository plan, runbook, and installed runtime
+  receipts remain authoritative.
+
+Next Bounded Action:
+
+- pass the terminal full suite and planning audit, commit and push exact source,
+  rebuild and transactionally install 0.3.51 once, then verify installed,
+  rollback, compatibility, schedule, and database invariants without a tick.
