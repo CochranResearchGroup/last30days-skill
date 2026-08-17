@@ -18098,16 +18098,28 @@ Validation Evidence:
 - focused incident/runner/runtime and release/package validation passes 63
   tests;
 - the first complete suite exposed only the two expected 0.3.50 test pins;
-  both were advanced to 0.3.51 and await terminal full-suite rerun;
+  both were advanced to 0.3.51, and the terminal suite passes 2,655 tests with
+  seven skips and six subtests;
 - two independent candidate builds are byte-identical at artifact SHA-256
   `1c0144eea45ea7c51387a9b06a25e9812f6b0cba2b610d2ca2f0185ae6bac633`;
-- installed service remains unchanged at 0.3.50/schema 16, ready and compatible
-  with MCP 4.0.3 while candidate validation continues.
+- exact pushed candidate `f378ab4` was transactionally installed once as
+  service 0.3.51/schema 16 with runtime-manifest SHA-256
+  `3cd3ae1113f728d00d9fac8324c1cfc1fe00b80475ae127b5afcadafa44b47cf`;
+  0.3.50 is the verified rollback target;
+- MCP 4.0.3 reports `compatible`; systemd is active/running; SQLite quick check
+  is `ok`, with 49 complete and two failed execution attempts and no active
+  attempt;
+- the installed classifier maps route ingress to `provider_degraded` and says
+  authentication was not determined, while auth/checkpoint retain
+  `reauthentication_required`;
+- the Aug 17 `daily-default` tick terminalized `complete_degraded` before the
+  restart; the schedule remains enabled/ready for Aug 18. No tick, browser,
+  source configuration, or notification action ran in this packet.
 
 State Movement:
 
-- P08 moves `CLOSED -> OPEN`; Plan 0052 opens version 1 at
-  `operator_ingress_alert_runtime_candidate`.
+- P08 moves `CLOSED -> OPEN -> CLOSED`; Plan 0052 advances version 1 to version
+  2/C01 and closes at `installed_alert_taxonomy_accepted`.
 
 Progress Classification:
 
@@ -18120,11 +18132,10 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending closeout decision; repository plan, runbook, and installed runtime
-  receipts remain authoritative.
+- not added because the pushed plan, runbook, immutable artifact, and installed
+  runtime already preserve the exact correction and acceptance receipts.
 
 Next Bounded Action:
 
-- pass the terminal full suite and planning audit, commit and push exact source,
-  rebuild and transactionally install 0.3.51 once, then verify installed,
-  rollback, compatibility, schedule, and database invariants without a tick.
+- stop. Preserve service 0.3.51 and restore/prove the exact authenticated
+  social browser/profile/route before any future social canary.

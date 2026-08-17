@@ -1131,16 +1131,19 @@ Current State:
   the disconnected named-profile browser with a default-profile process that
   later exited. The tick terminalized `complete_degraded` with zero items;
   recurring config and `daily-default` remain unchanged.
-
-Active Plan:
-
-- `docs/dev/plans/0052-2026-08-16-operator-ingress-alert-runtime.md`
-  version 1 repairs only the alert taxonomy that converted
-  `operator_ingress_unavailable` into a false reauthentication claim. It may
-  validate and install service 0.3.51, but it may not run a collection tick,
-  mutate browser state, or change recurring source configuration.
+- Plan 0052 installed service 0.3.51 and corrected only the incident taxonomy:
+  `operator_ingress_unavailable` now produces `provider_degraded` with an
+  explicit statement that authentication was not determined. Genuine auth and
+  checkpoint signals remain reauthentication incidents. The Aug 17 recurring
+  tick had already terminalized before the one managed restart; no tick,
+  browser, source-config, schedule, or notification effect was added.
 
 Closed Plan:
+
+- `docs/dev/plans/0052-2026-08-16-operator-ingress-alert-runtime.md`
+  version 2/C01 is the terminal alert-taxonomy authority. It installs exact
+  service 0.3.51, retains 0.3.50 rollback, and proves the installed classifier
+  without collection or browser effects.
 
 - `docs/dev/plans/0051-2026-08-16-x-linkedin-20-post-live-canary.md`
   version 2/C02 is the terminal one-shot authority. It proves service 0.3.50
@@ -1196,7 +1199,7 @@ Dependencies:
 
 Next Bounded Action:
 
-- preserve service 0.3.50 and the recurring ten-item ceilings. Before another
+- preserve service 0.3.51 and the recurring ten-item ceilings. Before another
   social tick, restore and prove the exact authenticated
   `last30days-facebook` browser/profile/route identity; do not retry Plan 0051.
 
