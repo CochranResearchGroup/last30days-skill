@@ -350,8 +350,12 @@ Subagent status and reconciliation:
 
 Graphiti write status:
 
-- provider readiness recovered; queue one compact source-backed Plan 0054
-  episode after the checkpoint commit is durable.
+- provider readiness recovered and one compact source-backed Plan 0054 episode
+  was queued as job `606a8781-25bb-4052-a5b3-e3197a192904` after the checkpoint
+  commit became durable;
+- the job timed out after 60 seconds during extraction, created no episode,
+  and is non-retryable. Git planning and runtime receipts remain authoritative;
+  no duplicate Graphiti write was queued.
 
 Remaining acceptance criteria:
 

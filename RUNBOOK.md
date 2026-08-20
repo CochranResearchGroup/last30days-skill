@@ -18535,3 +18535,54 @@ Stop Reason:
 - terminal hard stop. The sole live attempt is consumed. Do not run another X
   tick; repair the agent-browser session-identity boundary in a separate
   bounded slice while preserving the unrelated default browser.
+
+## Turn 309 | 2026-08-20
+
+Focus: finalize the Plan 0054/C04 Graphiti receipt without reopening the
+terminal X canary.
+
+Authority Consulted:
+
+- Plan 0054/C04; Graphiti provider-readiness and queued-job readbacks;
+  graph-backed memory, validation, Git, and turn-closeout policies.
+
+Decisions And Changes:
+
+- queued exactly one compact source-backed Plan 0054 checkpoint episode only
+  after provider readiness passed and checkpoint commit `b458e85` was durable;
+- did not retry or enqueue a duplicate after the bounded write timed out;
+- updated Plan 0054 with the exact derived-memory limitation. No runtime,
+  browser, profile, schedule, incident, or notification state changed.
+
+Validation Evidence:
+
+- Graphiti job `606a8781-25bb-4052-a5b3-e3197a192904` terminalized
+  `timed_out` after 60 seconds during extraction;
+- the receipt reports no episode UUID, `episode_created` is not true, failure
+  category is `timeout`, and `retryable` is false;
+- repository planning and runtime receipts remain the canonical evidence.
+
+State Movement:
+
+- none. Plan 0054 remains OPEN at version 4/C04 and
+  `terminal_canary_identity_misrouted`; P08 remains OPEN.
+
+Progress Classification:
+
+- `checkpoint_progress`; closeout now records the bounded Graphiti outcome
+  truthfully without weakening the live acceptance gate.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- attempted once and terminally timed out; no episode was created and no
+  duplicate write was queued.
+
+Stop Reason:
+
+- closeout complete. The next authorized work is a separate bounded
+  agent-browser session-identity repair; another X tick remains prohibited by
+  Plan 0054.
