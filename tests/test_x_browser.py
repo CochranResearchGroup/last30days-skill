@@ -11,12 +11,15 @@ NOW = datetime(2026, 7, 19, 12, 0, tzinfo=timezone.utc)
 
 
 class FakeAgentBrowserClient:
-    def __init__(self, *, auth=None, candidates=None):
+    def __init__(self, *, auth=None, candidates=None, candidate_batches=None):
         self.url = "https://x.com/home"
         self.actions = []
+        self.evaluations = []
         self.requests = []
         self.auth = auth
         self.candidates = candidates
+        self.candidate_batches = candidate_batches
+        self.capture_index = 0
 
     def acquire_workspace(self, request):
         self.requests.append(request)
@@ -57,6 +60,7 @@ class FakeAgentBrowserClient:
     def evaluate(self, workspace, script):
         from lib import x_browser
 
+        self.evaluations.append(script)
         if script == x_browser.PAGE_STATE_SCRIPT:
             return {
                 "url": self.url,
@@ -70,11 +74,20 @@ class FakeAgentBrowserClient:
                 "restricted": False,
                 "error_page": False,
             }
+        if script == x_browser.SCROLL_SCRIPT:
+            self.capture_index += 1
+            return {"url": self.url}
         if script == x_browser.EXTRACT_SCRIPT:
+            if self.candidate_batches is not None:
+                candidates = self.candidate_batches[
+                    min(self.capture_index, len(self.candidate_batches) - 1)
+                ]
+            else:
+                candidates = self.candidates
             return {
                 "url": self.url,
                 "title": "OpenAI - Search / X",
-                "candidates": self.candidates if self.candidates is not None else [
+                "candidates": candidates if candidates is not None else [
                     {
                         "text": "OpenAI shipped a new Codex workflow for long-running software tasks.",
                         "url": "https://x.com/OpenAI/status/2078123456789012345?ref_src=twsrc%5Etfw",
@@ -472,6 +485,104 @@ process.stdout.write(JSON.stringify(result));
                 "media_count": 0,
             }],
             result["diagnostics"]["rejected_candidates"],
+        )
+
+    def test_explicit_item_limit_scrolls_past_raw_rejections_for_accepted_yield(self):
+        from lib import x_browser
+
+        rejected = [
+            {
+                "text": "OpenAI",
+                "url": f"https://x.com/rejected/status/20781234567890124{index:02d}",
+                "author_handle": "rejected",
+                "timestamp": "2026-07-18T15:30:00.000Z",
+                "engagement": {},
+            }
+            for index in range(10)
+        ]
+        accepted = [
+            {
+                "text": f"OpenAI accepted result {index} contains enough relevant text.",
+                "url": f"https://x.com/accepted/status/20781234567890125{index:02d}",
+                "author_handle": "accepted",
+                "timestamp": "2026-07-18T15:30:00.000Z",
+                "engagement": {},
+            }
+            for index in range(10)
+        ]
+        client = FakeAgentBrowserClient(candidate_batches=[rejected, accepted])
+
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.search_x_browser(
+                "OpenAI",
+                "2026-06-20",
+                "2026-07-20",
+                depth="default",
+                limit=10,
+                config={
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertEqual(10, len(result["items"]))
+        self.assertEqual(20, result["diagnostics"]["candidate_count"])
+        self.assertEqual(
+            1,
+            client.evaluations.count(x_browser.SCROLL_SCRIPT),
+        )
+
+    def test_explicit_twenty_item_limit_has_a_bounded_four_scroll_budget(self):
+        from lib import x_browser
+
+        rejected = [
+            {
+                "text": "OpenAI",
+                "url": f"https://x.com/rejected/status/20781234567890126{index:02d}",
+                "author_handle": "rejected",
+                "timestamp": "2026-07-18T15:30:00.000Z",
+                "engagement": {},
+            }
+            for index in range(20)
+        ]
+        batches = [rejected]
+        for batch in range(4):
+            batches.append([
+                {
+                    "text": (
+                        f"OpenAI accepted batch {batch} result {index} has enough text."
+                    ),
+                    "url": (
+                        "https://x.com/accepted/status/"
+                        f"207812345678902{batch}{index:02d}"
+                    ),
+                    "author_handle": "accepted",
+                    "timestamp": "2026-07-18T15:30:00.000Z",
+                    "engagement": {},
+                }
+                for index in range(5)
+            ])
+        client = FakeAgentBrowserClient(candidate_batches=batches)
+
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.search_x_browser(
+                "OpenAI",
+                "2026-06-20",
+                "2026-07-20",
+                depth="default",
+                limit=20,
+                config={
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertEqual(20, len(result["items"]))
+        self.assertEqual(
+            4,
+            client.evaluations.count(x_browser.SCROLL_SCRIPT),
         )
 
     def test_checkpoint_stops_before_navigation_with_a_typed_failure(self):

@@ -1071,7 +1071,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: CLOSED
+State: OPEN
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1142,6 +1142,21 @@ Current State:
   five accepted posts from 13 observed, no retry, incident, notification,
   model use, cost, or recurring-schedule change. The exact social profile and
   Route A are ready; service 0.3.51 remains rollback.
+
+- Plan 0054 audits that 5/13 result item by item. Seven rejection decisions are
+  legitimate low-information or off-topic posts, while the eighth is a
+  repeated canonical status across captures. The actionable defect is accepted
+  yield: the service item ceiling is not propagated into the X scraper, whose
+  standard lane has only one scroll and stops on raw-card count. The successor
+  preserves the quality gate while making acquisition pursue bounded accepted
+  unique yield. Version 2/C02 is a fully validated service 0.3.53 candidate;
+  installation and its sole X-only 20-item canary remain pending.
+
+Active Plan:
+
+- `docs/dev/plans/0054-2026-08-20-x-accepted-yield-repair.md`
+  version 2/C02 owns item-limit propagation, bounded accepted-yield scrolling,
+  installed-runtime validation, and at most one X-only terminal canary.
 
 Closed Plan:
 

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **X accepted-yield acquisition.** Service 0.3.53 propagates each governed
+  acquisition request's admitted item ceiling into the X browser scraper and
+  applies a bounded proportional scroll budget. X now stops on accepted unique
+  posts or scroll-budget exhaustion instead of raw card count, preserving the
+  existing permalink, date, promotion, text, relevance, and duplicate gates.
+
 - **X authentication and recovery-notice truthfulness.** Service 0.3.52 keeps
   `auth_required` for an observed X login surface and reports an inconclusive
   rendered page as `auth_state_ambiguous` instead of asserting the user is

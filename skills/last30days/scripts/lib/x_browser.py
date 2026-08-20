@@ -19,6 +19,9 @@ DEPTH_CONFIG = {
     "default": {"results": 16, "scrolls": 1, "timeout": 75},
     "deep": {"results": 30, "scrolls": 2, "timeout": 120},
 }
+MAX_EXPLICIT_RESULTS = 100
+MAX_EXPLICIT_SCROLLS = 8
+ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 5
 
 BrowserWorkspaceRequest = browser_runtime.BrowserWorkspaceRequest
 BrowserWorkspace = browser_runtime.BrowserWorkspace
@@ -399,7 +402,7 @@ class XBrowserScraper:
             raise XBrowserFailure("navigation_mismatch", "X search state did not match the requested query")
         raw = list(self.client.evaluate(workspace, EXTRACT_SCRIPT).get("candidates") or [])
         for _ in range(self.scrolls):
-            if len(raw) >= self.limit:
+            if _accepted_unique_count(raw, topic, from_date, to_date) >= self.limit:
                 break
             self.client.evaluate(workspace, SCROLL_SCRIPT)
             self.client.act(
@@ -442,10 +445,26 @@ def search_x_browser(
     *,
     depth: str = "default",
     config: dict[str, Any] | None = None,
+    limit: int | None = None,
 ) -> dict[str, Any]:
     config = config or {}
     stable = agent_browser_config.load_target_config("x")
     settings = DEPTH_CONFIG.get(depth, DEPTH_CONFIG["default"])
+    result_limit = (
+        settings["results"]
+        if limit is None
+        else max(1, min(MAX_EXPLICIT_RESULTS, int(limit)))
+    )
+    scrolls = settings["scrolls"]
+    if limit is not None:
+        scrolls = max(
+            scrolls,
+            min(
+                MAX_EXPLICIT_SCROLLS,
+                (result_limit + ACCEPTED_ITEMS_PER_SCROLL_BUDGET - 1)
+                // ACCEPTED_ITEMS_PER_SCROLL_BUDGET,
+            ),
+        )
     request = BrowserWorkspaceRequest(
         profile_id=str(
             config.get("LAST30DAYS_X_BROWSER_PROFILE")
@@ -494,8 +513,8 @@ def search_x_browser(
     scraper = XBrowserScraper(
         client,
         request,
-        limit=settings["results"],
-        scrolls=settings["scrolls"],
+        limit=result_limit,
+        scrolls=scrolls,
         initial_wait=float(config.get("LAST30DAYS_X_BROWSER_INITIAL_WAIT") or 2),
         scroll_wait=float(config.get("LAST30DAYS_X_BROWSER_SCROLL_WAIT") or 1),
         now=config.get("_NOW"),
@@ -649,6 +668,21 @@ def _quality_gate(
             },
         })
     return items
+
+
+def _accepted_unique_count(
+    candidates: list[dict[str, Any]],
+    topic: str,
+    from_date: str,
+    to_date: str,
+) -> int:
+    """Preview accepted unique yield without mutating the run diagnostics."""
+    preview = XRunDiagnostics()
+    return len(
+        _dedupe_items(
+            _quality_gate(candidates, topic, from_date, to_date, preview)
+        )
+    )
 
 
 def _canonical_status_url(value: str) -> str | None:

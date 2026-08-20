@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "86e1bb1acd10e065a8ae1de4fc92f1fd247e0352c0634c0829abbe66b8f76b27",
+      "sha256": "77a0c8f9dcbf15aac185e8bd905313671437038c4b762f25a3efe837b4f83dfa",
       "source": "service/VERSION"
     },
     {
@@ -287,7 +287,7 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "7344a7ef9c98cc8daf877c10348454bce8a8b93d552ef6782ec3d6372c8011d4",
+      "sha256": "3f2469503217f38c4c7e1e822cd2e775c680330a3f90e5facc77cf595b31f8e6",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
@@ -607,7 +607,7 @@
     },
     {
       "path": "scripts/lib/x_browser.py",
-      "sha256": "c4dee69ae52f25e3b3a690aabd583f13d048a3d00b33d7ef61e3f7d06b4c25ee",
+      "sha256": "bd11afd082a65d0586cd2a0e1104e049c0c58a9f9b45b87d0a14b70966ba33a9",
       "source": "skills/last30days/scripts/lib/x_browser.py"
     },
     {
@@ -653,5 +653,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.52"
+  "service_version": "0.3.53"
 }

@@ -18266,3 +18266,124 @@ Stop Reason:
 
 - accepted. The one authorized retry is terminal and successful; do not run a
   second tick. Let the unchanged daily schedule proceed normally.
+
+## Turn 305 | 2026-08-20
+
+Focus: audit the X 5/13 acceptance result and open a bounded accepted-yield
+repair without weakening post quality.
+
+Authority Consulted:
+
+- operator request to address suspicious X post acceptance; installed tick and
+  database receipts; exact retained X browser/profile/tab evidence; Plan 0053
+  closeout; planning, architecture, browser, debugging, validation, roadmap,
+  and closeout policies.
+
+Decisions And Changes:
+
+- inspected the exact retained X search DOM through its valid service-owned tab
+  handle and accounted for all eight rejection receipts;
+- classified five short replies and two off-topic/thread-context posts as
+  legitimate quality rejections, with the eighth receipt caused by a repeated
+  canonical status across captures;
+- traced the actual yield defect: `request.item_limit` is applied only after the
+  X scraper returns, while the scraper keeps its independent depth cap, one
+  standard scroll, and raw-card early stop;
+- opened Plan 0054 on branch `fix/x-accepted-yield`; no scraper, installed
+  runtime, recurring configuration, schedule, or collection tick has changed.
+
+Validation Evidence:
+
+- service 0.3.52/schema 16 remains ready/compatible and exact profile
+  `last30days-facebook`, PID 86306, retained X tab, and Route A remain viable;
+- retained DOM evidence shows primary texts `idk just in case`, `Would be
+  peak`, `RequestError`, and two 3-6-character Chinese replies for the five
+  `insufficient_text` decisions;
+- one off-topic item is a reply with no primary text that mentions `@OpenAI`
+  only in thread context and quotes an unrelated post; the other is a long
+  collapsed market post with no visible `OpenAI` overlap;
+- CodeGraph source evidence binds the lost ceiling to `_x_adapter` and the
+  raw-card stop to `XBrowserScraper.search`.
+
+State Movement:
+
+- P08 moves `CLOSED -> OPEN`; Plan 0054 opens version 1/C01 at
+  `x_accepted_yield_repro_ready`.
+
+Progress Classification:
+
+- `outcome_progress`; the aggregate suspicion is resolved into seven valid
+  quality decisions and one exact accepted-yield implementation boundary.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending validated installed-runtime and terminal-canary closeout.
+
+Next Bounded Action:
+
+- make the raw-card early-stop and lost-item-limit regressions fail, implement
+  the narrow bounded-yield correction, then validate before any runtime or
+  provider effect.
+
+## Turn 306 | 2026-08-20
+
+Focus: implement and validate the X accepted-yield runtime candidate.
+
+Authority Consulted:
+
+- Plan 0054/C01; live item audit; CodeGraph source/impact evidence; branch,
+  architecture, versioning, validation, planning, roadmap, and closeout
+  policies.
+
+Decisions And Changes:
+
+- propagated `AcquisitionWorkRequest.item_limit` through `_x_adapter` into
+  `search_x_browser`;
+- clamped explicit X ceilings to 100 and proportional scroll budgets to eight,
+  with the requested 10/20 ceilings receiving two/four scroll opportunities;
+- replaced the raw-card early stop with a side-effect-free accepted-unique
+  preview using the unchanged quality and duplicate gates;
+- advanced the independent service to 0.3.53 and refreshed its canonical
+  runtime manifest and release note;
+- updated the active-plan audit fixture to the exact paused Plan 0046 plus
+  active Plan 0054 state. No runtime install, browser mutation, tick, source
+  configuration, schedule, or notification action has run.
+
+Validation Evidence:
+
+- all three minimized regressions fail against the prior behavior and pass
+  after correction;
+- focused X, acquisition-worker, runtime-package, release-version, source-log,
+  and planning-authority suites pass;
+- the complete `uv run pytest -q` suite passes with seven expected skips;
+- two service 0.3.53 builds are byte-identical at SHA-256
+  `5fd5b4f432483bc675119c23a5ebd343ff087ce28a4f83ae7b6181e4addfa872`;
+- CodeGraph is synchronized at 345 files, 9,267 nodes, and 21,273 edges.
+
+State Movement:
+
+- Plan 0054 advances version 1/C01 to version 2/C02 at
+  `validated_runtime_candidate`; P08 remains OPEN.
+
+Progress Classification:
+
+- `outcome_progress`; the exact service ceiling and accepted-yield semantics
+  are now implemented and fully validated before installation.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending installed-runtime and terminal-canary closeout.
+
+Next Bounded Action:
+
+- commit and push the exact candidate, transactionally install service 0.3.53,
+  verify current/rollback identities, then admit at most the one guarded X-only
+  20-item canary.

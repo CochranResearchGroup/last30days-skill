@@ -756,6 +756,26 @@ def test_browser_adapters_account_for_one_opaque_source_request(monkeypatch):
     assert [item["_network_request_count"] for item in results] == [1, 1, 1, 1]
 
 
+def test_x_adapter_propagates_the_admitted_item_limit(monkeypatch):
+    from lib import x_browser
+
+    observed = {}
+
+    def search(*_args, **kwargs):
+        observed.update(kwargs)
+        return {"items": []}
+
+    monkeypatch.setattr(x_browser, "search_x_browser", search)
+
+    result = service_acquisition_worker._x_adapter(
+        _request(item_limit=20),
+        {},
+    )
+
+    assert observed["limit"] == 20
+    assert result["_network_request_count"] == 1
+
+
 def test_facebook_adapter_constrains_search_to_the_admitted_item_limit(monkeypatch):
     from lib import facebook
 

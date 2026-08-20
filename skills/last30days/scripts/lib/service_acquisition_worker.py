@@ -195,6 +195,7 @@ def _x_adapter(
         request.to_date,
         depth=_depth(request.depth),
         config=dict(config),
+        limit=request.item_limit,
     ))
 
 
