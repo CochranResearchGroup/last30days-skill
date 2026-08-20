@@ -1147,16 +1147,18 @@ Current State:
   legitimate low-information or off-topic posts, while the eighth is a
   repeated canonical status across captures. The actionable accepted-yield
   defect is repaired and service 0.3.53 is installed with 0.3.52 retained as
-  rollback. Version 3/C03 remains open because notification readiness and exact
-  social-profile provenance both failed state-free preflight; no canary tick
-  was enqueued and the recurring schedule remains unchanged.
+  rollback. Version 4/C04 records the sole terminal canary: notification and
+  initial exact-profile gates passed, but the browser broker rebound the X
+  logical session from `last30days-facebook` to the unrelated default-profile
+  browser before auth classification. The resulting login screenshot is not
+  valid evidence about the named social profile; extraction never ran.
 
 Active Plan:
 
 - `docs/dev/plans/0054-2026-08-20-x-accepted-yield-repair.md`
-  version 3/C03 owns the installed accepted-yield repair and the still
-  unconsumed X-only 20-item canary behind notification and exact-profile
-  provenance gates.
+  version 4/C04 owns the installed accepted-yield repair and terminal
+  cross-profile canary receipt. Its live-attempt bound is consumed; the next
+  bounded work is agent-browser session-identity repair, not another tick.
 
 Closed Plan:
 

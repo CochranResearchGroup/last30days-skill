@@ -18458,3 +18458,80 @@ Stop Reason:
 - hard stop. Do not retry the canary until outbound notification readiness is
   restored and the exact named social-profile session is reconciled without
   touching the unrelated default browser.
+
+## Turn 308 | 2026-08-20
+
+Focus: retry the guarded X-only 20-item canary after readiness recovery and
+adjudicate its terminal authentication result.
+
+Authority Consulted:
+
+- operator retry request; Plan 0054/C03; installed service 0.3.53; exact
+  preflight, tick, incident artifact, notification, agent-browser profile,
+  allocation, capability, job, event, and schedule readbacks; last30days
+  administration, agent-browser ownership, validation, planning, roadmap, and
+  closeout policies.
+
+Decisions And Changes:
+
+- pushed checkpoint commit `5d4f177` after Git connectivity recovered;
+- confirmed service 0.3.53 ready/compatible and the exact social profile
+  available with zero holders, conflicts, or live browsers;
+- passed the no-launch access plan and capability gate for exact profile
+  `last30days-facebook`, then passed a state-free X-only preflight with Slack
+  notification readiness;
+- enqueued prospective tick `tick-4098d184cfee7bfc63fe407b3e2ece98`
+  exactly once and stopped at its first terminal receipt;
+- inspected the retained incident image and agent-browser timeline after the
+  provider reported `auth_required`; no retry, profile mutation, browser
+  shutdown, incident acknowledgement, or corrective Slack send occurred;
+- removed the owner-private temporary config. The recurring config and
+  schedule remain unchanged.
+
+Validation Evidence:
+
+- preflight bound one X lane to one attempt, 20 items, 50 requests, 120 wall
+  seconds, and zero cost/model use at config digest
+  `sha256:e71bce5afb6f7ff70a3f99a5cc34fd267fee928f417af7cfb6bc624df5eae9f3`;
+- the tick terminalized `complete_degraded` after one request and 11 seconds,
+  with zero observed/accepted/rejected cards; the X lane is `blocked_human`;
+- incident `incident-edab7eb0cdc74e9c37e74ac80db6e890` reopened and Slack
+  notification attempt `notification-attempt-7b349956085f6b6555b5bf027db5389c`
+  succeeded;
+- the broker launched correct-profile PID 56863 and opened X home on Route B,
+  then rebound logical session `last30days-facebook` to unrelated
+  default-profile PID 80220 with active lease conflict `default` and blocked
+  compatibility;
+- the retained 1047x490 JPEG shows the X sign-in page after that rebind. It
+  proves the routed default context is logged out, not that profile
+  `last30days-facebook` is logged out;
+- recurring config SHA-256 remains
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`,
+  `daily-default` remains ready for `2026-08-21T00:00:00Z`, and the temporary
+  config is absent.
+
+State Movement:
+
+- Plan 0054 advances version 3/C03 to version 4/C04 at
+  `terminal_canary_identity_misrouted`; P08 remains OPEN.
+
+Progress Classification:
+
+- `outcome_progress`; the retry disproves the Slack auth alert as evidence
+  about the selected social profile and localizes failure before extraction to
+  a deterministic cross-profile logical-session rebind.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- provider readiness passed; one compact Plan 0054 checkpoint episode remains
+  to be queued after the checkpoint commit is durable.
+
+Stop Reason:
+
+- terminal hard stop. The sole live attempt is consumed. Do not run another X
+  tick; repair the agent-browser session-identity boundary in a separate
+  bounded slice while preserving the unrelated default browser.

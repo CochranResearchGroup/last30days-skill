@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 3
+Plan version: 4
 Date: 2026-08-20
 
 ## Objective
@@ -23,10 +23,12 @@ quality gate.
 - the service now propagates `request.item_limit` into `search_x_browser`,
   clamps explicit ceilings to 100, derives a proportional bounded scroll
   budget, and stops when accepted unique yield meets the requested ceiling;
-- the sole guarded canary has not been enqueued: both Slack and Gmail
-  notification readiness failed on outbound network resolution/connectivity,
-  and the browser census no longer proves the exact named social-profile
-  route without crossing an unrelated default-profile ownership boundary.
+- the sole guarded canary is terminal `complete_degraded`: the broker first
+  launched exact profile `last30days-facebook`, then rebound that logical
+  session to the unrelated default-profile browser before auth classification;
+- the resulting X login screenshot proves only that the default profile was
+  logged out. It does not prove the named social profile lost authentication,
+  and the 20-item accepted-yield loop was not reached.
 
 ## Scope
 
@@ -286,3 +288,84 @@ Next action:
   until both pass.
 
 Checkpoint P0054-C03 is the current authority.
+
+### Checkpoint P0054-C04 | 2026-08-20
+
+Plan version: 4
+
+State transition:
+
+- `installed_canary_blocked -> terminal_canary_identity_misrouted`.
+
+Progress classification:
+
+- `outcome_progress`; the one authorized live attempt converted the prior
+  readiness ambiguity into a timestamped cross-profile session-rebind proof.
+
+Owned changes:
+
+- pushed the previously local checkpoint commit `5d4f177` after outbound Git
+  connectivity recovered;
+- derived one owner-private X-only 20-item config, passed state-free preflight,
+  enqueued its exact prospective tick once, and removed the temporary config;
+- did not retry, modify the recurring schedule, touch the unrelated default
+  browser, or mutate either browser profile.
+
+Validation evidence:
+
+- state-free preflight was `ready` for tick
+  `tick-4098d184cfee7bfc63fe407b3e2ece98`, exactly one X lane, one attempt,
+  20 items, 50 requests, 120 wall seconds, and zero cost/model use; Slack
+  readiness passed and Gmail was not needed after the first ready transport;
+- the exact no-launch access plan selected `last30days-facebook` by
+  `authenticated_target`, found zero holders or conflicts, and the browser
+  capability preflight applied the validated WSL stealth-Chromium binding
+  without launch;
+- the tick terminalized `complete_degraded` after one request and 11 seconds,
+  with zero observed, accepted, or rejected cards and X lane
+  `blocked_human`; incident
+  `incident-edab7eb0cdc74e9c37e74ac80db6e890` reopened and its Slack state
+  change notification succeeded;
+- agent-browser first launched PID 56863 under exact profile/session
+  `last30days-facebook` and opened `https://x.com/home` on Route B. Three
+  seconds later it recorded the same logical session as attached to unrelated
+  default-profile PID 80220 with conflict session `default` and
+  `profile_compatibility_missing_or_blocked`;
+- the retained 1047x490 incident image is the X sign-in page captured after
+  that rebind. It is valid evidence that the routed default context was logged
+  out, but invalid evidence that the named social profile requires auth;
+- recurring config SHA-256 remains
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`,
+  `daily-default` remains ready for `2026-08-21T00:00:00Z`, and the temporary
+  config is absent.
+
+Authority classification:
+
+- `inherited_authority`; the operator explicitly requested another guarded
+  attempt, which consumed the plan's sole live-provider allowance.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- provider readiness recovered; queue one compact source-backed Plan 0054
+  episode after the checkpoint commit is durable.
+
+Remaining acceptance criteria:
+
+- criteria 1-5 remain met and criterion 6's single terminal canary is now
+  recorded. The definition-of-done live yield proof remains unmet because the
+  request never reached X card extraction under the selected profile;
+- the live-attempt bound is consumed. No additional X tick is permitted under
+  this plan.
+
+Next action:
+
+- do not retry scraping. Diagnose and repair the agent-browser logical-session
+  rebind from exact profile `last30days-facebook` to profile `default` as a
+  separately bounded runtime-ownership slice, preserving PID 80220 and the
+  unrelated `odollo-payment-terms` browser.
+
+Checkpoint P0054-C04 is the current authority.
