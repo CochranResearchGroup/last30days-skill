@@ -18387,3 +18387,74 @@ Next Bounded Action:
 - commit and push the exact candidate, transactionally install service 0.3.53,
   verify current/rollback identities, then admit at most the one guarded X-only
   20-item canary.
+
+## Turn 307 | 2026-08-20
+
+Focus: install the validated X accepted-yield successor and attempt the guarded
+runtime acceptance gate.
+
+Authority Consulted:
+
+- `docs/dev/plans/0054-2026-08-20-x-accepted-yield-repair.md` version 2/C02;
+  pushed candidate `267e218`; installed runtime, database, schedule,
+  browser/profile/lease, notification-readiness, validation, and closeout
+  evidence.
+
+Decisions And Changes:
+
+- transactionally installed service 0.3.53 and retained 0.3.52 as rollback;
+- prepared one owner-private X-only canary configuration with a 20-item
+  ceiling, one attempt, zero cost/model use, and the recurring schedule file
+  untouched;
+- stopped before enqueue when no notification transport passed readiness;
+- inspected the browser census and found the `last30days-facebook` session
+  associated with an unrelated exclusive default profile/browser rather than
+  proving the exact social-profile route;
+- attempted only the service-owned release of the accidental X tab. The lease
+  guard refused it, so no bypass, browser shutdown, or unrelated-profile
+  mutation occurred;
+- securely removed the temporary canary configuration. No tick, provider
+  attempt, incident, notification, or recurring-state change was created.
+
+Validation Evidence:
+
+- installed service 0.3.53/schema 16 is ready and MCP 4.0.3-compatible;
+  runtime-manifest SHA-256 is
+  `95836f4f0ac7038023ab468b13c8130df01b150fd139c11b839cf4274b8bf0ed`;
+- installed imports prove the explicit X ceiling, proportional scroll budget,
+  accepted-unique stop, and worker propagation are present;
+- Slack verification failed on temporary DNS resolution and Gmail profile
+  readback timed out, reproducing the notification hard stop outside the tick;
+- durable tick count remains 55, active attempts remain zero, and latest tick
+  remains `tick-0fb90267ebbec47e0fe769aa3b485bdc`;
+- recurring config SHA-256 remains
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`,
+  with `daily-default` still ready for `2026-08-21T00:00:00Z`;
+- Graphiti provider readiness is `degraded` with a Codex app-server
+  `TimeoutError`, so no closeout episode was queued.
+
+State Movement:
+
+- Plan 0054 advances version 2/C02 to version 3/C03 at
+  `installed_canary_blocked`; P08 remains OPEN.
+
+Progress Classification:
+
+- `outcome_progress`; the source/runtime correction is installed, and the
+  unconsumed canary remains behind truthful external-readiness and browser-
+  provenance gates.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_deferred`; the bounded provider-readiness preflight timed
+  out before any write was queued.
+
+Stop Reason:
+
+- hard stop. Do not retry the canary until outbound notification readiness is
+  restored and the exact named social-profile session is reconciled without
+  touching the unrelated default browser.

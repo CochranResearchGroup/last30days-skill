@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 2
+Plan version: 3
 Date: 2026-08-20
 
 ## Objective
@@ -13,18 +13,20 @@ quality gate.
 
 ## Current State
 
-- installed service 0.3.52/schema 16 is ready and compatible with MCP 4.0.3;
+- installed service 0.3.53/schema 16 is ready and compatible with MCP 4.0.3,
+  with 0.3.52 retained as rollback;
 - X-only tick `tick-0fb90267ebbec47e0fe769aa3b485bdc`
   observed 13 card captures, accepted five, and rejected eight;
 - item-level retained-tab inspection accounts for the eight rejections as five
   genuinely short replies, two off-topic results, and one repeated canonical
   status across extraction snapshots;
-- the acquisition request carries its accepted-item ceiling as
-  `request.item_limit`, but `_x_adapter` does not pass that ceiling to
-  `search_x_browser`;
-- the standard X scraper therefore retains its independent 16-item depth cap
-  and one-scroll budget, and its early-stop condition measures raw card count
-  rather than accepted unique posts.
+- the service now propagates `request.item_limit` into `search_x_browser`,
+  clamps explicit ceilings to 100, derives a proportional bounded scroll
+  budget, and stops when accepted unique yield meets the requested ceiling;
+- the sole guarded canary has not been enqueued: both Slack and Gmail
+  notification readiness failed on outbound network resolution/connectivity,
+  and the browser census no longer proves the exact named social-profile
+  route without crossing an unrelated default-profile ownership boundary.
 
 ## Scope
 
@@ -206,3 +208,81 @@ Next action:
 - commit and push the validated source candidate before installation.
 
 Checkpoint P0054-C02 is the current authority.
+
+### Checkpoint P0054-C03 | 2026-08-20
+
+Plan version: 3
+
+State transition:
+
+- `validated_runtime_candidate -> installed_canary_blocked`.
+
+Progress classification:
+
+- `outcome_progress`; the exact successor is installed and verified, while
+  the terminal provider proof remains correctly unconsumed behind two
+  independent runtime preflight failures.
+
+Owned changes:
+
+- committed and pushed service 0.3.53 as `267e218` on
+  `fix/x-accepted-yield`;
+- transactionally installed that exact service with 0.3.52 retained as
+  rollback;
+- prepared and removed an owner-private, X-only, 20-item, one-attempt canary
+  configuration without changing the recurring schedule or creating a tick.
+
+Validation evidence:
+
+- the post-commit service artifact remains byte-identical at SHA-256
+  `5fd5b4f432483bc675119c23a5ebd343ff087ce28a4f83ae7b6181e4addfa872`;
+- installed service 0.3.53/schema 16 is ready and compatible with MCP 4.0.3 at
+  runtime-manifest SHA-256
+  `95836f4f0ac7038023ab468b13c8130df01b150fd139c11b839cf4274b8bf0ed`;
+- installed imports expose the new `limit` argument, the 100-item and
+  eight-scroll bounds, the five-items-per-scroll budget, the accepted-yield
+  stop, and worker item-limit propagation;
+- both state-free canary preflights stopped because no configured notification
+  transport passed readiness; direct Slack verification returned temporary
+  DNS failure and Gmail profile readback timed out;
+- the browser census maps session `last30days-facebook` onto the unrelated
+  exclusive `default` profile/browser rather than the exact retained social
+  profile. A service-owned release of the accidental X tab was refused by the
+  lease conflict, so no provenance bypass, browser shutdown, or foreign-profile
+  mutation occurred;
+- no canary tick was enqueued: durable tick count remains 55, active attempts
+  remain zero, the latest tick remains
+  `tick-0fb90267ebbec47e0fe769aa3b485bdc`, and recurring configuration SHA-256
+  remains
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`.
+
+Authority classification:
+
+- `inherited_authority`; installation and the guarded canary attempt remain
+  within the operator-requested X acceptance correction, while the failed
+  preflight terminates the current provider-effect slice.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `graphiti_write_deferred`; the bounded provider-readiness check returned
+  `degraded` with a Codex app-server `TimeoutError`, so no new episode was
+  queued.
+
+Remaining acceptance criteria:
+
+- acceptance criterion 6 remains unmet. Restore outbound notification
+  readiness and reconcile the exact `last30days-facebook` social-profile
+  session without touching the unrelated default browser; only after both
+  preflights pass may the one X-only 20-item canary be enqueued.
+
+Next action:
+
+- re-run state-free notification and exact-profile provenance preflights after
+  those external/runtime ownership conditions recover. Do not enqueue a tick
+  until both pass.
+
+Checkpoint P0054-C03 is the current authority.

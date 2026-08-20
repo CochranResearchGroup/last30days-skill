@@ -1145,18 +1145,18 @@ Current State:
 
 - Plan 0054 audits that 5/13 result item by item. Seven rejection decisions are
   legitimate low-information or off-topic posts, while the eighth is a
-  repeated canonical status across captures. The actionable defect is accepted
-  yield: the service item ceiling is not propagated into the X scraper, whose
-  standard lane has only one scroll and stops on raw-card count. The successor
-  preserves the quality gate while making acquisition pursue bounded accepted
-  unique yield. Version 2/C02 is a fully validated service 0.3.53 candidate;
-  installation and its sole X-only 20-item canary remain pending.
+  repeated canonical status across captures. The actionable accepted-yield
+  defect is repaired and service 0.3.53 is installed with 0.3.52 retained as
+  rollback. Version 3/C03 remains open because notification readiness and exact
+  social-profile provenance both failed state-free preflight; no canary tick
+  was enqueued and the recurring schedule remains unchanged.
 
 Active Plan:
 
 - `docs/dev/plans/0054-2026-08-20-x-accepted-yield-repair.md`
-  version 2/C02 owns item-limit propagation, bounded accepted-yield scrolling,
-  installed-runtime validation, and at most one X-only terminal canary.
+  version 3/C03 owns the installed accepted-yield repair and the still
+  unconsumed X-only 20-item canary behind notification and exact-profile
+  provenance gates.
 
 Closed Plan:
 
