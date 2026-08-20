@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **X authentication and recovery-notice truthfulness.** Service 0.3.52 keeps
+  `auth_required` for an observed X login surface and reports an inconclusive
+  rendered page as `auth_state_ambiguous` instead of asserting the user is
+  logged out. Resolved Slack notices now lead with resolved status and label
+  the historical incident classification and summary as previous state, so a
+  successful recovery no longer resembles a fresh authentication alert.
+
 - **Operator-ingress alert classification.** Service 0.3.51 classifies an
   unavailable Guacamole/dashboard route as `provider_degraded` and states that
   authentication was not determined. Genuine login-page and checkpoint

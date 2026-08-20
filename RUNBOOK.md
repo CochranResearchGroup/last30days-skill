@@ -18139,3 +18139,64 @@ Next Bounded Action:
 
 - stop. Preserve service 0.3.51 and restore/prove the exact authenticated
   social browser/profile/route before any future social canary.
+
+## Turn 303 | 2026-08-20
+
+Focus: diagnose the reported false X authentication notice and guard one
+truthful X-only retry.
+
+Authority Consulted:
+
+- operator request to try again after observing the logged-in X browser and a
+  conflicting Slack notice;
+  `docs/dev/plans/0053-2026-08-20-x-auth-alert-truthfulness.md`; installed
+  service/tick/incident/notification receipts; retained browser/profile/tab and
+  Route A evidence; debugging, browser, administration, planning, validation,
+  and closeout policies.
+
+Decisions And Changes:
+
+- isolated the Slack event as the Aug 20 `resolved` delivery for the Aug 16 X
+  incident, not a new auth failure; the Aug 20 X lane itself succeeded with
+  three accepted posts and no new incident;
+- identified a second code defect: twice-inconclusive X DOM evidence is mapped
+  to `auth_required` despite no observed login form, checkpoint, or restriction;
+- opened bounded Plan 0053 and branch `fix/x-auth-notice-and-ambiguity` from
+  clean pushed Plan 0052 closeout;
+- froze one X-only attempt after a service/package successor passes all gates.
+
+Validation Evidence:
+
+- installed service 0.3.51/schema 16 is ready/compatible; Aug 20 tick
+  `tick-2f22ae2004dcc257a5bec46772aa777c` has X collection success, three
+  accepted X posts, zero incidents, and zero notification deliveries;
+- the only X Slack delivery on Aug 20 belongs to resolved incident
+  `incident-edab7eb0cdc74e9c37e74ac80db6e890`, first detected Aug 16;
+- agent-browser reports exact profile `last30days-facebook`, PID 44458, health
+  ready, retained X tab `https://x.com/home` titled `Home / X`, and ready visible
+  Route A evidence with no profile conflict.
+
+State Movement:
+
+- P08 moves `CLOSED -> OPEN`; Plan 0053 opens version 1 at
+  `x_auth_truthfulness_repro_ready`.
+
+Progress Classification:
+
+- `outcome_progress`; the user-visible contradiction is reduced to two exact,
+  independently testable rendering and auth-classification seams.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending validated closeout; repository and installed receipts are current
+  authority.
+
+Next Bounded Action:
+
+- make both minimized regressions fail, implement the narrow correction, pass
+  release gates, install one successor, then preflight/enqueue one X-only tick
+  and stop at its first terminal receipt.

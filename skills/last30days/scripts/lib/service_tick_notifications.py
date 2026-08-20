@@ -46,15 +46,26 @@ def _receipt_ref(prefix: str, value: object) -> str:
 
 
 def _safe_message(payload: Mapping[str, object]) -> str:
-    lines = [
-        f"last30days incident {payload['incident_id']}",
-        f"kind: {payload['notification_kind']}",
-        f"type: {payload['incident_type']}",
-        f"severity: {payload['severity']}",
-        f"source/stage: {payload['source']} / {payload['stage']}",
-        f"summary: {payload['safe_summary']}",
-        f"protected artifact: {payload.get('protected_artifact_ref') or 'none'}",
-    ]
+    if payload["notification_kind"] == "resolved":
+        lines = [
+            f"last30days incident resolved {payload['incident_id']}",
+            "status: resolved",
+            f"previous incident type: {payload['incident_type']}",
+            f"source/stage: {payload['source']} / {payload['stage']}",
+            "resolution: A later successful provider execution resolved this incident.",
+            f"previous summary: {payload['safe_summary']}",
+            f"protected artifact: {payload.get('protected_artifact_ref') or 'none'}",
+        ]
+    else:
+        lines = [
+            f"last30days incident {payload['incident_id']}",
+            f"kind: {payload['notification_kind']}",
+            f"type: {payload['incident_type']}",
+            f"severity: {payload['severity']}",
+            f"source/stage: {payload['source']} / {payload['stage']}",
+            f"summary: {payload['safe_summary']}",
+            f"protected artifact: {payload.get('protected_artifact_ref') or 'none'}",
+        ]
     browser_incidents = {
         "captcha_required",
         "cloudflare_challenge",

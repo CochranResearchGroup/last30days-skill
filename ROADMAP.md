@@ -1071,7 +1071,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: CLOSED
+State: OPEN
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1137,6 +1137,13 @@ Current State:
   checkpoint signals remain reauthentication incidents. The Aug 17 recurring
   tick had already terminalized before the one managed restart; no tick,
   browser, source-config, schedule, or notification effect was added.
+
+Active Plan:
+
+- `docs/dev/plans/0053-2026-08-20-x-auth-alert-truthfulness.md`
+  version 1 corrects ambiguous X auth classification and resolved Slack
+  wording, then permits exactly one X-only terminal retry without recurring
+  configuration or browser-profile mutation.
 
 Closed Plan:
 

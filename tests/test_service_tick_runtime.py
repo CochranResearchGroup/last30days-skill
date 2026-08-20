@@ -561,6 +561,28 @@ def test_resolved_browser_notification_does_not_repeat_a_stale_operator_link():
     assert "browser incident resolved" in message
 
 
+def test_resolved_reauthentication_notification_is_not_an_active_auth_alert():
+    message = _safe_message(
+        {
+            "incident_id": "incident-resolved-auth",
+            "notification_kind": "resolved",
+            "notification_sequence": 3,
+            "incident_type": "reauthentication_required",
+            "severity": "critical",
+            "source": "x",
+            "stage": "collection",
+            "safe_summary": "Provider reported reauthentication_required.",
+            "protected_artifact_ref": None,
+            "operator_url": "https://guac.example.test/client/stale",
+        }
+    )
+
+    assert "status: resolved" in message
+    assert "previous incident type: reauthentication_required" in message
+    assert "type: reauthentication_required" not in message.splitlines()
+    assert "complete the manual browser check" not in message
+
+
 def test_production_manual_runtime_executes_without_creating_a_schedule(tmp_path):
     config_path = tmp_path / "tick-config-v1.json"
     config_path.write_text(

@@ -31,6 +31,7 @@ ERROR_TYPES = {
     "profile_mismatch",
     "route_stale",
     "auth_required",
+    "auth_state_ambiguous",
     "checkpoint_required",
     "rate_limited",
     "navigation_mismatch",
@@ -354,10 +355,16 @@ class XBrowserScraper:
                 "X reports that the authenticated account is restricted or rate limited",
                 operator_url=workspace.operator_url,
             )
-        if not auth.authenticated:
+        if auth.login_form:
             raise XBrowserFailure(
                 "auth_required",
                 "X authentication is required",
+                operator_url=workspace.operator_url,
+            )
+        if not auth.authenticated:
+            raise XBrowserFailure(
+                "auth_state_ambiguous",
+                "X authentication state could not be determined from the rendered page",
                 operator_url=workspace.operator_url,
             )
         query = _dated_query(topic, from_date, to_date)

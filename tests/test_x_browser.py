@@ -165,6 +165,28 @@ class XBrowserSearchTests(TestCase):
         self.assertEqual(external_url, result["diagnostics"]["operator_url"])
         self.assertNotIn("127.0.0.1", result["operator_url"])
 
+    def test_inconclusive_auth_dom_is_not_reported_as_logged_out(self):
+        from lib import x_browser
+
+        client = FakeAgentBrowserClient(auth=SimpleNamespace(
+            authenticated=False,
+            login_form=False,
+            checkpoint=False,
+            restricted=False,
+            url="https://x.com/home",
+        ))
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.search_x_browser(
+                "OpenAI",
+                "2026-06-20",
+                "2026-07-20",
+                depth="quick",
+                config={"LAST30DAYS_X_BROWSER_PROFILE": "last30days-facebook"},
+            )
+
+        self.assertEqual("auth_state_ambiguous", result["error_type"])
+        self.assertNotEqual("auth_required", result["error_type"])
+
     def test_checkpoint_detection_does_not_treat_generic_challenge_copy_as_auth(self):
         from lib import x_browser
 

@@ -617,6 +617,7 @@ Reddit, X, Facebook, and LinkedIn browser failures are typed so operator action 
 | Error type | Meaning / action |
 |---|---|
 | `auth_required` | Open the returned current operator URL and sign in to the configured profile. |
+| `auth_state_ambiguous` | The rendered X page showed neither authenticated navigation nor a login/checkpoint. Retry only after a bounded live probe; do not request sign-in from this result alone. |
 | `checkpoint_required` | Complete the site's security checkpoint in the operator-visible browser. |
 | `rate_limited` | The X account or search lane is restricted; stop and retry after the platform cooldown. |
 | `operator_ingress_unavailable` | Authentication was not determined. Repair the exact retained browser profile/route and public Guacamole/dashboard ingress before retrying collection. |

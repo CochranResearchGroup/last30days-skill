@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "79c8e95f3a51cd0b920c185c74349c59a93b2a20fabffc9c6f507334bfb3642a",
+      "sha256": "86e1bb1acd10e065a8ae1de4fc92f1fd247e0352c0634c0829abbe66b8f76b27",
       "source": "service/VERSION"
     },
     {
@@ -437,7 +437,7 @@
     },
     {
       "path": "scripts/lib/service_tick_notifications.py",
-      "sha256": "fd494e29fa8ed68a182c155765697cf489ceefb6a69bda5980f1d20bcd7f4a8e",
+      "sha256": "4cd2bcc109211603e274662c04569a5bb45b53fc48d398d8af52afdc3c645e6e",
       "source": "skills/last30days/scripts/lib/service_tick_notifications.py"
     },
     {
@@ -607,7 +607,7 @@
     },
     {
       "path": "scripts/lib/x_browser.py",
-      "sha256": "109262f16a0355547d8b52cc737a9457acb3a1f4214074281c69036839ec270c",
+      "sha256": "c4dee69ae52f25e3b3a690aabd583f13d048a3d00b33d7ef61e3f7d06b4c25ee",
       "source": "skills/last30days/scripts/lib/x_browser.py"
     },
     {
@@ -653,5 +653,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.51"
+  "service_version": "0.3.52"
 }
