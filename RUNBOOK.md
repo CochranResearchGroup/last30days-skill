@@ -18200,3 +18200,69 @@ Next Bounded Action:
 - make both minimized regressions fail, implement the narrow correction, pass
   release gates, install one successor, then preflight/enqueue one X-only tick
   and stop at its first terminal receipt.
+
+## Turn 304 | 2026-08-20
+
+Focus: close Plan 0053 after the installed X-auth correction and sole live
+retry.
+
+Authority Consulted:
+
+- operator retry request; Plan 0053/C01; pushed commit `f46b320`; reproducible
+  service artifact; installed/MCP/database/schedule readbacks; exact tick,
+  browser, tab, route, incident, and notification receipts; closeout,
+  validation, and graph-memory policies.
+
+Decisions And Changes:
+
+- installed service 0.3.52 transactionally with 0.3.51 retained as rollback;
+- discarded an `about:blank` generic-CLI probe after it selected the default
+  profile, closed that accidental context, and required the service-owned X
+  adapter to acquire exact profile `last30days-facebook`;
+- admitted the preflighted X-only tick once and stopped at its terminal success;
+- closed Plan 0053/P08 without changing recurring source configuration,
+  cadence, or notification transports.
+
+Validation Evidence:
+
+- focused suites, full `uv run pytest`, planning audit, patch hygiene, and two
+  byte-identical 0.3.52 builds pass; artifact SHA-256 is
+  `437d8822984a512f6206f7f69dc10c1a4d9a57c062c871784657259c6908bcf5`;
+- installed service 0.3.52/schema 16 is ready and MCP-compatible at runtime
+  manifest SHA-256
+  `dd48e5642aad10a419920bb31114cea5155b379315df74aa84ee37924d4ed40a`;
+  SQLite is `ok` and every execution attempt is terminal;
+- tick `tick-0fb90267ebbec47e0fe769aa3b485bdc` completed: one X attempt and
+  request, 21 seconds, 13 observed, five accepted/stored, eight rejected, zero
+  cost/model use, zero incidents, and zero notifications;
+- exact profile `last30days-facebook` is ready on PID 86306 with a ready X
+  search tab, visible attached Route A, no profile conflict, and no lease
+  waiter; `daily-default` remains ready for `2026-08-21T00:00:00Z` with its
+  prior recurring tick unchanged.
+
+State Movement:
+
+- P08 moves `OPEN -> CLOSED`; Plan 0053 advances version 1/C01 to version
+  2/C02 and closes at `installed_x_retry_accepted`.
+
+Progress Classification:
+
+- `outcome_progress`; current runtime and live receipt agree that X is logged
+  in, while ambiguity and historical recovery can no longer masquerade as a
+  fresh authentication failure.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; provider readiness passed, but job
+  `0bb17652-a8ee-46f6-ab44-d546008947c8` timed out during node extraction
+  before an episode UUID became visible. Retry the compact Plan 0053
+  commit/runtime/tick outcome at the next non-trivial closeout.
+
+Stop Reason:
+
+- accepted. The one authorized retry is terminal and successful; do not run a
+  second tick. Let the unchanged daily schedule proceed normally.

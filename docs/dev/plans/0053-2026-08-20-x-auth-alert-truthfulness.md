@@ -1,8 +1,8 @@
 # Plan 0053 | X Authentication Alert Truthfulness
 
-State: OPEN
+State: CLOSED
 Roadmap: P08
-Plan version: 1
+Plan version: 2
 Date: 2026-08-20
 
 ## Objective
@@ -114,3 +114,74 @@ Next action:
 - commit the validated source candidate before installing its exact artifact.
 
 Checkpoint P0053-C01 is the current authority.
+
+### Checkpoint P0053-C02 | 2026-08-20
+
+Plan version: 2
+
+State transition:
+
+- `validated_runtime_candidate -> installed_x_retry_accepted`.
+
+Progress classification:
+
+- `outcome_progress`; the false-alert paths are corrected in the installed
+  runtime and a fresh X-only tick proved the named profile is authenticated.
+
+Owned changes:
+
+- committed/pushed service 0.3.52 correction, transactional runtime upgrade,
+  one X-only manual receipt, and closeout authorities.
+
+Validation evidence:
+
+- pushed commit `f46b320` produced byte-identical service 0.3.52 artifacts at
+  SHA-256
+  `437d8822984a512f6206f7f69dc10c1a4d9a57c062c871784657259c6908bcf5`;
+- installed service 0.3.52/schema 16 is ready and MCP-compatible at runtime
+  manifest SHA-256
+  `dd48e5642aad10a419920bb31114cea5155b379315df74aa84ee37924d4ed40a`,
+  with 0.3.51 retained as rollback and SQLite `quick_check` returning `ok`;
+- installed import proof preserves `auth_state_ambiguous` and renders a
+  resolved reauthentication incident as historical state with no sign-in
+  action;
+- preflight admitted exactly one X lane, one attempt, ten accepted-item limit,
+  zero cost/model budget, and no recurring-schedule mutation;
+- tick `tick-0fb90267ebbec47e0fe769aa3b485bdc` completed successfully in 21
+  seconds: 13 posts observed, five accepted/stored, eight quality rejections,
+  one request, no retry, no incident, and no notification;
+- postflight proves PID 86306 owns exact profile `last30days-facebook`, the X
+  search tab and Route A are ready, and there are no lease waiters. A generic
+  CLI probe briefly selected the default profile and returned `about:blank`;
+  it was rejected as non-evidence and that accidental session was closed
+  before the service-owned X adapter launched the correct profile;
+- `daily-default` remains enabled/ready with unchanged Aug 21 boundary and
+  unchanged last recurring tick identity.
+
+Authority classification:
+
+- `inherited_authority`; this is the exact one-retry outcome requested by the
+  operator after the false X authentication notice.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; the provider preflight passed, but job
+  `0bb17652-a8ee-46f6-ab44-d546008947c8` timed out during node extraction
+  before an episode UUID became visible. The intended compact episode is the
+  commit/runtime/tick outcome in this checkpoint and should be retried at the
+  next non-trivial closeout.
+
+Stop rule:
+
+- satisfied. The one authorized tick is terminal; do not retry or change the
+  recurring schedule.
+
+Next action:
+
+- stop and allow the unchanged daily schedule to run normally.
+
+Checkpoint P0053-C02 is the current authority.

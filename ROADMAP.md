@@ -1071,7 +1071,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: OPEN
+State: CLOSED
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1137,15 +1137,16 @@ Current State:
   checkpoint signals remain reauthentication incidents. The Aug 17 recurring
   tick had already terminalized before the one managed restart; no tick,
   browser, source-config, schedule, or notification effect was added.
-
-Active Plan:
-
-- `docs/dev/plans/0053-2026-08-20-x-auth-alert-truthfulness.md`
-  version 1 corrects ambiguous X auth classification and resolved Slack
-  wording, then permits exactly one X-only terminal retry without recurring
-  configuration or browser-profile mutation.
+- Plan 0053 installed service 0.3.52 and made both X auth classification and
+  recovered Slack notices evidence-bound. Its one X-only retry succeeded with
+  five accepted posts from 13 observed, no retry, incident, notification,
+  model use, cost, or recurring-schedule change. The exact social profile and
+  Route A are ready; service 0.3.51 remains rollback.
 
 Closed Plan:
+
+- `docs/dev/plans/0053-2026-08-20-x-auth-alert-truthfulness.md`
+  version 2/C02 is the terminal installed-runtime and X-only retry authority.
 
 - `docs/dev/plans/0052-2026-08-16-operator-ingress-alert-runtime.md`
   version 2/C01 is the terminal alert-taxonomy authority. It installs exact
