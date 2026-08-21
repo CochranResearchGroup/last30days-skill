@@ -31,6 +31,9 @@ DEPTH_CONFIG = {
 
 DEFAULT_MIN_ACTION_DELAY = 4.0
 DEFAULT_MAX_ACTIONS_PER_MINUTE = 6
+MAX_EXPLICIT_RESULTS = 100
+MAX_EXPLICIT_SCROLLS = 8
+ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 5
 
 ERROR_TYPES = browser_runtime.ERROR_TYPES
 BrowserWorkspaceRequest = browser_runtime.BrowserWorkspaceRequest
@@ -535,7 +538,9 @@ class LinkedInScraper:
             diagnostics.failure_stage = "extraction"
             raw_candidates = self._extract(workspace)
             for _ in range(max(0, self.scrolls)):
-                if len(raw_candidates) >= self.limit:
+                if self._accepted_unique_count(
+                    raw_candidates, topic, from_date, to_date
+                ) >= self.limit:
                     break
                 self._act(workspace, BrowserAction("scroll", value="1400"))
                 if self.scroll_wait:
@@ -622,6 +627,24 @@ class LinkedInScraper:
             )
         candidates = raw.get("candidates") or []
         return [candidate for candidate in candidates if isinstance(candidate, dict)]
+
+    def _accepted_unique_count(
+        self,
+        raw_candidates: list[dict[str, Any]],
+        topic: str,
+        from_date: str,
+        to_date: str,
+    ) -> int:
+        """Preview accepted unique yield without mutating run diagnostics."""
+        return len(
+            self._quality_gate(
+                raw_candidates,
+                topic,
+                from_date,
+                to_date,
+                LinkedInRunDiagnostics(),
+            )
+        )
 
     def _act(self, workspace: BrowserWorkspace, action: BrowserAction) -> BrowserState:
         if self.interaction_limiter and action.operation in {
@@ -776,6 +799,7 @@ def search_linkedin(
     *,
     depth: str = "default",
     config: dict[str, Any] | None = None,
+    limit: int | None = None,
 ) -> dict[str, Any]:
     """Search LinkedIn and return only verified, quality-gated content posts."""
     config = config or {}
@@ -786,6 +810,21 @@ def search_linkedin(
             "error_type": "agent_browser_missing",
         }
     settings = DEPTH_CONFIG.get(depth, DEPTH_CONFIG["default"])
+    result_limit = int(
+        config.get("LAST30DAYS_LINKEDIN_MAX_RESULTS") or settings["results"]
+    )
+    if limit is not None:
+        result_limit = max(1, min(MAX_EXPLICIT_RESULTS, int(limit)))
+    scrolls = int(config.get("LAST30DAYS_LINKEDIN_SCROLLS") or settings["scrolls"])
+    if limit is not None:
+        scrolls = max(
+            scrolls,
+            min(
+                MAX_EXPLICIT_SCROLLS,
+                (result_limit + ACCEPTED_ITEMS_PER_SCROLL_BUDGET - 1)
+                // ACCEPTED_ITEMS_PER_SCROLL_BUDGET,
+            ),
+        )
     timeout = int(config.get("LAST30DAYS_LINKEDIN_TIMEOUT") or settings["timeout"])
     min_action_delay = float(
         config.get("LAST30DAYS_LINKEDIN_MIN_ACTION_DELAY") or DEFAULT_MIN_ACTION_DELAY
@@ -828,8 +867,8 @@ def search_linkedin(
             ),
         ),
         request,
-        limit=int(config.get("LAST30DAYS_LINKEDIN_MAX_RESULTS") or settings["results"]),
-        scrolls=int(config.get("LAST30DAYS_LINKEDIN_SCROLLS") or settings["scrolls"]),
+        limit=result_limit,
+        scrolls=scrolls,
         initial_wait=float(config.get("LAST30DAYS_LINKEDIN_INITIAL_WAIT") or 4.0),
         scroll_wait=float(config.get("LAST30DAYS_LINKEDIN_SCROLL_WAIT") or 2.0),
         interaction_limiter=_interaction_limiter(

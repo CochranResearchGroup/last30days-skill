@@ -18586,3 +18586,73 @@ Stop Reason:
 - closeout complete. The next authorized work is a separate bounded
   agent-browser session-identity repair; another X tick remains prohibited by
   Plan 0054.
+
+## Turn 310 | 2026-08-21
+
+Focus: close the proven X accepted-yield slice and implement the bounded
+LinkedIn accepted-unique successor.
+
+Authority Consulted:
+
+- operator approval following the terminal 20/20 canary report; Plan 0054/C04;
+  service tick/provider/derivative receipts; current roadmap, planning,
+  documentation, Git, validation, runtime-release, CodeGraph, diagnosis, TDD,
+  and closeout policies.
+
+Decisions And Changes:
+
+- reconciled Plan 0054 to terminal version 5/C05 and closed it after tick
+  `tick-9ff2c6e630de77dbe199eca6e52d0847` proved the installed X loop reached 20
+  unique linked posts under the repaired browser owner;
+- opened successor Plan 0055 version 1/C01 for the LinkedIn defects exposed by
+  the same tick;
+- propagated the governed LinkedIn `request.item_limit` to the browser search,
+  added a 100-result/eight-scroll hard bound with a five-item proportional
+  budget, and changed the capture stop from raw cards to accepted unique post
+  permalinks;
+- preserved existing LinkedIn and X authentication, quality, canonicalization,
+  sponsored/promoted, duplicate, and media behavior. No runtime install,
+  browser action, tick, source configuration, schedule, notification, cost, or
+  model action has occurred in this source slice.
+
+Validation Evidence:
+
+- worker propagation failed red with missing `limit`, then passed with 20;
+- explicit 20-item construction failed red at one scroll, then passed at the
+  bounded four-scroll budget;
+- repeated-card pagination failed red at 16 accepted items, then passed at 20
+  accepted unique items after the fourth scroll, retaining six duplicate
+  rejection receipts;
+- full LinkedIn, X-browser, and acquisition-worker test files pass with two
+  expected opt-in live-smoke skips;
+- focused runtime-package, version, source-log, and planning-authority suites
+  pass, and the complete `uv run pytest -q` suite passes with expected opt-in
+  skips;
+- two service 0.3.54 builds are byte-identical at SHA-256
+  `adbc281e359599391f7f716b5215e5f894e8a358409404602bd4c075a2a99874`;
+- CodeGraph synchronized the edited flow from the worker adapter through
+  `search_linkedin`, `LinkedInScraper.search`, and the accepted-unique preview.
+
+State Movement:
+
+- Plan 0054 moves `OPEN -> CLOSED` at version 5/C05; Plan 0055 becomes the P08
+  active plan at version 1/C01 `validated_source_correction`; P08 remains OPEN.
+
+Progress Classification:
+
+- `outcome_progress`; the canary-derived LinkedIn shortfall now has a
+  deterministic repro and bounded source correction.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending installed-runtime and terminal-canary closeout.
+
+Next Bounded Action:
+
+- commit and push the exact validated service 0.3.54 candidate, then
+  transactionally install and consume at most the single Plan 0055 20/20
+  canary.

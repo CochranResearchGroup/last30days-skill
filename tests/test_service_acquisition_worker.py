@@ -776,6 +776,30 @@ def test_x_adapter_propagates_the_admitted_item_limit(monkeypatch):
     assert result["_network_request_count"] == 1
 
 
+def test_linkedin_adapter_propagates_the_admitted_item_limit(monkeypatch):
+    from lib import linkedin
+
+    observed = {}
+
+    def search(*_args, **kwargs):
+        observed.update(kwargs)
+        return {"items": []}
+
+    monkeypatch.setattr(linkedin, "search_linkedin", search)
+
+    result = service_acquisition_worker._linkedin_adapter(
+        _request(
+            source="linkedin",
+            adapter="linkedin_agent_browser",
+            item_limit=20,
+        ),
+        {},
+    )
+
+    assert observed["limit"] == 20
+    assert result["_network_request_count"] == 1
+
+
 def test_facebook_adapter_constrains_search_to_the_admitted_item_limit(monkeypatch):
     from lib import facebook
 

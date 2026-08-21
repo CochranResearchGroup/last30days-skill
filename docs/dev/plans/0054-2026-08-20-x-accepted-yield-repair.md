@@ -1,8 +1,8 @@
 # Plan 0054 | X Accepted-Yield Repair
 
-State: OPEN
+State: CLOSED
 Roadmap: P08
-Plan version: 4
+Plan version: 5
 Date: 2026-08-20
 
 ## Objective
@@ -29,6 +29,15 @@ quality gate.
 - the resulting X login screenshot proves only that the default profile was
   logged out. It does not prove the named social profile lost authentication,
   and the 20-item accepted-yield loop was not reached.
+- the separately bounded agent-browser owner-transfer repair installed
+  generation `0.28.0-0ed74f1decdb-36f3d74f834d` and preserved one exact
+  social-profile browser owner;
+- terminal successor tick `tick-9ff2c6e630de77dbe199eca6e52d0847`
+  reached X extraction without an auth incident, observed 33 captures, found
+  20 unique linked posts, accepted 13, and exhausted the bounded capture loop;
+  its 20 rejections were 13 repeated accepted-status captures, three linked
+  short posts, and four linked off-topic posts, with zero promoted or
+  missing-permalink failures.
 
 ## Scope
 
@@ -373,3 +382,65 @@ Next action:
   unrelated `odollo-payment-terms` browser.
 
 Checkpoint P0054-C04 is the current authority.
+
+### Checkpoint P0054-C05 | 2026-08-21
+
+Plan version: 5
+
+State transition:
+
+- `terminal_canary_identity_misrouted -> closed_runtime_accepted_yield_proven`.
+
+Progress classification:
+
+- `outcome_progress`; the separately repaired browser-owner boundary allowed
+  one operator-authorized terminal retry to exercise the installed X capture
+  loop under the intended authenticated profile.
+
+Owned changes:
+
+- no additional Plan 0054 source change; the already-installed service 0.3.53
+  X accepted-yield implementation was exercised after the agent-browser
+  ownership repair;
+- the one temporary 20/20 canary configuration was removed, and recurring
+  source configuration and `daily-default` remained unchanged.
+
+Validation evidence:
+
+- tick `tick-9ff2c6e630de77dbe199eca6e52d0847` terminalized once as
+  `complete_degraded`; its X lane and collection/media/OCR/semantic stages all
+  succeeded and snapshot `tick-snapshot-1812a46c3db186a590131ceea96aa651`
+  was promoted;
+- X observed 33 capture rows, accepted 13 unique posts, and rejected 13
+  duplicate-status captures, three insufficient-text posts, and four
+  off-topic posts. All seven non-duplicate rejections had canonical status
+  links and authors; zero were promoted or missing permalinks;
+- no X auth incident, notification, retry, cost, model use, or recurring-
+  schedule mutation occurred.
+
+Authority classification:
+
+- `inherited_authority`; the operator explicitly authorized the terminal
+  retry after the separately bounded browser-owner repair completed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- deferred; repository, installed-runtime, and durable tick receipts remain
+  the canonical closeout evidence.
+
+Remaining acceptance criteria:
+
+- none. Criteria 1-6 and the definition of done are satisfied within the
+  bounded-yield contract; the ceiling is a maximum pursued within a finite
+  scroll budget, not a guarantee that 20 posts pass quality gates.
+
+Next action:
+
+- close Plan 0054. LinkedIn item-limit propagation and accepted-unique
+  pagination continue under successor Plan 0055.
+
+Checkpoint P0054-C05 is the terminal authority.

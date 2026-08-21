@@ -45,7 +45,15 @@ def post_candidate(**overrides):
 
 
 class FakeAgentBrowserClient:
-    def __init__(self, *, page=None, candidates=None, auth=None, preserve_url=False):
+    def __init__(
+        self,
+        *,
+        page=None,
+        candidates=None,
+        candidate_batches=None,
+        auth=None,
+        preserve_url=False,
+    ):
         self.workspace = linkedin.BrowserWorkspace(
             profile_id="last30days-linkedin",
             browser_id="browser-1",
@@ -69,6 +77,12 @@ class FakeAgentBrowserClient:
             "error_page": False,
         }
         self.candidates = candidates if candidates is not None else [post_candidate()]
+        self.candidate_batches = (
+            [list(batch) for batch in candidate_batches]
+            if candidate_batches is not None
+            else None
+        )
+        self.extraction_count = 0
         self.preserve_url = preserve_url
         self.actions = []
         self.command_timings = [{"operation": "eval", "duration_ms": 3, "status": "ok"}]
@@ -95,10 +109,17 @@ class FakeAgentBrowserClient:
         if script == linkedin.PAGE_STATE_SCRIPT:
             return dict(self.page)
         if script == linkedin.EXTRACT_SCRIPT:
+            candidates = self.candidates
+            if self.candidate_batches is not None:
+                batch_index = min(
+                    self.extraction_count, len(self.candidate_batches) - 1
+                )
+                candidates = self.candidate_batches[batch_index]
+                self.extraction_count += 1
             return {
                 "url": self.page["url"],
                 "title": self.page["title"],
-                "candidates": self.candidates,
+                "candidates": candidates,
             }
         raise AssertionError("unexpected script")
 
@@ -219,6 +240,27 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual("linkedin-content-search", workspace_request.task_name)
         self.assertEqual("https://www.linkedin.com/feed/", workspace_request.start_url)
         self.assertEqual("shared_display", workspace_request.display_isolation)
+
+    def test_explicit_twenty_item_limit_has_a_bounded_four_scroll_budget(self):
+        captured = {}
+
+        def scraper_factory(_client, _workspace_request, **kwargs):
+            captured.update(kwargs)
+            return mock.Mock(search=mock.Mock(return_value={"items": [], "error": None}))
+
+        with mock.patch.object(linkedin, "is_agent_browser_available", return_value=True), mock.patch.object(
+            linkedin, "LinkedInScraper", side_effect=scraper_factory
+        ):
+            linkedin.search_linkedin(
+                "robotic lawn mower",
+                "2026-06-15",
+                "2026-07-15",
+                depth="default",
+                limit=20,
+            )
+
+        self.assertEqual(20, captured["limit"])
+        self.assertEqual(4, captured["scrolls"])
 
     def test_retained_workspace_reselects_inactive_linkedin_tab(self):
         client = linkedin.CliAgentBrowserClient(timeout=5)
@@ -363,6 +405,45 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
         )
         self.assertEqual("2026-07-13", item["date"])
         self.assertEqual("AgriTech Lab", item["author"])
+
+    def test_scrolls_until_the_accepted_unique_item_limit_is_reached(self):
+        def candidates(start, count):
+            return [
+                post_candidate(
+                    text=(
+                        "AgriTech Lab\n"
+                        f"Robotic lawn mower field result {index} includes enough "
+                        "relevant deployment and safety detail."
+                    ),
+                    url=(
+                        "https://www.linkedin.com/feed/update/urn:li:activity:"
+                        f"735120000000000{index:04d}/"
+                    ),
+                    urn=f"urn:li:activity:735120000000000{index:04d}",
+                )
+                for index in range(start, start + count)
+            ]
+
+        first = candidates(0, 6)
+        client = FakeAgentBrowserClient(
+            candidate_batches=[
+                first,
+                first,
+                candidates(6, 5),
+                candidates(11, 5),
+                candidates(16, 4),
+            ]
+        )
+
+        result = make_scraper(client, limit=20, scrolls=4).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual(20, len(result["items"]))
+        self.assertEqual(4, len([
+            action for action in client.actions if action.operation == "scroll"
+        ]))
+        self.assertEqual(6, result["diagnostics"]["rejection_counts"]["duplicate"])
 
     def test_recovers_permalink_from_activity_urn(self):
         self.assertEqual(

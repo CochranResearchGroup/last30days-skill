@@ -1143,24 +1143,29 @@ Current State:
   model use, cost, or recurring-schedule change. The exact social profile and
   Route A are ready; service 0.3.51 remains rollback.
 
-- Plan 0054 audits that 5/13 result item by item. Seven rejection decisions are
-  legitimate low-information or off-topic posts, while the eighth is a
-  repeated canonical status across captures. The actionable accepted-yield
-  defect is repaired and service 0.3.53 is installed with 0.3.52 retained as
-  rollback. Version 4/C04 records the sole terminal canary: notification and
-  initial exact-profile gates passed, but the browser broker rebound the X
-  logical session from `last30days-facebook` to the unrelated default-profile
-  browser before auth classification. The resulting login screenshot is not
-  valid evidence about the named social profile; extraction never ran.
+- Plan 0054 closes at version 5/C05 after the separately repaired browser-owner
+  boundary allowed one terminal retry. X found 20 unique linked posts, accepted
+  13, rejected seven legitimate short/off-topic posts, and deduplicated 13
+  repeated captures with zero ads or missing permalinks. The installed 0.3.53
+  accepted-yield loop is therefore proven without a recurring-schedule change.
+- Plan 0055 owns the successor LinkedIn defect exposed by that same tick: the
+  service-admitted 20-item ceiling was dropped, and raw duplicate card count
+  stopped pagination after six unique posts. Version 1/C01 carries the source
+  correction and minimized red/green evidence; release, install, and one
+  terminal receipt-only 20/20 canary remain.
 
 Active Plan:
 
-- `docs/dev/plans/0054-2026-08-20-x-accepted-yield-repair.md`
-  version 4/C04 owns the installed accepted-yield repair and terminal
-  cross-profile canary receipt. Its live-attempt bound is consumed; the next
-  bounded work is agent-browser session-identity repair, not another tick.
+- `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
+  version 1/C01 owns LinkedIn item-limit propagation and accepted-unique
+  pagination through one bounded service release and terminal 20/20 canary.
 
 Closed Plan:
+
+- `docs/dev/plans/0054-2026-08-20-x-accepted-yield-repair.md`
+  version 5/C05 is the terminal X accepted-yield and authenticated retry
+  authority. It proves 20 unique linked posts reached the bounded quality loop
+  under service 0.3.53 and leaves recurring configuration unchanged.
 
 - `docs/dev/plans/0053-2026-08-20-x-auth-alert-truthfulness.md`
   version 2/C02 is the terminal installed-runtime and X-only retry authority.

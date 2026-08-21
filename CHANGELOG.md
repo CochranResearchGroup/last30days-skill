@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **LinkedIn accepted-yield acquisition.** Service 0.3.54 propagates each
+  governed acquisition request's admitted item ceiling into the LinkedIn
+  browser scraper and applies a bounded proportional scroll budget. LinkedIn
+  now stops on accepted unique post permalinks or scroll-budget exhaustion
+  instead of raw card count, preserving existing authentication, checkpoint,
+  rate-limit, permalink, date, sponsored, relevance, media, and duplicate
+  gates.
+
 - **X accepted-yield acquisition.** Service 0.3.53 propagates each governed
   acquisition request's admitted item ceiling into the X browser scraper and
   applies a bounded proportional scroll budget. X now stops on accepted unique
