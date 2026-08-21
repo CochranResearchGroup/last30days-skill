@@ -1148,17 +1148,19 @@ Current State:
   13, rejected seven legitimate short/off-topic posts, and deduplicated 13
   repeated captures with zero ads or missing permalinks. The installed 0.3.53
   accepted-yield loop is therefore proven without a recurring-schedule change.
-- Plan 0055 owns the successor LinkedIn defect exposed by that same tick: the
-  service-admitted 20-item ceiling was dropped, and raw duplicate card count
-  stopped pagination after six unique posts. Version 1/C01 carries the source
-  correction and minimized red/green evidence; release, install, and one
-  terminal receipt-only 20/20 canary remain.
+- Plan 0055 owns the successor LinkedIn defect exposed by that same tick. The
+  accepted-unique correction is installed with service 0.3.57, and exact
+  runtime-profile acquisition now passes for both X and LinkedIn. Its sole
+  version 1 canary failed pre-scrape with `route_stale`, so version 2/C02
+  remains open pending fresh authority for one new terminal receipt-only 20/20
+  canary.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 1/C01 owns LinkedIn item-limit propagation and accepted-unique
-  pagination through one bounded service release and terminal 20/20 canary.
+  version 2/C02 owns installed LinkedIn accepted-unique pagination and exact
+  X/LinkedIn browser identity recovery through one freshly authorized terminal
+  20/20 canary.
 
 Closed Plan:
 

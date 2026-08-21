@@ -18656,3 +18656,68 @@ Next Bounded Action:
 - commit and push the exact validated service 0.3.54 candidate, then
   transactionally install and consume at most the single Plan 0055 20/20
   canary.
+
+## Turn 311 | 2026-08-21
+
+Focus: consume the bounded Plan 0055 canary, repair exact social-browser
+identity recovery, and stop before an unauthorized retry.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C01; timer, provider, agent-browser, runtime,
+  route, Git, validation, release, diagnosis, TDD, and closeout authorities.
+
+Decisions And Changes:
+
+- installed the accepted-unique LinkedIn correction and admitted exactly one
+  temporary X/LinkedIn 20/20 tick without changing `daily-default`;
+- tick `tick-214741d5b5ea42fe21bb106f06dcab0d` terminalized
+  `complete_degraded` after both lanes failed `route_stale` before scrape, with
+  zero observed, accepted, rejected, incidents, or notifications;
+- traced the earlier false X/LinkedIn auth surfaces to an ambiguous retained
+  owner session. Physical PID 16807, runtime profile `last30days-facebook`, CDP
+  port 36603, X DOM, and LinkedIn DOM were authenticated;
+- rebound Route A/display `:10` to the exact social browser without launching
+  or closing Chrome and preserved unrelated Route B/display `:11`;
+- added deterministic exact-CDP binding for ambiguous owners and fail-closed
+  runtime-profile recovery for stale retained profile labels, then released and
+  installed service 0.3.57;
+- ran acquisition-only validation for X and LinkedIn. Both selected
+  `session:last30days-bound-social-20260821`; no second tick or scrape ran.
+
+Validation Evidence:
+
+- focused social acquisition suites pass with expected live-smoke skips;
+- full `uv run pytest -q` passes with expected opt-in skips;
+- two 0.3.57 builds and `dist/last30days-service-0.3.57.tar.gz` match SHA-256
+  `d867d5955d4e26387f27cd0c75a1af06a3c757e55f1c198e95ea22363ca09b39`;
+- installed service 0.3.57/schema 16 reports ready and MCP compatible, runtime
+  manifest SHA-256
+  `6388bf82c32a8942d5cce469dd782803bdea5118bc1b0f2d853f284d04981617`;
+  0.3.56 is retained as rollback.
+
+State Movement:
+
+- Plan 0055 advances to version 2/C02
+  `installed_identity_repair_waiting_fresh_canary_authority`; P08 remains OPEN.
+
+Recurring-State And Attempt Boundary:
+
+- Reddit and Facebook remain disabled; normal X/LinkedIn ceilings remain ten;
+  cadence and recurring schedule are unchanged;
+- the single C01 live attempt is consumed. Another 20/20 tick requires fresh
+  explicit operator authority.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred; plan, runbook, installed-runtime, and tick receipts are sufficient
+  for this open checkpoint.
+
+Next Bounded Action:
+
+- commit and push 0.3.57 plus C02 receipts, then wait for fresh authority for
+  one new terminal X/LinkedIn 20/20 canary.

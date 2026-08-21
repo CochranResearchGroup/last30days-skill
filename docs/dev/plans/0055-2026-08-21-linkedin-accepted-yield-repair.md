@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 1
+Plan version: 2
 Date: 2026-08-21
 
 ## Objective
@@ -147,4 +147,89 @@ Next action:
 - commit and push the exact validated service 0.3.54 candidate before
   transactional installation.
 
-Checkpoint P0055-C01 is the current authority.
+### Checkpoint P0055-C02 | 2026-08-21
+
+Plan version: 2
+
+State transition:
+
+- `validated_source_correction -> installed_identity_repair_waiting_fresh_canary_authority`.
+
+Progress classification:
+
+- `outcome_progress_with_live_gate`; pagination and exact browser acquisition
+  are installed, but the only authorized canary failed before either scraper
+  observed a post.
+
+Runtime and canary evidence:
+
+- source commit `91b6efb7a76f45dddd294bc0456d636dcd3fe40f` delivered the
+  LinkedIn 20-item accepted-unique correction in service 0.3.54 and was pushed
+  with exact remote readback;
+- the single admitted X/LinkedIn 20/20 tick
+  `tick-214741d5b5ea42fe21bb106f06dcab0d` terminalized
+  `complete_degraded` in eight seconds with both lanes `route_stale`, zero
+  observed/accepted/rejected items, zero incidents, and zero notifications;
+- diagnosis proved X and LinkedIn were authenticated in physical PID 16807 at
+  loopback CDP port 36603 under runtime profile `last30days-facebook`; the
+  false auth surface came from an ambiguous retained session and later stale
+  service profile labeling, not a logged-out browser;
+- Route A was rebound without launching or closing Chrome. Route A now names
+  `session:last30days-bound-social-20260821` on display `:10`; unrelated Route
+  B remains bound to `session:p0204-a06` on display `:11`;
+- service 0.3.57 adds fail-closed runtime identity recovery: runtime profile,
+  user-data directory, live/reachable state, and exact loopback CDP port must
+  all agree before a stale service browser row may be reused;
+- installed 0.3.57 acquisition-only checks now pass for both X and LinkedIn on
+  the exact social browser owner. No second tick or scrape was run.
+
+Validation and release evidence:
+
+- minimized regressions cover ambiguous-session exact CDP binding, retained
+  profile-label recovery, and rejection of wrong runtime profile, user-data
+  directory, or CDP port;
+- focused social acquisition suites and the complete `uv run pytest -q` suite
+  pass with expected opt-in skips;
+- two service 0.3.57 builds and the repository artifact are byte-identical at
+  SHA-256
+  `d867d5955d4e26387f27cd0c75a1af06a3c757e55f1c198e95ea22363ca09b39`;
+- installed service 0.3.57/schema 16 is ready and MCP 4.0.3-compatible with
+  runtime manifest SHA-256
+  `6388bf82c32a8942d5cce469dd782803bdea5118bc1b0f2d853f284d04981617`;
+  service 0.3.56 is retained as rollback.
+
+Authority and recurring-state boundary:
+
+- the version 1 single live-attempt budget is consumed. Another tick requires
+  fresh explicit operator authority and is not inferred from source/runtime
+  repair work;
+- Reddit and Facebook remain disabled; recurring `daily-default`, cadence,
+  and ten-item X/LinkedIn ceilings remain unchanged.
+
+Authority classification:
+
+- `inherited_authority`; source, packaging,
+  installation, route reconciliation, and acquisition-only validation were in
+  scope, while another live tick requires fresh explicit operator authority.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- deferred; plan, runbook, runtime, and tick receipts are the current durable
+  evidence surfaces.
+
+Remaining acceptance criteria:
+
+- one freshly authorized X/LinkedIn 20/20 canary must reach the scraper quality
+  loops and receipt actual observed, accepted, rejected, duplicate, permalink,
+  and sponsored/promoted outcomes before this plan can close.
+
+Next action:
+
+- commit and push service 0.3.57 and the C02 receipts, then wait for fresh
+  operator authority for one new 20/20 canary.
+
+Checkpoint P0055-C02 is the current authority.

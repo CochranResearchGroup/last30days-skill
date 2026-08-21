@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Runtime-profile identity recovery for social acquisition.** Service 0.3.57
+  can recover an exact X, LinkedIn, or Facebook browser owner when the retained
+  service row has a stale profile label. Recovery remains fail-closed: the
+  requested runtime profile must report a live, reachable browser whose exact
+  user-data directory and loopback CDP port match the selected retained row.
+
+- **Exact social-browser owner binding.** Service 0.3.56 detects retained
+  agent-browser sessions that ambiguously name more than one live browser and
+  binds a deterministic control lane to the selected social browser's exact
+  loopback CDP endpoint and runtime-profile identity before X, LinkedIn, or
+  Facebook DOM inspection. This prevents unrelated same-session browsers from
+  producing false auth errors without relabeling the authenticated profile.
+
 - **LinkedIn accepted-yield acquisition.** Service 0.3.54 propagates each
   governed acquisition request's admitted item ceiling into the LinkedIn
   browser scraper and applies a bounded proportional scroll budget. LinkedIn

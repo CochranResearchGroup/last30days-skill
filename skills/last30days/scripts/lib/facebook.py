@@ -645,13 +645,60 @@ class CliAgentBrowserClient:
             state if isinstance(state, dict) else {},
             expected_profile_id=selected_profile,
         )
+        if (
+            not shared_owner
+            and isinstance(state, dict)
+            and agent_browser_config.needs_runtime_profile_owner_resolution(
+                state,
+                expected_profile_id=selected_profile,
+            )
+        ):
+            try:
+                runtime_status = self._invoke(
+                    [
+                        "--runtime-profile",
+                        selected_profile,
+                        "runtime",
+                        "status",
+                    ],
+                    timeout=min(request.timeout, 30),
+                )
+            except FacebookScraperFailure:
+                runtime_status = {}
+            selected_profile_record = access_plan.get("selectedProfile")
+            expected_user_data_dir = (
+                str(selected_profile_record.get("userDataDir") or "")
+                if isinstance(selected_profile_record, dict)
+                else ""
+            )
+            shared_owner = agent_browser_config.runtime_profile_owner(
+                state,
+                runtime_status,
+                expected_profile_id=selected_profile,
+                expected_user_data_dir=expected_user_data_dir,
+            )
         if shared_owner:
             browser = shared_owner["browser"]
+            owner_session_name = shared_owner["session_name"]
+            owner_session = (
+                sessions.get(owner_session_name)
+                if isinstance(sessions, dict)
+                else None
+            )
+            if _session_has_ambiguous_browser_ownership(
+                owner_session,
+                shared_owner["browser_id"],
+            ):
+                owner_session_name = self._bind_exact_cdp_session(
+                    browser=browser,
+                    browser_id=shared_owner["browser_id"],
+                    request=request,
+                )
             stream = _ready_operator_stream(browser, request.view_provider)
             return BrowserWorkspace(
                 profile_id=selected_profile,
                 browser_id=shared_owner["browser_id"],
-                session_name=shared_owner["session_name"],
+                session_name=owner_session_name,
                 target_id=shared_owner["target_id"],
                 route_id=str(stream.get("id") or ""),
                 operator_url=_operator_url(stream),
@@ -874,6 +921,45 @@ class CliAgentBrowserClient:
             operator_url=_operator_url(opened),
             operator_visible_state=visible_state,
         )
+
+    def _bind_exact_cdp_session(
+        self,
+        *,
+        browser: dict[str, Any],
+        browser_id: str,
+        request: BrowserWorkspaceRequest,
+    ) -> str:
+        """Attach a deterministic CLI lane when one owner names several browsers."""
+        endpoint = str(browser.get("cdpEndpoint") or "")
+        port = _loopback_cdp_port(endpoint)
+        if port is None:
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "ambiguous retained browser owner has no loopback CDP endpoint",
+            )
+        binding = hashlib.sha256(
+            f"{browser_id}\n{endpoint}".encode("utf-8")
+        ).hexdigest()[:16]
+        session_name = f"last30days-bound-{binding}"
+        attached = self._invoke(
+            [
+                "--session",
+                session_name,
+                "--runtime-profile",
+                request.profile_id,
+                "--cdp",
+                str(port),
+                "tab",
+                "list",
+            ],
+            timeout=min(request.timeout, 30),
+        )
+        if not isinstance(attached.get("tabs"), list):
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "exact retained browser attachment returned no tab inventory",
+            )
+        return session_name
 
     def _reconcile_workspace_after_failed_open(
         self,
@@ -2565,6 +2651,36 @@ def _clean_engagement(raw: dict[str, Any]) -> dict[str, int]:
         except (TypeError, ValueError):
             cleaned[key] = 0
     return cleaned
+
+
+def _session_has_ambiguous_browser_ownership(
+    session: Any,
+    expected_browser_id: str,
+) -> bool:
+    if not isinstance(session, dict):
+        return False
+    browser_ids = {
+        str(browser_id or "")
+        for browser_id in session.get("browserIds") or ()
+        if str(browser_id or "")
+    }
+    return expected_browser_id in browser_ids and len(browser_ids) > 1
+
+
+def _loopback_cdp_port(endpoint: str) -> int | None:
+    try:
+        parsed = urlsplit(endpoint)
+        port = parsed.port
+    except ValueError:
+        return None
+    if (
+        parsed.scheme not in {"ws", "wss", "http", "https"}
+        or parsed.hostname not in {"127.0.0.1", "localhost", "::1"}
+        or port is None
+        or not 1 <= port <= 65_535
+    ):
+        return None
+    return port
 
 
 def _select_target_id(

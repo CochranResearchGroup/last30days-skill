@@ -196,6 +196,56 @@ class AgentBrowserConfigTests(unittest.TestCase):
             )
         )
 
+    def test_runtime_profile_owner_requires_exact_cdp_and_user_data_identity(self):
+        state = {
+            "sessions": {
+                "bound-social": {
+                    "browserIds": ["browser:social"],
+                    "tabIds": ["target:x"],
+                }
+            },
+            "browsers": {
+                "browser:social": {
+                    "profileId": "default",
+                    "health": "ready",
+                    "cdpEndpoint": "ws://127.0.0.1:36603/devtools/browser/social",
+                }
+            },
+            "tabs": {"target:x": {"targetId": "x"}},
+        }
+        runtime_status = {
+            "runtimeProfile": "last30days-facebook",
+            "browserAlive": True,
+            "devtoolsReachable": True,
+            "devtoolsPort": 36603,
+            "userDataDir": "/profiles/last30days-facebook/user-data",
+        }
+
+        owner = agent_browser_config.runtime_profile_owner(
+            state,
+            runtime_status,
+            expected_profile_id="last30days-facebook",
+            expected_user_data_dir="/profiles/last30days-facebook/user-data",
+        )
+        self.assertEqual("browser:social", owner["browser_id"])
+        self.assertEqual("bound-social", owner["session_name"])
+
+        for field, wrong_value in (
+            ("devtoolsPort", 36604),
+            ("userDataDir", "/profiles/default/user-data"),
+            ("runtimeProfile", "default"),
+        ):
+            mismatched = {**runtime_status, field: wrong_value}
+            self.assertIsNone(
+                agent_browser_config.runtime_profile_owner(
+                    state,
+                    mismatched,
+                    expected_profile_id="last30days-facebook",
+                    expected_user_data_dir="/profiles/last30days-facebook/user-data",
+                ),
+                field,
+            )
+
     def test_shared_acquisition_route_uses_authoritative_access_plan_hints(self):
         route = agent_browser_config.shared_acquisition_route(
             access_plan(),

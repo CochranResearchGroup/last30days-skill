@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import re
+from urllib.parse import urlparse
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -253,6 +254,127 @@ def shared_profile_owner(
         "target_id": target_id,
         "browser": browser,
     }
+
+
+def needs_runtime_profile_owner_resolution(
+    service_state: dict[str, Any],
+    *,
+    expected_profile_id: str,
+) -> bool:
+    """Return whether a ready CDP row may carry a stale profile label."""
+    browsers = service_state.get("browsers")
+    if not isinstance(browsers, dict):
+        return False
+    for browser in browsers.values():
+        if not isinstance(browser, dict) or browser.get("health") != "ready":
+            continue
+        observed_profile = str(
+            browser.get("profileId") or browser.get("runtimeProfile") or ""
+        )
+        if observed_profile == expected_profile_id:
+            continue
+        if _loopback_cdp_port(browser.get("cdpEndpoint")) is not None:
+            return True
+    return False
+
+
+def runtime_profile_owner(
+    service_state: dict[str, Any],
+    runtime_status: dict[str, Any],
+    *,
+    expected_profile_id: str,
+    expected_user_data_dir: str = "",
+) -> dict[str, Any] | None:
+    """Resolve a stale broker row from runtime-profile-owned CDP evidence.
+
+    The runtime-profile status is authoritative for the physical browser. A
+    retained browser is accepted only when its exact loopback CDP port matches
+    that live runtime and, when available, its user-data directory also agrees.
+    """
+    if str(runtime_status.get("runtimeProfile") or "") != expected_profile_id:
+        return None
+    if runtime_status.get("browserAlive") is not True:
+        return None
+    if runtime_status.get("devtoolsReachable") is not True:
+        return None
+    try:
+        runtime_port = int(runtime_status.get("devtoolsPort") or 0)
+    except (TypeError, ValueError):
+        return None
+    if runtime_port < 1:
+        return None
+    observed_user_data_dir = str(runtime_status.get("userDataDir") or "")
+    if (
+        expected_user_data_dir
+        and observed_user_data_dir
+        and observed_user_data_dir != expected_user_data_dir
+    ):
+        return None
+
+    browsers = service_state.get("browsers")
+    sessions = service_state.get("sessions")
+    tabs = service_state.get("tabs")
+    if not isinstance(browsers, dict) or not isinstance(sessions, dict):
+        return None
+
+    matches: list[tuple[int, str, dict[str, Any]]] = []
+    for browser_id, browser in browsers.items():
+        if not isinstance(browser, dict) or browser.get("health") != "ready":
+            continue
+        if _loopback_cdp_port(browser.get("cdpEndpoint")) != runtime_port:
+            continue
+        streams = browser.get("viewStreams") or ()
+        route_ready = any(
+            isinstance(stream, dict)
+            and stream.get("provider") == "rdp_gateway"
+            and isinstance(stream.get("readiness"), dict)
+            and stream["readiness"].get("state") == "ready"
+            for stream in streams
+        )
+        matches.append((1 if route_ready else 0, str(browser_id), browser))
+    if not matches:
+        return None
+    _, browser_id, browser = max(matches, key=lambda item: (item[0], item[1]))
+
+    session_name = ""
+    for candidate_session in browser.get("activeSessionIds") or ():
+        session = sessions.get(str(candidate_session))
+        if isinstance(session, dict) and browser_id in (session.get("browserIds") or ()):
+            session_name = str(candidate_session)
+            break
+    if not session_name:
+        for candidate_session, session in sessions.items():
+            if isinstance(session, dict) and browser_id in (session.get("browserIds") or ()):
+                session_name = str(candidate_session)
+                break
+    if not session_name:
+        return None
+
+    target_id = ""
+    session = sessions.get(session_name)
+    if isinstance(session, dict) and isinstance(tabs, dict):
+        for tab_id in session.get("tabIds") or ():
+            tab = tabs.get(tab_id)
+            if isinstance(tab, dict):
+                target_id = str(tab.get("targetId") or str(tab_id).removeprefix("target:"))
+                if target_id:
+                    break
+    return {
+        "browser_id": browser_id,
+        "session_name": session_name,
+        "target_id": target_id,
+        "browser": browser,
+    }
+
+
+def _loopback_cdp_port(value: Any) -> int | None:
+    try:
+        parsed = urlparse(str(value or ""))
+        if parsed.hostname not in {"127.0.0.1", "localhost", "::1"}:
+            return None
+        return parsed.port
+    except ValueError:
+        return None
 
 
 def _stable_target_config(
