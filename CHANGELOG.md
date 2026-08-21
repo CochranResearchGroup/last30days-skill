@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Retained social-browser daemon routing.** Service 0.3.58 preserves the
+  unique daemon session route carried by service-owned tab evidence when X,
+  LinkedIn, or Facebook reuses an existing browser. Follow-on controls now use
+  that retained route instead of re-attaching the already lifecycle-owned
+  browser process under its service-session alias; ambiguous or missing route
+  evidence continues to fail closed through the existing binding path.
+
 - **Runtime-profile identity recovery for social acquisition.** Service 0.3.57
   can recover an exact X, LinkedIn, or Facebook browser owner when the retained
   service row has a stale profile label. Recovery remains fail-closed: the

@@ -1411,6 +1411,62 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual("last30days-facebook", workspace.profile_id)
         self.assertEqual(2, invoke.call_count)
 
+    def test_retained_owner_uses_daemon_tab_route_for_follow_on_commands(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        browser_id = "session:last30days-bound-social"
+        service_session = "last30days-bound-social"
+        daemon_session = "handoff-c87d81798683ee75"
+        status = {
+            "service_state": {
+                "sessions": {
+                    service_session: {
+                        "profileId": "last30days-facebook",
+                        "browserIds": [browser_id],
+                        "tabIds": ["target:x"],
+                    },
+                },
+                "browsers": {
+                    browser_id: {
+                        "profileId": "last30days-facebook",
+                        "health": "ready",
+                        "activeSessionIds": [service_session],
+                        "cdpEndpoint": (
+                            "ws://127.0.0.1:36603/devtools/browser/example"
+                        ),
+                    },
+                },
+                "tabs": {
+                    "target:x": {
+                        "browserId": browser_id,
+                        "targetId": "x",
+                        "sessionId": daemon_session,
+                        "url": "https://x.com/search?q=OpenAI&f=live",
+                    },
+                },
+            },
+        }
+
+        def invoke(args, *, timeout, input_text=None):
+            if args[:2] == ["service", "access-plan"]:
+                return access_plan(shared_owner=(browser_id, service_session))
+            if args == ["service", "status"]:
+                return status
+            if args[:2] == ["--session", daemon_session]:
+                return {"url": "https://x.com/search?q=OpenAI&f=live"}
+            raise facebook.FacebookScraperFailure(
+                "agent_browser_error",
+                "runtime_lifecycle_existing_owner_requires_explicit_transition",
+            )
+
+        with mock.patch.object(client, "_invoke", side_effect=invoke), mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ):
+            workspace = client.acquire_workspace(request())
+            state = client.act(workspace, facebook.BrowserAction("scroll", value="1"))
+
+        self.assertEqual(daemon_session, workspace.session_name)
+        self.assertEqual("https://x.com/search?q=OpenAI&f=live", state.url)
+
     def test_default_profile_alias_rejects_ambiguous_active_owners(self):
         sessions = {
             "last30days-facebook": {

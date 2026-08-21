@@ -679,16 +679,19 @@ class CliAgentBrowserClient:
             )
         if shared_owner:
             browser = shared_owner["browser"]
-            owner_session_name = shared_owner["session_name"]
+            service_session_name = shared_owner["session_name"]
+            owner_session_name = (
+                shared_owner.get("command_session_name") or service_session_name
+            )
             owner_session = (
-                sessions.get(owner_session_name)
+                sessions.get(service_session_name)
                 if isinstance(sessions, dict)
                 else None
             )
             if _session_has_ambiguous_browser_ownership(
                 owner_session,
                 shared_owner["browser_id"],
-            ):
+            ) and not shared_owner.get("command_session_name"):
                 owner_session_name = self._bind_exact_cdp_session(
                     browser=browser,
                     browser_id=shared_owner["browser_id"],

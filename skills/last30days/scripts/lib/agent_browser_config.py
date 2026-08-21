@@ -251,6 +251,11 @@ def shared_profile_owner(
     return {
         "browser_id": browser_id,
         "session_name": session_name,
+        "command_session_name": _daemon_session_route(
+            browser_id=browser_id,
+            session=session,
+            tabs=tabs,
+        ),
         "target_id": target_id,
         "browser": browser,
     }
@@ -362,9 +367,45 @@ def runtime_profile_owner(
     return {
         "browser_id": browser_id,
         "session_name": session_name,
+        "command_session_name": _daemon_session_route(
+            browser_id=browser_id,
+            session=session,
+            tabs=tabs,
+        ),
         "target_id": target_id,
         "browser": browser,
     }
+
+
+def _daemon_session_route(
+    *,
+    browser_id: str,
+    session: Any,
+    tabs: Any,
+) -> str:
+    """Return one exact retained daemon route for a service-owned browser."""
+    if not isinstance(session, dict) or not isinstance(tabs, dict):
+        return ""
+    browser_ids = {
+        str(candidate or "")
+        for candidate in session.get("browserIds") or ()
+        if str(candidate or "")
+    }
+    routes: set[str] = set()
+    for tab_id in session.get("tabIds") or ():
+        tab = tabs.get(tab_id)
+        if not isinstance(tab, dict):
+            continue
+        tab_browser_id = str(tab.get("browserId") or "")
+        if tab_browser_id:
+            if tab_browser_id != browser_id:
+                continue
+        elif browser_ids != {browser_id}:
+            continue
+        route = str(tab.get("sessionId") or "")
+        if route:
+            routes.add(route)
+    return next(iter(routes)) if len(routes) == 1 else ""
 
 
 def _loopback_cdp_port(value: Any) -> int | None:
