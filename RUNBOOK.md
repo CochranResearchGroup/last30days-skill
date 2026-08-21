@@ -18721,3 +18721,84 @@ Next Bounded Action:
 
 - commit and push 0.3.57 plus C02 receipts, then wait for fresh authority for
   one new terminal X/LinkedIn 20/20 canary.
+
+## Turn 312 | 2026-08-21
+
+Focus: consume exactly one freshly authorized X/LinkedIn 20/20 canary and
+classify its terminal source boundary.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C02; timer, provider, agent-browser, runtime,
+  browser identity, validation, Git, documentation, and closeout authorities.
+
+Decisions And Changes:
+
+- verified installed service 0.3.57/schema 16 and MCP compatibility, then
+  proved PID 16807, runtime profile `last30days-facebook`, CDP port 36603,
+  Route A, and authenticated X/LinkedIn targets still name the same physical
+  social browser;
+- ran acquisition-only checks for both sources. Both recovered
+  `session:last30days-bound-social-20260821` without launching another Chrome
+  process;
+- admitted exactly one owner-private two-lane canary with one attempt and 20
+  items per lane, 40 aggregate items, zero cost/model budget, and no Reddit,
+  Facebook, or YouTube lane;
+- tick `tick-e0f09130ba77d4f223bfe8529380d7c8` terminalized
+  `complete_degraded` after 14 seconds. X and LinkedIn each returned
+  `agent_browser_error` before observing a post, with zero accepted/rejected
+  and empty rejection counts;
+- traced the two failures to agent-browser jobs `r622853` and `r702708`, both
+  rejected as `runtime_lifecycle_existing_owner_requires_explicit_transition`;
+- confirmed lifecycle authority still owns the physical process under older
+  logical browser `session:last30days-x-upgrade-live-20260820`, while the exact
+  route and scraper use `session:last30days-bound-social-20260821`. The
+  acquisition-only return succeeds, but the first scraper tab command re-enters
+  attach lifecycle without an explicit owner transition;
+- removed the temporary canary config after terminal readback. No retry ran.
+
+Validation Evidence:
+
+- preflight prospective and terminal tick IDs matched exactly at
+  `tick-e0f09130ba77d4f223bfe8529380d7c8` with config digest
+  `sha256:51c90b8400cf1112b05028342995a97cb54a5758f8bed9ed880ff6aa5ab89170`;
+- durable provider receipts record zero attempted/observed/accepted/rejected
+  for both sources, transient failure, no incidents, notifications, artifacts,
+  derivatives, source versions, model tokens, or cost;
+- normal config remains SHA-256
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`;
+  Reddit and Facebook remain disabled, `daily-default` stays enabled daily,
+  normal X/LinkedIn ceilings remain ten, and its next boundary is
+  `2026-08-22T00:00:00Z`.
+
+State Movement:
+
+- Plan 0055 advances to version 3/C03
+  `terminal_canary_exposed_runtime_lifecycle_owner_gap`; P08 remains OPEN.
+
+Progress Classification:
+
+- `outcome_progress_with_new_blocker`; the current failure is an explicit
+  runtime-owner transition before scraper acceptance, not a legitimate post
+  rejection, ad classification, or permalink limitation.
+
+Recurring-State And Attempt Boundary:
+
+- the single freshly authorized canary is consumed and terminal. Another live
+  tick requires fresh explicit authority;
+- recurring schedule and normal source ceilings were not mutated.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred; plan, runbook, SQLite receipts, and agent-browser lifecycle jobs
+  are sufficient durable evidence for this open checkpoint.
+
+Next Bounded Action:
+
+- correct the explicit runtime-lifecycle owner handoff between recovered exact
+  acquisition and the first tab command, validate it without provider work,
+  then stop for fresh live-canary authority.

@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 2
+Plan version: 3
 Date: 2026-08-21
 
 ## Objective
@@ -12,18 +12,21 @@ and pursue accepted unique post permalinks within a bounded scroll budget.
 
 ## Current State
 
-- installed service 0.3.53/schema 16 is ready and MCP 4.0.3-compatible;
-- terminal tick `tick-9ff2c6e630de77dbe199eca6e52d0847` requested 20 LinkedIn items but observed
-  the same six cards twice, accepted six, and rejected six duplicates;
-- the acquisition worker calls `search_linkedin` without the admitted
-  `request.item_limit`, leaving the browser scraper at its 16-result, one-scroll
-  default;
-- LinkedIn stops its capture loop when raw card count reaches the limit, so
-  repeated DOM cards consume the stopping budget without adding accepted unique
-  permalinks;
-- minimized worker, constructor, and browser-loop regressions now fail against
-  the prior behavior and pass with the bounded correction; release packaging,
-  installation, and a terminal live canary remain.
+- installed service 0.3.57/schema 16 is ready and MCP 4.0.3-compatible;
+- the LinkedIn item-limit and accepted-unique pagination correction is installed,
+  and acquisition-only checks recover the exact authenticated social browser;
+- freshly authorized terminal tick `tick-e0f09130ba77d4f223bfe8529380d7c8`
+  failed before either scraper observed a post because both deterministic CDP
+  attaches were rejected as
+  `runtime_lifecycle_existing_owner_requires_explicit_transition`;
+- the physical browser remains live as PID 16807 under runtime profile
+  `last30days-facebook`, but agent-browser lifecycle authority still owns it
+  under older logical browser `session:last30days-x-upgrade-live-20260820`
+  while the scraper targets `session:last30days-bound-social-20260821`;
+- no X or LinkedIn candidate reached quality, duplicate, permalink, or
+  sponsored/promoted classification in the fresh canary; the remaining defect
+  is the lifecycle-owner transition between acquisition and the first tab
+  command.
 
 ## Scope
 
@@ -233,3 +236,93 @@ Next action:
   operator authority for one new 20/20 canary.
 
 Checkpoint P0055-C02 is the current authority.
+
+### Checkpoint P0055-C03 | 2026-08-21
+
+Plan version: 3
+
+State transition:
+
+- `installed_identity_repair_waiting_fresh_canary_authority -> terminal_canary_exposed_runtime_lifecycle_owner_gap`.
+
+Progress classification:
+
+- `outcome_progress_with_new_blocker`; the fresh terminal receipt disproves
+  scraper acceptance as the current boundary and identifies the exact runtime
+  lifecycle rejection that occurs before post observation.
+
+Fresh authority and preflight evidence:
+
+- the operator explicitly authorized exactly one new X/LinkedIn 20/20 canary;
+- installed service 0.3.57 reported ready and compatible with runtime manifest
+  SHA-256
+  `6388bf82c32a8942d5cce469dd782803bdea5118bc1b0f2d853f284d04981617`;
+- direct runtime status proved PID 16807, runtime profile
+  `last30days-facebook`, user-data directory identity, loopback CDP port 36603,
+  and reachable X and LinkedIn targets;
+- installed acquisition-only checks for both sources selected the same exact
+  browser and session, `session:last30days-bound-social-20260821`, without
+  launching another Chrome process;
+- sanitized preflight `tick-e0f09130ba77d4f223bfe8529380d7c8`
+  admitted exactly two lanes, one attempt and 20 items per lane, aggregate 40
+  items, 100 network requests, 240 wall seconds, and zero cost/model budget.
+
+Terminal receipt and diagnosis:
+
+- tick `tick-e0f09130ba77d4f223bfe8529380d7c8` terminalized
+  `complete_degraded` in 14 seconds; X and LinkedIn each receipted
+  `agent_browser_error`, transient failure, zero attempted/observed/accepted/
+  rejected posts, and empty rejection counts;
+- agent-browser jobs `r622853` and `r702708` failed the two attach operations
+  with `runtime_lifecycle_existing_owner_requires_explicit_transition`;
+- the runtime owner registry still records the physical social process under
+  logical browser `session:last30days-x-upgrade-live-20260820` in retained/
+  orphaned ownership, while the exact service route and scraper use
+  `session:last30days-bound-social-20260821`;
+- the acquisition-only probe can recover and return that exact CDP browser, but
+  the first scraper tab command re-enters the launch/attach lifecycle and is
+  rejected because it does not perform an explicit ownership transition;
+- no incidents, notifications, artifacts, source versions, derivatives, or
+  model/cost usage were created. Because no post was observed, this canary
+  contains no new evidence about ads, missing permalinks, duplicates, or
+  acceptance quality.
+
+Recurring-state and cleanup evidence:
+
+- the owner-private temporary canary config was removed after terminal
+  readback;
+- normal config remains SHA-256
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`;
+- Reddit and Facebook remain disabled; `daily-default` remains enabled at one
+  day with normal X/LinkedIn ceilings of ten and next boundary
+  `2026-08-22T00:00:00Z`;
+- the single C03 live attempt is consumed. No retry is authorized by this
+  checkpoint.
+
+Authority classification:
+
+- `inherited_authority`; the operator supplied fresh authority for exactly one
+  new canary, which is now terminal and exhausted.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- deferred; the plan, runbook, database receipt, and agent-browser lifecycle
+  jobs are the durable evidence surfaces.
+
+Remaining acceptance criteria:
+
+- repair or reconcile the explicit runtime-owner transition so the same exact
+  social browser remains controllable from acquisition through the first tab
+  command, then obtain fresh authority for any further live tick.
+
+Next action:
+
+- implement and validate the lifecycle-owner handoff correction without a
+  provider retry; do not admit another live canary without fresh explicit
+  operator authority.
+
+Checkpoint P0055-C03 is the current authority.
