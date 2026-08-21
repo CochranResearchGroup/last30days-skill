@@ -1149,21 +1149,20 @@ Current State:
   repeated captures with zero ads or missing permalinks. The installed 0.3.53
   accepted-yield loop is therefore proven without a recurring-schedule change.
 - Plan 0055 owns the successor LinkedIn defect exposed by that same tick. The
-  accepted-unique correction is installed with service 0.3.57, and exact
-  runtime-profile acquisition now passes for both X and LinkedIn. A freshly
-  authorized version 3/C03 canary still failed before post observation: the
-  first tab commands were rejected as
-  `runtime_lifecycle_existing_owner_requires_explicit_transition` because the
-  physical social process remains owned under an older logical browser. The
-  plan remains open for that explicit lifecycle-owner correction; another live
-  tick requires fresh authority.
+  accepted-unique correction and retained daemon-route fix are installed with
+  service 0.3.58. Version 4/C04's one authorized canary still failed before
+  post observation because it overlapped an agent-browser workstation upgrade
+  while runtime admission was transferring. The candidate later failed and
+  preserved the old generation, but workstation runtime convergence remains
+  non-ready. The plan remains open for stable runtime readiness and live proof;
+  another provider tick requires fresh authority.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 3/C03 owns installed LinkedIn accepted-unique pagination plus the
-  newly isolated runtime-lifecycle owner transition between exact acquisition
-  and the first X/LinkedIn tab command.
+  version 4/C04 owns installed LinkedIn accepted-unique pagination and the
+  daemon-route correction, with live acceptance blocked at the separate
+  agent-browser workstation runtime-convergence gate.
 
 Closed Plan:
 

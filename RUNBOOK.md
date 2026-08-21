@@ -18802,3 +18802,89 @@ Next Bounded Action:
 - correct the explicit runtime-lifecycle owner handoff between recovered exact
   acquisition and the first tab command, validate it without provider work,
   then stop for fresh live-canary authority.
+
+## Turn 313 | 2026-08-21
+
+Focus: repair the retained social-browser command route, install it, and
+consume exactly one post-fix X/LinkedIn 20/20 canary.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C03; TDD, diagnosis, agent-browser lifecycle,
+  runtime, release, validation, Git, documentation, and closeout authorities.
+- active plan
+  `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`.
+
+Decisions And Changes:
+
+- added a public-path regression that reproduced the retained-owner failure on
+  the first follow-on command, then preserved one unique daemon session route
+  from the service-owned tab evidence while keeping the service-session alias
+  for ownership validation;
+- released and transactionally installed service 0.3.58 without mutating the
+  agent-browser lifecycle registry or restarting the social browser;
+- preflighted and enqueued exactly one X/LinkedIn tick with one attempt and 20
+  items per lane, then stopped at its first terminal receipt;
+- tick `tick-a678da2c70bded995195a865f8100f0f` terminalized
+  `complete_degraded` in under one second. Both lanes failed
+  `agent_browser_error` before observing a post, with zero accepted/rejected;
+- immediate readback showed agent-browser workstation admission draining while
+  an upgrade transferred runtimes. Upgrade
+  `upgrade-f226f899-9828-4126-aece-40591c203c49` later failed candidate
+  activation and preserved the old generation; admission draining cleared but
+  runtime convergence and workstation readiness remain false;
+- removed the owner-private temporary canary config. No retry ran.
+
+Validation Evidence:
+
+- the new regression failed with
+  `runtime_lifecycle_existing_owner_requires_explicit_transition` before the
+  fix and passed afterward;
+- focused social-browser/config suites and complete `uv run pytest -q` pass
+  with expected opt-in skips;
+- service artifact SHA-256 is
+  `80f6917a20dfc881e86ef6a32e771077bd99e3699c083a6e00894f9fd4873b51`;
+- installed 0.3.58/schema 16 is ready and MCP compatible at runtime manifest
+  `04008504fdae3ea1aafcf74dad793add40a3327312882433449dfbe1ac1cda77`;
+- canary preflight and terminal IDs match; aggregate ceilings were 40 items,
+  100 requests, 240 wall seconds, and zero cost/model use;
+- both provider receipts have zero attempted/observed/accepted/rejected and no
+  page signals, incident, notification, artifact, derivative, source version,
+  cost, or model use. No agent-browser control job was retained, so the canary
+  stopped before exercising the installed route fix;
+- normal config remains SHA-256
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`;
+  Reddit/Facebook remain disabled, `daily-default` remains enabled daily, and
+  normal X/LinkedIn ceilings remain ten.
+
+State Movement:
+
+- Plan 0055 advances to version 4/C04
+  `installed_daemon_route_fix_canary_blocked_by_runtime_upgrade`; P08 remains
+  OPEN.
+
+Progress Classification:
+
+- `blocker_reduction_with_unexercised_live_fix`; the source defect is repaired,
+  but the live attempt stopped at a separate non-ready runtime-upgrade gate.
+
+Recurring-State And Attempt Boundary:
+
+- the single freshly authorized canary is consumed and terminal. Another live
+  tick requires fresh explicit authority;
+- recurring schedule and normal source ceilings were not mutated.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred; Plan 0055/C04, this turn, installed service readback, SQLite tick
+  receipt, and agent-browser workstation receipt are the durable evidence.
+
+Next Bounded Action:
+
+- resolve agent-browser workstation runtime convergence without provider work;
+  only after readiness is true should a separately authorized canary be
+  considered.

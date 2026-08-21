@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 3
+Plan version: 4
 Date: 2026-08-21
 
 ## Objective
@@ -12,21 +12,19 @@ and pursue accepted unique post permalinks within a bounded scroll budget.
 
 ## Current State
 
-- installed service 0.3.57/schema 16 is ready and MCP 4.0.3-compatible;
+- installed service 0.3.58/schema 16 is ready and MCP 4.0.3-compatible;
 - the LinkedIn item-limit and accepted-unique pagination correction is installed,
-  and acquisition-only checks recover the exact authenticated social browser;
-- freshly authorized terminal tick `tick-e0f09130ba77d4f223bfe8529380d7c8`
-  failed before either scraper observed a post because both deterministic CDP
-  attaches were rejected as
-  `runtime_lifecycle_existing_owner_requires_explicit_transition`;
-- the physical browser remains live as PID 16807 under runtime profile
-  `last30days-facebook`, but agent-browser lifecycle authority still owns it
-  under older logical browser `session:last30days-x-upgrade-live-20260820`
-  while the scraper targets `session:last30days-bound-social-20260821`;
+  and 0.3.58 preserves the unique retained daemon session route for follow-on
+  browser controls instead of reattaching under the service-session alias;
+- freshly authorized terminal tick `tick-a678da2c70bded995195a865f8100f0f`
+  failed before either scraper observed a post while agent-browser workstation
+  runtime admission was transferring during a nonterminal upgrade;
+- the upgrade candidate later failed activation and preserved the old selected
+  generation, but workstation readiness remains false because runtime
+  convergence is not ready;
 - no X or LinkedIn candidate reached quality, duplicate, permalink, or
-  sponsored/promoted classification in the fresh canary; the remaining defect
-  is the lifecycle-owner transition between acquisition and the first tab
-  command.
+  sponsored/promoted classification in the fresh canary. The installed daemon
+  route fix therefore remains deterministic-test proven but live-unexercised.
 
 ## Scope
 
@@ -62,8 +60,9 @@ and pursue accepted unique post permalinks within a bounded scroll budget.
    unique permalinks are found or four scrolls are consumed.
 4. Existing LinkedIn and X auth, quality, canonicalization, media, duplicate,
    result-limit, and service-worker tests remain green.
-5. Focused and full validation plus two byte-identical service builds pass; the
-   exact successor installs ready with 0.3.53 retained as rollback.
+5. Focused and full validation plus a deterministic service build pass; the
+   exact successor installs ready with the prior verified release retained as
+   rollback.
 6. At most one X/LinkedIn canary uses 20-item ceilings, one attempt per lane,
    zero cost/model use, and stops at its first terminal receipt; recurring
    configuration and cadence remain unchanged.
@@ -326,3 +325,99 @@ Next action:
   operator authority.
 
 Checkpoint P0055-C03 is the current authority.
+
+### Checkpoint P0055-C04 | 2026-08-21
+
+Plan version: 4
+
+State transition:
+
+- `terminal_canary_exposed_runtime_lifecycle_owner_gap -> installed_daemon_route_fix_canary_blocked_by_runtime_upgrade`.
+
+Progress classification:
+
+- `blocker_reduction_with_unexercised_live_fix`; the service alias/daemon-route
+  defect is corrected and installed, while the single live proof stopped at a
+  separate agent-browser workstation-upgrade admission gate.
+
+Implementation and release evidence:
+
+- a public-path regression first reproduced
+  `runtime_lifecycle_existing_owner_requires_explicit_transition` when a
+  retained service session alias was used for the first follow-on command;
+- the adapter now preserves one unique daemon route from service-owned tab
+  evidence while retaining the service session for ownership checks. Missing
+  or ambiguous route evidence keeps the existing fail-closed path;
+- focused Facebook/X/LinkedIn/agent-browser-config suites and the complete
+  `uv run pytest -q` suite pass with expected opt-in skips;
+- service artifact `last30days-service-0.3.58.tar.gz` has SHA-256
+  `80f6917a20dfc881e86ef6a32e771077bd99e3699c083a6e00894f9fd4873b51`;
+- installed service 0.3.58/schema 16 is ready and MCP 4.0.3-compatible with
+  runtime manifest SHA-256
+  `04008504fdae3ea1aafcf74dad793add40a3327312882433449dfbe1ac1cda77`;
+  service 0.3.57 is retained as rollback.
+
+Terminal canary evidence:
+
+- sanitized preflight admitted prospective tick
+  `tick-a678da2c70bded995195a865f8100f0f`, exactly X and LinkedIn, one attempt
+  and 20 items per lane, aggregate 40 items, 100 requests, 240 wall seconds,
+  and zero cost/model budget;
+- that exact tick terminalized `complete_degraded` in under one second. Both
+  lanes returned transient `agent_browser_error` with zero attempted,
+  observed, accepted, and rejected posts, empty page signals, and no incident,
+  notification, artifact, derivative, source-version, cost, or model effect;
+- no agent-browser control job was retained for either provider. Immediate
+  control-plane readback reproduced runtime-host admission failure, and
+  workstation status showed `admissionDraining=true` while upgrade transaction
+  `upgrade-f226f899-9828-4126-aece-40591c203c49` was
+  `runtimes_transferring` at revision 5;
+- the transaction later terminalized `failed_preserved_old_generation` at
+  revision 7 with `candidate_activation_failed`; the old generation was
+  preserved, admission draining cleared, but `runtimeConvergenceReady=false`
+  leaves workstation readiness false;
+- this timing and zero-job evidence classify the canary as blocked before the
+  installed daemon-route code path. It does not disprove that fix and contains
+  no new post-quality, ad, duplicate, or permalink evidence.
+
+Recurring-state and attempt boundary:
+
+- the owner-private temporary canary config was removed after terminal
+  readback;
+- normal config remains SHA-256
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`;
+  Reddit and Facebook remain disabled, `daily-default` remains enabled daily,
+  normal X/LinkedIn ceilings remain ten, and the next boundary is
+  `2026-08-22T00:00:00Z`;
+- the single C04 live attempt is consumed. No retry is authorized by this
+  checkpoint.
+
+Authority classification:
+
+- `human_gate`; the operator supplied fresh explicit authority for the
+  daemon-route repair and exactly one post-fix X/LinkedIn 20/20 canary, and
+  that live authority is now consumed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- deferred; source commit, installed-runtime receipt, plan, runbook, SQLite
+  tick receipt, and workstation-upgrade receipt are the durable evidence.
+
+Remaining acceptance criteria:
+
+- complete or recover the agent-browser workstation upgrade until readiness is
+  true, admission is not draining, and one stable retained runtime route is
+  available; only a separately authorized later canary can prove the installed
+  daemon-route fix and LinkedIn accepted-yield behavior live.
+
+Next action:
+
+- resolve the non-ready agent-browser workstation runtime-convergence state
+  without running another provider attempt, then request fresh authority if a
+  new live X/LinkedIn canary is still desired.
+
+Checkpoint P0055-C04 is the current authority.
