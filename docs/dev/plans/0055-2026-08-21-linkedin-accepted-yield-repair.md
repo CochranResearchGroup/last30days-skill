@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 5
+Plan version: 6
 Date: 2026-08-21
 
 ## Objective
@@ -22,10 +22,13 @@ and pursue accepted unique post permalinks within a bounded scroll budget.
 - managed reconciliation restored one current runtime host, one dashboard,
   one executable generation, zero legacy daemons, a healthy runtime monitor,
   and an active interlock timer without terminating retained browsers;
-- workstation readiness nevertheless remains false because the latest exact
-  upgrade receipt is `failed_preserved_old_generation` with
-  `runtimeConvergenceReady=false`; concurrent installer sessions also failed
-  the distinct source candidate while preserving the old generation;
+- workstation transaction
+  `upgrade-3d5cf3e2-72a7-4b85-8de9-d49b67f9c048` is now accepted with all
+  seven readiness axes true, no admission drain, and steady single-host
+  topology;
+- the first post-readiness canary still failed before post observation because
+  both X and LinkedIn launch jobs rejected the retained social browser with
+  `runtime_lifecycle_existing_owner_requires_explicit_transition`;
 - no X or LinkedIn candidate reached quality, duplicate, permalink, or
   sponsored/promoted classification in the fresh canary. The installed daemon
   route fix therefore remains deterministic-test proven but live-unexercised.
@@ -517,3 +520,103 @@ Next action:
   at most the one still-unconsumed provider canary.
 
 Checkpoint P0055-C05 is the current authority.
+
+### Checkpoint P0055-C06 | 2026-08-21
+
+Plan version: 6
+
+State transition:
+
+- `workstation_topology_recovered_acceptance_receipt_blocked -> terminal_canary_confirms_runtime_owner_transition_gap`.
+
+Progress classification:
+
+- `outcome_progress_with_reopened_blocker`; the accepted workstation receipt
+  removes upgrade readiness as the cause and the terminal live attempt isolates
+  the remaining failure to retained social-browser lifecycle ownership before
+  either scraper can observe a post.
+
+Fresh authority and readiness evidence:
+
+- the operator requested another try, authorizing exactly the previously
+  unconsumed X/LinkedIn 20/20 canary;
+- two consecutive workstation samples and a final pre-enqueue gate agreed on
+  accepted transaction `upgrade-3d5cf3e2-72a7-4b85-8de9-d49b67f9c048`,
+  selected generation `0.28.0-fb5a8ef317c2-9cf9b4f6919d`, every readiness
+  axis true, no admission drain, one runtime host, one dashboard, one
+  executable generation, zero legacy daemons, and a healthy runtime monitor;
+- no competing workstation installer was present. Both no-launch access plans
+  selected authenticated profile `last30days-facebook`, compatible
+  `stealthcdp_chromium`, and no manual seeding requirement;
+- the access plans also exposed one retained lease with no compatible reusable
+  live browser and recommended waiting rather than launching a duplicate.
+
+Preflight and terminal receipt:
+
+- mode-0600 temporary config changed only revision, X and LinkedIn provider
+  item ceilings from ten to 20, and aggregate item capacity from 23 to 43;
+- source-scoped preflight was `ready` for exact tick
+  `tick-acafacd4f3bcd7579ad4797001fc4375` at config digest
+  `sha256:5856cb1ee34da53a7693ebe0111c75f07aa5c08181e19b601bfc21c8c1c3f0e4`;
+  it bound exactly X and LinkedIn, one attempt and 20 items per lane, aggregate
+  two attempts/40 items/100 requests/240 wall seconds, and zero cost/model
+  budget;
+- the exact tick was enqueued once and terminalized `complete_degraded` in
+  about eight seconds. X consumed four provider wall seconds and LinkedIn two;
+  each used one attempt and one request with zero attempted, observed,
+  accepted, or rejected posts;
+- both results are transient `agent_browser_error` with empty page signals and
+  rejection counts. X job `r256061` and LinkedIn job `r361567` both failed
+  launch with `runtime_lifecycle_existing_owner_requires_explicit_transition`;
+- the accepted workstation migration classifies
+  `session:last30days-bound-social-20260821` as `external_observed` /
+  `manual_preservation` without a receipt, preserves
+  `session:last30days-x-upgrade-live-20260820` as route-less
+  `manual_preserve_only`, and receipt-adopts only `session:p0204-a06`.
+  Therefore the failure is a runtime/session ownership limitation before
+  scraper classification, not an ad, permalink, authentication, or legitimate
+  post rejection;
+- no incident, notification, artifact, derivative, source version, model use,
+  or cost was created.
+
+Recurring-state and cleanup evidence:
+
+- the temporary config and directory were removed after terminal readback;
+- normal config remains SHA-256
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`;
+  Reddit/Facebook remain disabled, `daily-default` remains enabled and ready,
+  normal X/LinkedIn ceilings remain ten, and the next boundary is
+  `2026-08-22T00:00:00Z`;
+- SQLite quick check is `ok`; workstation readiness remains fully true after
+  the canary.
+
+Authority classification:
+
+- `human_gate`; the one provider canary authorized by the operator is now
+  consumed and terminal. No retry is authorized by this checkpoint.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- deferred; plan, runbook, SQLite receipt, agent-browser jobs, accepted
+  workstation transaction, and runtime-migration readback are sufficient
+  durable evidence.
+
+Remaining acceptance criteria:
+
+- create a receipt-bearing owner/session route for the exact authenticated
+  social browser, or route the scraper through an already adopted compatible
+  owner, without launching a duplicate profile process;
+- deterministically validate acquisition through the first follow-on tab
+  command before any later provider attempt.
+
+Next action:
+
+- repair the retained social-browser owner transition without provider work,
+  prove one exact controllable browser/profile/session identity across
+  acquisition and tab commands, then stop at the live-attempt gate.
+
+Checkpoint P0055-C06 is the current authority.

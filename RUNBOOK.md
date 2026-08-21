@@ -18966,3 +18966,86 @@ Next Bounded Action:
 - let the active agent-browser source owner produce one accepted workstation
   transaction without competing installers; verify every readiness axis is
   stable, then run at most the still-authorized one X/LinkedIn 20/20 canary.
+
+## Turn 315 | 2026-08-21
+
+Focus: retry the single authorized X/LinkedIn 20/20 canary after accepted
+agent-browser workstation readiness.
+
+Authority Consulted:
+
+- operator `try again`; Plan 0055/C05; agent-browser runtime and browser
+  ownership, planning, validation, Git custody, documentation, and closeout
+  authorities.
+- active plan
+  `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`.
+
+Decisions And Changes:
+
+- proved workstation transaction
+  `upgrade-3d5cf3e2-72a7-4b85-8de9-d49b67f9c048` accepted and stable before
+  opening the provider gate;
+- created one owner-private mode-0600 config changing only revision, aggregate
+  item capacity, and X/LinkedIn item ceilings; preflight bound exactly the two
+  requested lanes and predicted tick
+  `tick-acafacd4f3bcd7579ad4797001fc4375`;
+- enqueued that exact tick once and stopped at its terminal
+  `complete_degraded` receipt. No retry ran;
+- X job `r256061` and LinkedIn job `r361567` both failed launch with
+  `runtime_lifecycle_existing_owner_requires_explicit_transition` before
+  observing a post;
+- removed the temporary config and directory after terminal readback.
+
+Validation Evidence:
+
+- three pre-effect readiness checks agreed on every workstation axis true, no
+  admission drain, one runtime host, one dashboard, one executable generation,
+  zero legacy daemons, and a healthy monitor; the same remains true afterward;
+- preflight and terminal config digests match at
+  `sha256:5856cb1ee34da53a7693ebe0111c75f07aa5c08181e19b601bfc21c8c1c3f0e4`;
+- X and LinkedIn each consumed one attempt and one request, with six aggregate
+  provider wall seconds, zero attempted/observed/accepted/rejected posts, and
+  empty page signals/rejection counts;
+- no incident, notification, artifact, derivative, source version, cost, or
+  model use occurred;
+- accepted migration evidence preserves the exact social session as
+  unreceipted external/manual ownership and receipt-adopts only the distinct
+  `session:p0204-a06`. The failure precedes ad, permalink, auth, or post-quality
+  classification;
+- normal config SHA-256 remains
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`,
+  SQLite quick check is `ok`, and `daily-default` remains ready for
+  `2026-08-22T00:00:00Z` with normal ten-item ceilings.
+
+State Movement:
+
+- Plan 0055 advances to version 6/C06
+  `terminal_canary_confirms_runtime_owner_transition_gap`; P08 remains OPEN.
+
+Progress Classification:
+
+- `outcome_progress_with_reopened_blocker`; accepted workstation readiness is
+  proven and removed from the causal chain, exposing the exact remaining
+  browser-owner transition failure.
+
+Recurring-State And Attempt Boundary:
+
+- the one authorized canary is consumed and terminal. Another live attempt
+  requires fresh explicit authority;
+- Reddit/Facebook remain disabled; recurring schedule, cadence, and normal
+  X/LinkedIn ceilings remain unchanged.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred; Plan 0055/C06, this turn, SQLite receipts, agent-browser jobs, and
+  accepted migration evidence are the durable record.
+
+Next Bounded Action:
+
+- repair and deterministically validate the exact social browser's
+  receipt-bearing owner/session route through the first tab command without
+  provider work; do not retry the consumed canary.

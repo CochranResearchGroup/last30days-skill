@@ -1150,20 +1150,21 @@ Current State:
   accepted-yield loop is therefore proven without a recurring-schedule change.
 - Plan 0055 owns the successor LinkedIn defect exposed by that same tick. The
   accepted-unique correction and retained daemon-route fix are installed with
-  service 0.3.58. Version 5/C05 restored healthy managed topology—one current
-  runtime host, one dashboard, one executable generation, zero legacy daemons,
-  and a healthy monitor—without terminating retained browsers. Workstation
-  acceptance remains blocked because concurrent upgrade attempts preserved
-  the old generation and the latest receipt leaves
-  `runtimeConvergenceReady=false`. The newly authorized 20/20 provider canary
-  remains unconsumed behind that exact gate.
+  service 0.3.58. Version 6/C06 proves the workstation upgrade is accepted and
+  every readiness axis remains true, then consumes the one authorized 20/20
+  canary. Both lanes still fail before post observation because the exact
+  authenticated social browser is preserved as an external/manual runtime,
+  while only a different logical browser received a migration adoption
+  receipt. The plan remains open on the explicit owner/session transition; the
+  canary is terminal and consumed.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 5/C05 owns installed LinkedIn accepted-unique pagination and the
-  daemon-route correction, with healthy runtime topology but live acceptance
-  blocked until an agent-browser workstation transaction is accepted.
+  version 6/C06 owns installed LinkedIn accepted-unique pagination and the
+  daemon-route correction, with workstation readiness accepted but live
+  acquisition blocked by the retained social browser's unreceipted manual
+  ownership state.
 
 Closed Plan:
 
@@ -1234,10 +1235,11 @@ Dependencies:
 
 Next Bounded Action:
 
-- preserve service 0.3.58, the recurring ten-item ceilings, managed runtime
-  topology, and the active agent-browser source owner. After one accepted and
-  stable workstation-readiness receipt, consume at most the already authorized
-  single Plan 0055 X/LinkedIn 20/20 canary.
+- preserve service 0.3.58, the recurring ten-item ceilings, accepted
+  workstation topology, and the authenticated browser process. Repair and
+  deterministically prove its receipt-bearing owner/session route through the
+  first tab command without provider work; do not launch a duplicate profile
+  process or retry the consumed canary.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 
