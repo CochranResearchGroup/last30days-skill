@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 4
+Plan version: 5
 Date: 2026-08-21
 
 ## Objective
@@ -19,9 +19,13 @@ and pursue accepted unique post permalinks within a bounded scroll budget.
 - freshly authorized terminal tick `tick-a678da2c70bded995195a865f8100f0f`
   failed before either scraper observed a post while agent-browser workstation
   runtime admission was transferring during a nonterminal upgrade;
-- the upgrade candidate later failed activation and preserved the old selected
-  generation, but workstation readiness remains false because runtime
-  convergence is not ready;
+- managed reconciliation restored one current runtime host, one dashboard,
+  one executable generation, zero legacy daemons, a healthy runtime monitor,
+  and an active interlock timer without terminating retained browsers;
+- workstation readiness nevertheless remains false because the latest exact
+  upgrade receipt is `failed_preserved_old_generation` with
+  `runtimeConvergenceReady=false`; concurrent installer sessions also failed
+  the distinct source candidate while preserving the old generation;
 - no X or LinkedIn candidate reached quality, duplicate, permalink, or
   sponsored/promoted classification in the fresh canary. The installed daemon
   route fix therefore remains deterministic-test proven but live-unexercised.
@@ -421,3 +425,95 @@ Next action:
   new live X/LinkedIn canary is still desired.
 
 Checkpoint P0055-C04 is the current authority.
+
+### Checkpoint P0055-C05 | 2026-08-21
+
+Plan version: 5
+
+State transition:
+
+- `installed_daemon_route_fix_canary_blocked_by_runtime_upgrade -> workstation_topology_recovered_acceptance_receipt_blocked`.
+
+Progress classification:
+
+- `blocker_reduction_with_shared_runtime_acceptance_blocker`; managed runtime
+  topology is healthy again, but an accepted workstation transaction still
+  does not exist and the provider gate remains closed.
+
+Fresh authority and recovery evidence:
+
+- the operator explicitly authorized workstation-readiness recovery followed
+  by exactly one X/LinkedIn 20/20 canary only after all readiness axes were
+  true and stable;
+- exact recovery of transaction
+  `upgrade-7d44ef27-0421-40da-9c64-570da55b217e` first stopped because its
+  candidate process was still live and then because another canonical
+  controller held the workstation lock. That controller subsequently
+  preserved the old generation;
+- one receipt-bearing reconciliation completed after the monitor backoff,
+  retained all protected browser state, terminated zero processes, and
+  restored a healthy runtime-monitor receipt. The managed interlock timer is
+  active and waiting;
+- a concurrent agent-browser source-lane install transaction
+  `upgrade-76174566-40ae-490d-aeac-f5df3d9b2e27` failed post-commit
+  reconciliation with stale-executable and multiple-listener findings, while
+  a separate Odollo-owned transaction
+  `upgrade-9de3a8a8-e56d-4893-b673-54206750e661` failed candidate activation;
+- the bounded selected-payload transaction
+  `upgrade-48d69bd0-1408-48f4-a5e4-497b06323f32` also terminalized
+  `failed_preserved_old_generation` at revision 7 with
+  `candidate_activation_failed`. No manual process kill, owner-registry edit,
+  browser rehome, or retained-browser cleanup was performed;
+- the agent-browser source worktree is owned by another active lane, is 66
+  commits ahead of its remote, and contains an untracked note, so this plan did
+  not mutate that repository or compete with its source repair.
+
+Terminal readiness evidence:
+
+- workstation admission is not draining and the selected generation is
+  `0.28.0-a02d9e3a8a3a-a4d5bb2702b2`;
+- doctor reports exactly one current executable listener/runtime host, one
+  dashboard process, one executable generation, zero legacy daemons, no
+  multiplicity issues, and a healthy runtime monitor;
+- the only doctor issue is `workstation_upgrade_readiness_not_ready`:
+  payload, selected generation, dashboard ingress, operator journey, and
+  rollback are ready, while `runtimeConvergenceReady=false` because the latest
+  transaction is failed rather than accepted;
+- no X/LinkedIn preflight, tick, provider attempt, temporary config, incident,
+  notification, artifact, derivative, model use, or cost occurred.
+
+Recurring-state and attempt boundary:
+
+- the freshly authorized provider canary was not consumed because the
+  workstation gate never became fully ready;
+- Reddit and Facebook remain disabled; `daily-default`, cadence, and normal
+  ten-item X/LinkedIn ceilings remain unchanged.
+
+Authority classification:
+
+- `human_gate`; recovery and one post-readiness canary were explicitly
+  authorized, but the provider portion remains gated and unconsumed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- deferred; this plan, runbook, runtime receipts, and sibling-worktree custody
+  readback are sufficient durable evidence for the open checkpoint.
+
+Remaining acceptance criteria:
+
+- the active agent-browser source owner must produce one accepted workstation
+  transaction with every readiness axis true and no competing installer;
+- only then may the already authorized single X/LinkedIn 20/20 canary proceed
+  to its first terminal receipt.
+
+Next action:
+
+- preserve the healthy managed topology and the other owner’s source lane;
+  await an accepted workstation transaction, verify stable readiness, then run
+  at most the one still-unconsumed provider canary.
+
+Checkpoint P0055-C05 is the current authority.

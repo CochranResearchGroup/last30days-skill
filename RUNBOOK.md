@@ -18888,3 +18888,81 @@ Next Bounded Action:
 - resolve agent-browser workstation runtime convergence without provider work;
   only after readiness is true should a separately authorized canary be
   considered.
+
+## Turn 314 | 2026-08-21
+
+Focus: recover agent-browser workstation readiness and, only if every axis is
+stable, consume one newly authorized X/LinkedIn 20/20 canary.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C04; agent-browser runtime, diagnosis, planning,
+  validation, Git custody, documentation, and closeout authorities.
+- active plan
+  `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`.
+
+Decisions And Changes:
+
+- kept the provider gate closed while workstation readiness was false;
+- used only receipt-bearing recovery/reconciliation and managed service
+  controls. No manual process kill, owner-registry edit, browser rehome, or
+  retained-browser cleanup occurred;
+- exact recovery of `upgrade-7d44ef27-0421-40da-9c64-570da55b217e` was
+  blocked first by its live candidate and then by another controller's lock;
+  the concurrent controller later preserved the old generation;
+- a later agent-browser source-lane transaction
+  `upgrade-76174566-40ae-490d-aeac-f5df3d9b2e27` failed post-commit
+  reconciliation, and an Odollo-owned transaction
+  `upgrade-9de3a8a8-e56d-4893-b673-54206750e661` failed candidate activation;
+- after monitor backoff, one reconciliation restored a healthy runtime monitor,
+  and the managed interlock timer was restored to `active/waiting`;
+- final bounded transaction
+  `upgrade-48d69bd0-1408-48f4-a5e4-497b06323f32` preserved the selected old
+  generation and terminalized `failed_preserved_old_generation` at revision 7
+  with `candidate_activation_failed`;
+- the agent-browser source worktree is another active lane, 66 commits ahead
+  with an untracked note, so it was not modified.
+
+Validation Evidence:
+
+- admission is not draining; doctor reports one current listener/runtime host,
+  one dashboard process, one executable generation, zero legacy daemons, no
+  multiplicity issues, and a healthy runtime monitor;
+- payload, selected-generation, ingress, operator-journey, and rollback axes
+  are ready. The sole unready axis is `runtimeConvergenceReady`, and the sole
+  doctor issue is `workstation_upgrade_readiness_not_ready`;
+- no provider preflight, tick, attempt, temporary config, incident,
+  notification, artifact, derivative, cost, or model use occurred.
+
+State Movement:
+
+- Plan 0055 advances to version 5/C05
+  `workstation_topology_recovered_acceptance_receipt_blocked`; P08 remains
+  OPEN.
+
+Progress Classification:
+
+- `blocker_reduction_with_shared_runtime_acceptance_blocker`; process topology
+  is healthy, but no accepted workstation transaction exists.
+
+Recurring-State And Attempt Boundary:
+
+- the newly authorized X/LinkedIn 20/20 canary remains unconsumed behind the
+  readiness gate;
+- Reddit/Facebook remain disabled, and `daily-default`, cadence, and normal
+  X/LinkedIn ceilings remain unchanged.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred; Plan 0055/C05, this turn, runtime receipts, and sibling-worktree
+  custody are the durable evidence.
+
+Next Bounded Action:
+
+- let the active agent-browser source owner produce one accepted workstation
+  transaction without competing installers; verify every readiness axis is
+  stable, then run at most the still-authorized one X/LinkedIn 20/20 canary.
