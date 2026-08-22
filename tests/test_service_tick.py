@@ -177,6 +177,52 @@ def test_tick_config_accepts_exact_optional_schedule(tmp_path):
     assert receipt.state is contracts.TickState.QUEUED
 
 
+def test_tick_config_accepts_feed_surface_with_feed_selector(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["targets"][0].update({
+        "target_id": "reddit-home-feed",
+        "surface_kind": "feed",
+        "selector": {"feed": "home"},
+    })
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    receipt = TickCoordinator(
+        tmp_path / "research.db", config_path=config_path, clock=lambda: NOW
+    ).enqueue_tick(contracts.TickRequest.from_dict({
+        "schema_version": 1,
+        "schedule_id": "manual-default",
+        "interval_from": "2026-08-03T00:00:00Z",
+        "interval_to": "2026-08-04T00:00:00Z",
+        "trigger": "manual",
+    }))
+
+    assert receipt.lanes[0].target_id == "reddit-home-feed"
+
+
+def test_tick_config_rejects_surface_selector_mismatch(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["targets"][0].update({
+        "surface_kind": "feed",
+        "selector": {"topic": "OpenAI"},
+    })
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(TickConfigError, match=r"selector requires one of: feed"):
+        TickCoordinator(
+            tmp_path / "research.db", config_path=config_path, clock=lambda: NOW
+        ).enqueue_tick(contracts.TickRequest.from_dict({
+            "schema_version": 1,
+            "schedule_id": "manual-default",
+            "interval_from": "2026-08-03T00:00:00Z",
+            "interval_to": "2026-08-04T00:00:00Z",
+            "trigger": "manual",
+        }))
+
+
 @pytest.mark.parametrize(
     ("schedule_patch", "message"),
     [

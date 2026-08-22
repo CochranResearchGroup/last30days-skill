@@ -1427,6 +1427,7 @@ class AcquisitionWorkRequest:
     item_limit: int
     network_request_limit: int
     cost_budget_cents: int
+    surface_kind: str = "topic"
 
     CONTRACT_NAME: ClassVar[str] = "acquisition_work_request"
 
@@ -1455,10 +1456,21 @@ class AcquisitionWorkRequest:
                 "cost_budget_cents",
             }
         )
-        _require_exact_fields(payload, required=fields)
+        _require_exact_fields(
+            payload,
+            required=fields,
+            optional=frozenset({"surface_kind"}),
+        )
         depth = _require_non_empty_string(payload["depth"], "depth")
         if depth not in {"quick", "standard", "deep"}:
             raise ContractValidationError("depth must be quick, standard, or deep")
+        surface_kind = _require_non_empty_string(
+            payload.get("surface_kind", "topic"), "surface_kind"
+        )
+        if surface_kind not in {
+            "feed", "topic", "poster", "channel", "account", "profile"
+        }:
+            raise ContractValidationError("surface_kind is unsupported")
         return cls(
             schema_version=_validate_schema_version(payload["schema_version"]),
             work_id=_require_bounded_string(payload["work_id"], "work_id", 128),
@@ -1502,10 +1514,11 @@ class AcquisitionWorkRequest:
                 0,
                 10_000_000,
             ),
+            surface_kind=surface_kind,
         )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "schema_version": self.schema_version,
             "work_id": self.work_id,
             "job_id": self.job_id,
@@ -1524,6 +1537,9 @@ class AcquisitionWorkRequest:
             "network_request_limit": self.network_request_limit,
             "cost_budget_cents": self.cost_budget_cents,
         }
+        if self.surface_kind != "topic":
+            payload["surface_kind"] = self.surface_kind
+        return payload
 
 
 @dataclass(frozen=True)

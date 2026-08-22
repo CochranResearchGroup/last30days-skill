@@ -252,10 +252,10 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
                 "service", "access-plan",
                 "--service-name", "last30days",
                 "--agent-name", "x-scraper",
-                "--task-name", "x-search",
+                "--task-name", request.task_name or "x-search",
                 "--target-service-id", "x",
                 "--runtime-profile", request.profile_id,
-                "--url", "https://x.com/search",
+                "--url", request.start_url or "https://x.com/search",
                 "--browser-build", request.browser_build,
                 "--browser-host", request.browser_host,
                 "--view-stream-provider", request.view_provider,
@@ -437,6 +437,106 @@ class XBrowserScraper:
             "diagnostics": diagnostics.as_dict(),
         }
 
+    def feed(self, from_date: str, to_date: str) -> dict[str, Any]:
+        """Collect structurally valid posts from the authenticated home feed."""
+        started = time.monotonic()
+        diagnostics = XRunDiagnostics()
+        workspace = self.client.acquire_workspace(self.request)
+        auth = self.client.inspect_auth(workspace)
+        if auth.checkpoint:
+            raise XBrowserFailure(
+                "checkpoint_required",
+                "X requires an operator security checkpoint",
+                operator_url=workspace.operator_url,
+            )
+        if auth.restricted:
+            raise XBrowserFailure(
+                "rate_limited",
+                "X reports that the authenticated account is restricted or rate limited",
+                operator_url=workspace.operator_url,
+            )
+        if auth.login_form:
+            raise XBrowserFailure(
+                "auth_required",
+                "X authentication is required",
+                operator_url=workspace.operator_url,
+            )
+        if not auth.authenticated:
+            raise XBrowserFailure(
+                "auth_state_ambiguous",
+                "X authentication state could not be determined from the rendered page",
+                operator_url=workspace.operator_url,
+            )
+        feed_url = "https://x.com/home"
+        retained = self.client.prepare_site_tab(workspace, "x.com", consolidate=True)
+        self.client.act(
+            workspace,
+            BrowserAction("navigate" if retained else "new_tab", value=feed_url),
+        )
+        self.client.act(
+            workspace,
+            BrowserAction("wait", value=str(max(0, round(self.initial_wait * 1000)))),
+        )
+        page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
+        if page.checkpoint:
+            raise XBrowserFailure(
+                "checkpoint_required",
+                "X feed opened a security checkpoint",
+                operator_url=workspace.operator_url,
+            )
+        if page.restricted:
+            raise XBrowserFailure("rate_limited", "X feed reported an account restriction or rate limit")
+        if page.login_page:
+            raise XBrowserFailure(
+                "auth_required",
+                "X feed redirected to login",
+                operator_url=workspace.operator_url,
+            )
+        if page.error_page:
+            raise XBrowserFailure("search_unavailable", "X feed returned a temporary error page")
+        if not _page_matches_feed(page):
+            raise XBrowserFailure("navigation_mismatch", "X feed state did not match the authenticated home feed")
+        raw = list(self.client.evaluate(workspace, EXTRACT_SCRIPT).get("candidates") or [])
+        for _ in range(self.scrolls):
+            if _accepted_unique_count(
+                raw, "", from_date, to_date, surface_kind="feed"
+            ) >= self.limit:
+                break
+            self.client.evaluate(workspace, SCROLL_SCRIPT)
+            self.client.act(
+                workspace,
+                BrowserAction("wait", value=str(max(0, round(self.scroll_wait * 1000)))),
+            )
+            raw.extend(self.client.evaluate(workspace, EXTRACT_SCRIPT).get("candidates") or [])
+        if not raw:
+            raise XBrowserFailure(
+                "extraction_empty",
+                "Verified X home feed contained no post articles",
+            )
+        diagnostics.candidate_count = len(raw)
+        quality_items = _quality_gate(
+            raw, "", from_date, to_date, diagnostics, surface_kind="feed"
+        )
+        deduped_items = _dedupe_items(quality_items, diagnostics)
+        result_limit_count = max(0, len(deduped_items) - self.limit)
+        if result_limit_count:
+            for item in deduped_items[self.limit:]:
+                _record_item_rejection(diagnostics, "result_limit", item)
+        items = deduped_items[: self.limit]
+        diagnostics.duration_ms = round((time.monotonic() - started) * 1000)
+        diagnostics.accepted_count = len(items)
+        error_type = "quality_gate_failed" if raw and not items else None
+        return {
+            "items": items,
+            "error": "X feed candidates were found, but none passed the post quality gate" if error_type else None,
+            "error_type": error_type,
+            "url": page.url,
+            "title": page.title,
+            "profile": workspace.profile_id,
+            "session": workspace.session_name,
+            "diagnostics": diagnostics.as_dict(),
+        }
+
 
 def search_x_browser(
     topic: str,
@@ -553,6 +653,115 @@ def search_x_browser(
         }
 
 
+def scrape_x_feed(
+    from_date: str,
+    to_date: str,
+    *,
+    depth: str = "default",
+    config: dict[str, Any] | None = None,
+    limit: int | None = None,
+) -> dict[str, Any]:
+    """Scrape the authenticated X home feed without applying a topic query."""
+    config = config or {}
+    stable = agent_browser_config.load_target_config("x")
+    settings = DEPTH_CONFIG.get(depth, DEPTH_CONFIG["default"])
+    result_limit = (
+        settings["results"]
+        if limit is None
+        else max(1, min(MAX_EXPLICIT_RESULTS, int(limit)))
+    )
+    scrolls = settings["scrolls"]
+    if limit is not None:
+        scrolls = max(
+            scrolls,
+            min(
+                MAX_EXPLICIT_SCROLLS,
+                (result_limit + ACCEPTED_ITEMS_PER_SCROLL_BUDGET - 1)
+                // ACCEPTED_ITEMS_PER_SCROLL_BUDGET,
+            ),
+        )
+    request = BrowserWorkspaceRequest(
+        profile_id=str(
+            config.get("LAST30DAYS_X_BROWSER_PROFILE")
+            or stable.get("profile_id")
+            or "last30days-facebook"
+        ),
+        session_name=str(config.get("LAST30DAYS_X_BROWSER_SESSION") or "last30days-facebook"),
+        browser_build=str(
+            config.get("LAST30DAYS_X_BROWSER_BUILD")
+            or stable.get("browser_build")
+            or "stealthcdp_chromium"
+        ),
+        view_provider=str(
+            config.get("LAST30DAYS_X_BROWSER_VIEW_PROVIDER")
+            or stable.get("view_stream_provider")
+            or "rdp_gateway"
+        ),
+        timeout=int(config.get("LAST30DAYS_X_BROWSER_TIMEOUT") or settings["timeout"]),
+        start_url="https://x.com/home",
+        service_name="last30days",
+        agent_name="x-scraper",
+        task_name="x-feed",
+        target_service_id="x",
+        display_isolation=str(
+            config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION")
+            or stable.get("display_isolation")
+            or "shared_display"
+        ),
+        browser_host=str(stable.get("browser_host") or "remote_headed"),
+        control_input_provider=str(
+            stable.get("control_input_provider") or "manual_attached_desktop"
+        ),
+    )
+    client = CliAgentBrowserClient(
+        timeout=request.timeout,
+        **(
+            {"job_timeout_ms": int(config["LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS"])}
+            if config.get("LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS")
+            else {}
+        ),
+    )
+    scraper = XBrowserScraper(
+        client,
+        request,
+        limit=result_limit,
+        scrolls=scrolls,
+        initial_wait=float(config.get("LAST30DAYS_X_BROWSER_INITIAL_WAIT") or 2),
+        scroll_wait=float(config.get("LAST30DAYS_X_BROWSER_SCROLL_WAIT") or 1),
+        now=config.get("_NOW"),
+    )
+    try:
+        return scraper.feed(from_date, to_date)
+    except XBrowserFailure as exc:
+        _log(f"Failed error_type={exc.error_type} message={exc}")
+        diagnostics = {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0}
+        if exc.operator_url:
+            diagnostics["operator_url"] = exc.operator_url
+        return {
+            "items": [],
+            "error": str(exc),
+            "error_type": exc.error_type,
+            "profile": request.profile_id,
+            "session": request.session_name,
+            "operator_url": exc.operator_url or None,
+            "diagnostics": diagnostics,
+        }
+    except browser_runtime.FacebookScraperFailure as exc:
+        error_type = exc.error_type if exc.error_type in ERROR_TYPES else "agent_browser_error"
+        _log(f"Failed error_type={error_type} message={exc}")
+        operator_url = str(getattr(exc, "operator_url", "") or "")
+        diagnostics = {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0}
+        if operator_url:
+            diagnostics["operator_url"] = operator_url
+        return {
+            "items": [],
+            "error": str(exc),
+            "error_type": error_type,
+            "profile": request.profile_id,
+            "session": request.session_name,
+            "operator_url": operator_url or None,
+            "diagnostics": diagnostics,
+        }
 def parse_x_browser_response(response: dict[str, Any]) -> list[dict[str, Any]]:
     if response.get("error"):
         _log(f"X browser error ({response.get('error_type')}): {response['error']}")
@@ -601,12 +810,26 @@ def _page_matches_query(page: XPageState, query: str) -> bool:
     )
 
 
+def _page_matches_feed(page: XPageState) -> bool:
+    parsed = urlsplit(page.url)
+    return (
+        parsed.hostname in {"x.com", "www.x.com", "twitter.com", "www.twitter.com"}
+        and parsed.path.rstrip("/") == "/home"
+        and not page.login_page
+        and not page.checkpoint
+        and not page.restricted
+        and not page.error_page
+    )
+
+
 def _quality_gate(
     candidates: list[dict[str, Any]],
     topic: str,
     from_date: str,
     to_date: str,
     diagnostics: XRunDiagnostics,
+    *,
+    surface_kind: str = "topic",
 ) -> list[dict[str, Any]]:
     items = []
     for index, raw in enumerate(candidates):
@@ -618,11 +841,15 @@ def _quality_gate(
         evidence_text = f"{text} {context_text}".strip()
         handle = str(raw.get("author_handle") or "").lstrip("@")
         date = _iso_date(str(raw.get("timestamp") or ""))
-        relevance = _compute_relevance(topic, evidence_text)
+        relevance = (
+            _compute_relevance(topic, evidence_text)
+            if surface_kind == "topic"
+            else 0.5
+        )
         retrieval_signals: list[str] = []
         if len(evidence_text) < 30:
             retrieval_signals.append("short_text")
-        if relevance <= 0:
+        if surface_kind == "topic" and relevance <= 0:
             retrieval_signals.append("no_lexical_topic_overlap")
         reason = None
         if not url:
@@ -655,7 +882,11 @@ def _quality_gate(
             "author_handle": handle,
             "date": date,
             "engagement": _normalize_engagement(raw.get("engagement")),
-            "why_relevant": "Authenticated X search result",
+            "why_relevant": (
+                "Authenticated X search result"
+                if surface_kind == "topic"
+                else "Authenticated X home feed post"
+            ),
             "relevance": relevance,
             "metadata": {
                 "extraction": "agent-browser-dom-v1",
@@ -678,12 +909,21 @@ def _accepted_unique_count(
     topic: str,
     from_date: str,
     to_date: str,
+    *,
+    surface_kind: str = "topic",
 ) -> int:
     """Preview accepted unique yield without mutating the run diagnostics."""
     preview = XRunDiagnostics()
     return len(
         _dedupe_items(
-            _quality_gate(candidates, topic, from_date, to_date, preview)
+            _quality_gate(
+                candidates,
+                topic,
+                from_date,
+                to_date,
+                preview,
+                surface_kind=surface_kind,
+            )
         )
     )
 

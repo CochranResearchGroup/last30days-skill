@@ -270,7 +270,10 @@
       "properties": {
         "target_id": {"type": "string", "minLength": 1, "maxLength": 128},
         "service_id": {"type": "string", "minLength": 1, "maxLength": 128},
-        "surface_kind": {"type": "string", "minLength": 1, "maxLength": 64},
+        "surface_kind": {
+          "type": "string",
+          "enum": ["feed", "topic", "poster", "channel", "account", "profile"]
+        },
         "selector": {"type": "object", "maxProperties": 32},
         "access_partition_id": {
           "type": "string",

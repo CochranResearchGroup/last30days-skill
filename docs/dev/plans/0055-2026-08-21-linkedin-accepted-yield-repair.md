@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 10
+Plan version: 11
 Date: 2026-08-21
 
 ## Objective
@@ -1037,3 +1037,87 @@ Next action:
   to semantic ranking or quality thresholds.
 
 Checkpoint P0055-C10 is the current authority.
+
+Checkpoint P0055-C10 is superseded by P0055-C11 below.
+
+### Checkpoint P0055-C11 | 2026-08-22
+
+Plan version: 11
+
+State transition:
+
+- `retrieval_first_acceptance_candidate_built -> authenticated_home_feed_candidate_built`.
+
+Progress classification:
+
+- `outcome_progress`; the source-neutral feed surface now reaches the isolated
+  X and LinkedIn workers and each browser adapter can collect directly from the
+  authenticated home feed without converting the feed selector into a search.
+
+Product decision:
+
+- retain topic search as an on-demand acquisition capability;
+- retire the recurring X and LinkedIn OpenAI topic targets only by replacing
+  them with explicit authenticated home-feed targets;
+- leave the YouTube OpenAI topic target and disabled Reddit/Facebook targets
+  unchanged;
+- apply no semantic ranking to home-feed posts. Acquisition continues to
+  exclude only structural invalidity, out-of-window items, exact duplicates,
+  deterministic promoted/sponsored labels, and deterministic navigation noise.
+
+Owned changes:
+
+- `surface_kind` crosses both durable-tick and recurring-collection worker
+  boundaries while legacy topic requests preserve their serialized shape;
+- X navigates `https://x.com/home` under task `x-feed`; LinkedIn navigates
+  `https://www.linkedin.com/feed/` under task `linkedin-home-feed`;
+- feed items receive neutral acquisition relevance and an authenticated-feed
+  provenance statement, with no lexical-topic-overlap diagnostic;
+- strict tick validation now requires a supported surface and a matching
+  selector while retaining the installed `query` alias for topic targets;
+- service candidate 0.3.60 supersedes the uninstalled 0.3.59 candidate.
+
+Validation evidence:
+
+- 226 focused tests collected; the focused contract, tick, collection, worker,
+  X, LinkedIn, packaging, and release suite passed with two expected
+  environment-dependent skips;
+- full repository suite: 2,677 passed and seven expected tests skipped;
+- deterministic service artifact
+  `dist/service/last30days-service-0.3.60.tar.gz` built with SHA-256
+  `b45af3b07b10108f9dcd5eba5230cda9378f14b9430a4b5589a2809dc6a18428`.
+
+Runtime boundary:
+
+- installed service remains 0.3.58/schema 16 and ready with runtime manifest
+  `04008504fdae3ea1aafcf74dad793add40a3327312882433449dfbe1ac1cda77`;
+- recurring configuration, daily schedule, browser state, and provider attempt
+  counts are unchanged. No live feed scrape has run at this checkpoint.
+
+Authority classification:
+
+- `inherited_authority`; the operator explicitly selected direct home-feed
+  scraping while preserving search capability.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- pending installed-runtime closeout; this plan, Runbook Turn 320, source,
+  fixtures, and build receipt are the current durable authority.
+
+Remaining acceptance criteria:
+
+- commit and push the exact candidate;
+- transactionally install 0.3.60 with 0.3.58 retained for rollback;
+- replace only the recurring X and LinkedIn topic targets with explicit home
+  feeds and verify schedule/config readback before any bounded feed canary.
+
+Next action:
+
+- execute the reversible installed-runtime/config transition, then run at most
+  one X/LinkedIn feed canary and adjudicate its terminal receipt.
+
+Checkpoint P0055-C11 is the current authority.

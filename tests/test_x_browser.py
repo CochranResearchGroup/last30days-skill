@@ -111,6 +111,39 @@ class FakeAgentBrowserClient:
 
 
 class XBrowserSearchTests(TestCase):
+    def test_home_feed_collects_posts_without_a_topic_query(self):
+        from lib import x_browser
+
+        client = FakeAgentBrowserClient(candidates=[{
+            "text": "A completely unrelated but legitimate post from the home timeline.",
+            "url": "https://x.com/example/status/2078123456789012999",
+            "author_handle": "example",
+            "timestamp": "2026-07-18T15:30:00.000Z",
+            "promoted": False,
+            "engagement": {},
+        }])
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.scrape_x_feed(
+                "2026-06-20",
+                "2026-07-20",
+                depth="quick",
+                config={
+                    "LAST30DAYS_X_BROWSER_PROFILE": "last30days-facebook",
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual("https://x.com/home", result["url"])
+        self.assertEqual("x-feed", client.requests[0].task_name)
+        self.assertEqual("Authenticated X home feed post", result["items"][0]["why_relevant"])
+        self.assertNotIn(
+            "no_lexical_topic_overlap",
+            result["items"][0]["metadata"]["retrieval_signals"],
+        )
+
     def test_uses_stable_user_scoped_x_profile_when_run_override_is_absent(self):
         from lib import x_browser
 

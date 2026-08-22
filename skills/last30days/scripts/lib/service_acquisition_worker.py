@@ -189,6 +189,14 @@ def _x_adapter(
 ) -> dict[str, Any]:
     from . import x_browser
 
+    if request.surface_kind == "feed":
+        return _account_opaque_source_request(x_browser.scrape_x_feed(
+            request.from_date,
+            request.to_date,
+            depth=_depth(request.depth),
+            config=dict(config),
+            limit=request.item_limit,
+        ))
     return _account_opaque_source_request(x_browser.search_x_browser(
         request.query,
         request.from_date,
@@ -230,6 +238,14 @@ def _linkedin_adapter(
 ) -> dict[str, Any]:
     from . import linkedin
 
+    if request.surface_kind == "feed":
+        return _account_opaque_source_request(linkedin.scrape_linkedin_feed(
+            request.from_date,
+            request.to_date,
+            depth=_depth(request.depth),
+            config=dict(config),
+            limit=request.item_limit,
+        ))
     return _account_opaque_source_request(linkedin.search_linkedin(
         request.query,
         request.from_date,

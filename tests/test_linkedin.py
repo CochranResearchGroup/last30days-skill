@@ -175,6 +175,34 @@ class LinkedInAvailabilityTests(unittest.TestCase):
 
 
 class LinkedInNavigationAndAuthTests(unittest.TestCase):
+    def test_home_feed_collects_posts_without_a_topic_query(self):
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+        candidate = post_candidate(
+            text="A legitimate home-feed post with no relationship to the retired OpenAI query."
+        )
+        client = FakeAgentBrowserClient(page=page, candidates=[candidate])
+
+        result = make_scraper(client).feed("2026-06-15", "2026-07-15")
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual("https://www.linkedin.com/feed/", result["url"])
+        self.assertEqual(
+            "Authenticated LinkedIn home feed post",
+            result["items"][0]["why_relevant"],
+        )
+        self.assertNotIn(
+            "no_lexical_topic_overlap",
+            result["items"][0]["metadata"]["retrieval_signals"],
+        )
+
     def test_browser_failure_records_stage_and_bounded_operation_evidence(self):
         client = FakeAgentBrowserClient()
         client.command_timings = [
@@ -240,6 +268,26 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual("linkedin-content-search", workspace_request.task_name)
         self.assertEqual("https://www.linkedin.com/feed/", workspace_request.start_url)
         self.assertEqual("shared_display", workspace_request.display_isolation)
+
+    def test_feed_registers_distinct_home_feed_task_metadata(self):
+        captured = {}
+
+        def scraper_factory(_client, workspace_request, **_kwargs):
+            captured["request"] = workspace_request
+            return mock.Mock(feed=mock.Mock(return_value={"items": [], "error": None}))
+
+        with mock.patch.object(linkedin, "is_agent_browser_available", return_value=True), mock.patch.object(
+            linkedin, "LinkedInScraper", side_effect=scraper_factory
+        ):
+            linkedin.scrape_linkedin_feed(
+                "2026-06-15",
+                "2026-07-15",
+                depth="quick",
+            )
+
+        workspace_request = captured["request"]
+        self.assertEqual("linkedin-home-feed", workspace_request.task_name)
+        self.assertEqual("https://www.linkedin.com/feed/", workspace_request.start_url)
 
     def test_explicit_twenty_item_limit_has_a_bounded_four_scroll_budget(self):
         captured = {}

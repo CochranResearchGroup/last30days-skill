@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "c6f9fc69633abb19896a2e53c0f51af6b8167c67162a607cef542da2f22880ec",
+      "sha256": "c6563d885ff161801b46d7bf1e870a1b06a076a01282671715b6be4722c8dd89",
       "source": "service/VERSION"
     },
     {
@@ -12,7 +12,7 @@
     },
     {
       "path": "schemas/tick-config-v1.json",
-      "sha256": "775d7d069548939fc98176608345208d844ddfbc3e0cc5aae47f77050ebaffdc",
+      "sha256": "b00641da187b7c477c589a15de63995f44d4ef2629aec413b203cc3d6b42303a",
       "source": "skills/last30days/schemas/tick-config-v1.json"
     },
     {
@@ -152,7 +152,7 @@
     },
     {
       "path": "scripts/lib/linkedin.py",
-      "sha256": "b75d12fafc2346838142ec827f216653d7ddc2e76f60aae52f1e00ac8530f1d3",
+      "sha256": "76b4cf9b3f9a21fdfa8daedbc1cc7a02c8c24bbe4fdd5b1413d98ccfa5ff60c8",
       "source": "skills/last30days/scripts/lib/linkedin.py"
     },
     {
@@ -287,7 +287,7 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "8dcfef0d1843cbb1fbe21d54c71ff923bf79f2200adcefd10cb2ff64fc483e50",
+      "sha256": "1cf28332bcc929d781c7ab1c8f91296a66a7183b1b3cf4e189ed53fab404d843",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
@@ -307,7 +307,7 @@
     },
     {
       "path": "scripts/lib/service_contracts.py",
-      "sha256": "eb5325ec02aef1215592db1c66c0669fec371a39b8e0975fa484c10f5ab1356a",
+      "sha256": "33f88389785221f315daec008e71bd9acc996f29a703651d1520a596fb98fc12",
       "source": "skills/last30days/scripts/lib/service_contracts.py"
     },
     {
@@ -342,7 +342,7 @@
     },
     {
       "path": "scripts/lib/service_job_runner.py",
-      "sha256": "8100d39bccee67cdad22763db37fd2204fa07cb13f0ffee8ae8953a8fd6a0724",
+      "sha256": "a04e7ef6a3dc48627c472534a51ca2c5e84e805e91ac20df210918c494102df8",
       "source": "skills/last30days/scripts/lib/service_job_runner.py"
     },
     {
@@ -397,7 +397,7 @@
     },
     {
       "path": "scripts/lib/service_tick.py",
-      "sha256": "dcc5ece2d2df3a3978be337e8d3fe42fc2ad38e435fa9e44b9d3118e515750e2",
+      "sha256": "dd5766e6544d9b8bad4caa11db0042ddc0ce21d7108b99e8ae8b5d3b0f5eea8a",
       "source": "skills/last30days/scripts/lib/service_tick.py"
     },
     {
@@ -417,7 +417,7 @@
     },
     {
       "path": "scripts/lib/service_tick_builtin_adapters.py",
-      "sha256": "b129d3d47e008a3c4f81ab0b07d104365436e5dd4d1297524fcce632dbf7948b",
+      "sha256": "a830b2b736f6324ea9b30deb5fa9d29cefac83c54dfb5399f0ca1760ef56434b",
       "source": "skills/last30days/scripts/lib/service_tick_builtin_adapters.py"
     },
     {
@@ -452,7 +452,7 @@
     },
     {
       "path": "scripts/lib/service_tick_runner.py",
-      "sha256": "aa246ecc2ee2791164b6a53e7674c2a5b2ffef7023555f2e4cfab8b2e42b7ce2",
+      "sha256": "0057f76434b84ae59258c3b07dbf1bff51765d670f000e2a38f6271c69b6f061",
       "source": "skills/last30days/scripts/lib/service_tick_runner.py"
     },
     {
@@ -607,7 +607,7 @@
     },
     {
       "path": "scripts/lib/x_browser.py",
-      "sha256": "3b5dbec6fde1d5171a9a2947ffe3b1bd89ae652cffdd8bd2ebbdaa817ab10a85",
+      "sha256": "242e37cd6de4c494efefbbd3a4c7f0e33e86f98f9c5ba4f1c0e0ae76431c613c",
       "source": "skills/last30days/scripts/lib/x_browser.py"
     },
     {
@@ -653,5 +653,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.59"
+  "service_version": "0.3.60"
 }

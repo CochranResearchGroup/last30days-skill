@@ -38,11 +38,11 @@ def _normalization_proof_ref(adapter: str) -> str:
 
 
 def _selector_text(context: ProviderContext) -> str:
-    for field in ("query", "topic", "url", "handle"):
+    for field in ("query", "topic", "feed", "url", "handle"):
         value = context.selector.get(field)
         if isinstance(value, str) and value.strip():
             return value.strip()
-    raise ValueError("target selector requires query, topic, url, or handle")
+    raise ValueError("target selector requires query, topic, feed, url, or handle")
 
 
 def _retry_failure_class(retry_class: contracts.RetryClass) -> str:
@@ -155,6 +155,7 @@ class AcquisitionWorkerTickAdapter:
                 "item_limit": max(1, context.limits["items"]),
                 "network_request_limit": context.limits["network_requests"],
                 "cost_budget_cents": context.limits["cost_cents"],
+                "surface_kind": context.surface_kind,
             }
         )
         try:

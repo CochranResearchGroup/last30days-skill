@@ -19355,3 +19355,61 @@ Next Bounded Action:
 - map collection specs to X and LinkedIn home-feed, topic/search-feed, and
   configured-profile navigation; do not add semantic ranking or quality gates
   to that acquisition packet.
+
+## Turn 320 | 2026-08-22
+
+Focus: preserve topic search while adding explicit authenticated X and
+LinkedIn home-feed acquisition.
+
+Authority Consulted:
+
+- operator direct-feed direction; Plan 0055/C10; last30days administration and
+  agent-browser service operating contracts; current planning, CodeGraph,
+  architecture, documentation, versioning, validation, Git, and closeout
+  policies.
+
+Decisions And Changes:
+
+- carried `surface_kind=feed` across durable-tick, recurring-collection, and
+  isolated-worker boundaries without changing legacy topic serialization;
+- added direct authenticated X and LinkedIn home-feed navigation and reused
+  the existing structural, date, promoted/sponsored, navigation-noise, and
+  exact-duplicate gates;
+- assigned neutral acquisition relevance to feed items instead of inventing a
+  topic match; retained topic search unchanged;
+- built service candidate 0.3.60 and stopped before installed-runtime,
+  recurring-config, browser, or provider effects.
+
+Validation Evidence:
+
+- focused suite: 226 tests collected, passing with two expected
+  environment-dependent skips;
+- full repository suite: 2,677 passed and seven expected tests skipped;
+- service artifact SHA-256:
+  `b45af3b07b10108f9dcd5eba5230cda9378f14b9430a4b5589a2809dc6a18428`;
+- installed service remains 0.3.58/schema 16 ready with runtime manifest
+  `04008504fdae3ea1aafcf74dad793add40a3327312882433449dfbe1ac1cda77`.
+
+State Movement:
+
+- Plan 0055 advances to version 11/C11
+  `authenticated_home_feed_candidate_built`; P08 remains OPEN.
+
+Authority Classification:
+
+- `inherited_authority`; source, fixtures, release candidate, and durable docs
+  only.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending installed-runtime closeout.
+
+Next Bounded Action:
+
+- commit and push the exact 0.3.60 candidate, then transactionally install it,
+  replace only the recurring X/LinkedIn OpenAI topic targets with home-feed
+  targets, and admit at most one bounded two-lane feed canary.

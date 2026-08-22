@@ -83,6 +83,13 @@ resource keys and ceilings, artifact policy, OCR and semantic-sidecar stages,
 deterministic anomaly rules, notification transports, and query/index versions.
 Enabled targets execute serially in their array order; sanitized preflight and
 durable tick receipts preserve that same order.
+Each target declares an explicit acquisition surface. Use
+`"surface_kind": "feed"` with a non-empty `"selector": {"feed": "home"}`
+for an authenticated home feed, or retain `"surface_kind": "topic"` with a
+`topic`/`query` selector for on-demand or scheduled search. X and LinkedIn feed
+targets navigate directly to their retained profile's home feed; they do not
+convert the feed selector into a search query. Search support remains present
+when its topic target is disabled or replaced in a recurring schedule.
 Adapter types must resolve through the installed adapter registry and carry a
 non-zero stable-fixture or bounded-canary normalization proof. Credential and
 routing fields are references only: cookies, tokens, raw credentials,

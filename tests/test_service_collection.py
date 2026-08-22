@@ -734,6 +734,8 @@ def test_runner_applies_frozen_collection_limits_and_retention(tmp_path):
     db_path, supervisor, ledger, scheduler, coordinator = _coordinator(tmp_path)
     coordinator.put_spec(
         _spec(
+            surface_kind="feed",
+            selector={"feed": "home"},
             item_limit=3,
             wall_timeout_seconds=25,
             network_request_limit=4,
@@ -780,6 +782,7 @@ def test_runner_applies_frozen_collection_limits_and_retention(tmp_path):
     assert worker.requests[0].item_limit == 3
     assert worker.requests[0].wall_timeout_seconds == 25
     assert worker.requests[0].network_request_limit == 4
+    assert worker.requests[0].surface_kind == "feed"
     conn = sqlite3.connect(db_path)
     try:
         retention = conn.execute(

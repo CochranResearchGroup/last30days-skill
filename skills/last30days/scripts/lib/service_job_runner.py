@@ -550,6 +550,11 @@ class AcquisitionJobRunner:
                         else self.policy.network_request_limit,
                     ),
                     "cost_budget_cents": reserved_cost,
+                    "surface_kind": str(
+                        collection_policy.get("surface_kind", "topic")
+                        if collection_policy
+                        else "topic"
+                    ),
                 }
             )
             if reserved_cost > remaining_budget:

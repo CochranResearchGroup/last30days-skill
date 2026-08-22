@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import base64
 import sqlite3
+from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -192,6 +193,29 @@ def test_installed_worker_adapters_preserve_nonzero_normalized_items(
     assert request.item_limit == 3
     assert request.network_request_limit == 7
     assert request.wall_timeout_seconds == 30
+
+
+def test_builtin_adapter_preserves_feed_surface_and_selector():
+    worker = FixtureWorker(lambda request: _result(request))
+    registry = build_acquisition_adapter_registry(worker)
+    context = replace(
+        _context(),
+        target_id="x-home-feed",
+        selector={
+            "feed": "home",
+            "profile_id": "social-primary",
+            "depth": "standard",
+        },
+        surface_kind="feed",
+    )
+
+    registry.require(
+        "x_agent_browser", source="x", capability="collect"
+    ).collect(context)
+
+    request = worker.requests[0]
+    assert request.surface_kind == "feed"
+    assert request.query == "home"
 
 
 def test_builtin_adapter_bridge_preserves_worker_outcome_counts():

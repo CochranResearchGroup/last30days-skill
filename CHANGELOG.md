@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Authenticated X and LinkedIn home-feed acquisition.** Service 0.3.60
+  carries `surface_kind=feed` across durable tick and recurring-collection
+  worker boundaries, navigates directly to the authenticated X and LinkedIn
+  home feeds, and reuses the existing structural, sponsored/promoted, date,
+  and exact-duplicate gates without applying a topic-overlap requirement.
+  Topic search remains available as a separate, unchanged acquisition mode.
+
 ### Fixed
 
 - **Retrieval-first X and LinkedIn acceptance.** Service 0.3.59 retains

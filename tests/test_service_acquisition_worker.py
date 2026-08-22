@@ -800,6 +800,49 @@ def test_linkedin_adapter_propagates_the_admitted_item_limit(monkeypatch):
     assert result["_network_request_count"] == 1
 
 
+@pytest.mark.parametrize(
+    ("source", "adapter", "module_name", "feed_function"),
+    (
+        ("x", "x_agent_browser", "x_browser", "scrape_x_feed"),
+        ("linkedin", "linkedin_agent_browser", "linkedin", "scrape_linkedin_feed"),
+    ),
+)
+def test_feed_surface_dispatches_without_topic_search(
+    monkeypatch, source, adapter, module_name, feed_function
+):
+    module = __import__(f"lib.{module_name}", fromlist=[module_name])
+    observed = {}
+
+    def feed(*args, **kwargs):
+        observed["args"] = args
+        observed["kwargs"] = kwargs
+        return {"items": []}
+
+    monkeypatch.setattr(module, feed_function, feed)
+    monkeypatch.setattr(
+        module,
+        "search_x_browser" if source == "x" else "search_linkedin",
+        lambda *_args, **_kwargs: pytest.fail("topic search must not run for feed"),
+    )
+    request = _request(
+        source=source,
+        adapter=adapter,
+        query="home",
+        surface_kind="feed",
+        item_limit=20,
+    )
+
+    result = (
+        service_acquisition_worker._x_adapter(request, {})
+        if source == "x"
+        else service_acquisition_worker._linkedin_adapter(request, {})
+    )
+
+    assert observed["args"] == (request.from_date, request.to_date)
+    assert observed["kwargs"]["limit"] == 20
+    assert result["_network_request_count"] == 1
+
+
 def test_facebook_adapter_constrains_search_to_the_admitted_item_limit(monkeypatch):
     from lib import facebook
 

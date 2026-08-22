@@ -308,6 +308,7 @@ class ProviderContext:
     limits: dict[str, int]
     interval_from: str
     interval_to: str
+    surface_kind: str = "topic"
 
 
 class TickBudgetExceeded(RuntimeError):
@@ -873,6 +874,7 @@ class TickRunner:
             limits=admitted_limits,
             interval_from=str(tick["interval_from"]),
             interval_to=str(tick["interval_to"]),
+            surface_kind=str(target["surface_kind"]),
         )
         spec = self.registry.require(
             context.adapter_type, source=context.source, capability="collect"

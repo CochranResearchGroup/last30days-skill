@@ -71,6 +71,14 @@ _FALLBACK_CLASSES = frozenset(
         "permanent",
     }
 )
+_TARGET_SURFACE_SELECTORS = {
+    "feed": ("feed",),
+    "topic": ("topic", "query"),
+    "poster": ("poster", "handle"),
+    "channel": ("channel",),
+    "account": ("account", "handle"),
+    "profile": ("profile_url", "url"),
+}
 
 
 class TickConfigError(ValueError):
@@ -343,7 +351,19 @@ def _validate_config_shape(config: Mapping[str, Any]) -> None:
             ("retention_class", 64),
         ):
             _bounded_text(target[key], f"{target_field}.{key}", maximum)
-        _object(target["selector"], f"{target_field}.selector")
+        surface_kind = str(target["surface_kind"])
+        selector_fields = _TARGET_SURFACE_SELECTORS.get(surface_kind)
+        if selector_fields is None:
+            raise TickConfigError(f"{target_field}.surface_kind is unsupported")
+        selector = _object(target["selector"], f"{target_field}.selector")
+        if not any(
+            isinstance(selector.get(field), str) and selector[field].strip()
+            for field in selector_fields
+        ):
+            raise TickConfigError(
+                f"{target_field}.selector requires one of: "
+                + ", ".join(selector_fields)
+            )
         if not isinstance(target["enabled"], bool):
             raise TickConfigError(f"{target_field}.enabled must be boolean")
 

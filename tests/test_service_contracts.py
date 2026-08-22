@@ -136,6 +136,34 @@ def test_acquisition_work_request_round_trips_bounded_worker_authority():
     assert request.to_dict() == payload
 
 
+def test_acquisition_work_request_carries_feed_surface_across_worker_boundary():
+    payload = {
+        "schema_version": 1,
+        "work_id": "work-feed-001",
+        "job_id": "job-001",
+        "lease_generation": 1,
+        "attempt": 1,
+        "profile_id": "social-primary",
+        "source": "x",
+        "query": "home",
+        "from_date": "2026-08-21",
+        "to_date": "2026-08-22",
+        "depth": "standard",
+        "adapter": "x_agent_browser",
+        "adapter_version": "1",
+        "wall_timeout_seconds": 90,
+        "item_limit": 20,
+        "network_request_limit": 50,
+        "cost_budget_cents": 0,
+        "surface_kind": "feed",
+    }
+
+    request = contracts.AcquisitionWorkRequest.from_dict(payload)
+
+    assert request.surface_kind == "feed"
+    assert request.to_dict() == payload
+
+
 def test_acquisition_work_result_round_trips_sanitized_items_and_retry_state():
     payload = {
         "schema_version": 1,

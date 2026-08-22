@@ -489,10 +489,12 @@ class LinkedInScraper:
         self.now = now or datetime.now(timezone.utc)
         self.debug_dir = debug_dir
         self._topic = ""
+        self._surface_kind = "topic"
 
     def search(self, topic: str, from_date: str, to_date: str) -> dict[str, Any]:
         started = time.monotonic()
         self._topic = topic
+        self._surface_kind = "topic"
         diagnostics = LinkedInRunDiagnostics()
         workspace: BrowserWorkspace | None = None
         page = LinkedInPageState(url="", title="")
@@ -578,6 +580,89 @@ class LinkedInScraper:
                 operator_url=exc.operator_url,
             )
 
+    def feed(self, from_date: str, to_date: str) -> dict[str, Any]:
+        """Collect structurally valid posts from the authenticated home feed."""
+        started = time.monotonic()
+        self._topic = ""
+        self._surface_kind = "feed"
+        diagnostics = LinkedInRunDiagnostics()
+        workspace: BrowserWorkspace | None = None
+        page = LinkedInPageState(url="", title="")
+        try:
+            _log(f"Acquiring agent-browser workspace profile={self.request.profile_id!r}")
+            workspace = self.client.acquire_workspace(self.request)
+            diagnostics.failure_stage = "authentication"
+            auth = self.client.inspect_auth(workspace)
+            if auth.checkpoint:
+                raise LinkedInScraperFailure(
+                    "checkpoint_required",
+                    "LinkedIn requires an operator security-verification checkpoint",
+                    operator_url=workspace.operator_url,
+                )
+            if not auth.authenticated:
+                ingress_probe = getattr(self.client, "operator_ingress_ready", None)
+                if callable(ingress_probe) and not ingress_probe(workspace.operator_url):
+                    raise LinkedInScraperFailure(
+                        "operator_ingress_unavailable", "LinkedIn operator handoff URL is unavailable"
+                    )
+                raise LinkedInScraperFailure(
+                    "auth_required",
+                    "LinkedIn authentication is required in the retained agent-browser profile",
+                    operator_url=workspace.operator_url,
+                )
+            diagnostics.failure_stage = "navigation"
+            page = self._navigate_feed(workspace)
+            if self.initial_wait:
+                time.sleep(self.initial_wait)
+            diagnostics.failure_stage = "extraction"
+            raw_candidates = self._extract(workspace)
+            for _ in range(max(0, self.scrolls)):
+                if self._accepted_unique_count(
+                    raw_candidates,
+                    "",
+                    from_date,
+                    to_date,
+                    surface_kind="feed",
+                ) >= self.limit:
+                    break
+                self._act(workspace, BrowserAction("scroll", value="1400"))
+                if self.scroll_wait:
+                    time.sleep(self.scroll_wait)
+                raw_candidates.extend(self._extract(workspace))
+            if not raw_candidates:
+                raise LinkedInScraperFailure(
+                    "extraction_empty", "Verified LinkedIn home feed contained no candidate cards"
+                )
+            diagnostics.failure_stage = "quality_gate"
+            items = self._quality_gate(
+                raw_candidates,
+                "",
+                from_date,
+                to_date,
+                diagnostics,
+                surface_kind="feed",
+            )
+            diagnostics.duration_ms = _elapsed_ms(started)
+            if not items:
+                return self._result(
+                    [],
+                    "quality_gate_failed",
+                    "LinkedIn feed candidates were found, but none passed the post quality gate",
+                    workspace,
+                    page,
+                    diagnostics,
+                    from_date,
+                    to_date,
+                )
+            return self._result(items, None, None, workspace, page, diagnostics, from_date, to_date)
+        except LinkedInScraperFailure as exc:
+            diagnostics.duration_ms = _elapsed_ms(started)
+            _log(f"Failed stage error_type={exc.error_type} message={exc}")
+            return self._result(
+                [], exc.error_type, str(exc), workspace, page, diagnostics, from_date, to_date,
+                operator_url=exc.operator_url,
+            )
+
     def _navigate(self, workspace: BrowserWorkspace, topic: str) -> LinkedInPageState:
         search_url = _search_url(topic)
         prepare_site_tab = getattr(self.client, "prepare_site_tab", None)
@@ -617,6 +702,43 @@ class LinkedInScraper:
             )
         return page
 
+    def _navigate_feed(self, workspace: BrowserWorkspace) -> LinkedInPageState:
+        feed_url = "https://www.linkedin.com/feed/"
+        prepare_site_tab = getattr(self.client, "prepare_site_tab", None)
+        retained_tab = bool(
+            callable(prepare_site_tab)
+            and prepare_site_tab(workspace, "linkedin.com", consolidate=True)
+        )
+        operation = "navigate" if retained_tab else "new_tab"
+        _log(f"Navigating feed strategy={'reuse_tab' if retained_tab else 'new_tab'}")
+        self._act(workspace, BrowserAction(operation, value=feed_url))
+        self.client.act(workspace, BrowserAction("wait", value="2500"))
+        page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
+        if page.rate_limited:
+            raise LinkedInScraperFailure(
+                "rate_limit_detected",
+                f"LinkedIn warning detected ({page.rate_limit_reason or 'unspecified'}); stopping",
+                operator_url=workspace.operator_url,
+            )
+        if page.checkpoint:
+            raise LinkedInScraperFailure(
+                "checkpoint_required", "LinkedIn checkpoint appeared during feed navigation",
+                operator_url=workspace.operator_url,
+            )
+        if page.login_page:
+            raise LinkedInScraperFailure(
+                "auth_required", "LinkedIn session became logged out during feed navigation",
+                operator_url=workspace.operator_url,
+            )
+        if page.error_page:
+            raise LinkedInScraperFailure("search_unavailable", "LinkedIn returned an error page")
+        if not _page_matches_feed(page):
+            raise LinkedInScraperFailure(
+                "navigation_mismatch",
+                f"LinkedIn final page does not match the authenticated home feed: {page.url}",
+            )
+        return page
+
     def _extract(self, workspace: BrowserWorkspace) -> list[dict[str, Any]]:
         raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
         if raw.get("rate_limited"):
@@ -634,6 +756,8 @@ class LinkedInScraper:
         topic: str,
         from_date: str,
         to_date: str,
+        *,
+        surface_kind: str = "topic",
     ) -> int:
         """Preview accepted unique yield without mutating run diagnostics."""
         return len(
@@ -643,6 +767,7 @@ class LinkedInScraper:
                 from_date,
                 to_date,
                 LinkedInRunDiagnostics(),
+                surface_kind=surface_kind,
             )
         )
 
@@ -660,6 +785,8 @@ class LinkedInScraper:
         from_date: str,
         to_date: str,
         diagnostics: LinkedInRunDiagnostics,
+        *,
+        surface_kind: str = "topic",
     ) -> list[dict[str, Any]]:
         items: list[dict[str, Any]] = []
         seen: set[str] = set()
@@ -678,12 +805,16 @@ class LinkedInScraper:
                 diagnostics.rejection_counts["duplicate"] += 1
                 continue
             seen.add(digest)
-            relevance = _compute_relevance(topic, candidate.text)
+            relevance = (
+                _compute_relevance(topic, candidate.text)
+                if surface_kind == "topic"
+                else 0.5
+            )
             meaningful = re.sub(r"\W+", "", candidate.text, flags=re.UNICODE)
             retrieval_signals: list[str] = []
             if len(meaningful) < 30:
                 retrieval_signals.append("short_text")
-            if relevance <= 0:
+            if surface_kind == "topic" and relevance <= 0:
                 retrieval_signals.append("no_lexical_topic_overlap")
             items.append({
                 "id": f"LI{digest}",
@@ -693,7 +824,11 @@ class LinkedInScraper:
                 "date": candidate.published_at,
                 "engagement": candidate.engagement,
                 "relevance": round(relevance, 2),
-                "why_relevant": f"LinkedIn post: {candidate.text[:80]}",
+                "why_relevant": (
+                    f"LinkedIn post: {candidate.text[:80]}"
+                    if surface_kind == "topic"
+                    else "Authenticated LinkedIn home feed post"
+                ),
                 "metadata": {
                     "extraction": "agent-browser-dom-v1",
                     "remote_browser": True,
@@ -756,15 +891,29 @@ class LinkedInScraper:
         if not self.debug_dir:
             return
         artifact = {
-            "query": self._topic,
-            "requested_url": _search_url(self._topic),
+            "query": self._topic or None,
+            "surface_kind": self._surface_kind,
+            "requested_url": (
+                _search_url(self._topic)
+                if self._surface_kind == "topic"
+                else "https://www.linkedin.com/feed/"
+            ),
             "final_url": page.url,
             "profile": self.request.profile_id,
             "session": self.request.session_name,
             "workspace": result.get("workspace") or {},
             "error_type": result.get("error_type"),
             "page_assertions": {
-                "query_matches": _page_matches_query(page, self._topic) if page.url else False,
+                "query_matches": (
+                    _page_matches_query(page, self._topic)
+                    if page.url and self._surface_kind == "topic"
+                    else None
+                ),
+                "feed_matches": (
+                    _page_matches_feed(page)
+                    if page.url and self._surface_kind == "feed"
+                    else None
+                ),
                 "has_content_filters": page.has_content_filters,
                 "has_content_cards": page.has_content_cards,
                 "no_results": page.no_results,
@@ -886,6 +1035,89 @@ def search_linkedin(
         debug_dir=str(config.get("LAST30DAYS_LINKEDIN_DEBUG_DIR") or "").strip(),
     )
     return scraper.search(topic, from_date, to_date)
+
+
+def scrape_linkedin_feed(
+    from_date: str,
+    to_date: str,
+    *,
+    depth: str = "default",
+    config: dict[str, Any] | None = None,
+    limit: int | None = None,
+) -> dict[str, Any]:
+    """Scrape the authenticated LinkedIn home feed without a topic query."""
+    config = config or {}
+    if not is_agent_browser_available():
+        return {
+            "items": [],
+            "error": "agent-browser command is not on PATH",
+            "error_type": "agent_browser_missing",
+        }
+    settings = DEPTH_CONFIG.get(depth, DEPTH_CONFIG["default"])
+    result_limit = int(
+        config.get("LAST30DAYS_LINKEDIN_MAX_RESULTS") or settings["results"]
+    )
+    if limit is not None:
+        result_limit = max(1, min(MAX_EXPLICIT_RESULTS, int(limit)))
+    scrolls = int(config.get("LAST30DAYS_LINKEDIN_SCROLLS") or settings["scrolls"])
+    if limit is not None:
+        scrolls = max(
+            scrolls,
+            min(
+                MAX_EXPLICIT_SCROLLS,
+                (result_limit + ACCEPTED_ITEMS_PER_SCROLL_BUDGET - 1)
+                // ACCEPTED_ITEMS_PER_SCROLL_BUDGET,
+            ),
+        )
+    timeout = int(config.get("LAST30DAYS_LINKEDIN_TIMEOUT") or settings["timeout"])
+    min_action_delay = float(
+        config.get("LAST30DAYS_LINKEDIN_MIN_ACTION_DELAY") or DEFAULT_MIN_ACTION_DELAY
+    )
+    max_actions_per_minute = int(
+        config.get("LAST30DAYS_LINKEDIN_MAX_ACTIONS_PER_MINUTE")
+        or DEFAULT_MAX_ACTIONS_PER_MINUTE
+    )
+    request = BrowserWorkspaceRequest(
+        profile_id=str(config.get("LAST30DAYS_LINKEDIN_PROFILE") or "last30days-linkedin"),
+        session_name=str(config.get("LAST30DAYS_LINKEDIN_SESSION") or "last30days-linkedin"),
+        browser_build=str(config.get("LAST30DAYS_LINKEDIN_BROWSER_BUILD") or "stealthcdp_chromium"),
+        view_provider=str(config.get("LAST30DAYS_LINKEDIN_VIEW_PROVIDER") or "rdp_gateway"),
+        timeout=timeout,
+        browser_id_hint=str(config.get("LAST30DAYS_LINKEDIN_BROWSER_ID") or "").strip(),
+        route_id_hint=str(config.get("LAST30DAYS_LINKEDIN_ROUTE_ID") or "").strip(),
+        route_pool_entry_id_hint=str(
+            config.get("LAST30DAYS_LINKEDIN_ROUTE_POOL_ENTRY_ID") or ""
+        ).strip(),
+        start_url="https://www.linkedin.com/feed/",
+        agent_name="linkedin-scraper",
+        task_name="linkedin-home-feed",
+        target_service_id="linkedin",
+        display_isolation=str(
+            config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION") or "shared_display"
+        ),
+    )
+    scraper = LinkedInScraper(
+        CliAgentBrowserClient(
+            timeout=timeout,
+            **(
+                {"job_timeout_ms": int(config["LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS"])}
+                if config.get("LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS")
+                else {}
+            ),
+        ),
+        request,
+        limit=result_limit,
+        scrolls=scrolls,
+        initial_wait=float(config.get("LAST30DAYS_LINKEDIN_INITIAL_WAIT") or 4.0),
+        scroll_wait=float(config.get("LAST30DAYS_LINKEDIN_SCROLL_WAIT") or 2.0),
+        interaction_limiter=_interaction_limiter(
+            request.session_name,
+            min_action_delay,
+            max_actions_per_minute,
+        ),
+        debug_dir=str(config.get("LAST30DAYS_LINKEDIN_DEBUG_DIR") or "").strip(),
+    )
+    return scraper.feed(from_date, to_date)
 
 
 def acquire_linkedin_profile(
@@ -1112,6 +1344,18 @@ def _page_matches_query(page: LinkedInPageState, topic: str) -> bool:
     query_readback = topic.strip().casefold() in evidence
     return query_readback and (
         page.has_content_filters or page.has_content_cards or page.no_results
+    )
+
+
+def _page_matches_feed(page: LinkedInPageState) -> bool:
+    parsed = urlsplit(page.url)
+    return (
+        (parsed.hostname or "").lower() in {"linkedin.com", "www.linkedin.com"}
+        and parsed.path.rstrip("/") == "/feed"
+        and not page.login_page
+        and not page.checkpoint
+        and not page.rate_limited
+        and not page.error_page
     )
 
 
