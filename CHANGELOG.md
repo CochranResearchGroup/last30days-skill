@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Retrieval-first X and LinkedIn acceptance.** Service 0.3.59 retains
+  canonical, in-range X and LinkedIn posts even when their extracted text is
+  short or has no lexical overlap with the search topic. Those conditions are
+  preserved as non-blocking `retrieval_signals` for later enrichment. Exact
+  URL deduplication and structural post, author, date, navigation-noise, and
+  deterministic promoted/sponsored exclusions remain unchanged.
+
 - **Retained social-browser daemon routing.** Service 0.3.58 preserves the
   unique daemon session route carried by service-owned tab evidence when X,
   LinkedIn, or Facebook reuses an existing browser. Follow-on controls now use

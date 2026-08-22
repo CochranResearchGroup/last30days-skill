@@ -490,12 +490,13 @@ process.stdout.write(JSON.stringify(result));
     def test_explicit_item_limit_scrolls_past_raw_rejections_for_accepted_yield(self):
         from lib import x_browser
 
-        rejected = [
+        promoted = [
             {
-                "text": "OpenAI",
-                "url": f"https://x.com/rejected/status/20781234567890124{index:02d}",
-                "author_handle": "rejected",
+                "text": "OpenAI promoted result with enough text for structural testing.",
+                "url": f"https://x.com/promoted/status/20781234567890124{index:02d}",
+                "author_handle": "promoted",
                 "timestamp": "2026-07-18T15:30:00.000Z",
+                "promoted": True,
                 "engagement": {},
             }
             for index in range(10)
@@ -510,7 +511,7 @@ process.stdout.write(JSON.stringify(result));
             }
             for index in range(10)
         ]
-        client = FakeAgentBrowserClient(candidate_batches=[rejected, accepted])
+        client = FakeAgentBrowserClient(candidate_batches=[promoted, accepted])
 
         with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
             result = x_browser.search_x_browser(
@@ -536,17 +537,18 @@ process.stdout.write(JSON.stringify(result));
     def test_explicit_twenty_item_limit_has_a_bounded_four_scroll_budget(self):
         from lib import x_browser
 
-        rejected = [
+        promoted = [
             {
-                "text": "OpenAI",
-                "url": f"https://x.com/rejected/status/20781234567890126{index:02d}",
-                "author_handle": "rejected",
+                "text": "OpenAI promoted result with enough text for structural testing.",
+                "url": f"https://x.com/promoted/status/20781234567890126{index:02d}",
+                "author_handle": "promoted",
                 "timestamp": "2026-07-18T15:30:00.000Z",
+                "promoted": True,
                 "engagement": {},
             }
             for index in range(20)
         ]
-        batches = [rejected]
+        batches = [promoted]
         for batch in range(4):
             batches.append([
                 {
@@ -632,7 +634,7 @@ process.stdout.write(JSON.stringify(result));
         self.assertEqual([], result["items"])
         self.assertEqual({"promoted": 1}, result["diagnostics"]["rejection_counts"])
 
-    def test_rejected_articles_emit_bounded_content_free_receipts(self):
+    def test_short_and_unmatched_articles_are_retained_with_diagnostic_signals(self):
         from lib import x_browser
 
         short_text = "OpenAI"
@@ -678,32 +680,18 @@ process.stdout.write(JSON.stringify(result));
                 },
             )
 
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(2, len(result["items"]))
+        self.assertEqual({}, result["diagnostics"]["rejection_counts"])
+        self.assertEqual([], result["diagnostics"]["rejected_candidates"])
         self.assertEqual(
-            [
-                {
-                    "reason": "insufficient_text",
-                    "source_native_id": "2078123456789012345",
-                    "text_length": len(short_text),
-                    "context_length": 0,
-                    "has_quote_context": False,
-                    "media_count": 1,
-                },
-                {
-                    "reason": "off_topic",
-                    "source_native_id": "2078123456789012346",
-                    "text_length": len(off_topic_text),
-                    "context_length": 0,
-                    "has_quote_context": False,
-                    "media_count": 0,
-                },
-            ],
-            result["diagnostics"]["rejected_candidates"],
+            ["short_text"],
+            result["items"][0]["metadata"]["retrieval_signals"],
         )
-        serialized = json.dumps(result["diagnostics"]["rejected_candidates"])
-        self.assertNotIn(short_text, serialized)
-        self.assertNotIn(off_topic_text, serialized)
-        self.assertNotIn("author_handle", serialized)
-        self.assertNotIn("https://", serialized)
+        self.assertEqual(
+            ["no_lexical_topic_overlap"],
+            result["items"][1]["metadata"]["retrieval_signals"],
+        )
 
     def test_account_restriction_returns_rate_limited_before_navigation(self):
         from lib import x_browser

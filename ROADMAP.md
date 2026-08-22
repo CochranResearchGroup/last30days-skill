@@ -1157,14 +1157,22 @@ Current State:
   while only a different logical browser received a migration adoption
   receipt. The plan remains open on the explicit owner/session transition; the
   canary is terminal and consumed.
+- Plan 0055 version 10/C10 supersedes acquisition-time semantic filtering with
+  a retrieval-first contract. Candidate service 0.3.59 retains structurally
+  valid, canonical, in-range X and LinkedIn posts when text is short or lacks
+  lexical topic overlap, preserving those conditions as diagnostics while
+  deterministic promoted/sponsored, navigation-noise, and exact-duplicate
+  exclusion remain. Installed service 0.3.58 and the recurring schedule are
+  unchanged; reliable home-feed, topic-feed, and configured-profile coverage
+  is the next acquisition priority before GraphRAG or quality policy.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 6/C06 owns installed LinkedIn accepted-unique pagination and the
-  daemon-route correction, with workstation readiness accepted but live
-  acquisition blocked by the retained social browser's unreceipted manual
-  ownership state.
+  version 10/C10 owns the retrieval-first X/LinkedIn candidate and the next
+  bounded surface-coverage packet. Candidate service 0.3.59 is built and
+  fixture-validated; installed service 0.3.58 and recurring behavior remain
+  unchanged.
 
 Closed Plan:
 

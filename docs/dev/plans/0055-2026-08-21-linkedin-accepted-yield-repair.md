@@ -2,13 +2,14 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 9
+Plan version: 10
 Date: 2026-08-21
 
 ## Objective
 
-Make the governed LinkedIn browser lane honor the service-admitted item ceiling
-and pursue accepted unique post permalinks within a bounded scroll budget.
+Make the governed X and LinkedIn browser lanes prioritize reliable retrieval:
+honor service-admitted ceilings, pursue unique canonical post permalinks within
+bounded scroll budgets, and defer semantic quality decisions until enrichment.
 
 ## Current State
 
@@ -52,7 +53,12 @@ and pursue accepted unique post permalinks within a bounded scroll budget.
   post-quality duplicate observations. The tick adapter currently drops the
   X worker's bounded `rejected_candidates` diagnostics, so the eight
   `insufficient_text` and 11 `off_topic` cases cannot be adjudicated
-  item-by-item from the durable receipt.
+  item-by-item from the durable receipt;
+- the operator has now established retrieval reliability as the current
+  priority: short text and absent lexical topic overlap are diagnostic signals,
+  not acquisition-time rejection reasons. Content understanding, GraphRAG,
+  and quality policy follow only after search, home-feed, topic-feed, and
+  configured-profile coverage is dependable.
 
 ## Scope
 
@@ -61,15 +67,21 @@ and pursue accepted unique post permalinks within a bounded scroll budget.
   accepted items per scroll budget;
 - stop LinkedIn scrolling only when accepted unique yield meets the requested
   ceiling or the bounded scroll budget is exhausted;
-- preserve existing authentication, checkpoint, rate-limit, permalink, author,
-  date, sponsored, relevance, media, and duplicate gates;
+- preserve authentication, checkpoint, rate-limit, canonical permalink,
+  author, date-window, deterministic promoted/sponsored, navigation-noise,
+  media, and exact-duplicate handling;
+- retain short-text and absent lexical topic overlap as per-item diagnostics
+  without excluding otherwise structurally valid X or LinkedIn posts;
 - advance one service release, validate/build/install it transactionally, and
   run at most one receipt-only X/LinkedIn 20/20 canary without changing the
   recurring schedule.
 
 ## Non-Goals
 
-- do not weaken LinkedIn quality gates or reinterpret sponsored cards as posts;
+- do not reinterpret deterministically labeled promoted/sponsored cards or
+  navigation-only cards as posts;
+- do not introduce semantic ranking, GraphRAG judgment, heuristic spam
+  classifiers, or content-quality thresholds during acquisition;
 - do not change working X accepted-unique pagination;
 - do not re-enable Reddit or Facebook, alter `daily-default`, or change the
   recurring ten-item X/LinkedIn ceilings;
@@ -86,8 +98,10 @@ and pursue accepted unique post permalinks within a bounded scroll budget.
    while direct calls retain existing depth/config behavior.
 3. A repeated-card regression proves the scraper continues until 20 accepted
    unique permalinks are found or four scrolls are consumed.
-4. Existing LinkedIn and X auth, quality, canonicalization, media, duplicate,
-   result-limit, and service-worker tests remain green.
+4. Existing LinkedIn and X auth, structural validation, canonicalization,
+   deterministic ad/noise exclusion, media, duplicate, result-limit, and
+   service-worker tests remain green; fixtures prove short and lexically
+   unmatched posts are retained with diagnostic signals.
 5. Focused and full validation plus a deterministic service build pass; the
    exact successor installs ready with the prior verified release retained as
    rollback.
@@ -935,4 +949,88 @@ Next action:
   unique-ID progress diagnostics. Validate with fixtures only before any live
   retry.
 
-Checkpoint P0055-C09 is the current authority.
+Checkpoint P0055-C09 is superseded by P0055-C10 below.
+
+### Checkpoint P0055-C10 | 2026-08-22
+
+Plan version: 10
+
+State transition:
+
+- `rejection_classes_adjudicated_observability_gap_isolated -> retrieval_first_acceptance_candidate_built`.
+
+Progress classification:
+
+- `outcome_progress`; acquisition no longer discards structurally valid X or
+  LinkedIn posts merely because their extracted content is short or lacks a
+  lexical topic token.
+
+Product decision:
+
+- retrieval reliability now precedes semantic understanding and content
+  quality policy;
+- current and future acquisition surfaces should preserve canonical, in-range
+  posts from search/topic feeds, the operator's home feed, and configured
+  profile feeds before GraphRAG or another enrichment layer interprets them;
+- acquisition-time exclusion is limited to structural invalidity, exact
+  duplicates, deterministic promoted/sponsored labels, and deterministic
+  non-post/navigation noise. No heuristic spam classifier was added.
+
+Owned changes:
+
+- X and LinkedIn retain short or lexically unmatched posts and attach bounded
+  `short_text` or `no_lexical_topic_overlap` retrieval signals to item metadata;
+- canonical permalink, author, requested date window, deterministic
+  promoted/sponsored or navigation-noise exclusion, and exact URL
+  deduplication remain hard acquisition gates;
+- focused pagination fixtures now use deterministically promoted cards when
+  proving that accepted-yield scrolling continues past rejected observations;
+- service candidate 0.3.59 and its runtime manifest/changelog/version evidence
+  were built without installing or adopting the candidate.
+
+Validation evidence:
+
+- focused X, LinkedIn, runtime-package, release-version, and worker validation:
+  107 passed and two environment-dependent tests skipped;
+- full repository suite reached 2,667 passed, seven skipped, and six subtests
+  passed; its sole failure was the expected temporary header/checkpoint version
+  mismatch corrected by this checkpoint;
+- deterministic service artifact
+  `dist/service/last30days-service-0.3.59.tar.gz` built with SHA-256
+  `d1b4dcdb79552d197476f521aff2f0436044d154d3e183f4f388622e53e952a2`.
+
+Runtime boundary:
+
+- installed service 0.3.58, recurring X/LinkedIn ten-item ceilings,
+  Reddit/Facebook disabled state, schedule cadence, and retained browsers are
+  unchanged. No live provider attempt ran.
+
+Authority classification:
+
+- `inherited_authority`; the operator explicitly replaced acquisition-time
+  quality filtering with retrieval-first acceptance and deferred GraphRAG and
+  quality decisions until coverage is dependable.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- pending closeout write after the exact commit and validation receipts are
+  available.
+
+Remaining acceptance criteria:
+
+- rerun the authority audit and focused suite after this checkpoint;
+- design the next bounded source-neutral surface packet for home-feed,
+  topic/search-feed, and configured-profile coverage;
+- install or live-test 0.3.59 only under a separately explicit runtime packet.
+
+Next action:
+
+- map the current collection-spec surface model to X and LinkedIn browser
+  navigation so the next packet expands retrieval coverage without coupling it
+  to semantic ranking or quality thresholds.
+
+Checkpoint P0055-C10 is the current authority.

@@ -602,6 +602,30 @@ process.stdout.write(JSON.stringify(result));
         self.assertGreaterEqual(counts["missing_permalink"], 1)
         self.assertGreaterEqual(counts["outside_date_range"], 1)
 
+    def test_short_and_unmatched_posts_are_retained_with_diagnostic_signals(self):
+        candidates = [
+            post_candidate(text="robotic lawn mower"),
+            post_candidate(
+                text="Google DeepMind changed its leadership structure and operating model.",
+                url="https://www.linkedin.com/feed/update/urn:li:activity:7351200000000000001/",
+                urn="urn:li:activity:7351200000000000001",
+            ),
+        ]
+        result = make_scraper(FakeAgentBrowserClient(candidates=candidates)).search(
+            "robotic lawn mower", "2026-06-15", "2026-07-15"
+        )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(2, len(result["items"]))
+        self.assertEqual(
+            ["short_text"],
+            result["items"][0]["metadata"]["retrieval_signals"],
+        )
+        self.assertEqual(
+            ["no_lexical_topic_overlap"],
+            result["items"][1]["metadata"]["retrieval_signals"],
+        )
+
     def test_normalization_preserves_linkedin_metadata(self):
         raw = {
             "id": "LI1",

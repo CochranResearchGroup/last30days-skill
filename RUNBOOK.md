@@ -19287,3 +19287,67 @@ Next Bounded Action:
 - add provider-neutral bounded rejected-item evidence to tick receipts and
   LinkedIn per-scroll unique-ID progress diagnostics; validate with fixtures
   before any live retry or quality-gate change.
+
+## Turn 319 | 2026-08-22
+
+Focus: replace acquisition-time semantic filtering with retrieval-first X and
+LinkedIn acceptance while leaving the installed runtime unchanged.
+
+Authority Consulted:
+
+- operator retrieval-first direction; Plan 0055/C09; Roadmap P08; current
+  repository policies for planning, memory, CodeGraph, architecture,
+  documentation, versioning, validation, and Git custody.
+
+Decisions And Changes:
+
+- defined acquisition reliability as the current phase, followed by semantic
+  understanding/GraphRAG and only then content-quality policy;
+- retained structurally valid short and lexically unmatched X and LinkedIn
+  posts, recording the conditions as `retrieval_signals` rather than rejection
+  reasons;
+- preserved canonical identity, author, requested date range, exact URL
+  deduplication, deterministic promoted/sponsored labels, and LinkedIn
+  navigation-noise exclusion;
+- built service candidate 0.3.59 without installing it, changing recurring
+  configuration, controlling a browser, or running a provider attempt.
+
+Validation Evidence:
+
+- focused X, LinkedIn, runtime-package, release-version, and worker suite: 107
+  passed and two skipped;
+- full suite: 2,667 passed, seven skipped, and six subtests passed, with only
+  the temporary Plan 0055 header/checkpoint mismatch failing before C10 was
+  appended;
+- service artifact SHA-256:
+  `d1b4dcdb79552d197476f521aff2f0436044d154d3e183f4f388622e53e952a2`.
+
+State Movement:
+
+- Plan 0055 advances to version 10/C10
+  `retrieval_first_acceptance_candidate_built`; P08 remains OPEN.
+
+Progress Classification:
+
+- `outcome_progress`; two unjustified content-loss gates are now diagnostic
+  only, and the next coverage work is separated from later GraphRAG/quality
+  policy.
+
+Authority Classification:
+
+- `inherited_authority`; source, fixtures, release candidate, and durable docs
+  only. Installed and live state remain unchanged.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending closeout write after commit and terminal validation.
+
+Next Bounded Action:
+
+- map collection specs to X and LinkedIn home-feed, topic/search-feed, and
+  configured-profile navigation; do not add semantic ranking or quality gates
+  to that acquisition packet.

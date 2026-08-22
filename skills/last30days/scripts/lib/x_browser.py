@@ -618,19 +618,21 @@ def _quality_gate(
         evidence_text = f"{text} {context_text}".strip()
         handle = str(raw.get("author_handle") or "").lstrip("@")
         date = _iso_date(str(raw.get("timestamp") or ""))
+        relevance = _compute_relevance(topic, evidence_text)
+        retrieval_signals: list[str] = []
+        if len(evidence_text) < 30:
+            retrieval_signals.append("short_text")
+        if relevance <= 0:
+            retrieval_signals.append("no_lexical_topic_overlap")
         reason = None
         if not url:
             reason = "missing_permalink"
         elif not handle:
             reason = "missing_author"
-        elif len(evidence_text) < 30:
-            reason = "insufficient_text"
         elif raw.get("promoted"):
             reason = "promoted"
         elif not date or not (from_date <= date <= to_date):
             reason = "out_of_range"
-        elif _compute_relevance(topic, evidence_text) <= 0:
-            reason = "off_topic"
         if reason:
             media = raw.get("media")
             diagnostics.reject(
@@ -654,10 +656,11 @@ def _quality_gate(
             "date": date,
             "engagement": _normalize_engagement(raw.get("engagement")),
             "why_relevant": "Authenticated X search result",
-            "relevance": _compute_relevance(topic, evidence_text),
+            "relevance": relevance,
             "metadata": {
                 "extraction": "agent-browser-dom-v1",
                 "date_confidence": "high",
+                "retrieval_signals": retrieval_signals,
                 "media": list(raw.get("media") or [])[:16],
                 "quoted_text": str(raw.get("quoted_text") or "")[:1000],
                 "media_alt_text": [

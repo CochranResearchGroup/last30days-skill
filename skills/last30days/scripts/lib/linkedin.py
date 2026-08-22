@@ -666,7 +666,7 @@ class LinkedInScraper:
         for raw in raw_candidates:
             candidate = _candidate_from_raw(raw, self.now)
             diagnostics.candidate_counts[candidate.kind] += 1
-            _validate_candidate(candidate, topic, from_date, to_date)
+            _validate_candidate(candidate, from_date, to_date)
             if candidate.rejection_reasons:
                 diagnostics.candidate_counts["rejected"] += 1
                 diagnostics.rejection_counts.update(candidate.rejection_reasons)
@@ -679,6 +679,12 @@ class LinkedInScraper:
                 continue
             seen.add(digest)
             relevance = _compute_relevance(topic, candidate.text)
+            meaningful = re.sub(r"\W+", "", candidate.text, flags=re.UNICODE)
+            retrieval_signals: list[str] = []
+            if len(meaningful) < 30:
+                retrieval_signals.append("short_text")
+            if relevance <= 0:
+                retrieval_signals.append("no_lexical_topic_overlap")
             items.append({
                 "id": f"LI{digest}",
                 "text": candidate.text,
@@ -692,6 +698,7 @@ class LinkedInScraper:
                     "extraction": "agent-browser-dom-v1",
                     "remote_browser": True,
                     "date_confidence": candidate.date_confidence,
+                    "retrieval_signals": retrieval_signals,
                     "media": candidate.media[:16],
                 },
             })
@@ -801,7 +808,7 @@ def search_linkedin(
     config: dict[str, Any] | None = None,
     limit: int | None = None,
 ) -> dict[str, Any]:
-    """Search LinkedIn and return only verified, quality-gated content posts."""
+    """Search LinkedIn and return structurally verified content posts."""
     config = config or {}
     if not is_agent_browser_available():
         return {
@@ -1137,15 +1144,12 @@ def _candidate_from_raw(raw: dict[str, Any], now: datetime) -> LinkedInCandidate
 
 
 def _validate_candidate(
-    candidate: LinkedInCandidate, topic: str, from_date: str, to_date: str
+    candidate: LinkedInCandidate, from_date: str, to_date: str
 ) -> None:
     if candidate.kind != "post":
         candidate.rejection_reasons.append(f"kind_{candidate.kind}")
     if not candidate.canonical_url:
         candidate.rejection_reasons.append("missing_permalink")
-    meaningful = re.sub(r"\W+", "", candidate.text, flags=re.UNICODE)
-    if len(meaningful) < 30:
-        candidate.rejection_reasons.append("text_too_short")
     if _is_noise_text(candidate.text):
         candidate.rejection_reasons.append("navigation_noise")
     if not candidate.author:
@@ -1156,8 +1160,6 @@ def _validate_candidate(
         candidate.rejection_reasons.append("outside_date_range")
     if candidate.sponsored:
         candidate.rejection_reasons.append("sponsored")
-    if _compute_relevance(topic, candidate.text) <= 0:
-        candidate.rejection_reasons.append("off_topic")
 
 
 def _canonical_post_url(value: str, urn: str = "") -> str | None:

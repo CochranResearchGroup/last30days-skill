@@ -608,7 +608,9 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # at least four seconds, and stops immediately on search-limit, throttling,
 # temporary-restriction, or unusual-activity warnings. A command is successful
 # only when profile/auth/search readbacks pass and every
-# emitted item has a canonical post permalink, author, in-range date, and useful text.
+# emitted item has a canonical post permalink, author, and in-range date. Short
+# text and missing lexical topic overlap are retained as diagnostic signals for
+# later enrichment rather than used as acquisition-time rejection gates.
 # Debug artifacts contain timings, assertions, counts, and item lengths only;
 # they exclude cookies, operator URLs, raw HTML, and private page text.
 
@@ -625,7 +627,7 @@ Reddit, X, Facebook, and LinkedIn browser failures are typed so operator action 
 | `route_stale` | Refresh or repair current agent-browser route-display service state. |
 | `navigation_mismatch` | The site did not reach the exact requested query/filter state; no items are emitted. |
 | `extraction_empty` | A verified search page contained no candidate cards. |
-| `quality_gate_failed` | Candidates existed, but none were canonical, dated, relevant posts. |
+| `quality_gate_failed` | Candidates existed, but none passed structural identity/date checks or deterministic promoted/noise exclusion. |
 | `facebook_target_unresponsive` | The retained Facebook target and its one exact replacement did not answer bounded CDP reads; stop without retry. |
 | `search_unavailable` | X rendered a temporary error page instead of results. |
 
