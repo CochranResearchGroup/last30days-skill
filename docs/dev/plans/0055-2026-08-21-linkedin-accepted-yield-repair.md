@@ -1017,8 +1017,11 @@ Subagent status and reconciliation:
 
 Graphiti write status:
 
-- pending closeout write after the exact commit and validation receipts are
-  available.
+- `graphiti_write_pending`; provider readiness passed, but job
+  `7e9c6475-d08d-4a17-8b79-8206d4586a6e` timed out during edge extraction
+  after 120 seconds without creating a visible episode. This checkpoint,
+  Runbook Turn 319, commit `e88f80d`, and test/build receipts remain the
+  authoritative durable record; retry at the next non-trivial closeout.
 
 Remaining acceptance criteria:
 

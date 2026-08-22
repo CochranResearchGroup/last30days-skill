@@ -19344,7 +19344,11 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending closeout write after commit and terminal validation.
+- `graphiti_write_pending`; provider readiness passed, but job
+  `7e9c6475-d08d-4a17-8b79-8206d4586a6e` timed out during edge extraction
+  after 120 seconds without a visible episode. Retry at the next non-trivial
+  closeout; Plan 0055/C10, this turn, commit `e88f80d`, and validation receipts
+  remain authoritative.
 
 Next Bounded Action:
 
