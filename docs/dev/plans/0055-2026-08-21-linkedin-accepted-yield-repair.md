@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 7
+Plan version: 8
 Date: 2026-08-21
 
 ## Objective
@@ -35,12 +35,17 @@ and pursue accepted unique post permalinks within a bounded scroll budget.
   the adapters derived their command lane from stale top-level tab
   `sessionId=handoff-c87d81798683ee75`, which is observation-only after the
   owner compare-and-swap;
-- a retained candidate-owned blank tab now makes the route set deliberately
-  non-unique, so the installed adapter falls back to the receipt-owned service
-  session `last30days-owner-repair-20260821-c07`. Both installed adapters
-  resolve that route, and direct X/LinkedIn tab switches plus evaluations
-  succeed through it. No post-transfer provider retry has exercised this
-  corrected route yet.
+- a retained candidate-owned blank tab makes the route set deliberately
+  non-unique, so the installed adapters fall back to receipt-owned service
+  session `last30days-owner-repair-20260821-c07`;
+- terminal canary `tick-da3b0c6dbe61301e7371971f9440d9cb` exercised that
+  corrected route successfully: X observed 45 and accepted 11 posts; LinkedIn
+  observed 15 and accepted three. Both provider attempts and both lanes are
+  `success`, with no failure class, incident, coverage gap, auth failure, or
+  browser error;
+- the tick is `complete_degraded` only because three LinkedIn profile-photo
+  semantic sidecars returned `analysisoutputmissing`; collection, media, OCR,
+  lexical indexing, semantic indexing, and head promotion completed.
 
 ## Scope
 
@@ -731,4 +736,98 @@ Next action:
   owner receipt, PID/CDP identity, candidate session route, recurring-config
   digest, and zero active attempts immediately before one bounded tick.
 
-Checkpoint P0055-C07 is the current authority.
+Checkpoint P0055-C07 is superseded by P0055-C08 below.
+
+### Checkpoint P0055-C08 | 2026-08-21
+
+Plan version: 8
+
+State transition:
+
+- `owner_receipted_stale_tab_route_repaired_retry_withheld -> corrected_route_live_canary_succeeds_below_ceiling`.
+
+Progress classification:
+
+- `outcome_progress`; the corrected candidate-owned route produced accepted
+  posts from both X and LinkedIn and eliminated the prior pre-observation
+  owner-route failure.
+
+Live canary receipt:
+
+- installed service 0.3.58, MCP 4.0.3, database schema 16, and runtime manifest
+  `04008504fdae3ea1aafcf74dad793add40a3327312882433449dfbe1ac1cda77`
+  were compatible and ready before the attempt;
+- both installed acquisition clients resolved browser/session
+  `session:last30days-owner-repair-20260821-c07` /
+  `last30days-owner-repair-20260821-c07`. Browser PID 16807 remained healthy
+  on CDP endpoint
+  `ws://127.0.0.1:36603/devtools/browser/a21f8ae7-c39b-4307-a3e0-9528b9d9a190`;
+- mode-0600 temporary config changed only revision, aggregate item capacity
+  from 23 to 43, and X/LinkedIn item ceilings from ten to 20. Preflight was
+  `ready` for exact tick `tick-da3b0c6dbe61301e7371971f9440d9cb`
+  at config digest
+  `sha256:cf620a72aa45e96e9c5bc906db9d074e57fc0e9b3be35eabe550a8c3fb2d4710`,
+  with two attempts, 40 items, 100 requests, 240 wall seconds, and zero
+  cost/model budget;
+- the tick was enqueued once and no retry ran. X attempt
+  `provider-attempt-2d31b58574cae91e6dfe451e8f8d7317` observed 45, accepted
+  11, and rejected 34: 15 `duplicate_status`, eight `insufficient_text`, and
+  11 `off_topic`;
+- LinkedIn attempt `provider-attempt-832c826a68b2818a92b7ba2d5ca2da47`
+  observed 15, accepted three, and rejected 12, all `duplicate`. Each accepted
+  item has a canonical `/feed/update/urn:li:activity:.../` permalink;
+- both provider attempts and lanes are `success`, with no provider failure
+  class, incident, coverage gap, authentication signal, or browser error.
+
+Degraded-stage disposition:
+
+- the overall tick is `complete_degraded` because three semantic sidecars for
+  the repeated LinkedIn profile-photo asset returned safe error
+  `analysisoutputmissing`;
+- this occurred after post acceptance and raw publication. Collection, media,
+  OCR, lexical indexing, semantic indexing, and head promotion completed, so
+  the degraded label is not a scraper, auth, or post-permalink failure.
+
+Recurring-state and final health evidence:
+
+- the temporary config directory was moved to the user trash. Normal config
+  remains SHA-256
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`;
+  Reddit/Facebook remain disabled, normal X/LinkedIn ceilings remain ten, and
+  `daily-default` is ready for `2026-08-23T00:00:00Z`;
+- active tick attempts are zero, SQLite quick check is `ok`, and the social
+  browser remains `ready` on unchanged PID/CDP identity with four retained
+  tabs;
+- global workstation upgrade status still reports a separate ambiguous-runtime
+  transaction and `runtimeConvergenceReady=false`; the exact service browser
+  health and installed-adapter route were nevertheless effect-proven by both
+  successful provider attempts. Do not use the canary as acceptance evidence
+  for that wider workstation transaction.
+
+Authority classification:
+
+- `human_gate`; the newly authorized one-shot canary is consumed and terminal.
+  No second attempt or scraper mutation is authorized by this receipt.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- deferred; this checkpoint, the runbook, SQLite tick receipt, and retained
+  browser evidence are the durable source-backed record.
+
+Remaining acceptance criterion:
+
+- the browser-route blocker is resolved. The 20-item ceiling remains a ceiling,
+  not a yield guarantee: X accepted 11 after quality/duplicate gates and
+  LinkedIn exposed only 15 observed cards, of which 12 were duplicates.
+
+Next action:
+
+- stop at the terminal receipt. If work resumes, inspect the repeated LinkedIn
+  card set and X insufficient-text/off-topic rejections as a new bounded
+  scraper-analysis packet before changing acceptance gates.
+
+Checkpoint P0055-C08 is the current authority.

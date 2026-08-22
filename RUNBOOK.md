@@ -19135,3 +19135,80 @@ Next Bounded Action:
 
 - stop. On a new explicit retry request, recheck the receipt-owned candidate
   route and run at most one X/LinkedIn canary through it.
+
+## Turn 317 | 2026-08-21
+
+Focus: run the newly authorized 20-item X plus 20-item LinkedIn canary through
+the repaired candidate-owned browser route and report the terminal receipts.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C07; last30days live-operation guidance;
+  agent-browser service ownership guidance; planning, validation,
+  documentation, Git custody, and closeout authorities.
+
+Decisions And Changes:
+
+- revalidated installed service compatibility, the unchanged recurring config,
+  zero active attempts, and the exact retained browser PID/CDP identity;
+- proved both installed adapters resolve candidate browser/session
+  `session:last30days-owner-repair-20260821-c07` /
+  `last30days-owner-repair-20260821-c07`;
+- preflighted and enqueued exact tick
+  `tick-da3b0c6dbe61301e7371971f9440d9cb` once. No retry ran;
+- moved the temporary canary config directory to the user trash after the
+  terminal receipt.
+
+Validation Evidence:
+
+- preflight config digest is
+  `sha256:cf620a72aa45e96e9c5bc906db9d074e57fc0e9b3be35eabe550a8c3fb2d4710`;
+  bounds were two attempts, 40 items, 100 requests, 240 wall seconds, and zero
+  cost/model budget;
+- X attempt `provider-attempt-2d31b58574cae91e6dfe451e8f8d7317`
+  succeeded with 45 observed, 11 accepted, and 34 rejected: 15 duplicates,
+  eight insufficient-text, and 11 off-topic;
+- LinkedIn attempt `provider-attempt-832c826a68b2818a92b7ba2d5ca2da47`
+  succeeded with 15 observed, three accepted, and 12 duplicate rejections;
+- both lanes are `success`, with no provider failure class, incident, coverage
+  gap, auth signal, or browser error. Tick state is `complete_degraded` solely
+  because three repeated LinkedIn profile-photo semantic sidecars returned
+  `analysisoutputmissing`; head promotion and both indexes succeeded;
+- normal config SHA-256 remains
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`,
+  Reddit/Facebook remain disabled, normal X/LinkedIn limits remain ten,
+  `daily-default` is ready for `2026-08-23T00:00:00Z`, active attempts are
+  zero, and SQLite quick check is `ok`;
+- browser PID 16807 remains `ready` on unchanged CDP endpoint
+  `ws://127.0.0.1:36603/devtools/browser/a21f8ae7-c39b-4307-a3e0-9528b9d9a190`.
+
+State Movement:
+
+- Plan 0055 advances to version 8/C08
+  `corrected_route_live_canary_succeeds_below_ceiling`; P08 remains OPEN.
+
+Progress Classification:
+
+- `outcome_progress`; both scrapers now produce accepted posts through the
+  repaired route. Remaining underfill comes from quality/duplicate gates and
+  LinkedIn card yield, not the prior browser-owner rejection.
+
+Recurring-State And Attempt Boundary:
+
+- the one authorized canary is consumed and terminal; no additional provider
+  attempt ran;
+- recurring cadence and normal source ceilings were not changed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred; Plan 0055/C08, this runbook entry, and the durable SQLite receipt
+  retain the source-backed outcome.
+
+Next Bounded Action:
+
+- stop at the terminal receipt. If resumed, analyze LinkedIn repeated cards and
+  X insufficient-text/off-topic rejections before changing scraper gates.
