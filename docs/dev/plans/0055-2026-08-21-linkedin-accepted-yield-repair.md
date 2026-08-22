@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 8
+Plan version: 9
 Date: 2026-08-21
 
 ## Objective
@@ -45,7 +45,14 @@ and pursue accepted unique post permalinks within a bounded scroll budget.
   browser error;
 - the tick is `complete_degraded` only because three LinkedIn profile-photo
   semantic sidecars returned `analysisoutputmissing`; collection, media, OCR,
-  lexical indexing, semantic indexing, and head promotion completed.
+  lexical indexing, semantic indexing, and head promotion completed;
+- rejection-path review proves LinkedIn's 12 duplicate counts are repeated
+  observations of the same three valid non-sponsored posts across the initial
+  capture plus four scroll captures. X's 15 `duplicate_status` counts are also
+  post-quality duplicate observations. The tick adapter currently drops the
+  X worker's bounded `rejected_candidates` diagnostics, so the eight
+  `insufficient_text` and 11 `off_topic` cases cannot be adjudicated
+  item-by-item from the durable receipt.
 
 ## Scope
 
@@ -830,4 +837,102 @@ Next action:
   card set and X insufficient-text/off-topic rejections as a new bounded
   scraper-analysis packet before changing acceptance gates.
 
-Checkpoint P0055-C08 is the current authority.
+Checkpoint P0055-C08 is superseded by P0055-C09 below.
+
+### Checkpoint P0055-C09 | 2026-08-21
+
+Plan version: 9
+
+State transition:
+
+- `corrected_route_live_canary_succeeds_below_ceiling -> rejection_classes_adjudicated_observability_gap_isolated`.
+
+Progress classification:
+
+- `blocker_reduction`; the underfill is now separated into legitimate duplicate
+  suppression, a LinkedIn scroll-progress limitation, and X cases that need
+  retained item-level evidence before their quality decision can be trusted.
+
+LinkedIn rejection adjudication:
+
+- the accepted set contains exactly three canonical activity permalinks:
+  `urn:li:activity:7496746901808144384`,
+  `urn:li:activity:7496747030405459970`, and
+  `urn:li:activity:7496746415675670528`;
+- for an explicit limit of 20, `search_linkedin` derives four bounded scrolls.
+  The retained Agent Browser job sequence confirms one initial extraction and
+  four successful scroll/extraction pairs;
+- `LinkedInScraper.search` appends every extraction to `raw_candidates`.
+  `_quality_gate` first validates permalink, meaningful text, navigation noise,
+  author, date, sponsored state, and topic relevance; only candidates with no
+  rejection reason reach duplicate detection;
+- the durable outcome is 15 observed, three accepted, and 12 duplicates with no
+  other rejection class. Therefore the 12 are repeated observations of the
+  same three valid, non-sponsored posts, not 12 distinct ads or malformed
+  posts;
+- disposition: `legitimate_deduplication_with_scraper_progress_limitation`.
+  Duplicate suppression is correct, but four successful page-scroll commands
+  failed to expose any new unique card.
+
+X rejection adjudication:
+
+- `_quality_gate` validates canonical status permalink, author, evidence-text
+  length, promoted state, date range, and topic overlap before `_dedupe_items`
+  can emit `duplicate_status`. The 15 duplicate-status observations are
+  therefore repeated quality-passing, non-promoted posts; disposition
+  `legitimate_deduplication`;
+- the 11 `off_topic` items necessarily had canonical permalinks, authors, at
+  least 30 evidence characters, non-promoted state, and in-range dates, but the
+  extracted tweet, quote, and media-alt evidence contained no `OpenAI` token
+  overlap. They may be legitimate X statuses returned because the match lived
+  in unextracted card/link context; disposition `needs_evidence` rather than a
+  confirmed valid rejection;
+- the eight `insufficient_text` items had canonical permalinks and authors but
+  fewer than 30 extracted evidence characters. Because this branch precedes
+  promoted, date, and relevance checks, the receipt cannot determine whether
+  they were ads, out of range, irrelevant, or valid short posts; disposition
+  `needs_evidence`.
+
+Durable evidence gap:
+
+- `XRunDiagnostics` retains up to 32 bounded rejected-candidate records with
+  reason, native status ID, text/context lengths, quote-context presence, and
+  media count;
+- `AcquisitionWorkerTickAdapter` copies only `diagnostics.rejection_counts`
+  into `ProviderResult`; it does not persist `rejected_candidates`. Agent
+  Browser job records retain command success but not evaluate payloads;
+- the terminal tick therefore supports aggregate classification but not
+  item-level review of the 19 X quality rejects. No source retry or browser
+  command was run during this investigation.
+
+Authority classification:
+
+- `inherited_authority`; the operator authorized the bounded rejection review.
+  The review changed no scraper code, quality gate, recurring configuration,
+  browser state, or provider attempt boundary.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- deferred; this checkpoint, the runbook, CodeGraph source readback, SQLite
+  receipt, and retained Agent Browser jobs are the durable evidence.
+
+Remaining acceptance criterion:
+
+- preserve bounded rejected-candidate evidence through the tick receipt, then
+  adjudicate X cases from exact status IDs before changing any acceptance gate;
+- make LinkedIn scroll progress observable by comparing newly discovered
+  canonical IDs per scroll and classify a successful scroll with zero new IDs
+  as pagination stagnation.
+
+Next action:
+
+- implement one provider-neutral bounded rejection-evidence field from worker
+  diagnostics through `ProviderResult` persistence, plus LinkedIn per-scroll
+  unique-ID progress diagnostics. Validate with fixtures only before any live
+  retry.
+
+Checkpoint P0055-C09 is the current authority.

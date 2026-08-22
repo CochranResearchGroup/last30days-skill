@@ -19212,3 +19212,78 @@ Next Bounded Action:
 
 - stop at the terminal receipt. If resumed, analyze LinkedIn repeated cards and
   X insufficient-text/off-topic rejections before changing scraper gates.
+
+## Turn 318 | 2026-08-21
+
+Focus: adjudicate the terminal canary's LinkedIn duplicate cards and X quality
+rejections without changing gates or running another provider attempt.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C08; last30days read-only evidence guidance;
+  Agent Browser service ownership guidance; CodeGraph structural authority;
+  planning, validation, documentation, Git custody, and closeout policy.
+
+Decisions And Changes:
+
+- classified LinkedIn's 12 duplicate counts as repeated observations of the
+  same three valid, canonical, non-sponsored activity posts;
+- confirmed the scraper performed one initial extraction plus four successful
+  scroll/extraction pairs, but produced no new unique LinkedIn card;
+- classified X's 15 `duplicate_status` counts as repeated quality-passing,
+  non-promoted status posts;
+- held the eight X `insufficient_text` and 11 `off_topic` cases at
+  `needs_evidence`: the durable tick receipt retains only aggregate rejection
+  counts, not the worker's bounded rejected-candidate status IDs and shape
+  diagnostics;
+- made no source, runtime, browser, recurring-config, or quality-gate change and
+  ran no provider attempt.
+
+Validation Evidence:
+
+- durable LinkedIn receipt: 15 observed, three accepted canonical activity
+  permalinks, and 12 `duplicate` rejections with no other rejection class;
+- CodeGraph readback: LinkedIn validates every quality field before duplicate
+  detection and appends every post-scroll extraction; explicit limit 20 derives
+  four scrolls;
+- retained Agent Browser job sequence contains four successful LinkedIn
+  `scroll` jobs, each followed by successful `evaluate`, after the initial
+  extraction;
+- durable X receipt: 45 observed, 11 accepted, 15 duplicate-status, eight
+  insufficient-text, and 11 off-topic;
+- CodeGraph readback: X duplicate detection runs after all quality gates, while
+  insufficient-text precedes promoted/date/relevance checks;
+- `XRunDiagnostics` retains bounded rejected-candidate summaries, but
+  `AcquisitionWorkerTickAdapter` persists only `rejection_counts` into the tick
+  provider result. Retained Agent Browser jobs contain success state, not
+  evaluate response payloads.
+
+State Movement:
+
+- Plan 0055 advances to version 9/C09
+  `rejection_classes_adjudicated_observability_gap_isolated`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; duplicate suppression is legitimate, LinkedIn underfill
+  is a scroll-progress limitation, and the exact X evidence-loss seam is now
+  identified before any gate change.
+
+Authority Classification:
+
+- `inherited_authority`; analysis only, with no new live or mutation boundary.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred; Plan 0055/C09, this runbook entry, CodeGraph source readback, and
+  the durable runtime receipts retain the finding.
+
+Next Bounded Action:
+
+- add provider-neutral bounded rejected-item evidence to tick receipts and
+  LinkedIn per-scroll unique-ID progress diagnostics; validate with fixtures
+  before any live retry or quality-gate change.
