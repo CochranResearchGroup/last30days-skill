@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 11
+Plan version: 12
 Date: 2026-08-21
 
 ## Objective
@@ -13,52 +13,30 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 
 ## Current State
 
-- installed service 0.3.58/schema 16 is ready and MCP 4.0.3-compatible;
-- the LinkedIn item-limit and accepted-unique pagination correction is installed,
-  and 0.3.58 preserves the unique retained daemon session route for follow-on
-  browser controls instead of reattaching under the service-session alias;
-- freshly authorized terminal tick `tick-a678da2c70bded995195a865f8100f0f`
-  failed before either scraper observed a post while agent-browser workstation
-  runtime admission was transferring during a nonterminal upgrade;
-- managed reconciliation restored one current runtime host, one dashboard,
-  one executable generation, zero legacy daemons, a healthy runtime monitor,
-  and an active interlock timer without terminating retained browsers;
-- workstation transaction
-  `upgrade-3d5cf3e2-72a7-4b85-8de9-d49b67f9c048` is now accepted with all
-  seven readiness axes true, no admission drain, and steady single-host
-  topology;
-- the exact social browser now has receipt-bearing owner transfer
-  `owner-transfer-a5913eb8118312b002516d81d7c1cc25c852c979bda44e7f8f708bfd38050bf2`
-  on unchanged PID 16807, CDP port 36603, profile `last30days-facebook`, and
-  owner generation 9; both no-launch access plans select that browser for
-  shared `tab_new` reuse with zero duplicate pressure;
-- the first post-transfer canary still failed before post observation because
-  the adapters derived their command lane from stale top-level tab
-  `sessionId=handoff-c87d81798683ee75`, which is observation-only after the
-  owner compare-and-swap;
-- a retained candidate-owned blank tab makes the route set deliberately
-  non-unique, so the installed adapters fall back to receipt-owned service
-  session `last30days-owner-repair-20260821-c07`;
-- terminal canary `tick-da3b0c6dbe61301e7371971f9440d9cb` exercised that
-  corrected route successfully: X observed 45 and accepted 11 posts; LinkedIn
-  observed 15 and accepted three. Both provider attempts and both lanes are
-  `success`, with no failure class, incident, coverage gap, auth failure, or
-  browser error;
-- the tick is `complete_degraded` only because three LinkedIn profile-photo
-  semantic sidecars returned `analysisoutputmissing`; collection, media, OCR,
-  lexical indexing, semantic indexing, and head promotion completed;
-- rejection-path review proves LinkedIn's 12 duplicate counts are repeated
-  observations of the same three valid non-sponsored posts across the initial
-  capture plus four scroll captures. X's 15 `duplicate_status` counts are also
-  post-quality duplicate observations. The tick adapter currently drops the
-  X worker's bounded `rejected_candidates` diagnostics, so the eight
-  `insufficient_text` and 11 `off_topic` cases cannot be adjudicated
-  item-by-item from the durable receipt;
-- the operator has now established retrieval reliability as the current
-  priority: short text and absent lexical topic overlap are diagnostic signals,
-  not acquisition-time rejection reasons. Content understanding, GraphRAG,
-  and quality policy follow only after search, home-feed, topic-feed, and
-  configured-profile coverage is dependable.
+- service 0.3.60/schema 16 is installed ready with 0.3.58 retained for
+  rollback; the full repository suite passed with 2,677 tests and seven
+  expected skips before installation;
+- structurally valid short and lexically unmatched X and LinkedIn posts are
+  retained with retrieval diagnostics. Only structural invalidity, date range,
+  exact duplicate, deterministic promoted/sponsored labels, and deterministic
+  navigation noise remain acquisition exclusions;
+- topic search remains implemented and fixture-covered, but owner-private
+  revision `operator-20260822-x-linkedin-home-feed-v1` disables the recurring
+  X and LinkedIn OpenAI topic targets and enables their authenticated home-feed
+  targets at the existing ten-item ceilings;
+- YouTube retains its OpenAI topic target, Reddit and Facebook remain disabled,
+  and `daily-default` is enabled/ready for `2026-08-23T00:00:00Z` on the exact
+  full recurring-config digest;
+- the one installed feed canary terminalized with zero observed posts because
+  both Agent Browser launch-adoption jobs failed at
+  `runtime_lifecycle_process_tree_record_missing` before extraction;
+- no-launch access plans still select authenticated profile
+  `last30days-facebook`, require no operator authentication, and recommend the
+  retained browser. That pre-upgrade process remains live, but the current
+  Agent Browser generation lacks its required process-tree ownership record;
+- no browser was closed, relaunched, pruned, repaired, or retried. Direct-feed
+  extraction and acceptance therefore remain unproven in the installed
+  runtime.
 
 ## Scope
 
@@ -72,9 +50,11 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   media, and exact-duplicate handling;
 - retain short-text and absent lexical topic overlap as per-item diagnostics
   without excluding otherwise structurally valid X or LinkedIn posts;
-- advance one service release, validate/build/install it transactionally, and
-  run at most one receipt-only X/LinkedIn 20/20 canary without changing the
-  recurring schedule.
+- carry an explicit feed surface through recurring and isolated-worker
+  boundaries, navigate the authenticated X and LinkedIn home feeds, and retain
+  topic search as an on-demand capability;
+- install one release transactionally, replace only the recurring X and
+  LinkedIn topic targets with home feeds, and admit at most one feed canary.
 
 ## Non-Goals
 
@@ -83,8 +63,8 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 - do not introduce semantic ranking, GraphRAG judgment, heuristic spam
   classifiers, or content-quality thresholds during acquisition;
 - do not change working X accepted-unique pagination;
-- do not re-enable Reddit or Facebook, alter `daily-default`, or change the
-  recurring ten-item X/LinkedIn ceilings;
+- do not re-enable Reddit or Facebook, alter `daily-default` cadence, or change
+  the recurring ten-item X/LinkedIn ceilings;
 - do not add unbounded scrolling, click every `Show more`, launch another
   browser, or use cost/model budgets;
 - do not treat a 20-item ceiling as a guarantee that the source exposes 20
@@ -92,28 +72,31 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 
 ## Acceptance Criteria
 
-1. A worker regression proves the admitted LinkedIn item limit reaches the
-   browser search interface.
-2. An explicit 20-item LinkedIn request receives a bounded four-scroll budget,
-   while direct calls retain existing depth/config behavior.
-3. A repeated-card regression proves the scraper continues until 20 accepted
-   unique permalinks are found or four scrolls are consumed.
-4. Existing LinkedIn and X auth, structural validation, canonicalization,
+1. Worker regressions prove the admitted item limit and explicit surface reach
+   the appropriate X and LinkedIn browser adapters.
+2. Feed fixtures prove direct home navigation without topic lexical filtering,
+   while topic-search fixtures remain green.
+3. Existing LinkedIn and X auth, structural validation, canonicalization,
    deterministic ad/noise exclusion, media, duplicate, result-limit, and
    service-worker tests remain green; fixtures prove short and lexically
    unmatched posts are retained with diagnostic signals.
-5. Focused and full validation plus a deterministic service build pass; the
+4. Focused and full validation plus a deterministic service build pass; the
    exact successor installs ready with the prior verified release retained as
    rollback.
-6. At most one X/LinkedIn canary uses 20-item ceilings, one attempt per lane,
-   zero cost/model use, and stops at its first terminal receipt; recurring
-   configuration and cadence remain unchanged.
+5. Recurring readback proves only X and LinkedIn switch from their OpenAI topic
+   targets to authenticated home feeds; cadence and source ceilings remain.
+6. At most one X/LinkedIn feed canary uses one attempt per lane, zero cost/model
+   use, and stops at its first terminal receipt.
+7. A current-generation browser with receipt-bearing lifecycle ownership
+   serves a named tab request before any successor feed canary is authorized.
 
 ## Execution Bounds
 
 - implementation cycles: three red/green vertical slices;
 - review/rework cycles: one;
-- live provider attempts: one X/LinkedIn tick after installed-runtime gates;
+- live provider attempts: the one X/LinkedIn feed tick is consumed; no retry
+  until a current-generation browser passes the named-tab gate and the operator
+  supplies fresh attempt authority;
 - scroll limits: 100 explicit results and eight scrolls maximum per LinkedIn
   request;
 - terminal stops: acceptance met, preflight failure, auth/profile uncertainty,
@@ -122,16 +105,18 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 ## Owned Write Surfaces
 
 - `skills/last30days/scripts/lib/linkedin.py`;
+- `skills/last30days/scripts/lib/x_browser.py`;
 - `skills/last30days/scripts/lib/service_acquisition_worker.py`;
-- focused LinkedIn and worker tests;
+- durable tick/collection contracts, worker adapters, and focused source tests;
 - service version, runtime manifest, changelog, and release-version tests;
 - this plan, `ROADMAP.md`, and append-only `RUNBOOK.md`.
 
 ## Definition Of Done
 
-- installed runtime demonstrably honors a service-requested LinkedIn ceiling
-  through accepted-unique bounded pagination, the one terminal canary is
-  receipted, and recurring source/schedule state is unchanged.
+- installed runtime demonstrably observes authenticated X and LinkedIn home
+  feed posts under the recurring surface contract, preserves deterministic
+  ad/noise exclusion, and retains topic search for on-demand use. This remains
+  open on the current-generation browser lifecycle and live feed proof.
 
 ### Checkpoint P0055-C01 | 2026-08-21
 
@@ -1121,3 +1106,108 @@ Next action:
   one X/LinkedIn feed canary and adjudicate its terminal receipt.
 
 Checkpoint P0055-C11 is the current authority.
+
+Checkpoint P0055-C11 is superseded by P0055-C12 below.
+
+### Checkpoint P0055-C12 | 2026-08-22
+
+Plan version: 12
+
+State transition:
+
+- `authenticated_home_feed_candidate_built -> home_feed_runtime_adopted_browser_lifecycle_blocked`.
+
+Progress classification:
+
+- `blocker_reduction`; recurring X and LinkedIn collection now selects the
+  authenticated home feeds, while the first installed canary isolated an
+  Agent Browser lifecycle-adoption failure before either scraper observed a
+  post.
+
+Installed and recurring state:
+
+- exact service 0.3.60/schema 16 is installed ready with runtime-manifest
+  SHA-256 `dae4c5ae4da4fdbde820e241a4f41e1f6361ced2f1b39fc4edb9a463de3fbb95`;
+  service 0.3.58 remains the `previous` rollback release;
+- owner-private revision `operator-20260822-x-linkedin-home-feed-v1` disables
+  only the recurring X and LinkedIn OpenAI topic targets and enables
+  `operator-20260822-x-home-feed` and
+  `operator-20260822-linkedin-home-feed`; the YouTube OpenAI topic target and
+  disabled Reddit/Facebook targets are unchanged;
+- `daily-default` is enabled/ready on config digest
+  `sha256:9238e351363d0e4d37fa965c748df53012ae9a217231901fef60a720413ad417`,
+  with next boundary `2026-08-23T00:00:00Z` and no last error;
+- config replacement failed closed as designed. The first guarded rebind used
+  the scoped canary digest instead of the full recurring digest, was rejected,
+  and admitted no tick; the corrected full-digest rebind restored the schedule.
+  Both schedule-replacement events remain in append-only history;
+- pre-transition database backup
+  `/home/ecochran76/.local/share/last30days/backups/research-pre-home-feed-20260822.db`
+  and the live database both pass SQLite `quick_check`.
+
+Canary evidence:
+
+- one authorized two-lane feed canary, tick
+  `tick-e2c6e03fb5f45d9e7ff9efffa7b7ae7a`, terminalized
+  `complete_degraded`; X attempt
+  `provider-attempt-8be8c7a110617cb76032717e12523ba6` and LinkedIn attempt
+  `provider-attempt-9a735fa1edc59d35c810f02ecdacea4e` each failed transiently
+  with safe code `agent_browser_error` and zero attempted, observed, accepted,
+  or rejected posts;
+- Agent Browser retained jobs `r752042` and `r129542`, submitted during the
+  two provider attempts, are failed `launch` jobs with exact error
+  `runtime_lifecycle_process_tree_record_missing`. Both lack service, agent,
+  and task labels, so the named `x-feed` and `linkedin-home-feed` traces are
+  empty;
+- current no-launch access plans still select authenticated profile
+  `last30days-facebook`, require no manual authentication, and recommend reuse
+  of browser `session:last30days-owner-repair-20260821-c07` in session
+  `orphan-1d5e6832ce1b475f`. The browser is reported ready and its OS process
+  tree is live, but the upgraded runtime cannot adopt it without the missing
+  lifecycle ownership record;
+- fresh OS readback finds one root Chrome process for that profile and 21
+  profile processes using approximately 2.5 GiB RSS. No browser was closed,
+  launched, repaired, pruned, or retried.
+
+Interpretation:
+
+- this canary does not evaluate feed extraction or acceptance. The zero yield
+  is neither an authentication finding nor a content rejection;
+- the Agent Browser upgrade is the direct compatibility boundary: it retained
+  the pre-upgrade authenticated process but lacks the process-tree record now
+  required for lifecycle adoption;
+- topic-search implementation remains installed and tested, but it is no
+  longer selected by the recurring X or LinkedIn targets.
+
+Authority classification:
+
+- `inherited_authority`; the operator authorized direct-feed adoption and one
+  bounded canary. Closing or relaunching the authenticated browser is a
+  separate runtime effect and was not inferred.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- pending; this checkpoint, Runbook Turn 321, installed receipts, SQLite
+  records, and retained Agent Browser jobs are the current durable authority.
+
+Remaining acceptance criteria:
+
+- transactionally replace the pre-upgrade retained browser with one launched
+  under the current Agent Browser generation while preserving the durable
+  profile and rollback evidence;
+- prove a named service/task tab request before admitting another provider
+  attempt, then run at most one explicitly authorized two-lane feed canary;
+- only after posts are observed, evaluate direct-feed extraction coverage and
+  deterministic ad/spam exclusion.
+
+Next action:
+
+- obtain operator authority for the authenticated-browser close/relaunch
+  boundary. Do not retry X or LinkedIn acquisition against the unrecoverable
+  lifecycle record.
+
+Checkpoint P0055-C12 is the current authority.

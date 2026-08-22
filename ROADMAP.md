@@ -1157,24 +1157,26 @@ Current State:
   while only a different logical browser received a migration adoption
   receipt. The plan remains open on the explicit owner/session transition; the
   canary is terminal and consumed.
-- Plan 0055 version 11/C11 supersedes acquisition-time semantic filtering with
+- Plan 0055 version 12/C12 supersedes acquisition-time semantic filtering with
   a retrieval-first contract. Candidate service 0.3.59 retains structurally
   valid, canonical, in-range X and LinkedIn posts when text is short or lacks
   lexical topic overlap, preserving those conditions as diagnostics while
   deterministic promoted/sponsored, navigation-noise, and exact-duplicate
-  exclusion remain. Installed service 0.3.58 and the recurring schedule are
-  unchanged. Candidate service 0.3.60 now carries an explicit feed surface
-  through the isolated worker boundary and fixture-proves direct authenticated
-  X and LinkedIn home-feed navigation while retaining topic search. Installed
-  adoption, recurring-target replacement, and one bounded feed canary remain.
+  exclusion remain. Service 0.3.60 is now installed ready, recurring X and
+  LinkedIn targets select their authenticated home feeds, and topic search is
+  retained for on-demand use. The first feed canary observed no posts because
+  both Agent Browser launch-adoption jobs failed with
+  `runtime_lifecycle_process_tree_record_missing`; the pre-upgrade browser is
+  live and authenticated, but its current runtime ownership record is absent.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 11/C11 owns the retrieval-first X/LinkedIn candidate and the next
-  bounded surface-coverage packet. Candidate service 0.3.60 is built and
-  fixture-validated; installed service 0.3.58 and recurring behavior remain
-  unchanged.
+  version 12/C12 owns retrieval-first X/LinkedIn feed adoption and the exact
+  pre-upgrade browser lifecycle blocker. Service 0.3.60 and feed-based
+  recurring targets are installed; another acquisition attempt is forbidden
+  until the authenticated browser is transactionally relaunched and a named
+  tab request succeeds.
 
 Closed Plan:
 
@@ -1245,11 +1247,10 @@ Dependencies:
 
 Next Bounded Action:
 
-- preserve service 0.3.58, the recurring ten-item ceilings, accepted
-  workstation topology, and the authenticated browser process. Repair and
-  deterministically prove its receipt-bearing owner/session route through the
-  first tab command without provider work; do not launch a duplicate profile
-  process or retry the consumed canary.
+- obtain explicit authority to close and relaunch only the retained
+  `last30days-facebook` browser under the current Agent Browser generation.
+  Preserve the durable profile and rollback evidence, prove one named tab
+  request without provider work, and do not retry the consumed feed canary.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 

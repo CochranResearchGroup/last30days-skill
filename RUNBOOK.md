@@ -19413,3 +19413,78 @@ Next Bounded Action:
 - commit and push the exact 0.3.60 candidate, then transactionally install it,
   replace only the recurring X/LinkedIn OpenAI topic targets with home-feed
   targets, and admit at most one bounded two-lane feed canary.
+
+## Turn 321 | 2026-08-22
+
+Focus: install direct X/LinkedIn home-feed collection, replace only their
+recurring OpenAI search targets, and adjudicate one bounded feed canary.
+
+Authority Consulted:
+
+- operator direct-feed direction; Plan 0055/C11; last30days administration and
+  Agent Browser service operating contracts; current runtime, validation, Git,
+  documentation, closeout, and browser-ownership evidence.
+
+Decisions And Changes:
+
+- installed service 0.3.60/schema 16 and retained 0.3.58 as rollback;
+- changed the owner-private recurring revision to explicit X and LinkedIn home
+  feeds while preserving the search implementation, YouTube OpenAI target, and
+  Reddit/Facebook disabled state;
+- restored `daily-default` through an exact full-config-digest guarded rebind
+  after one fail-closed scoped-digest mismatch; neither rebind admitted work;
+- admitted exactly one X/LinkedIn feed canary and stopped after both providers
+  failed before observing a post;
+- performed no browser close, launch, prune, repair, or provider retry.
+
+Validation Evidence:
+
+- installed runtime manifest SHA-256:
+  `dae4c5ae4da4fdbde820e241a4f41e1f6361ced2f1b39fc4edb9a463de3fbb95`;
+- live health is ready at service 0.3.60/database schema 16; SQLite
+  `quick_check` is `ok`; `daily-default` is enabled/ready for
+  `2026-08-23T00:00:00Z` on digest
+  `sha256:9238e351363d0e4d37fa965c748df53012ae9a217231901fef60a720413ad417`;
+- canary tick `tick-e2c6e03fb5f45d9e7ff9efffa7b7ae7a` is
+  `complete_degraded`; both provider results report zero observations and
+  transient `agent_browser_error`;
+- exact retained Agent Browser jobs `r752042` and `r129542` failed with
+  `runtime_lifecycle_process_tree_record_missing`. Current access plans still
+  select the authenticated profile and the live retained browser with no auth
+  or manual-action requirement;
+- fresh OS census finds the retained profile's root Chrome PID 16807 plus 20
+  child processes, approximately 2.5 GiB RSS total. Agent Browser's optional
+  resource-monitor summary file is absent, so the OS census is the resource
+  authority.
+
+State Movement:
+
+- Plan 0055 advances to version 12/C12
+  `home_feed_runtime_adopted_browser_lifecycle_blocked`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; recurring selection and installed feed code are in
+  place, and the remaining failure is isolated to pre-upgrade browser
+  lifecycle ownership before extraction.
+
+Authority Classification:
+
+- `inherited_authority`; one bounded canary was authorized. Browser
+  close/relaunch authority was not inferred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending; Plan 0055/C12, this runbook entry, installed receipts, SQLite
+  evidence, and retained Agent Browser jobs are authoritative.
+
+Next Bounded Action:
+
+- with explicit operator approval, transactionally close and relaunch only the
+  `last30days-facebook` browser under the current Agent Browser generation,
+  prove one named tab request, and then request fresh authority for at most one
+  two-lane feed canary.
