@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 6
+Plan version: 7
 Date: 2026-08-21
 
 ## Objective
@@ -26,12 +26,21 @@ and pursue accepted unique post permalinks within a bounded scroll budget.
   `upgrade-3d5cf3e2-72a7-4b85-8de9-d49b67f9c048` is now accepted with all
   seven readiness axes true, no admission drain, and steady single-host
   topology;
-- the first post-readiness canary still failed before post observation because
-  both X and LinkedIn launch jobs rejected the retained social browser with
-  `runtime_lifecycle_existing_owner_requires_explicit_transition`;
-- no X or LinkedIn candidate reached quality, duplicate, permalink, or
-  sponsored/promoted classification in the fresh canary. The installed daemon
-  route fix therefore remains deterministic-test proven but live-unexercised.
+- the exact social browser now has receipt-bearing owner transfer
+  `owner-transfer-a5913eb8118312b002516d81d7c1cc25c852c979bda44e7f8f708bfd38050bf2`
+  on unchanged PID 16807, CDP port 36603, profile `last30days-facebook`, and
+  owner generation 9; both no-launch access plans select that browser for
+  shared `tab_new` reuse with zero duplicate pressure;
+- the first post-transfer canary still failed before post observation because
+  the adapters derived their command lane from stale top-level tab
+  `sessionId=handoff-c87d81798683ee75`, which is observation-only after the
+  owner compare-and-swap;
+- a retained candidate-owned blank tab now makes the route set deliberately
+  non-unique, so the installed adapter falls back to the receipt-owned service
+  session `last30days-owner-repair-20260821-c07`. Both installed adapters
+  resolve that route, and direct X/LinkedIn tab switches plus evaluations
+  succeed through it. No post-transfer provider retry has exercised this
+  corrected route yet.
 
 ## Scope
 
@@ -620,3 +629,106 @@ Next action:
   acquisition and tab commands, then stop at the live-attempt gate.
 
 Checkpoint P0055-C06 is the current authority.
+
+### Checkpoint P0055-C07 | 2026-08-21
+
+Plan version: 7
+
+State transition:
+
+- `terminal_canary_confirms_runtime_owner_transition_gap -> owner_receipted_stale_tab_route_repaired_retry_withheld`.
+
+Progress classification:
+
+- `blocker_reduction_with_consumed_canary`; browser ownership is receipted and
+  the remaining failed attempt isolated then repaired a stale per-tab daemon
+  route, but the repaired route has not received another provider attempt.
+
+Ownership and route evidence:
+
+- `handoff resume` adopted logical browser
+  `session:last30days-x-upgrade-live-20260820` into owner generation 9 with
+  receipt
+  `owner-transfer-a5913eb8118312b002516d81d7c1cc25c852c979bda44e7f8f708bfd38050bf2`;
+  Chrome PID 16807, CDP port 36603, browser UUID
+  `a21f8ae7-c39b-4307-a3e0-9528b9d9a190`, profile, and authenticated X and
+  LinkedIn targets did not change;
+- one candidate-owned blank-tab open/close transaction succeeded immediately
+  after transfer. Two stale exclusive service-session aliases were then
+  released with `cleanup=detach`; neither browser process was closed;
+- X and LinkedIn access plans now report one compatible browser,
+  `reuse_existing_browser`, `tab_new`, `duplicatePressure=false`, and
+  `duplicateProcessAllowed=false` for
+  `session:last30days-owner-repair-20260821-c07`;
+- the terminal provider receipt showed the adapters still selected stale tab
+  daemon route `handoff-c87d81798683ee75`. Agent-browser jobs `r647723` and
+  `r229031` rejected `tab_switch` and `evaluate` respectively with
+  `runtime_owner_observation_only: candidate cannot issue browser effects before owner compare-and-swap`;
+- retained blank target `5EA7B954B7E85DA5DC177B537C70C2E6` now carries the
+  candidate session ID. This makes `_daemon_session_route` return no unique
+  stale route, so both installed acquisition clients deterministically return
+  browser/session `session:last30days-owner-repair-20260821-c07` /
+  `last30days-owner-repair-20260821-c07`;
+- through that exact session, X target
+  `ED7F37E648270B2D8CCCCD8206832086` switched and evaluated `x.com`, and
+  LinkedIn target `DF31B25DA1139FB5010792EF14C70DE3` switched and evaluated
+  `www.linkedin.com`.
+
+Terminal canary receipt:
+
+- mode-0600 temporary config changed only revision, X/LinkedIn item ceilings
+  from ten to 20, and aggregate config item capacity from 23 to 43;
+- preflight was `ready` for exact tick
+  `tick-c944e818e7a9fb5af871a285e9177b75` at config digest
+  `sha256:58de0d5fc7ad35f6b71b1dd7d0eb2c58b93b8e40b9666832981c72f12275386e`,
+  with exactly two attempts, 40 items, 100 requests, 240 wall seconds, and zero
+  cost/model budget;
+- the tick was enqueued once and terminalized `complete_degraded`. X provider
+  attempt `provider-attempt-0339fb5880cfc13176aff39cbf3ee869` and LinkedIn
+  attempt `provider-attempt-0eb8400f1d1e0dc2371c40eb69160340` each consumed
+  one request and four wall seconds with zero attempted, observed, accepted, or
+  rejected posts;
+- page signals and rejection counts are empty. The failure occurred before ad,
+  permalink, authentication, or post-quality classification. No retry ran.
+
+Recurring-state and final health evidence:
+
+- the temporary config and directory were removed. Normal config remains
+  SHA-256 `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`;
+  Reddit/Facebook remain disabled, normal X/LinkedIn ceilings remain ten, and
+  `daily-default` is ready for `2026-08-23T00:00:00Z`;
+- active tick attempts are zero and SQLite quick check is `ok`;
+- workstation admission remains ready with every readiness axis true and no
+  drain. Global doctor still reports unrelated `stealthcdp-default` duplicate
+  lease pressure plus one cleanup-obligation diagnostic; the exact social
+  access plan itself reports zero duplicate pressure, and the receipted social
+  lane remains effect-capable.
+
+Authority classification:
+
+- `human_gate`; the operator-authorized 20/20 canary is consumed. The
+  post-terminal route repair used no provider attempt and does not authorize a
+  second tick.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- deferred; this checkpoint, the runbook, SQLite receipt, owner-transfer
+  receipt, and agent-browser job records are sufficient durable evidence.
+
+Remaining acceptance criterion:
+
+- run at most one newly authorized X/LinkedIn canary through the now-proven
+  candidate session and inspect accepted/rejected post counts; do not infer
+  authority from the route repair.
+
+Next action:
+
+- stop. If the operator explicitly requests another attempt, recheck the same
+  owner receipt, PID/CDP identity, candidate session route, recurring-config
+  digest, and zero active attempts immediately before one bounded tick.
+
+Checkpoint P0055-C07 is the current authority.

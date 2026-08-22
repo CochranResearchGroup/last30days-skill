@@ -19049,3 +19049,89 @@ Next Bounded Action:
 - repair and deterministically validate the exact social browser's
   receipt-bearing owner/session route through the first tab command without
   provider work; do not retry the consumed canary.
+
+## Turn 316 | 2026-08-21
+
+Focus: receipt-adopt the authenticated social browser, run one newly authorized
+X/LinkedIn 20/20 canary, and isolate its terminal result.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C06; agent-browser runtime ownership and
+  transactional handoff guidance; last30days live-operation, planning,
+  validation, documentation, Git custody, and closeout authorities.
+- active plan
+  `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`.
+
+Decisions And Changes:
+
+- receipt-adopted the existing authenticated browser without restarting Chrome
+  or changing its profile, PID, CDP port, or tabs;
+- released two stale exclusive service-session aliases with detach cleanup and
+  proved both X and LinkedIn access plans reuse the adopted browser with no
+  duplicate process permission;
+- preflighted and enqueued exact tick
+  `tick-c944e818e7a9fb5af871a285e9177b75` once. It terminalized
+  `complete_degraded`; no retry ran;
+- identified stale top-level tab session metadata as the post-transfer command
+  route. Added one candidate-owned blank tab as a retained route marker, then
+  proved both installed acquisition clients select the candidate session and
+  direct effects succeed on the exact X and LinkedIn tabs;
+- removed the temporary canary config and directory.
+
+Validation Evidence:
+
+- owner-transfer receipt is
+  `owner-transfer-a5913eb8118312b002516d81d7c1cc25c852c979bda44e7f8f708bfd38050bf2`;
+  unchanged browser identity is PID 16807, CDP port 36603, browser UUID
+  `a21f8ae7-c39b-4307-a3e0-9528b9d9a190`, profile
+  `last30days-facebook`;
+- preflight config digest is
+  `sha256:58de0d5fc7ad35f6b71b1dd7d0eb2c58b93b8e40b9666832981c72f12275386e`;
+  limits were one attempt and 20 items per lane, 40 aggregate items, zero cost,
+  and zero model use;
+- X attempt `provider-attempt-0339fb5880cfc13176aff39cbf3ee869`
+  and LinkedIn attempt `provider-attempt-0eb8400f1d1e0dc2371c40eb69160340`
+  each consumed one request/four wall seconds and returned zero
+  attempted/observed/accepted/rejected posts;
+- agent-browser jobs `r647723` and `r229031` retain the exact terminal failure:
+  `runtime_owner_observation_only: candidate cannot issue browser effects before owner compare-and-swap`;
+- after route repair, both installed adapters resolve session
+  `last30days-owner-repair-20260821-c07`; exact X and LinkedIn target switches
+  and hostname evaluations succeed through that session;
+- normal config SHA-256 remains
+  `ffcfc71a72d2a6696077227436250a863fe7f258b7767bf9a2746226b5733054`,
+  active attempts are zero, SQLite quick check is `ok`, and `daily-default` is
+  ready for `2026-08-23T00:00:00Z`.
+
+State Movement:
+
+- Plan 0055 advances to version 7/C07
+  `owner_receipted_stale_tab_route_repaired_retry_withheld`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction_with_consumed_canary`; the failed tick exposed a distinct
+  stale tab-session route after successful owner adoption, and that route is
+  now repaired and effect-proven without consuming another provider attempt.
+
+Recurring-State And Attempt Boundary:
+
+- the one authorized canary is consumed and terminal; another provider attempt
+  requires fresh explicit authority;
+- Reddit/Facebook remain disabled; recurring cadence and normal ten-item
+  X/LinkedIn ceilings are unchanged.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred; Plan 0055/C07, this runbook entry, SQLite receipts, owner-transfer
+  receipt, and agent-browser jobs are the durable record.
+
+Next Bounded Action:
+
+- stop. On a new explicit retry request, recheck the receipt-owned candidate
+  route and run at most one X/LinkedIn canary through it.
