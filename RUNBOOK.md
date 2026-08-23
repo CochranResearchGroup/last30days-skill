@@ -19730,3 +19730,88 @@ Next Bounded Action:
   the absent generation-5 browser and satisfy its cleanup obligation while
   preserving `last30days-facebook`. Do not edit registries manually or run
   another provider attempt first.
+
+## Turn 325 | 2026-08-23
+
+Focus: reconcile the exact stale Last30days lifecycle, consume one newly
+authorized X plus LinkedIn feed tick, and repair the next pre-navigation Agent
+Browser blocker in source.
+
+Authority Consulted:
+
+- operator confirmation that the Agent Browser upgrade was complete and
+  direction to continue; Plan 0055/C15; Agent Browser service/runtime and
+  Graphiti discovery contracts; current roadmap/runbook, planning,
+  documentation, validation, git, and closeout policy.
+
+Decisions And Changes:
+
+- preserved existing authenticated profile `last30days-facebook` and used an
+  isolated Agent Browser worktree rather than the unrelated dirty main
+  worktree;
+- implemented and live-validated exact reconciliation of an absent
+  `closing/owned` process group with an absent profile lock, then repaired the
+  repository merge so the terminal transition persists;
+- consumed exactly one new X plus LinkedIn tick after access planning reported
+  `launch_new_browser` without an owner conflict;
+- traced both pre-navigation failures to terminal replacement requiring the
+  new service lane to reuse the old logical browser ID;
+- repaired Agent Browser terminal replacement to move the satisfied lifecycle
+  to a collision-free new logical ID at exactly the next generation, retain one
+  cleanup obligation, reject pending transfers and duplicate profile records,
+  and recompute launch identity;
+- did not install the new Agent Browser source, run a second provider tick, or
+  create, replace, reseed, discard, or reauthenticate a profile.
+
+Validation Evidence:
+
+- the selected generation remains
+  `0.28.0-4b975a51aa89-d0782705d5ff`; the exact profile lifecycle is now
+  `terminal/satisfied` with evidence
+  `service_reconcile_process_group_absent:27742` and
+  `service_reconcile_profile_lock_absent`;
+- tick `tick-7224876f30d729e41ff5435b387be4df` terminalized
+  `complete_degraded`; X attempt
+  `provider-attempt-4f283f8d3ba840785db7b3c56739d4b9` and LinkedIn attempt
+  `provider-attempt-3e94e5755a39268fd3ffca355acb4d61` each observed zero posts;
+- Agent Browser jobs `r923698` and `r841495` failed
+  `remote_view_open` with
+  `runtime_lifecycle_terminal_replacement_rejected` before provider navigation;
+- X PID `50724` and LinkedIn PID `53490` exited through polite close, both
+  profile locks were released, and route/display leases rolled back;
+- Agent Browser branch `fix/reconcile-absent-closing-lifecycle` is published at
+  `cd23311e`; 12 lifecycle tests, 50 Service Health tests, strict Clippy,
+  formatting, docs build, documentation contract checks, and diff hygiene
+  pass.
+
+State Movement:
+
+- Plan 0055 advances to version 16/C16
+  `stale_lifecycle_reconciled_terminal_replacement_source_repaired_install_gate`;
+  P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; the stale lifecycle is resolved and the next exact
+  pre-navigation defect is repaired in source, but installed and provider
+  acceptance remain open.
+
+Authority Classification:
+
+- `human_gate`; the authorized tick is consumed. A new Agent Browser
+  transaction and another provider tick each require fresh explicit authority.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending; Plan 0055/C16, this runbook entry, durable tick/attempt rows, Agent
+  Browser jobs, and the published repair branch are authoritative.
+
+Next Bounded Action:
+
+- obtain explicit authority for one governed Agent Browser installation of
+  commit `cd23311e`, then prove one named non-provider tab before requesting a
+  new X plus LinkedIn tick. Preserve `last30days-facebook` throughout.

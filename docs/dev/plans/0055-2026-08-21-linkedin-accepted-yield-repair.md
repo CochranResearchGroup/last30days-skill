@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 15
+Plan version: 16
 Date: 2026-08-21
 
 ## Objective
@@ -38,13 +38,20 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   tick `tick-070bfe28cc98550d12f0d940ccdfac2e` used only X and LinkedIn, one
   attempt and ten-item ceiling per lane, zero model/cost budget, and the
   unchanged durable profile `last30days-facebook`;
+- Agent Browser's reviewed candidate reconciled the exact absent generation-5
+  owner from `closing/owned` to `terminal/satisfied` with absent-process-group
+  and absent-profile-lock evidence while preserving `last30days-facebook`;
+- the operator authorized one new tick after that repair. Manual tick
+  `tick-7224876f30d729e41ff5435b387be4df` again used only X and LinkedIn, one
+  attempt and ten-item ceiling per lane, zero model/cost budget, and the same
+  durable profile;
 - both provider attempts failed before navigation with
-  `runtime_lifecycle_existing_owner_requires_explicit_transition`. The owner
-  registry still maps the Last30days profile to
-  `session:plan0117-final-runtime` generation 5, while its lifecycle record is
-  `closing` with cleanup obligation `owned`; recorded process group PID
-  `27742` is absent. Both lanes therefore report zero attempted, observed,
-  accepted, or rejected posts;
+  `runtime_lifecycle_terminal_replacement_rejected`. The old lifecycle owner
+  uses `session:plan0117-final-runtime`, while the new service lane uses
+  `session:last30days-home-feed`. Agent Browser source commit `cd23311e` now
+  admits that exact next-generation logical-ID move with collision and transfer
+  guards, but the corrected binary is not installed. Both lanes therefore
+  report zero attempted, observed, accepted, or rejected posts;
 - direct-feed extraction and acceptance remain unproven. This receipt is not
   X or LinkedIn authentication, feed retrieval, scraper, rejection, or content
   quality evidence.
@@ -106,7 +113,8 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 - implementation cycles: three red/green vertical slices;
 - review/rework cycles: one;
 - live provider attempts: the one X/LinkedIn feed tick is consumed; no retry
-  until a current-generation browser passes the named-tab gate and the operator
+  until the terminal-replacement correction is transactionally installed, a
+  current-generation browser passes the named-tab gate, and the operator
   supplies fresh attempt authority;
 - scroll limits: 100 explicit results and eight scrolls maximum per LinkedIn
   request;
@@ -1528,3 +1536,95 @@ Next action:
   hand, discard `last30days-facebook`, or retry provider acquisition first.
 
 Checkpoint P0055-C15 is the current authority.
+
+Checkpoint P0055-C15 is superseded by P0055-C16 below.
+
+### Checkpoint P0055-C16 | 2026-08-23
+
+Plan version: 16
+
+State transition:
+
+- `current_generation_accepted_stale_profile_lifecycle_owner_blocked -> stale_lifecycle_reconciled_terminal_replacement_source_repaired_install_gate`.
+
+Progress classification:
+
+- `blocker_reduction`; exact lifecycle convergence is proven live, and the
+  newly exposed logical-ID replacement defect is repaired and validated in
+  Agent Browser source. Installed and provider acceptance remain open.
+
+Authorized runtime effects and evidence:
+
+- Agent Browser candidate reconciliation moved the exact generation-5
+  `session:plan0117-final-runtime` lifecycle from `closing/owned` to
+  `terminal/satisfied` with evidence
+  `service_reconcile_process_group_absent:27742` and
+  `service_reconcile_profile_lock_absent`. Owner identity and durable profile
+  `last30days-facebook` were preserved;
+- access planning then returned `launch_new_browser` with no owner conflict or
+  manual action;
+- the operator authorized exactly one new X plus LinkedIn tick. Preflight for
+  `plan-0055-x-linkedin-home-feed-post-lifecycle-reconcile-20260823` was ready
+  for tick `tick-7224876f30d729e41ff5435b387be4df`, one attempt and ten items per
+  lane, no fallback, zero model tokens, and zero cost;
+- the tick terminalized `complete_degraded`. X attempt
+  `provider-attempt-4f283f8d3ba840785db7b3c56739d4b9` and LinkedIn attempt
+  `provider-attempt-3e94e5755a39268fd3ffca355acb4d61` each report zero
+  attempted, observed, accepted, or rejected posts;
+- Agent Browser jobs `r923698` and `r841495` both failed
+  `remote_view_open` with
+  `runtime_lifecycle_terminal_replacement_rejected`. The prior terminal owner
+  is `session:plan0117-final-runtime`; the replacement service lane is
+  `session:last30days-home-feed`;
+- X browser PID `50724` and LinkedIn browser PID `53490` each exited through
+  polite close. Both profile locks were released and both route/display lease
+  allocations rolled back;
+- Agent Browser branch `fix/reconcile-absent-closing-lifecycle` is published at
+  commit `cd23311e`. Its terminal replacement moves a satisfied lifecycle to a
+  collision-free new logical ID at exactly the next generation, rejects
+  pending transfers and duplicate profile lifecycle records, retains one
+  cleanup obligation, and recomputes the launch identity. All 12 lifecycle
+  tests, all 50 Service Health tests, strict Clippy, formatting, documentation,
+  and diff checks pass.
+
+Interpretation:
+
+- the installed Agent Browser upgrade is healthy and the stale closing record
+  is no longer the blocker;
+- the new failure still precedes provider navigation and post extraction. It
+  provides no evidence about X or LinkedIn login state, feed retrieval,
+  scraper extraction, deterministic ad/spam exclusion, or acceptance quality;
+- the source repair is not installed. Installing it is a new governed Agent
+  Browser transaction, not an implicit continuation of the already accepted
+  upgrade.
+
+Authority classification:
+
+- `human_gate`; the authorized tick is consumed. No second provider tick or
+  new transactional Agent Browser installation is inferred.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- pending; this checkpoint, Runbook Turn 325, the durable tick/attempt rows,
+  Agent Browser jobs, and published repair branch are authoritative.
+
+Remaining acceptance criteria:
+
+- transactionally install and accept the published Agent Browser correction;
+- prove one named non-provider tab can advance the preserved profile to the
+  new service logical browser ID and close cleanly;
+- after that gate, request fresh authority for at most one X/LinkedIn feed tick
+  and inspect observed, accepted, duplicate, permalink, and deterministic
+  promoted/sponsored counts.
+
+Next action:
+
+- obtain explicit authority for one governed Agent Browser installation of the
+  validated `cd23311e` repair. Do not rerun provider acquisition first or alter
+  `last30days-facebook`.
+
+Checkpoint P0055-C16 is the current authority.
