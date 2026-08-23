@@ -19568,3 +19568,88 @@ Next Bounded Action:
   shared Agent Browser runtime host, then relaunch the same durable profile and
   prove one named tab request. A provider canary remains a later authority
   boundary.
+
+## Turn 323 | 2026-08-23
+
+Focus: repair the approved shared Agent Browser runtime route, prove one named
+non-provider tab, and stop before provider acquisition.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C13; Agent Browser service/runtime maintenance
+  contracts and operating guide; repo planning, roadmap/runbook, validation,
+  documentation, git, and closeout policy.
+
+Decisions And Changes:
+
+- recovered failed upgrade transaction
+  `upgrade-53125e3b-5a0f-42c4-b41f-74bd1346cc29` while preserving selected
+  generation `0.28.0-aa21c5fe8a6d-25828e3b8aed` and all unrelated browsers;
+- ran one reviewed workstation reconcile, which removed only an unselected
+  failed candidate generation and reported zero process terminations or
+  profile/display removals;
+- installed named lane `last30days-home-feed` and rebound the selected runtime
+  host to its persisted hashed socket using a runtime-only `/run` systemd
+  drop-in. The shared host is now reachable and the lane publishes port
+  `37366`;
+- issued one named `https://example.com` tab request. It failed before Chrome
+  after the old allocator repeatedly chose protected live display `:90`;
+- attempted the supported transactional candidate path without editing the
+  unrelated active AuraCall profile. Candidate upgrades rolled back because
+  no independently authenticated shadow-dashboard journey was committed;
+- observed one separately owned concurrent Agent Browser installer, monitored
+  it without interference, and confirmed it ended at the same presentation
+  gate with the old generation preserved;
+- ran no X, LinkedIn, Reddit, or Facebook navigation or provider acquisition.
+
+Validation Evidence:
+
+- runtime host PID `61217` and dashboard backend PID `46385` are active on the
+  selected old generation. Supervisor status for `last30days-home-feed` is
+  `ready`, `streamReachable=true`, and `publishedStreamPort=37366`;
+- access-plan chooses exact durable profile `last30days-facebook` with zero
+  leases/live compatible browsers and recommends `launch_new_browser`;
+  browser-capability preflight passed for the promoted WSL stealth Chromium;
+- tab job `mcp-service-request-tab_new-9ab16f7d-e464-48eb-b9af-0c304dfcf974`
+  failed only at remote-headed Xvfb launch after three internal attempts;
+- Xvfb PID `30094` owns abstract socket `@/tmp/.X11-unix/X90` and is explicitly
+  `protected` by retained display-allocation evidence, so it was not killed;
+- transaction `upgrade-698bb291-9084-4756-8faf-0d6fd8f118ba` and concurrent
+  transaction `upgrade-339e80a8-975a-4c2d-94c5-44f339d3afa0` both ended
+  `failed_preserved_old_generation` with
+  `candidate_dashboard_presentation_unproven`. Stable ingress and its existing
+  authenticated operator-journey receipt remained ready throughout.
+
+State Movement:
+
+- Plan 0055 advances to version 14/C14
+  `shared_runtime_route_repaired_upgrade_operator_journey_blocked`; P08 remains
+  OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; shared routing is healthy, and the remaining browser
+  acquisition blocker is isolated to old display allocation plus mandatory
+  candidate presentation acceptance.
+
+Authority Classification:
+
+- `human_gate`; an independently authenticated candidate-dashboard receipt is
+  required and was neither fabricated nor bypassed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending; Plan 0055/C14, this runbook entry, installed transaction receipts,
+  and current runtime readbacks are authoritative.
+
+Next Bounded Action:
+
+- run one attended transactional Agent Browser upgrade while an operator opens
+  and authenticates the shadow dashboard on port `4850`, then commit the exact
+  candidate presentation receipt inside five minutes. After selection, retry
+  one named non-provider tab; provider acquisition remains a later authority
+  boundary.

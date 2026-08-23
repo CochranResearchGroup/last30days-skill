@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 13
+Plan version: 14
 Date: 2026-08-21
 
 ## Objective
@@ -30,10 +30,17 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 - the one installed feed canary terminalized with zero observed posts because
   both Agent Browser launch-adoption jobs failed at
   `runtime_lifecycle_process_tree_record_missing` before extraction;
-- the authorized follow-up closed the retained browser and released the
-  `last30days-facebook` profile lease. Relaunch now fails before Chrome starts
-  because the shared runtime host inherits an invalid unrelated `default`
-  runtime-state row and dead CDP port `37725`;
+- the authorized shared-runtime repair recovered the failed upgrade admission,
+  restored the selected host's exact socket route, and installed a ready
+  `last30days-home-feed` lane on port `37366` without editing the unrelated
+  `default`/AuraCall profile;
+- one non-provider named-tab request reached browser display launch, then
+  failed before Chrome because selected generation
+  `0.28.0-aa21c5fe8a6d-25828e3b8aed` chose protected live Xvfb display `:90`;
+  the newer candidate allocator can avoid that collision, but each candidate
+  upgrade preserved the old generation because no independently authenticated
+  candidate-dashboard presentation receipt arrived during its five-minute
+  acceptance window;
 - no provider acquisition was retried. Direct-feed extraction and acceptance
   therefore remain unproven in the installed runtime.
 
@@ -1310,3 +1317,119 @@ Next action:
   another provider or tab attempt until the host state changes.
 
 Checkpoint P0055-C13 is the current authority.
+
+Checkpoint P0055-C13 is superseded by P0055-C14 below.
+
+### Checkpoint P0055-C14 | 2026-08-23
+
+Plan version: 14
+
+State transition:
+
+- `home_feed_browser_closed_shared_runtime_launch_state_blocked -> shared_runtime_route_repaired_upgrade_operator_journey_blocked`.
+
+Progress classification:
+
+- `blocker_reduction`; shared-host routing and named-lane readiness are now
+  proven, while browser creation is isolated to an old-generation X display
+  allocator collision and the candidate upgrade's independent presentation
+  gate.
+
+Authorized runtime effects and evidence:
+
+- the operator authorized shared Agent Browser runtime repair plus one named
+  non-provider tab proof. No X, LinkedIn, Reddit, or Facebook navigation or
+  provider acquisition was run;
+- failed transaction
+  `upgrade-53125e3b-5a0f-42c4-b41f-74bd1346cc29` was recovered to
+  `failed_preserved_old_generation`, admission draining cleared, and a reviewed
+  workstation reconcile removed only the unselected failed candidate
+  generation;
+- the selected host was rebound through runtime-only systemd drop-in
+  `/run/user/1000/systemd/user/agent-browser-runtime-host.service.d/10-selected-ingress.conf`
+  to its persisted socket directory. Host PID `61217` is active on the exact
+  hashed runtime-host socket; named lane `last30days-home-feed` is ready and
+  stream-reachable on port `37366`;
+- access-plan selects durable profile `last30days-facebook`, reports zero
+  active leases or compatible live browsers, and recommends
+  `launch_new_browser`. Browser capability preflight succeeded with the
+  promoted WSL stealth Chromium executable.
+
+Named-tab result:
+
+- the sole non-provider `service_request` job
+  `mcp-service-request-tab_new-9ab16f7d-e464-48eb-b9af-0c304dfcf974`
+  reached remote-headed private-display launch, then exhausted its three
+  internal launch attempts because Xvfb exited after each attempt selected
+  display `:90`;
+- live Xvfb PID `30094` owns abstract socket `@/tmp/.X11-unix/X90` without a
+  filesystem socket. Service resources classifies it as `protected` due
+  retained display allocation
+  `display:private_virtual_display:session-last30days-facebook`, so it was not
+  killed or reclaimed;
+- the current Agent Browser source allocator checks both the X lock PID and
+  live X process and would skip the collision. The selected older generation
+  remains installed and does not demonstrate that behavior.
+
+Upgrade result:
+
+- the old installer rejected the unrelated `default/runtime-state.json` null
+  PID before mutation. A current candidate parser read the record safely, and
+  the active AuraCall browser using its referenced profile path was preserved;
+- one stale internal acceptance session was closed through Agent Browser's
+  exact lifecycle command. Its browser process remains preserve-only under the
+  named persistent acceptance profile and was not signaled manually;
+- subsequent candidate upgrades reached the shadow-dashboard stage, but
+  transaction `upgrade-698bb291-9084-4756-8faf-0d6fd8f118ba` and independently
+  owned concurrent transaction
+  `upgrade-339e80a8-975a-4c2d-94c5-44f339d3afa0` both terminalized
+  `failed_preserved_old_generation` with stop reason
+  `candidate_dashboard_presentation_unproven` after no authenticated candidate
+  journey receipt was committed within five minutes;
+- stable ingress and operator journey remained ready on generation
+  `0.28.0-aa21c5fe8a6d-25828e3b8aed`; candidate backends were rolled back and
+  no provider state changed.
+
+Interpretation:
+
+- Agent Browser is not globally unhealthy: dashboard ingress, the selected
+  runtime host, exact socket route, named lane, access-plan, and capability
+  preflight are operational;
+- browser acquisition remains unaccepted because the installed generation's
+  private-display allocator collides with protected `:90`. Upgrading to the
+  repaired allocator requires an independently authenticated operator journey
+  against the shadow dashboard during the transaction window;
+- this is pre-navigation runtime evidence, not X or LinkedIn authentication,
+  feed retrieval, scrape, acceptance-filter, or quality evidence.
+
+Authority classification:
+
+- `human_gate`; the runtime repair authority was consumed, but the mandatory
+  authenticated shadow-dashboard acceptance receipt cannot be fabricated or
+  inferred.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- pending; this checkpoint, Runbook Turn 323, transaction receipts, current
+  process census, and supervisor status are authoritative.
+
+Remaining acceptance criteria:
+
+- rerun the current transactional upgrade while an operator authenticates the
+  candidate dashboard and commits its exact presentation receipt inside the
+  five-minute window;
+- after the candidate is selected, rerun one named non-provider tab proof and
+  confirm it allocates a display other than protected `:90`;
+- request fresh authority before any X or LinkedIn provider canary.
+
+Next action:
+
+- schedule one attended Agent Browser upgrade acceptance window. Do not kill
+  protected Xvfb PID `30094`, edit the unrelated default/AuraCall profile, or
+  run a provider request before the candidate generation is accepted.
+
+Checkpoint P0055-C14 is the current authority.
