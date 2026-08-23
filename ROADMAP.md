@@ -1157,7 +1157,7 @@ Current State:
   while only a different logical browser received a migration adoption
   receipt. The plan remains open on the explicit owner/session transition; the
   canary is terminal and consumed.
-- Plan 0055 version 14/C14 supersedes acquisition-time semantic filtering with
+- Plan 0055 version 15/C15 supersedes acquisition-time semantic filtering with
   a retrieval-first contract. Candidate service 0.3.59 retains structurally
   valid, canonical, in-range X and LinkedIn posts when text is short or lacks
   lexical topic overlap, preserving those conditions as diagnostics while
@@ -1170,21 +1170,24 @@ Current State:
   closed that exact retained browser, repaired the selected host's socket route,
   and installed a ready named runtime lane. One non-provider tab request then
   reached display launch but the selected old generation collided with
-  protected live Xvfb display `:90`. Candidate generations contain a repaired
-  allocator, yet transactional upgrades preserved the old generation because
-  no independently authenticated candidate-dashboard journey receipt arrived
-  within the required five-minute acceptance window. No provider attempt was
-  run.
+  protected live Xvfb display `:90`. Agent Browser transaction
+  `upgrade-0df91191-ad9b-4eb9-aa85-2f92e9729563` subsequently accepted the
+  repaired current generation with all readiness axes true. The newly
+  authorized X/LinkedIn retry still failed before navigation because the
+  Last30days owner registry retained absent browser
+  `session:plan0117-final-runtime` as non-terminal `closing` with an owned
+  cleanup obligation. Both lanes observed zero posts, so authentication,
+  direct-feed extraction, and acceptance remain untested.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 14/C14 owns retrieval-first X/LinkedIn feed adoption and the attended
-  runtime-upgrade acceptance gate. Service 0.3.60 and feed-based recurring
-  targets are installed; shared-host routing and the durable named lane are
-  ready, but another acquisition attempt is forbidden until the candidate
-  dashboard receives an authenticated presentation receipt, the repaired
-  generation is selected, and one named non-provider tab request succeeds.
+  version 15/C15 owns retrieval-first X/LinkedIn feed adoption and the exact
+  lifecycle-owner cleanup gate. Service 0.3.60 and feed-based recurring
+  targets are installed, and the Agent Browser current generation is accepted
+  and steady. Another acquisition attempt is forbidden until the absent
+  generation-5 Last30days owner is explicitly terminalized with its cleanup
+  obligation satisfied while preserving the durable authenticated profile.
 
 Closed Plan:
 

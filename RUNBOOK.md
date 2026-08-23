@@ -19653,3 +19653,80 @@ Next Bounded Action:
   candidate presentation receipt inside five minutes. After selection, retry
   one named non-provider tab; provider acquisition remains a later authority
   boundary.
+
+## Turn 324 | 2026-08-23
+
+Focus: wait for the Agent Browser upgrade to become fully ready, then retry one
+real X plus LinkedIn authenticated home-feed tick without replacing profiles.
+
+Authority Consulted:
+
+- operator correction and explicit `try again`; Plan 0055/C14; Agent Browser
+  service and runtime operating contracts; current roadmap/runbook,
+  validation, documentation, git, and closeout policy.
+
+Decisions And Changes:
+
+- waited without mutating browser/profile state while transaction
+  `upgrade-0df91191-ad9b-4eb9-aa85-2f92e9729563` advanced to terminal
+  `accepted` on generation `0.28.0-4b975a51aa89-d0782705d5ff`;
+- preserved exact existing profile `last30days-facebook`; access-plan selected
+  it for both X and LinkedIn with zero active leases/live compatible browsers;
+- preflighted and ran exactly one manual two-lane tick with ten items and one
+  attempt per lane, no fallback, zero model use, and zero paid cost;
+- did not create, replace, discard, or reseed a profile and did not run a
+  second provider attempt after the terminal result.
+
+Validation Evidence:
+
+- upgrade readiness reports dashboard ingress, operator journey, payload,
+  rollback, runtime convergence, selected generation, and overall readiness
+  all true; process census is steady at one current-generation dashboard and
+  one current-generation runtime host;
+- preflight returned `ready` for exact tick
+  `tick-070bfe28cc98550d12f0d940ccdfac2e` on config revision
+  `operator-20260822-x-linkedin-home-feed-v1`;
+- the tick terminalized `complete_degraded`. X attempt
+  `provider-attempt-6ba4a89057e065f33575ea8b6d1c3804` and LinkedIn attempt
+  `provider-attempt-855c0d0ca3c88a8eb77499642c4d02c0` each report zero
+  attempted, observed, accepted, or rejected posts;
+- retained jobs `r974493` and `r232569` failed before navigation with
+  `runtime_lifecycle_existing_owner_requires_explicit_transition` and rolled
+  back their route/display leases;
+- the Last30days owner registry still names
+  `session:plan0117-final-runtime`, generation 5. Its lifecycle record is
+  `closing`, cleanup obligation `owned`, process group PID `27742`; fresh
+  process readback finds that PID absent.
+
+State Movement:
+
+- Plan 0055 advances to version 15/C15
+  `current_generation_accepted_stale_profile_lifecycle_owner_blocked`; P08
+  remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; the upgrade is now proven accepted and removed from the
+  blocker set. The remaining failure is the exact stale lifecycle-owner
+  transition for the preserved Last30days profile.
+
+Authority Classification:
+
+- `human_gate`; the one authorized retry is consumed. Lifecycle mutation and
+  another provider tick require separate authority.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending; Plan 0055/C15, this runbook entry, durable tick/attempt rows, Agent
+  Browser jobs, and current lifecycle registries are authoritative.
+
+Next Bounded Action:
+
+- use Agent Browser's reviewed exact-owner lifecycle transition to terminalize
+  the absent generation-5 browser and satisfy its cleanup obligation while
+  preserving `last30days-facebook`. Do not edit registries manually or run
+  another provider attempt first.
