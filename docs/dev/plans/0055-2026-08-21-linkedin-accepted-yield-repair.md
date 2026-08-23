@@ -1609,8 +1609,13 @@ Subagent status and reconciliation:
 
 Graphiti write status:
 
-- pending; this checkpoint, Runbook Turn 325, the durable tick/attempt rows,
-  Agent Browser jobs, and published repair branch are authoritative.
+- pending; provider readiness passed and job
+  `0360a5ed-fa86-4f5e-a9d8-aa8e02586ed8` was queued in
+  `last30days_skill_main`, but it remained in node resolution past its nominal
+  180-second budget and grouped readback was still operation-locked. Do not
+  duplicate the episode; poll this exact job at the next non-trivial closeout.
+  This checkpoint, Runbook Turn 325, the durable tick/attempt rows, Agent
+  Browser jobs, and published repair branch remain authoritative.
 
 Remaining acceptance criteria:
 

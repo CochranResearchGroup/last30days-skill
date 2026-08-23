@@ -19807,8 +19807,13 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending; Plan 0055/C16, this runbook entry, durable tick/attempt rows, Agent
-  Browser jobs, and the published repair branch are authoritative.
+- pending; provider readiness passed and compact episode job
+  `0360a5ed-fa86-4f5e-a9d8-aa8e02586ed8` was queued in
+  `last30days_skill_main`, but it remained in node resolution past its nominal
+  180-second budget and exact grouped readback was operation-locked. Do not
+  enqueue a duplicate; poll this exact job at the next non-trivial closeout.
+  Plan 0055/C16, this runbook entry, durable tick/attempt rows, Agent Browser
+  jobs, and the published repair branch remain authoritative.
 
 Next Bounded Action:
 
