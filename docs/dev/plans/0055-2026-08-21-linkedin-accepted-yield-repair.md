@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 12
+Plan version: 13
 Date: 2026-08-21
 
 ## Objective
@@ -30,13 +30,12 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 - the one installed feed canary terminalized with zero observed posts because
   both Agent Browser launch-adoption jobs failed at
   `runtime_lifecycle_process_tree_record_missing` before extraction;
-- no-launch access plans still select authenticated profile
-  `last30days-facebook`, require no operator authentication, and recommend the
-  retained browser. That pre-upgrade process remains live, but the current
-  Agent Browser generation lacks its required process-tree ownership record;
-- no browser was closed, relaunched, pruned, repaired, or retried. Direct-feed
-  extraction and acceptance therefore remain unproven in the installed
-  runtime.
+- the authorized follow-up closed the retained browser and released the
+  `last30days-facebook` profile lease. Relaunch now fails before Chrome starts
+  because the shared runtime host inherits an invalid unrelated `default`
+  runtime-state row and dead CDP port `37725`;
+- no provider acquisition was retried. Direct-feed extraction and acceptance
+  therefore remain unproven in the installed runtime.
 
 ## Scope
 
@@ -1210,4 +1209,104 @@ Next action:
   boundary. Do not retry X or LinkedIn acquisition against the unrecoverable
   lifecycle record.
 
-Checkpoint P0055-C12 is the current authority.
+Checkpoint P0055-C12 is superseded by P0055-C13 below.
+
+### Checkpoint P0055-C13 | 2026-08-23
+
+Plan version: 13
+
+State transition:
+
+- `home_feed_runtime_adopted_browser_lifecycle_blocked -> home_feed_browser_closed_shared_runtime_launch_state_blocked`.
+
+Progress classification:
+
+- `blocker_reduction`; the pre-upgrade browser and profile lease are now gone,
+  and the remaining failure is isolated to the selected shared runtime host's
+  stale launch state before Chrome starts.
+
+Authorized runtime effects and evidence:
+
+- the operator authorized a transactional close/relaunch of only the
+  `last30days-facebook` browser plus one named non-provider tab proof; no X or
+  LinkedIn provider attempt was authorized or run;
+- fresh runtime census found current Agent Browser generation
+  `0.28.0-aa21c5fe8a6d-25828e3b8aed`, one runtime-host PID `32617`, one
+  dashboard PID `68960`, and no runtime multiplicity issue;
+- the retained logical browser was `session:plan0117-final-runtime`, with
+  active daemon browser `session:handoff-f0bb26b7965a9989`, Chrome root PID
+  `27742`, profile `last30days-facebook`, and owner-generation 5 receipt
+  `owner-transfer-b11d5204a7b6ba821c3d17ff6e1086e2e0b45a55a5f9f95a54db869ee2bc491c`;
+- a route-hinted `service_browser_close` succeeded for the active daemon
+  browser. Fresh OS readback finds neither PID `27742` nor any process using
+  the exact Last30days profile path; the broker reports zero active leases,
+  zero same-profile live browsers, and `launch_new_browser`;
+- the no-launch capability job
+  `mcp-service-browser-capability-preflight-c1cf9ffd-221e-47f9-a5a4-a78ad7ddc4f3`
+  succeeded for the durable profile and private-display request.
+
+Launch blocker:
+
+- four bounded `tab_new` paths were attempted only after materially different
+  routing state: default MCP lane, selected `runtime-host`, scoped named lane,
+  and that lane with an explicit route hint. Jobs
+  `mcp-service-request-tab_new-7091ab47-1052-4c12-8eef-bd6250d336c2`,
+  `mcp-service-request-tab_new-5e427d52-7f1f-4a35-8292-9b622b53803b`,
+  `mcp-service-request-tab_new-4bbbf22f-965d-462c-8cb6-b0e8583cf299`, and
+  `mcp-service-request-tab_new-a90fca53-56b8-4fce-8402-4e7a249e3f3d`
+  all failed in approximately one tenth of a second against the same dead CDP
+  endpoint `127.0.0.1:37725` before creating a browser, display allocation, or
+  named tab handle;
+- the selected host is current and live, but its environment is bound to
+  runtime profile `default`. That profile's `runtime-state.json` contains a
+  null `browserPid`, while the current parser requires a `u32`; runtime status
+  and service observation therefore report `runtime_profile_unavailable`;
+- the default profile points at an unrelated AuraCall user-data directory.
+  This plan did not rewrite, delete, or relaunch that shared identity;
+- the scoped `last30days-home-feed` supervisor lane proved the existing host
+  could publish its port, but systemd correctly rejected a duplicate host
+  start because PID `32617` already owned the lane. The lane was removed, port
+  `37366` was released, the unit failure flag was reset without starting or
+  stopping a process, and the pre-existing runtime-host listener on `37365`
+  remains. No temporary Last30days browser or profile process remains.
+
+Interpretation:
+
+- the original lifecycle-adoption blocker is resolved by the successful close;
+- launch and named-tab acceptance remain unproven. The failure occurs before
+  site navigation, so it is not X authentication, feed retrieval, scraping,
+  acceptance filtering, or content quality evidence;
+- repairing the shared host/default runtime state can affect other Agent
+  Browser consumers and exceeds the approved single-profile restart boundary.
+
+Authority classification:
+
+- `human_gate`; every effect remained inside the approved
+  Last30days browser/lane scope, and the shared-host repair boundary was not
+  inferred.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- pending; this checkpoint, Runbook Turn 322, retained Agent Browser jobs,
+  owner registry, process census, and supervisor receipts are authoritative.
+
+Remaining acceptance criteria:
+
+- transactionally repair or replace the selected shared runtime host so a
+  service request does not inherit the invalid unrelated `default` runtime
+  state or dead CDP port;
+- relaunch `last30days-facebook` on a private display and prove one named tab
+  request;
+- request fresh authority before any X or LinkedIn provider canary.
+
+Next action:
+
+- obtain operator authority for the shared Agent Browser runtime-host repair.
+  Do not edit the unrelated default/AuraCall profile manually, and do not run
+  another provider or tab attempt until the host state changes.
+
+Checkpoint P0055-C13 is the current authority.

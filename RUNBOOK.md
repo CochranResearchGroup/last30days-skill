@@ -19488,3 +19488,83 @@ Next Bounded Action:
   `last30days-facebook` browser under the current Agent Browser generation,
   prove one named tab request, and then request fresh authority for at most one
   two-lane feed canary.
+
+## Turn 322 | 2026-08-23
+
+Focus: consume the approved single-profile browser restart boundary, prove one
+named non-provider tab request, and stop before any provider acquisition.
+
+Authority Consulted:
+
+- operator approval; Plan 0055/C12; Last30days administration contract; Agent
+  Browser service access-plan, ownership, supervisor, and runtime-maintenance
+  contracts; current closeout and validation policy.
+
+Decisions And Changes:
+
+- closed the exact service-owned active browser
+  `session:handoff-f0bb26b7965a9989`, corresponding to retained logical browser
+  `session:plan0117-final-runtime` and the durable `last30days-facebook`
+  profile;
+- did not rewrite or delete the shared `default` runtime profile after finding
+  that it points at an unrelated AuraCall directory and has invalid null-PID
+  runtime state;
+- tried four materially distinct scoped launch routes, all of which failed
+  before Chrome or a tab handle existed against dead CDP port `37725`;
+- installed and then removed the temporary `last30days-home-feed` named lane,
+  released port `37366`, and reset only the resulting systemd failure flag;
+- ran no X or LinkedIn provider attempt and changed no recurring source or
+  schedule configuration.
+
+Validation Evidence:
+
+- current Agent Browser generation is
+  `0.28.0-aa21c5fe8a6d-25828e3b8aed`; runtime multiplicity remains one current
+  host PID `32617` and one current dashboard PID `68960`;
+- owner generation 5 and receipt
+  `owner-transfer-b11d5204a7b6ba821c3d17ff6e1086e2e0b45a55a5f9f95a54db869ee2bc491c`
+  bound the retained browser to its exact process before close;
+- close returned `closed=true` and `serviceOwned=true`; fresh OS readback finds
+  no PID `27742` and no process using the Last30days profile path;
+- access-plan reports zero active leases and `launch_new_browser`; capability
+  preflight job
+  `mcp-service-browser-capability-preflight-c1cf9ffd-221e-47f9-a5a4-a78ad7ddc4f3`
+  succeeded;
+- four retained `tab_new` jobs fail identically at `127.0.0.1:37725` in about
+  one tenth of a second. Service observation separately reports the host's
+  `default/runtime-state.json` cannot parse a null `browserPid` as `u32`;
+- cleanup readback finds only the pre-existing runtime-host listener on
+  `37365`; temporary lane `37366` and all Last30days profile processes are
+  absent.
+
+State Movement:
+
+- Plan 0055 advances to version 13/C13
+  `home_feed_browser_closed_shared_runtime_launch_state_blocked`; P08 remains
+  OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; legacy browser ownership no longer blocks the profile,
+  but shared-host launch state blocks Chrome before navigation.
+
+Authority Classification:
+
+- `explicit_authority_exhausted`; shared runtime-host repair could affect
+  unrelated consumers and was not inferred from the single-profile approval.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending; Plan 0055/C13, this runbook entry, and installed runtime receipts
+  are authoritative.
+
+Next Bounded Action:
+
+- with explicit operator approval, transactionally repair or replace the
+  shared Agent Browser runtime host, then relaunch the same durable profile and
+  prove one named tab request. A provider canary remains a later authority
+  boundary.

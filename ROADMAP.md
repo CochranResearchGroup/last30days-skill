@@ -1157,7 +1157,7 @@ Current State:
   while only a different logical browser received a migration adoption
   receipt. The plan remains open on the explicit owner/session transition; the
   canary is terminal and consumed.
-- Plan 0055 version 12/C12 supersedes acquisition-time semantic filtering with
+- Plan 0055 version 13/C13 supersedes acquisition-time semantic filtering with
   a retrieval-first contract. Candidate service 0.3.59 retains structurally
   valid, canonical, in-range X and LinkedIn posts when text is short or lacks
   lexical topic overlap, preserving those conditions as diagnostics while
@@ -1166,17 +1166,21 @@ Current State:
   LinkedIn targets select their authenticated home feeds, and topic search is
   retained for on-demand use. The first feed canary observed no posts because
   both Agent Browser launch-adoption jobs failed with
-  `runtime_lifecycle_process_tree_record_missing`; the pre-upgrade browser is
-  live and authenticated, but its current runtime ownership record is absent.
+  `runtime_lifecycle_process_tree_record_missing`. The authorized follow-up
+  closed that exact retained browser and released its profile lease, resolving
+  the ownership blocker. Relaunch remains blocked earlier than navigation: the
+  selected shared runtime host inherits an invalid unrelated `default`
+  runtime-state row and repeatedly targets dead CDP port `37725`. No provider
+  attempt was run.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 12/C12 owns retrieval-first X/LinkedIn feed adoption and the exact
-  pre-upgrade browser lifecycle blocker. Service 0.3.60 and feed-based
-  recurring targets are installed; another acquisition attempt is forbidden
-  until the authenticated browser is transactionally relaunched and a named
-  tab request succeeds.
+  version 13/C13 owns retrieval-first X/LinkedIn feed adoption and the shared
+  runtime-host launch-state blocker. Service 0.3.60 and feed-based recurring
+  targets are installed; the durable profile is unlocked, but another
+  acquisition attempt is forbidden until the host is transactionally repaired,
+  the browser is relaunched, and a named tab request succeeds.
 
 Closed Plan:
 
