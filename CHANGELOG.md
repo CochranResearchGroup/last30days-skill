@@ -18,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Progress-aware X and LinkedIn feed scrolling.** Service 0.3.61 tracks
+  canonical post identities across virtualized home-feed snapshots, continues
+  while new identities appear up to the existing eight-scroll ceiling, and
+  stops after two stagnant snapshots. LinkedIn also recovers canonical
+  activity permalinks, authors, and timestamps from current feed-card data,
+  ARIA, and encoded tracking variants. Deterministic promoted/sponsored,
+  structural, date, and exact-duplicate exclusions remain unchanged.
+
 - **Retrieval-first X and LinkedIn acceptance.** Service 0.3.59 retains
   canonical, in-range X and LinkedIn posts even when their extracted text is
   short or has no lexical overlap with the search topic. Those conditions are

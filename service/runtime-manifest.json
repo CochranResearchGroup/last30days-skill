@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "c6563d885ff161801b46d7bf1e870a1b06a076a01282671715b6be4722c8dd89",
+      "sha256": "a45027dc8c7e59ba40e216ee066296dd65f00b4a49d96b6caf1ae6b07c8f4bc8",
       "source": "service/VERSION"
     },
     {
@@ -653,5 +653,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.60"
+  "service_version": "0.3.61"
 }

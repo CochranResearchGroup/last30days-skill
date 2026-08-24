@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 17
+Plan version: 18
 Date: 2026-08-21
 
 ## Objective
@@ -1808,7 +1808,7 @@ Provider-free acceptance evidence:
 - the complete `uv run pytest -q` suite passed on the final source, and the
   deterministic service runtime manifest was refreshed and verified.
 
-Authority and effects:
+Authority classification:
 
 - `inherited_authority` covers this Last30days-only implementation and fixture
   validation packet;
