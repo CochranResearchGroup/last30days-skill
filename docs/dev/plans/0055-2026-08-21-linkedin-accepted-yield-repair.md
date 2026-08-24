@@ -1826,10 +1826,12 @@ Graphiti write status:
 
 - prior C17 job `eceb0d15-4d25-4d73-9799-d86450a1e6a7` terminalized
   `timed_out` without an episode after its 180-second node-resolution budget;
-- provider readiness passed and compact C18 job
-  `86280ba2-91c6-412a-acdb-255b858aae01` is queued in
-  `last30days_skill_main` from published source commit `78c506e`. Poll that
-  exact job at the next non-trivial closeout; do not enqueue a duplicate.
+- provider readiness passed, but compact C18 job
+  `86280ba2-91c6-412a-acdb-255b858aae01` terminalized `timed_out` without an
+  episode after its 300-second budget while extracting node attributes;
+- `graphiti_write_pending`; published commit `78c506e`, this checkpoint, and
+  the validation receipts remain authoritative. Reassess one bounded C18
+  retry at the next non-trivial closeout; do not enqueue another this turn.
 
 Remaining acceptance criteria:
 
