@@ -1228,16 +1228,23 @@ Current State:
   `tab/failed` sequence at authentication. Neither source observed a card;
   20-item acceptance remains blocked on retained-session tab inventory rather
   than scraper content, ads, quality, authentication, or infinite scrolling.
+- Plan 0055 version 23/C23 reproduces the exact Last30days route mismatch
+  without a provider. Both services resolve to broker owner
+  `handoff-17959ea3e226ee61`, which status advertises as ready but whose first
+  command fails `runtime_lifecycle_existing_owner_requires_explicit_transition`.
+  The configured session remains commandable and passes the existing safe
+  exact-default-alias validator for both sources; simple concurrency is ruled
+  out. No repair or live retry occurred.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 22/C22 owns retrieval-first X/LinkedIn feed completion. The bounded
+  version 23/C23 owns retrieval-first X/LinkedIn feed completion. The bounded
   unique-progress loop and current LinkedIn metadata variants are fixture
   accepted; service 0.3.62 is installed ready and proves its durable failure-
-  evidence contract live. Both sources remain pre-observation blocked on the
-  shared retained-session `tab list`; no further live attempt is authorized by
-  C22 without a changed premise.
+  evidence contract live. Both sources remain pre-observation blocked because
+  Last30days trusts a broker-advertised owner that is not commandable; the next
+  bounded unit is a provider-free route fallback regression and repair.
 
 Closed Plan:
 

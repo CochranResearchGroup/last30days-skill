@@ -20267,3 +20267,75 @@ Next Bounded Action:
 - diagnose the Last30days side of the shared `tab/failed` boundary while
   leaving Agent Browser and authenticated profiles unchanged. Do not run
   another provider tick until the retained-session tab premise changes.
+
+## Turn 332 | 2026-08-24
+
+Focus: diagnose the Last30days retained-session `tab list` boundary without a
+provider attempt or Agent Browser/profile mutation.
+
+Authority Consulted:
+
+- operator `kk go`; Plan 0055/C22; diagnosing-bugs, policy-selector, CodeGraph,
+  planning, Graphiti, Git, validation, documentation, and closeout contracts.
+
+Decisions And Changes:
+
+- built a read-only boundary loop around the exact configured and
+  broker-resolved `tab list` commands;
+- tested serial and paired-concurrent configured-session inventories before
+  inspecting the current workspace-resolution path;
+- used current access-plan/status payloads with the Last30days resolver and the
+  existing safe alias validator; no code repair or provider tick was run.
+
+Validation Evidence:
+
+- configured session `last30days-facebook` passed three serial tab inventories
+  and five simultaneous pairs, each with exit 0;
+- both X and LinkedIn resolve selected profile `last30days-facebook` to broker
+  owner and command session `handoff-17959ea3e226ee61`;
+- that exact route fails deterministically with
+  `runtime_lifecycle_existing_owner_requires_explicit_transition`, while the
+  configured session remains commandable;
+- status shows two separate ready browsers: the configured session owns
+  `session:last30days-facebook` with profile label `default`, and the broker
+  handoff owns `session:last30days-facebook--last30days-facebook` with the
+  selected profile label;
+- `_exact_retained_default_owner` accepts the configured alias for both X and
+  LinkedIn, but `acquire_workspace` returns the broker shared owner before
+  evaluating that compatibility path;
+- no navigation, extraction, provider request, session transition, profile
+  replacement, recurring-config mutation, or Agent Browser mutation occurred.
+
+State Movement:
+
+- Plan 0055 advances to version 23/C23
+  `broker_owner_route_lifecycle_mismatch_reproduced_fix_pending`; P08 remains
+  `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; the ambiguous `tab/failed` result is now one exact,
+  deterministic route-commandability mismatch with a fixture-testable
+  Last30days mitigation seam.
+
+Authority Classification:
+
+- `inherited_authority`; the operator authorized diagnosis. No implementation
+  or external/provider effect was inferred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; readiness passed, but job
+  `f2b5c46b-7792-4cbc-a0c7-21ae32978329` failed during node extraction with
+  `TimeoutError`. It was not requeued in this packet.
+
+Next Bounded Action:
+
+- add a failing provider-free `acquire_workspace` regression and narrowly fall
+  back to the already validated configured alias only on the exact lifecycle-
+  transition error; otherwise retain fail-closed broker routing. Do not run a
+  provider tick until that premise changes and the repair is validated.

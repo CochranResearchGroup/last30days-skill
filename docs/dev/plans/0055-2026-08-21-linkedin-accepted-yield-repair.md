@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 22
+Plan version: 23
 Date: 2026-08-21
 
 ## Objective
@@ -69,6 +69,11 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 - installed service 0.3.62 fixes both retained-evidence gaps. Live tick
   `tick-ba83099879712f849b3062bdef3bcb0c` durably preserved safe stage,
   signature, and browser-operation evidence for both failed lanes;
+- read-only route replay now proves both lanes resolve to broker-advertised
+  owner session `handoff-17959ea3e226ee61`, whose `tab list` deterministically
+  fails `runtime_lifecycle_existing_owner_requires_explicit_transition`.
+  Configured session `last30days-facebook` remains commandable, and the
+  existing exact-default-alias validator accepts it for both sources;
 - the temporary run configuration was moved to the user trash. Recurring
   revision `operator-20260822-x-linkedin-home-feed-v1`, SHA-256
   `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
@@ -2216,3 +2221,93 @@ Next action:
   changes.
 
 Checkpoint P0055-C22 is the current authority.
+
+### Checkpoint P0055-C23 | 2026-08-24
+
+Plan version: 23
+
+State transition:
+
+- `failure_observability_repair_installed_live_tab_inventory_blocked -> broker_owner_route_lifecycle_mismatch_reproduced_fix_pending`.
+
+Progress classification:
+
+- `blocker_reduction`; the shared pre-feed failure is now reproduced by one
+  read-only Last30days boundary probe with its exact safe error, selected
+  session, and viable compatibility route.
+
+Diagnostic evidence:
+
+- three serial `agent-browser --json --session last30days-facebook tab list`
+  probes succeeded and each returned one tab;
+- five simultaneous pairs against that same configured session also succeeded,
+  so ordinary same-session concurrency is not sufficient to reproduce the
+  combined-tick failure;
+- the Last30days resolver independently acquired current X and LinkedIn access
+  plans plus service status without navigation or extraction. Both selected
+  profile `last30days-facebook`, service-owner session
+  `handoff-17959ea3e226ee61`, and that same session as the command route;
+- `tab list` on the resolved route failed for both services with exact safe
+  error `runtime_lifecycle_existing_owner_requires_explicit_transition`;
+- a separate direct probe reconfirmed the configured session returns success
+  while the broker-advertised handoff route returns exit 1 with the same exact
+  lifecycle error;
+- current status exposes two distinct ready browsers: configured session
+  `last30days-facebook` owns browser `session:last30days-facebook` under the
+  stale profile label `default`, while the broker route owns browser
+  `session:last30days-facebook--last30days-facebook` under the selected profile;
+- the existing `_exact_retained_default_owner` compatibility validator returns
+  a safe configured-alias candidate for both X and LinkedIn. Current
+  `acquire_workspace` prefers a broker `shared_owner` before evaluating that
+  compatibility path;
+- no provider tick, page navigation, extraction, session transition, Agent
+  Browser mutation, profile replacement, or recurring-configuration change
+  occurred.
+
+Adjudication:
+
+- the service is healthy and the configured alias is commandable, but the
+  broker advertises a different retained owner as reusable while command
+  execution rejects that owner until an explicit lifecycle transition;
+- this is not authentication evidence and is not caused by feed content,
+  scraper selectors, infinite scrolling, quality filtering, or simple parallel
+  access;
+- Last30days currently trusts the broker-advertised owner and therefore never
+  reaches its existing exact-default-alias compatibility path. The actionable
+  defect is route-commandability handling at workspace acquisition;
+- no code fix was authorized or applied in this diagnosis-only packet.
+
+Authority classification:
+
+- `inherited_authority`; operator `kk go` authorized the bounded Last30days-side
+  diagnosis proposed at C22. Provider effects and Agent Browser/profile
+  mutation remained out of scope.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; readiness passed, but job
+  `f2b5c46b-7792-4cbc-a0c7-21ae32978329` failed during node extraction with
+  `TimeoutError`. It was not requeued in this packet.
+
+Remaining acceptance criteria:
+
+- fixture-prove a narrow Last30days route-commandability repair that preserves
+  broker authority and uses the exact retained-default alias only after the
+  advertised route returns the explicit lifecycle-transition error;
+- install the validated successor and complete one successful 20-item X and
+  LinkedIn home-feed observation with accepted-yield diagnostics.
+
+Next action:
+
+- implement a provider-free failing regression at `acquire_workspace`: when a
+  broker shared owner has no distinct commandable daemon route and its bounded
+  `tab list` preflight returns
+  `runtime_lifecycle_existing_owner_requires_explicit_transition`, fall back
+  only when `_exact_retained_default_owner` proves the configured alias for the
+  selected profile and target service. Otherwise fail closed as a route error.
+
+Checkpoint P0055-C23 is the current authority.
