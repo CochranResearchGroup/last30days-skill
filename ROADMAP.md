@@ -1184,18 +1184,27 @@ Current State:
   exact next-generation logical-ID move with collision and transfer guards,
   but it is not installed. Authentication, direct-feed extraction, and
   acceptance therefore remain untested.
+- Plan 0055 version 17/C17 supersedes the old pre-navigation gate with current
+  direct-feed evidence. Under the operator's exact three-attempt budget per
+  service, X reached the home feed twice, observed 32 cards each time, and
+  accepted 11 unique in-range posts; its first attempt failed transiently
+  before observation. LinkedIn reached the home feed on all three attempts,
+  observed 30 cards each time, and accepted 0, 1, and 0 posts. Five LinkedIn
+  cards per run were deterministic sponsored/ad exclusions; the dominant
+  remaining failures were missing permalink, date, or author metadata. P08 is
+  now blocked on Last30days retrieval and normalization, not Agent Browser
+  readiness, authentication, or semantic quality filtering. The live retry
+  budget is exhausted.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 16/C16 owns retrieval-first X/LinkedIn feed adoption and the exact
-  terminal-replacement installation gate. Service 0.3.60 and feed-based
-  recurring targets are installed; the Agent Browser current generation is
-  accepted and steady; and the absent generation-5 owner is now
-  `terminal/satisfied`. Another acquisition attempt is forbidden until the
-  published `cd23311e` correction is transactionally installed and a named
-  non-provider tab proves collision-free replacement while preserving the
-  durable authenticated profile.
+  version 17/C17 owns retrieval-first X/LinkedIn feed completion. Service
+  0.3.60 and feed-based recurring targets are installed, and current live
+  evidence proves both feeds are reachable. The next source packet must deepen
+  X unique-card pagination and recover LinkedIn permalink/date/author metadata
+  while excluding only deterministic ads, spam/noise, exact duplicates, and
+  true structural invalidity. No further live attempt is authorized by C17.
 
 Closed Plan:
 

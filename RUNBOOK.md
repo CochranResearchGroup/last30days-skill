@@ -19820,3 +19820,77 @@ Next Bounded Action:
 - obtain explicit authority for one governed Agent Browser installation of
   commit `cd23311e`, then prove one named non-provider tab before requesting a
   new X plus LinkedIn tick. Preserve `last30days-facebook` throughout.
+
+## Turn 326 | 2026-08-23
+
+Focus: run one successful 20-item authenticated home-feed scrape from X and
+LinkedIn with at most three separately receipted attempts per service.
+
+Authority Consulted:
+
+- operator correction that Agent Browser is outside this lane and explicit
+  20-item, three-attempt-per-service direction; Last30days service discovery,
+  administration, monitoring, retry, profile-reuse, planning, runtime,
+  validation, documentation, and closeout contracts; Plan 0055/C16.
+
+Decisions And Changes:
+
+- kept Agent Browser as an unchanged dependency and selected the existing
+  durable profile `last30days-facebook` through the installed Last30days feed
+  targets;
+- built a temporary, schedule-disabled config with one attempt and 20 items per
+  service-scoped tick, zero model/cost budget, and no fallback;
+- preflighted X and LinkedIn separately, then ran up to three uniquely
+  receipted ticks per service and stopped after the exact budget was consumed;
+- did not alter the installed recurring configuration, profile, authentication
+  state, Agent Browser runtime, Reddit/Facebook pause, or topic-search support;
+- removed the temporary config after the six terminal receipts were read.
+
+Validation Evidence:
+
+- X attempt 1 failed pre-observation with transient `agent_browser_error`;
+  attempts 2 and 3 each observed 32 cards and accepted 11 unique in-range posts.
+  Their 21 exclusions were repeated status captures plus one to three
+  out-of-range posts;
+- LinkedIn attempts 1 through 3 each observed 30 cards and accepted 0, 1, and
+  0 posts. Each run identified five sponsored/ad cards; overlapping diagnostics
+  consistently included 20 missing dates, ten missing authors, nine missing
+  permalinks, and nine unknown kinds;
+- all six ticks are durable `complete_degraded` receipts with no page signals
+  or authentication codes on the attempts that reached the feeds;
+- `daily-default` returned to `ready` with no runtime error or active tick;
+  the installed config remains revision
+  `operator-20260822-x-linkedin-home-feed-v1`, SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+State Movement:
+
+- Plan 0055 advances to version 17/C17
+  `direct_feed_retrieval_proven_accepted_yield_blocked`; P08 remains `OPEN`.
+
+Progress Classification:
+
+- `outcome_progress`; direct feed retrieval and observation are now proven for
+  both sources, and the remaining defects are isolated to Last30days X
+  unique-scroll completion and LinkedIn card metadata recovery.
+
+Authority Classification:
+
+- `inherited_authority`; the explicitly bounded six-attempt budget is fully
+  consumed. No further live provider attempt is authorized by this turn.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- prior C16 job `0360a5ed-fa86-4f5e-a9d8-aa8e02586ed8` completed as episode
+  `4b72ebf7-7600-4d29-92ac-3dcc091f9170`;
+- C17 compact write remains to be queued after this source checkpoint commits.
+
+Next Bounded Action:
+
+- implement and fixture-validate a Last30days-only repair for X repeated-card
+  pagination and LinkedIn permalink/date/author extraction. Do not modify Agent
+  Browser or consume another live retry budget.

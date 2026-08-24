@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 16
+Plan version: 17
 Date: 2026-08-21
 
 ## Objective
@@ -45,16 +45,19 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   `tick-7224876f30d729e41ff5435b387be4df` again used only X and LinkedIn, one
   attempt and ten-item ceiling per lane, zero model/cost budget, and the same
   durable profile;
-- both provider attempts failed before navigation with
-  `runtime_lifecycle_terminal_replacement_rejected`. The old lifecycle owner
-  uses `session:plan0117-final-runtime`, while the new service lane uses
-  `session:last30days-home-feed`. Agent Browser source commit `cd23311e` now
-  admits that exact next-generation logical-ID move with collision and transfer
-  guards, but the corrected binary is not installed. Both lanes therefore
-  report zero attempted, observed, accepted, or rejected posts;
-- direct-feed extraction and acceptance remain unproven. This receipt is not
-  X or LinkedIn authentication, feed retrieval, scraper, rejection, or content
-  quality evidence.
+- the operator subsequently authorized three separately receipted attempts per
+  service at a temporary 20-item ceiling. Both authenticated home feeds were
+  reached without authentication or page-signal incidents. X attempts two and
+  three each observed 32 cards and accepted 11 unique in-range posts; LinkedIn
+  observed 30 cards on every attempt and accepted at most one;
+- the 20-item outcome remains unproven. X is bounded by repeated status cards
+  before unique yield reaches 20. LinkedIn deterministically identifies five
+  sponsored/ad cards, but its remaining candidates are predominantly rejected
+  for missing permalink, date, or author metadata. This is a retrieval and
+  scraper-normalization blocker, not a semantic quality conclusion;
+- all three attempts per service are consumed. The temporary run configuration
+  was removed, while the recurring ten-item configuration and `daily-default`
+  remain unchanged and ready.
 
 ## Scope
 
@@ -71,8 +74,8 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 - carry an explicit feed surface through recurring and isolated-worker
   boundaries, navigate the authenticated X and LinkedIn home feeds, and retain
   topic search as an on-demand capability;
-- install one release transactionally, replace only the recurring X and
-  LinkedIn topic targets with home feeds, and admit at most one feed canary.
+- preserve the installed home-feed configuration and admit only the exact
+  operator-authorized, service-scoped retry budget.
 
 ## Non-Goals
 
@@ -1633,3 +1636,120 @@ Next action:
   `last30days-facebook`.
 
 Checkpoint P0055-C16 is the current authority.
+
+Checkpoint P0055-C16 is superseded by P0055-C17 below.
+
+### Checkpoint P0055-C17 | 2026-08-23
+
+Plan version: 17
+
+State transition:
+
+- `stale_lifecycle_reconciled_terminal_replacement_source_repaired_install_gate -> direct_feed_retrieval_proven_accepted_yield_blocked`.
+
+Progress classification:
+
+- `outcome_progress`; both authenticated feeds are now reached and card
+  observation is proven, replacing the prior pre-navigation blocker with exact
+  X unique-yield and LinkedIn metadata-recovery defects.
+
+Authority and bounds:
+
+- the operator explicitly directed one successful 20-item feed scrape from X
+  and LinkedIn with a retry budget of three per service;
+- orchestration interpreted that as at most three total separately receipted
+  provider attempts per service, stopped each service immediately on 20
+  accepted items, and admitted no fallback, model tokens, or cost;
+- each manual tick selected only one already-enabled authenticated home-feed
+  target through exact profile `last30days-facebook` and used a temporary
+  20-item, one-attempt configuration. The recurring configuration was not
+  edited;
+- the interval was `2026-08-23T01:46:47Z` through
+  `2026-08-24T01:46:47Z`.
+
+X evidence:
+
+- attempt 1, tick `tick-63a759d636523f00289cae6f4f9072b0`, failed
+  transiently before observation with `agent_browser_error` and counts
+  `0/0/0/0` attempted/observed/accepted/rejected;
+- attempt 2, tick `tick-5d9db7821c19ef162e451c10e10f4d49`, observed 32
+  cards, accepted 11, and rejected 21: 18 repeated status captures and three
+  out-of-range posts;
+- attempt 3, tick `tick-3241236cb5e57f70da4213f6a117d08b`, observed 32
+  cards, accepted 11, and rejected 21: 20 repeated status captures and one
+  out-of-range post;
+- neither successful acquisition attempt reported a page signal, auth code,
+  or provider incident. X did not reach 20 accepted unique posts.
+
+LinkedIn evidence:
+
+- attempt 1, tick `tick-25cd8e4845ff61a7de52451906c6c1ef`, observed 30
+  cards and accepted zero;
+- attempt 2, tick `tick-3fe1ad0761900acc65ba917f0578d29c`, observed 30
+  cards and accepted one;
+- attempt 3, tick `tick-75ed12d871b50ceae1ab3afffeed6a52`, observed 30
+  cards and accepted zero;
+- every run deterministically identified five sponsored/ad cards. Overlapping
+  rejection diagnostics consistently reported 20 missing dates, ten missing
+  authors, nine missing permalinks, and nine unknown kinds, plus date-window
+  and duplicate exclusions. No page signal or auth code was present;
+- LinkedIn did not reach 20 accepted posts. The non-ad deficit is a scraper and
+  normalization limitation until exact card-level evidence proves otherwise.
+
+Installed state and cleanup:
+
+- all six ticks are terminal `complete_degraded` with durable provider-attempt
+  rows in `/home/ecochran76/.local/share/last30days/research.db`;
+- `daily-default` is `ready`, has no runtime error or active tick, and retains
+  its existing enabled recurring schedule;
+- the temporary configuration was removed. The installed
+  `tick-config-v1.json` retains revision
+  `operator-20260822-x-linkedin-home-feed-v1` and SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+Interpretation:
+
+- this packet does not satisfy the requested 20-item outcome for either
+  service;
+- X retrieval is functional but is not scrolling deeply enough past repeated
+  cards to produce 20 unique in-range posts;
+- LinkedIn feed observation is functional, and deterministic ad detection is
+  working, but permalink/date/author extraction fails on most non-ad cards;
+- these are Last30days scraper defects. They do not justify an Agent Browser
+  upgrade, alternate profile, authentication warning, semantic topic filter,
+  or reclassification of unknown cards as spam.
+
+Authority classification:
+
+- `inherited_authority`; the operator explicitly authorized the two services,
+  20-item target, and three-attempt bound. That bound is now exhausted.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- prior C16 job `0360a5ed-fa86-4f5e-a9d8-aa8e02586ed8` is now completed as
+  episode `4b72ebf7-7600-4d29-92ac-3dcc091f9170`;
+- C17 compact write remains to be queued after this source checkpoint is
+  committed.
+
+Remaining acceptance criteria:
+
+- make X continue bounded unique-card retrieval beyond repeated status cards
+  until 20 unique accepted posts or the explicit scroll ceiling;
+- recover canonical LinkedIn post permalinks plus date and author metadata
+  from the observed home-feed card variants, retaining only deterministic
+  sponsored/ad, navigation-noise, exact-duplicate, date, and true structural
+  exclusions;
+- validate with provider-free fixtures before requesting any new live retry
+  budget.
+
+Next action:
+
+- implement one Last30days-only source packet for X unique-scroll completion
+  and LinkedIn card metadata recovery. Do not modify Agent Browser, profiles,
+  authentication state, recurring schedule, or run another live attempt.
+
+Checkpoint P0055-C17 is the current authority.
