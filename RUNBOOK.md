@@ -19970,3 +19970,83 @@ Next Bounded Action:
 
 - publish the coherent source commit. Prepare an installable service version
   and request fresh authority before one bounded X/LinkedIn 20-item live tick.
+
+## Turn 328 | 2026-08-24
+
+Focus: install the fixture-accepted X/LinkedIn feed repair and run one bounded
+20-item acceptance tick for both services.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C18; Last30days administration, monitoring,
+  maintenance, release, planning, Git, validation, documentation, and closeout
+  contracts.
+
+Decisions And Changes:
+
+- prepared and published service 0.3.61 at commit `ee85fdb`, containing repair
+  `78c506e`, then transactionally installed its deterministic artifact with
+  service 0.3.60 retained for rollback;
+- corrected the stale Plan 0055 header/authority label found by the complete
+  suite and re-ran the exact failed audit plus focused release/source gates;
+- built a schedule-disabled temporary config selecting only the authenticated
+  X and LinkedIn home feeds, one attempt and 20 items each, zero model/cost,
+  and no fallback;
+- ran exactly one tick and stopped. Agent Browser, profile state, recurring
+  config, Reddit, and Facebook were not changed;
+- moved the temporary config to the user trash after terminal readback.
+
+Validation Evidence:
+
+- artifact SHA-256 is
+  `c6fe940f790f001646abf97b023354f1a10a2ff72588d619652534e1c39c7d13`;
+  installed diagnose and MCP discovery agree on service 0.3.61/schema 16,
+  ready/compatible, loaded runtime-manifest SHA-256
+  `6abaef1d48ee9172d03c26c93697851edc321f1c62b3410297a3593c729e7ab0`;
+- focused X, LinkedIn, acquisition-worker, release, package, observability, and
+  plan-authority validation passes; both planning audits have zero findings;
+- preflight admitted tick `tick-32b710cd6db56be1e900992fa923bedf`
+  for `2026-08-23T13:12:00Z` through `2026-08-24T13:12:00Z` at exactly the
+  requested bounds;
+- the tick terminalized `complete_degraded`. X attempt
+  `provider-attempt-052c28c0f39587029c81c512c8d4ddb9` and LinkedIn attempt
+  `provider-attempt-ac080bf573a39e198adbe81eca43f9f7` both failed transiently
+  with safe code `agent_browser_error` and `0/0/0/0` counts. X recorded no
+  browser operations; LinkedIn recorded two successful service operations and
+  one failed tab operation. Neither emitted an auth code, page signal,
+  operator URL, incident, notification, rejection, or progress diagnostic;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` is enabled/ready for `2026-08-25T00:00:00Z` with no runtime
+  error.
+
+State Movement:
+
+- Plan 0055 advances to version 19/C19
+  `retrieval_repair_installed_live_validation_preobservation_blocked`; P08
+  remains `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; the repaired runtime is installed, but the live tick
+  stopped before either scraper could exercise it.
+
+Authority Classification:
+
+- `inherited_authority`; the exact install and one combined tick are consumed.
+  No retry or adjacent runtime mutation is authorized.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; the bounded provider-readiness probe returned
+  `degraded/TimeoutError` after 20 seconds, so no memory job was queued.
+
+Next Bounded Action:
+
+- diagnose the Last30days-side acquisition boundary from the retained C19
+  provider results without changing Agent Browser or the authenticated profile;
+  request fresh authority before another live attempt.

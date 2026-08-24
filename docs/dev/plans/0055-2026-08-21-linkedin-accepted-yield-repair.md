@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 18
+Plan version: 19
 Date: 2026-08-21
 
 ## Objective
@@ -13,9 +13,10 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 
 ## Current State
 
-- service 0.3.60/schema 16 is installed ready with 0.3.58 retained for
-  rollback; the full repository suite passed with 2,677 tests and seven
-  expected skips before installation;
+- service 0.3.61/schema 16 is installed ready with 0.3.60 retained for
+  rollback. It contains published retrieval repair `78c506e`; the loaded
+  runtime-manifest SHA-256 is
+  `6abaef1d48ee9172d03c26c93697851edc321f1c62b3410297a3593c729e7ab0`;
 - structurally valid short and lexically unmatched X and LinkedIn posts are
   retained with retrieval diagnostics. Only structural invalidity, date range,
   exact duplicate, deterministic promoted/sponsored labels, and deterministic
@@ -25,7 +26,7 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   X and LinkedIn OpenAI topic targets and enables their authenticated home-feed
   targets at the existing ten-item ceilings;
 - YouTube retains its OpenAI topic target, Reddit and Facebook remain disabled,
-  and `daily-default` is enabled/ready for `2026-08-23T00:00:00Z` on the exact
+  and `daily-default` is enabled/ready for `2026-08-25T00:00:00Z` on the exact
   full recurring-config digest;
 - the one installed feed canary terminalized with zero observed posts because
   both Agent Browser launch-adoption jobs failed at
@@ -50,14 +51,18 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   reached without authentication or page-signal incidents. X attempts two and
   three each observed 32 cards and accepted 11 unique in-range posts; LinkedIn
   observed 30 cards on every attempt and accepted at most one;
-- the 20-item outcome remains unproven. X is bounded by repeated status cards
-  before unique yield reaches 20. LinkedIn deterministically identifies five
-  sponsored/ad cards, but its remaining candidates are predominantly rejected
-  for missing permalink, date, or author metadata. This is a retrieval and
-  scraper-normalization blocker, not a semantic quality conclusion;
-- all three attempts per service are consumed. The temporary run configuration
-  was removed, while the recurring ten-item configuration and `daily-default`
-  remain unchanged and ready.
+- provider-free fixtures prove the repaired progress loop can reach 20 unique
+  X and LinkedIn posts on scroll six and that current LinkedIn card variants
+  recover permalink, author, and timestamp metadata;
+- the newly authorized installed-runtime tick
+  `tick-32b710cd6db56be1e900992fa923bedf` consumed one 20-item attempt for each
+  source but both failed `agent_browser_error` before observing a card. The
+  repair therefore remains unproven live; the result says nothing about post
+  acceptance, deterministic ad/spam exclusion, or semantic quality;
+- the temporary run configuration was moved to the user trash. Recurring
+  revision `operator-20260822-x-linkedin-home-feed-v1`, SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
+  and `daily-default` remain unchanged and ready.
 
 ## Scope
 
@@ -1846,3 +1851,95 @@ Next action:
   before installing it or running another live provider attempt under C18.
 
 Checkpoint P0055-C18 is the current authority.
+
+### Checkpoint P0055-C19 | 2026-08-24
+
+Plan version: 19
+
+State transition:
+
+- `feed_retrieval_repair_fixture_accepted_live_validation_pending -> retrieval_repair_installed_live_validation_preobservation_blocked`.
+
+Progress classification:
+
+- `blocker_reduction`; the exact repaired runtime is installed and ready, but
+  the sole live acceptance tick stopped before either feed was observed.
+
+Release and installation evidence:
+
+- published commit `ee85fdb` prepares service 0.3.61 and includes source repair
+  `78c506e`;
+- deterministic artifact
+  `dist/service/last30days-service-0.3.61.tar.gz` has SHA-256
+  `c6fe940f790f001646abf97b023354f1a10a2ff72588d619652534e1c39c7d13`;
+- focused X, LinkedIn, acquisition-worker, release-version, runtime-package,
+  source-log, and planning-authority validation passed. The complete suite's
+  only failure was the stale Plan 0055 version/authority label; that exact
+  finding was corrected and both deterministic planning audits now pass;
+- installed diagnose and MCP discovery agree on service 0.3.61/schema 16,
+  compatibility `compatible`, status `ready`, and loaded runtime-manifest
+  SHA-256
+  `6abaef1d48ee9172d03c26c93697851edc321f1c62b3410297a3593c729e7ab0`;
+  service 0.3.60 is the retained rollback release.
+
+Bounded live evidence:
+
+- schedule-disabled revision `operator-20260824-c19-x-linkedin-20-feed`
+  preflighted `ready` for interval `2026-08-23T13:12:00Z` through
+  `2026-08-24T13:12:00Z`, X and LinkedIn only, one attempt and 20 items each,
+  aggregate 2 attempts/40 items, zero model tokens, zero cost, and no fallback;
+- sole tick `tick-32b710cd6db56be1e900992fa923bedf` terminalized
+  `complete_degraded` after eight aggregate wall seconds;
+- X attempt `provider-attempt-052c28c0f39587029c81c512c8d4ddb9`
+  failed transiently with safe code `agent_browser_error`, no browser-operation
+  entries, no page signals, and counts `0/0/0/0`
+  attempted/observed/accepted/rejected;
+- LinkedIn attempt `provider-attempt-ac080bf573a39e198adbe81eca43f9f7`
+  failed transiently with safe code `agent_browser_error`; two service
+  operations succeeded and the tab operation failed. It has no page signals
+  and counts `0/0/0/0`;
+- no authentication code, operator URL, incident, notification, post,
+  rejection, or progress diagnostic was produced. The new scroll and metadata
+  repair was not exercised live.
+
+Preserved state:
+
+- the temporary config was moved to the user trash after terminal readback;
+- recurring config revision
+  `operator-20260822-x-linkedin-home-feed-v1` retains SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+- `daily-default` is enabled/ready for `2026-08-25T00:00:00Z` with no runtime
+  error. Reddit and Facebook remain disabled, and no profile or Agent Browser
+  state was changed.
+
+Authority classification:
+
+- `inherited_authority`; the operator's exact install plus one combined live
+  tick is consumed. No retry, Agent Browser work, profile change, or recurring
+  mutation is authorized by this checkpoint.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; the required provider-readiness probe returned
+  `degraded/TimeoutError` for the configured Codex app-server path after 20
+  seconds, so no new memory job was queued. This checkpoint, the installed
+  diagnose receipt, and the durable tick/provider rows remain authoritative.
+
+Remaining acceptance criteria:
+
+- complete one live X and LinkedIn feed observation under service 0.3.61 and
+  adjudicate accepted yield plus scroll/unique/stagnation diagnostics;
+- do not infer scraper acceptance or rejection quality from this pre-observation
+  failure.
+
+Next action:
+
+- diagnose the Last30days-to-browser acquisition boundary from the retained
+  provider receipt without changing Agent Browser or the authenticated profile.
+  Request fresh authority before any new provider attempt.
+
+Checkpoint P0055-C19 is the current authority.

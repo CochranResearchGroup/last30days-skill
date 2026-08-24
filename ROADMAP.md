@@ -1204,15 +1204,20 @@ Current State:
   from current data/ARIA variants. The full repository suite passes. No
   service install or live provider attempt occurred, so installed and live
   20-item acceptance remain open and require fresh authority.
+- Plan 0055 version 19/C19 installs exact service 0.3.61 with the repaired feed
+  loop and retains 0.3.60 for rollback. The one authorized 20-item X plus
+  LinkedIn tick failed before card observation: both attempts returned
+  transient `agent_browser_error` and `0/0/0/0` counts, with no auth or page
+  signal. Live scraper acceptance remains unproven; recurring configuration,
+  profile state, Reddit/Facebook pause, and Agent Browser are unchanged.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 18/C18 owns retrieval-first X/LinkedIn feed completion. The bounded
+  version 19/C19 owns retrieval-first X/LinkedIn feed completion. The bounded
   unique-progress loop and current LinkedIn metadata variants are fixture
-  accepted in source; service 0.3.60 and the prior behavior remain installed.
-  The next gate is a versioned install followed by one freshly authorized live
-  20-item acceptance tick. No further live attempt is authorized by C18.
+  accepted and installed in ready service 0.3.61, but the sole live tick failed
+  before observation. No further live attempt is authorized by C19.
 
 Closed Plan:
 
@@ -1283,10 +1288,10 @@ Dependencies:
 
 Next Bounded Action:
 
-- obtain explicit authority to close and relaunch only the retained
-  `last30days-facebook` browser under the current Agent Browser generation.
-  Preserve the durable profile and rollback evidence, prove one named tab
-  request without provider work, and do not retry the consumed feed canary.
+- diagnose only the Last30days-side acquisition boundary represented by the
+  C19 provider receipts. Do not change Agent Browser, discard or replace the
+  authenticated profile, alter recurring configuration, or retry the consumed
+  live canary without fresh authority.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 
