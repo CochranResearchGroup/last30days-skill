@@ -152,7 +152,7 @@
     },
     {
       "path": "scripts/lib/linkedin.py",
-      "sha256": "76b4cf9b3f9a21fdfa8daedbc1cc7a02c8c24bbe4fdd5b1413d98ccfa5ff60c8",
+      "sha256": "15d2b6c081fc168d8c36693a64dfab66a5cabeb71850ebb32c64e2e6eaa8c2f3",
       "source": "skills/last30days/scripts/lib/linkedin.py"
     },
     {
@@ -607,7 +607,7 @@
     },
     {
       "path": "scripts/lib/x_browser.py",
-      "sha256": "242e37cd6de4c494efefbbd3a4c7f0e33e86f98f9c5ba4f1c0e0ae76431c613c",
+      "sha256": "4f8859232aa528976fab9b5963b0fdae0bf9065effb194c322c23c747e159298",
       "source": "skills/last30days/scripts/lib/x_browser.py"
     },
     {

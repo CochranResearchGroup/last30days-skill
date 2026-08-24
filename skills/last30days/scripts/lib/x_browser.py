@@ -22,6 +22,7 @@ DEPTH_CONFIG = {
 MAX_EXPLICIT_RESULTS = 100
 MAX_EXPLICIT_SCROLLS = 8
 ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 5
+MAX_STAGNANT_SCROLLS = 2
 
 BrowserWorkspaceRequest = browser_runtime.BrowserWorkspaceRequest
 BrowserWorkspace = browser_runtime.BrowserWorkspace
@@ -212,6 +213,9 @@ class XRunDiagnostics:
     candidate_count: int = 0
     accepted_count: int = 0
     duration_ms: int = 0
+    scroll_count: int = 0
+    unique_observation_count: int = 0
+    stagnant_scrolls: int = 0
 
     def reject(
         self,
@@ -242,6 +246,9 @@ class XRunDiagnostics:
             "candidate_count": self.candidate_count,
             "accepted_count": self.accepted_count,
             "duration_ms": self.duration_ms,
+            "scroll_count": self.scroll_count,
+            "unique_observation_count": self.unique_observation_count,
+            "stagnant_scrolls": self.stagnant_scrolls,
         }
 
 
@@ -497,17 +504,33 @@ class XBrowserScraper:
         if not _page_matches_feed(page):
             raise XBrowserFailure("navigation_mismatch", "X feed state did not match the authenticated home feed")
         raw = list(self.client.evaluate(workspace, EXTRACT_SCRIPT).get("candidates") or [])
+        seen_observations = {_candidate_observation_key(item) for item in raw}
+        diagnostics.unique_observation_count = len(seen_observations)
+        stagnant_scrolls = 0
         for _ in range(self.scrolls):
             if _accepted_unique_count(
                 raw, "", from_date, to_date, surface_kind="feed"
             ) >= self.limit:
                 break
             self.client.evaluate(workspace, SCROLL_SCRIPT)
+            diagnostics.scroll_count += 1
             self.client.act(
                 workspace,
                 BrowserAction("wait", value=str(max(0, round(self.scroll_wait * 1000)))),
             )
-            raw.extend(self.client.evaluate(workspace, EXTRACT_SCRIPT).get("candidates") or [])
+            batch = list(
+                self.client.evaluate(workspace, EXTRACT_SCRIPT).get("candidates") or []
+            )
+            new_observations = {
+                _candidate_observation_key(item) for item in batch
+            } - seen_observations
+            seen_observations.update(new_observations)
+            raw.extend(batch)
+            stagnant_scrolls = 0 if new_observations else stagnant_scrolls + 1
+            diagnostics.unique_observation_count = len(seen_observations)
+            diagnostics.stagnant_scrolls = stagnant_scrolls
+            if stagnant_scrolls >= MAX_STAGNANT_SCROLLS:
+                break
         if not raw:
             raise XBrowserFailure(
                 "extraction_empty",
@@ -670,16 +693,7 @@ def scrape_x_feed(
         if limit is None
         else max(1, min(MAX_EXPLICIT_RESULTS, int(limit)))
     )
-    scrolls = settings["scrolls"]
-    if limit is not None:
-        scrolls = max(
-            scrolls,
-            min(
-                MAX_EXPLICIT_SCROLLS,
-                (result_limit + ACCEPTED_ITEMS_PER_SCROLL_BUDGET - 1)
-                // ACCEPTED_ITEMS_PER_SCROLL_BUDGET,
-            ),
-        )
+    scrolls = MAX_EXPLICIT_SCROLLS if limit is not None else settings["scrolls"]
     request = BrowserWorkspaceRequest(
         profile_id=str(
             config.get("LAST30DAYS_X_BROWSER_PROFILE")
@@ -924,6 +938,20 @@ def _accepted_unique_count(
                 preview,
                 surface_kind=surface_kind,
             )
+        )
+    )
+
+
+def _candidate_observation_key(candidate: dict[str, Any]) -> str:
+    """Identify one rendered status across overlapping virtualized snapshots."""
+    canonical_url = _canonical_status_url(str(candidate.get("url") or ""))
+    if canonical_url:
+        return canonical_url
+    return "\n".join(
+        (
+            str(candidate.get("author_handle") or "").casefold().strip(),
+            str(candidate.get("timestamp") or "").strip(),
+            re.sub(r"\s+", " ", str(candidate.get("text") or "")).casefold()[:500],
         )
     )
 

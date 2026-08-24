@@ -1754,3 +1754,83 @@ Next action:
   authentication state, recurring schedule, or run another live attempt.
 
 Checkpoint P0055-C17 is the current authority.
+
+### Checkpoint P0055-C18 | 2026-08-23
+
+Plan version: 18
+
+State transition:
+
+- `direct_feed_retrieval_proven_accepted_yield_blocked -> feed_retrieval_repair_fixture_accepted_live_validation_pending`.
+
+Progress classification:
+
+- `blocker_reduction`; the two isolated Last30days retrieval defects now have
+  provider-free regression proof, while installed and live 20-item acceptance
+  remain open.
+
+Implementation:
+
+- explicit item-limited X and LinkedIn home-feed runs now receive the existing
+  eight-scroll hard ceiling instead of assuming five accepted posts per scroll;
+- each feed tracks canonical candidate identities across virtualized DOM
+  snapshots, continues while new identities appear, and stops after two
+  consecutive snapshots with no new identity. Raw overlapping observations
+  remain available to the existing exact-duplicate diagnostics;
+- additive diagnostics now report scroll count, unique observation count, and
+  terminal stagnation count;
+- LinkedIn now normalizes candidate roots across current `data-view-name`,
+  `data-urn`, `data-id`, legacy update-card, search-result, and role-listitem
+  variants; recovers activity URNs from bounded element attributes, encoded
+  tracking values, post slugs, or the already bounded React runtime fallback;
+- LinkedIn synthesizes the canonical activity permalink when only a recovered
+  URN is present and broadens actor and timestamp recovery to current
+  title/name, ARIA, datetime, title, and relative-time variants;
+- deterministic sponsored/ad rejection, navigation-noise rejection, exact
+  deduplication, date bounds, retrieval-first short/unmatched-post retention,
+  profiles, Agent Browser, topic-search support, and recurring configuration
+  are unchanged.
+
+Provider-free acceptance evidence:
+
+- X and LinkedIn fixtures each begin with five unique posts, repeat the first
+  virtualized snapshot, then expose three new posts per scroll. Both reach 20
+  accepted unique posts on scroll six, proving progress beyond the former
+  four-scroll assumption;
+- separate X and LinkedIn fixtures repeat one unchanged post and stop after
+  exactly two stagnant snapshots, proving the bounded termination condition;
+- a LinkedIn DOM fixture recovers canonical URL
+  `https://www.linkedin.com/feed/update/urn:li:activity:7494999999999999999/`,
+  author `Example Company`, and timestamp `3h • Edited` from current
+  data/ARIA variants without a visible canonical permalink anchor;
+- focused X, LinkedIn, acquisition-worker, runtime-package, release-version,
+  and source-log validation passed;
+- the complete `uv run pytest -q` suite passed on the final source, and the
+  deterministic service runtime manifest was refreshed and verified.
+
+Authority and effects:
+
+- `inherited_authority` covers this Last30days-only implementation and fixture
+  validation packet;
+- no provider navigation, live tick, service installation, Agent Browser
+  change, profile mutation, recurring-config change, or new retry was run;
+- the prior three-attempt-per-service live budget remains exhausted. A new live
+  X/LinkedIn acceptance tick requires fresh explicit authority after an
+  installable service version is prepared.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Remaining acceptance criteria:
+
+- publish and install an exact service version containing this source packet;
+- with fresh explicit authority, run one bounded 20-item X plus LinkedIn
+  home-feed tick and adjudicate accepted yield and the new progress diagnostics.
+
+Next action:
+
+- commit and publish the provider-free source packet. Do not install it or run
+  another live provider attempt under C18.
+
+Checkpoint P0055-C18 is the current authority.

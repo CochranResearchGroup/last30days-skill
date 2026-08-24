@@ -1195,16 +1195,24 @@ Current State:
   now blocked on Last30days retrieval and normalization, not Agent Browser
   readiness, authentication, or semantic quality filtering. The live retry
   budget is exhausted.
+- Plan 0055 version 18/C18 fixture-accepts the Last30days-only retrieval
+  repair. Explicit item-limited home-feed runs can use the existing eight-scroll
+  ceiling, track canonical identities across virtualized snapshots, and stop
+  after two no-progress snapshots. X and LinkedIn fixtures each pass an
+  overlapping initial snapshot and reach 20 unique posts on scroll six;
+  LinkedIn also recovers canonical activity URL, actor, and relative timestamp
+  from current data/ARIA variants. The full repository suite passes. No
+  service install or live provider attempt occurred, so installed and live
+  20-item acceptance remain open and require fresh authority.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 17/C17 owns retrieval-first X/LinkedIn feed completion. Service
-  0.3.60 and feed-based recurring targets are installed, and current live
-  evidence proves both feeds are reachable. The next source packet must deepen
-  X unique-card pagination and recover LinkedIn permalink/date/author metadata
-  while excluding only deterministic ads, spam/noise, exact duplicates, and
-  true structural invalidity. No further live attempt is authorized by C17.
+  version 18/C18 owns retrieval-first X/LinkedIn feed completion. The bounded
+  unique-progress loop and current LinkedIn metadata variants are fixture
+  accepted in source; service 0.3.60 and the prior behavior remain installed.
+  The next gate is a versioned install followed by one freshly authorized live
+  20-item acceptance tick. No further live attempt is authorized by C18.
 
 Closed Plan:
 

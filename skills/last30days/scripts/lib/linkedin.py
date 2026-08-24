@@ -34,6 +34,7 @@ DEFAULT_MAX_ACTIONS_PER_MINUTE = 6
 MAX_EXPLICIT_RESULTS = 100
 MAX_EXPLICIT_SCROLLS = 8
 ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 5
+MAX_STAGNANT_SCROLLS = 2
 
 ERROR_TYPES = browser_runtime.ERROR_TYPES
 BrowserWorkspaceRequest = browser_runtime.BrowserWorkspaceRequest
@@ -139,18 +140,36 @@ EXTRACT_SCRIPT = r"""
   const selectors = [
     '[data-view-name="feed-full-update"]',
     '[data-urn^="urn:li:activity:"]',
+    '[data-id^="urn:li:activity:"]',
     '.feed-shared-update-v2',
     'li.reusable-search__result-container',
     'main [role="listitem"]'
   ];
   const nodes = [];
   const nodeSet = new Set();
+  const rootSelector = [
+    '[data-view-name="feed-full-update"]',
+    '[data-urn^="urn:li:activity:"]',
+    '[data-id^="urn:li:activity:"]',
+    '.feed-shared-update-v2',
+    'li.reusable-search__result-container'
+  ].join(', ');
+  const addNode = (rawNode) => {
+    const node = rawNode?.closest?.(rootSelector) || rawNode;
+    if (!node || nodeSet.has(node)) return;
+    if (nodes.some((existing) => existing.contains?.(node))) return;
+    for (let index = nodes.length - 1; index >= 0; index -= 1) {
+      if (node.contains?.(nodes[index])) {
+        nodeSet.delete(nodes[index]);
+        nodes.splice(index, 1);
+      }
+    }
+    nodeSet.add(node);
+    nodes.push(node);
+  };
   for (const selector of selectors) {
     for (const node of main.querySelectorAll(selector)) {
-      if (nodeSet.has(node)) continue;
-      if (nodes.some((existing) => existing.contains(node))) continue;
-      nodeSet.add(node);
-      nodes.push(node);
+      addNode(node);
     }
   }
   const count = (value, labels) => {
@@ -165,7 +184,37 @@ EXTRACT_SCRIPT = r"""
     }
     return 0;
   };
+  const urnFromValue = (value) => {
+    if (!value) return "";
+    let decoded = String(value);
+    try {
+      decoded = decodeURIComponent(decoded);
+    } catch {
+      // Malformed tracking values are ignored in favor of the raw value.
+    }
+    const urnMatch = decoded.match(/urn:li:activity:(\d+)/i);
+    if (urnMatch) return `urn:li:activity:${urnMatch[1]}`;
+    const slugMatch = decoded.match(/(?:^|[-_:])activity[-_:](\d{10,})(?:[-_/?#]|$)/i);
+    return slugMatch ? `urn:li:activity:${slugMatch[1]}` : "";
+  };
   const activityUrn = (node) => {
+    const attributeNodes = [
+      node,
+      ...Array.from(node.querySelectorAll?.(
+        '[data-urn], [data-id], [data-entity-urn], [data-view-tracking-scope], a[href]'
+      ) || []).slice(0, 160)
+    ];
+    for (const element of attributeNodes) {
+      const values = [
+        element?.href,
+        ...Array.from(element?.getAttributeNames?.() || []).slice(0, 40)
+          .map((name) => element.getAttribute?.(name))
+      ];
+      for (const value of values) {
+        const urn = urnFromValue(value);
+        if (urn) return urn;
+      }
+    }
     const runtimeKeys = Object.keys(node);
     const groups = [
       runtimeKeys.filter((key) => key.startsWith("__reactProps")),
@@ -180,8 +229,8 @@ EXTRACT_SCRIPT = r"""
         const value = queue[cursor++];
         steps += 1;
         if (typeof value === "string") {
-          const match = value.match(/urn:li:activity:\d+/);
-          if (match) return match[0];
+          const urn = urnFromValue(value);
+          if (urn) return urn;
           continue;
         }
         if ((!value || typeof value !== "object") && typeof value !== "function") continue;
@@ -201,40 +250,64 @@ EXTRACT_SCRIPT = r"""
   };
   const candidates = [];
   const seen = new Set();
+  const timestampPattern = /(?:^|\b)(?:now|just now|\d+\s*(?:s|sec|second|m|min|minute|h|hr|hour|d|day|w|week|mo|month|y|yr|year)s?(?:\s+ago)?)(?:\s*[•·]|$)/i;
   for (const node of nodes) {
     const text = (node.innerText || node.textContent || "").trim();
     if (!text) continue;
     const anchors = Array.from(node.querySelectorAll('a[href]'));
     const permalink = anchors.find((anchor) =>
-      /\/feed\/update\/urn:li:activity:\d+|\/posts\/[^/?#]+/i.test(anchor.href || "")
+      /\/feed\/update\/urn:li:activity:\d+|\/posts\/[^/?#]+/i.test(
+        (() => { try { return decodeURIComponent(anchor.href || ""); } catch { return anchor.href || ""; } })()
+      )
     );
     const authorNode = node.querySelector(
-      '.update-components-actor__name, .feed-shared-actor__name, [data-view-name="feed-actor-name"]'
+      '.update-components-actor__title, .update-components-actor__name, '
+      + '.feed-shared-actor__title, .feed-shared-actor__name, '
+      + '[data-view-name="feed-actor-name"], [data-view-name*="actor-name"], '
+      + '[data-view-name*="actor"] a[href]'
     ) || anchors.find((anchor) => /\/in\/|\/company\//.test(anchor.href || ""));
     const timeNode = node.querySelector(
-      'time, .update-components-actor__sub-description, .feed-shared-actor__sub-description'
+      'time, [datetime], .update-components-actor__sub-description, '
+      + '.feed-shared-actor__sub-description, [data-view-name*="actor"] [aria-label]'
     );
     const timestampText = (text.split("\n").map(clean).find((line) =>
       /^(?:now|just now|\d+\s*(?:s|m|h|d|w|mo)|\d+\s+(?:second|minute|hour|day|week|month)s?)(?:\s*•.*)?$/i.test(line)
     ) || "");
+    const timestampAttribute = Array.from(node.querySelectorAll(
+      'time, [datetime], [aria-label], [title], a[href]'
+    )).slice(0, 160).flatMap((item) => [
+      item.getAttribute?.('datetime'), item.getAttribute?.('aria-label'),
+      item.getAttribute?.('title'), item.innerText, item.textContent
+    ]).map(clean).find((value) => timestampPattern.test(value)) || "";
     const actionText = Array.from(node.querySelectorAll('button, [aria-label]'))
       .map((item) => `${item.getAttribute('aria-label') || ''} ${item.innerText || ''}`)
       .join(" ");
-    const urn = node.getAttribute('data-urn') || node.dataset?.urn || activityUrn(node);
-    const key = `${permalink?.href || urn}|${text.slice(0, 240)}`;
+    const urn = urnFromValue(node.getAttribute('data-urn'))
+      || urnFromValue(node.dataset?.urn)
+      || activityUrn(node);
+    const canonicalHref = permalink?.href || (urn
+      ? `https://www.linkedin.com/feed/update/${urn}/`
+      : "");
+    const authorImage = authorNode?.querySelector?.('img[alt]');
+    const author = clean(
+      authorNode?.innerText || authorNode?.textContent
+      || authorNode?.getAttribute?.('aria-label') || authorNode?.getAttribute?.('title')
+      || authorImage?.alt || ""
+    ).replace(/\s+(?:’s|'s)\s+profile picture$/i, "");
+    const key = `${canonicalHref || urn}|${text.slice(0, 240)}`;
     if (seen.has(key)) continue;
     seen.add(key);
     candidates.push({
       text,
-      url: permalink?.href || "",
+      url: canonicalHref,
       urn,
-      author: clean(authorNode?.innerText || authorNode?.textContent || ""),
+      author,
       author_url: authorNode?.href || authorNode?.closest?.('a[href]')?.href || "",
       timestamp: clean(
         timeNode?.getAttribute?.('datetime') ||
         timeNode?.getAttribute?.('aria-label') ||
         timeNode?.getAttribute?.('title') ||
-        timeNode?.innerText || timeNode?.textContent || timestampText
+        timeNode?.innerText || timeNode?.textContent || timestampText || timestampAttribute
       ),
       sponsored: /(^|\n)\s*(promoted|sponsored)\s*($|\n)/i.test(text),
       engagement: {
@@ -252,7 +325,7 @@ EXTRACT_SCRIPT = r"""
           duration_seconds: null, alt_text: image.alt || null
         })),
         ...Array.from(node.querySelectorAll("video")).map((video) => ({
-          kind: "video", url: permalink?.href || location.href,
+            kind: "video", url: canonicalHref || location.href,
           preview_url: video.poster || null, mime_type: null,
           width: video.videoWidth || null, height: video.videoHeight || null,
           duration_seconds: Number.isFinite(video.duration) ? Math.round(video.duration) : null,
@@ -365,6 +438,9 @@ class LinkedInRunDiagnostics:
     accepted_count: int = 0
     duration_ms: int = 0
     failure_stage: str = "workspace_acquisition"
+    scroll_count: int = 0
+    unique_observation_count: int = 0
+    stagnant_scrolls: int = 0
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -372,6 +448,9 @@ class LinkedInRunDiagnostics:
             "rejection_counts": dict(self.rejection_counts),
             "accepted_count": self.accepted_count,
             "duration_ms": self.duration_ms,
+            "scroll_count": self.scroll_count,
+            "unique_observation_count": self.unique_observation_count,
+            "stagnant_scrolls": self.stagnant_scrolls,
         }
 
 
@@ -616,6 +695,11 @@ class LinkedInScraper:
                 time.sleep(self.initial_wait)
             diagnostics.failure_stage = "extraction"
             raw_candidates = self._extract(workspace)
+            seen_observations = {
+                _candidate_observation_key(item) for item in raw_candidates
+            }
+            diagnostics.unique_observation_count = len(seen_observations)
+            stagnant_scrolls = 0
             for _ in range(max(0, self.scrolls)):
                 if self._accepted_unique_count(
                     raw_candidates,
@@ -626,9 +710,20 @@ class LinkedInScraper:
                 ) >= self.limit:
                     break
                 self._act(workspace, BrowserAction("scroll", value="1400"))
+                diagnostics.scroll_count += 1
                 if self.scroll_wait:
                     time.sleep(self.scroll_wait)
-                raw_candidates.extend(self._extract(workspace))
+                batch = self._extract(workspace)
+                new_observations = {
+                    _candidate_observation_key(item) for item in batch
+                } - seen_observations
+                seen_observations.update(new_observations)
+                raw_candidates.extend(batch)
+                stagnant_scrolls = 0 if new_observations else stagnant_scrolls + 1
+                diagnostics.unique_observation_count = len(seen_observations)
+                diagnostics.stagnant_scrolls = stagnant_scrolls
+                if stagnant_scrolls >= MAX_STAGNANT_SCROLLS:
+                    break
             if not raw_candidates:
                 raise LinkedInScraperFailure(
                     "extraction_empty", "Verified LinkedIn home feed contained no candidate cards"
@@ -1061,14 +1156,7 @@ def scrape_linkedin_feed(
         result_limit = max(1, min(MAX_EXPLICIT_RESULTS, int(limit)))
     scrolls = int(config.get("LAST30DAYS_LINKEDIN_SCROLLS") or settings["scrolls"])
     if limit is not None:
-        scrolls = max(
-            scrolls,
-            min(
-                MAX_EXPLICIT_SCROLLS,
-                (result_limit + ACCEPTED_ITEMS_PER_SCROLL_BUDGET - 1)
-                // ACCEPTED_ITEMS_PER_SCROLL_BUDGET,
-            ),
-        )
+        scrolls = MAX_EXPLICIT_SCROLLS
     timeout = int(config.get("LAST30DAYS_LINKEDIN_TIMEOUT") or settings["timeout"])
     min_action_delay = float(
         config.get("LAST30DAYS_LINKEDIN_MIN_ACTION_DELAY") or DEFAULT_MIN_ACTION_DELAY
@@ -1384,6 +1472,24 @@ def _candidate_from_raw(raw: dict[str, Any], now: datetime) -> LinkedInCandidate
             for item in list(raw.get("media") or [])[:16]
             if isinstance(item, dict)
         ],
+    )
+
+
+def _candidate_observation_key(candidate: dict[str, Any]) -> str:
+    """Identify one rendered post across overlapping virtualized snapshots."""
+    canonical_url = _canonical_post_url(
+        str(candidate.get("url") or ""), str(candidate.get("urn") or "")
+    )
+    if canonical_url:
+        return canonical_url
+    return "\n".join(
+        (
+            str(candidate.get("author") or candidate.get("author_url") or "")
+            .casefold()
+            .strip(),
+            str(candidate.get("timestamp") or "").strip(),
+            re.sub(r"\s+", " ", str(candidate.get("text") or "")).casefold()[:500],
+        )
     )
 
 

@@ -19896,3 +19896,71 @@ Next Bounded Action:
 - implement and fixture-validate a Last30days-only repair for X repeated-card
   pagination and LinkedIn permalink/date/author extraction. Do not modify Agent
   Browser or consume another live retry budget.
+
+## Turn 327 | 2026-08-23
+
+Focus: repair X and LinkedIn infinite-feed retrieval in Last30days and prove
+the behavior without consuming another provider attempt.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C17; Last30days runtime, policy-selector,
+  planning, CodeGraph, architecture, validation, documentation, Git, and
+  closeout contracts.
+
+Decisions And Changes:
+
+- kept topic search unchanged and confined adaptive progress behavior to the X
+  and LinkedIn home-feed paths;
+- replaced the four-scroll accepted-yield assumption with the existing
+  eight-scroll ceiling plus canonical identity progress and a two-snapshot
+  stagnation stop;
+- added scroll, unique-observation, and stagnation readback to both source
+  diagnostics;
+- expanded LinkedIn current-card root, activity-URN, encoded tracking-link,
+  actor, and timestamp extraction while retaining deterministic ad and
+  structural exclusion semantics;
+- refreshed the deterministic service runtime manifest. No installed runtime,
+  provider, Agent Browser, profile, schedule, or recurring config was changed.
+
+Validation Evidence:
+
+- X and LinkedIn overlap fixtures each reached 20 accepted unique posts on
+  scroll six after the first snapshot repeated;
+- both sources stopped after exactly two unchanged snapshots in stagnation
+  fixtures;
+- the LinkedIn current-variant DOM fixture recovered activity URL, author, and
+  relative timestamp without a visible canonical permalink anchor;
+- focused source, acquisition-worker, runtime-package, release-version, and
+  observability suites passed;
+- the complete `uv run pytest -q` suite passed on the final source.
+
+State Movement:
+
+- Plan 0055 advances to version 18/C18
+  `feed_retrieval_repair_fixture_accepted_live_validation_pending`; P08 remains
+  `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; provider-free evidence closes the source-level defects,
+  but installed and live 20-item acceptance remain open.
+
+Authority Classification:
+
+- `inherited_authority` for the source packet; the exhausted live retry budget
+  does not authorize an install or provider tick.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- poll queued C17 job `eceb0d15-4d25-4d73-9799-d86450a1e6a7`, then write at
+  most one compact C18 episode after the commit is durable.
+
+Next Bounded Action:
+
+- publish the coherent source commit. Prepare an installable service version
+  and request fresh authority before one bounded X/LinkedIn 20-item live tick.

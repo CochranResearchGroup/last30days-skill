@@ -620,6 +620,80 @@ process.stdout.write(JSON.stringify(result));
             client.evaluations.count(x_browser.SCROLL_SCRIPT),
         )
 
+    def test_home_feed_scrolls_past_overlap_until_twenty_unique_posts(self):
+        from lib import x_browser
+
+        def candidates(start, count):
+            return [
+                {
+                    "text": f"Home feed post {index} with stable structural metadata.",
+                    "url": f"https://x.com/example/status/207812345679{index:07d}",
+                    "author_handle": "example",
+                    "timestamp": "2026-07-18T15:30:00.000Z",
+                    "promoted": False,
+                    "engagement": {},
+                }
+                for index in range(start, start + count)
+            ]
+
+        first = candidates(0, 5)
+        client = FakeAgentBrowserClient(candidate_batches=[
+            first,
+            first,
+            candidates(5, 3),
+            candidates(8, 3),
+            candidates(11, 3),
+            candidates(14, 3),
+            candidates(17, 3),
+        ])
+
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.scrape_x_feed(
+                "2026-06-20",
+                "2026-07-20",
+                depth="default",
+                limit=20,
+                config={
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertEqual(20, len(result["items"]))
+        self.assertEqual(6, client.evaluations.count(x_browser.SCROLL_SCRIPT))
+        self.assertEqual(20, result["diagnostics"]["unique_observation_count"])
+        self.assertEqual(6, result["diagnostics"]["scroll_count"])
+
+    def test_home_feed_stops_after_two_snapshots_without_new_posts(self):
+        from lib import x_browser
+
+        repeated = [{
+            "text": "One stable home-feed post repeated by the virtualized timeline.",
+            "url": "https://x.com/example/status/2078123456799999999",
+            "author_handle": "example",
+            "timestamp": "2026-07-18T15:30:00.000Z",
+            "promoted": False,
+            "engagement": {},
+        }]
+        client = FakeAgentBrowserClient(candidate_batches=[repeated, repeated, repeated])
+
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.scrape_x_feed(
+                "2026-06-20",
+                "2026-07-20",
+                limit=20,
+                config={
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertEqual(1, len(result["items"]))
+        self.assertEqual(2, client.evaluations.count(x_browser.SCROLL_SCRIPT))
+        self.assertEqual(2, result["diagnostics"]["stagnant_scrolls"])
+
     def test_checkpoint_stops_before_navigation_with_a_typed_failure(self):
         from lib import x_browser
 

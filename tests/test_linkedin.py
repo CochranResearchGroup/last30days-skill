@@ -310,6 +310,26 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual(20, captured["limit"])
         self.assertEqual(4, captured["scrolls"])
 
+    def test_feed_twenty_item_limit_uses_the_eight_scroll_safety_ceiling(self):
+        captured = {}
+
+        def scraper_factory(_client, _workspace_request, **kwargs):
+            captured.update(kwargs)
+            return mock.Mock(feed=mock.Mock(return_value={"items": [], "error": None}))
+
+        with mock.patch.object(linkedin, "is_agent_browser_available", return_value=True), mock.patch.object(
+            linkedin, "LinkedInScraper", side_effect=scraper_factory
+        ):
+            linkedin.scrape_linkedin_feed(
+                "2026-06-15",
+                "2026-07-15",
+                depth="default",
+                limit=20,
+            )
+
+        self.assertEqual(20, captured["limit"])
+        self.assertEqual(8, captured["scrolls"])
+
     def test_retained_workspace_reselects_inactive_linkedin_tab(self):
         client = linkedin.CliAgentBrowserClient(timeout=5)
         with mock.patch.object(client, "_invoke", side_effect=[
@@ -493,6 +513,80 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
         ]))
         self.assertEqual(6, result["diagnostics"]["rejection_counts"]["duplicate"])
 
+    def test_home_feed_scrolls_past_overlap_until_twenty_unique_posts(self):
+        def candidates(start, count):
+            return [
+                post_candidate(
+                    text=(
+                        "Feed Author\n"
+                        f"Home feed result {index} includes stable structural metadata."
+                    ),
+                    url=(
+                        "https://www.linkedin.com/feed/update/urn:li:activity:"
+                        f"735130000000000{index:04d}/"
+                    ),
+                    urn=f"urn:li:activity:735130000000000{index:04d}",
+                )
+                for index in range(start, start + count)
+            ]
+
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+        first = candidates(0, 5)
+        client = FakeAgentBrowserClient(page=page, candidate_batches=[
+            first,
+            first,
+            candidates(5, 3),
+            candidates(8, 3),
+            candidates(11, 3),
+            candidates(14, 3),
+            candidates(17, 3),
+        ])
+
+        result = make_scraper(client, limit=20, scrolls=8).feed(
+            "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual(20, len(result["items"]))
+        self.assertEqual(6, len([
+            action for action in client.actions if action.operation == "scroll"
+        ]))
+        self.assertEqual(20, result["diagnostics"]["unique_observation_count"])
+        self.assertEqual(6, result["diagnostics"]["scroll_count"])
+
+    def test_home_feed_stops_after_two_snapshots_without_new_posts(self):
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+        repeated = [post_candidate()]
+        client = FakeAgentBrowserClient(
+            page=page,
+            candidate_batches=[repeated, repeated, repeated],
+        )
+
+        result = make_scraper(client, limit=20, scrolls=8).feed(
+            "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual(1, len(result["items"]))
+        self.assertEqual(2, len([
+            action for action in client.actions if action.operation == "scroll"
+        ]))
+        self.assertEqual(2, result["diagnostics"]["stagnant_scrolls"])
+
     def test_recovers_permalink_from_activity_urn(self):
         self.assertEqual(
             "https://www.linkedin.com/feed/update/urn:li:activity:7351200000000000000/",
@@ -503,6 +597,67 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
         self.assertIn("activityUrn", linkedin.EXTRACT_SCRIPT)
         self.assertIn("steps < 12000", linkedin.EXTRACT_SCRIPT)
         self.assertIn("activityUrn(node)", linkedin.EXTRACT_SCRIPT)
+
+    def test_extractor_recovers_current_attribute_actor_and_timestamp_variants(self):
+        harness = f"""
+const tracking = {{
+  href: "https://www.linkedin.com/feed/?updateEntityUrn=urn%3Ali%3Aactivity%3A7494999999999999999",
+  innerText: "", textContent: "", getAttributeNames() {{ return ["href"]; }},
+  getAttribute(name) {{ return name === "href" ? this.href : null; }}
+}};
+const author = {{
+  href: "https://www.linkedin.com/company/example-company/",
+  innerText: "", textContent: "", getAttributeNames() {{ return ["aria-label"]; }},
+  getAttribute(name) {{ return name === "aria-label" ? "Example Company" : null; }},
+  closest() {{ return this; }}, querySelector() {{ return null; }}
+}};
+const time = {{
+  innerText: "", textContent: "",
+  getAttribute(name) {{ return name === "aria-label" ? "3h • Edited" : null; }}
+}};
+const post = {{
+  innerText: "Example Company\\n3h • Edited\\nA real feed post with current metadata variants.",
+  textContent: "", dataset: {{}}, contains() {{ return false; }}, closest() {{ return this; }},
+  getAttributeNames() {{ return ["data-id"]; }},
+  getAttribute(name) {{
+    return name === "data-id" ? "urn:li:activity:7494999999999999999" : null;
+  }},
+  querySelector(selector) {{
+    if (selector.includes("actor__title")) return author;
+    if (selector.startsWith("time")) return time;
+    return null;
+  }},
+  querySelectorAll(selector) {{
+    if (selector === "a[href]") return [tracking, author];
+    if (selector.includes("[data-urn]")) return [tracking];
+    if (selector.startsWith("time")) return [time];
+    return [];
+  }}
+}};
+const main = {{querySelectorAll(selector) {{
+  return selector === '[data-id^="urn:li:activity:"]' ? [post] : [];
+}}}};
+const document = {{
+  title: "Feed | LinkedIn", body: {{innerText: post.innerText}},
+  querySelector(selector) {{
+    return selector === 'main, [role="main"], .scaffold-layout__main' ? main : null;
+  }}
+}};
+const location = {{href: "https://www.linkedin.com/feed/"}};
+const result = {linkedin.EXTRACT_SCRIPT};
+process.stdout.write(JSON.stringify(result));
+"""
+        completed = subprocess.run(
+            ["node", "-e", harness], capture_output=True, text=True, check=False
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        candidate = json.loads(completed.stdout)["candidates"][0]
+        self.assertEqual(
+            "https://www.linkedin.com/feed/update/urn:li:activity:7494999999999999999/",
+            candidate["url"],
+        )
+        self.assertEqual("Example Company", candidate["author"])
+        self.assertEqual("3h • Edited", candidate["timestamp"])
 
     def test_extractor_prioritizes_runtime_props_over_large_fiber_graph(self):
         harness = f"""
