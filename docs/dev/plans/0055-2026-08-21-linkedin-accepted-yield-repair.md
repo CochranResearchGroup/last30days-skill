@@ -1822,15 +1822,25 @@ Subagent status and reconciliation:
 
 - `not_spawned`; current orchestration policy prohibits delegation.
 
+Graphiti write status:
+
+- prior C17 job `eceb0d15-4d25-4d73-9799-d86450a1e6a7` terminalized
+  `timed_out` without an episode after its 180-second node-resolution budget;
+- provider readiness passed and compact C18 job
+  `86280ba2-91c6-412a-acdb-255b858aae01` is queued in
+  `last30days_skill_main` from published source commit `78c506e`. Poll that
+  exact job at the next non-trivial closeout; do not enqueue a duplicate.
+
 Remaining acceptance criteria:
 
-- publish and install an exact service version containing this source packet;
+- prepare and install an exact service version containing published commit
+  `78c506e`;
 - with fresh explicit authority, run one bounded 20-item X plus LinkedIn
   home-feed tick and adjudicate accepted yield and the new progress diagnostics.
 
 Next action:
 
-- commit and publish the provider-free source packet. Do not install it or run
-  another live provider attempt under C18.
+- prepare the installable service version and obtain fresh explicit authority
+  before installing it or running another live provider attempt under C18.
 
 Checkpoint P0055-C18 is the current authority.

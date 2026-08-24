@@ -19957,8 +19957,12 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- poll queued C17 job `eceb0d15-4d25-4d73-9799-d86450a1e6a7`, then write at
-  most one compact C18 episode after the commit is durable.
+- C17 job `eceb0d15-4d25-4d73-9799-d86450a1e6a7` terminalized `timed_out`
+  without an episode after 180 seconds in node resolution;
+- provider readiness passed, and compact C18 job
+  `86280ba2-91c6-412a-acdb-255b858aae01` is queued in
+  `last30days_skill_main` from published commit `78c506e`. Do not enqueue a
+  duplicate; poll this exact job at the next non-trivial closeout.
 
 Next Bounded Action:
 
