@@ -20050,3 +20050,71 @@ Next Bounded Action:
 - diagnose the Last30days-side acquisition boundary from the retained C19
   provider results without changing Agent Browser or the authenticated profile;
   request fresh authority before another live attempt.
+
+## Turn 329 | 2026-08-24
+
+Focus: diagnose the Last30days-side C19 tab-acquisition boundary using only
+retained evidence and provider-free replay.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C19; Last30days monitoring/maintenance,
+  diagnosing-bugs, CodeGraph, planning, validation, documentation, and closeout
+  contracts.
+
+Decisions And Changes:
+
+- made no Agent Browser command, provider request, profile change, service
+  mutation, recurring-config change, schedule change, or retry;
+- traced the worker, X/LinkedIn wrapper, shared browser client, tick adapter,
+  and durable provider-result boundaries structurally;
+- built two deterministic in-process red replays: one at the X wrapper and one
+  at the tick bridge. No source fix was applied in this diagnosis packet;
+- reconciled Plan 0055 and P08 to the exact retained-evidence limit.
+
+Validation Evidence:
+
+- installed/repository hashes match for both source modules and equal their
+  0.3.61 runtime-manifest entries, excluding install drift;
+- LinkedIn's retained `service/ok`, `service/ok`, `tab/failed` sequence maps to
+  successful workspace acquisition followed by the first `tab list` inside
+  authentication inspection;
+- X wrapper replay exits `agent_browser_error` but drops supplied
+  authentication stage and `service/service/tab` timings;
+- tick-bridge replay retains `tab/failed` but has no fields for worker
+  `failure_stage` or `failure_signature`;
+- four existing component tests pass for LinkedIn stage/operation retention,
+  worker signature creation, tick browser-operation retention, and X typed
+  error mapping. The current test suite lacks both end-to-end assertions;
+- current plan-authority audit passes with zero findings after documentation
+  reconciliation.
+
+State Movement:
+
+- Plan 0055 advances to version 20/C20
+  `last30days_failure_observability_gap_confirmed`; P08 remains `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; LinkedIn is localized exactly and the reason X is not
+  localizable is now a deterministic Last30days defect.
+
+Authority Classification:
+
+- `inherited_authority`; the bounded read-only diagnosis is complete. No fix
+  or live effect was inferred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; provider readiness returned
+  `degraded/TimeoutError` after 20 seconds, so no memory job was queued.
+
+Next Bounded Action:
+
+- implement provider-free Last30days regressions and preserve X failure stage/
+  operations plus tick-level stage/signature end-to-end. Do not modify Agent
+  Browser, profiles, recurring config, or run another live provider attempt.

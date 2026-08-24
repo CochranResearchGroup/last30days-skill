@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 19
+Plan version: 20
 Date: 2026-08-21
 
 ## Objective
@@ -59,6 +59,13 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   source but both failed `agent_browser_error` before observing a card. The
   repair therefore remains unproven live; the result says nothing about post
   acceptance, deterministic ad/spam exclusion, or semantic quality;
+- retained-result replay now proves a Last30days observability defect. The X
+  feed wrapper drops failure stage and bounded browser-command timings on
+  browser-runtime exceptions, while the tick bridge drops worker
+  `failure_stage` and `failure_signature` for both sources. LinkedIn's retained
+  operations still prove workspace acquisition succeeded before its first
+  authentication-stage `tab list` failed; X's exact failed command cannot be
+  recovered from C19;
 - the temporary run configuration was moved to the user trash. Recurring
   revision `operator-20260822-x-linkedin-home-feed-v1`, SHA-256
   `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
@@ -1943,3 +1950,94 @@ Next action:
   Request fresh authority before any new provider attempt.
 
 Checkpoint P0055-C19 is the current authority.
+
+### Checkpoint P0055-C20 | 2026-08-24
+
+Plan version: 20
+
+State transition:
+
+- `retrieval_repair_installed_live_validation_preobservation_blocked -> last30days_failure_observability_gap_confirmed`.
+
+Progress classification:
+
+- `blocker_reduction`; the retained C19 evidence now identifies LinkedIn's
+  exact failed command boundary and proves why X cannot be adjudicated more
+  precisely without another provider attempt.
+
+Read-only diagnostic evidence:
+
+- no provider request, Agent Browser command, profile operation, service
+  restart/install, recurring-config change, or schedule mutation was run;
+- installed and repository `x_browser.py` SHA-256 values both equal
+  `4f8859232aa528976fab9b5963b0fdae0bf9065effb194c322c23c747e159298`;
+  installed and repository `linkedin.py` values both equal
+  `15d2b6c081fc168d8c36693a64dfab66a5cabeb71850ebb32c64e2e6eaa8c2f3`.
+  Both match the installed 0.3.61 runtime manifest, excluding release drift;
+- LinkedIn C19 operations are `service/ok`, `service/ok`, then `tab/failed`.
+  The shared client records `service` for access-plan/status commands and
+  `tab` for tab commands. The feed sets failure stage `authentication` after
+  workspace acquisition and then calls `prepare_site_tab`, whose first command
+  is `tab list`. Therefore LinkedIn acquired its workspace and failed on the
+  first retained-session tab inventory before auth evaluation;
+- X C19 retains no operation evidence. A deterministic in-process replay sent
+  the real X feed wrapper an authentication-stage failure plus bounded
+  `service/service/tab` timings. It returned `agent_browser_error` while
+  omitting both `failure_stage` and `browser_operations`, reproducing the exact
+  retained-evidence gap;
+- a second deterministic replay passed `failure_stage`, stable
+  `failure_signature`, and `tab/failed` evidence through the real tick-adapter
+  bridge. The bridge retained the tab timing but its `ProviderResult` contract
+  had no stage or signature fields, proving the second observability loss;
+- existing LinkedIn failure-stage/operation, worker failure-signature, tick
+  browser-operation, and X typed-error tests all pass. They test the components
+  separately but do not assert end-to-end preservation of stage/signature or X
+  failure operations.
+
+Adjudication:
+
+- confirmed Last30days defect 1: `scrape_x_feed` constructs fresh minimal
+  diagnostics in both exception handlers and discards the client's bounded
+  command timings plus the stage where the exception occurred;
+- confirmed Last30days defect 2: `AcquisitionWorkerTickAdapter` maps worker
+  diagnostics into `ProviderResult` but preserves only page signals, browser
+  operations, and rejection counts. `failure_stage` and `failure_signature`
+  are not fields in the durable provider-result contract;
+- confirmed live boundary: LinkedIn failed on retained-session `tab list`
+  before authentication evaluation, navigation, extraction, scrolling, or
+  quality gates;
+- unresolved by retained evidence: X may have failed at the same tab boundary
+  or earlier during access-plan/status. Claiming one would exceed the receipt;
+- rejected hypothesis: the new scrolling/LinkedIn extraction repair caused
+  C19. Neither source reached navigation or extraction, and installed source
+  identity matches the fixture-accepted candidate.
+
+Authority classification:
+
+- `inherited_authority`; the operator authorized read-only diagnosis of the
+  retained Last30days boundary. No fix, install, or retry was performed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; the bounded provider-readiness probe again returned
+  `degraded/TimeoutError` after 20 seconds, so no memory job was queued.
+
+Remaining acceptance criteria:
+
+- preserve failure stage, stable signature, and bounded command operations
+  end-to-end for X and LinkedIn provider failures;
+- after fixture validation and installed adoption, complete a live 20-item X
+  and LinkedIn observation and adjudicate the retrieval diagnostics.
+
+Next action:
+
+- implement a Last30days-only failure-observability repair at the X wrapper and
+  tick provider-result boundary, with failing-before/fixed-after regression
+  tests at both seams. Do not change Agent Browser, the authenticated profile,
+  recurring configuration, or run a provider retry in that packet.
+
+Checkpoint P0055-C20 is the current authority.

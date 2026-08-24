@@ -1210,14 +1210,22 @@ Current State:
   transient `agent_browser_error` and `0/0/0/0` counts, with no auth or page
   signal. Live scraper acceptance remains unproven; recurring configuration,
   profile state, Reddit/Facebook pause, and Agent Browser are unchanged.
+- Plan 0055 version 20/C20 diagnoses the retained pre-observation failures
+  without invoking Agent Browser or a provider. LinkedIn acquired its workspace
+  and then failed its first authentication-stage `tab list`. X cannot be
+  localized because its feed wrapper discards failure stage and command
+  timings; the tick bridge also drops worker stage/signature for both sources.
+  Deterministic replays reproduce both Last30days observability gaps, and exact
+  installed/repository hashes exclude 0.3.61 release drift.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 19/C19 owns retrieval-first X/LinkedIn feed completion. The bounded
+  version 20/C20 owns retrieval-first X/LinkedIn feed completion. The bounded
   unique-progress loop and current LinkedIn metadata variants are fixture
   accepted and installed in ready service 0.3.61, but the sole live tick failed
-  before observation. No further live attempt is authorized by C19.
+  before observation. The next packet is a Last30days-only failure-evidence
+  repair; no further live attempt is authorized by C20.
 
 Closed Plan:
 
@@ -1288,10 +1296,11 @@ Dependencies:
 
 Next Bounded Action:
 
-- diagnose only the Last30days-side acquisition boundary represented by the
-  C19 provider receipts. Do not change Agent Browser, discard or replace the
-  authenticated profile, alter recurring configuration, or retry the consumed
-  live canary without fresh authority.
+- preserve Last30days X failure stage/command timings and carry worker
+  failure stage/signature through the durable tick provider result, with
+  provider-free regression tests. Do not change Agent Browser, discard or
+  replace the authenticated profile, alter recurring configuration, or retry
+  the consumed live canary in that packet.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 
