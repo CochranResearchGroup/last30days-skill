@@ -1217,15 +1217,20 @@ Current State:
   timings; the tick bridge also drops worker stage/signature for both sources.
   Deterministic replays reproduce both Last30days observability gaps, and exact
   installed/repository hashes exclude 0.3.61 release drift.
+- Plan 0055 version 21/C21 fixture-accepts source candidate service 0.3.62.
+  X feed failures now retain safe stage and bounded command operations, and
+  the durable tick receipt preserves normalized worker stage plus stable
+  SHA-256 signature. The complete suite and reproducible service build pass;
+  installed service remains 0.3.61 and no provider attempt occurred.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 20/C20 owns retrieval-first X/LinkedIn feed completion. The bounded
+  version 21/C21 owns retrieval-first X/LinkedIn feed completion. The bounded
   unique-progress loop and current LinkedIn metadata variants are fixture
-  accepted and installed in ready service 0.3.61, but the sole live tick failed
-  before observation. The next packet is a Last30days-only failure-evidence
-  repair; no further live attempt is authorized by C20.
+  accepted and installed in ready service 0.3.61. Candidate 0.3.62 repairs the
+  failure-evidence boundary and is fixture accepted but not installed; no
+  further live attempt is authorized by C21.
 
 Closed Plan:
 

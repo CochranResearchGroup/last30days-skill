@@ -20118,3 +20118,72 @@ Next Bounded Action:
 - implement provider-free Last30days regressions and preserve X failure stage/
   operations plus tick-level stage/signature end-to-end. Do not modify Agent
   Browser, profiles, recurring config, or run another live provider attempt.
+
+## Turn 330 | 2026-08-24
+
+Focus: implement and fixture-accept the provider-free Last30days failure-
+observability repair identified by Plan 0055/C20.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C20; Last30days TDD, CodeGraph, release,
+  planning, Git, validation, documentation, and closeout contracts.
+
+Decisions And Changes:
+
+- added failing-before/fixed-after public regressions at the X feed wrapper,
+  acquisition tick bridge, and durable provider-result round-trip;
+- made X feed failures retain their safe execution stage and bounded sanitized
+  command timings;
+- added validated optional failure stage/signature fields to `ProviderResult`,
+  mapped worker evidence through the tick adapter, and persisted it in durable
+  result JSON without adding raw error text, arguments, or private URLs;
+- advanced the source candidate to service 0.3.62, refreshed its runtime
+  manifest, and built the deterministic artifact twice;
+- did not install/restart the service, invoke Agent Browser or a provider,
+  change profiles/configuration/schedules, or modify Reddit/Facebook state.
+
+Validation Evidence:
+
+- the new X test first failed with missing `failure_stage`; the bridge test
+  first failed because `ProviderResult` lacked the field; the round-trip test
+  first failed because serialization dropped it. All pass after implementation;
+- focused scraper, worker, tick, release, package, and source-log suites pass;
+- the complete Python suite passes with only expected skips;
+- service artifact SHA-256 is
+  `271bea8ded19b279f6394290bf6e156c261af80b17ff7eb3222f654afb56c6bc`
+  on both builds; runtime-manifest SHA-256 is
+  `fbcf7209c5a3d7a5e0737ed91acd6ffa69026da4a5b89dcb517984879c3c8013`.
+
+State Movement:
+
+- Plan 0055 advances to version 21/C21
+  `failure_observability_repair_fixture_accepted_install_pending`; P08 remains
+  `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; future pre-observation failures can now be localized
+  from the durable Last30days receipt.
+
+Authority Classification:
+
+- `inherited_authority`; exact provider-free implementation authority is
+  consumed. Installation and a live tick need fresh authority.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; the bounded closeout readiness probe returned
+  `degraded/TimeoutError` after 20 seconds on the configured Codex app-server
+  path, so no memory write was queued.
+
+Next Bounded Action:
+
+- after fresh authority, transactionally install exact service 0.3.62 and run
+  one combined single-attempt 20-item X/LinkedIn feed tick. Preserve Agent
+  Browser, authenticated profiles, recurring configuration, Reddit, and
+  Facebook unchanged.

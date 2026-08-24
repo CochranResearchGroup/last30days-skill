@@ -842,6 +842,35 @@ process.stdout.write(JSON.stringify(result));
         self.assertEqual("agent_browser_error", result["error_type"])
         self.assertEqual([], result["items"])
 
+    def test_feed_failure_preserves_stage_and_bounded_browser_operations(self):
+        from lib import facebook, x_browser
+
+        client = FakeAgentBrowserClient()
+        client.command_timings = [
+            {"operation": "service", "duration_ms": index, "status": "ok"}
+            for index in range(21)
+        ]
+        client.inspect_auth = lambda workspace: (_ for _ in ()).throw(
+            facebook.FacebookScraperFailure(
+                "agent_browser_error", "browser unavailable"
+            )
+        )
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.scrape_x_feed(
+                "2026-06-20",
+                "2026-07-20",
+                depth="quick",
+                config={"LAST30DAYS_X_BROWSER_PROFILE": "last30days-facebook"},
+            )
+
+        self.assertEqual("agent_browser_error", result["error_type"])
+        self.assertEqual("authentication", result["diagnostics"]["failure_stage"])
+        self.assertEqual(20, len(result["diagnostics"]["browser_operations"]))
+        self.assertEqual(
+            {"operation": "service", "duration_ms": 1, "status": "ok"},
+            result["diagnostics"]["browser_operations"][0],
+        )
+
 
 class RecordingCliClient:
     def __init__(self, responses):

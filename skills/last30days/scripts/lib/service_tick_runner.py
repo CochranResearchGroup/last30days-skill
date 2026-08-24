@@ -167,6 +167,8 @@ class ProviderResult:
     usage: dict[str, int]
     failure_class: str | None = None
     safe_error_code: str | None = None
+    failure_stage: str | None = None
+    failure_signature: str | None = None
     page_signals: tuple[str, ...] = ()
     rendered_page: bytes | None = None
     rendered_page_mime_type: str | None = None
@@ -189,6 +191,22 @@ class ProviderResult:
         if self.status in {"partial", "failure"}:
             _text(self.failure_class, "failure_class", 64)
             _text(self.safe_error_code, "safe_error_code", 64)
+        if self.failure_stage is not None:
+            stage = _text(self.failure_stage, "failure_stage", 64)
+            if any(
+                character not in "abcdefghijklmnopqrstuvwxyz0123456789_"
+                for character in stage
+            ):
+                raise ValueError("failure stage must be a normalized safe identifier")
+        if self.failure_signature is not None:
+            signature = _text(self.failure_signature, "failure_signature", 71)
+            digest = signature.removeprefix("sha256:")
+            if (
+                not signature.startswith("sha256:")
+                or len(digest) != 64
+                or any(character not in "0123456789abcdef" for character in digest)
+            ):
+                raise ValueError("failure signature must be a lowercase SHA-256 identifier")
         if self.rendered_page is not None and not self.rendered_page_mime_type:
             raise ValueError("rendered page bytes require a MIME type")
         if self.operator_url is not None:
@@ -404,6 +422,8 @@ class TickRunner:
             "usage": result.usage,
             "failure_class": result.failure_class,
             "safe_error_code": result.safe_error_code,
+            "failure_stage": result.failure_stage,
+            "failure_signature": result.failure_signature,
             "page_signals": list(result.page_signals),
             "rendered_page": rendered_page,
             "operator_url": result.operator_url,
@@ -497,6 +517,8 @@ class TickRunner:
             usage=dict(payload.get("usage", {})),
             failure_class=payload.get("failure_class"),
             safe_error_code=payload.get("safe_error_code"),
+            failure_stage=payload.get("failure_stage"),
+            failure_signature=payload.get("failure_signature"),
             page_signals=tuple(payload.get("page_signals", ())),
             rendered_page=stored_bytes(rendered) if rendered is not None else None,
             rendered_page_mime_type=(

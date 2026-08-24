@@ -347,6 +347,7 @@ class XBrowserScraper:
         self.initial_wait = initial_wait
         self.scroll_wait = scroll_wait
         self.now = now or datetime.now(timezone.utc)
+        self.failure_stage = "workspace_acquisition"
 
     def search(self, topic: str, from_date: str, to_date: str) -> dict[str, Any]:
         started = time.monotonic()
@@ -448,7 +449,9 @@ class XBrowserScraper:
         """Collect structurally valid posts from the authenticated home feed."""
         started = time.monotonic()
         diagnostics = XRunDiagnostics()
+        self.failure_stage = "workspace_acquisition"
         workspace = self.client.acquire_workspace(self.request)
+        self.failure_stage = "authentication"
         auth = self.client.inspect_auth(workspace)
         if auth.checkpoint:
             raise XBrowserFailure(
@@ -474,6 +477,7 @@ class XBrowserScraper:
                 "X authentication state could not be determined from the rendered page",
                 operator_url=workspace.operator_url,
             )
+        self.failure_stage = "navigation"
         feed_url = "https://x.com/home"
         retained = self.client.prepare_site_tab(workspace, "x.com", consolidate=True)
         self.client.act(
@@ -503,6 +507,7 @@ class XBrowserScraper:
             raise XBrowserFailure("search_unavailable", "X feed returned a temporary error page")
         if not _page_matches_feed(page):
             raise XBrowserFailure("navigation_mismatch", "X feed state did not match the authenticated home feed")
+        self.failure_stage = "extraction"
         raw = list(self.client.evaluate(workspace, EXTRACT_SCRIPT).get("candidates") or [])
         seen_observations = {_candidate_observation_key(item) for item in raw}
         diagnostics.unique_observation_count = len(seen_observations)
@@ -537,6 +542,7 @@ class XBrowserScraper:
                 "Verified X home feed contained no post articles",
             )
         diagnostics.candidate_count = len(raw)
+        self.failure_stage = "quality_gate"
         quality_items = _quality_gate(
             raw, "", from_date, to_date, diagnostics, surface_kind="feed"
         )
@@ -748,9 +754,7 @@ def scrape_x_feed(
         return scraper.feed(from_date, to_date)
     except XBrowserFailure as exc:
         _log(f"Failed error_type={exc.error_type} message={exc}")
-        diagnostics = {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0}
-        if exc.operator_url:
-            diagnostics["operator_url"] = exc.operator_url
+        diagnostics = _failure_diagnostics(scraper, client, exc.operator_url)
         return {
             "items": [],
             "error": str(exc),
@@ -764,9 +768,7 @@ def scrape_x_feed(
         error_type = exc.error_type if exc.error_type in ERROR_TYPES else "agent_browser_error"
         _log(f"Failed error_type={error_type} message={exc}")
         operator_url = str(getattr(exc, "operator_url", "") or "")
-        diagnostics = {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0}
-        if operator_url:
-            diagnostics["operator_url"] = operator_url
+        diagnostics = _failure_diagnostics(scraper, client, operator_url)
         return {
             "items": [],
             "error": str(exc),
@@ -1037,6 +1039,53 @@ def _iso_date(value: str) -> str | None:
         return datetime.fromisoformat(value.replace("Z", "+00:00")).date().isoformat()
     except (TypeError, ValueError):
         return None
+
+
+def _failure_diagnostics(
+    scraper: XBrowserScraper,
+    client: Any,
+    operator_url: str,
+) -> dict[str, Any]:
+    diagnostics: dict[str, Any] = {
+        "rejection_counts": {},
+        "accepted_count": 0,
+        "duration_ms": 0,
+        "failure_stage": scraper.failure_stage,
+        "browser_operations": _bounded_browser_operations(
+            getattr(client, "command_timings", [])
+        ),
+    }
+    if operator_url:
+        diagnostics["operator_url"] = operator_url
+    return diagnostics
+
+
+def _bounded_browser_operations(value: Any) -> list[dict[str, Any]]:
+    if not isinstance(value, list):
+        return []
+    operations: list[dict[str, Any]] = []
+    for item in value[-20:]:
+        if not isinstance(item, dict):
+            continue
+        operation = str(item.get("operation") or "").strip()[:64]
+        status = str(item.get("status") or "").strip()[:32]
+        duration = item.get("duration_ms")
+        if (
+            not operation
+            or not status
+            or isinstance(duration, bool)
+            or not isinstance(duration, int)
+            or duration < 0
+        ):
+            continue
+        operations.append(
+            {
+                "operation": operation,
+                "duration_ms": duration,
+                "status": status,
+            }
+        )
+    return operations
 
 
 def _log(message: str) -> None:

@@ -121,6 +121,35 @@ def _rejection_counts(diagnostics: Mapping[str, object]) -> dict[str, int]:
     return counts
 
 
+def _failure_stage(diagnostics: Mapping[str, object]) -> str | None:
+    value = diagnostics.get("failure_stage")
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    if (
+        not value
+        or len(value) > 64
+        or any(
+            character not in "abcdefghijklmnopqrstuvwxyz0123456789_"
+            for character in value
+        )
+    ):
+        return None
+    return value
+
+
+def _failure_signature(diagnostics: Mapping[str, object]) -> str | None:
+    value = diagnostics.get("failure_signature")
+    if not isinstance(value, str) or not value.startswith("sha256:"):
+        return None
+    digest = value.removeprefix("sha256:")
+    if len(digest) != 64 or any(
+        character not in "0123456789abcdef" for character in digest
+    ):
+        return None
+    return value
+
+
 class AcquisitionWorkerTickAdapter:
     def __init__(self, worker, *, adapter: str, adapter_version: str) -> None:
         self.worker = worker
@@ -233,6 +262,8 @@ class AcquisitionWorkerTickAdapter:
         }
         browser_operations = _browser_operations(result.diagnostics)
         rejection_counts = _rejection_counts(result.diagnostics)
+        failure_stage = _failure_stage(result.diagnostics)
+        failure_signature = _failure_signature(result.diagnostics)
         if items:
             return ProviderResult(
                 status=(
@@ -246,6 +277,8 @@ class AcquisitionWorkerTickAdapter:
                     _failure_class(result) if result.safe_error_code else None
                 ),
                 safe_error_code=result.safe_error_code,
+                failure_stage=failure_stage,
+                failure_signature=failure_signature,
                 page_signals=tuple(result.diagnostics.get("page_signals") or ()),
                 operator_url=result.operator_url,
                 rendered_page=result.rendered_page,
@@ -269,6 +302,8 @@ class AcquisitionWorkerTickAdapter:
             usage=usage,
             failure_class=_failure_class(result),
             safe_error_code=result.safe_error_code or "source_error",
+            failure_stage=failure_stage,
+            failure_signature=failure_signature,
             page_signals=tuple(result.diagnostics.get("page_signals") or ()),
             operator_url=result.operator_url,
             rendered_page=result.rendered_page,

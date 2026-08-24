@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 20
+Plan version: 21
 Date: 2026-08-21
 
 ## Objective
@@ -66,6 +66,9 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   operations still prove workspace acquisition succeeded before its first
   authentication-stage `tab list` failed; X's exact failed command cannot be
   recovered from C19;
+- source candidate service 0.3.62 fixes both retained-evidence gaps with
+  failing-before/fixed-after regressions. It is fixture-accepted and packaged,
+  but is not installed; installed service 0.3.61 remains ready and unchanged;
 - the temporary run configuration was moved to the user trash. Recurring
   revision `operator-20260822-x-linkedin-home-feed-v1`, SHA-256
   `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
@@ -2041,3 +2044,78 @@ Next action:
   recurring configuration, or run a provider retry in that packet.
 
 Checkpoint P0055-C20 is the current authority.
+
+### Checkpoint P0055-C21 | 2026-08-24
+
+Plan version: 21
+
+State transition:
+
+- `last30days_failure_observability_gap_confirmed -> failure_observability_repair_fixture_accepted_install_pending`.
+
+Progress classification:
+
+- `blocker_reduction`; the next installed provider receipt can localize X and
+  LinkedIn failures by safe stage/signature and bounded command operation.
+
+Implementation evidence:
+
+- `XBrowserScraper.feed` now tracks the current bounded stage across workspace
+  acquisition, authentication, navigation, extraction, and quality gating;
+- `scrape_x_feed` preserves that stage and at most 20 sanitized command timing
+  records on either typed X or shared browser-runtime failure;
+- `ProviderResult` now validates optional normalized `failure_stage` and exact
+  lowercase `sha256:` `failure_signature` fields. The acquisition tick adapter
+  carries valid worker evidence into failure and partial results;
+- provider-result JSON serialization/restoration persists both fields while
+  older rows that omit them continue to restore as `None`;
+- raw exception messages, command arguments, and private URLs are not added to
+  the durable evidence contract.
+
+Validation evidence:
+
+- all three new regressions failed on the pre-fix seam and pass after the
+  minimal implementation: X feed stage/operation retention, worker-to-tick
+  stage/signature preservation, and durable provider-result round-trip;
+- focused X, acquisition-worker, tick-runtime, tick-runner, release, runtime-
+  package, and source-log suites pass;
+- the complete Python repository suite passes with only expected skips;
+- deterministic service 0.3.62 built twice with artifact SHA-256
+  `271bea8ded19b279f6394290bf6e156c261af80b17ff7eb3222f654afb56c6bc`;
+  runtime-manifest SHA-256 is
+  `fbcf7209c5a3d7a5e0737ed91acd6ffa69026da4a5b89dcb517984879c3c8013`;
+- no service install/restart, Agent Browser command, provider request, profile
+  operation, recurring-config change, schedule mutation, Reddit/Facebook
+  change, or live retry occurred.
+
+Authority classification:
+
+- `inherited_authority`; the operator authorized the exact provider-free C20
+  implementation packet. Installation and a provider tick remain outside this
+  consumed authority.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; the bounded closeout readiness probe returned
+  `degraded/TimeoutError` after 20 seconds on the configured Codex app-server
+  path, so no memory write was queued.
+
+Remaining acceptance criteria:
+
+- install exact service 0.3.62 through the transactional service workflow;
+- run one bounded 20-item X and LinkedIn feed observation and adjudicate safe
+  stage/operation evidence if either source again fails before observation;
+- prove accepted yield plus scroll/unique/stagnation diagnostics when either
+  source reaches extraction.
+
+Next action:
+
+- request fresh authority for the exact 0.3.62 install and one combined,
+  single-attempt 20-item X/LinkedIn tick. Do not change Agent Browser, profiles,
+  recurring configuration, Reddit, or Facebook.
+
+Checkpoint P0055-C21 is the current authority.

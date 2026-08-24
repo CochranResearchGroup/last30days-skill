@@ -39,7 +39,7 @@ def test_v4_release_versions_are_independent_and_explicit():
 
     service_version = (ROOT / "service/VERSION").read_text(encoding="utf-8").strip()
     runtime_manifest = _json("service/runtime-manifest.json")
-    assert service_version == "0.3.61"
+    assert service_version == "0.3.62"
     assert runtime_manifest["service_version"] == service_version
 
 

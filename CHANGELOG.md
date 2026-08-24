@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Durable social-browser failure evidence.** Service 0.3.62 preserves the
+  X home-feed failure stage and bounded command-operation timings, then carries
+  normalized worker failure stages and stable SHA-256 signatures through the
+  tick adapter and durable provider-result receipt. Raw browser errors, URLs,
+  and command arguments remain excluded from this evidence path.
+
 - **Progress-aware X and LinkedIn feed scrolling.** Service 0.3.61 tracks
   canonical post identities across virtualized home-feed snapshots, continues
   while new identities appear up to the existing eight-scroll ceiling, and

@@ -272,6 +272,29 @@ def test_builtin_adapter_bridge_preserves_bounded_browser_operation_evidence():
     )
 
 
+def test_builtin_adapter_bridge_preserves_safe_failure_stage_and_signature():
+    signature = "sha256:" + "a" * 64
+    worker = FixtureWorker(
+        lambda request: _result(
+            request,
+            status="failed",
+            error="agent_browser_error",
+            retry="transient",
+            diagnostics={
+                "failure_stage": "authentication",
+                "failure_signature": signature,
+            },
+        )
+    )
+
+    result = build_acquisition_adapter_registry(worker).require(
+        "x_agent_browser", source="x", capability="collect"
+    ).collect(_context("x_agent_browser", "x"))
+
+    assert result.failure_stage == "authentication"
+    assert result.failure_signature == signature
+
+
 def test_builtin_adapter_bridge_preserves_bounded_rejection_counts():
     worker = FixtureWorker(
         lambda request: _result(
