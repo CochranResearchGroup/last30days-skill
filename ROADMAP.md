@@ -1222,15 +1222,22 @@ Current State:
   the durable tick receipt preserves normalized worker stage plus stable
   SHA-256 signature. The complete suite and reproducible service build pass;
   installed service remains 0.3.61 and no provider attempt occurred.
+- Plan 0055 version 22/C22 installs exact service 0.3.62 and consumes one
+  combined single-attempt 20/20 feed tick. Both X and LinkedIn preserve the new
+  safe failure stage/signature and the same `service/ok`, `service/ok`,
+  `tab/failed` sequence at authentication. Neither source observed a card;
+  20-item acceptance remains blocked on retained-session tab inventory rather
+  than scraper content, ads, quality, authentication, or infinite scrolling.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 21/C21 owns retrieval-first X/LinkedIn feed completion. The bounded
+  version 22/C22 owns retrieval-first X/LinkedIn feed completion. The bounded
   unique-progress loop and current LinkedIn metadata variants are fixture
-  accepted and installed in ready service 0.3.61. Candidate 0.3.62 repairs the
-  failure-evidence boundary and is fixture accepted but not installed; no
-  further live attempt is authorized by C21.
+  accepted; service 0.3.62 is installed ready and proves its durable failure-
+  evidence contract live. Both sources remain pre-observation blocked on the
+  shared retained-session `tab list`; no further live attempt is authorized by
+  C22 without a changed premise.
 
 Closed Plan:
 

@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 21
+Plan version: 22
 Date: 2026-08-21
 
 ## Objective
@@ -13,10 +13,10 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 
 ## Current State
 
-- service 0.3.61/schema 16 is installed ready with 0.3.60 retained for
-  rollback. It contains published retrieval repair `78c506e`; the loaded
+- service 0.3.62/schema 16 is installed ready with 0.3.61 retained for
+  rollback. It contains published observability repair `f28e6c4`; the loaded
   runtime-manifest SHA-256 is
-  `6abaef1d48ee9172d03c26c93697851edc321f1c62b3410297a3593c729e7ab0`;
+  `fbcf7209c5a3d7a5e0737ed91acd6ffa69026da4a5b89dcb517984879c3c8013`;
 - structurally valid short and lexically unmatched X and LinkedIn posts are
   retained with retrieval diagnostics. Only structural invalidity, date range,
   exact duplicate, deterministic promoted/sponsored labels, and deterministic
@@ -66,9 +66,9 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   operations still prove workspace acquisition succeeded before its first
   authentication-stage `tab list` failed; X's exact failed command cannot be
   recovered from C19;
-- source candidate service 0.3.62 fixes both retained-evidence gaps with
-  failing-before/fixed-after regressions. It is fixture-accepted and packaged,
-  but is not installed; installed service 0.3.61 remains ready and unchanged;
+- installed service 0.3.62 fixes both retained-evidence gaps. Live tick
+  `tick-ba83099879712f849b3062bdef3bcb0c` durably preserved safe stage,
+  signature, and browser-operation evidence for both failed lanes;
 - the temporary run configuration was moved to the user trash. Recurring
   revision `operator-20260822-x-linkedin-home-feed-v1`, SHA-256
   `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
@@ -2119,3 +2119,100 @@ Next action:
   recurring configuration, Reddit, or Facebook.
 
 Checkpoint P0055-C21 is the current authority.
+
+### Checkpoint P0055-C22 | 2026-08-24
+
+Plan version: 22
+
+State transition:
+
+- `failure_observability_repair_fixture_accepted_install_pending -> failure_observability_repair_installed_live_tab_inventory_blocked`.
+
+Progress classification:
+
+- `blocker_reduction`; installed live evidence now localizes both sources to
+  the same retained-session tab inventory boundary before authentication
+  evaluation, navigation, extraction, scrolling, or quality gating.
+
+Installed and live evidence:
+
+- transactionally installed exact service 0.3.62 artifact SHA-256
+  `271bea8ded19b279f6394290bf6e156c261af80b17ff7eb3222f654afb56c6bc`;
+  service 0.3.61 is retained as rollback;
+- diagnose and service-info readbacks agree on service 0.3.62/schema 16,
+  `ready`, contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`,
+  and runtime-manifest SHA-256
+  `fbcf7209c5a3d7a5e0737ed91acd6ffa69026da4a5b89dcb517984879c3c8013`;
+- a schedule-disabled temporary config admitted exactly X and LinkedIn home-
+  feed lanes at one attempt and 20 items each, aggregate limits 2 attempts,
+  40 items, 100 network requests, 240 wall seconds, and zero cost/model use;
+- preflight and terminal receipt agree on tick
+  `tick-ba83099879712f849b3062bdef3bcb0c`, config digest
+  `sha256:5693ee7902b7b0459516a43842b7cf1cdd8111d0d00450d8d446a646949ac996`,
+  and interval `2026-08-23T16:26:00Z` through `2026-08-24T16:26:00Z`;
+- X attempt `provider-attempt-84719ea75ef3350fe121f72c16e902bf`
+  failed transiently at `authentication` with stable signature
+  `sha256:0f9a96d2c03bd22e8677e5caee2a7aedc7b20d536a99cfab6a854b009ef66af6`
+  after `service/ok`, `service/ok`, `tab/failed`;
+- LinkedIn attempt `provider-attempt-3cbe530a7cab7c08f607a31c6fa02e55`
+  failed transiently at `authentication` with stable signature
+  `sha256:497d4b0728b966ed3b1b340598be4f230419c5bf01fa3dc853a1b5062b8e68e5`
+  after the same `service/ok`, `service/ok`, `tab/failed` sequence;
+- both lanes retained safe code `agent_browser_error`, `0/0/0/0` outcome
+  counts, empty rejection counts, no page/auth signal, and no operator URL.
+  The tick terminalized `complete_degraded` after exactly two attempts, two
+  network requests, ten wall seconds, zero items, zero cost, and zero model use;
+- no incident, notification, source version, evidence artifact, or provider
+  retry was created. SQLite integrity passes with zero active attempts or
+  unreleased resource leases;
+- the recurring config remains byte-identical at SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` remains enabled/ready for `2026-08-25T00:00:00Z` with no
+  runtime error. The temporary config was moved to user trash.
+
+Adjudication:
+
+- the installed/live observability repair is accepted: both new fields and
+  bounded operations survived the worker, tick adapter, durable JSON receipt,
+  and public tick readback;
+- neither source reached authentication evaluation. The outcome is not a
+  logged-out determination and says nothing about feed content, ads/spam,
+  infinite scrolling, retrieval quality, or 20-item acceptance;
+- both sources fail the same first `tab` command after successful service
+  acquisition. The remaining blocker is retained-session tab inventory at the
+  Last30days-to-Agent-Browser boundary, not either source scraper;
+- the one combined tick authority is consumed. Repeating it without changing
+  the tab-inventory premise would be no-progress retrying.
+
+Authority classification:
+
+- `inherited_authority`; the operator authorized the exact 0.3.62 install and
+  one combined single-attempt X/LinkedIn tick. No Agent Browser or profile
+  mutation was performed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; the bounded closeout readiness probe returned
+  `degraded/TimeoutError` after 20 seconds on the configured Codex app-server
+  path, so no memory write was queued.
+
+Remaining acceptance criteria:
+
+- restore a working retained-session `tab list` boundary without replacing or
+  discarding the authenticated profiles;
+- complete one successful 20-item X and LinkedIn home-feed observation and
+  adjudicate accepted yield plus scroll/unique/stagnation diagnostics.
+
+Next action:
+
+- keep Agent Browser and profiles unchanged. On the Last30days lane, diagnose
+  why the shared client receives `tab/failed` after successful access-plan and
+  status operations; do not run another provider tick until that premise
+  changes.
+
+Checkpoint P0055-C22 is the current authority.

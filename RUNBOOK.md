@@ -20187,3 +20187,83 @@ Next Bounded Action:
   one combined single-attempt 20-item X/LinkedIn feed tick. Preserve Agent
   Browser, authenticated profiles, recurring configuration, Reddit, and
   Facebook unchanged.
+
+## Turn 331 | 2026-08-24
+
+Focus: install service 0.3.62 and run one combined single-attempt 20-item X and
+LinkedIn home-feed tick.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C21; Last30days release, administration,
+  monitoring, service runtime, recurring-tick, policy-selector, planning, Git,
+  validation, documentation, and closeout contracts.
+
+Decisions And Changes:
+
+- re-anchored clean published commit `f28e6c4`, exact artifact/runtime hashes,
+  installed 0.3.61 rollback identity, SQLite integrity, zero active work,
+  recurring config, and schedule before mutation;
+- transactionally installed exact service 0.3.62 with 0.3.61 retained;
+- prepared an owner-private, schedule-disabled config enabling only the X and
+  LinkedIn home feeds at one attempt and 20 items each;
+- preflighted and enqueued exactly one matching tick, then stopped without a
+  retry after its terminal receipt;
+- moved the temporary config to user trash. Agent Browser, authenticated
+  profiles, recurring configuration, Reddit, and Facebook were unchanged.
+
+Validation Evidence:
+
+- installed diagnose and service-info agree on 0.3.62/schema 16, ready, runtime
+  manifest `fbcf7209c5a3d7a5e0737ed91acd6ffa69026da4a5b89dcb517984879c3c8013`;
+- preflight and terminal receipt agree on tick
+  `tick-ba83099879712f849b3062bdef3bcb0c`, config digest
+  `sha256:5693ee7902b7b0459516a43842b7cf1cdd8111d0d00450d8d446a646949ac996`,
+  two lanes, and exact aggregate limits 2/40/100/240 with zero cost/model use;
+- the tick terminalized `complete_degraded` after two attempts, two requests,
+  ten wall seconds, and zero items. Neither lane observed or rejected a card;
+- X attempt `provider-attempt-84719ea75ef3350fe121f72c16e902bf`
+  retained `authentication`, stable signature
+  `sha256:0f9a96d2c03bd22e8677e5caee2a7aedc7b20d536a99cfab6a854b009ef66af6`,
+  and `service/ok`, `service/ok`, `tab/failed`;
+- LinkedIn attempt `provider-attempt-3cbe530a7cab7c08f607a31c6fa02e55`
+  retained `authentication`, stable signature
+  `sha256:497d4b0728b966ed3b1b340598be4f230419c5bf01fa3dc853a1b5062b8e68e5`,
+  and the same operation sequence;
+- no auth/page signal, operator URL, rejection, incident, notification, source
+  version, evidence artifact, active attempt, or unreleased lease remains;
+- SQLite integrity passes. Recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` is enabled/ready for `2026-08-25T00:00:00Z` with no error.
+
+State Movement:
+
+- Plan 0055 advances to version 22/C22
+  `failure_observability_repair_installed_live_tab_inventory_blocked`; P08
+  remains `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; both source failures are now durably localized to the
+  first retained-session tab inventory command.
+
+Authority Classification:
+
+- `inherited_authority`; the exact install plus one combined tick is consumed.
+  No Agent Browser/profile mutation or repeat provider attempt occurred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; the bounded closeout readiness probe returned
+  `degraded/TimeoutError` after 20 seconds on the configured Codex app-server
+  path, so no memory write was queued.
+
+Next Bounded Action:
+
+- diagnose the Last30days side of the shared `tab/failed` boundary while
+  leaving Agent Browser and authenticated profiles unchanged. Do not run
+  another provider tick until the retained-session tab premise changes.
