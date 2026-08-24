@@ -1732,8 +1732,9 @@ Graphiti write status:
 
 - prior C16 job `0360a5ed-fa86-4f5e-a9d8-aa8e02586ed8` is now completed as
   episode `4b72ebf7-7600-4d29-92ac-3dcc091f9170`;
-- C17 compact write remains to be queued after this source checkpoint is
-  committed.
+- C17 compact episode job `eceb0d15-4d25-4d73-9799-d86450a1e6a7` is queued
+  in `last30days_skill_main` from source checkpoint `51c7ef4`. Poll that exact
+  job at the next non-trivial closeout; do not enqueue a duplicate.
 
 Remaining acceptance criteria:
 
