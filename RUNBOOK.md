@@ -20561,7 +20561,7 @@ Graphiti Write Status:
 - prior C25 job `a400e049-5475-45eb-81f1-9da21159c423` failed by timeout;
   provider readiness passed and C28 job
   `240b7460-07a1-4ef9-b99f-a12a5c2b0987` queued once in
-  `last30days_skill_main`.
+  `last30days_skill_main`, then timed out after its 120-second bound.
 
 Next Bounded Action:
 
