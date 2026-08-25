@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 28
+Plan version: 29
 Date: 2026-08-21
 
 ## Objective
@@ -28,7 +28,7 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   X and LinkedIn OpenAI topic targets and enables their authenticated home-feed
   targets at the existing ten-item ceilings;
 - YouTube retains its OpenAI topic target, Reddit and Facebook remain disabled,
-  and `daily-default` is enabled/ready for `2026-08-25T00:00:00Z` on the exact
+  and `daily-default` is enabled/ready for `2026-08-26T00:00:00Z` on the exact
   full recurring-config digest;
 - the one installed feed canary terminalized with zero observed posts because
   both Agent Browser launch-adoption jobs failed at
@@ -111,6 +111,17 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 - service 0.3.68 replaces the racy lifecycle subscription with a current
   document-readiness predicate. Provider-free focused acceptance passes, but
   no fourth live attempt ran because the explicit retry budget is exhausted;
+- fresh operator authority admitted exactly one installed 0.3.68 combined
+  20/20 tick. Tick `tick-e09af48f79ac1984c78779b0e5f18dca`
+  terminalized `complete_degraded` with both lanes still at
+  `0 attempted / 0 observed / 0 accepted / 0 rejected`. X acquired and
+  released its attributed tab, but Last30days' 20-second handle-readiness
+  wrapper expired while Agent Browser's matching `ui_action` succeeded after
+  about 18.6 seconds. LinkedIn acquired its attributed tab, completed
+  handle readiness and authentication evaluation, then failed its subsequent
+  legacy direct `open` navigation instead of carrying that navigation through
+  the service-tab handle. No post, rejection, ad/spam, auth, semantic-quality,
+  or infinite-scroll conclusion is supported;
 - the temporary run configuration was moved to the user trash. Recurring
   revision `operator-20260822-x-linkedin-home-feed-v1`, SHA-256
   `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
@@ -2634,3 +2645,108 @@ Next action:
   authorized tick is the live acceptance test for installed 0.3.68.
 
 Checkpoint P0055-C28 is the current authority.
+
+### Checkpoint P0055-C29 | 2026-08-25
+
+Plan version: 29
+
+State transition:
+
+- `attributed_tab_adopted_live_retry_budget_exhausted ->
+  live_handle_readiness_budget_and_navigation_carry_blocked`.
+
+Progress classification:
+
+- `blocker_reduction`; installed 0.3.68 proved service-tab acquisition,
+  release, and LinkedIn authentication evaluation live, narrowing the
+  remaining failure to two Last30days control-path defects before observation.
+
+Authority and bounds:
+
+- fresh operator `ok go` authorized one installed 0.3.68 combined X and
+  LinkedIn acceptance tick;
+- schedule-disabled preflight admitted exactly two lanes, one provider attempt
+  and 20 items per lane, aggregate limits of two attempts, 40 items, 100
+  requests, 240 wall seconds, and zero model/cost budget;
+- no second tick, provider retry, profile mutation, browser lifecycle action,
+  or Agent Browser repair occurred.
+
+Live evidence:
+
+- preflight and terminal receipt agree on tick
+  `tick-e09af48f79ac1984c78779b0e5f18dca`, config digest
+  `sha256:12bfdcb3c8164e624452d596229e58f93a67568dbbd9512764d62e303f53b2a1`,
+  and interval `2026-08-24T19:23:00Z` through
+  `2026-08-25T19:23:00Z`;
+- X provider attempt `provider-attempt-fd10feebd9074df08a3c4e6e98f2f395`
+  used 33 wall seconds and retained `service/ok`, `service/ok`, `tab/ok`,
+  `tab/timed_out`. Agent Browser trace proves attributed `tab_new` succeeded,
+  the matching handle-readiness `ui_action` also succeeded after about 18.6
+  seconds, and exact attributed-tab release succeeded. The Last30days wrapper
+  timed out at 20.095 seconds before receiving that successful result;
+- LinkedIn provider attempt
+  `provider-attempt-00d560305e43df5624c7e6dff25cdc69` used 13 wall
+  seconds and retained `service/ok`, `service/ok`, `tab/ok`, `tab/ok`,
+  `eval/ok`, `open/failed`. Agent Browser trace proves attributed `tab_new`,
+  handle-readiness `ui_action`, authentication evaluation, and exact release
+  all succeeded. The first subsequent feed navigation used the legacy direct
+  `open` path and failed before page-state or extraction;
+- both attempts remained transient, pre-observation failures with
+  `0 attempted / 0 observed / 0 accepted / 0 rejected`. The tick created no
+  incident or notification and consumed exactly two attempts, two requests,
+  46 wall seconds, zero items, zero cost, and zero model tokens;
+- installed service 0.3.68/schema 16 remains `ready`, with runtime-manifest
+  SHA-256
+  `6c38f8b7fe32fbe94262e30c19defab2037deb87f8f0b514735b5e78b0e201c5`;
+  SQLite integrity is `ok`, with zero active tick attempts, zero active
+  provider attempts, and zero unreleased resource leases;
+- recurring config remains byte-identical at SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` remains enabled/ready for `2026-08-26T00:00:00Z`.
+
+Adjudication:
+
+- Agent Browser's scoped requests and trace report no incident or required
+  intervention. The browser acquired, evaluated, and released attributed tabs;
+- X is blocked by insufficient Last30days response-budget headroom around an
+  otherwise successful handle-readiness job. LinkedIn is blocked because
+  Last30days carries the handle through evaluation but not its next navigation;
+- neither result supports any claim about authentication truth, valid posts,
+  deterministic ads/spam, semantic quality, selector coverage, or infinite
+  scrolling because neither source observed a card.
+
+Authority classification:
+
+- `inherited_authority`; the fresh one-tick authorization is consumed. No
+  second live attempt is authorized.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- provider readiness passed and one compact C29 episode was queued in
+  `last30days_skill_main` as job
+  `0191842e-5fda-4adf-a91d-a400748fae15`. It failed during node extraction
+  with `TimeoutError` after its 120-second bound; no duplicate write was
+  issued.
+
+Remaining acceptance criteria:
+
+- give handle readiness enough outer response-budget headroom and carry
+  navigation plus subsequent controls through the attributed service-tab
+  handle;
+- fixture-validate and install the successor before any fresh live acceptance
+  attempt;
+- complete one successful 20-item X and LinkedIn home-feed observation, then
+  inspect accepted yield and scroll/unique/stagnation diagnostics.
+
+Next action:
+
+- add provider-free regressions for the exact X boundary timeout and LinkedIn
+  post-auth navigation carry, implement the narrow Last30days-only successor,
+  validate and install it, then stop before another provider attempt unless
+  fresh live authority exists.
+
+Checkpoint P0055-C29 is the current authority.

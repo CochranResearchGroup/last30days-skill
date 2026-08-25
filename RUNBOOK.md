@@ -20567,3 +20567,85 @@ Next Bounded Action:
 
 - request fresh authority for one installed 0.3.68 combined 20/20 tick; do
   not infer any content-quality conclusion until a source observes posts.
+
+## Turn 336 | 2026-08-25
+
+Focus: run the one freshly authorized installed 0.3.68 combined X/LinkedIn
+20-item feed acceptance tick and localize any remaining pre-observation block.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C28; repo policy selector, Agent Browser service,
+  planning, roadmap/runbook, Git, validation, documentation, Graphiti, and
+  closeout contracts.
+
+Decisions And Changes:
+
+- preserved exact authenticated profile `last30days-facebook`, existing
+  browser lifecycle, and recurring configuration;
+- created one schedule-disabled two-lane configuration with one 20-item
+  attempt per source and zero fallback/model/cost budget;
+- consumed exactly one combined tick and stopped without a second attempt;
+- made no scraper, Agent Browser, profile, schedule, or release mutation.
+
+Validation Evidence:
+
+- installed service 0.3.68/schema 16 is `ready`, with runtime-manifest SHA-256
+  `6c38f8b7fe32fbe94262e30c19defab2037deb87f8f0b514735b5e78b0e201c5`;
+- preflight and terminal receipt agree on tick
+  `tick-e09af48f79ac1984c78779b0e5f18dca`, config digest
+  `sha256:12bfdcb3c8164e624452d596229e58f93a67568dbbd9512764d62e303f53b2a1`,
+  and exact two-attempt/40-item aggregate ceiling;
+- X acquired an attributed tab and Agent Browser completed its handle-readiness
+  `ui_action` after about 18.6 seconds, but Last30days' 20-second wrapper timed
+  out at 20.095 seconds before returning that success; exact tab release then
+  succeeded;
+- LinkedIn acquired an attributed tab, completed handle readiness and
+  authentication evaluation, then failed its next legacy direct `open`
+  navigation instead of using the attributed service-tab control path; exact
+  tab release succeeded;
+- both sources retained `0 attempted / 0 observed / 0 accepted / 0 rejected`.
+  The tick terminalized `complete_degraded` after two attempts, two requests,
+  46 wall seconds, zero items, zero cost, and zero model tokens, with no
+  incident or notification;
+- SQLite integrity is `ok`, with zero active tick attempts, zero active
+  provider attempts, and zero unreleased resource leases. Recurring config is
+  still SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` remains enabled/ready for `2026-08-26T00:00:00Z`.
+
+State Movement:
+
+- Plan 0055 advances to version 29/C29
+  `live_handle_readiness_budget_and_navigation_carry_blocked`; P08 remains
+  `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; 0.3.68 live-proves attributed-tab acquisition, release,
+  and LinkedIn authentication evaluation, narrowing the remaining defects to
+  Last30days timeout layering and incomplete handle-bound navigation carry.
+
+Authority Classification:
+
+- `inherited_authority`; the fresh one-tick authorization is consumed. No
+  second provider attempt or Agent Browser/profile mutation occurred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- provider readiness passed and one C29 episode queued in
+  `last30days_skill_main` as job
+  `0191842e-5fda-4adf-a91d-a400748fae15`. It failed during node extraction
+  with `TimeoutError` after its 120-second bound; no duplicate write was
+  issued.
+
+Next Bounded Action:
+
+- fixture-drive sufficient handle-readiness response headroom and service-tab-
+  handle carry for navigation and later controls, validate and install that
+  Last30days-only successor, then stop before another live tick unless fresh
+  authority exists.

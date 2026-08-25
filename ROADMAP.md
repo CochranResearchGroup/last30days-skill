@@ -1254,16 +1254,26 @@ Current State:
   attempts remain pre-observation. The final race-free readiness predicate is
   fixture-accepted but not live-accepted because the explicit retry budget is
   exhausted.
+- Plan 0055 version 29/C29 consumes exactly one freshly authorized installed
+  0.3.68 combined 20/20 tick. X acquires and releases its attributed tab, but
+  Last30days' 20-second wrapper expires at the edge of an Agent Browser
+  readiness `ui_action` that succeeds after about 18.6 seconds. LinkedIn
+  acquires its attributed tab and completes readiness plus authentication
+  evaluation, then its subsequent legacy direct `open` navigation fails
+  instead of carrying the attributed handle. Both lanes remain pre-observation
+  at `0/0/0/0`; no content, ad/spam, auth, quality, or infinite-scroll
+  conclusion is supported.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 28/C28 owns retrieval-first X/LinkedIn feed completion. Service
+  version 29/C29 owns retrieval-first X/LinkedIn feed completion. Service
   0.3.68 is installed ready and fixture-accepts attributed-tab acquisition,
   bounded evaluation, exact control/release, and race-free readiness polling.
-  Both sources remain live-unaccepted at the pre-observation boundary because
-  the three-attempt retry budget expired before 0.3.68 could be exercised;
-  another tick requires fresh operator authority.
+  Live acceptance remains blocked before observation on Last30days response-
+  budget headroom and incomplete service-tab-handle control carry. The fresh
+  one-tick authority is consumed; another tick requires fresh operator
+  authority after a validated successor is installed.
 
 Closed Plan:
 
