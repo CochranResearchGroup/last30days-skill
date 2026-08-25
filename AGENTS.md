@@ -118,6 +118,7 @@ Read and follow:
 - `docs/dev/policies/0023-subagent-runtime-governance.md`
 - `docs/dev/policies/0024-preview-artifact-review.md`
 - `docs/dev/policies/0025-active-lane-coordination.md`
+- `docs/dev/policies/0026-code-testing-discipline.md`
 
 ## Scope
 
