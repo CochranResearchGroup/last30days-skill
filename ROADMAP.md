@@ -1241,17 +1241,24 @@ Current State:
   tab/eval operations, but the commandable alias has a different authentication
   state: X renders its login page and LinkedIn is unauthenticated without an
   operator ingress URL. No cards or rejection decisions were reached.
+- Plan 0055 version 25/C25 installs service 0.3.64, removes the mismatched alias
+  fallback, and proves the upgraded Agent Browser can list and select both feed
+  tabs through its service queue on the exact authenticated broker browser.
+  The combined 20/20 tick then fails before both authentication evaluations
+  because the upgraded `evaluate` action requires a `serviceTabHandle`.
+  Neither source observes or rejects a card; this is a Last30days contract-
+  adoption gap, not auth, content quality, ad filtering, or infinite scrolling.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 24/C24 owns retrieval-first X/LinkedIn feed completion. The bounded
+  version 25/C25 owns retrieval-first X/LinkedIn feed completion. The bounded
   unique-progress loop and current LinkedIn metadata variants are fixture
-  accepted; service 0.3.63 is installed ready and proves the narrow route
-  fallback live. Both sources remain pre-observation blocked because the
-  commandable compatibility alias does not share the broker-owned browser's
-  authentication state; the next bounded unit must change that premise before
-  another provider retry.
+  accepted; service 0.3.64 is installed ready and routes retained work to the
+  correct authenticated broker browser. Both sources remain pre-observation
+  blocked because Last30days does not yet acquire and carry the service-owned
+  tab handle required by upgraded Agent Browser evaluate; that lifecycle must
+  be fixture-accepted and installed before another provider retry.
 
 Closed Plan:
 

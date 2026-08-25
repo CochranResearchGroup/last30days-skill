@@ -20417,3 +20417,83 @@ Next Bounded Action:
 - do not retry on the current alias. First expose a commandable route to the
   already-authenticated broker-owned browser or authenticate the retained alias
   without replacing or discarding either profile.
+
+## Turn 334 | 2026-08-25
+
+Focus: adopt the upgraded Agent Browser retained-owner service route and run
+one combined 20-item X and LinkedIn home-feed retry.
+
+Authority Consulted:
+
+- operator `agent browser has been upgraded. Please retry`; Plan 0055/C24;
+  repo policy selector, Agent Browser service, TDD, codebase design, planning,
+  Git, versioning, validation, documentation, and closeout contracts.
+
+Decisions And Changes:
+
+- rejected the old configured-session alias fallback because service status
+  proves it is not the selected authenticated profile;
+- routed retained-owner controls through local Agent Browser MCP
+  `service_request`, copying the access plan's exact browser ID, retained
+  session name, and runtime profile;
+- released and transactionally installed service 0.3.64 with 0.3.63 retained
+  for rollback;
+- created a schedule-disabled two-lane config with one attempt and 20-item
+  ceiling per source, then consumed exactly one combined retry.
+
+Validation Evidence:
+
+- focused social-browser and release/package tests pass; the complete suite
+  passes. Runtime artifact SHA-256 is
+  `b01d2415093e794903e8b284db590e2210058420e5760e5d5c7011f2f42b6226`;
+- provider-free X and LinkedIn probes both select ready retained feed tabs on
+  profile `last30days-facebook`, browser
+  `session:last30days-facebook--last30days-facebook`, and session
+  `handoff-cf9000d7f4b26642` through the service queue;
+- installed diagnose reports 0.3.64/schema 16 ready with runtime-manifest
+  SHA-256
+  `6310fc7464a4be38b7535ed30f3fe801d81541c86cec62dddead140ba0ac2c38`;
+- tick `tick-352ccd454c30f1d06b9e70fe78281d8f` terminalized
+  `complete_degraded`: both `tab_list` and `tab_switch` jobs succeeded, but
+  each first authentication `evaluate` was rejected before queueing with exact
+  validation error `evaluate requires serviceTabHandle`;
+- both sources retained `0 attempted / 0 observed / 0 accepted / 0 rejected`.
+  The tick used two attempts, two requests, 17 wall seconds, zero items, zero
+  cost, and zero model tokens; it created no incident or notification;
+- SQLite integrity is `ok` with zero active attempts and zero unreleased
+  leases. Recurring config remains byte-identical at SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` remains enabled/ready for `2026-08-26T00:00:00Z`.
+
+State Movement:
+
+- Plan 0055 advances to version 25/C25
+  `exact_broker_route_commandable_service_tab_handle_required`; P08 remains
+  `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; the correct authenticated broker route is now proven
+  commandable. The next failure is the narrower Last30days adoption gap for
+  upgraded Agent Browser's service-owned tab-handle contract.
+
+Authority Classification:
+
+- `inherited_authority`; the operator authorized one retry after the upgrade.
+  It is consumed. No Agent Browser/profile mutation or second tick occurred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_queued`; provider readiness passed and sole job
+  `a400e049-5475-45eb-81f1-9da21159c423` was queued in canonical group
+  `last30days_skill_main`. No duplicate write was issued.
+
+Next Bounded Action:
+
+- fixture-drive service-tab-handle acquisition, carry, and safe release on the
+  exact retained-owner route; install that successor before requesting fresh
+  live retry authority.

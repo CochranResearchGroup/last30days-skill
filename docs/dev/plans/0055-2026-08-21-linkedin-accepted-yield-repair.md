@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 24
+Plan version: 25
 Date: 2026-08-21
 
 ## Objective
@@ -13,10 +13,10 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 
 ## Current State
 
-- service 0.3.63/schema 16 is installed ready with 0.3.62 retained for
-  rollback. It contains route-fallback repair `0fb21e6`; the loaded
-  runtime-manifest SHA-256 is
-  `acb440f389fb02377f93fb85f4d030fdbf8f4d412a63c810d65d60481544e9fe`;
+- service 0.3.64/schema 16 is installed ready with 0.3.63 retained for
+  rollback. It contains service-queued retained-owner repair `c45cbef`; the
+  loaded runtime-manifest SHA-256 is
+  `6310fc7464a4be38b7535ed30f3fe801d81541c86cec62dddead140ba0ac2c38`;
 - structurally valid short and lexically unmatched X and LinkedIn posts are
   retained with retrieval diagnostics. Only structural invalidity, date range,
   exact duplicate, deterministic promoted/sponsored labels, and deterministic
@@ -83,6 +83,18 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   eval operations. The alias is not authenticated like the broker-owned browser,
   however. X captured an actual login page and LinkedIn reported unauthenticated
   with no operator ingress. Neither lane observed a post;
+- upgraded Agent Browser access plans now expose the exact authenticated
+  broker browser `session:last30days-facebook--last30days-facebook`, runtime
+  profile `last30days-facebook`, and retained session
+  `handoff-cf9000d7f4b26642` with service-queue route hints. Provider-free X and
+  LinkedIn probes both select their ready retained tabs through that route;
+- service 0.3.64 removes the mismatched alias fallback and queues retained
+  browser commands with the access plan's exact browser, session, and profile.
+  Live tick `tick-352ccd454c30f1d06b9e70fe78281d8f` proves tab list and tab switch
+  succeed for both sources, then both authentication evaluations fail before
+  queueing because upgraded Agent Browser requires a `serviceTabHandle` for
+  action `evaluate`. Neither lane observed or rejected a post, and no incident
+  or notification was created;
 - the temporary run configuration was moved to the user trash. Recurring
   revision `operator-20260822-x-linkedin-home-feed-v1`, SHA-256
   `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
@@ -145,9 +157,9 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 - implementation cycles: three red/green vertical slices;
 - review/rework cycles: one;
 - live provider attempts: the one X/LinkedIn feed tick is consumed; no retry
-  until the terminal-replacement correction is transactionally installed, a
-  current-generation browser passes the named-tab gate, and the operator
-  supplies fresh attempt authority;
+  until Last30days acquires and carries the service-owned tab handle required
+  by the upgraded Agent Browser evaluate contract, the repair is installed,
+  and the operator supplies fresh attempt authority;
 - scroll limits: 100 explicit results and eight scrolls maximum per LinkedIn
   request;
 - terminal stops: acceptance met, preflight failure, auth/profile uncertainty,
@@ -2431,4 +2443,90 @@ Next action:
   first change the route/authentication premise while preserving the existing
   browsers and authenticated profiles.
 
-Checkpoint P0055-C24 is the current authority.
+### Checkpoint P0055-C25 | 2026-08-25
+
+Plan version: 25
+
+State transition:
+
+- `lifecycle_fallback_installed_alias_auth_mismatch_blocked ->
+  exact_broker_route_commandable_service_tab_handle_required`.
+
+Progress classification:
+
+- `blocker_reduction`; the upgraded Agent Browser serves retained X and
+  LinkedIn tabs on the exact authenticated broker browser, and the remaining
+  failure is the narrower Last30days service-tab-handle contract gap.
+
+Implementation and validation evidence:
+
+- regression-first coverage routes retained-owner tab controls through local
+  Agent Browser MCP `service_request` with exact `browserId`, `sessionName`, and
+  `runtimeProfile`, and proves a differently profiled configured alias is never
+  substituted;
+- focused social-browser and release/package suites pass; the complete suite
+  passes, and runtime artifact
+  `b01d2415093e794903e8b284db590e2210058420e5760e5d5c7011f2f42b6226`
+  builds from the explicit manifest;
+- service 0.3.64/schema 16 installs `ready` with runtime-manifest SHA-256
+  `6310fc7464a4be38b7535ed30f3fe801d81541c86cec62dddead140ba0ac2c38`;
+  0.3.63 remains available for rollback.
+
+Live retry evidence:
+
+- provider-free probes found and selected both retained feed tabs using profile
+  `last30days-facebook`, browser
+  `session:last30days-facebook--last30days-facebook`, and session
+  `handoff-cf9000d7f4b26642` through the service queue;
+- schedule-disabled tick `tick-352ccd454c30f1d06b9e70fe78281d8f`
+  admitted exactly one attempt and 20 items per source for interval
+  `2026-08-24T14:49:00Z` through `2026-08-25T14:49:00Z`;
+- both sources completed service access-plan/status work plus successful
+  service-queued `tab_list` and `tab_switch`. Their first `evaluate` failed
+  before queueing with exact Agent Browser validation error
+  `evaluate requires serviceTabHandle`;
+- X used 11 wall seconds and LinkedIn used six. Both retained
+  `0 attempted / 0 observed / 0 accepted / 0 rejected`, with authentication as
+  the safe wrapper stage and `agent_browser_error` as the safe error code;
+- the tick terminalized `complete_degraded` after exactly two provider
+  attempts, two network requests, 17 wall seconds, zero items, zero cost, and
+  zero model use. It created no incident and sent no notification;
+- SQLite integrity is `ok`, with zero active tick attempts and zero unreleased
+  resource leases. Recurring config remains byte-identical at SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` remains enabled/ready for `2026-08-26T00:00:00Z`.
+
+Adjudication:
+
+- the visible authenticated profiles are healthy and were not discarded,
+  replaced, or bypassed. The prior wrong-profile fallback has been removed;
+- this retry does not reach post retrieval, rejection, advertising/spam,
+  semantic quality, or infinite scrolling. It is solely a Last30days adoption
+  gap for the upgraded Agent Browser service-tab-handle contract;
+- another identical retry would be no-progress and is not authorized.
+
+Authority classification:
+
+- `inherited_authority`; the operator explicitly requested one retry after the
+  Agent Browser upgrade. That tick authority is consumed. Agent Browser and
+  profile mutation remained out of scope.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Remaining acceptance criteria:
+
+- acquire a service-owned tab handle on the exact access-plan route, carry it
+  through bounded evaluate and subsequent browser controls, release it safely,
+  and fixture-validate that lifecycle before another installed retry;
+- complete one successful 20-item X and LinkedIn home-feed observation and
+  adjudicate accepted yield plus scroll/unique/stagnation diagnostics.
+
+Next action:
+
+- add a failing provider-free regression for upgraded retained-owner evaluate,
+  implement the minimal service-tab-handle acquisition/carry/release lifecycle,
+  package and install the successor, then request fresh retry authority.
+
+Checkpoint P0055-C25 is the current authority.
