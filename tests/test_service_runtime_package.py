@@ -45,7 +45,7 @@ def test_runtime_manifest_is_explicit_current_and_skill_free():
 
     assert manifest["format"] == "last30days-service-runtime-v1"
     assert manifest["hash_algorithm"] == "sha256"
-    assert manifest["service_version"] == VERSION.read_text().strip() == "0.3.63"
+    assert manifest["service_version"] == VERSION.read_text().strip() == "0.3.64"
     assert paths == sorted(paths)
     assert len(paths) == len(set(paths))
     assert len(sources) == len(set(sources))

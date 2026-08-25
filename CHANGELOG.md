@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Service-queued retained social-browser controls.** Service 0.3.64 uses
+  Agent Browser's service request queue, including the access plan's exact
+  browser ID, session name, and runtime profile, when X or LinkedIn reuses a
+  lifecycle-owned browser. It also retires the prior default-session alias
+  fallback, so a retained owner can never be replaced with a differently
+  profiled session after a direct-control rejection.
+
 - **Lifecycle-blocked retained social route fallback.** Service 0.3.63
   preflights a broker-advertised shared owner when it has no distinct daemon
   command route and an exact retained default-profile alias is already proven.

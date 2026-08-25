@@ -38,10 +38,6 @@ REMOTE_VIEW_RECONCILIATION_RESERVE_SECONDS = 10
 TAB_INVENTORY_TIMEOUT_SECONDS = 20
 QUERY_CAPTURE_OUTER_TIMEOUT_SECONDS = 50
 QUERY_CAPTURE_INNER_TIMEOUT_MS = 45_000
-EXISTING_OWNER_TRANSITION_ERROR = (
-    "runtime_lifecycle_existing_owner_requires_explicit_transition"
-)
-
 ERROR_TYPES = {
     "agent_browser_missing",
     "profile_mismatch",
@@ -535,6 +531,8 @@ class CliAgentBrowserClient:
         self._query_capture_url = ""
         self._prepared_query_capture: dict[str, Any] | None = None
         self._prepared_query_capture_session = ""
+        self._requested_profile_id = ""
+        self._service_request_route: dict[str, Any] | None = None
 
     def begin_run_budget(self, timeout: int) -> None:
         """Bound cumulative adapter work so parent timeout cleanup still runs."""
@@ -597,6 +595,8 @@ class CliAgentBrowserClient:
         access_plan: dict[str, Any] | None = None,
         target_service_id: str | None = None,
     ) -> BrowserWorkspace:
+        self._requested_profile_id = request.profile_id
+        self._service_request_route = None
         requested_target_service_id = target_service_id or request.target_service_id
         if access_plan is None:
             access_plan = self._invoke(
@@ -699,38 +699,32 @@ class CliAgentBrowserClient:
                     browser_id=shared_owner["browser_id"],
                     request=request,
                 )
-            aliased_owner = _exact_retained_default_owner(
-                session_name=request.session_name,
-                selected_profile=selected_profile,
-                target_service_id=requested_target_service_id,
-                sessions=sessions,
-                browsers=browsers,
-                tabs=tabs,
-            )
-            if (
-                aliased_owner
-                and request.session_name != service_session_name
-                and command_session_name in {"", service_session_name}
-            ):
-                try:
-                    self._invoke(
-                        ["--session", owner_session_name, "tab", "list"],
-                        timeout=min(request.timeout, TAB_INVENTORY_TIMEOUT_SECONDS),
-                    )
-                except FacebookScraperFailure as exc:
-                    if str(exc) != EXISTING_OWNER_TRANSITION_ERROR:
-                        raise
-                    _log(
-                        "Broker shared owner requires an explicit lifecycle "
-                        "transition; using the exact retained profile alias"
-                    )
-                    return _browser_workspace_from_retained_owner(
-                        request=request,
-                        browser=aliased_owner["browser"],
-                        browser_id=aliased_owner["browser_id"],
-                        session_name=aliased_owner["session_name"],
-                        target_id=aliased_owner["target_id"],
-                    )
+            else:
+                decision = access_plan.get("decision")
+                service_request_record = (
+                    decision.get("serviceRequest")
+                    if isinstance(decision, dict)
+                    else None
+                )
+                service_request = (
+                    service_request_record.get("request")
+                    if isinstance(service_request_record, dict)
+                    else None
+                )
+                self._service_request_route = dict(service_request or {})
+                self._service_request_route.update(
+                    {
+                        "serviceName": request.service_name,
+                        "agentName": request.agent_name,
+                        "taskName": request.task_name,
+                        "targetServiceIds": [requested_target_service_id],
+                        "browserBuild": request.browser_build,
+                        "runtimeProfile": selected_profile,
+                        "browserId": shared_owner["browser_id"],
+                        "sessionName": owner_session_name,
+                        "profileLeasePolicy": "wait",
+                    }
+                )
             stream = _ready_operator_stream(browser, request.view_provider)
             return BrowserWorkspace(
                 profile_id=selected_profile,
@@ -1658,6 +1652,159 @@ class CliAgentBrowserClient:
         except (OSError, URLError, ValueError):
             return False
 
+    def _service_request_arguments(
+        self,
+        args: list[str],
+        input_text: str | None,
+    ) -> dict[str, Any] | None:
+        route = self._service_request_route
+        if not isinstance(route, dict) or "--session" not in args:
+            return None
+        session_index = args.index("--session")
+        if session_index + 1 >= len(args):
+            return None
+        if args[session_index + 1] != route.get("sessionName"):
+            return None
+
+        tokens: list[str] = []
+        job_timeout_ms = self.job_timeout_ms
+        index = 0
+        while index < len(args):
+            token = args[index]
+            if token in {"--session", "--runtime-profile", "--job-timeout-ms"}:
+                if token == "--job-timeout-ms" and index + 1 < len(args):
+                    try:
+                        job_timeout_ms = int(args[index + 1])
+                    except ValueError:
+                        pass
+                index += 2
+                continue
+            tokens.append(token)
+            index += 1
+        if not tokens:
+            return None
+
+        request = {
+            key: value
+            for key, value in route.items()
+            if key not in {"action", "params", "url", "jobTimeoutMs"}
+        }
+        request["jobTimeoutMs"] = job_timeout_ms
+        request["params"] = {}
+        if tokens[:2] == ["tab", "list"]:
+            request["action"] = "tab_list"
+        elif tokens[:2] == ["tab", "new"]:
+            request["action"] = "tab_new"
+            request["url"] = tokens[2] if len(tokens) > 2 else "about:blank"
+        elif tokens[:2] == ["tab", "close"]:
+            request["action"] = "tab_close"
+            if len(tokens) > 2:
+                request["params"] = {"index": int(tokens[2])}
+        elif tokens[0] == "tab" and len(tokens) > 1:
+            request["action"] = "tab_switch"
+            request["params"] = {"index": int(tokens[1])}
+        elif tokens[:2] == ["eval", "--stdin"]:
+            request.update(
+                {
+                    "action": "evaluate",
+                    "script": input_text or "",
+                    "returnByValue": True,
+                    "timeoutMs": job_timeout_ms,
+                }
+            )
+        elif tokens[0] == "open" and len(tokens) > 1:
+            request["action"] = "navigate"
+            request["url"] = tokens[1]
+            request["params"] = {"url": tokens[1]}
+        elif tokens[0] == "scroll":
+            request["action"] = "scroll"
+            request["params"] = {
+                "direction": tokens[1] if len(tokens) > 1 else "down",
+                "amount": float(tokens[2]) if len(tokens) > 2 else 300,
+            }
+        else:
+            return None
+        return request
+
+    def _invoke_service_request(
+        self,
+        arguments: dict[str, Any],
+        *,
+        timeout: int,
+    ) -> dict[str, Any]:
+        messages = [
+            {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "initialize",
+                "params": {
+                    "protocolVersion": "2025-03-26",
+                    "capabilities": {},
+                    "clientInfo": {"name": "last30days", "version": "1"},
+                },
+            },
+            {"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}},
+            {
+                "jsonrpc": "2.0",
+                "id": 2,
+                "method": "tools/call",
+                "params": {"name": "service_request", "arguments": arguments},
+            },
+        ]
+        result = subprocess.run(
+            ["agent-browser", "mcp", "serve"],
+            input="\n".join(json.dumps(message) for message in messages) + "\n",
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            encoding="utf-8",
+            errors="replace",
+        )
+        if result.returncode != 0:
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                _redact(_cli_error_message(result.stderr or result.stdout)),
+            )
+        response = None
+        for line in (result.stdout or "").splitlines():
+            try:
+                candidate = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(candidate, dict) and candidate.get("id") == 2:
+                response = candidate
+        if not isinstance(response, dict) or response.get("error"):
+            raise FacebookScraperFailure(
+                "agent_browser_error", "agent-browser service request returned no result"
+            )
+        tool_result = response.get("result")
+        if not isinstance(tool_result, dict) or tool_result.get("isError") is True:
+            raise FacebookScraperFailure(
+                "agent_browser_error", "agent-browser service request failed"
+            )
+        content = tool_result.get("content")
+        text_content = next(
+            (
+                entry.get("text")
+                for entry in content or []
+                if isinstance(entry, dict) and isinstance(entry.get("text"), str)
+            ),
+            "",
+        )
+        try:
+            payload = json.loads(text_content)
+        except json.JSONDecodeError as exc:
+            raise FacebookScraperFailure(
+                "agent_browser_error", "agent-browser service request returned malformed JSON"
+            ) from exc
+        if not isinstance(payload, dict) or payload.get("success") is False:
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                _redact(str(payload.get("error") or "agent-browser service request failed")),
+            )
+        data = payload.get("data", payload)
+        return data if isinstance(data, dict) else {"value": data}
+
     def _invoke(
         self,
         args: list[str],
@@ -1676,7 +1823,41 @@ class CliAgentBrowserClient:
                     "Facebook adapter run budget was exhausted",
                 )
             effective_timeout = max(1, min(timeout, math.ceil(remaining)))
-        cmd = ["agent-browser", "--json", *args]
+        command_args = list(args)
+        if (
+            self._requested_profile_id
+            and "--session" in command_args
+            and "--runtime-profile" not in command_args
+        ):
+            session_index = command_args.index("--session")
+            command_args[session_index + 2:session_index + 2] = [
+                "--runtime-profile",
+                self._requested_profile_id,
+            ]
+        service_request = self._service_request_arguments(command_args, input_text)
+        if service_request is not None:
+            try:
+                data = self._invoke_service_request(
+                    service_request,
+                    timeout=effective_timeout,
+                )
+            except subprocess.TimeoutExpired as exc:
+                self._record_timing(args, started, "timed_out")
+                raise FacebookScraperFailure(
+                    "agent_browser_timeout",
+                    f"agent-browser operation timed out after {effective_timeout}s",
+                ) from exc
+            except OSError as exc:
+                self._record_timing(args, started, "failed")
+                raise FacebookScraperFailure(
+                    "agent_browser_error", _redact(str(exc))
+                ) from exc
+            except FacebookScraperFailure:
+                self._record_timing(args, started, "failed")
+                raise
+            self._record_timing(args, started, "ok")
+            return data
+        cmd = ["agent-browser", "--json", *command_args]
         try:
             result = subprocess.run(
                 cmd,

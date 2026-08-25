@@ -1467,7 +1467,131 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual(daemon_session, workspace.session_name)
         self.assertEqual("https://x.com/search?q=OpenAI&f=live", state.url)
 
-    def test_lifecycle_blocked_shared_owner_uses_exact_retained_alias(self):
+    def test_broker_workspace_commands_use_service_queue_route_hints(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        browser_id = "session:last30days-facebook--last30days-facebook"
+        broker_session = "handoff-social"
+        service_actions = []
+        status = {
+            "service_state": {
+                "sessions": {
+                    broker_session: {
+                        "profileId": "last30days-facebook",
+                        "browserIds": [browser_id],
+                        "tabIds": ["target:x"],
+                    },
+                },
+                "browsers": {
+                    browser_id: {
+                        "profileId": "last30days-facebook",
+                        "health": "ready",
+                        "activeSessionIds": [broker_session],
+                    },
+                },
+                "tabs": {
+                    "target:x": {
+                        "browserId": browser_id,
+                        "targetId": "x",
+                        "sessionId": broker_session,
+                        "url": "https://x.com/home",
+                    },
+                },
+            },
+        }
+
+        def completed(payload, returncode=0):
+            return subprocess.CompletedProcess(
+                args=[],
+                returncode=returncode,
+                stdout=json.dumps(payload),
+                stderr="",
+            )
+
+        def run(command, **kwargs):
+            if command[2:4] == ["service", "access-plan"]:
+                return completed(
+                    {
+                        "success": True,
+                        "data": access_plan(
+                            shared_owner=(browser_id, broker_session)
+                        ),
+                    }
+                )
+            if command[2:4] == ["service", "status"]:
+                return completed({"success": True, "data": status})
+            if command == ["agent-browser", "mcp", "serve"]:
+                messages = [
+                    json.loads(line)
+                    for line in str(kwargs.get("input") or "").splitlines()
+                ]
+                tool_call = next(
+                    message
+                    for message in messages
+                    if message.get("method") == "tools/call"
+                )
+                arguments = tool_call["params"]["arguments"]
+                self.assertEqual("service_request", tool_call["params"]["name"])
+                self.assertEqual(browser_id, arguments["browserId"])
+                self.assertEqual(broker_session, arguments["sessionName"])
+                self.assertEqual(
+                    "last30days-facebook", arguments["runtimeProfile"]
+                )
+                service_actions.append(arguments["action"])
+                data = (
+                    {"tabs": [{"active": True, "url": "https://x.com/home"}]}
+                    if arguments["action"] == "tab_list"
+                    else {"url": "https://x.com/home"}
+                )
+                response = {
+                    "jsonrpc": "2.0",
+                    "id": 2,
+                    "result": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": json.dumps(
+                                    {
+                                        "success": True,
+                                        "data": data,
+                                    }
+                                ),
+                            }
+                        ],
+                        "isError": False,
+                    },
+                }
+                return subprocess.CompletedProcess(
+                    args=[],
+                    returncode=0,
+                    stdout=json.dumps(response),
+                    stderr="",
+                )
+            if "--session" in command and broker_session in command:
+                return completed(
+                    {
+                        "success": False,
+                        "error": "direct retained-owner commands are not allowed",
+                    },
+                    returncode=1,
+                )
+            raise AssertionError(f"unexpected command: {command}")
+
+        with mock.patch.object(
+            facebook.subprocess, "run", side_effect=run
+        ), mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ):
+            workspace = client.acquire_workspace(request())
+            state = client.act(
+                workspace,
+                facebook.BrowserAction("scroll", value="1"),
+            )
+
+        self.assertEqual(broker_session, workspace.session_name)
+        self.assertEqual("https://x.com/home", state.url)
+        self.assertEqual(["scroll"], service_actions)
+
+    def test_shared_owner_never_falls_back_to_mismatched_alias(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         shared_browser_id = "session:last30days-facebook--last30days-facebook"
         shared_session = "handoff-social"
@@ -1539,9 +1663,8 @@ class FacebookCliAdapterTests(unittest.TestCase):
         ):
             workspace = client.acquire_workspace(request())
 
-        self.assertEqual(alias_browser_id, workspace.browser_id)
-        self.assertEqual("last30days-facebook", workspace.session_name)
-        self.assertEqual("alias-facebook", workspace.target_id)
+        self.assertEqual(shared_browser_id, workspace.browser_id)
+        self.assertEqual(shared_session, workspace.session_name)
         self.assertEqual("last30days-facebook", workspace.profile_id)
 
     def test_default_profile_alias_rejects_ambiguous_active_owners(self):
