@@ -1,8 +1,8 @@
 # Plan 0055 | LinkedIn Accepted-Yield Repair
 
-State: OPEN
+State: CLOSED
 Roadmap: P08
-Plan version: 30
+Plan version: 31
 Date: 2026-08-21
 
 ## Objective
@@ -2900,3 +2900,42 @@ Next action:
   unless fresh authority is granted.
 
 Checkpoint P0055-C30 is the current authority.
+
+### Checkpoint P0055-C31 | 2026-08-25
+
+Plan version: 31
+
+State transition:
+
+- `control_contract_repaired_auth_probe_and_route_attribution_blocked ->
+  closed_superseded_by_bounded_target_auth_reliability_plan`.
+
+Progress classification:
+
+- `blocker_reduction`; Plan 0055 preserves the full accepted-yield and
+  attributed-control history, while the remaining route, target-identity,
+  meaningful-page, authentication, and notification work moves to bounded
+  successor Plan 0056.
+
+Authority classification:
+
+- `inherited_authority`; the operator requested repair planning. No code,
+  install, browser, profile, recurring configuration, provider, incident, or
+  notification mutation occurred.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Remaining acceptance criteria:
+
+- inherited by
+  `0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`; closing this
+  historical campaign does not claim the X/LinkedIn 20/20 outcome is complete.
+
+Next action:
+
+- execute Plan 0056/P1 provider-free regressions before changing production
+  routing or authentication classification.
+
+Checkpoint P0055-C31 is terminal; Plan 0056/C01 is the current authority.

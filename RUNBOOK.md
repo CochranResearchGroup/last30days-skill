@@ -20744,3 +20744,80 @@ Next Bounded Action:
   page authentication, and contradictory logical-versus-physical tab-handle
   attribution; do not infer logout or run another live tick without fresh
   authority.
+
+## Turn 338 | 2026-08-25
+
+Focus: convert the C30 false-auth and target-attribution diagnosis into a
+bounded Last30days repair successor.
+
+Authority Consulted:
+
+- operator `plan repairs`; Plan 0055/C30; repo policy selector, CodeGraph,
+  planning, goal execution, architecture, testing, validation, documentation,
+  roadmap/runbook, Git, and closeout contracts.
+
+Decisions And Changes:
+
+- closed Plan 0055 at version 31/C31 as superseded rather than falsely calling
+  its 20/20 objective complete;
+- opened Plan 0056 version 1/C01 for authoritative broker routing, coherent
+  service-tab identity, meaningful-page readiness, evidence-bound X/LinkedIn
+  authentication, exact release, and truthful incident/notification behavior
+  at
+  `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`;
+- froze Agent Browser implementation, browser/profile state, direct CDP
+  control, tab cleanup, recurring configuration, provider retries, and content-
+  quality expansion outside the successor scope;
+- defined six dependency-ordered packets, four implementation work units, two
+  attempts per work unit, one closed-world review/rework cycle, one same-handle
+  page reprobe per provider attempt, and zero currently authorized live
+  attempts;
+- reserved the live acceptance packet for separately granted fresh authority:
+  one combined X/LinkedIn tick, one 20-item attempt per lane, zero model/cost,
+  existing eight-scroll ceiling, and first-terminal-receipt stop.
+
+Validation Evidence:
+
+- the active-only planning audit passed before drafting with Plan 0055/P08
+  correctly wired. Its first post-draft run caught a missing exact Plan 0056
+  path in the runbook; after adding that locator, the audit passed with no
+  findings and Plan 0056 wired in both roadmap and runbook;
+- CodeGraph bound the repair to `shared_profile_owner`, shared browser
+  acquisition/handle controls, X and LinkedIn auth probes, incident mapping,
+  and their focused tests;
+- the plan includes explicit objective, current evidence, scope, non-goals,
+  invariants, dependency graph, write surfaces, truth table, validation tiers,
+  execution bounds, gates, acceptance criteria, and definition of done;
+- no implementation test, build, install, live tick, browser action, profile
+  mutation, incident mutation, or notification delivery ran in this planning
+  packet.
+
+State Movement:
+
+- Plan 0055 moves `OPEN -> CLOSED` at version 31/C31 as superseded; Plan 0056
+  becomes `OPEN` at version 1/C01; P08 remains `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; the diagnosis is now restart-safe and executable without
+  extending the 30-checkpoint historical plan or confusing missing DOM with
+  logout evidence.
+
+Authority Classification:
+
+- `inherited_authority`; the operator authorized repair planning only. No live
+  provider attempt is authorized.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_attempted`; this planning-only packet did not mutate external memory.
+
+Next Bounded Action:
+
+- execute Plan 0056/P1: add red-capable provider-free fixtures for broker-wait
+  bypass, cross-attributed handle, blank LinkedIn auth, and ambiguous X auth,
+  then stop at the exact failing assertions before production changes.

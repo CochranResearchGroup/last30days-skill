@@ -1274,15 +1274,21 @@ Current State:
 
 Active Plan:
 
-- `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 30/C30 owns retrieval-first X/LinkedIn feed completion. Service
-  0.3.69 is installed ready and live-proves readiness headroom plus schema-
-  valid handle-bound navigation. Acceptance remains blocked before observation
-  on X ambiguous-auth DOM evidence and LinkedIn blank-page auth inspection plus
-  contradictory tab-handle browser attribution. The one-tick authority is
-  consumed; another tick requires a validated successor and fresh authority.
+- `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`
+  version 1/C01 owns the bounded successor. It makes the broker decision
+  authoritative, validates service-tab identity before browser controls,
+  separates meaningful-page readiness from authentication, prevents blank or
+  ambiguous targets from producing reauthentication evidence, and requires
+  exact same-handle release. Implementation begins with provider-free red
+  fixtures; no live retry is authorized by the planning packet.
 
 Closed Plan:
+
+- `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
+  version 31/C31 is terminal as superseded, not outcome-complete. It preserves
+  the accepted-yield, feed-loop, attributed-control, install, and live-canary
+  history through service 0.3.69. Its unmet X/LinkedIn 20/20 result and exact
+  C30 route/auth blockers transfer unchanged to Plan 0056.
 
 - `docs/dev/plans/0054-2026-08-20-x-accepted-yield-repair.md`
   version 5/C05 is the terminal X accepted-yield and authenticated retry
