@@ -1582,8 +1582,8 @@ class FacebookCliAdapterTests(unittest.TestCase):
                 elif action == "ui_action":
                     self.assertEqual(handle, arguments["serviceTabHandle"])
                     self.assertEqual(
-                        "domcontentloaded",
-                        arguments["uiAction"]["steps"][0]["loadState"],
+                        "() => document.readyState !== 'loading'",
+                        arguments["uiAction"]["steps"][0]["function"],
                     )
                     data = {"ok": True}
                 elif action == "evaluate":

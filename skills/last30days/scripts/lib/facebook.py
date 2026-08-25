@@ -1741,7 +1741,7 @@ class CliAgentBrowserClient:
                         "steps": [
                             {
                                 "type": "wait",
-                                "loadState": "domcontentloaded",
+                                "function": "() => document.readyState !== 'loading'",
                                 "timeout": SERVICE_TAB_READY_TIMEOUT_MS,
                             }
                         ],

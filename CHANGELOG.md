@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Race-free attributed-tab readiness.** Service 0.3.68 polls the current
+  document readiness predicate through Agent Browser's handle-bound UI action
+  instead of subscribing to a lifecycle event that may already have fired.
+  This avoids a false 20-second acquisition timeout on already-ready tabs.
+
 - **Handle-bound social tab readiness.** Service 0.3.67 waits for DOM content
   readiness through the attributed Agent Browser tab handle before checking X
   or LinkedIn authentication. Follow-on navigation also stops at DOM content
