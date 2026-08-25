@@ -533,6 +533,8 @@ class CliAgentBrowserClient:
         self._prepared_query_capture_session = ""
         self._requested_profile_id = ""
         self._service_request_route: dict[str, Any] | None = None
+        self._service_tab_handle: dict[str, Any] | None = None
+        self._service_tab_url = ""
 
     def begin_run_budget(self, timeout: int) -> None:
         """Bound cumulative adapter work so parent timeout cleanup still runs."""
@@ -597,6 +599,8 @@ class CliAgentBrowserClient:
     ) -> BrowserWorkspace:
         self._requested_profile_id = request.profile_id
         self._service_request_route = None
+        self._service_tab_handle = None
+        self._service_tab_url = ""
         requested_target_service_id = target_service_id or request.target_service_id
         if access_plan is None:
             access_plan = self._invoke(
@@ -725,12 +729,33 @@ class CliAgentBrowserClient:
                         "profileLeasePolicy": "wait",
                     }
                 )
+                acquired = self._invoke(
+                    [
+                        "--session",
+                        owner_session_name,
+                        "tab",
+                        "new",
+                        request.start_url,
+                    ],
+                    timeout=min(request.timeout, 30),
+                )
+                service_tab_handle = acquired.get("serviceTabHandle")
+                if not isinstance(service_tab_handle, dict):
+                    raise FacebookScraperFailure(
+                        "agent_browser_error",
+                        "agent-browser retained tab acquisition returned no service tab handle",
+                    )
+                self._service_tab_handle = dict(service_tab_handle)
+                self._service_tab_url = request.start_url
             stream = _ready_operator_stream(browser, request.view_provider)
             return BrowserWorkspace(
                 profile_id=selected_profile,
                 browser_id=shared_owner["browser_id"],
                 session_name=owner_session_name,
-                target_id=shared_owner["target_id"],
+                target_id=str(
+                    (self._service_tab_handle or {}).get("targetId")
+                    or shared_owner["target_id"]
+                ),
                 route_id=str(stream.get("id") or ""),
                 operator_url=_operator_url(stream),
                 operator_visible_state="ready" if stream else "not_required",
@@ -1460,6 +1485,12 @@ class CliAgentBrowserClient:
     ) -> bool:
         """Select a usable site tab and optionally close same-site duplicates."""
         cache_key = (workspace.session_name, hostname)
+        if (
+            isinstance(self._service_tab_handle, dict)
+            and _url_matches_hostname(self._service_tab_url, hostname)
+        ):
+            self._prepared_sites.add(cache_key)
+            return True
         if cache_key in self._prepared_sites and not consolidate and not require_active:
             return True
         raw = self._invoke(
@@ -1700,6 +1731,10 @@ class CliAgentBrowserClient:
             request["action"] = "tab_close"
             if len(tokens) > 2:
                 request["params"] = {"index": int(tokens[2])}
+        elif tokens[:2] == ["tab", "handle-release"] and isinstance(
+            self._service_tab_handle, dict
+        ):
+            request["action"] = "tab_handle_release"
         elif tokens[0] == "tab" and len(tokens) > 1:
             request["action"] = "tab_switch"
             request["params"] = {"index": int(tokens[1])}
@@ -1724,7 +1759,36 @@ class CliAgentBrowserClient:
             }
         else:
             return None
+        if (
+            isinstance(self._service_tab_handle, dict)
+            and request["action"]
+            in {"evaluate", "navigate", "scroll", "tab_handle_release"}
+        ):
+            request["serviceTabHandle"] = dict(self._service_tab_handle)
         return request
+
+    def release_workspace(self) -> None:
+        """Release this client's attributed tab without closing the shared browser."""
+        if not isinstance(self._service_tab_handle, dict):
+            return
+        route = self._service_request_route or {}
+        session_name = str(route.get("sessionName") or "")
+        if not session_name:
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "agent-browser service tab handle has no retained session route",
+            )
+        try:
+            self._invoke(
+                ["--session", session_name, "tab", "handle-release"],
+                timeout=min(self.timeout, 30),
+            )
+        finally:
+            self._service_tab_handle = None
+            self._service_tab_url = ""
+            self._prepared_sites = {
+                key for key in self._prepared_sites if key[0] != session_name
+            }
 
     def _invoke_service_request(
         self,

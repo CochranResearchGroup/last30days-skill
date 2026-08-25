@@ -1057,7 +1057,7 @@ class FacebookCliAdapterTests(unittest.TestCase):
         }
         self.assertEqual("", facebook._select_live_route_entry(state, request()))
 
-    def test_ready_retained_browser_is_reused_without_remote_open(self):
+    def test_ready_retained_browser_gets_distinct_service_tabs_without_remote_open(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         status = {
             "service_state": {
@@ -1082,16 +1082,30 @@ class FacebookCliAdapterTests(unittest.TestCase):
             }
         }
         plan = access_plan(shared_owner=("browser-1", "last30days-facebook"))
+        first_handle = {
+            "serviceTabHandle": {
+                "handleId": "handle-1", "targetId": "service-1",
+                "browserId": "browser-1", "sessionName": "last30days-facebook",
+            }
+        }
+        second_handle = {
+            "serviceTabHandle": {
+                "handleId": "handle-2", "targetId": "service-2",
+                "browserId": "browser-1", "sessionName": "last30days-facebook",
+            }
+        }
         with mock.patch.object(
-            client, "_invoke", side_effect=[plan, status, plan, status]
+            client, "_invoke",
+            side_effect=[plan, status, first_handle, plan, status, second_handle],
         ) as invoke, mock.patch.object(facebook.agent_browser_config, "record_access_plan"):
             first = client.acquire_workspace(request(session_name="default"))
             second = client.acquire_workspace(request(session_name="default"))
         self.assertEqual(first.browser_id, second.browser_id)
         self.assertEqual("last30days-facebook", first.session_name)
-        self.assertEqual("t1", first.target_id)
+        self.assertEqual("service-1", first.target_id)
+        self.assertEqual("service-2", second.target_id)
         self.assertEqual("https://operator.example/token", first.operator_url)
-        self.assertEqual(4, invoke.call_count)
+        self.assertEqual(6, invoke.call_count)
 
     def test_access_plan_route_hints_fall_back_when_status_has_no_live_owner(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
@@ -1451,6 +1465,13 @@ class FacebookCliAdapterTests(unittest.TestCase):
                 return access_plan(shared_owner=(browser_id, service_session))
             if args == ["service", "status"]:
                 return status
+            if args == ["--session", daemon_session, "tab", "new", "https://www.facebook.com/"]:
+                return {
+                    "serviceTabHandle": {
+                        "handleId": "handle-x", "targetId": "owned-x",
+                        "browserId": browser_id, "sessionName": daemon_session,
+                    }
+                }
             if args[:2] == ["--session", daemon_session]:
                 return {"url": "https://x.com/search?q=OpenAI&f=live"}
             raise facebook.FacebookScraperFailure(
@@ -1467,7 +1488,7 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual(daemon_session, workspace.session_name)
         self.assertEqual("https://x.com/search?q=OpenAI&f=live", state.url)
 
-    def test_broker_workspace_commands_use_service_queue_route_hints(self):
+    def test_broker_workspace_uses_and_releases_service_tab_handle(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         browser_id = "session:last30days-facebook--last30days-facebook"
         broker_session = "handoff-social"
@@ -1536,12 +1557,27 @@ class FacebookCliAdapterTests(unittest.TestCase):
                 self.assertEqual(
                     "last30days-facebook", arguments["runtimeProfile"]
                 )
-                service_actions.append(arguments["action"])
-                data = (
-                    {"tabs": [{"active": True, "url": "https://x.com/home"}]}
-                    if arguments["action"] == "tab_list"
-                    else {"url": "https://x.com/home"}
-                )
+                action = arguments["action"]
+                service_actions.append(action)
+                handle = {
+                    "handleId": "tab-handle-x",
+                    "browserId": browser_id,
+                    "sessionName": broker_session,
+                    "targetId": "x-owned",
+                }
+                if action == "tab_new":
+                    data = {
+                        "serviceTabHandle": handle,
+                        "url": "https://x.com/home",
+                    }
+                elif action == "evaluate":
+                    self.assertEqual(handle, arguments["serviceTabHandle"])
+                    data = {"result": {"authenticated_dom": True}}
+                elif action == "tab_handle_release":
+                    self.assertEqual(handle, arguments["serviceTabHandle"])
+                    data = {"released": True}
+                else:
+                    raise AssertionError(f"unexpected service action: {action}")
                 response = {
                     "jsonrpc": "2.0",
                     "id": 2,
@@ -1582,14 +1618,14 @@ class FacebookCliAdapterTests(unittest.TestCase):
             facebook.agent_browser_config, "record_access_plan"
         ):
             workspace = client.acquire_workspace(request())
-            state = client.act(
-                workspace,
-                facebook.BrowserAction("scroll", value="1"),
-            )
+            auth = client.evaluate(workspace, facebook.AUTH_SCRIPT)
+            client.release_workspace()
 
         self.assertEqual(broker_session, workspace.session_name)
-        self.assertEqual("https://x.com/home", state.url)
-        self.assertEqual(["scroll"], service_actions)
+        self.assertTrue(auth["authenticated_dom"])
+        self.assertEqual(
+            ["tab_new", "evaluate", "tab_handle_release"], service_actions
+        )
 
     def test_shared_owner_never_falls_back_to_mismatched_alias(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
@@ -1649,11 +1685,13 @@ class FacebookCliAdapterTests(unittest.TestCase):
                 )
             if args == ["service", "status"]:
                 return status
-            if args == ["--session", shared_session, "tab", "list"]:
-                raise facebook.FacebookScraperFailure(
-                    "agent_browser_error",
-                    "runtime_lifecycle_existing_owner_requires_explicit_transition",
-                )
+            if args == ["--session", shared_session, "tab", "new", "https://www.facebook.com/"]:
+                return {
+                    "serviceTabHandle": {
+                        "handleId": "handle-shared", "targetId": "owned-shared",
+                        "browserId": shared_browser_id, "sessionName": shared_session,
+                    }
+                }
             raise AssertionError(f"unexpected command: {args}")
 
         with mock.patch.object(

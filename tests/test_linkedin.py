@@ -271,12 +271,17 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
 
     def test_feed_registers_distinct_home_feed_task_metadata(self):
         captured = {}
+        client = mock.Mock()
 
         def scraper_factory(_client, workspace_request, **_kwargs):
             captured["request"] = workspace_request
             return mock.Mock(feed=mock.Mock(return_value={"items": [], "error": None}))
 
-        with mock.patch.object(linkedin, "is_agent_browser_available", return_value=True), mock.patch.object(
+        with mock.patch.object(
+            linkedin, "is_agent_browser_available", return_value=True
+        ), mock.patch.object(
+            linkedin, "CliAgentBrowserClient", return_value=client
+        ), mock.patch.object(
             linkedin, "LinkedInScraper", side_effect=scraper_factory
         ):
             linkedin.scrape_linkedin_feed(
@@ -288,6 +293,7 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
         workspace_request = captured["request"]
         self.assertEqual("linkedin-home-feed", workspace_request.task_name)
         self.assertEqual("https://www.linkedin.com/feed/", workspace_request.start_url)
+        client.release_workspace.assert_called_once_with()
 
     def test_explicit_twenty_item_limit_has_a_bounded_four_scroll_budget(self):
         captured = {}

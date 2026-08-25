@@ -680,6 +680,11 @@ def search_x_browser(
             "operator_url": operator_url or None,
             "diagnostics": diagnostics,
         }
+    finally:
+        try:
+            client.release_workspace()
+        except browser_runtime.FacebookScraperFailure as exc:
+            _log(f"Best-effort X service tab release did not complete: {exc}")
 
 
 def scrape_x_feed(
@@ -778,6 +783,13 @@ def scrape_x_feed(
             "operator_url": operator_url or None,
             "diagnostics": diagnostics,
         }
+    finally:
+        try:
+            client.release_workspace()
+        except browser_runtime.FacebookScraperFailure as exc:
+            _log(f"Best-effort X service tab release did not complete: {exc}")
+
+
 def parse_x_browser_response(response: dict[str, Any]) -> list[dict[str, Any]]:
     if response.get("error"):
         _log(f"X browser error ({response.get('error_type')}): {response['error']}")

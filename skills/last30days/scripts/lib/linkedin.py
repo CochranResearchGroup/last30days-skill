@@ -1184,15 +1184,16 @@ def scrape_linkedin_feed(
             config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION") or "shared_display"
         ),
     )
-    scraper = LinkedInScraper(
-        CliAgentBrowserClient(
-            timeout=timeout,
-            **(
-                {"job_timeout_ms": int(config["LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS"])}
-                if config.get("LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS")
-                else {}
-            ),
+    client = CliAgentBrowserClient(
+        timeout=timeout,
+        **(
+            {"job_timeout_ms": int(config["LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS"])}
+            if config.get("LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS")
+            else {}
         ),
+    )
+    scraper = LinkedInScraper(
+        client,
         request,
         limit=result_limit,
         scrolls=scrolls,
@@ -1205,7 +1206,13 @@ def scrape_linkedin_feed(
         ),
         debug_dir=str(config.get("LAST30DAYS_LINKEDIN_DEBUG_DIR") or "").strip(),
     )
-    return scraper.feed(from_date, to_date)
+    try:
+        return scraper.feed(from_date, to_date)
+    finally:
+        try:
+            client.release_workspace()
+        except browser_runtime.FacebookScraperFailure as exc:
+            _log(f"Best-effort LinkedIn service tab release did not complete: {exc}")
 
 
 def acquire_linkedin_profile(

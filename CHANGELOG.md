@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Attributed retained social-browser tabs.** Service 0.3.65 acquires an
+  Agent Browser service tab handle before X or LinkedIn feed work, carries
+  that exact handle through queued navigation, evaluation, and scrolling, and
+  releases only the attributed tab at source completion. This preserves the
+  existing authenticated browser while preventing one client from selecting
+  or closing another client's tabs.
+
 - **Service-queued retained social-browser controls.** Service 0.3.64 uses
   Agent Browser's service request queue, including the access plan's exact
   browser ID, session name, and runtime profile, when X or LinkedIn reuses a

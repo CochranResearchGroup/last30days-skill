@@ -20,6 +20,7 @@ class FakeAgentBrowserClient:
         self.candidates = candidates
         self.candidate_batches = candidate_batches
         self.capture_index = 0
+        self.released_workspaces = []
 
     def acquire_workspace(self, request):
         self.requests.append(request)
@@ -109,6 +110,9 @@ class FakeAgentBrowserClient:
     def operator_ingress_ready(self, operator_url):
         return True
 
+    def release_workspace(self):
+        self.released_workspaces.append(True)
+
 
 class XBrowserSearchTests(TestCase):
     def test_home_feed_collects_posts_without_a_topic_query(self):
@@ -143,6 +147,7 @@ class XBrowserSearchTests(TestCase):
             "no_lexical_topic_overlap",
             result["items"][0]["metadata"]["retrieval_signals"],
         )
+        self.assertEqual(1, len(client.released_workspaces))
 
     def test_uses_stable_user_scoped_x_profile_when_run_override_is_absent(self):
         from lib import x_browser
@@ -882,6 +887,15 @@ class RecordingCliClient:
 
     def invoke(self, args, *, timeout, input_text=None):
         self.calls.append(list(args))
+        if len(args) >= 4 and args[0] == "--session" and args[2:4] == ["tab", "new"]:
+            return {
+                "serviceTabHandle": {
+                    "handleId": f"handle-{len(self.calls)}",
+                    "targetId": f"owned-{len(self.calls)}",
+                    "browserId": "session:last30days-facebook",
+                    "sessionName": args[1],
+                }
+            }
         if not self.responses:
             raise AssertionError(f"unexpected agent-browser call: {args}")
         return self.responses.pop(0)
@@ -1111,8 +1125,8 @@ class XBrowserAcquisitionTests(TestCase):
 
         self.assertEqual("session:last30days-facebook", workspace.browser_id)
         self.assertEqual("last30days-facebook", workspace.session_name)
-        self.assertEqual("x", workspace.target_id)
-        self.assertEqual(2, len(recorder.calls))
+        self.assertEqual("owned-3", workspace.target_id)
+        self.assertEqual(3, len(recorder.calls))
 
     def test_acquisition_rebinds_an_ambiguous_shared_owner_to_its_exact_cdp(self):
         from lib import x_browser
@@ -1288,7 +1302,7 @@ class XBrowserAcquisitionTests(TestCase):
         self.assertEqual("last30days-facebook", workspace.profile_id)
         self.assertEqual("session:last30days-bound-social", workspace.browser_id)
         self.assertEqual("last30days-bound-social", workspace.session_name)
-        self.assertEqual("x", workspace.target_id)
+        self.assertEqual("owned-4", workspace.target_id)
         self.assertEqual("remote-headed-view", workspace.route_id)
         self.assertEqual(
             [
@@ -1299,7 +1313,7 @@ class XBrowserAcquisitionTests(TestCase):
             ],
             recorder.calls[2],
         )
-        self.assertEqual(3, len(recorder.calls))
+        self.assertEqual(4, len(recorder.calls))
 
     def test_acquisition_reuses_cdp_owner_when_human_view_route_is_incompatible(self):
         from lib import x_browser
@@ -1364,9 +1378,9 @@ class XBrowserAcquisitionTests(TestCase):
 
         self.assertEqual("session:stored-last30days-social", workspace.browser_id)
         self.assertEqual("stored-last30days-social", workspace.session_name)
-        self.assertEqual("x", workspace.target_id)
+        self.assertEqual("owned-3", workspace.target_id)
         self.assertEqual("not_required", workspace.operator_visible_state)
-        self.assertEqual(2, len(recorder.calls))
+        self.assertEqual(3, len(recorder.calls))
 
     def test_shared_owner_prefers_direct_external_guacamole_url(self):
         from lib import x_browser
