@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 29
+Plan version: 30
 Date: 2026-08-21
 
 ## Objective
@@ -13,12 +13,12 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 
 ## Current State
 
-- service 0.3.68/schema 16 is installed ready with 0.3.67 retained for
-  rollback. It contains attributed service-tab acquisition, exact handle
-  carry/release, bounded evaluation responses, and race-free document-readiness
-  polling through commits `6ded3da`, `ccd28d8`, `98f92a4`, and `08cc840`;
-  the loaded runtime-manifest SHA-256 is
-  `6c38f8b7fe32fbe94262e30c19defab2037deb87f8f0b514735b5e78b0e201c5`;
+- service 0.3.69/schema 16 is installed ready with 0.3.67 and 0.3.68 retained
+  for rollback. It contains attributed service-tab acquisition, exact handle
+  carry/release, bounded evaluation responses, race-free document-readiness
+  polling, schema-valid handle-bound navigation, and readiness transport
+  headroom; the loaded runtime-manifest SHA-256 is
+  `ac988adc9f8b27b690c39524acc68fe6e32514e968866dbc1e430a0b73e583a6`;
 - structurally valid short and lexically unmatched X and LinkedIn posts are
   retained with retrieval diagnostics. Only structural invalidity, date range,
   exact duplicate, deterministic promoted/sponsored labels, and deterministic
@@ -117,11 +117,30 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   `0 attempted / 0 observed / 0 accepted / 0 rejected`. X acquired and
   released its attributed tab, but Last30days' 20-second handle-readiness
   wrapper expired while Agent Browser's matching `ui_action` succeeded after
-  about 18.6 seconds. LinkedIn acquired its attributed tab, completed
-  handle readiness and authentication evaluation, then failed its subsequent
-  legacy direct `open` navigation instead of carrying that navigation through
-  the service-tab handle. No post, rejection, ad/spam, auth, semantic-quality,
-  or infinite-scroll conclusion is supported;
+  about 18.6 seconds. LinkedIn acquired its attributed tab and completed
+  handle readiness plus authentication evaluation, but its next navigation
+  request was rejected before queueing because Last30days supplied the
+  `waitUntil` action parameter as a forbidden top-level `service_request`
+  field. No post, rejection, ad/spam, auth, semantic-quality, or
+  infinite-scroll conclusion is supported;
+- service 0.3.69 moves `waitUntil` into the bounded navigation parameters and
+  gives the 15-second readiness predicate a 30-second outer transport window.
+  Focused X/LinkedIn/browser-adapter tests and the complete canonical suite
+  pass; artifact SHA-256 is
+  `a126f57706235960425a51998552a264c9aba15bbb1497aa929b033b36e220c1`;
+- the one freshly authorized installed 0.3.69 combined 20/20 tick
+  `tick-60b28ffebd8e778b4c7332d438a76d11` live-proves both repairs but still
+  observes no card. X completes tab acquisition, readiness, evaluation,
+  schema-valid handle-bound navigation, re-evaluation, and exact release, then
+  stops `auth_state_ambiguous`: neither signed-in DOM nor a login, checkpoint,
+  or restriction signal was detected. LinkedIn completes acquisition,
+  readiness, and evaluation but reports `auth_required` from an unconfirmed
+  authenticated-nav probe; its retained screenshot is blank, and its exact
+  release fails because the returned handle names logical browser
+  `session:last30days-facebook--last30days-facebook` while Agent Browser stores
+  that target under physical browser `session:handoff-356556ee1fe03a25`.
+  These are retrieval/auth-probe and route-attribution limitations, not proof
+  that either profile is logged out;
 - the temporary run configuration was moved to the user trash. Recurring
   revision `operator-20260822-x-linkedin-home-feed-v1`, SHA-256
   `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
@@ -2749,4 +2768,135 @@ Next action:
   validate and install it, then stop before another provider attempt unless
   fresh live authority exists.
 
-Checkpoint P0055-C29 is the current authority.
+### Checkpoint P0055-C30 | 2026-08-25
+
+Plan version: 30
+
+State transition:
+
+- `live_handle_readiness_budget_and_navigation_carry_blocked ->
+  control_contract_repaired_auth_probe_and_route_attribution_blocked`.
+
+Progress classification:
+
+- `blocker_reduction`; 0.3.69 live-proves the response-budget and navigation-
+  schema repairs. Remaining failures occur after control completion but before
+  card observation.
+
+Authority and bounds:
+
+- operator `ok go` authorized the narrow Last30days repair, successor install,
+  and exactly one combined X and LinkedIn feed acceptance tick;
+- the schedule-disabled preflight admitted two lanes, one provider attempt and
+  20 items per lane, aggregate limits of two attempts, 40 items, 100 requests,
+  240 wall seconds, and zero model/cost budget;
+- no second tick, provider retry, profile mutation, browser lifecycle action,
+  Agent Browser repair, or tab cleanup occurred.
+
+Implementation and validation:
+
+- the 15-second attributed-tab readiness predicate now has a 30-second outer
+  transport window;
+- handle-bound navigation preserves top-level URL routing but moves
+  `waitUntil=domcontentloaded` into the action `params`, matching the installed
+  `service_request` schema;
+- provider-free regressions failed before implementation and pass afterward;
+  focused X, LinkedIn, Facebook/browser-adapter, version, and package tests
+  pass, as does the complete canonical suite;
+- service artifact 0.3.69 has SHA-256
+  `a126f57706235960425a51998552a264c9aba15bbb1497aa929b033b36e220c1`.
+
+Installed evidence:
+
+- service 0.3.69/schema 16 is `ready`; contract SHA-256 is
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`
+  and runtime-manifest SHA-256 is
+  `ac988adc9f8b27b690c39524acc68fe6e32514e968866dbc1e430a0b73e583a6`;
+- 0.3.67 and 0.3.68 remain available for rollback.
+
+Live evidence:
+
+- preflight and terminal receipt agree on tick
+  `tick-60b28ffebd8e778b4c7332d438a76d11`, config digest
+  `sha256:f8eabfde69a352114498aea04539faf710d03bd8849b6aac6f1df2d158cad51d`,
+  and interval `2026-08-24T21:00:00Z` through
+  `2026-08-25T21:00:00Z`;
+- X provider attempt `provider-attempt-367d5249a31c2eb3de2ce2bf5cbbc75c`
+  used 28 wall seconds and retained `service/ok`, `service/ok`, `tab/ok`,
+  `tab/ok`, `eval/ok`, `open/ok`, `eval/ok`. Agent Browser independently
+  records successful `tab_new`, readiness `ui_action`, two evaluations,
+  schema-valid handle-bound `navigate`, and exact handle release. It then
+  terminalized transient `auth_state_ambiguous` at
+  `0 attempted / 0 observed / 0 accepted / 0 rejected` because neither the
+  authenticated selector nor login, checkpoint, or restriction selectors
+  matched, including after the bounded reload;
+- LinkedIn provider attempt
+  `provider-attempt-65486b33ad262436e7ed0bda3f85efe6` used 21 wall
+  seconds and retained `service/ok`, `service/ok`, `tab/ok`, `tab/ok`,
+  `eval/ok`, then authentication-class `auth_required` at
+  `0 attempted / 0 observed / 0 accepted / 0 rejected`. Its retained rendered
+  evidence is blank, with no page signals. Agent Browser records successful
+  `tab_new`, readiness, and evaluation, followed by failed exact release:
+  handle browser ID `session:last30days-facebook--last30days-facebook` does not
+  match retained target browser ID `session:handoff-356556ee1fe03a25`;
+- the terminal tick is `complete_degraded`, consumed two attempts, three
+  requests, 49 wall seconds, zero items, zero cost, and zero model tokens. It
+  created no tick incident; one reminder notification was delivered for
+  pre-existing incident `incident-f6d4dda908a9d23f97cc31eb69e043bc`;
+- SQLite integrity is `ok`, with zero active tick attempts, zero active
+  provider attempts, and zero unreleased Last30days resource leases. The
+  LinkedIn Agent Browser tab remains retained because its handle release
+  failed, and was not mutated without authority;
+- recurring configuration remains byte-identical at SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` remains enabled/ready for `2026-08-26T00:00:00Z`.
+
+Adjudication:
+
+- the C29 LinkedIn diagnosis is corrected: the handle was present; the
+  installed service rejected a forbidden top-level navigation parameter
+  before queueing. Service 0.3.69 fixes and live-proves that contract;
+- X's terminal state is not a legitimate logout finding: the probe is
+  explicitly ambiguous and detected no signed-out or challenge DOM;
+- LinkedIn's `auth_required` classification is also not sufficient logout
+  proof here because it is based on absence of authenticated navigation while
+  the captured page is blank and the returned handle has contradictory
+  logical-versus-physical browser attribution;
+- neither source reached observation, so no conclusion is supported about
+  real posts, ads/spam, quality filtering, permalink recovery, or infinite
+  scrolling.
+
+Authority classification:
+
+- `inherited_authority`; the one-tick authorization is consumed. No second
+  live attempt is authorized.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- the bounded provider-readiness probe returned `degraded` with a Codex
+  app-server `TimeoutError` at its 10-second bound. No C30 memory write was
+  queued.
+
+Remaining acceptance criteria:
+
+- make X authentication/readiness evidence robust to a rendered `/home` page
+  that lacks the current legacy signed-in selector without converting absence
+  into logout proof;
+- make LinkedIn authentication inspection wait for meaningful rendered-page
+  evidence and reconcile the attributed tab handle's logical and physical
+  browser identity before exact release;
+- after a validated successor and fresh authority, complete one successful
+  20-item X and LinkedIn feed observation and inspect accepted yield plus
+  scroll/unique/stagnation diagnostics.
+
+Next action:
+
+- fixture-drive explicit ambiguous/blank-page authentication evidence and the
+  logical-versus-physical handle mismatch, then stop before any new live tick
+  unless fresh authority is granted.
+
+Checkpoint P0055-C30 is the current authority.

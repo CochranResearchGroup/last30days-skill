@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "c2ca3e327d480913b7929f31cdc88233947c101f5fdc281915bfcf830415b5b1",
+      "sha256": "6c254029c39e23e926e6ec0260fe4ad3a2a50b62973a4b12d9756ee3787533fb",
       "source": "service/VERSION"
     },
     {
@@ -92,7 +92,7 @@
     },
     {
       "path": "scripts/lib/facebook.py",
-      "sha256": "f04e8338075f0e08f186bae5210b3b6fcf519101820dcae44ef6f11edc20d2c2",
+      "sha256": "da5f73b2309a51984980d9b3631df1d008e48213ad332c497222436f59e99469",
       "source": "skills/last30days/scripts/lib/facebook.py"
     },
     {
@@ -653,5 +653,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.68"
+  "service_version": "0.3.69"
 }

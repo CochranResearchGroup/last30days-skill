@@ -20649,3 +20649,98 @@ Next Bounded Action:
   handle carry for navigation and later controls, validate and install that
   Last30days-only successor, then stop before another live tick unless fresh
   authority exists.
+
+## Turn 337 | 2026-08-25
+
+Focus: repair the two C29 Last30days control-contract defects, install the
+validated successor, and consume one authorized combined X/LinkedIn 20-item
+feed tick.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0055/C29; repo policy selector, TDD, CodeGraph, Agent
+  Browser service, planning, roadmap/runbook, Git, validation, documentation,
+  Graphiti, and closeout contracts.
+
+Decisions And Changes:
+
+- added provider-free red/green regressions for readiness transport headroom
+  and the installed `service_request` navigation schema;
+- moved `waitUntil=domcontentloaded` from the forbidden request top level into
+  bounded navigation `params`, while retaining top-level URL routing and the
+  exact service-tab handle;
+- enlarged only the handle-readiness outer wrapper from 20 to 30 seconds
+  around the unchanged 15-second browser predicate;
+- released and transactionally installed service 0.3.69, then consumed exactly
+  one schedule-disabled two-lane tick with one 20-item attempt per source;
+- made no Agent Browser repair, profile/lifecycle mutation, recurring-config
+  edit, second tick, or provider retry.
+
+Validation Evidence:
+
+- focused X, LinkedIn, Facebook/browser-adapter, release-version, and package
+  tests pass, as does the complete canonical suite;
+- artifact SHA-256 is
+  `a126f57706235960425a51998552a264c9aba15bbb1497aa929b033b36e220c1`;
+- installed service 0.3.69/schema 16 is `ready`, with contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`
+  and runtime-manifest SHA-256
+  `ac988adc9f8b27b690c39524acc68fe6e32514e968866dbc1e430a0b73e583a6`;
+- preflight and terminal receipt agree on tick
+  `tick-60b28ffebd8e778b4c7332d438a76d11`, config digest
+  `sha256:f8eabfde69a352114498aea04539faf710d03bd8849b6aac6f1df2d158cad51d`,
+  interval `2026-08-24T21:00:00Z` through `2026-08-25T21:00:00Z`, and
+  exact two-attempt/40-item aggregate ceiling;
+- X attempt `provider-attempt-367d5249a31c2eb3de2ce2bf5cbbc75c`
+  live-proves readiness headroom and schema-valid handle-bound navigation:
+  Agent Browser records successful tab creation, readiness, evaluation,
+  navigation, re-evaluation, and exact release. X nevertheless ends
+  `auth_state_ambiguous` at `0/0/0/0` after neither authenticated nor explicit
+  signed-out/challenge DOM matches;
+- LinkedIn attempt
+  `provider-attempt-65486b33ad262436e7ed0bda3f85efe6` completes tab
+  creation, readiness, and auth evaluation but ends `auth_required` at
+  `0/0/0/0` on blank rendered evidence. Agent Browser then rejects exact tab
+  release because the handle's logical browser ID differs from the retained
+  target's physical browser ID;
+- the terminal tick is `complete_degraded`, consumed two attempts, three
+  requests, 49 wall seconds, zero items, zero cost, and zero model tokens. It
+  created no tick incident; one reminder notification was delivered for an
+  existing incident;
+- SQLite integrity is `ok`, with zero active attempts and zero unreleased
+  Last30days resource leases. Recurring config is still SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` remains ready for `2026-08-26T00:00:00Z`.
+
+State Movement:
+
+- Plan 0055 advances to version 30/C30
+  `control_contract_repaired_auth_probe_and_route_attribution_blocked`; P08
+  remains `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; the C29 control bugs are fixed and live-proven. Neither
+  lane has yet produced post-observation evidence.
+
+Authority Classification:
+
+- `inherited_authority`; the one-tick authorization is consumed. No second
+  live attempt is authorized.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- the bounded provider-readiness probe returned `degraded` with a Codex
+  app-server `TimeoutError` at its 10-second bound, so no C30 memory write was
+  queued.
+
+Next Bounded Action:
+
+- fixture-drive X ambiguous rendered `/home` authentication, LinkedIn blank-
+  page authentication, and contradictory logical-versus-physical tab-handle
+  attribution; do not infer logout or run another live tick without fresh
+  authority.

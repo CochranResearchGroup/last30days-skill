@@ -1585,6 +1585,10 @@ class FacebookCliAdapterTests(unittest.TestCase):
                         "() => document.readyState !== 'loading'",
                         arguments["uiAction"]["steps"][0]["function"],
                     )
+                    self.assertGreaterEqual(
+                        kwargs["timeout"],
+                        arguments["timeoutMs"] / 1000 + 10,
+                    )
                     data = {"ok": True}
                 elif action == "evaluate":
                     self.assertEqual(handle, arguments["serviceTabHandle"])
@@ -1592,7 +1596,10 @@ class FacebookCliAdapterTests(unittest.TestCase):
                     data = {"result": {"authenticated_dom": True}}
                 elif action == "navigate":
                     self.assertEqual(handle, arguments["serviceTabHandle"])
-                    self.assertEqual("domcontentloaded", arguments["waitUntil"])
+                    self.assertNotIn("waitUntil", arguments)
+                    self.assertEqual(
+                        "domcontentloaded", arguments["params"]["waitUntil"]
+                    )
                     data = {"url": "https://x.com/home"}
                 elif action == "tab_handle_release":
                     self.assertEqual(handle, arguments["serviceTabHandle"])

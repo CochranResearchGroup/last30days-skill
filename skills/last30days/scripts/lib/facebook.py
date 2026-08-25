@@ -40,6 +40,7 @@ QUERY_CAPTURE_OUTER_TIMEOUT_SECONDS = 50
 QUERY_CAPTURE_INNER_TIMEOUT_MS = 45_000
 SERVICE_EVALUATE_MAX_RETURN_BYTES = 1_048_576
 SERVICE_TAB_READY_TIMEOUT_MS = 15_000
+SERVICE_TAB_READY_OUTER_TIMEOUT_SECONDS = 30
 ERROR_TYPES = {
     "agent_browser_missing",
     "profile_mismatch",
@@ -751,7 +752,10 @@ class CliAgentBrowserClient:
                 self._service_tab_url = request.start_url
                 self._invoke(
                     ["--session", owner_session_name, "tab", "handle-ready"],
-                    timeout=min(request.timeout, 20),
+                    timeout=min(
+                        request.timeout,
+                        SERVICE_TAB_READY_OUTER_TIMEOUT_SECONDS,
+                    ),
                 )
             stream = _ready_operator_stream(browser, request.view_provider)
             return BrowserWorkspace(
@@ -1777,8 +1781,10 @@ class CliAgentBrowserClient:
         elif tokens[0] == "open" and len(tokens) > 1:
             request["action"] = "navigate"
             request["url"] = tokens[1]
-            request["params"] = {"url": tokens[1]}
-            request["waitUntil"] = "domcontentloaded"
+            request["params"] = {
+                "url": tokens[1],
+                "waitUntil": "domcontentloaded",
+            }
         elif tokens[0] == "scroll":
             request["action"] = "scroll"
             request["params"] = {

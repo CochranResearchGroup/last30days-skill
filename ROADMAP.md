@@ -1259,21 +1259,28 @@ Current State:
   Last30days' 20-second wrapper expires at the edge of an Agent Browser
   readiness `ui_action` that succeeds after about 18.6 seconds. LinkedIn
   acquires its attributed tab and completes readiness plus authentication
-  evaluation, then its subsequent legacy direct `open` navigation fails
-  instead of carrying the attributed handle. Both lanes remain pre-observation
-  at `0/0/0/0`; no content, ad/spam, auth, quality, or infinite-scroll
-  conclusion is supported.
+  evaluation, then its handle-bound navigation request is rejected before
+  queueing because `waitUntil` is supplied as a forbidden top-level field.
+  Both lanes remain pre-observation at `0/0/0/0`.
+- Plan 0055 version 30/C30 installs service 0.3.69 and live-proves both C29
+  repairs: X completes readiness within the enlarged wrapper and Agent Browser
+  queues the schema-valid handle-bound navigation. The one authorized 20/20
+  tick still observes zero cards. X ends `auth_state_ambiguous` after neither
+  authenticated nor signed-out/challenge selectors match. LinkedIn ends
+  `auth_required` from an unconfirmed authenticated-nav probe on blank rendered
+  evidence, then exact release exposes contradictory logical-versus-physical
+  browser IDs on its handle. These are retrieval/auth-probe and tab-attribution
+  limitations, not logout proof or content-quality evidence.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 29/C29 owns retrieval-first X/LinkedIn feed completion. Service
-  0.3.68 is installed ready and fixture-accepts attributed-tab acquisition,
-  bounded evaluation, exact control/release, and race-free readiness polling.
-  Live acceptance remains blocked before observation on Last30days response-
-  budget headroom and incomplete service-tab-handle control carry. The fresh
-  one-tick authority is consumed; another tick requires fresh operator
-  authority after a validated successor is installed.
+  version 30/C30 owns retrieval-first X/LinkedIn feed completion. Service
+  0.3.69 is installed ready and live-proves readiness headroom plus schema-
+  valid handle-bound navigation. Acceptance remains blocked before observation
+  on X ambiguous-auth DOM evidence and LinkedIn blank-page auth inspection plus
+  contradictory tab-handle browser attribution. The one-tick authority is
+  consumed; another tick requires a validated successor and fresh authority.
 
 Closed Plan:
 

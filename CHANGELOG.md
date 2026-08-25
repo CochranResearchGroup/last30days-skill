@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Schema-valid retained-tab navigation.** Service 0.3.69 moves the
+  `domcontentloaded` wait condition into Agent Browser's bounded navigation
+  action parameters and gives the 15-second attributed-tab readiness job a
+  30-second transport window. This prevents pre-queue navigation rejection
+  and false wrapper timeouts while preserving the exact leased tab handle.
+
 - **Race-free attributed-tab readiness.** Service 0.3.68 polls the current
   document readiness predicate through Agent Browser's handle-bound UI action
   instead of subscribing to a lifecycle event that may already have fired.
