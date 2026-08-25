@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 25
+Plan version: 28
 Date: 2026-08-21
 
 ## Objective
@@ -13,10 +13,12 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 
 ## Current State
 
-- service 0.3.64/schema 16 is installed ready with 0.3.63 retained for
-  rollback. It contains service-queued retained-owner repair `c45cbef`; the
-  loaded runtime-manifest SHA-256 is
-  `6310fc7464a4be38b7535ed30f3fe801d81541c86cec62dddead140ba0ac2c38`;
+- service 0.3.68/schema 16 is installed ready with 0.3.67 retained for
+  rollback. It contains attributed service-tab acquisition, exact handle
+  carry/release, bounded evaluation responses, and race-free document-readiness
+  polling through commits `6ded3da`, `ccd28d8`, `98f92a4`, and `08cc840`;
+  the loaded runtime-manifest SHA-256 is
+  `6c38f8b7fe32fbe94262e30c19defab2037deb87f8f0b514735b5e78b0e201c5`;
 - structurally valid short and lexically unmatched X and LinkedIn posts are
   retained with retrieval diagnostics. Only structural invalidity, date range,
   exact duplicate, deterministic promoted/sponsored labels, and deterministic
@@ -95,6 +97,20 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   queueing because upgraded Agent Browser requires a `serviceTabHandle` for
   action `evaluate`. Neither lane observed or rejected a post, and no incident
   or notification was created;
+- the operator authorized a three-attempt retry budget per service. Combined
+  ticks `tick-c4085e961b45b0f90add0ce68a51f8a6`,
+  `tick-dfe0aff77ee388209d1ee0be70ceacf9`, and
+  `tick-32b746f906375bb795a6b516089636a9` consumed it exactly, with one X and
+  one LinkedIn 20-item attempt in each tick;
+- C26 proved exact service-tab acquisition and release but exposed Agent
+  Browser's required `maxReturnBytes` evaluation bound. C27 proved bounded
+  evaluations work, then exposed premature LinkedIn authentication inspection
+  and full-load X navigation timing. C28 exposed a missed lifecycle-event race
+  in the first handle-bound readiness wait. Every attempt remained
+  pre-observation at `0 attempted / 0 observed / 0 accepted / 0 rejected`;
+- service 0.3.68 replaces the racy lifecycle subscription with a current
+  document-readiness predicate. Provider-free focused acceptance passes, but
+  no fourth live attempt ran because the explicit retry budget is exhausted;
 - the temporary run configuration was moved to the user trash. Recurring
   revision `operator-20260822-x-linkedin-home-feed-v1`, SHA-256
   `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
@@ -2529,4 +2545,92 @@ Next action:
   implement the minimal service-tab-handle acquisition/carry/release lifecycle,
   package and install the successor, then request fresh retry authority.
 
-Checkpoint P0055-C25 is the current authority.
+Checkpoint P0055-C25 was the prior authority.
+
+### Checkpoint P0055-C28 | 2026-08-25
+
+Plan version: 28
+
+State transition:
+
+- `exact_broker_route_commandable_service_tab_handle_required ->
+  attributed_tab_adopted_live_retry_budget_exhausted`.
+
+Implementation and validation evidence:
+
+- service 0.3.65 acquires an Agent Browser `serviceTabHandle`, carries it on
+  queued evaluate/navigation/scroll controls, and releases only the attributed
+  tab in source `finally` blocks;
+- service 0.3.66 adds the required one-MiB `maxReturnBytes` bound;
+- service 0.3.67 adds handle-bound readiness and DOM-content navigation;
+- service 0.3.68 replaces the missed lifecycle-event wait with a polled
+  `document.readyState !== 'loading'` predicate;
+- focused social-browser and release/package suites plus the complete suite
+  pass. Runtime artifact
+  SHA-256 is
+  `eeaafc459a0ce2dde804119866eab1b6c5a72c30cd24ffb1e2f52fd87a77daae`;
+- installed diagnose reports service 0.3.68/schema 16 `ready`, contract
+  SHA-256 `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`,
+  and runtime-manifest SHA-256
+  `6c38f8b7fe32fbe94262e30c19defab2037deb87f8f0b514735b5e78b0e201c5`.
+
+Live retry evidence:
+
+- all three schedule-disabled receipts used interval
+  `2026-08-24T17:49:00Z` through `2026-08-25T17:49:00Z`, one attempt and 20
+  items per source, and aggregate limits of two attempts, 40 items, 100
+  requests, 240 wall seconds, and zero model/cost budget;
+- C26 tick `tick-c4085e961b45b0f90add0ce68a51f8a6` failed both first
+  authentication evaluations because `maxReturnBytes` was absent;
+- C27 tick `tick-dfe0aff77ee388209d1ee0be70ceacf9` executed both bounded
+  evaluations. X then timed out in full-load recovery navigation; LinkedIn
+  evaluated before the new tab was ready and returned `auth_required`;
+- C28 tick `tick-32b746f906375bb795a6b516089636a9` timed out both
+  handle-bound readiness steps at workspace acquisition because the lifecycle
+  event could already have fired before subscription;
+- all six provider attempts retained zero attempted, observed, accepted, and
+  rejected posts. No conclusion about post legitimacy, ads, spam, semantic
+  quality, selector coverage, or infinite scrolling is supported;
+- SQLite integrity is `ok`, with zero active tick attempts, zero active
+  provider attempts, and zero unreleased resource leases. Recurring config
+  remains byte-identical at SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+Adjudication:
+
+- the handle contract is implemented and progressively narrowed three distinct
+  pre-observation failures, but the 20-item live acceptance criterion remains
+  unmet;
+- 0.3.68 is installed and fixture-accepted, not live-accepted;
+- the explicit three-attempt retry budget is exhausted. A fourth provider
+  attempt requires fresh operator authority.
+
+Authority classification:
+
+- `inherited_authority`; the operator explicitly authorized three attempts per
+  service. All three are consumed. No Agent Browser/profile mutation occurred.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- prior C25 job `a400e049-5475-45eb-81f1-9da21159c423` failed by provider
+  timeout. Provider readiness passed at closeout and C28 job
+  `240b7460-07a1-4ef9-b99f-a12a5c2b0987` was queued once in
+  `last30days_skill_main`.
+
+Remaining acceptance criteria:
+
+- obtain fresh retry authority, then run one installed 0.3.68 combined X and
+  LinkedIn 20-item home-feed tick;
+- only after posts are observed, adjudicate accepted yield and
+  scroll/unique/stagnation diagnostics.
+
+Next action:
+
+- do not enqueue another provider attempt without fresh authority. The next
+  authorized tick is the live acceptance test for installed 0.3.68.
+
+Checkpoint P0055-C28 is the current authority.

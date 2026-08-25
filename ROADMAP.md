@@ -1248,17 +1248,22 @@ Current State:
   because the upgraded `evaluate` action requires a `serviceTabHandle`.
   Neither source observes or rejects a card; this is a Last30days contract-
   adoption gap, not auth, content quality, ad filtering, or infinite scrolling.
+- Plan 0055 version 28/C28 installs service 0.3.68 after exactly three combined
+  20/20 retries progressively expose the upgraded handle contract's response
+  cap, new-tab readiness, and missed lifecycle-event race. All six provider
+  attempts remain pre-observation. The final race-free readiness predicate is
+  fixture-accepted but not live-accepted because the explicit retry budget is
+  exhausted.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 25/C25 owns retrieval-first X/LinkedIn feed completion. The bounded
-  unique-progress loop and current LinkedIn metadata variants are fixture
-  accepted; service 0.3.64 is installed ready and routes retained work to the
-  correct authenticated broker browser. Both sources remain pre-observation
-  blocked because Last30days does not yet acquire and carry the service-owned
-  tab handle required by upgraded Agent Browser evaluate; that lifecycle must
-  be fixture-accepted and installed before another provider retry.
+  version 28/C28 owns retrieval-first X/LinkedIn feed completion. Service
+  0.3.68 is installed ready and fixture-accepts attributed-tab acquisition,
+  bounded evaluation, exact control/release, and race-free readiness polling.
+  Both sources remain live-unaccepted at the pre-observation boundary because
+  the three-attempt retry budget expired before 0.3.68 could be exercised;
+  another tick requires fresh operator authority.
 
 Closed Plan:
 

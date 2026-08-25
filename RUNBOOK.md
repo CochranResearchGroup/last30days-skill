@@ -20497,3 +20497,73 @@ Next Bounded Action:
 - fixture-drive service-tab-handle acquisition, carry, and safe release on the
   exact retained-owner route; install that successor before requesting fresh
   live retry authority.
+
+## Turn 335 | 2026-08-25
+
+Focus: adopt Agent Browser's attributed-tab contract and use the authorized
+three-attempt X/LinkedIn 20-item retry budget.
+
+Authority Consulted:
+
+- operator authorization for a three-attempt retry budget per service; Plan
+  0055/C25; repo planning, Git, versioning, validation, documentation,
+  closeout, Agent Browser service, TDD, and codebase-design contracts.
+
+Decisions And Changes:
+
+- acquired a distinct `serviceTabHandle` on the exact retained owner, carried
+  it through bounded controls, and released only the caller-owned tab;
+- released and installed services 0.3.65 through 0.3.68 as successive live
+  evidence narrowed the pre-observation boundary;
+- consumed exactly three combined retries, one X and one LinkedIn attempt per
+  tick, then stopped without a fourth attempt.
+
+Validation Evidence:
+
+- focused social-browser and release/package suites plus the complete suite
+  pass; 0.3.68 artifact
+  SHA-256 is
+  `eeaafc459a0ce2dde804119866eab1b6c5a72c30cd24ffb1e2f52fd87a77daae`;
+- installed diagnose reports 0.3.68/schema 16 ready with runtime-manifest
+  SHA-256
+  `6c38f8b7fe32fbe94262e30c19defab2037deb87f8f0b514735b5e78b0e201c5`;
+- ticks `tick-c4085e961b45b0f90add0ce68a51f8a6`,
+  `tick-dfe0aff77ee388209d1ee0be70ceacf9`, and
+  `tick-32b746f906375bb795a6b516089636a9` all terminalized
+  `complete_degraded`, progressively exposing missing response cap, premature
+  readiness/full-load navigation, and missed lifecycle-event readiness;
+- all six provider attempts retained `0 attempted / 0 observed / 0 accepted /
+  0 rejected`. SQLite integrity is `ok`, with zero active attempts and leases;
+- recurring config remains byte-identical at SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+State Movement:
+
+- Plan 0055 advances to version 28/C28
+  `attributed_tab_adopted_live_retry_budget_exhausted`; P08 remains `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; the upgraded handle contract is implemented, but no
+  source reached post observation and 0.3.68 lacks live acceptance.
+
+Authority Classification:
+
+- `inherited_authority`; the explicit three-attempt budget is exhausted. No
+  fourth provider attempt or Agent Browser/profile mutation occurred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- prior C25 job `a400e049-5475-45eb-81f1-9da21159c423` failed by timeout;
+  provider readiness passed and C28 job
+  `240b7460-07a1-4ef9-b99f-a12a5c2b0987` queued once in
+  `last30days_skill_main`.
+
+Next Bounded Action:
+
+- request fresh authority for one installed 0.3.68 combined 20/20 tick; do
+  not infer any content-quality conclusion until a source observes posts.
