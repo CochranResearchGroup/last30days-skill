@@ -1467,6 +1467,83 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual(daemon_session, workspace.session_name)
         self.assertEqual("https://x.com/search?q=OpenAI&f=live", state.url)
 
+    def test_lifecycle_blocked_shared_owner_uses_exact_retained_alias(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        shared_browser_id = "session:last30days-facebook--last30days-facebook"
+        shared_session = "handoff-social"
+        alias_browser_id = "session:last30days-facebook"
+        status = {
+            "service_state": {
+                "sessions": {
+                    shared_session: {
+                        "profileId": "last30days-facebook",
+                        "browserIds": [shared_browser_id],
+                        "tabIds": ["target:shared-facebook"],
+                    },
+                    "last30days-facebook": {
+                        "profileId": "default",
+                        "browserIds": [alias_browser_id],
+                        "tabIds": ["target:alias-facebook"],
+                    },
+                },
+                "browsers": {
+                    shared_browser_id: {
+                        "profileId": "last30days-facebook",
+                        "health": "ready",
+                        "activeSessionIds": [shared_session],
+                    },
+                    alias_browser_id: {
+                        "profileId": "default",
+                        "health": "ready",
+                        "activeSessionIds": ["last30days-facebook"],
+                        "cdpEndpoint": (
+                            "ws://127.0.0.1:36603/devtools/browser/alias"
+                        ),
+                    },
+                },
+                "tabs": {
+                    "target:shared-facebook": {
+                        "browserId": shared_browser_id,
+                        "targetId": "shared-facebook",
+                        "sessionId": shared_session,
+                        "url": "https://www.facebook.com/",
+                    },
+                    "target:alias-facebook": {
+                        "browserId": alias_browser_id,
+                        "targetId": "alias-facebook",
+                        "sessionId": "last30days-facebook",
+                        "url": "https://www.facebook.com/",
+                    },
+                },
+            },
+        }
+
+        def invoke(args, *, timeout, input_text=None):
+            if args[:2] == ["service", "access-plan"]:
+                return access_plan(
+                    shared_owner=(shared_browser_id, shared_session)
+                )
+            if args == ["service", "status"]:
+                return status
+            if args == ["--session", shared_session, "tab", "list"]:
+                raise facebook.FacebookScraperFailure(
+                    "agent_browser_error",
+                    "runtime_lifecycle_existing_owner_requires_explicit_transition",
+                )
+            raise AssertionError(f"unexpected command: {args}")
+
+        with mock.patch.object(
+            client, "_invoke", side_effect=invoke
+        ), mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ):
+            workspace = client.acquire_workspace(request())
+
+        self.assertEqual(alias_browser_id, workspace.browser_id)
+        self.assertEqual("last30days-facebook", workspace.session_name)
+        self.assertEqual("alias-facebook", workspace.target_id)
+        self.assertEqual("last30days-facebook", workspace.profile_id)
+
     def test_default_profile_alias_rejects_ambiguous_active_owners(self):
         sessions = {
             "last30days-facebook": {

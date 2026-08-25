@@ -38,6 +38,9 @@ REMOTE_VIEW_RECONCILIATION_RESERVE_SECONDS = 10
 TAB_INVENTORY_TIMEOUT_SECONDS = 20
 QUERY_CAPTURE_OUTER_TIMEOUT_SECONDS = 50
 QUERY_CAPTURE_INNER_TIMEOUT_MS = 45_000
+EXISTING_OWNER_TRANSITION_ERROR = (
+    "runtime_lifecycle_existing_owner_requires_explicit_transition"
+)
 
 ERROR_TYPES = {
     "agent_browser_missing",
@@ -680,9 +683,8 @@ class CliAgentBrowserClient:
         if shared_owner:
             browser = shared_owner["browser"]
             service_session_name = shared_owner["session_name"]
-            owner_session_name = (
-                shared_owner.get("command_session_name") or service_session_name
-            )
+            command_session_name = shared_owner.get("command_session_name") or ""
+            owner_session_name = command_session_name or service_session_name
             owner_session = (
                 sessions.get(service_session_name)
                 if isinstance(sessions, dict)
@@ -697,6 +699,38 @@ class CliAgentBrowserClient:
                     browser_id=shared_owner["browser_id"],
                     request=request,
                 )
+            aliased_owner = _exact_retained_default_owner(
+                session_name=request.session_name,
+                selected_profile=selected_profile,
+                target_service_id=requested_target_service_id,
+                sessions=sessions,
+                browsers=browsers,
+                tabs=tabs,
+            )
+            if (
+                aliased_owner
+                and request.session_name != service_session_name
+                and command_session_name in {"", service_session_name}
+            ):
+                try:
+                    self._invoke(
+                        ["--session", owner_session_name, "tab", "list"],
+                        timeout=min(request.timeout, TAB_INVENTORY_TIMEOUT_SECONDS),
+                    )
+                except FacebookScraperFailure as exc:
+                    if str(exc) != EXISTING_OWNER_TRANSITION_ERROR:
+                        raise
+                    _log(
+                        "Broker shared owner requires an explicit lifecycle "
+                        "transition; using the exact retained profile alias"
+                    )
+                    return _browser_workspace_from_retained_owner(
+                        request=request,
+                        browser=aliased_owner["browser"],
+                        browser_id=aliased_owner["browser_id"],
+                        session_name=aliased_owner["session_name"],
+                        target_id=aliased_owner["target_id"],
+                    )
             stream = _ready_operator_stream(browser, request.view_provider)
             return BrowserWorkspace(
                 profile_id=selected_profile,

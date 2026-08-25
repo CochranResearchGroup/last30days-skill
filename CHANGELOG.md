@@ -18,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Lifecycle-blocked retained social route fallback.** Service 0.3.63
+  preflights a broker-advertised shared owner when it has no distinct daemon
+  command route and an exact retained default-profile alias is already proven.
+  Only the explicit existing-owner lifecycle-transition error activates that
+  alias; all other errors and unproven aliases remain fail-closed. This keeps X
+  and LinkedIn authentication and feed work on the existing authenticated
+  profile without transitioning or replacing Agent Browser ownership.
+
 - **Durable social-browser failure evidence.** Service 0.3.62 preserves the
   X home-feed failure stage and bounded command-operation timings, then carries
   normalized worker failure stages and stable SHA-256 signatures through the
