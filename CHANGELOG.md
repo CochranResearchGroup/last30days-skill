@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Bounded service evaluation responses.** Service 0.3.66 supplies Agent
+  Browser's required one-MiB `maxReturnBytes` bound on every handle-attributed
+  evaluation. This restores authenticated DOM probes and candidate extraction
+  under the upgraded service-request contract while keeping returned page data
+  explicitly capped.
+
 - **Attributed retained social-browser tabs.** Service 0.3.65 acquires an
   Agent Browser service tab handle before X or LinkedIn feed work, carries
   that exact handle through queued navigation, evaluation, and scrolling, and

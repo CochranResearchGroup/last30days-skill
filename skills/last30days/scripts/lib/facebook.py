@@ -38,6 +38,7 @@ REMOTE_VIEW_RECONCILIATION_RESERVE_SECONDS = 10
 TAB_INVENTORY_TIMEOUT_SECONDS = 20
 QUERY_CAPTURE_OUTER_TIMEOUT_SECONDS = 50
 QUERY_CAPTURE_INNER_TIMEOUT_MS = 45_000
+SERVICE_EVALUATE_MAX_RETURN_BYTES = 1_048_576
 ERROR_TYPES = {
     "agent_browser_missing",
     "profile_mismatch",
@@ -1745,6 +1746,7 @@ class CliAgentBrowserClient:
                     "script": input_text or "",
                     "returnByValue": True,
                     "timeoutMs": job_timeout_ms,
+                    "maxReturnBytes": SERVICE_EVALUATE_MAX_RETURN_BYTES,
                 }
             )
         elif tokens[0] == "open" and len(tokens) > 1:

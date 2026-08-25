@@ -1572,6 +1572,7 @@ class FacebookCliAdapterTests(unittest.TestCase):
                     }
                 elif action == "evaluate":
                     self.assertEqual(handle, arguments["serviceTabHandle"])
+                    self.assertEqual(1_048_576, arguments["maxReturnBytes"])
                     data = {"result": {"authenticated_dom": True}}
                 elif action == "tab_handle_release":
                     self.assertEqual(handle, arguments["serviceTabHandle"])
