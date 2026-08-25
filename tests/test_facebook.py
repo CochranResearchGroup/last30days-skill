@@ -1096,7 +1096,16 @@ class FacebookCliAdapterTests(unittest.TestCase):
         }
         with mock.patch.object(
             client, "_invoke",
-            side_effect=[plan, status, first_handle, plan, status, second_handle],
+            side_effect=[
+                plan,
+                status,
+                first_handle,
+                {"ok": True},
+                plan,
+                status,
+                second_handle,
+                {"ok": True},
+            ],
         ) as invoke, mock.patch.object(facebook.agent_browser_config, "record_access_plan"):
             first = client.acquire_workspace(request(session_name="default"))
             second = client.acquire_workspace(request(session_name="default"))
@@ -1105,7 +1114,7 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual("service-1", first.target_id)
         self.assertEqual("service-2", second.target_id)
         self.assertEqual("https://operator.example/token", first.operator_url)
-        self.assertEqual(6, invoke.call_count)
+        self.assertEqual(8, invoke.call_count)
 
     def test_access_plan_route_hints_fall_back_when_status_has_no_live_owner(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
@@ -1570,10 +1579,21 @@ class FacebookCliAdapterTests(unittest.TestCase):
                         "serviceTabHandle": handle,
                         "url": "https://x.com/home",
                     }
+                elif action == "ui_action":
+                    self.assertEqual(handle, arguments["serviceTabHandle"])
+                    self.assertEqual(
+                        "domcontentloaded",
+                        arguments["uiAction"]["steps"][0]["loadState"],
+                    )
+                    data = {"ok": True}
                 elif action == "evaluate":
                     self.assertEqual(handle, arguments["serviceTabHandle"])
                     self.assertEqual(1_048_576, arguments["maxReturnBytes"])
                     data = {"result": {"authenticated_dom": True}}
+                elif action == "navigate":
+                    self.assertEqual(handle, arguments["serviceTabHandle"])
+                    self.assertEqual("domcontentloaded", arguments["waitUntil"])
+                    data = {"url": "https://x.com/home"}
                 elif action == "tab_handle_release":
                     self.assertEqual(handle, arguments["serviceTabHandle"])
                     data = {"released": True}
@@ -1620,12 +1640,23 @@ class FacebookCliAdapterTests(unittest.TestCase):
         ):
             workspace = client.acquire_workspace(request())
             auth = client.evaluate(workspace, facebook.AUTH_SCRIPT)
+            client.act(
+                workspace,
+                facebook.BrowserAction("navigate", value="https://x.com/home"),
+            )
             client.release_workspace()
 
         self.assertEqual(broker_session, workspace.session_name)
         self.assertTrue(auth["authenticated_dom"])
         self.assertEqual(
-            ["tab_new", "evaluate", "tab_handle_release"], service_actions
+            [
+                "tab_new",
+                "ui_action",
+                "evaluate",
+                "navigate",
+                "tab_handle_release",
+            ],
+            service_actions,
         )
 
     def test_shared_owner_never_falls_back_to_mismatched_alias(self):
@@ -1693,6 +1724,8 @@ class FacebookCliAdapterTests(unittest.TestCase):
                         "browserId": shared_browser_id, "sessionName": shared_session,
                     }
                 }
+            if args == ["--session", shared_session, "tab", "handle-ready"]:
+                return {"ok": True}
             raise AssertionError(f"unexpected command: {args}")
 
         with mock.patch.object(

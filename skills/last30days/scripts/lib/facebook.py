@@ -39,6 +39,7 @@ TAB_INVENTORY_TIMEOUT_SECONDS = 20
 QUERY_CAPTURE_OUTER_TIMEOUT_SECONDS = 50
 QUERY_CAPTURE_INNER_TIMEOUT_MS = 45_000
 SERVICE_EVALUATE_MAX_RETURN_BYTES = 1_048_576
+SERVICE_TAB_READY_TIMEOUT_MS = 15_000
 ERROR_TYPES = {
     "agent_browser_missing",
     "profile_mismatch",
@@ -748,6 +749,10 @@ class CliAgentBrowserClient:
                     )
                 self._service_tab_handle = dict(service_tab_handle)
                 self._service_tab_url = request.start_url
+                self._invoke(
+                    ["--session", owner_session_name, "tab", "handle-ready"],
+                    timeout=min(request.timeout, 20),
+                )
             stream = _ready_operator_stream(browser, request.view_provider)
             return BrowserWorkspace(
                 profile_id=selected_profile,
@@ -1723,7 +1728,27 @@ class CliAgentBrowserClient:
         }
         request["jobTimeoutMs"] = job_timeout_ms
         request["params"] = {}
-        if tokens[:2] == ["tab", "list"]:
+        if tokens[:2] == ["tab", "handle-ready"] and isinstance(
+            self._service_tab_handle, dict
+        ):
+            request.update(
+                {
+                    "action": "ui_action",
+                    "timeoutMs": SERVICE_TAB_READY_TIMEOUT_MS,
+                    "maxTextBytes": 1_024,
+                    "uiAction": {
+                        "maxActions": 1,
+                        "steps": [
+                            {
+                                "type": "wait",
+                                "loadState": "domcontentloaded",
+                                "timeout": SERVICE_TAB_READY_TIMEOUT_MS,
+                            }
+                        ],
+                    },
+                }
+            )
+        elif tokens[:2] == ["tab", "list"]:
             request["action"] = "tab_list"
         elif tokens[:2] == ["tab", "new"]:
             request["action"] = "tab_new"
@@ -1753,6 +1778,7 @@ class CliAgentBrowserClient:
             request["action"] = "navigate"
             request["url"] = tokens[1]
             request["params"] = {"url": tokens[1]}
+            request["waitUntil"] = "domcontentloaded"
         elif tokens[0] == "scroll":
             request["action"] = "scroll"
             request["params"] = {
@@ -1764,7 +1790,13 @@ class CliAgentBrowserClient:
         if (
             isinstance(self._service_tab_handle, dict)
             and request["action"]
-            in {"evaluate", "navigate", "scroll", "tab_handle_release"}
+            in {
+                "evaluate",
+                "navigate",
+                "scroll",
+                "tab_handle_release",
+                "ui_action",
+            }
         ):
             request["serviceTabHandle"] = dict(self._service_tab_handle)
         return request

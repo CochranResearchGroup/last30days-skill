@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Handle-bound social tab readiness.** Service 0.3.67 waits for DOM content
+  readiness through the attributed Agent Browser tab handle before checking X
+  or LinkedIn authentication. Follow-on navigation also stops at DOM content
+  readiness instead of waiting for long-lived social pages to report a full
+  load event.
+
 - **Bounded service evaluation responses.** Service 0.3.66 supplies Agent
   Browser's required one-MiB `maxReturnBytes` bound on every handle-attributed
   evaluation. This restores authenticated DOM probes and candidate extraction

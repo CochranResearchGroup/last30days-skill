@@ -896,6 +896,8 @@ class RecordingCliClient:
                     "sessionName": args[1],
                 }
             }
+        if len(args) >= 4 and args[0] == "--session" and args[2:4] == ["tab", "handle-ready"]:
+            return {"ok": True}
         if not self.responses:
             raise AssertionError(f"unexpected agent-browser call: {args}")
         return self.responses.pop(0)
@@ -1126,7 +1128,7 @@ class XBrowserAcquisitionTests(TestCase):
         self.assertEqual("session:last30days-facebook", workspace.browser_id)
         self.assertEqual("last30days-facebook", workspace.session_name)
         self.assertEqual("owned-3", workspace.target_id)
-        self.assertEqual(3, len(recorder.calls))
+        self.assertEqual(4, len(recorder.calls))
 
     def test_acquisition_rebinds_an_ambiguous_shared_owner_to_its_exact_cdp(self):
         from lib import x_browser
@@ -1313,7 +1315,7 @@ class XBrowserAcquisitionTests(TestCase):
             ],
             recorder.calls[2],
         )
-        self.assertEqual(4, len(recorder.calls))
+        self.assertEqual(5, len(recorder.calls))
 
     def test_acquisition_reuses_cdp_owner_when_human_view_route_is_incompatible(self):
         from lib import x_browser
@@ -1380,7 +1382,7 @@ class XBrowserAcquisitionTests(TestCase):
         self.assertEqual("stored-last30days-social", workspace.session_name)
         self.assertEqual("owned-3", workspace.target_id)
         self.assertEqual("not_required", workspace.operator_visible_state)
-        self.assertEqual(3, len(recorder.calls))
+        self.assertEqual(4, len(recorder.calls))
 
     def test_shared_owner_prefers_direct_external_guacamole_url(self):
         from lib import x_browser
