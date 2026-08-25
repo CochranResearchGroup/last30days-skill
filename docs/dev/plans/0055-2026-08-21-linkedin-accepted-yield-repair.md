@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 23
+Plan version: 24
 Date: 2026-08-21
 
 ## Objective
@@ -13,10 +13,10 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
 
 ## Current State
 
-- service 0.3.62/schema 16 is installed ready with 0.3.61 retained for
-  rollback. It contains published observability repair `f28e6c4`; the loaded
+- service 0.3.63/schema 16 is installed ready with 0.3.62 retained for
+  rollback. It contains route-fallback repair `0fb21e6`; the loaded
   runtime-manifest SHA-256 is
-  `fbcf7209c5a3d7a5e0737ed91acd6ffa69026da4a5b89dcb517984879c3c8013`;
+  `acb440f389fb02377f93fb85f4d030fdbf8f4d412a63c810d65d60481544e9fe`;
 - structurally valid short and lexically unmatched X and LinkedIn posts are
   retained with retrieval diagnostics. Only structural invalidity, date range,
   exact duplicate, deterministic promoted/sponsored labels, and deterministic
@@ -74,6 +74,15 @@ bounded scroll budgets, and defer semantic quality decisions until enrichment.
   fails `runtime_lifecycle_existing_owner_requires_explicit_transition`.
   Configured session `last30days-facebook` remains commandable, and the
   existing exact-default-alias validator accepts it for both sources;
+- provider-free regression and complete-suite acceptance prove a narrow
+  Last30days fallback: only the exact existing-owner lifecycle-transition
+  error may activate that already-proven alias, while every other route error
+  remains fail-closed;
+- live tick `tick-86048a845f0106d333038b4ca649ea2d` proves that fallback executes:
+  both lanes record broker `tab/failed` followed by successful alias tab and
+  eval operations. The alias is not authenticated like the broker-owned browser,
+  however. X captured an actual login page and LinkedIn reported unauthenticated
+  with no operator ingress. Neither lane observed a post;
 - the temporary run configuration was moved to the user trash. Recurring
   revision `operator-20260822-x-linkedin-home-feed-v1`, SHA-256
   `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
@@ -2311,3 +2320,115 @@ Next action:
   selected profile and target service. Otherwise fail closed as a route error.
 
 Checkpoint P0055-C23 is the current authority.
+
+### Checkpoint P0055-C24 | 2026-08-24
+
+Plan version: 24
+
+State transition:
+
+- `broker_owner_route_lifecycle_mismatch_reproduced_fix_pending -> lifecycle_fallback_installed_alias_auth_mismatch_blocked`.
+
+Progress classification:
+
+- `blocker_reduction`; the lifecycle-blocked broker route is now handled by a
+  fixture-proven and installed Last30days fallback, and the live failure moved
+  past workspace acquisition to the authentication state of the compatibility
+  alias.
+
+Implementation and validation evidence:
+
+- regression-first coverage proves that a broker shared owner with no distinct
+  command route falls back only when its bounded `tab list` returns exact error
+  `runtime_lifecycle_existing_owner_requires_explicit_transition` and
+  `_exact_retained_default_owner` independently proves the configured alias;
+- every non-matching error and unproven alias remains fail-closed; no Agent
+  Browser transition, browser replacement, profile replacement, or direct CDP
+  bypass was added;
+- focused X/LinkedIn/Facebook suites pass, and the complete suite passes with
+  `2687 passed, 7 skipped, 6 subtests passed`;
+- service 0.3.63 artifact SHA-256
+  `4d1ca066bf66fe410e582a5a734d6a66bd4b946b26b2ad95d92d00a5382c705c`
+  was reproduced independently and transactionally installed; 0.3.62 remains
+  the rollback release;
+- installed diagnose reports service 0.3.63/schema 16 `ready`, contract
+  SHA-256 `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`,
+  and runtime-manifest SHA-256
+  `acb440f389fb02377f93fb85f4d030fdbf8f4d412a63c810d65d60481544e9fe`.
+
+Live retry evidence:
+
+- a schedule-disabled temporary config admitted only X and LinkedIn home-feed
+  lanes, one attempt and 20 items each, with aggregate limits of two attempts,
+  40 items, 100 network requests, 240 wall seconds, and zero model/cost use;
+- preflight and terminal receipt agree on tick
+  `tick-86048a845f0106d333038b4ca649ea2d`, config digest
+  `sha256:913a4e8af74556e2347c41ec96c17036d16eca9e6a73964596dd14940bd73833`,
+  and interval `2026-08-24T00:35:00Z` through `2026-08-25T00:35:00Z`;
+- X attempt `provider-attempt-dae0dc093d2484eb669f88ce3dbe2fd7`
+  recorded `service/ok`, `service/ok`, broker `tab/failed`, alias `tab/ok`,
+  alias `tab/ok`, and `eval/ok`, then failed at authentication with safe code
+  `auth_required` and signature
+  `sha256:27e51c36bfbad11e92de415c266fe81ffba14810ade816e5b2590efadb75cf2f`;
+- X's retained rendered-page artifact is an actual X login screen. This is a
+  truthful observation of the commandable compatibility alias, but it does not
+  prove the separately broker-owned visible browser is logged out;
+- LinkedIn attempt `provider-attempt-3d9c7396da0db42d93a07280290add81`
+  recorded the same failed-broker then successful-alias operation pattern and
+  `eval/ok`, then failed at authentication with safe code
+  `operator_ingress_unavailable` and signature
+  `sha256:b71ceea9970ae6c391ccbec1d6546238d74d24d2793117fb127dbdc7527d17d6`;
+- both lanes retained `0/0/0/0` outcome counts and no rejection counts. The
+  tick terminalized `complete_degraded` after exactly two attempts, two network
+  requests, 45 wall seconds, zero items, zero cost, and zero model use;
+- state-change notifications were emitted for the reopened X reauthentication
+  and LinkedIn provider-degraded incidents. SQLite integrity passes with zero
+  active tick attempts and zero unreleased resource leases;
+- recurring config SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`
+  remains byte-identical. `daily-default` remains enabled/ready for
+  `2026-08-26T00:00:00Z` with no runtime error.
+
+Adjudication:
+
+- the Last30days route fallback and installed release are accepted, but the
+  20-item feed acceptance criterion is not met;
+- the failure is not post rejection, advertising, spam, semantic quality,
+  selector coverage, or infinite scrolling. Neither scraper observed a card;
+- the commandable compatibility alias and broker-owned browser are distinct.
+  The former lacks the required authentication state, while the latter remains
+  blocked by Agent Browser's explicit lifecycle-transition requirement;
+- another identical retry would be no-progress and is not authorized.
+
+Authority classification:
+
+- `inherited_authority`; the operator authorized the repair and one retry. The
+  retry authority is now exhausted. Agent Browser and profile mutation remained
+  out of scope.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `graphiti_write_failed`; the bounded provider readiness probe passed, but the
+  sole write request was rejected before queueing because group id
+  `last30days-skill` violates the underscore-only identifier contract. No
+  second write was attempted in this packet.
+
+Remaining acceptance criteria:
+
+- expose a commandable route to the already-authenticated broker-owned browser,
+  or authenticate the existing commandable alias, without discarding either
+  retained profile;
+- complete one successful 20-item X and LinkedIn home-feed observation and
+  adjudicate accepted yield plus scroll/unique/stagnation diagnostics.
+
+Next action:
+
+- do not retry either provider again on the current alias. The next packet must
+  first change the route/authentication premise while preserving the existing
+  browsers and authenticated profiles.
+
+Checkpoint P0055-C24 is the current authority.

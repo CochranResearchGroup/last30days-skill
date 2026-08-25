@@ -1235,16 +1235,23 @@ Current State:
   The configured session remains commandable and passes the existing safe
   exact-default-alias validator for both sources; simple concurrency is ruled
   out. No repair or live retry occurred.
+- Plan 0055 version 24/C24 installs service 0.3.63 with the exact lifecycle-
+  error alias fallback and consumes one combined 20/20 feed tick. Both lanes
+  prove the fallback by moving from broker `tab/failed` to successful alias
+  tab/eval operations, but the commandable alias has a different authentication
+  state: X renders its login page and LinkedIn is unauthenticated without an
+  operator ingress URL. No cards or rejection decisions were reached.
 
 Active Plan:
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
-  version 23/C23 owns retrieval-first X/LinkedIn feed completion. The bounded
+  version 24/C24 owns retrieval-first X/LinkedIn feed completion. The bounded
   unique-progress loop and current LinkedIn metadata variants are fixture
-  accepted; service 0.3.62 is installed ready and proves its durable failure-
-  evidence contract live. Both sources remain pre-observation blocked because
-  Last30days trusts a broker-advertised owner that is not commandable; the next
-  bounded unit is a provider-free route fallback regression and repair.
+  accepted; service 0.3.63 is installed ready and proves the narrow route
+  fallback live. Both sources remain pre-observation blocked because the
+  commandable compatibility alias does not share the broker-owned browser's
+  authentication state; the next bounded unit must change that premise before
+  another provider retry.
 
 Closed Plan:
 

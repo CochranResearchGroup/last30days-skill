@@ -20339,3 +20339,81 @@ Next Bounded Action:
   back to the already validated configured alias only on the exact lifecycle-
   transition error; otherwise retain fail-closed broker routing. Do not run a
   provider tick until that premise changes and the repair is validated.
+
+## Turn 333 | 2026-08-24
+
+Focus: fixture-prove and install the narrow Last30days route fallback, then run
+one combined 20-item X and LinkedIn home-feed retry.
+
+Authority Consulted:
+
+- operator `ok fix it and retry`; Plan 0055/C23; repo policy selector, TDD,
+  codebase design, CodeGraph, planning, Git, versioning, validation,
+  documentation, and closeout contracts.
+
+Decisions And Changes:
+
+- added a public regression for the exact broker lifecycle-transition failure;
+- changed shared workspace acquisition to preflight the broker command route
+  and use the already-proven exact retained alias only on that exact error;
+- preserved fail-closed behavior for every other route error and did not add a
+  lifecycle transition, browser replacement, profile replacement, or direct
+  CDP bypass;
+- released service 0.3.63 and created a schedule-disabled two-lane live config
+  with one attempt and 20-item ceiling per service.
+
+Validation Evidence:
+
+- focused X/LinkedIn/Facebook suites pass; the complete suite reports
+  `2687 passed, 7 skipped, 6 subtests passed`;
+- two builds reproduced artifact SHA-256
+  `4d1ca066bf66fe410e582a5a734d6a66bd4b946b26b2ad95d92d00a5382c705c`;
+- transactional install reports service 0.3.63/schema 16 ready and retains
+  0.3.62 for rollback;
+- preflight and terminal readback agree on
+  `tick-86048a845f0106d333038b4ca649ea2d` and config digest
+  `sha256:913a4e8af74556e2347c41ec96c17036d16eca9e6a73964596dd14940bd73833`;
+- both providers record broker `tab/failed` followed by successful alias tab
+  and eval operations, proving the installed fallback executed;
+- X then reports `auth_required`; its retained rendered page visibly contains
+  the X login form. LinkedIn reports `operator_ingress_unavailable` after an
+  unauthenticated auth evaluation and has no operator URL;
+- both results remain `0 attempted / 0 observed / 0 accepted / 0 rejected`.
+  SQLite integrity passes with zero active attempts and zero unreleased leases;
+- recurring config remains byte-identical at SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
+  and `daily-default` remains enabled/ready for `2026-08-26T00:00:00Z`.
+
+State Movement:
+
+- Plan 0055 advances to version 24/C24
+  `lifecycle_fallback_installed_alias_auth_mismatch_blocked`; P08 remains
+  `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; commandability is repaired, but live evidence proves the
+  commandable alias does not carry the broker-owned browser's authentication
+  state. No scraper card, rejection rule, or scroll loop was reached.
+
+Authority Classification:
+
+- `inherited_authority`; the operator authorized the repair and one retry. That
+  retry authority is now exhausted. Agent Browser/profile mutation remained out
+  of scope.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_failed`; readiness passed, but the sole write request was
+  rejected before queueing because group id `last30days-skill` violates the
+  underscore-only identifier contract. No second write was attempted.
+
+Next Bounded Action:
+
+- do not retry on the current alias. First expose a commandable route to the
+  already-authenticated broker-owned browser or authenticate the retained alias
+  without replacing or discarding either profile.
