@@ -21344,8 +21344,9 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- `pending_closeout`; write one source-backed installed/live result after the
-  final repository integration readback.
+- provider readiness passed and one compact source-backed installed/live
+  closeout was queued in `last30days_skill_main` as job
+  `8d257c32-0e93-42b2-8329-c45e97a5bfeb`; no duplicate write was issued.
 
 Next Bounded Action:
 
