@@ -6,7 +6,7 @@ Branch: fix/linkedin-accepted-yield
 Target: main
 Integration: fast-forward
 Roadmap: P08
-Plan version: 8
+Plan version: 9
 Date: 2026-08-25
 
 ## Objective
@@ -71,6 +71,11 @@ observation before making any authentication or content-quality claim.
   X attempt and one LinkedIn attempt, each capped at 20 accepted items. Stop at
   the first terminal receipt without changing Agent Browser or the recurring
   configuration.
+- P8 installed exact service 0.3.73 and consumed its sole combined tick. Both
+  lanes terminalized before page observation: X exposed an untyped adapter
+  exception that the worker collapsed at `adapter_execution`; LinkedIn exposed
+  a typed `agent_browser_error` at `workspace_acquisition`. Neither receipt is
+  authentication or content-quality evidence, and no retry is authorized.
 
 ## Scope
 
@@ -803,3 +808,75 @@ Next action:
 
 Checkpoint P0056-C08 is the current authority. Plan 0056 remains `OPEN` until
 the bounded installed/live receipt is reconciled.
+
+### Checkpoint P0056-C09 | 2026-08-26
+
+Plan version: 9
+
+State transition:
+
+- `successor_install_and_single_20_20_acceptance_authorized ->
+  installed_acceptance_terminal_preobservation_failures`.
+
+Progress classification:
+
+- `blocker_reduction`; the provider-neutral successor is installed and live,
+  but the one bounded tick proves two distinct pre-observation failures rather
+  than 20/20 acceptance.
+
+Authority classification:
+
+- `human_gate`; the sole P8 tick is consumed. No retry, repair, rollback,
+  Agent Browser operation, recurring-config change, incident transition, or
+  notification delivery is authorized by this checkpoint.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Evidence:
+
+- pushed source checkpoint `d590b6cbc80fb0e101512a10af71229e3f589f0b`
+  released service 0.3.73. Four deterministic artifacts agree at SHA-256
+  `d89baaa7ca1b0976894d893712b9be883e9293f02d6352f3ab10b42d0cac9266`;
+  runtime manifest SHA-256 is
+  `eb958fa36f6c86e039005095a1f633cc5eb12b803b95e94492f8c66c6d55b417`;
+- the focused release/browser selection, the complete canonical suite with
+  2,697 tests, seven skips, and eight subtests, and all MCP Go packages pass;
+- exact 0.3.73/schema 16 installed `ready`; 0.3.72 is the verified previous
+  release. MCP service readback is compatible and names the same manifest;
+- schedule-disabled tick `tick-86c0a6f0d60b4a66301e027d9e4981d5`, execution
+  `tick-attempt-052803dc2068e090b7ad2ffdf503eee4`, and sanitized config digest
+  `sha256:d7a6c0100212ab8b7e23ecc97d516b9dbd844bc4421bb2146e89a3c8732efbfa`
+  terminalized `complete_degraded` after exactly two attempts, 29 wall seconds,
+  one accounted network request, zero items, zero model tokens, and zero cost;
+- X attempt `provider-attempt-eed3fb9a676701bbefe5edbe689f0393`
+  terminalized `adapter_exception` at `adapter_execution`, signature
+  `sha256:07bfc774cc33ac79038bada703a8ddaede5886b64e69b5944def5a8dde4b4087`,
+  with `0 attempted / 0 observed / 0 accepted / 0 rejected` and no durable
+  browser-operation evidence. The acquisition worker's generic exception
+  boundary deliberately discards the exception class and message, so this is
+  a Last30days observability limit and cannot establish browser or auth cause;
+- LinkedIn attempt `provider-attempt-7b37d65cb4011a09e32434766dbc9f68`
+  terminalized `agent_browser_error` at `workspace_acquisition`, signature
+  `sha256:c1c6d0ff8a494273a826a1aa7bd837ac915fb7e8af0f35670cf007510b365376`,
+  at `0/0/0/0`. Its only durable operation is `service/ok` in 73 ms, proving
+  the service boundary was reached but not a tab, auth probe, or feed;
+- both resource leases have exact release timestamps. SQLite quick check is
+  `ok`, with zero active tick attempts, provider attempts, or unreleased
+  leases. The tick created zero incidents and zero notifications;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+  `daily-default` remains enabled/ready for `2026-08-27T00:00:00Z` and was not
+  advanced by the manual tick.
+
+Next action:
+
+- stop. Under fresh repair authority, first preserve a bounded exception class
+  at the X adapter boundary and the specific typed acquisition reason at the
+  LinkedIn boundary, then fixture the exact installed paths before considering
+  another provider attempt. Do not infer logout, scraper quality, or feed
+  exhaustion from either zero-observation receipt.
+
+Checkpoint P0056-C09 is the current authority. Plan 0056 remains `OPEN` because
+neither lane reached observation or 20 accepted items.

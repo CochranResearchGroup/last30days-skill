@@ -1275,7 +1275,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`
-  version 8/C08 owns the bounded successor. Its provider-free repair now uses
+  version 9/C09 owns the bounded successor. Its provider-free repair now uses
   the broker's available queued service request without invented route hints,
   validates browser/session/URL/agent/task identity before readiness, stops on
   lease wait when no compatible service route exists, and treats blank
@@ -1304,7 +1304,13 @@ Active Plan:
   admit one schedule-disabled combined home-feed tick with one X and one
   LinkedIn attempt, each capped at 20 accepted items. The packet stops at that
   terminal receipt and leaves Agent Browser plus the recurring configuration
-  unchanged.
+  unchanged. Exact service 0.3.73 is now installed ready with 0.3.72 retained,
+  and the sole tick is consumed. Both lanes stopped before observation: X at a
+  generic `adapter_exception` whose class was not preserved, and LinkedIn at
+  `workspace_acquisition/agent_browser_error` after one successful service
+  boundary operation. Both are `0/0/0/0`, with zero incidents/notifications
+  and all leases released. The receipts prove neither logout nor feed/content
+  quality; a future retry requires fresh repair and provider authority.
 
 Closed Plan:
 

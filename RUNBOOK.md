@@ -21274,3 +21274,80 @@ Next Bounded Action:
 - validate the documentation-only closeout delta, push the feature branch,
   fast-forward `origin/main` through the documented integration path, and stop
   before install or a live X/LinkedIn attempt.
+
+## Turn 345 | 2026-08-26
+
+Focus: install the provider-neutral successor and run one bounded X plus
+LinkedIn 20/20 home-feed acceptance tick.
+
+Authority Consulted:
+
+- operator request to try again; Plan 0056/C08-C09; Roadmap P08; exact Git,
+  release, installed-service, temporary tick-config, durable receipt, SQLite,
+  schedule, recurring-config, validation, integration, and closeout evidence.
+
+Decisions And Changes:
+
+- recorded the operator's one-tick authority and restored the required
+  machine-readable active-lane catalog before release work;
+- released pushed source `d590b6cbc80fb0e101512a10af71229e3f589f0b` as
+  service 0.3.73, transactionally installed it ready, and retained 0.3.72;
+- admitted exactly one schedule-disabled combined tick with one X and one
+  LinkedIn home-feed attempt, each capped at 20 items and zero model/cost;
+- stopped at the first terminal receipt. No retry, Agent Browser mutation,
+  recurring-config change, incident transition, or notification delivery was
+  performed.
+
+Validation Evidence:
+
+- the focused release/browser suite and complete canonical suite pass; the
+  latter has 2,697 tests, seven skips, and eight subtests. All MCP Go packages
+  pass;
+- four service artifacts agree at SHA-256
+  `d89baaa7ca1b0976894d893712b9be883e9293f02d6352f3ab10b42d0cac9266`;
+  installed runtime-manifest SHA-256 is
+  `eb958fa36f6c86e039005095a1f633cc5eb12b803b95e94492f8c66c6d55b417`;
+- tick `tick-86c0a6f0d60b4a66301e027d9e4981d5` terminalized
+  `complete_degraded` at two attempts, 29 wall seconds, one network request,
+  zero items, model tokens, and cost;
+- X attempt `provider-attempt-eed3fb9a676701bbefe5edbe689f0393`
+  failed `adapter_exception` at `adapter_execution`, `0/0/0/0`, without a
+  durable exception class or browser operation. LinkedIn attempt
+  `provider-attempt-7b37d65cb4011a09e32434766dbc9f68` failed
+  `agent_browser_error` at `workspace_acquisition`, `0/0/0/0`, after one
+  `service/ok` operation lasting 73 ms;
+- zero incidents and notifications were created; both resource leases are
+  released; SQLite quick check is `ok`; active tick/provider attempts and
+  unreleased leases are all zero;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` remains enabled/ready for `2026-08-27T00:00:00Z`.
+
+State Movement:
+
+- Plan 0056 advances to version 9/C09
+  `installed_acceptance_terminal_preobservation_failures`; P08 and Plan 0056
+  remain open because neither source reached observation or 20 accepted items.
+
+Progress Classification:
+
+- `blocker_reduction`; installed P7 behavior is live, but two pre-observation
+  error-reporting boundaries now block reliable diagnosis and acceptance.
+
+Authority Classification:
+
+- `human_gate`; the sole authorized tick is consumed and no retry is implied.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `pending_closeout`; write one source-backed installed/live result after the
+  final repository integration readback.
+
+Next Bounded Action:
+
+- stop. Under fresh authority, fixture and repair X exception-class retention
+  plus LinkedIn typed acquisition-reason retention before another live tick.
