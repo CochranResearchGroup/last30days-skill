@@ -18,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Settled, provider-neutral social tab acquisition.** Service 0.3.73 polls
+  only the exact newly attributed target while its inventory record is absent
+  or blank, bounded to six reads and five seconds. The synchronous broker
+  request remains the per-tab attribution authority, so a retained session's
+  inherited trace metadata cannot falsely reject a coherent X or LinkedIn
+  target. The shared lifecycle now lives in `agent_browser_runtime.py` rather
+  than the Facebook adapter.
+
 - **Broker reuse-route hint carry.** Service 0.3.72 carries a unique live
   browser ID and active lease session from the access plan's `profileReuse`
   evidence into an available queued `tab_new` request when the request omits
