@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 5
+Plan version: 6
 Date: 2026-08-25
 
 ## Objective
@@ -42,7 +42,17 @@ observation before making any authentication or content-quality claim.
   remain disabled;
 - the operator has now authorized a bounded testing, diagnosis, and repair
   cycle of at most five cycles; each live cycle is one schedule-disabled
-  combined tick with one 20-item X attempt and one 20-item LinkedIn attempt.
+  combined tick with one 20-item X attempt and one 20-item LinkedIn attempt;
+- all five cycles are consumed. Installed 0.3.72 proves successful broker tab
+  creation, handle-bound inventory, and exact release for both lanes, but both
+  attempts stop inside Last30days' immediate post-create identity check before
+  readiness;
+- the X target appears coherently after the immediate check, proving that a
+  newly returned handle can precede its target's visible inventory record;
+- the LinkedIn target appears on the correct feed URL but carries the retained
+  session's X `traceFilter`, while the successful broker request itself names
+  the LinkedIn agent, task, and target service. Inventory `traceFilter` is
+  therefore not established as per-tab attribution authority.
 
 ## Scope
 
@@ -52,13 +62,16 @@ observation before making any authentication or content-quality claim.
   direct `profileReuse` recommends waiting; preserve its route hints or fill
   missing browser/session hints only from unique broker-provided
   `profileReuse` evidence, never service status;
-- validate a returned `serviceTabHandle` against the requested source,
-  selected profile, browser identity, owner session, target ID, URL hostname,
-  validity, and service attribution before readiness or authentication probes;
+- validate a returned `serviceTabHandle` against the exact synchronous broker
+  request, selected profile, owner session, target ID, URL hostname, and
+  validity before readiness or authentication probes;
 - treat the broker-issued handle as the logical browser authority and permit
-  tab inventory to expose a distinct physical browser ID; require exact target,
-  session, hostname, and service attribution instead of inferring equality
-  across those two identity layers;
+  tab inventory to expose a distinct physical browser ID or inherited session
+  trace. Require exact target, session, and hostname coherence instead of
+  inferring equality or per-tab attribution from inventory metadata;
+- bounded-poll the exact handle-bound tab inventory after `tab_new` while the
+  target is absent or still blank, without issuing another tab request,
+  navigating, switching tabs, or broadening the browser/profile scope;
 - require meaningful rendered-page evidence after readiness: a target must be
   live, on the requested hostname, non-blank, and carry bounded URL/title/DOM
   signals before authentication classification;
@@ -98,7 +111,10 @@ observation before making any authentication or content-quality claim.
    the same access plan. Only when it is unavailable or blocked does a direct
    `profileReuse` wait terminalize acquisition.
 2. **Target identity:** every readiness, navigation, evaluation, scroll, and
-   release operation must name the same validated service-tab handle.
+   release operation must name the same validated service-tab handle. The
+   request-local broker response is attribution authority; retained-session
+   inventory trace is diagnostic only unless Agent Browser establishes a
+   stronger per-tab contract.
 3. **Profile preservation:** the configured `last30days-facebook` profile and
    its existing browser remain untouched on every failure path.
 4. **Evidence-bound auth:** only explicit signed-out evidence may produce
@@ -117,10 +133,11 @@ observation before making any authentication or content-quality claim.
 |---|---|---|---|---|
 | P1 | C30 evidence | Red fixtures reproduce broker-wait bypass, cross-attributed handle, blank LinkedIn auth, and ambiguous X auth | focused fixtures/tests only | all named defects fail before implementation |
 | P2 | P1 | Broker and handle-coherence gates fail closed without touching browser state | `agent_browser_config.py`, shared browser client, focused tests | route and target matrices pass |
-| P3 | P2 | Meaningful-page and evidence-bound auth state machines for X and LinkedIn | `x_browser.py`, `linkedin.py`, incident mapping/tests | explicit login, authenticated, checkpoint, blank, ambiguous, and mismatch cases pass |
 | P4 | P3 | Durable receipt and notification semantics preserve the exact failure boundary | worker/tick adapter and incident tests as required | no ambiguous case becomes reauthentication |
 | P5 | P4 | Focused, package, complete-suite, reproducible-build, and installed-runtime acceptance | version/release surfaces if code changes ship | exact successor is ready with rollback retained |
 | P6 | P5 plus current bounded authority | Up to three schedule-disabled combined 20/20 acceptance ticks within the five-cycle total budget | temporary private config and durable runtime receipts only | both lanes prove 20/20 or the fifth cycle terminalizes |
+| P7 | P6 terminal evidence plus fresh implementation authority | Red/green post-create settling and request-attribution contract | shared browser client plus focused fixtures only | delayed X inventory and inherited-trace LinkedIn cases pass while true target/session/hostname mismatches fail closed |
+| P8 | P7 plus fresh install/live authority | Validated successor and one schedule-disabled combined 20/20 acceptance tick | release surfaces and temporary private tick config only | both lanes prove 20/20 or the one authorized receipt terminalizes |
 
 Packets P2 through P4 are tightly coupled on the critical path and should be
 implemented serially. Provider-free fixture authoring and notification-contract
@@ -148,14 +165,35 @@ No subagent delegation is authorized by the current orchestration policy.
 
 - Validate the tab-new response before storing `_service_tab_handle`.
 - Bind expected source hostname, selected profile, logical browser ID, owner
-  session, target ID, agent name, and task name into an immutable acquisition
-  record.
+  session, target ID, agent name, task name, and target service into an
+  immutable request-local acquisition record. Construct it only from the
+  request submitted by this client and the handle returned by that same
+  synchronous broker response.
 - Do not compare the handle's logical browser ID to tab inventory's physical
   browser ID. The broker-issued handle plus exact live target ID, owner session,
-  hostname, and agent/task attribution form the coherence proof.
+  and hostname form the inventory coherence proof.
+- Treat inventory `traceFilter` as diagnostic retained-session metadata. A
+  mismatched trace cannot negate a coherent request-local broker handle, and a
+  matching trace cannot rescue the wrong target, session, or hostname.
 - Require handle validity and live target presence before each first control
   and immediately before release; preserve bounded expected/observed fields in
   diagnostics without cookies, page text, tokens, or private content.
+
+### 2a. Post-create inventory settling
+
+- Replace the one-shot inventory read with an injected-clock, deterministic
+  bounded poll on the exact returned session and target. Use at most six
+  inventory reads and at most five wall-clock seconds, whichever is reached
+  first; tests replace sleeping with a recorder.
+- Retry only when the exact target is absent or its URL is empty/about:blank.
+  A present non-empty foreign hostname or a present non-empty conflicting
+  owner session fails immediately.
+- Success requires the exact target ID, no conflicting owner session, and the
+  requested hostname. The next operation is then the existing handle-bound
+  readiness call; polling itself never navigates or creates another tab.
+- Exhaustion raises the existing typed acquisition failure with safe counts
+  and the last observed identity state. The caller retains exact-handle release
+  behavior and cannot close the shared browser or any unrelated tab.
 
 ### 3. Meaningful-page readiness
 
@@ -200,10 +238,12 @@ ambiguous result and gain the same meaningful-page prerequisite.
 2. Correct broker reuse plus a coherent service-tab handle reaches readiness,
    navigation, authentication, extraction, scrolling, and exact release on one
    target ID; every control carries that same handle.
-3. Wrong source/task attribution, missing target, `browser_missing`, blank
-   target, and stale handle each fail before auth classification and never
-   close a tab or browser. A logical-handle/physical-inventory browser-ID
-   difference alone is accepted when all other ownership fields agree.
+3. Missing target after the settling bound, `browser_missing`, non-empty wrong
+   hostname, conflicting owner session, blank target after the settling bound,
+   and stale handle each fail before auth classification and never close a tab
+   or browser. A logical-handle/physical-inventory browser-ID difference or
+   inherited inventory trace alone is accepted when target, session, hostname,
+   and request-local broker ownership agree.
 4. X and LinkedIn truth-table fixtures distinguish authenticated, explicit
    login, checkpoint, restriction, blank/loading, and ambiguous states.
 5. No blank, ambiguous, or target-mismatch fixture creates or refreshes a
@@ -224,6 +264,13 @@ ambiguous result and gain the same meaningful-page prerequisite.
     eight-scroll ceiling, with observed, accepted, rejected, duplicate, scroll,
     unique-observation, and stagnation counts preserved. A bounded shortfall is
     truthful evidence but does not close this plan.
+11. A deterministic X fixture returns a valid handle, omits its target from the
+    first inventories, then exposes the coherent X target; it reaches
+    `handle-ready` once without a second `tab_new`.
+12. A deterministic LinkedIn fixture returns a LinkedIn-attributed handle whose
+    coherent target carries inherited `x-scraper/x-feed` trace metadata; it
+    reaches readiness and exact release, while crossed target/session/hostname
+    fixtures still fail closed.
 
 ## Validation Plan
 
@@ -232,6 +279,11 @@ ambiguous result and gain the same meaningful-page prerequisite.
   `tests/test_x_browser.py`, `tests/test_linkedin.py`, and
   `tests/test_service_tick_incidents.py`; demonstrate each named regression
   fails before its fix when practical.
+- **Post-create feedback loop:** one focused `tests/test_facebook.py` selection
+  first fails on delayed target visibility and inherited-trace LinkedIn
+  attribution, then passes with injected sleeping/clock control. The same
+  selection retains immediate-failure cases for conflicting session and
+  non-empty foreign hostname.
 - **Boundary integration:** acquisition-worker and tick-adapter tests prove
   failure stage/signature and incident semantics survive process boundaries.
 - **Presubmit:** focused social-browser, worker, tick, release/version, package,
@@ -254,7 +306,12 @@ ambiguous result and gain the same meaningful-page prerequisite.
   coherent handle per provider attempt;
 - total repair cycles: at most five; Cycles 1 and 2 are provider-free repair
   and release/install validation, while each remaining live cycle permits at
-  most one X attempt and one LinkedIn attempt in one combined tick;
+  most one X attempt and one LinkedIn attempt in one combined tick; this bound
+  is exhausted and is not reset by Plan version 6;
+- P7 planning is authorized by the operator's repair-planning request. P7
+  implementation, a successor install, and P8 live acceptance require a fresh
+  bounded authority packet with explicit implementation and provider-effect
+  ceilings;
 - scroll ceiling: existing maximum eight per lane;
 - no-progress bound: two consecutive implementation checkpoints require a
   local split or tactic change before continuation;
@@ -280,9 +337,8 @@ ambiguous result and gain the same meaningful-page prerequisite.
 - installed Agent Browser access-plan and service-request schemas are external
   contracts; Last30days consumes them but does not repair that runtime;
 - profile `last30days-facebook` and recurring configuration are preserved;
-- implementation, installation, and the bounded combined live ticks may
-  proceed under the operator's explicit five-cycle testing/repair direction,
-  subject to the validation, preflight, and first-terminal-receipt stops;
+- the five-cycle implementation/install/live direction is exhausted. Plan
+  version 6 does not renew it; P7/P8 effects require fresh bounded authority;
 - no direct browser or profile mutation is an escape hatch for a failed
   Last30days contract.
 
@@ -535,3 +591,52 @@ Next action:
 
 Checkpoint P0056-C05 is the current authority. Plan 0056 remains `OPEN`
 because the required X and LinkedIn 20/20 outcome was not achieved.
+
+### Checkpoint P0056-C06 | 2026-08-25
+
+Plan version: 6
+
+State transition:
+
+- `five_cycle_budget_exhausted_post_create_coherence_blocked ->
+  post_create_settling_and_request_attribution_repair_planned`.
+
+Progress classification:
+
+- `blocker_reduction`; Cycle 5 evidence is converted into a bounded,
+  red-capable repair packet that preserves cross-request isolation without
+  treating retained-session trace metadata as per-tab ownership proof.
+
+Authority classification:
+
+- `inherited_authority`; the operator requested repair planning only. No code,
+  install, provider attempt, browser operation, or recurring configuration
+  change is authorized or performed by this checkpoint.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Evidence:
+
+- current source performs one immediate handle-bound `tab list`, then rejects
+  a missing target or mismatched inventory `traceFilter` before `handle-ready`;
+- Cycle 5 later-target evidence proves delayed X inventory coherence and a
+  coherent LinkedIn feed target with retained-session X trace despite the
+  successful LinkedIn-attributed broker request;
+- the planned feedback loop uses at most six exact-session inventory reads and
+  five seconds, treats only absent/blank target state as transient, and keeps
+  session/hostname conflicts fail-fast;
+- branch and origin agree at
+  `ab46af78a76513cc9569593b0bba4d24b4013800` before this planning update;
+  installed service remains 0.3.72 and no runtime effect is part of this slice.
+
+Next action:
+
+- under fresh bounded implementation authority, execute P7 test-first. Do not
+  install or run another combined 20/20 tick until its focused and canonical
+  provider-free validation is green and a separate live-effect ceiling is
+  explicit.
+
+Checkpoint P0056-C06 is the current planning authority. Plan 0056 remains
+`OPEN`; the five-cycle live/repair budget remains exhausted.

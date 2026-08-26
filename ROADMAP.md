@@ -1275,7 +1275,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`
-  version 5/C05 owns the bounded successor. Its provider-free repair now uses
+  version 6/C06 owns the bounded successor. Its provider-free repair now uses
   the broker's available queued service request without invented route hints,
   validates browser/session/URL/agent/task identity before readiness, stops on
   lease wait when no compatible service route exists, and treats blank
@@ -1288,8 +1288,11 @@ Active Plan:
   guard rejected every tab request. Installed 0.3.72 carries those hints and
   proves successful tab creation, inventory, and exact release for both lanes,
   but the final tick still stops in Last30days's immediate coherence probe at
-  `0/0/0/0`. The five-cycle budget is exhausted; Plan 0056 remains open pending
-  fresh authority for a bounded inventory-readiness and attribution repair.
+  `0/0/0/0`. The five-cycle budget is exhausted. C06 now specifies the next
+  provider-free repair: bounded exact-target inventory settling and
+  request-local broker attribution, with retained-session `traceFilter`
+  diagnostic only. Plan 0056 remains open pending fresh implementation and
+  live-effect authority; no sixth provider attempt is implied by the revision.
 
 Closed Plan:
 

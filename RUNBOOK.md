@@ -21132,3 +21132,69 @@ Next Bounded Action:
 - stop. Under fresh authority, fixture-drive a bounded post-create inventory
   poll and adjudicate broker request attribution versus retained-session
   `traceFilter` before another combined tick.
+
+## Turn 343 | 2026-08-25
+
+Focus: convert Cycle 5's post-create evidence into a bounded repair plan
+without consuming a sixth provider cycle.
+
+Authority Consulted:
+
+- operator request to plan repairs; Plan 0056/C05; current source graph for
+  broker acquisition, `_require_service_tab_identity`, readiness, and release;
+  Cycle 5 Agent Browser receipts already preserved in C05.
+
+Decisions And Changes:
+
+- advanced Plan 0056 to version 6/C06 and added P7/P8 successor packets;
+- made the synchronous broker request plus returned handle the request-local
+  attribution authority. Exact target/session/hostname inventory remains the
+  coherence proof, while retained-session `traceFilter` is diagnostic only;
+- bounded post-create settling to at most six exact-session inventory reads
+  and five seconds. Only an absent or empty/about:blank target retries;
+  conflicting session or non-empty foreign hostname fails immediately;
+- preserved exact-handle readiness/release, shared-profile protection, the
+  exhausted five-cycle bound, and the separate fresh-authority gate for code,
+  installation, and another live 20/20 tick.
+
+Validation Evidence:
+
+- CodeGraph current-source readback confirms the existing implementation
+  performs one immediate `tab list`, rejects missing target, checks
+  session/hostname, and treats inventory agent/task trace as authoritative
+  before `handle-ready`;
+- current branch and origin agree at
+  `ab46af78a76513cc9569593b0bba4d24b4013800` before this documentation slice;
+- no code, test behavior, installed runtime, provider state, browser state,
+  recurring configuration, incident, or notification was changed.
+
+State Movement:
+
+- Plan 0056 advances to version 6/C06
+  `post_create_settling_and_request_attribution_repair_planned`; P08 and Plan
+  0056 remain open because live 20/20 acceptance is unmet.
+
+Progress Classification:
+
+- `blocker_reduction`; the next red-capable seam and ownership hierarchy are
+  now explicit, bounded, and consistent with Cycle 5 receipts.
+
+Authority Classification:
+
+- `inherited_authority`; repair planning only. The exhausted five-cycle bound
+  still blocks implementation/install/provider effects without fresh scope.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; this planning-only refinement does not supersede the C05
+  source-backed runtime memory.
+
+Next Bounded Action:
+
+- under fresh bounded implementation authority, add the delayed-X and
+  inherited-trace-LinkedIn red fixtures, implement the settling/acquisition
+  record repair, and validate provider-free before any install or live tick.
