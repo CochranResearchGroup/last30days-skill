@@ -731,7 +731,10 @@ Evidence:
   deterministic 0.3.72 service artifact SHA-256 is
   `e57cc8af1d34e1da58e63e24fa22d670b4f6653506cdc1c94a9133e0e842b49b`;
 - service version remains 0.3.72. The refreshed source manifest is a build
-  boundary only and no release artifact was installed.
+  boundary only and no release artifact was installed. Source checkpoint is
+  `a52a5e66354c517e3f35d803a031b7d90364e93d`; Graphiti closeout job
+  `b552a94e-ea5f-4da3-b819-4922be10a598` is queued in
+  `last30days_skill_main`.
 
 Next action:
 

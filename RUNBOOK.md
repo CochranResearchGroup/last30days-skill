@@ -21198,3 +21198,79 @@ Next Bounded Action:
 - under fresh bounded implementation authority, add the delayed-X and
   inherited-trace-LinkedIn red fixtures, implement the settling/acquisition
   record repair, and validate provider-free before any install or live tick.
+
+## Turn 344 | 2026-08-26
+
+Focus: repair the shared browser architecture and the two remaining
+post-create acquisition defects without installing or invoking a provider.
+
+Authority Consulted:
+
+- operator request to fix the codebase architecture, test, and merge if
+  successful; Plan 0056/C06-C07; repo architecture, TDD, CodeGraph, planning,
+  Git, versioning, validation, documentation, and closeout policies.
+
+Decisions And Changes:
+
+- moved provider-neutral Agent Browser acquisition, target coherence,
+  readiness, control, evaluation, exact release, value objects, typed failures,
+  and helpers from `facebook.py` into `agent_browser_runtime.py`;
+- changed X, LinkedIn, Reddit, YouTube, and service-acquisition cleanup to
+  depend directly on that runtime. Facebook now subclasses it for only
+  Facebook defaults, auth, query capture, and frozen-target recovery;
+- made the synchronous broker request and returned handle request-local
+  attribution authority. Retained-session `traceFilter` is diagnostic only;
+- added a six-read/five-second exact-target inventory settle bound for absent
+  or blank new targets. Conflicting session and non-empty foreign hostname
+  remain immediate failures, and polling never issues another `tab_new`;
+- refreshed the source runtime manifest without changing service version
+  0.3.72 or installing an artifact. Source checkpoint is
+  `a52a5e66354c517e3f35d803a031b7d90364e93d`.
+
+Validation Evidence:
+
+- both new regressions were demonstrated red before repair and green after;
+- the affected 322-test provider selection passes;
+- the canonical comprehensive suite passes with 2,697 tests, seven skips, and
+  eight subtests; the first canonical run's three stale test patch targets and
+  pre-checkpoint plan-audit failure were preserved and corrected before the
+  clean rerun;
+- all MCP Go packages pass; the reproducible service artifact is
+  `e57cc8af1d34e1da58e63e24fa22d670b4f6653506cdc1c94a9133e0e842b49b`;
+- the dirty-tree skill build succeeds with 152 files; CodeGraph is current and
+  resolves the provider-neutral base plus provider-specific subclasses; the
+  plan-authority audit passes with zero issues.
+
+State Movement:
+
+- Plan 0056 advances to version 7/C07
+  `provider_neutral_runtime_candidate_validation`; P08 and Plan 0056 remain
+  open because no successor installation or live 20/20 receipt is part of this
+  source architecture slice.
+
+Progress Classification:
+
+- `blocker_reduction`; the false cross-provider Facebook ownership is removed
+  and the two Cycle 5 acquisition limitations are fixture-accepted.
+
+Authority Classification:
+
+- `inherited_authority`; source, tests, push, and repository integration are
+  authorized. Install, browser, provider, recurring-config, incident, and
+  notification effects remain outside this packet.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- provider readiness passed and one compact source-backed closeout was queued
+  in `last30days_skill_main` as job
+  `b552a94e-ea5f-4da3-b819-4922be10a598`; no duplicate write was issued.
+
+Next Bounded Action:
+
+- validate the documentation-only closeout delta, push the feature branch,
+  fast-forward `origin/main` through the documented integration path, and stop
+  before install or a live X/LinkedIn attempt.
