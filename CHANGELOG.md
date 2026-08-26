@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Logical-handle versus physical-browser coherence.** Service 0.3.71 treats
+  the broker-issued service-tab handle as the logical browser authority while
+  allowing tab inventory to report its distinct physical browser ID. Target,
+  session, hostname, and agent/task attribution checks remain mandatory. This
+  removes Last30days' false acquisition rejection without weakening
+  cross-scraper ownership protection.
+
 - **Broker-authoritative social tab acquisition and evidence-bound auth.**
   Service 0.3.70 submits Agent Browser's available queued service request
   without inventing browser or session hints, validates the returned target's

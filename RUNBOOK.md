@@ -20893,3 +20893,80 @@ Next Bounded Action:
 
 - execute Cycle 2: comprehensive validation, version/release checkpoint,
   reproducible build, transactional installation, and installed preflight.
+
+## Turn 340 | 2026-08-25
+
+Focus: install the Cycle 2 successor, consume Cycle 3's combined 20/20 tick,
+and repair its common live-only acquisition rejection.
+
+Authority Consulted:
+
+- operator five-cycle testing/diagnosis/repair authorization; Plan 0056/C02;
+  repo TDD, diagnosis, CodeGraph, Agent Browser service, release, installation,
+  validation, planning, documentation, Git, and closeout contracts.
+
+Decisions And Changes:
+
+- released pushed commit `992de763c99339e6bca11f3464cb4bd153cd7323`
+  as reproducible service 0.3.70 and transactionally installed it with 0.3.68
+  and 0.3.69 retained;
+- created one owner-private, schedule-disabled config selecting only X and
+  LinkedIn home feeds, one attempt and 20 items each, zero cost/model budget;
+- consumed exactly one combined tick and stopped at its terminal receipt;
+- inferred no authentication or content-quality conclusion: both lanes stopped
+  at workspace acquisition with zero attempted/observed/accepted/rejected;
+- localized the common failure to the new handle-bound tab inventory probe:
+  broker tab creation is not timing-recorded, while the single recorded service
+  operation is that probe; the newly added logical-versus-physical browser-ID
+  equality check matches the C30 evidence and fails both lanes before readiness;
+- added a red/green regression accepting a broker logical handle whose exact
+  live target reports a different physical browser ID, while retaining exact
+  session, hostname, target, and agent/task attribution checks;
+- changed no Agent Browser code or state, browser/profile state, recurring
+  configuration, incident state, or notification routing.
+
+Validation Evidence:
+
+- the complete pre-install suite passed: 2,693 tests, seven skips, six subtests;
+- three clean 0.3.70 builds agreed at artifact SHA-256
+  `f9b190b3c8df4b7a09d933b4531067d505119719a629745b5211e1e717916456`;
+- installed 0.3.70/schema 16 is ready with runtime-manifest SHA-256
+  `4da3dea4dbfb5b147980a66580bce17f126f0c031de5efd701123dfdf1c10ba1`;
+- preflight and terminal receipt agree on tick
+  `tick-1af6ef03e10052f44592a6d9448b3c9f`, config digest
+  `sha256:b93309014df9a7200bd8062b38d027f9293f9431fe14b71d22ca97648dca94f7`,
+  two attempts, 40 items, 100 requests, 240 seconds, and zero model/cost;
+- X attempt `provider-attempt-56b1096c567efbe7bf773303acd5ae0d`
+  and LinkedIn attempt `provider-attempt-335373cc29d193af2d0581316e70cc73`
+  both failed transiently at `workspace_acquisition` with exactly one recorded
+  service operation and `0/0/0/0`; no incident or notification was created;
+- focused browser/config/incident tests pass after the 0.3.71 repair, including
+  the distinct-physical-ID acceptance and wrong-attribution rejection.
+
+State Movement:
+
+- Plan 0056 advances to version 3/C03
+  `installed_logical_physical_identity_rejection_localized`; P08 remains open.
+
+Progress Classification:
+
+- `blocker_reduction`; false logout is eliminated and the common live-only
+  acquisition failure now has a minimal green repair.
+
+Authority Classification:
+
+- `inherited_authority`; Cycles 2 and 3 are consumed. Cycle 4 is the next
+  allowed installed repair plus combined tick.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `pending_closeout`; the live outcome remains pre-observation.
+
+Next Bounded Action:
+
+- validate, release, and install service 0.3.71, then consume Cycle 4's single
+  combined 20/20 tick and stop at its terminal receipt.

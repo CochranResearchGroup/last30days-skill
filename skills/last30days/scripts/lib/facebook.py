@@ -699,7 +699,6 @@ class CliAgentBrowserClient:
                 {"browserId": browser_id, "sessionName": session_name}
             )
             self._require_service_tab_identity(
-                browser_id=browser_id,
                 session_name=session_name,
                 target_id=target_id,
                 start_url=request.start_url,
@@ -1896,7 +1895,6 @@ class CliAgentBrowserClient:
     def _require_service_tab_identity(
         self,
         *,
-        browser_id: str,
         session_name: str,
         target_id: str,
         start_url: str,
@@ -1922,12 +1920,6 @@ class CliAgentBrowserClient:
             raise FacebookScraperFailure(
                 "agent_browser_error",
                 "agent-browser service tab handle target is not live",
-            )
-        observed_browser_id = str(target.get("browserId") or "")
-        if observed_browser_id and observed_browser_id != browser_id:
-            raise FacebookScraperFailure(
-                "agent_browser_error",
-                "agent-browser service tab handle browser identity is inconsistent",
             )
         observed_session_name = str(
             target.get("sessionId") or target.get("ownerSessionId") or ""

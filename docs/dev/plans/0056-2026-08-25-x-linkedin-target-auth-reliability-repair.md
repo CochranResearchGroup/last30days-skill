@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 2
+Plan version: 3
 Date: 2026-08-25
 
 ## Objective
@@ -54,8 +54,10 @@ observation before making any authentication or content-quality claim.
 - validate a returned `serviceTabHandle` against the requested source,
   selected profile, browser identity, owner session, target ID, URL hostname,
   validity, and service attribution before readiness or authentication probes;
-- accept logical-versus-physical browser identity only through an explicit
-  broker-provided canonical alias, never by Last30days inference;
+- treat the broker-issued handle as the logical browser authority and permit
+  tab inventory to expose a distinct physical browser ID; require exact target,
+  session, hostname, and service attribution instead of inferring equality
+  across those two identity layers;
 - require meaningful rendered-page evidence after readiness: a target must be
   live, on the requested hostname, non-blank, and carry bounded URL/title/DOM
   signals before authentication classification;
@@ -145,8 +147,9 @@ No subagent delegation is authorized by the current orchestration policy.
 - Bind expected source hostname, selected profile, logical browser ID, owner
   session, target ID, agent name, and task name into an immutable acquisition
   record.
-- Reconcile a physical browser ID only from an explicit Agent Browser alias or
-  canonical-browser field. Otherwise return `tab_handle_identity_mismatch`.
+- Do not compare the handle's logical browser ID to tab inventory's physical
+  browser ID. The broker-issued handle plus exact live target ID, owner session,
+  hostname, and agent/task attribution form the coherence proof.
 - Require handle validity and live target presence before each first control
   and immediately before release; preserve bounded expected/observed fields in
   diagnostics without cookies, page text, tokens, or private content.
@@ -194,10 +197,10 @@ ambiguous result and gain the same meaningful-page prerequisite.
 2. Correct broker reuse plus a coherent service-tab handle reaches readiness,
    navigation, authentication, extraction, scrolling, and exact release on one
    target ID; every control carries that same handle.
-3. Wrong source/task attribution, missing target, `browser_missing`, logical-
-   physical browser disagreement without an explicit alias, blank target, and
-   stale handle each fail before auth classification and never close a tab or
-   browser.
+3. Wrong source/task attribution, missing target, `browser_missing`, blank
+   target, and stale handle each fail before auth classification and never
+   close a tab or browser. A logical-handle/physical-inventory browser-ID
+   difference alone is accepted when all other ownership fields agree.
 4. X and LinkedIn truth-table fixtures distinguish authenticated, explicit
    login, checkpoint, restriction, blank/loading, and ambiguous states.
 5. No blank, ambiguous, or target-mismatch fixture creates or refreshes a
@@ -371,3 +374,51 @@ Next action:
   reproducible build, transactional install, and installed-runtime preflight.
 
 Checkpoint P0056-C02 is the current authority.
+
+### Checkpoint P0056-C03 | 2026-08-25
+
+Plan version: 3
+
+State transition:
+
+- `provider_free_target_auth_contract_green ->
+  installed_logical_physical_identity_rejection_localized`.
+
+Progress classification:
+
+- `blocker_reduction`; installed service 0.3.70 and one combined 20/20 tick
+  prove the false-logout repair while localizing both pre-readiness failures to
+  Last30days' new tab-inventory coherence probe.
+
+Authority classification:
+
+- `inherited_authority`; Cycles 2 and 3 are consumed within the operator's
+  five-cycle testing and repair budget.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Evidence:
+
+- pushed commit `992de763c99339e6bca11f3464cb4bd153cd7323` built three
+  identical 0.3.70 artifacts at SHA-256
+  `f9b190b3c8df4b7a09d933b4531067d505119719a629745b5211e1e717916456`;
+- the complete canonical suite passed with 2,693 tests, seven skips, and six
+  subtests before installation; 0.3.70 installed ready on schema 16 with
+  0.3.68 and 0.3.69 retained;
+- tick `tick-1af6ef03e10052f44592a6d9448b3c9f` used one 20-item
+  attempt per lane and terminalized `complete_degraded` at `0/0/0/0` for X and
+  LinkedIn, with `workspace_acquisition` / `agent_browser_error`, one recorded
+  service operation each, zero incidents, and zero notifications;
+- the recorded operation is the new handle-bound tab inventory probe. A red
+  provider-free case then reproduced rejection when the broker handle's
+  logical browser ID differs from the tab record's physical browser ID; the
+  repaired case passes while the wrong-agent/task case still fails closed.
+
+Next action:
+
+- release and install service 0.3.71, then consume Cycle 4's single combined
+  20/20 tick and inspect its first terminal receipt.
+
+Checkpoint P0056-C03 is the current authority.

@@ -1209,7 +1209,7 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual("x-owned", workspace.target_id)
         self.assertEqual(["tab_new", "tab_list", "ui_action"], service_actions)
 
-    def test_broker_tab_identity_mismatch_stops_before_readiness(self):
+    def test_broker_logical_handle_accepts_a_distinct_physical_tab_browser(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         logical_browser_id = "session:last30days-facebook--last30days-facebook"
         physical_browser_id = "session:handoff-social"
@@ -1260,6 +1260,10 @@ class FacebookCliAdapterTests(unittest.TestCase):
                             "browserId": physical_browser_id,
                             "sessionId": broker_session,
                             "url": "https://www.linkedin.com/feed/",
+                            "traceFilter": {
+                                "agentName": "linkedin-scraper",
+                                "taskName": "linkedin-home-feed",
+                            },
                         }
                     ]
                 }
@@ -1281,19 +1285,19 @@ class FacebookCliAdapterTests(unittest.TestCase):
         ), mock.patch.object(
             facebook.agent_browser_config, "record_access_plan"
         ):
-            with self.assertRaises(facebook.FacebookScraperFailure) as raised:
-                client.acquire_workspace(
-                    request(
-                        start_url="https://www.linkedin.com/feed/",
-                        agent_name="linkedin-scraper",
-                        task_name="linkedin-home-feed",
-                        target_service_id="linkedin",
-                    )
+            workspace = client.acquire_workspace(
+                request(
+                    start_url="https://www.linkedin.com/feed/",
+                    agent_name="linkedin-scraper",
+                    task_name="linkedin-home-feed",
+                    target_service_id="linkedin",
                 )
+            )
 
-        self.assertEqual("agent_browser_error", raised.exception.error_type)
-        self.assertIn("browser identity", str(raised.exception))
-        self.assertEqual(["tab_new", "tab_list"], service_actions)
+        self.assertEqual(logical_browser_id, workspace.browser_id)
+        self.assertEqual(broker_session, workspace.session_name)
+        self.assertEqual("linkedin-owned", workspace.target_id)
+        self.assertEqual(["tab_new", "tab_list", "ui_action"], service_actions)
 
     def test_broker_tab_attribution_mismatch_stops_before_readiness(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
