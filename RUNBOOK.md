@@ -20821,3 +20821,75 @@ Next Bounded Action:
 - execute Plan 0056/P1: add red-capable provider-free fixtures for broker-wait
   bypass, cross-attributed handle, blank LinkedIn auth, and ambiguous X auth,
   then stop at the exact failing assertions before production changes.
+
+## Turn 339 | 2026-08-25
+
+Focus: execute Cycle 1 of the bounded X/LinkedIn 20-item diagnosis and repair
+loop.
+
+Authority Consulted:
+
+- operator authorization for up to five testing, diagnosis, and repair cycles;
+  Plan 0056/C01; repo CodeGraph, TDD, diagnosis, browser-service, architecture,
+  planning, validation, documentation, Git, and release policies.
+
+Decisions And Changes:
+
+- corrected the C01 broker interpretation: an available and unblocked
+  `decision.serviceRequest` is the authoritative queued tab route even when
+  direct `profileReuse` recommends `wait_for_profile_lease`;
+- submit that broker request without caller-invented browser/session hints and
+  reject lease-wait acquisition only when the service request is unavailable,
+  blocked, malformed, or absent;
+- validate the returned service target against browser ID, owner session,
+  target ID, hostname, and any present agent/task attribution before readiness;
+- classify LinkedIn DOM with neither signed-in nor explicit signed-out evidence
+  as `auth_state_ambiguous`, and perform one same-tab feed reprobe before that
+  classification;
+- normalize shared-client acquisition failures through X's typed failure
+  boundary; preserve X's existing one same-tab auth reprobe and defer selector
+  expansion until a correctly attributed live target proves it necessary;
+- changed no Agent Browser code or state, browser/profile state, recurring
+  configuration, provider data, incidents, or notifications.
+
+Validation Evidence:
+
+- red/green public regressions cover broker-request precedence, browser
+  identity mismatch, agent/task attribution mismatch, blank LinkedIn auth, and
+  the single LinkedIn reprobe;
+- the focused selection
+  `tests/test_agent_browser_config.py tests/test_facebook.py
+  tests/test_x_browser.py tests/test_linkedin.py
+  tests/test_service_tick_incidents.py` passes: 203 passed and 3 skipped;
+- its only intermediate regression was the obsolete fixture that expected a
+  status-derived CDP route to override broker lease wait; it now proves the
+  opposite fail-closed contract.
+
+State Movement:
+
+- Plan 0056 advances to version 2/C02
+  `provider_free_target_auth_contract_green`; P08 remains `OPEN`.
+
+Progress Classification:
+
+- `blocker_reduction`; the exact route and false-auth defects now have green
+  provider-free contracts, while installed and live 20/20 proof remain open.
+
+Authority Classification:
+
+- `inherited_authority`; Cycle 1 is consumed. Cycles 2 through 5 remain
+  available under the bounded repair objective.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `pending_closeout`; durable memory will be attempted after installed/live
+  acceptance evidence exists.
+
+Next Bounded Action:
+
+- execute Cycle 2: comprehensive validation, version/release checkpoint,
+  reproducible build, transactional installation, and installed preflight.

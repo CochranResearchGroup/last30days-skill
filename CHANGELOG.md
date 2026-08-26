@@ -18,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Broker-authoritative social tab acquisition and evidence-bound auth.**
+  Service 0.3.70 submits Agent Browser's available queued service request
+  without inventing browser or session hints, validates the returned target's
+  browser/session/URL/agent/task identity before readiness, and stops when a
+  lease wait has no compatible service route. LinkedIn now treats blank DOM
+  evidence as ambiguous rather than logout and performs one same-tab reprobe;
+  X preserves the same typed ambiguous-auth boundary.
+
 - **Schema-valid retained-tab navigation.** Service 0.3.69 moves the
   `domcontentloaded` wait condition into Agent Browser's bounded navigation
   action parameters and gives the 15-second attributed-tab readiness job a

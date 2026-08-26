@@ -1116,6 +1116,272 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual("https://operator.example/token", first.operator_url)
         self.assertEqual(8, invoke.call_count)
 
+    def test_broker_service_request_remains_authoritative_when_profile_reuse_waits(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        browser_id = "session:last30days-facebook--last30days-facebook"
+        broker_session = "handoff-social"
+        plan = {
+            "selectedProfile": {"id": "last30days-facebook"},
+            "decision": {
+                "serviceRequest": {
+                    "available": True,
+                    "blockedByAcquisition": False,
+                    "blockedByLifecycleOwner": False,
+                    "request": {
+                        "action": "tab_new",
+                        "serviceName": "last30days",
+                        "agentName": "x-scraper",
+                        "taskName": "x-feed",
+                        "targetServiceIds": ["x"],
+                        "runtimeProfile": "last30days-facebook",
+                        "profileLeasePolicy": "wait",
+                        "url": "https://x.com/home",
+                    },
+                },
+                "profileReuse": {
+                    "recommendedAction": "wait_for_profile_lease",
+                    "compatibleLiveBrowserCount": 0,
+                    "activeLeaseSessionIds": [broker_session],
+                    "sameProfileLiveBrowserIds": [browser_id],
+                    "sharedAcquisition": {"mode": None},
+                },
+                "launchPosture": {"remoteViewRecommended": True},
+            },
+        }
+        handle = {
+            "handleId": "tab-handle-x",
+            "browserId": browser_id,
+            "sessionName": broker_session,
+            "targetId": "x-owned",
+        }
+        service_actions = []
+
+        def invoke(args, **_kwargs):
+            if args[:2] == ["service", "access-plan"]:
+                return plan
+            arguments = client._service_request_arguments(args, None)
+            self.assertIsNotNone(arguments)
+            return service_request(arguments)
+
+        def service_request(arguments, **_kwargs):
+            service_actions.append(arguments["action"])
+            if arguments["action"] == "tab_new":
+                self.assertNotIn("browserId", arguments)
+                self.assertNotIn("sessionName", arguments)
+                return {
+                    "serviceTabHandle": handle,
+                    "url": "https://x.com/home",
+                }
+            if arguments["action"] == "tab_list":
+                return {
+                    "tabs": [
+                        {
+                            "targetId": "x-owned",
+                            "browserId": browser_id,
+                            "sessionId": broker_session,
+                            "url": "https://x.com/home",
+                        }
+                    ]
+                }
+            if arguments["action"] == "ui_action":
+                self.assertEqual(handle, arguments["serviceTabHandle"])
+                return {"ok": True}
+            raise AssertionError(f"unexpected service action: {arguments}")
+
+        with mock.patch.object(
+            client, "_invoke", side_effect=invoke
+        ), mock.patch.object(
+            client, "_invoke_service_request", side_effect=service_request
+        ), mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ):
+            workspace = client.acquire_workspace(
+                request(
+                    start_url="https://x.com/home",
+                    agent_name="x-scraper",
+                    task_name="x-feed",
+                    target_service_id="x",
+                )
+            )
+
+        self.assertEqual(browser_id, workspace.browser_id)
+        self.assertEqual(broker_session, workspace.session_name)
+        self.assertEqual("x-owned", workspace.target_id)
+        self.assertEqual(["tab_new", "tab_list", "ui_action"], service_actions)
+
+    def test_broker_tab_identity_mismatch_stops_before_readiness(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        logical_browser_id = "session:last30days-facebook--last30days-facebook"
+        physical_browser_id = "session:handoff-social"
+        broker_session = "handoff-social"
+        plan = {
+            "selectedProfile": {"id": "last30days-facebook"},
+            "decision": {
+                "serviceRequest": {
+                    "available": True,
+                    "blockedByAcquisition": False,
+                    "blockedByLifecycleOwner": False,
+                    "request": {
+                        "action": "tab_new",
+                        "serviceName": "last30days",
+                        "agentName": "linkedin-scraper",
+                        "taskName": "linkedin-home-feed",
+                        "targetServiceIds": ["linkedin"],
+                        "runtimeProfile": "last30days-facebook",
+                        "profileLeasePolicy": "wait",
+                        "url": "https://www.linkedin.com/feed/",
+                    },
+                },
+                "profileReuse": {
+                    "recommendedAction": "wait_for_profile_lease",
+                },
+            },
+        }
+        handle = {
+            "handleId": "tab-handle-linkedin",
+            "browserId": logical_browser_id,
+            "sessionName": broker_session,
+            "targetId": "linkedin-owned",
+        }
+        service_actions = []
+
+        def service_request(arguments, **_kwargs):
+            service_actions.append(arguments["action"])
+            if arguments["action"] == "tab_new":
+                return {
+                    "serviceTabHandle": handle,
+                    "url": "https://www.linkedin.com/feed/",
+                }
+            if arguments["action"] == "tab_list":
+                return {
+                    "tabs": [
+                        {
+                            "targetId": "linkedin-owned",
+                            "browserId": physical_browser_id,
+                            "sessionId": broker_session,
+                            "url": "https://www.linkedin.com/feed/",
+                        }
+                    ]
+                }
+            if arguments["action"] == "ui_action":
+                return {"ok": True}
+            raise AssertionError(f"unexpected service action: {arguments}")
+
+        def invoke(args, **_kwargs):
+            if args[:2] == ["service", "access-plan"]:
+                return plan
+            arguments = client._service_request_arguments(args, None)
+            self.assertIsNotNone(arguments)
+            return service_request(arguments)
+
+        with mock.patch.object(
+            client, "_invoke", side_effect=invoke
+        ), mock.patch.object(
+            client, "_invoke_service_request", side_effect=service_request
+        ), mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ):
+            with self.assertRaises(facebook.FacebookScraperFailure) as raised:
+                client.acquire_workspace(
+                    request(
+                        start_url="https://www.linkedin.com/feed/",
+                        agent_name="linkedin-scraper",
+                        task_name="linkedin-home-feed",
+                        target_service_id="linkedin",
+                    )
+                )
+
+        self.assertEqual("agent_browser_error", raised.exception.error_type)
+        self.assertIn("browser identity", str(raised.exception))
+        self.assertEqual(["tab_new", "tab_list"], service_actions)
+
+    def test_broker_tab_attribution_mismatch_stops_before_readiness(self):
+        client = facebook.CliAgentBrowserClient(timeout=5)
+        browser_id = "session:last30days-facebook--last30days-facebook"
+        broker_session = "handoff-social"
+        plan = {
+            "selectedProfile": {"id": "last30days-facebook"},
+            "decision": {
+                "serviceRequest": {
+                    "available": True,
+                    "blockedByAcquisition": False,
+                    "blockedByLifecycleOwner": False,
+                    "request": {
+                        "action": "tab_new",
+                        "serviceName": "last30days",
+                        "agentName": "linkedin-scraper",
+                        "taskName": "linkedin-home-feed",
+                        "targetServiceIds": ["linkedin"],
+                        "runtimeProfile": "last30days-facebook",
+                        "profileLeasePolicy": "wait",
+                        "url": "https://www.linkedin.com/feed/",
+                    },
+                },
+                "profileReuse": {"recommendedAction": "wait_for_profile_lease"},
+            },
+        }
+        handle = {
+            "handleId": "tab-handle-linkedin",
+            "browserId": browser_id,
+            "sessionName": broker_session,
+            "targetId": "linkedin-owned",
+        }
+        service_actions = []
+
+        def service_request(arguments, **_kwargs):
+            service_actions.append(arguments["action"])
+            if arguments["action"] == "tab_new":
+                return {
+                    "serviceTabHandle": handle,
+                    "url": "https://www.linkedin.com/feed/",
+                }
+            if arguments["action"] == "tab_list":
+                return {
+                    "tabs": [
+                        {
+                            "targetId": "linkedin-owned",
+                            "browserId": browser_id,
+                            "sessionId": broker_session,
+                            "url": "https://www.linkedin.com/feed/",
+                            "traceFilter": {
+                                "agentName": "x-scraper",
+                                "taskName": "x-feed",
+                            },
+                        }
+                    ]
+                }
+            if arguments["action"] == "ui_action":
+                return {"ok": True}
+            raise AssertionError(f"unexpected service action: {arguments}")
+
+        def invoke(args, **_kwargs):
+            if args[:2] == ["service", "access-plan"]:
+                return plan
+            arguments = client._service_request_arguments(args, None)
+            self.assertIsNotNone(arguments)
+            return service_request(arguments)
+
+        with mock.patch.object(
+            client, "_invoke", side_effect=invoke
+        ), mock.patch.object(
+            client, "_invoke_service_request", side_effect=service_request
+        ), mock.patch.object(
+            facebook.agent_browser_config, "record_access_plan"
+        ):
+            with self.assertRaises(facebook.FacebookScraperFailure) as raised:
+                client.acquire_workspace(
+                    request(
+                        start_url="https://www.linkedin.com/feed/",
+                        agent_name="linkedin-scraper",
+                        task_name="linkedin-home-feed",
+                        target_service_id="linkedin",
+                    )
+                )
+
+        self.assertEqual("agent_browser_error", raised.exception.error_type)
+        self.assertIn("attribution identity", str(raised.exception))
+        self.assertEqual(["tab_new", "tab_list"], service_actions)
+
     def test_access_plan_route_hints_fall_back_when_status_has_no_live_owner(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         plan = access_plan(shared_owner=("browser-1", "shared-social"))

@@ -1275,12 +1275,13 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`
-  version 1/C01 owns the bounded successor. It makes the broker decision
-  authoritative, validates service-tab identity before browser controls,
-  separates meaningful-page readiness from authentication, prevents blank or
-  ambiguous targets from producing reauthentication evidence, and requires
-  exact same-handle release. Implementation begins with provider-free red
-  fixtures; no live retry is authorized by the planning packet.
+  version 2/C02 owns the bounded successor. Its provider-free repair now uses
+  the broker's available queued service request without invented route hints,
+  validates browser/session/URL/agent/task identity before readiness, stops on
+  lease wait when no compatible service route exists, and treats blank
+  LinkedIn auth evidence as ambiguous rather than logout. The operator has
+  authorized at most five total diagnosis/repair cycles through installed and
+  live 20/20 acceptance.
 
 Closed Plan:
 

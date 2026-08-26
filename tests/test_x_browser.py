@@ -1317,7 +1317,7 @@ class XBrowserAcquisitionTests(TestCase):
         )
         self.assertEqual(5, len(recorder.calls))
 
-    def test_acquisition_reuses_cdp_owner_when_human_view_route_is_incompatible(self):
+    def test_acquisition_waits_when_broker_has_no_compatible_service_route(self):
         from lib import x_browser
 
         plan = {
@@ -1367,22 +1367,21 @@ class XBrowserAcquisitionTests(TestCase):
         recorder._client._invoke = recorder.invoke
 
         with patch.object(x_browser.agent_browser_config, "record_access_plan"):
-            workspace = recorder._client.acquire_workspace(
-                x_browser.BrowserWorkspaceRequest(
-                    profile_id="last30days-facebook",
-                    session_name="last30days-facebook",
-                    browser_build="stealthcdp_chromium",
-                    view_provider="rdp_gateway",
-                    control_input_provider="manual_attached_desktop",
-                    timeout=45,
+            with self.assertRaises(x_browser.XBrowserFailure) as raised:
+                recorder._client.acquire_workspace(
+                    x_browser.BrowserWorkspaceRequest(
+                        profile_id="last30days-facebook",
+                        session_name="last30days-facebook",
+                        browser_build="stealthcdp_chromium",
+                        view_provider="rdp_gateway",
+                        control_input_provider="manual_attached_desktop",
+                        timeout=45,
+                    )
                 )
-            )
 
-        self.assertEqual("session:stored-last30days-social", workspace.browser_id)
-        self.assertEqual("stored-last30days-social", workspace.session_name)
-        self.assertEqual("owned-3", workspace.target_id)
-        self.assertEqual("not_required", workspace.operator_visible_state)
-        self.assertEqual(4, len(recorder.calls))
+        self.assertEqual("agent_browser_error", raised.exception.error_type)
+        self.assertIn("wait_for_profile_lease", str(raised.exception))
+        self.assertEqual(1, len(recorder.calls))
 
     def test_shared_owner_prefers_direct_external_guacamole_url(self):
         from lib import x_browser

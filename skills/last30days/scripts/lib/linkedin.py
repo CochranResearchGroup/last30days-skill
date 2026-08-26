@@ -523,13 +523,15 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
             )
             self.act(workspace, BrowserAction("wait", value="2500"))
         raw = self.evaluate(workspace, AUTH_SCRIPT)
-        return LinkedInAuthState(
-            authenticated=bool(raw.get("authenticated_dom")),
-            login_form=bool(raw.get("login_form")),
-            checkpoint=bool(raw.get("checkpoint")),
-            has_li_at=bool(raw.get("has_li_at")),
-            url=str(raw.get("url") or ""),
-        )
+        auth = _auth_state(raw)
+        if not (auth.authenticated or auth.login_form or auth.checkpoint):
+            self.act(
+                workspace,
+                BrowserAction("navigate", value="https://www.linkedin.com/feed/"),
+            )
+            self.act(workspace, BrowserAction("wait", value="2500"))
+            auth = _auth_state(self.evaluate(workspace, AUTH_SCRIPT))
+        return auth
 
     def _activate_linkedin_tab(self, session_name: str) -> None:
         """Select a retained LinkedIn tab before site-specific auth inspection."""
@@ -542,6 +544,16 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
             "linkedin.com",
             consolidate=True,
         )
+
+
+def _auth_state(raw: dict[str, Any]) -> LinkedInAuthState:
+    return LinkedInAuthState(
+        authenticated=bool(raw.get("authenticated_dom")),
+        login_form=bool(raw.get("login_form")),
+        checkpoint=bool(raw.get("checkpoint")),
+        has_li_at=bool(raw.get("has_li_at")),
+        url=str(raw.get("url") or ""),
+    )
 
 
 class LinkedInScraper:
@@ -597,7 +609,7 @@ class LinkedInScraper:
                     "LinkedIn requires an operator security-verification checkpoint",
                     operator_url=workspace.operator_url,
                 )
-            if not auth.authenticated:
+            if auth.login_form:
                 ingress_probe = getattr(self.client, "operator_ingress_ready", None)
                 if callable(ingress_probe) and not ingress_probe(workspace.operator_url):
                     raise LinkedInScraperFailure(
@@ -606,6 +618,12 @@ class LinkedInScraper:
                 raise LinkedInScraperFailure(
                     "auth_required",
                     "LinkedIn authentication is required in the retained agent-browser profile",
+                    operator_url=workspace.operator_url,
+                )
+            if not auth.authenticated:
+                raise LinkedInScraperFailure(
+                    "auth_state_ambiguous",
+                    "LinkedIn authentication state could not be determined from the rendered page",
                     operator_url=workspace.operator_url,
                 )
 
@@ -678,7 +696,7 @@ class LinkedInScraper:
                     "LinkedIn requires an operator security-verification checkpoint",
                     operator_url=workspace.operator_url,
                 )
-            if not auth.authenticated:
+            if auth.login_form:
                 ingress_probe = getattr(self.client, "operator_ingress_ready", None)
                 if callable(ingress_probe) and not ingress_probe(workspace.operator_url):
                     raise LinkedInScraperFailure(
@@ -687,6 +705,12 @@ class LinkedInScraper:
                 raise LinkedInScraperFailure(
                     "auth_required",
                     "LinkedIn authentication is required in the retained agent-browser profile",
+                    operator_url=workspace.operator_url,
+                )
+            if not auth.authenticated:
+                raise LinkedInScraperFailure(
+                    "auth_state_ambiguous",
+                    "LinkedIn authentication state could not be determined from the rendered page",
                     operator_url=workspace.operator_url,
                 )
             diagnostics.failure_stage = "navigation"

@@ -289,11 +289,18 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
                 "auth_required",
                 "agent-browser reports that the selected X profile requires operator authentication",
             )
-        return super().acquire_workspace(
-            request,
-            access_plan=access_plan,
-            target_service_id="x",
-        )
+        try:
+            return super().acquire_workspace(
+                request,
+                access_plan=access_plan,
+                target_service_id="x",
+            )
+        except browser_runtime.FacebookScraperFailure as exc:
+            raise XBrowserFailure(
+                exc.error_type,
+                str(exc),
+                operator_url=exc.operator_url,
+            ) from exc
 
     def inspect_auth(self, workspace: BrowserWorkspace) -> XAuthState:
         if not self.prepare_site_tab(workspace, "x.com", consolidate=True):

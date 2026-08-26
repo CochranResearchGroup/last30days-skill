@@ -46,6 +46,7 @@ ERROR_TYPES = {
     "profile_mismatch",
     "route_stale",
     "auth_required",
+    "auth_state_ambiguous",
     "checkpoint_required",
     "rate_limit_detected",
     "operator_ingress_unavailable",
@@ -639,6 +640,91 @@ class CliAgentBrowserClient:
             agent_browser_config.record_access_plan(access_plan, requested_target_service_id)
         except OSError as exc:
             _log(f"Could not record user-scoped agent-browser configuration: {_redact(str(exc))}")
+
+        decision = access_plan.get("decision")
+        profile_reuse = (
+            decision.get("profileReuse") if isinstance(decision, dict) else None
+        )
+        service_request_record = (
+            decision.get("serviceRequest") if isinstance(decision, dict) else None
+        )
+        broker_request = (
+            service_request_record.get("request")
+            if isinstance(service_request_record, dict)
+            else None
+        )
+        if (
+            isinstance(service_request_record, dict)
+            and service_request_record.get("available") is True
+            and service_request_record.get("blockedByAcquisition") is not True
+            and service_request_record.get("blockedByLifecycleOwner") is not True
+            and isinstance(broker_request, dict)
+            and broker_request.get("action") == "tab_new"
+        ):
+            self._service_request_route = dict(broker_request)
+            self._service_request_route.update(
+                {
+                    "action": "tab_new",
+                    "serviceName": request.service_name,
+                    "agentName": request.agent_name,
+                    "taskName": request.task_name,
+                    "targetServiceIds": [requested_target_service_id],
+                    "browserBuild": request.browser_build,
+                    "runtimeProfile": selected_profile,
+                    "profileLeasePolicy": "wait",
+                    "url": request.start_url,
+                }
+            )
+            acquired = self._invoke_service_request(
+                dict(self._service_request_route),
+                timeout=min(request.timeout, 30),
+            )
+            service_tab_handle = acquired.get("serviceTabHandle")
+            if not isinstance(service_tab_handle, dict):
+                raise FacebookScraperFailure(
+                    "agent_browser_error",
+                    "agent-browser broker tab acquisition returned no service tab handle",
+                )
+            browser_id = str(service_tab_handle.get("browserId") or "")
+            session_name = str(service_tab_handle.get("sessionName") or "")
+            target_id = str(service_tab_handle.get("targetId") or "")
+            if not browser_id or not session_name or not target_id:
+                raise FacebookScraperFailure(
+                    "agent_browser_error",
+                    "agent-browser broker tab handle is missing target ownership",
+                )
+            self._service_tab_handle = dict(service_tab_handle)
+            self._service_tab_url = str(acquired.get("url") or request.start_url)
+            self._service_request_route.update(
+                {"browserId": browser_id, "sessionName": session_name}
+            )
+            self._require_service_tab_identity(
+                browser_id=browser_id,
+                session_name=session_name,
+                target_id=target_id,
+                start_url=request.start_url,
+                agent_name=request.agent_name,
+                task_name=request.task_name,
+            )
+            self._invoke(
+                ["--session", session_name, "tab", "handle-ready"],
+                timeout=min(request.timeout, SERVICE_TAB_READY_OUTER_TIMEOUT_SECONDS),
+            )
+            return BrowserWorkspace(
+                profile_id=selected_profile,
+                browser_id=browser_id,
+                session_name=session_name,
+                target_id=target_id,
+                operator_visible_state="not_required",
+            )
+        if (
+            isinstance(profile_reuse, dict)
+            and profile_reuse.get("recommendedAction") == "wait_for_profile_lease"
+        ):
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "agent-browser access plan requires wait_for_profile_lease",
+            )
 
         shared_route = agent_browser_config.shared_acquisition_route(
             access_plan,
@@ -1806,6 +1892,75 @@ class CliAgentBrowserClient:
         ):
             request["serviceTabHandle"] = dict(self._service_tab_handle)
         return request
+
+    def _require_service_tab_identity(
+        self,
+        *,
+        browser_id: str,
+        session_name: str,
+        target_id: str,
+        start_url: str,
+        agent_name: str,
+        task_name: str,
+    ) -> None:
+        """Reject a broker handle that does not name its retained target."""
+        listed = self._invoke(
+            ["--session", session_name, "tab", "list"],
+            timeout=min(self.timeout, 30),
+        )
+        tabs = listed.get("tabs") if isinstance(listed.get("tabs"), list) else []
+        target = next(
+            (
+                tab
+                for tab in tabs
+                if isinstance(tab, dict)
+                and str(tab.get("targetId") or "") == target_id
+            ),
+            None,
+        )
+        if not isinstance(target, dict):
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "agent-browser service tab handle target is not live",
+            )
+        observed_browser_id = str(target.get("browserId") or "")
+        if observed_browser_id and observed_browser_id != browser_id:
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "agent-browser service tab handle browser identity is inconsistent",
+            )
+        observed_session_name = str(
+            target.get("sessionId") or target.get("ownerSessionId") or ""
+        )
+        if observed_session_name and observed_session_name != session_name:
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "agent-browser service tab handle session identity is inconsistent",
+            )
+        expected_hostname = urlsplit(start_url).hostname or ""
+        observed_url = str(target.get("url") or "")
+        if expected_hostname and not _url_matches_hostname(
+            observed_url, expected_hostname
+        ):
+            raise FacebookScraperFailure(
+                "agent_browser_error",
+                "agent-browser service tab handle URL identity is inconsistent",
+            )
+        trace_filter = target.get("traceFilter")
+        if isinstance(trace_filter, dict):
+            observed_agent_name = str(trace_filter.get("agentName") or "")
+            observed_task_name = str(trace_filter.get("taskName") or "")
+            if (
+                observed_agent_name
+                and observed_agent_name != agent_name
+            ) or (
+                observed_task_name
+                and observed_task_name != task_name
+            ):
+                raise FacebookScraperFailure(
+                    "agent_browser_error",
+                    "agent-browser service tab handle attribution identity is inconsistent",
+                )
 
     def release_workspace(self) -> None:
         """Release this client's attributed tab without closing the shared browser."""

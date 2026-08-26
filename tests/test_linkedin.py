@@ -389,6 +389,54 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
         )
         self.assertTrue(auth.authenticated)
 
+    def test_blank_linkedin_auth_probe_reuses_the_same_tab_for_one_reprobe(self):
+        client = linkedin.CliAgentBrowserClient(timeout=5)
+        workspace = linkedin.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="session:shared-social",
+            session_name="shared-social",
+            target_id="linkedin-owned",
+        )
+        blank = {
+            "authenticated_dom": False,
+            "login_form": False,
+            "checkpoint": False,
+            "has_li_at": False,
+            "url": "https://www.linkedin.com/feed/",
+            "title": "",
+        }
+        authenticated = {
+            "authenticated_dom": True,
+            "login_form": False,
+            "checkpoint": False,
+            "has_li_at": False,
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+        }
+
+        with mock.patch.object(
+            client, "prepare_site_tab", return_value=True
+        ), mock.patch.object(
+            client, "act", return_value=linkedin.BrowserState()
+        ) as act, mock.patch.object(
+            client, "evaluate", side_effect=[blank, authenticated]
+        ):
+            auth = client.inspect_auth(workspace)
+
+        self.assertTrue(auth.authenticated)
+        self.assertEqual(
+            [
+                mock.call(
+                    workspace,
+                    linkedin.BrowserAction(
+                        "navigate", value="https://www.linkedin.com/feed/"
+                    ),
+                ),
+                mock.call(workspace, linkedin.BrowserAction("wait", value="2500")),
+            ],
+            act.call_args_list,
+        )
+
     def test_retained_workspace_closes_duplicate_linkedin_tabs_only(self):
         client = linkedin.CliAgentBrowserClient(timeout=5)
         with mock.patch.object(client, "_invoke", side_effect=[
@@ -454,6 +502,20 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
         )
         result = make_scraper(client).search("robotic lawn mower", "2026-06-15", "2026-07-15")
         self.assertEqual("auth_required", result["error_type"])
+
+    def test_blank_feed_auth_evidence_is_ambiguous_not_logged_out(self):
+        client = FakeAgentBrowserClient(
+            auth=linkedin.LinkedInAuthState(
+                authenticated=False,
+                login_form=False,
+                checkpoint=False,
+                url="https://www.linkedin.com/feed/",
+            )
+        )
+
+        result = make_scraper(client).feed("2026-06-15", "2026-07-15")
+
+        self.assertEqual("auth_state_ambiguous", result["error_type"])
 
     def test_no_results_is_valid_empty_result(self):
         page = dict(FakeAgentBrowserClient().page)

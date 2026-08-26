@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 1
+Plan version: 2
 Date: 2026-08-25
 
 ## Objective
@@ -19,9 +19,10 @@ observation before making any authentication or content-quality claim.
 - current direct browser readback corroborates the operator's observation that
   the selected `last30days-facebook` browser retains X Home and LinkedIn Feed
   pages, while the terminal tick evaluated newly attributed targets instead;
-- the access plan reported `wait_for_profile_lease` with no compatible reusable
-  browser route, but Last30days' `shared_profile_owner` fallback synthesized a
-  route from service status and requested a new attributed tab anyway;
+- the access plan reported `wait_for_profile_lease` for direct profile reuse,
+  while its separate `serviceRequest` record was available and unblocked;
+  Last30days ignored that broker-provided queued path and instead synthesized
+  a route from service status;
 - X attempt `provider-attempt-367d5249a31c2eb3de2ce2bf5cbbc75c`
   stopped `auth_state_ambiguous` at `0 attempted / 0 observed / 0 accepted /
   0 rejected`; it did not prove logout;
@@ -39,15 +40,17 @@ observation before making any authentication or content-quality claim.
   `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
   remains unchanged with ten-item X and LinkedIn ceilings. Reddit and Facebook
   remain disabled;
-- no new live provider attempt is authorized by this planning packet.
+- the operator has now authorized a bounded testing, diagnosis, and repair
+  cycle of at most five cycles; each live cycle is one schedule-disabled
+  combined tick with one 20-item X attempt and one 20-item LinkedIn attempt.
 
 ## Scope
 
 - make the access-plan decision authoritative for whether Last30days may
   acquire or reuse a service-attributed browser target;
-- reject a status-derived shared-owner fallback when the broker reports wait,
-  no compatible browser, no shared acquisition route, or an incompatible
-  lifecycle owner;
+- submit an available, unblocked broker-provided `serviceRequest` unchanged in
+  routing identity even when direct `profileReuse` recommends waiting; reject
+  status-derived fallback when that queued route is unavailable or blocked;
 - validate a returned `serviceTabHandle` against the requested source,
   selected profile, browser identity, owner session, target ID, URL hostname,
   validity, and service attribution before readiness or authentication probes;
@@ -80,15 +83,16 @@ observation before making any authentication or content-quality claim.
   expansion beyond deterministic ads/spam and structural invalidity;
 - no Reddit or Facebook enablement, recurring cadence change, or increase of
   the recurring ten-item X/LinkedIn ceilings;
-- no provider retry, notification delivery, incident closure, or live canary
-  under this planning-only packet;
+- no notification delivery or incident closure outside the normal tick
+  contract, and no provider attempts beyond the five-cycle repair budget;
 - no unbounded scrolling or guarantee based only on a requested item ceiling.
 
 ## Required Invariants
 
-1. **Broker authority:** `recommendedAction`, compatibility count, shared
-   acquisition mode, browser ID, and session ID must form one coherent broker
-   route before a browser command is sent.
+1. **Broker authority:** an available and unblocked broker `serviceRequest` is
+   the authoritative service-tab route and must be submitted without invented
+   browser/session hints. Only when it is unavailable or blocked does a direct
+   `profileReuse` wait terminalize acquisition.
 2. **Target identity:** every readiness, navigation, evaluation, scroll, and
    release operation must name the same validated service-tab handle.
 3. **Profile preservation:** the configured `last30days-facebook` profile and
@@ -112,7 +116,7 @@ observation before making any authentication or content-quality claim.
 | P3 | P2 | Meaningful-page and evidence-bound auth state machines for X and LinkedIn | `x_browser.py`, `linkedin.py`, incident mapping/tests | explicit login, authenticated, checkpoint, blank, ambiguous, and mismatch cases pass |
 | P4 | P3 | Durable receipt and notification semantics preserve the exact failure boundary | worker/tick adapter and incident tests as required | no ambiguous case becomes reauthentication |
 | P5 | P4 | Focused, package, complete-suite, reproducible-build, and installed-runtime acceptance | version/release surfaces if code changes ship | exact successor is ready with rollback retained |
-| P6 | P5 plus fresh live authority | One schedule-disabled combined 20/20 acceptance tick | temporary private config and durable runtime receipts only | first terminal receipt; no retry |
+| P6 | P5 plus current bounded authority | Up to three schedule-disabled combined 20/20 acceptance ticks within the five-cycle total budget | temporary private config and durable runtime receipts only | both lanes prove 20/20 or the fifth cycle terminalizes |
 
 Packets P2 through P4 are tightly coupled on the critical path and should be
 implemented serially. Provider-free fixture authoring and notification-contract
@@ -123,10 +127,12 @@ No subagent delegation is authorized by the current orchestration policy.
 
 ### 1. Broker-decision gate
 
-- Prefer the broker's explicit `reuse_existing_browser` plus `tab_new` route.
-- Treat `wait_for_profile_lease`, zero compatible browsers, absent shared route,
-  or missing reusable IDs as `browser_route_unavailable` or the existing safe
-  transient equivalent.
+- Prefer an available, unblocked broker `serviceRequest` for `tab_new`, without
+  adding caller-inferred browser or session identifiers. This queued service
+  route remains authoritative even when direct profile reuse reports
+  `wait_for_profile_lease` or zero compatible browsers.
+- Treat `wait_for_profile_lease` as terminal only when the broker service
+  request is unavailable, blocked, malformed, or absent.
 - Remove the current ability for a status-only same-profile CDP row to override
   an incompatible access-plan decision for X or LinkedIn acquisition.
 - Preserve the existing narrow runtime/profile resolution paths only when they
@@ -181,8 +187,10 @@ ambiguous result and gain the same meaningful-page prerequisite.
 
 ## Acceptance Criteria
 
-1. A red fixture matching C30 proves the current code wrongly proceeds from
-   broker wait/no-compatible state; the repair returns before `tab_new`.
+1. A red fixture matching C30 proves the current code ignores an available
+   broker service request and synthesizes status-derived routing; the repair
+   submits the broker request without browser/session hints. A separate fixture
+   proves wait stops before `tab_new` when no compatible service route exists.
 2. Correct broker reuse plus a coherent service-tab handle reaches readiness,
    navigation, authentication, extraction, scrolling, and exact release on one
    target ID; every control carries that same handle.
@@ -238,8 +246,9 @@ ambiguous result and gain the same meaningful-page prerequisite.
   findings and critical regressions;
 - ambiguous-page reprobes: one navigation plus one re-evaluation on the same
   coherent handle per provider attempt;
-- live provider attempts: zero under current authority; after fresh authority,
-  at most one X attempt and one LinkedIn attempt in one combined tick;
+- total repair cycles: at most five; Cycles 1 and 2 are provider-free repair
+  and release/install validation, while each remaining live cycle permits at
+  most one X attempt and one LinkedIn attempt in one combined tick;
 - scroll ceiling: existing maximum eight per lane;
 - no-progress bound: two consecutive implementation checkpoints require a
   local split or tactic change before continuation;
@@ -265,11 +274,9 @@ ambiguous result and gain the same meaningful-page prerequisite.
 - installed Agent Browser access-plan and service-request schemas are external
   contracts; Last30days consumes them but does not repair that runtime;
 - profile `last30days-facebook` and recurring configuration are preserved;
-- implementation may proceed under the operator's repair-planning direction,
-  but installation and provider effects must follow their normal validation
-  and runtime authority boundaries;
-- a live tick is a separate effect and requires fresh explicit authority after
-  the successor is validated and installed;
+- implementation, installation, and the bounded combined live ticks may
+  proceed under the operator's explicit five-cycle testing/repair direction,
+  subject to the validation, preflight, and first-terminal-receipt stops;
 - no direct browser or profile mutation is an escape hatch for a failed
   Last30days contract.
 
@@ -322,3 +329,45 @@ Next action:
   behavior.
 
 Checkpoint P0056-C01 is the current authority.
+
+### Checkpoint P0056-C02 | 2026-08-25
+
+Plan version: 2
+
+State transition:
+
+- `bounded_target_auth_reliability_successor_open ->
+  provider_free_target_auth_contract_green`.
+
+Progress classification:
+
+- `blocker_reduction`; the shared browser boundary now follows the broker's
+  available queued service request, validates returned target identity and
+  attribution before readiness, and stops when no service route is available.
+
+Authority classification:
+
+- `inherited_authority`; the operator authorized up to five testing,
+  diagnosis, and repair cycles to restore both 20-item feed ticks.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Evidence:
+
+- red/green regressions cover broker service-request precedence, browser and
+  session coherence, agent/task attribution, LinkedIn ambiguous auth, and one
+  same-tab LinkedIn reprobe;
+- X now normalizes shared-browser acquisition failures through its typed error
+  boundary, and the obsolete status-only lease-wait bypass fixture now proves
+  fail-closed behavior;
+- the focused browser/config/incident selection passes with 203 tests and
+  three expected skips.
+
+Next action:
+
+- complete Cycle 2 comprehensive validation, release/version updates,
+  reproducible build, transactional install, and installed-runtime preflight.
+
+Checkpoint P0056-C02 is the current authority.
