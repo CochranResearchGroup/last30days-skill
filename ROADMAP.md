@@ -1275,7 +1275,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`
-  version 4/C04 owns the bounded successor. Its provider-free repair now uses
+  version 5/C05 owns the bounded successor. Its provider-free repair now uses
   the broker's available queued service request without invented route hints,
   validates browser/session/URL/agent/task identity before readiness, stops on
   lease wait when no compatible service route exists, and treats blank
@@ -1285,8 +1285,11 @@ Active Plan:
   incidents are gone but repeated the same pre-readiness failure. Read-only
   Agent Browser receipts identify the actual common blocker: Last30days omitted
   the access plan's unique browser/session reuse hints, so the duplicate-profile
-  guard rejected every tab request. The 0.3.72 candidate carries only those
-  broker-provided hints without status inference or duplicate launch.
+  guard rejected every tab request. Installed 0.3.72 carries those hints and
+  proves successful tab creation, inventory, and exact release for both lanes,
+  but the final tick still stops in Last30days's immediate coherence probe at
+  `0/0/0/0`. The five-cycle budget is exhausted; Plan 0056 remains open pending
+  fresh authority for a bounded inventory-readiness and attribution repair.
 
 Closed Plan:
 

@@ -21049,3 +21049,85 @@ Next Bounded Action:
 
 - validate, release, install, and preflight service 0.3.72, then consume the
   final combined 20/20 tick and terminalize the five-cycle objective honestly.
+
+## Turn 342 | 2026-08-25
+
+Focus: install service 0.3.72, consume final Cycle 5, and close out the bounded
+repair run without overstating 20/20 acceptance.
+
+Authority Consulted:
+
+- operator five-cycle testing/diagnosis/repair authorization; Plan 0056/C04;
+  pushed Git/release state, installed service, final tick/database/schedule,
+  recurring config, and read-only Agent Browser service receipts/targets.
+
+Decisions And Changes:
+
+- released pushed commit `f16591471a51d8b87c36b3ba916828381aa678cf` as
+  reproducible service 0.3.72 and transactionally installed it ready;
+- consumed the fifth and final combined schedule-disabled tick with one
+  20-item attempt per lane and no retry;
+- stopped after the terminal receipt. No sixth tick, direct provider attempt,
+  Agent Browser mutation, profile/tab cleanup, recurring-config edit, incident
+  mutation, or notification delivery occurred;
+- retained Plan 0056 as open because neither lane reached observation or 20
+  accepted items.
+
+Validation Evidence:
+
+- focused browser/incident/release/package/plan tests and the complete canonical
+  suite pass; complete result is 2,693 passed, seven skipped, six subtests;
+- three 0.3.72 builds agree at artifact SHA-256
+  `9a3c2ad1b327f86f2c97f3604dea1b1243a44a79bcf426911300788413d9588c`;
+- installed 0.3.72/schema 16 is ready with runtime-manifest SHA-256
+  `89f191bf1c66d0d1c4b7c772ca57b26cc4088c60a1a414e09c7263889f364713`;
+- final tick `tick-4b14711aaec1d762ccae04313bbd23f3`, config digest
+  `sha256:9f7221e9c718eeb64b4971e45e334c153da92c73decdf17c16a59ea034829106`,
+  is `complete_degraded` with both lanes at `0/0/0/0`, zero incidents,
+  notifications, model tokens, and cost;
+- X attempt `provider-attempt-267b1db2a0d2fcb8ab3cf26b78bac25e`
+  and LinkedIn attempt `provider-attempt-a3e7c946115be90704f9c49255e0b32c`
+  both reached successful broker tab creation, handle-bound tab inventory, and
+  exact release, then failed Last30days post-create coherence before readiness;
+- X target `93BF3F2CFE650EAC33B286624CC66AC7` later has coherent X
+  attribution and URL, consistent with an immediate inventory race. LinkedIn
+  target `95E0C28F3F413D1308467584A89A1BC7` has the correct feed URL but
+  inherits `x-scraper/x-feed` from the retained session despite the successful
+  LinkedIn request attribution;
+- SQLite quick check is `ok`; active execution attempts, provider attempts, and
+  unreleased resource leases are all zero. Recurring config digest remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  daily schedule is enabled/ready for `2026-08-27T00:00:00Z`;
+- releases 0.3.70, 0.3.71, and 0.3.72 are retained. Git branch and origin agree
+  at `f16591471a51d8b87c36b3ba916828381aa678cf` before this closeout update.
+
+State Movement:
+
+- Plan 0056 advances to version 5/C05
+  `five_cycle_budget_exhausted_post_create_coherence_blocked`; P08 and the plan
+  remain open because 20/20 acceptance is unmet.
+
+Progress Classification:
+
+- `blocker_reduction`; route selection and tab creation are restored, but
+  retrieval reliability is still blocked before authentication/observation.
+
+Authority Classification:
+
+- `human_gate`; all five authorized cycles are consumed. Further provider
+  effects require fresh operator direction.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `pending`; queue one compact source-backed memory if readiness permits,
+  otherwise leave this runbook checkpoint authoritative.
+
+Next Bounded Action:
+
+- stop. Under fresh authority, fixture-drive a bounded post-create inventory
+  poll and adjudicate broker request attribution versus retained-session
+  `traceFilter` before another combined tick.

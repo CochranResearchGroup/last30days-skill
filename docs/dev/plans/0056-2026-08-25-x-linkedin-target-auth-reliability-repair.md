@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 4
+Plan version: 5
 Date: 2026-08-25
 
 ## Objective
@@ -472,3 +472,66 @@ Next action:
   not both lanes reach 20.
 
 Checkpoint P0056-C04 is the current authority.
+
+### Checkpoint P0056-C05 | 2026-08-25
+
+Plan version: 5
+
+State transition:
+
+- `broker_reuse_route_hint_omission_repaired ->
+  five_cycle_budget_exhausted_post_create_coherence_blocked`.
+
+Progress classification:
+
+- `blocker_reduction`; the final successor proves browser reuse routing, tab
+  creation, inventory, and exact release for both lanes, but the five-cycle
+  budget ends before readiness, auth, observation, or 20/20 acceptance.
+
+Authority classification:
+
+- `human_gate`; all five operator-authorized cycles are consumed. No sixth
+  provider attempt is authorized by this plan.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Evidence:
+
+- pushed commit `f16591471a51d8b87c36b3ba916828381aa678cf` built three
+  identical 0.3.72 artifacts at SHA-256
+  `9a3c2ad1b327f86f2c97f3604dea1b1243a44a79bcf426911300788413d9588c`;
+- installed 0.3.72/schema 16 is ready with runtime-manifest SHA-256
+  `89f191bf1c66d0d1c4b7c772ca57b26cc4088c60a1a414e09c7263889f364713`;
+- the complete canonical suite passed with 2,693 tests, seven skips, and six
+  subtests before installation;
+- final tick `tick-4b14711aaec1d762ccae04313bbd23f3`, config digest
+  `sha256:9f7221e9c718eeb64b4971e45e334c153da92c73decdf17c16a59ea034829106`,
+  terminalized `complete_degraded`; X attempt
+  `provider-attempt-267b1db2a0d2fcb8ab3cf26b78bac25e` and LinkedIn
+  attempt `provider-attempt-a3e7c946115be90704f9c49255e0b32c` remain
+  `workspace_acquisition` / `agent_browser_error` at `0/0/0/0`;
+- unlike Cycles 3 and 4, both `tab_new` requests succeeded, both handle-bound
+  `tab_list` requests succeeded, and both exact handle releases succeeded. The
+  remaining failure is Last30days' immediate post-create coherence check;
+- X target `93BF3F2CFE650EAC33B286624CC66AC7` later appears with the
+  correct X agent/task and URL, consistent with an immediate inventory/readiness
+  race. LinkedIn target `95E0C28F3F413D1308467584A89A1BC7` later appears
+  on the right URL but inherits the retained session's `x-scraper/x-feed`
+  trace despite the successful LinkedIn-attributed service request;
+- the final tick created zero incidents and zero notifications. SQLite quick
+  check is `ok`, with zero active execution attempts, provider attempts, or
+  unreleased resource leases. Recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  daily schedule remains enabled and ready for `2026-08-27T00:00:00Z`.
+
+Next action:
+
+- stop. A future fresh authority packet should fixture-drive a bounded
+  post-create inventory poll and decide whether per-tab service-request
+  attribution, rather than retained-session `traceFilter`, is the correct
+  LinkedIn ownership proof before any further live attempt.
+
+Checkpoint P0056-C05 is the current authority. Plan 0056 remains `OPEN`
+because the required X and LinkedIn 20/20 outcome was not achieved.
