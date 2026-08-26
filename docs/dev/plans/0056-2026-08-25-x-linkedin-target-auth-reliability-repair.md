@@ -1,8 +1,12 @@
 # Plan 0056 | X/LinkedIn Target And Authentication Reliability Repair
 
 State: OPEN
+Lane: P08
+Branch: fix/linkedin-accepted-yield
+Target: main
+Integration: fast-forward
 Roadmap: P08
-Plan version: 7
+Plan version: 8
 Date: 2026-08-25
 
 ## Objective
@@ -61,6 +65,12 @@ observation before making any authentication or content-quality claim.
 - the operator has now authorized the provider-free P7 implementation,
   architecture repair, validation, and merge if successful. This authority
   does not install a successor, invoke Agent Browser, or admit a provider tick.
+- P7 is now integrated at `699ef3e637fde797d1eab9b44734ee86cd939ca5`;
+  the operator has separately authorized P8: build and install one exact
+  successor, then run one schedule-disabled combined home-feed tick with one
+  X attempt and one LinkedIn attempt, each capped at 20 accepted items. Stop at
+  the first terminal receipt without changing Agent Browser or the recurring
+  configuration.
 
 ## Scope
 
@@ -745,3 +755,51 @@ Next action:
 Checkpoint P0056-C07 is the current authority for implementation and
 repository integration. Plan 0056 remains `OPEN` because installed and live
 X/LinkedIn 20/20 acceptance are separately gated and unmet.
+
+### Checkpoint P0056-C08 | 2026-08-26
+
+Plan version: 8
+
+State transition:
+
+- `provider_neutral_runtime_candidate_validation ->
+  successor_install_and_single_20_20_acceptance_authorized`.
+
+Progress classification:
+
+- `implementation`; the integrated P7 candidate is entering exact release,
+  transactional installation, and one bounded live acceptance receipt.
+
+Authority classification:
+
+- `inherited_authority`; the operator said to try again after P7 integration,
+  clearing the prior human gate.
+  This authorizes one successor install and one schedule-disabled combined
+  home-feed tick with a single X attempt and a single LinkedIn attempt, each
+  capped at 20 accepted items. It does not authorize a retry, Agent Browser
+  changes, profile replacement, recurring-config mutation, incident handling,
+  or notification delivery outside the tick contract.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Evidence:
+
+- source, `origin/main`, and `origin/fix/linkedin-accepted-yield` agree at
+  `699ef3e637fde797d1eab9b44734ee86cd939ca5` before this checkpoint;
+- P7 validation passed with 2,697 tests, seven skips, eight subtests, all Go
+  packages, and reproducible provider-neutral runtime packaging;
+- service 0.3.72 remains the last documented installed identity pending fresh
+  installed-runtime readback; the recurring ten-item configuration and daily
+  schedule remain outside this packet.
+
+Next action:
+
+- validate and release one exact successor, install it transactionally,
+  perform fresh service/database/schedule/config preflight, and admit exactly
+  one combined X plus LinkedIn 20/20 tick. Stop at its terminal receipt and
+  reconcile all durable counters and unchanged-state proofs.
+
+Checkpoint P0056-C08 is the current authority. Plan 0056 remains `OPEN` until
+the bounded installed/live receipt is reconciled.

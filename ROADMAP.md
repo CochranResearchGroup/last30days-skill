@@ -1275,7 +1275,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`
-  version 7/C07 owns the bounded successor. Its provider-free repair now uses
+  version 8/C08 owns the bounded successor. Its provider-free repair now uses
   the broker's available queued service request without invented route hints,
   validates browser/session/URL/agent/task identity before readiness, stops on
   lease wait when no compatible service route exists, and treats blank
@@ -1298,7 +1298,13 @@ Active Plan:
   Go packages, reproducible service packaging, the 152-file skill build,
   CodeGraph ownership readback, and the plan-authority audit. Install and live-
   effect authority remain separate; no sixth provider attempt is implied by
-  the revision.
+  the revision. P7 is integrated at
+  `699ef3e637fde797d1eab9b44734ee86cd939ca5`. The operator has now separately
+  authorized P8 to build and transactionally install one exact successor and
+  admit one schedule-disabled combined home-feed tick with one X and one
+  LinkedIn attempt, each capped at 20 accepted items. The packet stops at that
+  terminal receipt and leaves Agent Browser plus the recurring configuration
+  unchanged.
 
 Closed Plan:
 
