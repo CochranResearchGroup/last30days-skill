@@ -662,6 +662,61 @@ class CliAgentBrowserClient:
             and broker_request.get("action") == "tab_new"
         ):
             self._service_request_route = dict(broker_request)
+            shared_acquisition = (
+                profile_reuse.get("sharedAcquisition")
+                if isinstance(profile_reuse, dict)
+                else None
+            )
+            same_profile_browser_ids = (
+                profile_reuse.get("sameProfileLiveBrowserIds")
+                if isinstance(profile_reuse, dict)
+                else None
+            )
+            active_lease_session_ids = (
+                profile_reuse.get("activeLeaseSessionIds")
+                if isinstance(profile_reuse, dict)
+                else None
+            )
+            route_browser_id = str(
+                broker_request.get("browserId")
+                or (
+                    profile_reuse.get("reusableBrowserId")
+                    if isinstance(profile_reuse, dict)
+                    else ""
+                )
+                or (
+                    shared_acquisition.get("browserId")
+                    if isinstance(shared_acquisition, dict)
+                    else ""
+                )
+                or (
+                    same_profile_browser_ids[0]
+                    if isinstance(same_profile_browser_ids, list)
+                    and len(same_profile_browser_ids) == 1
+                    else ""
+                )
+                or ""
+            )
+            route_session_name = str(
+                broker_request.get("sessionName")
+                or (
+                    profile_reuse.get("reusableSessionName")
+                    if isinstance(profile_reuse, dict)
+                    else ""
+                )
+                or (
+                    shared_acquisition.get("sessionName")
+                    if isinstance(shared_acquisition, dict)
+                    else ""
+                )
+                or (
+                    active_lease_session_ids[0]
+                    if isinstance(active_lease_session_ids, list)
+                    and len(active_lease_session_ids) == 1
+                    else ""
+                )
+                or ""
+            )
             self._service_request_route.update(
                 {
                     "action": "tab_new",
@@ -675,6 +730,13 @@ class CliAgentBrowserClient:
                     "url": request.start_url,
                 }
             )
+            if route_browser_id and route_session_name:
+                self._service_request_route.update(
+                    {
+                        "browserId": route_browser_id,
+                        "sessionName": route_session_name,
+                    }
+                )
             acquired = self._invoke_service_request(
                 dict(self._service_request_route),
                 timeout=min(request.timeout, 30),

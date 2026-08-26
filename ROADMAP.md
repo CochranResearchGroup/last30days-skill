@@ -1275,16 +1275,18 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`
-  version 3/C03 owns the bounded successor. Its provider-free repair now uses
+  version 4/C04 owns the bounded successor. Its provider-free repair now uses
   the broker's available queued service request without invented route hints,
   validates browser/session/URL/agent/task identity before readiness, stops on
   lease wait when no compatible service route exists, and treats blank
   LinkedIn auth evidence as ambiguous rather than logout. The operator has
   authorized at most five total diagnosis/repair cycles through installed and
-  live 20/20 acceptance. Installed 0.3.70 proved both false-auth incidents are
-  gone and localized a new common pre-readiness failure to Last30days comparing
-  a broker handle's logical browser ID with tab inventory's physical ID; the
-  0.3.71 candidate removes only that invalid comparison.
+  live 20/20 acceptance. Installed 0.3.70 and 0.3.71 proved both false-auth
+  incidents are gone but repeated the same pre-readiness failure. Read-only
+  Agent Browser receipts identify the actual common blocker: Last30days omitted
+  the access plan's unique browser/session reuse hints, so the duplicate-profile
+  guard rejected every tab request. The 0.3.72 candidate carries only those
+  broker-provided hints without status inference or duplicate launch.
 
 Closed Plan:
 

@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 3
+Plan version: 4
 Date: 2026-08-25
 
 ## Objective
@@ -48,9 +48,10 @@ observation before making any authentication or content-quality claim.
 
 - make the access-plan decision authoritative for whether Last30days may
   acquire or reuse a service-attributed browser target;
-- submit an available, unblocked broker-provided `serviceRequest` unchanged in
-  routing identity even when direct `profileReuse` recommends waiting; reject
-  status-derived fallback when that queued route is unavailable or blocked;
+- submit an available, unblocked broker-provided `serviceRequest` even when
+  direct `profileReuse` recommends waiting; preserve its route hints or fill
+  missing browser/session hints only from unique broker-provided
+  `profileReuse` evidence, never service status;
 - validate a returned `serviceTabHandle` against the requested source,
   selected profile, browser identity, owner session, target ID, URL hostname,
   validity, and service attribution before readiness or authentication probes;
@@ -92,8 +93,9 @@ observation before making any authentication or content-quality claim.
 ## Required Invariants
 
 1. **Broker authority:** an available and unblocked broker `serviceRequest` is
-   the authoritative service-tab route and must be submitted without invented
-   browser/session hints. Only when it is unavailable or blocked does a direct
+   the authoritative service-tab route. Missing browser/session hints may be
+   filled only from unique `profileReuse` browser and lease-session evidence in
+   the same access plan. Only when it is unavailable or blocked does a direct
    `profileReuse` wait terminalize acquisition.
 2. **Target identity:** every readiness, navigation, evaluation, scroll, and
    release operation must name the same validated service-tab handle.
@@ -129,10 +131,11 @@ No subagent delegation is authorized by the current orchestration policy.
 
 ### 1. Broker-decision gate
 
-- Prefer an available, unblocked broker `serviceRequest` for `tab_new`, without
-  adding caller-inferred browser or session identifiers. This queued service
-  route remains authoritative even when direct profile reuse reports
-  `wait_for_profile_lease` or zero compatible browsers.
+- Prefer an available, unblocked broker `serviceRequest` for `tab_new`. Preserve
+  broker request hints; when absent, add them only from a unique reusable or
+  same-profile live browser plus unique active lease session in the same
+  `profileReuse` decision. This queued service route remains authoritative even
+  when direct profile reuse reports `wait_for_profile_lease`.
 - Treat `wait_for_profile_lease` as terminal only when the broker service
   request is unavailable, blocked, malformed, or absent.
 - Remove the current ability for a status-only same-profile CDP row to override
@@ -422,3 +425,50 @@ Next action:
   20/20 tick and inspect its first terminal receipt.
 
 Checkpoint P0056-C03 is the current authority.
+
+### Checkpoint P0056-C04 | 2026-08-25
+
+Plan version: 4
+
+State transition:
+
+- `installed_logical_physical_identity_rejection_localized ->
+  broker_reuse_route_hint_omission_repaired`.
+
+Progress classification:
+
+- `blocker_reduction`; Cycle 4 disproved the local identity-gate hypothesis,
+  and read-only Agent Browser receipts identified the actual common blocker as
+  omitted broker reuse route hints on all four live requests.
+
+Authority classification:
+
+- `inherited_authority`; Cycle 4 is consumed and Cycle 5 remains for the final
+  validated successor plus combined 20/20 acceptance tick.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Evidence:
+
+- installed service 0.3.71 repeated the exact X and LinkedIn source-specific
+  failure signatures at `workspace_acquisition`, `0/0/0/0`, with one service
+  operation and no incident/notification;
+- Agent Browser service receipts for both Cycle 3 and Cycle 4 show every
+  `tab_new` failed its duplicate-profile-lane guard and explicitly requested
+  the access-plan browserId/sessionName reuse hints;
+- the access plan provides one same-profile live logical browser and one active
+  lease session. A red/green regression now requires those exact broker fields
+  on the queued request without reading service status or allowing a duplicate
+  profile lane;
+- the 0.3.71 logical/physical comparison removal was not causal but remains a
+  valid distinction; exact target/session/hostname/attribution gates remain.
+
+Next action:
+
+- validate, release, and install service 0.3.72, then consume the final Cycle 5
+  combined tick. The five-cycle budget terminalizes at that receipt whether or
+  not both lanes reach 20.
+
+Checkpoint P0056-C04 is the current authority.

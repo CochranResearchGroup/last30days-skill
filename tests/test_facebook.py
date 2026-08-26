@@ -1166,8 +1166,8 @@ class FacebookCliAdapterTests(unittest.TestCase):
         def service_request(arguments, **_kwargs):
             service_actions.append(arguments["action"])
             if arguments["action"] == "tab_new":
-                self.assertNotIn("browserId", arguments)
-                self.assertNotIn("sessionName", arguments)
+                self.assertEqual(browser_id, arguments["browserId"])
+                self.assertEqual(broker_session, arguments["sessionName"])
                 return {
                     "serviceTabHandle": handle,
                     "url": "https://x.com/home",

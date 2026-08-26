@@ -20970,3 +20970,82 @@ Next Bounded Action:
 
 - validate, release, and install service 0.3.71, then consume Cycle 4's single
   combined 20/20 tick and stop at its terminal receipt.
+
+## Turn 341 | 2026-08-25
+
+Focus: consume Cycle 4, correct its disproved hypothesis, and prepare the exact
+broker reuse-route repair for final Cycle 5 acceptance.
+
+Authority Consulted:
+
+- operator five-cycle testing/diagnosis/repair authorization; Plan 0056/C03;
+  current installed Last30days and read-only Agent Browser service receipts;
+  repo TDD, diagnosis, CodeGraph, browser-service, release, validation,
+  planning, documentation, Git, and closeout contracts.
+
+Decisions And Changes:
+
+- released pushed commit `e98b3dbf4f7e6c6f90f84c6c48afeb0f5195845b`
+  as service 0.3.71, installed it ready, and consumed exactly one combined
+  schedule-disabled 20/20 tick;
+- rejected the prior causal hypothesis after 0.3.71 reproduced the exact same
+  source-specific failure signatures, stage, counts, and single-service-
+  operation shape as 0.3.70;
+- read Agent Browser's service receipts without interacting with tabs or
+  profiles. All four X/LinkedIn `tab_new` requests across Cycles 3 and 4 were
+  rejected by the duplicate-profile-lane guard because Last30days omitted the
+  live browser and active lease session route hints;
+- added a red/green regression requiring those exact hints from the same
+  access plan's unique `profileReuse` evidence. The repair does not consult
+  service status, launch a duplicate profile lane, or mutate browser state;
+- retained the logical-handle/physical-inventory distinction because it is
+  valid but confirmed it was not reached by either live tick;
+- made no Agent Browser implementation/state, profile, recurring config,
+  incident, or notification mutation.
+
+Validation Evidence:
+
+- service 0.3.71 candidate passed the complete 2,693-test canonical suite and
+  three builds agreed at SHA-256
+  `2f589f029fe4d390515984003a9b0a6160ba46f812d474cbcff6772a27af53b9`;
+- installed 0.3.71/schema 16 is ready with runtime-manifest SHA-256
+  `e2ec13514c05f27f950384a098f2abde0920d749215ab58e1f46f83eb2c400ee`;
+- Cycle 4 tick `tick-e8dfd6b234482f9e4e3740c1a8302314`, config digest
+  `sha256:aa07cbe12e1bf8762ec375d48ec88dcd62ec102cc2273b6e01bb75c44cf83110`,
+  terminalized `complete_degraded` with both lanes at `0/0/0/0`, zero items,
+  incidents, notifications, model tokens, and cost;
+- Agent Browser receipt IDs include X
+  `mcp-service-request-tab_new-35caca47-90dc-4884-8a82-fecdd73bd80b` and
+  LinkedIn `mcp-service-request-tab_new-1090b56c-68f7-49cf-89fe-56d1389f3323`,
+  both with the exact duplicate-profile-lane/missing-route-hints rejection;
+- the new broker-hint regression failed on missing `browserId`, then passed
+  with the unique same-profile browser and active lease session; the attribution
+  mismatch and no-route lease-wait contracts remain green.
+
+State Movement:
+
+- Plan 0056 advances to version 4/C04
+  `broker_reuse_route_hint_omission_repaired`; P08 remains open.
+
+Progress Classification:
+
+- `blocker_reduction`; the exact common rejection is now explained by external
+  receipts and repaired at the Last30days broker boundary.
+
+Authority Classification:
+
+- `inherited_authority`; Cycle 4 is consumed. Cycle 5 is the final permitted
+  validation/install/combined-tick cycle.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `pending_closeout`; write once after the final terminal receipt.
+
+Next Bounded Action:
+
+- validate, release, install, and preflight service 0.3.72, then consume the
+  final combined 20/20 tick and terminalize the five-cycle objective honestly.

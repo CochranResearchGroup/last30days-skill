@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Broker reuse-route hint carry.** Service 0.3.72 carries a unique live
+  browser ID and active lease session from the access plan's `profileReuse`
+  evidence into an available queued `tab_new` request when the request omits
+  those hints. This satisfies Agent Browser's duplicate-profile-lane guard
+  without status inference, duplicate launch, or profile replacement.
+
 - **Logical-handle versus physical-browser coherence.** Service 0.3.71 treats
   the broker-issued service-tab handle as the logical browser authority while
   allowing tab inventory to report its distinct physical browser ID. Target,
