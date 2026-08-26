@@ -10,7 +10,7 @@ import time
 from typing import Any
 from urllib.parse import parse_qs, quote, unquote, urlsplit
 
-from . import agent_browser_config, facebook as browser_runtime, log
+from . import agent_browser_config, agent_browser_runtime as browser_runtime, log
 from .relevance import token_overlap_relevance as _compute_relevance
 
 
@@ -295,7 +295,7 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
                 access_plan=access_plan,
                 target_service_id="x",
             )
-        except browser_runtime.FacebookScraperFailure as exc:
+        except browser_runtime.AgentBrowserRuntimeFailure as exc:
             raise XBrowserFailure(
                 exc.error_type,
                 str(exc),
@@ -671,7 +671,7 @@ def search_x_browser(
             "operator_url": exc.operator_url or None,
             "diagnostics": diagnostics,
         }
-    except browser_runtime.FacebookScraperFailure as exc:
+    except browser_runtime.AgentBrowserRuntimeFailure as exc:
         error_type = exc.error_type if exc.error_type in ERROR_TYPES else "agent_browser_error"
         _log(f"Failed error_type={error_type} message={exc}")
         operator_url = str(getattr(exc, "operator_url", "") or "")
@@ -690,7 +690,7 @@ def search_x_browser(
     finally:
         try:
             client.release_workspace()
-        except browser_runtime.FacebookScraperFailure as exc:
+        except browser_runtime.AgentBrowserRuntimeFailure as exc:
             _log(f"Best-effort X service tab release did not complete: {exc}")
 
 
@@ -776,7 +776,7 @@ def scrape_x_feed(
             "operator_url": exc.operator_url or None,
             "diagnostics": diagnostics,
         }
-    except browser_runtime.FacebookScraperFailure as exc:
+    except browser_runtime.AgentBrowserRuntimeFailure as exc:
         error_type = exc.error_type if exc.error_type in ERROR_TYPES else "agent_browser_error"
         _log(f"Failed error_type={error_type} message={exc}")
         operator_url = str(getattr(exc, "operator_url", "") or "")
@@ -793,7 +793,7 @@ def scrape_x_feed(
     finally:
         try:
             client.release_workspace()
-        except browser_runtime.FacebookScraperFailure as exc:
+        except browser_runtime.AgentBrowserRuntimeFailure as exc:
             _log(f"Best-effort X service tab release did not complete: {exc}")
 
 

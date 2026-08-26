@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Callable, Optional
 from urllib.parse import parse_qs, urlparse
 
-from . import facebook as browser_runtime, subproc, youtube_yt
+from . import agent_browser_runtime as browser_runtime, subproc, youtube_yt
 
 
 Runner = Callable[..., subproc.SubprocResult]

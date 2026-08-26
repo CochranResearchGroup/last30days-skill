@@ -1275,7 +1275,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`
-  version 6/C06 owns the bounded successor. Its provider-free repair now uses
+  version 7/C07 owns the bounded successor. Its provider-free repair now uses
   the broker's available queued service request without invented route hints,
   validates browser/session/URL/agent/task identity before readiness, stops on
   lease wait when no compatible service route exists, and treats blank
@@ -1291,8 +1291,14 @@ Active Plan:
   `0/0/0/0`. The five-cycle budget is exhausted. C06 now specifies the next
   provider-free repair: bounded exact-target inventory settling and
   request-local broker attribution, with retained-session `traceFilter`
-  diagnostic only. Plan 0056 remains open pending fresh implementation and
-  live-effect authority; no sixth provider attempt is implied by the revision.
+  diagnostic only. The operator has authorized P7's provider-free behavior
+  repair, extraction of the generic Agent Browser lifecycle out of
+  `facebook.py` into `agent_browser_runtime.py`, validation, and repository
+  integration if green. The source candidate now passes 2,697 tests, all MCP
+  Go packages, reproducible service packaging, the 152-file skill build,
+  CodeGraph ownership readback, and the plan-authority audit. Install and live-
+  effect authority remain separate; no sixth provider attempt is implied by
+  the revision.
 
 Closed Plan:
 

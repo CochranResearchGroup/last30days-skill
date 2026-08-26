@@ -267,8 +267,10 @@ class FacebookCliAdapterTests(unittest.TestCase):
         client = facebook.CliAgentBrowserClient(timeout=30)
         client._run_deadline = 10.0
 
-        with mock.patch.object(facebook.time, "monotonic", return_value=11.0), mock.patch.object(
-            facebook.subprocess, "run"
+        with mock.patch.object(
+            facebook.browser_runtime.time, "monotonic", return_value=11.0
+        ), mock.patch.object(
+            facebook.browser_runtime.subprocess, "run"
         ) as run:
             with self.assertRaises(facebook.FacebookScraperFailure) as raised:
                 client._invoke(["--session", "shared-social", "tab", "list"], timeout=30)
@@ -304,8 +306,10 @@ class FacebookCliAdapterTests(unittest.TestCase):
             stderr="",
         )
 
-        with mock.patch.object(facebook.time, "monotonic", side_effect=[10.0, 10.1]), mock.patch.object(
-            facebook.subprocess, "run", return_value=completed
+        with mock.patch.object(
+            facebook.browser_runtime.time, "monotonic", side_effect=[10.0, 10.1]
+        ), mock.patch.object(
+            facebook.browser_runtime.subprocess, "run", return_value=completed
         ) as run:
             client._invoke(
                 ["--session", "last30days-facebook", "tab", "list"],
@@ -1299,93 +1303,6 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual("linkedin-owned", workspace.target_id)
         self.assertEqual(["tab_new", "tab_list", "ui_action"], service_actions)
 
-    def test_broker_tab_attribution_mismatch_stops_before_readiness(self):
-        client = facebook.CliAgentBrowserClient(timeout=5)
-        browser_id = "session:last30days-facebook--last30days-facebook"
-        broker_session = "handoff-social"
-        plan = {
-            "selectedProfile": {"id": "last30days-facebook"},
-            "decision": {
-                "serviceRequest": {
-                    "available": True,
-                    "blockedByAcquisition": False,
-                    "blockedByLifecycleOwner": False,
-                    "request": {
-                        "action": "tab_new",
-                        "serviceName": "last30days",
-                        "agentName": "linkedin-scraper",
-                        "taskName": "linkedin-home-feed",
-                        "targetServiceIds": ["linkedin"],
-                        "runtimeProfile": "last30days-facebook",
-                        "profileLeasePolicy": "wait",
-                        "url": "https://www.linkedin.com/feed/",
-                    },
-                },
-                "profileReuse": {"recommendedAction": "wait_for_profile_lease"},
-            },
-        }
-        handle = {
-            "handleId": "tab-handle-linkedin",
-            "browserId": browser_id,
-            "sessionName": broker_session,
-            "targetId": "linkedin-owned",
-        }
-        service_actions = []
-
-        def service_request(arguments, **_kwargs):
-            service_actions.append(arguments["action"])
-            if arguments["action"] == "tab_new":
-                return {
-                    "serviceTabHandle": handle,
-                    "url": "https://www.linkedin.com/feed/",
-                }
-            if arguments["action"] == "tab_list":
-                return {
-                    "tabs": [
-                        {
-                            "targetId": "linkedin-owned",
-                            "browserId": browser_id,
-                            "sessionId": broker_session,
-                            "url": "https://www.linkedin.com/feed/",
-                            "traceFilter": {
-                                "agentName": "x-scraper",
-                                "taskName": "x-feed",
-                            },
-                        }
-                    ]
-                }
-            if arguments["action"] == "ui_action":
-                return {"ok": True}
-            raise AssertionError(f"unexpected service action: {arguments}")
-
-        def invoke(args, **_kwargs):
-            if args[:2] == ["service", "access-plan"]:
-                return plan
-            arguments = client._service_request_arguments(args, None)
-            self.assertIsNotNone(arguments)
-            return service_request(arguments)
-
-        with mock.patch.object(
-            client, "_invoke", side_effect=invoke
-        ), mock.patch.object(
-            client, "_invoke_service_request", side_effect=service_request
-        ), mock.patch.object(
-            facebook.agent_browser_config, "record_access_plan"
-        ):
-            with self.assertRaises(facebook.FacebookScraperFailure) as raised:
-                client.acquire_workspace(
-                    request(
-                        start_url="https://www.linkedin.com/feed/",
-                        agent_name="linkedin-scraper",
-                        task_name="linkedin-home-feed",
-                        target_service_id="linkedin",
-                    )
-                )
-
-        self.assertEqual("agent_browser_error", raised.exception.error_type)
-        self.assertIn("attribution identity", str(raised.exception))
-        self.assertEqual(["tab_new", "tab_list"], service_actions)
-
     def test_access_plan_route_hints_fall_back_when_status_has_no_live_owner(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         plan = access_plan(shared_owner=("browser-1", "shared-social"))
@@ -1540,7 +1457,7 @@ class FacebookCliAdapterTests(unittest.TestCase):
         )
 
         with mock.patch.object(
-            facebook.time, "monotonic", return_value=10.0
+            facebook.browser_runtime.time, "monotonic", return_value=10.0
         ), mock.patch.object(
             client,
             "_invoke",
@@ -1911,7 +1828,7 @@ class FacebookCliAdapterTests(unittest.TestCase):
             raise AssertionError(f"unexpected command: {command}")
 
         with mock.patch.object(
-            facebook.subprocess, "run", side_effect=run
+            facebook.browser_runtime.subprocess, "run", side_effect=run
         ), mock.patch.object(
             facebook.agent_browser_config, "record_access_plan"
         ):

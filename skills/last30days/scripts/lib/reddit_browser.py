@@ -11,7 +11,7 @@ import time
 from typing import Any, Protocol
 from urllib.parse import parse_qs, quote_plus, unquote, urlsplit, urlunsplit
 
-from . import facebook as browser_runtime
+from . import agent_browser_runtime as browser_runtime
 from . import log
 from .relevance import query_term_coverage, token_overlap_relevance
 
@@ -268,7 +268,7 @@ class RedditBrowserScraper:
                     diagnostics,
                 )
             return self._result(items, None, None, workspace, page, diagnostics)
-        except (RedditBrowserFailure, browser_runtime.FacebookScraperFailure) as exc:
+        except (RedditBrowserFailure, browser_runtime.AgentBrowserRuntimeFailure) as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
             return self._result(
                 [], exc.error_type, _safe_error_message(str(exc)), workspace, page, diagnostics

@@ -19,7 +19,7 @@ import time
 from typing import Any, Literal, Protocol
 from urllib.parse import parse_qs, unquote, urlencode, urlsplit, urlunsplit
 
-from . import dates, facebook as browser_runtime, log
+from . import agent_browser_runtime as browser_runtime, dates, log
 from .relevance import token_overlap_relevance as _compute_relevance
 
 
@@ -42,7 +42,7 @@ BrowserWorkspace = browser_runtime.BrowserWorkspace
 BrowserSnapshot = browser_runtime.BrowserSnapshot
 BrowserAction = browser_runtime.BrowserAction
 BrowserState = browser_runtime.BrowserState
-LinkedInScraperFailure = browser_runtime.FacebookScraperFailure
+LinkedInScraperFailure = browser_runtime.AgentBrowserRuntimeFailure
 
 
 AUTH_SCRIPT = r"""
@@ -1235,7 +1235,7 @@ def scrape_linkedin_feed(
     finally:
         try:
             client.release_workspace()
-        except browser_runtime.FacebookScraperFailure as exc:
+        except browser_runtime.AgentBrowserRuntimeFailure as exc:
             _log(f"Best-effort LinkedIn service tab release did not complete: {exc}")
 
 

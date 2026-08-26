@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 6
+Plan version: 7
 Date: 2026-08-25
 
 ## Objective
@@ -52,7 +52,15 @@ observation before making any authentication or content-quality claim.
 - the LinkedIn target appears on the correct feed URL but carries the retained
   session's X `traceFilter`, while the successful broker request itself names
   the LinkedIn agent, task, and target service. Inventory `traceFilter` is
-  therefore not established as per-tab attribution authority.
+  therefore not established as per-tab attribution authority;
+- the generic Agent Browser lifecycle client, workspace/value objects, typed
+  failures, and target-coherence helpers currently live in `facebook.py`.
+  X, LinkedIn, Reddit, YouTube, and cleanup code import that Facebook module as
+  their shared runtime. The behavior is shared, but the module ownership is
+  misleading and creates cross-provider coupling;
+- the operator has now authorized the provider-free P7 implementation,
+  architecture repair, validation, and merge if successful. This authority
+  does not install a successor, invoke Agent Browser, or admit a provider tick.
 
 ## Scope
 
@@ -86,7 +94,13 @@ observation before making any authentication or content-quality claim.
   validation, deterministic ad/spam exclusion, and topic-search capability;
 - retain enough safe diagnostics to distinguish route selection, target
   attribution, page readiness, authentication classification, extraction, and
-  bounded-yield failures in the durable provider receipt.
+  bounded-yield failures in the durable provider receipt;
+- extract a deep `agent_browser_runtime` module that owns provider-neutral
+  acquisition, readiness, control, evaluation, release, value objects, and
+  typed runtime failures. Facebook keeps only Facebook auth/query behavior;
+  X, LinkedIn, Reddit, YouTube, and cleanup code depend directly on the new
+  provider-neutral interface. Preserve narrow Facebook compatibility exports
+  only where needed by existing callers while making the new module canonical.
 
 ## Non-Goals
 
@@ -133,10 +147,11 @@ observation before making any authentication or content-quality claim.
 |---|---|---|---|---|
 | P1 | C30 evidence | Red fixtures reproduce broker-wait bypass, cross-attributed handle, blank LinkedIn auth, and ambiguous X auth | focused fixtures/tests only | all named defects fail before implementation |
 | P2 | P1 | Broker and handle-coherence gates fail closed without touching browser state | `agent_browser_config.py`, shared browser client, focused tests | route and target matrices pass |
+| P3 | P2 | Meaningful-page and evidence-bound authentication gates preserve transient retrieval failures without false logout | X/LinkedIn adapters and focused tests | auth truth-table and same-handle reprobe cases pass |
 | P4 | P3 | Durable receipt and notification semantics preserve the exact failure boundary | worker/tick adapter and incident tests as required | no ambiguous case becomes reauthentication |
 | P5 | P4 | Focused, package, complete-suite, reproducible-build, and installed-runtime acceptance | version/release surfaces if code changes ship | exact successor is ready with rollback retained |
 | P6 | P5 plus current bounded authority | Up to three schedule-disabled combined 20/20 acceptance ticks within the five-cycle total budget | temporary private config and durable runtime receipts only | both lanes prove 20/20 or the fifth cycle terminalizes |
-| P7 | P6 terminal evidence plus fresh implementation authority | Red/green post-create settling and request-attribution contract | shared browser client plus focused fixtures only | delayed X inventory and inherited-trace LinkedIn cases pass while true target/session/hostname mismatches fail closed |
+| P7 | P6 terminal evidence plus current implementation authority | Red/green post-create settling, request-attribution contract, and provider-neutral runtime extraction | `agent_browser_runtime.py`, provider adapters/imports, compatibility seam, focused fixtures | delayed X inventory and inherited-trace LinkedIn cases pass; true target/session/hostname mismatches fail closed; no non-Facebook provider imports Facebook as its runtime |
 | P8 | P7 plus fresh install/live authority | Validated successor and one schedule-disabled combined 20/20 acceptance tick | release surfaces and temporary private tick config only | both lanes prove 20/20 or the one authorized receipt terminalizes |
 
 Packets P2 through P4 are tightly coupled on the critical path and should be
@@ -194,6 +209,21 @@ No subagent delegation is authorized by the current orchestration policy.
 - Exhaustion raises the existing typed acquisition failure with safe counts
   and the last observed identity state. The caller retains exact-handle release
   behavior and cannot close the shared browser or any unrelated tab.
+
+### 2b. Provider-neutral runtime ownership
+
+- Move provider-neutral lifecycle value objects, the typed runtime failure,
+  acquisition/readiness/control/release client behavior, and shared identity/
+  route helpers into `lib/agent_browser_runtime.py`.
+- Keep the module deep: its public interface represents an attributed browser
+  workspace and hides broker/CLI mechanics. Do not split it into one-method
+  wrappers or duplicate lifecycle logic in provider modules.
+- Make Facebook's CLI client a provider-specific subclass containing only its
+  query-capture and Facebook authentication probes. Existing Facebook imports
+  may be served by compatibility aliases, but the canonical definitions and
+  all other provider imports must resolve to `agent_browser_runtime`.
+- Preserve public behavior and error codes at process boundaries. The rename is
+  architectural ownership, not a receipt-schema or provider-policy change.
 
 ### 3. Meaningful-page readiness
 
@@ -279,11 +309,14 @@ ambiguous result and gain the same meaningful-page prerequisite.
   `tests/test_x_browser.py`, `tests/test_linkedin.py`, and
   `tests/test_service_tick_incidents.py`; demonstrate each named regression
   fails before its fix when practical.
-- **Post-create feedback loop:** one focused `tests/test_facebook.py` selection
+- **Post-create feedback loop:** one focused shared-runtime test selection
   first fails on delayed target visibility and inherited-trace LinkedIn
   attribution, then passes with injected sleeping/clock control. The same
   selection retains immediate-failure cases for conflicting session and
   non-empty foreign hostname.
+- **Architecture boundary:** provider import tests prove X, LinkedIn, Reddit,
+  YouTube, and cleanup code resolve the provider-neutral runtime rather than
+  importing Facebook. Existing Facebook compatibility callers remain green.
 - **Boundary integration:** acquisition-worker and tick-adapter tests prove
   failure stage/signature and incident semantics survive process boundaries.
 - **Presubmit:** focused social-browser, worker, tick, release/version, package,
@@ -308,10 +341,10 @@ ambiguous result and gain the same meaningful-page prerequisite.
   and release/install validation, while each remaining live cycle permits at
   most one X attempt and one LinkedIn attempt in one combined tick; this bound
   is exhausted and is not reset by Plan version 6;
-- P7 planning is authorized by the operator's repair-planning request. P7
-  implementation, a successor install, and P8 live acceptance require a fresh
-  bounded authority packet with explicit implementation and provider-effect
-  ceilings;
+- P7 implementation, architecture repair, provider-free validation, commit,
+  push, and integration to `origin/main` are authorized by the operator's
+  current request. A successor install and P8 live acceptance still require a
+  fresh bounded authority packet with explicit provider-effect ceilings;
 - scroll ceiling: existing maximum eight per lane;
 - no-progress bound: two consecutive implementation checkpoints require a
   local split or tactic change before continuation;
@@ -323,9 +356,16 @@ ambiguous result and gain the same meaningful-page prerequisite.
 ## Owned Write Surfaces
 
 - `skills/last30days/scripts/lib/agent_browser_config.py`;
-- `skills/last30days/scripts/lib/facebook.py` shared browser-client boundary;
+- `skills/last30days/scripts/lib/agent_browser_runtime.py` provider-neutral
+  browser-client boundary;
+- `skills/last30days/scripts/lib/facebook.py` provider-specific adapter and
+  compatibility exports;
 - `skills/last30days/scripts/lib/x_browser.py`;
 - `skills/last30days/scripts/lib/linkedin.py`;
+- `skills/last30days/scripts/lib/reddit_browser.py`;
+- `skills/last30days/scripts/lib/youtube_yt.py`;
+- `skills/last30days/scripts/lib/youtube_media.py`;
+- `skills/last30days/scripts/lib/service_acquisition_cleanup.py`;
 - worker/tick/incident adapters only if required to preserve safe evidence;
 - focused tests and fixtures for the named contracts;
 - service version, changelog, runtime manifest, package/release tests if an
@@ -337,8 +377,9 @@ ambiguous result and gain the same meaningful-page prerequisite.
 - installed Agent Browser access-plan and service-request schemas are external
   contracts; Last30days consumes them but does not repair that runtime;
 - profile `last30days-facebook` and recurring configuration are preserved;
-- the five-cycle implementation/install/live direction is exhausted. Plan
-  version 6 does not renew it; P7/P8 effects require fresh bounded authority;
+- the five-cycle install/live direction is exhausted. Plan version 7 authorizes
+  only P7 source, tests, and repository integration; P8 installation and live
+  effects require fresh bounded authority;
 - no direct browser or profile mutation is an escape hatch for a failed
   Last30days contract.
 
@@ -589,7 +630,7 @@ Next action:
   attribution, rather than retained-session `traceFilter`, is the correct
   LinkedIn ownership proof before any further live attempt.
 
-Checkpoint P0056-C05 is the current authority. Plan 0056 remains `OPEN`
+At that point, Checkpoint P0056-C06 was the operative authority. Plan 0056 remains `OPEN`
 because the required X and LinkedIn 20/20 outcome was not achieved.
 
 ### Checkpoint P0056-C06 | 2026-08-25
@@ -640,3 +681,64 @@ Next action:
 
 Checkpoint P0056-C06 is the current planning authority. Plan 0056 remains
 `OPEN`; the five-cycle live/repair budget remains exhausted.
+
+### Checkpoint P0056-C07 | 2026-08-26
+
+Plan version: 7
+
+State transition:
+
+- `post_create_settling_and_request_attribution_repair_planned ->
+  provider_neutral_runtime_candidate_validation`.
+
+Progress classification:
+
+- `implementation`; the P7 behavior repair and architecture extraction are
+  complete in source and are proceeding through provider-free validation.
+
+Authority classification:
+
+- `inherited_authority`; the operator requested the codebase architecture repair,
+  tests, and merge if successful. This checkpoint adds no install, browser
+  operation, provider attempt, recurring configuration change, incident, or
+  notification authority.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Evidence:
+
+- the inherited LinkedIn session-trace fixture failed before repair and passed
+  after request-local attribution superseded inventory `traceFilter`;
+- the delayed X inventory fixture failed before repair and passed after a poll
+  bounded to six exact-session reads and five seconds, with one `tab_new` and
+  one handle-bound readiness operation;
+- `agent_browser_runtime.py` now owns provider-neutral acquisition, target
+  coherence, page control, evaluation, and exact release. X, LinkedIn, Reddit,
+  YouTube, and cleanup import it directly; Facebook retains provider-specific
+  defaults, auth, query capture, and target recovery behind a subclass;
+- the affected 322-test provider selection passes, as do the runtime manifest,
+  reproducible package, version, release, source-log, and focused architecture
+  checks. The first comprehensive run preserved four failures: three stale
+  Facebook-test patch targets and the expected pre-C07 plan audit. The three
+  test seams and checkpoint declaration were corrected without changing
+  production behavior. The canonical rerun then passed with 2,697 tests, seven
+  skips, and eight subtests;
+- all MCP Go packages pass; CodeGraph is current and resolves the shared base
+  in `agent_browser_runtime.py` with provider-specific X, LinkedIn, Facebook,
+  and Reddit subclasses; the dirty-tree skill build contains 152 files and the
+  deterministic 0.3.72 service artifact SHA-256 is
+  `e57cc8af1d34e1da58e63e24fa22d670b4f6653506cdc1c94a9133e0e842b49b`;
+- service version remains 0.3.72. The refreshed source manifest is a build
+  boundary only and no release artifact was installed.
+
+Next action:
+
+- create a source checkpoint, record its immutable hash in the runbook, then
+  push and integrate to `origin/main`. Stop before install or any live provider
+  attempt.
+
+Checkpoint P0056-C07 is the current authority for implementation and
+repository integration. Plan 0056 remains `OPEN` because installed and live
+X/LinkedIn 20/20 acceptance are separately gated and unmet.

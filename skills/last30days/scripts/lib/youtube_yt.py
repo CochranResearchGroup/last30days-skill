@@ -57,7 +57,7 @@ def reset_transcript_fetch_stats() -> None:
 # Max words to keep from each transcript
 TRANSCRIPT_MAX_WORDS = 5000
 
-from . import dates, facebook as browser_runtime, http, log, subproc
+from . import agent_browser_runtime as browser_runtime, dates, http, log, subproc
 from .query import infer_query_intent
 
 from .relevance import token_overlap_relevance as _compute_relevance
@@ -582,7 +582,7 @@ class _YouTubeBrowserClient(browser_runtime.CliAgentBrowserClient):
         selected = plan.get("selectedProfile")
         selected_profile = str(selected.get("id") or "") if isinstance(selected, dict) else ""
         if selected_profile != request.profile_id:
-            raise browser_runtime.FacebookScraperFailure(
+            raise browser_runtime.AgentBrowserRuntimeFailure(
                 "profile_mismatch",
                 f"agent-browser selected profile {selected_profile!r}, not {request.profile_id!r}",
             )
@@ -599,7 +599,7 @@ class _YouTubeBrowserClient(browser_runtime.CliAgentBrowserClient):
             if str(launch.get(key) or "") != expected
         ]
         if mismatches:
-            raise browser_runtime.FacebookScraperFailure(
+            raise browser_runtime.AgentBrowserRuntimeFailure(
                 "agent_browser_error",
                 "agent-browser access plan did not preserve hidden-RDP posture: "
                 + ", ".join(mismatches),

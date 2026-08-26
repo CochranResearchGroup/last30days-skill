@@ -6,7 +6,7 @@ import json
 import sys
 from collections.abc import Mapping
 
-from .facebook import BrowserWorkspace, CliAgentBrowserClient
+from .agent_browser_runtime import BrowserWorkspace, CliAgentBrowserClient
 
 
 def cleanup_facebook_tabs(payload: Mapping[str, object]) -> bool:
