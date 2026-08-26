@@ -21123,8 +21123,9 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- `pending`; queue one compact source-backed memory if readiness permits,
-  otherwise leave this runbook checkpoint authoritative.
+- provider readiness passed and one compact source-backed closeout was queued
+  in `last30days_skill_main` as job
+  `1eadfef4-b6b7-48e3-93f9-4e714f1be6d8`; no duplicate write was issued.
 
 Next Bounded Action:
 
