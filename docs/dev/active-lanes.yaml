@@ -7,10 +7,11 @@ lanes:
     branch: fix/linkedin-accepted-yield
     target: main
     plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 5584cc537ae9f3713e1932c1b15d12091598f27d
+    custody_state: INTEGRATED
+    checkpoint: 02dbcedca2b26f8b948785d5c6b3d883486c7f76
     remote_ref: refs/remotes/origin/fix/linkedin-accepted-yield
     integration: fast-forward
+    integration_receipt: 02dbcedca2b26f8b948785d5c6b3d883486c7f76
     dependencies: []
     overlaps: []
     updated_at: 2026-08-26
