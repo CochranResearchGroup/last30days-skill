@@ -1094,7 +1094,13 @@ Evidence:
   direct build confirms the sole gate: `service/runtime-manifest.json is
   stale; run service/scripts/build-runtime.sh --refresh-manifest`;
 - active planning audit, `git diff --check`, and Python compilation pass. Ruff
-  is unavailable in the repository uv environment.
+  is unavailable in the repository uv environment;
+- source checkpoint `5b2bfaa2a1319cb3fe56e63620357f6334842fd5`
+  and its P08 branch-custody proposal are pushed. The exact active-lane audit
+  still reads the canonical `origin/main` catalog, where P08 remains projected
+  as integrated at `1a74d3674b8da9c44357ce5005c13d8ba362022a`;
+  `stale_checkpoint` and `integrated_cleanup_pending` therefore remain a
+  default-branch catalog reconciliation gate, not a source-test failure.
 
 Next action:
 

@@ -21487,7 +21487,12 @@ Validation Evidence:
 - active planning audit passes; `git diff --check` passes;
 - Python compilation of the touched modules and regression test passes;
 - Ruff was not available in the repository uv environment, so no Ruff claim is
-  made.
+  made;
+- source checkpoint `5b2bfaa2a1319cb3fe56e63620357f6334842fd5` and
+  a P08 custody proposal are pushed on the existing feature branch. The exact
+  active-lane audit remains non-green because canonical `origin/main` still
+  projects P08 as integrated at its prior checkpoint; findings are
+  `stale_checkpoint` and `integrated_cleanup_pending`.
 
 State Movement:
 
