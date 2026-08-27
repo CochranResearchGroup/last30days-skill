@@ -319,9 +319,41 @@ class CliAgentBrowserClient:
                         "sessionName": route_session_name,
                     }
                 )
-            acquired = self._invoke_service_request(
-                dict(self._service_request_route),
-                timeout=min(request.timeout, 30),
+            broker_timeout = min(request.timeout, 30)
+            broker_started = time.monotonic()
+            try:
+                acquired = self._invoke_service_request(
+                    dict(self._service_request_route),
+                    timeout=broker_timeout,
+                )
+            except subprocess.TimeoutExpired as exc:
+                self.command_timings.append(
+                    {
+                        "operation": "service_request:tab_new",
+                        "duration_ms": _elapsed_ms(broker_started),
+                        "status": "timed_out",
+                    }
+                )
+                raise AgentBrowserRuntimeFailure(
+                    "agent_browser_timeout",
+                    f"agent-browser broker request timed out after {broker_timeout}s",
+                    reason_code="broker_service_request_timeout",
+                ) from exc
+            except (OSError, AgentBrowserRuntimeFailure):
+                self.command_timings.append(
+                    {
+                        "operation": "service_request:tab_new",
+                        "duration_ms": _elapsed_ms(broker_started),
+                        "status": "failed",
+                    }
+                )
+                raise
+            self.command_timings.append(
+                {
+                    "operation": "service_request:tab_new",
+                    "duration_ms": _elapsed_ms(broker_started),
+                    "status": "ok",
+                }
             )
             service_tab_handle = acquired.get("serviceTabHandle")
             if not isinstance(service_tab_handle, dict):

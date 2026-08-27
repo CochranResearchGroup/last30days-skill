@@ -1,3 +1,4 @@
+import subprocess
 import unittest
 from unittest import mock
 
@@ -124,6 +125,86 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
         self.assertEqual(["tab_new", "tab_list", "tab_list", "ui_action"], actions)
         sleep.assert_called_once_with(
             agent_browser_runtime.SERVICE_TARGET_INVENTORY_POLL_SECONDS
+        )
+
+    def test_direct_broker_timeout_is_typed_at_workspace_acquisition(self):
+        client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
+        request = _request(
+            url="https://x.com/home",
+            agent="x-scraper",
+            task="x-feed",
+            service="x",
+        )
+        plan = _access_plan(
+            url=request.start_url,
+            agent=request.agent_name,
+            task=request.task_name,
+            service=request.target_service_id,
+        )
+
+        with (
+            mock.patch.object(client, "_invoke", return_value=plan),
+            mock.patch.object(
+                client,
+                "_invoke_service_request",
+                side_effect=subprocess.TimeoutExpired("agent-browser mcp serve", 5),
+            ),
+            mock.patch.object(
+                agent_browser_runtime.agent_browser_config, "record_access_plan"
+            ),
+            self.assertRaises(
+                agent_browser_runtime.AgentBrowserRuntimeFailure
+            ) as raised,
+        ):
+            client.acquire_workspace(request)
+
+        self.assertEqual("agent_browser_timeout", raised.exception.error_type)
+        self.assertEqual(
+            "broker_service_request_timeout", raised.exception.reason_code
+        )
+        self.assertEqual(
+            [
+                {
+                    "operation": "service_request:tab_new",
+                    "duration_ms": mock.ANY,
+                    "status": "timed_out",
+                }
+            ],
+            client.command_timings,
+        )
+
+    def test_x_workspace_acquisition_preserves_broker_timeout_reason(self):
+        client = x_browser.CliAgentBrowserClient(timeout=5)
+        request = _request(
+            url="https://x.com/home",
+            agent="x-scraper",
+            task="x-feed",
+            service="x",
+        )
+        plan = _access_plan(
+            url=request.start_url,
+            agent=request.agent_name,
+            task=request.task_name,
+            service=request.target_service_id,
+        )
+
+        with (
+            mock.patch.object(client, "_invoke", return_value=plan),
+            mock.patch.object(
+                client,
+                "_invoke_service_request",
+                side_effect=subprocess.TimeoutExpired("agent-browser mcp serve", 5),
+            ),
+            mock.patch.object(
+                agent_browser_runtime.agent_browser_config, "record_access_plan"
+            ),
+            self.assertRaises(x_browser.XBrowserFailure) as raised,
+        ):
+            client.acquire_workspace(request)
+
+        self.assertEqual("agent_browser_timeout", raised.exception.error_type)
+        self.assertEqual(
+            "broker_service_request_timeout", raised.exception.reason_code
         )
 
     def test_inherited_session_trace_does_not_override_request_attribution(self):

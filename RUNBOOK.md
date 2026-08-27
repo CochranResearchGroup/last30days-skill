@@ -21438,3 +21438,89 @@ Next Bounded Action:
 
 - provider-free typed timeout translation and fixtures; do not install or run
   another provider tick without a separately bounded successor.
+
+## Turn 347 | 2026-08-26
+
+Focus: verify X/LinkedIn pages through Agent Browser directly, correlate the
+broker trace, and instrument the Last30days timeout boundary.
+
+Authority Consulted:
+
+- operator request for direct Agent Browser page confirmation and Last30days
+  diagnosis; Plan 0056/C11-C12; Roadmap P08; repo policy, Agent Browser service
+  ownership, diagnosis/TDD, CodeGraph, and validation authorities.
+
+Decisions And Changes:
+
+- connected directly to retained session `handoff-356556ee1fe03a25` and proved
+  browser command operations work; a command omitted the explicit
+  `last30days-facebook` runtime profile and the resulting live browser is now
+  attributed to profile `default`. Its LinkedIn login page and X public landing
+  page are therefore not authentication evidence for the intended profile;
+- did not close, replace, reconcile, clean, or otherwise mutate Agent Browser
+  lifecycle state after detecting that profile error;
+- correlated Agent Browser trace to the failed tick: X waited 30,232 ms and
+  LinkedIn waited 30,280 ms for the exclusive `last30days-facebook` lease held
+  by the same handoff, because the holder was not recognized as a compatible
+  browser for that profile;
+- falsified an MCP-stdio shutdown hang: the exact Last30days wrapper completed
+  a read-only `tab_list` request with six tabs in 148 ms and exited normally;
+- added typed translation at direct broker acquisition so outer
+  `subprocess.TimeoutExpired` becomes `agent_browser_timeout` with normalized
+  reason `broker_service_request_timeout` and a
+  `service_request:tab_new/timed_out` command-timing record;
+- made `XBrowserFailure` preserve that reason and project it into X result
+  diagnostics. No successor was built or installed and no provider tick ran.
+
+Validation Evidence:
+
+- the public workspace-acquisition regression failed red with raw
+  `subprocess.TimeoutExpired`, then passed after the translation; the X
+  propagation regression failed red on missing `reason_code`, then passed;
+- focused affected suites pass: agent-browser runtime 7, X 33 plus one skip,
+  LinkedIn 41 plus one skip, acquisition worker 40, and tick runtime 26;
+- the comprehensive suite completed with 2,690 passed, seven skipped, and
+  eight subtests plus 11 release-packaging failures. All 11 bind to the
+  intentionally stale 0.3.74 runtime manifest after source instrumentation;
+  a direct build fails only with `service/runtime-manifest.json is stale; run
+  service/scripts/build-runtime.sh --refresh-manifest`;
+- active planning audit passes; `git diff --check` passes;
+- Python compilation of the touched modules and regression test passes;
+- Ruff was not available in the repository uv environment, so no Ruff claim is
+  made.
+
+State Movement:
+
+- Plan 0056 advances to version 12/C12
+  `direct_browser_and_broker_lease_diagnosis_active`; P08 and the plan remain
+  open because the intended profile lacks a coherent commandable broker route
+  and neither source reached observation or 20 accepted items.
+
+Progress Classification:
+
+- `blocker_reduction`; browser commandability, intended-profile identity,
+  broker lease routing, MCP process lifecycle, and Last30days timeout
+  translation are now separately evidenced.
+
+Authority Classification:
+
+- `inherited_authority`; implementation stayed provider-free and no new live
+  scrape, install, recurring-config effect, or Agent Browser cleanup occurred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`: the prior C11 episode remains pending after its
+  retryable node-extraction timeout; add this source-backed diagnosis to the
+  same next closeout write rather than issuing duplicate speculative episodes.
+
+Next Bounded Action:
+
+- cut a separately authorized source successor if the instrumentation should
+  enter the release manifest. A separate Agent Browser lifecycle/profile
+  correction is required before a meaningful installed 20/20 tick; do not
+  infer authentication state for `last30days-facebook` from the current
+  `default` browser.

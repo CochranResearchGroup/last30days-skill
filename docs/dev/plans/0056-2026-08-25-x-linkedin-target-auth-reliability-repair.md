@@ -6,7 +6,7 @@ Branch: fix/x-linkedin-failure-cause-evidence
 Target: main
 Integration: fast-forward
 Roadmap: P08
-Plan version: 11
+Plan version: 12
 Date: 2026-08-25
 
 ## Objective
@@ -87,6 +87,21 @@ observation before making any authentication or content-quality claim.
   before browser-operation evidence or post observation. This is a common
   Last30days timeout-translation defect, not logout, feed exhaustion, content
   filtering, or an Agent Browser health finding.
+- direct Agent Browser inspection on 2026-08-26 proves the retained
+  `handoff-356556ee1fe03a25` command lane is responsive, but the live browser
+  is currently attributed to profile `default`, not the intended
+  `last30days-facebook` profile. A direct command that omitted the explicit
+  runtime profile contributed the current default-profile attachment and is
+  not authentication evidence for the intended profile;
+- retained service trace proves the C11 X and LinkedIn requests waited on the
+  exclusive `last30days-facebook` lease held by that handoff for 30,232 ms and
+  30,280 ms respectively. Agent Browser did not classify the handoff browser
+  as compatible with the requested profile, so the broker attempted a waiting
+  launch rather than attributed tab reuse;
+- Last30days' direct broker acquisition calls `_invoke_service_request()`
+  outside `_invoke()`'s existing `subprocess.TimeoutExpired` translator. Its
+  outer deadline therefore hid the broker's typed lease-conflict result as a
+  generic adapter exception.
 
 ## Scope
 
@@ -1021,3 +1036,74 @@ Next action:
 
 Checkpoint P0056-C11 is the current authority. Plan 0056 remains `OPEN` because
 neither lane reached observation or 20 accepted items.
+
+### Checkpoint P0056-C12 | 2026-08-26
+
+Plan version: 12
+
+State transition:
+
+- `terminal_tick_localized_direct_broker_timeout_translation_gap ->
+  direct_browser_and_broker_lease_diagnosis_active`.
+
+Progress classification:
+
+- `blocker_reduction`; direct browser commandability, current profile
+  attribution, broker lease waits, and the Last30days translation gap are now
+  separate evidence boundaries.
+
+Authority classification:
+
+- `inherited_authority`; the operator explicitly requested direct Agent
+  Browser page confirmation followed by Last30days instrumentation and actual
+  diagnosis. This packet may read the retained browser and service trace and
+  implement provider-free Last30days timeout instrumentation. It may not
+  close, replace, reconcile, or mutate Agent Browser profiles/browsers, install
+  a successor, run another provider tick, or change recurring configuration.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Controller, bound, and terminal stop:
+
+- controller: primary orchestrator;
+- implementation loop: one red/green public workspace-acquisition regression;
+- runtime probes: one bounded direct page read per source and one bounded
+  non-waiting MCP lifecycle probe;
+- terminal stop: typed timeout instrumentation validated, exact causal report
+  written, or a new Agent Browser mutation/install/live-tick gate is reached.
+
+Evidence:
+
+- direct retained-session control completed tab switch, URL/title reads, and
+  DOM snapshots in 1-51 ms; bounded X navigation completed in 2,186 ms;
+- current live service state records `session:handoff-356556ee1fe03a25` as a
+  ready `attached_existing` browser with profile `default`, while the durable
+  `last30days-facebook` profile allocation has no browser holder;
+- retained trace records X and LinkedIn profile-lease waits of 30,232 ms and
+  30,280 ms against that handoff, followed by typed lease-conflict failures;
+- the exact Last30days MCP stdio wrapper completed a non-waiting read-only
+  `tab_list` request and exited in 148 ms, falsifying an MCP process-exit hang;
+- two public-boundary regressions failed before their respective fixes and now
+  pass. The affected runtime, X, LinkedIn, acquisition-worker, and tick suites
+  pass with 147 tests and two skips in aggregate;
+- the comprehensive suite reached `2,690 passed / 7 skipped / 8 subtests` with
+  11 expected release-packaging failures because 0.3.74's tracked runtime
+  manifest intentionally remains bound to the pre-instrumentation source. A
+  direct build confirms the sole gate: `service/runtime-manifest.json is
+  stale; run service/scripts/build-runtime.sh --refresh-manifest`;
+- active planning audit, `git diff --check`, and Python compilation pass. Ruff
+  is unavailable in the repository uv environment.
+
+Next action:
+
+- cut a separately authorized source successor if this instrumentation should
+  enter the release manifest. Before any meaningful live tick, repair or
+  reconcile the Agent Browser lifecycle/profile identity through Agent
+  Browser's own authority; do not use the current `default` browser as proof
+  for `last30days-facebook`.
+
+Checkpoint P0056-C12 is the current authority. Plan 0056 remains `OPEN` because
+the intended profile is not currently commandable through a coherent broker
+route and neither lane has reached observation or 20 accepted items.

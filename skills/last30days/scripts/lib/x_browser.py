@@ -48,10 +48,18 @@ ERROR_TYPES = {
 
 
 class XBrowserFailure(RuntimeError):
-    def __init__(self, error_type: str, message: str, *, operator_url: str = "") -> None:
+    def __init__(
+        self,
+        error_type: str,
+        message: str,
+        *,
+        operator_url: str = "",
+        reason_code: str = "",
+    ) -> None:
         super().__init__(message)
         self.error_type = error_type if error_type in ERROR_TYPES else "agent_browser_error"
         self.operator_url = operator_url
+        self.reason_code = reason_code
 
 
 AUTH_SCRIPT = r"""
@@ -300,6 +308,7 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
                 exc.error_type,
                 str(exc),
                 operator_url=exc.operator_url,
+                reason_code=exc.reason_code,
             ) from exc
 
     def inspect_auth(self, workspace: BrowserWorkspace) -> XAuthState:
@@ -660,6 +669,8 @@ def search_x_browser(
     except XBrowserFailure as exc:
         _log(f"Failed error_type={exc.error_type} message={exc}")
         diagnostics = {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0}
+        if exc.reason_code:
+            diagnostics["failure_reason_code"] = exc.reason_code
         if exc.operator_url:
             diagnostics["operator_url"] = exc.operator_url
         return {
@@ -769,6 +780,8 @@ def scrape_x_feed(
     except XBrowserFailure as exc:
         _log(f"Failed error_type={exc.error_type} message={exc}")
         diagnostics = _failure_diagnostics(scraper, client, exc.operator_url)
+        if exc.reason_code:
+            diagnostics["failure_reason_code"] = exc.reason_code
         return {
             "items": [],
             "error": str(exc),
