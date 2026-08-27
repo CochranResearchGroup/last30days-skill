@@ -1275,7 +1275,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`
-  version 9/C09 owns the bounded successor. Its provider-free repair now uses
+  version 10/C10 owns the bounded successor. Its provider-free repair now uses
   the broker's available queued service request without invented route hints,
   validates browser/session/URL/agent/task identity before readiness, stops on
   lease wait when no compatible service route exists, and treats blank
@@ -1310,7 +1310,10 @@ Active Plan:
   `workspace_acquisition/agent_browser_error` after one successful service
   boundary operation. Both are `0/0/0/0`, with zero incidents/notifications
   and all leases released. The receipts prove neither logout nor feed/content
-  quality; a future retry requires fresh repair and provider authority.
+  quality. C10 now owns the narrow Last30days failure-cause repair, one exact
+  successor install, and one schedule-disabled X plus LinkedIn 20/20 tick; it
+  excludes Agent Browser changes, recurring-config mutation, and provider
+  retries.
 
 Closed Plan:
 

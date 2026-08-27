@@ -2,11 +2,11 @@
 
 State: OPEN
 Lane: P08
-Branch: fix/linkedin-accepted-yield
+Branch: fix/x-linkedin-failure-cause-evidence
 Target: main
 Integration: fast-forward
 Roadmap: P08
-Plan version: 9
+Plan version: 10
 Date: 2026-08-25
 
 ## Objective
@@ -75,7 +75,12 @@ observation before making any authentication or content-quality claim.
   lanes terminalized before page observation: X exposed an untyped adapter
   exception that the worker collapsed at `adapter_execution`; LinkedIn exposed
   a typed `agent_browser_error` at `workspace_acquisition`. Neither receipt is
-  authentication or content-quality evidence, and no retry is authorized.
+  authentication or content-quality evidence;
+- the operator has now authorized the bounded C10 successor: repair those two
+  Last30days evidence-loss paths, validate and install one exact successor,
+  then run one schedule-disabled combined home-feed tick with one X and one
+  LinkedIn attempt, each capped at 20 accepted items. This does not authorize
+  Agent Browser implementation/state changes or recurring-config mutation.
 
 ## Scope
 
@@ -880,3 +885,55 @@ Next action:
 
 Checkpoint P0056-C09 is the current authority. Plan 0056 remains `OPEN` because
 neither lane reached observation or 20 accepted items.
+
+### Checkpoint P0056-C10 | 2026-08-26
+
+Plan version: 10
+
+State transition:
+
+- `installed_acceptance_terminal_preobservation_failures ->
+  failure_cause_repair_active`.
+
+Progress classification:
+
+- `blocker_reduction`; the successor targets only the two verified diagnostic
+  blind spots before one bounded installed/live acceptance attempt.
+
+Authority classification:
+
+- `inherited_authority`; the operator explicitly said `ok go` after the
+  proposed Last30days repair and single successor 20/20 tick. The packet may
+  edit, test, release, install, and invoke that one tick. It may not modify or
+  operate Agent Browser itself, change recurring source configuration, retry
+  either provider, or infer authentication/content quality before observation.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Evidence:
+
+- C09's X result is a deterministic reproducer of exception-class loss at the
+  acquisition worker's public adapter boundary;
+- C09's LinkedIn result proves a typed workspace-acquisition failure reached
+  the durable tick, but its specific normalized acquisition reason did not;
+- source and `origin/main` begin this packet clean and equal at
+  `ae4264c9072f73dd65f7379d598edd4dcce57a55`; installed 0.3.73 remains the
+  pre-repair baseline with 0.3.72 retained.
+
+Controller, bound, and terminal stop:
+
+- controller: primary orchestrator;
+- repair loop: one red/green public-boundary slice per evidence-loss path;
+- live bound: one X attempt plus one LinkedIn attempt in one schedule-disabled
+  tick, 20 accepted-item ceiling per lane, no per-provider retry;
+- terminal stop: the first durable terminal receipt, regardless of outcome.
+
+Next action:
+
+- write the X exception-loss regression first, prove it red, then implement
+  only bounded normalized cause evidence with no raw exception-message leak.
+
+Checkpoint P0056-C10 is the current authority. Plan 0056 remains `OPEN` until
+the exact installed successor and terminal live receipt are reconciled.

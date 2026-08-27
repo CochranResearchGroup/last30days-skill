@@ -3,15 +3,14 @@ lanes:
   - id: P08
     objective: Prove one bounded 20-item X and LinkedIn home-feed tick
     plan: docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md
-    plan_ref: refs/remotes/origin/fix/linkedin-accepted-yield
-    branch: fix/linkedin-accepted-yield
+    plan_ref: refs/remotes/origin/fix/x-linkedin-failure-cause-evidence
+    branch: fix/x-linkedin-failure-cause-evidence
     target: main
     plan_state: OPEN
-    custody_state: INTEGRATED
-    checkpoint: 02dbcedca2b26f8b948785d5c6b3d883486c7f76
-    remote_ref: refs/remotes/origin/fix/linkedin-accepted-yield
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: ae4264c9072f73dd65f7379d598edd4dcce57a55
+    remote_ref: refs/remotes/origin/fix/x-linkedin-failure-cause-evidence
     integration: fast-forward
-    integration_receipt: 02dbcedca2b26f8b948785d5c6b3d883486c7f76
     dependencies: []
     overlaps: []
     updated_at: 2026-08-26
