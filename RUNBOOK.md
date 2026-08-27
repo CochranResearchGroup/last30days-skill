@@ -21352,3 +21352,89 @@ Next Bounded Action:
 
 - stop. Under fresh authority, fixture and repair X exception-class retention
   plus LinkedIn typed acquisition-reason retention before another live tick.
+
+## Turn 346 | 2026-08-26
+
+Focus: preserve bounded X/LinkedIn acquisition causes, install the successor,
+and consume one exact 20/20 home-feed tick.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0056/C09-C11; Roadmap P08; repository policy,
+  diagnosis/TDD, CodeGraph, release/install, temporary tick, durable database,
+  schedule, recurring-config, and closeout authorities.
+
+Decisions And Changes:
+
+- added class-only unexpected-adapter reasons and normalized broker-acquisition
+  reasons without retaining raw exception messages;
+- carried `failure_reason_code` through durable provider serialization and
+  included it in stable failure signatures;
+- released pushed commit `bac91709935da06cbb3e2240ac75e78fb97b254e` as
+  service 0.3.74, installed it ready, and retained 0.3.73;
+- ran preflight until one private schedule-disabled config was valid, then
+  consumed exactly one X plus LinkedIn tick with one 20-item attempt per lane;
+- stopped at its first terminal receipt. No retry, Agent Browser operation or
+  mutation, recurring-config mutation, incident transition, or notification
+  delivery occurred. Three temporary private configs were removed after use
+  and are not recoverable.
+
+Validation Evidence:
+
+- affected tests and the complete suite pass: 2,699 passed, seven skipped,
+  eight subtests; all MCP Go packages, the 152-file skill build, service build,
+  and plan audit pass;
+- 0.3.74 artifact SHA-256 is
+  `3a259d6712ff11be262b5c48a723ff69a2f2b41b41f27d24230b280345d2667f`;
+  installed runtime-manifest SHA-256 is
+  `9eef9535471d3b276074c1199ea47a09ba79011d3b93bbe08ef0bfbe19fccb5d`;
+- tick `tick-1294554510e56c82bbadb2e116b412f2`, execution
+  `tick-attempt-dd78188439552a650afdd22cda17fc68`, and config digest
+  `sha256:ededfa17f4110b291bf4db55ea1ba1d54dcfc6a8d9b3e10b95649c0baed680a6`
+  terminalized `complete_degraded` with exactly two attempts, 55 wall seconds,
+  and zero items, network requests, model tokens, or cost;
+- X attempt `provider-attempt-78d4fc9e5d4f1f54cfe2bb21b017b2dd`
+  and LinkedIn attempt `provider-attempt-031fd74ec725f3e21b6059290186847e`
+  both failed `adapter_exception/adapter_execution` with bounded reason
+  `unexpected_timeout_expired`, no browser operations, and `0/0/0/0`;
+- CodeGraph/source inspection binds the common cause to Last30days' direct
+  `_invoke_service_request()` path, where `subprocess.TimeoutExpired` escapes
+  before translation to `AgentBrowserRuntimeFailure`;
+- both leases are released; SQLite quick check is `ok`; active tick/provider
+  attempts, unreleased leases, incidents, and notifications are all zero;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` remains enabled/ready for `2026-08-28T00:00:00Z`.
+
+State Movement:
+
+- Plan 0056 advances to version 11/C11
+  `terminal_tick_localized_direct_broker_timeout_translation_gap`; P08 and the
+  plan remain open because neither source observed or accepted posts.
+
+Progress Classification:
+
+- `blocker_reduction`; both formerly opaque lanes now share one exact,
+  provider-neutral Last30days timeout-translation defect.
+
+Authority Classification:
+
+- `human_gate`; the sole live tick is consumed and no retry is implied.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- provider readiness passed and one compact source-backed C11 closeout episode
+  was queued in `last30days_skill_main` as job
+  `79f4b12d-8d29-4c17-9163-18a0c4623262`, but the worker terminalized
+  `failed/retryable` with `TimeoutError` during node extraction;
+- `graphiti_write_pending`: retry that exact compact episode at the next
+  non-trivial closeout; no duplicate write was queued this turn.
+
+Next Bounded Action:
+
+- provider-free typed timeout translation and fixtures; do not install or run
+  another provider tick without a separately bounded successor.

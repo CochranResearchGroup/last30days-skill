@@ -6,7 +6,7 @@ Branch: fix/x-linkedin-failure-cause-evidence
 Target: main
 Integration: fast-forward
 Roadmap: P08
-Plan version: 10
+Plan version: 11
 Date: 2026-08-25
 
 ## Objective
@@ -80,7 +80,13 @@ observation before making any authentication or content-quality claim.
   Last30days evidence-loss paths, validate and install one exact successor,
   then run one schedule-disabled combined home-feed tick with one X and one
   LinkedIn attempt, each capped at 20 accepted items. This does not authorize
-  Agent Browser implementation/state changes or recurring-config mutation.
+  Agent Browser implementation/state changes or recurring-config mutation;
+- C10 installed service 0.3.74 and consumed its sole combined tick. The new
+  durable cause evidence proves both lanes hit an unhandled
+  `subprocess.TimeoutExpired` in Last30days' direct broker-request wrapper,
+  before browser-operation evidence or post observation. This is a common
+  Last30days timeout-translation defect, not logout, feed exhaustion, content
+  filtering, or an Agent Browser health finding.
 
 ## Scope
 
@@ -937,3 +943,81 @@ Next action:
 
 Checkpoint P0056-C10 is the current authority. Plan 0056 remains `OPEN` until
 the exact installed successor and terminal live receipt are reconciled.
+
+### Checkpoint P0056-C11 | 2026-08-26
+
+Plan version: 11
+
+State transition:
+
+- `failure_cause_repair_active ->
+  terminal_tick_localized_direct_broker_timeout_translation_gap`.
+
+Progress classification:
+
+- `blocker_reduction`; 20/20 acceptance remains unmet, but both previously
+  opaque failures now resolve to the same exact Last30days exception class and
+  code path.
+
+Authority classification:
+
+- `human_gate`; the single C10 live tick is consumed. No retry, second install,
+  Agent Browser operation or mutation, recurring-config mutation, manual
+  incident transition, or notification delivery is authorized.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Evidence:
+
+- pushed repair commit `bac91709935da06cbb3e2240ac75e78fb97b254e`
+  releases service 0.3.74. The clean artifact SHA-256 is
+  `3a259d6712ff11be262b5c48a723ff69a2f2b41b41f27d24230b280345d2667f`
+  and installed runtime-manifest SHA-256 is
+  `9eef9535471d3b276074c1199ea47a09ba79011d3b93bbe08ef0bfbe19fccb5d`;
+- 0.3.74/schema 16 is installed `ready`, exact service/MCP readback is
+  compatible, and 0.3.73 is retained as previous;
+- affected social/runtime/tick tests pass; the complete canonical suite is
+  `2,699 passed / 7 skipped / 8 subtests passed`; all MCP Go packages pass;
+  the clean 152-file skill build, service package, and plan audit pass;
+- ready preflight predicted tick `tick-1294554510e56c82bbadb2e116b412f2`,
+  config digest
+  `sha256:ededfa17f4110b291bf4db55ea1ba1d54dcfc6a8d9b3e10b95649c0baed680a6`,
+  two attempts, 40 items, 100 requests, 240 seconds, and zero model/cost;
+- that exact schedule-disabled tick terminalized `complete_degraded` after one
+  execution, exactly two provider attempts, 55 accounted wall seconds, zero
+  items, requests, model tokens, and cost;
+- X attempt `provider-attempt-78d4fc9e5d4f1f54cfe2bb21b017b2dd`
+  failed `adapter_exception/adapter_execution` with reason
+  `unexpected_timeout_expired`, signature
+  `sha256:b9d8044c7d4b8b3ca18660fc20f5ca71ffd31eb1cb3dbe954b3dfaddd4cf2b91`,
+  `0 attempted / 0 observed / 0 accepted / 0 rejected`, 28 seconds, and no
+  browser-operation evidence;
+- LinkedIn attempt `provider-attempt-031fd74ec725f3e21b6059290186847e`
+  failed the same code/stage/reason at `0/0/0/0`, 27 seconds, signature
+  `sha256:b59aa4f936945b0ee53ba85a13e46febfecadcf1ffa3a1f0a7258f1690a6aaf4`,
+  and no browser-operation evidence;
+- source trace shows `acquire_workspace()` directly calls
+  `_invoke_service_request()`, whose `subprocess.run(..., timeout=...)` does
+  not translate `subprocess.TimeoutExpired`; the exception therefore escapes
+  the typed `AgentBrowserRuntimeFailure` boundary into the worker's generic
+  adapter catch;
+- both exact leases are released; SQLite quick check is `ok`; active tick and
+  provider attempts, unreleased leases, incidents, and notifications are all
+  zero;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+  `daily-default` remains enabled/ready for `2026-08-28T00:00:00Z`; its normal
+  `2026-08-27T00:00:00Z` boundary occurred independently before the manual
+  tick and was not modified by this packet.
+
+Next action:
+
+- provider-free only: translate `subprocess.TimeoutExpired` inside the direct
+  broker request to typed `agent_browser_timeout` with a normalized reason,
+  fixture both acquisition paths, and validate a successor. Another install
+  or live tick requires a separately bounded successor packet.
+
+Checkpoint P0056-C11 is the current authority. Plan 0056 remains `OPEN` because
+neither lane reached observation or 20 accepted items.

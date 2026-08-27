@@ -1275,7 +1275,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`
-  version 10/C10 owns the bounded successor. Its provider-free repair now uses
+  version 11/C11 owns the bounded successor. Its provider-free repair now uses
   the broker's available queued service request without invented route hints,
   validates browser/session/URL/agent/task identity before readiness, stops on
   lease wait when no compatible service route exists, and treats blank
@@ -1313,7 +1313,11 @@ Active Plan:
   quality. C10 now owns the narrow Last30days failure-cause repair, one exact
   successor install, and one schedule-disabled X plus LinkedIn 20/20 tick; it
   excludes Agent Browser changes, recurring-config mutation, and provider
-  retries.
+  retries. Service 0.3.74 is installed and the one C10 tick is consumed. Both
+  lanes now identify `unexpected_timeout_expired` in Last30days' direct broker
+  request before browser-operation evidence or post observation. The next
+  provider-free repair is typed timeout translation; no further live attempt
+  is admitted by C11.
 
 Closed Plan:
 
