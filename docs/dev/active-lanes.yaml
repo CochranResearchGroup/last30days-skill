@@ -7,11 +7,10 @@ lanes:
     branch: fix/x-linkedin-failure-cause-evidence
     target: main
     plan_state: OPEN
-    custody_state: INTEGRATED
-    checkpoint: 1a74d3674b8da9c44357ce5005c13d8ba362022a
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 5b2bfaa2a1319cb3fe56e63620357f6334842fd5
     remote_ref: refs/remotes/origin/fix/x-linkedin-failure-cause-evidence
     integration: fast-forward
-    integration_receipt: 1a74d3674b8da9c44357ce5005c13d8ba362022a
     dependencies: []
     overlaps: []
     updated_at: 2026-08-26
