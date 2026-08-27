@@ -282,6 +282,7 @@ def test_builtin_adapter_bridge_preserves_safe_failure_stage_and_signature():
             retry="transient",
             diagnostics={
                 "failure_stage": "authentication",
+                "failure_reason_code": "service_tab_target_unsettled",
                 "failure_signature": signature,
             },
         )
@@ -292,6 +293,7 @@ def test_builtin_adapter_bridge_preserves_safe_failure_stage_and_signature():
     ).collect(_context("x_agent_browser", "x"))
 
     assert result.failure_stage == "authentication"
+    assert result.failure_reason_code == "service_tab_target_unsettled"
     assert result.failure_signature == signature
 
 

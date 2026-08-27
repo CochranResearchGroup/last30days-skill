@@ -138,6 +138,15 @@ def _failure_stage(diagnostics: Mapping[str, object]) -> str | None:
     return value
 
 
+def _failure_reason_code(diagnostics: Mapping[str, object]) -> str | None:
+    value = diagnostics.get("failure_reason_code")
+    if not isinstance(value, str) or not value or len(value) > 64:
+        return None
+    if any(character not in "abcdefghijklmnopqrstuvwxyz0123456789_" for character in value):
+        return None
+    return value
+
+
 def _failure_signature(diagnostics: Mapping[str, object]) -> str | None:
     value = diagnostics.get("failure_signature")
     if not isinstance(value, str) or not value.startswith("sha256:"):
@@ -263,6 +272,7 @@ class AcquisitionWorkerTickAdapter:
         browser_operations = _browser_operations(result.diagnostics)
         rejection_counts = _rejection_counts(result.diagnostics)
         failure_stage = _failure_stage(result.diagnostics)
+        failure_reason_code = _failure_reason_code(result.diagnostics)
         failure_signature = _failure_signature(result.diagnostics)
         if items:
             return ProviderResult(
@@ -278,6 +288,7 @@ class AcquisitionWorkerTickAdapter:
                 ),
                 safe_error_code=result.safe_error_code,
                 failure_stage=failure_stage,
+                failure_reason_code=failure_reason_code,
                 failure_signature=failure_signature,
                 page_signals=tuple(result.diagnostics.get("page_signals") or ()),
                 operator_url=result.operator_url,
@@ -303,6 +314,7 @@ class AcquisitionWorkerTickAdapter:
             failure_class=_failure_class(result),
             safe_error_code=result.safe_error_code or "source_error",
             failure_stage=failure_stage,
+            failure_reason_code=failure_reason_code,
             failure_signature=failure_signature,
             page_signals=tuple(result.diagnostics.get("page_signals") or ()),
             operator_url=result.operator_url,

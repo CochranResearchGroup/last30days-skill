@@ -225,6 +225,26 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
             result["diagnostics"]["browser_operations"],
         )
 
+    def test_feed_preserves_typed_workspace_acquisition_reason(self):
+        client = FakeAgentBrowserClient()
+        client.acquire_workspace = mock.Mock(
+            side_effect=linkedin.browser_runtime.AgentBrowserRuntimeFailure(
+                "agent_browser_error",
+                "dynamic route details must not become durable evidence",
+                reason_code="service_tab_target_unsettled",
+            )
+        )
+
+        result = make_scraper(client).feed("2026-06-15", "2026-07-15")
+
+        self.assertEqual("agent_browser_error", result["error_type"])
+        self.assertEqual("workspace_acquisition", result["diagnostics"]["failure_stage"])
+        self.assertEqual(
+            "service_tab_target_unsettled",
+            result["diagnostics"]["failure_reason_code"],
+        )
+        self.assertNotIn("dynamic route details", str(result["diagnostics"]))
+
     def test_workspace_acquisition_uses_broker_for_linkedin_identity(self):
         client = linkedin.CliAgentBrowserClient(timeout=5)
         expected = linkedin.BrowserWorkspace(

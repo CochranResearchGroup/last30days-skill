@@ -590,10 +590,23 @@ def _safe_error_code(value: object) -> str | None:
     return normalized
 
 
+def _unexpected_exception_reason(exc: Exception) -> str:
+    """Return a bounded class-only reason without retaining exception text."""
+    class_name = type(exc).__name__
+    snake_name = re.sub(r"(?<!^)(?=[A-Z])", "_", class_name).casefold()
+    normalized = re.sub(r"[^a-z0-9_]+", "_", snake_name).strip("_")[:48]
+    return f"unexpected_{normalized or 'exception'}"[:64]
+
+
 def _safe_failure_stage(value: object) -> str:
     text = str(value or "").strip().casefold()
     normalized = re.sub(r"[^a-z0-9_]+", "_", text).strip("_")[:64]
     return normalized or "adapter_result"
+
+
+def _safe_failure_reason(value: object) -> str:
+    text = str(value or "").strip()
+    return text if re.fullmatch(r"[a-z][a-z0-9_]{0,63}", text) else ""
 
 
 def _failure_signature(
@@ -602,12 +615,14 @@ def _failure_signature(
     error_code: str,
     retry_class: contracts.RetryClass,
     failure_stage: str,
+    failure_reason_code: str,
 ) -> str:
     payload = {
         "adapter": request.adapter,
         "adapter_version": request.adapter_version,
         "error_code": error_code,
         "failure_stage": failure_stage,
+        "failure_reason_code": failure_reason_code,
         "retry_class": retry_class.value,
         "source": request.source,
     }
@@ -797,11 +812,14 @@ def execute_work(
         urllib.request.urlopen = bounded_urlopen
         try:
             raw = adapter(request, config)
-        except Exception:
+        except Exception as exc:
             raw = {
                 "items": [],
                 "error_type": "adapter_exception",
-                "diagnostics": {"failure_stage": "adapter_execution"},
+                "diagnostics": {
+                    "failure_stage": "adapter_execution",
+                    "failure_reason_code": _unexpected_exception_reason(exc),
+                },
             }
         finally:
             urllib.request.urlopen = original_urlopen
@@ -1002,9 +1020,17 @@ def execute_work(
             + normalization_filtered
         )
     failure_stage = ""
+    failure_reason_code = ""
     if error_code is not None:
         failure_stage = _safe_failure_stage(diagnostics.get("failure_stage"))
         diagnostics["failure_stage"] = failure_stage
+        failure_reason_code = _safe_failure_reason(
+            diagnostics.get("failure_reason_code")
+        )
+        if failure_reason_code:
+            diagnostics["failure_reason_code"] = failure_reason_code
+        else:
+            diagnostics.pop("failure_reason_code", None)
     encoded_diagnostics = json.dumps(
         diagnostics,
         ensure_ascii=False,
@@ -1016,6 +1042,11 @@ def execute_work(
         diagnostics = {
             "truncated": True,
             **({"failure_stage": failure_stage} if failure_stage else {}),
+            **(
+                {"failure_reason_code": failure_reason_code}
+                if failure_reason_code
+                else {}
+            ),
         }
     if error_code is not None:
         diagnostics["failure_signature"] = _failure_signature(
@@ -1023,6 +1054,7 @@ def execute_work(
             error_code=error_code,
             retry_class=retry_class,
             failure_stage=failure_stage,
+            failure_reason_code=failure_reason_code,
         )
     return contracts.AcquisitionWorkResult.from_dict(
         {

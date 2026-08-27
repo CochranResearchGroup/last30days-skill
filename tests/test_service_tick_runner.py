@@ -621,6 +621,7 @@ def test_provider_result_round_trip_preserves_failure_stage_and_signature(tmp_pa
         failure_class="transient",
         safe_error_code="agent_browser_error",
         failure_stage="authentication",
+        failure_reason_code="service_tab_target_unsettled",
         failure_signature=signature,
     )
 
@@ -630,6 +631,7 @@ def test_provider_result_round_trip_preserves_failure_stage_and_signature(tmp_pa
     restored = runner._restore_provider_result(payload)
 
     assert restored.failure_stage == "authentication"
+    assert restored.failure_reason_code == "service_tab_target_unsettled"
     assert restored.failure_signature == signature
 
 

@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Durable social acquisition failure causes.** Service 0.3.74 preserves a
+  bounded class-only reason for unexpected adapter failures and normalized
+  broker-acquisition reasons for X and LinkedIn through the durable tick
+  result. Failure signatures now distinguish those safe reasons while raw
+  exception messages, profile details, and route details remain excluded.
+
 - **Settled, provider-neutral social tab acquisition.** Service 0.3.73 polls
   only the exact newly attributed target while its inventory record is absent
   or blank, bounded to six reads and five seconds. The synchronous broker

@@ -121,11 +121,14 @@ class AgentBrowserRuntimeFailure(RuntimeError):
         super().__init__(message)
         self.error_type = error_type
         self.operator_url = operator_url
-        self.reason_code = (
-            reason_code
-            if reason_code in RATE_LIMIT_REASONS
-            else ("unspecified" if error_type == "rate_limit_detected" else "")
-        )
+        if error_type == "rate_limit_detected":
+            self.reason_code = (
+                reason_code if reason_code in RATE_LIMIT_REASONS else "unspecified"
+            )
+        elif re.fullmatch(r"[a-z][a-z0-9_]{0,63}", reason_code):
+            self.reason_code = reason_code
+        else:
+            self.reason_code = ""
 
 
 class AgentBrowserClient(Protocol):
@@ -325,6 +328,7 @@ class CliAgentBrowserClient:
                 raise AgentBrowserRuntimeFailure(
                     "agent_browser_error",
                     "agent-browser broker tab acquisition returned no service tab handle",
+                    reason_code="broker_service_tab_handle_missing",
                 )
             browser_id = str(service_tab_handle.get("browserId") or "")
             session_name = str(service_tab_handle.get("sessionName") or "")
@@ -333,6 +337,7 @@ class CliAgentBrowserClient:
                 raise AgentBrowserRuntimeFailure(
                     "agent_browser_error",
                     "agent-browser broker tab handle is missing target ownership",
+                    reason_code="broker_service_tab_ownership_missing",
                 )
             self._service_tab_handle = dict(service_tab_handle)
             self._service_tab_url = str(acquired.get("url") or request.start_url)
@@ -364,6 +369,7 @@ class CliAgentBrowserClient:
             raise AgentBrowserRuntimeFailure(
                 "agent_browser_error",
                 "agent-browser access plan requires wait_for_profile_lease",
+                reason_code="profile_lease_wait_required",
             )
 
         shared_route = agent_browser_config.shared_acquisition_route(
@@ -1299,6 +1305,7 @@ class CliAgentBrowserClient:
                     raise AgentBrowserRuntimeFailure(
                         "agent_browser_error",
                         "agent-browser service tab handle session identity is inconsistent",
+                        reason_code="service_tab_session_mismatch",
                     )
                 observed_url = str(target.get("url") or "")
                 if observed_url and observed_url != "about:blank":
@@ -1308,6 +1315,7 @@ class CliAgentBrowserClient:
                         raise AgentBrowserRuntimeFailure(
                             "agent_browser_error",
                             "agent-browser service tab handle URL identity is inconsistent",
+                            reason_code="service_tab_url_mismatch",
                         )
                     # The request and synchronously returned handle are the
                     # attribution authority. traceFilter describes the retained
@@ -1324,6 +1332,7 @@ class CliAgentBrowserClient:
             "agent_browser_error",
             "agent-browser service tab handle target did not settle "
             f"after {read_number} inventory reads (last_state={last_state})",
+            reason_code="service_tab_target_unsettled",
         )
 
     def release_workspace(self) -> None:
@@ -1845,4 +1854,3 @@ def _log(msg: str) -> None:
 
 def is_agent_browser_available() -> bool:
     return shutil.which("agent-browser") is not None
-

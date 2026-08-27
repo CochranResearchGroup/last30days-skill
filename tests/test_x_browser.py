@@ -857,7 +857,9 @@ process.stdout.write(JSON.stringify(result));
         ]
         client.inspect_auth = lambda workspace: (_ for _ in ()).throw(
             facebook.FacebookScraperFailure(
-                "agent_browser_error", "browser unavailable"
+                "agent_browser_error",
+                "browser unavailable",
+                reason_code="service_tab_target_unsettled",
             )
         )
         with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
@@ -870,6 +872,10 @@ process.stdout.write(JSON.stringify(result));
 
         self.assertEqual("agent_browser_error", result["error_type"])
         self.assertEqual("authentication", result["diagnostics"]["failure_stage"])
+        self.assertEqual(
+            "service_tab_target_unsettled",
+            result["diagnostics"]["failure_reason_code"],
+        )
         self.assertEqual(20, len(result["diagnostics"]["browser_operations"]))
         self.assertEqual(
             {"operation": "service", "duration_ms": 1, "status": "ok"},

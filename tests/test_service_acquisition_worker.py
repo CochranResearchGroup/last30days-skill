@@ -85,6 +85,23 @@ def test_worker_preserves_operator_failure_type_without_browser_leases():
     assert "secret-route" not in str(serialized)
 
 
+def test_worker_preserves_safe_unexpected_adapter_exception_type_without_message():
+    def broken_adapter(_request, _config):
+        raise TypeError("private target and credential details must not survive")
+
+    result = execute_work(
+        _request(),
+        {},
+        adapters={"x_agent_browser": broken_adapter},
+    )
+
+    assert result.status is contracts.AcquisitionStatus.FAILED
+    assert result.safe_error_code == "adapter_exception"
+    assert result.diagnostics["failure_stage"] == "adapter_execution"
+    assert result.diagnostics["failure_reason_code"] == "unexpected_type_error"
+    assert "private target" not in str(result.to_dict())
+
+
 def test_worker_fetches_bounded_image_bytes_into_the_typed_item_contract():
     image = b"small-image-bytes"
 
@@ -504,6 +521,7 @@ def test_worker_failure_signature_is_stable_across_attempts_and_job_ids():
             "error_type": "agent_browser_error",
             "diagnostics": {
                 "failure_stage": "authentication",
+                "failure_reason_code": "service_tab_target_unsettled",
                 "browser_operations": [
                     {"operation": "tab", "status": "failed", "duration_ms": 41}
                 ],
@@ -520,8 +538,26 @@ def test_worker_failure_signature_is_stable_across_attempts_and_job_ids():
         {},
         adapters={"x_agent_browser": fake_adapter},
     )
+    different_reason = execute_work(
+        _request(work_id="work-x-003", job_id="job-003", attempt=2),
+        {},
+        adapters={
+            "x_agent_browser": lambda _request, _config: {
+                "items": [],
+                "error_type": "agent_browser_error",
+                "diagnostics": {
+                    "failure_stage": "authentication",
+                    "failure_reason_code": "service_tab_url_mismatch",
+                },
+            }
+        },
+    )
 
     assert first.diagnostics["failure_signature"] == second.diagnostics["failure_signature"]
+    assert (
+        first.diagnostics["failure_signature"]
+        != different_reason.diagnostics["failure_signature"]
+    )
     assert first.diagnostics["failure_stage"] == "authentication"
     assert first.diagnostics["browser_operations"][0]["operation"] == "tab"
 

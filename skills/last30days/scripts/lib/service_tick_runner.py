@@ -168,6 +168,7 @@ class ProviderResult:
     failure_class: str | None = None
     safe_error_code: str | None = None
     failure_stage: str | None = None
+    failure_reason_code: str | None = None
     failure_signature: str | None = None
     page_signals: tuple[str, ...] = ()
     rendered_page: bytes | None = None
@@ -198,6 +199,13 @@ class ProviderResult:
                 for character in stage
             ):
                 raise ValueError("failure stage must be a normalized safe identifier")
+        if self.failure_reason_code is not None:
+            reason = _text(self.failure_reason_code, "failure_reason_code", 64)
+            if any(
+                character not in "abcdefghijklmnopqrstuvwxyz0123456789_"
+                for character in reason
+            ):
+                raise ValueError("failure reason must be a normalized safe identifier")
         if self.failure_signature is not None:
             signature = _text(self.failure_signature, "failure_signature", 71)
             digest = signature.removeprefix("sha256:")
@@ -423,6 +431,7 @@ class TickRunner:
             "failure_class": result.failure_class,
             "safe_error_code": result.safe_error_code,
             "failure_stage": result.failure_stage,
+            "failure_reason_code": result.failure_reason_code,
             "failure_signature": result.failure_signature,
             "page_signals": list(result.page_signals),
             "rendered_page": rendered_page,
@@ -518,6 +527,7 @@ class TickRunner:
             failure_class=payload.get("failure_class"),
             safe_error_code=payload.get("safe_error_code"),
             failure_stage=payload.get("failure_stage"),
+            failure_reason_code=payload.get("failure_reason_code"),
             failure_signature=payload.get("failure_signature"),
             page_signals=tuple(payload.get("page_signals", ())),
             rendered_page=stored_bytes(rendered) if rendered is not None else None,

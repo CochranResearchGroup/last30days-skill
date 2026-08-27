@@ -185,6 +185,9 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
 
         self.assertIn("did not settle", str(raised.exception))
         self.assertEqual(
+            "service_tab_target_unsettled", raised.exception.reason_code
+        )
+        self.assertEqual(
             agent_browser_runtime.SERVICE_TARGET_INVENTORY_MAX_READS,
             actions.count("tab_list"),
         )

@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "c0f775ab23ceac6e25254b5da85be2fe5d3d3f4cc9d917d8290c257b3a7cb59a",
+      "sha256": "9506899760f74db815aca385f758106bd523b10727b756cc41edf7e7200cba4d",
       "source": "service/VERSION"
     },
     {
@@ -27,7 +27,7 @@
     },
     {
       "path": "scripts/lib/agent_browser_runtime.py",
-      "sha256": "448498f15ea39cdd9f02a82a1ec93a1455c1a52692c99879a4c17fd61ae7737a",
+      "sha256": "8f7823d7f90424442a41a073690e7d144d769b89df88887d2ad7adfdf0862cd9",
       "source": "skills/last30days/scripts/lib/agent_browser_runtime.py"
     },
     {
@@ -157,7 +157,7 @@
     },
     {
       "path": "scripts/lib/linkedin.py",
-      "sha256": "dc449470dda7fb3c59876346b8f75655d2fe49379f9269df58f47d4d5fb815d7",
+      "sha256": "511d2c84cd334d0128f762a10705006acc87b3ab1fa41a828137b22bac9549c3",
       "source": "skills/last30days/scripts/lib/linkedin.py"
     },
     {
@@ -292,7 +292,7 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "1cf28332bcc929d781c7ab1c8f91296a66a7183b1b3cf4e189ed53fab404d843",
+      "sha256": "9438e0f972488f679b0930149dc8e2438c9cf2c47a6624555e7e351c96d33843",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
@@ -422,7 +422,7 @@
     },
     {
       "path": "scripts/lib/service_tick_builtin_adapters.py",
-      "sha256": "4e11f01ce3a2eafb49edefe1768c1377a697ca74f52b377083aaee1de607332f",
+      "sha256": "1f9a8fcfd184f523f00fab448864ab3b9b996e18ad68b65684c37cafffdfce89",
       "source": "skills/last30days/scripts/lib/service_tick_builtin_adapters.py"
     },
     {
@@ -457,7 +457,7 @@
     },
     {
       "path": "scripts/lib/service_tick_runner.py",
-      "sha256": "bf223ee2d570afa1be05f6fcef7c4ff24865885b547212fd545b87574f294cd0",
+      "sha256": "f638915f28c52b7b9722be31ec69ddca69cc2943b61021341ff04b79f248d8b6",
       "source": "skills/last30days/scripts/lib/service_tick_runner.py"
     },
     {
@@ -612,7 +612,7 @@
     },
     {
       "path": "scripts/lib/x_browser.py",
-      "sha256": "842ca70f9a4387a0f57bfeb11efb73bae08ef5c5713680b768e2896635667b15",
+      "sha256": "22a7fb2cd15cc51e06f3708fb9ad74014a777fb3961d73f893d7ad72799dfb90",
       "source": "skills/last30days/scripts/lib/x_browser.py"
     },
     {
@@ -658,5 +658,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.73"
+  "service_version": "0.3.74"
 }

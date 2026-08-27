@@ -441,6 +441,7 @@ class LinkedInRunDiagnostics:
     scroll_count: int = 0
     unique_observation_count: int = 0
     stagnant_scrolls: int = 0
+    failure_reason_code: str = ""
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -671,6 +672,7 @@ class LinkedInScraper:
             return self._result(items, None, None, workspace, page, diagnostics, from_date, to_date)
         except LinkedInScraperFailure as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
+            diagnostics.failure_reason_code = exc.reason_code
             _log(f"Failed stage error_type={exc.error_type} message={exc}")
             return self._result(
                 [], exc.error_type, str(exc), workspace, page, diagnostics, from_date, to_date,
@@ -776,6 +778,7 @@ class LinkedInScraper:
             return self._result(items, None, None, workspace, page, diagnostics, from_date, to_date)
         except LinkedInScraperFailure as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
+            diagnostics.failure_reason_code = exc.reason_code
             _log(f"Failed stage error_type={exc.error_type} message={exc}")
             return self._result(
                 [], exc.error_type, str(exc), workspace, page, diagnostics, from_date, to_date,
@@ -984,6 +987,8 @@ class LinkedInScraper:
         diagnostics_data = diagnostics.as_dict()
         if error_type:
             diagnostics_data["failure_stage"] = diagnostics.failure_stage
+            if diagnostics.failure_reason_code:
+                diagnostics_data["failure_reason_code"] = diagnostics.failure_reason_code
             diagnostics_data["browser_operations"] = _bounded_browser_operations(
                 getattr(self.client, "command_timings", [])
             )

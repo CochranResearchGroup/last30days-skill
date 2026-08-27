@@ -676,6 +676,8 @@ def search_x_browser(
         _log(f"Failed error_type={error_type} message={exc}")
         operator_url = str(getattr(exc, "operator_url", "") or "")
         diagnostics = {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0}
+        if exc.reason_code:
+            diagnostics["failure_reason_code"] = exc.reason_code
         if operator_url:
             diagnostics["operator_url"] = operator_url
         return {
@@ -781,6 +783,8 @@ def scrape_x_feed(
         _log(f"Failed error_type={error_type} message={exc}")
         operator_url = str(getattr(exc, "operator_url", "") or "")
         diagnostics = _failure_diagnostics(scraper, client, operator_url)
+        if exc.reason_code:
+            diagnostics["failure_reason_code"] = exc.reason_code
         return {
             "items": [],
             "error": str(exc),
