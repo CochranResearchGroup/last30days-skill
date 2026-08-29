@@ -6,7 +6,7 @@ Branch: fix/x-linkedin-failure-cause-evidence
 Target: main
 Integration: fast-forward
 Roadmap: P08
-Plan version: 13
+Plan version: 14
 Date: 2026-08-25
 
 ## Objective
@@ -1193,3 +1193,83 @@ Next action:
 
 Checkpoint P0056-C13 is the current authority. Plan 0056 remains `OPEN` until
 the installed and live 20/20 result is reconciled.
+
+### Checkpoint P0056-C14 | 2026-08-29
+
+Plan version: 14
+
+State transition:
+
+- `broker_handle_contract_repair_and_single_20_20_acceptance_active ->
+  x_20_proven_linkedin_collection_budget_blocker_observed`.
+
+Progress classification:
+
+- `partial_acceptance`; the post-broker tab-discovery defect is repaired and
+  X reaches the requested ceiling. LinkedIn reaches authenticated feed
+  observation and durable publication, but does not reach 20 accepted items.
+
+Authority classification:
+
+- `inherited_authority`; the one combined live tick authorized by
+  P9 terminalized. No second live tick, Agent Browser mutation, or recurring
+  configuration change is authorized by this checkpoint.
+
+Implementation and validation evidence:
+
+- source commit `cd6bd726a072692c5cd408cb87e92e71a875dc68`
+  removes ordinary-tab target rediscovery after broker acquisition, rejects
+  an explicitly invalid handle, and sends the first readiness probe through
+  the returned `serviceTabHandle`;
+- the affected runtime, X, LinkedIn, Facebook, acquisition-worker, cleanup,
+  incident, Reddit, and YouTube suites pass; the canonical Python suite passes
+  with `2,700 passed / 7 skipped / 6 subtests`; `go test ./...`, release tests,
+  active-plan audit, and `git diff --check` pass;
+- clean artifact `last30days-service-0.3.75.tar.gz` has SHA-256
+  `83abe719a72df4812457acf711c660d745cfe5937c55cd49f4ad27b537f380b9`;
+- installed release `releases/0.3.75` is `ready`, database schema 16, runtime
+  manifest SHA-256
+  `da02581da9c651c12d080f9253a9f861347d70e1d3748269d70ad8df4111cd98`;
+  `releases/0.3.74` is retained as the previous release.
+
+Live receipt evidence:
+
+- schedule-disabled tick `tick-1aff45976d98120d147d2035f60ecc09`
+  terminalized `complete_degraded` and promoted snapshot
+  `tick-snapshot-a3defde49483cc7c16bde90c461ad73c`;
+- X terminalized `success`: 38 attempted/observed, 20 accepted, 18 rejected,
+  4 network requests, and 36 wall seconds. All 20 accepted records have unique
+  canonical `x.com/.../status/...` permalinks;
+- LinkedIn terminalized `failure` with a partial result: 117
+  attempted/observed, 13 accepted, 104 rejected, 50 network requests, and 86
+  wall seconds. Its safe failure is `network_budget_exhausted` at
+  `media_fetch`, not authentication or browser acquisition;
+- LinkedIn rejection counts are overlapping: duplicate 51, deterministic ad
+  kind 22, sponsored 22, missing date 50, missing author 24, missing permalink
+  12, and unknown kind 12. The 13 published records carry LinkedIn activity
+  permalinks, but one canonical URL was accepted under two fallback native
+  identifiers, leaving 12 distinct canonical URLs;
+- aggregate usage was 2 attempts, 33 accepted items, 54 network requests, 122
+  wall seconds, and zero model tokens/cost. Database integrity is `ok`.
+
+Diagnosis:
+
+- the latest result falsifies Agent Browser authentication and tab discovery
+  as the current LinkedIn blocker. The remaining retrieval path spends the
+  same provider network budget on media fetches while trying to accumulate 20
+  normalized posts, and canonical-URL identity is not the final dedupe key;
+- reaching a trustworthy LinkedIn 20 requires a separately authorized repair
+  that prevents optional media hydration from starving primary post
+  collection and collapses identical canonical activity URLs before accepted
+  counts are committed.
+
+Next action:
+
+- design a bounded red/green successor for LinkedIn primary-item collection
+  versus media-hydration budgeting and canonical-URL deduplication, then seek
+  authority for one new combined acceptance tick. Do not increase recurring
+  collection limits or issue another live tick from this checkpoint.
+
+Checkpoint P0056-C14 is the current authority. Plan 0056 remains `OPEN` because
+X is proven at 20 but LinkedIn is proven only at 13 accepted records and 12
+distinct canonical post URLs.
