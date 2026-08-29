@@ -188,8 +188,9 @@ def test_worker_rejects_private_media_destinations_before_network():
         media_transport=transport,
     )
 
-    assert result.status is contracts.AcquisitionStatus.PARTIAL
-    assert result.safe_error_code == "unsafe_media_url"
+    assert result.status is contracts.AcquisitionStatus.SUCCEEDED
+    assert result.safe_error_code is None
+    assert result.diagnostics["media_error_code"] == "unsafe_media_url"
     assert result.network_request_count == 0
     assert result.items[0].media == []
     assert socket_calls == []
@@ -239,8 +240,9 @@ def test_worker_rejects_redirects_to_private_media_destinations():
         media_transport=Transport(),
     )
 
-    assert result.status is contracts.AcquisitionStatus.PARTIAL
-    assert result.safe_error_code == "unsafe_media_url"
+    assert result.status is contracts.AcquisitionStatus.SUCCEEDED
+    assert result.safe_error_code is None
+    assert result.diagnostics["media_error_code"] == "unsafe_media_url"
     assert result.network_request_count == 1
     assert result.items[0].media == []
     assert media_calls == [
@@ -318,11 +320,71 @@ def test_worker_stops_media_fetches_at_the_remaining_wall_budget():
         monotonic_clock=lambda: 100.0,
     )
 
-    assert result.status is contracts.AcquisitionStatus.PARTIAL
-    assert result.safe_error_code == "wall_time_budget_exhausted"
+    assert result.status is contracts.AcquisitionStatus.SUCCEEDED
+    assert result.safe_error_code is None
+    assert result.diagnostics["media_error_code"] == "wall_time_budget_exhausted"
     assert result.network_request_count == 1
     assert len(result.items[0].media) == 1
     assert deadlines == [101.0, 101.0]
+
+
+def test_optional_media_budget_exhaustion_does_not_fail_collected_posts():
+    def fake_adapter(_request, _config):
+        return {
+            "items": [
+                {
+                    "id": "linkedin-primary-post",
+                    "text": "A permalinked LinkedIn post remains primary evidence.",
+                    "url": (
+                        "https://www.linkedin.com/feed/update/"
+                        "urn:li:activity:7351200000000000000/"
+                    ),
+                    "date": "2026-07-23",
+                    "metadata": {
+                        "media": [
+                            {
+                                "kind": "image",
+                                "url": "https://cdn.example.test/one.jpg",
+                                "mime_type": "image/jpeg",
+                            },
+                            {
+                                "kind": "image",
+                                "url": "https://cdn.example.test/two.jpg",
+                                "mime_type": "image/jpeg",
+                            },
+                        ]
+                    },
+                }
+            ]
+        }
+
+    class Transport:
+        def get(self, _url, *, deadline, maximum_bytes, before_connect):
+            del deadline, maximum_bytes
+            before_connect()
+            return PinnedMediaResponse(
+                status=200,
+                headers={"content-type": "image/jpeg"},
+                content=b"bounded-image",
+            )
+
+    result = execute_work(
+        _request(
+            source="linkedin",
+            adapter="linkedin_agent_browser",
+            network_request_limit=1,
+        ),
+        {},
+        adapters={"linkedin_agent_browser": fake_adapter},
+        media_transport=Transport(),
+    )
+
+    assert result.status is contracts.AcquisitionStatus.SUCCEEDED
+    assert result.safe_error_code is None
+    assert result.item_count == 1
+    assert result.network_request_count == 1
+    assert len(result.items[0].media) == 1
+    assert result.diagnostics["media_error_code"] == "network_budget_exhausted"
 
 
 def test_worker_does_not_connect_when_dns_consumes_the_wall_deadline():
@@ -367,8 +429,9 @@ def test_worker_does_not_connect_when_dns_consumes_the_wall_deadline():
         monotonic_clock=lambda: now[0],
     )
 
-    assert result.status is contracts.AcquisitionStatus.PARTIAL
-    assert result.safe_error_code == "wall_time_budget_exhausted"
+    assert result.status is contracts.AcquisitionStatus.SUCCEEDED
+    assert result.safe_error_code is None
+    assert result.diagnostics["media_error_code"] == "wall_time_budget_exhausted"
     assert result.network_request_count == 0
     assert result.items[0].media == []
     assert socket_calls == []

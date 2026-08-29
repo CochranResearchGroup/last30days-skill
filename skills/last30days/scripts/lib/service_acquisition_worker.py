@@ -938,13 +938,15 @@ def execute_work(
             "error_type": "validator_failed",
             "diagnostics": {"failure_stage": "normalization"},
         }
-    if media_error_code is not None and not raw.get("error_type"):
-        raw["error_type"] = media_error_code
+    if media_error_code is not None:
         diagnostics = raw.get("diagnostics")
         if not isinstance(diagnostics, dict):
             diagnostics = {}
             raw["diagnostics"] = diagnostics
-        diagnostics["failure_stage"] = "media_fetch"
+        diagnostics["media_error_code"] = media_error_code
+        if not items and not raw.get("error_type"):
+            raw["error_type"] = media_error_code
+            diagnostics["failure_stage"] = "media_fetch"
     error_code = _safe_error_code(raw.get("error_type"))
     if error_code is None and raw.get("error"):
         error_code = "source_error"

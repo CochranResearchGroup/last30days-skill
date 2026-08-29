@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **LinkedIn feed retrieval reliability.** Service 0.3.76 preserves
+  permalinked home-feed posts when author or date metadata is not rendered,
+  records those extraction gaps as retrieval signals, deduplicates changing
+  virtualized cards by canonical activity URL, and keeps optional media-fetch
+  failures from failing already-collected primary posts. Deterministic
+  sponsored/ad and navigation-noise rejection remains in force.
+
 - **Broker-handle-authoritative social readiness.** Service 0.3.75 keeps the
   synchronous Agent Browser `serviceTabHandle` as the acquisition authority
   and sends the first readiness probe through that exact handle. It no longer

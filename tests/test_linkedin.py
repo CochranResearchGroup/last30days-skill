@@ -649,6 +649,109 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
         self.assertEqual(20, result["diagnostics"]["unique_observation_count"])
         self.assertEqual(6, result["diagnostics"]["scroll_count"])
 
+    def test_home_feed_preserves_permalinked_post_with_missing_author_and_date(self):
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+        candidate = post_candidate(author="", author_url="", timestamp="")
+
+        result = make_scraper(
+            FakeAgentBrowserClient(page=page, candidates=[candidate])
+        ).feed("2026-06-15", "2026-07-15")
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(1, len(result["items"]))
+        self.assertIsNone(result["items"][0]["author"])
+        self.assertIsNone(result["items"][0]["date"])
+        self.assertEqual(
+            ["missing_author", "missing_date"],
+            result["items"][0]["metadata"]["retrieval_signals"],
+        )
+
+    def test_home_feed_deduplicates_expanded_text_by_canonical_permalink(self):
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+        collapsed = post_candidate(text="AgriTech Lab\nA permalinked feed post.")
+        expanded = post_candidate(
+            text=(
+                "AgriTech Lab\nA permalinked feed post with expanded body text "
+                "after the virtualized card rerendered."
+            )
+        )
+
+        result = make_scraper(
+            FakeAgentBrowserClient(page=page, candidates=[collapsed, expanded])
+        ).feed("2026-06-15", "2026-07-15")
+
+        self.assertEqual(1, len(result["items"]))
+        self.assertEqual(1, result["diagnostics"]["rejection_counts"]["duplicate"])
+
+    def test_home_feed_reaches_twenty_when_only_ads_are_excluded(self):
+        def legitimate(start, count):
+            return [
+                post_candidate(
+                    text=f"Permalinked feed post {index} with useful primary text.",
+                    url=(
+                        "https://www.linkedin.com/feed/update/urn:li:activity:"
+                        f"735140000000000{index:04d}/"
+                    ),
+                    urn=f"urn:li:activity:735140000000000{index:04d}",
+                    author="",
+                    author_url="",
+                    timestamp="",
+                )
+                for index in range(start, start + count)
+            ]
+
+        ads = [
+            post_candidate(
+                text=f"Sponsored placement {index}",
+                url=(
+                    "https://www.linkedin.com/feed/update/urn:li:activity:"
+                    f"735150000000000{index:04d}/"
+                ),
+                urn=f"urn:li:activity:735150000000000{index:04d}",
+                sponsored=True,
+            )
+            for index in range(5)
+        ]
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+        first = legitimate(0, 10) + ads
+        second = legitimate(0, 20) + ads
+
+        result = make_scraper(
+            FakeAgentBrowserClient(page=page, candidate_batches=[first, second]),
+            limit=20,
+            scrolls=2,
+        ).feed("2026-06-15", "2026-07-15")
+
+        self.assertEqual(20, len(result["items"]))
+        self.assertEqual(20, len({item["url"] for item in result["items"]}))
+        self.assertNotIn("missing_author", result["diagnostics"]["rejection_counts"])
+        self.assertNotIn("missing_date", result["diagnostics"]["rejection_counts"])
+        self.assertEqual(5, result["diagnostics"]["rejection_counts"]["sponsored"])
+
     def test_home_feed_stops_after_two_snapshots_without_new_posts(self):
         page = dict(FakeAgentBrowserClient().page)
         page.update({

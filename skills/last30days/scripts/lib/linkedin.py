@@ -915,13 +915,18 @@ class LinkedInScraper:
         for raw in raw_candidates:
             candidate = _candidate_from_raw(raw, self.now)
             diagnostics.candidate_counts[candidate.kind] += 1
-            _validate_candidate(candidate, from_date, to_date)
+            _validate_candidate(
+                candidate,
+                from_date,
+                to_date,
+                surface_kind=surface_kind,
+            )
             if candidate.rejection_reasons:
                 diagnostics.candidate_counts["rejected"] += 1
                 diagnostics.rejection_counts.update(candidate.rejection_reasons)
                 continue
             digest = hashlib.sha1(
-                f"{candidate.canonical_url}\n{candidate.text[:300]}".encode("utf-8")
+                candidate.canonical_url.encode("utf-8")
             ).hexdigest()[:16]
             if digest in seen:
                 diagnostics.rejection_counts["duplicate"] += 1
@@ -934,6 +939,10 @@ class LinkedInScraper:
             )
             meaningful = re.sub(r"\W+", "", candidate.text, flags=re.UNICODE)
             retrieval_signals: list[str] = []
+            if not candidate.author:
+                retrieval_signals.append("missing_author")
+            if not candidate.published_at or candidate.date_confidence == "low":
+                retrieval_signals.append("missing_date")
             if len(meaningful) < 30:
                 retrieval_signals.append("short_text")
             if surface_kind == "topic" and relevance <= 0:
@@ -1530,7 +1539,11 @@ def _candidate_observation_key(candidate: dict[str, Any]) -> str:
 
 
 def _validate_candidate(
-    candidate: LinkedInCandidate, from_date: str, to_date: str
+    candidate: LinkedInCandidate,
+    from_date: str,
+    to_date: str,
+    *,
+    surface_kind: str = "topic",
 ) -> None:
     if candidate.kind != "post":
         candidate.rejection_reasons.append(f"kind_{candidate.kind}")
@@ -1538,10 +1551,11 @@ def _validate_candidate(
         candidate.rejection_reasons.append("missing_permalink")
     if _is_noise_text(candidate.text):
         candidate.rejection_reasons.append("navigation_noise")
-    if not candidate.author:
+    if not candidate.author and surface_kind == "topic":
         candidate.rejection_reasons.append("missing_author")
     if not candidate.published_at or candidate.date_confidence == "low":
-        candidate.rejection_reasons.append("missing_date")
+        if surface_kind == "topic":
+            candidate.rejection_reasons.append("missing_date")
     elif dates.get_date_confidence(candidate.published_at, from_date, to_date) != "high":
         candidate.rejection_reasons.append("outside_date_range")
     if candidate.sponsored:

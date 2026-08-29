@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "9f5825e1e2a64afa8978070e4254d6c6db5744b8b6d34a0f253fe6e293e1b8d1",
+      "sha256": "370a6b6cd4c65b05b18aa8da5669412c93c6a828a3340a95c1ed467d2dbb2c7d",
       "source": "service/VERSION"
     },
     {
@@ -157,7 +157,7 @@
     },
     {
       "path": "scripts/lib/linkedin.py",
-      "sha256": "511d2c84cd334d0128f762a10705006acc87b3ab1fa41a828137b22bac9549c3",
+      "sha256": "f24c1c962b54a76d4b2a8b995f2022c49b8a975e6013a0f657c3fb94cd115d09",
       "source": "skills/last30days/scripts/lib/linkedin.py"
     },
     {
@@ -292,7 +292,7 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "9438e0f972488f679b0930149dc8e2438c9cf2c47a6624555e7e351c96d33843",
+      "sha256": "74f879a2a1d94d2d30cf8d1709e311f78827a743af3f992ca61e3e1e03a4189f",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
@@ -658,5 +658,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.75"
+  "service_version": "0.3.76"
 }
