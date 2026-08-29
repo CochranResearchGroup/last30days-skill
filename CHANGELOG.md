@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Yield-aware LinkedIn feed scrolling.** Service 0.3.77 keeps the existing
+  eight-scroll safety ceiling while advancing farther through tall,
+  virtualized home-feed cards when accepted canonical-post yield lags the
+  remaining item target. Each move remains bounded, and deterministic
+  sponsored/ad exclusion and canonical-URL deduplication remain unchanged.
+
 - **LinkedIn feed retrieval reliability.** Service 0.3.76 preserves
   permalinked home-feed posts when author or date metadata is not rendered,
   records those extraction gaps as retrieval signals, deduplicates changing

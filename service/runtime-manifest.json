@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "370a6b6cd4c65b05b18aa8da5669412c93c6a828a3340a95c1ed467d2dbb2c7d",
+      "sha256": "4840f4ba815e6b65819a7418a942a61f3bd352d56a75471d5e164f77ba9d8cd0",
       "source": "service/VERSION"
     },
     {
@@ -157,7 +157,7 @@
     },
     {
       "path": "scripts/lib/linkedin.py",
-      "sha256": "f24c1c962b54a76d4b2a8b995f2022c49b8a975e6013a0f657c3fb94cd115d09",
+      "sha256": "491d6b62bdd1d1197a45881f985847311be5524470097ec4a94dccee121bc64d",
       "source": "skills/last30days/scripts/lib/linkedin.py"
     },
     {
@@ -658,5 +658,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.76"
+  "service_version": "0.3.77"
 }

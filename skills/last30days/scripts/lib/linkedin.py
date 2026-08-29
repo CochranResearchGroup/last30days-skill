@@ -35,6 +35,9 @@ MAX_EXPLICIT_RESULTS = 100
 MAX_EXPLICIT_SCROLLS = 8
 ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 5
 MAX_STAGNANT_SCROLLS = 2
+MIN_FEED_SCROLL_PIXELS = 1_400
+FEED_SCROLL_PIXELS_PER_REQUIRED_ITEM = 800
+MAX_FEED_SCROLL_PIXELS = 3_200
 
 ERROR_TYPES = browser_runtime.ERROR_TYPES
 BrowserWorkspaceRequest = browser_runtime.BrowserWorkspaceRequest
@@ -726,16 +729,43 @@ class LinkedInScraper:
             }
             diagnostics.unique_observation_count = len(seen_observations)
             stagnant_scrolls = 0
-            for _ in range(max(0, self.scrolls)):
-                if self._accepted_unique_count(
+            scroll_pixels = MIN_FEED_SCROLL_PIXELS
+            for scroll_index in range(max(0, self.scrolls)):
+                accepted_before = self._accepted_unique_count(
                     raw_candidates,
                     "",
                     from_date,
                     to_date,
                     surface_kind="feed",
-                ) >= self.limit:
+                )
+                if accepted_before >= self.limit:
                     break
-                self._act(workspace, BrowserAction("scroll", value="1400"))
+                remaining_scrolls = max(1, self.scrolls - scroll_index)
+                required_items_per_scroll = max(
+                    1,
+                    (
+                        self.limit
+                        - accepted_before
+                        + remaining_scrolls
+                        - 1
+                    )
+                    // remaining_scrolls,
+                )
+                scroll_pixels = max(
+                    scroll_pixels,
+                    min(
+                        MAX_FEED_SCROLL_PIXELS,
+                        max(
+                            MIN_FEED_SCROLL_PIXELS,
+                            required_items_per_scroll
+                            * FEED_SCROLL_PIXELS_PER_REQUIRED_ITEM,
+                        ),
+                    ),
+                )
+                self._act(
+                    workspace,
+                    BrowserAction("scroll", value=str(scroll_pixels)),
+                )
                 diagnostics.scroll_count += 1
                 if self.scroll_wait:
                     time.sleep(self.scroll_wait)

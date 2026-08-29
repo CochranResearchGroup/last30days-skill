@@ -649,6 +649,79 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
         self.assertEqual(20, result["diagnostics"]["unique_observation_count"])
         self.assertEqual(6, result["diagnostics"]["scroll_count"])
 
+    def test_home_feed_advances_farther_when_accepted_yield_lags(self):
+        posts = [
+            post_candidate(
+                text=(
+                    "Feed Author\n"
+                    f"Tall virtualized feed post {index} has a canonical permalink."
+                ),
+                url=(
+                    "https://www.linkedin.com/feed/update/urn:li:activity:"
+                    f"735140000000000{index:04d}/"
+                ),
+                urn=f"urn:li:activity:735140000000000{index:04d}",
+            )
+            for index in range(24)
+        ]
+        sponsored = post_candidate(
+            text="Sponsored placement",
+            url="https://www.linkedin.com/feed/update/urn:li:activity:7351499999999999999/",
+            urn="urn:li:activity:7351499999999999999",
+            sponsored=True,
+        )
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+
+        class TallVirtualizedFeedClient(FakeAgentBrowserClient):
+            def __init__(self):
+                super().__init__(page=page)
+                self.scroll_offset = 0
+
+            def act(self, workspace, action):
+                state = super().act(workspace, action)
+                if action.operation == "scroll":
+                    self.scroll_offset += int(action.value or 0)
+                return state
+
+            def evaluate(self, workspace, script):
+                if script == linkedin.EXTRACT_SCRIPT:
+                    last_visible = min(
+                        len(posts) - 1,
+                        max(0, (self.scroll_offset + 2_000) // 1_000),
+                    )
+                    first_visible = max(0, (self.scroll_offset - 2_000) // 1_000)
+                    return {
+                        "url": self.page["url"],
+                        "title": self.page["title"],
+                        "candidates": posts[first_visible:last_visible + 1] + [sponsored],
+                    }
+                return super().evaluate(workspace, script)
+
+        client = TallVirtualizedFeedClient()
+        result = make_scraper(client, limit=20, scrolls=8).feed(
+            "2026-06-15", "2026-07-15"
+        )
+
+        scrolls = [
+            int(action.value or 0)
+            for action in client.actions
+            if action.operation == "scroll"
+        ]
+        self.assertEqual(20, len(result["items"]), scrolls)
+        self.assertEqual(20, len({item["url"] for item in result["items"]}))
+        self.assertLessEqual(len(scrolls), 8)
+        self.assertGreater(max(scrolls), 1_400)
+        self.assertTrue(all(distance <= 3_200 for distance in scrolls))
+        self.assertGreater(result["diagnostics"]["rejection_counts"]["sponsored"], 0)
+
     def test_home_feed_preserves_permalinked_post_with_missing_author_and_date(self):
         page = dict(FakeAgentBrowserClient().page)
         page.update({
