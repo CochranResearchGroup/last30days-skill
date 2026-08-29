@@ -6,7 +6,7 @@ Branch: fix/x-linkedin-failure-cause-evidence
 Target: main
 Integration: fast-forward
 Roadmap: P08
-Plan version: 16
+Plan version: 17
 Date: 2026-08-25
 
 ## Objective
@@ -117,6 +117,15 @@ observation before making any authentication or content-quality claim.
   run one schedule-disabled combined home-feed tick with one X attempt and one
   LinkedIn attempt, each capped at 20 accepted items. Agent Browser state and
   recurring configuration remain outside the packet.
+- P10 installed service 0.3.76 and terminalized tick
+  `tick-d844d848bf526237a683b506af6dad9a`. Both provider attempts succeeded:
+  X reached 20 unique canonical status URLs, while LinkedIn reached 14 unique
+  canonical activity URLs from 117 observations. LinkedIn rejected 77
+  duplicate observations, 22 deterministic sponsored/ad observations, and
+  four unknown cards without permalinks; the remaining acceptance gap is
+  bounded infinite-scroll depth, not Agent Browser acquisition,
+  authentication, admission of metadata-gap posts, canonical deduplication,
+  or optional-media failure propagation.
 
 ## Scope
 
@@ -211,6 +220,7 @@ observation before making any authentication or content-quality claim.
 | P8 | P7 plus fresh install/live authority | Validated successor and one schedule-disabled combined 20/20 acceptance tick | release surfaces and temporary private tick config only | both lanes prove 20/20 or the one authorized receipt terminalizes |
 | P9 | current Agent Browser handle contract plus P8 terminal evidence | Remove raw post-broker target rediscovery, prove handle-scoped readiness against realistic ordinary-tab inventory, install one exact successor, and run one bounded combined 20/20 tick | `agent_browser_runtime.py`, focused tests, release/install surfaces, temporary private tick config, durable receipts | both lanes prove 20/20 or the single authorized combined receipt terminalizes |
 | P10 | P9 terminal receipt plus standing goal authority | Preserve legitimate LinkedIn feed posts across recoverable metadata gaps, deduplicate by canonical activity URL, isolate optional media failure, install one exact successor, and run one changed-input combined 20/20 acceptance tick | `linkedin.py`, acquisition worker, focused tests, release/install surfaces, temporary private tick config, durable receipts | both lanes prove 20 unique accepted posts or the single P10 combined receipt terminalizes |
+| P11 | P10 terminal receipt plus standing goal authority | Make LinkedIn home-feed scrolling accepted-yield-aware within the existing finite action and wall-clock bounds, install one exact successor, and spend the final changed-input combined 20/20 attempt | `linkedin.py`, focused tests, release/install surfaces, temporary private tick config, durable receipts | both lanes prove 20 unique accepted posts or the final bounded receipt terminalizes |
 
 Packets P2 through P4 are tightly coupled on the critical path and should be
 implemented serially. Provider-free fixture authoring and notification-contract
@@ -1414,3 +1424,72 @@ Next action:
 
 Checkpoint P0056-C16 is the current authority. Plan 0056 remains `OPEN` pending
 installed and live 20+20 evidence.
+
+### Checkpoint P0056-C17 | 2026-08-29
+
+Plan version: 17
+
+State transition:
+
+- `validated_service_0_3_76_install_ready ->
+  linkedin_bounded_scroll_yield_successor_active`.
+
+Progress classification:
+
+- `blocker_reduction`; P10 proves both Agent Browser acquisition paths and
+  both provider attempts succeed. The remaining LinkedIn deficit is isolated
+  to bounded feed depth under virtualized overlap and deterministic ad load.
+
+Authority classification:
+
+- `inherited_authority`; the operator-approved goal remains one verified
+  20+20 tick, and the earlier three-attempt budget leaves one changed-input
+  attempt after P9 and P10. P11 changes only the LinkedIn feed scroll strategy,
+  preserves the same profile, service, item, action, wall-clock, model, cost,
+  and recurring-configuration boundaries, and does not mutate Agent Browser.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Controller, bound, and terminal stop:
+
+- controller: primary orchestrator;
+- implementation loop: one public-boundary red/green slice for accepted-yield-
+  aware bounded scrolling, plus one directly related repair pass if validation
+  exposes a regression;
+- live bound: one final schedule-disabled combined tick with one X attempt and
+  one LinkedIn attempt, 20 accepted-item ceiling per lane, zero model/cost
+  budget, and no unchanged-input retry;
+- terminal stop: both lanes prove 20 unique accepted posts, or the one P11
+  durable receipt terminalizes and is fully reconciled.
+
+Current evidence:
+
+- branch and remote agree at
+  `3b2285b94fd559949173335a647eadc5365b0698`; the worktree is clean and
+  `origin/main` remains `ef98acf13d22c2422381f7f0b14e0b0da64239cd`;
+- installed service 0.3.76 is compatible and ready on schema 16 with runtime
+  manifest SHA-256
+  `40f34491d5fd0482ad3213032662e69cc9040cc0ef9bdf38d8e593f7bed5b94d`;
+- P10 tick `tick-d844d848bf526237a683b506af6dad9a` promoted snapshot
+  `tick-snapshot-467a41946590146dd239efadee6935f5`: X returned 20 unique
+  canonical status URLs; LinkedIn returned 14 unique canonical activity URLs
+  from 117 observations, with 77 duplicate, 22 sponsored/ad, and four
+  unknown/missing-permalink rejections; both provider attempts are `success`
+  and database integrity is `ok`;
+- current LinkedIn feed collection allows at most eight 1,400-pixel scrolls,
+  and its stagnation counter advances on any new observed card rather than new
+  accepted canonical post yield. A new ad or unlinkable card can therefore
+  mask flat accepted yield without advancing far enough through the feed.
+
+Next action:
+
+- add one live-shaped public `feed()` regression that remains at 14 under the
+  current eight-scroll strategy, make it red and green with accepted-yield-
+  aware bounded advancement, then run focused and comprehensive validation
+  before packaging and installing one exact successor.
+
+Checkpoint P0056-C17 is the current authority. Plan 0056 remains `OPEN` until
+the final installed P11 receipt proves 20 unique accepted X posts and 20
+unique accepted LinkedIn posts or terminalizes for durable reconciliation.
