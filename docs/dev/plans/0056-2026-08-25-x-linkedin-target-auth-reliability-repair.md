@@ -6,7 +6,7 @@ Branch: fix/x-linkedin-failure-cause-evidence
 Target: main
 Integration: fast-forward
 Roadmap: P08
-Plan version: 14
+Plan version: 15
 Date: 2026-08-25
 
 ## Objective
@@ -210,6 +210,7 @@ observation before making any authentication or content-quality claim.
 | P7 | P6 terminal evidence plus current implementation authority | Red/green post-create settling, request-attribution contract, and provider-neutral runtime extraction | `agent_browser_runtime.py`, provider adapters/imports, compatibility seam, focused fixtures | delayed X inventory and inherited-trace LinkedIn cases pass; true target/session/hostname mismatches fail closed; no non-Facebook provider imports Facebook as its runtime |
 | P8 | P7 plus fresh install/live authority | Validated successor and one schedule-disabled combined 20/20 acceptance tick | release surfaces and temporary private tick config only | both lanes prove 20/20 or the one authorized receipt terminalizes |
 | P9 | current Agent Browser handle contract plus P8 terminal evidence | Remove raw post-broker target rediscovery, prove handle-scoped readiness against realistic ordinary-tab inventory, install one exact successor, and run one bounded combined 20/20 tick | `agent_browser_runtime.py`, focused tests, release/install surfaces, temporary private tick config, durable receipts | both lanes prove 20/20 or the single authorized combined receipt terminalizes |
+| P10 | P9 terminal receipt plus standing goal authority | Preserve legitimate LinkedIn feed posts across recoverable metadata gaps, deduplicate by canonical activity URL, isolate optional media failure, install one exact successor, and run one changed-input combined 20/20 acceptance tick | `linkedin.py`, acquisition worker, focused tests, release/install surfaces, temporary private tick config, durable receipts | both lanes prove 20 unique accepted posts or the single P10 combined receipt terminalizes |
 
 Packets P2 through P4 are tightly coupled on the critical path and should be
 implemented serially. Provider-free fixture authoring and notification-contract
@@ -1280,3 +1281,71 @@ Next action:
 Checkpoint P0056-C14 is the current authority. Plan 0056 remains `OPEN` because
 X is proven at 20 but LinkedIn is proven only at 13 accepted records and 12
 distinct canonical post URLs.
+
+### Checkpoint P0056-C15 | 2026-08-29
+
+Plan version: 15
+
+State transition:
+
+- `x_20_proven_linkedin_collection_budget_blocker_observed ->
+  linkedin_retrieval_reliability_successor_active`.
+
+Progress classification:
+
+- `blocker_reduction`; the P9 receipt separates three Last30days defects after
+  successful authenticated feed observation: metadata-gap admission,
+  canonical-URL identity, and optional-media failure propagation.
+
+Authority classification:
+
+- `inherited_authority`; the operator-approved goal remains a verified 20+20
+  tick. Goal-execution policy treats the prior packet's hard stop as ending
+  that unchanged attempt, not revoking standing authority for an in-envelope
+  changed-input successor. P10 changes implementation semantics before one new
+  live tick and does not change systems, profile, audience, data class, cost,
+  or recurring configuration.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Controller, bound, and terminal stop:
+
+- controller: primary orchestrator;
+- implementation loop: at most one red/green slice each for feed admission,
+  canonical-URL identity, and optional-media failure isolation, plus one
+  directly related repair pass if broader validation exposes a regression;
+- live bound: one schedule-disabled combined tick, one X attempt and one
+  LinkedIn attempt, 20 accepted-item ceiling per lane, zero model/cost budget,
+  and no unchanged-input retry;
+- terminal stop: both lanes prove 20 unique accepted posts, or the one P10
+  durable receipt terminalizes and is fully reconciled.
+
+Current evidence:
+
+- branch and remote agree at
+  `3736bd72375fe53fe708a0d3052a2336d1ee1ae1`; the worktree is clean and
+  `origin/main` remains `ef98acf13d22c2422381f7f0b14e0b0da64239cd`;
+- installed service 0.3.75 is compatible and ready on schema 16; current
+  service discovery reports both X and LinkedIn acquisition-ready;
+- current Agent Browser 0.28.0 access plans select profile
+  `last30days-facebook`, reuse retained browser
+  `session:last30days-social-replacement-20260829`, and report no acquisition,
+  lifecycle, lease, policy, or manual-action blocker for either source;
+- P9 receipt `tick-1aff45976d98120d147d2035f60ecc09` proves X 20/20 and
+  LinkedIn 13 accepted from 117 observed, including one duplicated canonical
+  activity URL and terminal `network_budget_exhausted` at `media_fetch`;
+- code inspection proves feed quality currently rejects missing author/date,
+  deduplicates on URL plus mutable text, and promotes optional media exhaustion
+  to the top-level acquisition error even when primary posts were collected.
+
+Next action:
+
+- add one public-boundary LinkedIn feed regression for recoverable metadata
+  gaps, make it red and green, then repeat for canonical URL identity and
+  optional media isolation before broader validation and release packaging.
+
+Checkpoint P0056-C15 is the current authority. Plan 0056 remains `OPEN` until
+one installed P10 receipt proves 20 unique accepted X posts and 20 unique
+accepted LinkedIn posts.
