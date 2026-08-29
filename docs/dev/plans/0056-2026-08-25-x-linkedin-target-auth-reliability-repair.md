@@ -6,7 +6,7 @@ Branch: fix/x-linkedin-failure-cause-evidence
 Target: main
 Integration: fast-forward
 Roadmap: P08
-Plan version: 15
+Plan version: 16
 Date: 2026-08-25
 
 ## Objective
@@ -1349,3 +1349,68 @@ Next action:
 Checkpoint P0056-C15 is the current authority. Plan 0056 remains `OPEN` until
 one installed P10 receipt proves 20 unique accepted X posts and 20 unique
 accepted LinkedIn posts.
+
+### Checkpoint P0056-C16 | 2026-08-29
+
+Plan version: 16
+
+State transition:
+
+- `linkedin_retrieval_reliability_successor_active ->
+  validated_service_0_3_76_install_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; all three receipt-proven Last30days defects have
+  public-boundary red/green coverage and the comprehensive suite is green.
+
+Authority classification:
+
+- `inherited_authority`; install and one P10 acceptance tick remain inside the
+  standing goal and the bounded successor recorded at C15.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Implementation evidence:
+
+- source commit `d47493015f4debfe0e098d71aba1f16b2262a57a`
+  changes LinkedIn home-feed admission so permalinked posts with missing
+  rendered author/date metadata remain primary evidence with explicit
+  retrieval signals; topic-search quality behavior remains unchanged;
+- canonical LinkedIn activity URLs now define accepted identity and stable
+  source-native IDs, so card text expansion cannot create a second accepted
+  post;
+- optional media errors remain bounded and diagnostic but no longer promote
+  to a top-level acquisition failure when primary posts were collected;
+  zero-item media failures still fail closed;
+- service version advances to 0.3.76 with a refreshed runtime manifest and
+  release note.
+
+Validation evidence:
+
+- each new public-boundary tracer bullet failed before its implementation and
+  passed afterward: metadata-gap feed admission, canonical-permalink identity,
+  and optional-media budget isolation;
+- a combined fixture now reaches 20 unique LinkedIn feed posts with missing
+  author/date metadata while five deterministic sponsored cards remain
+  excluded;
+- affected LinkedIn, profile, acquisition-worker, tick-runner, tick-runtime,
+  media, incident, and query suites pass;
+- the first comprehensive run produced only 11 expected stale-manifest release
+  failures with 2,693 passing tests; after service 0.3.76 manifest refresh, the
+  canonical suite passes `2,704 passed / 7 skipped / 6 subtests` in 141.23
+  seconds;
+- `go test ./...`, Python compilation, active-plan audit, and
+  `git diff --check` pass.
+
+Next action:
+
+- publish the validated source checkpoint, build clean skill and service
+  artifacts, transactionally upgrade the installed service from 0.3.75 to
+  0.3.76, verify readiness and rollback retention, then preflight the one P10
+  schedule-disabled 20+20 tick.
+
+Checkpoint P0056-C16 is the current authority. Plan 0056 remains `OPEN` pending
+installed and live 20+20 evidence.
