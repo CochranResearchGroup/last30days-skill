@@ -8,7 +8,7 @@ lanes:
     target: main
     plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: d41f866e11b6f2942b3e8362b6ade41f042fbb59
+    checkpoint: d41f8666c0b4919571b2442c16070f0db701467a
     remote_ref: refs/remotes/origin/fix/x-linkedin-failure-cause-evidence
     integration: fast-forward
     dependencies: []
