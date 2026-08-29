@@ -1,12 +1,12 @@
 # Plan 0056 | X/LinkedIn Target And Authentication Reliability Repair
 
-State: OPEN
+State: CLOSED
 Lane: P08
 Branch: fix/x-linkedin-failure-cause-evidence
 Target: main
 Integration: fast-forward
 Roadmap: P08
-Plan version: 18
+Plan version: 19
 Date: 2026-08-25
 
 ## Objective
@@ -1558,3 +1558,75 @@ Next action:
 
 Checkpoint P0056-C18 is the current authority. Plan 0056 remains `OPEN` pending
 the final installed P11 receipt.
+
+### Checkpoint P0056-C19 | 2026-08-29
+
+Plan version: 19
+
+State transition:
+
+- `validated_service_0_3_77_install_ready ->
+  installed_live_20_plus_20_accepted_closed`.
+
+Progress classification:
+
+- `objective_achieved`; one installed, schedule-disabled combined tick proves
+  20 unique accepted X home-feed posts and 20 unique accepted LinkedIn
+  home-feed posts.
+
+Authority classification:
+
+- `inherited_authority_consumed`; P11 used the third and final changed-input
+  attempt in the operator's three-attempt service budget. No retry occurred.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Installed-runtime evidence:
+
+- exact service 0.3.77 installed transactionally from artifact SHA-256
+  `237dd4a1c675b5f06b36a3027af0f67251823b467ad27f3b72b80ed90932387d`;
+- installed runtime-manifest SHA-256 is
+  `f56bfd9c1b41a7c9ad8663352d32e2c8cc94cb23ef64e6bdbcec6dba38edfc8d`;
+- service discovery and diagnosis report compatible/ready on database schema
+  16, with X and LinkedIn acquisition-ready; `current` resolves to 0.3.77
+  and `previous` retains 0.3.76.
+
+Live acceptance evidence:
+
+- state-free preflight and the single enqueue agree on tick
+  `tick-b5c8a3b8b06e9103e581cdac8456ec67`, config digest
+  `sha256:559c13b89b1d2221d0814605538e4c8b66550464725f1df6874aa3abca4118b2`,
+  and two one-attempt, 20-item lanes with zero model/cost;
+- X attempt `provider-attempt-ec0452bf9f42c279186b934c59280679`
+  succeeded at `32 attempted / 32 observed / 20 accepted / 12 rejected`;
+- LinkedIn attempt
+  `provider-attempt-2bb4edc0f8f6c8192eff439f49ec9868`
+  succeeded at `122 attempted / 122 observed / 20 accepted / 102 rejected`;
+- both lanes are `success`; promoted snapshot
+  `tick-snapshot-9ac16d4f9b5d113fea8bb9486d7593f3` contains 20 unique
+  `x.com/<author>/status/<id>` URLs and 20 unique
+  `linkedin.com/feed/update/urn:li:activity:<id>/` URLs with zero pattern
+  violations;
+- the tick used two attempts, 40 items, 56 network requests, 92 wall seconds,
+  and zero model tokens or cost. Its aggregate state is `complete_degraded`
+  only because optional semantic-sidecar derivative stages failed; both
+  collection and media stages succeeded and the head was promoted;
+- both resource leases are released, active ticks and provider attempts are
+  zero, incidents and notifications are empty, and SQLite integrity is `ok`;
+- the recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` remains enabled and ready for
+  `2026-08-30T00:00:00Z`.
+
+Closeout:
+
+- the accepted-yield-aware scroll repair was the missing retrieval control;
+  Agent Browser profile selection, authentication, service-tab acquisition,
+  and exact release all succeeded without an Agent Browser mutation;
+- Plan 0056 and lane P08 may close after publication and fast-forward
+  integration of this checkpoint.
+
+Checkpoint P0056-C19 closes Plan 0056. The installed and durable acceptance
+receipt satisfies the 20 X plus 20 LinkedIn objective.

@@ -1071,7 +1071,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: OPEN
+State: CLOSED
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1274,52 +1274,18 @@ Current State:
 
 Active Plan:
 
-- `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`
-  version 11/C11 owns the bounded successor. Its provider-free repair now uses
-  the broker's available queued service request without invented route hints,
-  validates browser/session/URL/agent/task identity before readiness, stops on
-  lease wait when no compatible service route exists, and treats blank
-  LinkedIn auth evidence as ambiguous rather than logout. The operator has
-  authorized at most five total diagnosis/repair cycles through installed and
-  live 20/20 acceptance. Installed 0.3.70 and 0.3.71 proved both false-auth
-  incidents are gone but repeated the same pre-readiness failure. Read-only
-  Agent Browser receipts identify the actual common blocker: Last30days omitted
-  the access plan's unique browser/session reuse hints, so the duplicate-profile
-  guard rejected every tab request. Installed 0.3.72 carries those hints and
-  proves successful tab creation, inventory, and exact release for both lanes,
-  but the final tick still stops in Last30days's immediate coherence probe at
-  `0/0/0/0`. The five-cycle budget is exhausted. C06 now specifies the next
-  provider-free repair: bounded exact-target inventory settling and
-  request-local broker attribution, with retained-session `traceFilter`
-  diagnostic only. The operator has authorized P7's provider-free behavior
-  repair, extraction of the generic Agent Browser lifecycle out of
-  `facebook.py` into `agent_browser_runtime.py`, validation, and repository
-  integration if green. The source candidate now passes 2,697 tests, all MCP
-  Go packages, reproducible service packaging, the 152-file skill build,
-  CodeGraph ownership readback, and the plan-authority audit. Install and live-
-  effect authority remain separate; no sixth provider attempt is implied by
-  the revision. P7 is integrated at
-  `699ef3e637fde797d1eab9b44734ee86cd939ca5`. The operator has now separately
-  authorized P8 to build and transactionally install one exact successor and
-  admit one schedule-disabled combined home-feed tick with one X and one
-  LinkedIn attempt, each capped at 20 accepted items. The packet stops at that
-  terminal receipt and leaves Agent Browser plus the recurring configuration
-  unchanged. Exact service 0.3.73 is now installed ready with 0.3.72 retained,
-  and the sole tick is consumed. Both lanes stopped before observation: X at a
-  generic `adapter_exception` whose class was not preserved, and LinkedIn at
-  `workspace_acquisition/agent_browser_error` after one successful service
-  boundary operation. Both are `0/0/0/0`, with zero incidents/notifications
-  and all leases released. The receipts prove neither logout nor feed/content
-  quality. C10 now owns the narrow Last30days failure-cause repair, one exact
-  successor install, and one schedule-disabled X plus LinkedIn 20/20 tick; it
-  excludes Agent Browser changes, recurring-config mutation, and provider
-  retries. Service 0.3.74 is installed and the one C10 tick is consumed. Both
-  lanes now identify `unexpected_timeout_expired` in Last30days' direct broker
-  request before browser-operation evidence or post observation. The next
-  provider-free repair is typed timeout translation; no further live attempt
-  is admitted by C11.
+- none; Plan 0056/C19 satisfied the 20 X plus 20 LinkedIn home-feed objective
+  and closed the lane.
 
 Closed Plan:
+
+- `docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md`
+  version 19/C19 is terminal and outcome-complete. Exact service 0.3.77 is
+  installed ready with 0.3.76 retained. Tick
+  `tick-b5c8a3b8b06e9103e581cdac8456ec67` proves successful X and LinkedIn
+  collection lanes with 20 unique canonical posts each, zero model/cost,
+  released leases, healthy SQLite, and no recurring-config or Agent Browser
+  mutation.
 
 - `docs/dev/plans/0055-2026-08-21-linkedin-accepted-yield-repair.md`
   version 31/C31 is terminal as superseded, not outcome-complete. It preserves
@@ -1394,11 +1360,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- preserve Last30days X failure stage/command timings and carry worker
-  failure stage/signature through the durable tick provider result, with
-  provider-free regression tests. Do not change Agent Browser, discard or
-  replace the authenticated profile, alter recurring configuration, or retry
-  the consumed live canary in that packet.
+- none for P08; ordinary recurring operation continues under the unchanged
+  private schedule configuration. Any future feed/profile expansion requires
+  a new plan and explicit authority.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 

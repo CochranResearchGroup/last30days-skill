@@ -21529,3 +21529,84 @@ Next Bounded Action:
   correction is required before a meaningful installed 20/20 tick; do not
   infer authentication state for `last30days-facebook` from the current
   `default` browser.
+
+## Turn 348 | 2026-08-29
+
+Focus: isolate the remaining LinkedIn feed-depth deficit, install the bounded
+successor, and complete the final X plus LinkedIn 20/20 acceptance tick.
+
+Authority Consulted:
+
+- operator goal and three-attempt service budget; Plan 0056/C13-C19; Roadmap
+  P08; repo policy, diagnosis/TDD, CodeGraph, Agent Browser no-launch routing,
+  transactional release/install, temporary tick, durable receipt, recurring
+  config, validation, integration, and closeout authorities.
+
+Decisions And Changes:
+
+- audited P10 and proved both Agent Browser provider attempts succeeded. X
+  reached 20 while LinkedIn stopped at 14 because eight fixed 1,400-pixel
+  moves did not traverse enough of the tall virtualized feed;
+- added one live-shaped public `feed()` regression. It reproduced 14 accepted
+  posts before the repair and reaches 20 with accepted-yield-aware scroll
+  distances bounded from 1,400 through 3,200 pixels while retaining the
+  eight-scroll ceiling and deterministic sponsored/ad exclusion;
+- released source commit `40dedc5d941d8030292f93fac1c8fb63ef7da6b1` as
+  service 0.3.77, installed the exact artifact transactionally, and retained
+  0.3.76;
+- preflighted and enqueued exactly one private, schedule-disabled X plus
+  LinkedIn tick with one 20-item attempt per lane and zero model/cost. No
+  Agent Browser or recurring-config mutation occurred.
+
+Validation Evidence:
+
+- focused LinkedIn, profile, acquisition-worker, broader affected, release,
+  and runtime-package suites pass; the canonical Python suite exits zero; all
+  MCP Go packages, Python compilation, plan/goal authority audits, and
+  `git diff --check` pass;
+- release artifact SHA-256 is
+  `237dd4a1c675b5f06b36a3027af0f67251823b467ad27f3b72b80ed90932387d`;
+  installed runtime-manifest SHA-256 is
+  `f56bfd9c1b41a7c9ad8663352d32e2c8cc94cb23ef64e6bdbcec6dba38edfc8d`;
+- no-launch Agent Browser plans select profile `last30days-facebook` and
+  expose available, unblocked service-tab requests for both sources;
+- tick `tick-b5c8a3b8b06e9103e581cdac8456ec67` and promoted snapshot
+  `tick-snapshot-9ac16d4f9b5d113fea8bb9486d7593f3` prove X
+  `32/32/20/12` and LinkedIn `122/122/20/102`; the snapshot has 20 unique
+  canonical status URLs and 20 unique canonical activity URLs;
+- both collection lanes and media stages succeeded. Optional semantic-sidecar
+  failures account for aggregate `complete_degraded` and do not reduce the
+  accepted source set;
+- both leases are released; active ticks/provider attempts are zero; incidents
+  and notifications are empty; SQLite integrity is `ok`;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`
+  and `daily-default` is ready for the Aug 30 UTC boundary.
+
+State Movement:
+
+- Plan 0056 advances to version 19/C19 and closes outcome-complete; Roadmap P08
+  closes with the requested installed 20 X plus 20 LinkedIn proof.
+
+Progress Classification:
+
+- `objective_achieved`; retrieval reliability now meets the requested
+  per-tick volume on both authenticated home feeds.
+
+Authority Classification:
+
+- `inherited_authority_consumed`; the final changed-input attempt is consumed
+  and no retry is available or needed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending final source-backed closeout write after repository integration.
+
+Next Bounded Action:
+
+- publish and fast-forward the closed plan/lane checkpoint, record one durable
+  Graphiti closeout, and stop.
