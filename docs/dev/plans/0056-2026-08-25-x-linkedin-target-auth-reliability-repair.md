@@ -6,7 +6,7 @@ Branch: fix/x-linkedin-failure-cause-evidence
 Target: main
 Integration: fast-forward
 Roadmap: P08
-Plan version: 12
+Plan version: 13
 Date: 2026-08-25
 
 ## Objective
@@ -102,6 +102,21 @@ observation before making any authentication or content-quality claim.
   outside `_invoke()`'s existing `subprocess.TimeoutExpired` translator. Its
   outer deadline therefore hid the broker's typed lease-conflict result as a
   generic adapter exception.
+- current Agent Browser 0.28.0 source and installed behavior prove that
+  ordinary `tab list` intentionally omits CDP `targetId` and `sessionId`;
+  those diagnostic identifiers require `tab list --verbose`;
+- Last30days currently accepts the authoritative synchronous
+  `serviceTabHandle`, then calls ordinary `tab list` and requires the omitted
+  `targetId` before it will run the handle-scoped readiness probe. The test
+  double incorrectly supplied verbose-only fields to the ordinary surface;
+- Agent Browser's service-client contract explicitly requires consumers to
+  keep the returned `serviceTabHandle` for follow-on work and not rediscover
+  raw targets, sessions, or DevTools identity after brokered acquisition;
+- the operator has authorized P9: repair that Last30days contract, validate
+  and install one exact successor if required by the service boundary, then
+  run one schedule-disabled combined home-feed tick with one X attempt and one
+  LinkedIn attempt, each capped at 20 accepted items. Agent Browser state and
+  recurring configuration remain outside the packet.
 
 ## Scope
 
@@ -194,6 +209,7 @@ observation before making any authentication or content-quality claim.
 | P6 | P5 plus current bounded authority | Up to three schedule-disabled combined 20/20 acceptance ticks within the five-cycle total budget | temporary private config and durable runtime receipts only | both lanes prove 20/20 or the fifth cycle terminalizes |
 | P7 | P6 terminal evidence plus current implementation authority | Red/green post-create settling, request-attribution contract, and provider-neutral runtime extraction | `agent_browser_runtime.py`, provider adapters/imports, compatibility seam, focused fixtures | delayed X inventory and inherited-trace LinkedIn cases pass; true target/session/hostname mismatches fail closed; no non-Facebook provider imports Facebook as its runtime |
 | P8 | P7 plus fresh install/live authority | Validated successor and one schedule-disabled combined 20/20 acceptance tick | release surfaces and temporary private tick config only | both lanes prove 20/20 or the one authorized receipt terminalizes |
+| P9 | current Agent Browser handle contract plus P8 terminal evidence | Remove raw post-broker target rediscovery, prove handle-scoped readiness against realistic ordinary-tab inventory, install one exact successor, and run one bounded combined 20/20 tick | `agent_browser_runtime.py`, focused tests, release/install surfaces, temporary private tick config, durable receipts | both lanes prove 20/20 or the single authorized combined receipt terminalizes |
 
 Packets P2 through P4 are tightly coupled on the critical path and should be
 implemented serially. Provider-free fixture authoring and notification-contract
@@ -1113,3 +1129,67 @@ Next action:
 Checkpoint P0056-C12 is the current authority. Plan 0056 remains `OPEN` because
 the intended profile is not currently commandable through a coherent broker
 route and neither lane has reached observation or 20 accepted items.
+
+### Checkpoint P0056-C13 | 2026-08-29
+
+Plan version: 13
+
+State transition:
+
+- `direct_browser_and_broker_lease_diagnosis_active ->
+  broker_handle_contract_repair_and_single_20_20_acceptance_active`.
+
+Progress classification:
+
+- `blocker_reduction`; current Agent Browser source, history, and live
+  readback localize the pre-readiness failure to Last30days consuming the
+  wrong tab-inventory surface after successful broker acquisition.
+
+Authority classification:
+
+- `inherited_authority`; the operator explicitly requested planning,
+  execution, and a reattempt of the 20+20 test. This packet authorizes the
+  Last30days implementation, validation, exact successor installation when
+  required, and one schedule-disabled combined tick with one X and one
+  LinkedIn attempt capped at 20 accepted items each. It does not authorize an
+  Agent Browser implementation or lifecycle change, profile replacement,
+  recurring-config mutation, or a second live tick.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Controller, bound, and terminal stop:
+
+- controller: primary orchestrator;
+- implementation loop: one red/green contract slice plus one focused
+  regression repair if validation exposes a directly related failure;
+- live bound: one X attempt plus one LinkedIn attempt in one
+  schedule-disabled tick, 20 accepted-item ceiling per lane, zero
+  model/cost budget, and no per-provider retry;
+- terminal stop: both lanes return 20 unique accepted posts, or the first
+  combined durable receipt terminalizes and is fully reconciled.
+
+Evidence:
+
+- Agent Browser commit `8ba25fdfcad2405a9c83f42461a807d77adc59c9`
+  introduced `tab list --verbose` for diagnostic `targetId` and `sessionId`
+  while retaining the ordinary compact inventory;
+- current Agent Browser `tab_list(false)` omits those identifiers and its
+  service-client contract says broker consumers must use the returned
+  `serviceTabHandle` rather than rediscover raw target identity;
+- Last30days commit `a52a5e66354c517e3f35d803a031b7d90364e93d`
+  introduced `_require_service_tab_identity()`, whose ordinary `tab list`
+  request searches for the unavailable `targetId`; its unit fixture returns
+  fields the real ordinary surface omits;
+- branch and remote agree at
+  `f2bd39fd606609d423c1793d03ad28374c9b3a4f` before implementation.
+
+Next action:
+
+- make the realistic broker-handle regression red, remove raw target
+  rediscovery from the acquisition path, require handle-scoped readiness,
+  then run focused and canonical validation before any install or live tick.
+
+Checkpoint P0056-C13 is the current authority. Plan 0056 remains `OPEN` until
+the installed and live 20/20 result is reconciled.

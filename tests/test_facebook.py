@@ -1176,17 +1176,6 @@ class FacebookCliAdapterTests(unittest.TestCase):
                     "serviceTabHandle": handle,
                     "url": "https://x.com/home",
                 }
-            if arguments["action"] == "tab_list":
-                return {
-                    "tabs": [
-                        {
-                            "targetId": "x-owned",
-                            "browserId": browser_id,
-                            "sessionId": broker_session,
-                            "url": "https://x.com/home",
-                        }
-                    ]
-                }
             if arguments["action"] == "ui_action":
                 self.assertEqual(handle, arguments["serviceTabHandle"])
                 return {"ok": True}
@@ -1211,12 +1200,11 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual(browser_id, workspace.browser_id)
         self.assertEqual(broker_session, workspace.session_name)
         self.assertEqual("x-owned", workspace.target_id)
-        self.assertEqual(["tab_new", "tab_list", "ui_action"], service_actions)
+        self.assertEqual(["tab_new", "ui_action"], service_actions)
 
     def test_broker_logical_handle_accepts_a_distinct_physical_tab_browser(self):
         client = facebook.CliAgentBrowserClient(timeout=5)
         logical_browser_id = "session:last30days-facebook--last30days-facebook"
-        physical_browser_id = "session:handoff-social"
         broker_session = "handoff-social"
         plan = {
             "selectedProfile": {"id": "last30days-facebook"},
@@ -1256,21 +1244,6 @@ class FacebookCliAdapterTests(unittest.TestCase):
                     "serviceTabHandle": handle,
                     "url": "https://www.linkedin.com/feed/",
                 }
-            if arguments["action"] == "tab_list":
-                return {
-                    "tabs": [
-                        {
-                            "targetId": "linkedin-owned",
-                            "browserId": physical_browser_id,
-                            "sessionId": broker_session,
-                            "url": "https://www.linkedin.com/feed/",
-                            "traceFilter": {
-                                "agentName": "linkedin-scraper",
-                                "taskName": "linkedin-home-feed",
-                            },
-                        }
-                    ]
-                }
             if arguments["action"] == "ui_action":
                 return {"ok": True}
             raise AssertionError(f"unexpected service action: {arguments}")
@@ -1301,7 +1274,7 @@ class FacebookCliAdapterTests(unittest.TestCase):
         self.assertEqual(logical_browser_id, workspace.browser_id)
         self.assertEqual(broker_session, workspace.session_name)
         self.assertEqual("linkedin-owned", workspace.target_id)
-        self.assertEqual(["tab_new", "tab_list", "ui_action"], service_actions)
+        self.assertEqual(["tab_new", "ui_action"], service_actions)
 
     def test_access_plan_route_hints_fall_back_when_status_has_no_live_owner(self):
         client = facebook.CliAgentBrowserClient(timeout=5)

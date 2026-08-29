@@ -29,9 +29,6 @@ TAB_INVENTORY_TIMEOUT_SECONDS = 20
 SERVICE_EVALUATE_MAX_RETURN_BYTES = 1_048_576
 SERVICE_TAB_READY_TIMEOUT_MS = 15_000
 SERVICE_TAB_READY_OUTER_TIMEOUT_SECONDS = 30
-SERVICE_TARGET_INVENTORY_MAX_READS = 6
-SERVICE_TARGET_INVENTORY_SETTLE_SECONDS = 5.0
-SERVICE_TARGET_INVENTORY_POLL_SECONDS = 0.1
 ERROR_TYPES = {
     "agent_browser_missing",
     "profile_mismatch",
@@ -371,17 +368,16 @@ class CliAgentBrowserClient:
                     "agent-browser broker tab handle is missing target ownership",
                     reason_code="broker_service_tab_ownership_missing",
                 )
+            if service_tab_handle.get("valid") is False:
+                raise AgentBrowserRuntimeFailure(
+                    "agent_browser_error",
+                    "agent-browser broker tab handle is not valid",
+                    reason_code="broker_service_tab_handle_invalid",
+                )
             self._service_tab_handle = dict(service_tab_handle)
             self._service_tab_url = str(acquired.get("url") or request.start_url)
             self._service_request_route.update(
                 {"browserId": browser_id, "sessionName": session_name}
-            )
-            self._require_service_tab_identity(
-                session_name=session_name,
-                target_id=target_id,
-                start_url=request.start_url,
-                agent_name=request.agent_name,
-                task_name=request.task_name,
             )
             self._invoke(
                 ["--session", session_name, "tab", "handle-ready"],
@@ -1300,72 +1296,6 @@ class CliAgentBrowserClient:
         ):
             request["serviceTabHandle"] = dict(self._service_tab_handle)
         return request
-
-    def _require_service_tab_identity(
-        self,
-        *,
-        session_name: str,
-        target_id: str,
-        start_url: str,
-        agent_name: str,
-        task_name: str,
-    ) -> None:
-        """Wait briefly for the broker target, then require coherent identity."""
-        expected_hostname = urlsplit(start_url).hostname or ""
-        deadline = time.monotonic() + SERVICE_TARGET_INVENTORY_SETTLE_SECONDS
-        last_state = "absent"
-        for read_number in range(1, SERVICE_TARGET_INVENTORY_MAX_READS + 1):
-            listed = self._invoke(
-                ["--session", session_name, "tab", "list"],
-                timeout=min(self.timeout, 30),
-            )
-            tabs = listed.get("tabs") if isinstance(listed.get("tabs"), list) else []
-            target = next(
-                (
-                    tab
-                    for tab in tabs
-                    if isinstance(tab, dict)
-                    and str(tab.get("targetId") or "") == target_id
-                ),
-                None,
-            )
-            if isinstance(target, dict):
-                observed_session_name = str(
-                    target.get("sessionId") or target.get("ownerSessionId") or ""
-                )
-                if observed_session_name and observed_session_name != session_name:
-                    raise AgentBrowserRuntimeFailure(
-                        "agent_browser_error",
-                        "agent-browser service tab handle session identity is inconsistent",
-                        reason_code="service_tab_session_mismatch",
-                    )
-                observed_url = str(target.get("url") or "")
-                if observed_url and observed_url != "about:blank":
-                    if expected_hostname and not _url_matches_hostname(
-                        observed_url, expected_hostname
-                    ):
-                        raise AgentBrowserRuntimeFailure(
-                            "agent_browser_error",
-                            "agent-browser service tab handle URL identity is inconsistent",
-                            reason_code="service_tab_url_mismatch",
-                        )
-                    # The request and synchronously returned handle are the
-                    # attribution authority. traceFilter describes the retained
-                    # session and is diagnostic, not per-tab ownership proof.
-                    return
-                last_state = "blank"
-            if (
-                read_number >= SERVICE_TARGET_INVENTORY_MAX_READS
-                or time.monotonic() >= deadline
-            ):
-                break
-            time.sleep(SERVICE_TARGET_INVENTORY_POLL_SECONDS)
-        raise AgentBrowserRuntimeFailure(
-            "agent_browser_error",
-            "agent-browser service tab handle target did not settle "
-            f"after {read_number} inventory reads (last_state={last_state})",
-            reason_code="service_tab_target_unsettled",
-        )
 
     def release_workspace(self) -> None:
         """Release this client's attributed tab without closing the shared browser."""

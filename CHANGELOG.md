@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Broker-handle-authoritative social readiness.** Service 0.3.75 keeps the
+  synchronous Agent Browser `serviceTabHandle` as the acquisition authority
+  and sends the first readiness probe through that exact handle. It no longer
+  rejects valid X or LinkedIn tabs by searching ordinary compact tab inventory
+  for diagnostic-only CDP target identifiers.
+
 - **Durable social acquisition failure causes.** Service 0.3.74 preserves a
   bounded class-only reason for unexpected adapter failures and normalized
   broker-acquisition reasons for X and LinkedIn through the durable tick
