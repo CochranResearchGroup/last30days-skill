@@ -8,7 +8,7 @@ lanes:
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATED
-    checkpoint: 5ed145d4b35215f381ba8fe2db5e512771b00064
+    checkpoint: 3bb26a5fce0892d16dc3e20226f5e03e8239902b
     remote_ref: refs/remotes/origin/fix/x-linkedin-failure-cause-evidence
     integration: fast-forward
     integration_receipt: 3bb26a5fce0892d16dc3e20226f5e03e8239902b
