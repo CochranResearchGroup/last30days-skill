@@ -6,9 +6,9 @@ lanes:
     plan_ref: refs/remotes/origin/fix/x-linkedin-failure-cause-evidence
     branch: fix/x-linkedin-failure-cause-evidence
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 597c3379950f8705a31d1eede73f39fb4987b9a3
+    plan_state: CLOSED
+    custody_state: INTEGRATION_READY
+    checkpoint: 5ed145d4b35215f381ba8fe2db5e512771b00064
     remote_ref: refs/remotes/origin/fix/x-linkedin-failure-cause-evidence
     integration: fast-forward
     dependencies: []
