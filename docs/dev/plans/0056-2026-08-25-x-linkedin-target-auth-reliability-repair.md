@@ -6,7 +6,7 @@ Branch: fix/x-linkedin-failure-cause-evidence
 Target: main
 Integration: fast-forward
 Roadmap: P08
-Plan version: 17
+Plan version: 18
 Date: 2026-08-25
 
 ## Objective
@@ -1493,3 +1493,68 @@ Next action:
 Checkpoint P0056-C17 is the current authority. Plan 0056 remains `OPEN` until
 the final installed P11 receipt proves 20 unique accepted X posts and 20
 unique accepted LinkedIn posts or terminalizes for durable reconciliation.
+
+### Checkpoint P0056-C18 | 2026-08-29
+
+Plan version: 18
+
+State transition:
+
+- `linkedin_bounded_scroll_yield_successor_active ->
+  validated_service_0_3_77_install_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; the receipt-shaped 14-item LinkedIn ceiling is now a
+  deterministic public-boundary regression, and the bounded successor reaches
+  20 unique canonical posts without changing Agent Browser, admission rules,
+  or the eight-scroll safety ceiling.
+
+Authority classification:
+
+- `inherited_authority`; installing exact service 0.3.77 and running the one
+  final P11 tick remain inside the bounded C17 successor and the operator's
+  three-attempt budget.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Implementation evidence:
+
+- source commit `40dedc5d941d8030292f93fac1c8fb63ef7da6b1` adds
+  accepted-yield-aware LinkedIn feed advancement: each scroll remains bounded
+  from 1,400 through 3,200 pixels, distances do not decrease during the run,
+  and the existing eight-action, interaction, wall-clock, auth, profile,
+  handle, deterministic-ad, and canonical-deduplication boundaries remain
+  unchanged;
+- the new public `feed()` regression models a tall virtualized feed with 24
+  canonical posts and a repeated sponsored card. The pre-repair strategy
+  reproduced 14 accepted items; the successor returns 20 unique activity URLs
+  while continuing to reject the sponsored card;
+- service version advances to 0.3.77 with a refreshed manifest and release
+  note. The clean release-check artifact is
+  `/tmp/last30days-p0056-p11-release-check/last30days-service-0.3.77.tar.gz`
+  with SHA-256
+  `237dd4a1c675b5f06b36a3027af0f67251823b467ad27f3b72b80ed90932387d`.
+
+Validation evidence:
+
+- the LinkedIn-only, LinkedIn-profile, acquisition-worker, broader affected,
+  release-version, and runtime-package suites pass;
+- the canonical `uv run pytest -q --tb=short` suite exits zero through a
+  pipefail-preserving summary; the MCP `go test ./...` suite and Python
+  compilation pass;
+- active-plan, active-goal, and repo authority audits pass, as does
+  `git diff --check`;
+- the branch-local lane audit correctly remains dirty/stale until this plan
+  checkpoint is committed and published.
+
+Next action:
+
+- publish this checkpoint, update the P08 catalog checkpoint, transactionally
+  install exact service 0.3.77, verify readiness and rollback retention, then
+  preflight and enqueue the one final schedule-disabled P11 20+20 tick.
+
+Checkpoint P0056-C18 is the current authority. Plan 0056 remains `OPEN` pending
+the final installed P11 receipt.
