@@ -1255,20 +1255,27 @@ Live receipt evidence:
 Diagnosis:
 
 - the latest result falsifies Agent Browser authentication and tab discovery
-  as the current LinkedIn blocker. The remaining retrieval path spends the
-  same provider network budget on media fetches while trying to accumulate 20
-  normalized posts, and canonical-URL identity is not the final dedupe key;
+  as the current LinkedIn blocker. Two later boundaries are independently
+  wrong: admission rejects observed cards for missing scraped date, author,
+  permalink, or kind metadata even though the operator's current policy only
+  excludes deterministic ads/spam, and optional media hydration can exhaust
+  the provider network budget and turn a published partial result into lane
+  failure;
+- canonical-URL identity is also not the final dedupe key: the same LinkedIn
+  activity permalink was accepted twice under different fallback native IDs;
 - reaching a trustworthy LinkedIn 20 requires a separately authorized repair
-  that prevents optional media hydration from starving primary post
-  collection and collapses identical canonical activity URLs before accepted
-  counts are committed.
+  that preserves legitimate posts despite recoverable extraction gaps,
+  excludes only deterministic ads/spam, collapses identical canonical
+  activity URLs before accepted counts are committed, and prevents optional
+  media hydration from failing primary post collection.
 
 Next action:
 
-- design a bounded red/green successor for LinkedIn primary-item collection
-  versus media-hydration budgeting and canonical-URL deduplication, then seek
-  authority for one new combined acceptance tick. Do not increase recurring
-  collection limits or issue another live tick from this checkpoint.
+- design a bounded red/green successor for LinkedIn extraction-gap admission,
+  canonical-URL deduplication, and primary-item collection versus optional
+  media-hydration failure, then seek authority for one new combined acceptance
+  tick. Do not increase recurring collection limits or issue another live tick
+  from this checkpoint.
 
 Checkpoint P0056-C14 is the current authority. Plan 0056 remains `OPEN` because
 X is proven at 20 but LinkedIn is proven only at 13 accepted records and 12
