@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 10
+Plan version: 11
 Date: 2026-08-29
 
 ## Objective
@@ -760,3 +760,56 @@ Next action or stop reason:
 - preserve the terminal receipt and exact upstream job IDs. The Agent Browser
   owner should reconcile the process lock and the retained queued LinkedIn job;
   after that, a new explicit 20+20 attempt budget is required for live proof.
+
+### Checkpoint P0057-C11 | 2026-08-30
+
+Plan version: 11
+
+State transition:
+
+- `renewed_20_gate_upstream_contention -> upgraded_runtime_retry_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; the operator reports the Agent Browser upgrade complete,
+  explicitly authorizes another try, and current read-only evidence shows the
+  prior lock/queued-job blocker has cleared.
+
+Authority and bounds:
+
+- the operator's request authorizes exactly one fresh schedule-disabled 20+20
+  X/LinkedIn canary through the installed Last30days service;
+- the persistent goal still authorizes exactly one schedule-disabled 40+40
+  canary only if both 20-item lanes pass;
+- recurring configuration, Reddit/Facebook state, profile replacement, and
+  direct Agent Browser lifecycle mutation remain outside scope.
+
+Current evidence:
+
+- `main` and `origin/main` are synchronized and clean at
+  `b3616330f47186e8be65dbe11c89579e66408bdd`;
+- Last30days service 0.3.81 is active and ready on schema 16 with runtime
+  manifest SHA-256
+  `e0736e687c59c1ee97825e29324224d8bca589d7c7f910f126cd4f136a25d61c`;
+- Agent Browser 0.28.0 reports zero queue depth, no active state-lock holders,
+  zero file/process lock timeouts, and no retained record for the formerly
+  queued LinkedIn job;
+- both target-specific access plans select the existing durable
+  `last30days-facebook` profile, require no manual action or seeding, report no
+  acquisition/lifecycle blocker, and provide service-owned `tab_new` requests
+  using the established `last30days-social-replacement-20260829` session name.
+
+Authority classification:
+
+- `inherited_authority`; this is the exact operator-requested retry after the
+  reported upstream upgrade, bounded by the unchanged conditional 40-item gate.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- publish this renewed authority checkpoint, create an owner-private
+  schedule-disabled 20+20 config, preflight and enqueue it exactly once, then
+  reconcile the terminal receipt before deciding the 40+40 gate.

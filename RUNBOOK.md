@@ -22005,3 +22005,59 @@ Next Bounded Action:
 - commit and push this receipt checkpoint, remove the owner-private temporary
   canary config, and hand the exact Agent Browser job IDs to its owner. Retry
   only after upstream reconciliation and renewed explicit attempt authority.
+
+## Turn 355 | 2026-08-30
+
+Focus: verify the operator-reported Agent Browser upgrade and execute one fresh
+bounded 20+20 retry, with 40+40 still conditional on both lanes passing.
+
+Authority Consulted:
+
+- operator `agent browser has been upgraded ... please try again`; persistent
+  goal; Plan 0057/C10-C11; Roadmap P08; repo goal/planning policy; Agent Browser
+  service guidance for no-launch readiness and profile reuse.
+
+Decisions And Changes:
+
+- treated the request as exact renewed authority for one fresh 20+20 attempt;
+- retained the persistent goal's one 40+40 attempt only after a passing 20-item
+  gate;
+- used only read-only Agent Browser status, job, and access-plan surfaces before
+  the Last30days tick; performed no direct browser or lifecycle mutation.
+
+Validation Evidence:
+
+- the prior queued LinkedIn job is absent after the upgrade;
+- lock diagnostics show no active holders and zero file/process timeouts;
+- both X and LinkedIn plans select durable profile `last30days-facebook`, with
+  no acquisition/lifecycle blocker and no manual auth or seeding requirement;
+- clean synchronized Git is
+  `b3616330f47186e8be65dbe11c89579e66408bdd`; Last30days service 0.3.81 is
+  active/ready on schema 16.
+
+State Movement:
+
+- Plan 0057 advances to version 11/C11 `upgraded_runtime_retry_ready`; P08
+  remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; current upstream evidence clears the exact prior stop.
+
+Authority Classification:
+
+- `inherited_authority` for one fresh 20+20 attempt and one conditional 40+40
+  attempt through the existing Last30days workflow.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred until the terminal live outcome is reconciled.
+
+Next Bounded Action:
+
+- commit and push this checkpoint, then preflight and enqueue the fresh 20+20
+  schedule-disabled canary exactly once.
