@@ -21827,3 +21827,65 @@ Next Bounded Action:
 
 - push and install exact service 0.3.81, reconcile runtime invariants, and stop
   before another LinkedIn canary pending an explicit renewed attempt budget.
+
+## Turn 352 | 2026-08-29
+
+Focus: publish and install the validated LinkedIn false-stagnation repair, then
+reconcile the exact action-specific live gate.
+
+Authority Consulted:
+
+- persistent operator goal and three-attempt LinkedIn ceiling; Plan 0057/C07-
+  C08; Roadmap P08; repo release, transactional install, runtime proof,
+  temporary-artifact cleanup, retry, and closeout authorities.
+
+Decisions And Changes:
+
+- pushed commit `8f24fc0d89ed15713d5accea3d6ed481af881f9a`, built service
+  0.3.81 artifact SHA-256
+  `69adc408067af9316068607155a2afdf8a538aeb50223b9dcfcb189a569a654d`,
+  and transactionally installed release `releases/0.3.81` ready on schema 16;
+- preserved the objective and 40-item precondition: no 40+40 canary was
+  created after LinkedIn failed the 20-item gate;
+- moved the owner-private 20+20 config and temporary 0.3.80/0.3.81 build
+  directories to trash after installation.
+
+Validation Evidence:
+
+- installed runtime-manifest SHA-256 is
+  `e0736e687c59c1ee97825e29324224d8bca589d7c7f910f126cd4f136a25d61c`;
+- service is active/ready, active attempts and open canary leases are zero,
+  SQLite is `ok`, recurring config hash remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
+  and `daily-default` remains ready for Aug 31 UTC;
+- Git is clean and `main` equals `origin/main` at the installed source commit
+  before this documentation checkpoint.
+
+State Movement:
+
+- Plan 0057 advances to version 8/C08
+  `installed_awaiting_attempt_budget`; P08 remains OPEN.
+
+Progress Classification:
+
+- `outcome_progress`; the next retrieval strategy is installed and no local
+  implementation, runtime, schedule, lease, or integrity work remains before
+  live proof.
+
+Authority Classification:
+
+- `human_gate`; another LinkedIn live provider attempt would be Plan 0057
+  attempt four and exceed the operator's explicit ceiling of three.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending terminal goal outcome; no intermediate success write.
+
+Next Bounded Action:
+
+- if the operator renews the attempt budget, run one schedule-disabled 20+20
+  canary on installed 0.3.81 and run 40+40 only after both lanes accept 20.

@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 7
+Plan version: 8
 Date: 2026-08-29
 
 ## Objective
@@ -570,3 +570,70 @@ Next action or stop reason:
 - push, build, and install exact service 0.3.81, reconcile installed state, and
   stop before another live LinkedIn attempt pending a renewed bounded attempt
   budget. The 40-item gate remains closed.
+
+### Checkpoint P0057-C08 | 2026-08-29
+
+Plan version: 8
+
+State transition:
+
+- `live_false_stagnation_repaired -> installed_awaiting_attempt_budget`.
+
+Progress classification:
+
+- `outcome_progress`; the changed-input false-stagnation repair is installed
+  and fully reconciled, leaving only the explicit action-specific live gate.
+
+Installed identity:
+
+- source commit `8f24fc0d89ed15713d5accea3d6ed481af881f9a` is pushed to
+  `origin/main`;
+- artifact `last30days-service-0.3.81.tar.gz` has SHA-256
+  `69adc408067af9316068607155a2afdf8a538aeb50223b9dcfcb189a569a654d`;
+- transactional upgrade reports release `releases/0.3.81`, schema 16, status
+  `ready`, contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`,
+  and runtime-manifest SHA-256
+  `e0736e687c59c1ee97825e29324224d8bca589d7c7f910f126cd4f136a25d61c`.
+
+Post-install reconciliation:
+
+- `daily-default` remains enabled and `ready`; its last boundary/tick remain
+  `2026-08-30T00:00:00Z` and
+  `tick-1f0f5a259b92001fcfc86ec94309419a`, with next boundary
+  `2026-08-31T00:00:00Z`;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  Reddit and Facebook remain disabled and recurring X/LinkedIn ceilings remain
+  unchanged;
+- active tick/provider attempts and unreleased canary leases are zero, SQLite
+  quick-check is `ok`, and the Git worktree is clean and synchronized;
+- the owner-private canary config and both temporary 0.3.80/0.3.81 build
+  directories were moved to trash and are recoverable there.
+
+Acceptance and gate state:
+
+- criterion 7 remains unproven after X 20/20 and LinkedIn 5/20; criterion 8 is
+  still correctly unexecuted;
+- the next technically ready action is one installed 0.3.81 LinkedIn/combined
+  20-item canary, but it would be the fourth Plan 0057 LinkedIn provider
+  attempt and therefore exceed the operator's explicit ceiling of three;
+- no further live provider action is authorized until the operator supplies a
+  renewed bounded attempt budget. Source, installation, authentication,
+  service readiness, schedule invariants, and database integrity are not the
+  blocker.
+
+Authority classification:
+
+- `human_gate`; exact boundary is an additional LinkedIn live provider attempt
+  beyond the three-attempt ceiling.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- await a renewed attempt budget. If granted, run one schedule-disabled 20+20
+  canary on installed 0.3.81; run 40+40 only if both lanes accept 20 and the
+  tick has no unexpected degradation.

@@ -1085,10 +1085,11 @@ Current State:
   but LinkedIn 5/20. All 15 unlinked observations were structurally broad
   list-item chrome without post actions or timestamps; the actual early stop
   was the two-snapshot stagnation guard after only two scrolls. Version 7/C07
-  validates service 0.3.81 with a finite four-snapshot LinkedIn tolerance.
-  Installation remains authorized, but the explicit three-attempt LinkedIn
-  live ceiling is reached; another provider attempt requires a renewed budget,
-  and conditional 40+40 remains gated.
+  validates and installs service 0.3.81 with a finite four-snapshot LinkedIn
+  tolerance. Version 8/C08 reconciles the ready schema-16 runtime, unchanged
+  recurring schedule/config, released leases, healthy SQLite, and clean Git.
+  The explicit three-attempt LinkedIn live ceiling is reached; another provider
+  attempt requires a renewed budget, and conditional 40+40 remains gated.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,
@@ -1284,7 +1285,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0057-2026-08-29-semantic-sidecar-empty-media-repair.md`
-  version 7/C07 is the active source-repair, installed-runtime, 20+20, and
+  version 8/C08 is the active source-repair, installed-runtime, 20+20, and
   conditional 40+40 canary authority.
 
 Closed Plan:
