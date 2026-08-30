@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 9
+Plan version: 10
 Date: 2026-08-29
 
 ## Objective
@@ -686,3 +686,77 @@ Next action or stop reason:
 - create an owner-private, schedule-disabled 20+20 config, preflight and enqueue
   exactly once through the installed service, reconcile its terminal receipt,
   and admit 40+40 only if criterion 7 passes.
+
+### Checkpoint P0057-C10 | 2026-08-29
+
+Plan version: 10
+
+State transition:
+
+- `renewed_canary_active -> renewed_20_gate_upstream_contention`.
+
+Progress classification:
+
+- `no_progress` on criterion 7; the canary terminalized before either scraper
+  observed a post, while its cross-service receipts precisely localize the
+  failure to Agent Browser control-plane locking and queued-job lifecycle.
+
+Live receipt:
+
+- schedule-disabled tick `tick-337817dd01760a3f43b0d4a8c125eb8e`
+  terminalized `complete_degraded` in 28 seconds with zero accepted, attempted,
+  or observed items in both lanes, two provider attempts, two requests, zero
+  cost/model use, and snapshot
+  `tick-snapshot-a3176be90e12da2db5849c02b7170163`;
+- X consumed 22 seconds and one request. Agent Browser job
+  `mcp-service-request-tab_new-d2c3e2b1-2379-4552-970c-3ac524200976`
+  succeeded, as did tab readiness and evaluation, but navigation job
+  `mcp-service-request-navigate-ceae199d-2623-43a5-b296-6fed849b818b`
+  failed with `service_state_lock_timeout: process mutation lock`. The exact
+  service tab was then released successfully;
+- LinkedIn consumed four seconds and one request. Agent Browser accepted
+  `mcp-service-request-tab_new-d6bd071d-e270-432a-8405-da397b9130e2`
+  but retained it as `queued` without a start or completion while the control
+  plane reported `Busy`; Last30days correctly failed before observation;
+- contemporaneous Agent Browser history contains repeated unlabeled launch and
+  dashboard-resource jobs, including independent state-lock failures. The
+  retained `last30days-facebook` browser remained viable, ready, CDP-backed,
+  and bound to `session:last30days-social-replacement-20260829`. This is not
+  logout, authentication, content parsing, quality filtering, or sidecar
+  evidence.
+
+Acceptance and gate state:
+
+- criterion 7 fails because neither lane reached 20; criterion 8's precondition
+  is false, so no 40+40 canary was preflighted or enqueued;
+- the renewed 20+20 attempt is consumed. Its conditional 40+40 authority cannot
+  be repurposed into another 20+20 attempt;
+- another live attempt requires both upstream reconciliation of the exact
+  process-lock/queued-job evidence and a new bounded attempt authorization.
+  Agent Browser repair or cancellation is outside this repo's mutation scope.
+
+Invariant reconciliation:
+
+- Last30days active tick/provider attempts and open canary leases are zero;
+  SQLite quick-check is `ok`;
+- `daily-default` remains enabled and ready for `2026-08-31T00:00:00Z`, and the
+  recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+Authority classification:
+
+- `human_gate` for another Last30days live provider attempt because the renewed
+  20-item attempt is terminal and the authorized 40-item attempt remains
+  conditional on a gate that did not pass;
+- `scope_expansion` for Agent Browser mutation, including cancel, unlock,
+  reconcile, replacement, cleanup, or repair.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- preserve the terminal receipt and exact upstream job IDs. The Agent Browser
+  owner should reconcile the process lock and the retained queued LinkedIn job;
+  after that, a new explicit 20+20 attempt budget is required for live proof.

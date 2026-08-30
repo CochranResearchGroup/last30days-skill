@@ -21937,3 +21937,71 @@ Next Bounded Action:
 
 - commit and push this authority checkpoint, then preflight and enqueue the
   schedule-disabled 20+20 canary exactly once through the installed service.
+
+## Turn 354 | 2026-08-29
+
+Focus: reconcile the renewed 20+20 terminal receipt and enforce the conditional
+40-item gate.
+
+Authority Consulted:
+
+- Plan 0057/C09-C10; Roadmap P08; the operator's exact renewed attempt budget;
+  Agent Browser service guidance for read-only failure classification only.
+
+Decisions And Changes:
+
+- preflight admitted exactly two schedule-disabled lanes, one attempt each,
+  20-item ceilings, aggregate 660-second wall budget, zero cost/model use, and
+  tick `tick-337817dd01760a3f43b0d4a8c125eb8e`;
+- enqueued that tick exactly once. It terminalized `complete_degraded` with
+  zero observed/attempted/accepted items in both lanes;
+- denied the conditional 40+40 canary because the 20-item gate did not pass;
+- used Agent Browser service surfaces only for read-only job/health evidence;
+  performed no cancel, unlock, reconcile, replacement, cleanup, profile, tab,
+  or browser mutation.
+
+Validation Evidence:
+
+- X tab acquisition, readiness, and evaluation succeeded; its navigation job
+  `mcp-service-request-navigate-ceae199d-2623-43a5-b296-6fed849b818b`
+  failed with `service_state_lock_timeout: process mutation lock`, after which
+  exact tab release succeeded;
+- LinkedIn job
+  `mcp-service-request-tab_new-d6bd071d-e270-432a-8405-da397b9130e2`
+  remains queued without start/completion while Agent Browser reports `Busy`;
+- the retained social browser remains viable, ready, and CDP-backed. Concurrent
+  unlabeled launch/resource activity and additional lock failures establish
+  control-plane contention, not authentication or scraper-quality failure;
+- Last30days has zero active attempts and zero open canary leases, SQLite is
+  `ok`, `daily-default` is unchanged and ready for Aug 31 UTC, and recurring
+  config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+State Movement:
+
+- Plan 0057 advances to version 10/C10
+  `renewed_20_gate_upstream_contention`; P08 remains OPEN.
+
+Progress Classification:
+
+- `no_progress` on accepted feed yield; `blocker_reduction` on diagnosis.
+
+Authority Classification:
+
+- `human_gate` for another live 20+20 attempt; `scope_expansion` for any Agent
+  Browser mutation. The conditional 40+40 authority remains untriggered.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred because the goal remains open and the upstream blocker is not yet
+  terminally reconciled.
+
+Next Bounded Action:
+
+- commit and push this receipt checkpoint, remove the owner-private temporary
+  canary config, and hand the exact Agent Browser job IDs to its owner. Retry
+  only after upstream reconciliation and renewed explicit attempt authority.

@@ -1094,6 +1094,11 @@ Current State:
   one schedule-disabled 20+20 canary on installed service 0.3.81, followed by
   exactly one 40+40 canary only if both 20-item lanes pass. Recurring settings,
   Reddit/Facebook state, and Agent Browser remain outside the mutation scope.
+- Plan 0057 version 10/C10 records that the renewed 20+20 canary failed before
+  observation: X navigation hit Agent Browser's process mutation lock and the
+  LinkedIn `tab_new` job remains queued while that control plane reports busy.
+  The retained browser is still viable/ready. The 40+40 precondition is false;
+  no 40-item tick was created and Agent Browser mutation remains out of scope.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,
@@ -1289,7 +1294,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0057-2026-08-29-semantic-sidecar-empty-media-repair.md`
-  version 9/C09 is the active source-repair, installed-runtime, 20+20, and
+  version 10/C10 is the active source-repair, installed-runtime, 20+20, and
   conditional 40+40 canary authority.
 
 Closed Plan:
@@ -1375,8 +1380,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- run exactly one owner-private, schedule-disabled 20+20 canary on installed
-  service 0.3.81; run exactly one 40+40 canary only if both lanes accept 20.
+- preserve the terminal Last30days receipt while the Agent Browser owner
+  reconciles the exact process-lock and retained queued-job evidence; another
+  live 20+20 attempt requires a new bounded authorization after that repair.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 
