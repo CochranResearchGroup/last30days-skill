@@ -1372,7 +1372,7 @@ class CliAgentBrowserClient:
                 "agent_browser_error", "agent-browser service request returned no result"
             )
         tool_result = response.get("result")
-        if not isinstance(tool_result, dict) or tool_result.get("isError") is True:
+        if not isinstance(tool_result, dict):
             raise AgentBrowserRuntimeFailure(
                 "agent_browser_error", "agent-browser service request failed"
             )
@@ -1391,10 +1391,19 @@ class CliAgentBrowserClient:
             raise AgentBrowserRuntimeFailure(
                 "agent_browser_error", "agent-browser service request returned malformed JSON"
             ) from exc
-        if not isinstance(payload, dict) or payload.get("success") is False:
+        if not isinstance(payload, dict):
+            raise AgentBrowserRuntimeFailure(
+                "agent_browser_error", "agent-browser service request returned malformed JSON"
+            )
+        if tool_result.get("isError") is True or payload.get("success") is False:
+            message = _redact(
+                str(payload.get("error") or "agent-browser service request failed")
+            )
+            reason_match = re.match(r"^([a-z][a-z0-9_]{0,63})(?::|\b)", message)
             raise AgentBrowserRuntimeFailure(
                 "agent_browser_error",
-                _redact(str(payload.get("error") or "agent-browser service request failed")),
+                message,
+                reason_code=reason_match.group(1) if reason_match else "",
             )
         data = payload.get("data", payload)
         return data if isinstance(data, dict) else {"value": data}

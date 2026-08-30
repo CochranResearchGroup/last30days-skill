@@ -1,3 +1,4 @@
+import json
 import subprocess
 import unittest
 from unittest import mock
@@ -169,6 +170,60 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             ],
             client.command_timings,
         )
+
+    def test_broker_error_preserves_structured_lifecycle_reason(self):
+        client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
+        error = (
+            "runtime_owner_generation_stale: daemon is no longer the "
+            "effect-capable browser owner"
+        )
+        stdout = "\n".join(
+            [
+                json.dumps({"jsonrpc": "2.0", "id": 1, "result": {}}),
+                json.dumps(
+                    {
+                        "jsonrpc": "2.0",
+                        "id": 2,
+                        "result": {
+                            "isError": True,
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "text": json.dumps(
+                                        {"success": False, "error": error}
+                                    ),
+                                }
+                            ],
+                        },
+                    }
+                ),
+            ]
+        )
+
+        with (
+            mock.patch.object(
+                agent_browser_runtime.subprocess,
+                "run",
+                return_value=subprocess.CompletedProcess(
+                    args=["agent-browser", "mcp", "serve"],
+                    returncode=0,
+                    stdout=stdout,
+                    stderr="",
+                ),
+            ),
+            self.assertRaises(
+                agent_browser_runtime.AgentBrowserRuntimeFailure
+            ) as raised,
+        ):
+            client._invoke_service_request(
+                {"action": "tab_new", "serviceName": "last30days"}, timeout=5
+            )
+
+        self.assertEqual("agent_browser_error", raised.exception.error_type)
+        self.assertEqual(
+            "runtime_owner_generation_stale", raised.exception.reason_code
+        )
+        self.assertEqual(error, str(raised.exception))
 
     def test_x_workspace_acquisition_preserves_broker_timeout_reason(self):
         client = x_browser.CliAgentBrowserClient(timeout=5)

@@ -1119,6 +1119,17 @@ Current State:
   with reachable CDP. No X/LinkedIn navigation or Last30days canary ran, so a
   renewed 20+20 attempt still requires explicit authority and 40+40 remains
   gated.
+- Plan 0057 version 14/C14 records the renewed schedule-disabled 20+20 canary.
+  Tick `tick-cbc7830ca7d65d24a8ccacd3966c9291` failed before observation with
+  zero X and zero LinkedIn items because both Agent Browser `tab_new` jobs
+  rejected owner generation 57 as `runtime_owner_generation_stale`. Fresh
+  no-launch plans now explicitly block on the still-transferring lifecycle
+  owner; this is not authentication, infinite-scroll, extraction, or filtering
+  evidence. A provider-free Last30days regression now preserves that structured
+  failure reason in a version-distinct service 0.3.82 candidate, but that
+  candidate is not installed. P08 remains OPEN, 40+40 remains gated, and
+  another live retry waits on Agent Browser owner reconciliation plus renewed
+  attempt authority.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,

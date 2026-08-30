@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 13
+Plan version: 14
 Date: 2026-08-29
 
 ## Objective
@@ -980,3 +980,103 @@ Next action or stop reason:
   20+20 canary, preflight Last30days against the now-live owner without
   replacing the profile, creating another browser lane, or trusting the stale
   access-plan session identity.
+
+### Checkpoint P0057-C14 | 2026-08-30
+
+Plan version: 14
+
+State transition:
+
+- `direct_profile_owner_ready -> renewed_canary_terminal_lifecycle_transfer_blocked`.
+
+Progress classification:
+
+- `diagnostic_outcome`; the authorized 20+20 attempt failed before observation,
+  localized the control-plane contradiction, and produced a provider-free
+  regression repair for Last30days failure attribution.
+
+Authority and bounds:
+
+- the operator's request to return to scraping authorized one schedule-disabled
+  20+20 X/LinkedIn canary using the existing authenticated profile;
+- Reddit and Facebook remained disabled, the recurring configuration and timer
+  were not changed, no 40+40 canary was admitted, and no Agent Browser state was
+  repaired, replaced, reconciled, or bypassed.
+
+Terminal canary receipt:
+
+- preflight admitted exact interval `2026-08-29T19:33:15Z` through
+  `2026-08-30T19:33:15Z`, config revision
+  `plan-0057-x-linkedin-20-direct-owner-canary-v6`, and config digest
+  `sha256:bb739710bbe6682d5999571ebeda8d1a5f23f635cddc7a8d6c9acdd3d7c84700`;
+- manual tick `tick-cbc7830ca7d65d24a8ccacd3966c9291` terminalized
+  `complete_degraded` in two seconds after exactly one X attempt and one
+  LinkedIn attempt;
+- both lanes recorded zero observed, attempted, accepted, and rejected items,
+  one network request, one wall second, and collection failure. No item,
+  evidence, media, OCR, semantic-sidecar, incident, notification, or cost/model
+  receipt was created;
+- Agent Browser jobs
+  `mcp-service-request-tab_new-9403df27-215b-4cfd-8636-ef281c2ee26b` and
+  `mcp-service-request-tab_new-27deb1c0-94fc-42dc-8ef3-d7343fb4109d`
+  both rejected `tab_new` with
+  `runtime_owner_generation_stale: daemon is no longer the effect-capable browser owner`.
+  The failure is before authentication, navigation, scrolling, extraction,
+  canonicalization, ad/spam rejection, or quality filtering.
+
+Current Agent Browser boundary:
+
+- fresh no-launch access plans still select authenticated profile
+  `last30days-facebook`, but now truthfully report `serviceRequest.available=false`,
+  `blockedByLifecycleOwner=true`, and
+  `recommendedAction=reconcile_lifecycle_owner_for_tab_acquisition`;
+- lifecycle owner generation 57 for logical browser
+  `session:last30days-social-direct-20260830-c13` remains `transferring`, with
+  cleanup obligation `transferring` and required action
+  `inspect_lifecycle_owner`. Another scrape retry would therefore be a known
+  pre-observation failure, not a feed-retrieval test.
+
+Last30days observability repair:
+
+- `_invoke_service_request` now parses structured MCP error content even when
+  the tool envelope carries `isError=true`, preserves the redacted provider
+  message, and promotes a valid leading safe code such as
+  `runtime_owner_generation_stale` into `reason_code`;
+- the new regression and the X/LinkedIn adapter suites pass: 90 tests passed
+  and two were intentionally skipped. This version-distinct service 0.3.82
+  candidate is not installed and does not claim to repair Agent Browser
+  lifecycle ownership;
+- the refreshed immutable runtime manifest and service 0.3.82 artifact build
+  successfully; artifact SHA-256 is
+  `dcf7d23ad2cf8f6e1fffc484b11a67a2bc13ac80861831d7e24e59faec9fa5e5`.
+  Packaging/lifecycle coverage passes 20 tests, and the comprehensive suite
+  passes 2,714 tests with seven skips and six subtests.
+
+Acceptance and invariant reconciliation:
+
+- criterion 7 remains failed before observation and criterion 8 remains closed;
+- both resource leases are released, active tick/provider attempts are zero,
+  SQLite quick-check is `ok`, and installed service 0.3.81 remains ready on
+  schema 16;
+- `daily-default` remains enabled/ready for `2026-08-31T00:00:00Z`, and recurring
+  config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+Authority classification:
+
+- `inherited_authority` for the bounded Last30days attribution repair and its
+  validation; `external_owner_gate` for Agent Browser lifecycle reconciliation;
+  `human_gate` for another live Last30days provider attempt after this consumed
+  retry.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- Agent Browser's owner must finish, abort, or reconcile the generation-57
+  lifecycle transfer until its access plan exposes one effect-capable reusable
+  route. Then install the separately validated Last30days attribution repair
+  through a version-distinct service artifact and obtain authority for one new
+  20+20 retry. Do not bypass the broker or create a duplicate profile lane.

@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Structured Agent Browser service failures.** Service 0.3.82 parses the
+  structured MCP payload even when `service_request` returns an error envelope,
+  preserving its redacted message and bounded leading reason code. Lifecycle
+  failures such as `runtime_owner_generation_stale` now survive Last30days
+  attribution instead of collapsing to a generic broker error.
+
 - **Virtualized LinkedIn feed settling.** Service 0.3.81 tolerates four
   consecutive feed snapshots without a new structural observation before
   declaring stagnation. This preserves a finite early stop while allowing a

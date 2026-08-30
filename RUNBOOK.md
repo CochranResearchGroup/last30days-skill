@@ -22193,3 +22193,80 @@ Next Bounded Action:
 
 - keep the fresh profile owner intact and wait for explicit authority before
   preflighting or enqueueing another 20+20 X/LinkedIn canary.
+
+## Turn 358 | 2026-08-30
+
+Focus: resume bounded X/LinkedIn scraping, reconcile the terminal 20+20 receipt,
+and preserve the exact Agent Browser lifecycle failure in Last30days.
+
+Authority Consulted:
+
+- operator request to return to scraping; Plan 0057/C13-C14; Roadmap P08;
+  Last30days, Agent Browser, repo validation, and documentation policies.
+
+Decisions And Changes:
+
+- preflighted and enqueued exactly one schedule-disabled 20+20 X/LinkedIn tick
+  against existing authenticated profile `last30days-facebook`;
+- stopped after that terminal attempt; did not retry, run 40+40, enable Reddit
+  or Facebook, change the recurring timer/configuration, or mutate Agent Browser;
+- changed `_invoke_service_request` so an MCP `isError=true` envelope no longer
+  discards its structured safe error and reason code, added a regression for
+  `runtime_owner_generation_stale`, and cut version-distinct service candidate
+  0.3.82 without installing it.
+
+Validation Evidence:
+
+- tick `tick-cbc7830ca7d65d24a8ccacd3966c9291` terminalized
+  `complete_degraded` with zero observed/attempted/accepted/rejected X items and
+  zero LinkedIn items, exactly two provider attempts, two requests, two wall
+  seconds, zero artifacts/evidence/incidents/notifications, and released leases;
+- retained Agent Browser jobs identify the same root cause for both lanes:
+  `runtime_owner_generation_stale: daemon is no longer the effect-capable browser owner`;
+- current access plans select the correct authenticated profile but report the
+  generation-57 owner and cleanup obligation still `transferring`, service
+  requests unavailable, and lifecycle-owner reconciliation required;
+- `uv run pytest tests/test_agent_browser_runtime.py` passes 7 tests; X and
+  LinkedIn suites pass 83 tests with two skips; SQLite quick-check is `ok`, no
+  tick/provider attempt or resource lease remains active, and installed service
+  0.3.81 is ready on schema 16;
+- refreshed service 0.3.82 runtime packaging builds at SHA-256
+  `dcf7d23ad2cf8f6e1fffc484b11a67a2bc13ac80861831d7e24e59faec9fa5e5`;
+  packaging/release coverage passes 20 tests and the comprehensive suite passes
+  2,714 tests with seven skips and six subtests;
+- `daily-default` remains ready for `2026-08-31T00:00:00Z`; recurring config
+  SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+State Movement:
+
+- Plan 0057 advances to version 14/C14
+  `renewed_canary_terminal_lifecycle_transfer_blocked`; P08 remains OPEN.
+
+Progress Classification:
+
+- `diagnostic_outcome`; the scrape did not reach either feed, while the exact
+  acquisition defect and Last30days attribution gap are now bounded and tested.
+
+Authority Classification:
+
+- `inherited_authority` for the Last30days source repair; `external_owner_gate`
+  for Agent Browser lifecycle reconciliation; `human_gate` for another live
+  provider attempt.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- not written; the terminal result and source-backed decision are recorded in
+  Plan 0057, Roadmap P08, and this runbook turn without expanding external
+  memory state.
+
+Next Bounded Action:
+
+- hand the generation-57 lifecycle transfer to Agent Browser's owner for
+  reconciliation. After its no-launch plan exposes one effect-capable route,
+  version and install the tested Last30days attribution repair and obtain
+  authority for one fresh 20+20 canary.
