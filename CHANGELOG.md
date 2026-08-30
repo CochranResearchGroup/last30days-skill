@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Virtualized LinkedIn feed settling.** Service 0.3.81 tolerates four
+  consecutive feed snapshots without a new structural observation before
+  declaring stagnation. This preserves a finite early stop while allowing a
+  temporarily unchanged virtualized viewport to settle and resume yielding
+  canonical posts.
+
 - **Adaptive LinkedIn feed retrieval evidence.** Service 0.3.80 scales the
   finite home-feed scroll budget with explicit 20- and 40-item ceilings while
   retaining the existing action-rate limiter. Cards without a recovered

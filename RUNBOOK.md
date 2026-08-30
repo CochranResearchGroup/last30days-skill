@@ -21758,3 +21758,72 @@ Next Bounded Action:
 
 - push the exact service 0.3.80 candidate, transactionally install it, then run
   one fresh 20+20 canary with wall budgets that preserve the action limiter.
+
+## Turn 351 | 2026-08-29
+
+Focus: install the adaptive LinkedIn successor, run its bounded 20+20 gate,
+adjudicate missing-permalink evidence, and repair the resulting false
+stagnation stop without exceeding the operator's live-attempt ceiling.
+
+Authority Consulted:
+
+- persistent operator goal and explicit three-attempt per-service budget;
+  Plan 0057/C06-C07; Roadmap P08; repo goal, TDD, CodeGraph, release/install,
+  temporary-canary, retry, validation, and closeout authorities.
+
+Decisions And Changes:
+
+- pushed commit `ad7e9cfc1179eaf0f913076e06f95520ee7bd665`, built artifact
+  SHA-256 `e72cb3cfca3aa29cee0390555c5bea8eb274157db604b06b873eba71b639b8dc`,
+  and transactionally installed service 0.3.80 ready on schema 16;
+- admitted exactly one schedule-disabled, zero-cost/model X plus LinkedIn
+  20-item canary with provider wall budgets sized for the action limiter;
+- tick `tick-eb2930c762ca189c950a68235619356e` completed. X reached 20 from
+  37 observed in 16 seconds; LinkedIn reached five from 85 in 44 seconds. All
+  collection and derivative stages succeeded;
+- adjudicated all 15 LinkedIn missing-permalink observations as broad
+  list-item chrome: none had post actions or timestamps and none used a
+  post-specific root. No acceptance or canonicalization loosening is warranted;
+- isolated the real stop to the two-snapshot stagnation guard after only two
+  scroll cycles, reproduced that virtualized-feed sequence red, and validated
+  service 0.3.81 with a finite four-snapshot tolerance.
+
+Validation Evidence:
+
+- the false-stagnation regression fails at five under the old behavior and
+  passes at 20 after repair; a true-stagnation regression stops after four;
+- full LinkedIn, focused affected, release/runtime/lifecycle, comprehensive
+  Python, MCP Go, compilation, plan-authority, and diff checks pass;
+- both leases are released, active attempts are zero, SQLite is `ok`, no
+  incident/notification exists, recurring config hash remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
+  and `daily-default` remains ready for Aug 31 UTC.
+
+State Movement:
+
+- Plan 0057 advances to version 7/C07 `live_false_stagnation_repaired`; P08
+  remains OPEN, criterion 7 remains failed, and criterion 8 remains gated.
+
+Progress Classification:
+
+- `blocker_reduction`; missing-permalink uncertainty is resolved and the next
+  retrieval blocker has a validated changed-input repair.
+
+Authority Classification:
+
+- `inherited_authority` covers source integration and exact installation;
+  `human_gate` applies to any further LinkedIn provider attempt because this
+  tick consumed Plan 0057's third live LinkedIn attempt.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending terminal goal outcome; no intermediate success write.
+
+Next Bounded Action:
+
+- push and install exact service 0.3.81, reconcile runtime invariants, and stop
+  before another LinkedIn canary pending an explicit renewed attempt budget.

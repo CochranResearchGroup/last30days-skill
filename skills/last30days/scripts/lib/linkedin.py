@@ -37,7 +37,7 @@ ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 5
 MIN_EXPLICIT_FEED_SCROLLS = 8
 MAX_EXPLICIT_FEED_SCROLLS = 32
 FEED_SCROLLS_PER_FIVE_ITEMS = 4
-MAX_STAGNANT_SCROLLS = 2
+MAX_FEED_STAGNANT_SCROLLS = 4
 MIN_FEED_SCROLL_PIXELS = 1_400
 FEED_SCROLL_PIXELS_PER_REQUIRED_ITEM = 800
 MAX_FEED_SCROLL_PIXELS = 3_200
@@ -805,7 +805,7 @@ class LinkedInScraper:
                 stagnant_scrolls = 0 if new_observations else stagnant_scrolls + 1
                 diagnostics.unique_observation_count = len(seen_observations)
                 diagnostics.stagnant_scrolls = stagnant_scrolls
-                if stagnant_scrolls >= MAX_STAGNANT_SCROLLS:
+                if stagnant_scrolls >= MAX_FEED_STAGNANT_SCROLLS:
                     break
             if not raw_candidates:
                 raise LinkedInScraperFailure(

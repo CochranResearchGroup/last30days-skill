@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 6
+Plan version: 7
 Date: 2026-08-29
 
 ## Objective
@@ -476,3 +476,97 @@ Next action or stop reason:
   artifact, re-prove readiness and invariant preflight, then run the one
   successor 20+20 canary with provider wall budgets sized for the preserved
   action limiter.
+
+### Checkpoint P0057-C07 | 2026-08-29
+
+Plan version: 7
+
+State transition:
+
+- `successor_runtime_candidate_validated -> live_false_stagnation_repaired`.
+
+Progress classification:
+
+- `blocker_reduction`; the successor live receipt adjudicates the
+  missing-permalink observations and isolates the remaining yield stop to a
+  reproducible virtualized-feed stagnation assumption.
+
+Installed and live evidence:
+
+- source commit `ad7e9cfc1179eaf0f913076e06f95520ee7bd665` was pushed,
+  artifact SHA-256
+  `e72cb3cfca3aa29cee0390555c5bea8eb274157db604b06b873eba71b639b8dc`
+  was transactionally installed as service 0.3.80, and readiness reported
+  schema 16 with runtime-manifest SHA-256
+  `13b1b73be6acef9b8f6ffe36f7c1bf4aba26d5878ebe493df87a31a079477607`;
+- preflight admitted exactly two schedule-disabled, zero-cost/model lanes with
+  20-item ceilings and aggregate wall budget 660 seconds;
+- tick `tick-eb2930c762ca189c950a68235619356e` terminalized `complete`.
+  X observed and attempted 37 cards, accepted 20 unique canonical posts,
+  rejected 17, used three requests and 16 seconds, and completed collection,
+  media, OCR, and semantic-sidecar stages successfully;
+- LinkedIn observed and attempted 85 cards, accepted five, rejected 80, used
+  three requests and 44 seconds, and completed every lane stage successfully.
+  Rejections include 33 outside the interval, 15 duplicates, 17 sponsored/ad
+  observations, and 15 missing permalinks; counts overlap;
+- all 15 missing-permalink observations came from the broad
+  `listitem_fallback` root. None had post actions or timestamps; six had actor
+  structure, nine had some link and media, and three had an external link.
+  This is deterministic recommendation/feed chrome evidence, not evidence of
+  legitimate post links that the canonicalizer discarded;
+- three provider network requests correspond to initial extraction plus two
+  scroll/extraction cycles. The fixed two-snapshot stagnation guard stopped the
+  feed long before its new 16-scroll ceiling despite a healthy authenticated
+  lane.
+
+Changed-input repair:
+
+- a public feed regression reproduces two unchanged virtualized snapshots
+  followed by a third productive snapshot. It failed red at five accepted
+  posts under the old stop and passes with 20 after LinkedIn feed stagnation
+  tolerance increases from two to four consecutive unchanged snapshots;
+- a companion regression proves a genuinely unchanged feed still stops
+  finitely after four snapshots. The 16/32 total scroll ceilings, action-rate
+  limiter, date gate, sponsored/ad filter, canonicalization, deduplication,
+  and rate-limit/authentication hard stops remain unchanged;
+- focused suites and the comprehensive Python suite pass; MCP Go packages,
+  compilation, release/runtime packaging, and diff checks pass for service
+  0.3.81. Ruff remains unavailable and is not claimed.
+
+Invariant reconciliation:
+
+- both tick leases are released, active tick/provider attempts are zero,
+  SQLite quick-check is `ok`, no incident or notification was created, and the
+  promoted snapshot is `tick-snapshot-29f5ee13c939f81f260898c1d417c186`;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` remains enabled and ready for `2026-08-31T00:00:00Z`.
+
+Acceptance and attempt disposition:
+
+- criterion 7 remains failed at LinkedIn 5/20; criterion 8 remains gated and
+  no 40+40 canary was created;
+- Plan 0057 has now consumed three LinkedIn live provider attempts: the initial
+  combined transient failure, the successful 11-item diagnostic successor,
+  and this successful five-item adaptive successor. The operator's explicit
+  three-attempt per-service ceiling is therefore reached;
+- service 0.3.81 can be pushed and installed under standing repair authority,
+  but any further LinkedIn provider attempt requires an explicit new attempt
+  budget. This is an action-specific gate, not an Agent Browser or
+  authentication blocker.
+
+Authority classification:
+
+- `inherited_authority` for source integration and installation;
+- `human_gate` for another LinkedIn live provider attempt because it would
+  exceed the explicit cumulative retry ceiling of three.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- push, build, and install exact service 0.3.81, reconcile installed state, and
+  stop before another live LinkedIn attempt pending a renewed bounded attempt
+  budget. The 40-item gate remains closed.

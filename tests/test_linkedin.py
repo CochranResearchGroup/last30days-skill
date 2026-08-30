@@ -938,7 +938,7 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
             [item["url"] for item in result["items"][0]["metadata"]["media"]],
         )
 
-    def test_home_feed_stops_after_two_snapshots_without_new_posts(self):
+    def test_home_feed_stops_after_four_snapshots_without_new_posts(self):
         page = dict(FakeAgentBrowserClient().page)
         page.update({
             "url": "https://www.linkedin.com/feed/",
@@ -951,7 +951,7 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
         repeated = [post_candidate()]
         client = FakeAgentBrowserClient(
             page=page,
-            candidate_batches=[repeated, repeated, repeated],
+            candidate_batches=[repeated, repeated, repeated, repeated, repeated],
         )
 
         result = make_scraper(client, limit=20, scrolls=8).feed(
@@ -959,10 +959,50 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
         )
 
         self.assertEqual(1, len(result["items"]))
-        self.assertEqual(2, len([
+        self.assertEqual(4, len([
             action for action in client.actions if action.operation == "scroll"
         ]))
-        self.assertEqual(2, result["diagnostics"]["stagnant_scrolls"])
+        self.assertEqual(4, result["diagnostics"]["stagnant_scrolls"])
+
+    def test_home_feed_recovers_after_two_stagnant_virtualized_snapshots(self):
+        def candidates(start, count):
+            return [
+                post_candidate(
+                    text=f"Recovered feed result {index} with canonical identity.",
+                    url=(
+                        "https://www.linkedin.com/feed/update/urn:li:activity:"
+                        f"735138000000000{index:04d}/"
+                    ),
+                    urn=f"urn:li:activity:735138000000000{index:04d}",
+                )
+                for index in range(start, start + count)
+            ]
+
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+        initial = candidates(0, 5)
+        recovered = candidates(5, 15)
+        client = FakeAgentBrowserClient(
+            page=page,
+            candidate_batches=[initial, initial, initial, recovered],
+        )
+
+        result = make_scraper(client, limit=20, scrolls=16).feed(
+            "2026-06-15", "2026-07-15"
+        )
+
+        self.assertEqual(20, len(result["items"]))
+        self.assertEqual(3, len([
+            action for action in client.actions if action.operation == "scroll"
+        ]))
+        self.assertEqual(0, result["diagnostics"]["stagnant_scrolls"])
 
     def test_recovers_permalink_from_activity_urn(self):
         self.assertEqual(
