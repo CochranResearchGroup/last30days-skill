@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 14
+Plan version: 15
 Date: 2026-08-29
 
 ## Objective
@@ -1080,3 +1080,67 @@ Next action or stop reason:
   route. Then install the separately validated Last30days attribution repair
   through a version-distinct service artifact and obtain authority for one new
   20+20 retry. Do not bypass the broker or create a duplicate profile lane.
+
+### Checkpoint P0057-C15 | 2026-08-30
+
+Plan version: 15
+
+State transition:
+
+- `renewed_canary_terminal_lifecycle_transfer_blocked -> retry_preflight_runtime_admission_draining`.
+
+Progress classification:
+
+- `blocker_revalidation`; the operator-reported upgrade has staged a new
+  candidate generation, but its transaction has not committed effect authority
+  or reopened runtime admission.
+
+Authority and bounds:
+
+- the operator explicitly authorized one more 20+20 X/LinkedIn retry after the
+  Agent Browser upgrade;
+- Last30days performed only read-only service discovery and Agent Browser
+  no-launch preflight. No tick, provider attempt, browser request, Last30days
+  installation, 40+40 canary, schedule change, or Agent Browser mutation was
+  performed. The authorized 20+20 attempt remains unconsumed.
+
+Current upgrade and access-plan evidence:
+
+- Agent Browser transaction
+  `upgrade-4bd5a63e-a613-4997-8853-f61b15fc5ef9` is revision 10 at
+  `candidate_ready`, with candidate generation
+  `0.28.0-dae585f23da3-1f12fdb1b046`, old and still-selected generation
+  `0.28.0-ceb8f8a926e6-178c836a535e`, two outstanding owner obligations, and
+  `nextSafeAction=resume`;
+- six status observations across 25 seconds remained unchanged at
+  `classification=active_convergence` and overall `ready=false`;
+- both X and LinkedIn access-plan reads fail before profile selection with
+  `runtime_admission_draining: transaction 'upgrade-4bd5a63e-a613-4997-8853-f61b15fc5ef9' is transferring runtime ownership at revision 10`;
+- this is an Agent Browser upgrade-transaction gate before browser acquisition,
+  not authentication, navigation, infinite scroll, extraction, acceptance, or
+  deterministic ad/spam filtering evidence.
+
+Last30days state:
+
+- MCP 4.0.3 remains compatible with installed service 0.3.81, which is ready on
+  schema 16; the validated 0.3.82 attribution candidate remains uninstalled;
+- criterion 7 remains untested by this packet and criterion 8 remains closed.
+
+Authority classification:
+
+- `inherited_authority` remains available for exactly one schedule-disabled
+  20+20 retry after admission reopens; `external_owner_gate` applies to resuming
+  or rolling back the Agent Browser transaction.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- Agent Browser's upgrade owner must resume exact transaction
+  `upgrade-4bd5a63e-a613-4997-8853-f61b15fc5ef9` from revision 10 and complete
+  or safely roll back the outstanding owner obligations. Once workstation
+  status is terminal-ready and both no-launch access plans return executable
+  service requests, run the already-authorized 20+20 retry without requesting a
+  new attempt budget.

@@ -1130,6 +1130,16 @@ Current State:
   candidate is not installed. P08 remains OPEN, 40+40 remains gated, and
   another live retry waits on Agent Browser owner reconciliation plus renewed
   attempt authority.
+- Plan 0057 version 15/C15 records the next retry's no-effect preflight. Agent
+  Browser transaction `upgrade-4bd5a63e-a613-4997-8853-f61b15fc5ef9` has
+  reached revision 10 `candidate_ready`, but old generation
+  `0.28.0-ceb8f8a926e6-178c836a535e` remains selected, two owner obligations
+  remain, `nextSafeAction=resume`, and runtime admission is still drained. Both
+  X and LinkedIn access plans therefore fail before profile selection with
+  `runtime_admission_draining`. No provider attempt was consumed; the exact
+  20+20 authority remains available once the Agent Browser upgrade owner
+  terminalizes the transaction and access plans become executable. P08 remains
+  OPEN and 40+40 remains gated.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,

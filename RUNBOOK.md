@@ -22270,3 +22270,68 @@ Next Bounded Action:
   reconciliation. After its no-launch plan exposes one effect-capable route,
   version and install the tested Last30days attribution repair and obtain
   authority for one fresh 20+20 canary.
+
+## Turn 359 | 2026-08-30
+
+Focus: retry the bounded 20+20 X/LinkedIn canary after the operator-reported
+Agent Browser upgrade.
+
+Authority Consulted:
+
+- operator's explicit retry request; Plan 0057/C14-C15; Roadmap P08;
+  Last30days administration, Agent Browser service ownership, and repo planning
+  and closeout policies.
+
+Decisions And Changes:
+
+- called Last30days `service_info` first and confirmed MCP/service compatibility;
+- read both Agent Browser access plans before any browser or tick request and
+  withheld the canary because runtime admission remains drained;
+- inspected only the exact active upgrade transaction and did not resume,
+  rollback, close, reconcile, launch, or otherwise mutate Agent Browser.
+
+Validation Evidence:
+
+- installed Last30days service 0.3.81 is ready on schema 16 and compatible with
+  MCP 4.0.3;
+- exact Agent Browser transaction
+  `upgrade-4bd5a63e-a613-4997-8853-f61b15fc5ef9` is revision 10
+  `candidate_ready`, with candidate generation
+  `0.28.0-dae585f23da3-1f12fdb1b046`, old selected generation
+  `0.28.0-ceb8f8a926e6-178c836a535e`, two outstanding owner obligations,
+  `nextSafeAction=resume`, and rollback readiness retained;
+- six observations over 25 seconds remained `active_convergence` and
+  `ready=false`; both X and LinkedIn access plans return the same
+  `runtime_admission_draining` error before profile selection;
+- no Last30days tick ID, execution attempt, provider attempt, or browser job was
+  created in this packet.
+
+State Movement:
+
+- Plan 0057 advances to version 15/C15
+  `retry_preflight_runtime_admission_draining`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_revalidation`; the upgrade candidate exists, but the transaction has
+  not completed its owner transfer or reopened admission.
+
+Authority Classification:
+
+- `inherited_authority` for one still-unconsumed 20+20 retry after readiness;
+  `external_owner_gate` for the Agent Browser transaction's resume or rollback.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- not written; this nonterminal upgrade checkpoint is recorded in Plan 0057,
+  Roadmap P08, and this runbook turn without creating durable semantic memory.
+
+Next Bounded Action:
+
+- Agent Browser's upgrade owner resumes and terminalizes transaction
+  `upgrade-4bd5a63e-a613-4997-8853-f61b15fc5ef9`. Once workstation status and
+  both feed access plans are ready, run the already-authorized 20+20 retry.
