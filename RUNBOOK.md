@@ -21685,3 +21685,76 @@ Next Bounded Action:
 
 - make plan authority and the comprehensive suite green, build and install the
   exact 0.3.78 artifact, then run one bounded 20+20 canary.
+
+## Turn 350 | 2026-08-29
+
+Focus: instrument LinkedIn missing-permalink rejections without private
+content, replace the fixed eight-scroll volume ceiling, and validate the next
+20+20 successor candidate.
+
+Authority Consulted:
+
+- persistent operator goal; Plan 0057/C04-C06; Roadmap P08; repo policy
+  selector, TDD, codebase-design, CodeGraph, planning, goal execution,
+  documentation, testing, release, and runtime-install authorities.
+
+Decisions And Changes:
+
+- reconciled the installed canaries: X accepted 20, while the successful
+  LinkedIn successor observed 246 cards and accepted 11 after 102 old-card, 76
+  duplicate, 48 sponsored/ad, and nine missing-permalink reasons; counts can
+  overlap;
+- added bounded structural evidence for missing-permalink cards: whitelisted
+  root shape plus actor, timestamp, post-action, media, any-link, and
+  external-link presence. Rejected text, raw URLs, DOM, identifiers, tracking
+  values, and inferred quality labels are not persisted;
+- replaced the fixed eight-scroll explicit-feed ceiling with finite adaptive
+  budgets: 16 scrolls for 20 requested items and a maximum 32 for 40, while
+  retaining the existing action-rate limiter, stagnation stop, deterministic
+  sponsored/ad exclusion, date gate, canonicalization, and deduplication;
+- advanced the validated source candidate to service 0.3.80 and refreshed its
+  canonical runtime manifest. No installation or live successor tick has yet
+  occurred in this turn.
+
+Validation Evidence:
+
+- missing-permalink and 20-item budget regressions each failed red before their
+  repair and pass green; a behavior regression reaches item 20 on productive
+  scroll nine, and a 40-item regression proves the finite 32-scroll maximum;
+- executable extractor fixtures caught and then cleared a synthetic-DOM
+  `matches` compatibility error;
+- focused LinkedIn, acquisition-worker, release, runtime-package, and lifecycle
+  suites pass; the comprehensive Python suite exits zero with 2,719 collected
+  tests; all MCP Go packages, Python compilation, plan authority, and diff
+  checks pass. Ruff is unavailable and is not claimed.
+
+State Movement:
+
+- Plan 0057 advances from version 4/C04
+  `live_gate_failed_repair_installed` through version 5/C05 to version 6/C06
+  `successor_runtime_candidate_validated`; P08 remains OPEN.
+
+Progress Classification:
+
+- `outcome_progress`; the changed-input successor removes the demonstrated
+  eight-scroll limit and creates durable evidence to adjudicate the nine
+  unlinked observations after the next live gate.
+
+Authority Classification:
+
+- `inherited_authority`; the same systems, authenticated profile, zero-cost
+  envelope, deterministic filters, and conditional volume gate remain in
+  force.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending terminal outcome; do not write an intermediate success claim.
+
+Next Bounded Action:
+
+- push the exact service 0.3.80 candidate, transactionally install it, then run
+  one fresh 20+20 canary with wall budgets that preserve the action limiter.

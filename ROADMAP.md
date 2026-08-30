@@ -1081,11 +1081,12 @@ pause controls.
 
 Current State:
 
-- Plan 0057 reopens P08 for the bounded semantic-sidecar reliability repair and
-  conditional volume canaries. The source candidate excludes deterministic
-  LinkedIn avatar/logo chrome, records text-free source-grounded analysis as
-  empty rather than failure, and preserves genuine analyzer failure behavior;
-  installation plus 20+20 and conditional 40+40 live proof remain pending.
+- Plan 0057 keeps P08 open after installed service 0.3.79 proved truthful empty
+  sidecars but the bounded LinkedIn successor accepted only 11 of 20 requested
+  posts. Version 6/C06 validates service 0.3.80 with bounded, content-free
+  missing-permalink structural counters and adaptive finite LinkedIn feed
+  budgets of 16 scrolls for 20 items and 32 for 40. Exact installation plus a
+  fresh 20+20 and conditional 40+40 live proof remain pending.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,
@@ -1281,7 +1282,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0057-2026-08-29-semantic-sidecar-empty-media-repair.md`
-  version 2/C02 is the active source-repair, installed-runtime, 20+20, and
+  version 6/C06 is the active source-repair, installed-runtime, 20+20, and
   conditional 40+40 canary authority.
 
 Closed Plan:

@@ -34,6 +34,9 @@ DEFAULT_MAX_ACTIONS_PER_MINUTE = 6
 MAX_EXPLICIT_RESULTS = 100
 MAX_EXPLICIT_SCROLLS = 8
 ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 5
+MIN_EXPLICIT_FEED_SCROLLS = 8
+MAX_EXPLICIT_FEED_SCROLLS = 32
+FEED_SCROLLS_PER_FIVE_ITEMS = 4
 MAX_STAGNANT_SCROLLS = 2
 MIN_FEED_SCROLL_PIXELS = 1_400
 FEED_SCROLL_PIXELS_PER_REQUIRED_ITEM = 800
@@ -297,6 +300,37 @@ EXTRACT_SCRIPT = r"""
       || authorNode?.getAttribute?.('aria-label') || authorNode?.getAttribute?.('title')
       || authorImage?.alt || ""
     ).replace(/\s+(?:’s|'s)\s+profile picture$/i, "");
+    const media = [
+      ...Array.from(node.querySelectorAll(
+        '.update-components-image img, .feed-shared-image img, img[src*="media.licdn.com"]'
+      )).map((image) => ({
+        kind: "image", url: image.currentSrc || image.src || "",
+        preview_url: null, mime_type: null,
+        width: image.naturalWidth || null, height: image.naturalHeight || null,
+        duration_seconds: null, alt_text: image.alt || null
+      })),
+      ...Array.from(node.querySelectorAll("video")).map((video) => ({
+        kind: "video", url: canonicalHref || location.href,
+        preview_url: video.poster || null, mime_type: null,
+        width: video.videoWidth || null, height: video.videoHeight || null,
+        duration_seconds: Number.isFinite(video.duration) ? Math.round(video.duration) : null,
+        alt_text: null
+      }))
+    ].filter((asset) => asset.url);
+    const rootShape = node.matches?.(
+      '[data-view-name="feed-full-update"], [data-urn^="urn:li:activity:"], '
+      + '[data-id^="urn:li:activity:"], .feed-shared-update-v2'
+    ) ? "feed_update" : node.matches?.('li.reusable-search__result-container')
+      ? "search_result" : node.matches?.('[role="listitem"]')
+        ? "listitem_fallback" : "unknown";
+    const hasExternalLink = anchors.some((anchor) => {
+      try {
+        const host = new URL(anchor.href || "", location.href).hostname.toLowerCase();
+        return Boolean(host) && host !== "linkedin.com" && host !== "www.linkedin.com";
+      } catch {
+        return false;
+      }
+    });
     const key = `${canonicalHref || urn}|${text.slice(0, 240)}`;
     if (seen.has(key)) continue;
     seen.add(key);
@@ -313,28 +347,21 @@ EXTRACT_SCRIPT = r"""
         timeNode?.innerText || timeNode?.textContent || timestampText || timestampAttribute
       ),
       sponsored: /(^|\n)\s*(promoted|sponsored)\s*($|\n)/i.test(text),
+      structural_evidence: {
+        root_shape: rootShape,
+        has_post_actions: /\b(?:like|react|comment|repost|send)\b/i.test(actionText),
+        has_actor: Boolean(authorNode),
+        has_timestamp: Boolean(timeNode || timestampText || timestampAttribute),
+        has_media: media.length > 0,
+        has_any_link: anchors.length > 0,
+        has_external_link: hasExternalLink
+      },
       engagement: {
         likes: count(`${actionText} ${text}`, ["reactions?", "likes?"]),
         comments: count(`${actionText} ${text}`, ["comments?"]),
         shares: count(`${actionText} ${text}`, ["reposts?", "shares?"])
       },
-      media: [
-        ...Array.from(node.querySelectorAll(
-          '.update-components-image img, .feed-shared-image img, img[src*="media.licdn.com"]'
-        )).map((image) => ({
-          kind: "image", url: image.currentSrc || image.src || "",
-          preview_url: null, mime_type: null,
-          width: image.naturalWidth || null, height: image.naturalHeight || null,
-          duration_seconds: null, alt_text: image.alt || null
-        })),
-        ...Array.from(node.querySelectorAll("video")).map((video) => ({
-            kind: "video", url: canonicalHref || location.href,
-          preview_url: video.poster || null, mime_type: null,
-          width: video.videoWidth || null, height: video.videoHeight || null,
-          duration_seconds: Number.isFinite(video.duration) ? Math.round(video.duration) : null,
-          alt_text: null
-        }))
-      ].filter((asset) => asset.url)
+      media
     });
   }
   return {
@@ -954,6 +981,8 @@ class LinkedInScraper:
             if candidate.rejection_reasons:
                 diagnostics.candidate_counts["rejected"] += 1
                 diagnostics.rejection_counts.update(candidate.rejection_reasons)
+                if "missing_permalink" in candidate.rejection_reasons:
+                    _record_missing_permalink_structure(diagnostics, raw)
                 continue
             digest = hashlib.sha1(
                 candidate.canonical_url.encode("utf-8")
@@ -1224,7 +1253,21 @@ def scrape_linkedin_feed(
         result_limit = max(1, min(MAX_EXPLICIT_RESULTS, int(limit)))
     scrolls = int(config.get("LAST30DAYS_LINKEDIN_SCROLLS") or settings["scrolls"])
     if limit is not None:
-        scrolls = MAX_EXPLICIT_SCROLLS
+        scrolls = max(
+            scrolls,
+            min(
+                MAX_EXPLICIT_FEED_SCROLLS,
+                max(
+                    MIN_EXPLICIT_FEED_SCROLLS,
+                    (
+                        result_limit * FEED_SCROLLS_PER_FIVE_ITEMS
+                        + ACCEPTED_ITEMS_PER_SCROLL_BUDGET
+                        - 1
+                    )
+                    // ACCEPTED_ITEMS_PER_SCROLL_BUDGET,
+                ),
+            ),
+        )
     timeout = int(config.get("LAST30DAYS_LINKEDIN_TIMEOUT") or settings["timeout"])
     min_action_delay = float(
         config.get("LAST30DAYS_LINKEDIN_MIN_ACTION_DELAY") or DEFAULT_MIN_ACTION_DELAY
@@ -1609,6 +1652,32 @@ def _validate_candidate(
         candidate.rejection_reasons.append("outside_date_range")
     if candidate.sponsored:
         candidate.rejection_reasons.append("sponsored")
+
+
+def _record_missing_permalink_structure(
+    diagnostics: LinkedInRunDiagnostics,
+    raw: dict[str, Any],
+) -> None:
+    """Persist only bounded structural counters for rejected feed cards."""
+    evidence = raw.get("structural_evidence")
+    if not isinstance(evidence, dict):
+        diagnostics.rejection_counts["missing_permalink_structure_unavailable"] += 1
+        return
+    root_shape = evidence.get("root_shape")
+    if root_shape in {"feed_update", "search_result", "listitem_fallback", "unknown"}:
+        diagnostics.rejection_counts[f"missing_permalink_root_{root_shape}"] += 1
+    else:
+        diagnostics.rejection_counts["missing_permalink_root_unknown"] += 1
+    for signal in (
+        "has_post_actions",
+        "has_actor",
+        "has_timestamp",
+        "has_media",
+        "has_any_link",
+        "has_external_link",
+    ):
+        if evidence.get(signal) is True:
+            diagnostics.rejection_counts[f"missing_permalink_{signal}"] += 1
 
 
 def _canonical_post_url(value: str, urn: str = "") -> str | None:

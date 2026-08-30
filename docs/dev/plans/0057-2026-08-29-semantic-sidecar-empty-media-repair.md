@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 4
+Plan version: 6
 Date: 2026-08-29
 
 ## Objective
@@ -37,6 +37,10 @@ and only after that canary succeeds run one 40-item canary for each source.
 - publish a durable empty semantic-sidecar derivative for that outcome while
   retaining true exceptions and invalid adapter output as failures;
 - prove mixed successful and empty sidecars leave the lane and tick successful;
+- persist bounded, content-free structural evidence for LinkedIn candidates
+  rejected because no canonical permalink was recovered;
+- scale the LinkedIn feed scroll budget with the requested item ceiling while
+  preserving the existing action-rate limiter and a finite maximum;
 - run focused, presubmit/full, packaging, installed-runtime, and durable receipt
   validation proportionate to the changed surface;
 - run exactly one 20+20 X/LinkedIn home-feed canary after installation; if and
@@ -338,3 +342,137 @@ Next action or stop reason:
 
 - stop this live work unit with the 40-item gate closed. Begin the next packet
   at the rejected-card evidence seam rather than retrying unchanged code.
+
+### Checkpoint P0057-C05 | 2026-08-29
+
+Plan version: 5
+
+State transition:
+
+- `live_gate_failed_repair_installed -> permalink_evidence_successor_active`.
+
+Progress classification:
+
+- `blocker_reduction`; current source and durable receipts identify two
+  independently testable reasons the LinkedIn 20-item gate remains unproven.
+
+Changed assumptions and evidence:
+
+- missing-permalink observations cannot be presumed legitimate posts or
+  scraper limitations. The extractor deliberately includes a broad
+  `main [role="listitem"]` fallback in addition to post-specific roots, so the
+  nine observations may be recommendation/navigation chrome;
+- current durable rejection counts do not preserve enough structural evidence
+  to distinguish those cases. The successor will persist only bounded enums
+  and booleans such as root shape, post-action presence, actor/timestamp/media
+  presence, and link-category presence; it will not persist rejected text,
+  raw URLs, DOM, profile identifiers, or tracking values;
+- the successful LinkedIn canary exhausted the fixed eight-scroll ceiling with
+  11 recent unique non-ad posts after observing 246 cards. The feed did not
+  stagnate or fail authentication, so an item-limit-aware finite scroll budget
+  is a distinct retrieval-reliability repair rather than a quality-filter
+  change.
+
+Successor controller and bounds:
+
+- controller: primary agent;
+- implementation attempts: at most two red/green work units, one for
+  structural rejection evidence and one for adaptive feed scrolling;
+- live exit: exactly one new 20+20 successor canary after a pushed and
+  installed immutable service candidate;
+- conditional live exit: exactly one 40+40 canary only if both successor
+  20-item lanes accept 20 canonical posts and terminalize without unexpected
+  degradation;
+- hard stops: authentication/checkpoint evidence, rate limiting, an unreleased
+  lease, recurring-config drift, database-integrity failure, or failure of
+  either 20-item lane to accept 20;
+- cumulative safeguards: deterministic sponsored/ad, date, canonical-URL, and
+  exact-duplicate gates remain unchanged; the LinkedIn action-rate limiter
+  remains active; no Agent Browser mutation or profile replacement is in
+  scope.
+
+Acceptance state:
+
+- criteria 1 through 6 and 9 remain proven by the installed 0.3.79 receipt;
+- criterion 7 remains unmet; criterion 8 remains gated;
+- the next evidence required is a red/green public-result regression proving
+  content-free missing-permalink classification, followed by an adaptive
+  scroll-budget regression that can reach a 20-item target beyond eight
+  productive snapshots without becoming unbounded.
+
+Authority classification:
+
+- `inherited_authority`; this is a changed implementation strategy for the
+  same requested 20-item gate, systems, profiles, data class, mutation class,
+  and zero-cost provider envelope.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- execute the two red/green work units, widen validation according to the
+  touched durable-result surface, and install one exact successor before the
+  single new 20+20 live gate.
+
+### Checkpoint P0057-C06 | 2026-08-29
+
+Plan version: 6
+
+State transition:
+
+- `permalink_evidence_successor_active -> successor_runtime_candidate_validated`.
+
+Progress classification:
+
+- `outcome_progress`; both retrieval repairs are source-complete and validated
+  as service 0.3.80, leaving immutable installation and the bounded live gate.
+
+Validation evidence:
+
+- the public feed-result regression failed red because a missing-permalink
+  candidate exposed only the aggregate reason, then passed after whitelisted
+  root-shape and post-signal counters were added. The regression proves
+  rejected text and a raw external URL never enter diagnostics;
+- the 20-item configuration regression failed red at eight rather than 16
+  scrolls, then passed after the explicit feed budget became item-limit-aware;
+  a 40-item regression proves the finite 32-scroll maximum;
+- a behavioral feed regression reaches 20 unique canonical posts on the ninth
+  productive scroll, directly proving the former eight-scroll ceiling could
+  stop below the requested yield;
+- the existing executable JavaScript fixtures initially caught an unsafe
+  assumption that every synthetic DOM node implemented `matches`; optional
+  capability checks repaired that compatibility issue and the full LinkedIn
+  suite passes with its one opt-in live skip;
+- focused LinkedIn, acquisition-worker, release, runtime-package, and
+  lifecycle-install suites pass; the comprehensive Python suite exits zero
+  with 2,719 collected tests, all MCP Go packages pass, Python compilation
+  succeeds, plan-authority and diff checks pass. Ruff remains unavailable and
+  is not claimed;
+- service 0.3.80 and its canonical runtime manifest are synchronized. No
+  installation, live provider action, recurring-config mutation, or Agent
+  Browser mutation has occurred in this successor packet yet.
+
+Acceptance state:
+
+- source behavior and durable counter propagation are proven; criterion 7
+  remains live-unproven and criterion 8 remains gated;
+- the next authoritative evidence is an installed runtime receipt bound to a
+  pushed commit, followed by exactly one fresh 20+20 canary.
+
+Authority classification:
+
+- `inherited_authority`; validation and the next transactional install remain
+  inside the approved successor packet.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- commit and push service 0.3.80, build and transactionally install its exact
+  artifact, re-prove readiness and invariant preflight, then run the one
+  successor 20+20 canary with provider wall budgets sized for the preserved
+  action limiter.

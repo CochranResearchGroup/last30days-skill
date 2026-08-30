@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Adaptive LinkedIn feed retrieval evidence.** Service 0.3.80 scales the
+  finite home-feed scroll budget with explicit 20- and 40-item ceilings while
+  retaining the existing action-rate limiter. Cards without a recovered
+  canonical permalink now contribute only bounded structural counters for
+  root shape and post-signal presence, without persisting rejected text, URLs,
+  DOM, identifiers, or tracking values.
+
 - **Truthful text-free media enrichment.** Service 0.3.79 excludes
   deterministic LinkedIn profile-photo, company-logo, and group-logo chrome
   from post-owned media and records source-grounded semantic analysis as

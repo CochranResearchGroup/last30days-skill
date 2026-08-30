@@ -336,7 +336,7 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual(20, captured["limit"])
         self.assertEqual(4, captured["scrolls"])
 
-    def test_feed_twenty_item_limit_uses_the_eight_scroll_safety_ceiling(self):
+    def test_feed_twenty_item_limit_uses_an_adaptive_sixteen_scroll_budget(self):
         captured = {}
 
         def scraper_factory(_client, _workspace_request, **kwargs):
@@ -354,7 +354,29 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
             )
 
         self.assertEqual(20, captured["limit"])
-        self.assertEqual(8, captured["scrolls"])
+        self.assertEqual(16, captured["scrolls"])
+
+    def test_feed_forty_item_limit_uses_the_bounded_maximum_scroll_budget(self):
+        captured = {}
+
+        def scraper_factory(_client, _workspace_request, **kwargs):
+            captured.update(kwargs)
+            return mock.Mock(feed=mock.Mock(return_value={"items": [], "error": None}))
+
+        with mock.patch.object(
+            linkedin, "is_agent_browser_available", return_value=True
+        ), mock.patch.object(
+            linkedin, "LinkedInScraper", side_effect=scraper_factory
+        ):
+            linkedin.scrape_linkedin_feed(
+                "2026-06-15",
+                "2026-07-15",
+                depth="default",
+                limit=40,
+            )
+
+        self.assertEqual(40, captured["limit"])
+        self.assertEqual(32, captured["scrolls"])
 
     def test_retained_workspace_reselects_inactive_linkedin_tab(self):
         client = linkedin.CliAgentBrowserClient(timeout=5)
@@ -825,6 +847,41 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
         self.assertNotIn("missing_date", result["diagnostics"]["rejection_counts"])
         self.assertEqual(5, result["diagnostics"]["rejection_counts"]["sponsored"])
 
+    def test_home_feed_can_reach_twenty_after_nine_productive_scrolls(self):
+        def candidates(start, count):
+            return [
+                post_candidate(
+                    text=f"Feed result {index} with stable structural metadata.",
+                    url=(
+                        "https://www.linkedin.com/feed/update/urn:li:activity:"
+                        f"735135000000000{index:04d}/"
+                    ),
+                    urn=f"urn:li:activity:735135000000000{index:04d}",
+                )
+                for index in range(start, start + count)
+            ]
+
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+        batches = [candidates(index * 2, 2) for index in range(10)]
+        client = FakeAgentBrowserClient(page=page, candidate_batches=batches)
+
+        result = make_scraper(client, limit=20, scrolls=16).feed(
+            "2026-06-15", "2026-07-15"
+        )
+
+        scrolls = [action for action in client.actions if action.operation == "scroll"]
+        self.assertEqual(9, len(scrolls))
+        self.assertEqual(20, len(result["items"]))
+        self.assertEqual(20, len({item["url"] for item in result["items"]}))
+
     def test_home_feed_keeps_post_media_but_excludes_identity_chrome(self):
         page = dict(FakeAgentBrowserClient().page)
         page.update({
@@ -1124,6 +1181,41 @@ process.stdout.write(JSON.stringify(result));
         self.assertGreaterEqual(counts["sponsored"], 1)
         self.assertGreaterEqual(counts["missing_permalink"], 1)
         self.assertGreaterEqual(counts["outside_date_range"], 1)
+
+    def test_missing_permalink_rejections_expose_only_bounded_structure(self):
+        rejected_text = "Private rejected-card text must never enter diagnostics."
+        rejected_url = "https://external.example/private-tracking-value"
+        candidate = post_candidate(
+            text=rejected_text,
+            url="",
+            urn="",
+            structural_evidence={
+                "root_shape": "listitem_fallback",
+                "has_post_actions": False,
+                "has_actor": True,
+                "has_timestamp": False,
+                "has_media": True,
+                "has_any_link": True,
+                "has_external_link": True,
+                "raw_url": rejected_url,
+            },
+        )
+
+        result = make_scraper(
+            FakeAgentBrowserClient(candidates=[candidate])
+        ).feed("2026-06-15", "2026-07-15")
+
+        counts = result["diagnostics"]["rejection_counts"]
+        self.assertEqual(1, counts["missing_permalink"])
+        self.assertEqual(1, counts["missing_permalink_root_listitem_fallback"])
+        self.assertEqual(1, counts["missing_permalink_has_actor"])
+        self.assertEqual(1, counts["missing_permalink_has_media"])
+        self.assertEqual(1, counts["missing_permalink_has_any_link"])
+        self.assertEqual(1, counts["missing_permalink_has_external_link"])
+        self.assertNotIn("missing_permalink_has_post_actions", counts)
+        self.assertNotIn("missing_permalink_has_timestamp", counts)
+        self.assertNotIn(rejected_text, str(result["diagnostics"]))
+        self.assertNotIn(rejected_url, str(result["diagnostics"]))
 
     def test_short_and_unmatched_posts_are_retained_with_diagnostic_signals(self):
         candidates = [
