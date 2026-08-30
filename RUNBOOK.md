@@ -22061,3 +22061,66 @@ Next Bounded Action:
 
 - commit and push this checkpoint, then preflight and enqueue the fresh 20+20
   schedule-disabled canary exactly once.
+
+## Turn 356 | 2026-08-30
+
+Focus: reconcile the post-upgrade 20+20 retry and identify the exact pre-start
+Agent Browser failure.
+
+Authority Consulted:
+
+- operator's explicit retry; Plan 0057/C11-C12; Roadmap P08; Agent Browser
+  access-plan, status, profile, job, and lifecycle read surfaces.
+
+Decisions And Changes:
+
+- admitted exactly one owner-private, schedule-disabled 20+20 tick after a
+  ready preflight and enqueued it once;
+- did not run 40+40 because neither 20-item lane passed;
+- did not alter the access-plan request, session name, profile, browser,
+  lifecycle, or Agent Browser service state.
+
+Validation Evidence:
+
+- tick `tick-fa7987a91c2c498f55a490e6cb28c827` completed degraded in about two
+  seconds with zero observations and zero cost/model use;
+- X job `mcp-service-request-tab_new-72c04b0a-dfb5-4064-a0a7-daab33e356f6`
+  and LinkedIn job
+  `mcp-service-request-tab_new-dc6b81be-245a-4638-a8e3-74cd1fd3c57b`
+  both failed before start with `existing_session_profile_identity_unproven`;
+- the access plan still reports the request available and unblocked while
+  emitting absent session identity `last30days-social-replacement-20260829`;
+  the registered durable profile remains authenticated for X and LinkedIn;
+- Agent Browser generation `0.28.0-3b7f15a031dd-79a80827b0b7` is otherwise
+  steady/ready, so the blocker is the plan/execution identity contract, not
+  global runtime health;
+- Last30days active attempts/open leases are zero, SQLite is `ok`, the recurring
+  config hash is unchanged, and `daily-default` remains ready for Aug 31 UTC.
+
+State Movement:
+
+- Plan 0057 advances to version 12/C12
+  `upgraded_runtime_identity_contract_blocked`; P08 remains OPEN.
+
+Progress Classification:
+
+- `no_progress` on feed yield; `blocker_reduction` on exact fault isolation.
+
+Authority Classification:
+
+- `human_gate` for another Last30days provider attempt; `scope_expansion` for
+  Agent Browser session/profile/lifecycle mutation or route override.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred because the open goal remains blocked at an external owner boundary.
+
+Next Bounded Action:
+
+- commit and push the exact receipts, move the temporary canary config to
+  Trash, and hand the access-plan/execution contradiction to Agent Browser's
+  owner for repair before any renewed retry.

@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 11
+Plan version: 12
 Date: 2026-08-29
 
 ## Objective
@@ -813,3 +813,86 @@ Next action or stop reason:
 - publish this renewed authority checkpoint, create an owner-private
   schedule-disabled 20+20 config, preflight and enqueue it exactly once, then
   reconcile the terminal receipt before deciding the 40+40 gate.
+
+### Checkpoint P0057-C12 | 2026-08-30
+
+Plan version: 12
+
+State transition:
+
+- `upgraded_runtime_retry_ready -> upgraded_runtime_identity_contract_blocked`.
+
+Progress classification:
+
+- `no_progress` on criterion 7; `blocker_reduction` on diagnosis because both
+  providers now fail with the same exact Agent Browser access-plan/execution
+  identity contradiction before any browser effect starts.
+
+Live receipt:
+
+- owner-private, schedule-disabled tick
+  `tick-fa7987a91c2c498f55a490e6cb28c827` terminalized
+  `complete_degraded` in about two seconds with two provider attempts, two
+  requests, zero observed/attempted/accepted items, zero cost/model use, and
+  snapshot `tick-snapshot-1818bbcbf64b45d5b43b02f1f80df0a6`;
+- X job `mcp-service-request-tab_new-72c04b0a-dfb5-4064-a0a7-daab33e356f6`
+  and LinkedIn job
+  `mcp-service-request-tab_new-dc6b81be-245a-4638-a8e3-74cd1fd3c57b`
+  both failed before `startedAt` with
+  `existing_session_profile_identity_unproven`;
+- both Last30days provider receipts therefore report transient
+  `agent_browser_error` at `workspace_acquisition`, with one request and one
+  wall second each. No authentication, navigation, extraction, quality gate,
+  media, OCR, or semantic-sidecar work began.
+
+Agent Browser contract evidence:
+
+- installed/current Agent Browser generation is
+  `0.28.0-3b7f15a031dd-79a80827b0b7`, binary SHA-256
+  `3b7f15a031dd93b74df37ff3f6b4cddc14040ffc988778af690310b3e3dedba5`,
+  with steady multiplicity and ready runtime lifecycle;
+- the durable `last30days-facebook` profile exists, is explicitly authenticated
+  for X and LinkedIn, and retains its canonical user-data directory;
+- no retained session or runtime-owner record exists for
+  `last30days-social-replacement-20260829`, yet the post-upgrade access plan
+  continues to emit that exact `sessionName`, marks `tab_new` available,
+  reports `blockedByAcquisition=false`, `blockedByLifecycleOwner=false`, and
+  recommends `launch_new_browser`;
+- executing the plan's own request immediately rejects the unproven session
+  identity. This is an Agent Browser access-plan/execution contract defect, not
+  evidence that the selected durable profile is logged out or incorrect.
+
+Acceptance and gate state:
+
+- criterion 7 remains failed before observation; criterion 8's precondition is
+  false and no 40+40 canary was preflighted or enqueued;
+- another live provider attempt requires an Agent Browser owner repair that
+  makes the no-launch plan executable as returned, plus renewed explicit
+  Last30days attempt authority. Last30days will not strip or override the
+  service-owned session route and will not create a duplicate profile lane.
+
+Invariant reconciliation:
+
+- Last30days active tick/provider attempts and open canary leases are zero;
+  SQLite quick-check is `ok`;
+- `daily-default` remains enabled/ready for `2026-08-31T00:00:00Z`; recurring
+  config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+Authority classification:
+
+- `human_gate` for another Last30days live attempt after this explicit retry;
+- `scope_expansion` for changing Agent Browser profile/session/lifecycle state
+  or overriding the route returned by its access plan.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- preserve the exact tick and Agent Browser job receipts. The Agent Browser
+  owner must repair the access plan so a launch-new request does not carry an
+  unprovable absent session identity, or make that exact session identity
+  provable before returning an executable plan. Then obtain one new bounded
+  20+20 attempt authorization.

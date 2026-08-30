@@ -1104,6 +1104,13 @@ Current State:
   are clear, and both no-launch access plans select the existing durable social
   profile without acquisition, lifecycle, or manual-auth blockers. One fresh
   20+20 canary is ready; 40+40 remains conditional on both lanes passing.
+- Plan 0057 version 12/C12 records the post-upgrade retry. Both X and LinkedIn
+  `tab_new` jobs were rejected before start with
+  `existing_session_profile_identity_unproven`. The access plan advertises an
+  unblocked launch-new request carrying session name
+  `last30days-social-replacement-20260829`, but current service state has no
+  session or runtime-owner record for that identity. The durable authenticated
+  profile itself remains registered. The 40+40 gate did not open.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,
@@ -1299,7 +1306,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0057-2026-08-29-semantic-sidecar-empty-media-repair.md`
-  version 11/C11 is the active source-repair, installed-runtime, 20+20, and
+  version 12/C12 is the active source-repair, installed-runtime, 20+20, and
   conditional 40+40 canary authority.
 
 Closed Plan:
@@ -1385,8 +1392,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- run exactly one fresh owner-private, schedule-disabled 20+20 canary after the
-  accepted Agent Browser upgrade; run 40+40 only if both lanes accept 20.
+- preserve the terminal retry while the Agent Browser owner repairs the
+  access-plan/execution session-identity contradiction; another live 20+20
+  attempt requires renewed bounded authority after that repair.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 
