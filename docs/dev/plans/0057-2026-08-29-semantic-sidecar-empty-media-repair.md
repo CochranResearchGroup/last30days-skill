@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 8
+Plan version: 9
 Date: 2026-08-29
 
 ## Objective
@@ -637,3 +637,52 @@ Next action or stop reason:
 - await a renewed attempt budget. If granted, run one schedule-disabled 20+20
   canary on installed 0.3.81; run 40+40 only if both lanes accept 20 and the
   tick has no unexpected degradation.
+
+### Checkpoint P0057-C09 | 2026-08-29
+
+Plan version: 9
+
+State transition:
+
+- `installed_awaiting_attempt_budget -> renewed_canary_active`.
+
+Progress classification:
+
+- `blocker_reduction`; the operator explicitly renewed the bounded live budget
+  and the installed false-stagnation repair is ready for its first live proof.
+
+Authority and bounds:
+
+- the operator's `ok goo` authorizes exactly one additional schedule-disabled
+  20+20 X/LinkedIn canary on installed service 0.3.81;
+- only if both lanes accept 20 canonical posts without unexpected degradation,
+  the same renewal authorizes exactly one schedule-disabled 40+40 canary;
+- the renewed budget is at most two additional attempts per service, with the
+  second attempt conditional on the 20-item gate. It does not authorize another
+  20-item retry after a failed gate, recurring-config mutation, Agent Browser
+  mutation, or re-enabling Reddit/Facebook.
+
+Current evidence:
+
+- `main` and `origin/main` are synchronized at
+  `a83451a5a5c8051dc46befcdd87564b47845c34e` with a clean worktree;
+- installed service 0.3.81 is active and ready on schema 16 with runtime
+  manifest SHA-256
+  `e0736e687c59c1ee97825e29324224d8bca589d7c7f910f126cd4f136a25d61c`;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+Authority classification:
+
+- `inherited_authority`; the renewed live action is exact, bounded, and leaves
+  persistent schedule and browser state untouched.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- create an owner-private, schedule-disabled 20+20 config, preflight and enqueue
+  exactly once through the installed service, reconcile its terminal receipt,
+  and admit 40+40 only if criterion 7 passes.

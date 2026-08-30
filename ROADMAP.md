@@ -1090,6 +1090,10 @@ Current State:
   recurring schedule/config, released leases, healthy SQLite, and clean Git.
   The explicit three-attempt LinkedIn live ceiling is reached; another provider
   attempt requires a renewed budget, and conditional 40+40 remains gated.
+- Plan 0057 version 9/C09 records the operator's renewed live budget: exactly
+  one schedule-disabled 20+20 canary on installed service 0.3.81, followed by
+  exactly one 40+40 canary only if both 20-item lanes pass. Recurring settings,
+  Reddit/Facebook state, and Agent Browser remain outside the mutation scope.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,
@@ -1285,7 +1289,7 @@ Current State:
 Active Plan:
 
 - `docs/dev/plans/0057-2026-08-29-semantic-sidecar-empty-media-repair.md`
-  version 8/C08 is the active source-repair, installed-runtime, 20+20, and
+  version 9/C09 is the active source-repair, installed-runtime, 20+20, and
   conditional 40+40 canary authority.
 
 Closed Plan:
@@ -1371,9 +1375,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- none for P08; ordinary recurring operation continues under the unchanged
-  private schedule configuration. Any future feed/profile expansion requires
-  a new plan and explicit authority.
+- run exactly one owner-private, schedule-disabled 20+20 canary on installed
+  service 0.3.81; run exactly one 40+40 canary only if both lanes accept 20.
 
 ## P09 | Facebook Agent-Browser Timeout Remediation
 

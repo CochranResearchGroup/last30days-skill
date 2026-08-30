@@ -21889,3 +21889,51 @@ Next Bounded Action:
 
 - if the operator renews the attempt budget, run one schedule-disabled 20+20
   canary on installed 0.3.81 and run 40+40 only after both lanes accept 20.
+
+## Turn 353 | 2026-08-29
+
+Focus: execute the renewed bounded 20-item live gate on installed service
+0.3.81, with 40-item admission conditional on both lanes passing.
+
+Authority Consulted:
+
+- operator `ok goo`; persistent goal; Plan 0057/C08-C09; Roadmap P08; repo goal,
+  planning, documentation, validation, and closeout policy.
+
+Decisions And Changes:
+
+- classified the operator response as an explicit renewal of the proposed
+  budget: one additional 20+20 attempt and one conditional 40+40 attempt;
+- retained the exact guardrails: owner-private schedule-disabled configs,
+  unchanged recurring configuration, Reddit/Facebook disabled, existing
+  authenticated profiles, and no Agent Browser mutation;
+- re-anchored clean synchronized Git at
+  `a83451a5a5c8051dc46befcdd87564b47845c34e`, active installed service 0.3.81,
+  ready schema 16, and recurring config SHA-256
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+State Movement:
+
+- Plan 0057 advances to version 9/C09 `renewed_canary_active`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; the prior action-specific attempt gate is resolved.
+
+Authority Classification:
+
+- `inherited_authority` for exactly one 20+20 live attempt and one 40+40
+  attempt only after a successful 20-item gate.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending terminal goal outcome; no intermediate success write.
+
+Next Bounded Action:
+
+- commit and push this authority checkpoint, then preflight and enqueue the
+  schedule-disabled 20+20 canary exactly once through the installed service.
