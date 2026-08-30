@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 3
+Plan version: 4
 Date: 2026-08-29
 
 ## Objective
@@ -272,3 +272,69 @@ Next action or stop reason:
   exact artifact, and reconcile readiness, schedule/configuration invariance,
   leases, and database integrity. Leave the plan open on the unmet 20-item
   LinkedIn gate; do not run 40+40.
+
+### Checkpoint P0057-C04 | 2026-08-29
+
+Plan version: 4
+
+State transition:
+
+- `live_gate_failed_repair_validated -> live_gate_failed_repair_installed`.
+
+Progress classification:
+
+- `outcome_progress`; the additional deterministic chrome repair is installed
+  and every post-canary invariant is reconciled, while the failed LinkedIn
+  volume gate remains explicit rather than being converted into a success.
+
+Installed identity:
+
+- candidate commit `e84ccdde0bf9f30d1141bbb0521ac0e0a1cb063b` is pushed to
+  `origin/main`;
+- service artifact `last30days-service-0.3.79.tar.gz` has SHA-256
+  `68bd43fe0364d8577bbe8fc31a88c89b424333d6e035fe4932d557e8074c47f8`;
+- transactional upgrade reports service 0.3.79, release `releases/0.3.79`,
+  schema 16, status `ready`, contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`,
+  and runtime-manifest SHA-256
+  `b502396354542229acfae868b9ba67b58cc5a90ea02bf2e301d0e1ca7f8a892a`.
+
+Post-install reconciliation:
+
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  Reddit and Facebook remain disabled, X and LinkedIn home-feed targets remain
+  enabled, and their recurring provider ceilings remain ten items each;
+- schedule `daily-default` remains enabled and `ready`, with last boundary
+  `2026-08-30T00:00:00Z`, last timer tick
+  `tick-1f0f5a259b92001fcfc86ec94309419a`, and next boundary
+  `2026-08-31T00:00:00Z`;
+- both canary ticks are terminal, active tick and provider attempts are zero,
+  every canary resource lease has `released_at`, and SQLite `PRAGMA quick_check`
+  returns `ok`;
+- no 40+40 config or tick was created because the required 20+20 success gate
+  did not pass.
+
+Acceptance disposition:
+
+- criteria 1 through 6 and 9 pass;
+- criterion 7 remains failed at LinkedIn accepted yield 11/20, so criterion 8
+  remains correctly unexecuted and the plan remains `OPEN`;
+- the next bounded packet is retrieval instrumentation for the nine observed
+  LinkedIn cards lacking canonical permalinks. It must distinguish legitimate
+  link-bearing posts from non-post chrome before changing acceptance logic or
+  authorizing another live canary.
+
+Authority classification:
+
+- `inherited_authority`; installation and reconciliation completed the
+  approved repair packet. The live-attempt bound is honored.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- stop this live work unit with the 40-item gate closed. Begin the next packet
+  at the rejected-card evidence seam rather than retrying unchanged code.
