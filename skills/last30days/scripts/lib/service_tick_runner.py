@@ -14,6 +14,7 @@ from urllib.parse import urlparse
 from .service_tick_anomalies import AnomalyMonitor, AnomalyRule
 from .service_tick_analysis import (
     AnalysisAdapterRegistry,
+    AnalysisOutputEmpty,
     MediaAnalysisInput,
     OcrAnalysis,
     default_analysis_adapter_registry,
@@ -1344,6 +1345,15 @@ class TickRunner:
                             },
                         )
                     )
+                except AnalysisOutputEmpty as exc:
+                    receipt = self.media.publish_empty(
+                        asset.asset_id,
+                        derivative_kind="semantic_sidecar",
+                        adapter_type=sidecar_adapter_type,
+                        reason_code=exc.reason_code,
+                        input_refs=tuple(input_refs),
+                    )
+                    observed_states["semantic_sidecar"].append(receipt.state)
                 except Exception as exc:
                     self.media.publish_failure(
                         asset.asset_id,

@@ -107,3 +107,46 @@ def test_media_derivatives_are_content_addressed_partition_inheriting_and_citabl
     assert literal == "A blue line rises from left to right."
     assert "may depict increasing revenue" in inferred
     conn.close()
+
+
+def test_text_free_semantic_sidecar_is_a_durable_empty_derivative(tmp_path):
+    db_path = tmp_path / "research.db"
+    publisher = MediaDerivativePublisher(
+        db_path,
+        ContentAddressedArtifactStore(tmp_path / "artifacts"),
+        clock=lambda: NOW,
+    )
+    asset = publisher.store_asset(
+        parent_version_id="version-text-free-post",
+        source_url="https://media.example/post/video-thumbnail.jpg",
+        content=b"text-free-thumbnail",
+        mime_type="image/jpeg",
+        media_kind="video_thumbnail",
+        alt_text=None,
+        access_partition_id="profile:social-primary",
+        retention_class="durable",
+    )
+
+    receipt = publisher.publish_empty(
+        asset.asset_id,
+        derivative_kind="semantic_sidecar",
+        adapter_type="source_grounded_semantic_sidecar_v1",
+        reason_code="source_grounded_text_missing",
+        input_refs=(asset.asset_id,),
+    )
+
+    assert receipt.state == "empty"
+    assert receipt.derivative_version == (
+        "source_grounded_semantic_sidecar_v1:empty-v1"
+    )
+    conn = sqlite3.connect(db_path)
+    state, output_json = conn.execute(
+        "SELECT state, output_json FROM service_media_derivatives"
+    ).fetchone()
+    assert state == "empty"
+    assert output_json == (
+        '{"adapter_type":"source_grounded_semantic_sidecar_v1",'
+        f'"input_refs":["{asset.asset_id}"],'
+        '"reason_code":"source_grounded_text_missing"}'
+    )
+    conn.close()

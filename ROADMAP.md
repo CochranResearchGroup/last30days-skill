@@ -146,7 +146,8 @@ successor plans without reopening Plans 0010 or 0011:
 The 2026-07-29 architecture direction made Plan 0018 the governing successor
 after Plan 0014's terminal timer result. Plan 0018 is now `CLOSED` at its
 independently accepted version 28/C76 service-product and source-evidence
-boundary. Plans 0023/P07 and 0024/P08 are `CLOSED`; Plan 0025/P09 is
+boundary. Plans 0023/P07 is `CLOSED`; Plan 0024/P08 is `OPEN` for the bounded
+Plan 0057 semantic-sidecar and volume-canary successor; Plan 0025/P09 is
 `CANCELLED` as superseded; Plan 0026/P10 is `OPEN` under the operator's
 explicit recurring handoff and Slack-notification authority.
 Plans 0013 and 0017 remain planned and outside this transition critical path;
@@ -1071,7 +1072,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: CLOSED
+State: OPEN
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1080,6 +1081,11 @@ pause controls.
 
 Current State:
 
+- Plan 0057 reopens P08 for the bounded semantic-sidecar reliability repair and
+  conditional volume canaries. The source candidate excludes deterministic
+  LinkedIn avatar/logo chrome, records text-free source-grounded analysis as
+  empty rather than failure, and preserves genuine analyzer failure behavior;
+  installation plus 20+20 and conditional 40+40 live proof remain pending.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,
@@ -1274,8 +1280,9 @@ Current State:
 
 Active Plan:
 
-- none; Plan 0056/C19 satisfied the 20 X plus 20 LinkedIn home-feed objective
-  and closed the lane.
+- `docs/dev/plans/0057-2026-08-29-semantic-sidecar-empty-media-repair.md`
+  version 2/C02 is the active source-repair, installed-runtime, 20+20, and
+  conditional 40+40 canary authority.
 
 Closed Plan:
 

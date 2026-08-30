@@ -925,6 +925,106 @@ def test_enabled_image_analysis_fails_independently_when_adapter_output_is_missi
     assert snapshots.query("publishable", access_partitions=("public",))
 
 
+def test_text_free_media_is_empty_while_grounded_media_keeps_sidecar_stage_success(
+    tmp_path,
+):
+    def collect(_context):
+        def media(source_url, *, alt_text):
+            return CollectedMedia(
+                source_url=source_url,
+                content=source_url.encode("utf-8"),
+                mime_type="image/jpeg",
+                media_kind="image",
+                alt_text=alt_text,
+                ocr_engine="fixture-ocr",
+                ocr_engine_version="1",
+            )
+
+        return ProviderResult.success(
+            items=(
+                CollectedItem(
+                    source_native_id="grounded-image",
+                    url="https://example.test/grounded-image",
+                    title="Grounded image",
+                    text="The source item remains publishable.",
+                    author=None,
+                    published_at=None,
+                    media=(
+                        media(
+                            "https://example.test/grounded.jpg",
+                            alt_text="A chart attached to the post",
+                        ),
+                    ),
+                ),
+                CollectedItem(
+                    source_native_id="text-free-image",
+                    url="https://example.test/text-free-image",
+                    title="Text-free image",
+                    text="The second source item also remains publishable.",
+                    author=None,
+                    published_at=None,
+                    media=(
+                        media(
+                            "https://example.test/text-free.jpg",
+                            alt_text=None,
+                        ),
+                    ),
+                ),
+            ),
+            usage=_usage(items=2),
+        )
+
+    services = [
+        {
+            "service_id": "web",
+            "source": "web",
+            "providers": [_provider("web-provider", "fixture", "network:web")],
+        }
+    ]
+    coordinator, _, db_path, config_path, _, snapshots = _coordinator(
+        tmp_path,
+        services,
+        [_target("web")],
+        [
+            AdapterSpec(
+                "fixture",
+                frozenset({"collect"}),
+                None,
+                collect,
+                "fixture:runner:text-free-sidecar",
+            )
+        ],
+    )
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config["config_revision"] = "runner-text-free-sidecar-v1"
+    config["analysis"]["semantic_sidecar_adapter_type"] = (
+        "source_grounded_semantic_sidecar_v1"
+    )
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+
+    receipt = coordinator.enqueue_tick(
+        _request("2026-08-03T00:00:00Z", "2026-08-04T00:00:00Z")
+    )
+
+    assert receipt.state is contracts.TickState.COMPLETE
+    assert receipt.lanes[0].state.value == "success"
+    lane_id = receipt.lanes[0].lane_id
+    assert receipt.stage_states[f"lane:{lane_id}:ocr"] == "empty"
+    assert receipt.stage_states[f"lane:{lane_id}:semantic_sidecar"] == "success"
+    conn = sqlite3.connect(db_path)
+    assert conn.execute(
+        """SELECT state, COUNT(*) FROM service_media_derivatives
+           WHERE derivative_kind = 'semantic_sidecar' GROUP BY state ORDER BY state"""
+    ).fetchall() == [("empty", 1), ("success", 1)]
+    assert conn.execute(
+        """SELECT json_extract(output_json, '$.reason_code')
+           FROM service_media_derivatives
+           WHERE derivative_kind = 'semantic_sidecar' AND state = 'empty'"""
+    ).fetchone()[0] == "source_grounded_text_missing"
+    conn.close()
+    assert snapshots.query("publishable", access_partitions=("public",))
+
+
 def test_aggregate_budget_exhaustion_terminalizes_only_unstarted_lanes(tmp_path):
     calls = []
 

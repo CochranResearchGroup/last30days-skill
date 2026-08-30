@@ -4,6 +4,7 @@ import pytest
 
 from lib.service_tick_analysis import (
     AnalysisAdapterError,
+    AnalysisOutputEmpty,
     MediaAnalysisInput,
     OcrAnalysis,
     default_analysis_adapter_registry,
@@ -108,3 +109,16 @@ def test_source_grounded_sidecar_uses_only_alt_and_completed_ocr():
     )
     assert analysis_input.provided_ocr_engine == "tesseract"
     assert analysis_input.provided_ocr_regions == ocr.regions
+
+
+def test_source_grounded_sidecar_reports_text_free_media_as_empty():
+    adapter = default_analysis_adapter_registry(
+        which=lambda _name: None
+    ).require(
+        "source_grounded_semantic_sidecar_v1", capability="semantic_sidecar"
+    )
+
+    with pytest.raises(AnalysisOutputEmpty) as captured:
+        adapter.analyze(_input(alt_text=None))
+
+    assert captured.value.reason_code == "source_grounded_text_missing"

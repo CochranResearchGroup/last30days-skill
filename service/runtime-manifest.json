@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "4840f4ba815e6b65819a7418a942a61f3bd352d56a75471d5e164f77ba9d8cd0",
+      "sha256": "582b6423c30a3e637d96da0cc9daff7cbd1457982ec8a775af5f703d52651bc3",
       "source": "service/VERSION"
     },
     {
@@ -157,7 +157,7 @@
     },
     {
       "path": "scripts/lib/linkedin.py",
-      "sha256": "491d6b62bdd1d1197a45881f985847311be5524470097ec4a94dccee121bc64d",
+      "sha256": "8d6824455339c882a4f63d80452ad170d1dabaa04fa259680d6ef3dca7326249",
       "source": "skills/last30days/scripts/lib/linkedin.py"
     },
     {
@@ -412,7 +412,7 @@
     },
     {
       "path": "scripts/lib/service_tick_analysis.py",
-      "sha256": "bd019882a427dbe9a0baab535378e9839bc3afa49c0c85564d7fa813944cff6b",
+      "sha256": "58f428cb2acc8466b60ee3aab29ccece645f1c16aaaadae7b43e3908c6df12d0",
       "source": "skills/last30days/scripts/lib/service_tick_analysis.py"
     },
     {
@@ -437,7 +437,7 @@
     },
     {
       "path": "scripts/lib/service_tick_media.py",
-      "sha256": "484b5353a2c9bd69e150b0cfea708d853192e586978edc6c0befb9ffa0fc0649",
+      "sha256": "b008137da147e5df3292f0bc22eaad8a1d3ce0d410ddc4488b4c46005df15f84",
       "source": "skills/last30days/scripts/lib/service_tick_media.py"
     },
     {
@@ -457,7 +457,7 @@
     },
     {
       "path": "scripts/lib/service_tick_runner.py",
-      "sha256": "f638915f28c52b7b9722be31ec69ddca69cc2943b61021341ff04b79f248d8b6",
+      "sha256": "c5f5481a3917ada5226f9c491d08fcfee374dee0763c92346e0ac0e4fd39a873",
       "source": "skills/last30days/scripts/lib/service_tick_runner.py"
     },
     {
@@ -658,5 +658,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.77"
+  "service_version": "0.3.78"
 }

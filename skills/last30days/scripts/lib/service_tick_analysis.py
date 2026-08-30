@@ -21,6 +21,12 @@ class AnalysisOutputMissing(RuntimeError):
     pass
 
 
+class AnalysisOutputEmpty(RuntimeError):
+    def __init__(self, reason_code: str) -> None:
+        super().__init__(reason_code)
+        self.reason_code = reason_code
+
+
 @dataclass(frozen=True)
 class MediaAnalysisInput:
     source_url: str
@@ -204,7 +210,7 @@ def _source_grounded_sidecar(value: MediaAnalysisInput) -> SemanticSidecar:
     if ocr_text:
         sections.append(f"OCR text: {ocr_text}")
     if not sections:
-        raise AnalysisOutputMissing("source_grounded_text_missing")
+        raise AnalysisOutputEmpty("source_grounded_text_missing")
     literal_description = "\n".join(sections)[:16_384]
     terms: list[str] = []
     seen: set[str] = set()

@@ -21610,3 +21610,78 @@ Next Bounded Action:
 
 - publish and fast-forward the closed plan/lane checkpoint, record one durable
   Graphiti closeout, and stop.
+
+## Turn 349 | 2026-08-29
+
+Focus: repair expected text-free semantic-sidecar handling and prepare the
+bounded 20+20 then conditional 40+40 X/LinkedIn canaries.
+
+Authority Consulted:
+
+- operator goal; Plan 0057/C01-C02; Roadmap P08; repo planning, architecture,
+  TDD, CodeGraph, testing, release, transactional-install, temporary-canary,
+  validation, and closeout policies.
+- Plan 0057 authority:
+  `docs/dev/plans/0057-2026-08-29-semantic-sidecar-empty-media-repair.md`.
+
+Decisions And Changes:
+
+- correlated the accepted 20+20 tick's 30 media derivatives and proved all 13
+  sidecar failures lacked both alt text and OCR text; 11 were LinkedIn profile
+  photos across only three URLs, one was LinkedIn post media, and one was an X
+  video thumbnail;
+- added deterministic LinkedIn post-owned media filtering for known profile
+  photos and company logos while retaining post images and video previews;
+- added an explicit typed empty source-grounded analysis outcome, a durable
+  empty derivative receipt retaining `source_grounded_text_missing`, and runner
+  handling that makes mixed successful plus empty sidecars stage-successful;
+- retained the prior generic failure path for missing provider output, invalid
+  adapter results, persistence errors, and other genuine exceptions;
+- advanced the independently versioned candidate to service 0.3.78 and
+  refreshed its canonical runtime manifest. No installation, provider tick,
+  recurring-config mutation, or Agent Browser action has occurred yet.
+
+Validation Evidence:
+
+- each of the LinkedIn media, typed empty outcome, durable empty receipt, and
+  mixed-stage tick regressions failed red before its implementation and passes
+  green afterward; existing genuine missing-output degradation remains green;
+- 136 focused affected tests pass with one opt-in live skip, and nine release
+  and runtime-package checks pass;
+- the comprehensive suite reports 2,708 passed, seven skipped, and six
+  subtests plus one stale plan-authority expectation that still named closed
+  Plan 0056. This turn rewires active authority to Plan 0057 and updates that
+  deterministic expectation before the required comprehensive rerun;
+- the required rerun passes with 2,709 tests, seven skips, and six subtests;
+  MCP Go packages, Python compilation, plan-authority, active planning,
+  goal-governance, and catalog-only lane audits all pass;
+- `git diff --check` passes. Ruff is not installed in the uv environment, so
+  no Ruff claim is made.
+
+State Movement:
+
+- P08 moves `CLOSED -> OPEN`; Plan 0057 advances from version 1/C01
+  `contract_repair_active` to version 2/C02 `validated_runtime_candidate`.
+
+Progress Classification:
+
+- `outcome_progress`; code-level acceptance is proven and only governance
+  revalidation, installation, and live volume canaries remain.
+
+Authority Classification:
+
+- `inherited_authority`; all work remains within the explicitly requested
+  repair, 20+20 proof, and conditional 40+40 proof.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending closeout after live receipts and repository integration.
+
+Next Bounded Action:
+
+- make plan authority and the comprehensive suite green, build and install the
+  exact 0.3.78 artifact, then run one bounded 20+20 canary.

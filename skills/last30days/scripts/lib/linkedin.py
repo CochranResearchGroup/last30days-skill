@@ -1545,9 +1545,21 @@ def _candidate_from_raw(raw: dict[str, Any], now: datetime) -> LinkedInCandidate
         media=[
             item
             for item in list(raw.get("media") or [])[:16]
-            if isinstance(item, dict)
+            if isinstance(item, dict) and _is_post_owned_media(item)
         ],
     )
+
+
+def _is_post_owned_media(item: dict[str, Any]) -> bool:
+    """Reject deterministic LinkedIn identity chrome from post media."""
+    references = (item.get("url"), item.get("preview_url"))
+    for reference in references:
+        if not isinstance(reference, str) or not reference.strip():
+            continue
+        path = urlsplit(reference).path.casefold()
+        if "profile-displayphoto" in path or "company-logo" in path:
+            return False
+    return True
 
 
 def _candidate_observation_key(candidate: dict[str, Any]) -> str:

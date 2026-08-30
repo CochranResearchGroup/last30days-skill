@@ -562,6 +562,47 @@ class MediaDerivativePublisher:
         finally:
             conn.close()
 
+    def publish_empty(
+        self,
+        asset_id: str,
+        *,
+        derivative_kind: str,
+        adapter_type: str,
+        reason_code: str,
+        input_refs: tuple[str, ...],
+    ) -> DerivativeReceipt:
+        if derivative_kind not in {"ocr", "semantic_sidecar"}:
+            raise ValueError("derivative empty kind is unsupported")
+        adapter = _text(adapter_type, "adapter_type", 128)
+        reason = _text(reason_code, "reason_code", 128)
+        references = _strings(input_refs, "input_refs")
+        if not references:
+            raise ValueError("derivative empty input refs must not be empty")
+        conn = self._connect()
+        try:
+            conn.execute("BEGIN IMMEDIATE")
+            asset = self._asset(conn, asset_id)
+            receipt = self._publish_derivative(
+                conn,
+                asset=asset,
+                kind=derivative_kind,
+                version=f"{adapter}:empty-v1",
+                input_digest=_digest(list(references)),
+                output={
+                    "adapter_type": adapter,
+                    "reason_code": reason,
+                    "input_refs": list(references),
+                },
+                state="empty",
+            )
+            conn.commit()
+            return receipt
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            conn.close()
+
     def ocr_citation(
         self, derivative_id: str, *, region_ordinal: int
     ) -> dict[str, object]:

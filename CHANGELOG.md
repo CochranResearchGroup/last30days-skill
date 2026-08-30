@@ -18,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Truthful text-free media enrichment.** Service 0.3.78 excludes deterministic
+  LinkedIn profile-photo and company-logo chrome from post-owned media and
+  records source-grounded semantic analysis as `empty` when an asset has
+  neither meaningful alt text nor OCR text. Mixed successful and empty
+  sidecars now leave the optional lane stage successful, while missing
+  provider output, invalid adapter results, and persistence errors remain
+  failures.
+
 - **Yield-aware LinkedIn feed scrolling.** Service 0.3.77 keeps the existing
   eight-scroll safety ceiling while advancing farther through tall,
   virtualized home-feed cards when accepted canonical-post yield lags the

@@ -825,6 +825,57 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
         self.assertNotIn("missing_date", result["diagnostics"]["rejection_counts"])
         self.assertEqual(5, result["diagnostics"]["rejection_counts"]["sponsored"])
 
+    def test_home_feed_keeps_post_media_but_excludes_profile_and_company_chrome(self):
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+        candidate_url = (
+            "https://www.linkedin.com/feed/update/"
+            "urn:li:activity:7351200000000000000/"
+        )
+        candidate = post_candidate(media=[
+            {
+                "kind": "image",
+                "url": "https://media.licdn.com/dms/image/v2/D5622AQ/post/feedshare-shrink_800/image.jpg",
+                "alt_text": "A chart attached to the post",
+            },
+            {
+                "kind": "image",
+                "url": "https://media.licdn.com/dms/image/v2/C4E03AQ/profile-displayphoto-shrink_100_100/avatar.jpg",
+                "alt_text": None,
+            },
+            {
+                "kind": "image",
+                "url": "https://media.licdn.com/dms/image/v2/C4D0BAQ/company-logo_100_100/logo.jpg",
+                "alt_text": "Example Company",
+            },
+            {
+                "kind": "video",
+                "url": candidate_url,
+                "preview_url": "https://media.licdn.com/dms/image/v2/D5624AQ/post/videocover-low/image.jpg",
+                "alt_text": None,
+            },
+        ])
+
+        result = make_scraper(
+            FakeAgentBrowserClient(page=page, candidates=[candidate])
+        ).feed("2026-06-15", "2026-07-15")
+
+        self.assertEqual(1, len(result["items"]))
+        self.assertEqual(
+            [
+                "https://media.licdn.com/dms/image/v2/D5622AQ/post/feedshare-shrink_800/image.jpg",
+                candidate_url,
+            ],
+            [item["url"] for item in result["items"][0]["metadata"]["media"]],
+        )
+
     def test_home_feed_stops_after_two_snapshots_without_new_posts(self):
         page = dict(FakeAgentBrowserClient().page)
         page.update({
