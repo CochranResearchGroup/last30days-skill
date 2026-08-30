@@ -825,7 +825,7 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
         self.assertNotIn("missing_date", result["diagnostics"]["rejection_counts"])
         self.assertEqual(5, result["diagnostics"]["rejection_counts"]["sponsored"])
 
-    def test_home_feed_keeps_post_media_but_excludes_profile_and_company_chrome(self):
+    def test_home_feed_keeps_post_media_but_excludes_identity_chrome(self):
         page = dict(FakeAgentBrowserClient().page)
         page.update({
             "url": "https://www.linkedin.com/feed/",
@@ -854,6 +854,11 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
                 "kind": "image",
                 "url": "https://media.licdn.com/dms/image/v2/C4D0BAQ/company-logo_100_100/logo.jpg",
                 "alt_text": "Example Company",
+            },
+            {
+                "kind": "image",
+                "url": "https://media.licdn.com/dms/image/v2/D4E07AQ/group-logo_image-shrink_48x48/logo.jpg",
+                "alt_text": None,
             },
             {
                 "kind": "video",

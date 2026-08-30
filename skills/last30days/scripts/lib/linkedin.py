@@ -1557,7 +1557,14 @@ def _is_post_owned_media(item: dict[str, Any]) -> bool:
         if not isinstance(reference, str) or not reference.strip():
             continue
         path = urlsplit(reference).path.casefold()
-        if "profile-displayphoto" in path or "company-logo" in path:
+        if any(
+            chrome_marker in path
+            for chrome_marker in (
+                "profile-displayphoto",
+                "company-logo",
+                "group-logo",
+            )
+        ):
             return False
     return True
 

@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 2
+Plan version: 3
 Date: 2026-08-29
 
 ## Objective
@@ -59,8 +59,9 @@ and only after that canary succeeds run one 40-item canary for each source.
 
 ## Acceptance Criteria
 
-1. LinkedIn post normalization excludes known `profile-displayphoto` and
-   `company-logo` media while retaining post image and video media.
+1. LinkedIn post normalization excludes known `profile-displayphoto`,
+   `company-logo`, and `group-logo` media while retaining post image and video
+   media.
 2. A source-grounded sidecar input with neither meaningful alt text nor OCR
    emits a typed empty outcome carrying `source_grounded_text_missing`.
 3. The durable derivative ledger records that outcome as `empty`, not
@@ -203,3 +204,71 @@ Next action or stop reason:
 - make the plan-authority projection green, rerun comprehensive validation,
   build and transactionally install exact service 0.3.78, then execute the
   bounded 20+20 canary.
+
+### Checkpoint P0057-C03 | 2026-08-29
+
+Plan version: 3
+
+State transition:
+
+- `validated_runtime_candidate -> live_gate_failed_repair_validated`.
+
+Progress classification:
+
+- `outcome_progress`; the semantic-empty repair is proven live, the 20-item
+  volume gate has an exact failure receipt, and one additional deterministic
+  LinkedIn chrome family exposed by that receipt is repaired in service
+  0.3.79.
+
+Validation evidence:
+
+- combined canary `tick-fec768d7311523394f8ca5b5b714cde6` terminalized
+  `complete_degraded`: X observed and attempted 35 cards, accepted 20, rejected
+  15, and completed every media, OCR, and semantic-sidecar stage successfully;
+  LinkedIn failed before observing a card with the safe transient code
+  `agent_browser_error` after 102 seconds and one network request;
+- bounded LinkedIn successor `tick-4ba548dbb0869f08cccebf0309f8a523`
+  terminalized `complete`: it observed and attempted 246 cards, accepted 11,
+  rejected 235, and completed collection, media, OCR, and semantic-sidecar
+  stages successfully in 86 seconds and ten network requests;
+- the LinkedIn rejection receipt records 102 outside-date-range observations,
+  76 duplicates, 48 sponsored/ad observations, and nine cards without a
+  canonical permalink. Counts can overlap when one card has multiple reasons;
+  no authentication or semantic-sidecar failure explains the 11-item yield;
+- the successful successor persisted eight media assets and 16 derivatives,
+  including three truthful `source_grounded_semantic_sidecar_v1:empty-v1`
+  outcomes and no semantic failure;
+- three remaining `group-logo_image-shrink_48x48` identity assets produced six
+  empty OCR/sidecar derivatives. A focused regression reproduced that leak
+  red, then passed after `group-logo` joined the deterministic identity-chrome
+  filter while feed-share and video-cover media remained retained;
+- focused LinkedIn, release, runtime-package, and lifecycle-install suites pass;
+  the comprehensive Python suite, all MCP Go packages, Python compilation,
+  and diff checks pass for service 0.3.79. Ruff remains unavailable and is not
+  claimed.
+
+Gate disposition:
+
+- criterion 7 is not met because LinkedIn accepted 11 rather than 20; the
+  criterion 8 precondition is therefore false and no 40+40 canary is
+  authorized by this plan;
+- the two live attempts exhaust this bounded work unit. Further retrieval work
+  should target the nine missing-permalink observations with new durable
+  instrumentation rather than repeat the same canary unchanged.
+
+Authority classification:
+
+- `inherited_authority`; the deterministic media repair, validation, and exact
+  successor installation remain inside the approved goal. Another live volume
+  attempt is intentionally stopped at the recorded bound.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- commit and push the service 0.3.79 candidate, transactionally install that
+  exact artifact, and reconcile readiness, schedule/configuration invariance,
+  leases, and database integrity. Leave the plan open on the unmet 20-item
+  LinkedIn gate; do not run 40+40.
