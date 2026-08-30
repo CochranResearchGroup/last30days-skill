@@ -1111,6 +1111,14 @@ Current State:
   `last30days-social-replacement-20260829`, but current service state has no
   session or runtime-owner record for that identity. The durable authenticated
   profile itself remains registered. The 40+40 gate did not open.
+- Plan 0057 version 13/C13 records the operator-authorized direct owner repair.
+  Read-only preflight proved the exact `last30days-facebook` profile had no
+  live Chrome process, singleton lock, service holder, browser, or current
+  session. Fresh direct session `last30days-social-direct-20260830-c13` then
+  launched that exact profile and is now the sole ready owner at PID `74831`
+  with reachable CDP. No X/LinkedIn navigation or Last30days canary ran, so a
+  renewed 20+20 attempt still requires explicit authority and 40+40 remains
+  gated.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,

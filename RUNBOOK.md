@@ -22124,3 +22124,72 @@ Next Bounded Action:
 - commit and push the exact receipts, move the temporary canary config to
   Trash, and hand the access-plan/execution contradiction to Agent Browser's
   owner for repair before any renewed retry.
+
+## Turn 357 | 2026-08-30
+
+Focus: verify exclusive availability of `last30days-facebook` and establish a
+fresh direct owner outside the contradictory access-plan session.
+
+Authority Consulted:
+
+- operator's explicit process/lock verification and exact-profile direct-launch
+  request; Plan 0057/C12-C13; Roadmap P08; Agent Browser service and direct CLI
+  contracts.
+
+Decisions And Changes:
+
+- verified the exact profile through runtime status, OS process command lines,
+  Chrome singleton paths, service allocation, and first-class lease evidence;
+- launched the existing `last30days-facebook` profile at `about:blank` through
+  fresh session `last30days-social-direct-20260830-c13`, bypassing absent
+  access-plan identity `last30days-social-replacement-20260829`;
+- preserved remote-headed posture and did not delete locks, kill processes,
+  replace the profile, navigate X/LinkedIn, or enqueue a Last30days tick.
+
+Validation Evidence:
+
+- before launch: runtime browser absent, no Chrome/Chromium process referenced
+  the user-data directory, all three singleton paths were absent, service
+  allocation was available with zero holders, and the retained legacy lease
+  was observation-only with no browser or owner generation;
+- installed Agent Browser generation
+  `0.28.0-3b7f15a031dd-79a80827b0b7` was steady/ready and the validated
+  `stealthcdp_chromium` launch capability was ready;
+- launch returned success; post-launch runtime PID is `74831`, CDP is reachable
+  on port `37579`, the active page is `about:blank`, and `SingletonLock` names
+  `cooper-74831`;
+- service state reports browser
+  `session:last30days-social-direct-20260830-c13` healthy `ready`, with the
+  exact profile held exclusively by that session and no conflicting holder;
+- the direct RDP stream is retained as `reattachable_no_route`; no route was
+  acquired because this packet authorized profile launch, not a Guacamole
+  handoff.
+
+State Movement:
+
+- Plan 0057 advances to version 13/C13 `direct_profile_owner_ready`; P08
+  remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; exact browser/profile ownership now exists, while feed
+  yield remains untested in this packet.
+
+Authority Classification:
+
+- `inherited_authority` for the completed operator-requested direct launch;
+  `human_gate` remains for another live 20+20 Last30days attempt.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- deferred until the next bounded Last30days terminal outcome so runtime owner
+  creation is not mistaken for scraper acceptance.
+
+Next Bounded Action:
+
+- keep the fresh profile owner intact and wait for explicit authority before
+  preflighting or enqueueing another 20+20 X/LinkedIn canary.

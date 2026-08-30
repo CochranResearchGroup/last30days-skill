@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 12
+Plan version: 13
 Date: 2026-08-29
 
 ## Objective
@@ -896,3 +896,87 @@ Next action or stop reason:
   unprovable absent session identity, or make that exact session identity
   provable before returning an executable plan. Then obtain one new bounded
   20+20 attempt authorization.
+
+### Checkpoint P0057-C13 | 2026-08-30
+
+Plan version: 13
+
+State transition:
+
+- `upgraded_runtime_identity_contract_blocked -> direct_profile_owner_ready`.
+
+Progress classification:
+
+- `blocker_reduction`; the operator-authorized direct-launch repair established
+  one current, exact owner for the durable social profile without consuming a
+  Last30days provider attempt.
+
+Authority and bounds:
+
+- the operator explicitly authorized verifying that no live Chrome process or
+  profile lock used `last30days-facebook`, then launching that exact profile
+  through a fresh direct session that bypassed the contradictory access-plan
+  session;
+- no process termination, lock deletion, profile replacement, X/LinkedIn
+  navigation, Last30days canary, or recurring configuration change was
+  authorized or performed.
+
+Pre-launch evidence:
+
+- Agent Browser runtime status reported `browserAlive=false`, no PID, no CDP
+  endpoint, and the canonical user-data directory
+  `/home/ecochran76/.agent-browser/runtime-profiles/last30days-facebook/user-data`;
+- no Chrome or Chromium command line referenced that directory, and
+  `SingletonLock`, `SingletonSocket`, and `SingletonCookie` were all absent;
+- the service profile allocation was `available` with zero holders, browsers,
+  sessions, tabs, conflicts, and waiting jobs;
+- the retained first-class lease was historical, idle, observation-only, and
+  ownerless: `browserId=null`, `ownerGeneration=null`, and no live process
+  identity;
+- installed Agent Browser generation
+  `0.28.0-3b7f15a031dd-79a80827b0b7` was steady/ready. Its no-launch config
+  reported default build `stealthcdp_chromium` and
+  `stealthCdpChromiumReady=true`.
+
+Direct-launch receipt:
+
+- fresh direct daemon session `last30days-social-direct-20260830-c13` launched
+  the exact `last30days-facebook` runtime profile at `about:blank` with
+  `remote_headed`, `rdp_gateway`, `manual_attached_desktop`,
+  `private_virtual_display`, and detach-on-close behavior;
+- the launch selected the validated `default-stealthcdp-wsl-native` capability
+  binding and returned success without consulting or reusing
+  `last30days-social-replacement-20260829`;
+- post-launch runtime evidence reports live root PID `74831`, reachable CDP on
+  loopback port `37579`, one active `about:blank` page, and the exact canonical
+  user-data directory;
+- the service allocation is now `exclusive`, held only by the fresh session;
+  browser `session:last30days-social-direct-20260830-c13` is `ready`, the
+  session's profile selection reason is `explicit_profile`, and disposition is
+  `new_browser`;
+- Chrome's `SingletonLock` now resolves to `cooper-74831`, agreeing with the
+  live root PID. The retained RDP view stream is `reattachable_no_route`; no
+  Guacamole route was requested or acquired in this direct-launch packet.
+
+Acceptance and gate state:
+
+- the requested process/lock verification and exact-profile direct launch are
+  complete;
+- criterion 7 remains untested after C12. This checkpoint grants no new
+  Last30days 20+20 attempt authority, and criterion 8 remains closed.
+
+Authority classification:
+
+- `inherited_authority` for the exact operator-requested verification and
+  direct launch; `human_gate` for another Last30days provider attempt.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- preserve the fresh exact owner. If the operator authorizes another bounded
+  20+20 canary, preflight Last30days against the now-live owner without
+  replacing the profile, creating another browser lane, or trusting the stale
+  access-plan session identity.
