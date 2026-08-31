@@ -22792,3 +22792,83 @@ Next Bounded Action:
 - push the exact 0.3.82 candidate, transactionally install it, verify installed
   compatibility, then enqueue the single authorized 20+20 canary and stop at
   its first terminal receipt.
+
+## Turn 366 | 2026-08-31
+
+Focus: install the navigation-budget repair, recover the expired sole-profile
+lease, and execute the single authorized X 20 plus LinkedIn 20 canary.
+
+Authority Consulted:
+
+- operator's explicit `ok go` and standing force-lease instruction; Plan
+  0057/C21-C22; Roadmap P08; Last30days administration, Agent Browser
+  capability-bound lease, and repo validation and closeout policies.
+
+Decisions And Changes:
+
+- pushed commit `9e64953bf0956c0dad4ef4b0d0a978f1feb0cd79`, built exact service 0.3.82,
+  and transactionally installed the artifact with SHA-256
+  `21ef6cbc98838cdf2f5e875118239a066878310fea2a29efdc3e9fb2261c1cb1`;
+- after generation 64 expired, used the existing exact `last30days` capability
+  to reconcile its stale session and rejoin the same live browser at owner
+  generation 65. Chrome and the authenticated profile were preserved;
+- preflighted and enqueued exactly one schedule-disabled canary with X and
+  LinkedIn each capped at 20 and one attempt. Reddit, Facebook, and YouTube
+  were disabled in that private config;
+- did not enqueue 40+40 or change recurring source, volume, or schedule state.
+
+Validation Evidence:
+
+- installed `service_info` reports 0.3.82 ready and compatible on schema 16,
+  with runtime-manifest SHA-256
+  `b74585459c8d7e673ac8c910c8cb4de87dfa19bad441155a286e1f2c3c0be310`;
+- tick `tick-167701135a7f1c282b0610a635a6ea53` completed and promoted its head
+  after one execution attempt and one provider attempt per lane;
+- X observed 52, accepted 20, and rejected 32 duplicate statuses in 31 seconds.
+  All 20 accepted rows are unique canonical status URLs with authors;
+- LinkedIn observed 132, accepted 20, and rejected 112 in 83 seconds. All 20
+  accepted rows have unique activity URLs, but five are identical composer
+  chrome rather than posts, so only 15 are legitimate feed posts;
+- no accepted X or LinkedIn row contains a literal `Promoted` or `Sponsored`
+  marker. The current blocker is LinkedIn structural false acceptance, not
+  authentication, navigation, scrolling yield, or semantic-sidecar failure;
+- all collection, media, OCR, semantic-sidecar, indexing, catalog, promotion,
+  and execution stages terminalized successfully;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  SQLite quick-check is `ok`, and active tick attempts, provider attempts, and
+  tick resource leases are zero;
+- the generation-65 Agent Browser lease is active, capability-proven,
+  effect-capable, and has zero blocking identity axes.
+
+State Movement:
+
+- Plan 0057 advances to version 22/C22
+  `x_20_clean_linkedin_20_raw_with_composer_false_positives`; P08 remains OPEN.
+
+Progress Classification:
+
+- `partial_acceptance`; X now has a clean 20-post result, while LinkedIn's raw
+  20 includes five deterministic non-post rows.
+
+Authority Classification:
+
+- `explicit_authority` for the single live retry is consumed;
+- the standing force authority remains limited to capability-bound acquisition
+  on the sole `last30days-facebook` profile. Another provider attempt and the
+  conditional 40+40 gate require new explicit authority.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- not written; source-backed terminal evidence is durable in Plan 0057,
+  Roadmap P08, and this runbook turn.
+
+Next Bounded Action:
+
+- repair deterministic LinkedIn composer-chrome acceptance provider-free,
+  validate and install the bounded change, then seek authority for a fresh
+  LinkedIn 20-post proof. Do not run 40+40 until criterion 7 is clean.

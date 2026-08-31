@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 21
+Plan version: 22
 Date: 2026-08-29
 
 ## Objective
@@ -37,7 +37,15 @@ and only after that canary succeeds run one 40-item canary for each source.
 - deterministic readback found five accepted LinkedIn composer-chrome records
   (`Start a post / Video / Photo / Write article`) and one accepted item marked
   `Promoted`, so the raw LinkedIn 20/20 is not a clean legitimate-post result.
-  Criterion 7 remains false and criterion 8 remains gated.
+  Criterion 7 remains false and criterion 8 remains gated;
+- service 0.3.82 is now transactionally installed and compatible on schema 16.
+  C22 reconciled the expired generation-64 lease onto the same live browser at
+  generation 65 without replacing Chrome, then completed one authorized
+  schedule-disabled canary. X produced 20 unique canonical status posts, while
+  LinkedIn produced 20 unique canonical-shaped activity URLs but included five
+  composer-chrome rows. No accepted row carried a literal `Promoted` or
+  `Sponsored` marker. Criterion 7 therefore remains false and 40+40 remains
+  gated on a clean LinkedIn 20-post result.
 
 ## Scope
 
@@ -1676,3 +1684,91 @@ Next action or stop reason:
   installed identity, then enqueue one schedule-disabled X 20 plus LinkedIn 20
   canary. Stop at its first terminal receipt; do not run 40+40 unless both lanes
   produce clean 20-item results.
+
+### Checkpoint P0057-C22 | 2026-08-31
+
+Plan version: 22
+
+State transition:
+
+- `navigation_budget_propagation_candidate_validated -> x_20_clean_linkedin_20_raw_with_composer_false_positives`.
+
+Progress classification:
+
+- `partial_acceptance`; the installed navigation repair restores a complete X
+  20-item feed collection, and LinkedIn reaches its raw ceiling, but LinkedIn
+  still admits deterministic composer chrome as if it were a post.
+
+Authority and bounds:
+
+- the operator's explicit `ok go` authorized exactly one schedule-disabled X
+  20 plus LinkedIn 20 retry;
+- the standing force-acquisition grant was used only after the generation-64
+  sole-profile lease expired and advertised stale replacement recourse;
+- the exact capability reconciled and rebound the same live
+  `session:last30days-force-20260831-c20` browser at generation 65. No browser
+  process or authenticated profile was replaced;
+- Reddit, Facebook, and YouTube remained disabled in the private canary. No
+  recurring configuration changed and no 40+40 tick was created.
+
+Installed and live evidence:
+
+- exact service 0.3.82 artifact SHA-256
+  `21ef6cbc98838cdf2f5e875118239a066878310fea2a29efdc3e9fb2261c1cb1`
+  is installed ready and compatible on schema 16 with runtime-manifest SHA-256
+  `b74585459c8d7e673ac8c910c8cb4de87dfa19bad441155a286e1f2c3c0be310`;
+- tick `tick-167701135a7f1c282b0610a635a6ea53` terminalized `complete` and promoted
+  its head after one execution attempt, two provider attempts, 35 network
+  requests, 114 wall seconds, 40 accepted items, zero model tokens, and zero
+  cost;
+- X attempt `provider-attempt-c01baeb332ae2b4681f6a788575e381b`
+  observed 52, accepted 20, rejected 32 duplicate statuses, and completed in 31
+  seconds. All 20 accepted URLs are unique canonical `x.com/*/status/*` links,
+  all have authors, and none is composer chrome or labeled promoted/sponsored;
+- LinkedIn attempt `provider-attempt-aa0f08e7024fecf737043bb547326e4c`
+  observed 132, accepted 20, and rejected 112. Its rejection ledger records 82
+  duplicates, 27 outside-range observations, and bounded missing-permalink or
+  unknown-kind cases;
+- all 20 accepted LinkedIn URLs are unique canonical-shaped activity URLs, but
+  five rows contain exactly `Start a post / Video / Photo / Write article` and
+  are not posts. The remaining 15 are feed-post records. No accepted LinkedIn
+  row contains a literal `Promoted` or `Sponsored` marker; two legitimate-shaped
+  feed rows lack a parsed author;
+- both lane collection, media, OCR, and semantic-sidecar stages succeeded;
+  global lexical, semantic, catalog, and head-promotion stages also succeeded;
+- the recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+  Its daily schedule remains enabled and ready for
+  `2026-09-01T00:00:00Z`; recurring Reddit and Facebook remain disabled, X and
+  LinkedIn home feeds remain enabled, and ordinary YouTube is unchanged;
+- SQLite `quick_check` is `ok`; active tick attempts, active provider attempts,
+  and open tick resource leases are all zero;
+- Agent Browser lease `profile-lease-v1:fc553beb74ded8415f61dbf1` is active for
+  principal `last30days` on owner generation 65, capability-proven,
+  effect-capable, and has zero blocking identity axes.
+
+Acceptance reconciliation:
+
+- criterion 6 remains satisfied and X now satisfies its half of criterion 7;
+- criterion 7 remains false because only 15 of LinkedIn's 20 accepted rows are
+  actual feed posts. Criterion 8 therefore remains closed and no 40+40 canary
+  is authorized by this result;
+- criterion 9 remains satisfied.
+
+Authority classification:
+
+- `inherited_authority` includes the operator's explicit grant and consumed the
+  one live 20+20 retry;
+- `inherited_authority` remains standing only for capability-bound force lease
+  acquisition on the sole social profile when required. Another provider
+  attempt requires renewed explicit authority.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- repair deterministic LinkedIn composer-chrome acceptance without provider
+  effects, validate and install that bounded change, then request authority for
+  a fresh 20-item LinkedIn proof. Do not run 40+40 until criterion 7 is clean.
