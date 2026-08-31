@@ -22403,3 +22403,79 @@ Next Bounded Action:
 - Agent Browser's owner reconciles the generation-57 transfer. Once both feed
   access plans expose an effect-capable route, run the already-authorized 20+20
   canary without another attempt-budget request.
+
+## Turn 361 | 2026-08-30
+
+Focus: retry the still-authorized 20+20 X/LinkedIn canary after another Agent
+Browser upgrade.
+
+Authority Consulted:
+
+- operator's renewed `try again`; Plan 0057/C16-C17; Roadmap P08; Last30days
+  administration, Agent Browser service ownership, and repo planning and
+  closeout policies.
+
+Decisions And Changes:
+
+- called Last30days `service_info` first and confirmed compatibility, then read
+  workstation status and both no-launch feed access plans;
+- withheld tick preflight and enqueue because neither plan exposes an
+  executable browser request; did not bypass the broker, create another profile
+  lane, mutate Agent Browser, or consume the authorized provider retry.
+
+Validation Evidence:
+
+- installed Last30days service 0.3.81 is ready on schema 16 and compatible with
+  MCP 4.0.3;
+- Agent Browser is globally ready on accepted generation
+  `0.28.0-733cde7ff22e-04a1b2314f0d`; transaction
+  `upgrade-1c34440b-669a-43b1-9feb-edfc87229ae1` is accepted at revision 13;
+- X and LinkedIn each select `last30days-facebook` with fresh target readiness,
+  but both report `serviceRequest.available=false`,
+  `blockedByLifecycleOwner=true`, and
+  `acquisitionBlocker=lifecycle_owner_blocks_replacement`;
+- logical browser `session:last30days-social-direct-20260830-c13` remains at
+  owner generation 57 with lifecycle and cleanup obligation `transferring`, no
+  compatible live browser or reusable session, and required action
+  `inspect_lifecycle_owner` at registry revision 1919;
+- no Last30days tick or provider attempt was created: active tick attempts,
+  active provider attempts, and open resource leases are all zero; SQLite
+  quick-check is `ok`;
+- `daily-default` remains enabled and ready for
+  `2026-09-01T00:00:00Z`; recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
+  with Reddit and Facebook still disabled.
+- active and goal-only planning audits, the plan-authority audit, its focused
+  test suite, and `git diff --check` pass.
+
+State Movement:
+
+- Plan 0057 advances to version 17/C17
+  `replacement_upgrade_accepted_same_profile_lifecycle_transfer_blocked`; P08
+  remains OPEN.
+
+Progress Classification:
+
+- `blocker_revalidation`; the replacement workstation generation is healthy,
+  while the profile-specific lifecycle owner is unchanged and still blocks
+  browser acquisition.
+
+Authority Classification:
+
+- `inherited_authority` for the still-unconsumed 20+20 retry after executable
+  access plans; `external_owner_gate` for generation-57 lifecycle repair.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- not written; this is another nonterminal readback of the same retained-profile
+  lifecycle blocker, now bound to the replacement workstation generation.
+
+Next Bounded Action:
+
+- Agent Browser's owner reconciles the generation-57 transfer. Once both feed
+  plans expose executable service requests, run the already-authorized 20+20
+  canary without another attempt-budget request.

@@ -1149,6 +1149,14 @@ Current State:
   `lifecycle_owner_blocks_replacement`. No provider attempt was consumed; the
   exact 20+20 authority remains available after Agent Browser reconciles that
   profile-specific owner. P08 remains OPEN and 40+40 remains gated.
+- Plan 0057 version 17/C17 records that replacement Agent Browser generation
+  `0.28.0-733cde7ff22e-04a1b2314f0d` is accepted and globally ready, but both
+  feed plans remain blocked by the same generation-57 lifecycle transfer for
+  `session:last30days-social-direct-20260830-c13`. The correct profile and fresh
+  target readiness are present, but neither plan exposes an executable service
+  request. No provider attempt was consumed; the exact 20+20 authority remains
+  available after profile-owner reconciliation. P08 remains OPEN and 40+40
+  remains gated.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,

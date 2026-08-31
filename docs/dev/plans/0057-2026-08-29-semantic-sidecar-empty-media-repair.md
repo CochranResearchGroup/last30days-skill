@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 16
+Plan version: 17
 Date: 2026-08-29
 
 ## Objective
@@ -1203,6 +1203,8 @@ Last30days state:
   `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
 - SQLite quick-check is `ok`, with zero active tick/provider attempts and zero
   open resource leases;
+- active and goal-only planning audits, the plan-authority audit, its focused
+  test suite, and `git diff --check` pass;
 - criterion 7 remains untested by this packet and criterion 8 remains closed.
 
 Authority classification:
@@ -1222,3 +1224,81 @@ Next action or stop reason:
   a valid replacement request. Then run the already-authorized 20+20 retry
   without requesting another attempt budget. Do not bypass the broker or create
   a duplicate profile lane.
+
+### Checkpoint P0057-C17 | 2026-08-30
+
+Plan version: 17
+
+State transition:
+
+- `upgrade_accepted_profile_lifecycle_transfer_blocked -> replacement_upgrade_accepted_same_profile_lifecycle_transfer_blocked`.
+
+Progress classification:
+
+- `blocker_revalidation`; a newer Agent Browser generation is accepted and
+  globally ready, but it did not reconcile the retained profile's generation-57
+  transfer or make either feed request executable.
+
+Authority and bounds:
+
+- the operator requested another attempt under the still-unconsumed bounded
+  retry authority;
+- Last30days called service discovery first, then read workstation status and
+  both no-launch access plans. No tick, provider attempt, browser request,
+  profile mutation, Agent Browser repair, Last30days installation, or recurring
+  change occurred. The one authorized schedule-disabled 20+20 attempt remains
+  unconsumed.
+
+Current upgrade and access-plan evidence:
+
+- workstation status is `ready=true` on newly accepted generation
+  `0.28.0-733cde7ff22e-04a1b2314f0d`; transaction
+  `upgrade-1c34440b-669a-43b1-9feb-edfc87229ae1` is accepted at revision 13,
+  replacing generation `0.28.0-899c9147e387-94e7829f7efc`;
+- both X and LinkedIn again select authenticated profile
+  `last30days-facebook`; each target readiness row is `fresh` with
+  `recommendedAction=use_profile`;
+- both plans still return `serviceRequest.available=false`,
+  `blockedByAcquisition=true`, `blockedByLifecycleOwner=true`, and
+  `acquisitionBlocker=lifecycle_owner_blocks_replacement`;
+- retained logical browser `session:last30days-social-direct-20260830-c13`
+  remains owner generation 57 with lifecycle and cleanup obligation both
+  `transferring`, no compatible live browser or reusable session, and required
+  action `inspect_lifecycle_owner` at registry revision 1919;
+- this remains a browser-acquisition failure before authentication probe,
+  navigation, infinite scroll, extraction, acceptance, or deterministic
+  ad/spam filtering. Enqueueing now would knowingly spend the retry on another
+  pre-observation 0+0 result.
+
+Last30days and invariant reconciliation:
+
+- installed service 0.3.81 remains ready on schema 16 and compatible with MCP
+  4.0.3;
+- `daily-default` remains enabled and ready for
+  `2026-09-01T00:00:00Z`, with last boundary `2026-08-31T00:00:00Z` and last
+  tick `tick-1c5d1cc0a33d035e15db0e9dc9fb8bab` terminal
+  `complete_degraded`;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  Reddit and Facebook targets remain disabled, while the X and LinkedIn home
+  feeds remain enabled;
+- SQLite quick-check is `ok`, with zero active tick/provider attempts and zero
+  open resource leases;
+- criterion 7 remains untested by this packet and criterion 8 remains closed.
+
+Authority classification:
+
+- `inherited_authority` remains for exactly one schedule-disabled 20+20 retry
+  after both plans expose executable requests; `external_owner_gate` applies to
+  the still-transferring generation-57 lifecycle owner.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- Agent Browser's owner must reconcile the retained generation-57 transfer so
+  both X and LinkedIn plans return executable service requests. Then run the
+  already-authorized 20+20 canary without requesting another attempt budget;
+  do not bypass the broker or create a duplicate profile lane.
