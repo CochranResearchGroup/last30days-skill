@@ -1175,6 +1175,15 @@ Current State:
   LinkedIn tab acquisition succeeds, and bounded probes reach X Home and the
   LinkedIn Feed. No Last30days attempt was consumed; P08 remains OPEN and 40+40
   remains gated pending renewed authority for one 20+20 canary.
+- Plan 0057 version 20/C20 records terminal tick
+  `tick-dea48f46dcda2e88caf9d5f2d58bff9e`. LinkedIn reached raw 20/20 with 20
+  unique canonical-shaped URLs and successful media, OCR, semantic-sidecar,
+  indexing, and promotion stages. X reached 0/20 because its acquired tab's
+  navigation exceeded Agent Browser's persisted 25-second job deadline; the
+  generation-64 lease stayed healthy and force acquisition was not implicated.
+  Five accepted LinkedIn rows are composer chrome and one contains a
+  `Promoted` marker, so criterion 7 remains false. P08 stays OPEN and 40+40
+  remains gated.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,

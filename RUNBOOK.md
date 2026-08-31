@@ -22639,3 +22639,93 @@ Next Bounded Action:
 - preserve the generation-64 browser and, only after renewed operator
   authority, run exactly one schedule-disabled X 20 plus LinkedIn 20 canary.
   Do not run 40+40 unless both lanes satisfy criterion 7.
+
+## Turn 364 | 2026-08-31
+
+Focus: persist standing force-acquisition authority and execute one renewed
+schedule-disabled X 20 plus LinkedIn 20 canary.
+
+Authority Consulted:
+
+- operator's explicit 20+20 instruction and standing force-lease instruction;
+  Plan 0057/C19-C20; Roadmap P08; Last30days administration, Agent Browser
+  service/profile ownership, and repo planning, validation, documentation, and
+  closeout policies.
+
+Decisions And Changes:
+
+- saved the standing authority and exact capability-bound generation-repair
+  procedure as user memory, bounded to the sole `last30days-facebook` profile;
+- called Last30days `service_info` first, confirmed compatibility, created one
+  owner-private schedule-disabled configuration, preflighted it, and enqueued
+  its exact tick once;
+- did not force the lease because the existing generation-64 lease was active,
+  capability-proven, and had zero blocking axes;
+- did not retry X after navigation failure, run 40+40, alter recurring state,
+  enable another source, or infer that force-acquisition authority covers a
+  non-acquisition failure.
+
+Validation Evidence:
+
+- tick `tick-dea48f46dcda2e88caf9d5f2d58bff9e` terminalized
+  `complete_degraded` after two attempts, 18 requests, 154 wall seconds, 20
+  items, zero model tokens, and zero cost;
+- X attempt `provider-attempt-6ffee9e8af3431ff59e17a6c82cac90d`
+  returned 0/20 at navigation. Agent Browser job
+  `mcp-service-request-navigate-84462b3e-6a01-4221-bff9-85c9c83a53a3`
+  started after successful acquisition but exceeded its persisted 25-second
+  deadline and was reconciled `timed_out`;
+- LinkedIn attempt `provider-attempt-3675ad9e4042dbe70ae94ff6cd2f8cb3`
+  observed 310, accepted 20 unique canonical-shaped URLs, rejected 290, and
+  completed all collection, media, OCR, semantic-sidecar, lexical, semantic,
+  and promotion stages successfully;
+- LinkedIn published 20 versions/evidence rows, nine assets, and 18 derivatives
+  comprising 12 success plus six expected empty outcomes;
+- deterministic accepted-item inspection found five composer-chrome rows and
+  one `Promoted` row, so the nominal LinkedIn 20/20 is not a clean legitimate
+  non-ad set;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`,
+  `daily-default` remains ready for `2026-09-01T00:00:00Z`, SQLite quick-check
+  is `ok`, and active tick/provider attempt plus open resource-lease counts are
+  zero;
+- Agent Browser remains ready on `session:last30days-force-20260831-c20`,
+  generation 64, with an active capability-proven lease and zero identity
+  blockers. Its service-owned X tab-release job is still queued.
+- Active and goal-only planning audits, the plan-authority audit, its eight
+  focused tests, and `git diff --check` pass.
+
+State Movement:
+
+- Plan 0057 advances to version 20/C20
+  `linkedin_20_x_navigation_timeout_with_acceptance_false_positives`; P08
+  remains OPEN.
+
+Progress Classification:
+
+- `partial_acceptance`; LinkedIn retrieval reached the ceiling and downstream
+  stages passed, but X did not reach observation and obvious LinkedIn chrome/ad
+  acceptance defects remain.
+
+Authority Classification:
+
+- `inherited_authority` records the standing, until-revoked grant for
+  capability-bound sole-profile lease acquisition; `human_gate` applies to
+  another live provider attempt. The 40+40 gate remains closed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- not written; the terminal receipt, standing-authority memory, and exact next
+  repair boundaries are durably recorded in Plan 0057, Roadmap P08, and this
+  runbook turn.
+
+Next Bounded Action:
+
+- reproduce and repair X's persisted navigation-deadline mismatch without a
+  live provider attempt, then tighten deterministic LinkedIn composer/ad
+  rejection. Do not run another canary or 40+40 without explicit live-attempt
+  authority.

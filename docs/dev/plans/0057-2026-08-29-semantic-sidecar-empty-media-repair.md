@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 19
+Plan version: 20
 Date: 2026-08-29
 
 ## Objective
@@ -28,8 +28,16 @@ and only after that canary succeeds run one 40-item canary for each source.
   agree at generation 64 with no blocking identity axes;
 - bounded URL/title probes reach `https://x.com/home` as `(13) Home / X` and
   `https://www.linkedin.com/feed/` as `Feed | LinkedIn` through the same live
-  browser. No Last30days provider attempt was run, so criterion 7 still needs a
-  newly authorized 20+20 canary and criterion 8 remains gated.
+  browser;
+- C20 consumed the newly authorized 20+20 canary. LinkedIn reached its ceiling
+  with 20 accepted unique canonical-shaped URLs, but X failed at navigation
+  with zero observations after its Agent Browser navigation job exceeded a
+  persisted 25-second deadline. The lease remained healthy and did not require
+  forced acquisition;
+- deterministic readback found five accepted LinkedIn composer-chrome records
+  (`Start a post / Video / Photo / Write article`) and one accepted item marked
+  `Promoted`, so the raw LinkedIn 20/20 is not a clean legitimate-post result.
+  Criterion 7 remains false and criterion 8 remains gated.
 
 ## Scope
 
@@ -1498,3 +1506,115 @@ Next action or stop reason:
 - preserve the ready generation-64 browser and obtain explicit authority for
   exactly one schedule-disabled 20+20 X/LinkedIn canary. Do not run 40+40 until
   both 20-item lanes satisfy criterion 7.
+
+### Checkpoint P0057-C20 | 2026-08-31
+
+Plan version: 20
+
+State transition:
+
+- `capability_bound_generation_64_reuse_ready -> linkedin_20_x_navigation_timeout_with_acceptance_false_positives`.
+
+Progress classification:
+
+- `partial_acceptance`; LinkedIn retrieval and all downstream media/index
+  stages succeeded at the requested ceiling, while X failed before observation
+  and the accepted LinkedIn set contains deterministically invalid chrome/ad
+  records.
+
+Authority and bounds:
+
+- the operator authorized exactly one new schedule-disabled X 20 plus LinkedIn
+  20 canary and granted standing capability-bound force-acquisition authority
+  for the sole `last30days-facebook` profile until revoked;
+- the live profile lease was already active, capability-proven, generation 64,
+  and free of blocking identity axes, so no forced lease action was needed;
+- the canary used one attempt per source, excluded Reddit, YouTube, and
+  Facebook, preserved zero cost/model budgets, and stopped at its first
+  terminal receipt. No retry or 40+40 run was admitted.
+
+Preflight and terminal receipt:
+
+- `service_info` was the first product call and reported service 0.3.81 ready,
+  schema 16, MCP adapter 4.0.3, and compatible;
+- preflight admitted interval `2026-08-30T13:53:51Z` through
+  `2026-08-31T13:53:51Z`, schedule
+  `plan-0057-c20-x-linkedin-20-retry`, config revision
+  `plan-0057-x-linkedin-20-retry-v8`, config digest
+  `sha256:dda3bc113b708a215bf6699d5fb931616f39657e4b2880d80b7205cb7612fd59`,
+  two attempts, 40 aggregate items, 200 requests, and 660 wall seconds;
+- tick `tick-dea48f46dcda2e88caf9d5f2d58bff9e` terminalized
+  `complete_degraded` after 154 consumed wall seconds, two attempts, 18 network
+  requests, 20 items, zero model tokens, and zero cost;
+- all Last30days provider attempts and resource leases are terminal/released,
+  and the promoted snapshot is
+  `tick-snapshot-fe881dc9233174468d994b62dc190dfa`.
+
+X outcome:
+
+- X attempt `provider-attempt-6ffee9e8af3431ff59e17a6c82cac90d`
+  failed transiently at `failure_stage=navigation` with safe code
+  `agent_browser_error`, zero observed, attempted, accepted, or rejected items,
+  one request, and 17 wall seconds;
+- Agent Browser job
+  `mcp-service-request-navigate-84462b3e-6a01-4221-bff9-85c9c83a53a3`
+  acquired and started normally, then timed out because it exceeded its
+  persisted 25-second deadline. This is not a lease-acquisition or
+  authentication failure;
+- the service-owned X tab-release job remains queued behind Agent Browser
+  service work. Last30days' own resource lease is released, and the retained
+  browser remains ready on generation 64 with zero lease identity blockers.
+
+LinkedIn outcome:
+
+- LinkedIn attempt `provider-attempt-3675ad9e4042dbe70ae94ff6cd2f8cb3`
+  succeeded after observing and attempting 310 candidates, accepting 20 and
+  rejecting 290 in 137 wall seconds and 17 requests;
+- all 20 accepted records have unique canonical-shaped LinkedIn activity URLs;
+  rejection counters include 158 duplicates, 66 `kind_ad`, 66 `sponsored`, 57
+  outside-date-range, nine `kind_unknown`, and nine `missing_permalink` rows.
+  Counters are typed reasons and may overlap;
+- deterministic inspection of accepted content found five composer-chrome
+  records whose text is exactly `Start a post / Video / Photo / Write article`,
+  six accepted records with missing dates, two with missing authors, and one
+  accepted item containing a `Promoted` marker. Therefore 20/20 is a raw
+  contract yield, not proof of 20 legitimate non-ad posts;
+- the lane published 20 source versions and evidence rows, nine media assets,
+  and 18 derivatives: 12 `success` plus six expected `empty`. Collection,
+  media, OCR, semantic-sidecar, lexical-index, semantic-index, and head-promotion
+  stages all succeeded.
+
+Current runtime and invariant reconciliation:
+
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  Reddit and Facebook remain disabled, X and LinkedIn home feeds remain
+  enabled, and the ordinary YouTube topic remains unchanged;
+- `daily-default` remains ready for `2026-09-01T00:00:00Z` with last ordinary
+  tick `tick-1c5d1cc0a33d035e15db0e9dc9fb8bab`;
+- SQLite `PRAGMA quick_check` is `ok`, with zero active tick attempts, zero
+  active provider attempts, and zero open Last30days resource leases;
+- active and goal-only planning audits, the plan-authority audit, its eight
+  focused tests, and `git diff --check` pass;
+- the standing force-acquisition rule and exact generation-64 repair sequence
+  were saved as user memory. The private canary config was moved to trash and
+  is not committed.
+
+Authority classification:
+
+- `inherited_authority` applies only to capability-bound force acquisition when
+  the sole social profile lease is stale or contradictory; it did not apply to
+  this X navigation timeout;
+- `human_gate` applies to another live provider attempt. The 40+40 gate remains
+  closed because criterion 7 failed.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- reproduce and repair the X navigation deadline without a live provider
+  attempt, and separately tighten deterministic LinkedIn rejection for composer
+  chrome and accepted `Promoted` markers. Do not run another canary or 40+40
+  without explicit live-attempt authority.
