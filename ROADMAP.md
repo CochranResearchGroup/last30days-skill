@@ -1184,6 +1184,13 @@ Current State:
   Five accepted LinkedIn rows are composer chrome and one contains a
   `Promoted` marker, so criterion 7 remains false. P08 stays OPEN and 40+40
   remains gated.
+- Plan 0057 version 21/C21 removes the shared adapter's fixed 25-second
+  navigation ceiling. Navigation now inherits the bounded source/run budget,
+  retains a five-second caller margin, and remains capped by the existing
+  105-second cumulative adapter limit. The regression is red/green, affected
+  presubmit and canonical Python/MCP Go gates pass, and service 0.3.82 is the
+  validated install candidate. No provider attempt was consumed; P08 remains
+  OPEN pending the explicitly authorized 20+20 retry.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,

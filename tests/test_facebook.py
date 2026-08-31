@@ -255,7 +255,7 @@ class FacebookCliAdapterTests(unittest.TestCase):
                     "--session",
                     "shared-social",
                     "--job-timeout-ms",
-                    "25000",
+                    "40000",
                     "open",
                     "https://www.facebook.com/",
                 ],

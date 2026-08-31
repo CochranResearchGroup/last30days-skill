@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 20
+Plan version: 21
 Date: 2026-08-29
 
 ## Objective
@@ -1618,3 +1618,61 @@ Next action or stop reason:
   attempt, and separately tighten deterministic LinkedIn rejection for composer
   chrome and accepted `Promoted` markers. Do not run another canary or 40+40
   without explicit live-attempt authority.
+
+### Checkpoint P0057-C21 | 2026-08-31
+
+Plan version: 21
+
+State transition:
+
+- `linkedin_20_x_navigation_timeout_with_acceptance_false_positives -> navigation_budget_propagation_candidate_validated`.
+
+Progress classification:
+
+- `blocker_reduction`; the fixed 25-second navigation ceiling that prevented X
+  observation is reproduced, removed, and validated without provider effects.
+
+Authority and bounds:
+
+- the operator's explicit `ok go` authorizes this repair, installation, and one
+  new schedule-disabled X 20 plus LinkedIn 20 retry;
+- the standing force-acquisition grant remains limited to an actual stale or
+  contradictory sole-profile lease. It does not authorize unrelated Agent
+  Browser cleanup or retry a non-acquisition failure;
+- no live provider attempt, recurring mutation, force acquisition, 40+40 run,
+  or source expansion occurred in this checkpoint.
+
+Implementation and validation evidence:
+
+- the shared Agent Browser adapter no longer caps `navigate` at 25,000 ms. It
+  derives the outer wait from the source timeout and remaining run budget up to
+  the existing 105-second ceiling, then persists an inner deadline with a
+  five-second caller margin. Other browser actions retain their 30-second cap;
+- the focused X regression failed red because the adapter emitted 25,000 ms
+  instead of the expected 40,000 ms under a 45-second source timeout, then
+  passed green after the repair;
+- the shared X, LinkedIn, Reddit, Facebook, runtime, release, package, and
+  transactional-install selection passes with 278 tests and three skips;
+- the canonical Python suite passes with 2,714 tests, seven skips, and six
+  subtests. All MCP Go packages pass from `mcp/`; an initial root-level
+  `go test ./...` was an invalid invocation because the repository root is not
+  a Go module and is not counted as a product failure;
+- service 0.3.82's changelog and deterministic runtime manifest include the
+  repair. Python compilation and `git diff --check` pass.
+
+Authority classification:
+
+- `inherited_authority` for the implementation and exact installation;
+  `explicit_authority` for one new 20+20 live canary. Criterion 8 remains
+  closed until a clean criterion-7 result exists.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- publish and transactionally install exact service 0.3.82, confirm compatible
+  installed identity, then enqueue one schedule-disabled X 20 plus LinkedIn 20
+  canary. Stop at its first terminal receipt; do not run 40+40 unless both lanes
+  produce clean 20-item results.

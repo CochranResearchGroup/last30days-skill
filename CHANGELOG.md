@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Budget-propagated social navigation.** Service 0.3.82 derives each Agent
+  Browser navigation deadline from the source lane's bounded timeout instead
+  of imposing a fixed 25-second ceiling. The service retains a five-second
+  caller margin and the existing 105-second cumulative adapter ceiling, so
+  slow authenticated feed navigation can finish without escaping the
+  provider budget.
+
 - **Structured Agent Browser service failures.** Service 0.3.82 parses the
   structured MCP payload even when `service_request` returns an error envelope,
   preserving its redacted message and bounded leading reason code. Lifecycle

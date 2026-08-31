@@ -22729,3 +22729,66 @@ Next Bounded Action:
   live provider attempt, then tighten deterministic LinkedIn composer/ad
   rejection. Do not run another canary or 40+40 without explicit live-attempt
   authority.
+
+## Turn 365 | 2026-08-31
+
+Focus: repair the fixed Agent Browser navigation deadline and validate service
+0.3.82 before the newly authorized 20+20 retry.
+
+Authority Consulted:
+
+- operator's explicit `ok go`; Plan 0057/C20-C21; Roadmap P08; Last30days
+  administration and repo planning, testing, architecture, release,
+  documentation, integration, validation, and closeout policies.
+
+Decisions And Changes:
+
+- reproduced the exact timeout mismatch at the shared adapter seam: a
+  45-second source budget still persisted a 25,000 ms navigation job;
+- removed only the fixed navigation cap. Navigation now uses the bounded source
+  and remaining-run budget up to 105 seconds with a five-second caller margin;
+  non-navigation actions retain their existing 30-second cap;
+- updated the service 0.3.82 changelog and deterministic runtime manifest;
+- did not perform provider work, force a healthy lease, alter recurrence, run
+  40+40, or broaden source scope.
+
+Validation Evidence:
+
+- the focused regression failed red at 25,000 versus expected 40,000 ms and
+  passed green after repair;
+- affected presubmit passes with 278 tests and three skips; the canonical
+  Python suite passes with 2,714 tests, seven skips, and six subtests;
+- all MCP Go packages pass from `mcp/`; the first root-level Go invocation was
+  invalid because the root is not a Go module and was corrected without code
+  change;
+- Python compilation and `git diff --check` pass.
+
+State Movement:
+
+- Plan 0057 advances to version 21/C21
+  `navigation_budget_propagation_candidate_validated`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; the exact pre-observation X blocker is removed and the
+  changed-input candidate is ready for installed-runtime proof.
+
+Authority Classification:
+
+- `inherited_authority` for implementation and installation;
+  `explicit_authority` for one schedule-disabled 20+20 retry. The 40+40 gate
+  remains closed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending terminal live evidence; no intermediate memory write.
+
+Next Bounded Action:
+
+- push the exact 0.3.82 candidate, transactionally install it, verify installed
+  compatibility, then enqueue the single authorized 20+20 canary and stop at
+  its first terminal receipt.

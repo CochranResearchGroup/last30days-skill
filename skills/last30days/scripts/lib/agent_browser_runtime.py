@@ -1018,6 +1018,7 @@ class CliAgentBrowserClient:
 
     def act(self, workspace: BrowserWorkspace, action: BrowserAction) -> BrowserState:
         prefix = ["--session", workspace.session_name]
+        command_timeout = min(self.timeout, 30)
         if action.operation == "wait":
             try:
                 delay = max(0.0, float(action.value or "0") / 1000.0)
@@ -1032,12 +1033,20 @@ class CliAgentBrowserClient:
         elif action.operation == "click":
             args = ["click", action.target]
         elif action.operation == "navigate":
-            outer_timeout = min(self.timeout, 30)
+            outer_timeout = min(self.timeout, MAX_RUN_BUDGET_SECONDS)
+            if self._run_deadline is not None:
+                outer_timeout = max(
+                    1,
+                    min(
+                        outer_timeout,
+                        math.ceil(self._run_deadline - time.monotonic()),
+                    ),
+                )
             inner_timeout_ms = min(
                 self.job_timeout_ms,
-                25_000,
                 max(1_000, (outer_timeout - 5) * 1_000),
             )
+            command_timeout = outer_timeout
             prefix.extend(["--job-timeout-ms", str(inner_timeout_ms)])
             args = ["open", action.value]
         elif action.operation == "new_tab":
@@ -1046,7 +1055,7 @@ class CliAgentBrowserClient:
             args = ["scroll", "down", action.value or "1400"]
         else:  # pragma: no cover - Literal guards production callers
             raise AgentBrowserRuntimeFailure("agent_browser_error", f"unsupported browser action: {action.operation}")
-        raw = self._invoke(prefix + args, timeout=min(self.timeout, 30))
+        raw = self._invoke(prefix + args, timeout=command_timeout)
         return BrowserState(url=str(raw.get("url") or ""), title=str(raw.get("title") or ""))
 
     def prepare_site_tab(
