@@ -69,6 +69,7 @@ class BrowserWorkspaceRequest:
     browser_host: str = "remote_headed"
     display_isolation: str = "private_virtual_display"
     control_input_provider: str = "manual_attached_desktop"
+    constrain_presentation: bool = False
 
 
 @dataclass(frozen=True)
@@ -186,20 +187,26 @@ class CliAgentBrowserClient:
         self._service_tab_url = ""
         requested_target_service_id = target_service_id or request.target_service_id
         if access_plan is None:
+            access_plan_args = [
+                "service", "access-plan",
+                "--service-name", request.service_name,
+                "--agent-name", request.agent_name,
+                "--task-name", request.task_name,
+                "--target-service-id", requested_target_service_id,
+                "--url", request.start_url,
+                "--browser-build", request.browser_build,
+            ]
+            if request.constrain_presentation:
+                access_plan_args.extend(
+                    [
+                        "--browser-host", request.browser_host,
+                        "--view-stream-provider", request.view_provider,
+                        "--control-input-provider", request.control_input_provider,
+                        "--display-isolation", request.display_isolation,
+                    ]
+                )
             access_plan = self._invoke(
-                [
-                    "service", "access-plan",
-                    "--service-name", request.service_name,
-                    "--agent-name", request.agent_name,
-                    "--task-name", request.task_name,
-                    "--target-service-id", requested_target_service_id,
-                    "--url", request.start_url,
-                    "--browser-build", request.browser_build,
-                    "--browser-host", request.browser_host,
-                    "--view-stream-provider", request.view_provider,
-                    "--control-input-provider", request.control_input_provider,
-                    "--display-isolation", request.display_isolation,
-                ],
+                access_plan_args,
                 timeout=min(request.timeout, 30),
             )
         selected_profile = agent_browser_config.selected_profile_id(access_plan)

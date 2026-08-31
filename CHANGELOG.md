@@ -18,6 +18,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **LinkedIn bounded snapshot accumulation.** Service 0.3.87 recognizes all
+  canonical LinkedIn feed URN kinds (`activity`, `ugcPost`, and `share`),
+  prefers post-local `rootUrn` evidence over polluted feed-level React arrays,
+  and merges one exact `See new posts` refresh plus one bounded feed replay
+  and scroll when a finite personalized snapshot yields fewer than the
+  requested limit.
+
+- **Reuse-compatible social acquisition.** Service 0.3.86 keeps ordinary X,
+  LinkedIn, Reddit, and media scrape acquisition independent from optional
+  operator-presentation preferences. Access-plan requests no longer force an
+  RDP host, viewer, input, or display shape that can make an already-live
+  authenticated CDP browser appear incompatible; those constraints remain
+  available for the separate manual-authentication handoff path.
+
+- **Deterministic LinkedIn post ownership.** Service 0.3.85 discovers current
+  feed posts from their post-owned control menu and action cluster instead of
+  sweeping every feed listitem. It rejects neighboring virtualized controls
+  even when React state lends them a canonical activity URN, bounds runtime
+  identity recovery to qualified React props without traversing fiber graphs,
+  prefers the outer post identity over quoted content, and records the
+  ownership source and root shape with each accepted item.
+
 - **Deterministic LinkedIn sort-control rejection.** Service 0.3.84 rejects
   exact LinkedIn comment-sort controls such as `Sort by: Top` when virtualized
   feed DOM state incorrectly associates them with a canonical activity link.

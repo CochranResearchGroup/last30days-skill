@@ -62,6 +62,48 @@ def _access_plan(*, url: str, agent: str, task: str, service: str):
 
 
 class AgentBrowserRuntimeTests(unittest.TestCase):
+    def test_scrape_access_plan_does_not_force_operator_presentation_constraints(self):
+        client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
+        request = _request(
+            url="https://www.linkedin.com/feed/",
+            agent="linkedin-scraper",
+            task="linkedin-home-feed",
+            service="linkedin",
+        )
+        plan = _access_plan(
+            url=request.start_url,
+            agent=request.agent_name,
+            task=request.task_name,
+            service=request.target_service_id,
+        )
+        invocations = []
+
+        def invoke(args, **_kwargs):
+            invocations.append(args)
+            return plan
+
+        with (
+            mock.patch.object(client, "_invoke", side_effect=invoke),
+            mock.patch.object(
+                client,
+                "_invoke_service_request",
+                side_effect=agent_browser_runtime.AgentBrowserRuntimeFailure(
+                    "agent_browser_error", "stop after access plan"
+                ),
+            ),
+            mock.patch.object(
+                agent_browser_runtime.agent_browser_config, "record_access_plan"
+            ),
+            self.assertRaises(agent_browser_runtime.AgentBrowserRuntimeFailure),
+        ):
+            client.acquire_workspace(request)
+
+        access_plan_args = invocations[0]
+        self.assertNotIn("--browser-host", access_plan_args)
+        self.assertNotIn("--view-stream-provider", access_plan_args)
+        self.assertNotIn("--control-input-provider", access_plan_args)
+        self.assertNotIn("--display-isolation", access_plan_args)
+
     def _acquire(
         self,
         *,

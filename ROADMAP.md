@@ -1081,6 +1081,16 @@ pause controls.
 
 Current State:
 
+- Plan 0057 version 26/C26 installs service 0.3.87 with deterministic LinkedIn
+  post ownership and bounded multi-snapshot accumulation. Direct CDP plus
+  vision inspection found a finite feed snapshot ending at `See new posts`;
+  snapshots of 12, 3, and 8 accepted roots produced 21 unique canonical posts
+  after two duplicates, all admitted through `post_control_menu`. The governed
+  collection boundary remains unproven: corrected run
+  `collection-run-561f0c1c52c23ecfc2072906a45fe567` failed before observation
+  because Agent Browser reported
+  `existing_session_profile_identity_inconsistent`. Criterion 7 remains false,
+  the provider budget is consumed, and 40+40 remains gated.
 - Plan 0057 keeps P08 open after service 0.3.80's successor tick proved X 20/20
   but LinkedIn 5/20. All 15 unlinked observations were structurally broad
   list-item chrome without post actions or timestamps; the actual early stop

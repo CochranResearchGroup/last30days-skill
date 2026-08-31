@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 24
+Plan version: 26
 Date: 2026-08-29
 
 ## Objective
@@ -59,6 +59,23 @@ and only after that canary succeeds run one 40-item canary for each source.
   newly reproduced sort-control family is now rejected deterministically and
   exact service 0.3.84 is installed ready. Criterion 7 and 40+40 remain gated
   pending renewed authority for one clean LinkedIn proof.
+- C25 replaces reactive control-label rejection with a positive LinkedIn post
+  ownership contract after direct CDP and visual inspection reproduced the
+  underlying virtualization defect: ordinary feed listitems can temporarily
+  inherit an adjacent post's React activity URN. A candidate must now originate
+  from a post-owned action cluster, and runtime identity recovery is bounded to
+  that qualified root. The operator explicitly authorized planning,
+  implementation, testing, installation, and one renewed LinkedIn 20-item live
+  proof for this upgrade.
+- C26 installs service 0.3.87 with that positive-ownership extractor plus a
+  bounded multi-snapshot feed loop. Direct CDP and vision inspection showed the
+  current feed ending at an exact `See new posts` control rather than behaving
+  as an unbounded infinite scroll. Three bounded snapshots yielded 12, 3, and
+  8 accepted post roots, or 21 unique identities after two cross-snapshot
+  duplicates. Every accepted root entered through `post_control_menu` ownership.
+  The governed service proof remains incomplete because both collection runs
+  failed before observation at Agent Browser acquisition; the corrected run's
+  exact boundary was `existing_session_profile_identity_inconsistent`.
 
 ## Scope
 
@@ -73,6 +90,10 @@ and only after that canary succeeds run one 40-item canary for each source.
   rejected because no canonical permalink was recovered;
 - scale the LinkedIn feed scroll budget with the requested item ceiling while
   preserving the existing action-rate limiter and a finite maximum;
+- discover current LinkedIn feed posts from positive post-owned controls,
+  reject virtualized neighboring listitems even when they expose a canonical
+  activity URL, prefer the action-menu author over social-context actors, and
+  resolve runtime URNs only inside the qualified root without fiber traversal;
 - run focused, presubmit/full, packaging, installed-runtime, and durable receipt
   validation proportionate to the changed surface;
 - run exactly one 20+20 X/LinkedIn home-feed canary after installation; if and
@@ -117,6 +138,10 @@ and only after that canary succeeds run one 40-item canary for each source.
    receipts are reconciled without treating ceilings as guaranteed yield.
 9. The recurring configuration, Reddit/Facebook disabled state, authenticated
    profile routing, and timer schedule remain unchanged by both canaries.
+10. A provider-free DOM regression reproduces a neighboring control listitem
+    carrying a borrowed activity URN and proves that it is not extracted, while
+    a structurally qualified post is extracted with its own identity and
+    action-menu author.
 
 ## Execution Packets
 
@@ -1940,3 +1965,200 @@ Next action or stop reason:
 - commit and push exact service 0.3.84 plus this terminal receipt. Then stop;
   seek explicit authority before one fresh LinkedIn-only 20-post proof, and do
   not run 40+40 until criterion 7 is clean.
+
+### Checkpoint P0057-C25 | 2026-08-31
+
+Plan version: 25
+
+State transition:
+
+- `linkedin_sort_control_rejection_installed -> linkedin_positive_post_admission_in_progress`.
+
+Progress classification:
+
+- `implementation`; direct CDP and visual evidence identified the shared cause
+  behind composer and sort-control false positives, and the bounded structural
+  replacement is now authorized and test-first.
+
+Authority and bounds:
+
+- the operator explicitly requested the scrape-algorithm upgrade, its tests,
+  and a renewed 20-item LinkedIn proof;
+- the provider-free change is confined to LinkedIn candidate discovery,
+  identity ownership, author recovery, and progress evidence;
+- X, Reddit, Facebook, YouTube, recurring configuration, and the conditional
+  40+40 canary remain outside this packet.
+
+Frozen implementation contract:
+
+- feed listitems are not candidates merely because they contain or inherit an
+  activity URN;
+- current-layout posts enter through a post control-menu anchor and corroborating
+  reaction/comment/repost actions, with legacy explicit post roots retained as
+  a compatibility path;
+- the closest owning listitem is the maximum current-layout extraction root;
+- canonical DOM permalinks and explicit root attributes outrank React props;
+- React-props traversal is bounded to the qualified root, excludes fiber graphs,
+  and must not silently choose among ambiguous activity identities;
+- the control-menu label is the primary current-layout author signal;
+- only structurally admitted, unique canonical identities count toward the
+  20-item ceiling; explicit promoted/sponsored rows remain rejected.
+
+Validation ladder:
+
+1. provider-free Node DOM regression red before green for the borrowed-URN
+   neighboring-listitem failure;
+2. focused LinkedIn tests;
+3. affected social/runtime/install tests and complete Python/MCP suites;
+4. exact package build, transactional installation, and installed-identity
+   readback;
+5. exactly one schedule-disabled LinkedIn-only 20-item proof, followed by a
+   row-level audit that all 20 stored items are real, unique post roots.
+
+Authority classification:
+
+- `inherited_authority` from the operator's explicit instruction for the bounded algorithm upgrade, validation,
+  installation, and one schedule-disabled LinkedIn-only 20-item proof.
+
+Subagent status:
+
+- not spawned; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- add the provider-free DOM regression and demonstrate red, then implement the
+  narrow extractor replacement. Stop the live lane if provider-free or installed
+  validation fails; do not enqueue 40+40 from this packet.
+
+### Checkpoint P0057-C26 | 2026-08-31
+
+Plan version: 26
+
+State transition:
+
+- `linkedin_positive_post_admission_in_progress -> linkedin_deterministic_multi_snapshot_installed`.
+
+Progress classification:
+
+- `blocker_reduction`; deterministic post ownership and bounded snapshot
+  accumulation are implemented, validated against the live feed, packaged, and
+  installed. The remaining governed proof is blocked before scraper execution
+  by Agent Browser's retained-session identity seam.
+
+Authority and bounds:
+
+- the operator explicitly authorized planning, implementation, testing,
+  installation, and the renewed LinkedIn live proof;
+- the standing sole-profile force-lease authority was available, but no
+  duplicate Chrome launch or direct Agent Browser state edit was attempted
+  after the retained browser stayed live and authenticated;
+- X, Reddit, Facebook, YouTube, recurring configuration, and 40+40 were not
+  exercised or changed;
+- the disabled owner-private canary spec remains
+  `canary-linkedin-feed-20-c25` version 2 with a 20-item ceiling and 30-day
+  lookback.
+
+Implementation evidence:
+
+- legacy explicit post roots remain supported. Current-layout candidates must
+  originate at an `Open control menu for post by ...` anchor, resolve to the
+  closest listitem, and contain at least two post-action families among
+  reaction, comment, and repost;
+- the extractor records the ownership source and root shape, prefers the
+  control-menu author, bounds React-props traversal to 12,000 nodes inside the
+  qualified root, excludes fiber traversal, and rejects ambiguous runtime
+  identity rather than choosing one;
+- canonical identity now covers LinkedIn `activity`, `ugcPost`, and `share`
+  URNs. A post-local root URN and unique descendant identity outrank polluted
+  runtime arrays;
+- ordinary social scrapes no longer force remote-presentation constraints into
+  Agent Browser access planning. Facebook retains those constraints because
+  its operator handoff workflow requires them;
+- when a single LinkedIn snapshot is below the requested ceiling, the feed
+  loop may click exactly one visible button whose complete text is
+  `See new posts`, then perform one bounded same-feed replay and one bounded
+  scroll. Candidates are deduplicated by canonical identity across snapshots.
+
+Live CDP and vision evidence:
+
+- direct extraction from the authenticated LinkedIn feed accepted 12 unique
+  current-layout posts, all owned by `post_control_menu` with the bounded
+  listitem fallback root;
+- vision at the bottom of that feed showed an exact `See new posts` control,
+  demonstrating that this presentation was a finite snapshot rather than an
+  endlessly extending scroll surface;
+- the exact refresh produced three new identities. A later bounded same-feed
+  snapshot accepted eight identities, two already seen and six new;
+- the three snapshots therefore produced accepted counts `[12, 3, 8]`, 21
+  unique canonical identities, and two cross-snapshot duplicates. No generic
+  listitem, composer control, sort control, or unowned inherited URN entered
+  the accepted set.
+
+Governed-service evidence and remaining boundary:
+
+- the initial collection run
+  `collection-run-65e5e5831d0c15386d9f9bf64f742215` failed before observation
+  with `agent_browser_error`; its mistakenly old interval was corrected before
+  the bounded follow-up;
+- corrected run `collection-run-561f0c1c52c23ecfc2072906a45fe567`, job
+  `40189f3e-b91f-474b-8338-b5a0d3fca938`, used interval
+  `2026-08-02T00:00:00Z..2026-09-01T00:00:00Z` and also failed before scraper
+  execution with `0 attempted / 0 observed / 0 stored`;
+- Agent Browser job
+  `mcp-service-request-tab_new-b551a7a2-2826-4e3f-a60b-ca7326d92938`
+  supplies the exact second-run boundary:
+  `existing_session_profile_identity_inconsistent`. The browser itself
+  remained open, authenticated, and directly CDP-commandable;
+- the live provider budget is exhausted. Direct CDP/vision supplied the final
+  bounded algorithm audit; no third governed collection run or 40+40 canary
+  was created.
+
+Validation and installation evidence:
+
+- the borrowed-URN neighboring-listitem regression failed red before the
+  ownership change and passes green; separate regressions cover missing
+  ownership, bounded no-fiber traversal, all supported URN kinds, polluted
+  runtime identity, presentation-neutral acquisition, and deterministic
+  8+7+6 snapshot accumulation to exactly 20 unique posts;
+- focused LinkedIn and affected browser/runtime/release suites pass, followed
+  by the complete Python suite;
+- artifact
+  `/tmp/last30days-0.3.87.sE6g6o/last30days-service-0.3.87.tar.gz` has SHA-256
+  `b0051a9f8b2e53a8c8372858f5842d5d824e84a6ffdcea78bc23fcaf68bf15a3`;
+- exact service 0.3.87 is installed ready and MCP-compatible on schema 16 with
+  contract SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`
+  and runtime-manifest SHA-256
+  `e6a286396a0de5df7cdf616ce62e4a90c4913c36760d10be02d9225b1dab023a`;
+- SQLite `quick_check` is `ok`; active tick attempts, provider attempts, and
+  open Last30days leases are zero; recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+Acceptance reconciliation:
+
+- criteria 1-6 and 9 remain satisfied;
+- the deterministic LinkedIn algorithm has a live direct-CDP 20-plus proof,
+  but criterion 7 remains formally false because installed service 0.3.87 has
+  not stored 20 LinkedIn rows through the governed Agent Browser boundary;
+- criterion 8 and 40+40 remain closed.
+
+Authority classification:
+
+- `inherited_authority` covered the bounded upgrade, installation, and live
+  audit. The provider retry budget is consumed.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; the prior non-retryable write job remains without
+  an episode, so no blind retry was made in this packet.
+
+Next action or stop reason:
+
+- Agent Browser must reconcile the retained authenticated browser's session and
+  profile identity. After renewed explicit provider authority, run one
+  schedule-disabled installed-service LinkedIn 20-post proof and audit all 20
+  stored roots. Do not run 40+40 until criterion 7 passes.

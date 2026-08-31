@@ -933,7 +933,7 @@ def test_fake_cli_exercises_the_real_subprocess_contract_in_bounded_order(
     assert len(commands) == 7
     access = commands[0]
     assert access[access.index("--target-service-id") + 1] == "reddit"
-    assert access[access.index("--display-isolation") + 1] == "private_virtual_display"
+    assert "--display-isolation" not in access
     assert all(
         token.casefold() not in {"cdp", "process", "ps"}
         for command in commands

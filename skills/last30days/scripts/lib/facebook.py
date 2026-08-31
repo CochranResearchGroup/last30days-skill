@@ -336,6 +336,7 @@ class BrowserWorkspaceRequest(browser_runtime.BrowserWorkspaceRequest):
     agent_name: str = "facebook-scraper"
     task_name: str = "facebook-search"
     target_service_id: str = "facebook"
+    constrain_presentation: bool = True
 
 
 BrowserWorkspace = browser_runtime.BrowserWorkspace

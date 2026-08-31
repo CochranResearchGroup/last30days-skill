@@ -38,6 +38,12 @@ def post_candidate(**overrides):
         "author_url": "https://www.linkedin.com/company/agritech-lab/",
         "timestamp": "2d • Edited",
         "sponsored": False,
+        "structural_evidence": {
+            "root_shape": "feed_update",
+            "has_post_ownership": True,
+            "ownership_source": "legacy_explicit_root",
+            "has_post_actions": True,
+        },
         "engagement": {"likes": 17, "comments": 3, "shares": 1},
     }
     values.update(overrides)
@@ -53,6 +59,7 @@ class FakeAgentBrowserClient:
         candidate_batches=None,
         auth=None,
         preserve_url=False,
+        feed_refresh_available=False,
     ):
         self.workspace = linkedin.BrowserWorkspace(
             profile_id="last30days-linkedin",
@@ -84,6 +91,7 @@ class FakeAgentBrowserClient:
         )
         self.extraction_count = 0
         self.preserve_url = preserve_url
+        self.feed_refresh_available = feed_refresh_available
         self.actions = []
         self.command_timings = [{"operation": "eval", "duration_ms": 3, "status": "ok"}]
         self.ingress_ready = True
@@ -125,6 +133,10 @@ class FakeAgentBrowserClient:
 
     def operator_ingress_ready(self, operator_url):
         return self.ingress_ready
+
+    def activate_feed_refresh(self, workspace):
+        self.actions.append(linkedin.BrowserAction("click", target="See new posts"))
+        return self.feed_refresh_available
 
 
 def make_scraper(client, **overrides):
@@ -202,6 +214,56 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
             "no_lexical_topic_overlap",
             result["items"][0]["metadata"]["retrieval_signals"],
         )
+        self.assertEqual(
+            "legacy_explicit_root",
+            result["items"][0]["metadata"]["post_ownership_source"],
+        )
+
+    def test_home_feed_merges_bounded_refresh_snapshots_to_reach_limit(self):
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+
+        def batch(start, count):
+            return [
+                post_candidate(
+                    url=(
+                        "https://www.linkedin.com/feed/update/"
+                        f"urn:li:ugcPost:{7495000000000000000 + index}/"
+                    ),
+                    urn=f"urn:li:ugcPost:{7495000000000000000 + index}",
+                    text=f"Owned feed post {index} with sufficient deterministic content.",
+                )
+                for index in range(start, start + count)
+            ]
+
+        client = FakeAgentBrowserClient(
+            page=page,
+            candidate_batches=[batch(0, 8), batch(8, 7), batch(15, 6)],
+            feed_refresh_available=True,
+        )
+
+        result = make_scraper(client, limit=20, scrolls=0).feed(
+            "2026-06-15", "2026-07-15"
+        )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(20, len(result["items"]))
+        self.assertEqual(20, len({item["url"] for item in result["items"]}))
+        self.assertEqual(3, client.extraction_count)
+        self.assertEqual(
+            1,
+            sum(
+                action.operation == "click" and action.target == "See new posts"
+                for action in client.actions
+            ),
+        )
 
     def test_home_feed_rejects_composer_chrome_with_activity_permalink(self):
         page = dict(FakeAgentBrowserClient().page)
@@ -255,6 +317,36 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
         self.assertEqual(
             1,
             result["diagnostics"]["rejection_counts"]["sort_control_chrome"],
+        )
+
+    def test_home_feed_rejects_canonical_candidate_without_post_ownership(self):
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+        candidate = post_candidate(
+            text="An unrecognized neighboring control carrying a borrowed activity identity.",
+            structural_evidence={
+                "root_shape": "listitem_fallback",
+                "has_post_ownership": False,
+                "has_post_actions": False,
+            },
+        )
+
+        result = make_scraper(
+            FakeAgentBrowserClient(page=page, candidates=[candidate])
+        ).feed("2026-06-15", "2026-07-15")
+
+        self.assertEqual([], result["items"])
+        self.assertEqual("quality_gate_failed", result["error_type"])
+        self.assertEqual(
+            1,
+            result["diagnostics"]["rejection_counts"]["missing_post_ownership"],
         )
 
     def test_browser_failure_records_stage_and_bounded_operation_evidence(self):
@@ -1068,6 +1160,83 @@ class LinkedInCandidateQualityTests(unittest.TestCase):
         self.assertIn("activityUrn", linkedin.EXTRACT_SCRIPT)
         self.assertIn("steps < 12000", linkedin.EXTRACT_SCRIPT)
         self.assertIn("activityUrn(node)", linkedin.EXTRACT_SCRIPT)
+        self.assertNotIn("__reactFiber", linkedin.EXTRACT_SCRIPT)
+
+    def test_extractor_does_not_admit_neighboring_listitem_with_borrowed_runtime_urn(self):
+        harness = f"""
+const action = (label) => ({{
+  innerText: "", textContent: "",
+  getAttribute(name) {{ return name === "aria-label" ? label : null; }}
+}});
+const author = {{
+  href: "https://www.linkedin.com/in/actual-author/",
+  innerText: "Actual Author", textContent: "Actual Author",
+  getAttribute() {{ return null; }},
+  closest() {{ return this; }}, querySelector() {{ return null; }}
+}};
+const post = {{
+  innerText: "Feed post\\nActual Author\\n2h •\\nA legitimate current-layout feed post.",
+  textContent: "", dataset: {{}},
+  contains() {{ return false; }},
+  matches(selector) {{ return selector.includes('[role=\"listitem\"]'); }},
+  closest(selector) {{ return selector.includes('[role=\"listitem\"]') ? this : null; }},
+  getAttribute() {{ return null; }}, getAttributeNames() {{ return []; }},
+  querySelector(selector) {{
+    if (selector.includes('actor__title')) return author;
+    if (selector.includes('Open control menu for post by')) return menu;
+    return null;
+  }},
+  querySelectorAll(selector) {{
+    if (selector === 'a[href]') return [author];
+    if (selector === 'button, [aria-label]') return [menu, like, comment, repost];
+    if (selector.includes('[data-urn]')) return [];
+    return [];
+  }}
+}};
+const menu = action("Open control menu for post by Actual Author");
+menu.closest = (selector) => selector.includes('[role="listitem"]') ? post : null;
+const like = action("React Like");
+const comment = action("Comment");
+const repost = action("Repost");
+post["__reactProps$fixture"] = {{
+  initialContent: {{ entityUrn: "urn:li:activity:7495000000000000001" }},
+  quotedContent: {{ entityUrn: "urn:li:activity:7495000000000000999" }}
+}};
+const neighbor = {{
+  innerText: "New posts", textContent: "", dataset: {{}},
+  contains() {{ return false; }},
+  matches(selector) {{ return selector.includes('[role=\"listitem\"]'); }},
+  closest() {{ return null; }},
+  getAttribute() {{ return null; }}, getAttributeNames() {{ return []; }},
+  querySelector() {{ return null; }}, querySelectorAll() {{ return []; }}
+}};
+neighbor["__reactProps$fixture"] = {{
+  virtualizedNeighbor: "urn:li:activity:7495000000000000001"
+}};
+const main = {{querySelectorAll(selector) {{
+  if (selector === 'main [role="listitem"]') return [neighbor, post];
+  if (selector.includes('Open control menu for post by')) return [menu];
+  return [];
+}}}};
+const document = {{
+  title: "Feed | LinkedIn", body: {{innerText: `${{neighbor.innerText}}\\n${{post.innerText}}`}},
+  querySelector(selector) {{
+    return selector === 'main, [role="main"], .scaffold-layout__main' ? main : null;
+  }}
+}};
+const location = {{href: "https://www.linkedin.com/feed/"}};
+const result = {linkedin.EXTRACT_SCRIPT};
+process.stdout.write(JSON.stringify(result));
+"""
+        completed = subprocess.run(
+            ["node", "-e", harness], capture_output=True, text=True, check=False
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        candidates = json.loads(completed.stdout)["candidates"]
+        self.assertEqual(1, len(candidates), candidates)
+        self.assertIn("legitimate current-layout feed post", candidates[0]["text"])
+        self.assertEqual("urn:li:activity:7495000000000000001", candidates[0]["urn"])
+        self.assertEqual("Actual Author", candidates[0]["author"])
 
     def test_extractor_recovers_current_attribute_actor_and_timestamp_variants(self):
         harness = f"""
@@ -1130,7 +1299,7 @@ process.stdout.write(JSON.stringify(result));
         self.assertEqual("Example Company", candidate["author"])
         self.assertEqual("3h • Edited", candidate["timestamp"])
 
-    def test_extractor_prioritizes_runtime_props_over_large_fiber_graph(self):
+    def test_extractor_uses_bounded_props_without_traversing_fiber_graph(self):
         harness = f"""
 const runtimeTree = (depth, leaf) => {{
   const root = {{}};
@@ -1167,11 +1336,17 @@ const post = {{
 post["__reactFiber$fixture"] = runtimeTree(12, "fiber leaf");
 post["__reactProps$fixture"] = runtimeTree(
   12,
-  "urn:li:activity:7494833904651243523"
+  {{
+    rootUrn: "urn:li:ugcPost:7494833904651243523",
+    feedActivities: [
+      "urn:li:activity:7494833904651243991",
+      "urn:li:activity:7494833904651243992"
+    ]
+  }}
 );
 const main = {{
   querySelectorAll(selector) {{
-    return selector === "main [role=\\"listitem\\"]" ? [post] : [];
+    return selector === '[data-view-name="feed-full-update"]' ? [post] : [];
   }}
 }};
 const document = {{
@@ -1194,7 +1369,7 @@ process.stdout.write(JSON.stringify(result));
         self.assertEqual(0, completed.returncode, completed.stderr)
         result = json.loads(completed.stdout)
         self.assertEqual(
-            "urn:li:activity:7494833904651243523",
+            "urn:li:ugcPost:7494833904651243523",
             result["candidates"][0]["urn"],
         )
 
@@ -1205,6 +1380,18 @@ process.stdout.write(JSON.stringify(result));
                 "https://linkedin.com/posts/example_activity-7351200000000000000-abcd/?utm_source=share"
             ),
         )
+
+    def test_canonicalizes_all_linkedin_feed_post_urn_kinds(self):
+        for urn in (
+            "urn:li:activity:7494833904651243523",
+            "urn:li:ugcPost:7494833904651243524",
+            "urn:li:share:7494833904651243525",
+        ):
+            with self.subTest(urn=urn):
+                self.assertEqual(
+                    f"https://www.linkedin.com/feed/update/{urn}/",
+                    linkedin._canonical_post_url("", urn),
+                )
 
     def test_extractor_preserves_literal_now_timestamp(self):
         harness = f"""
@@ -1232,7 +1419,7 @@ const post = {{
 }};
 const main = {{
   querySelectorAll(selector) {{
-    return selector === "main [role=\\"listitem\\"]" ? [post] : [];
+    return selector === '[data-urn^="urn:li:activity:"]' ? [post] : [];
   }}
 }};
 const document = {{

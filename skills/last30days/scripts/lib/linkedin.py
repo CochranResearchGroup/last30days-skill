@@ -143,16 +143,16 @@ EXTRACT_SCRIPT = r"""
     url: location.href, title: document.title, candidates: [],
     rate_limited: Boolean(rateLimitReason), rate_limit_reason: rateLimitReason
   };
-  const selectors = [
+  const legacyPostSelectors = [
     '[data-view-name="feed-full-update"]',
     '[data-urn^="urn:li:activity:"]',
     '[data-id^="urn:li:activity:"]',
     '.feed-shared-update-v2',
-    'li.reusable-search__result-container',
-    'main [role="listitem"]'
+    'li.reusable-search__result-container'
   ];
   const nodes = [];
   const nodeSet = new Set();
+  const ownershipSources = new WeakMap();
   const rootSelector = [
     '[data-view-name="feed-full-update"]',
     '[data-urn^="urn:li:activity:"]',
@@ -160,7 +160,7 @@ EXTRACT_SCRIPT = r"""
     '.feed-shared-update-v2',
     'li.reusable-search__result-container'
   ].join(', ');
-  const addNode = (rawNode) => {
+  const addNode = (rawNode, ownershipSource) => {
     const node = rawNode?.closest?.(rootSelector) || rawNode;
     if (!node || nodeSet.has(node)) return;
     if (nodes.some((existing) => existing.contains?.(node))) return;
@@ -171,12 +171,38 @@ EXTRACT_SCRIPT = r"""
       }
     }
     nodeSet.add(node);
+    ownershipSources.set(node, ownershipSource);
     nodes.push(node);
   };
-  for (const selector of selectors) {
+  for (const selector of legacyPostSelectors) {
     for (const node of main.querySelectorAll(selector)) {
-      addNode(node);
+      addNode(node, "legacy_explicit_root");
     }
+  }
+  const actionEvidence = (node) => {
+    const controls = Array.from(node?.querySelectorAll?.('button, [aria-label]') || []);
+    const labels = controls.map((item) => clean(
+      `${item.getAttribute?.('aria-label') || ''} ${item.innerText || ''}`
+    ));
+    const menu = controls.find((item) =>
+      /^Open control menu for post by\s+\S/i.test(clean(item.getAttribute?.('aria-label')))
+    );
+    const hasReaction = labels.some((label) => /\b(?:react|like)\b/i.test(label));
+    const hasComment = labels.some((label) => /\bcomment\b/i.test(label));
+    const hasRepost = labels.some((label) => /\brepost\b/i.test(label));
+    return {
+      menu,
+      hasReaction,
+      hasComment,
+      hasRepost,
+      qualified: Boolean(menu) && [hasReaction, hasComment, hasRepost].filter(Boolean).length >= 2
+    };
+  };
+  for (const menu of main.querySelectorAll(
+    '[aria-label^="Open control menu for post by "]'
+  )) {
+    const node = menu.closest?.('[role="listitem"]') || menu.closest?.(rootSelector);
+    if (node && actionEvidence(node).qualified) addNode(node, "post_control_menu");
   }
   const count = (value, labels) => {
     const text = clean(value);
@@ -198,19 +224,18 @@ EXTRACT_SCRIPT = r"""
     } catch {
       // Malformed tracking values are ignored in favor of the raw value.
     }
-    const urnMatch = decoded.match(/urn:li:activity:(\d+)/i);
-    if (urnMatch) return `urn:li:activity:${urnMatch[1]}`;
+    const urnMatch = decoded.match(/urn:li:(activity|ugcPost|share):(\d+)/i);
+    if (urnMatch) {
+      const kind = urnMatch[1].toLowerCase() === "ugcpost"
+        ? "ugcPost" : urnMatch[1].toLowerCase();
+      return `urn:li:${kind}:${urnMatch[2]}`;
+    }
     const slugMatch = decoded.match(/(?:^|[-_:])activity[-_:](\d{10,})(?:[-_/?#]|$)/i);
     return slugMatch ? `urn:li:activity:${slugMatch[1]}` : "";
   };
-  const activityUrn = (node) => {
-    const attributeNodes = [
-      node,
-      ...Array.from(node.querySelectorAll?.(
-        '[data-urn], [data-id], [data-entity-urn], [data-view-tracking-scope], a[href]'
-      ) || []).slice(0, 160)
-    ];
-    for (const element of attributeNodes) {
+  const urnsFromElements = (elements) => {
+    const urns = new Set();
+    for (const element of elements) {
       const values = [
         element?.href,
         ...Array.from(element?.getAttributeNames?.() || []).slice(0, 40)
@@ -218,40 +243,58 @@ EXTRACT_SCRIPT = r"""
       ];
       for (const value of values) {
         const urn = urnFromValue(value);
-        if (urn) return urn;
+        if (urn) urns.add(urn);
       }
     }
-    const runtimeKeys = Object.keys(node);
-    const groups = [
-      runtimeKeys.filter((key) => key.startsWith("__reactProps")),
-      runtimeKeys.filter((key) => key.startsWith("__reactFiber"))
-    ];
-    for (const keys of groups) {
-      const queue = keys.map((key) => node[key]);
-      const seen = new WeakSet();
-      let cursor = 0;
-      let steps = 0;
-      while (cursor < queue.length && steps < 12000) {
-        const value = queue[cursor++];
-        steps += 1;
-        if (typeof value === "string") {
-          const urn = urnFromValue(value);
-          if (urn) return urn;
-          continue;
+    return urns;
+  };
+  const activityUrn = (node) => {
+    const directUrns = urnsFromElements([node]);
+    if (directUrns.size === 1) return Array.from(directUrns)[0];
+    if (directUrns.size > 1) return "";
+    const runtimeKeys = Object.keys(node).filter((key) => key.startsWith("__reactProps"));
+    const queue = runtimeKeys.map((key) => ({value: node[key], path: key}));
+    const seenRuntime = new WeakSet();
+    const initialContentUrns = new Set();
+    const rootContentUrns = new Set();
+    const runtimeUrns = new Set();
+    let cursor = 0;
+    let steps = 0;
+    while (cursor < queue.length && steps < 12000) {
+      const entry = queue[cursor++];
+      const value = entry.value;
+      steps += 1;
+      if (typeof value === "string") {
+        const urn = urnFromValue(value);
+        if (urn) {
+          runtimeUrns.add(urn);
+          if (/(?:^|\.)initialContent(?:\.|$)/.test(entry.path)) initialContentUrns.add(urn);
+          if (/(?:^|\.)rootUrn$/.test(entry.path)) rootContentUrns.add(urn);
         }
-        if ((!value || typeof value !== "object") && typeof value !== "function") continue;
-        if (seen.has(value)) continue;
-        seen.add(value);
-        for (const key of Object.keys(value).slice(0, 120)) {
-          if (key === "return" || key === "_owner") continue;
-          try {
-            queue.push(value[key]);
-          } catch {
-            // React runtime values may expose guarded accessors.
-          }
+        continue;
+      }
+      if ((!value || typeof value !== "object") && typeof value !== "function") continue;
+      if (seenRuntime.has(value)) continue;
+      seenRuntime.add(value);
+      for (const key of Object.keys(value).slice(0, 120)) {
+        if (key === "return" || key === "_owner") continue;
+        try {
+          queue.push({value: value[key], path: `${entry.path}.${key}`});
+        } catch {
+          // React runtime values may expose guarded accessors.
         }
       }
     }
+    if (initialContentUrns.size === 1) return Array.from(initialContentUrns)[0];
+    if (initialContentUrns.size > 1) return "";
+    const descendantUrns = urnsFromElements(Array.from(node.querySelectorAll?.(
+      '[data-urn], [data-id], [data-entity-urn], [data-view-tracking-scope], a[href]'
+    ) || []).slice(0, 160));
+    if (descendantUrns.size === 1) return Array.from(descendantUrns)[0];
+    if (rootContentUrns.size === 1) return Array.from(rootContentUrns)[0];
+    if (rootContentUrns.size > 1) return "";
+    if (runtimeUrns.size === 1) return Array.from(runtimeUrns)[0];
+    if (runtimeUrns.size > 1) return "";
     return "";
   };
   const candidates = [];
@@ -261,11 +304,14 @@ EXTRACT_SCRIPT = r"""
     const text = (node.innerText || node.textContent || "").trim();
     if (!text) continue;
     const anchors = Array.from(node.querySelectorAll('a[href]'));
-    const permalink = anchors.find((anchor) =>
-      /\/feed\/update\/urn:li:activity:\d+|\/posts\/[^/?#]+/i.test(
+    const permalinkAnchors = anchors.filter((anchor) =>
+      /\/feed\/update\/urn:li:(?:activity|ugcPost|share):\d+|\/posts\/[^/?#]+/i.test(
         (() => { try { return decodeURIComponent(anchor.href || ""); } catch { return anchor.href || ""; } })()
       )
     );
+    const ownership = actionEvidence(node);
+    const menuAuthor = clean(ownership.menu?.getAttribute?.('aria-label') || "")
+      .replace(/^Open control menu for post by\s+/i, "");
     const authorNode = node.querySelector(
       '.update-components-actor__title, .update-components-actor__name, '
       + '.feed-shared-actor__title, .feed-shared-actor__name, '
@@ -291,12 +337,14 @@ EXTRACT_SCRIPT = r"""
     const urn = urnFromValue(node.getAttribute('data-urn'))
       || urnFromValue(node.dataset?.urn)
       || activityUrn(node);
+    const matchingPermalink = permalinkAnchors.find((anchor) => urn && urnFromValue(anchor.href) === urn);
+    const permalink = matchingPermalink || (permalinkAnchors.length === 1 ? permalinkAnchors[0] : null);
     const canonicalHref = permalink?.href || (urn
       ? `https://www.linkedin.com/feed/update/${urn}/`
       : "");
     const authorImage = authorNode?.querySelector?.('img[alt]');
     const author = clean(
-      authorNode?.innerText || authorNode?.textContent
+      menuAuthor || authorNode?.innerText || authorNode?.textContent
       || authorNode?.getAttribute?.('aria-label') || authorNode?.getAttribute?.('title')
       || authorImage?.alt || ""
     ).replace(/\s+(?:’s|'s)\s+profile picture$/i, "");
@@ -349,6 +397,8 @@ EXTRACT_SCRIPT = r"""
       sponsored: /(^|\n)\s*(promoted|sponsored)\s*($|\n)/i.test(text),
       structural_evidence: {
         root_shape: rootShape,
+        has_post_ownership: Boolean(ownershipSources.get(node)),
+        ownership_source: ownershipSources.get(node) || "",
         has_post_actions: /\b(?:like|react|comment|repost|send)\b/i.test(actionText),
         has_actor: Boolean(authorNode),
         has_timestamp: Boolean(timeNode || timestampText || timestampAttribute),
@@ -368,6 +418,19 @@ EXTRACT_SCRIPT = r"""
     url: location.href, title: document.title, candidates,
     rate_limited: Boolean(rateLimitReason), rate_limit_reason: rateLimitReason
   };
+})()
+"""
+
+FEED_REFRESH_SCRIPT = r"""
+(() => {
+  const exact = Array.from(document.querySelectorAll("button")).filter((button) =>
+    String(button.innerText || button.textContent || "")
+      .replace(/\s+/g, " ").trim() === "See new posts"
+    && button.offsetParent !== null
+  );
+  if (exact.length !== 1) return {clicked: false, exact_control_count: exact.length};
+  exact[0].click();
+  return {clicked: true, exact_control_count: 1};
 })()
 """
 
@@ -457,6 +520,9 @@ class LinkedInCandidate:
     date_confidence: Literal["high", "med", "low"]
     engagement: dict[str, int]
     sponsored: bool
+    has_post_ownership: bool = False
+    post_ownership_source: str = ""
+    post_root_shape: str = ""
     media: list[dict[str, Any]] = field(default_factory=list)
     rejection_reasons: list[str] = field(default_factory=list)
 
@@ -563,6 +629,14 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
             self.act(workspace, BrowserAction("wait", value="2500"))
             auth = _auth_state(self.evaluate(workspace, AUTH_SCRIPT))
         return auth
+
+    def activate_feed_refresh(self, workspace: BrowserWorkspace) -> bool:
+        """Activate only LinkedIn's exact visible end-of-snapshot control."""
+        result = self.evaluate(workspace, FEED_REFRESH_SCRIPT)
+        return bool(
+            result.get("clicked") is True
+            and result.get("exact_control_count") == 1
+        )
 
     def _activate_linkedin_tab(self, session_name: str) -> None:
         """Select a retained LinkedIn tab before site-specific auth inspection."""
@@ -807,6 +881,49 @@ class LinkedInScraper:
                 diagnostics.stagnant_scrolls = stagnant_scrolls
                 if stagnant_scrolls >= MAX_FEED_STAGNANT_SCROLLS:
                     break
+            refresh = getattr(self.client, "activate_feed_refresh", None)
+            refreshed = bool(
+                self._accepted_unique_count(
+                    raw_candidates,
+                    "",
+                    from_date,
+                    to_date,
+                    surface_kind="feed",
+                ) < self.limit
+                and callable(refresh)
+                and refresh(workspace)
+            )
+            if refreshed:
+                self.client.act(workspace, BrowserAction("wait", value="2500"))
+                raw_candidates.extend(self._extract(workspace))
+                if self._accepted_unique_count(
+                    raw_candidates,
+                    "",
+                    from_date,
+                    to_date,
+                    surface_kind="feed",
+                ) < self.limit:
+                    page = self._navigate_feed(workspace)
+                    if self.initial_wait:
+                        time.sleep(self.initial_wait)
+                    raw_candidates.extend(self._extract(workspace))
+                    if self.scrolls > 0 and self._accepted_unique_count(
+                        raw_candidates,
+                        "",
+                        from_date,
+                        to_date,
+                        surface_kind="feed",
+                    ) < self.limit:
+                        self._act(
+                            workspace,
+                            BrowserAction(
+                                "scroll", value=str(MIN_FEED_SCROLL_PIXELS)
+                            ),
+                        )
+                        diagnostics.scroll_count += 1
+                        if self.scroll_wait:
+                            time.sleep(self.scroll_wait)
+                        raw_candidates.extend(self._extract(workspace))
             if not raw_candidates:
                 raise LinkedInScraperFailure(
                     "extraction_empty", "Verified LinkedIn home feed contained no candidate cards"
@@ -1023,6 +1140,8 @@ class LinkedInScraper:
                     "extraction": "agent-browser-dom-v1",
                     "remote_browser": True,
                     "date_confidence": candidate.date_confidence,
+                    "post_ownership_source": candidate.post_ownership_source,
+                    "post_root_shape": candidate.post_root_shape,
                     "retrieval_signals": retrieval_signals,
                     "media": candidate.media[:16],
                 },
@@ -1573,6 +1692,22 @@ def _candidate_from_raw(raw: dict[str, Any], now: datetime) -> LinkedInCandidate
     author = _clean_author(str(raw.get("author") or "")) or _author_from_url(
         str(raw.get("author_url") or "")
     )
+    structural_evidence = raw.get("structural_evidence")
+    post_ownership_source = (
+        str(structural_evidence.get("ownership_source") or "")
+        if isinstance(structural_evidence, dict)
+        else ""
+    )
+    post_root_shape = (
+        str(structural_evidence.get("root_shape") or "")
+        if isinstance(structural_evidence, dict)
+        else ""
+    )
+    has_post_ownership = bool(
+        isinstance(structural_evidence, dict)
+        and structural_evidence.get("has_post_ownership") is True
+        and post_ownership_source in {"legacy_explicit_root", "post_control_menu"}
+    )
     kind: Literal["post", "ad", "unknown"] = (
         "ad" if sponsored else "post" if canonical_url else "unknown"
     )
@@ -1585,6 +1720,9 @@ def _candidate_from_raw(raw: dict[str, Any], now: datetime) -> LinkedInCandidate
         date_confidence=confidence,
         engagement=_clean_engagement(raw.get("engagement") or {}),
         sponsored=sponsored,
+        has_post_ownership=has_post_ownership,
+        post_ownership_source=post_ownership_source,
+        post_root_shape=post_root_shape,
         media=[
             item
             for item in list(raw.get("media") or [])[:16]
@@ -1641,6 +1779,8 @@ def _validate_candidate(
         candidate.rejection_reasons.append(f"kind_{candidate.kind}")
     if not candidate.canonical_url:
         candidate.rejection_reasons.append("missing_permalink")
+    if surface_kind == "feed" and not candidate.has_post_ownership:
+        candidate.rejection_reasons.append("missing_post_ownership")
     if _is_composer_chrome(candidate.text):
         candidate.rejection_reasons.append("composer_chrome")
     if _is_sort_control_chrome(candidate.text):
@@ -1685,7 +1825,7 @@ def _record_missing_permalink_structure(
 
 
 def _canonical_post_url(value: str, urn: str = "") -> str | None:
-    if not value and re.fullmatch(r"urn:li:activity:\d+", urn):
+    if not value and re.fullmatch(r"urn:li:(?:activity|ugcPost|share):\d+", urn, re.I):
         value = f"https://www.linkedin.com/feed/update/{urn}/"
     if not value:
         return None
@@ -1693,7 +1833,7 @@ def _canonical_post_url(value: str, urn: str = "") -> str | None:
     if (parsed.hostname or "").lower() not in {"linkedin.com", "www.linkedin.com"}:
         return None
     path = re.sub(r"/+", "/", unquote(parsed.path or "/"))
-    if re.fullmatch(r"/feed/update/urn:li:activity:\d+/?", path, re.I):
+    if re.fullmatch(r"/feed/update/urn:li:(?:activity|ugcPost|share):\d+/?", path, re.I):
         path = path.rstrip("/") + "/"
     elif re.fullmatch(r"/posts/[A-Za-z0-9_.%-]+/?", path):
         path = path.rstrip("/") + "/"

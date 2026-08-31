@@ -23024,3 +23024,108 @@ Next Bounded Action:
 - commit and push exact service 0.3.84 and this receipt, then stop. Seek
   explicit authority before a fresh LinkedIn-only 20-post proof; do not run
   40+40 until criterion 7 is clean.
+
+## Turn 369 | 2026-08-31
+
+Focus: replace broad LinkedIn listitem harvesting with deterministic post
+ownership, inspect the live feed through CDP and vision, and install a bounded
+multi-snapshot scraper.
+
+Authority Consulted:
+
+- operator's explicit algorithm-upgrade, test, and live-proof instruction;
+  Plan 0057/C25; Roadmap P08; Last30days administration, Agent Browser
+  broker-first routing, CodeGraph, diagnosis, testing, architecture, release,
+  documentation, integration, validation, and closeout policies.
+
+Decisions And Changes:
+
+- current-layout LinkedIn posts now require a post control-menu anchor plus at
+  least two post-action families inside the closest owning listitem; generic
+  feed listitems and adjacent inherited identities do not qualify;
+- React-props traversal is bounded to the qualified post root, excludes fiber
+  graphs, and cannot select an ambiguous identity. Canonical identity supports
+  `activity`, `ugcPost`, and `share` URNs;
+- ordinary X/LinkedIn/Reddit access plans no longer force presentation
+  constraints incompatible with the reusable local CDP browser. Facebook
+  retains its operator-handoff presentation contract;
+- LinkedIn feed collection now combines bounded canonical-identity snapshots:
+  one exact `See new posts` refresh, one same-feed replay, and one bounded
+  scroll when the first snapshot is below the requested ceiling.
+
+Live Inspection Evidence:
+
+- direct authenticated-feed extraction accepted 12 unique roots, all with
+  `post_control_menu` ownership;
+- vision at the bottom of the feed found an exact `See new posts` button, so
+  the observed surface was a finite refreshable snapshot rather than an
+  endlessly extending infinite scroll;
+- the refresh added three new identities and a later bounded feed snapshot
+  accepted eight identities, six new. Across `[12, 3, 8]`, the exact union was
+  21 unique canonical posts with two duplicates;
+- no generic listitem, composer control, sort control, or unowned inherited URN
+  was accepted.
+
+Governed Collection Evidence:
+
+- initial run `collection-run-65e5e5831d0c15386d9f9bf64f742215`
+  failed before observation; its old interval was corrected;
+- corrected run `collection-run-561f0c1c52c23ecfc2072906a45fe567`,
+  job `40189f3e-b91f-474b-8338-b5a0d3fca938`, covered
+  `2026-08-02T00:00:00Z..2026-09-01T00:00:00Z` and failed with zero attempted,
+  observed, or stored items;
+- the exact Agent Browser acquisition failure was
+  `existing_session_profile_identity_inconsistent`, even though the retained
+  browser remained open, authenticated, and directly CDP-commandable;
+- no duplicate browser or unsafe Agent Browser state edit was used. The live
+  budget is consumed, the canary spec remains disabled at version 2, and no
+  40+40 run was created.
+
+Validation Evidence:
+
+- red/green regressions cover neighboring borrowed URNs, missing ownership,
+  bounded no-fiber traversal, supported URN kinds, polluted runtime identity,
+  presentation-neutral acquisition, and 8+7+6 snapshot accumulation to 20;
+- focused, affected, and complete Python suites pass;
+- artifact SHA-256 is
+  `b0051a9f8b2e53a8c8372858f5842d5d824e84a6ffdcea78bc23fcaf68bf15a3`;
+- installed service 0.3.87 is ready and compatible on schema 16 with contract
+  SHA-256
+  `fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1`
+  and runtime-manifest SHA-256
+  `e6a286396a0de5df7cdf616ce62e4a90c4913c36760d10be02d9225b1dab023a`;
+- SQLite quick-check is `ok`; active tick/provider attempts and open leases are
+  zero; recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+State Movement:
+
+- Plan 0057 advances to version 26/C26
+  `linkedin_deterministic_multi_snapshot_installed`; P08 remains OPEN because
+  the installed governed service has not yet stored a clean LinkedIn 20.
+
+Progress Classification:
+
+- `blocker_reduction`; the scraper algorithm is live-inspected, tested, and
+  installed, while the remaining failure is isolated to Agent Browser session
+  identity before scraper execution.
+
+Authority Classification:
+
+- `inherited_authority` is consumed for the bounded live audit. Another
+  provider run and 40+40 require renewed explicit authority.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; the prior non-retryable write remains without an
+  episode, so no blind retry was issued.
+
+Next Bounded Action:
+
+- reconcile the retained authenticated browser's Agent Browser session/profile
+  identity, then seek renewed authority for one installed-service LinkedIn
+  20-post proof. Do not run 40+40 until criterion 7 is clean.
