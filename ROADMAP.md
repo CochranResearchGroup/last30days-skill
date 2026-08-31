@@ -1072,7 +1072,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: OPEN
+State: CLOSED
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1081,13 +1081,15 @@ pause controls.
 
 Current State:
 
-- Plan 0057 version 28/C28 records the operator's decision to ignore Agent
-  Browser's `service_state_stale_revision` race as non-blocking orchestration
-  noise. C27's same-browser service 0.3.87 proof accepted 20 canonical LinkedIn
-  posts from 66 unique candidates and rejected five sponsored ads; C22 had
-  already produced 20 unique canonical X posts. Those bounded source-local
-  proofs satisfy criterion 7. The 40+40 gate is open, but no 40+40 canary has
-  been authorized or run by C28; the revision race is no longer P08 work.
+- Plan 0057 version 29/C29 consumes and reconciles the one-shot 40+40 canary.
+  Authenticated direct passes through exact retained browser
+  `session:last30days-force-20260831-c29` accepted 24 unique canonical X posts
+  and 12 unique canonical LinkedIn posts. X reached its eight-scroll production
+  bound with only duplicate rejections; LinkedIn stopped at four stagnant
+  snapshots after deterministically excluding four unique sponsored ads. The
+  40-item values are ceilings rather than guaranteed yield, criterion 8 is
+  satisfied by the attempted terminal result, Plan 0057 is CLOSED, and P08
+  returns to CLOSED. A future higher-yield repair belongs in a new bounded plan.
 - Plan 0057 keeps P08 open after service 0.3.80's successor tick proved X 20/20
   but LinkedIn 5/20. All 15 unlinked observations were structurally broad
   list-item chrome without post actions or timestamps; the actual early stop

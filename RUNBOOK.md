@@ -23281,3 +23281,87 @@ Next Bounded Action:
 - ignore the Agent Browser revision race. After explicit operator authority,
   run exactly one schedule-disabled 40+40 X/LinkedIn canary and reconcile its
   terminal receipt without changing recurring settings.
+
+## Turn 372 | 2026-08-31
+
+Focus: execute and reconcile the authorized one-shot 40+40 X/LinkedIn
+home-feed canary.
+
+Authority Consulted:
+
+- operator's explicit `ok go`; Plan 0057/C28-C29; Roadmap P08; installed
+  Last30days administration workflow; standing sole-profile force authority;
+  repo goal, documentation, validation, Git, and closeout policies.
+
+Decisions And Changes:
+
+- created disabled owner-private 40-item X and LinkedIn canary specs with zero
+  monetary budget and no recurring schedule effect;
+- ignored the already-adjudicated Agent Browser wrapper failure after it
+  terminalized before observation, then used the exact ready browser created on
+  the existing authenticated profile for the actual bounded scraper attempts;
+- applied only the installed deterministic extractors and ad/spam gates. No
+  semantic filter, alternate profile, recurring setting, or source enablement
+  changed.
+
+Live Evidence:
+
+- service 0.3.87/schema 16 was ready and MCP-compatible;
+- governed X collection run
+  `collection-run-3a9ddd0ce2d45b84aec82cfc1664094a`, job
+  `2b1b0798-0563-4421-84d9-8c345fdb7d1e`, failed pre-observation at
+  `agent_browser_error` with `0/0/0`; no governed LinkedIn run was enqueued;
+- exact ready browser `session:last30days-force-20260831-c29`, PID 94519, used
+  the existing `last30days-facebook` profile for both direct passes;
+- X: authenticated `Home / X`, 67 raw candidates, 24 unique observations, 24
+  unique canonical posts accepted, and 43 duplicate instances rejected after
+  the production eight-scroll maximum;
+- LinkedIn: authenticated `Feed | LinkedIn`, 115 raw instances, 16 unique
+  observations, 12 unique canonical posts accepted, and four unique sponsored
+  ads rejected. The scraper stopped after nine scrolls at the four-stagnant-
+  snapshot bound; no exact refresh control was available;
+- direct passes intentionally produced no stored provider rows, media records,
+  or derivatives. Their bounded wall times were 19.2 and 30.2 seconds.
+
+Validation Evidence:
+
+- both one-shot specs remain disabled at version 1 with item limit 40;
+- recurring config revision `operator-20260822-x-linkedin-home-feed-v1` and
+  digest `sha256:9238e351363d0e4d37fa965c748df53012ae9a217231901fef60a720413ad417`
+  remain unchanged; X/LinkedIn stay enabled, Reddit/Facebook stay disabled, and
+  YouTube is unchanged;
+- SQLite `quick_check` is `ok`; the exact retained browser remains ready and
+  the empty temporary capability directory is removed;
+- repository authority, active planning, and diff checks must pass before the
+  terminal documentation is committed.
+
+State Movement:
+
+- Plan 0057 advances to version 29/C29
+  `forty_plus_forty_terminal_below_ceiling` and moves `OPEN -> CLOSED`; P08
+  moves `OPEN -> CLOSED`.
+
+Progress Classification:
+
+- `outcome_progress`; criterion 8's bounded attempt and exact reconciliation
+  are complete. The observed ceilings were X 24/40 and LinkedIn 12/40.
+
+Authority Classification:
+
+- `inherited_authority`; the user explicitly authorized the one-shot 40+40
+  effect and C28 established that the wrapper race was non-blocking.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_retried`; durable terminal evidence is recorded in Plan 0057, Roadmap
+  P08, and this runbook turn.
+
+Next Bounded Action:
+
+- stop. The authorized canary is consumed. If accepted yield above X 24 and
+  LinkedIn 12 is required, open a new bounded retrieval-throughput plan rather
+  than reopening Plan 0057.

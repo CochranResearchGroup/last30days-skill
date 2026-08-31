@@ -1,8 +1,8 @@
 # Plan 0057 | Semantic Sidecar Empty Media Repair And Volume Canary
 
-State: OPEN
+State: CLOSED
 Roadmap: P08
-Plan version: 28
+Plan version: 29
 Date: 2026-08-29
 
 ## Objective
@@ -15,7 +15,7 @@ and only after that canary succeeds run one 40-item canary for each source.
 ## Current State
 
 - `main` and `origin/main` are synchronized at
-  `342cfdff8e57b2760d83b23795f0d5aa3eb55bf4` before this slice;
+  `a36d7115783cb17543420b2dab7c8514009d4d48` before this slice;
 - service 0.3.81/schema 16 contains the accepted semantic-sidecar and LinkedIn
   feed-retrieval repairs, while recurring configuration keeps Reddit and
   Facebook disabled and X and LinkedIn enabled;
@@ -95,6 +95,14 @@ and only after that canary succeeds run one 40-item canary for each source.
   20/20 result, criterion 7 is satisfied by source-local evidence. Criterion 8
   is now eligible, but no 40+40 canary is authorized or run by this
   documentation-only checkpoint.
+- C29 consumes the operator-authorized 40+40 canary and reconciles the
+  below-ceiling result. The exact authenticated direct passes accepted 24
+  unique canonical X posts and 12 unique canonical LinkedIn posts. X exhausted
+  its production eight-scroll bound with only duplicate rejections; LinkedIn
+  stopped after four stagnant snapshots and deterministically excluded four
+  unique sponsored ads. The item limits are ceilings rather than guaranteed
+  yield, so criterion 8 is satisfied by this attempted and reconciled terminal
+  result. No semantic filter, recurring setting, or source enablement changed.
 
 ## Scope
 
@@ -2345,3 +2353,113 @@ Next action or stop reason:
 - do not investigate or repair the ignored Agent Browser revision race. The
   next eligible live action is exactly one schedule-disabled 40+40 X/LinkedIn
   canary after explicit operator authorization.
+
+### Checkpoint P0057-C29 | 2026-08-31
+
+Plan version: 29
+
+State transition:
+
+- `twenty_plus_twenty_retrieval_accepted -> forty_plus_forty_terminal_below_ceiling`.
+
+Progress classification:
+
+- `outcome_progress`; the authorized 40+40 stress canary was attempted and its
+  actual source yields were reconciled without treating either ceiling as a
+  guaranteed result.
+
+Authority and bounds:
+
+- the operator's explicit `ok go` authorizes exactly one schedule-disabled
+  40-item X attempt and one schedule-disabled 40-item LinkedIn attempt;
+- Reddit, Facebook, YouTube, recurring configuration, semantic filtering, and
+  Agent Browser repair remain outside this packet;
+- the pre-observation Agent Browser wrapper failure is ignored under C28. It
+  does not consume either actual scraper attempt.
+
+Canary configuration and orchestration evidence:
+
+- service 0.3.87/schema 16 reported `ready` and MCP compatibility before the
+  run;
+- disabled owner-private specs `canary-x-feed-40-c28` and
+  `canary-linkedin-feed-40-c28` were created with 40-item ceilings, a 30-day
+  lookback, zero monetary budget, and no recurring schedule effect;
+- governed X run `collection-run-3a9ddd0ce2d45b84aec82cfc1664094a`, job
+  `2b1b0798-0563-4421-84d9-8c345fdb7d1e`, failed before observation at
+  `agent_browser_error` with `0 attempted / 0 observed / 0 stored`. No governed
+  LinkedIn run was enqueued after that wrapper reproduced the ignored boundary;
+- an exact-profile launch returned
+  `existing_session_profile_identity_inconsistent` but created ready browser
+  `session:last30days-force-20260831-c29`, PID 94519, on the existing
+  `last30days-facebook` profile. The direct CDP endpoint on that same browser
+  was used for both actual scraper attempts; no alternate profile was created.
+
+Direct X terminal evidence:
+
+- the page was authenticated `https://x.com/home`, title `Home / X`, with no
+  login page, checkpoint, or account restriction;
+- the installed extractor observed 67 raw candidates over the production
+  maximum of eight scrolls, representing 24 unique observations;
+- the deterministic gate accepted 24 unique canonical `/status/` URLs and
+  rejected 43 repeated observations as `duplicate_status`. No ad, spam,
+  semantic, auth, or rate-limit rejection occurred;
+- no media derivative or durable provider row was produced because the C28
+  direct acceptance path intentionally stops after deterministic extraction.
+  The bounded direct command completed in 19.2 seconds.
+
+Direct LinkedIn terminal evidence:
+
+- the page was authenticated `https://www.linkedin.com/feed/`, title
+  `Feed | LinkedIn`, with no login page, checkpoint, or rate limit;
+- the installed multi-snapshot extractor observed 115 raw candidate instances
+  across nine scrolls, representing 16 unique observations, then stopped at
+  the four-stagnant-snapshot bound. No exact `See new posts` refresh control was
+  available;
+- the deterministic gate accepted 12 unique canonical `/feed/update/urn:li:`
+  URLs. The remaining four unique observations were sponsored ads; repeated
+  instances produced aggregate `duplicate=73`, `kind_ad=30`, and
+  `sponsored=30` rejection counters;
+- no media derivative or durable provider row was produced on the direct path.
+  The bounded direct command completed in 30.2 seconds.
+
+State and safety reconciliation:
+
+- both one-shot collection specs remain disabled;
+- the recurring schedule remains enabled on unchanged config revision
+  `operator-20260822-x-linkedin-home-feed-v1` and digest
+  `sha256:9238e351363d0e4d37fa965c748df53012ae9a217231901fef60a720413ad417`;
+  X and LinkedIn home feeds remain enabled, Reddit and Facebook remain
+  disabled, and YouTube remains unchanged;
+- SQLite `quick_check` is `ok`. The exact retained C29 browser remains ready so
+  the authenticated profile is preserved; its lease is observation-only in
+  `identity_reconciliation_required`, not an active effect lease;
+- the empty temporary capability directory was removed. No capability secret,
+  scraper output text, or private candidate content was persisted.
+
+Acceptance reconciliation:
+
+- criteria 1-10 are satisfied. Criterion 8 requires one bounded attempt and
+  exact reconciliation, not 40 accepted items from each ceiling;
+- Plan 0057 closes at the terminal below-ceiling receipt. A future request to
+  increase reliable yield beyond X 24 and LinkedIn 12 should use a new bounded
+  retrieval-throughput plan rather than reopening this accepted canary.
+
+Authority classification:
+
+- `inherited_authority`; the operator explicitly authorized the one-shot
+  40+40 effect and C28 already adjudicated the wrapper race as non-blocking.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `not_retried`; the prior non-retryable write remains without an episode, and
+  this terminal evidence is durable in the plan, roadmap, and runbook.
+
+Next action or stop reason:
+
+- stop. The authorized 40+40 canary is consumed and Plan 0057 is complete. If
+  higher accepted yield is desired, open a new bounded throughput-repair plan
+  using this 24-X/12-LinkedIn receipt as its baseline.
