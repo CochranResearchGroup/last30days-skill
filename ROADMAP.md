@@ -1072,7 +1072,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: CLOSED
+State: OPEN
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1081,6 +1081,17 @@ pause controls.
 
 Current State:
 
+- Plan 0058 version 2/C02 validates service 0.3.88 for the bounded
+  retrieval-throughput repair
+  after Plan 0057's terminal 40+40 baseline accepted X 24/40 and LinkedIn
+  12/40. The successor targets X's fixed eight-scroll feed ceiling and
+  LinkedIn's exact-control-gated stagnant-snapshot stop, preserves deterministic
+  ad/spam filtering and recurring configuration, and authorizes exactly one
+  new schedule-disabled 40+40 acceptance canary after installation. The X
+  provider-free proof reaches 40 after 12 of its 14 allowed scrolls, and the
+  LinkedIn proof reaches 40 after crossing one control-free stagnant snapshot
+  boundary while preserving its global 32-scroll ceiling. Current
+  authority: `docs/dev/plans/0058-2026-08-31-x-linkedin-feed-throughput-repair.md`.
 - Plan 0057 version 29/C29 consumes and reconciles the one-shot 40+40 canary.
   Authenticated direct passes through exact retained browser
   `session:last30days-force-20260831-c29` accepted 24 unique canonical X posts

@@ -23365,3 +23365,130 @@ Next Bounded Action:
 - stop. The authorized canary is consumed. If accepted yield above X 24 and
   LinkedIn 12 is required, open a new bounded retrieval-throughput plan rather
   than reopening Plan 0057.
+
+## Turn 373 | 2026-08-31
+
+Focus: open the bounded X and LinkedIn home-feed throughput repair and establish
+the provider-free red loop.
+
+Authority Consulted:
+
+- operator's explicit `ok go`; Plan 0057/C29 terminal evidence; Roadmap P08;
+  repo planning, architecture, testing, documentation, Git, and closeout
+  policies; diagnosing-bugs, TDD, and Last30days skill instructions.
+
+Decisions And Changes:
+
+- opened Plan 0058 instead of reopening terminal Plan 0057 and moved P08 from
+  `CLOSED -> OPEN`;
+- bounded the slice to X explicit-feed scroll scaling, LinkedIn finite snapshot
+  renewal, successor installation, and one newly authorized 40+40 canary;
+- preserved deterministic ad/spam and post-ownership gates, recurring source
+  configuration, and the exact existing authenticated profile.
+
+Evidence Reconciled:
+
+- X's 40-item direct pass accepted 24 unique posts, rejected only duplicate
+  instances, and exhausted the production fixed eight-scroll ceiling;
+- LinkedIn's direct pass accepted 12 unique posts, rejected four unique
+  sponsored ads, and stopped after four stagnant snapshots because no exact
+  refresh control was present despite a configured 32-scroll global budget;
+- neither page showed login, checkpoint, restriction, or rate-limit evidence.
+
+Validation Evidence:
+
+- the new provider-free regressions fail at the measured old ceilings: X
+  returns 28/40 after eight scrolls and LinkedIn returns 10/40 after four
+  stagnant snapshots without a refresh control;
+- implementation and successor validation remain in progress at this
+  checkpoint.
+
+State Movement:
+
+- Plan 0058 opens at version 1/C01 `retrieval_throughput_red_loop_open`; P08
+  moves `CLOSED -> OPEN`.
+
+Progress Classification:
+
+- `diagnosis`; the two leading stop modes are localized and ready for failing
+  public-behavior regressions.
+
+Authority Classification:
+
+- `explicit_authority`; the operator authorized implementation, installation,
+  and one new 40+40 run with `ok go`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `deferred`; no durable memory write is appropriate before the live outcome.
+
+Next Bounded Action:
+
+- add and run failing X and LinkedIn throughput regressions, then implement the
+  finite successor behavior.
+
+## Turn 374 | 2026-08-31
+
+Focus: implement and validate the finite X and LinkedIn feed-throughput
+successor.
+
+Authority Consulted:
+
+- Plan 0058/C01-C02; Roadmap P08; repo architecture, TDD, validation,
+  versioning, packaging, Git, and closeout policies.
+
+Decisions And Changes:
+
+- scaled an explicit 40-item X feed request from eight to 14 allowed scrolls,
+  with a finite 32-scroll maximum and the existing two-stagnant-snapshot stop;
+- replaced LinkedIn's exact-control-dependent tail with a bounded snapshot
+  epoch loop that spends one global scroll budget across at most three
+  renewals, tries the exact refresh control once, reloads the same feed when
+  needed, and stops if renewal adds no observation;
+- added renewal, refresh, and reload counters while preserving canonical post
+  ownership, dedupe, ad/spam, auth, checkpoint, and rate-limit gates;
+- prepared service 0.3.88 and refreshed its canonical runtime manifest.
+
+Validation Evidence:
+
+- red: X returned 28/40 and LinkedIn 10/40 in the two measured stop-mode
+  fixtures before implementation;
+- green: X reaches 40 after 12 scrolls and LinkedIn reaches 40 after six total
+  scrolls plus one control-free feed reload;
+- complete X/LinkedIn suites and the full Python suite pass; release,
+  lifecycle, package, version, and plan-authority suites pass sequentially;
+- MCP Go tests, Python compilation, runtime artifact build, authority audit,
+  and `git diff --check` pass. Ruff is not installed in the project
+  environment and is not claimed as a completed gate.
+
+State Movement:
+
+- Plan 0058 advances to version 2/C02
+  `successor_runtime_candidate_validated`; P08 remains OPEN.
+
+Progress Classification:
+
+- `implementation`; the provider-free and package candidate is complete, while
+  installation and the single live 40+40 acceptance remain.
+
+Authority Classification:
+
+- `inherited_authority`; the operator's `ok go` covers this bounded successor,
+  installation, and one canary.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `deferred`; live acceptance has not yet occurred.
+
+Next Bounded Action:
+
+- commit and push the validated candidate, build and transactionally install
+  exact service 0.3.88, then run the one authorized 40+40 canary.

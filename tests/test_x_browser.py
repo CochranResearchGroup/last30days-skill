@@ -670,6 +670,44 @@ process.stdout.write(JSON.stringify(result));
         self.assertEqual(20, result["diagnostics"]["unique_observation_count"])
         self.assertEqual(6, result["diagnostics"]["scroll_count"])
 
+    def test_home_feed_forty_item_limit_scales_past_eight_scrolls(self):
+        from lib import x_browser
+
+        def candidates(start, count):
+            return [
+                {
+                    "text": f"Home feed post {index} with stable structural metadata.",
+                    "url": f"https://x.com/example/status/207812345680{index:07d}",
+                    "author_handle": "example",
+                    "timestamp": "2026-07-18T15:30:00.000Z",
+                    "promoted": False,
+                    "engagement": {},
+                }
+                for index in range(start, start + count)
+            ]
+
+        client = FakeAgentBrowserClient(
+            candidate_batches=[candidates(0, 4)]
+            + [candidates(4 + batch * 3, 3) for batch in range(12)]
+        )
+
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.scrape_x_feed(
+                "2026-06-20",
+                "2026-07-20",
+                limit=40,
+                config={
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertEqual(40, len(result["items"]))
+        self.assertEqual(12, client.evaluations.count(x_browser.SCROLL_SCRIPT))
+        self.assertEqual(40, result["diagnostics"]["unique_observation_count"])
+        self.assertEqual(12, result["diagnostics"]["scroll_count"])
+
     def test_home_feed_stops_after_two_snapshots_without_new_posts(self):
         from lib import x_browser
 

@@ -22,6 +22,8 @@ DEPTH_CONFIG = {
 MAX_EXPLICIT_RESULTS = 100
 MAX_EXPLICIT_SCROLLS = 8
 ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 5
+MAX_EXPLICIT_FEED_SCROLLS = 32
+FEED_ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 3
 MAX_STAGNANT_SCROLLS = 2
 
 BrowserWorkspaceRequest = browser_runtime.BrowserWorkspaceRequest
@@ -724,7 +726,20 @@ def scrape_x_feed(
         if limit is None
         else max(1, min(MAX_EXPLICIT_RESULTS, int(limit)))
     )
-    scrolls = MAX_EXPLICIT_SCROLLS if limit is not None else settings["scrolls"]
+    scrolls = settings["scrolls"]
+    if limit is not None:
+        scrolls = min(
+            MAX_EXPLICIT_FEED_SCROLLS,
+            max(
+                MAX_EXPLICIT_SCROLLS,
+                (
+                    result_limit
+                    + FEED_ACCEPTED_ITEMS_PER_SCROLL_BUDGET
+                    - 1
+                )
+                // FEED_ACCEPTED_ITEMS_PER_SCROLL_BUDGET,
+            ),
+        )
     request = BrowserWorkspaceRequest(
         profile_id=str(
             config.get("LAST30DAYS_X_BROWSER_PROFILE")

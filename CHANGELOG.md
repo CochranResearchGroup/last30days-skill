@@ -18,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Bounded X and LinkedIn feed throughput.** Service 0.3.88 scales X's
+  explicit home-feed scroll allowance with requested accepted yield, up to a
+  finite maximum, and lets LinkedIn spend its existing global scroll allowance
+  across bounded snapshot renewals even when the exact `See new posts` control
+  is absent. Renewal diagnostics distinguish control refreshes from same-feed
+  reloads; canonical post ownership, deduplication, and deterministic ad/spam
+  rejection remain unchanged.
+
 - **LinkedIn bounded snapshot accumulation.** Service 0.3.87 recognizes all
   canonical LinkedIn feed URN kinds (`activity`, `ugcPost`, and `share`),
   prefers post-local `rootUrn` evidence over polluted feed-level React arrays,

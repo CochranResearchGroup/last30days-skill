@@ -265,6 +265,58 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
             ),
         )
 
+    def test_home_feed_renews_stagnant_snapshot_without_refresh_control(self):
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+
+        def batch(start, count=10):
+            return [
+                post_candidate(
+                    url=(
+                        "https://www.linkedin.com/feed/update/"
+                        f"urn:li:activity:{7351600000000000000 + index}/"
+                    ),
+                    urn=f"urn:li:activity:{7351600000000000000 + index}",
+                    text=f"Owned feed post {index} with deterministic post content.",
+                )
+                for index in range(start, start + count)
+            ]
+
+        first = batch(0)
+        client = FakeAgentBrowserClient(
+            page=page,
+            candidate_batches=[
+                first,
+                first,
+                first,
+                first,
+                first,
+                batch(10),
+                batch(20),
+                batch(30),
+            ],
+            feed_refresh_available=False,
+        )
+
+        result = make_scraper(client, limit=40, scrolls=32).feed(
+            "2026-06-15", "2026-07-15"
+        )
+
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(40, len(result["items"]))
+        self.assertEqual(40, len({item["url"] for item in result["items"]}))
+        self.assertEqual(6, result["diagnostics"]["scroll_count"])
+        self.assertEqual(1, result["diagnostics"]["snapshot_renewal_count"])
+        self.assertEqual(0, result["diagnostics"]["feed_refresh_count"])
+        self.assertEqual(1, result["diagnostics"]["feed_reload_count"])
+
     def test_home_feed_rejects_composer_chrome_with_activity_permalink(self):
         page = dict(FakeAgentBrowserClient().page)
         page.update({

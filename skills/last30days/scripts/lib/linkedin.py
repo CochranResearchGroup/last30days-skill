@@ -38,6 +38,7 @@ MIN_EXPLICIT_FEED_SCROLLS = 8
 MAX_EXPLICIT_FEED_SCROLLS = 32
 FEED_SCROLLS_PER_FIVE_ITEMS = 4
 MAX_FEED_STAGNANT_SCROLLS = 4
+MAX_FEED_SNAPSHOT_RENEWALS = 3
 MIN_FEED_SCROLL_PIXELS = 1_400
 FEED_SCROLL_PIXELS_PER_REQUIRED_ITEM = 800
 MAX_FEED_SCROLL_PIXELS = 3_200
@@ -537,6 +538,9 @@ class LinkedInRunDiagnostics:
     scroll_count: int = 0
     unique_observation_count: int = 0
     stagnant_scrolls: int = 0
+    snapshot_renewal_count: int = 0
+    feed_refresh_count: int = 0
+    feed_reload_count: int = 0
     failure_reason_code: str = ""
 
     def as_dict(self) -> dict[str, Any]:
@@ -548,6 +552,9 @@ class LinkedInRunDiagnostics:
             "scroll_count": self.scroll_count,
             "unique_observation_count": self.unique_observation_count,
             "stagnant_scrolls": self.stagnant_scrolls,
+            "snapshot_renewal_count": self.snapshot_renewal_count,
+            "feed_refresh_count": self.feed_refresh_count,
+            "feed_reload_count": self.feed_reload_count,
         }
 
 
@@ -831,99 +838,117 @@ class LinkedInScraper:
             diagnostics.unique_observation_count = len(seen_observations)
             stagnant_scrolls = 0
             scroll_pixels = MIN_FEED_SCROLL_PIXELS
-            for scroll_index in range(max(0, self.scrolls)):
-                accepted_before = self._accepted_unique_count(
+            feed_refresh_attempted = False
+            snapshot_renewals = 0
+            while self._accepted_unique_count(
+                raw_candidates,
+                "",
+                from_date,
+                to_date,
+                surface_kind="feed",
+            ) < self.limit:
+                while diagnostics.scroll_count < max(0, self.scrolls):
+                    accepted_before = self._accepted_unique_count(
+                        raw_candidates,
+                        "",
+                        from_date,
+                        to_date,
+                        surface_kind="feed",
+                    )
+                    if accepted_before >= self.limit:
+                        break
+                    remaining_scrolls = max(
+                        1, self.scrolls - diagnostics.scroll_count
+                    )
+                    required_items_per_scroll = max(
+                        1,
+                        (
+                            self.limit
+                            - accepted_before
+                            + remaining_scrolls
+                            - 1
+                        )
+                        // remaining_scrolls,
+                    )
+                    scroll_pixels = max(
+                        scroll_pixels,
+                        min(
+                            MAX_FEED_SCROLL_PIXELS,
+                            max(
+                                MIN_FEED_SCROLL_PIXELS,
+                                required_items_per_scroll
+                                * FEED_SCROLL_PIXELS_PER_REQUIRED_ITEM,
+                            ),
+                        ),
+                    )
+                    self._act(
+                        workspace,
+                        BrowserAction("scroll", value=str(scroll_pixels)),
+                    )
+                    diagnostics.scroll_count += 1
+                    if self.scroll_wait:
+                        time.sleep(self.scroll_wait)
+                    batch = self._extract(workspace)
+                    new_observations = {
+                        _candidate_observation_key(item) for item in batch
+                    } - seen_observations
+                    seen_observations.update(new_observations)
+                    raw_candidates.extend(batch)
+                    stagnant_scrolls = (
+                        0 if new_observations else stagnant_scrolls + 1
+                    )
+                    diagnostics.unique_observation_count = len(seen_observations)
+                    diagnostics.stagnant_scrolls = stagnant_scrolls
+                    if stagnant_scrolls >= MAX_FEED_STAGNANT_SCROLLS:
+                        break
+
+                accepted_after_scrolls = self._accepted_unique_count(
                     raw_candidates,
                     "",
                     from_date,
                     to_date,
                     surface_kind="feed",
                 )
-                if accepted_before >= self.limit:
+                if accepted_after_scrolls >= self.limit:
                     break
-                remaining_scrolls = max(1, self.scrolls - scroll_index)
-                required_items_per_scroll = max(
-                    1,
-                    (
-                        self.limit
-                        - accepted_before
-                        + remaining_scrolls
-                        - 1
+                if accepted_after_scrolls <= 0:
+                    break
+                if snapshot_renewals >= MAX_FEED_SNAPSHOT_RENEWALS:
+                    break
+
+                refreshed = False
+                if not feed_refresh_attempted:
+                    feed_refresh_attempted = True
+                    refresh = getattr(self.client, "activate_feed_refresh", None)
+                    refreshed = bool(callable(refresh) and refresh(workspace))
+
+                if refreshed:
+                    diagnostics.feed_refresh_count += 1
+                    self.client.act(
+                        workspace, BrowserAction("wait", value="2500")
                     )
-                    // remaining_scrolls,
-                )
-                scroll_pixels = max(
-                    scroll_pixels,
-                    min(
-                        MAX_FEED_SCROLL_PIXELS,
-                        max(
-                            MIN_FEED_SCROLL_PIXELS,
-                            required_items_per_scroll
-                            * FEED_SCROLL_PIXELS_PER_REQUIRED_ITEM,
-                        ),
-                    ),
-                )
-                self._act(
-                    workspace,
-                    BrowserAction("scroll", value=str(scroll_pixels)),
-                )
-                diagnostics.scroll_count += 1
-                if self.scroll_wait:
-                    time.sleep(self.scroll_wait)
+                else:
+                    if self.scrolls <= 0 and snapshot_renewals == 0:
+                        break
+                    page = self._navigate_feed(workspace)
+                    diagnostics.feed_reload_count += 1
+                    if self.initial_wait:
+                        time.sleep(self.initial_wait)
+
+                snapshot_renewals += 1
+                diagnostics.snapshot_renewal_count = snapshot_renewals
                 batch = self._extract(workspace)
                 new_observations = {
                     _candidate_observation_key(item) for item in batch
                 } - seen_observations
                 seen_observations.update(new_observations)
                 raw_candidates.extend(batch)
-                stagnant_scrolls = 0 if new_observations else stagnant_scrolls + 1
+                if new_observations:
+                    stagnant_scrolls = 0
                 diagnostics.unique_observation_count = len(seen_observations)
                 diagnostics.stagnant_scrolls = stagnant_scrolls
-                if stagnant_scrolls >= MAX_FEED_STAGNANT_SCROLLS:
+                if not new_observations:
                     break
-            refresh = getattr(self.client, "activate_feed_refresh", None)
-            refreshed = bool(
-                self._accepted_unique_count(
-                    raw_candidates,
-                    "",
-                    from_date,
-                    to_date,
-                    surface_kind="feed",
-                ) < self.limit
-                and callable(refresh)
-                and refresh(workspace)
-            )
-            if refreshed:
-                self.client.act(workspace, BrowserAction("wait", value="2500"))
-                raw_candidates.extend(self._extract(workspace))
-                if self._accepted_unique_count(
-                    raw_candidates,
-                    "",
-                    from_date,
-                    to_date,
-                    surface_kind="feed",
-                ) < self.limit:
-                    page = self._navigate_feed(workspace)
-                    if self.initial_wait:
-                        time.sleep(self.initial_wait)
-                    raw_candidates.extend(self._extract(workspace))
-                    if self.scrolls > 0 and self._accepted_unique_count(
-                        raw_candidates,
-                        "",
-                        from_date,
-                        to_date,
-                        surface_kind="feed",
-                    ) < self.limit:
-                        self._act(
-                            workspace,
-                            BrowserAction(
-                                "scroll", value=str(MIN_FEED_SCROLL_PIXELS)
-                            ),
-                        )
-                        diagnostics.scroll_count += 1
-                        if self.scroll_wait:
-                            time.sleep(self.scroll_wait)
-                        raw_candidates.extend(self._extract(workspace))
             if not raw_candidates:
                 raise LinkedInScraperFailure(
                     "extraction_empty", "Verified LinkedIn home feed contained no candidate cards"
