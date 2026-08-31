@@ -1081,16 +1081,16 @@ pause controls.
 
 Current State:
 
-- Plan 0057 version 26/C26 installs service 0.3.87 with deterministic LinkedIn
-  post ownership and bounded multi-snapshot accumulation. Direct CDP plus
-  vision inspection found a finite feed snapshot ending at `See new posts`;
-  snapshots of 12, 3, and 8 accepted roots produced 21 unique canonical posts
-  after two duplicates, all admitted through `post_control_menu`. The governed
-  collection boundary remains unproven: corrected run
-  `collection-run-561f0c1c52c23ecfc2072906a45fe567` failed before observation
-  because Agent Browser reported
-  `existing_session_profile_identity_inconsistent`. Criterion 7 remains false,
-  the provider budget is consumed, and 40+40 remains gated.
+- Plan 0057 version 27/C27 force-replaces the exact stale generation-65
+  Last30days lane under the operator's sole-profile authority and restores an
+  active, effect-capable, unblocked generation-66 lease on current lane
+  `last30days-force-20260831-c27`. A same-browser CDP proof applied service
+  0.3.87's installed extractor and deterministic quality gate to 66 unique
+  candidates, accepting 20 canonical LinkedIn posts and rejecting five
+  sponsored ads. Two governed collection jobs still failed before observation;
+  after identity repair the remaining boundary is Agent Browser's
+  `service_state_stale_revision` race during broker-wrapped DOM evaluation.
+  Criterion 7 therefore remains false and 40+40 remains gated.
 - Plan 0057 keeps P08 open after service 0.3.80's successor tick proved X 20/20
   but LinkedIn 5/20. All 15 unlinked observations were structurally broad
   list-item chrome without post actions or timestamps; the actual early stop

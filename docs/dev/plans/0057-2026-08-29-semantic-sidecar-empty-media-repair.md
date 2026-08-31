@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 26
+Plan version: 27
 Date: 2026-08-29
 
 ## Objective
@@ -76,6 +76,18 @@ and only after that canary succeeds run one 40-item canary for each source.
   The governed service proof remains incomplete because both collection runs
   failed before observation at Agent Browser acquisition; the corrected run's
   exact boundary was `existing_session_profile_identity_inconsistent`.
+- C27 uses the operator's standing sole-profile force authority to replace the
+  stale generation-65 session daemon, install current-generation lane
+  `last30days-force-20260831-c27`, and align the existing `last30days`
+  principal binding with ready owner generation 66. The exact lease is active,
+  effect-capable, and unblocked; browser PID 29938 is ready on the authenticated
+  LinkedIn feed. Two governed collection jobs still failed before observation,
+  and a direct same-browser CDP proof then applied the installed extractor and
+  deterministic quality gate to 66 unique candidates: 20 canonical posts were
+  accepted and five sponsored ads were rejected. Criterion 7 remains false
+  because the 20 accepted posts were not stored through the governed service
+  boundary; the remaining defect is Agent Browser's service-state revision
+  race during broker-wrapped DOM evaluation.
 
 ## Scope
 
@@ -2162,3 +2174,105 @@ Next action or stop reason:
   profile identity. After renewed explicit provider authority, run one
   schedule-disabled installed-service LinkedIn 20-post proof and audit all 20
   stored roots. Do not run 40+40 until criterion 7 passes.
+
+### Checkpoint P0057-C27 | 2026-08-31
+
+Plan version: 27
+
+State transition:
+
+- `linkedin_deterministic_multi_snapshot_installed -> linkedin_force_route_live_proven`.
+
+Progress classification:
+
+- `blocker_reduction`; the stale session/profile identity gate is repaired and
+  the installed deterministic scraper has a successful 20-post live proof.
+  Governed persistence remains blocked at Agent Browser's state-revision seam.
+
+Authority and bounds:
+
+- the operator explicitly instructed this lane to force past
+  `existing_session_profile_identity_inconsistent` and previously established
+  standing force-acquisition authority for the sole-user
+  `last30days-facebook` profile;
+- only the exact stale `last30days` session lanes, owner binding, and existing
+  authenticated profile were in scope. No second profile, X/Reddit/Facebook,
+  recurring configuration, or 40+40 run was used;
+- disabled canary `canary-linkedin-feed-20-force-c26` was created only to avoid
+  replaying the prior terminal collection interval.
+
+Forced Agent Browser repair evidence:
+
+- the old generation-65 lane was internally contradictory: its session named
+  browser `session:last30days-force-20260831-c20`, while that browser omitted
+  the reverse active-session link. The old generation daemon rewrote repaired
+  disk state from stale memory;
+- exact stale daemon PID 92570 was terminated after a graceful stop failed.
+  Its Chrome exited, all three singleton profile locks were absent, and Agent
+  Browser recorded terminal evidence `exact_process_exited` plus
+  `profile_lock_released` with cleanup satisfied;
+- current Agent Browser 0.28.0 lane
+  `last30days-force-20260831-c27` was installed from generation
+  `0.28.0-70186b09c706-f5c37c517628`. The fresh launch became ready owner
+  generation 66 on browser PID 29938;
+- the already-registered `last30days` principal binding was advanced from
+  owner generation 65 to 66, and the exact live C27 session was attributed to
+  that registered principal. Current lease readback is `state=active`,
+  `observationOnly=false`, zero blocking identity axes, browser
+  `session:last30days-force-20260831-c27`;
+- bounded readback returns `Feed | LinkedIn` on the same live browser. The
+  dashboard backend and runtime host are both restored active.
+
+Governed and direct proof evidence:
+
+- collection run `collection-run-581d42bd841592908f9992ba20bb8395`, job
+  `7269c9d7-542f-4538-ad5b-a596ccd4b312`, and successor run
+  `collection-run-99547560f6820009771648c2b73cfdd2`, job
+  `773161c7-5394-4a5c-b07b-93661148f40e`, both failed before observation with
+  `agent_browser_error`;
+- after identity repair, broker acquisition and authentication progressed, but
+  broker-wrapped evaluation failed compare-and-swap with
+  `service_state_stale_revision` while a later revision became current. Pausing
+  the dashboard reconciler did not eliminate the race, localizing it inside the
+  command/runtime-host state path rather than LinkedIn or the scraper;
+- a forced read-only CDP pass used browser PID 29938's exact endpoint, the
+  installed `EXTRACT_SCRIPT`, both authenticated feed tabs, bounded refresh,
+  and 32 total wheel scrolls. Candidate text stayed inside the local pipeline;
+- 66 unique raw candidates entered the unchanged deterministic quality gate.
+  It accepted exactly 20 canonical LinkedIn post URLs and rejected five ads,
+  all under `kind_ad` plus `sponsored`. No probabilistic quality filter was
+  introduced;
+- the temporary CDP helper was removed. SQLite `quick_check` is `ok` and the
+  installed service remains 0.3.87/schema 16.
+
+Acceptance reconciliation:
+
+- criteria 1-6, 9, and 10 remain satisfied;
+- the direct live retrieval and deterministic acceptance portion of criterion
+  7 is proven for LinkedIn at 20 posts, but criterion 7 remains formally false
+  until a governed service job stores those 20 rows and the paired X lane is
+  reconciled;
+- criterion 8 and 40+40 remain closed.
+
+Authority classification:
+
+- `inherited_authority`; the operator's explicit force instruction and standing
+  sole-profile authority cover this bounded repair, and the LinkedIn retry
+  budget is consumed.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `not_retried`; the prior non-retryable Graphiti write remains without an
+  episode, and this packet records the durable evidence in the plan, roadmap,
+  and runbook instead.
+
+Next action or stop reason:
+
+- repair Agent Browser's broker-wrapped evaluation revision race so the
+  governed Last30days collection can persist the already-proven 20-post yield.
+  Do not repeat profile replacement and do not run 40+40 while criterion 7 is
+  false.

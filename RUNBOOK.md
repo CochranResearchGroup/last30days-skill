@@ -23129,3 +23129,86 @@ Next Bounded Action:
 - reconcile the retained authenticated browser's Agent Browser session/profile
   identity, then seek renewed authority for one installed-service LinkedIn
   20-post proof. Do not run 40+40 until criterion 7 is clean.
+
+## Turn 370 | 2026-08-31
+
+Focus: force-repair the stale Last30days Agent Browser lane and obtain a
+successful 20-post LinkedIn home-feed retrieval proof.
+
+Authority Consulted:
+
+- operator's explicit `force it through` instruction and standing sole-profile
+  force-acquisition authority; Plan 0057/C26-C27; Roadmap P08; Agent Browser
+  service/runtime skills; repo CodeGraph, documentation, validation, and
+  closeout policies.
+
+Decisions And Changes:
+
+- localized `existing_session_profile_identity_inconsistent` to a broken
+  bidirectional session/browser link held in memory by stale generation-65
+  daemon PID 92570;
+- terminated only that stale lane after graceful stop failed, verified Chrome
+  exit and profile-lock release, then installed current-generation lane
+  `last30days-force-20260831-c27` on the same authenticated profile;
+- aligned the existing registered `last30days` principal binding and exact C27
+  session with ready owner generation 66. No replacement profile or parallel
+  Chrome process remains;
+- kept the installed LinkedIn extractor and deterministic ad/post gate
+  unchanged. No semantic quality filter was added.
+
+Live Evidence:
+
+- current lease is active and effect-capable with zero blocking identity axes;
+  browser `session:last30days-force-20260831-c27` is ready at PID 29938 and
+  returns `Feed | LinkedIn`;
+- governed jobs `7269c9d7-542f-4538-ad5b-a596ccd4b312` and
+  `773161c7-5394-4a5c-b07b-93661148f40e` failed before observation. After the
+  identity repair, broker-wrapped DOM evaluation reached LinkedIn but lost its
+  service-state compare-and-swap to `service_state_stale_revision`;
+- a forced direct pass through the exact Agent Browser-owned CDP endpoint used
+  the installed `EXTRACT_SCRIPT`, two authenticated feed tabs, bounded refresh,
+  and 32 wheel scrolls. It accumulated 66 unique candidates, accepted exactly
+  20 canonical posts, and deterministically rejected five sponsored ads;
+- all 20 accepted records have canonical `/feed/update/urn:li:` permalinks.
+  Candidate text was not emitted or persisted by the diagnostic pipeline.
+
+Validation Evidence:
+
+- Agent Browser 0.28.0 dashboard backend and runtime host are restored active;
+- the current lease reports `observationOnly=false`, owner generation 66, and
+  no blocking axes; the exact live browser is ready and same-session linked;
+- Last30days remains service 0.3.87/schema 16 and SQLite `quick_check` is `ok`;
+- the temporary CDP helper is removed; recurring settings, X, Reddit,
+  Facebook, and 40+40 were untouched.
+
+State Movement:
+
+- Plan 0057 advances to version 27/C27
+  `linkedin_force_route_live_proven`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; LinkedIn retrieval and deterministic 20-post acceptance
+  are proven. Governed storage remains blocked by the Agent Browser revision
+  race, not by auth, feed yield, or scraper quality.
+
+Authority Classification:
+
+- `inherited_authority`; the operator's explicit force instruction and standing
+  sole-profile authority cover this bounded repair, and the LinkedIn retry
+  budget is consumed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_retried`; the prior non-retryable write remains without an episode.
+  Durable evidence is recorded in Plan 0057, Roadmap P08, and this runbook turn.
+
+Next Bounded Action:
+
+- fix Agent Browser's broker-wrapped evaluation revision race and rerun one
+  governed LinkedIn 20-post collection. Do not replace the healthy C27 browser
+  and do not open 40+40 while criterion 7 remains false.
