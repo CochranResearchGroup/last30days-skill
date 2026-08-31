@@ -1167,6 +1167,14 @@ Current State:
   scrolling, extraction, or filtering evidence. The renewed attempt is
   consumed; P08 remains OPEN and 40+40 remains gated pending an Agent
   Browser-side repair and renewed live authority.
+- Plan 0057 version 19/C19 records the operator-authorized stale-lease repair.
+  Agent Browser's scoped `last30days` capability now binds the exact existing
+  `last30days-facebook` profile to ready browser
+  `session:last30days-force-20260831-c20` at owner generation 64. The active
+  lease is capability-proven with no blocking identity axes, same-browser X and
+  LinkedIn tab acquisition succeeds, and bounded probes reach X Home and the
+  LinkedIn Feed. No Last30days attempt was consumed; P08 remains OPEN and 40+40
+  remains gated pending renewed authority for one 20+20 canary.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,

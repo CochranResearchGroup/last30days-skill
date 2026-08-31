@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 18
+Plan version: 19
 Date: 2026-08-29
 
 ## Objective
@@ -15,18 +15,21 @@ and only after that canary succeeds run one 40-item canary for each source.
 ## Current State
 
 - `main` and `origin/main` are synchronized at
-  `59acf55125182e63f3463672d55be3d0a75a302a` before this slice;
-- tick `tick-b5c8a3b8b06e9103e581cdac8456ec67` collected 20 canonical X posts and
-  20 canonical LinkedIn posts, but terminalized `complete_degraded` because
-  both optional semantic-sidecar stages were `failure`;
-- 17 of 30 media assets produced deterministic source-grounded sidecars;
-  all 13 failures had neither source alt text nor OCR text;
-- 12 failures were LinkedIn assets, including 11 profile photos across only
-  three distinct URLs, and one was an X video thumbnail;
-- the source-grounded adapter raises `AnalysisOutputMissing` when both grounded
-  text inputs are absent, and the runner records that expected absence as a
-  failure; mixed success plus empty already aggregates to success, but no
-  explicit empty analysis outcome reaches that path today.
+  `380c0051dd620f0270f78bfaf2647046326b4452` before this slice;
+- service 0.3.81/schema 16 contains the accepted semantic-sidecar and LinkedIn
+  feed-retrieval repairs, while recurring configuration keeps Reddit and
+  Facebook disabled and X and LinkedIn enabled;
+- C18 consumed the renewed 20+20 attempt before either feed was reached because
+  Agent Browser rejected both advertised replacement requests with
+  `existing_session_profile_identity_unproven`;
+- C19 used the operator-authorized capability-bound force path to supersede the
+  stale generation-62 owner with ready generation 64 on the exact existing
+  `last30days-facebook` profile. The active lease and principal binding now
+  agree at generation 64 with no blocking identity axes;
+- bounded URL/title probes reach `https://x.com/home` as `(13) Home / X` and
+  `https://www.linkedin.com/feed/` as `Feed | LinkedIn` through the same live
+  browser. No Last30days provider attempt was run, so criterion 7 still needs a
+  newly authorized 20+20 canary and criterion 8 remains gated.
 
 ## Scope
 
@@ -1408,3 +1411,90 @@ Next action or stop reason:
   profile identity instead of requiring an already-proven existing session.
   Prove that path without a Last30days attempt; then obtain renewed authority
   before another 20+20 canary. Do not run 40+40.
+
+### Checkpoint P0057-C19 | 2026-08-31
+
+Plan version: 19
+
+State transition:
+
+- `renewed_canary_terminal_access_plan_request_contradiction -> capability_bound_generation_64_reuse_ready`.
+
+Progress classification:
+
+- `blocker_repair`; the stale retained identity was forced through Agent
+  Browser's scoped capability path, and both feed tabs are now reachable on one
+  reusable browser without consuming another Last30days provider attempt.
+
+Authority and bounds:
+
+- the operator explicitly authorized forced supersession of the stale
+  `last30days-facebook` session/lease;
+- mutation remained confined to that exact profile, its scoped `last30days`
+  capability, the terminal retained session
+  `last30days-social-direct-20260830-c13`, and replacement sessions used to
+  establish the current owner;
+- no profile directory, cookie, unrelated session, process, route, recurring
+  configuration, Last30days attempt, or 40+40 canary was deleted or changed.
+
+Diagnosis and repair receipt:
+
+- lease doctor identified observation-only legacy lease
+  `profile-lease-v1:c53de05eadf2eb8ef67973a2` with blocker
+  `legacy_principal_unproven`, while the access plan independently proved the
+  generation-62 owner terminal, cleanup satisfied, and process absent;
+- scoped principal registration created capability
+  `profile-capability-v1:54a83c2b534428b40cd7c025` for only
+  `last30days-facebook`. The exact stale session was already released with zero
+  browser IDs and tabs and was removed through Agent Browser's session API;
+- the advertised replacement route still returned
+  `existing_session_profile_identity_unproven`. A reviewed fresh-session force
+  launch proved the browser path, and the final capability-carrying launch
+  created `session:last30days-force-20260831-c20` at owner generation 64;
+- capability-bound `rejoin` advanced the durable principal binding from
+  generation 62 to 64. The resulting lease
+  `profile-lease-v1:fc553beb74ded8415f61dbf1` is active,
+  `observationOnly=false`, has no blocking identity axes, and is renewed through
+  `2026-08-31T15:00:00Z`;
+- the browser is ready at PID `40176` with reachable CDP and two retained tabs.
+  Reuse acquisition for LinkedIn succeeded on the same browser without another
+  duplicate-process override.
+
+Provider-free acceptance evidence:
+
+- X probe job `mcp-service-request-probe-6b2004c8-9235-4978-9445-9c5e8eb51a56`
+  returned `ok=true`, URL `https://x.com/home`, and title `(13) Home / X`;
+- LinkedIn probe job
+  `mcp-service-request-probe-d5fa924f-fa6e-4d29-8a08-4c3cb7bd4493`
+  returned `ok=true`, URL `https://www.linkedin.com/feed/`, and title
+  `Feed | LinkedIn`;
+- these probes prove browser acquisition, exact profile reuse, and direct page
+  reachability only. They do not prove 20-item scrolling, extraction,
+  canonical-link acceptance, deterministic filtering, or criterion 7.
+
+Current runtime and invariant reconciliation:
+
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  Reddit and Facebook remain disabled, while X and LinkedIn remain enabled;
+- no new Last30days tick or provider attempt was admitted; the C18 attempt
+  budget remains consumed and 40+40 remains closed;
+- active and goal-only planning audits, the plan-authority audit, its eight
+  focused tests, and `git diff --check` pass;
+- the private capability and recovery-plan files are ephemeral operator
+  material and are not committed.
+
+Authority classification:
+
+- `human_gate`; provider-free browser repair is accepted, but another live
+  20+20 Last30days attempt requires renewed operator authority.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- preserve the ready generation-64 browser and obtain explicit authority for
+  exactly one schedule-disabled 20+20 X/LinkedIn canary. Do not run 40+40 until
+  both 20-item lanes satisfy criterion 7.

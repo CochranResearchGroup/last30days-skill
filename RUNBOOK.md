@@ -22566,3 +22566,76 @@ Next Bounded Action:
 - Agent Browser proves that its launch-new replacement request can establish
   the selected profile identity and create the advertised session. Then obtain
   renewed authority before another 20+20 Last30days canary; do not run 40+40.
+
+## Turn 363 | 2026-08-31
+
+Focus: force-supersede the stale `last30days-facebook` identity lane and prove
+provider-free X/LinkedIn page reuse without consuming another live canary.
+
+Authority Consulted:
+
+- operator's explicit force instruction; Plan 0057/C18-C19; Roadmap P08; Agent
+  Browser service/profile ownership guidance; repo planning, validation,
+  documentation, and closeout policies.
+
+Decisions And Changes:
+
+- resolved the exact stale lease before mutation and registered a scoped
+  `last30days` capability for only `last30days-facebook`;
+- removed only the already-released, browserless, tabless retained session
+  `last30days-social-direct-20260830-c13` through Agent Browser's service API;
+- used a reviewed fresh-session override after the advertised replacement
+  route continued to reject its own identity, then launched generation 64 with
+  the scoped capability and capability-bound `rejoin`;
+- did not delete the profile, kill any process manually, run broad GC, touch an
+  unrelated browser/route, change recurring configuration, or admit a
+  Last30days provider attempt.
+
+Validation Evidence:
+
+- current browser `session:last30days-force-20260831-c20` is ready at PID
+  `40176`, lifecycle owner generation 64, with reachable CDP;
+- the durable principal binding is generation 64 and lease
+  `profile-lease-v1:fc553beb74ded8415f61dbf1` is active,
+  `observationOnly=false`, with no blocking identity axes and expiry renewed to
+  `2026-08-31T15:00:00Z`;
+- a second `tab_new` request reused that exact browser for LinkedIn with no
+  duplicate process and no identity rejection;
+- bounded URL/title probes returned `(13) Home / X` at
+  `https://x.com/home` and `Feed | LinkedIn` at
+  `https://www.linkedin.com/feed/`;
+- no content was scraped, no acceptance/filtering claim is made, and the C18
+  20+20 attempt remains consumed.
+- active and goal-only planning audits, the plan-authority audit, its eight
+  focused tests, and `git diff --check` pass.
+
+State Movement:
+
+- Plan 0057 advances to version 19/C19
+  `capability_bound_generation_64_reuse_ready`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_repair`; browser acquisition, profile identity, and same-browser
+  feed routing now have current provider-free proof.
+
+Authority Classification:
+
+- the force-repair authority is consumed; `human_gate` remains for another
+  live schedule-disabled 20+20 Last30days canary. The conditional 40+40 gate
+  remains closed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- not written; the exact runtime repair and next gate are durably recorded in
+  Plan 0057, Roadmap P08, and this runbook turn.
+
+Next Bounded Action:
+
+- preserve the generation-64 browser and, only after renewed operator
+  authority, run exactly one schedule-disabled X 20 plus LinkedIn 20 canary.
+  Do not run 40+40 unless both lanes satisfy criterion 7.
