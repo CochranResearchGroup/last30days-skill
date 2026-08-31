@@ -22335,3 +22335,71 @@ Next Bounded Action:
 - Agent Browser's upgrade owner resumes and terminalizes transaction
   `upgrade-4bd5a63e-a613-4997-8853-f61b15fc5ef9`. Once workstation status and
   both feed access plans are ready, run the already-authorized 20+20 retry.
+
+## Turn 360 | 2026-08-30
+
+Focus: recheck and, if executable, run the still-authorized 20+20 X/LinkedIn
+retry after Agent Browser upgrade acceptance.
+
+Authority Consulted:
+
+- operator's renewed `try again`; Plan 0057/C15-C16; Roadmap P08; Last30days
+  administration and Agent Browser service ownership guidance.
+
+Decisions And Changes:
+
+- called Last30days `service_info` first, then read current workstation status
+  and both feed access plans;
+- stopped before tick preflight or enqueue because both access plans explicitly
+  reject browser acquisition; did not bypass the broker, create another profile
+  lane, or mutate Agent Browser.
+
+Validation Evidence:
+
+- workstation status is `ready=true` on accepted generation
+  `0.28.0-899c9147e387-94e7829f7efc`; transaction
+  `upgrade-5280e236-bd93-4a7c-9c0c-3341f2fc55fe` is accepted at revision 13;
+- X and LinkedIn each select `last30days-facebook` with fresh target readiness,
+  but each reports `serviceRequest.available=false`,
+  `blockedByLifecycleOwner=true`, and
+  `acquisitionBlocker=lifecycle_owner_blocks_replacement`;
+- logical browser `session:last30days-social-direct-20260830-c13` remains at
+  owner generation 57 with lifecycle and cleanup obligation `transferring`, no
+  reusable browser/session, and required action `inspect_lifecycle_owner`;
+- installed Last30days 0.3.81 remains ready and MCP 4.0.3 compatible; no tick,
+  provider attempt, service browser job, or new retry receipt exists.
+- `daily-default` naturally advanced through boundary
+  `2026-08-31T00:00:00Z` as tick
+  `tick-1c5d1cc0a33d035e15db0e9dc9fb8bab` and is ready for
+  `2026-09-01T00:00:00Z`; recurring config SHA-256 is unchanged, SQLite
+  quick-check is `ok`, and active attempt/open-lease counts are zero;
+
+State Movement:
+
+- Plan 0057 advances to version 16/C16
+  `upgrade_accepted_profile_lifecycle_transfer_blocked`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; global upgrade admission is healthy, while the narrower
+  retained-profile lifecycle transfer remains unresolved.
+
+Authority Classification:
+
+- `inherited_authority` for the still-unconsumed 20+20 retry after executable
+  access plans; `external_owner_gate` for generation-57 lifecycle repair.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- not written; the accepted-upgrade versus profile-lifecycle distinction is
+  recorded in Plan 0057, Roadmap P08, and this runbook turn.
+
+Next Bounded Action:
+
+- Agent Browser's owner reconciles the generation-57 transfer. Once both feed
+  access plans expose an effect-capable route, run the already-authorized 20+20
+  canary without another attempt-budget request.

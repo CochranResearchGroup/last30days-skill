@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 15
+Plan version: 16
 Date: 2026-08-29
 
 ## Objective
@@ -1144,3 +1144,81 @@ Next action or stop reason:
   status is terminal-ready and both no-launch access plans return executable
   service requests, run the already-authorized 20+20 retry without requesting a
   new attempt budget.
+
+### Checkpoint P0057-C16 | 2026-08-30
+
+Plan version: 16
+
+State transition:
+
+- `retry_preflight_runtime_admission_draining -> upgrade_accepted_profile_lifecycle_transfer_blocked`.
+
+Progress classification:
+
+- `blocker_reduction`; the workstation-wide admission drain is closed and the
+  new generation is accepted, leaving the narrower retained-profile lifecycle
+  transfer as the sole browser-acquisition gate.
+
+Authority and bounds:
+
+- the operator again requested the existing bounded retry;
+- Last30days called service discovery and both Agent Browser no-launch access
+  plans only. No tick, provider attempt, browser request, profile mutation,
+  Agent Browser repair, Last30days installation, or recurring change occurred.
+  The one authorized 20+20 attempt remains unconsumed.
+
+Upgrade acceptance:
+
+- workstation status is now `ready=true` on selected generation
+  `0.28.0-899c9147e387-94e7829f7efc`;
+- transaction `upgrade-5280e236-bd93-4a7c-9c0c-3341f2fc55fe` is accepted at
+  revision 13 with terminal result `accepted`; old generation
+  `0.28.0-ceb8f8a926e6-178c836a535e` is no longer selected;
+- the prior `runtime_admission_draining` gate is therefore closed.
+
+Profile-specific access-plan evidence:
+
+- both X and LinkedIn select authenticated profile `last30days-facebook`; each
+  target readiness row is `fresh` with `recommendedAction=use_profile`;
+- both plans nevertheless return `serviceRequest.available=false`,
+  `blockedByAcquisition=true`, `blockedByLifecycleOwner=true`, and
+  `acquisitionBlocker=lifecycle_owner_blocks_replacement`;
+- retained logical browser `session:last30days-social-direct-20260830-c13`
+  remains owner generation 57 with lifecycle and cleanup obligation both
+  `transferring`, no compatible live browser or reusable route, and required
+  action `inspect_lifecycle_owner` at registry revision 1885;
+- this is before authentication probe, navigation, scrolling, extraction,
+  acceptance, or deterministic ad/spam filtering. A tick would be a known
+  pre-observation failure rather than a retrieval test.
+
+Last30days state:
+
+- installed service 0.3.81 remains ready and compatible with MCP 4.0.3; no
+  service product operation after discovery was necessary because Agent Browser
+  preflight was non-executable;
+- the unchanged recurring scheduler naturally advanced through boundary
+  `2026-08-31T00:00:00Z` as tick
+  `tick-1c5d1cc0a33d035e15db0e9dc9fb8bab` and is ready for
+  `2026-09-01T00:00:00Z`; recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+- SQLite quick-check is `ok`, with zero active tick/provider attempts and zero
+  open resource leases;
+- criterion 7 remains untested by this packet and criterion 8 remains closed.
+
+Authority classification:
+
+- `inherited_authority` remains for exactly one schedule-disabled 20+20 retry
+  after the profile route becomes effect-capable; `external_owner_gate` applies
+  to inspecting and reconciling owner generation 57.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- Agent Browser's owner must inspect and reconcile the generation-57 lifecycle
+  transfer until both access plans return one effect-capable reusable route or
+  a valid replacement request. Then run the already-authorized 20+20 retry
+  without requesting another attempt budget. Do not bypass the broker or create
+  a duplicate profile lane.

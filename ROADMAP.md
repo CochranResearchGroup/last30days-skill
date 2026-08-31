@@ -1140,6 +1140,15 @@ Current State:
   20+20 authority remains available once the Agent Browser upgrade owner
   terminalizes the transaction and access plans become executable. P08 remains
   OPEN and 40+40 remains gated.
+- Plan 0057 version 16/C16 records that the new Agent Browser workstation
+  generation `0.28.0-899c9147e387-94e7829f7efc` is accepted and globally ready,
+  closing `runtime_admission_draining`. Both X and LinkedIn still select the
+  correct fresh authenticated profile, but owner generation 57 for
+  `session:last30days-social-direct-20260830-c13` remains `transferring` with
+  no reusable route, so both service requests remain blocked by
+  `lifecycle_owner_blocks_replacement`. No provider attempt was consumed; the
+  exact 20+20 authority remains available after Agent Browser reconciles that
+  profile-specific owner. P08 remains OPEN and 40+40 remains gated.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,
