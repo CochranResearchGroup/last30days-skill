@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 23
+Plan version: 24
 Date: 2026-08-29
 
 ## Objective
@@ -50,7 +50,15 @@ and only after that canary succeeds run one 40-item canary for each source.
   LinkedIn candidate-validation seam and installs service 0.3.83. The focused,
   affected, canonical Python, MCP Go, compilation, packaging, and governance
   gates pass. One operator-authorized schedule-disabled LinkedIn 20-post proof
-  remains before criterion 7 can be reconsidered.
+  remains before criterion 7 can be reconsidered;
+- C24 records that proof as terminal tick
+  `tick-899ad0de3d34aa8ecb0a52b3cce30c9d`: one LinkedIn attempt observed 148,
+  accepted 20, and rejected 128. All accepted URLs are unique canonical
+  activity URLs and composer chrome is absent, but three accepted rows are the
+  exact `Sort by: Top` comment control, leaving 17 actual feed posts. The
+  newly reproduced sort-control family is now rejected deterministically and
+  exact service 0.3.84 is installed ready. Criterion 7 and 40+40 remain gated
+  pending renewed authority for one clean LinkedIn proof.
 
 ## Scope
 
@@ -1845,3 +1853,90 @@ Next action or stop reason:
 - commit and push the exact installed 0.3.83 source, then preflight and enqueue
   one schedule-disabled LinkedIn-only 20-post proof. Stop at its first terminal
   receipt and do not run 40+40 automatically.
+
+### Checkpoint P0057-C24 | 2026-08-31
+
+Plan version: 24
+
+State transition:
+
+- `linkedin_composer_rejection_installed -> linkedin_sort_control_rejection_installed`.
+
+Progress classification:
+
+- `blocker_reduction`; the authorized proof verified composer rejection and
+  exposed one narrower deterministic LinkedIn chrome family, which is now
+  reproduced, rejected, validated, and installed.
+
+Authority and bounds:
+
+- the operator-authorized schedule-disabled LinkedIn-only proof is consumed;
+- X, Reddit, Facebook, YouTube, recurring configuration, and 40+40 were not
+  exercised or changed;
+- the standing force-lease authority was not used because the exact social
+  profile lease was active with zero blocking axes.
+
+Terminal live evidence:
+
+- tick `tick-899ad0de3d34aa8ecb0a52b3cce30c9d`, execution attempt
+  `tick-attempt-6786a760e9c560673e2debea7f5668bb`, and provider attempt
+  `provider-attempt-c8fcd11c2aee65904e5d9c1845bd9d68` completed without retry;
+- LinkedIn observed 148 candidates, accepted 20, and rejected 128. The
+  rejection ledger includes nine `composer_chrome`, 93 duplicate, 24
+  outside-range, and bounded kind/permalink diagnostics;
+- all 20 accepted URLs are unique canonical activity URLs. Seventeen rows are
+  actual `Feed post` records; three are exactly `Sort by: Top`. Accepted
+  composer rows and literal promoted/sponsored labels are both zero. The two
+  actual feed rows without parsed authors remain retrieval-completeness
+  signals, not quality rejections;
+- collection, media, OCR, semantic-sidecar, lexical-index, semantic-index,
+  head-promotion, and the valid-empty catalog stage all terminalized
+  successfully;
+- SQLite `quick_check` is `ok`; active execution attempts, provider attempts,
+  and tick resource leases are all zero;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+  Reddit and Facebook remain disabled, X and LinkedIn home feeds remain
+  enabled, ordinary YouTube remains enabled, and the daily schedule remains
+  unchanged.
+
+Follow-up implementation and validation evidence:
+
+- a focused regression reproduces `Sort by: Top` being accepted when nearby
+  virtualized DOM state supplies a canonical activity URL;
+- `_validate_candidate` now records `sort_control_chrome` only for the exact
+  normalized labels `Sort by: Top`, `Sort by: Most relevant`, and
+  `Sort by: Recent`. It adds no semantic, topical, author, or date filtering;
+- the regression failed red with one false accepted item and passed green with
+  `quality_gate_failed` plus one `sort_control_chrome` rejection;
+- the focused LinkedIn/release suite, affected social/runtime/install suite,
+  complete Python suite, Python compilation, and `git diff --check` pass;
+- artifact
+  `/tmp/last30days-0.3.84-sort.Ch2lMZ/last30days-service-0.3.84.tar.gz`
+  has SHA-256
+  `6a0c72bb1cd72e073c073370a381e60632d9a79540fb4d841b73e8e3ebd38b23`;
+- exact service 0.3.84 is transactionally installed ready and MCP-compatible
+  on database schema 16 with runtime-manifest SHA-256
+  `2c50e9a1d7ae00117b8a7f38fb1faeac7e6292e90ec0264ef6a3bc77a1dbc16d`.
+
+Acceptance reconciliation:
+
+- criteria 1-6 and 9 remain satisfied;
+- criterion 7 remains false because the consumed live proof contained only 17
+  actual LinkedIn feed posts. Criterion 8 and 40+40 remain closed.
+
+Authority classification:
+
+- `inherited_authority` covered the one consumed live proof and the bounded
+  deterministic repair and installation it exposed;
+- another live provider attempt requires renewed explicit authority.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- commit and push exact service 0.3.84 plus this terminal receipt. Then stop;
+  seek explicit authority before one fresh LinkedIn-only 20-post proof, and do
+  not run 40+40 until criterion 7 is clean.

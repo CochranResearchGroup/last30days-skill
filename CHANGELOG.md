@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Deterministic LinkedIn sort-control rejection.** Service 0.3.84 rejects
+  exact LinkedIn comment-sort controls such as `Sort by: Top` when virtualized
+  feed DOM state incorrectly associates them with a canonical activity link.
+  These controls now record the bounded `sort_control_chrome` rejection reason
+  instead of being counted as posts.
+
 - **Deterministic LinkedIn composer rejection.** Service 0.3.83 rejects the
   exact `Start a post / Video / Photo / Write article` composer-control cluster
   even when nearby DOM state supplies a canonical-shaped activity permalink.

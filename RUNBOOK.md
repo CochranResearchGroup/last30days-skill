@@ -22942,3 +22942,85 @@ Next Bounded Action:
 - commit and push the exact installed 0.3.83 source, then run one
   schedule-disabled LinkedIn-only 20-post proof and reconcile its first
   terminal receipt.
+
+## Turn 368 | 2026-08-31
+
+Focus: execute the authorized LinkedIn-only 20-post proof, audit every accepted
+row, and repair the deterministic sort-control false-positive family it
+exposed.
+
+Authority Consulted:
+
+- operator's `ok go`; Plan 0057/C23-C24; Roadmap P08; Last30days
+  administration, Agent Browser broker-first routing, CodeGraph, testing,
+  release, documentation, integration, validation, and closeout policies.
+
+Decisions And Changes:
+
+- confirmed the exact `last30days-facebook` lease was active and unblocked, so
+  no forced acquisition or replacement profile was used;
+- preflighted and enqueued exactly one schedule-disabled LinkedIn home-feed
+  lane with one provider attempt and a 20-item ceiling;
+- audited the 20 stored rows rather than accepting the provider counter alone;
+- reproduced and rejected exact LinkedIn comment-sort labels that inherit an
+  activity permalink, using the dedicated `sort_control_chrome` reason;
+- advanced the independently installed service to 0.3.84 without changing
+  recurring configuration or another source.
+
+Terminal Live Evidence:
+
+- tick `tick-899ad0de3d34aa8ecb0a52b3cce30c9d` completed in one execution and
+  one provider attempt: 148 observed, 20 accepted, 128 rejected;
+- all 20 URLs are unique canonical LinkedIn activity URLs; accepted composer
+  and explicit promoted/sponsored rows are zero;
+- 17 rows are actual feed posts and three are exactly `Sort by: Top` chrome;
+- all collection and enrichment/index stages succeeded, SQLite `quick_check`
+  is `ok`, and active attempts and resource leases are zero;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`.
+
+Validation Evidence:
+
+- the sort-control regression failed red with one accepted false item and
+  passed green with one `sort_control_chrome` rejection;
+- focused LinkedIn/release tests, the affected social/runtime/install suite,
+  complete Python suite, Python compilation, and `git diff --check` pass;
+- artifact SHA-256 is
+  `6a0c72bb1cd72e073c073370a381e60632d9a79540fb4d841b73e8e3ebd38b23`;
+- installed service 0.3.84 is ready and compatible on schema 16 with
+  runtime-manifest SHA-256
+  `2c50e9a1d7ae00117b8a7f38fb1faeac7e6292e90ec0264ef6a3bc77a1dbc16d`.
+
+State Movement:
+
+- Plan 0057 advances to version 24/C24
+  `linkedin_sort_control_rejection_installed`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; composer rejection is proven live, and the next exact
+  non-post family found by row-level audit is installed provider-free.
+
+Authority Classification:
+
+- `inherited_authority` for the single live proof is consumed. Another live
+  provider attempt and the conditional 40+40 canary require renewed explicit
+  authority.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`: job
+  `0013abdc-ba2f-4577-a34b-3ed4de8f7a3a` timed out after 300 seconds while
+  extracting edges, reported `episode_uuid=null`, and an exact grouped
+  duplicate check found no episode. The job is non-retryable, so no blind
+  retry was issued.
+
+Next Bounded Action:
+
+- commit and push exact service 0.3.84 and this receipt, then stop. Seek
+  explicit authority before a fresh LinkedIn-only 20-post proof; do not run
+  40+40 until criterion 7 is clean.

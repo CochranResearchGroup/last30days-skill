@@ -1206,6 +1206,14 @@ Current State:
   MCP Go, package, install, compilation, and governance gates pass; and exact
   service 0.3.83 is installed ready and compatible. P08 remains OPEN pending
   the one authorized LinkedIn-only 20-post proof; 40+40 remains gated.
+- Plan 0057 version 24/C24 records terminal LinkedIn-only tick
+  `tick-899ad0de3d34aa8ecb0a52b3cce30c9d`. It accepted 20 unique canonical
+  activity URLs in one attempt and rejected nine composer-control candidates,
+  but three accepted rows were exactly `Sort by: Top`, leaving 17 actual feed
+  posts. That exact comment-control family now records
+  `sort_control_chrome`; the red/green and complete regression gates pass, and
+  exact service 0.3.84 is installed ready. P08 remains OPEN, criterion 7 is
+  false, and another LinkedIn proof plus 40+40 require renewed authority.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,

@@ -230,6 +230,33 @@ class LinkedInNavigationAndAuthTests(unittest.TestCase):
             result["diagnostics"]["rejection_counts"]["composer_chrome"],
         )
 
+    def test_home_feed_rejects_sort_control_with_activity_permalink(self):
+        page = dict(FakeAgentBrowserClient().page)
+        page.update({
+            "url": "https://www.linkedin.com/feed/",
+            "title": "Feed | LinkedIn",
+            "heading": "Feed",
+            "query_value": "",
+            "has_content_filters": False,
+            "has_content_cards": True,
+        })
+        candidate = post_candidate(
+            text="Sort by: Top",
+            author="",
+            timestamp="",
+        )
+
+        result = make_scraper(
+            FakeAgentBrowserClient(page=page, candidates=[candidate])
+        ).feed("2026-06-15", "2026-07-15")
+
+        self.assertEqual([], result["items"])
+        self.assertEqual("quality_gate_failed", result["error_type"])
+        self.assertEqual(
+            1,
+            result["diagnostics"]["rejection_counts"]["sort_control_chrome"],
+        )
+
     def test_browser_failure_records_stage_and_bounded_operation_evidence(self):
         client = FakeAgentBrowserClient()
         client.command_timings = [

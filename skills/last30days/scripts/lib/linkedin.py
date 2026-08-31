@@ -1643,6 +1643,8 @@ def _validate_candidate(
         candidate.rejection_reasons.append("missing_permalink")
     if _is_composer_chrome(candidate.text):
         candidate.rejection_reasons.append("composer_chrome")
+    if _is_sort_control_chrome(candidate.text):
+        candidate.rejection_reasons.append("sort_control_chrome")
     if _is_noise_text(candidate.text):
         candidate.rejection_reasons.append("navigation_noise")
     if not candidate.author and surface_kind == "topic":
@@ -1788,6 +1790,16 @@ def _is_composer_chrome(value: str) -> bool:
         if line.strip()
     )
     return lines == ("start a post", "video", "photo", "write article")
+
+
+def _is_sort_control_chrome(value: str) -> bool:
+    """Reject LinkedIn comment-sort controls inherited by an activity link."""
+    normalized = re.sub(r"\s+", " ", value).casefold().strip()
+    return normalized in {
+        "sort by: top",
+        "sort by: most relevant",
+        "sort by: recent",
+    }
 
 
 def _clean_engagement(raw: dict[str, Any]) -> dict[str, int]:
