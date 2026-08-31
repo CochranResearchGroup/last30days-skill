@@ -23212,3 +23212,72 @@ Next Bounded Action:
 - fix Agent Browser's broker-wrapped evaluation revision race and rerun one
   governed LinkedIn 20-post collection. Do not replace the healthy C27 browser
   and do not open 40+40 while criterion 7 remains false.
+
+## Turn 371 | 2026-08-31
+
+Focus: correct the acceptance record after the operator directed Last30days to
+ignore the Agent Browser revision race.
+
+Authority Consulted:
+
+- operator's explicit `ignore the revision race` instruction; Plan 0057/C27-C28;
+  Roadmap P08; repo planning, documentation, validation, Git, and closeout
+  policies.
+
+Decisions And Changes:
+
+- adjudicated `service_state_stale_revision` as non-blocking orchestration
+  noise, not a Last30days retrieval or scraper defect and not a repair target;
+- accepted C27's same-browser direct LinkedIn result as the required 20-post
+  proof and paired it with C22's governed X 20/20 result;
+- changed no browser, service, scraper, schedule, recurring configuration, or
+  provider state and made no new live attempt.
+
+Evidence Reconciled:
+
+- X: 20 unique canonical status posts from C22;
+- LinkedIn: 66 unique candidates, 20 unique canonical feed posts accepted, and
+  five sponsored ads deterministically rejected in C27 through the exact ready
+  Agent Browser-owned authenticated browser and installed service 0.3.87
+  extractor;
+- the broker revision race occurred outside retrieval and deterministic post
+  acceptance, so the operator explicitly excludes it from criterion 7.
+
+Validation Evidence:
+
+- the active-only planning-contract audit passes with Plan 0057 wired to P08;
+- the repo authority audit and `git diff --check` are required to pass before
+  this documentation-only checkpoint is committed;
+- no live smoke was run because this turn changes only evidence adjudication
+  and the operator explicitly directed the revision race to be ignored.
+
+State Movement:
+
+- Plan 0057 advances to version 28/C28
+  `twenty_plus_twenty_retrieval_accepted`; P08 remains OPEN for the unexecuted
+  40+40 outcome.
+
+Progress Classification:
+
+- `acceptance`; criteria 1-7, 9, and 10 are satisfied. Criterion 8 is eligible
+  but has not been executed.
+
+Authority Classification:
+
+- `inherited_authority`; this turn only adjudicates existing evidence. It does
+  not authorize another provider run.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_retried`; the acceptance decision is durably recorded in Plan 0057,
+  Roadmap P08, and this runbook turn.
+
+Next Bounded Action:
+
+- ignore the Agent Browser revision race. After explicit operator authority,
+  run exactly one schedule-disabled 40+40 X/LinkedIn canary and reconcile its
+  terminal receipt without changing recurring settings.

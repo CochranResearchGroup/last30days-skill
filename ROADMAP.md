@@ -1081,16 +1081,13 @@ pause controls.
 
 Current State:
 
-- Plan 0057 version 27/C27 force-replaces the exact stale generation-65
-  Last30days lane under the operator's sole-profile authority and restores an
-  active, effect-capable, unblocked generation-66 lease on current lane
-  `last30days-force-20260831-c27`. A same-browser CDP proof applied service
-  0.3.87's installed extractor and deterministic quality gate to 66 unique
-  candidates, accepting 20 canonical LinkedIn posts and rejecting five
-  sponsored ads. Two governed collection jobs still failed before observation;
-  after identity repair the remaining boundary is Agent Browser's
-  `service_state_stale_revision` race during broker-wrapped DOM evaluation.
-  Criterion 7 therefore remains false and 40+40 remains gated.
+- Plan 0057 version 28/C28 records the operator's decision to ignore Agent
+  Browser's `service_state_stale_revision` race as non-blocking orchestration
+  noise. C27's same-browser service 0.3.87 proof accepted 20 canonical LinkedIn
+  posts from 66 unique candidates and rejected five sponsored ads; C22 had
+  already produced 20 unique canonical X posts. Those bounded source-local
+  proofs satisfy criterion 7. The 40+40 gate is open, but no 40+40 canary has
+  been authorized or run by C28; the revision race is no longer P08 work.
 - Plan 0057 keeps P08 open after service 0.3.80's successor tick proved X 20/20
   but LinkedIn 5/20. All 15 unlinked observations were structurally broad
   list-item chrome without post actions or timestamps; the actual early stop

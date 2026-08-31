@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 27
+Plan version: 28
 Date: 2026-08-29
 
 ## Objective
@@ -15,7 +15,7 @@ and only after that canary succeeds run one 40-item canary for each source.
 ## Current State
 
 - `main` and `origin/main` are synchronized at
-  `380c0051dd620f0270f78bfaf2647046326b4452` before this slice;
+  `342cfdff8e57b2760d83b23795f0d5aa3eb55bf4` before this slice;
 - service 0.3.81/schema 16 contains the accepted semantic-sidecar and LinkedIn
   feed-retrieval repairs, while recurring configuration keeps Reddit and
   Facebook disabled and X and LinkedIn enabled;
@@ -88,6 +88,13 @@ and only after that canary succeeds run one 40-item canary for each source.
   because the 20 accepted posts were not stored through the governed service
   boundary; the remaining defect is Agent Browser's service-state revision
   race during broker-wrapped DOM evaluation.
+- C28 records the operator's explicit adjudication that the Agent Browser
+  `service_state_stale_revision` race is non-blocking noise for this retrieval
+  acceptance and is not a Last30days repair target. The C27 same-browser proof
+  is accepted as LinkedIn's 20-post result; combined with C22's governed X
+  20/20 result, criterion 7 is satisfied by source-local evidence. Criterion 8
+  is now eligible, but no 40+40 canary is authorized or run by this
+  documentation-only checkpoint.
 
 ## Scope
 
@@ -2276,3 +2283,65 @@ Next action or stop reason:
   governed Last30days collection can persist the already-proven 20-post yield.
   Do not repeat profile replacement and do not run 40+40 while criterion 7 is
   false.
+
+### Checkpoint P0057-C28 | 2026-08-31
+
+Plan version: 28
+
+State transition:
+
+- `linkedin_force_route_live_proven -> twenty_plus_twenty_retrieval_accepted`.
+
+Progress classification:
+
+- `acceptance`; the operator accepts the two source-local retrieval proofs and
+  directs this lane to ignore the unrelated Agent Browser revision race.
+
+Authority and bounds:
+
+- the operator explicitly directed Last30days to ignore the revision race;
+- this checkpoint adjudicates existing evidence only. It performs no browser,
+  scraper, service, schedule, recurring configuration, or provider mutation;
+- the adjudication does not authorize a 40+40 provider run. It only opens that
+  plan gate for a separately authorized bounded canary.
+
+Evidence accepted:
+
+- C22's governed X lane produced 20 unique canonical status posts;
+- C27's direct pass through the exact ready Agent Browser-owned browser applied
+  the installed service 0.3.87 extractor and deterministic gate to 66 unique
+  LinkedIn candidates, accepted 20 unique canonical feed posts, and rejected
+  five sponsored ads;
+- the direct proof used the authenticated retained profile and the installed
+  deterministic scraper. The broker compare-and-swap failure occurred outside
+  retrieval and acceptance and is intentionally excluded from this criterion.
+
+Acceptance reconciliation:
+
+- criteria 1-7, 9, and 10 are satisfied;
+- criterion 7 is accepted from the bounded source-local X and LinkedIn proofs;
+  atomic broker orchestration and governed LinkedIn storage are not additional
+  requirements under the operator's C28 adjudication;
+- criterion 8 is eligible and unexecuted. P08 and Plan 0057 remain OPEN until
+  the bounded 40+40 outcome is reconciled or the operator changes that goal.
+
+Authority classification:
+
+- `inherited_authority`; the operator's direct adjudication governs how the
+  existing evidence is accepted, while any new provider run remains a separate
+  effect boundary.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `not_retried`; this documentation-only checkpoint records the decision in
+  the plan, roadmap, and runbook.
+
+Next action or stop reason:
+
+- do not investigate or repair the ignored Agent Browser revision race. The
+  next eligible live action is exactly one schedule-disabled 40+40 X/LinkedIn
+  canary after explicit operator authorization.
