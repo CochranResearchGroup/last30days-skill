@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 17
+Plan version: 18
 Date: 2026-08-29
 
 ## Objective
@@ -1302,3 +1302,109 @@ Next action or stop reason:
   both X and LinkedIn plans return executable service requests. Then run the
   already-authorized 20+20 canary without requesting another attempt budget;
   do not bypass the broker or create a duplicate profile lane.
+
+### Checkpoint P0057-C18 | 2026-08-31
+
+Plan version: 18
+
+State transition:
+
+- `replacement_upgrade_accepted_same_profile_lifecycle_transfer_blocked -> renewed_canary_terminal_access_plan_request_contradiction`.
+
+Progress classification:
+
+- `diagnostic_outcome`; Agent Browser now passes the no-launch acquisition
+  gate, but the exact launch-new requests it advertises are rejected before
+  start by its own service worker, so neither feed is reached.
+
+Authority and bounds:
+
+- the operator explicitly requested the still-authorized retry after an Agent
+  Browser-side repair;
+- Last30days called service discovery first, confirmed compatibility, admitted
+  exactly one schedule-disabled X 20 plus LinkedIn 20 tick, enqueued its exact
+  preflight digest once, and stopped at the first terminal receipt;
+- Reddit, YouTube, and Facebook were disabled in the canary; no 40+40 canary,
+  recurring change, Agent Browser mutation, replacement profile, or second
+  attempt was performed. The authorized 20+20 retry is now consumed.
+
+Preflight and terminal receipt:
+
+- preflight admitted interval `2026-08-30T12:35:46Z` through
+  `2026-08-31T12:35:46Z`, schedule
+  `plan-0057-c18-x-linkedin-20-retry`, config revision
+  `plan-0057-x-linkedin-20-retry-v7`, and config digest
+  `sha256:41d3f02b7b591e6ac95ec9b4fa33595846ee8e8874d1c7d1b92e16373797a2ab`;
+- tick `tick-342713d933e6415a940da34f6aa6d7c4` terminalized
+  `complete_degraded` in two seconds after exactly one X attempt and one
+  LinkedIn attempt;
+- both lanes recorded zero observed, attempted, accepted, and rejected items,
+  one network request, one wall second, and collection failure. No source
+  version, evidence, artifact, derivative, incident, notification, model, or
+  cost receipt was created;
+- both resource leases were released and no retry or fallback was admitted.
+
+Agent Browser contract evidence:
+
+- before enqueue, both access plans selected authenticated profile
+  `last30days-facebook` with fresh target readiness and returned
+  `serviceRequest.available=true`, no acquisition, lifecycle, or manual-action
+  blocker, and `recommendedAction=use_selected_profile`;
+- the former lifecycle owner
+  `session:last30days-social-direct-20260830-c13` was terminal at generation 62
+  with cleanup satisfied, process absence proven, and replacement eligible at
+  registry revision 1956;
+- both plans advertised `launch_new_browser` through `tab_new` requests using
+  replacement session `handoff-3c307b74ea88da11` and the exact durable profile;
+- Agent Browser jobs
+  `mcp-service-request-tab_new-1feec57d-64cf-4ed3-a0a9-d21147a32637` and
+  `mcp-service-request-tab_new-6f8d7407-ddb2-41e1-9112-12117aec1b39` both
+  failed before `startedAt` with
+  `existing_session_profile_identity_unproven`;
+- the advertised replacement session was not created, no browser is projected
+  for the profile, the old session remains released, and the profile allocation
+  remains available with zero holders. This is an access-plan/service-request
+  contract contradiction before authentication, navigation, infinite scroll,
+  extraction, acceptance, or deterministic ad/spam filtering.
+
+Current runtime and invariant reconciliation:
+
+- Agent Browser workstation status is globally ready on accepted generation
+  `0.28.0-464895a29720-4611219e2c56`; transaction
+  `upgrade-04f5b478-d13c-419d-8566-382feac9edf3` is accepted at revision 13;
+- installed Last30days service 0.3.81 remains ready on schema 16 and compatible
+  with MCP 4.0.3; its provider envelope records the safe generic code
+  `agent_browser_error`, while retained Agent Browser jobs supply the exact
+  failure above;
+- `daily-default` remains enabled and ready for
+  `2026-09-01T00:00:00Z`, with last boundary `2026-08-31T00:00:00Z` and last
+  recurring tick `tick-1c5d1cc0a33d035e15db0e9dc9fb8bab`;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  Reddit and Facebook remain disabled, while the X and LinkedIn home feeds
+  remain enabled;
+- SQLite quick-check is `ok`, with zero active tick/provider attempts and zero
+  open resource leases; the temporary canary directory was moved to trash;
+- active and goal-only planning audits, the plan-authority audit, its focused
+  test suite, and `git diff --check` pass;
+- criterion 7 fails before observation and criterion 8 remains closed.
+
+Authority classification:
+
+- `human_gate`; the previously authorized 20+20 retry is consumed, Agent
+  Browser must first correct its launch-new identity contract, and another live
+  provider attempt requires renewed operator authority after that correction
+  is proven by an executable request path.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- Agent Browser must make its advertised replacement request self-consistent:
+  when the terminal owner is replacement-eligible and no compatible browser
+  exists, the new `tab_new` session must establish or supersede the selected
+  profile identity instead of requiring an already-proven existing session.
+  Prove that path without a Last30days attempt; then obtain renewed authority
+  before another 20+20 canary. Do not run 40+40.

@@ -1157,6 +1157,16 @@ Current State:
   request. No provider attempt was consumed; the exact 20+20 authority remains
   available after profile-owner reconciliation. P08 remains OPEN and 40+40
   remains gated.
+- Plan 0057 version 18/C18 records terminal tick
+  `tick-342713d933e6415a940da34f6aa6d7c4`: both no-launch plans finally exposed
+  launch-new `tab_new` requests for replacement session
+  `handoff-3c307b74ea88da11`, but both jobs failed before start with
+  `existing_session_profile_identity_unproven`. X and LinkedIn therefore
+  yielded 0/20 and 0/20 without reaching either feed. This is an Agent Browser
+  access-plan/service-request contract contradiction, not authentication,
+  scrolling, extraction, or filtering evidence. The renewed attempt is
+  consumed; P08 remains OPEN and 40+40 remains gated pending an Agent
+  Browser-side repair and renewed live authority.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,

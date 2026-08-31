@@ -22479,3 +22479,90 @@ Next Bounded Action:
 - Agent Browser's owner reconciles the generation-57 transfer. Once both feed
   plans expose executable service requests, run the already-authorized 20+20
   canary without another attempt-budget request.
+
+## Turn 362 | 2026-08-31
+
+Focus: execute the bounded X/LinkedIn 20+20 retry after the operator-reported
+Agent Browser-side repair and reconcile its terminal launch failure.
+
+Authority Consulted:
+
+- operator's explicit `try again`; Plan 0057/C17-C18; Roadmap P08; Last30days
+  administration, Agent Browser service/profile ownership, and repo planning,
+  validation, documentation, and closeout policies.
+
+Decisions And Changes:
+
+- called Last30days `service_info` first, confirmed compatibility, and read both
+  feed access plans before any tick effect;
+- after both plans exposed executable requests, preflighted and enqueued exactly
+  one schedule-disabled X 20 plus LinkedIn 20 tick and stopped at its first
+  terminal receipt;
+- did not retry, run 40+40, enable another source, change recurring state,
+  mutate Agent Browser, or create a replacement profile.
+
+Validation Evidence:
+
+- preflight admitted exact config digest
+  `sha256:41d3f02b7b591e6ac95ec9b4fa33595846ee8e8874d1c7d1b92e16373797a2ab`
+  for interval `2026-08-30T12:35:46Z` through
+  `2026-08-31T12:35:46Z`, exactly two attempts, and 40 aggregate items;
+- tick `tick-342713d933e6415a940da34f6aa6d7c4` terminalized
+  `complete_degraded` in two seconds. X and LinkedIn each consumed one attempt,
+  one request, and one wall second, with zero observed, attempted, accepted, or
+  rejected items;
+- before enqueue, both access plans selected `last30days-facebook`, reported
+  fresh target readiness and no blockers, and advertised `launch_new_browser`
+  `tab_new` requests using `handoff-3c307b74ea88da11` after generation-62
+  terminal cleanup was satisfied and process absence proven;
+- exact jobs `mcp-service-request-tab_new-1feec57d-64cf-4ed3-a0a9-d21147a32637`
+  and `mcp-service-request-tab_new-6f8d7407-ddb2-41e1-9112-12117aec1b39`
+  both failed before start with `existing_session_profile_identity_unproven`;
+  the advertised session was never created and the profile remains available
+  with no browser or holder;
+- Agent Browser is globally ready on accepted generation
+  `0.28.0-464895a29720-4611219e2c56`; this failure is confined to browser
+  acquisition and predates authentication, navigation, scrolling, extraction,
+  acceptance, or filtering;
+- installed Last30days 0.3.81 remains ready/schema 16 and MCP-compatible;
+  SQLite quick-check is `ok`, active attempt and open-lease counts are zero,
+  and both canary leases are released;
+- recurring config SHA-256 remains
+  `28212c6a182fc191c2cb09bc0c645b4b9386f497b2f6b00b2025c24e78abf604`;
+  `daily-default` remains enabled/ready for `2026-09-01T00:00:00Z`, Reddit and
+  Facebook remain disabled, and the temporary canary directory was moved to
+  trash.
+- active and goal-only planning audits, the plan-authority audit, its focused
+  test suite, and `git diff --check` pass.
+
+State Movement:
+
+- Plan 0057 advances to version 18/C18
+  `renewed_canary_terminal_access_plan_request_contradiction`; P08 remains OPEN.
+
+Progress Classification:
+
+- `diagnostic_outcome`; the lifecycle-transfer gate is repaired, but the
+  supposedly executable replacement request fails its own identity precondition
+  before browser launch.
+
+Authority Classification:
+
+- the authorized 20+20 retry is consumed; `external_owner_gate` applies to the
+  Agent Browser launch contract, and another live attempt requires renewed
+  authority after provider-free proof of that repair.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- not written; the terminal receipt and exact external contract contradiction
+  are durably recorded in Plan 0057, Roadmap P08, and this runbook turn.
+
+Next Bounded Action:
+
+- Agent Browser proves that its launch-new replacement request can establish
+  the selected profile identity and create the advertised session. Then obtain
+  renewed authority before another 20+20 Last30days canary; do not run 40+40.
