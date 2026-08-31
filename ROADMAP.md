@@ -1200,6 +1200,12 @@ Current State:
   only 15 actual feed posts. No accepted item carries a literal promoted or
   sponsored marker. P08 remains OPEN, criterion 7 remains false, and 40+40
   remains gated.
+- Plan 0057 version 23/C23 rejects the exact LinkedIn composer-control cluster
+  at the candidate-validation seam even when it inherits a canonical-shaped
+  activity URL. The regression is red/green; affected and canonical Python,
+  MCP Go, package, install, compilation, and governance gates pass; and exact
+  service 0.3.83 is installed ready and compatible. P08 remains OPEN pending
+  the one authorized LinkedIn-only 20-post proof; 40+40 remains gated.
 - exact service 0.3.5/schema16 is installed active/ready with 0.3.4/schema15
   rollback retained and the reviewed contract/runtime hashes current;
 - one service-owned daily UTC schedule admitted exactly one Aug 5-6 timer tick,

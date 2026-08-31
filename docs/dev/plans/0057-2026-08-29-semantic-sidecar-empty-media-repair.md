@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 22
+Plan version: 23
 Date: 2026-08-29
 
 ## Objective
@@ -45,7 +45,12 @@ and only after that canary succeeds run one 40-item canary for each source.
   LinkedIn produced 20 unique canonical-shaped activity URLs but included five
   composer-chrome rows. No accepted row carried a literal `Promoted` or
   `Sponsored` marker. Criterion 7 therefore remains false and 40+40 remains
-  gated on a clean LinkedIn 20-post result.
+  gated on a clean LinkedIn 20-post result;
+- C23 adds an exact deterministic composer-chrome rejection at the existing
+  LinkedIn candidate-validation seam and installs service 0.3.83. The focused,
+  affected, canonical Python, MCP Go, compilation, packaging, and governance
+  gates pass. One operator-authorized schedule-disabled LinkedIn 20-post proof
+  remains before criterion 7 can be reconsidered.
 
 ## Scope
 
@@ -1772,3 +1777,71 @@ Next action or stop reason:
 - repair deterministic LinkedIn composer-chrome acceptance without provider
   effects, validate and install that bounded change, then request authority for
   a fresh 20-item LinkedIn proof. Do not run 40+40 until criterion 7 is clean.
+
+### Checkpoint P0057-C23 | 2026-08-31
+
+Plan version: 23
+
+State transition:
+
+- `x_20_clean_linkedin_20_raw_with_composer_false_positives -> linkedin_composer_rejection_installed`.
+
+Progress classification:
+
+- `blocker_reduction`; the deterministic non-post family that consumed five
+  LinkedIn acceptance slots is reproduced, rejected, validated, and installed.
+
+Authority and bounds:
+
+- the operator's `ok go` authorizes this bounded repair, installation, and one
+  fresh schedule-disabled LinkedIn 20-post proof;
+- X, Reddit, Facebook, YouTube, recurring configuration, and the 40+40 gate
+  remain outside this live packet.
+
+Implementation and validation evidence:
+
+- a focused home-feed regression reproduces the observed defect: the exact
+  `Start a post / Video / Photo / Write article` control cluster is accepted
+  when nearby DOM state supplies a canonical-shaped activity URL;
+- `_validate_candidate` now records the dedicated `composer_chrome` rejection
+  when normalized lines exactly match that four-control sequence. It does not
+  add semantic relevance, author, date, or topic filtering;
+- the regression failed red with one accepted false post and passed green with
+  `quality_gate_failed` plus one `composer_chrome` rejection;
+- the affected social/runtime/package/install suite passes with 291 tests and
+  three skips;
+- the first canonical run reached one expected release-version fixture failure
+  after service advanced to 0.3.83. That explicit pin was updated and its
+  focused test passed; the complete rerun passes with 2,715 tests, seven skips,
+  and six subtests;
+- all MCP Go packages, Python compilation, active/goal planning audits, the
+  plan-authority audit and its eight tests, and `git diff --check` pass;
+- artifact
+  `/tmp/last30days-0.3.83-composer.OV6gp6/last30days-service-0.3.83.tar.gz`
+  has SHA-256
+  `b1099588f758c573a07c53d7eb0ba798d214e088b3ddcf696a833c079a3d742e`;
+- the exact artifact is transactionally installed as service 0.3.83, ready and
+  MCP-compatible on database schema 16, with runtime-manifest SHA-256
+  `f40e52be6190748262408759205d1cc6aa86ad0e89647f877b19e0f02efb0a47`.
+
+Acceptance reconciliation:
+
+- criteria 1-6 and 9 remain satisfied;
+- criterion 7 remains pending one current LinkedIn live proof. Criterion 8 and
+  40+40 remain closed.
+
+Authority classification:
+
+- `inherited_authority` covers the approved repair and exact installation;
+  the same explicit user instruction permits one schedule-disabled LinkedIn
+  20-post proof after this checkpoint.
+
+Subagent status:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next action or stop reason:
+
+- commit and push the exact installed 0.3.83 source, then preflight and enqueue
+  one schedule-disabled LinkedIn-only 20-post proof. Stop at its first terminal
+  receipt and do not run 40+40 automatically.

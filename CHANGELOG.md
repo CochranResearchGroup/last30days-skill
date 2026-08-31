@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Deterministic LinkedIn composer rejection.** Service 0.3.83 rejects the
+  exact `Start a post / Video / Photo / Write article` composer-control cluster
+  even when nearby DOM state supplies a canonical-shaped activity permalink.
+  The home-feed yield loop now counts only actual post candidates and records
+  the bounded `composer_chrome` rejection reason.
+
 - **Budget-propagated social navigation.** Service 0.3.82 derives each Agent
   Browser navigation deadline from the source lane's bounded timeout instead
   of imposing a fixed 25-second ceiling. The service retains a five-second

@@ -22872,3 +22872,73 @@ Next Bounded Action:
 - repair deterministic LinkedIn composer-chrome acceptance provider-free,
   validate and install the bounded change, then seek authority for a fresh
   LinkedIn 20-post proof. Do not run 40+40 until criterion 7 is clean.
+
+## Turn 367 | 2026-08-31
+
+Focus: deterministically reject LinkedIn composer chrome and install the exact
+service 0.3.83 candidate before the authorized LinkedIn-only proof.
+
+Authority Consulted:
+
+- operator's `ok go`; Plan 0057/C22-C23; Roadmap P08; Last30days
+  administration and repo planning, CodeGraph, testing, release,
+  documentation, integration, validation, and closeout policies.
+
+Decisions And Changes:
+
+- used CodeGraph to trace LinkedIn home-feed acceptance through
+  `_accepted_unique_count`, `_quality_gate`, and `_validate_candidate`;
+- added a dedicated exact-line composer classifier and bounded
+  `composer_chrome` rejection reason at the existing provider-specific
+  validation seam;
+- advanced the independently installed service to 0.3.83, refreshed its
+  deterministic runtime manifest, built the exact artifact, and installed it
+  transactionally;
+- did not add semantic quality filtering, modify another source, change
+  recurrence, or open the 40+40 gate.
+
+Validation Evidence:
+
+- the focused regression failed red with one false accepted composer record,
+  then passed green with one `composer_chrome` rejection;
+- the affected suite passes with 291 tests and three skips;
+- the first canonical run exposed only one stale explicit service-version pin.
+  After synchronizing it to 0.3.83, its focused test and the complete rerun pass
+  with 2,715 tests, seven skips, and six subtests;
+- MCP Go packages, Python compilation, planning and authority audits, eight
+  focused authority tests, and `git diff --check` pass;
+- artifact SHA-256 is
+  `b1099588f758c573a07c53d7eb0ba798d214e088b3ddcf696a833c079a3d742e`;
+- installed service 0.3.83 is ready and compatible on schema 16 with
+  runtime-manifest SHA-256
+  `f40e52be6190748262408759205d1cc6aa86ad0e89647f877b19e0f02efb0a47`.
+
+State Movement:
+
+- Plan 0057 advances to version 23/C23
+  `linkedin_composer_rejection_installed`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; the known deterministic LinkedIn false-positive family
+  no longer counts toward accepted feed yield.
+
+Authority Classification:
+
+- `inherited_authority` for repair and installation; the operator's current
+  instruction permits one schedule-disabled LinkedIn 20-post proof. X and the
+  conditional 40+40 canary remain out of scope.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- pending terminal live evidence so the bounded slice can be written once.
+
+Next Bounded Action:
+
+- commit and push the exact installed 0.3.83 source, then run one
+  schedule-disabled LinkedIn-only 20-post proof and reconcile its first
+  terminal receipt.

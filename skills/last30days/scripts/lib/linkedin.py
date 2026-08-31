@@ -1641,6 +1641,8 @@ def _validate_candidate(
         candidate.rejection_reasons.append(f"kind_{candidate.kind}")
     if not candidate.canonical_url:
         candidate.rejection_reasons.append("missing_permalink")
+    if _is_composer_chrome(candidate.text):
+        candidate.rejection_reasons.append("composer_chrome")
     if _is_noise_text(candidate.text):
         candidate.rejection_reasons.append("navigation_noise")
     if not candidate.author and surface_kind == "topic":
@@ -1776,6 +1778,16 @@ def _is_noise_text(value: str) -> bool:
     return not lowered or lowered.startswith((
         "people you may know", "jobs you may be interested in", "recommended for you",
     ))
+
+
+def _is_composer_chrome(value: str) -> bool:
+    """Reject LinkedIn's post-composer controls when surfaced as a feed card."""
+    lines = tuple(
+        re.sub(r"\s+", " ", line).casefold().strip()
+        for line in value.splitlines()
+        if line.strip()
+    )
+    return lines == ("start a post", "video", "photo", "write article")
 
 
 def _clean_engagement(raw: dict[str, Any]) -> dict[str, int]:
