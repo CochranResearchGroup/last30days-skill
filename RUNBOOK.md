@@ -24313,3 +24313,51 @@ Next Bounded Action:
 - publish the source checkpoint, install the Agent Browser terminal-session
   parity candidate, then build and install exact service 0.3.93 before one
   zero-active-work-gated X-and-LinkedIn acceptance tick.
+
+## Turn 386 | 2026-09-01
+
+Focus: publish and reconcile the schema-17 source checkpoint.
+
+Authority Consulted:
+
+- Plan 0062 version 3/C05; P08; active-lane, commit, push, and validation
+  policy.
+
+Decisions And Changes:
+
+- committed and pushed the schema-17/service-0.3.93/MCP-4.0.4 repair as
+  `646ef5b88f7874978641db5ab9cfc3ac6dbd5cf2`;
+- advanced the P08 active-lane checkpoint to that exact published commit;
+- made no live service, database, schedule, browser, or credential mutation.
+
+Validation Evidence:
+
+- `origin/fix/tick-restart-recovery` contains the exact checkpoint;
+- plan-authority, active planning, and goal-governance audits pass with Turn
+  385 and Plan 0062 correctly wired.
+
+State Movement:
+
+- source custody moves from local validated work to published checkpoint;
+  Plan 0062 remains OPEN at C05 pending installation and acceptance.
+
+Progress Classification:
+
+- `blocker_reduction`.
+
+Authority Classification:
+
+- `inherited_authority`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the published commit and repo-local authorities are durable.
+
+Next Bounded Action:
+
+- qualify and install the exact Agent Browser terminal replacement candidate,
+  then build and install the published Last30days service candidate.

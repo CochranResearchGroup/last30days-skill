@@ -304,7 +304,9 @@ Evidence:
   lock, runtime manifest, and install/rollback fixtures;
 - complete `uv run pytest -q` and `go test ./...` pass; `git diff --check`
   passes. Ruff is not installed in the declared uv environment and was not
-  added as an undeclared dependency.
+  added as an undeclared dependency;
+- source checkpoint `646ef5b88f7874978641db5ab9cfc3ac6dbd5cf2` is published
+  at `origin/fix/tick-restart-recovery`.
 
 Subagent status: `not_spawned`
 
