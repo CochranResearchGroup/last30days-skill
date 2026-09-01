@@ -165,3 +165,9 @@ Authority classification:
   X and LinkedIn feed targets are enabled, Reddit and Facebook targets are
   disabled, and YouTube is unchanged. Both 40-item canary collection specs
   remain disabled. The authenticated `last30days-facebook` profile is unchanged.
+- the ordinary September 1 boundary fired during final installation. X
+  completed 10/10 and YouTube 3/3; the deliberate service restart terminated
+  the concurrent LinkedIn worker with `worker_exit_nonzero`, so that scheduled
+  tick is truthfully `complete_degraded`. No duplicate interval was enqueued;
+  the next ordinary boundary is September 2. The separate LinkedIn 40/40 live
+  canary above remains the scraper acceptance evidence.

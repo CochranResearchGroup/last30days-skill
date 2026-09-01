@@ -23533,6 +23533,10 @@ Live Evidence:
 - LinkedIn attempt one: 40/40, 18 scrolls, 49 unique observations, 193 seconds;
   101 sponsored-ad observations and 353 duplicate sightings were rejected
   deterministically. No feed refresh or reload was needed.
+- the ordinary September 1 timer overlapped final service installation. X
+  completed 10/10 and YouTube 3/3 before the deliberate restart terminated the
+  LinkedIn worker with `worker_exit_nonzero`; the tick is `complete_degraded`,
+  no duplicate interval was enqueued, and the next boundary is September 2.
 
 Validation Evidence:
 
