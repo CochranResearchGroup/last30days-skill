@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Three-attempt provider persistence.** Service 0.3.93 and MCP 4.0.4 migrate database
+  schema 16 to 17 without discarding provider attempt or result receipts and
+  admits retry ordinal 2, matching the existing one-to-three-attempt tick
+  configuration contract. Retry ordinal 3 remains rejected.
+
 - **Recurring 80-item X and LinkedIn capacity.** Service 0.3.92 raises X's
   finite explicit home-feed allowance to 40 scrolls so an 80-item request can
   honor the live-observed two-new-posts-per-scroll floor. The recurring timer

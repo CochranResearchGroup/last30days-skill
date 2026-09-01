@@ -307,6 +307,52 @@ def _request(start, end):
     )
 
 
+def test_transient_provider_can_use_all_three_configured_attempts(tmp_path):
+    calls = []
+
+    def transient_then_empty(context):
+        retry_ordinal = len(calls)
+        calls.append(retry_ordinal)
+        if retry_ordinal < 2:
+            return ProviderResult.failure(
+                failure_class="transient",
+                safe_error_code="fixture_transient",
+                usage=_usage(),
+            )
+        return ProviderResult.empty(usage=_usage())
+
+    provider = _provider("web-provider", "fixture_transient", "network:web")
+    provider["limits"] = _limits(attempts=3)
+    coordinator, _, db_path, _, _, _ = _coordinator(
+        tmp_path,
+        [{"service_id": "web", "source": "web", "providers": [provider]}],
+        [_target("web")],
+        [
+            AdapterSpec(
+                "fixture_transient",
+                frozenset({"collect"}),
+                None,
+                transient_then_empty,
+                "fixture:runner:transient",
+            )
+        ],
+        aggregate_limits=_limits(items=10, attempts=3),
+    )
+
+    receipt = coordinator.enqueue_tick(
+        _request("2026-08-03T00:00:00Z", "2026-08-04T00:00:00Z")
+    )
+
+    assert calls == [0, 1, 2], receipt.to_dict()
+    assert receipt.lanes[0].state is contracts.TickLaneState.EMPTY
+    conn = sqlite3.connect(db_path)
+    assert conn.execute(
+        """SELECT retry_ordinal FROM service_tick_provider_attempts
+           ORDER BY retry_ordinal"""
+    ).fetchall() == [(0,), (1,), (2,)]
+    conn.close()
+
+
 def test_manual_tick_runs_every_lane_raw_first_and_publishes_one_degraded_snapshot(
     tmp_path,
 ):
@@ -532,7 +578,7 @@ def test_manual_tick_runs_every_lane_raw_first_and_publishes_one_degraded_snapsh
         "events",
         "execution_attempts",
     }
-    assert completed.versions["database_schema"] == "16"
+    assert completed.versions["database_schema"] == "17"
     assert completed.versions["embedding_space"] == "fixture-space-v1"
     assert snapshots.current().tick_id == completed.tick_id
     results = snapshots.query("revenue chart", access_partitions=("public",))

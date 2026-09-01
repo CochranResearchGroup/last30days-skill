@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 2
+Plan version: 3
 Date: 2026-09-01
 Branch: `fix/tick-restart-recovery`
 Target: `main`
@@ -40,6 +40,8 @@ with enough installed scroll and wall-time budget to make those limits real.
 - rebind only the paused `daily-default` row from the old exact config digest to
   the new validated digest while preserving its next boundary;
 - observe the next ordinary scheduled tick under the resulting configuration.
+- migrate schema 16 to 17 so the configured third attempt can be recorded
+  without losing provider attempt or result receipts.
 
 ## Non-Goals
 
@@ -57,7 +59,8 @@ with enough installed scroll and wall-time budget to make those limits real.
    requests, and 2,280 wall seconds.
 3. Installed X explicit-feed policy permits 40 scrolls and a deterministic
    two-new-posts-per-scroll fixture reaches 80 unique items.
-4. Service 0.3.92 is installed, ready, and bound to its exact runtime manifest.
+4. Service 0.3.93/schema 17 and MCP 4.0.4 are installed, ready, compatible, and
+   bound to their exact runtime and contract manifests.
 5. `daily-default` remains enabled and ready at the unchanged September 2
    boundary under the new exact config digest, with no tick admitted by the
    configuration/rebind operation.
@@ -98,6 +101,18 @@ external blocker.
 - terminal condition: the one tick reaches a durable terminal receipt and its
   X/LinkedIn yields, attempts, exclusions, budgets, schedule continuity, and
   active-work cleanup are reconciled.
+
+### P0062-D | Three-attempt persistence repair
+
+- owner: primary agent;
+- write surfaces: provider-attempt schema migration, migration and real-tick
+  regressions, service/MCP compatibility identities, Plan 0062, P08, and the
+  append-only runbook;
+- dependency: Agent Browser terminal replacement parity is source-validated
+  and must be installed before another live acceptance tick;
+- terminal condition: schema 17 preserves a v16 provider result, admits retry
+  ordinal 2, rejects ordinal 3, and the version-distinct service artifact is
+  installed ready without changing saved tick configuration.
 
 ## Bounds And Stops
 
@@ -262,3 +277,40 @@ Next action: repair the schema/config contract for three provider attempts and
 durably enable the already-reviewed exact-profile fresh-session recovery path;
 then obtain authority for a new manual tick or observe the ordinary September
 2 tick. No second manual tick is authorized by this plan version.
+
+### Checkpoint P0062-C05 | 2026-09-01
+
+Plan version: 3
+
+State: `schema_repair_source_validated`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`; the operator authorized the diagnosed repairs,
+  testing, merge, installation, and one bounded post-install acceptance tick.
+
+Evidence:
+
+- the real tick regression was red after provider calls at retry ordinals 0
+  and 1 and is green through ordinals 0, 1, and 2 after schema 17;
+- the migration regression was red at schema 16 and is green after rebuilding
+  only `service_tick_provider_attempts`, preserving a referenced provider
+  result, admitting ordinal 2, rejecting ordinal 3, and returning an empty
+  `PRAGMA foreign_key_check`;
+- service 0.3.93, schema 17, and MCP 4.0.4 identities are aligned across the
+  canonical contract catalog, generated Go constants, compatibility release
+  lock, runtime manifest, and install/rollback fixtures;
+- complete `uv run pytest -q` and `go test ./...` pass; `git diff --check`
+  passes. Ruff is not installed in the declared uv environment and was not
+  added as an undeclared dependency.
+
+Subagent status: `not_spawned`
+
+Graphiti write status: `not_written`; current source, tests, plan, and direct
+runtime diagnosis remain authoritative.
+
+Next action: publish this source checkpoint, qualify and install the exact
+Agent Browser candidate first, then build and install service 0.3.93 and run
+one bounded X-and-LinkedIn acceptance tick after a zero-active-work preflight.

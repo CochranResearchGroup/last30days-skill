@@ -2113,7 +2113,53 @@ BEGIN
     SELECT RAISE(ABORT, 'service tick schedule event is immutable');
 END;
 """,
+    17: """
+PRAGMA foreign_keys=OFF;
+PRAGMA legacy_alter_table=ON;
+
+ALTER TABLE service_tick_provider_attempts
+    RENAME TO service_tick_provider_attempts_v16;
+
+CREATE TABLE service_tick_provider_attempts (
+    provider_attempt_id TEXT PRIMARY KEY,
+    tick_id TEXT NOT NULL REFERENCES service_ticks(tick_id) ON DELETE CASCADE,
+    lane_id TEXT NOT NULL REFERENCES service_tick_lanes(lane_id) ON DELETE CASCADE,
+    provider_manifest_id TEXT NOT NULL REFERENCES service_tick_providers(provider_manifest_id),
+    execution_attempt_id TEXT NOT NULL REFERENCES service_tick_attempts(execution_attempt_id),
+    retry_ordinal INTEGER NOT NULL CHECK (retry_ordinal IN (0, 1, 2)),
+    state TEXT NOT NULL CHECK (state IN ('running', 'result_staged', 'success', 'empty', 'failure', 'blocked_human', 'budget_exhausted')),
+    failure_class TEXT,
+    fallback_reason TEXT,
+    result_digest TEXT,
+    outcome_counts_json TEXT NOT NULL DEFAULT '{"attempted":0,"observed":0,"accepted":0,"rejected":0}',
+    started_at TEXT NOT NULL,
+    completed_at TEXT,
+    UNIQUE (
+        execution_attempt_id, lane_id, provider_manifest_id, retry_ordinal
+    )
+);
+
+INSERT INTO service_tick_provider_attempts (
+    provider_attempt_id, tick_id, lane_id, provider_manifest_id,
+    execution_attempt_id, retry_ordinal, state, failure_class,
+    fallback_reason, result_digest, outcome_counts_json, started_at,
+    completed_at
+)
+SELECT
+    provider_attempt_id, tick_id, lane_id, provider_manifest_id,
+    execution_attempt_id, retry_ordinal, state, failure_class,
+    fallback_reason, result_digest, outcome_counts_json, started_at,
+    completed_at
+FROM service_tick_provider_attempts_v16;
+
+DROP TABLE service_tick_provider_attempts_v16;
+
+PRAGMA legacy_alter_table=OFF;
+PRAGMA foreign_keys=ON;
+""",
 }
+
+_FOREIGN_KEYS_OFF_MIGRATIONS = frozenset({17})
 
 
 def _connect(db_path: Optional[Path] = None) -> sqlite3.Connection:
@@ -2167,6 +2213,9 @@ def _run_migrations(conn: sqlite3.Connection):
         )
 
     for version in sorted(MIGRATIONS.keys()):
+        foreign_keys_off = version in _FOREIGN_KEYS_OFF_MIGRATIONS
+        if foreign_keys_off:
+            conn.execute("PRAGMA foreign_keys=OFF")
         try:
             conn.execute("BEGIN IMMEDIATE")
             current = conn.execute(
@@ -2181,6 +2230,12 @@ def _run_migrations(conn: sqlite3.Connection):
                 conn.commit()
                 continue
             _execute_script_transactionally(conn, MIGRATIONS[version])
+            if foreign_keys_off:
+                violations = conn.execute("PRAGMA foreign_key_check").fetchall()
+                if violations:
+                    raise sqlite3.IntegrityError(
+                        f"migration {version} produced foreign key violations"
+                    )
             conn.execute(
                 "INSERT INTO schema_version (version) VALUES (?)", (version,)
             )
@@ -2188,6 +2243,10 @@ def _run_migrations(conn: sqlite3.Connection):
         except Exception:
             conn.rollback()
             raise
+        finally:
+            if foreign_keys_off:
+                conn.execute("PRAGMA legacy_alter_table=OFF")
+                conn.execute("PRAGMA foreign_keys=ON")
 
 
 def _execute_script_transactionally(

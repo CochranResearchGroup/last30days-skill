@@ -24244,3 +24244,72 @@ Next Bounded Action:
 - reconcile the three-attempt schema contract and persist the reviewed
   exact-profile fresh-session acquisition setting before another manual or
   ordinary tick; do not enqueue a second manual tick without new authority.
+
+## Turn 385 | 2026-09-01
+
+Focus: repair and validate the three-attempt persistence contract exposed by
+the failed 80+80 acceptance tick.
+
+Authority Consulted:
+
+- operator authorization to repair, test, merge, install, and execute one
+  bounded acceptance tick; Plan 0062 version 3/P0062-D; P08; current planning,
+  testing, versioning, documentation, worktree, and validation policy;
+- Graphiti discovery returned ten older Agent Browser facts but no current
+  evidence for this defect, so current repository and live-state evidence
+  remained authoritative.
+
+Decisions And Changes:
+
+- added schema migration 17, which rebuilds only
+  `service_tick_provider_attempts` with retry ordinals 0 through 2 while
+  preserving rows and dependent receipt references;
+- bounded foreign-key suspension to that rebuild, verified
+  `PRAGMA foreign_key_check` before commit, and restored normal enforcement;
+- aligned the canonical service contract, MCP compatibility release lock and
+  generated constants, runtime manifest, service 0.3.93, and MCP 4.0.4;
+- did not alter the owner-private saved tick configuration, schedule, live
+  database, credentials, or browser profile.
+
+Validation Evidence:
+
+- the real tick regression failed before the repair after ordinals 0 and 1,
+  then passed with provider calls and durable rows for 0, 1, and 2;
+- the v16 migration regression failed at schema 16, then passed with its
+  existing referenced provider result preserved, ordinal 2 admitted, ordinal
+  3 rejected, and no foreign-key violations;
+- complete `uv run pytest -q` passes; `go test ./...` passes; install and
+  rollback fixtures pass; generated-contract and runtime-manifest checks pass;
+  `git diff --check` passes;
+- Ruff is absent from the declared uv environment, so optional Ruff lint did
+  not run and no undeclared dependency was installed.
+
+State Movement:
+
+- Plan 0062 advances to C05 `schema_repair_source_validated`; P08 remains OPEN
+  pending exact artifact installation and one bounded acceptance tick.
+
+Progress Classification:
+
+- `blocker_reduction`; the deterministic retry-ordinal failure is removed in
+  source and protected by migration plus end-to-end tick regressions.
+
+Authority Classification:
+
+- `inherited_authority`; all changes remain inside the approved repair and
+  installation objective.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the source, tests, plan, roadmap, runbook, and forthcoming
+  commit provide durable evidence.
+
+Next Bounded Action:
+
+- publish the source checkpoint, install the Agent Browser terminal-session
+  parity candidate, then build and install exact service 0.3.93 before one
+  zero-active-work-gated X-and-LinkedIn acceptance tick.

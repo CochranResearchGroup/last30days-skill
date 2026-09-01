@@ -40,7 +40,7 @@ def test_v8_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 16
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
     assert conn.execute("SELECT name FROM topics").fetchone()[0] == "Existing Topic"
     tables = {
         row[0]
@@ -235,7 +235,7 @@ def test_v8_migration_backfills_an_immutable_current_document_version(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 16
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
     version = conn.execute(
         """SELECT v.document_id, v.content_hash, v.access_partition_id,
                   v.system_from, v.system_to
@@ -340,6 +340,7 @@ def test_concurrent_initializers_publish_each_schema_version_once(tmp_path):
         (14, 1),
         (15, 1),
         (16, 1),
+        (17, 1),
     ]
     conn.close()
 
@@ -349,7 +350,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     store.init_db(db_path)
     monkeypatch.setitem(
         store.MIGRATIONS,
-        17,
+        18,
         """
         CREATE TABLE should_be_rolled_back (id INTEGER PRIMARY KEY);
         THIS IS NOT VALID SQL;
@@ -363,7 +364,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'should_be_rolled_back'"
     ).fetchone() is None
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 16
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
     conn.close()
 
 
@@ -420,7 +421,7 @@ def test_v15_migration_preserves_observation_and_adds_viewer_lease_proof(tmp_pat
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 16
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
     assert conn.execute(
         """SELECT public_operator_url, viewer_lease_id, lease_acquired_at
            FROM service_incident_observations"""
@@ -429,6 +430,170 @@ def test_v15_migration_preserves_observation_and_adds_viewer_lease_proof(tmp_pat
         None,
         None,
     )
+    conn.close()
+
+
+def test_v17_migration_preserves_provider_receipts_and_admits_third_attempt(tmp_path):
+    db_path = tmp_path / "v16-provider-attempt.db"
+    conn = sqlite3.connect(db_path)
+    conn.executescript(store.SCHEMA_V1)
+    conn.executescript(store.SCHEMA_V1_DEFAULTS)
+    for version in range(2, 17):
+        conn.executescript(store.MIGRATIONS[version])
+        conn.execute("INSERT INTO schema_version(version) VALUES (?)", (version,))
+    conn.execute(
+        """INSERT INTO service_ticks (
+               tick_id, schedule_id, interval_from, interval_to, trigger,
+               config_revision, config_digest, config_json, state,
+               created_at, updated_at
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            "tick-v16",
+            "manual-default",
+            "2026-08-03T00:00:00Z",
+            "2026-08-04T00:00:00Z",
+            "manual",
+            "config-v16",
+            "sha256:config-v16",
+            "{}",
+            "collecting",
+            "2026-08-04T12:00:00Z",
+            "2026-08-04T12:00:00Z",
+        ),
+    )
+    conn.execute(
+        """INSERT INTO service_tick_attempts (
+               execution_attempt_id, tick_id, attempt, state, created_at
+           ) VALUES (?, ?, ?, ?, ?)""",
+        (
+            "execution-v16",
+            "tick-v16",
+            1,
+            "running",
+            "2026-08-04T12:00:00Z",
+        ),
+    )
+    conn.execute(
+        """INSERT INTO service_tick_lanes (
+               lane_id, tick_id, service_id, target_id, access_partition_id,
+               service_config_json, target_config_json, lane_digest, state,
+               created_at, updated_at
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            "lane-v16",
+            "tick-v16",
+            "x",
+            "x-home",
+            "profile:x",
+            "{}",
+            "{}",
+            "sha256:lane-v16",
+            "ready",
+            "2026-08-04T12:00:00Z",
+            "2026-08-04T12:00:00Z",
+        ),
+    )
+    conn.execute(
+        """INSERT INTO service_tick_providers (
+               provider_manifest_id, tick_id, lane_id, provider_ordinal,
+               provider_id, adapter_type, normalization_proof_ref,
+               resource_keys_json, fallback_on_json, limits_json,
+               provider_digest
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            "provider-v16",
+            "tick-v16",
+            "lane-v16",
+            0,
+            "x-browser",
+            "agent_browser",
+            "fixture:v16",
+            "[]",
+            '["transient"]',
+            '{"attempts":3}',
+            "sha256:provider-v16",
+        ),
+    )
+    conn.execute(
+        """INSERT INTO service_tick_provider_attempts (
+               provider_attempt_id, tick_id, lane_id, provider_manifest_id,
+               execution_attempt_id, retry_ordinal, state, result_digest,
+               started_at, completed_at
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            "provider-attempt-v16",
+            "tick-v16",
+            "lane-v16",
+            "provider-v16",
+            "execution-v16",
+            1,
+            "failure",
+            "sha256:result-v16",
+            "2026-08-04T12:00:00Z",
+            "2026-08-04T12:01:00Z",
+        ),
+    )
+    conn.execute(
+        """INSERT INTO service_tick_provider_results (
+               provider_attempt_id, tick_id, lane_id, result_json,
+               result_digest, created_at
+           ) VALUES (?, ?, ?, ?, ?, ?)""",
+        (
+            "provider-attempt-v16",
+            "tick-v16",
+            "lane-v16",
+            "{}",
+            "sha256:result-v16",
+            "2026-08-04T12:01:00Z",
+        ),
+    )
+    conn.commit()
+    conn.close()
+
+    store.init_db(db_path)
+
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys=ON")
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
+    assert conn.execute(
+        """SELECT a.retry_ordinal, r.result_digest
+           FROM service_tick_provider_attempts AS a
+           JOIN service_tick_provider_results AS r USING (provider_attempt_id)"""
+    ).fetchone() == (1, "sha256:result-v16")
+    conn.execute(
+        """INSERT INTO service_tick_provider_attempts (
+               provider_attempt_id, tick_id, lane_id, provider_manifest_id,
+               execution_attempt_id, retry_ordinal, state, started_at
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            "provider-attempt-v17-third",
+            "tick-v16",
+            "lane-v16",
+            "provider-v16",
+            "execution-v16",
+            2,
+            "running",
+            "2026-08-04T12:02:00Z",
+        ),
+    )
+    with pytest.raises(sqlite3.IntegrityError):
+        conn.execute(
+            """INSERT INTO service_tick_provider_attempts (
+                   provider_attempt_id, tick_id, lane_id, provider_manifest_id,
+                   execution_attempt_id, retry_ordinal, state, started_at
+               ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                "provider-attempt-v17-fourth",
+                "tick-v16",
+                "lane-v16",
+                "provider-v16",
+                "execution-v16",
+                3,
+                "running",
+                "2026-08-04T12:03:00Z",
+            ),
+        )
+    assert conn.execute("PRAGMA foreign_key_check").fetchall() == []
     conn.close()
 
 
@@ -449,7 +614,7 @@ def test_applied_v3_database_receives_replay_and_supervisor_schema(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 16
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'index_documents'"
     ).fetchone()[0] == "index_documents"

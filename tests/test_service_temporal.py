@@ -41,7 +41,7 @@ def test_schema7_compatibility_export_is_deterministic_and_receipted(tmp_path):
     assert first == second
     assert first == json.loads(output_path.read_text(encoding="utf-8"))
     assert first["format"] == "last30days-schema7-replay-v1"
-    assert first["database_schema_version"] == 16
+    assert first["database_schema_version"] == 17
     assert first["documents"] == []
     assert receipt == {
         "format": "last30days-schema7-replay-receipt-v1",
