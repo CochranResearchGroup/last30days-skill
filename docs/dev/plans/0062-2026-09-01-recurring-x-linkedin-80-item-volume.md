@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 1
+Plan version: 2
 Date: 2026-09-01
 Branch: `fix/tick-restart-recovery`
 Target: `main`
@@ -39,7 +39,7 @@ with enough installed scroll and wall-time budget to make those limits real.
 
 ## Non-Goals
 
-- manually triggering a tick in this slice;
+- manually triggering more than one X-and-LinkedIn-only acceptance tick;
 - changing Reddit, Facebook, or YouTube enablement or selectors;
 - changing the authenticated browser profile, content acceptance rules,
   deterministic ad/spam filtering, or retry count;
@@ -84,6 +84,16 @@ external blocker.
 - dependency: P0062-A accepted and the September 2 boundary reached;
 - terminal condition: acceptance criterion 6 has a durable readback or one
   exact external blocker is recorded.
+
+### P0062-C | Operator-requested immediate acceptance tick
+
+- owner: primary agent;
+- input: one manual service tick scoped to already-enabled X and LinkedIn;
+- bounds: saved 80-item limits, three attempts per source, no YouTube, Reddit,
+  or Facebook lane, and no second manually enqueued tick;
+- terminal condition: the one tick reaches a durable terminal receipt and its
+  X/LinkedIn yields, attempts, exclusions, budgets, schedule continuity, and
+  active-work cleanup are reconciled.
 
 ## Bounds And Stops
 
@@ -171,3 +181,34 @@ live readbacks are durable and authoritative.
 Next action: at the September 2 UTC boundary, observe the first ordinary tick
 under the 80+80 configuration and reconcile its X, LinkedIn, and YouTube
 terminal receipts without manually enqueueing work.
+
+### Checkpoint P0062-C03 | 2026-09-01
+
+Plan version: 2
+
+State: `manual_80x80_acceptance_tick_authorized`
+
+Progress classification: `planned_followup`
+
+Authority classification:
+
+- `inherited_authority`; the operator's `try it` instruction explicitly
+  authorizes one immediate live test of the newly configured X and LinkedIn
+  limits.
+
+Evidence:
+
+- service 0.3.92 remains ready and compatible at the installed runtime
+  manifest;
+- the saved config and schedule remain ready at the validated 80+80 digest;
+- the service MCP collection projection is empty, so the existing native
+  service tick operation remains the governed execution surface.
+
+Subagent status: `not_spawned`
+
+Graphiti write status: `not_written`; current repository and live service
+evidence are sufficient.
+
+Next action: enqueue exactly one manual tick scoped to X and LinkedIn, poll
+only that tick to terminal state, then reconcile its provider receipts and
+schedule invariants.
