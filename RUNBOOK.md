@@ -24091,3 +24091,82 @@ Next Bounded Action:
   install service 0.3.92 and rebind only `daily-default` from the old exact
   digest to the new validated digest while preserving its September 2
   boundary and admitting no tick.
+
+## Turn 383 | 2026-09-01
+
+Focus: install the validated 80+80 capacity release and complete the exact
+schedule rebind without admitting a tick.
+
+Authority Consulted:
+
+- operator recurring 80+80 direction; Plan 0062/C01; Last30days lifecycle,
+  schedule, configuration, validation, Git, and closeout contracts.
+
+Decisions And Changes:
+
+- completed the canonical Python suite and published implementation checkpoint
+  `80eec3d` to `origin/fix/tick-restart-recovery` before the runtime mutation;
+- stopped only `last30days.service` after proving zero active tick attempts,
+  provider attempts, and open resource leases;
+- created one recoverable SQLite backup, then used an exact guarded predicate
+  to change only `daily-default` from the prior digest to the validated 80+80
+  digest while retaining its ready state, next boundary, and last tick;
+- installed version-distinct service artifact 0.3.92 and started the managed
+  service;
+- did not enqueue a tick, invoke X or LinkedIn, alter source enablement,
+  operate Agent Browser, or change the browser profile or content gates.
+
+Validation Evidence:
+
+- complete `uv run pytest -q` passes, as do focused X/runtime/release tests,
+  plan-authority audit, active planning audit, goal-governance audit,
+  reproducible artifact build, and `git diff --check`;
+- artifact SHA-256 is
+  `67db8404bead637637ba0be55433df210bc2503de218fd31c8f15a3f342fec80`;
+  installed service 0.3.92/schema 16 is ready and MCP-compatible with
+  runtime-manifest SHA-256
+  `68f57446667df4f9d105b80c63a48e215b625ea6a94fc79eee81d2d0c2ae901b`;
+- saved recurring readback is X 80 items/3 attempts/360 seconds, LinkedIn 80/3/360,
+  YouTube 3/1/120, and aggregate 163 items/7 attempts/350 requests/2,280
+  seconds. Reddit and Facebook remain disabled;
+- `daily-default` is enabled and ready at digest
+  `sha256:069cf238586388e1e55924083e97161a403dd7fa488a6c2cf45d55fb29500074`
+  with next boundary `2026-09-02T00:00:00Z`, prior tick
+  `tick-56318fada747d408976df141ab17a0ef`, and no runtime error;
+- tick count remains 111 with no creation after the September 1 boundary;
+  active tick attempts, provider attempts, and open resource leases are zero;
+  live and backup SQLite `quick_check` are `ok`;
+- backup path is
+  `/home/ecochran76/.local/share/last30days/backups/research-pre-80x80-rebind-20260901.db`.
+
+State Movement:
+
+- Plan 0062 advances to C02
+  `configured_and_installed_awaiting_ordinary_tick`; acceptance criteria 1
+  through 5 are accepted, P0062-B and criterion 6 remain open; P08 remains
+  OPEN.
+
+Progress Classification:
+
+- `outcome_progress`; the timer and installed scraper now durably request and
+  budget 80 unique posts from each social feed.
+
+Authority Classification:
+
+- `inherited_authority`; the install and exact rebind stayed within the
+  operator's requested recurring mutation.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the published commit, owner-private config, live schedule,
+  install receipt, and repository checkpoint are authoritative.
+
+Next Bounded Action:
+
+- observe the first ordinary September 2 tick under Plan 0062/P0062-B and
+  reconcile terminal X, LinkedIn, and YouTube receipts without manually
+  enqueueing or retrying work.

@@ -1081,13 +1081,14 @@ pause controls.
 
 Current State:
 
-- Plan 0062 version 1/C01 is the current actionable P08 plan. The operator
-  superseded the unchanged 10+10 observation with an explicit recurring
-  80+80 target. P0062-A raises the X and LinkedIn saved item limits to 80,
-  retains three attempts, gives each social provider a 360-second attempt
-  ceiling, and installs X's finite 40-scroll allowance before an exact guarded
-  schedule rebind. P0062-B will observe the resulting ordinary September 2
-  tick without manually enqueueing work. Current authority:
+- Plan 0062 version 1/C02 is the current actionable P08 plan. Service 0.3.92 is
+  installed ready with X's finite 40-scroll allowance. Saved recurring
+  revision `operator-20260901-x-linkedin-80-v1` requests 80 X and 80 LinkedIn
+  posts, retains three attempts for each, and provides 360 seconds per social
+  attempt. The exact guarded digest rebind preserved the September 2 boundary,
+  prior tick, and ready schedule without admitting work. P0062-B will observe
+  the resulting ordinary tick without manually enqueueing it. Current
+  authority:
   `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`.
 - Plan 0060 version 1/C06 is CLOSED after installing service 0.3.91 with finite
   active-tick drain semantics and genuine three-attempt transient retry budgets

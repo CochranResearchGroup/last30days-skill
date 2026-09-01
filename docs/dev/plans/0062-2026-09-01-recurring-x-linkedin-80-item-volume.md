@@ -124,3 +124,50 @@ are sufficient.
 Next action: validate and install the bounded capacity change, save the 80+80
 configuration, then perform the exact guarded schedule rebind without
 admitting a tick.
+
+### Checkpoint P0062-C02 | 2026-09-01
+
+Plan version: 1
+
+State: `configured_and_installed_awaiting_ordinary_tick`
+
+Progress classification: `outcome_progress`
+
+Authority classification:
+
+- `inherited_authority`; installation and the guarded schedule rebind are
+  ordinary implementation steps for the operator's recurring 80+80 request.
+
+Evidence:
+
+- complete canonical `uv run pytest -q` and focused X/runtime/release suites
+  pass; plan-authority, active planning, and goal-governance audits pass;
+- commit `80eec3d` is published at `origin/fix/tick-restart-recovery`;
+- service 0.3.92 is installed, active, ready, and MCP-compatible on schema 16
+  with runtime-manifest SHA-256
+  `68f57446667df4f9d105b80c63a48e215b625ea6a94fc79eee81d2d0c2ae901b`;
+- saved revision `operator-20260901-x-linkedin-80-v1` reads back X 80/3/360,
+  LinkedIn 80/3/360, YouTube 3/1/120, and aggregate limits 163/7/2,280;
+- with the service stopped and active attempts and leases proven zero, one
+  exact guarded update moved only `daily-default` from digest
+  `sha256:b2ec0ed2eecc7d0e1fa1b6fa97595bf6fbfeb51d44db9f99d4a5884986856c3e`
+  to validated digest
+  `sha256:069cf238586388e1e55924083e97161a403dd7fa488a6c2cf45d55fb29500074`;
+- backup
+  `/home/ecochran76/.local/share/last30days/backups/research-pre-80x80-rebind-20260901.db`
+  and the live database both pass `quick_check`;
+- `daily-default` remains enabled and ready at the unchanged boundary
+  `2026-09-02T00:00:00Z`, retains prior tick
+  `tick-56318fada747d408976df141ab17a0ef`, and reports no runtime error;
+- the database still contains 111 ticks with the latest created on the prior
+  September 1 boundary. The update admitted no manual or timer tick, and active
+  tick attempts, provider attempts, and open resource leases remain zero.
+
+Subagent status: `not_spawned`
+
+Graphiti write status: `not_written`; the plan, runbook, published commit, and
+live readbacks are durable and authoritative.
+
+Next action: at the September 2 UTC boundary, observe the first ordinary tick
+under the 80+80 configuration and reconcile its X, LinkedIn, and YouTube
+terminal receipts without manually enqueueing work.
