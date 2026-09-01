@@ -1,17 +1,17 @@
 schema_version: 1
 lanes:
   - id: P08
-    objective: Prove one bounded 20-item X and LinkedIn home-feed tick
-    plan: docs/dev/plans/0056-2026-08-25-x-linkedin-target-auth-reliability-repair.md
-    plan_ref: refs/remotes/origin/fix/x-linkedin-failure-cause-evidence
-    branch: fix/x-linkedin-failure-cause-evidence
+    objective: Make recurring ticks restart-safe and retry transient social failures
+    plan: docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md
+    plan_ref: refs/heads/fix/tick-restart-recovery
+    branch: fix/tick-restart-recovery
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 3bb26a5fce0892d16dc3e20226f5e03e8239902b
-    remote_ref: refs/remotes/origin/fix/x-linkedin-failure-cause-evidence
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 646ef5b88f7874978641db5ab9cfc3ac6dbd5cf2
+    remote_ref: refs/remotes/origin/fix/tick-restart-recovery
     integration: fast-forward
-    integration_receipt: 3bb26a5fce0892d16dc3e20226f5e03e8239902b
+    integration_receipt: null
     dependencies: []
     overlaps: []
-    updated_at: 2026-08-29
+    updated_at: 2026-09-01

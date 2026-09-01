@@ -35,11 +35,11 @@ def test_v4_release_versions_are_independent_and_explicit():
     assert _json(".claude-plugin/marketplace.json")["plugins"][0]["version"] == "4.0.0"
     assert _json("gemini-extension.json")["version"] == "4.0.0"
 
-    assert _json("mcp/manifest.json")["version"] == "4.0.3"
+    assert _json("mcp/manifest.json")["version"] == "4.0.4"
 
     service_version = (ROOT / "service/VERSION").read_text(encoding="utf-8").strip()
     runtime_manifest = _json("service/runtime-manifest.json")
-    assert service_version == "0.3.90"
+    assert service_version == "0.3.93"
     assert runtime_manifest["service_version"] == service_version
 
 
@@ -57,7 +57,7 @@ def test_mcp_release_identity_is_locked_to_canonical_contract():
     ]
     assert len(current) == 1
     assert current[0] == {
-        "adapter_version": "4.0.3",
+        "adapter_version": "4.0.4",
         "contract_schema_version": catalog["schema_version"],
         "contract_sha256": hashlib.sha256(catalog_raw).hexdigest(),
         "service_api": catalog["compatibility"]["service_api"],
@@ -79,7 +79,7 @@ def test_contract_generator_rejects_unreleased_or_ambiguous_identity():
         catalog=catalog,
         manifest=manifest,
         release_lock=release_lock,
-    )["adapter_version"] == "4.0.3"
+    )["adapter_version"] == "4.0.4"
 
     missing = copy.deepcopy(release_lock)
     missing["releases"] = missing["releases"][:-1]

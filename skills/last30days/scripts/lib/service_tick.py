@@ -188,7 +188,7 @@ def _validate_limits(value: object, field: str, *, provider: bool) -> None:
         limits["attempts"],
         f"{field}.attempts",
         minimum=1,
-        maximum=2 if provider else 1_000,
+        maximum=3 if provider else 1_000,
     )
     _integer(
         limits["network_requests"],

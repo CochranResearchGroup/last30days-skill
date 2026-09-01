@@ -1072,7 +1072,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: CLOSED
+State: OPEN
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1081,6 +1081,43 @@ pause controls.
 
 Current State:
 
+- Plan 0062 version 3/C05 is the current actionable P08 plan. Service 0.3.92 is
+  installed ready with X's finite 40-scroll allowance. Saved recurring
+  revision `operator-20260901-x-linkedin-80-v1` requests 80 X and 80 LinkedIn
+  posts, retains three attempts for each, and provides 360 seconds per social
+  attempt. The exact guarded digest rebind preserved the September 2 boundary,
+  prior tick, and ready schedule without admitting work. P0062-B will observe
+  the resulting ordinary tick. The operator subsequently authorized one
+  immediate manual X-and-LinkedIn-only acceptance tick under the same saved
+  limits. That tick failed before scraping: two X attempts hit the unproven
+  stale-session identity gate because the reviewed fresh-session recovery
+  switch was absent, then schema 16 rejected retry ordinal 2 despite the saved
+  three-attempt limit and aborted before LinkedIn. The tick is terminal with
+  zero active work, the ordinary schedule is unchanged, and no second manual
+  enqueue is authorized. Schema 17 is now source-validated to preserve v16
+  provider receipts, admit configured retry ordinal 2, and reject ordinal 3;
+  service 0.3.93 and MCP 4.0.4 release identities are aligned and their full
+  Python, Go, migration, and install/rollback suites pass. Installation waits
+  on the source-validated Agent Browser terminal replacement candidate so the
+  two repairs can be accepted together.
+  Current authority:
+  `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`.
+- Plan 0060 version 1/C06 is CLOSED after installing service 0.3.91 with finite
+  active-tick drain semantics and genuine three-attempt transient retry budgets
+  for recurring X and LinkedIn. The exact-digest schedule rebind preserved the September 2
+  boundary. After Agent Browser restored one ready runtime host, the reviewed
+  exact-profile fresh-session path bypassed an unproven stale session identity
+  without changing profiles. The terminal LinkedIn verification accepted 20/20
+  unique canonical posts in 88.3 seconds after 10 non-stagnant scrolls while
+  deterministically excluding 53 sponsored-ad observations and deduplicating
+  110 repeated observations. P08 remains open for the next ordinary scheduled
+  tick. Current authority:
+  `docs/dev/plans/0060-2026-09-01-tick-restart-recovery.md`.
+- Plan 0061 version 1/C01 is CANCELLED before its scheduled boundary because
+  the operator replaced its unchanged-configuration premise with the 80+80
+  recurring target now owned by Plan 0062. It admitted no tick. Historical
+  authority:
+  `docs/dev/plans/0061-2026-09-01-next-ordinary-tick-observation.md`.
 - Plan 0059 version 1/C01 closes a schedule-disabled 80+80 live capacity
   canary on installed service 0.3.90. LinkedIn accepted 80 unique canonical
   posts in one attempt after 29 scrolls while deterministically excluding 367

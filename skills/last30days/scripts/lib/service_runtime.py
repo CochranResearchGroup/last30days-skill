@@ -241,10 +241,12 @@ class TickScheduleLoop:
                 delay = self.error_seconds
             self._stop_event.wait(delay)
 
-    def stop(self, *, timeout: float = 5.0) -> None:
+    def stop(self, *, timeout: float = 5.0) -> bool:
+        """Stop scheduling new polls and report whether the active poll drained."""
         self._stop_event.set()
         if self._thread is not None:
             self._thread.join(timeout=timeout)
+        return not self.is_alive
 
 
 class EnrichmentLoop:

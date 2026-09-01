@@ -23657,3 +23657,707 @@ Next Bounded Action:
   small implementation plan to raise or adapt the finite X explicit-feed
   budget with provider-free tests and one installed canary. Otherwise leave
   recurrence unchanged and monitor the next ordinary tick.
+
+## Turn 377 | 2026-09-01
+
+Focus: diagnose the degraded September 1 LinkedIn timer lane and open a bounded
+restart-recovery successor.
+
+Authority Consulted:
+
+- the operator's explicit `ok go`; Plan 0059/P08 terminal evidence; current
+  Last30days, Agent Browser service, planning, testing, architecture,
+  documentation, Git, and closeout policies.
+
+Decisions And Changes:
+
+- confirmed the timer itself fired normally and isolated LinkedIn's failure to
+  the deliberate Last30days installation restart, not authentication, DOM
+  extraction, or Agent Browser acquisition;
+- opened Plan 0060/P08 for finite active-tick drain semantics, three-attempt
+  recurring X/LinkedIn providers, one validated install, and one bounded
+  LinkedIn verification at
+  `docs/dev/plans/0060-2026-09-01-tick-restart-recovery.md`;
+- preserved the exact `last30days-facebook` profile, disabled Reddit/Facebook
+  lanes, YouTube behavior, feed selectors, item ceilings, and deterministic
+  ad/spam filtering.
+
+Validation Evidence:
+
+- durable tick receipt shows LinkedIn transient failure with zero observed
+  items from `00:00:40.238Z` to `00:02:10.867Z`;
+- installed files changed at `00:02:07.707Z` and the replacement service began
+  at `00:02:11Z`;
+- current exact-profile access planning reports one compatible retained
+  browser and no acquisition or lifecycle blocker; its retained LinkedIn tab
+  is `https://www.linkedin.com/feed/`;
+- code inspection proves nonzero workers map to transient
+  `worker_exit_nonzero`, shutdown waits only five seconds for the tick loop,
+  and automatic retry requires at least two configured attempts.
+
+State Movement:
+
+- Plan 0060 opens at version 1/C01 `diagnosed_and_planned`; P08 reopens for the
+  bounded reliability successor.
+
+Progress Classification:
+
+- `blocker_reduction`.
+
+Authority Classification:
+
+- `inherited_authority`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `pending_closeout`; implementation outcome is not yet known.
+
+Next Bounded Action:
+
+- add red restart-drain and recurring retry-budget regressions.
+
+## Turn 378 | 2026-09-01
+
+Focus: install restart-safe recurring ticks, activate genuine X/LinkedIn
+three-attempt budgets, and investigate one post-install LinkedIn failure.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0060/C01-C02; current runtime, validation, install,
+  schedule-transition, Agent Browser service, documentation, Git, and closeout
+  contracts.
+
+Decisions And Changes:
+
+- implemented finite 900-second active-tick drain, `KillMode=mixed`, and a
+  930-second systemd stop ceiling so a planned restart signals the main service
+  before child workers and stops new schedule polls while one poll drains;
+- expanded provider attempt validation to three and changed transient retry
+  admission to consume every configured remaining attempt;
+- installed service 0.3.91 and set the owner-private recurring X and LinkedIn
+  providers to three attempts with aggregate limits 7/350/23/840; Reddit,
+  YouTube, and Facebook retain one attempt, and Reddit/Facebook remain disabled;
+- after the config replacement correctly paused schedule readiness, selected
+  the already-staged exact release and used an exact old/new digest guarded
+  rebind. It preserved the last tick and September 2 boundary;
+- consumed one 20-item LinkedIn verification and stopped at its terminal
+  pre-navigation failure without retrying or mutating Agent Browser.
+
+Validation Evidence:
+
+- commit `89ac5f8d931f2183067c1aa7e2e57c6e7d9a9c93` is published; focused suites
+  and the complete canonical `uv run pytest -q` suite pass;
+- service 0.3.91/schema 16 is ready with runtime-manifest SHA-256
+  `a6509a82b743c7eef0b1cb7156901aca9b2c0263508c527dc9253094463d4c90`;
+- `daily-default` is ready at config digest
+  `sha256:b2ec0ed2eecc7d0e1fa1b6fa97595bf6fbfeb51d44db9f99d4a5884986856c3e`,
+  has no runtime error, retains last tick
+  `tick-56318fada747d408976df141ab17a0ef`, and retains next boundary
+  `2026-09-02T00:00:00Z`; live and backup SQLite checks are `ok`;
+- LinkedIn returned transient `agent_browser_error` at
+  `workspace_acquisition` in 2.3 seconds with zero observations and no page
+  title or URL;
+- Agent Browser directly reports zero runtime hosts, one dashboard,
+  `runtime_host_count_not_one`, degraded runtime lifecycle, and unavailable
+  process inventory. Jobs readback fails because runtime-host endpoint metadata
+  is incomplete. Exact profile selection remains correct but has zero compatible
+  live browsers and a terminal prior owner.
+
+State Movement:
+
+- Plan 0060 advances to C03
+  `restart_repair_installed_agent_browser_runtime_host_blocked`; P08 remains
+  OPEN because the next bounded LinkedIn success is externally blocked before
+  scraper execution.
+
+Progress Classification:
+
+- `blocker_reduction`; Last30days restart and retry behavior is installed, and
+  the remaining LinkedIn failure is localized upstream to Agent Browser host
+  availability.
+
+Authority Classification:
+
+- `inherited_authority`; the implementation, one install candidate, exact
+  schedule rebind, and one verification stayed within the accepted packet.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; exact repository and runtime receipts are authoritative.
+
+Next Bounded Action:
+
+- restore one healthy Agent Browser runtime host outside this repository, then
+  obtain explicit authority for a fresh bounded LinkedIn retry. Do not change
+  LinkedIn scraper logic from this zero-observation workspace failure.
+
+## Turn 379 | 2026-09-01
+
+Focus: retry one 20-item LinkedIn home-feed acquisition after the Agent Browser
+upgrade and localize any remaining failure.
+
+Authority Consulted:
+
+- operator `Try again`; Plan 0060/C03; Last30days service-client,
+  Agent Browser service, monitoring, administration, documentation, validation,
+  and closeout contracts.
+
+Decisions And Changes:
+
+- called Last30days `service_info` first and confirmed installed compatibility;
+- closed Plan 0060 and opened the read-only successor
+  `docs/dev/plans/0061-2026-09-01-next-ordinary-tick-observation.md` so P08
+  retains one bounded actionable plan without enqueueing or changing the timer;
+- rejected an account-only access-plan fallback to `stealthcdp-default` and
+  used the exact worker-shaped access plan, which correctly selected the
+  existing authenticated `last30days-facebook` profile;
+- consumed exactly one 20-item LinkedIn feed retry and stopped at its first
+  terminal receipt;
+- changed no scraper, provider policy, schedule, recurring configuration,
+  installed service, browser profile, or Agent Browser lifecycle state.
+
+Validation Evidence:
+
+- exact-profile planning selects `last30days-facebook` by its registered
+  LinkedIn authentication, reports zero compatible live browsers, and permits
+  supersession of terminal owner generation 69 with process absence proven;
+- retry `plan0060-linkedin-postinstall-2` returned transient
+  `agent_browser_error` at `workspace_acquisition` in 2.3 seconds: zero
+  attempted, observed, accepted, rejected, scrolled, refreshed, or reloaded
+  posts. The `tab_new` service request itself failed after 2.1 seconds;
+- Agent Browser jobs readback still returns `Runtime host endpoint metadata is
+  incomplete; preserving evidence and refusing a duplicate host`; post-attempt
+  status shows generation `0.28.0-fa99bc026aa4-a04fbee7185d`, one dashboard,
+  zero runtime hosts, `runtime_host_count_not_one`, and unavailable browser
+  process observation;
+- Last30days service 0.3.91 remains ready; `daily-default` remains enabled and
+  ready for `2026-09-02T00:00:00Z` with its exact config digest and prior tick;
+  active tick attempts, provider attempts, and resource leases are zero, and
+  SQLite `quick_check` is `ok`.
+
+State Movement:
+
+- Plan 0060 advances to C04
+  `authorized_linkedin_retry_confirms_runtime_host_blocker`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_confirmation`; the post-upgrade retry reproduces the upstream
+  runtime-host failure before LinkedIn navigation, so scraper changes remain
+  unsupported.
+
+Authority Classification:
+
+- `explicit_authority`; exactly one fresh LinkedIn retry was requested and
+  consumed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; exact repository and runtime receipts are authoritative.
+
+Next Bounded Action:
+
+- Agent Browser must restore exactly one runtime host with complete endpoint
+  metadata. Retry the LinkedIn feed only after that census reads one host.
+
+## Turn 380 | 2026-09-01
+
+Focus: consume one additional 20-item LinkedIn retry and determine whether the
+Agent Browser runtime-host blocker changed.
+
+Authority Consulted:
+
+- operator `try again`; Plan 0060/C04; Last30days service-client, Agent Browser
+  service, repo planning, documentation, validation, and closeout contracts.
+
+Decisions And Changes:
+
+- called Last30days `service_info` first and confirmed installed compatibility;
+- verified that the worker-shaped access plan selected the existing
+  `last30days-facebook` profile by registered LinkedIn authentication;
+- consumed exactly one additional LinkedIn 20-item feed attempt and stopped at
+  its first terminal receipt;
+- changed no scraper, provider policy, recurring configuration, schedule,
+  installation, profile, or Agent Browser lifecycle state.
+
+Validation Evidence:
+
+- retry `plan0060-linkedin-postinstall-3` returned transient
+  `agent_browser_error` at `workspace_acquisition` in 2.2 seconds with the same
+  failure signature as the prior retry; attempted, observed, accepted,
+  rejected, scroll, refresh, reload, and snapshot-renewal counts are zero;
+- Agent Browser's `tab_new` request failed after 2.1 seconds without a result;
+  jobs readback still reports incomplete runtime-host endpoint metadata;
+- Agent Browser status remains one dashboard, zero runtime hosts,
+  `runtime_host_count_not_one`, degraded lifecycle readiness, and unavailable
+  browser process observation on generation
+  `0.28.0-fa99bc026aa4-a04fbee7185d`;
+- Last30days remains ready; `daily-default` remains enabled and ready for
+  `2026-09-02T00:00:00Z`; active tick attempts, provider attempts, and resource
+  leases are zero, and SQLite `quick_check` is `ok`.
+
+State Movement:
+
+- Plan 0060 advances to C05
+  `third_authorized_linkedin_retry_same_runtime_host_failure`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_confirmation`; the unchanged failure signature proves the request
+  still does not reach LinkedIn navigation or scraper execution.
+
+Authority Classification:
+
+- `explicit_authority`; exactly one additional retry was requested and
+  consumed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; exact repository and runtime receipts are authoritative.
+
+Next Bounded Action:
+
+- stop retrying until Agent Browser reports exactly one runtime host with
+  complete endpoint metadata; do not change LinkedIn scraper logic from this
+  pre-navigation failure.
+
+## Turn 381 | 2026-09-01
+
+Focus: recover from the Agent Browser runtime-host outage and complete one
+terminal 20-item LinkedIn home-feed verification.
+
+Authority Consulted:
+
+- operator `try again` and `continue`; Plan 0060/C05; Last30days service-client,
+  Agent Browser service, CodeGraph, repo planning, documentation, validation,
+  Git, and closeout contracts.
+
+Decisions And Changes:
+
+- called Last30days `service_info` first and confirmed installed compatibility;
+- confirmed Agent Browser had converged to one ready runtime host on generation
+  `0.28.0-852249c8a8ae-1e2e914e853e`;
+- kept the exact `last30days-facebook` profile. After the ordinary request
+  exposed `existing_session_profile_identity_unproven`, used the existing
+  reviewed fresh-session override only because zero compatible live browsers
+  existed and terminal owner replacement was eligible;
+- treated the forced run severed by its 150-second outer command deadline as
+  interrupted rather than successful, proved its process absent, then continued
+  with a 300-second provider deadline and stopped at the first terminal receipt;
+- changed no code, selectors, deterministic content gates, recurring config,
+  schedule, installation, profile identity, or presentation route.
+
+Validation Evidence:
+
+- `plan0060-linkedin-postinstall-4-resume` succeeded in 88.3 seconds with 20
+  accepted posts and 20 unique canonical LinkedIn post URLs;
+- the scraper observed 183 card instances over 10 scrolls with zero stagnant
+  scrolls, refreshes, reloads, or snapshot renewals; deterministic filtering
+  rejected 53 sponsored-ad observations and deduplicated 110 repeats;
+- Agent Browser remains ready with exactly one runtime host and no multiplicity
+  issues. The successful exact-profile browser remains live on
+  `https://www.linkedin.com/feed/` under Agent Browser ownership; no
+  consumer-side cleanup was performed;
+- Last30days service 0.3.91 remains ready; `daily-default` remains enabled and
+  ready for `2026-09-02T00:00:00Z` at the same config digest; active tick
+  attempts, provider attempts, and Last30days resource leases are zero, and
+  SQLite `quick_check` is `ok`.
+
+State Movement:
+
+- Plan 0060 advances to C06 `accepted_and_closed` and is CLOSED. P08 remains
+  OPEN under Plan 0061/C01 for read-only ordinary schedule observation.
+
+Progress Classification:
+
+- `acceptance_completion`; the prior upstream blocker is resolved and the
+  installed LinkedIn feed path now proves the required 20/20 terminal receipt.
+
+Authority Classification:
+
+- `explicit_authority`; the operator requested the retry and continuation. The
+  fresh-session recovery preserved the exact profile and standing force-lease
+  instruction.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the repository checkpoint, published Git ref, and current
+  runtime receipts are authoritative.
+
+Next Bounded Action:
+
+- monitor the September 2 ordinary tick under the installed three-attempt
+  configuration under Plan 0061; do not manually enqueue work or change
+  LinkedIn selectors or content gates from this successful receipt.
+
+## Turn 382 | 2026-09-01
+
+Focus: replace the pending 10+10 timer observation with a durable recurring
+80+80 X and LinkedIn configuration and the installed capacity it requires.
+
+Authority Consulted:
+
+- operator `Update the timer to grab 80 unique X and linked in posts`; Plan
+  0059 live-capacity evidence;
+  `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`;
+  Last30days service-client and administration contracts; planning,
+  documentation, validation, Git, and closeout policy.
+
+Decisions And Changes:
+
+- called Last30days `service_info` first and confirmed service 0.3.91 ready and
+  compatible on schema 16;
+- cancelled Plan 0061 before its boundary and opened Plan 0062 as the current
+  P08 authority;
+- changed the saved recurring revision to
+  `operator-20260901-x-linkedin-80-v1`, raised X and LinkedIn from 10 to 80
+  items, retained three attempts each, and raised their per-attempt wall
+  ceiling from 120 to 360 seconds;
+- raised aggregate items from 23 to 163 and aggregate wall seconds from 840 to
+  2,280 while retaining seven attempts and 350 network requests;
+- raised X's finite explicit-feed bound from 32 to 40 scrolls and added the
+  deterministic 80-item/two-posts-per-scroll regression;
+- changed no source enablement, selectors, browser profile, content gates,
+  deterministic ad/spam filtering, or Agent Browser state, and manually
+  enqueued no tick.
+
+Validation Evidence:
+
+- pre-mutation schedule readback was ready at
+  `2026-09-02T00:00:00Z`, bound to digest
+  `sha256:b2ec0ed2eecc7d0e1fa1b6fa97595bf6fbfeb51d44db9f99d4a5884986856c3e`,
+  with zero active tick attempts, provider attempts, or open resource leases;
+- strict tick preflight accepts revision
+  `operator-20260901-x-linkedin-80-v1` at digest
+  `sha256:069cf238586388e1e55924083e97161a403dd7fa488a6c2cf45d55fb29500074`
+  and reads back X 80/3/360, LinkedIn 80/3/360, YouTube 3/1/120, and aggregate
+  163/7/2,280;
+- the focused X capacity regression reaches 80 unique items after 38 scrolls;
+  the first focused runtime-package pass identified only the expected stale
+  hard-coded release-version assertion, which is corrected in this slice;
+- deterministic service artifact
+  `dist/service/last30days-service-0.3.92.tar.gz` has SHA-256
+  `67db8404bead637637ba0be55433df210bc2503de218fd31c8f15a3f342fec80`;
+  runtime-manifest SHA-256 is
+  `68f57446667df4f9d105b80c63a48e215b625ea6a94fc79eee81d2d0c2ae901b`.
+
+State Movement:
+
+- Plan 0061 moves from OPEN to CANCELLED; Plan 0062/C01 is OPEN with P0062-A
+  implementation active; P08 remains OPEN.
+
+Progress Classification:
+
+- `outcome_progress`; the requested recurring limits and required X capacity
+  are implemented and strictly preflighted, pending candidate validation,
+  installation, and guarded schedule rebind.
+
+Authority Classification:
+
+- `explicit_authority`; the recurring 80+80 outcome was directly requested.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; current repository, configuration, and runtime receipts are
+  authoritative.
+
+Next Bounded Action:
+
+- complete candidate validation, publish the recoverable checkpoint, then
+  install service 0.3.92 and rebind only `daily-default` from the old exact
+  digest to the new validated digest while preserving its September 2
+  boundary and admitting no tick.
+
+## Turn 383 | 2026-09-01
+
+Focus: install the validated 80+80 capacity release and complete the exact
+schedule rebind without admitting a tick.
+
+Authority Consulted:
+
+- operator recurring 80+80 direction; Plan 0062/C01; Last30days lifecycle,
+  schedule, configuration, validation, Git, and closeout contracts.
+
+Decisions And Changes:
+
+- completed the canonical Python suite and published implementation checkpoint
+  `80eec3d` to `origin/fix/tick-restart-recovery` before the runtime mutation;
+- stopped only `last30days.service` after proving zero active tick attempts,
+  provider attempts, and open resource leases;
+- created one recoverable SQLite backup, then used an exact guarded predicate
+  to change only `daily-default` from the prior digest to the validated 80+80
+  digest while retaining its ready state, next boundary, and last tick;
+- installed version-distinct service artifact 0.3.92 and started the managed
+  service;
+- did not enqueue a tick, invoke X or LinkedIn, alter source enablement,
+  operate Agent Browser, or change the browser profile or content gates.
+
+Validation Evidence:
+
+- complete `uv run pytest -q` passes, as do focused X/runtime/release tests,
+  plan-authority audit, active planning audit, goal-governance audit,
+  reproducible artifact build, and `git diff --check`;
+- artifact SHA-256 is
+  `67db8404bead637637ba0be55433df210bc2503de218fd31c8f15a3f342fec80`;
+  installed service 0.3.92/schema 16 is ready and MCP-compatible with
+  runtime-manifest SHA-256
+  `68f57446667df4f9d105b80c63a48e215b625ea6a94fc79eee81d2d0c2ae901b`;
+- saved recurring readback is X 80 items/3 attempts/360 seconds, LinkedIn 80/3/360,
+  YouTube 3/1/120, and aggregate 163 items/7 attempts/350 requests/2,280
+  seconds. Reddit and Facebook remain disabled;
+- `daily-default` is enabled and ready at digest
+  `sha256:069cf238586388e1e55924083e97161a403dd7fa488a6c2cf45d55fb29500074`
+  with next boundary `2026-09-02T00:00:00Z`, prior tick
+  `tick-56318fada747d408976df141ab17a0ef`, and no runtime error;
+- tick count remains 111 with no creation after the September 1 boundary;
+  active tick attempts, provider attempts, and open resource leases are zero;
+  live and backup SQLite `quick_check` are `ok`;
+- backup path is
+  `/home/ecochran76/.local/share/last30days/backups/research-pre-80x80-rebind-20260901.db`.
+
+State Movement:
+
+- Plan 0062 advances to C02
+  `configured_and_installed_awaiting_ordinary_tick`; acceptance criteria 1
+  through 5 are accepted, P0062-B and criterion 6 remain open; P08 remains
+  OPEN.
+
+Progress Classification:
+
+- `outcome_progress`; the timer and installed scraper now durably request and
+  budget 80 unique posts from each social feed.
+
+Authority Classification:
+
+- `inherited_authority`; the install and exact rebind stayed within the
+  operator's requested recurring mutation.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the published commit, owner-private config, live schedule,
+  install receipt, and repository checkpoint are authoritative.
+
+Next Bounded Action:
+
+- observe the first ordinary September 2 tick under Plan 0062/P0062-B and
+  reconcile terminal X, LinkedIn, and YouTube receipts without manually
+  enqueueing or retrying work.
+
+## Turn 384 | 2026-09-01
+
+Focus: execute and reconcile the one operator-authorized immediate 80+80 X and
+LinkedIn acceptance tick.
+
+Authority Consulted:
+
+- operator `try it`; Plan 0062 version 2/C03; installed Last30days service and
+  monitoring contracts; planning, validation, and closeout policy.
+
+Decisions And Changes:
+
+- preflighted one manual tick for the rolling 30-day interval ending
+  `2026-09-01T21:41:50Z`, scoped only to X and LinkedIn under their saved
+  80-item, three-attempt, 360-second limits;
+- enqueued exactly one tick,
+  `tick-8a7c84f0337e04e6b90aa02068dd0383`, and did not enqueue a retry;
+- made no browser, profile, schedule, saved-config, content-policy, service, or
+  database-schema mutation.
+
+Validation Evidence:
+
+- the tick reached terminal `failed` at `2026-09-01T21:42:12.426501Z` with
+  execution error `integrityerror` and no page observations or accepted items;
+- X provider retry ordinals 0 and 1 each failed transiently at
+  `workspace_acquisition` with
+  `existing_session_profile_identity_unproven`, zero observations, and exact
+  signature
+  `sha256:a489884adfd2a0f6f6d1247c8a3d924910ca0fcb65fe8c9d8f68d11ce58563ef`;
+- direct installed-unit readback confirms
+  `LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE` is absent, so the
+  already-reviewed exact-profile fresh-session path was not requested;
+- direct schema readback proves the configuration/schema contradiction:
+  providers admit `attempts=3`, while schema 16 checks
+  `retry_ordinal IN (0, 1)`. The attempted ordinal 2 therefore raised the
+  SQLite integrity error before LinkedIn could start;
+- total consumption was two attempts, two network requests, two wall seconds,
+  and zero items. Both resource leases were released; active tick attempts,
+  provider attempts, and open leases are zero;
+- `daily-default` remains ready at `2026-09-02T00:00:00Z`, still bound to
+  digest
+  `sha256:069cf238586388e1e55924083e97161a403dd7fa488a6c2cf45d55fb29500074`
+  and its prior scheduled tick. Live SQLite `quick_check` is `ok`.
+
+State Movement:
+
+- Plan 0062 advances to C04 `manual_tick_failed_before_scraping`; P08 remains
+  OPEN, and the single C03 manual-tick authority is consumed.
+
+Progress Classification:
+
+- `blocker_reduction`; the test isolates one missing recovery configuration
+  and one deterministic schema defect before either content scraper ran.
+
+Authority Classification:
+
+- `inherited_authority`; the execution stayed within the single bounded test
+  and this reconciliation introduces no new live mutation.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the plan, runbook, and live database evidence are durable and
+  sufficient.
+
+Next Bounded Action:
+
+- reconcile the three-attempt schema contract and persist the reviewed
+  exact-profile fresh-session acquisition setting before another manual or
+  ordinary tick; do not enqueue a second manual tick without new authority.
+
+## Turn 385 | 2026-09-01
+
+Focus: repair and validate the three-attempt persistence contract exposed by
+the failed 80+80 acceptance tick.
+
+Authority Consulted:
+
+- operator authorization to repair, test, merge, install, and execute one
+  bounded acceptance tick; Plan 0062 version 3/P0062-D; P08; current planning,
+  testing, versioning, documentation, worktree, and validation policy;
+- Graphiti discovery returned ten older Agent Browser facts but no current
+  evidence for this defect, so current repository and live-state evidence
+  remained authoritative.
+
+Decisions And Changes:
+
+- added schema migration 17, which rebuilds only
+  `service_tick_provider_attempts` with retry ordinals 0 through 2 while
+  preserving rows and dependent receipt references;
+- bounded foreign-key suspension to that rebuild, verified
+  `PRAGMA foreign_key_check` before commit, and restored normal enforcement;
+- aligned the canonical service contract, MCP compatibility release lock and
+  generated constants, runtime manifest, service 0.3.93, and MCP 4.0.4;
+- did not alter the owner-private saved tick configuration, schedule, live
+  database, credentials, or browser profile.
+
+Validation Evidence:
+
+- the real tick regression failed before the repair after ordinals 0 and 1,
+  then passed with provider calls and durable rows for 0, 1, and 2;
+- the v16 migration regression failed at schema 16, then passed with its
+  existing referenced provider result preserved, ordinal 2 admitted, ordinal
+  3 rejected, and no foreign-key violations;
+- complete `uv run pytest -q` passes; `go test ./...` passes; install and
+  rollback fixtures pass; generated-contract and runtime-manifest checks pass;
+  `git diff --check` passes;
+- Ruff is absent from the declared uv environment, so optional Ruff lint did
+  not run and no undeclared dependency was installed.
+
+State Movement:
+
+- Plan 0062 advances to C05 `schema_repair_source_validated`; P08 remains OPEN
+  pending exact artifact installation and one bounded acceptance tick.
+
+Progress Classification:
+
+- `blocker_reduction`; the deterministic retry-ordinal failure is removed in
+  source and protected by migration plus end-to-end tick regressions.
+
+Authority Classification:
+
+- `inherited_authority`; all changes remain inside the approved repair and
+  installation objective.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the source, tests, plan, roadmap, runbook, and forthcoming
+  commit provide durable evidence.
+
+Next Bounded Action:
+
+- publish the source checkpoint, install the Agent Browser terminal-session
+  parity candidate, then build and install exact service 0.3.93 before one
+  zero-active-work-gated X-and-LinkedIn acceptance tick.
+
+## Turn 386 | 2026-09-01
+
+Focus: publish and reconcile the schema-17 source checkpoint.
+
+Authority Consulted:
+
+- Plan 0062 version 3/C05; P08; active-lane, commit, push, and validation
+  policy.
+
+Decisions And Changes:
+
+- committed and pushed the schema-17/service-0.3.93/MCP-4.0.4 repair as
+  `646ef5b88f7874978641db5ab9cfc3ac6dbd5cf2`;
+- advanced the P08 active-lane checkpoint to that exact published commit;
+- made no live service, database, schedule, browser, or credential mutation.
+
+Validation Evidence:
+
+- `origin/fix/tick-restart-recovery` contains the exact checkpoint;
+- plan-authority, active planning, and goal-governance audits pass with Turn
+  385 and Plan 0062 correctly wired.
+
+State Movement:
+
+- source custody moves from local validated work to published checkpoint;
+  Plan 0062 remains OPEN at C05 pending installation and acceptance.
+
+Progress Classification:
+
+- `blocker_reduction`.
+
+Authority Classification:
+
+- `inherited_authority`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the published commit and repo-local authorities are durable.
+
+Next Bounded Action:
+
+- qualify and install the exact Agent Browser terminal replacement candidate,
+  then build and install the published Last30days service candidate.

@@ -744,6 +744,42 @@ process.stdout.write(JSON.stringify(result));
         self.assertEqual(40, len(result["items"]))
         self.assertEqual(18, result["diagnostics"]["scroll_count"])
 
+    def test_home_feed_eighty_item_limit_allows_two_posts_per_scroll(self):
+        from lib import x_browser
+
+        def candidates(start, count):
+            return [
+                {
+                    "text": f"Home feed post {index} with stable structural metadata.",
+                    "url": f"https://x.com/example/status/207812345682{index:07d}",
+                    "author_handle": "example",
+                    "timestamp": "2026-07-18T15:30:00.000Z",
+                    "promoted": False,
+                    "engagement": {},
+                }
+                for index in range(start, start + count)
+            ]
+
+        client = FakeAgentBrowserClient(
+            candidate_batches=[candidates(0, 4)]
+            + [candidates(4 + batch * 2, 2) for batch in range(38)]
+        )
+
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.scrape_x_feed(
+                "2026-06-20",
+                "2026-07-20",
+                limit=80,
+                config={
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertEqual(80, len(result["items"]))
+        self.assertEqual(38, result["diagnostics"]["scroll_count"])
+
     def test_home_feed_stops_after_two_snapshots_without_new_posts(self):
         from lib import x_browser
 

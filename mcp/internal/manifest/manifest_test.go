@@ -71,8 +71,8 @@ func TestManifestRequiredFields(t *testing.T) {
 	if m.Name != "last30days-pp-mcp" {
 		t.Errorf("name = %q, want last30days-pp-mcp", m.Name)
 	}
-	if m.Version != "4.0.3" {
-		t.Errorf("version = %q, want 4.0.3", m.Version)
+	if m.Version != "4.0.4" {
+		t.Errorf("version = %q, want 4.0.4", m.Version)
 	}
 	if m.Server.Type != "binary" {
 		t.Errorf("server.type = %q, want binary", m.Server.Type)

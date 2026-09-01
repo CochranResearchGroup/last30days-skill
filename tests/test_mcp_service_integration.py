@@ -164,11 +164,11 @@ def test_real_service_mcp_discovery_query_refresh_and_poll(tmp_path):
             }
             assert info_payload["product"] == "last30days"
             assert info_payload["service_api_version"] == 1
-            assert info_payload["mcp_adapter_version"] == "4.0.3"
+            assert info_payload["mcp_adapter_version"] == "4.0.4"
             assert info_payload["mcp_supported_service_api_min"] == 1
             assert info_payload["mcp_supported_service_api_max"] == 1
-            assert info_payload["mcp_supported_database_schema_min"] == 16
-            assert info_payload["mcp_supported_database_schema_max"] == 16
+            assert info_payload["mcp_supported_database_schema_min"] == 17
+            assert info_payload["mcp_supported_database_schema_max"] == 17
             assert info_payload["compatibility_state"] == "compatible"
             assert len(info_payload["runtime_manifest_sha256"]) == 64
             query = _call(
