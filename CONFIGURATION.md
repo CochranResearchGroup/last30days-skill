@@ -542,6 +542,11 @@ LAST30DAYS_YOUTUBE_BROWSER_FALLBACK=auto
 # Shared display policy for all agent-browser-backed sources. Existing source
 # defaults remain in effect when unset.
 # LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION=private_virtual_display
+# Reviewed recovery override for a profile whose retained lifecycle identity is
+# stale even though process and profile-lock absence have been proven. Leave
+# unset normally: this never creates another profile, but it permits a fresh
+# named browser lane for the same exact profile.
+# LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE=1
 
 # X via an authenticated agent-browser profile (opt-in; preferred over API
 # backends while enabled). The default profile already used on this workstation

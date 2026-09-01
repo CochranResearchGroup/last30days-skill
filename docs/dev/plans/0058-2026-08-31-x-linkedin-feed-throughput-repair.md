@@ -1,8 +1,8 @@
 # Plan 0058 | X And LinkedIn Feed Throughput Repair
 
-State: OPEN
+State: CLOSED
 Roadmap: P08
-Plan version: 2
+Plan version: 3
 Date: 2026-08-31
 
 ## Objective
@@ -123,3 +123,45 @@ Authority classification:
   tests, compilation, authority audit, artifact build, and diff checks pass;
 - the exact candidate is not yet installed and no live provider attempt has
   been consumed. Recurring configuration and browser state remain unchanged.
+
+### Checkpoint P0058-C03 | 2026-08-31
+
+State: `live_40x40_accepted`
+
+Plan version:
+
+- 3
+
+Authority classification:
+
+- `inherited_authority`
+
+- installed 0.3.88 exposed a separate Last30days adapter defect: every browser
+  action started and ended a new Agent Browser MCP process, so successful tab
+  acquisition was immediately followed by an operator-requested browser close
+  and `existing_session_profile_identity_unproven` on the next action;
+- service 0.3.90 keeps one MCP control process for the complete scrape and
+  exposes the operator-authorized reviewed duplicate-lane override. The
+  override drops a stale browser hint and uses the explicit fresh session only
+  when no compatible live browser exists; otherwise it reuses that browser;
+- live X attempt one accepted 35/40 after 14 scrolls with duplicate sightings
+  as the only rejection. A two-new-posts-per-scroll regression raised the
+  bounded 40-item allowance to 20 scrolls. Attempt two timed out before scrape
+  acquisition because the first attempt's browser was still live; reconciliation
+  proved that one healthy exact-profile browser and no second process existed.
+  Attempt three reused it and accepted 40/40 after 15 scrolls, with 40 unique
+  observations and 76 duplicate sightings;
+- the first LinkedIn attempt accepted 40/40 after 18 scrolls in 193 seconds,
+  deterministically rejected 101 sponsored-ad observations, and rejected 353
+  duplicate sightings. It needed no snapshot refresh or reload;
+- service 0.3.90 is transactionally installed and ready on database schema 16.
+  The comprehensive Python lane passes with 2727 tests, seven skips, and nine
+  subtests; focused source/runtime suites, MCP Go tests, compilation, package
+  build, manifest checks, authority audit, SQLite quick-check, and diff checks
+  pass;
+- recurring configuration remains revision
+  `operator-20260822-x-linkedin-home-feed-v1` at digest
+  `sha256:9238e351363d0e4d37fa965c748df53012ae9a217231901fef60a720413ad417`:
+  X and LinkedIn feed targets are enabled, Reddit and Facebook targets are
+  disabled, and YouTube is unchanged. Both 40-item canary collection specs
+  remain disabled. The authenticated `last30days-facebook` profile is unchanged.

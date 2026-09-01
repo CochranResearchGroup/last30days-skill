@@ -23,7 +23,7 @@ MAX_EXPLICIT_RESULTS = 100
 MAX_EXPLICIT_SCROLLS = 8
 ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 5
 MAX_EXPLICIT_FEED_SCROLLS = 32
-FEED_ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 3
+FEED_ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 2
 MAX_STAGNANT_SCROLLS = 2
 
 BrowserWorkspaceRequest = browser_runtime.BrowserWorkspaceRequest
@@ -644,6 +644,9 @@ def search_x_browser(
         control_input_provider=str(
             stable.get("control_input_provider") or "manual_attached_desktop"
         ),
+        allow_duplicate_profile_lane=browser_runtime.config_flag(
+            config.get("LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE")
+        ),
     )
     client = CliAgentBrowserClient(
         timeout=request.timeout,
@@ -771,6 +774,9 @@ def scrape_x_feed(
         browser_host=str(stable.get("browser_host") or "remote_headed"),
         control_input_provider=str(
             stable.get("control_input_provider") or "manual_attached_desktop"
+        ),
+        allow_duplicate_profile_lane=browser_runtime.config_flag(
+            config.get("LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE")
         ),
     )
     client = CliAgentBrowserClient(

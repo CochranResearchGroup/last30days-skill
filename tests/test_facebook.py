@@ -1697,6 +1697,47 @@ class FacebookCliAdapterTests(unittest.TestCase):
                 stderr="",
             )
 
+        def service_request(arguments, **kwargs):
+            self.assertEqual(browser_id, arguments["browserId"])
+            self.assertEqual(broker_session, arguments["sessionName"])
+            self.assertEqual("last30days-facebook", arguments["runtimeProfile"])
+            action = arguments["action"]
+            service_actions.append(action)
+            handle = {
+                "handleId": "tab-handle-x",
+                "browserId": browser_id,
+                "sessionName": broker_session,
+                "targetId": "x-owned",
+            }
+            if action == "tab_new":
+                return {
+                    "serviceTabHandle": handle,
+                    "url": "https://x.com/home",
+                }
+            if action == "ui_action":
+                self.assertEqual(handle, arguments["serviceTabHandle"])
+                self.assertEqual(
+                    "() => document.readyState !== 'loading'",
+                    arguments["uiAction"]["steps"][0]["function"],
+                )
+                self.assertGreaterEqual(
+                    kwargs["timeout"], arguments["timeoutMs"] / 1000 + 10
+                )
+                return {"ok": True}
+            if action == "evaluate":
+                self.assertEqual(handle, arguments["serviceTabHandle"])
+                self.assertEqual(1_048_576, arguments["maxReturnBytes"])
+                return {"result": {"authenticated_dom": True}}
+            if action == "navigate":
+                self.assertEqual(handle, arguments["serviceTabHandle"])
+                self.assertNotIn("waitUntil", arguments)
+                self.assertEqual("domcontentloaded", arguments["params"]["waitUntil"])
+                return {"url": "https://x.com/home"}
+            if action == "tab_handle_release":
+                self.assertEqual(handle, arguments["serviceTabHandle"])
+                return {"released": True}
+            raise AssertionError(f"unexpected service action: {action}")
+
         def run(command, **kwargs):
             if command[2:4] == ["service", "access-plan"]:
                 return completed(
@@ -1709,87 +1750,6 @@ class FacebookCliAdapterTests(unittest.TestCase):
                 )
             if command[2:4] == ["service", "status"]:
                 return completed({"success": True, "data": status})
-            if command == ["agent-browser", "mcp", "serve"]:
-                messages = [
-                    json.loads(line)
-                    for line in str(kwargs.get("input") or "").splitlines()
-                ]
-                tool_call = next(
-                    message
-                    for message in messages
-                    if message.get("method") == "tools/call"
-                )
-                arguments = tool_call["params"]["arguments"]
-                self.assertEqual("service_request", tool_call["params"]["name"])
-                self.assertEqual(browser_id, arguments["browserId"])
-                self.assertEqual(broker_session, arguments["sessionName"])
-                self.assertEqual(
-                    "last30days-facebook", arguments["runtimeProfile"]
-                )
-                action = arguments["action"]
-                service_actions.append(action)
-                handle = {
-                    "handleId": "tab-handle-x",
-                    "browserId": browser_id,
-                    "sessionName": broker_session,
-                    "targetId": "x-owned",
-                }
-                if action == "tab_new":
-                    data = {
-                        "serviceTabHandle": handle,
-                        "url": "https://x.com/home",
-                    }
-                elif action == "ui_action":
-                    self.assertEqual(handle, arguments["serviceTabHandle"])
-                    self.assertEqual(
-                        "() => document.readyState !== 'loading'",
-                        arguments["uiAction"]["steps"][0]["function"],
-                    )
-                    self.assertGreaterEqual(
-                        kwargs["timeout"],
-                        arguments["timeoutMs"] / 1000 + 10,
-                    )
-                    data = {"ok": True}
-                elif action == "evaluate":
-                    self.assertEqual(handle, arguments["serviceTabHandle"])
-                    self.assertEqual(1_048_576, arguments["maxReturnBytes"])
-                    data = {"result": {"authenticated_dom": True}}
-                elif action == "navigate":
-                    self.assertEqual(handle, arguments["serviceTabHandle"])
-                    self.assertNotIn("waitUntil", arguments)
-                    self.assertEqual(
-                        "domcontentloaded", arguments["params"]["waitUntil"]
-                    )
-                    data = {"url": "https://x.com/home"}
-                elif action == "tab_handle_release":
-                    self.assertEqual(handle, arguments["serviceTabHandle"])
-                    data = {"released": True}
-                else:
-                    raise AssertionError(f"unexpected service action: {action}")
-                response = {
-                    "jsonrpc": "2.0",
-                    "id": 2,
-                    "result": {
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": json.dumps(
-                                    {
-                                        "success": True,
-                                        "data": data,
-                                    }
-                                ),
-                            }
-                        ],
-                        "isError": False,
-                    },
-                }
-                return subprocess.CompletedProcess(
-                    args=[],
-                    returncode=0,
-                    stdout=json.dumps(response),
-                    stderr="",
-                )
             if "--session" in command and broker_session in command:
                 return completed(
                     {
@@ -1802,6 +1762,8 @@ class FacebookCliAdapterTests(unittest.TestCase):
 
         with mock.patch.object(
             facebook.browser_runtime.subprocess, "run", side_effect=run
+        ), mock.patch.object(
+            client, "_invoke_service_request", side_effect=service_request
         ), mock.patch.object(
             facebook.agent_browser_config, "record_access_plan"
         ):

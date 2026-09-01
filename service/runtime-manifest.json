@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "8aab6f89e1022875ed1bf9db8eb9344fbf94c436a8e30160a8d9492ce68f4fdc",
+      "sha256": "48d5b56bd4cce325a38ea1a1478a685f9e28b36243c4249b5be42899f37fb5f8",
       "source": "service/VERSION"
     },
     {
@@ -27,7 +27,7 @@
     },
     {
       "path": "scripts/lib/agent_browser_runtime.py",
-      "sha256": "cae561987d5c16d88b96264016cb31ffb735e776c3b5a06827439418466594a2",
+      "sha256": "d0aed8418513178b6229c9f205f659474aeaa58a1e5e8103d149da171a8c6ca6",
       "source": "skills/last30days/scripts/lib/agent_browser_runtime.py"
     },
     {
@@ -92,7 +92,7 @@
     },
     {
       "path": "scripts/lib/env.py",
-      "sha256": "d6612150ad99413257239b30e05533e80dec8e260e0c13d1cece9b33147b1354",
+      "sha256": "1cec594529a092a7574336c059ace0609ab7a1654ee618fae5d413963213384a",
       "source": "skills/last30days/scripts/lib/env.py"
     },
     {
@@ -157,7 +157,7 @@
     },
     {
       "path": "scripts/lib/linkedin.py",
-      "sha256": "22fbb48bf26caffd4b67431f51a779d4b008dbc780e3c3bcfba1b8f941d6088d",
+      "sha256": "47a49dcfff7775acbb7a98907614337ee3e6acdb5169e0397ff06e3b8b553cef",
       "source": "skills/last30days/scripts/lib/linkedin.py"
     },
     {
@@ -612,7 +612,7 @@
     },
     {
       "path": "scripts/lib/x_browser.py",
-      "sha256": "dc6ba7d7751921f8faff444ff567cf47204b2c639858a31d71b7293b50e08343",
+      "sha256": "87ac49f9cb2f4261086ff6545eeb65562ff3f60b6b7206af32e5151aba77dec8",
       "source": "skills/last30days/scripts/lib/x_browser.py"
     },
     {
@@ -658,5 +658,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.88"
+  "service_version": "0.3.90"
 }

@@ -15,7 +15,14 @@ from lib import (
 )
 
 
-def _request(*, url: str, agent: str, task: str, service: str):
+def _request(
+    *,
+    url: str,
+    agent: str,
+    task: str,
+    service: str,
+    allow_duplicate_profile_lane: bool = False,
+):
     return agent_browser_runtime.BrowserWorkspaceRequest(
         profile_id="last30days-facebook",
         session_name="last30days-facebook",
@@ -26,6 +33,7 @@ def _request(*, url: str, agent: str, task: str, service: str):
         agent_name=agent,
         task_name=task,
         target_service_id=service,
+        allow_duplicate_profile_lane=allow_duplicate_profile_lane,
     )
 
 
@@ -62,6 +70,18 @@ def _access_plan(*, url: str, agent: str, task: str, service: str):
 
 
 class AgentBrowserRuntimeTests(unittest.TestCase):
+    @staticmethod
+    def _mcp_process(*responses):
+        process = mock.Mock()
+        process.poll.return_value = None
+        process.stdin = mock.Mock()
+        process.stdout = iter(
+            json.dumps(response) + "\n" for response in responses
+        )
+        process.stderr = iter(())
+        process.wait.return_value = 0
+        return process
+
     def test_scrape_access_plan_does_not_force_operator_presentation_constraints(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
         request = _request(
@@ -167,6 +187,109 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
         self.assertEqual("x-owned", workspace.target_id)
         self.assertEqual(["tab_new", "ui_action"], actions)
 
+    def test_reviewed_duplicate_profile_lane_override_reaches_broker(self):
+        client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
+        request = _request(
+            url="https://x.com/home",
+            agent="x-scraper",
+            task="x-feed",
+            service="x",
+            allow_duplicate_profile_lane=True,
+        )
+        plan = _access_plan(
+            url=request.start_url,
+            agent=request.agent_name,
+            task=request.task_name,
+            service=request.target_service_id,
+        )
+        captured = []
+        handle = {
+            "browserId": "session:last30days-force",
+            "sessionName": "last30days-force",
+            "targetId": "x-owned",
+        }
+
+        def service_request(arguments, **_kwargs):
+            captured.append(arguments)
+            if arguments["action"] == "tab_new":
+                return {"serviceTabHandle": handle, "url": request.start_url}
+            return {"ok": True}
+
+        def invoke(args, **_kwargs):
+            if args[:2] == ["service", "access-plan"]:
+                return plan
+            arguments = client._service_request_arguments(args, None)
+            self.assertIsNotNone(arguments)
+            return service_request(arguments)
+
+        with (
+            mock.patch.object(client, "_invoke", side_effect=invoke),
+            mock.patch.object(
+                client, "_invoke_service_request", side_effect=service_request
+            ),
+            mock.patch.object(
+                agent_browser_runtime.agent_browser_config, "record_access_plan"
+            ),
+        ):
+            client.acquire_workspace(request)
+
+        self.assertIs(True, captured[0]["allowDuplicateProfileLane"])
+        self.assertEqual("last30days-facebook", captured[0]["sessionName"])
+        self.assertNotIn("browserId", captured[0])
+
+    def test_reviewed_override_still_reuses_one_compatible_live_browser(self):
+        client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
+        request = _request(
+            url="https://x.com/home",
+            agent="x-scraper",
+            task="x-feed",
+            service="x",
+            allow_duplicate_profile_lane=True,
+        )
+        plan = _access_plan(
+            url=request.start_url,
+            agent=request.agent_name,
+            task=request.task_name,
+            service=request.target_service_id,
+        )
+        plan["decision"]["profileReuse"]["compatibleLiveBrowserCount"] = 1
+        captured = []
+        handle = {
+            "browserId": "session:last30days-facebook--last30days-facebook",
+            "sessionName": "handoff-social",
+            "targetId": "x-owned",
+        }
+
+        def service_request(arguments, **_kwargs):
+            captured.append(arguments)
+            if arguments["action"] == "tab_new":
+                return {"serviceTabHandle": handle, "url": request.start_url}
+            return {"ok": True}
+
+        def invoke(args, **_kwargs):
+            if args[:2] == ["service", "access-plan"]:
+                return plan
+            arguments = client._service_request_arguments(args, None)
+            self.assertIsNotNone(arguments)
+            return service_request(arguments)
+
+        with (
+            mock.patch.object(client, "_invoke", side_effect=invoke),
+            mock.patch.object(
+                client, "_invoke_service_request", side_effect=service_request
+            ),
+            mock.patch.object(
+                agent_browser_runtime.agent_browser_config, "record_access_plan"
+            ),
+        ):
+            client.acquire_workspace(request)
+
+        self.assertEqual(
+            "session:last30days-facebook--last30days-facebook",
+            captured[0]["browserId"],
+        )
+        self.assertEqual("handoff-social", captured[0]["sessionName"])
+
     def test_direct_broker_timeout_is_typed_at_workspace_acquisition(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
         request = _request(
@@ -219,39 +342,30 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             "runtime_owner_generation_stale: daemon is no longer the "
             "effect-capable browser owner"
         )
-        stdout = "\n".join(
-            [
-                json.dumps({"jsonrpc": "2.0", "id": 1, "result": {}}),
-                json.dumps(
-                    {
-                        "jsonrpc": "2.0",
-                        "id": 2,
-                        "result": {
-                            "isError": True,
-                            "content": [
-                                {
-                                    "type": "text",
-                                    "text": json.dumps(
-                                        {"success": False, "error": error}
-                                    ),
-                                }
-                            ],
-                        },
-                    }
-                ),
-            ]
+        process = self._mcp_process(
+            {"jsonrpc": "2.0", "id": 1, "result": {}},
+            {
+                "jsonrpc": "2.0",
+                "id": 2,
+                "result": {
+                    "isError": True,
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": json.dumps(
+                                {"success": False, "error": error}
+                            ),
+                        }
+                    ],
+                },
+            },
         )
 
         with (
             mock.patch.object(
                 agent_browser_runtime.subprocess,
-                "run",
-                return_value=subprocess.CompletedProcess(
-                    args=["agent-browser", "mcp", "serve"],
-                    returncode=0,
-                    stdout=stdout,
-                    stderr="",
-                ),
+                "Popen",
+                return_value=process,
             ),
             self.assertRaises(
                 agent_browser_runtime.AgentBrowserRuntimeFailure
@@ -266,6 +380,58 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             "runtime_owner_generation_stale", raised.exception.reason_code
         )
         self.assertEqual(error, str(raised.exception))
+
+    def test_broker_requests_share_one_live_mcp_process(self):
+        client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
+        process = self._mcp_process(
+            {"jsonrpc": "2.0", "id": 1, "result": {}},
+            {
+                "jsonrpc": "2.0",
+                "id": 2,
+                "result": {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": json.dumps(
+                                {"success": True, "data": {"step": 1}}
+                            ),
+                        }
+                    ]
+                },
+            },
+            {
+                "jsonrpc": "2.0",
+                "id": 3,
+                "result": {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": json.dumps(
+                                {"success": True, "data": {"step": 2}}
+                            ),
+                        }
+                    ]
+                },
+            },
+        )
+
+        with mock.patch.object(
+            agent_browser_runtime.subprocess, "Popen", return_value=process
+        ) as popen:
+            first = client._invoke_service_request(
+                {"action": "tab_new", "serviceName": "last30days"},
+                timeout=5,
+            )
+            second = client._invoke_service_request(
+                {"action": "evaluate", "serviceName": "last30days"},
+                timeout=5,
+            )
+
+        self.assertEqual({"step": 1}, first)
+        self.assertEqual({"step": 2}, second)
+        popen.assert_called_once()
+        self.assertEqual(4, process.stdin.write.call_count)
+        process.terminate.assert_not_called()
 
     def test_x_workspace_acquisition_preserves_broker_timeout_reason(self):
         client = x_browser.CliAgentBrowserClient(timeout=5)

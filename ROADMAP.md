@@ -1072,7 +1072,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: OPEN
+State: CLOSED
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1081,6 +1081,16 @@ pause controls.
 
 Current State:
 
+- Plan 0058 version 3/C03 closes the retrieval-throughput successor with exact
+  service 0.3.90 installed and live authenticated acceptance at X 40/40 and
+  LinkedIn 40/40. The repair keeps one Agent Browser MCP control process alive
+  across the complete scrape, uses the reviewed fresh-session override only
+  when no compatible exact-profile browser is live, and calibrates X's bounded
+  feed allowance to the observed two-new-posts-per-scroll floor. LinkedIn
+  deterministically excluded 101 sponsored-ad observations. Recurring source
+  configuration is unchanged: X and LinkedIn feeds enabled, Reddit and
+  Facebook disabled, and YouTube unchanged. Current authority:
+  `docs/dev/plans/0058-2026-08-31-x-linkedin-feed-throughput-repair.md`.
 - Plan 0058 version 2/C02 validates service 0.3.88 for the bounded
   retrieval-throughput repair
   after Plan 0057's terminal 40+40 baseline accepted X 24/40 and LinkedIn

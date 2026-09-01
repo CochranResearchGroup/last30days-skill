@@ -1344,6 +1344,9 @@ def search_linkedin(
             config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION")
             or "shared_display"
         ),
+        allow_duplicate_profile_lane=browser_runtime.config_flag(
+            config.get("LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE")
+        ),
     )
     scraper = LinkedInScraper(
         CliAgentBrowserClient(
@@ -1438,6 +1441,9 @@ def scrape_linkedin_feed(
         display_isolation=str(
             config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION") or "shared_display"
         ),
+        allow_duplicate_profile_lane=browser_runtime.config_flag(
+            config.get("LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE")
+        ),
     )
     client = CliAgentBrowserClient(
         timeout=timeout,
@@ -1531,6 +1537,9 @@ def acquire_linkedin_profile(
         display_isolation=str(
             config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION")
             or "shared_display"
+        ),
+        allow_duplicate_profile_lane=browser_runtime.config_flag(
+            config.get("LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE")
         ),
     )
     client = CliAgentBrowserClient(

@@ -23492,3 +23492,84 @@ Next Bounded Action:
 
 - commit and push the validated candidate, build and transactionally install
   exact service 0.3.88, then run the one authorized 40+40 canary.
+
+## Turn 375 | 2026-08-31
+
+Focus: repair Agent Browser action-lifecycle ownership and complete live 40+40
+feed acceptance.
+
+Authority Consulted:
+
+- Plan 0058/C02-C03; Roadmap P08; the operator's standing force-acquisition
+  authority for the sole `last30days-facebook` profile; repo TDD, validation,
+  versioning, documentation, Git, and closeout policies.
+
+Decisions And Changes:
+
+- localized the post-acquisition failure to Last30days starting a separate MCP
+  server for every Agent Browser action. Ending the first process closed its
+  newly launched browser before authentication inspection;
+- changed the adapter to retain one MCP stdio process for acquisition,
+  readiness, navigation, evaluation, scrolling, and exact tab release;
+- added an explicit recovery-only
+  `LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE` switch. It uses the
+  requested fresh session only when no compatible browser exists and preserves
+  normal live-browser reuse;
+- recalibrated X's finite explicit-feed budget from three to two accepted posts
+  per scroll after live 35/40 evidence at the prior 14-scroll allowance;
+- installed intermediate immutable service 0.3.89, then versioned the final
+  race-proof MCP reader bytes separately as service 0.3.90 instead of
+  overwriting that release; synchronized the installed skill.
+
+Live Evidence:
+
+- X attempt one: 35/40, 14 scrolls, 35 unique observations, only duplicate
+  sightings rejected;
+- X attempt two: acquisition timeout before scraping; reconciliation showed
+  the first attempt's one healthy exact-profile browser remained live and no
+  duplicate profile process was created;
+- X attempt three: 40/40, 15 scrolls, 40 unique observations, 76 duplicate
+  sightings, no ad or structural rejection;
+- LinkedIn attempt one: 40/40, 18 scrolls, 49 unique observations, 193 seconds;
+  101 sponsored-ad observations and 353 duplicate sightings were rejected
+  deterministically. No feed refresh or reload was needed.
+
+Validation Evidence:
+
+- red regressions reproduced both the one-shot MCP ownership failure and the X
+  32/40 two-posts-per-scroll ceiling before repair;
+- focused Agent Browser, X, LinkedIn, Facebook, release, and package suites pass;
+- comprehensive Python lane: 2727 passed, seven skipped, nine subtests passed;
+- MCP Go tests, Python compilation, canonical runtime manifest, exact artifact
+  build, plan-authority audit, SQLite quick-check, and `git diff --check` pass;
+- installed service 0.3.90 reports ready on schema 16 with its exact runtime
+  manifest
+  `28a9ae91e54f2b8b1e33773928f70010954d0132cbce874df4012e3ecce18027`.
+
+State Movement:
+
+- Plan 0058 advances to version 3/C03 `live_40x40_accepted` and closes; P08
+  closes.
+
+Progress Classification:
+
+- `accepted`; both requested authenticated feed ceilings are proven live.
+
+Authority Classification:
+
+- `inherited_authority`; no recurring source, profile, or provider scope was
+  expanded.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibited delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the repository plan and runbook are the durable source-backed
+  record for this closeout.
+
+Next Bounded Action:
+
+- monitor the next ordinary tick; further retrieval or content-understanding
+  work belongs in a new bounded plan.

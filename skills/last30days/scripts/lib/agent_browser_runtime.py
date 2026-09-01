@@ -11,9 +11,11 @@ from dataclasses import dataclass, field
 import hashlib
 import json
 import math
+import queue
 import re
 import shutil
 import subprocess
+import threading
 import time
 from typing import Any, Literal, Protocol
 from urllib.error import HTTPError, URLError
@@ -70,6 +72,7 @@ class BrowserWorkspaceRequest:
     display_isolation: str = "private_virtual_display"
     control_input_provider: str = "manual_attached_desktop"
     constrain_presentation: bool = False
+    allow_duplicate_profile_lane: bool = False
 
 
 @dataclass(frozen=True)
@@ -164,6 +167,11 @@ class CliAgentBrowserClient:
         self._service_request_route: dict[str, Any] | None = None
         self._service_tab_handle: dict[str, Any] | None = None
         self._service_tab_url = ""
+        self._mcp_process: subprocess.Popen[str] | None = None
+        self._mcp_responses: queue.Queue[dict[str, Any]] = queue.Queue()
+        self._mcp_response_cache: dict[int, dict[str, Any]] = {}
+        self._mcp_request_id = 1
+        self._mcp_stderr_lines: list[str] = []
 
     def begin_run_budget(self, timeout: int) -> None:
         """Bound cumulative adapter work so parent timeout cleanup still runs."""
@@ -316,6 +324,8 @@ class CliAgentBrowserClient:
                     "url": request.start_url,
                 }
             )
+            if request.allow_duplicate_profile_lane:
+                self._service_request_route["allowDuplicateProfileLane"] = True
             if route_browser_id and route_session_name:
                 self._service_request_route.update(
                     {
@@ -323,6 +333,17 @@ class CliAgentBrowserClient:
                         "sessionName": route_session_name,
                     }
                 )
+            compatible_live_browser_count = (
+                profile_reuse.get("compatibleLiveBrowserCount", 0)
+                if isinstance(profile_reuse, dict)
+                else 0
+            )
+            if (
+                request.allow_duplicate_profile_lane
+                and compatible_live_browser_count == 0
+            ):
+                self._service_request_route.pop("browserId", None)
+                self._service_request_route["sessionName"] = request.session_name
             broker_timeout = min(request.timeout, 30)
             broker_started = time.monotonic()
             try:
@@ -1316,10 +1337,12 @@ class CliAgentBrowserClient:
     def release_workspace(self) -> None:
         """Release this client's attributed tab without closing the shared browser."""
         if not isinstance(self._service_tab_handle, dict):
+            self._close_mcp_session()
             return
         route = self._service_request_route or {}
         session_name = str(route.get("sessionName") or "")
         if not session_name:
+            self._close_mcp_session()
             raise AgentBrowserRuntimeFailure(
                 "agent_browser_error",
                 "agent-browser service tab handle has no retained session route",
@@ -1335,6 +1358,7 @@ class CliAgentBrowserClient:
             self._prepared_sites = {
                 key for key in self._prepared_sites if key[0] != session_name
             }
+            self._close_mcp_session()
 
     def _invoke_service_request(
         self,
@@ -1342,47 +1366,18 @@ class CliAgentBrowserClient:
         *,
         timeout: int,
     ) -> dict[str, Any]:
-        messages = [
+        self._ensure_mcp_session(timeout)
+        request_id = self._mcp_request_id
+        self._mcp_request_id += 1
+        self._write_mcp_message(
             {
                 "jsonrpc": "2.0",
-                "id": 1,
-                "method": "initialize",
-                "params": {
-                    "protocolVersion": "2025-03-26",
-                    "capabilities": {},
-                    "clientInfo": {"name": "last30days", "version": "1"},
-                },
-            },
-            {"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}},
-            {
-                "jsonrpc": "2.0",
-                "id": 2,
+                "id": request_id,
                 "method": "tools/call",
                 "params": {"name": "service_request", "arguments": arguments},
-            },
-        ]
-        result = subprocess.run(
-            ["agent-browser", "mcp", "serve"],
-            input="\n".join(json.dumps(message) for message in messages) + "\n",
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-            encoding="utf-8",
-            errors="replace",
+            }
         )
-        if result.returncode != 0:
-            raise AgentBrowserRuntimeFailure(
-                "agent_browser_error",
-                _redact(_cli_error_message(result.stderr or result.stdout)),
-            )
-        response = None
-        for line in (result.stdout or "").splitlines():
-            try:
-                candidate = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            if isinstance(candidate, dict) and candidate.get("id") == 2:
-                response = candidate
+        response = self._wait_for_mcp_response(request_id, timeout)
         if not isinstance(response, dict) or response.get("error"):
             raise AgentBrowserRuntimeFailure(
                 "agent_browser_error", "agent-browser service request returned no result"
@@ -1423,6 +1418,174 @@ class CliAgentBrowserClient:
             )
         data = payload.get("data", payload)
         return data if isinstance(data, dict) else {"value": data}
+
+    def _ensure_mcp_session(self, timeout: int) -> None:
+        process = self._mcp_process
+        if process is not None and process.poll() is None:
+            return
+        self._close_mcp_session()
+        self._mcp_responses = queue.Queue()
+        self._mcp_response_cache = {}
+        self._mcp_request_id = 2
+        self._mcp_stderr_lines = []
+        process = subprocess.Popen(
+            ["agent-browser", "mcp", "serve"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1,
+            encoding="utf-8",
+            errors="replace",
+        )
+        self._mcp_process = process
+        if process.stdin is None or process.stdout is None or process.stderr is None:
+            self._close_mcp_session()
+            raise AgentBrowserRuntimeFailure(
+                "agent_browser_error",
+                "agent-browser MCP session did not expose stdio",
+            )
+        threading.Thread(
+            target=self._read_mcp_stdout,
+            args=(process, self._mcp_responses),
+            daemon=True,
+            name="last30days-agent-browser-mcp-stdout",
+        ).start()
+        threading.Thread(
+            target=self._read_mcp_stderr,
+            args=(process, self._mcp_stderr_lines),
+            daemon=True,
+            name="last30days-agent-browser-mcp-stderr",
+        ).start()
+        self._write_mcp_message(
+            {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "initialize",
+                "params": {
+                    "protocolVersion": "2025-03-26",
+                    "capabilities": {},
+                    "clientInfo": {"name": "last30days", "version": "1"},
+                },
+            }
+        )
+        initialized = self._wait_for_mcp_response(1, timeout)
+        if initialized.get("error"):
+            self._close_mcp_session()
+            raise AgentBrowserRuntimeFailure(
+                "agent_browser_error",
+                "agent-browser MCP initialization failed",
+            )
+        self._write_mcp_message(
+            {
+                "jsonrpc": "2.0",
+                "method": "notifications/initialized",
+                "params": {},
+            }
+        )
+
+    def _write_mcp_message(self, message: dict[str, Any]) -> None:
+        process = self._mcp_process
+        if process is None or process.stdin is None or process.poll() is not None:
+            raise AgentBrowserRuntimeFailure(
+                "agent_browser_error", "agent-browser MCP session is not running"
+            )
+        try:
+            process.stdin.write(json.dumps(message, separators=(",", ":")) + "\n")
+            process.stdin.flush()
+        except (BrokenPipeError, OSError) as exc:
+            self._close_mcp_session()
+            raise AgentBrowserRuntimeFailure(
+                "agent_browser_error", "agent-browser MCP session closed unexpectedly"
+            ) from exc
+
+    def _wait_for_mcp_response(
+        self, request_id: int, timeout: int
+    ) -> dict[str, Any]:
+        cached = self._mcp_response_cache.pop(request_id, None)
+        if cached is not None:
+            return cached
+        deadline = time.monotonic() + max(1, timeout)
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                self._close_mcp_session()
+                raise subprocess.TimeoutExpired("agent-browser mcp serve", timeout)
+            try:
+                response = self._mcp_responses.get(timeout=remaining)
+            except queue.Empty as exc:
+                self._close_mcp_session()
+                raise subprocess.TimeoutExpired(
+                    "agent-browser mcp serve", timeout
+                ) from exc
+            if response.get("_mcp_eof") is True:
+                message = "agent-browser MCP session exited before responding"
+                if self._mcp_stderr_lines:
+                    message = _redact(_cli_error_message(self._mcp_stderr_lines[-1]))
+                self._close_mcp_session()
+                raise AgentBrowserRuntimeFailure("agent_browser_error", message)
+            response_id = response.get("id")
+            if response_id == request_id:
+                return response
+            if isinstance(response_id, int):
+                self._mcp_response_cache[response_id] = response
+
+    def _read_mcp_stdout(
+        self,
+        process: subprocess.Popen[str],
+        responses: queue.Queue[dict[str, Any]],
+    ) -> None:
+        stdout = process.stdout
+        if stdout is None:
+            responses.put({"_mcp_eof": True})
+            return
+        try:
+            try:
+                for line in stdout:
+                    try:
+                        response = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    if isinstance(response, dict):
+                        responses.put(response)
+            except (OSError, ValueError):
+                pass
+        finally:
+            responses.put({"_mcp_eof": True})
+
+    def _read_mcp_stderr(
+        self, process: subprocess.Popen[str], stderr_lines: list[str]
+    ) -> None:
+        stderr = process.stderr
+        if stderr is None:
+            return
+        try:
+            for line in stderr:
+                cleaned = line.strip()
+                if cleaned:
+                    stderr_lines.append(cleaned)
+                    del stderr_lines[:-20]
+        except (OSError, ValueError):
+            pass
+
+    def _close_mcp_session(self) -> None:
+        process = self._mcp_process
+        self._mcp_process = None
+        if process is None:
+            return
+        if process.poll() is None:
+            process.terminate()
+            try:
+                process.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait(timeout=2)
+        for stream in (process.stdin, process.stdout, process.stderr):
+            try:
+                if stream is not None:
+                    stream.close()
+            except OSError:
+                pass
 
     def _invoke(
         self,
@@ -1841,3 +2004,10 @@ def _log(msg: str) -> None:
 
 def is_agent_browser_available() -> bool:
     return shutil.which("agent-browser") is not None
+
+
+def config_flag(value: object) -> bool:
+    """Parse an opt-in boolean config value without truthifying arbitrary text."""
+    if isinstance(value, bool):
+        return value
+    return str(value or "").strip().casefold() in {"1", "true", "yes", "on"}

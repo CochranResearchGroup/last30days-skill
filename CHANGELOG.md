@@ -18,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Persistent Agent Browser control and reviewed stale-lane recovery.** Service
+  0.3.90 keeps one Agent Browser MCP control process alive for the complete
+  browser scrape instead of ending browser ownership after each action. An
+  explicit recovery-only configuration switch can select a fresh named session
+  for the same exact profile after process and lock absence are proven, while a
+  compatible live browser is still reused. X feed capacity now budgets for the
+  live-observed two-new-posts-per-scroll floor.
+
 - **Bounded X and LinkedIn feed throughput.** Service 0.3.88 scales X's
   explicit home-feed scroll allowance with requested accepted yield, up to a
   finite maximum, and lets LinkedIn spend its existing global scroll allowance
