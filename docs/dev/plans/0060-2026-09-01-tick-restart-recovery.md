@@ -286,3 +286,55 @@ runtime receipt are the durable evidence surfaces.
 Next action: Agent Browser must restore exactly one runtime host and complete
 its endpoint metadata. Retry LinkedIn only after that census reads one host;
 do not change LinkedIn selectors from this pre-navigation failure.
+
+### Checkpoint P0060-C05 | 2026-09-01
+
+Plan version: 1
+
+State: `third_authorized_linkedin_retry_same_runtime_host_failure`
+
+Progress classification: `blocker_confirmation`
+
+Authority classification:
+
+- `explicit_authority`; the operator requested one additional retry.
+
+Retry evidence:
+
+- Last30days `service_info` was again the first product call and reports service
+  0.3.91 ready and compatible on schema 16 with unchanged runtime manifest;
+- the exact worker-shaped Agent Browser plan again selects
+  `last30days-facebook` by registered LinkedIn authentication and advertises an
+  available, unblocked `tab_new` request while reporting zero compatible live
+  browsers;
+- retry `plan0060-linkedin-postinstall-3` terminated in 2.2 seconds with the
+  same failure signature
+  `sha256:0fe41b74f0da779e4111d8c89977ba9367b507145c748d553eb5c208a08cd087`,
+  transient `agent_browser_error`, and failure stage `workspace_acquisition`;
+- attempted, observed, accepted, rejected, scroll, refresh, reload, and
+  snapshot-renewal counts are zero. The Agent Browser `tab_new` request failed
+  after 2.1 seconds without returning a job result;
+- jobs readback still refuses operation because runtime-host endpoint metadata
+  is incomplete. Status remains one dashboard, zero runtime hosts,
+  `runtime_host_count_not_one`, degraded lifecycle readiness, and unavailable
+  browser process observation on generation
+  `0.28.0-fa99bc026aa4-a04fbee7185d`.
+
+Isolation evidence:
+
+- `daily-default` remains enabled and ready for
+  `2026-09-02T00:00:00Z` at the same config digest and with no runtime error;
+- active tick attempts, provider attempts, and resource leases are zero, and
+  the live SQLite database passes `quick_check`;
+- no LinkedIn navigation, DOM inspection, or extraction occurred; no alternate
+  profile, Agent Browser cleanup, schedule mutation, installation, or further
+  retry was performed.
+
+Subagent status: `not_spawned`
+
+Graphiti write status: `not_written`; repository and exact runtime receipts are
+the durable evidence surfaces.
+
+Next action: stop retrying until Agent Browser reports exactly one runtime host
+with complete endpoint metadata. This repeated pre-navigation signature does
+not justify a LinkedIn scraper change.

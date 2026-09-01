@@ -23868,3 +23868,68 @@ Next Bounded Action:
 
 - Agent Browser must restore exactly one runtime host with complete endpoint
   metadata. Retry the LinkedIn feed only after that census reads one host.
+
+## Turn 380 | 2026-09-01
+
+Focus: consume one additional 20-item LinkedIn retry and determine whether the
+Agent Browser runtime-host blocker changed.
+
+Authority Consulted:
+
+- operator `try again`; Plan 0060/C04; Last30days service-client, Agent Browser
+  service, repo planning, documentation, validation, and closeout contracts.
+
+Decisions And Changes:
+
+- called Last30days `service_info` first and confirmed installed compatibility;
+- verified that the worker-shaped access plan selected the existing
+  `last30days-facebook` profile by registered LinkedIn authentication;
+- consumed exactly one additional LinkedIn 20-item feed attempt and stopped at
+  its first terminal receipt;
+- changed no scraper, provider policy, recurring configuration, schedule,
+  installation, profile, or Agent Browser lifecycle state.
+
+Validation Evidence:
+
+- retry `plan0060-linkedin-postinstall-3` returned transient
+  `agent_browser_error` at `workspace_acquisition` in 2.2 seconds with the same
+  failure signature as the prior retry; attempted, observed, accepted,
+  rejected, scroll, refresh, reload, and snapshot-renewal counts are zero;
+- Agent Browser's `tab_new` request failed after 2.1 seconds without a result;
+  jobs readback still reports incomplete runtime-host endpoint metadata;
+- Agent Browser status remains one dashboard, zero runtime hosts,
+  `runtime_host_count_not_one`, degraded lifecycle readiness, and unavailable
+  browser process observation on generation
+  `0.28.0-fa99bc026aa4-a04fbee7185d`;
+- Last30days remains ready; `daily-default` remains enabled and ready for
+  `2026-09-02T00:00:00Z`; active tick attempts, provider attempts, and resource
+  leases are zero, and SQLite `quick_check` is `ok`.
+
+State Movement:
+
+- Plan 0060 advances to C05
+  `third_authorized_linkedin_retry_same_runtime_host_failure`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_confirmation`; the unchanged failure signature proves the request
+  still does not reach LinkedIn navigation or scraper execution.
+
+Authority Classification:
+
+- `explicit_authority`; exactly one additional retry was requested and
+  consumed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; exact repository and runtime receipts are authoritative.
+
+Next Bounded Action:
+
+- stop retrying until Agent Browser reports exactly one runtime host with
+  complete endpoint metadata; do not change LinkedIn scraper logic from this
+  pre-navigation failure.
