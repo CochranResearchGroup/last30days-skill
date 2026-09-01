@@ -23798,3 +23798,73 @@ Next Bounded Action:
 - restore one healthy Agent Browser runtime host outside this repository, then
   obtain explicit authority for a fresh bounded LinkedIn retry. Do not change
   LinkedIn scraper logic from this zero-observation workspace failure.
+
+## Turn 379 | 2026-09-01
+
+Focus: retry one 20-item LinkedIn home-feed acquisition after the Agent Browser
+upgrade and localize any remaining failure.
+
+Authority Consulted:
+
+- operator `Try again`; Plan 0060/C03; Last30days service-client,
+  Agent Browser service, monitoring, administration, documentation, validation,
+  and closeout contracts.
+
+Decisions And Changes:
+
+- called Last30days `service_info` first and confirmed installed compatibility;
+- rejected an account-only access-plan fallback to `stealthcdp-default` and
+  used the exact worker-shaped access plan, which correctly selected the
+  existing authenticated `last30days-facebook` profile;
+- consumed exactly one 20-item LinkedIn feed retry and stopped at its first
+  terminal receipt;
+- changed no scraper, provider policy, schedule, recurring configuration,
+  installed service, browser profile, or Agent Browser lifecycle state.
+
+Validation Evidence:
+
+- exact-profile planning selects `last30days-facebook` by its registered
+  LinkedIn authentication, reports zero compatible live browsers, and permits
+  supersession of terminal owner generation 69 with process absence proven;
+- retry `plan0060-linkedin-postinstall-2` returned transient
+  `agent_browser_error` at `workspace_acquisition` in 2.3 seconds: zero
+  attempted, observed, accepted, rejected, scrolled, refreshed, or reloaded
+  posts. The `tab_new` service request itself failed after 2.1 seconds;
+- Agent Browser jobs readback still returns `Runtime host endpoint metadata is
+  incomplete; preserving evidence and refusing a duplicate host`; post-attempt
+  status shows generation `0.28.0-fa99bc026aa4-a04fbee7185d`, one dashboard,
+  zero runtime hosts, `runtime_host_count_not_one`, and unavailable browser
+  process observation;
+- Last30days service 0.3.91 remains ready; `daily-default` remains enabled and
+  ready for `2026-09-02T00:00:00Z` with its exact config digest and prior tick;
+  active tick attempts, provider attempts, and resource leases are zero, and
+  SQLite `quick_check` is `ok`.
+
+State Movement:
+
+- Plan 0060 advances to C04
+  `authorized_linkedin_retry_confirms_runtime_host_blocker`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_confirmation`; the post-upgrade retry reproduces the upstream
+  runtime-host failure before LinkedIn navigation, so scraper changes remain
+  unsupported.
+
+Authority Classification:
+
+- `explicit_authority`; exactly one fresh LinkedIn retry was requested and
+  consumed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; exact repository and runtime receipts are authoritative.
+
+Next Bounded Action:
+
+- Agent Browser must restore exactly one runtime host with complete endpoint
+  metadata. Retry the LinkedIn feed only after that census reads one host.

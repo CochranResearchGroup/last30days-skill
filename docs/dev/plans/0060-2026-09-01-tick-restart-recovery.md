@@ -231,3 +231,58 @@ the durable evidence surfaces available in this session.
 Next action: restore exactly one healthy Agent Browser runtime host outside this
 repository, then request a fresh bounded LinkedIn retry. Do not change LinkedIn
 selectors or quality gates from this pre-navigation failure.
+
+### Checkpoint P0060-C04 | 2026-09-01
+
+Plan version: 1
+
+State: `authorized_linkedin_retry_confirms_runtime_host_blocker`
+
+Progress classification: `blocker_confirmation`
+
+Authority classification:
+
+- `explicit_authority`; the operator requested one fresh retry after the Agent
+  Browser upgrade.
+
+Retry evidence:
+
+- Last30days `service_info` was called first and reports installed service
+  0.3.91 ready and compatible on schema 16 with runtime-manifest SHA-256
+  `a6509a82b743c7eef0b1cb7156901aca9b2c0263508c527dc9253094463d4c90`;
+- the exact worker-shaped Agent Browser access plan selects
+  `last30days-facebook` by registered LinkedIn authentication, reports zero
+  compatible live browsers, and permits replacement of terminal owner
+  generation 69 with process absence proven;
+- the one authorized 20-item LinkedIn home-feed retry
+  `plan0060-linkedin-postinstall-2` terminated in 2.3 seconds with transient
+  `agent_browser_error` at `workspace_acquisition`; attempted, observed,
+  accepted, rejected, scroll, refresh, and reload counts are all zero;
+- the Agent Browser `tab_new` service request consumed 2.1 seconds and returned
+  no result. Direct jobs readback still fails with `Runtime host endpoint
+  metadata is incomplete; preserving evidence and refusing a duplicate host`;
+- post-attempt Agent Browser status reports selected generation
+  `0.28.0-fa99bc026aa4-a04fbee7185d`, one dashboard, zero runtime hosts,
+  `runtime_host_count_not_one`, degraded lifecycle readiness, and unavailable
+  browser process observation.
+
+Isolation evidence:
+
+- `daily-default` remains enabled and ready at config digest
+  `sha256:b2ec0ed2eecc7d0e1fa1b6fa97595bf6fbfeb51d44db9f99d4a5884986856c3e`,
+  retains last tick `tick-56318fada747d408976df141ab17a0ef`, and retains the
+  next boundary `2026-09-02T00:00:00Z` with no runtime error;
+- active tick attempts, provider attempts, and resource leases are zero, and
+  the live SQLite database passes `quick_check`;
+- no LinkedIn page was navigated, inspected, or scraped; no second retry,
+  Agent Browser cleanup, alternate profile, schedule mutation, or service
+  installation was performed.
+
+Subagent status: `not_spawned`
+
+Graphiti write status: `not_written`; the repository checkpoint and live
+runtime receipt are the durable evidence surfaces.
+
+Next action: Agent Browser must restore exactly one runtime host and complete
+its endpoint metadata. Retry LinkedIn only after that census reads one host;
+do not change LinkedIn selectors from this pre-navigation failure.
