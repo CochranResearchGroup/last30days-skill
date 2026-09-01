@@ -24170,3 +24170,77 @@ Next Bounded Action:
 - observe the first ordinary September 2 tick under Plan 0062/P0062-B and
   reconcile terminal X, LinkedIn, and YouTube receipts without manually
   enqueueing or retrying work.
+
+## Turn 384 | 2026-09-01
+
+Focus: execute and reconcile the one operator-authorized immediate 80+80 X and
+LinkedIn acceptance tick.
+
+Authority Consulted:
+
+- operator `try it`; Plan 0062 version 2/C03; installed Last30days service and
+  monitoring contracts; planning, validation, and closeout policy.
+
+Decisions And Changes:
+
+- preflighted one manual tick for the rolling 30-day interval ending
+  `2026-09-01T21:41:50Z`, scoped only to X and LinkedIn under their saved
+  80-item, three-attempt, 360-second limits;
+- enqueued exactly one tick,
+  `tick-8a7c84f0337e04e6b90aa02068dd0383`, and did not enqueue a retry;
+- made no browser, profile, schedule, saved-config, content-policy, service, or
+  database-schema mutation.
+
+Validation Evidence:
+
+- the tick reached terminal `failed` at `2026-09-01T21:42:12.426501Z` with
+  execution error `integrityerror` and no page observations or accepted items;
+- X provider retry ordinals 0 and 1 each failed transiently at
+  `workspace_acquisition` with
+  `existing_session_profile_identity_unproven`, zero observations, and exact
+  signature
+  `sha256:a489884adfd2a0f6f6d1247c8a3d924910ca0fcb65fe8c9d8f68d11ce58563ef`;
+- direct installed-unit readback confirms
+  `LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE` is absent, so the
+  already-reviewed exact-profile fresh-session path was not requested;
+- direct schema readback proves the configuration/schema contradiction:
+  providers admit `attempts=3`, while schema 16 checks
+  `retry_ordinal IN (0, 1)`. The attempted ordinal 2 therefore raised the
+  SQLite integrity error before LinkedIn could start;
+- total consumption was two attempts, two network requests, two wall seconds,
+  and zero items. Both resource leases were released; active tick attempts,
+  provider attempts, and open leases are zero;
+- `daily-default` remains ready at `2026-09-02T00:00:00Z`, still bound to
+  digest
+  `sha256:069cf238586388e1e55924083e97161a403dd7fa488a6c2cf45d55fb29500074`
+  and its prior scheduled tick. Live SQLite `quick_check` is `ok`.
+
+State Movement:
+
+- Plan 0062 advances to C04 `manual_tick_failed_before_scraping`; P08 remains
+  OPEN, and the single C03 manual-tick authority is consumed.
+
+Progress Classification:
+
+- `blocker_reduction`; the test isolates one missing recovery configuration
+  and one deterministic schema defect before either content scraper ran.
+
+Authority Classification:
+
+- `inherited_authority`; the execution stayed within the single bounded test
+  and this reconciliation introduces no new live mutation.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the plan, runbook, and live database evidence are durable and
+  sufficient.
+
+Next Bounded Action:
+
+- reconcile the three-attempt schema contract and persist the reviewed
+  exact-profile fresh-session acquisition setting before another manual or
+  ordinary tick; do not enqueue a second manual tick without new authority.

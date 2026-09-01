@@ -1081,7 +1081,7 @@ pause controls.
 
 Current State:
 
-- Plan 0062 version 2/C03 is the current actionable P08 plan. Service 0.3.92 is
+- Plan 0062 version 2/C04 is the current actionable P08 plan. Service 0.3.92 is
   installed ready with X's finite 40-scroll allowance. Saved recurring
   revision `operator-20260901-x-linkedin-80-v1` requests 80 X and 80 LinkedIn
   posts, retains three attempts for each, and provides 360 seconds per social
@@ -1089,7 +1089,13 @@ Current State:
   prior tick, and ready schedule without admitting work. P0062-B will observe
   the resulting ordinary tick. The operator subsequently authorized one
   immediate manual X-and-LinkedIn-only acceptance tick under the same saved
-  limits; it excludes all other lanes and permits no second manual enqueue.
+  limits. That tick failed before scraping: two X attempts hit the unproven
+  stale-session identity gate because the reviewed fresh-session recovery
+  switch was absent, then schema 16 rejected retry ordinal 2 despite the saved
+  three-attempt limit and aborted before LinkedIn. The tick is terminal with
+  zero active work, the ordinary schedule is unchanged, and no second manual
+  enqueue is authorized. The next repair must reconcile the schema/config
+  attempt contract and persist the reviewed exact-profile recovery path.
   Current authority:
   `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`.
 - Plan 0060 version 1/C06 is CLOSED after installing service 0.3.91 with finite

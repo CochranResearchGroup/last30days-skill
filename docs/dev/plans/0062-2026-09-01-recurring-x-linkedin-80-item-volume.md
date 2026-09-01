@@ -22,7 +22,11 @@ with enough installed scroll and wall-time budget to make those limits real.
 - a bounded 36-scroll X canary accepted 80/80, and LinkedIn accepted 80/80 in
   289.453 seconds after 29 scrolls;
 - `daily-default` is ready for `2026-09-02T00:00:00Z` and no tick or provider
-  attempt is active.
+  attempt is active;
+- the one operator-authorized manual 80+80 tick is terminal failed before page
+  observation: two X attempts stopped at the reviewed stale-session identity
+  gate, then schema 16 rejected retry ordinal 2 and prevented LinkedIn from
+  starting.
 
 ## Scope
 
@@ -212,3 +216,49 @@ evidence are sufficient.
 Next action: enqueue exactly one manual tick scoped to X and LinkedIn, poll
 only that tick to terminal state, then reconcile its provider receipts and
 schedule invariants.
+
+### Checkpoint P0062-C04 | 2026-09-01
+
+Plan version: 2
+
+State: `manual_tick_failed_before_scraping`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`; this checkpoint reconciles the single immediate tick
+  authorized at C03 and does not enqueue another tick.
+
+Evidence:
+
+- manual tick `tick-8a7c84f0337e04e6b90aa02068dd0383` reached terminal
+  `failed` with execution error `integrityerror` after 1.161 seconds;
+- X retry ordinals 0 and 1 each returned transient zero-observation
+  `agent_browser_error` at `workspace_acquisition`, reason
+  `existing_session_profile_identity_unproven`, with failure signature
+  `sha256:a489884adfd2a0f6f6d1247c8a3d924910ca0fcb65fe8c9d8f68d11ce58563ef`;
+- the installed service environment does not set the reviewed recovery switch
+  `LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE`, so neither X
+  attempt took the exact-profile fresh-session path;
+- the saved provider limit admits three attempts, but schema 16 constrains
+  `service_tick_provider_attempts.retry_ordinal` to `IN (0, 1)`. Inserting
+  retry ordinal 2 raised the recorded SQLite integrity error and aborted lane
+  iteration before the LinkedIn provider was attempted;
+- the tick consumed two attempts, two network requests, two wall seconds, and
+  zero items. It published no snapshot or head and left zero active tick
+  attempts, active provider attempts, or open resource leases;
+- `daily-default` remains ready for `2026-09-02T00:00:00Z` at unchanged digest
+  `sha256:069cf238586388e1e55924083e97161a403dd7fa488a6c2cf45d55fb29500074`
+  and still references its prior scheduled tick. Live SQLite `quick_check` is
+  `ok`.
+
+Subagent status: `not_spawned`
+
+Graphiti write status: `not_written`; the repository plan and direct live
+database readbacks are sufficient.
+
+Next action: repair the schema/config contract for three provider attempts and
+durably enable the already-reviewed exact-profile fresh-session recovery path;
+then obtain authority for a new manual tick or observe the ordinary September
+2 tick. No second manual tick is authorized by this plan version.
