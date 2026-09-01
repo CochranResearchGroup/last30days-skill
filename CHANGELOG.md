@@ -18,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Recurring 80-item X and LinkedIn capacity.** Service 0.3.92 raises X's
+  finite explicit home-feed allowance to 40 scrolls so an 80-item request can
+  honor the live-observed two-new-posts-per-scroll floor. The recurring timer
+  can now pair that bound with 80-item X and LinkedIn provider limits and
+  provider wall-time budgets sized for the previously observed 80-item runs;
+  canonical permalink deduplication and deterministic ad/spam rejection are
+  unchanged.
+
 - **Restart-safe recurring ticks.** Service 0.3.91 makes a planned Linux
   user-service restart signal the service process first, stop scheduling new
   ticks, and give one active tick a finite 900-second drain window before

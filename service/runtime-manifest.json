@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "64f2bce677867f901cf58916aa07b200c7e1df16af73611ae8cbf86fbbc09c6c",
+      "sha256": "2618061a75f808bdce29fc1a24405411e8e352a24b2f0f2602ec3ef6c434eda0",
       "source": "service/VERSION"
     },
     {
@@ -612,7 +612,7 @@
     },
     {
       "path": "scripts/lib/x_browser.py",
-      "sha256": "87ac49f9cb2f4261086ff6545eeb65562ff3f60b6b7206af32e5151aba77dec8",
+      "sha256": "a120c1b81801d48e44002091a2fd075463f80e1e890dbe3e003a52e3de1e5a70",
       "source": "skills/last30days/scripts/lib/x_browser.py"
     },
     {
@@ -658,5 +658,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.91"
+  "service_version": "0.3.92"
 }

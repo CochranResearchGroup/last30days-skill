@@ -1,6 +1,6 @@
 # Plan 0061 | Next Ordinary Tick Observation
 
-State: OPEN
+State: CANCELLED
 Roadmap: P08
 Plan version: 1
 Date: 2026-09-01
@@ -93,3 +93,11 @@ are authoritative.
 
 Next action: after the September 2 boundary, reconcile the automatically
 created tick without manually enqueueing or retrying work.
+
+### Cancellation | 2026-09-01
+
+The operator superseded this unchanged-configuration observation before the
+September 2 boundary by directing the recurring timer to collect 80 unique X
+posts and 80 unique LinkedIn posts. No tick was observed under this plan.
+Plan 0062 owns the configuration, installed X scroll-budget change, guarded
+schedule rebind, and observation of the resulting ordinary tick.

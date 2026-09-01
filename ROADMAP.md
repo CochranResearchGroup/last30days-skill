@@ -1081,6 +1081,14 @@ pause controls.
 
 Current State:
 
+- Plan 0062 version 1/C01 is the current actionable P08 plan. The operator
+  superseded the unchanged 10+10 observation with an explicit recurring
+  80+80 target. P0062-A raises the X and LinkedIn saved item limits to 80,
+  retains three attempts, gives each social provider a 360-second attempt
+  ceiling, and installs X's finite 40-scroll allowance before an exact guarded
+  schedule rebind. P0062-B will observe the resulting ordinary September 2
+  tick without manually enqueueing work. Current authority:
+  `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`.
 - Plan 0060 version 1/C06 is CLOSED after installing service 0.3.91 with finite
   active-tick drain semantics and genuine three-attempt transient retry budgets
   for recurring X and LinkedIn. The exact-digest schedule rebind preserved the September 2
@@ -1092,9 +1100,9 @@ Current State:
   110 repeated observations. P08 remains open for the next ordinary scheduled
   tick. Current authority:
   `docs/dev/plans/0060-2026-09-01-tick-restart-recovery.md`.
-- Plan 0061 version 1/C01 is the current actionable P08 plan. It authorizes
-  read-only reconciliation of the existing September 2 scheduled tick and
-  expressly prohibits manual enqueue, retry, or schedule mutation. Current
+- Plan 0061 version 1/C01 is CANCELLED before its scheduled boundary because
+  the operator replaced its unchanged-configuration premise with the 80+80
+  recurring target now owned by Plan 0062. It admitted no tick. Historical
   authority:
   `docs/dev/plans/0061-2026-09-01-next-ordinary-tick-observation.md`.
 - Plan 0059 version 1/C01 closes a schedule-disabled 80+80 live capacity

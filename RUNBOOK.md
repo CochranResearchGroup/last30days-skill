@@ -24009,3 +24009,85 @@ Next Bounded Action:
 - monitor the September 2 ordinary tick under the installed three-attempt
   configuration under Plan 0061; do not manually enqueue work or change
   LinkedIn selectors or content gates from this successful receipt.
+
+## Turn 382 | 2026-09-01
+
+Focus: replace the pending 10+10 timer observation with a durable recurring
+80+80 X and LinkedIn configuration and the installed capacity it requires.
+
+Authority Consulted:
+
+- operator `Update the timer to grab 80 unique X and linked in posts`; Plan
+  0059 live-capacity evidence;
+  `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`;
+  Last30days service-client and administration contracts; planning,
+  documentation, validation, Git, and closeout policy.
+
+Decisions And Changes:
+
+- called Last30days `service_info` first and confirmed service 0.3.91 ready and
+  compatible on schema 16;
+- cancelled Plan 0061 before its boundary and opened Plan 0062 as the current
+  P08 authority;
+- changed the saved recurring revision to
+  `operator-20260901-x-linkedin-80-v1`, raised X and LinkedIn from 10 to 80
+  items, retained three attempts each, and raised their per-attempt wall
+  ceiling from 120 to 360 seconds;
+- raised aggregate items from 23 to 163 and aggregate wall seconds from 840 to
+  2,280 while retaining seven attempts and 350 network requests;
+- raised X's finite explicit-feed bound from 32 to 40 scrolls and added the
+  deterministic 80-item/two-posts-per-scroll regression;
+- changed no source enablement, selectors, browser profile, content gates,
+  deterministic ad/spam filtering, or Agent Browser state, and manually
+  enqueued no tick.
+
+Validation Evidence:
+
+- pre-mutation schedule readback was ready at
+  `2026-09-02T00:00:00Z`, bound to digest
+  `sha256:b2ec0ed2eecc7d0e1fa1b6fa97595bf6fbfeb51d44db9f99d4a5884986856c3e`,
+  with zero active tick attempts, provider attempts, or open resource leases;
+- strict tick preflight accepts revision
+  `operator-20260901-x-linkedin-80-v1` at digest
+  `sha256:069cf238586388e1e55924083e97161a403dd7fa488a6c2cf45d55fb29500074`
+  and reads back X 80/3/360, LinkedIn 80/3/360, YouTube 3/1/120, and aggregate
+  163/7/2,280;
+- the focused X capacity regression reaches 80 unique items after 38 scrolls;
+  the first focused runtime-package pass identified only the expected stale
+  hard-coded release-version assertion, which is corrected in this slice;
+- deterministic service artifact
+  `dist/service/last30days-service-0.3.92.tar.gz` has SHA-256
+  `67db8404bead637637ba0be55433df210bc2503de218fd31c8f15a3f342fec80`;
+  runtime-manifest SHA-256 is
+  `68f57446667df4f9d105b80c63a48e215b625ea6a94fc79eee81d2d0c2ae901b`.
+
+State Movement:
+
+- Plan 0061 moves from OPEN to CANCELLED; Plan 0062/C01 is OPEN with P0062-A
+  implementation active; P08 remains OPEN.
+
+Progress Classification:
+
+- `outcome_progress`; the requested recurring limits and required X capacity
+  are implemented and strictly preflighted, pending candidate validation,
+  installation, and guarded schedule rebind.
+
+Authority Classification:
+
+- `explicit_authority`; the recurring 80+80 outcome was directly requested.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; current repository, configuration, and runtime receipts are
+  authoritative.
+
+Next Bounded Action:
+
+- complete candidate validation, publish the recoverable checkpoint, then
+  install service 0.3.92 and rebind only `daily-default` from the old exact
+  digest to the new validated digest while preserving its September 2
+  boundary and admitting no tick.
