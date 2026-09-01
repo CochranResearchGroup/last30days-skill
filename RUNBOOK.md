@@ -23813,6 +23813,9 @@ Authority Consulted:
 Decisions And Changes:
 
 - called Last30days `service_info` first and confirmed installed compatibility;
+- closed Plan 0060 and opened the read-only successor
+  `docs/dev/plans/0061-2026-09-01-next-ordinary-tick-observation.md` so P08
+  retains one bounded actionable plan without enqueueing or changing the timer;
 - rejected an account-only access-plan fallback to `stealthcdp-default` and
   used the exact worker-shaped access plan, which correctly selected the
   existing authenticated `last30days-facebook` profile;
@@ -23933,3 +23936,76 @@ Next Bounded Action:
 - stop retrying until Agent Browser reports exactly one runtime host with
   complete endpoint metadata; do not change LinkedIn scraper logic from this
   pre-navigation failure.
+
+## Turn 381 | 2026-09-01
+
+Focus: recover from the Agent Browser runtime-host outage and complete one
+terminal 20-item LinkedIn home-feed verification.
+
+Authority Consulted:
+
+- operator `try again` and `continue`; Plan 0060/C05; Last30days service-client,
+  Agent Browser service, CodeGraph, repo planning, documentation, validation,
+  Git, and closeout contracts.
+
+Decisions And Changes:
+
+- called Last30days `service_info` first and confirmed installed compatibility;
+- confirmed Agent Browser had converged to one ready runtime host on generation
+  `0.28.0-852249c8a8ae-1e2e914e853e`;
+- kept the exact `last30days-facebook` profile. After the ordinary request
+  exposed `existing_session_profile_identity_unproven`, used the existing
+  reviewed fresh-session override only because zero compatible live browsers
+  existed and terminal owner replacement was eligible;
+- treated the forced run severed by its 150-second outer command deadline as
+  interrupted rather than successful, proved its process absent, then continued
+  with a 300-second provider deadline and stopped at the first terminal receipt;
+- changed no code, selectors, deterministic content gates, recurring config,
+  schedule, installation, profile identity, or presentation route.
+
+Validation Evidence:
+
+- `plan0060-linkedin-postinstall-4-resume` succeeded in 88.3 seconds with 20
+  accepted posts and 20 unique canonical LinkedIn post URLs;
+- the scraper observed 183 card instances over 10 scrolls with zero stagnant
+  scrolls, refreshes, reloads, or snapshot renewals; deterministic filtering
+  rejected 53 sponsored-ad observations and deduplicated 110 repeats;
+- Agent Browser remains ready with exactly one runtime host and no multiplicity
+  issues. The successful exact-profile browser remains live on
+  `https://www.linkedin.com/feed/` under Agent Browser ownership; no
+  consumer-side cleanup was performed;
+- Last30days service 0.3.91 remains ready; `daily-default` remains enabled and
+  ready for `2026-09-02T00:00:00Z` at the same config digest; active tick
+  attempts, provider attempts, and Last30days resource leases are zero, and
+  SQLite `quick_check` is `ok`.
+
+State Movement:
+
+- Plan 0060 advances to C06 `accepted_and_closed` and is CLOSED. P08 remains
+  OPEN under Plan 0061/C01 for read-only ordinary schedule observation.
+
+Progress Classification:
+
+- `acceptance_completion`; the prior upstream blocker is resolved and the
+  installed LinkedIn feed path now proves the required 20/20 terminal receipt.
+
+Authority Classification:
+
+- `explicit_authority`; the operator requested the retry and continuation. The
+  fresh-session recovery preserved the exact profile and standing force-lease
+  instruction.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the repository checkpoint, published Git ref, and current
+  runtime receipts are authoritative.
+
+Next Bounded Action:
+
+- monitor the September 2 ordinary tick under the installed three-attempt
+  configuration under Plan 0061; do not manually enqueue work or change
+  LinkedIn selectors or content gates from this successful receipt.

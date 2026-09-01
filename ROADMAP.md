@@ -1081,17 +1081,22 @@ pause controls.
 
 Current State:
 
-- Plan 0060 version 1/C05 installs service 0.3.91 with finite active-tick drain
-  semantics and genuine three-attempt transient retry budgets for recurring X
-  and LinkedIn. The exact-digest schedule rebind preserved the September 2
-  boundary. A third, separately authorized 20-item LinkedIn retry reproduced
-  the identical pre-navigation failure signature: Agent Browser has zero
-  runtime hosts, reports `runtime_host_count_not_one`, and its jobs read fails
-  with `Runtime host endpoint metadata is incomplete`. The LinkedIn worker
-  again returned transient `agent_browser_error` at `workspace_acquisition`
-  with zero observations; no scraper-quality conclusion is supported by these
-  receipts. Current authority:
+- Plan 0060 version 1/C06 is CLOSED after installing service 0.3.91 with finite
+  active-tick drain semantics and genuine three-attempt transient retry budgets
+  for recurring X and LinkedIn. The exact-digest schedule rebind preserved the September 2
+  boundary. After Agent Browser restored one ready runtime host, the reviewed
+  exact-profile fresh-session path bypassed an unproven stale session identity
+  without changing profiles. The terminal LinkedIn verification accepted 20/20
+  unique canonical posts in 88.3 seconds after 10 non-stagnant scrolls while
+  deterministically excluding 53 sponsored-ad observations and deduplicating
+  110 repeated observations. P08 remains open for the next ordinary scheduled
+  tick. Current authority:
   `docs/dev/plans/0060-2026-09-01-tick-restart-recovery.md`.
+- Plan 0061 version 1/C01 is the current actionable P08 plan. It authorizes
+  read-only reconciliation of the existing September 2 scheduled tick and
+  expressly prohibits manual enqueue, retry, or schedule mutation. Current
+  authority:
+  `docs/dev/plans/0061-2026-09-01-next-ordinary-tick-observation.md`.
 - Plan 0059 version 1/C01 closes a schedule-disabled 80+80 live capacity
   canary on installed service 0.3.90. LinkedIn accepted 80 unique canonical
   posts in one attempt after 29 scrolls while deterministically excluding 367

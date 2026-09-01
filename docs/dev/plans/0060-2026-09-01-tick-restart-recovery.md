@@ -1,6 +1,6 @@
 # Plan 0060 | Tick Restart Recovery
 
-State: OPEN
+State: CLOSED
 Roadmap: P08
 Plan version: 1
 Date: 2026-09-01
@@ -22,11 +22,13 @@ ordinary transient failures.
   service files changed at `00:02:07.707Z`, the worker returned transient
   `worker_exit_nonzero` at `00:02:10.867488Z`, and the replacement service
   started at `00:02:11Z`;
-- the exact `last30days-facebook` profile remains selected, but current Agent
-  Browser status has zero runtime hosts and zero compatible live browsers;
+- the exact `last30days-facebook` profile remains selected; Agent Browser now
+  reports one ready runtime host and steady-state multiplicity;
 - recurring X and LinkedIn provider manifests now declare three attempts,
   aggregate limits admit their full bounded retry budget, and service 0.3.91
-  is installed ready with the schedule rebound to the exact config digest.
+  is installed ready with the schedule rebound to the exact config digest;
+- a bounded post-install LinkedIn feed verification accepted 20/20 unique
+  canonical posts while deterministically excluding sponsored ads.
 
 ## Scope
 
@@ -338,3 +340,70 @@ the durable evidence surfaces.
 Next action: stop retrying until Agent Browser reports exactly one runtime host
 with complete endpoint metadata. This repeated pre-navigation signature does
 not justify a LinkedIn scraper change.
+
+### Checkpoint P0060-C06 | 2026-09-01
+
+Plan version: 1
+
+State: `accepted_and_closed`
+
+Progress classification: `acceptance_completion`
+
+Authority classification:
+
+- `explicit_authority`; the operator requested another retry and then directed
+  continuation of the in-progress exact-profile recovery.
+
+Recovery and acceptance evidence:
+
+- Last30days `service_info` was the first product call and reports installed
+  service 0.3.91 ready and compatible on schema 16 with runtime-manifest
+  SHA-256
+  `a6509a82b743c7eef0b1cb7156901aca9b2c0263508c527dc9253094463d4c90`;
+- Agent Browser generation `0.28.0-852249c8a8ae-1e2e914e853e` reports exactly
+  one runtime host, one dashboard, zero legacy daemons, no multiplicity issues,
+  steady state, and ready lifecycle status;
+- the normal exact-profile request exposed
+  `existing_session_profile_identity_unproven` before navigation. The reviewed
+  fresh-session path retained the same `last30days-facebook` profile, dropped
+  the stale session route because no compatible browser was live, and reached
+  the authenticated LinkedIn home feed;
+- the first forced execution was interrupted by its 150-second outer command
+  deadline after reaching LinkedIn and left no terminal worker receipt. Agent
+  Browser subsequently recorded the exact browser process closed with profile
+  lock released and process absence proven;
+- continuation `plan0060-linkedin-postinstall-4-resume` used a 300-second
+  provider budget and terminated successfully in 88.3 seconds with 20 accepted
+  items and 20 unique canonical LinkedIn post URLs;
+- it observed 183 card instances over 10 scrolls with zero stagnant scrolls,
+  refreshes, reloads, or snapshot renewals. Deterministic gates rejected 53
+  sponsored-ad observations and deduplicated 110 repeated observations;
+- the successful exact-profile browser remains ready on `Feed | LinkedIn`
+  under Agent Browser ownership. No consumer-side close, cleanup, alternate
+  profile, or presentation mutation was performed.
+
+Isolation evidence:
+
+- `daily-default` remains enabled and ready at config digest
+  `sha256:b2ec0ed2eecc7d0e1fa1b6fa97595bf6fbfeb51d44db9f99d4a5884986856c3e`,
+  retains last tick `tick-56318fada747d408976df141ab17a0ef`, and retains the
+  next boundary `2026-09-02T00:00:00Z` with no runtime error;
+- active tick attempts, provider attempts, and Last30days resource leases are
+  zero, and the live SQLite database passes `quick_check`;
+- recurring configuration, provider ceilings, source enablement, schedule,
+  installed service, and deterministic content policy were unchanged.
+
+Acceptance disposition:
+
+- all six Plan 0060 acceptance criteria and the definition of done are
+  satisfied. Plan 0060 is CLOSED; P08 remains OPEN for the next ordinary daily
+  tick and broader recurring-lane observation.
+
+Subagent status: `not_spawned`
+
+Graphiti write status: `not_written`; the repository checkpoint, published Git
+ref, and current runtime receipts are the durable evidence surfaces.
+
+Next action: monitor the September 2 ordinary tick under the installed
+three-attempt configuration. Do not change LinkedIn selectors or content gates
+from this successful 20/20 receipt.
