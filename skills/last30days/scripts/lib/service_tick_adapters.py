@@ -129,16 +129,20 @@ def should_retry_provider(
     failure_class: str,
     retry_ordinal: int,
 ) -> bool:
-    """The sole automatic retry is retry ordinal one after a transient failure."""
-    if isinstance(retry_ordinal, bool) or not isinstance(retry_ordinal, int):
-        raise ValueError("retry_ordinal must be an integer")
+    """Retry transient failures while another configured attempt remains."""
+    if (
+        isinstance(retry_ordinal, bool)
+        or not isinstance(retry_ordinal, int)
+        or retry_ordinal < 0
+    ):
+        raise ValueError("retry_ordinal must be a non-negative integer")
     limits = provider.get("limits")
     if not isinstance(limits, Mapping):
         raise ValueError("provider limits must be an object")
     attempts = limits.get("attempts")
     if isinstance(attempts, bool) or not isinstance(attempts, int):
         raise ValueError("provider attempts limit must be an integer")
-    return failure_class == "transient" and retry_ordinal == 0 and attempts >= 2
+    return failure_class == "transient" and retry_ordinal + 1 < attempts
 
 
 def default_adapter_registry() -> AdapterRegistry:

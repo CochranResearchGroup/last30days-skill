@@ -1072,7 +1072,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: CLOSED
+State: OPEN
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1081,6 +1081,15 @@ pause controls.
 
 Current State:
 
+- Plan 0060 version 1/C01 opens a bounded restart-recovery successor after the
+  September 1 timer overlapped a deliberate service installation. X and
+  YouTube completed, but systemd restart terminated the active LinkedIn worker
+  as transient `worker_exit_nonzero`; its one-attempt recurring provider could
+  not retry. The exact authenticated profile and LinkedIn scraper remain
+  healthy. This successor owns finite active-tick drain semantics, three-attempt
+  X/LinkedIn recurrence, one validated install, and one bounded LinkedIn proof.
+  Current authority:
+  `docs/dev/plans/0060-2026-09-01-tick-restart-recovery.md`.
 - Plan 0059 version 1/C01 closes a schedule-disabled 80+80 live capacity
   canary on installed service 0.3.90. LinkedIn accepted 80 unique canonical
   posts in one attempt after 29 scrolls while deterministically excluding 367

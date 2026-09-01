@@ -241,11 +241,43 @@ def test_tick_schedule_loop_polls_independently_and_stops_cleanly():
 
     loop.start()
     assert scheduler.called.wait(1)
-    loop.stop(timeout=1)
+    assert loop.stop(timeout=1) is True
 
     assert loop.is_alive is False
     assert loop.last_error_code is None
     assert loop.last_status == {"state": "ready"}
+
+
+def test_tick_schedule_loop_reports_active_poll_until_it_drains():
+    class BlockingScheduler:
+        def __init__(self):
+            self.calls = 0
+            self.started = threading.Event()
+            self.released = threading.Event()
+
+        def poll(self):
+            self.calls += 1
+            self.started.set()
+            self.released.wait()
+            return {"state": "ready"}
+
+    scheduler = BlockingScheduler()
+    loop = TickScheduleLoop(
+        scheduler,
+        interval_seconds=0.01,
+        error_seconds=0.01,
+    )
+
+    loop.start()
+    assert scheduler.started.wait(1)
+
+    assert loop.stop(timeout=0.01) is False
+    assert loop.is_alive is True
+
+    scheduler.released.set()
+    assert loop.stop(timeout=1) is True
+    assert loop.is_alive is False
+    assert scheduler.calls == 1
 
 
 def test_assessment_loop_is_independent_and_stoppable():

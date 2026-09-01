@@ -51,6 +51,29 @@ from lib.service_tick_runtime import (
 from lib.service_tick_schedule import TickScheduleCoordinator
 
 
+_DEFAULT_SHUTDOWN_DRAIN_SECONDS = 900.0
+_MAX_SHUTDOWN_DRAIN_SECONDS = 900.0
+
+
+def _shutdown_drain_seconds() -> float:
+    raw = os.getenv(
+        "LAST30DAYS_SERVICE_SHUTDOWN_DRAIN_SECONDS",
+        str(_DEFAULT_SHUTDOWN_DRAIN_SECONDS),
+    )
+    try:
+        seconds = float(raw)
+    except ValueError as exc:
+        raise RuntimeError(
+            "LAST30DAYS_SERVICE_SHUTDOWN_DRAIN_SECONDS must be a number"
+        ) from exc
+    if not 0 < seconds <= _MAX_SHUTDOWN_DRAIN_SECONDS:
+        raise RuntimeError(
+            "LAST30DAYS_SERVICE_SHUTDOWN_DRAIN_SECONDS must be greater than "
+            f"zero and at most {_MAX_SHUTDOWN_DRAIN_SECONDS:g}"
+        )
+    return seconds
+
+
 def _default_socket_path() -> Path:
     override = os.getenv("LAST30DAYS_SERVICE_SOCKET")
     if override:
@@ -85,6 +108,7 @@ def _prepare_private_data_path(db_path: Path) -> None:
 def _serve(args: argparse.Namespace) -> int:
     socket_path = Path(args.socket) if args.socket else _default_socket_path()
     db_path = Path(args.db) if args.db else _default_db_path()
+    shutdown_drain_seconds = _shutdown_drain_seconds()
     os.umask(0o077)
     _prepare_private_data_path(db_path)
     embedding_provider = LocalHashEmbeddingProvider()
@@ -237,13 +261,17 @@ def _serve(args: argparse.Namespace) -> int:
         assessment_loop.start()
     if graph_loop is not None:
         graph_loop.start()
+    shutdown_error: RuntimeError | None = None
     try:
         while not stop_event.wait(0.2):
             if not thread.is_alive():
                 raise RuntimeError("service listener stopped unexpectedly")
     finally:
         if tick_schedule_loop is not None:
-            tick_schedule_loop.stop(timeout=5)
+            if not tick_schedule_loop.stop(timeout=shutdown_drain_seconds):
+                shutdown_error = RuntimeError(
+                    "tick_schedule_shutdown_drain_timeout"
+                )
         if graph_loop is not None:
             graph_loop.stop(timeout=5)
         if assessment_loop is not None:
@@ -255,6 +283,8 @@ def _serve(args: argparse.Namespace) -> int:
         thread.join(timeout=5)
         signal.signal(signal.SIGTERM, previous_sigterm)
         signal.signal(signal.SIGINT, previous_sigint)
+    if shutdown_error is not None:
+        raise shutdown_error
     return 0
 
 

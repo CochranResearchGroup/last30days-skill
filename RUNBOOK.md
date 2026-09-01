@@ -23657,3 +23657,65 @@ Next Bounded Action:
   small implementation plan to raise or adapt the finite X explicit-feed
   budget with provider-free tests and one installed canary. Otherwise leave
   recurrence unchanged and monitor the next ordinary tick.
+
+## Turn 377 | 2026-09-01
+
+Focus: diagnose the degraded September 1 LinkedIn timer lane and open a bounded
+restart-recovery successor.
+
+Authority Consulted:
+
+- the operator's explicit `ok go`; Plan 0059/P08 terminal evidence; current
+  Last30days, Agent Browser service, planning, testing, architecture,
+  documentation, Git, and closeout policies.
+
+Decisions And Changes:
+
+- confirmed the timer itself fired normally and isolated LinkedIn's failure to
+  the deliberate Last30days installation restart, not authentication, DOM
+  extraction, or Agent Browser acquisition;
+- opened Plan 0060/P08 for finite active-tick drain semantics, three-attempt
+  recurring X/LinkedIn providers, one validated install, and one bounded
+  LinkedIn verification at
+  `docs/dev/plans/0060-2026-09-01-tick-restart-recovery.md`;
+- preserved the exact `last30days-facebook` profile, disabled Reddit/Facebook
+  lanes, YouTube behavior, feed selectors, item ceilings, and deterministic
+  ad/spam filtering.
+
+Validation Evidence:
+
+- durable tick receipt shows LinkedIn transient failure with zero observed
+  items from `00:00:40.238Z` to `00:02:10.867Z`;
+- installed files changed at `00:02:07.707Z` and the replacement service began
+  at `00:02:11Z`;
+- current exact-profile access planning reports one compatible retained
+  browser and no acquisition or lifecycle blocker; its retained LinkedIn tab
+  is `https://www.linkedin.com/feed/`;
+- code inspection proves nonzero workers map to transient
+  `worker_exit_nonzero`, shutdown waits only five seconds for the tick loop,
+  and automatic retry requires at least two configured attempts.
+
+State Movement:
+
+- Plan 0060 opens at version 1/C01 `diagnosed_and_planned`; P08 reopens for the
+  bounded reliability successor.
+
+Progress Classification:
+
+- `blocker_reduction`.
+
+Authority Classification:
+
+- `inherited_authority`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `pending_closeout`; implementation outcome is not yet known.
+
+Next Bounded Action:
+
+- add red restart-drain and recurring retry-budget regressions.

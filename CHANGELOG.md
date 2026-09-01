@@ -18,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Restart-safe recurring ticks.** Service 0.3.91 makes a planned Linux
+  user-service restart signal the service process first, stop scheduling new
+  ticks, and give one active tick a finite 900-second drain window before
+  systemd terminates any remaining cgroup processes. The schedule loop reports
+  a drain timeout truthfully instead of silently exiting while a provider
+  worker is active. Durable tick providers may now configure up to three
+  attempts, and transient failures consume each remaining bounded attempt.
+
 - **Persistent Agent Browser control and reviewed stale-lane recovery.** Service
   0.3.90 keeps one Agent Browser MCP control process alive for the complete
   browser scrape instead of ending browser ownership after each action. An

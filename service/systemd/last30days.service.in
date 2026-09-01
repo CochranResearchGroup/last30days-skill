@@ -7,6 +7,8 @@ Type=simple
 ExecStart=@LAUNCHER@ serve
 Restart=on-failure
 RestartSec=2
+KillMode=mixed
+TimeoutStopSec=930
 EnvironmentFile=@ENV_FILE@
 @SOCKET_ENV@
 Environment=PATH=%h/.local/bin:%h/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin

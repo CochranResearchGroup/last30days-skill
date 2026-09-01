@@ -10,16 +10,31 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+import pytest
+
 import store
 
 from lib import service_contracts as contracts
 from lib.service_client import ServiceClient, ServiceClientError
-from service import build_parser
+from service import _shutdown_drain_seconds, build_parser
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "skills" / "last30days" / "scripts"
 SERVICE = SCRIPTS / "service.py"
+
+
+def test_shutdown_drain_uses_finite_default(monkeypatch):
+    monkeypatch.delenv("LAST30DAYS_SERVICE_SHUTDOWN_DRAIN_SECONDS", raising=False)
+
+    assert _shutdown_drain_seconds() == 900.0
+
+
+def test_shutdown_drain_rejects_values_above_systemd_budget(monkeypatch):
+    monkeypatch.setenv("LAST30DAYS_SERVICE_SHUTDOWN_DRAIN_SECONDS", "901")
+
+    with pytest.raises(RuntimeError, match="at most 900"):
+        _shutdown_drain_seconds()
 
 
 def _wait_ready(client: ServiceClient, process: subprocess.Popen, timeout=8):

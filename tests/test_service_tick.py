@@ -177,6 +177,34 @@ def test_tick_config_accepts_exact_optional_schedule(tmp_path):
     assert receipt.state is contracts.TickState.QUEUED
 
 
+def test_tick_config_accepts_three_provider_attempts_and_rejects_four(tmp_path):
+    config_path = tmp_path / "tick-config-v1.json"
+    _write_config(config_path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    payload["services"][0]["providers"][0]["limits"]["attempts"] = 3
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    request = contracts.TickRequest.from_dict(
+        {
+            "schema_version": 1,
+            "schedule_id": "manual-default",
+            "interval_from": "2026-08-03T00:00:00Z",
+            "interval_to": "2026-08-04T00:00:00Z",
+            "trigger": "manual",
+        }
+    )
+    TickCoordinator(
+        tmp_path / "accepted.db", config_path=config_path, clock=lambda: NOW
+    ).enqueue_tick(request)
+
+    payload["services"][0]["providers"][0]["limits"]["attempts"] = 4
+    config_path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(TickConfigError, match="attempts must be between 1 and 3"):
+        TickCoordinator(
+            tmp_path / "rejected.db", config_path=config_path, clock=lambda: NOW
+        ).enqueue_tick(request)
+
+
 def test_tick_config_accepts_feed_surface_with_feed_selector(tmp_path):
     config_path = tmp_path / "tick-config-v1.json"
     _write_config(config_path)
@@ -1158,6 +1186,16 @@ def test_provider_fallback_is_sequential_and_retry_is_transient_only():
     ) is None
     assert should_retry_provider(
         providers[0], failure_class="transient", retry_ordinal=0
+    )
+    three_attempt_provider = {"limits": {"attempts": 3}}
+    assert should_retry_provider(
+        three_attempt_provider, failure_class="transient", retry_ordinal=0
+    )
+    assert should_retry_provider(
+        three_attempt_provider, failure_class="transient", retry_ordinal=1
+    )
+    assert not should_retry_provider(
+        three_attempt_provider, failure_class="transient", retry_ordinal=2
     )
     assert not should_retry_provider(
         providers[0], failure_class="authentication", retry_ordinal=0

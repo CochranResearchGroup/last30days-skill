@@ -83,6 +83,9 @@ resource keys and ceilings, artifact policy, OCR and semantic-sidecar stages,
 deterministic anomaly rules, notification transports, and query/index versions.
 Enabled targets execute serially in their array order; sanitized preflight and
 durable tick receipts preserve that same order.
+Each provider may declare one to three attempts. Automatic retries consume the
+second and third attempts only for transient failures, and the aggregate tick
+limits must budget every admitted attempt across enabled targets.
 Each target declares an explicit acquisition surface. Use
 `"surface_kind": "feed"` with a non-empty `"selector": {"feed": "home"}`
 for an authenticated home feed, or retain `"surface_kind": "topic"` with a
@@ -858,6 +861,10 @@ LAST30DAYS_SERVICE_SOCKET=/run/user/1000/last30days/service.sock
 # Defaults to $XDG_DATA_HOME/last30days/research.db, or
 # ~/.local/share/last30days/research.db when XDG_DATA_HOME is unset.
 LAST30DAYS_SERVICE_DB=~/.local/share/last30days/research.db
+
+# Planned service stops let one active recurring tick drain for at most this
+# many seconds. The default and maximum are both 900 seconds.
+LAST30DAYS_SERVICE_SHUTDOWN_DRAIN_SECONDS=900
 
 # Optional local Graphiti graph-service projection. Loopback HTTP only.
 LAST30DAYS_GRAPHITI_URL=http://127.0.0.1:8829
