@@ -23577,3 +23577,83 @@ Next Bounded Action:
 
 - monitor the next ordinary tick; further retrieval or content-understanding
   work belongs in a new bounded plan.
+
+## Turn 376 | 2026-08-31
+
+Focus: run and reconcile one schedule-disabled X and LinkedIn 80+80 home-feed
+capacity canary.
+
+Authority Consulted:
+
+- the operator's explicit `let's try 80+80`; Plan 0058/C03 terminal evidence;
+  Roadmap P08; the standing force-acquisition authority for the sole
+  `last30days-facebook` profile; Last30days, Agent Browser service, planning,
+  documentation, validation, Git, and closeout policy.
+
+Decisions And Changes:
+
+- opened and closed bounded Plan 0059 rather than reopening Plan 0058;
+- used installed service 0.3.90 and direct schedule-disabled feed collection;
+- after X reached 78/80 at the installed 32-scroll ceiling with zero
+  stagnation, used one transparent process-local 36-scroll retry. No installed
+  source, saved config, recurring spec, or timer changed;
+- retained deterministic canonical permalink, post ownership, duplicate,
+  sponsored-ad, auth, checkpoint, and rate-limit gates.
+
+Live Evidence:
+
+- X attempt one: 78/80, 32 scrolls, 78 unique observations, 242 candidate
+  instances, 164 duplicate sightings, zero stagnation, and no typed error;
+- X attempt two: 80/80, 36 scrolls, 82 unique observations, 262 candidate
+  instances, 180 duplicate sightings, two surplus result-limit exclusions,
+  and no typed error;
+- LinkedIn attempt one: 80/80, 29 scrolls, 102 unique observations, 289.453
+  seconds, 367 sponsored-ad observations and 1,159 duplicate sightings
+  excluded, with no snapshot renewal, refresh, reload, or typed error;
+- all 160 accepted items in the terminal source pair carried unique canonical
+  provider permalinks.
+
+Validation Evidence:
+
+- live service discovery is ready and compatible at service 0.3.90/schema 16
+  with unchanged contract and runtime-manifest digests;
+- recurring config revision `operator-20260822-x-linkedin-home-feed-v1` retains
+  digest `sha256:9238e351363d0e4d37fa965c748df53012ae9a217231901fef60a720413ad417`;
+  X/LinkedIn feeds and YouTube remain enabled, Reddit/Facebook remain disabled;
+- both 40-item canary specs remain disabled at version 1. The daily schedule is
+  ready with next boundary `2026-09-02T00:00:00Z`;
+- the exact retained profile has one compatible live browser, zero active
+  leases, no duplicate pressure or blocking identity axes, lifecycle ready,
+  and owner generation 69;
+- SQLite `quick_check` is `ok` for all three live database files.
+
+State Movement:
+
+- Plan 0059 opens and closes at version 1/C01
+  `bounded_80x80_canary_complete`; P08 remains CLOSED.
+
+Progress Classification:
+
+- `outcome_progress`; the requested 80+80 capacity run is complete. LinkedIn
+  meets the target under installed policy; X meets it only with the ephemeral
+  36-scroll extension, so production 80-item support is not claimed.
+
+Authority Classification:
+
+- `explicit_authority`; no recurring or installed mutation was inferred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibited delegation.
+
+Graphiti Write Status:
+
+- `not_written`; Plan 0059, note 0110, Roadmap P08, and this turn are the
+  durable source-backed record.
+
+Next Bounded Action:
+
+- if 80 accepted X items must become a supported installed behavior, open one
+  small implementation plan to raise or adapt the finite X explicit-feed
+  budget with provider-free tests and one installed canary. Otherwise leave
+  recurrence unchanged and monitor the next ordinary tick.

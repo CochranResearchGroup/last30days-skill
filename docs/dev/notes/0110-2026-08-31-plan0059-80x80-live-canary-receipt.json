@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "receipt_id": "plan0059-80x80-live-canary-0110",
+  "recorded_date": "2026-08-31",
+  "authority": {
+    "plan": "0059",
+    "checkpoint": "P0059-C01",
+    "classification": "explicit_authority",
+    "plan_state": "closed",
+    "roadmap_lane": "P08",
+    "roadmap_state": "closed"
+  },
+  "installed": {
+    "service_version": "0.3.90",
+    "database_schema_version": 16,
+    "status": "ready",
+    "compatibility_state": "compatible",
+    "contract_sha256": "fe8727fbe0d4e2f6775f49a6fc958369fe4877ba812bae4ef69121b88f12e2f1",
+    "runtime_manifest_sha256": "28a9ae91e54f2b8b1e33773928f70010954d0132cbce874df4012e3ecce18027"
+  },
+  "x": {
+    "target": 80,
+    "attempt_count": 2,
+    "attempt_1": {
+      "accepted": 78,
+      "canonical_unique_permalinks": 78,
+      "candidate_instances": 242,
+      "unique_observations": 78,
+      "scrolls": 32,
+      "stagnant_scrolls": 0,
+      "duration_ms": 71307,
+      "rejection_counts": {
+        "duplicate_status": 164
+      },
+      "terminal_reason": "installed_explicit_feed_scroll_ceiling"
+    },
+    "attempt_2": {
+      "accepted": 80,
+      "canonical_unique_permalinks": 80,
+      "candidate_instances": 262,
+      "unique_observations": 82,
+      "scrolls": 36,
+      "stagnant_scrolls": 0,
+      "duration_ms": 73054,
+      "process_local_scroll_ceiling": 36,
+      "rejection_counts": {
+        "duplicate_status": 180,
+        "result_limit": 2
+      },
+      "error_type": null
+    }
+  },
+  "linkedin": {
+    "target": 80,
+    "attempt_count": 1,
+    "accepted": 80,
+    "canonical_unique_permalinks": 80,
+    "unique_observations": 102,
+    "scrolls": 29,
+    "stagnant_scrolls": 0,
+    "snapshot_renewals": 0,
+    "feed_refreshes": 0,
+    "feed_reloads": 0,
+    "duration_ms": 289453,
+    "candidate_counts": {
+      "post": 1239,
+      "ad": 367,
+      "rejected": 367
+    },
+    "rejection_counts": {
+      "duplicate": 1159,
+      "kind_ad": 367,
+      "sponsored": 367,
+      "missing_permalink": 28
+    },
+    "error_type": null
+  },
+  "postconditions": {
+    "profile_id": "last30days-facebook",
+    "reusable_browser_id": "session:last30days-force-20260831-c33",
+    "compatible_live_browser_count": 1,
+    "active_lease_count": 0,
+    "duplicate_pressure": false,
+    "blocking_identity_axes": [],
+    "lifecycle_state": "ready",
+    "owner_generation": 69,
+    "recurring_config_revision": "operator-20260822-x-linkedin-home-feed-v1",
+    "recurring_config_digest": "sha256:9238e351363d0e4d37fa965c748df53012ae9a217231901fef60a720413ad417",
+    "x_feed_enabled": true,
+    "linkedin_feed_enabled": true,
+    "reddit_enabled": false,
+    "facebook_enabled": false,
+    "youtube_enabled": true,
+    "disabled_canary_specs": [
+      "canary-x-feed-40-c28",
+      "canary-linkedin-feed-40-c28"
+    ],
+    "next_daily_boundary": "2026-09-02T00:00:00Z",
+    "sqlite_quick_check": "ok"
+  },
+  "interpretation": "The 80+80 live target is achievable. LinkedIn reaches it under installed policy. X requires more than the installed 32-scroll ceiling on this feed sample; the successful 36-scroll retry was process-local and did not persist a runtime or configuration change."
+}

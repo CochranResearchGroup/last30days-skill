@@ -1081,6 +1081,16 @@ pause controls.
 
 Current State:
 
+- Plan 0059 version 1/C01 closes a schedule-disabled 80+80 live capacity
+  canary on installed service 0.3.90. LinkedIn accepted 80 unique canonical
+  posts in one attempt after 29 scrolls while deterministically excluding 367
+  sponsored-ad observations. X's unmodified 32-scroll attempt accepted 78 and
+  remained non-stagnant; one transparent process-local 36-scroll retry accepted
+  80. Recurring configuration, disabled specs, exact profile identity,
+  schedule, and databases remained unchanged. The experiment proves live
+  capacity but not an installed X 80-item guarantee; a persistent X ceiling
+  change requires a new implementation decision. Current authority:
+  `docs/dev/plans/0059-2026-08-31-x-linkedin-80-post-live-canary.md`.
 - Plan 0058 version 3/C03 closes the retrieval-throughput successor with exact
   service 0.3.90 installed and live authenticated acceptance at X 40/40 and
   LinkedIn 40/40. The repair keeps one Agent Browser MCP control process alive
