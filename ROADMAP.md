@@ -1081,14 +1081,15 @@ pause controls.
 
 Current State:
 
-- Plan 0060 version 1/C01 opens a bounded restart-recovery successor after the
-  September 1 timer overlapped a deliberate service installation. X and
-  YouTube completed, but systemd restart terminated the active LinkedIn worker
-  as transient `worker_exit_nonzero`; its one-attempt recurring provider could
-  not retry. The exact authenticated profile and LinkedIn scraper remain
-  healthy. This successor owns finite active-tick drain semantics, three-attempt
-  X/LinkedIn recurrence, one validated install, and one bounded LinkedIn proof.
-  Current authority:
+- Plan 0060 version 1/C03 installs service 0.3.91 with finite active-tick drain
+  semantics and genuine three-attempt transient retry budgets for recurring X
+  and LinkedIn. The exact-digest schedule rebind preserved the September 2
+  boundary. The one post-install LinkedIn check stopped before DOM extraction:
+  Agent Browser has zero runtime hosts, reports `runtime_host_count_not_one`,
+  and its jobs read fails with `Runtime host endpoint metadata is incomplete`.
+  The LinkedIn worker therefore returned transient `agent_browser_error` at
+  `workspace_acquisition` with zero observations; no scraper-quality conclusion
+  is supported by this receipt. Current authority:
   `docs/dev/plans/0060-2026-09-01-tick-restart-recovery.md`.
 - Plan 0059 version 1/C01 closes a schedule-disabled 80+80 live capacity
   canary on installed service 0.3.90. LinkedIn accepted 80 unique canonical

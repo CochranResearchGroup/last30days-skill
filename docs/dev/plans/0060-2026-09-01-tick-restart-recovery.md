@@ -22,11 +22,11 @@ ordinary transient failures.
   service files changed at `00:02:07.707Z`, the worker returned transient
   `worker_exit_nonzero` at `00:02:10.867488Z`, and the replacement service
   started at `00:02:11Z`;
-- the exact `last30days-facebook` Agent Browser profile currently has one
-  compatible retained browser and no acquisition or lifecycle blocker;
-- recurring X and LinkedIn provider manifests now declare three attempts and
-  aggregate limits admit their full bounded retry budget; installation of
-  service 0.3.91 is still pending.
+- the exact `last30days-facebook` profile remains selected, but current Agent
+  Browser status has zero runtime hosts and zero compatible live browsers;
+- recurring X and LinkedIn provider manifests now declare three attempts,
+  aggregate limits admit their full bounded retry budget, and service 0.3.91
+  is installed ready with the schedule rebound to the exact config digest.
 
 ## Scope
 
@@ -163,3 +163,71 @@ Graphiti write status: `pending_closeout`
 
 Next action: commit and publish the candidate checkpoint, then consume the one
 authorized install and bounded LinkedIn verification.
+
+### Checkpoint P0060-C03 | 2026-09-01
+
+Plan version: 1
+
+State: `restart_repair_installed_agent_browser_runtime_host_blocked`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`
+
+Installed and schedule evidence:
+
+- commit `89ac5f8d931f2183067c1aa7e2e57c6e7d9a9c93` is published at
+  `origin/fix/tick-restart-recovery` and its complete canonical test suite
+  passed;
+- the first installer readiness check failed because the owner-private config
+  change correctly paused `daily-default` at `schedule_config_replaced`; its
+  attempted 0.3.90 rollback could not parse provider attempt limit three;
+- the already-staged exact 0.3.91 release was selected without a second build
+  or installer transaction, and the established full-config-digest guarded
+  rebind moved exactly one paused `daily-default` row from digest
+  `sha256:9238e351363d0e4d37fa965c748df53012ae9a217231901fef60a720413ad417`
+  to validated digest
+  `sha256:b2ec0ed2eecc7d0e1fa1b6fa97595bf6fbfeb51d44db9f99d4a5884986856c3e`;
+- backup
+  `/home/ecochran76/.local/share/last30days/backups/research-pre-retry3-rebind-20260901.db`
+  and the live database each pass `quick_check`;
+- service 0.3.91 is ready on schema 16 and runtime-manifest SHA-256
+  `a6509a82b743c7eef0b1cb7156901aca9b2c0263508c527dc9253094463d4c90`;
+  `daily-default` is ready with its prior tick and unchanged next boundary
+  `2026-09-02T00:00:00Z`.
+
+LinkedIn verification evidence:
+
+- the one authorized 20-item installed LinkedIn feed worker completed in 2.3
+  seconds with transient `agent_browser_error`, failure stage
+  `workspace_acquisition`, zero attempted/observed/accepted/rejected posts, and
+  message `agent-browser service request returned no result`;
+- direct Agent Browser jobs readback fails with
+  `Runtime host endpoint metadata is incomplete; preserving evidence and
+  refusing a duplicate host`;
+- direct Agent Browser status reports one dashboard, zero runtime hosts,
+  `runtime_host_count_not_one`, runtime state `degraded`, partial process
+  observation, and unavailable browser process inventory;
+- exact-profile access planning still selects `last30days-facebook`, reports
+  no identity or acquisition blocker, but finds zero compatible live browsers;
+  owner generation 69 is terminal with process absence proven.
+
+Interpretation:
+
+- this post-install failure occurs before LinkedIn navigation or DOM
+  extraction. It is an Agent Browser runtime-host availability failure, not
+  evidence of a LinkedIn scraper, authentication, or content-quality defect;
+- the attempt budget stopped after the first terminal receipt. No browser
+  launch, force-replacement, second provider attempt, or profile mutation was
+  performed by this checkpoint.
+
+Subagent status: `not_spawned`
+
+Graphiti write status: `not_written`; repository and exact runtime receipts are
+the durable evidence surfaces available in this session.
+
+Next action: restore exactly one healthy Agent Browser runtime host outside this
+repository, then request a fresh bounded LinkedIn retry. Do not change LinkedIn
+selectors or quality gates from this pre-navigation failure.

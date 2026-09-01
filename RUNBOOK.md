@@ -23719,3 +23719,82 @@ Graphiti Write Status:
 Next Bounded Action:
 
 - add red restart-drain and recurring retry-budget regressions.
+
+## Turn 378 | 2026-09-01
+
+Focus: install restart-safe recurring ticks, activate genuine X/LinkedIn
+three-attempt budgets, and investigate one post-install LinkedIn failure.
+
+Authority Consulted:
+
+- operator `ok go`; Plan 0060/C01-C02; current runtime, validation, install,
+  schedule-transition, Agent Browser service, documentation, Git, and closeout
+  contracts.
+
+Decisions And Changes:
+
+- implemented finite 900-second active-tick drain, `KillMode=mixed`, and a
+  930-second systemd stop ceiling so a planned restart signals the main service
+  before child workers and stops new schedule polls while one poll drains;
+- expanded provider attempt validation to three and changed transient retry
+  admission to consume every configured remaining attempt;
+- installed service 0.3.91 and set the owner-private recurring X and LinkedIn
+  providers to three attempts with aggregate limits 7/350/23/840; Reddit,
+  YouTube, and Facebook retain one attempt, and Reddit/Facebook remain disabled;
+- after the config replacement correctly paused schedule readiness, selected
+  the already-staged exact release and used an exact old/new digest guarded
+  rebind. It preserved the last tick and September 2 boundary;
+- consumed one 20-item LinkedIn verification and stopped at its terminal
+  pre-navigation failure without retrying or mutating Agent Browser.
+
+Validation Evidence:
+
+- commit `89ac5f8d931f2183067c1aa7e2e57c6e7d9a9c93` is published; focused suites
+  and the complete canonical `uv run pytest -q` suite pass;
+- service 0.3.91/schema 16 is ready with runtime-manifest SHA-256
+  `a6509a82b743c7eef0b1cb7156901aca9b2c0263508c527dc9253094463d4c90`;
+- `daily-default` is ready at config digest
+  `sha256:b2ec0ed2eecc7d0e1fa1b6fa97595bf6fbfeb51d44db9f99d4a5884986856c3e`,
+  has no runtime error, retains last tick
+  `tick-56318fada747d408976df141ab17a0ef`, and retains next boundary
+  `2026-09-02T00:00:00Z`; live and backup SQLite checks are `ok`;
+- LinkedIn returned transient `agent_browser_error` at
+  `workspace_acquisition` in 2.3 seconds with zero observations and no page
+  title or URL;
+- Agent Browser directly reports zero runtime hosts, one dashboard,
+  `runtime_host_count_not_one`, degraded runtime lifecycle, and unavailable
+  process inventory. Jobs readback fails because runtime-host endpoint metadata
+  is incomplete. Exact profile selection remains correct but has zero compatible
+  live browsers and a terminal prior owner.
+
+State Movement:
+
+- Plan 0060 advances to C03
+  `restart_repair_installed_agent_browser_runtime_host_blocked`; P08 remains
+  OPEN because the next bounded LinkedIn success is externally blocked before
+  scraper execution.
+
+Progress Classification:
+
+- `blocker_reduction`; Last30days restart and retry behavior is installed, and
+  the remaining LinkedIn failure is localized upstream to Agent Browser host
+  availability.
+
+Authority Classification:
+
+- `inherited_authority`; the implementation, one install candidate, exact
+  schedule rebind, and one verification stayed within the accepted packet.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; exact repository and runtime receipts are authoritative.
+
+Next Bounded Action:
+
+- restore one healthy Agent Browser runtime host outside this repository, then
+  obtain explicit authority for a fresh bounded LinkedIn retry. Do not change
+  LinkedIn scraper logic from this zero-observation workspace failure.
