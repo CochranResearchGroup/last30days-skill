@@ -24361,3 +24361,74 @@ Next Bounded Action:
 
 - qualify and install the exact Agent Browser terminal replacement candidate,
   then build and install the published Last30days service candidate.
+
+## Turn 387 | 2026-09-01
+
+Focus: add the non-secret Last30days half of principal-bound Agent Browser
+acquisition after production acceptance exposed a missing capability.
+
+Authority Consulted:
+
+- operator repair/test/install objective; Plan 0062 C05; installed Agent Browser
+  truthful-planning contract; Last30days administration skill; current source,
+  tests, runtime, and private-authentication mutation boundary.
+
+Decisions And Changes:
+
+- added optional `LAST30DAYS_AGENT_BROWSER_PROFILE_CAPABILITY_FILE` support with
+  absolute-path, same-user, regular-file, no-symlink, 0600, size, encoding, and
+  token-shape validation;
+- moved capability-bearing access planning from CLI argv to MCP
+  `service_access_plan`, then injects the same raw value only into ephemeral
+  `service_request` argument copies;
+- kept the capability out of the retained request route, command timings,
+  stable target configuration, logs, receipts, and service state;
+- preserved unauthenticated CLI planning when no capability file is configured,
+  so the currently installed service remains fail closed; and
+- advanced the independent service candidate to 0.3.94 without registering a
+  principal, writing a capability, changing the owner-private environment, or
+  admitting a provider tick.
+
+Validation Evidence:
+
+- three focused capability tests were red before implementation and now pass;
+- 213 Agent Browser-runtime, X, Facebook, and LinkedIn tests pass with three
+  environment-dependent skips;
+- defensive error redaction covers both `profileCapability` and generic
+  capability labels;
+- the broad Python run excluding the one known baseline integration file exits
+  zero; that file's repeatable service-shutdown timeout also reproduces on the
+  unchanged prior source branch, so it is not attributed to this candidate;
+- all MCP Go packages pass, Python compilation passes, the generated runtime
+  manifest is current, and `git diff --check` passes;
+- live `service_info` reports service 0.3.93/schema 17 ready but the retained
+  Codex connector is adapter 4.0.3/schema-max-16 and therefore incompatible;
+  reinstalling source adapter 4.0.4 is a required deployment precondition.
+
+State Movement:
+
+- Plan 0062 advances to version 4/C06; P08 remains OPEN pending exact package
+  installation and separately authorized capability registration/live proof.
+
+Progress Classification:
+
+- `blocker_reduction`.
+
+Authority Classification:
+
+- `inherited_authority` for source and installation preparation;
+  `authority_withheld` for principal/capability mutation and another tick.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; current repository evidence is sufficient.
+
+Next Bounded Action:
+
+- publish and merge this checkpoint, reinstall MCP adapter 4.0.4, build and
+  install exact service 0.3.94, and verify readiness without capability
+  configuration.

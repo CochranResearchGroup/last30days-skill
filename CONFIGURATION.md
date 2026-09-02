@@ -551,6 +551,14 @@ LAST30DAYS_YOUTUBE_BROWSER_FALLBACK=auto
 # named browser lane for the same exact profile.
 # LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE=1
 
+# Optional principal-bound Agent Browser authority. Set this to one absolute,
+# user-owned regular file created by `agent-browser service leases register`.
+# The file must not be a symlink and must have mode 0600. Last30days reads the
+# capability only in memory and sends it ephemerally to both MCP
+# `service_access_plan` and `service_request`; it is never placed in argv,
+# agent-browser.json, logs, receipts, or service state.
+# LAST30DAYS_AGENT_BROWSER_PROFILE_CAPABILITY_FILE=/home/user/.config/last30days/private/agent-browser-last30days.cap
+
 # X via an authenticated agent-browser profile (opt-in; preferred over API
 # backends while enabled). The default profile already used on this workstation
 # is shown; use a different registered X profile elsewhere.
@@ -596,8 +604,10 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # LAST30DAYS_LINKEDIN_DEBUG_DIR=~/.local/state/last30days/linkedin-debug
 
 # The Reddit, X, Facebook, and LinkedIn scrapers ask agent-browser for an access
-# plan by target identity on every
-# acquisition. The access plan's retained browserId and sessionName route hints
+# plan by target identity on every acquisition. When the private capability
+# file above is configured, planning and execution use the same authenticated
+# MCP session; otherwise planning remains unauthenticated and protected profile
+# replacement fails closed. The access plan's retained browserId and sessionName route hints
 # override the optional session values above when a compatible shared profile
 # owner is already live. Route IDs, browser IDs, session names, tabs, and display
 # allocations are runtime leases, not durable configuration.
@@ -1052,7 +1062,7 @@ previous verified releases deliberately; `start`, `stop`, `status`, and
 `diagnose` provide the remaining lifecycle controls.
 
 The v4 release uses independent artifact versions: Skill/plugin `4.0.0`, MCP
-adapter `4.0.3`, and service `0.3.58`. Upgrade the service first, install the
+adapter `4.0.4`, and service `0.3.94`. Upgrade the service first, install the
 adapter second, and require `service_info` to report
 `compatibility_state=compatible` before updating the optional Skill. Schema 16
 needs no migration. A typed incompatibility means one side is stale; it does

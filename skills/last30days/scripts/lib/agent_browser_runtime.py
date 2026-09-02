@@ -11,9 +11,12 @@ from dataclasses import dataclass, field
 import hashlib
 import json
 import math
+import os
+from pathlib import Path
 import queue
 import re
 import shutil
+import stat
 import subprocess
 import threading
 import time
@@ -31,6 +34,8 @@ TAB_INVENTORY_TIMEOUT_SECONDS = 20
 SERVICE_EVALUATE_MAX_RETURN_BYTES = 1_048_576
 SERVICE_TAB_READY_TIMEOUT_MS = 15_000
 SERVICE_TAB_READY_OUTER_TIMEOUT_SECONDS = 30
+PROFILE_CAPABILITY_FILE_ENV = "LAST30DAYS_AGENT_BROWSER_PROFILE_CAPABILITY_FILE"
+MAX_PROFILE_CAPABILITY_BYTES = 4_096
 ERROR_TYPES = {
     "agent_browser_missing",
     "profile_mismatch",
@@ -155,7 +160,13 @@ class AgentBrowserClient(Protocol):
 class CliAgentBrowserClient:
     """Typed adapter for the installed Agent Browser service and JSON CLI."""
 
-    def __init__(self, *, timeout: int, job_timeout_ms: int | None = None) -> None:
+    def __init__(
+        self,
+        *,
+        timeout: int,
+        job_timeout_ms: int | None = None,
+        profile_capability_file: str | os.PathLike[str] | None = None,
+    ) -> None:
         self.timeout = timeout
         self.job_timeout_ms = job_timeout_ms or timeout * 1000
         if self.job_timeout_ms <= 0:
@@ -164,6 +175,17 @@ class CliAgentBrowserClient:
         self._prepared_sites: set[tuple[str, str]] = set()
         self._run_deadline: float | None = None
         self._requested_profile_id = ""
+        configured_capability_file = (
+            profile_capability_file
+            if profile_capability_file is not None
+            else os.environ.get(PROFILE_CAPABILITY_FILE_ENV)
+        )
+        self._profile_capability_file = (
+            Path(configured_capability_file)
+            if configured_capability_file
+            else None
+        )
+        self._profile_capability = ""
         self._service_request_route: dict[str, Any] | None = None
         self._service_tab_handle: dict[str, Any] | None = None
         self._service_tab_url = ""
@@ -195,28 +217,12 @@ class CliAgentBrowserClient:
         self._service_tab_url = ""
         requested_target_service_id = target_service_id or request.target_service_id
         if access_plan is None:
-            access_plan_args = [
-                "service", "access-plan",
-                "--service-name", request.service_name,
-                "--agent-name", request.agent_name,
-                "--task-name", request.task_name,
-                "--target-service-id", requested_target_service_id,
-                "--url", request.start_url,
-                "--browser-build", request.browser_build,
-            ]
-            if request.constrain_presentation:
-                access_plan_args.extend(
-                    [
-                        "--browser-host", request.browser_host,
-                        "--view-stream-provider", request.view_provider,
-                        "--control-input-provider", request.control_input_provider,
-                        "--display-isolation", request.display_isolation,
-                    ]
-                )
-            access_plan = self._invoke(
-                access_plan_args,
-                timeout=min(request.timeout, 30),
+            access_plan = self._resolve_access_plan(
+                request,
+                target_service_id=requested_target_service_id,
             )
+        elif not self._profile_capability:
+            self._profile_capability = self._read_profile_capability()
         selected_profile = agent_browser_config.selected_profile_id(access_plan)
         if not selected_profile:
             raise AgentBrowserRuntimeFailure(
@@ -775,6 +781,124 @@ class CliAgentBrowserClient:
             operator_url=_operator_url(opened),
             operator_visible_state=visible_state,
         )
+
+    def _resolve_access_plan(
+        self,
+        request: BrowserWorkspaceRequest,
+        *,
+        target_service_id: str,
+        constrain_presentation: bool | None = None,
+    ) -> dict[str, Any]:
+        """Plan through authenticated MCP when a private capability is configured."""
+        include_presentation = (
+            request.constrain_presentation
+            if constrain_presentation is None
+            else constrain_presentation
+        )
+        self._profile_capability = self._read_profile_capability()
+        if self._profile_capability:
+            arguments: dict[str, Any] = {
+                "serviceName": request.service_name,
+                "agentName": request.agent_name,
+                "taskName": request.task_name,
+                "targetServiceIds": [target_service_id],
+                "url": request.start_url,
+                "runtimeProfile": request.profile_id,
+                "browserBuild": request.browser_build,
+            }
+            if include_presentation:
+                arguments.update(
+                    {
+                        "browserHost": request.browser_host,
+                        "viewStreamProvider": request.view_provider,
+                        "controlInputProvider": request.control_input_provider,
+                        "displayIsolation": request.display_isolation,
+                    }
+                )
+            return self._invoke_mcp_tool(
+                "service_access_plan",
+                arguments,
+                timeout=min(request.timeout, 30),
+            )
+
+        access_plan_args = [
+            "service", "access-plan",
+            "--service-name", request.service_name,
+            "--agent-name", request.agent_name,
+            "--task-name", request.task_name,
+            "--target-service-id", target_service_id,
+            "--runtime-profile", request.profile_id,
+            "--url", request.start_url,
+            "--browser-build", request.browser_build,
+        ]
+        if include_presentation:
+            access_plan_args.extend(
+                [
+                    "--browser-host", request.browser_host,
+                    "--view-stream-provider", request.view_provider,
+                    "--control-input-provider", request.control_input_provider,
+                    "--display-isolation", request.display_isolation,
+                ]
+            )
+        return self._invoke(
+            access_plan_args,
+            timeout=min(request.timeout, 30),
+        )
+
+    def _read_profile_capability(self) -> str:
+        path = self._profile_capability_file
+        if path is None:
+            return ""
+        failure = AgentBrowserRuntimeFailure(
+            "agent_browser_error",
+            "configured Agent Browser profile capability is unavailable",
+            reason_code="profile_capability_unavailable",
+        )
+        if not path.is_absolute():
+            raise failure
+        flags = (
+            os.O_RDONLY
+            | getattr(os, "O_CLOEXEC", 0)
+            | getattr(os, "O_NOFOLLOW", 0)
+        )
+        try:
+            descriptor = os.open(path, flags)
+        except OSError as exc:
+            raise failure from exc
+        try:
+            metadata = os.fstat(descriptor)
+            if (
+                not stat.S_ISREG(metadata.st_mode)
+                or metadata.st_uid != os.geteuid()
+                or metadata.st_mode & 0o077
+                or metadata.st_size > MAX_PROFILE_CAPABILITY_BYTES
+            ):
+                raise failure
+            chunks: list[bytes] = []
+            remaining = MAX_PROFILE_CAPABILITY_BYTES + 1
+            while remaining:
+                chunk = os.read(descriptor, remaining)
+                if not chunk:
+                    break
+                chunks.append(chunk)
+                remaining -= len(chunk)
+            encoded = b"".join(chunks)
+        except OSError as exc:
+            raise failure from exc
+        finally:
+            os.close(descriptor)
+        if len(encoded) > MAX_PROFILE_CAPABILITY_BYTES:
+            raise failure
+        try:
+            capability = encoded.decode("utf-8").strip()
+        except UnicodeDecodeError as exc:
+            raise failure from exc
+        if (
+            len(capability) < 32
+            or any(character.isspace() for character in capability)
+        ):
+            raise failure
+        return capability
 
     def _bind_exact_cdp_session(
         self,
@@ -1338,11 +1462,13 @@ class CliAgentBrowserClient:
         """Release this client's attributed tab without closing the shared browser."""
         if not isinstance(self._service_tab_handle, dict):
             self._close_mcp_session()
+            self._profile_capability = ""
             return
         route = self._service_request_route or {}
         session_name = str(route.get("sessionName") or "")
         if not session_name:
             self._close_mcp_session()
+            self._profile_capability = ""
             raise AgentBrowserRuntimeFailure(
                 "agent_browser_error",
                 "agent-browser service tab handle has no retained session route",
@@ -1359,6 +1485,7 @@ class CliAgentBrowserClient:
                 key for key in self._prepared_sites if key[0] != session_name
             }
             self._close_mcp_session()
+            self._profile_capability = ""
 
     def _invoke_service_request(
         self,
@@ -1366,26 +1493,45 @@ class CliAgentBrowserClient:
         *,
         timeout: int,
     ) -> dict[str, Any]:
+        return self._invoke_mcp_tool(
+            "service_request",
+            arguments,
+            timeout=timeout,
+        )
+
+    def _invoke_mcp_tool(
+        self,
+        name: str,
+        arguments: dict[str, Any],
+        *,
+        timeout: int,
+    ) -> dict[str, Any]:
         self._ensure_mcp_session(timeout)
         request_id = self._mcp_request_id
         self._mcp_request_id += 1
+        ephemeral_arguments = dict(arguments)
+        if (
+            name in {"service_access_plan", "service_request"}
+            and self._profile_capability
+        ):
+            ephemeral_arguments["profileCapability"] = self._profile_capability
         self._write_mcp_message(
             {
                 "jsonrpc": "2.0",
                 "id": request_id,
                 "method": "tools/call",
-                "params": {"name": "service_request", "arguments": arguments},
+                "params": {"name": name, "arguments": ephemeral_arguments},
             }
         )
         response = self._wait_for_mcp_response(request_id, timeout)
         if not isinstance(response, dict) or response.get("error"):
             raise AgentBrowserRuntimeFailure(
-                "agent_browser_error", "agent-browser service request returned no result"
+                "agent_browser_error", "agent-browser MCP tool returned no result"
             )
         tool_result = response.get("result")
         if not isinstance(tool_result, dict):
             raise AgentBrowserRuntimeFailure(
-                "agent_browser_error", "agent-browser service request failed"
+                "agent_browser_error", "agent-browser MCP tool failed"
             )
         content = tool_result.get("content")
         text_content = next(
@@ -1400,15 +1546,15 @@ class CliAgentBrowserClient:
             payload = json.loads(text_content)
         except json.JSONDecodeError as exc:
             raise AgentBrowserRuntimeFailure(
-                "agent_browser_error", "agent-browser service request returned malformed JSON"
+                "agent_browser_error", "agent-browser MCP tool returned malformed JSON"
             ) from exc
         if not isinstance(payload, dict):
             raise AgentBrowserRuntimeFailure(
-                "agent_browser_error", "agent-browser service request returned malformed JSON"
+                "agent_browser_error", "agent-browser MCP tool returned malformed JSON"
             )
         if tool_result.get("isError") is True or payload.get("success") is False:
             message = _redact(
-                str(payload.get("error") or "agent-browser service request failed")
+                str(payload.get("error") or "agent-browser MCP tool failed")
             )
             reason_match = re.match(r"^([a-z][a-z0-9_]{0,63})(?::|\b)", message)
             raise AgentBrowserRuntimeFailure(
@@ -1960,7 +2106,16 @@ def _operator_url(payload: dict[str, Any]) -> str:
 
 def _redact(value: str) -> str:
     redacted = value
-    for key in ("c_user", "xs", "cookie", "authorization", "token", "password"):
+    for key in (
+        "c_user",
+        "xs",
+        "cookie",
+        "authorization",
+        "profilecapability",
+        "capability",
+        "token",
+        "password",
+    ):
         redacted = re.sub(
             rf"(?i)({re.escape(key)}\s*[:=]\s*)[^\s,;}}]+", r"\1[REDACTED]", redacted
         )
