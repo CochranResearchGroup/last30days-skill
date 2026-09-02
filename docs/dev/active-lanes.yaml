@@ -8,10 +8,10 @@ lanes:
     target: main
     plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 646ef5b88f7874978641db5ab9cfc3ac6dbd5cf2
+    checkpoint: cfb1da0767943b5849ff1afb3e1cb44baae5d62b
     remote_ref: refs/remotes/origin/fix/tick-restart-recovery
     integration: fast-forward
     integration_receipt: null
     dependencies: []
     overlaps: []
-    updated_at: 2026-09-01
+    updated_at: 2026-09-02

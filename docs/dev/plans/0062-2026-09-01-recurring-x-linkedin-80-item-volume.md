@@ -2,9 +2,9 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 4
-Date: 2026-09-01
-Branch: `fix/agent-browser-profile-capability-client`
+Plan version: 5
+Date: 2026-09-02
+Branch: `fix/tick-restart-recovery`
 Target: `main`
 
 ## Objective
@@ -15,18 +15,24 @@ with enough installed scroll and wall-time budget to make those limits real.
 
 ## Current State
 
-- the timer requests 10 X and 10 LinkedIn items with three attempts per source;
+- the timer requests 80 X and 80 LinkedIn items with three attempts per source;
 - Reddit and Facebook are disabled, while YouTube remains enabled for 3 items;
-- the installed X scraper caps explicit feed requests at 32 scrolls, which
-  previously accepted 78/80 while still yielding new posts;
+- the installed X scraper permits 40 explicit feed scrolls;
 - a bounded 36-scroll X canary accepted 80/80, and LinkedIn accepted 80/80 in
   289.453 seconds after 29 scrolls;
-- `daily-default` is ready for `2026-09-02T00:00:00Z` and no tick or provider
+- `daily-default` is ready for `2026-09-03T00:00:00Z` and no tick or provider
   attempt is active;
 - the one operator-authorized manual 80+80 tick is terminal failed before page
   observation: two X attempts stopped at the reviewed stale-session identity
   gate, then schema 16 rejected retry ordinal 2 and prevented LinkedIn from
-  starting.
+  starting;
+- schema 17 is installed and the September 2 ordinary tick durably recorded
+  all three attempts for both social providers, but every acquisition failed
+  before observation because protected profile capability was absent;
+- service 0.3.94 and MCP 4.0.4 are installed. The existing `last30days`
+  principal grant has now been rotated in place, its replacement capability is
+  stored in an owner-only 0600 file, and the restarted service is configured to
+  read that file without exposing the secret.
 
 ## Scope
 
@@ -59,7 +65,7 @@ with enough installed scroll and wall-time budget to make those limits real.
    requests, and 2,280 wall seconds.
 3. Installed X explicit-feed policy permits 40 scrolls and a deterministic
    two-new-posts-per-scroll fixture reaches 80 unique items.
-4. Service 0.3.93/schema 17 and MCP 4.0.4 are installed, ready, compatible, and
+4. Service 0.3.94/schema 17 and MCP 4.0.4 are installed, ready, compatible, and
    bound to their exact runtime and contract manifests.
 5. `daily-default` remains enabled and ready at the unchanged September 2
    boundary under the new exact config digest, with no tick admitted by the
@@ -380,3 +386,48 @@ checkpoint are the current durable authority.
 Next action: reconnect the Codex client, then request explicit authority for
 capability registration and owner-private environment wiring. A further
 provider tick remains separately authorized.
+
+### Checkpoint P0062-C07 | 2026-09-02
+
+Plan version: 5
+
+State: `profile_capability_configured_tick_ready`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`; the operator explicitly authorized registration and
+  private capability wiring followed by one 80+80 tick.
+
+Evidence:
+
+- the checkout fast-forwarded cleanly to merged main commit `cfb1da0`, which
+  contains service 0.3.94's authenticated Agent Browser client and the schema
+  17 retry repair;
+- Agent Browser reported one existing active grant for principal `last30days`
+  and profile `last30days-facebook`, with rotation allowed and no blockers;
+- the missing local capability was recovered by rotating that same grant, not
+  by creating a duplicate principal. The prior capability is revoked, the new
+  grant is active and bound to the current owner, and the replacement file is
+  an owner-owned 0600 regular file under the owner-private Last30days config;
+- the owner-private environment now points
+  `LAST30DAYS_AGENT_BROWSER_PROFILE_CAPABILITY_FILE` at that file and retains
+  the reviewed exact-profile fresh-lane recovery flag. The raw capability was
+  not printed, persisted in repository state, or placed in command arguments;
+- Last30days restarted active and reports service 0.3.94/schema 17 ready with
+  runtime manifest
+  `882612c588752cefc41c94e011359927148437a3ee8765853fb0460a29deaf2e`;
+- `daily-default` remains ready for `2026-09-03T00:00:00Z` at unchanged digest
+  `sha256:069cf238586388e1e55924083e97161a403dd7fa488a6c2cf45d55fb29500074`;
+  active tick attempts, provider attempts, and leases are zero and SQLite
+  `quick_check` is `ok`.
+
+Subagent status: `not_spawned`.
+
+Graphiti write status: `pending`; this durable security and runtime transition
+will be written after the bounded acceptance result is known.
+
+Next action: preflight and enqueue exactly one X-and-LinkedIn-only 80+80 tick,
+poll only its returned ID to terminal state, and reconcile yield, exclusions,
+budgets, schedule continuity, and active-work cleanup.

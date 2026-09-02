@@ -24501,3 +24501,75 @@ Next Bounded Action:
 - reconnect the Codex client, then request explicit authority to register the
   Last30days Agent Browser principal and wire its private capability file. Do
   not run another provider tick without separate authority.
+
+## Turn 389 | 2026-09-02
+
+Focus: restore principal-bound Agent Browser authority for Last30days and
+prepare the explicitly authorized 80+80 acceptance tick.
+
+Authority Consulted:
+
+- operator `ok go` authorization for principal registration, private
+  capability configuration, and one 80+80 tick; Plan 0062 version 4/C06;
+  Last30days administration and Agent Browser service/profile contracts;
+  current repository, live service, schedule, database, and protected-grant
+  readbacks.
+
+Decisions And Changes:
+
+- fast-forwarded the clean active worktree to merged main commit `cfb1da0`;
+- found one existing active protected grant for principal `last30days` and
+  exact profile `last30days-facebook`, so rotated that grant in place rather
+  than registering a duplicate identity;
+- wrote the replacement capability only to an owner-private 0600 regular file
+  and configured Last30days with its absolute path while retaining the reviewed
+  exact-profile fresh-lane recovery flag;
+- restarted only `last30days.service`; did not change the saved tick config,
+  schedule, profile, authentication state, source enablement, or content rules.
+
+Validation Evidence:
+
+- Agent Browser reported rotation allowed with no blockers, revoked the prior
+  capability, activated the replacement, bound it to the current owner, and
+  advanced its registry revision. The raw capability was not printed or placed
+  in repository state, argv, receipts, or service configuration;
+- the capability file is owned by the operator, mode 0600, regular, and
+  nonsymlinked under a mode-0700 private directory;
+- restarted Last30days is active and reports service 0.3.94/schema 17 ready at
+  runtime manifest
+  `882612c588752cefc41c94e011359927148437a3ee8765853fb0460a29deaf2e`;
+- `daily-default` remains ready for `2026-09-03T00:00:00Z` at unchanged 80+80
+  digest
+  `sha256:069cf238586388e1e55924083e97161a403dd7fa488a6c2cf45d55fb29500074`;
+  active tick attempts, active provider attempts, and open resource leases are
+  zero and live SQLite `quick_check` is `ok`.
+
+State Movement:
+
+- Plan 0062 advances to version 5/C07
+  `profile_capability_configured_tick_ready`; P08 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; the protected profile authority that blocked all six
+  September 2 social attempts is now restored without duplicating the principal.
+
+Authority Classification:
+
+- `inherited_authority`; the identity and secret mutation was explicitly
+  approved and remains limited to Last30days and the existing profile.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `pending`; write one compact source-backed episode after the acceptance tick
+  reaches terminal state.
+
+Next Bounded Action:
+
+- preflight and enqueue exactly one X-and-LinkedIn-only 80+80 tick, poll only
+  that tick, then reconcile yield, exclusions, budgets, schedule continuity,
+  and active-work cleanup.

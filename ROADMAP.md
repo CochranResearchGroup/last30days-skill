@@ -1081,7 +1081,7 @@ pause controls.
 
 Current State:
 
-- Plan 0062 version 4/C06 is the current actionable P08 plan. Service 0.3.93 is
+- Plan 0062 version 5/C07 is the current actionable P08 plan. Service 0.3.94 is
   installed ready with schema 17 and X's finite 40-scroll allowance. Saved recurring
   revision `operator-20260901-x-linkedin-80-v1` requests 80 X and 80 LinkedIn
   posts, retains three attempts for each, and provides 360 seconds per social
@@ -1102,9 +1102,11 @@ Current State:
   argv, stable target config, logs, receipts, or service state. Service 0.3.94
   and MCP 4.0.4 are installed from merged main, and a fresh adapter reports
   schema-17 compatibility. The already-open Codex connector required targeted
-  termination and does not hot-restart, so this conversation must reconnect;
-  registration, private configuration, and another tick remain separately
-  authorized gates.
+  termination and did not hot-restart. After reconnect, the operator explicitly
+  authorized the remaining registration, private configuration, and one live
+  tick. The existing `last30days` grant was rotated in place without creating a
+  duplicate principal; its replacement capability is owner-private, wired into
+  the restarted ready service, and the 80+80 tick is now the next bounded action.
   Current authority:
   `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`.
 - Plan 0060 version 1/C06 is CLOSED after installing service 0.3.91 with finite
