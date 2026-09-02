@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Authenticated Reddit home-feed acquisition.** Service 0.3.97 routes
+  governed `surface_kind=feed` Reddit work directly to the retained authenticated
+  profile, collects as many as 80 unique canonical post URLs with bounded
+  virtualized scrolling, and keeps topic search available as a separate public-
+  first path. Feed acquisition excludes only explicit promoted cards and
+  platform-marked spam as quality decisions while reporting date scope,
+  duplicates, and scraper limitations separately. Its CDP-only local-headless
+  posture avoids making ordinary feed retrieval depend on an RDP/Xvfb route.
+
 - **Authenticated X and LinkedIn home-feed acquisition.** Service 0.3.60
   carries `surface_kind=feed` across durable tick and recurring-collection
   worker boundaries, navigates directly to the authenticated X and LinkedIn

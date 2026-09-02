@@ -286,6 +286,28 @@ def _reddit_adapter(
 ) -> dict[str, Any]:
     from . import reddit, reddit_browser, reddit_public
 
+    if request.surface_kind == "feed":
+        try:
+            feed_result = reddit_browser.scrape_reddit_feed(
+                request.from_date,
+                request.to_date,
+                depth=_depth(request.depth),
+                config=dict(config),
+                limit=request.item_limit,
+            )
+        except Exception:
+            feed_result = {
+                "items": [],
+                "error_type": "adapter_exception",
+                "diagnostics": {"failure_stage": "adapter_execution"},
+            }
+        feed_result["_network_request_count"] = 1
+        return _with_access_method_provenance(
+            feed_result,
+            attempted=["agent_browser"],
+            selected=("agent_browser" if feed_result.get("items") else None),
+        )
+
     bounded = request.item_limit <= _BOUNDED_REDDIT_ITEM_LIMIT
     depth = "quick" if bounded else _depth(request.depth)
     policy = load_service_source_policy(config)

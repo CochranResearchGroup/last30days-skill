@@ -178,10 +178,11 @@ def test_current_repository_authority_passes() -> None:
 
     assert report["status"] == "passed", report
     assert report["issues"] == []
-    assert report["active_plan_count"] == 2
+    assert report["active_plan_count"] == 3
     assert report["active_plans"] == [
         "docs/dev/plans/0046-2026-08-11-facebook-retained-browser-runtime-recovery.md",
         "docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md",
+        "docs/dev/plans/0063-2026-09-02-reddit-home-feed-scraper.md",
     ]
     assert report["campaign_plan_count"] == 0
 

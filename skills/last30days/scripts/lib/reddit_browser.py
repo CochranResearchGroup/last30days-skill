@@ -22,6 +22,10 @@ DEPTH_CONFIG = {
     "deep": {"results": 20, "scrolls": 2, "timeout": 110},
 }
 DOM_SHAPES = frozenset({"search-post-unit", "shreddit-post", "article-permalink"})
+MAX_EXPLICIT_RESULTS = 100
+MAX_EXPLICIT_FEED_SCROLLS = 40
+FEED_ACCEPTED_ITEMS_PER_SCROLL_BUDGET = 2
+MAX_STAGNANT_SCROLLS = 3
 
 BrowserWorkspaceRequest = browser_runtime.BrowserWorkspaceRequest
 BrowserWorkspace = browser_runtime.BrowserWorkspace
@@ -35,6 +39,31 @@ class RedditBrowserFailure(RuntimeError):
     def __init__(self, error_type: str, message: str) -> None:
         super().__init__(message)
         self.error_type = error_type
+
+
+AUTH_SCRIPT = r"""
+(() => {
+  const body = (document.body?.innerText || '').slice(0, 12000);
+  const cookieNames = new Set(
+    document.cookie.split(';').map(part => part.split('=', 1)[0].trim())
+  );
+  const loginForm = Boolean(document.querySelector(
+    'form[action*="/login"], input[name="username"], input[name="password"]'
+  ));
+  const userMenu = Boolean(document.querySelector(
+    '#expand-user-drawer-button, [data-testid="user-drawer-button"], '
+      + 'button[aria-label*="user menu" i], faceplate-tracker[noun="user_menu"]'
+  ));
+  const checkpoint = /(?:captcha|security check|verify you are human)/i.test(
+    `${location.href}\n${body}`
+  );
+  return {
+    authenticated: (userMenu || cookieNames.has('reddit_session')) && !loginForm && !checkpoint,
+    login_form: loginForm || /\/login\/?(?:[?#]|$)/i.test(location.pathname),
+    checkpoint,
+  };
+})()
+"""
 
 
 PAGE_STATE_SCRIPT = r"""
@@ -82,6 +111,14 @@ EXTRACT_SCRIPT = r"""
       post.getAttribute('data-promoted') === 'true' ||
       Boolean(post.querySelector('[aria-label*="promoted" i], [data-testid*="promoted" i]')) ||
       context?.post?.isPromoted === true;
+    const platformNotice = post.querySelector(
+      '[slot*="removed" i], [data-testid*="removed" i], shreddit-status-message'
+    );
+    const platformSpam = context?.post?.isSpam === true ||
+      context?.post?.spam === true ||
+      /(?:this post was |post )?removed by reddit(?:'s|’s) filters/i.test(
+        clean(platformNotice?.innerText || platformNotice?.textContent || '')
+      );
     const dom_shape = post.matches('shreddit-post') ? 'shreddit-post' : 'search-post-unit';
     const crosspost = post.hasAttribute('is-crosspost') ||
       post.getAttribute('post-type') === 'crosspost' ||
@@ -96,6 +133,7 @@ EXTRACT_SCRIPT = r"""
       score: clean(post.getAttribute('score') || counters[0]?.getAttribute('number') || ''),
       comment_count: clean(post.getAttribute('comment-count') || counters[1]?.getAttribute('number') || ''),
       promoted,
+      platform_spam: platformSpam,
       dom_shape,
       crosspost,
     });
@@ -117,6 +155,7 @@ EXTRACT_SCRIPT = r"""
         score: '',
         comment_count: '',
         promoted: /(?:^|\s)promoted(?:\s|$)/i.test(clean(article.innerText || '')),
+        platform_spam: false,
         dom_shape: 'article-permalink',
         crosspost: false,
       });
@@ -142,27 +181,49 @@ class RedditPageState:
     interstitial: bool = False
 
 
+@dataclass(frozen=True)
+class RedditAuthState:
+    authenticated: bool = False
+    login_form: bool = False
+    checkpoint: bool = False
+
+
 @dataclass
 class RedditDiagnostics:
     rejection_counts: Counter[str] = field(default_factory=Counter)
+    limitation_counts: Counter[str] = field(default_factory=Counter)
+    scope_exclusion_counts: Counter[str] = field(default_factory=Counter)
+    duplicate_count: int = 0
     accepted_count: int = 0
     candidate_count: int = 0
     duration_ms: int = 0
     failure_stage: str = "workspace_acquisition"
     verified_no_results: bool = False
+    scroll_count: int = 0
+    stagnant_scrolls: int = 0
+    unique_observation_count: int = 0
+    stop_reason: str = ""
 
     def as_dict(self) -> dict[str, Any]:
         return {
             "candidate_count": self.candidate_count,
             "rejection_counts": dict(self.rejection_counts),
+            "limitation_counts": dict(self.limitation_counts),
+            "scope_exclusion_counts": dict(self.scope_exclusion_counts),
+            "duplicate_count": self.duplicate_count,
             "accepted_count": self.accepted_count,
             "duration_ms": self.duration_ms,
             "verified_no_results": self.verified_no_results,
+            "scroll_count": self.scroll_count,
+            "stagnant_scrolls": self.stagnant_scrolls,
+            "unique_observation_count": self.unique_observation_count,
+            "stop_reason": self.stop_reason,
         }
 
 
 class AgentBrowserClient(Protocol):
     def acquire_workspace(self, request: BrowserWorkspaceRequest) -> BrowserWorkspace: ...
+    def inspect_auth(self, workspace: BrowserWorkspace) -> RedditAuthState: ...
     def act(self, workspace: BrowserWorkspace, action: BrowserAction) -> BrowserState: ...
     def evaluate(self, workspace: BrowserWorkspace, script: str) -> dict[str, Any]: ...
 
@@ -170,6 +231,17 @@ class AgentBrowserClient(Protocol):
 class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
     def acquire_workspace(self, request: BrowserWorkspaceRequest) -> BrowserWorkspace:
         return super().acquire_workspace(request, target_service_id="reddit")
+
+    def inspect_auth(self, workspace: BrowserWorkspace) -> RedditAuthState:
+        if not self.prepare_site_tab(workspace, "reddit.com", consolidate=True):
+            self.act(workspace, BrowserAction("new_tab", value="https://www.reddit.com/"))
+            self.act(workspace, BrowserAction("wait", value="2500"))
+        raw = self.evaluate(workspace, AUTH_SCRIPT)
+        return RedditAuthState(
+            authenticated=bool(raw.get("authenticated")),
+            login_form=bool(raw.get("login_form")),
+            checkpoint=bool(raw.get("checkpoint")),
+        )
 
 
 def search_url(topic: str) -> str:
@@ -179,7 +251,13 @@ def search_url(topic: str) -> str:
     )
 
 
-def browser_request(config: dict[str, Any], *, timeout: int) -> BrowserWorkspaceRequest:
+def browser_request(
+    config: dict[str, Any],
+    *,
+    timeout: int,
+    surface_kind: str = "topic",
+) -> BrowserWorkspaceRequest:
+    feed_surface = surface_kind == "feed"
     return BrowserWorkspaceRequest(
         profile_id=str(
             config.get("LAST30DAYS_REDDIT_BROWSER_PROFILE") or "last30days-facebook"
@@ -190,17 +268,30 @@ def browser_request(config: dict[str, Any], *, timeout: int) -> BrowserWorkspace
         browser_build=str(
             config.get("LAST30DAYS_REDDIT_BROWSER_BUILD") or "stealthcdp_chromium"
         ),
-        view_provider=str(
-            config.get("LAST30DAYS_REDDIT_BROWSER_VIEW_PROVIDER") or "rdp_gateway"
+        view_provider=(
+            "cdp_screencast"
+            if feed_surface
+            else str(
+                config.get("LAST30DAYS_REDDIT_BROWSER_VIEW_PROVIDER")
+                or "rdp_gateway"
+            )
         ),
         timeout=timeout,
         start_url="https://www.reddit.com/",
         agent_name="reddit-scraper",
-        task_name="reddit-post-search",
+        task_name=("reddit-home-feed" if feed_surface else "reddit-post-search"),
         target_service_id="reddit",
+        browser_host=("local_headless" if feed_surface else "remote_headed"),
+        control_input_provider=(
+            "cdp_input" if feed_surface else "manual_attached_desktop"
+        ),
         display_isolation=str(
             config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION")
             or "private_virtual_display"
+        ),
+        constrain_presentation=feed_surface,
+        allow_duplicate_profile_lane=browser_runtime.config_flag(
+            config.get("LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE")
         ),
     )
 
@@ -274,6 +365,114 @@ class RedditBrowserScraper:
                 [], exc.error_type, _safe_error_message(str(exc)), workspace, page, diagnostics
             )
 
+    def feed(self, from_date: str, to_date: str) -> dict[str, Any]:
+        """Collect structurally valid posts from the authenticated home feed."""
+        started = time.monotonic()
+        diagnostics = RedditDiagnostics()
+        workspace: BrowserWorkspace | None = None
+        page = RedditPageState(url="", title="")
+        try:
+            workspace = self.client.acquire_workspace(self.request)
+            diagnostics.failure_stage = "authentication"
+            auth = self.client.inspect_auth(workspace)
+            if auth.checkpoint:
+                raise RedditBrowserFailure(
+                    "checkpoint_required",
+                    "Reddit requires an operator security-verification checkpoint",
+                )
+            if auth.login_form:
+                raise RedditBrowserFailure(
+                    "auth_required",
+                    "Reddit authentication is required in the retained profile",
+                )
+            if not auth.authenticated:
+                raise RedditBrowserFailure(
+                    "auth_state_ambiguous",
+                    "Reddit authentication state could not be determined from the rendered page",
+                )
+            diagnostics.failure_stage = "navigation"
+            page = self._navigate_feed(workspace)
+            if self.initial_wait:
+                time.sleep(self.initial_wait)
+            diagnostics.failure_stage = "extraction"
+            raw_candidates = self._extract(workspace)
+            seen_observations = {
+                _candidate_observation_key(item) for item in raw_candidates
+            }
+            diagnostics.unique_observation_count = len(seen_observations)
+            stagnant_scrolls = 0
+            diagnostics.stop_reason = "scroll_budget"
+            for _ in range(self.scrolls):
+                if self._accepted_unique_count(raw_candidates, from_date, to_date) >= self.limit:
+                    diagnostics.stop_reason = "accepted_limit"
+                    break
+                self.client.act(workspace, BrowserAction("scroll", value="1400"))
+                diagnostics.scroll_count += 1
+                if self.scroll_wait:
+                    time.sleep(self.scroll_wait)
+                batch = self._extract(workspace)
+                new_observations = {
+                    _candidate_observation_key(item) for item in batch
+                } - seen_observations
+                seen_observations.update(new_observations)
+                raw_candidates.extend(batch)
+                stagnant_scrolls = 0 if new_observations else stagnant_scrolls + 1
+                diagnostics.stagnant_scrolls = stagnant_scrolls
+                diagnostics.unique_observation_count = len(seen_observations)
+                if stagnant_scrolls >= MAX_STAGNANT_SCROLLS:
+                    diagnostics.stop_reason = "stagnation_limit"
+                    break
+            if self._accepted_unique_count(raw_candidates, from_date, to_date) >= self.limit:
+                diagnostics.stop_reason = "accepted_limit"
+            if not raw_candidates:
+                raise RedditBrowserFailure(
+                    "extraction_empty",
+                    "Verified Reddit home feed contained no extractable post cards",
+                )
+            diagnostics.failure_stage = "quality_gate"
+            items = self._quality_gate(
+                raw_candidates,
+                "",
+                from_date,
+                to_date,
+                diagnostics,
+                surface_kind="feed",
+            )
+            diagnostics.duration_ms = _elapsed_ms(started)
+            if not items:
+                return self._result(
+                    [],
+                    "quality_gate_failed",
+                    "Reddit feed candidates were found, but none passed the structural gate",
+                    workspace,
+                    page,
+                    diagnostics,
+                )
+            return self._result(items, None, None, workspace, page, diagnostics)
+        except (RedditBrowserFailure, browser_runtime.AgentBrowserRuntimeFailure) as exc:
+            diagnostics.duration_ms = _elapsed_ms(started)
+            return self._result(
+                [], exc.error_type, _safe_error_message(str(exc)), workspace, page, diagnostics
+            )
+
+    def _accepted_unique_count(
+        self,
+        raw_candidates: list[dict[str, Any]],
+        from_date: str,
+        to_date: str,
+    ) -> int:
+        preview = RedditDiagnostics()
+        return len(
+            self._quality_gate(
+                raw_candidates,
+                "",
+                from_date,
+                to_date,
+                preview,
+                surface_kind="feed",
+            )
+        )
+
     def _navigate(self, workspace: BrowserWorkspace, topic: str) -> RedditPageState:
         desired = search_url(topic)
         prepare = getattr(self.client, "prepare_site_tab", None)
@@ -312,6 +511,56 @@ class RedditBrowserScraper:
             )
         return page
 
+    def _navigate_feed(self, workspace: BrowserWorkspace) -> RedditPageState:
+        desired = "https://www.reddit.com/"
+        prepare = getattr(self.client, "prepare_site_tab", None)
+        retained = bool(
+            callable(prepare) and prepare(workspace, "reddit.com", consolidate=True)
+        )
+        self.client.act(
+            workspace,
+            BrowserAction("navigate" if retained else "new_tab", value=desired),
+        )
+        self.client.act(workspace, BrowserAction("wait", value="2500"))
+        page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
+        for delay_ms in ("3500", "5000"):
+            if (
+                page.has_posts
+                or page.rate_limited
+                or page.checkpoint
+                or page.login_page
+                or page.error_page
+                or page.interstitial
+            ):
+                break
+            self.client.act(workspace, BrowserAction("wait", value=delay_ms))
+            page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
+        if page.rate_limited:
+            raise RedditBrowserFailure(
+                "rate_limit_detected",
+                f"Reddit rate-limit page detected ({page.rate_limit_reason or 'unspecified'})",
+            )
+        if page.checkpoint:
+            raise RedditBrowserFailure(
+                "checkpoint_required", "Reddit returned a browser verification challenge"
+            )
+        if page.login_page:
+            raise RedditBrowserFailure(
+                "auth_required", "Reddit redirected the home feed to login"
+            )
+        if page.error_page:
+            raise RedditBrowserFailure("feed_unavailable", "Reddit returned an error page")
+        if page.interstitial:
+            raise RedditBrowserFailure(
+                "interstitial_detected", "Reddit returned a blocking consent interstitial"
+            )
+        if not _page_matches_feed(page):
+            raise RedditBrowserFailure(
+                "navigation_mismatch",
+                f"Reddit final page does not match the home feed: {page.url}",
+            )
+        return page
+
     def _extract(self, workspace: BrowserWorkspace) -> list[dict[str, Any]]:
         raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
         candidates = raw.get("candidates") if isinstance(raw, dict) else None
@@ -328,6 +577,8 @@ class RedditBrowserScraper:
         from_date: str,
         to_date: str,
         diagnostics: RedditDiagnostics,
+        *,
+        surface_kind: str = "topic",
     ) -> list[dict[str, Any]]:
         diagnostics.candidate_count = len(raw_candidates)
         items: list[dict[str, Any]] = []
@@ -336,33 +587,53 @@ class RedditBrowserScraper:
             if bool(raw.get("promoted")):
                 diagnostics.rejection_counts["promoted"] += 1
                 continue
+            if bool(raw.get("platform_spam")):
+                diagnostics.rejection_counts["platform_spam"] += 1
+                continue
             canonical = _canonical_post_url(str(raw.get("permalink") or ""))
             reddit_id = _reddit_id(canonical or "")
             if not canonical or not reddit_id:
-                diagnostics.rejection_counts["invalid_permalink"] += 1
+                if surface_kind == "feed":
+                    diagnostics.limitation_counts["invalid_permalink"] += 1
+                else:
+                    diagnostics.rejection_counts["invalid_permalink"] += 1
                 continue
             if reddit_id in seen:
-                diagnostics.rejection_counts["duplicate"] += 1
+                if surface_kind == "feed":
+                    diagnostics.duplicate_count += 1
+                else:
+                    diagnostics.rejection_counts["duplicate"] += 1
                 continue
             title = _clean(str(raw.get("title") or ""))
             text = _clean(str(raw.get("text") or ""))
             if not title:
-                diagnostics.rejection_counts["missing_title"] += 1
+                if surface_kind == "feed":
+                    diagnostics.limitation_counts["missing_title"] += 1
+                else:
+                    diagnostics.rejection_counts["missing_title"] += 1
                 continue
-            relevance = token_overlap_relevance(topic, f"{title} {text}".strip())
-            if relevance <= 0:
-                diagnostics.rejection_counts["off_topic"] += 1
-                continue
-            if query_term_coverage(topic, f"{title} {text}".strip()) < 1.0:
-                diagnostics.rejection_counts["partial_query_match"] += 1
-                continue
+            relevance = 0.5
+            if surface_kind == "topic":
+                relevance = token_overlap_relevance(topic, f"{title} {text}".strip())
+                if relevance <= 0:
+                    diagnostics.rejection_counts["off_topic"] += 1
+                    continue
+                if query_term_coverage(topic, f"{title} {text}".strip()) < 1.0:
+                    diagnostics.rejection_counts["partial_query_match"] += 1
+                    continue
             published_at = _timestamp(str(raw.get("created_at") or ""))
             if published_at is None:
-                diagnostics.rejection_counts["invalid_timestamp"] += 1
+                if surface_kind == "feed":
+                    diagnostics.limitation_counts["invalid_timestamp"] += 1
+                else:
+                    diagnostics.rejection_counts["invalid_timestamp"] += 1
                 continue
             date = published_at.date().isoformat()
             if not (from_date <= date <= to_date):
-                diagnostics.rejection_counts["outside_date_range"] += 1
+                if surface_kind == "feed":
+                    diagnostics.scope_exclusion_counts["outside_date_range"] += 1
+                else:
+                    diagnostics.rejection_counts["outside_date_range"] += 1
                 continue
             subreddit = str(raw.get("subreddit") or "").strip()
             if subreddit.casefold().startswith("r/"):
@@ -371,7 +642,10 @@ class RedditBrowserScraper:
                 match = re.search(r"/r/([^/]+)/comments/", canonical, re.IGNORECASE)
                 subreddit = unquote(match.group(1)) if match else ""
             if not subreddit:
-                diagnostics.rejection_counts["missing_subreddit"] += 1
+                if surface_kind == "feed":
+                    diagnostics.limitation_counts["missing_subreddit"] += 1
+                else:
+                    diagnostics.rejection_counts["missing_subreddit"] += 1
                 continue
             seen.add(reddit_id)
             items.append(
@@ -387,7 +661,11 @@ class RedditBrowserScraper:
                     "score": _count(raw.get("score")),
                     "num_comments": _count(raw.get("comment_count")),
                     "relevance": round(float(relevance), 2),
-                    "why_relevant": f"Reddit post: {title[:80]}",
+                    "why_relevant": (
+                        "Authenticated Reddit home feed post"
+                        if surface_kind == "feed"
+                        else f"Reddit post: {title[:80]}"
+                    ),
                     "metadata": {
                         "extraction": "agent-browser-dom-v1",
                         "dom_shape": (
@@ -398,6 +676,7 @@ class RedditBrowserScraper:
                         "crosspost": bool(raw.get("crosspost")),
                         "remote_browser": True,
                         "published_at": published_at.isoformat() if published_at else None,
+                        **({"surface_kind": "feed"} if surface_kind == "feed" else {}),
                     },
                 }
             )
@@ -521,6 +800,92 @@ def search_reddit_browser(
     return result
 
 
+def scrape_reddit_feed(
+    from_date: str,
+    to_date: str,
+    *,
+    depth: str = "default",
+    config: dict[str, Any] | None = None,
+    limit: int | None = None,
+) -> dict[str, Any]:
+    """Scrape the authenticated Reddit home feed without a topic query."""
+    config = config or {}
+    if shutil.which("agent-browser") is None:
+        return {
+            "items": [],
+            "error": "agent-browser command is not on PATH",
+            "error_type": "agent_browser_missing",
+        }
+    settings = DEPTH_CONFIG.get(depth, DEPTH_CONFIG["default"])
+    timeout = max(
+        1,
+        int(config.get("LAST30DAYS_REDDIT_BROWSER_TIMEOUT") or settings["timeout"]),
+    )
+    result_limit = max(
+        1,
+        min(
+            MAX_EXPLICIT_RESULTS,
+            int(
+                config.get("LAST30DAYS_REDDIT_BROWSER_MAX_RESULTS")
+                or settings["results"]
+            ),
+        ),
+    )
+    if limit is not None:
+        result_limit = max(1, min(MAX_EXPLICIT_RESULTS, int(limit)))
+    scrolls = max(
+        0,
+        min(
+            MAX_EXPLICIT_FEED_SCROLLS,
+            int(
+                config.get("LAST30DAYS_REDDIT_BROWSER_SCROLLS")
+                or settings["scrolls"]
+            ),
+        ),
+    )
+    if limit is not None:
+        scrolls = max(
+            scrolls,
+            min(
+                MAX_EXPLICIT_FEED_SCROLLS,
+                (
+                    result_limit
+                    + FEED_ACCEPTED_ITEMS_PER_SCROLL_BUDGET
+                    - 1
+                )
+                // FEED_ACCEPTED_ITEMS_PER_SCROLL_BUDGET,
+            ),
+        )
+    client = CliAgentBrowserClient(
+        timeout=timeout,
+        **(
+            {"job_timeout_ms": int(config["LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS"])}
+            if config.get("LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS")
+            else {}
+        ),
+    )
+    scraper = RedditBrowserScraper(
+        client,
+        browser_request(config, timeout=timeout, surface_kind="feed"),
+        limit=result_limit,
+        scrolls=scrolls,
+        initial_wait=float(config.get("LAST30DAYS_REDDIT_BROWSER_INITIAL_WAIT") or 2.0),
+        scroll_wait=float(config.get("LAST30DAYS_REDDIT_BROWSER_SCROLL_WAIT") or 1.5),
+    )
+    try:
+        result = scraper.feed(from_date, to_date)
+        _log(
+            f"feed accepted={len(result.get('items') or [])} "
+            f"error_type={result.get('error_type') or 'none'}"
+        )
+        return result
+    finally:
+        try:
+            client.release_workspace()
+        except browser_runtime.AgentBrowserRuntimeFailure as exc:
+            _log(f"Best-effort Reddit service tab release did not complete: {exc}")
+
+
 def _page_state(raw: dict[str, Any]) -> RedditPageState:
     return RedditPageState(
         url=str(raw.get("url") or ""),
@@ -547,6 +912,15 @@ def _page_matches_query(page: RedditPageState, topic: str) -> bool:
     return unquote(query).strip().casefold() == topic.strip().casefold()
 
 
+def _page_matches_feed(page: RedditPageState) -> bool:
+    parsed = urlsplit(page.url)
+    return (
+        (parsed.hostname or "").casefold() in {"reddit.com", "www.reddit.com"}
+        and parsed.path.rstrip("/") in {"", "/best", "/hot"}
+        and page.has_posts
+    )
+
+
 def _canonical_post_url(value: str) -> str | None:
     if not value:
         return None
@@ -567,6 +941,19 @@ def _canonical_post_url(value: str) -> str | None:
 def _reddit_id(url: str) -> str:
     match = re.search(r"/comments/([A-Za-z0-9]+)(?:/|$)", url)
     return match.group(1) if match else ""
+
+
+def _candidate_observation_key(candidate: dict[str, Any]) -> str:
+    canonical = _canonical_post_url(str(candidate.get("permalink") or ""))
+    if canonical:
+        return canonical
+    return "\n".join(
+        (
+            _clean(str(candidate.get("author") or "")).casefold(),
+            _clean(str(candidate.get("created_at") or "")),
+            _clean(str(candidate.get("title") or "")).casefold()[:500],
+        )
+    )
 
 
 def _timestamp(value: str) -> datetime | None:

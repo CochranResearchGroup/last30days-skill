@@ -479,7 +479,7 @@ The project-scoped file is the cleanest pattern for **per-client setups**: drop 
 
 | Source | Key(s) | Required for | Free tier |
 |---|---|---|---|
-| Reddit (public) | none; optional `LAST30DAYS_REDDIT_BROWSER=1` plus `agent-browser` | RSS/Shreddit is always on; browser DOM fallback is opt-in | yes |
+| Reddit | none for topic search; authenticated profile plus `agent-browser` for recurring home-feed collection | RSS/Shreddit remains the public topic-search path; `surface_kind=feed` goes directly to the authenticated home-feed scraper | yes |
 | Hacker News | none | always on | yes |
 | Polymarket | none | always on | yes |
 | GitHub | `gh` CLI installed (uses your GitHub auth) | always on if `gh` present | yes |
@@ -513,14 +513,16 @@ BRAVE_API_KEY=<your-brave-key>
 SCRAPECREATORS_API_KEY=<your-scrapecreators-key>
 INCLUDE_SOURCES=tiktok,instagram
 
-# Reddit stays keyless/public first. Opt in to a bounded agent-browser DOM
-# fallback before the paid ScrapeCreators fallback.
+# Reddit topic search stays keyless/public first. Opt in to the bounded
+# agent-browser DOM fallback before the paid ScrapeCreators fallback.
+# Governed collection requests with surface_kind=feed bypass that search chain
+# and use the authenticated home feed directly.
 LAST30DAYS_REDDIT_BROWSER=1
 # LAST30DAYS_REDDIT_BROWSER_PROFILE=last30days-facebook
 # LAST30DAYS_REDDIT_BROWSER_SESSION=last30days-reddit
 # LAST30DAYS_REDDIT_BROWSER_BUILD=stealthcdp_chromium
-# LAST30DAYS_REDDIT_BROWSER_VIEW_PROVIDER=rdp_gateway
-# LAST30DAYS_REDDIT_BROWSER_TIMEOUT=75
+# LAST30DAYS_REDDIT_BROWSER_VIEW_PROVIDER=rdp_gateway  # topic-search fallback only
+# LAST30DAYS_REDDIT_BROWSER_TIMEOUT=360  # recommended for an 80-item feed request
 # LAST30DAYS_REDDIT_BROWSER_MAX_RESULTS=10
 # LAST30DAYS_REDDIT_BROWSER_SCROLLS=1
 # LAST30DAYS_REDDIT_BROWSER_INITIAL_WAIT=2
@@ -623,10 +625,16 @@ LAST30DAYS_LINKEDIN_BROWSER=1
 # URLs, browser/session IDs, routes, displays, tabs, or page data. The live
 # access plan remains authoritative over the recorded file.
 #
-# Reddit remains public-first: RSS/Shreddit runs before the opt-in browser DOM
-# path, and ScrapeCreators remains the final configured fallback. The browser
-# routine searches post results only, emits canonical public post URLs, and
-# performs no account actions.
+# Reddit topic search remains public-first: RSS/Shreddit runs before the opt-in
+# browser DOM path, and ScrapeCreators remains the final configured fallback.
+# A governed recurring request with surface_kind=feed instead opens the
+# authenticated Reddit home feed directly in the configured profile. Feed
+# collection uses a CDP-only local-headless posture, waits up to 11 seconds for
+# asynchronous post cards, and can auto-budget as many as 40 bounded scrolls
+# for an explicit 80-item request. It emits unique canonical public post URLs,
+# excludes only explicit promoted cards and platform-marked spam as quality
+# decisions, and reports structural scraper limitations, date-scope exclusions,
+# and duplicates separately. Neither path performs account actions.
 # Facebook navigates each query through its Search control or a verified
 # service-owned tab in the broker-selected retained profile.
 # LinkedIn reuses one retained site tab, spaces user-like browser actions by

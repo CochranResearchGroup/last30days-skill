@@ -942,6 +942,48 @@ def test_feed_surface_dispatches_without_topic_search(
     assert result["_network_request_count"] == 1
 
 
+def test_reddit_feed_surface_dispatches_directly_to_browser_feed(monkeypatch):
+    from lib import reddit, reddit_browser, reddit_public
+
+    observed = {}
+
+    def feed(*args, **kwargs):
+        observed["args"] = args
+        observed["kwargs"] = kwargs
+        return {"items": [{"id": "R-feed"}]}
+
+    monkeypatch.setattr(reddit_browser, "scrape_reddit_feed", feed)
+    monkeypatch.setattr(
+        reddit_browser,
+        "search_reddit_browser",
+        lambda *_args, **_kwargs: pytest.fail("Reddit topic search must not run for feed"),
+    )
+    monkeypatch.setattr(
+        reddit_public,
+        "search_reddit_public",
+        lambda *_args, **_kwargs: pytest.fail("Reddit keyless search must not run for feed"),
+    )
+    monkeypatch.setattr(
+        reddit,
+        "search_reddit",
+        lambda *_args, **_kwargs: pytest.fail("Reddit paid search must not run for feed"),
+    )
+    request = _request(
+        source="reddit",
+        adapter="reddit_api",
+        query="home",
+        surface_kind="feed",
+        item_limit=80,
+    )
+
+    result = service_acquisition_worker._reddit_adapter(request, {})
+
+    assert observed["args"] == (request.from_date, request.to_date)
+    assert observed["kwargs"]["limit"] == 80
+    assert result["items"] == [{"id": "R-feed"}]
+    assert result["_network_request_count"] == 1
+
+
 def test_facebook_adapter_constrains_search_to_the_admitted_item_limit(monkeypatch):
     from lib import facebook
 

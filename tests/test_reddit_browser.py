@@ -23,6 +23,7 @@ class FakeClient:
         self.actions = []
         self.requests = []
         self.command_timings = []
+        self.release_count = 0
 
     def acquire_workspace(self, request):
         self.requests.append(request)
@@ -36,6 +37,9 @@ class FakeClient:
     def prepare_site_tab(self, _workspace, _hostname, *, consolidate=False):
         return False
 
+    def inspect_auth(self, _workspace):
+        return reddit_browser.RedditAuthState(authenticated=True)
+
     def act(self, _workspace, action):
         self.actions.append(action)
         return BrowserState(url=action.value if action.operation in {"navigate", "new_tab"} else "")
@@ -44,6 +48,9 @@ class FakeClient:
         if script == reddit_browser.PAGE_STATE_SCRIPT:
             return self.page
         return {"candidates": self.extracts}
+
+    def release_workspace(self):
+        self.release_count += 1
 
 
 def _scraper(client, *, limit=3):
@@ -62,6 +69,430 @@ def _scraper(client, *, limit=3):
         scroll_wait=0,
         now=datetime(2026, 7, 31, 12, 0, tzinfo=timezone.utc),
     )
+
+
+def _feed_scraper(client, *, limit=3, scrolls=3):
+    return reddit_browser.RedditBrowserScraper(
+        client,
+        reddit_browser.browser_request(
+            {
+                "LAST30DAYS_REDDIT_BROWSER_PROFILE": "last30days-facebook",
+                "LAST30DAYS_REDDIT_BROWSER_SESSION": "last30days-reddit",
+            },
+            timeout=30,
+            surface_kind="feed",
+        ),
+        limit=limit,
+        scrolls=scrolls,
+        initial_wait=0,
+        scroll_wait=0,
+        now=datetime(2026, 9, 2, 12, 0, tzinfo=timezone.utc),
+    )
+
+
+def test_feed_public_interface_keeps_unrelated_real_post_with_canonical_link(
+    monkeypatch,
+):
+    client = FakeClient(
+        page={
+            "url": "https://www.reddit.com/",
+            "title": "Reddit - Dive into anything",
+            "has_posts": True,
+        },
+        extracts=[
+            {
+                "title": "A sourdough loaf from this morning",
+                "text": "Fermentation notes and photos.",
+                "permalink": "/r/Breadit/comments/feed001/morning_loaf/",
+                "author": "example_baker",
+                "subreddit": "r/Breadit",
+                "created_at": "2026-09-02T09:15:00Z",
+                "dom_shape": "shreddit-post",
+            }
+        ],
+    )
+    monkeypatch.setattr(reddit_browser.shutil, "which", lambda _name: "/fake/agent-browser")
+    monkeypatch.setattr(reddit_browser, "CliAgentBrowserClient", lambda *, timeout: client)
+
+    result = reddit_browser.scrape_reddit_feed(
+        "2026-08-03",
+        "2026-09-02",
+        depth="quick",
+        config={
+            "LAST30DAYS_REDDIT_BROWSER_INITIAL_WAIT": "0",
+            "LAST30DAYS_REDDIT_BROWSER_SCROLL_WAIT": "0",
+        },
+        limit=1,
+    )
+
+    assert result["error_type"] is None
+    assert result["diagnostics"]["stop_reason"] == "accepted_limit"
+    assert result["items"] == [
+        {
+            "id": "Rfeed001",
+            "reddit_id": "feed001",
+            "title": "A sourdough loaf from this morning",
+            "text": "Fermentation notes and photos.",
+            "url": "https://www.reddit.com/r/Breadit/comments/feed001/morning_loaf/",
+            "author": "example_baker",
+            "subreddit": "Breadit",
+            "date": "2026-09-02",
+            "score": 0,
+            "num_comments": 0,
+            "relevance": 0.5,
+            "why_relevant": "Authenticated Reddit home feed post",
+            "metadata": {
+                "extraction": "agent-browser-dom-v1",
+                "remote_browser": True,
+                "published_at": "2026-09-02T09:15:00+00:00",
+                "dom_shape": "shreddit-post",
+                "crosspost": False,
+                "surface_kind": "feed",
+            },
+        }
+    ]
+    assert client.requests[0].task_name == "reddit-home-feed"
+    assert client.actions[0] == reddit_browser.BrowserAction(
+        "new_tab", value="https://www.reddit.com/"
+    )
+    assert client.release_count == 1
+
+
+def test_feed_scrolls_until_accepted_unique_limit_despite_ads_and_duplicates():
+    first = {
+        "title": "A real first feed post",
+        "permalink": "/r/example/comments/feed101/first/",
+        "subreddit": "r/example",
+        "created_at": "2026-09-02T09:15:00Z",
+    }
+    batches = [
+        [
+            first,
+            dict(first),
+            {
+                "title": "Buy this promoted product",
+                "permalink": "/r/example/comments/ad0001/promoted/",
+                "subreddit": "r/example",
+                "created_at": "2026-09-02T09:16:00Z",
+                "promoted": True,
+            },
+        ],
+        [
+            {
+                "title": "A second unrelated real post",
+                "permalink": "/r/another/comments/feed202/second/",
+                "subreddit": "r/another",
+                "created_at": "2026-09-02T09:17:00Z",
+            }
+        ],
+    ]
+
+    class BatchClient(FakeClient):
+        def __init__(self):
+            super().__init__(
+                page={
+                    "url": "https://www.reddit.com/",
+                    "title": "Reddit - Dive into anything",
+                    "has_posts": True,
+                }
+            )
+            self.batch_index = 0
+
+        def evaluate(self, workspace, script):
+            if script == reddit_browser.PAGE_STATE_SCRIPT:
+                return self.page
+            batch = batches[min(self.batch_index, len(batches) - 1)]
+            self.batch_index += 1
+            return {"candidates": batch}
+
+    client = BatchClient()
+
+    result = _feed_scraper(client, limit=2).feed("2026-08-03", "2026-09-02")
+
+    assert [item["reddit_id"] for item in result["items"]] == ["feed101", "feed202"]
+    assert result["diagnostics"]["rejection_counts"] == {"promoted": 1}
+    assert result["diagnostics"]["duplicate_count"] == 1
+    assert result["diagnostics"]["scroll_count"] == 1
+
+
+def test_feed_rejects_only_explicit_platform_spam_marker_not_unrelated_content():
+    client = FakeClient(
+        page={
+            "url": "https://www.reddit.com/",
+            "title": "Reddit - Dive into anything",
+            "has_posts": True,
+        },
+        extracts=[
+            {
+                "title": "A post Reddit explicitly filtered",
+                "permalink": "/r/example/comments/spam01/filtered/",
+                "subreddit": "r/example",
+                "created_at": "2026-09-02T09:15:00Z",
+                "platform_spam": True,
+            },
+            {
+                "title": "Completely unrelated gardening discussion",
+                "permalink": "/r/gardening/comments/real02/tomatoes/",
+                "subreddit": "r/gardening",
+                "created_at": "2026-09-02T09:16:00Z",
+            },
+        ],
+    )
+
+    result = _feed_scraper(client, limit=2, scrolls=0).feed(
+        "2026-08-03", "2026-09-02"
+    )
+
+    assert [item["reddit_id"] for item in result["items"]] == ["real02"]
+    assert result["diagnostics"]["rejection_counts"] == {"platform_spam": 1}
+
+
+def test_feed_reports_structural_limitations_and_date_scope_separately():
+    client = FakeClient(
+        page={
+            "url": "https://www.reddit.com/",
+            "title": "Reddit - Dive into anything",
+            "has_posts": True,
+        },
+        extracts=[
+            {
+                "title": "Rendered card without a canonical post link",
+                "permalink": "/r/example/not-a-post/",
+                "created_at": "2026-09-02T09:15:00Z",
+            },
+            {
+                "title": "Rendered post without a usable timestamp",
+                "permalink": "/r/example/comments/notime1/post/",
+                "subreddit": "r/example",
+            },
+            {
+                "title": "Real post outside the requested interval",
+                "permalink": "/r/example/comments/older01/post/",
+                "subreddit": "r/example",
+                "created_at": "2026-07-01T09:15:00Z",
+            },
+            {
+                "title": "Real post inside the requested interval",
+                "permalink": "/r/example/comments/current1/post/",
+                "subreddit": "r/example",
+                "created_at": "2026-09-02T09:16:00Z",
+            },
+        ],
+    )
+
+    result = _feed_scraper(client, limit=4, scrolls=0).feed(
+        "2026-08-03", "2026-09-02"
+    )
+
+    assert [item["reddit_id"] for item in result["items"]] == ["current1"]
+    assert result["diagnostics"]["rejection_counts"] == {}
+    assert result["diagnostics"]["limitation_counts"] == {
+        "invalid_permalink": 1,
+        "invalid_timestamp": 1,
+    }
+    assert result["diagnostics"]["scope_exclusion_counts"] == {
+        "outside_date_range": 1
+    }
+
+
+def test_feed_public_interface_can_collect_eighty_unique_posts(monkeypatch):
+    batches = [
+        [
+            {
+                "title": f"Feed post {index}",
+                "permalink": f"/r/example/comments/feed{index:03d}/post/",
+                "subreddit": "r/example",
+                "created_at": "2026-09-02T09:15:00Z",
+            }
+            for index in range(offset, offset + 2)
+        ]
+        for offset in range(0, 80, 2)
+    ]
+
+    class EightyPostClient(FakeClient):
+        def __init__(self):
+            super().__init__(
+                page={
+                    "url": "https://www.reddit.com/",
+                    "title": "Reddit - Dive into anything",
+                    "has_posts": True,
+                }
+            )
+            self.batch_index = 0
+
+        def evaluate(self, workspace, script):
+            if script == reddit_browser.PAGE_STATE_SCRIPT:
+                return self.page
+            batch = batches[min(self.batch_index, len(batches) - 1)]
+            self.batch_index += 1
+            return {"candidates": batch}
+
+    client = EightyPostClient()
+    monkeypatch.setattr(reddit_browser.shutil, "which", lambda _name: "/fake/agent-browser")
+    monkeypatch.setattr(reddit_browser, "CliAgentBrowserClient", lambda *, timeout: client)
+
+    result = reddit_browser.scrape_reddit_feed(
+        "2026-08-03",
+        "2026-09-02",
+        depth="quick",
+        config={
+            "LAST30DAYS_REDDIT_BROWSER_INITIAL_WAIT": "0",
+            "LAST30DAYS_REDDIT_BROWSER_SCROLL_WAIT": "0",
+        },
+        limit=80,
+    )
+
+    assert len(result["items"]) == 80
+    assert len({item["url"] for item in result["items"]}) == 80
+    assert result["diagnostics"]["scroll_count"] == 39
+    assert client.release_count == 1
+
+
+def test_feed_configuration_cannot_exceed_finite_result_and_scroll_caps(monkeypatch):
+    observed = {}
+    client = FakeClient()
+
+    class CaptureScraper:
+        def __init__(self, _client, _request, **kwargs):
+            observed.update(kwargs)
+
+        def feed(self, _from_date, _to_date):
+            return {"items": [], "error_type": "quality_gate_failed"}
+
+    monkeypatch.setattr(reddit_browser.shutil, "which", lambda _name: "/fake/agent-browser")
+    monkeypatch.setattr(reddit_browser, "CliAgentBrowserClient", lambda **_kwargs: client)
+    monkeypatch.setattr(reddit_browser, "RedditBrowserScraper", CaptureScraper)
+
+    reddit_browser.scrape_reddit_feed(
+        "2026-08-03",
+        "2026-09-02",
+        config={
+            "LAST30DAYS_REDDIT_BROWSER_MAX_RESULTS": "1000",
+            "LAST30DAYS_REDDIT_BROWSER_SCROLLS": "1000",
+        },
+    )
+
+    assert observed["limit"] == reddit_browser.MAX_EXPLICIT_RESULTS
+    assert observed["scrolls"] == reddit_browser.MAX_EXPLICIT_FEED_SCROLLS
+
+
+def test_feed_stops_after_three_stagnant_virtualized_snapshots():
+    repeated = {
+        "title": "The same rendered feed post",
+        "permalink": "/r/example/comments/repeat1/post/",
+        "subreddit": "r/example",
+        "created_at": "2026-09-02T09:15:00Z",
+    }
+    client = FakeClient(
+        page={
+            "url": "https://www.reddit.com/",
+            "title": "Reddit - Dive into anything",
+            "has_posts": True,
+        },
+        extracts=[repeated],
+    )
+
+    result = _feed_scraper(client, limit=2, scrolls=10).feed(
+        "2026-08-03", "2026-09-02"
+    )
+
+    assert [item["reddit_id"] for item in result["items"]] == ["repeat1"]
+    assert result["diagnostics"]["scroll_count"] == 3
+    assert result["diagnostics"]["stagnant_scrolls"] == 3
+    assert result["diagnostics"]["stop_reason"] == "stagnation_limit"
+
+
+def test_feed_request_uses_exact_profile_with_cdp_only_headless_posture():
+    request = reddit_browser.browser_request(
+        {
+            "LAST30DAYS_REDDIT_BROWSER_PROFILE": "last30days-facebook",
+            "LAST30DAYS_REDDIT_BROWSER_SESSION": "last30days-reddit-feed",
+            "LAST30DAYS_REDDIT_BROWSER_ID": "session:existing-reddit-browser",
+            "LAST30DAYS_REDDIT_ROUTE_ID": "guacamole:reddit",
+            "LAST30DAYS_REDDIT_ROUTE_POOL_ENTRY_ID": "route-pool:reddit",
+            "LAST30DAYS_REDDIT_BROWSER_HOST": "remote_headed",
+            "LAST30DAYS_REDDIT_BROWSER_VIEW_PROVIDER": "rdp_gateway",
+            "LAST30DAYS_REDDIT_BROWSER_CONTROL_INPUT_PROVIDER": "manual_attached_desktop",
+            "LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE": "1",
+        },
+        timeout=360,
+        surface_kind="feed",
+    )
+
+    assert request.profile_id == "last30days-facebook"
+    assert request.session_name == "last30days-reddit-feed"
+    assert request.browser_id_hint == ""
+    assert request.route_id_hint == ""
+    assert request.route_pool_entry_id_hint == ""
+    assert request.allow_duplicate_profile_lane is True
+    assert request.browser_host == "local_headless"
+    assert request.view_provider == "cdp_screencast"
+    assert request.control_input_provider == "cdp_input"
+    assert request.constrain_presentation is True
+
+
+def test_feed_requires_authenticated_profile_before_navigation():
+    class LoggedOutClient(FakeClient):
+        def inspect_auth(self, _workspace):
+            return reddit_browser.RedditAuthState(login_form=True)
+
+    client = LoggedOutClient(extracts=[])
+
+    result = _feed_scraper(client, limit=1, scrolls=0).feed(
+        "2026-08-03", "2026-09-02"
+    )
+
+    assert result["items"] == []
+    assert result["error_type"] == "auth_required"
+    assert result["diagnostics"]["failure_stage"] == "authentication"
+    assert client.actions == []
+
+
+def test_feed_waits_for_asynchronous_post_cards_before_navigation_mismatch():
+    class DelayedFeedClient(FakeClient):
+        def __init__(self):
+            super().__init__(
+                extracts=[
+                    {
+                        "title": "A post that rendered after the shell",
+                        "permalink": "/r/example/comments/delay01/post/",
+                        "subreddit": "r/example",
+                        "created_at": "2026-09-02T09:15:00Z",
+                    }
+                ]
+            )
+            self.page_states = iter(
+                [
+                    {
+                        "url": "https://www.reddit.com/",
+                        "title": "Reddit - Dive into anything",
+                        "has_posts": False,
+                    },
+                    {
+                        "url": "https://www.reddit.com/",
+                        "title": "Reddit - Dive into anything",
+                        "has_posts": True,
+                    },
+                ]
+            )
+
+        def evaluate(self, workspace, script):
+            if script == reddit_browser.PAGE_STATE_SCRIPT:
+                return next(self.page_states)
+            return super().evaluate(workspace, script)
+
+    client = DelayedFeedClient()
+
+    result = _feed_scraper(client, limit=1, scrolls=0).feed(
+        "2026-08-03", "2026-09-02"
+    )
+
+    assert result["error_type"] is None
+    assert [item["reddit_id"] for item in result["items"]] == ["delay01"]
+    assert [action.value for action in client.actions if action.operation == "wait"] == [
+        "2500",
+        "3500",
+    ]
 
 
 def test_search_normalizes_filters_deduplicates_and_limits_posts():
