@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Presentation-neutral X feed acquisition.** Service 0.3.96 no longer asks
+  Agent Browser to satisfy operator-presentation constraints for the ordinary
+  authenticated X home-feed scraper. This lets access planning reuse the exact
+  capability-bound live browser route, matching LinkedIn and the existing
+  presentation-neutral social acquisition contract.
+
 - **Broker-issued Agent Browser session preservation.** Service 0.3.95 keeps
   the fresh terminal session selected by Agent Browser when the reviewed
   duplicate-profile recovery lane proves there is no compatible live browser.

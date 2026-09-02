@@ -764,7 +764,6 @@ def scrape_x_feed(
         control_input_provider=str(
             stable.get("control_input_provider") or "manual_attached_desktop"
         ),
-        constrain_presentation=True,
         allow_duplicate_profile_lane=browser_runtime.config_flag(
             config.get("LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE")
         ),

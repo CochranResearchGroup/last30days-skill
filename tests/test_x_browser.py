@@ -142,6 +142,7 @@ class XBrowserSearchTests(TestCase):
         self.assertIsNone(result["error_type"])
         self.assertEqual("https://x.com/home", result["url"])
         self.assertEqual("x-feed", client.requests[0].task_name)
+        self.assertFalse(client.requests[0].constrain_presentation)
         self.assertEqual("Authenticated X home feed post", result["items"][0]["why_relevant"])
         self.assertNotIn(
             "no_lexical_topic_overlap",
