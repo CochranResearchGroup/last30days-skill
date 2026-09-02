@@ -6,7 +6,7 @@ Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 5
+Plan version: 6
 Date: 2026-09-02
 
 ## Objective
@@ -357,3 +357,55 @@ transient and repository/runtime readbacks remain authoritative.
 Next action: the operator completes Reddit sign-in through the durable handoff,
 closes the manual Chrome window, and reports completion. Then run a bounded
 post-close authentication probe before consuming the next Reddit feed attempt.
+
+### Checkpoint P0063-C06 | 2026-09-02
+
+Plan version: 6
+
+State: `service_owned_reddit_handoff_ready_operator_action_pending`
+
+Progress classification: `acceptance_progress`
+
+Authority classification:
+
+- `inherited_authority`; repairing the failed operator presentation remained
+  inside the explicitly approved exact-profile manual-login objective.
+
+Evidence:
+
+- C05 overstated the retained `/remote-view/r895695` record as an operational
+  handoff. The operator's direct readback proved its claimed frontend session
+  had no HTTP route, and dashboard recovery returned
+  `operator_presentation_authority_unavailable`; the direct runtime browser had
+  only a raw route association, not service-owned presentation authority;
+- current scoped doctor readback proves all three Guacamole/RDP routes, public
+  ingress, permissions, backend TCP, and display sockets ready. The first
+  Route A plan exposed a stale retained allocation collision:
+  `remote-view-display:11` recorded display `:10`, so it could not bind Route A
+  display `:11`;
+- a unique display allocation passed strict route-bound dry-run. The actual
+  Route A launch then failed only visible-window ownership proof and correctly
+  closed its new browser and rolled back its route lease;
+- the controlled Route B retry used the same exact user-data directory, unique
+  display allocation `remote-view-display:reddit-login-c05-b`, and existing
+  display `:10`. It returned `success=true`, browser PID 90966, route
+  `guacamole:2`, opaque handoff `/remote-view/r338548`, and
+  `operatorVisible.state=ready`;
+- current service readback reports the browser healthy, the route and route-
+  pool entry checked out, the display content `browser_window_visible`, the
+  selected Reddit target ready, and public operator access HTTP 200. The
+  handoff record itself is `ready`, resolves to that browser/session/route, and
+  its public endpoint returns HTTP 200;
+- authentication has not been inferred from page visibility. No Reddit scrape
+  attempt, timer mutation, recurring enablement, provider mutation, profile
+  replacement, or unrelated browser interaction occurred.
+
+Subagent status: `not_spawned`; current orchestration policy prohibits
+delegation.
+
+Graphiti write status: `not_written`; repository and current service readbacks
+remain authoritative for this transient operator handoff.
+
+Next action: the operator opens `/remote-view/r338548`, confirms or completes
+Reddit authentication, and reports completion. Then verify the authenticated
+surface before the next bounded Reddit feed acquisition.

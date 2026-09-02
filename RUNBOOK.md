@@ -25157,3 +25157,82 @@ Next Bounded Action:
 - operator completes Reddit sign-in through the durable handoff, closes the
   manual browser, and reports completion; then run the post-close auth probe
   before the next bounded Reddit feed acquisition.
+
+## Turn 398 | 2026-09-02
+
+Focus: replace the non-operational Reddit presentation tile with a proven
+service-owned Guacamole/RDP handoff.
+
+Authority Consulted:
+
+- operator error readback for claimed session `handoff-a79ef2887412addf`;
+  Plan 0063/C05; Agent Browser service and Guacamole/RDP contracts; current
+  doctor, access-plan, display-allocation, route, trace, browser, handoff, and
+  public HTTP readbacks.
+
+Decisions And Changes:
+
+- accepted the operator readback as proof that C05's retained handoff was not
+  operational: a direct runtime browser can be visible on an RDP display while
+  lacking an HTTP-backed service handoff and presentation recovery authority;
+- closed only direct browser PID 7511, which this turn had launched, after its
+  claimed handoff failed; preserved the exact user-data directory;
+- resolved a stale display-allocation collision with a unique explicit
+  allocation, then tried Route A once and Route B once. Route A failed visible-
+  window proof and rolled back cleanly; Route B produced the required proven
+  handoff;
+- retained the successful Route B browser for operator interaction. No auth
+  state was inferred from visible page content.
+
+Validation Evidence:
+
+- scoped doctor reports three ready Guacamole/RDP routes, public ingress HTTP
+  200, valid login and permissions, reachable backend TCP, and displays
+  `:10`, `:11`, and `:12` ready;
+- retained allocation `remote-view-display:11` incorrectly carried display
+  `:10`, explaining the Route A target mismatch. Dry-run passed after selecting
+  unique allocation `remote-view-display:reddit-login-c05-7511`;
+- Route A actual launch failed `operator_presentation_observation_failed` and
+  its receipt proves the new browser closed and its lease/route rolled back;
+- Route B actual launch returned success with browser PID 90966, session
+  `reddit-login-c05-b`, unique allocation
+  `remote-view-display:reddit-login-c05-b`, display `:10`, route
+  `guacamole:2`, and handoff `/remote-view/r338548`;
+- final readback reports browser health ready, attachability
+  `attached_ready`, route and pool agreement, process-bound visible Chrome
+  window, selected Reddit target ready, `operatorVisible.state=ready`, handoff
+  state ready, and public handoff HTTP 200;
+- no Reddit acquisition attempt, recurring schedule mutation, provider
+  mutation, profile replacement, or unrelated browser interaction occurred.
+
+State Movement:
+
+- Plan 0063 advances to version 6/C06
+  `service_owned_reddit_handoff_ready_operator_action_pending`; P23 remains
+  OPEN.
+
+Progress Classification:
+
+- `acceptance_progress`; the operator now has a service-owned, HTTP-backed,
+  proof-complete Reddit login surface.
+
+Authority Classification:
+
+- `inherited_authority`; the repair stayed within the approved forced exact-
+  profile login and existing Guacamole/RDP route scope. No scraping retry
+  budget was consumed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; current service and repository receipts are authoritative for
+  the transient login handoff.
+
+Next Bounded Action:
+
+- operator opens `/remote-view/r338548`, confirms or completes Reddit login,
+  and reports completion; then verify the authenticated surface before the next
+  bounded feed acquisition.

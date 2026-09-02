@@ -23,7 +23,7 @@ lanes:
     target: main
     plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 5e939f00a2353e2441abae12b8a46656d2fe4c95
+    checkpoint: 52355bfe94a602c99f1b49c34f551a54c0e18c85
     remote_ref: refs/remotes/origin/feat/reddit-home-feed
     integration: fast-forward
     integration_receipt: null
