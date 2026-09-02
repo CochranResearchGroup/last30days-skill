@@ -2275,24 +2275,25 @@ only explicit ads and platform-marked spam as content-quality decisions.
 
 Current State:
 
-- service 0.3.97 source now routes Reddit `surface_kind=feed` directly to an
-  authenticated home-feed interface while topic search retains its public-first
-  access order and relevance semantics;
-- offline behavior proves 80-item capacity, canonical dedupe, finite scrolling,
-  deterministic ad/platform-spam exclusion, and separate structural/date/
-  duplicate diagnostics;
-- all three approved live attempts are consumed. The final attempt proved exact-
-  profile local-headless acquisition, authentication, and Reddit home
-  navigation, then exposed the now-repaired asynchronous card-readiness gap;
-- service 0.3.97 is transactionally installed, MCP-ready and compatible on
-  schema 17, source-identical to the validated commit, and database-clean;
-- the requested Reddit manual-login surface is currently blocked inside Agent
-  Browser: its protected planner proves terminal-owner supersession safe, but
-  both manual-seeding acquire and exact recovery apply reject that same owner
-  as `existing_session_profile_identity_unproven` before Chrome launch;
-- Plan 0063 version 4/C04 owns Agent Browser login-readiness followed by a
-  later fresh-budget 80-item proof. All existing Reddit collection
-  specifications remain disabled.
+- installed service 0.3.100 routes Reddit `surface_kind=feed` to the
+  authenticated home-feed interface while retaining topic search, 80-item
+  capacity, canonical dedupe, finite scrolling, deterministic ad/platform-spam
+  exclusion, and separate structural/date/duplicate diagnostics;
+- direct authenticated-profile inspection proved Reddit rendered 62 post
+  containers and 29 unique canonical post links. The profile itself is not the
+  current blocker;
+- the three-attempt live campaign is exhausted: attempt 1 exposed Reddit's
+  local-headless network-security block; attempts 2 and 3 exposed the modern
+  broker path dropping the ready RDP route hint and launching stale Xvfb
+  display `:90`;
+- commit `28cfab2` repairs those boundaries. Installed-code dry-run evidence
+  proves a remote-headed broker request with
+  `routePoolEntryId=guacamole-rdp-b` and an item ceiling of 100, while the
+  reproducible 0.3.100 artifact is transactionally installed and ready on
+  schema 17;
+- Plan 0063 version 7/C07 owns one later fresh-budget 80-item proof. All 13
+  Reddit collection specifications remain disabled, and no recurring schedule
+  was enabled or changed.
 
 Active Plan:
 
@@ -2306,9 +2307,9 @@ Dependencies:
 
 Next Action:
 
-- repair the protected Agent Browser terminal-owner supersession path, produce
-  a ready Guacamole/RDP manual-login handoff for the exact profile, then obtain
-  a fresh bounded live-attempt budget for the 80-item proof.
+- obtain one fresh Reddit attempt and run the disabled 80-item specification
+  through installed service 0.3.100; accept only an 80-unique-post receipt or
+  a new typed terminal limitation, and keep the recurring Reddit lane disabled.
 
 ## Goal-Compatible Plan Conversion
 

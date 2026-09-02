@@ -25236,3 +25236,93 @@ Next Bounded Action:
 - operator opens `/remote-view/r338548`, confirms or completes Reddit login,
   and reports completion; then verify the authenticated surface before the next
   bounded feed acquisition.
+
+## Turn 399 | 2026-09-02
+
+Focus: verify authenticated Reddit availability, run the three-attempt 80-item
+campaign, diagnose each failure, and repair the final broker route loss.
+
+Authority Consulted:
+
+- operator confirmation that Reddit was authenticated and reachable from the
+  left rail; Plan 0063/C06; installed last30days service/MCP contracts; Agent
+  Browser service status; current repository planning, validation, release,
+  and active-lane policies.
+
+Decisions And Changes:
+
+- verified the exact retained Reddit surface through read-only CDP before
+  spending the campaign attempts, then closed only that exact browser so the
+  managed scraper could acquire the same profile cleanly;
+- ran three disabled, manual, 80-item Reddit collection specifications. No
+  recurring schedule, provider content, credential, profile, or unrelated
+  browser was changed;
+- repaired the real failures in last30days: typed the Reddit network-security
+  block, raised the default acquisition ceiling to 100, selected the governed
+  remote-headed RDP posture, added exact route hints, and preserved the route-
+  pool entry through the broker-first `tab_new` request;
+- advanced the immutable service runtime to 0.3.100, built it reproducibly,
+  installed it transactionally, and stopped without running a fourth live
+  attempt because the explicit three-attempt campaign ceiling was reached;
+- committed and pushed implementation commit `28cfab2`. The separate Agent
+  Browser handoff/lifecycle note is commit `47a1040f` on branch
+  `docs/reddit-handoff-errors-20260902`.
+
+Validation Evidence:
+
+- authenticated-surface probe: zero login controls, 17 account signals, 62
+  rendered post containers, and 29 unique canonical post links at the Reddit
+  home feed;
+- jobs `af5c6062-f3b2-457c-b0ff-1a9be7edc708`,
+  `e7296104-c074-4b85-84e5-6d5d3de2c6e9`, and
+  `4d501581-1139-4aff-8228-95ea08468414` are terminal failed receipts. The
+  first was Reddit's local-headless network block; the latter two were stale
+  Xvfb `:90` launches, with the third proving the broker had discarded the
+  configured route-pool hint;
+- the exact broker regression failed before the repair and passes afterward;
+  focused browser, Reddit, worker, collection, job-runner, env, release,
+  install, packaging, and logging suites pass. The full suite has one
+  reproducible MCP integration teardown timeout, so no green full-suite claim
+  is made;
+- artifact SHA-256 is
+  `4b100b437338289df9f37796b9675d6cef369f822b519fb637e5613dc9ae61ee`.
+  Installed readback reports service 0.3.100 ready on schema 17 with runtime-
+  manifest SHA-256
+  `44460e4d2a01cbb57c9c4c27c1f397b1d23fb1b8c5759fc055b5a0c5837a330c`;
+- installed-code dry run proves `remote_headed`, `rdp_gateway`, item limit 100,
+  and `routePoolEntryId=guacamole-rdp-b` in both configured request and emitted
+  broker payload;
+- `PRAGMA quick_check` is `ok`; all 13 Reddit specifications are disabled, no
+  collection profile lease remains, and no exact-profile Agent Browser is
+  live.
+
+State Movement:
+
+- Plan 0063 advances to version 7/C07
+  `broker_route_repaired_live_attempt_ceiling_reached`; P23 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; the exact route-loss defect is fixed and installed, but
+  live 80-item acceptance remains unproven.
+
+Authority Classification:
+
+- `inherited_authority`; all work stayed within the approved Reddit-only
+  scrape, exact-profile, and no-schedule-mutation envelope. Exceeding the three-
+  attempt ceiling was not authorized.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; repo, installed-runtime, database, and Agent Browser evidence
+  are authoritative for this checkpoint.
+
+Next Bounded Action:
+
+- obtain one fresh Reddit attempt, run the disabled 80-item specification on
+  installed service 0.3.100, and accept only 80 unique canonical posts or a new
+  typed terminal limitation. Keep Reddit disabled in recurring schedules.

@@ -6,7 +6,7 @@ Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 6
+Plan version: 7
 Date: 2026-09-02
 
 ## Objective
@@ -17,16 +17,21 @@ filtering, while preserving the existing Reddit search capability.
 
 ## Current State
 
-- `RedditBrowserScraper.search` is limited to Reddit `/search`, caps each DOM
-  snapshot at 80 candidates, stops scrolling when raw candidate count reaches
-  the requested limit, and applies query-term relevance gates;
-- the service acquisition worker already distinguishes `surface_kind=feed` for
-  X and LinkedIn but sends every Reddit request through the search access-order
-  path;
-- prior live Reddit proof established bounded execution and truthful zero-yield
-  observability, not successful post retrieval;
-- Reddit remains disabled in `daily-default`, and this plan does not enable or
-  otherwise mutate that schedule.
+- service 0.3.100 is installed and ready on schema 17 with a dedicated Reddit
+  home-feed path, 80-item collection capacity, remote-headed CDP control, typed
+  network-security blocking, and broker-preserved RDP route-pool selection;
+- direct authenticated-profile inspection observed 62 rendered post containers
+  and 29 unique canonical post links before the bounded live campaign, proving
+  that the profile and Reddit surface were usable;
+- all three campaign attempts are terminal. They exposed, in order, a Reddit
+  local-headless network-security block and two broker launches that discarded
+  the configured route-pool hint and fell back to stale Xvfb display `:90`;
+- commit `28cfab2` repairs the final broker request boundary, and installed-code
+  dry-run evidence proves `routePoolEntryId=guacamole-rdp-b`, but the campaign's
+  three-attempt ceiling prevents claiming live 80-item acceptance without a new
+  explicit attempt allowance;
+- all 13 Reddit collection specifications remain disabled, and this plan has
+  not enabled or otherwise mutated `daily-default`.
 
 ## Scope
 
@@ -409,3 +414,83 @@ remain authoritative for this transient operator handoff.
 Next action: the operator opens `/remote-view/r338548`, confirms or completes
 Reddit authentication, and reports completion. Then verify the authenticated
 surface before the next bounded Reddit feed acquisition.
+
+### Checkpoint P0063-C07 | 2026-09-02
+
+Plan version: 7
+
+State: `broker_route_repaired_live_attempt_ceiling_reached`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`; authenticated-surface inspection, three bounded
+  Reddit-only attempts, deterministic repair, packaging, and installation all
+  stayed inside the approved exact-profile, no-provider-mutation, and
+  no-schedule-enablement scope. A fourth live attempt was not run because the
+  campaign's explicit three-attempt ceiling is reached.
+
+Evidence:
+
+- direct read-only CDP inspection of the service-owned
+  `reddit-login-c05-b` browser at `https://www.reddit.com/?feed=home` found no
+  login control, 17 account signals, 62 rendered post containers, and 29
+  unique canonical post links. The operator independently confirmed that the
+  browser was authenticated and reachable from the left rail;
+- fresh MCP adapter 4.0.4 readback is compatible with service API 1 and
+  database schema 17. The conversation's already-open MCP transport remained
+  pinned to adapter 4.0.3, so product operations used fresh processes of the
+  installed adapter rather than bypassing the service contract;
+- attempt 1, job `af5c6062-f3b2-457c-b0ff-1a9be7edc708`, requested 80 but
+  the prior host default reduced it to 50. Reddit returned its network-security
+  block page to the local-headless browser, which the prior auth probe
+  mislabeled `auth_state_ambiguous`;
+- attempt 2, job `e7296104-c074-4b85-84e5-6d5d3de2c6e9`, correctly requested
+  80 after the host ceiling repair but failed before navigation when generic
+  remote-headed acquisition tried stale Xvfb display `:90` three times;
+- attempt 3, job `4d501581-1139-4aff-8228-95ea08468414`, also requested 80.
+  Although the installed worker read `guacamole-rdp-b`, the broker-first
+  `tab_new` branch rebuilt the request without `routePoolEntryId`, again
+  selecting display `:90` and failing `agent_browser_error` before navigation;
+- commit `28cfab2` adds typed Reddit network-security detection, raises the
+  default host item ceiling from 50 to 100, moves feed acquisition to the
+  remote-headed RDP posture, accepts exact route hints, and preserves
+  `routePoolEntryId` across the broker-first request boundary. The exact
+  broker regression failed before the repair and passes afterward;
+- the focused Agent Browser, Reddit, worker, collection, job-runner, env,
+  release, install, runtime-package, and source-log suites pass. The full suite
+  reached 100% with one persistent teardown timeout in
+  `test_real_service_mcp_discovery_query_refresh_and_poll`; its isolated rerun
+  reproduces the same service-termination timeout and is not presented as a
+  green full-suite result;
+- service artifact `last30days-service-0.3.100.tar.gz` reproduced byte-for-byte
+  with SHA-256
+  `4b100b437338289df9f37796b9675d6cef369f822b519fb637e5613dc9ae61ee`.
+  Transactional install readback reports service 0.3.100 ready, database schema
+  17, contract SHA-256
+  `bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025`,
+  and runtime-manifest SHA-256
+  `44460e4d2a01cbb57c9c4c27c1f397b1d23fb1b8c5759fc055b5a0c5837a330c`;
+- an installed-code dry run reads the private configuration and proves
+  `browser_host=remote_headed`, `view_provider=rdp_gateway`, configured and
+  broker-emitted `routePoolEntryId=guacamole-rdp-b`, and default item limit
+  100 without launching a browser or consuming another provider attempt;
+- live database `PRAGMA quick_check` is `ok`; the three P0063 collection runs
+  and jobs are terminal failed receipts, all 13 Reddit specifications are
+  disabled, there is no collection profile lease, and Agent Browser reports no
+  live browser for `last30days-facebook`;
+- the Agent Browser lifecycle/handoff issue was documented separately in
+  commit `47a1040f` on branch
+  `docs/reddit-handoff-errors-20260902` for upstream service review.
+
+Subagent status: `not_spawned`; current orchestration policy prohibits
+delegation.
+
+Graphiti write status: `not_written`; current repository, database, installed
+release, and Agent Browser readbacks are the authoritative evidence.
+
+Next action: obtain one fresh Reddit acquisition attempt, then run the disabled
+80-item specification through installed service 0.3.100 and require either 80
+unique canonical posts or the next typed terminal limitation. Do not enable the
+recurring Reddit lane.
