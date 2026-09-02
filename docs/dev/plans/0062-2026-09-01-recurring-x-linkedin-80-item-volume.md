@@ -431,3 +431,54 @@ will be written after the bounded acceptance result is known.
 Next action: preflight and enqueue exactly one X-and-LinkedIn-only 80+80 tick,
 poll only its returned ID to terminal state, and reconcile yield, exclusions,
 budgets, schedule continuity, and active-work cleanup.
+
+### Checkpoint P0062-C08 | 2026-09-02
+
+Plan version: 5
+
+State: `manual_tick_environment_bypass_identified`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`; this checkpoint reconciles the one C07-authorized
+  tick and does not enqueue another.
+
+Evidence:
+
+- manual tick `tick-94d0476e65170ad5df114b6d47e0790f` completed degraded
+  after exactly three attempts for each social provider, with zero observations
+  and zero accepted items;
+- Agent Browser retained six matching `remote_view_open` jobs, all failed with
+  `existing_session_profile_identity_unproven`. X attempts share signature
+  `sha256:d7fe9f118c424ddcd83cea8b5319d2801c304787296f2918ecf10b435003e2b6`;
+  LinkedIn attempts share
+  `sha256:0fe41b74f0da779e4111d8c89977ba9367b507145c748d553eb5c208a08cd087`;
+- source trace proves `service.py tick enqueue` assembles and executes its tick
+  in the invoking CLI process. The acquisition subprocess copies that parent
+  environment and only adds `PYTHONPATH`; it does not read the systemd unit's
+  `EnvironmentFile`;
+- the invoking shell contained neither
+  `LAST30DAYS_AGENT_BROWSER_PROFILE_CAPABILITY_FILE` nor
+  `LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE`. Consequently this
+  manual command bypassed the configured protected path and repeated the old
+  unauthenticated acquisition route. This result does not test the newly
+  configured capability;
+- direct `/proc` readback of the restarted managed Last30days process confirms
+  it has both the capability-file path and reviewed fresh-lane flag. The next
+  ordinary timer tick will inherit them;
+- all six tick resource leases are released, active tick/provider attempts and
+  open leases are zero, live SQLite `quick_check` is `ok`, and `daily-default`
+  remains ready for `2026-09-03T00:00:00Z` at its unchanged saved digest and
+  prior timer receipt.
+
+Subagent status: `not_spawned`.
+
+Graphiti write status: `pending`; write one compact source-backed incident
+episode after this checkpoint is published.
+
+Next action: either observe the September 3 ordinary service-owned tick, which
+will inherit the configured capability, or obtain authority for one corrected
+manual tick whose parent process explicitly receives the same two non-secret
+environment values. Do not enqueue another manual tick under C07 authority.

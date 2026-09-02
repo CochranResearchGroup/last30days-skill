@@ -24573,3 +24573,80 @@ Next Bounded Action:
 - preflight and enqueue exactly one X-and-LinkedIn-only 80+80 tick, poll only
   that tick, then reconcile yield, exclusions, budgets, schedule continuity,
   and active-work cleanup.
+
+## Turn 390 | 2026-09-02
+
+Focus: execute and reconcile the protected 80+80 manual acceptance tick.
+
+Authority Consulted:
+
+- operator authorization recorded at Plan 0062/C07; installed service 0.3.94;
+  Last30days tick and Agent Browser service contracts; current source trace,
+  process environment, tick receipt, Agent Browser jobs, schedule, and database.
+
+Decisions And Changes:
+
+- preflighted exactly X and LinkedIn at 80 items, three attempts, and 360
+  seconds each for interval `2026-08-03T12:57:45Z` through
+  `2026-09-02T12:57:45Z`;
+- enqueued exactly one manual tick,
+  `tick-94d0476e65170ad5df114b6d47e0790f`, through the installed direct CLI;
+- after terminal failure, diagnosed the parent-environment mismatch and did not
+  enqueue another tick, rotate the capability again, or alter browser state.
+
+Validation Evidence:
+
+- the tick completed degraded in 13.0 seconds after all three X and all three
+  LinkedIn attempts; it consumed six attempts, six network requests, eleven
+  budgeted wall seconds, and accepted zero items;
+- every provider result failed transiently at `workspace_acquisition` with
+  `agent_browser_error`. Agent Browser retained the corresponding six
+  `remote_view_open` jobs, each with exact error
+  `existing_session_profile_identity_unproven`;
+- source trace establishes that direct `service.py tick enqueue` runs the tick
+  locally and its acquisition subprocess inherits the invoking shell plus only
+  a `PYTHONPATH` addition. The CLI does not load the managed unit's
+  `EnvironmentFile`;
+- the invoking shell had neither capability-file nor fresh-lane setting, so
+  the tick never exercised the configured authenticated planning/request path.
+  This is a Last30days manual-execution environment bypass, not evidence that
+  the rotated Agent Browser capability is invalid;
+- direct `/proc` readback confirms the running scheduled service has both
+  `LAST30DAYS_AGENT_BROWSER_PROFILE_CAPABILITY_FILE` and
+  `LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE=1` after restart;
+- the tick promoted an empty degraded snapshot but did not change the recurring
+  schedule. `daily-default` remains ready for `2026-09-03T00:00:00Z` at the
+  unchanged digest and prior timer receipt;
+- active tick attempts, provider attempts, and open resource leases are zero;
+  live SQLite `quick_check` is `ok`.
+
+State Movement:
+
+- Plan 0062 advances to C08 `manual_tick_environment_bypass_identified`; P08
+  remains OPEN and the C07 manual-tick authority is consumed.
+
+Progress Classification:
+
+- `blocker_reduction`; the protected integration itself was not disproven, and
+  the remaining failure is isolated to how direct manual ticks inherit runtime
+  configuration.
+
+Authority Classification:
+
+- `inherited_authority`; the one authorized tick was executed and reconciled;
+  no second tick is inferred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `pending`; seed one compact source-backed incident episode after publishing
+  this checkpoint.
+
+Next Bounded Action:
+
+- observe the September 3 ordinary timer tick, whose managed process has both
+  required environment values, or obtain separate authority for one corrected
+  manual tick with those values explicitly inherited by its parent process.

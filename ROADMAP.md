@@ -1106,7 +1106,13 @@ Current State:
   authorized the remaining registration, private configuration, and one live
   tick. The existing `last30days` grant was rotated in place without creating a
   duplicate principal; its replacement capability is owner-private, wired into
-  the restarted ready service, and the 80+80 tick is now the next bounded action.
+  the restarted ready service. The one authorized manual tick nevertheless
+  bypassed those settings because the direct CLI process does not load the
+  systemd `EnvironmentFile`; all six attempts followed the old unauthenticated
+  route and observed zero items. Cleanup is complete and the ordinary service
+  timer has both settings in its live process environment. Plan 0062 C08 now
+  owns either observation of that September 3 tick or a separately authorized
+  corrected manual execution.
   Current authority:
   `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`.
 - Plan 0060 version 1/C06 is CLOSED after installing service 0.3.91 with finite
