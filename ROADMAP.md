@@ -1081,8 +1081,8 @@ pause controls.
 
 Current State:
 
-- Plan 0062 version 3/C05 is the current actionable P08 plan. Service 0.3.92 is
-  installed ready with X's finite 40-scroll allowance. Saved recurring
+- Plan 0062 version 4/C06 is the current actionable P08 plan. Service 0.3.93 is
+  installed ready with schema 17 and X's finite 40-scroll allowance. Saved recurring
   revision `operator-20260901-x-linkedin-80-v1` requests 80 X and 80 LinkedIn
   posts, retains three attempts for each, and provides 360 seconds per social
   attempt. The exact guarded digest rebind preserved the September 2 boundary,
@@ -1092,14 +1092,15 @@ Current State:
   limits. That tick failed before scraping: two X attempts hit the unproven
   stale-session identity gate because the reviewed fresh-session recovery
   switch was absent, then schema 16 rejected retry ordinal 2 despite the saved
-  three-attempt limit and aborted before LinkedIn. The tick is terminal with
-  zero active work, the ordinary schedule is unchanged, and no second manual
-  enqueue is authorized. Schema 17 is now source-validated to preserve v16
-  provider receipts, admit configured retry ordinal 2, and reject ordinal 3;
-  service 0.3.93 and MCP 4.0.4 release identities are aligned and their full
-  Python, Go, migration, and install/rollback suites pass. Installation waits
-  on the source-validated Agent Browser terminal replacement candidate so the
-  two repairs can be accepted together.
+  three-attempt limit and aborted before LinkedIn. Schema 17 is installed and
+  production-proven: the one successor acceptance tick reached all three X and
+  LinkedIn attempts before terminalizing degraded with zero active residue.
+  Agent Browser now truthfully reports `profile_capability_required`; Last30days
+  did not possess or transmit that capability. Service 0.3.94 source now reads
+  only an absolute, same-user 0600 nonsymlink capability file and sends the raw
+  value ephemerally to both MCP planning and execution without placing it in
+  argv, stable target config, logs, receipts, or service state. Registration,
+  private configuration, and another tick remain separately authorized gates.
   Current authority:
   `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`.
 - Plan 0060 version 1/C06 is CLOSED after installing service 0.3.91 with finite

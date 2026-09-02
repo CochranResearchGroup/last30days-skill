@@ -264,22 +264,10 @@ class XRunDiagnostics:
 
 class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
     def acquire_workspace(self, request: BrowserWorkspaceRequest) -> BrowserWorkspace:
-        access_plan = self._invoke(
-            [
-                "service", "access-plan",
-                "--service-name", "last30days",
-                "--agent-name", "x-scraper",
-                "--task-name", request.task_name or "x-search",
-                "--target-service-id", "x",
-                "--runtime-profile", request.profile_id,
-                "--url", request.start_url or "https://x.com/search",
-                "--browser-build", request.browser_build,
-                "--browser-host", request.browser_host,
-                "--view-stream-provider", request.view_provider,
-                "--control-input-provider", request.control_input_provider,
-                "--display-isolation", request.display_isolation,
-            ],
-            timeout=min(request.timeout, 30),
+        access_plan = self._resolve_access_plan(
+            request,
+            target_service_id="x",
+            constrain_presentation=True,
         )
         selected = access_plan.get("selectedProfile")
         selected_profile = str(selected.get("id") or "") if isinstance(selected, dict) else ""
@@ -644,6 +632,7 @@ def search_x_browser(
         control_input_provider=str(
             stable.get("control_input_provider") or "manual_attached_desktop"
         ),
+        constrain_presentation=True,
         allow_duplicate_profile_lane=browser_runtime.config_flag(
             config.get("LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE")
         ),
@@ -775,6 +764,7 @@ def scrape_x_feed(
         control_input_provider=str(
             stable.get("control_input_provider") or "manual_attached_desktop"
         ),
+        constrain_presentation=True,
         allow_duplicate_profile_lane=browser_runtime.config_flag(
             config.get("LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE")
         ),

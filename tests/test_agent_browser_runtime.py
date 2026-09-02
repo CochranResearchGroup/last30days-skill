@@ -1,5 +1,8 @@
 import json
+import os
+from pathlib import Path
 import subprocess
+import tempfile
 import unittest
 from unittest import mock
 
@@ -123,6 +126,128 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
         self.assertNotIn("--view-stream-provider", access_plan_args)
         self.assertNotIn("--control-input-provider", access_plan_args)
         self.assertNotIn("--display-isolation", access_plan_args)
+
+    def test_private_profile_capability_authenticates_plan_and_requests_ephemerally(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            capability_path = Path(temporary_directory) / "last30days.cap"
+            capability = "synthetic-last30days-profile-capability-secret-v1"
+            capability_path.write_text(capability + "\n", encoding="utf-8")
+            os.chmod(capability_path, 0o600)
+            client = agent_browser_runtime.CliAgentBrowserClient(
+                timeout=5,
+                profile_capability_file=capability_path,
+            )
+            request = _request(
+                url="https://x.com/home",
+                agent="x-scraper",
+                task="x-feed",
+                service="x",
+            )
+            plan = _access_plan(
+                url=request.start_url,
+                agent=request.agent_name,
+                task=request.task_name,
+                service=request.target_service_id,
+            )
+            handle = {
+                "browserId": "session:terminal-profile-safe",
+                "sessionName": "terminal-profile-safe",
+                "targetId": "x-owned",
+            }
+            messages = []
+
+            def response(data):
+                return {
+                    "result": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": json.dumps({"success": True, "data": data}),
+                            }
+                        ]
+                    }
+                }
+
+            with (
+                mock.patch.object(client, "_ensure_mcp_session"),
+                mock.patch.object(
+                    client,
+                    "_write_mcp_message",
+                    side_effect=lambda message: messages.append(message),
+                ),
+                mock.patch.object(
+                    client,
+                    "_wait_for_mcp_response",
+                    side_effect=[
+                        response(plan),
+                        response(
+                            {"serviceTabHandle": handle, "url": request.start_url}
+                        ),
+                        response({"ok": True}),
+                    ],
+                ),
+                mock.patch.object(
+                    agent_browser_runtime.agent_browser_config, "record_access_plan"
+                ),
+            ):
+                workspace = client.acquire_workspace(request)
+
+            self.assertEqual("x-owned", workspace.target_id)
+            self.assertEqual(
+                ["service_access_plan", "service_request", "service_request"],
+                [message["params"]["name"] for message in messages],
+            )
+            self.assertTrue(
+                all(
+                    message["params"]["arguments"].get("profileCapability")
+                    == capability
+                    for message in messages
+                )
+            )
+            self.assertNotIn("profileCapability", client._service_request_route)
+            self.assertNotIn(capability, json.dumps(client.command_timings))
+
+    def test_profile_capability_file_rejects_symlink_and_open_permissions(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = Path(temporary_directory)
+            capability_path = directory / "capability"
+            capability_path.write_text(
+                "synthetic-last30days-profile-capability-secret-v1\n",
+                encoding="utf-8",
+            )
+            os.chmod(capability_path, 0o644)
+            client = agent_browser_runtime.CliAgentBrowserClient(
+                timeout=5,
+                profile_capability_file=capability_path,
+            )
+            with self.assertRaises(
+                agent_browser_runtime.AgentBrowserRuntimeFailure
+            ) as open_permissions:
+                client._read_profile_capability()
+            self.assertEqual(
+                "profile_capability_unavailable", open_permissions.exception.reason_code
+            )
+
+            os.chmod(capability_path, 0o600)
+            symlink_path = directory / "capability-link"
+            symlink_path.symlink_to(capability_path)
+            client = agent_browser_runtime.CliAgentBrowserClient(
+                timeout=5,
+                profile_capability_file=symlink_path,
+            )
+            with self.assertRaises(
+                agent_browser_runtime.AgentBrowserRuntimeFailure
+            ) as symlink:
+                client._read_profile_capability()
+            self.assertEqual(
+                "profile_capability_unavailable", symlink.exception.reason_code
+            )
+
+    def test_profile_capability_is_redacted_from_defensive_error_text(self):
+        self.assertEqual(
+            "profileCapability=[REDACTED]",
+            agent_browser_runtime._redact("profileCapability=super-secret-value"),
+        )
 
     def _acquire(
         self,

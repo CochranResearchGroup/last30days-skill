@@ -2,9 +2,9 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 3
+Plan version: 4
 Date: 2026-09-01
-Branch: `fix/tick-restart-recovery`
+Branch: `fix/agent-browser-profile-capability-client`
 Target: `main`
 
 ## Objective
@@ -316,3 +316,54 @@ runtime diagnosis remain authoritative.
 Next action: publish this source checkpoint, qualify and install the exact
 Agent Browser candidate first, then build and install service 0.3.93 and run
 one bounded X-and-LinkedIn acceptance tick after a zero-active-work preflight.
+
+### Checkpoint P0062-C06 | 2026-09-01
+
+Plan version: 4
+
+State: `profile_capability_client_source_validated`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority` for source plumbing, tests, and installation; capability
+  registration, private configuration mutation, and another provider tick are
+  explicitly withheld pending operator authorization.
+
+Evidence:
+
+- service 0.3.93/schema 17 and Agent Browser truthful planning are installed;
+  the consumed successor tick proved retry ordinals zero through two for both X
+  and LinkedIn, then failed every browser acquisition because Last30days passed
+  no `profileCapability`;
+- Last30days 0.3.94 source accepts one absolute private capability-file path,
+  opens it with no-follow semantics, requires a same-user regular file with no
+  group/other permission bits, bounds and validates its content, and emits only
+  the safe `profile_capability_unavailable` failure when invalid;
+- when configured, the client calls Agent Browser MCP `service_access_plan` and
+  `service_request` with the capability added only to ephemeral argument copies.
+  The raw value is absent from CLI argv, the retained request route, command
+  timings, stable `agent-browser.json`, logs, receipts, and service state;
+- the capability-specific red tests failed before implementation and pass after
+  it. The complete Agent Browser-runtime, X, Facebook, and LinkedIn test slice
+  passes with the historical X presentation constraints preserved;
+- the complete Python suite has one reproducible baseline-only teardown timeout
+  in `test_real_service_mcp_discovery_query_refresh_and_poll`; the exact same
+  test fails on unchanged `origin/main`, while the changed focused suites pass.
+- the broad Python run excluding that baseline integration file exits zero; all
+  MCP Go packages, Python compilation, generated-manifest validation, plan
+  authority, and `git diff --check` pass;
+- live first-call `service_info` exposed a retained adapter 4.0.3 process whose
+  schema ceiling is 16 against ready service 0.3.93/schema 17. Source adapter
+  4.0.4 is already aligned and must be reinstalled before service acceptance.
+
+Subagent status: `not_spawned`.
+
+Graphiti write status: `not_written`; repository source, tests, and this
+checkpoint are the current durable authority.
+
+Next action: publish and merge this checkpoint, reinstall MCP 4.0.4, and
+install service 0.3.94 without configuring a capability or running a tick.
+Then request explicit authority for capability registration and owner-private
+environment wiring.
