@@ -25,6 +25,7 @@ def _request(
     task: str,
     service: str,
     allow_duplicate_profile_lane: bool = False,
+    route_pool_entry_id_hint: str = "",
 ):
     return agent_browser_runtime.BrowserWorkspaceRequest(
         profile_id="last30days-facebook",
@@ -37,6 +38,7 @@ def _request(
         task_name=task,
         target_service_id=service,
         allow_duplicate_profile_lane=allow_duplicate_profile_lane,
+        route_pool_entry_id_hint=route_pool_entry_id_hint,
     )
 
 
@@ -311,6 +313,43 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
 
         self.assertEqual("x-owned", workspace.target_id)
         self.assertEqual(["tab_new", "ui_action"], actions)
+
+    def test_broker_request_preserves_route_pool_entry_hint(self):
+        client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
+        request = _request(
+            url="https://www.reddit.com/",
+            agent="reddit-scraper",
+            task="reddit-home-feed",
+            service="reddit",
+            route_pool_entry_id_hint="guacamole-rdp-b",
+        )
+        plan = _access_plan(
+            url=request.start_url,
+            agent=request.agent_name,
+            task=request.task_name,
+            service=request.target_service_id,
+        )
+        captured = {}
+
+        def service_request(arguments, **_kwargs):
+            captured.update(arguments)
+            raise agent_browser_runtime.AgentBrowserRuntimeFailure(
+                "agent_browser_error", "stop after request capture"
+            )
+
+        with (
+            mock.patch.object(client, "_resolve_access_plan", return_value=plan),
+            mock.patch.object(
+                client, "_invoke_service_request", side_effect=service_request
+            ),
+            mock.patch.object(
+                agent_browser_runtime.agent_browser_config, "record_access_plan"
+            ),
+            self.assertRaises(agent_browser_runtime.AgentBrowserRuntimeFailure),
+        ):
+            client.acquire_workspace(request)
+
+        self.assertEqual("guacamole-rdp-b", captured["routePoolEntryId"])
 
     def test_reviewed_duplicate_profile_lane_override_reaches_broker(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)

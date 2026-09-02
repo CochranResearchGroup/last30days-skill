@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "c3271e39cb0dc15d4333a36537c5a799f3dcfd0ad66b4e598c0cd47ffe2cbe1b",
+      "sha256": "1698f11fa703b13ab18c084ad8212f5da351464632dc1b58938c985258a4ac66",
       "source": "service/VERSION"
     },
     {
@@ -27,7 +27,7 @@
     },
     {
       "path": "scripts/lib/agent_browser_runtime.py",
-      "sha256": "d1461784e5ebd92cfd0c5a4d47654147fb73cc49a53a8903cfd7ad734bbdbc17",
+      "sha256": "d15493e9f3e6825dfb8be79740a884d6a869a35c5ffcb5029b0357076072300d",
       "source": "skills/last30days/scripts/lib/agent_browser_runtime.py"
     },
     {
@@ -92,7 +92,7 @@
     },
     {
       "path": "scripts/lib/env.py",
-      "sha256": "1cec594529a092a7574336c059ace0609ab7a1654ee618fae5d413963213384a",
+      "sha256": "d1f80ea235265a1163d76f5e33c50284ae7472ac6b3dab6dee65ef0b7f4aac9d",
       "source": "skills/last30days/scripts/lib/env.py"
     },
     {
@@ -222,7 +222,7 @@
     },
     {
       "path": "scripts/lib/reddit_browser.py",
-      "sha256": "fb51cf8804506f2f945b73bcd65f3b8296cdf3adf7354601a032701e1e11ad10",
+      "sha256": "5c68311cf831dd597fb4892b0b4d586079d6036af35c475b1ca38b7ca2e2e462",
       "source": "skills/last30days/scripts/lib/reddit_browser.py"
     },
     {
@@ -347,7 +347,7 @@
     },
     {
       "path": "scripts/lib/service_job_runner.py",
-      "sha256": "a04e7ef6a3dc48627c472534a51ca2c5e84e805e91ac20df210918c494102df8",
+      "sha256": "dbcf5763881be64daa549061bd988718a2ca041c55aaeb516b7dbbbf2a2ca4b7",
       "source": "skills/last30days/scripts/lib/service_job_runner.py"
     },
     {
@@ -658,5 +658,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.97"
+  "service_version": "0.3.100"
 }

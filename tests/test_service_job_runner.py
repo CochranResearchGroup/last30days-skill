@@ -112,6 +112,10 @@ def _runtime(tmp_path, worker, *, budget_cents=50, embedding_provider=None):
     return scheduler, supervisor, retriever, runner
 
 
+def test_default_job_policy_allows_collection_specs_up_to_one_hundred_items():
+    assert JobRunnerPolicy().item_limit == 100
+
+
 def test_successful_runner_publishes_new_content_with_semantic_evidence(tmp_path):
     worker = FakeWorker(
         {

@@ -57,10 +57,12 @@ AUTH_SCRIPT = r"""
   const checkpoint = /(?:captcha|security check|verify you are human)/i.test(
     `${location.href}\n${body}`
   );
+  const networkBlocked = /you(?:'ve| have) been blocked by network security/i.test(body);
   return {
-    authenticated: (userMenu || cookieNames.has('reddit_session')) && !loginForm && !checkpoint,
+    authenticated: (userMenu || cookieNames.has('reddit_session')) && !loginForm && !checkpoint && !networkBlocked,
     login_form: loginForm || /\/login\/?(?:[?#]|$)/i.test(location.pathname),
     checkpoint,
+    network_blocked: networkBlocked,
   };
 })()
 """
@@ -73,6 +75,7 @@ PAGE_STATE_SCRIPT = r"""
   const url = location.href;
   const search = new URL(url).searchParams;
   const hasPosts = Boolean(document.querySelector('shreddit-post, [data-testid="search-post-unit"], article a[href*="/comments/"]'));
+  const networkBlocked = /you(?:'ve| have) been blocked by network security/i.test(text);
   return {
     url,
     title: document.title || '',
@@ -85,6 +88,7 @@ PAGE_STATE_SCRIPT = r"""
     rate_limit_reason: lower.includes('whoa there, pardner') ? 'whoa_there' : '',
     error_page: /(?:something went wrong|our cdn was unable|upstream connect error)/i.test(lower),
     interstitial: !hasPosts && /(?:before you continue to reddit|review your privacy choices|consent to continue)/i.test(lower),
+    network_blocked: networkBlocked,
   };
 })()
 """
@@ -179,6 +183,7 @@ class RedditPageState:
     rate_limit_reason: str = ""
     error_page: bool = False
     interstitial: bool = False
+    network_blocked: bool = False
 
 
 @dataclass(frozen=True)
@@ -186,6 +191,7 @@ class RedditAuthState:
     authenticated: bool = False
     login_form: bool = False
     checkpoint: bool = False
+    network_blocked: bool = False
 
 
 @dataclass
@@ -241,6 +247,7 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
             authenticated=bool(raw.get("authenticated")),
             login_form=bool(raw.get("login_form")),
             checkpoint=bool(raw.get("checkpoint")),
+            network_blocked=bool(raw.get("network_blocked")),
         )
 
 
@@ -268,20 +275,23 @@ def browser_request(
         browser_build=str(
             config.get("LAST30DAYS_REDDIT_BROWSER_BUILD") or "stealthcdp_chromium"
         ),
-        view_provider=(
-            "cdp_screencast"
-            if feed_surface
-            else str(
-                config.get("LAST30DAYS_REDDIT_BROWSER_VIEW_PROVIDER")
-                or "rdp_gateway"
-            )
+        view_provider=str(
+            config.get("LAST30DAYS_REDDIT_BROWSER_VIEW_PROVIDER")
+            or "rdp_gateway"
         ),
         timeout=timeout,
+        browser_id_hint=str(
+            config.get("LAST30DAYS_REDDIT_BROWSER_ID") or ""
+        ).strip(),
+        route_id_hint=str(config.get("LAST30DAYS_REDDIT_ROUTE_ID") or "").strip(),
+        route_pool_entry_id_hint=str(
+            config.get("LAST30DAYS_REDDIT_ROUTE_POOL_ENTRY_ID") or ""
+        ).strip(),
         start_url="https://www.reddit.com/",
         agent_name="reddit-scraper",
         task_name=("reddit-home-feed" if feed_surface else "reddit-post-search"),
         target_service_id="reddit",
-        browser_host=("local_headless" if feed_surface else "remote_headed"),
+        browser_host="remote_headed",
         control_input_provider=(
             "cdp_input" if feed_surface else "manual_attached_desktop"
         ),
@@ -375,6 +385,11 @@ class RedditBrowserScraper:
             workspace = self.client.acquire_workspace(self.request)
             diagnostics.failure_stage = "authentication"
             auth = self.client.inspect_auth(workspace)
+            if auth.network_blocked:
+                raise RedditBrowserFailure(
+                    "network_security_block",
+                    "Reddit blocked this browser posture at the network-security boundary",
+                )
             if auth.checkpoint:
                 raise RedditBrowserFailure(
                     "checkpoint_required",
@@ -485,6 +500,11 @@ class RedditBrowserScraper:
         )
         self.client.act(workspace, BrowserAction("wait", value="2500"))
         page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
+        if page.network_blocked:
+            raise RedditBrowserFailure(
+                "network_security_block",
+                "Reddit blocked this browser posture at the network-security boundary",
+            )
         if page.rate_limited:
             raise RedditBrowserFailure(
                 "rate_limit_detected",
@@ -526,6 +546,7 @@ class RedditBrowserScraper:
         for delay_ms in ("3500", "5000"):
             if (
                 page.has_posts
+                or page.network_blocked
                 or page.rate_limited
                 or page.checkpoint
                 or page.login_page
@@ -535,6 +556,11 @@ class RedditBrowserScraper:
                 break
             self.client.act(workspace, BrowserAction("wait", value=delay_ms))
             page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
+        if page.network_blocked:
+            raise RedditBrowserFailure(
+                "network_security_block",
+                "Reddit blocked this browser posture at the network-security boundary",
+            )
         if page.rate_limited:
             raise RedditBrowserFailure(
                 "rate_limit_detected",
@@ -899,6 +925,7 @@ def _page_state(raw: dict[str, Any]) -> RedditPageState:
         rate_limit_reason=str(raw.get("rate_limit_reason") or ""),
         error_page=bool(raw.get("error_page")),
         interstitial=bool(raw.get("interstitial")),
+        network_blocked=bool(raw.get("network_blocked")),
     )
 
 

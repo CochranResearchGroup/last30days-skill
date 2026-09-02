@@ -402,7 +402,7 @@ def test_feed_stops_after_three_stagnant_virtualized_snapshots():
     assert result["diagnostics"]["stop_reason"] == "stagnation_limit"
 
 
-def test_feed_request_uses_exact_profile_with_cdp_only_headless_posture():
+def test_feed_request_uses_exact_profile_with_remote_headed_posture():
     request = reddit_browser.browser_request(
         {
             "LAST30DAYS_REDDIT_BROWSER_PROFILE": "last30days-facebook",
@@ -421,14 +421,28 @@ def test_feed_request_uses_exact_profile_with_cdp_only_headless_posture():
 
     assert request.profile_id == "last30days-facebook"
     assert request.session_name == "last30days-reddit-feed"
-    assert request.browser_id_hint == ""
-    assert request.route_id_hint == ""
-    assert request.route_pool_entry_id_hint == ""
+    assert request.browser_id_hint == "session:existing-reddit-browser"
+    assert request.route_id_hint == "guacamole:reddit"
+    assert request.route_pool_entry_id_hint == "route-pool:reddit"
     assert request.allow_duplicate_profile_lane is True
-    assert request.browser_host == "local_headless"
-    assert request.view_provider == "cdp_screencast"
+    assert request.browser_host == "remote_headed"
+    assert request.view_provider == "rdp_gateway"
     assert request.control_input_provider == "cdp_input"
     assert request.constrain_presentation is True
+
+
+def test_feed_network_security_block_is_typed_before_auth_ambiguity():
+    class NetworkBlockedClient(FakeClient):
+        def inspect_auth(self, _workspace):
+            return reddit_browser.RedditAuthState(network_blocked=True)
+
+    result = _feed_scraper(
+        NetworkBlockedClient(extracts=[]), limit=1, scrolls=0
+    ).feed("2026-08-03", "2026-09-02")
+
+    assert result["items"] == []
+    assert result["error_type"] == "network_security_block"
+    assert result["diagnostics"]["failure_stage"] == "authentication"
 
 
 def test_feed_requires_authenticated_profile_before_navigation():

@@ -85,7 +85,7 @@ class AssessmentQueue(Protocol):
 class JobRunnerPolicy:
     lease_seconds: int = 300
     wall_timeout_seconds: int = 120
-    item_limit: int = 50
+    item_limit: int = 100
     network_request_limit: int = 100
     depth: str = "standard"
     successful_coverage_seconds: int = 86_400

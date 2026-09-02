@@ -332,6 +332,10 @@ class CliAgentBrowserClient:
             )
             if request.allow_duplicate_profile_lane:
                 self._service_request_route["allowDuplicateProfileLane"] = True
+            if request.route_pool_entry_id_hint:
+                self._service_request_route["routePoolEntryId"] = (
+                    request.route_pool_entry_id_hint
+                )
             if route_browser_id and route_session_name:
                 self._service_request_route.update(
                     {

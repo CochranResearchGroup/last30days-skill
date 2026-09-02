@@ -15,8 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   virtualized scrolling, and keeps topic search available as a separate public-
   first path. Feed acquisition excludes only explicit promoted cards and
   platform-marked spam as quality decisions while reporting date scope,
-  duplicates, and scraper limitations separately. Its CDP-only local-headless
-  posture avoids making ordinary feed retrieval depend on an RDP/Xvfb route.
+  duplicates, and scraper limitations separately.
 
 - **Authenticated X and LinkedIn home-feed acquisition.** Service 0.3.60
   carries `surface_kind=feed` across durable tick and recurring-collection
@@ -26,6 +25,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Topic search remains available as a separate, unchanged acquisition mode.
 
 ### Fixed
+
+- **Broker-preserved Reddit route selection.** Service 0.3.100 preserves the
+  configured Reddit route-pool entry in the broker-first Agent Browser
+  `tab_new` request. The installed worker was reading the hint correctly, but
+  this acquisition branch rebuilt the request without it and consequently
+  attempted the stale generic Xvfb display instead of the ready RDP route.
+
+- **Governed Reddit route-pool selection.** Service 0.3.99 carries optional
+  Reddit browser, route, and route-pool hints through the installed worker so
+  authenticated feed acquisition can bind a known-ready RDP display instead
+  of falling back to an orphaned generic Xvfb allocation.
+
+- **Reddit headed-feed reliability and 80-item service capacity.** Service
+  0.3.98 runs authenticated Reddit feed acquisition through the configured
+  remote-headed route after live evidence showed Reddit blocks the local-
+  headless posture at its network-security boundary. That block now receives
+  its own typed diagnostic instead of looking like ambiguous authentication,
+  and the acquisition host ceiling matches the existing 100-item collection
+  contract so an 80-item specification is no longer silently reduced to 50.
 
 - **Presentation-neutral X feed acquisition.** Service 0.3.96 no longer asks
   Agent Browser to satisfy operator-presentation constraints for the ordinary
