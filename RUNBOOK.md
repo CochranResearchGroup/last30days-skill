@@ -24432,3 +24432,72 @@ Next Bounded Action:
 - publish and merge this checkpoint, reinstall MCP adapter 4.0.4, build and
   install exact service 0.3.94, and verify readiness without capability
   configuration.
+
+## Turn 388 | 2026-09-01
+
+Focus: merge and install the authenticated Agent Browser client while
+preserving the capability and provider-execution boundaries.
+
+Authority Consulted:
+
+- operator repair, test, merge, and install objective; Plan 0062 version 4/C06;
+  first-call Last30days discovery contract; current repository, installed
+  binary, service, systemd, and fresh-process readbacks.
+
+Decisions And Changes:
+
+- published source commit `51ae5c9`, merged it to main as `96400a4`, and pushed
+  main;
+- first live `service_info` exposed the retained Codex adapter as
+  4.0.3/schema-max-16 against service 0.3.93/schema 17;
+- installed merged-source MCP 4.0.4, built the deterministic 0.3.94 service
+  artifact, and upgraded the user service;
+- identified this conversation's exact stale adapter child by its verified
+  parent PID and terminated only that child. Other Codex sessions and the
+  Last30days service were untouched. The host returned `Transport closed`
+  instead of hot-restarting the connector, so a client reconnect is required;
+- did not register or read a capability, change the owner-private environment,
+  or invoke a provider tick.
+
+Validation Evidence:
+
+- MCP binary SHA-256 is
+  `6e8d0886d0d9e8988af5e3cade3a5d7e88cea086d37801e93d135bfb95cf6d14`;
+- service artifact SHA-256 is
+  `57dfd8b5966224c4853a191db9cb293973b40bcb543e29718e7f6fe4a5b14f1b`;
+- installed service 0.3.94 is active and diagnose reports ready/schema 17 with
+  runtime-manifest SHA-256
+  `882612c588752cefc41c94e011359927148437a3ee8765853fb0460a29deaf2e`;
+- installed and merged capability-client source SHA-256 both equal
+  `120e081986fb488d5a10b6b1a8f2c95e57d3f7d3ac8dacd851c48cd935effe0f`;
+- a fresh installed MCP process reports compatible adapter 4.0.4, service
+  0.3.94, and database-schema range 17..17;
+- the private environment contains no capability-file setting.
+
+State Movement:
+
+- Plan 0062 C06 moves from source-validated to installed. P08 remains OPEN at
+  the separately authorized capability-registration and live-proof gates.
+
+Progress Classification:
+
+- `blocker_reduction`.
+
+Authority Classification:
+
+- `inherited_authority` for merge and installation; `authority_withheld` for
+  principal/capability mutation and another provider tick.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; current repository and installed readbacks are sufficient.
+
+Next Bounded Action:
+
+- reconnect the Codex client, then request explicit authority to register the
+  Last30days Agent Browser principal and wire its private capability file. Do
+  not run another provider tick without separate authority.

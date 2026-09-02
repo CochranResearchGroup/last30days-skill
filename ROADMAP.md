@@ -1099,8 +1099,12 @@ Current State:
   did not possess or transmit that capability. Service 0.3.94 source now reads
   only an absolute, same-user 0600 nonsymlink capability file and sends the raw
   value ephemerally to both MCP planning and execution without placing it in
-  argv, stable target config, logs, receipts, or service state. Registration,
-  private configuration, and another tick remain separately authorized gates.
+  argv, stable target config, logs, receipts, or service state. Service 0.3.94
+  and MCP 4.0.4 are installed from merged main, and a fresh adapter reports
+  schema-17 compatibility. The already-open Codex connector required targeted
+  termination and does not hot-restart, so this conversation must reconnect;
+  registration, private configuration, and another tick remain separately
+  authorized gates.
   Current authority:
   `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`.
 - Plan 0060 version 1/C06 is CLOSED after installing service 0.3.91 with finite

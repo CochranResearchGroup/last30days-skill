@@ -321,7 +321,7 @@ one bounded X-and-LinkedIn acceptance tick after a zero-active-work preflight.
 
 Plan version: 4
 
-State: `profile_capability_client_source_validated`
+State: `profile_capability_client_installed`
 
 Progress classification: `blocker_reduction`
 
@@ -357,13 +357,26 @@ Evidence:
 - live first-call `service_info` exposed a retained adapter 4.0.3 process whose
   schema ceiling is 16 against ready service 0.3.93/schema 17. Source adapter
   4.0.4 is already aligned and must be reinstalled before service acceptance.
+- commit `51ae5c9` was merged to main by `96400a4`; MCP adapter 4.0.4 was
+  installed with binary SHA-256
+  `6e8d0886d0d9e8988af5e3cade3a5d7e88cea086d37801e93d135bfb95cf6d14`;
+- merged-main service artifact SHA-256
+  `57dfd8b5966224c4853a191db9cb293973b40bcb543e29718e7f6fe4a5b14f1b`
+  installed as 0.3.94. Diagnose reports ready/schema 17/runtime manifest
+  `882612c588752cefc41c94e011359927148437a3ee8765853fb0460a29deaf2e`,
+  and installed capability-client source matches merged source;
+- a fresh MCP process reports `compatible`, adapter 4.0.4, service 0.3.94, and
+  schema range 17..17. This conversation's retained connector stayed on 4.0.3;
+  targeted termination closed only that process, but the host returned
+  `Transport closed` instead of hot-restarting. This client must reconnect;
+- the owner-private environment still has no capability-file setting. No
+  capability was registered or read, and no provider tick was invoked.
 
 Subagent status: `not_spawned`.
 
 Graphiti write status: `not_written`; repository source, tests, and this
 checkpoint are the current durable authority.
 
-Next action: publish and merge this checkpoint, reinstall MCP 4.0.4, and
-install service 0.3.94 without configuring a capability or running a tick.
-Then request explicit authority for capability registration and owner-private
-environment wiring.
+Next action: reconnect the Codex client, then request explicit authority for
+capability registration and owner-private environment wiring. A further
+provider tick remains separately authorized.
