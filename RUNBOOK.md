@@ -25017,3 +25017,75 @@ Next Bounded Action:
 - after the operator grants a fresh live-attempt budget, run one Reddit-only
   80-item campaign on installed service 0.3.97 and preserve its receipt and
   exact cleanup evidence.
+
+## Turn 396 | 2026-09-02
+
+Focus: establish an exact-profile Guacamole/RDP browser for Reddit manual
+authentication.
+
+Authority Consulted:
+
+- operator request for Guacamole/RDP login; Plan 0063/C03; Agent Browser
+  operating guide, protected-profile, manual-seeding, recovery, and remote-view
+  contracts; current access-plan, capability, doctor, runtime, job, and trace
+  readbacks.
+
+Decisions And Changes:
+
+- selected only `last30days-facebook` and its existing private Last30Days
+  capability; no replacement profile, raw Guacamole route, or direct Chrome
+  process was created;
+- followed the protected manual-seeding acquisition path, then the protected
+  profile-acquisition and sealed terminal-owner recovery path when the first
+  request was vetoed;
+- stopped after the exact recovery apply reproduced the same identity veto;
+  did not bypass protected profile authority or run a Reddit scrape.
+
+Validation Evidence:
+
+- capability status reports one active exact-profile grant; scoped remote-view
+  doctor reports browser launch, route pool, Guacamole, RDP gateway, display,
+  and public operator ingress ready;
+- capability-authenticated access planning selects the exact profile and
+  terminal owner session with cleanup satisfied, process absence proven, and
+  the profile lock released;
+- manual-seeding acquire failed before launch with
+  `existing_session_profile_identity_unproven` on both the generic and exact
+  authority-derived session route; both presentation leases rolled back;
+- protected acquisition returned `profile_acquisition_daemon_route_mismatch`;
+  its supported recovery planner sealed only `supersede_terminal_owner` for
+  generation 73, but exact apply returned
+  `existing_session_profile_identity_unproven`;
+- final runtime status reports no live exact-profile browser, PID, DevTools
+  endpoint, targets, or lock. Trace contains two terminal failed jobs and no
+  browser event, incident, or operator handoff.
+
+State Movement:
+
+- Plan 0063 advances to version 4/C04
+  `manual_login_blocked_by_agent_browser_identity_veto`; P23 remains OPEN.
+
+Progress Classification:
+
+- `blocked_progress`; Reddit authentication could not begin because Agent
+  Browser rejected the exact protected recovery it had just authorized.
+
+Authority Classification:
+
+- `inherited_authority`; every attempted effect stayed inside the requested
+  profile and presentation scope. No scraping retry budget was consumed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the existing repository checkpoint is authoritative and the
+  prior Graphiti transport failure remains unresolved.
+
+Next Bounded Action:
+
+- repair Agent Browser's protected terminal-owner supersession/daemon-route
+  coherence, then repeat only the manual-seeding acquisition and require a
+  ready durable handoff before asking the operator to log in.

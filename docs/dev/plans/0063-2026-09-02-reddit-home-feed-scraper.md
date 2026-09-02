@@ -6,7 +6,7 @@ Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 3
+Plan version: 4
 Date: 2026-09-02
 
 ## Objective
@@ -269,3 +269,47 @@ Graphiti write status: `failed_transport`; job
 Next action: obtain a fresh explicit live-attempt budget, then run one bounded
 Reddit-only campaign against installed service 0.3.97 to prove 80 unique
 canonical posts or preserve the next typed terminal limitation.
+
+### Checkpoint P0063-C04 | 2026-09-02
+
+Plan version: 4
+
+State: `manual_login_blocked_by_agent_browser_identity_veto`
+
+Progress classification: `blocked_progress`
+
+Authority classification:
+
+- `inherited_authority`; the operator requested an exact-profile Guacamole/RDP
+  login surface. All actions were limited to protected acquisition, route
+  presentation, and exact recovery planning for `last30days-facebook`.
+
+Evidence:
+
+- capability status reports one active `last30days` grant for the exact
+  profile, and scoped remote-view doctor reports the RDP/Guacamole stack ready;
+- the capability-authenticated access plan selects `last30days-facebook`, the
+  exact terminal owner session, and `supersede_terminal_owner`, with process
+  absence and profile-lock release proven;
+- both generic and exact-session `service_profile_manual_seeding_acquire`
+  requests failed before Chrome launch with
+  `existing_session_profile_identity_unproven`; each route/display lease was
+  fully rolled back;
+- protected `service_profile_acquire` failed with
+  `profile_acquisition_daemon_route_mismatch`. The supported recovery planner
+  then sealed a single `supersede_terminal_owner` action for generation 73,
+  but applying that exact plan again failed with
+  `existing_session_profile_identity_unproven`;
+- final runtime readback reports no browser PID, DevTools endpoint, targets, or
+  profile lock. No durable recovery receipt exists, no operator handoff URL was
+  produced, and no Reddit acquisition attempt ran.
+
+Subagent status: `not_spawned`.
+
+Graphiti write status: `not_written`; the repository receipt is authoritative
+and the prior Graphiti write path remains failed on transport timeout.
+
+Next action: repair Agent Browser so protected terminal-owner supersession can
+complete on its authority-derived daemon route, then request the Reddit manual-
+seeding handoff again and require `operatorVisible.state=ready` before sharing
+its durable `/remote-view/<handoff-id>` URL.

@@ -2286,8 +2286,13 @@ Current State:
   navigation, then exposed the now-repaired asynchronous card-readiness gap;
 - service 0.3.97 is transactionally installed, MCP-ready and compatible on
   schema 17, source-identical to the validated commit, and database-clean;
-- Plan 0063 version 3/C03 owns a later fresh-budget 80-item proof. All existing
-  Reddit collection specifications remain disabled.
+- the requested Reddit manual-login surface is currently blocked inside Agent
+  Browser: its protected planner proves terminal-owner supersession safe, but
+  both manual-seeding acquire and exact recovery apply reject that same owner
+  as `existing_session_profile_identity_unproven` before Chrome launch;
+- Plan 0063 version 4/C04 owns Agent Browser login-readiness followed by a
+  later fresh-budget 80-item proof. All existing Reddit collection
+  specifications remain disabled.
 
 Active Plan:
 
@@ -2301,8 +2306,9 @@ Dependencies:
 
 Next Action:
 
-- obtain a fresh bounded live-attempt budget, then run the installed Reddit
-  feed path for the final 80-item acceptance proof.
+- repair the protected Agent Browser terminal-owner supersession path, produce
+  a ready Guacamole/RDP manual-login handoff for the exact profile, then obtain
+  a fresh bounded live-attempt budget for the 80-item proof.
 
 ## Goal-Compatible Plan Conversion
 
