@@ -2265,6 +2265,41 @@ Next Bounded Action:
   checkpoint notice as valid only when a bounded responsive probe supplies
   explicit human-gate evidence.
 
+## P23 | Reddit Home Feed Scraper
+
+State: OPEN
+
+Objective: add a deterministic authenticated Reddit home-feed scraper that
+collects 80 unique canonical posts while preserving topic search and excluding
+only explicit ads and platform-marked spam as content-quality decisions.
+
+Current State:
+
+- Reddit has an Agent Browser search adapter with canonical permalink,
+  timestamp, subreddit, and relevance validation, but it has no feed interface;
+- X and LinkedIn already route `surface_kind=feed` through dedicated home-feed
+  methods, while Reddit sends every request through the topic-search access
+  order;
+- prior Reddit live proof established bounded healthy-zero observability, not
+  successful content yield;
+- Plan 0063 version 1 owns implementation and one bounded three-attempt,
+  80-item live proof. Reddit remains disabled in `daily-default`.
+
+Active Plan:
+
+- `docs/dev/plans/0063-2026-09-02-reddit-home-feed-scraper.md`
+
+Dependencies:
+
+- consumes the published Agent Browser session-recovery fixes on
+  `fix/tick-restart-recovery` without changing P08's schedule acceptance;
+- preserves existing Reddit topic search and source-access policy.
+
+Next Action:
+
+- execute Packet A as a red/green public-interface tracer bullet, then add
+  scrolling and exclusion behaviors one at a time.
+
 ## Goal-Compatible Plan Conversion
 
 Before moving a lane from `PLANNED` to `OPEN`, create or identify a plan that:

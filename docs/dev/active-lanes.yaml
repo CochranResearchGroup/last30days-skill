@@ -15,3 +15,20 @@ lanes:
     dependencies: []
     overlaps: []
     updated_at: 2026-09-02
+  - id: P23
+    objective: Build and prove an authenticated 80-item Reddit home-feed scraper
+    plan: docs/dev/plans/0063-2026-09-02-reddit-home-feed-scraper.md
+    plan_ref: refs/heads/feat/reddit-home-feed
+    branch: feat/reddit-home-feed
+    target: main
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: f5a191a2cb337bdceec45047f821d580c0c871c9
+    remote_ref: refs/remotes/origin/feat/reddit-home-feed
+    integration: fast-forward
+    integration_receipt: null
+    dependencies:
+      - P08
+    overlaps:
+      - skills/last30days/scripts/lib/agent_browser_runtime.py
+    updated_at: 2026-09-02

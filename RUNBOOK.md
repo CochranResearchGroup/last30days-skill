@@ -24793,3 +24793,74 @@ Next Bounded Action:
 - observe the September 3 `daily-default` tick, verify X/LinkedIn/YouTube
   terminal receipts and cleanup, and close P08 only if the recurring execution
   itself satisfies Plan 0062 acceptance criterion 6.
+
+## Turn 393 | 2026-09-02
+
+Focus: define and start the authenticated Reddit home-feed scraper lane.
+
+Authority Consulted:
+
+- operator-approved feed-first scope; Plan 0062/C09 and published P08 runtime
+  fixes; current Reddit browser/search adapter and tests; X/LinkedIn feed seams;
+  Graphiti `last30days_skill_main`; CodeGraph; planning, architecture, testing,
+  documentation, Git, validation, and closeout policy.
+
+Decisions And Changes:
+
+- confirmed the existing Reddit browser module is a topic-search adapter, not a
+  home-feed scraper: it navigates `/search`, applies lexical relevance, caps raw
+  snapshots at 80, and has no `surface_kind=feed` worker route;
+- recovered prior durable evidence that Reddit's live proof established
+  truthful healthy-zero execution rather than content yield;
+- accepted the operator's exact scope: preserve search, scrape the home feed,
+  retain legitimate posts without topical filtering, exclude only explicit ads
+  and platform-marked spam, prove 80 unique canonical links with at most three
+  attempts, and leave the timer disabled;
+- created isolated branch `feat/reddit-home-feed` from published P08 commit
+  `f5a191a` so Plan 0062 can remain independently open for its scheduled-tick
+  acceptance gate;
+- opened Plan 0063/P23 and registered its exact code, runtime, proof, and stop
+  bounds in
+  `docs/dev/plans/0063-2026-09-02-reddit-home-feed-scraper.md`. No browser,
+  provider, schedule, credential, or service mutation ran.
+
+Validation Evidence:
+
+- Graphiti runtime was healthy; focused discovery returned eight facts and five
+  episodes, including the Plan 0020 search relevance remediation and Plan 0018
+  healthy-zero Reddit proof, both verified by exact episode readback;
+- CodeGraph index was current and traced `surface_kind=feed` only through the X
+  and LinkedIn worker adapters; Reddit still routes all requests through
+  `_reddit_adapter` search access order;
+- policy selector classified the repository `already-aligned` with the
+  product-engineering profile; active-lane audit identified pre-existing P08
+  default-branch catalog drift, so the new lane is isolated rather than mixed
+  into that branch.
+
+State Movement:
+
+- P23 and Plan 0063 version 1 move to OPEN; P08/Plan 0062 remains OPEN and
+  unchanged.
+
+Progress Classification:
+
+- `authorized_plan_opened`; implementation begins with Packet A.
+
+Authority Classification:
+
+- `explicit_authority`; the operator approved the proposed interface, profile,
+  exclusions, 80-item proof, and three-attempt bound.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `pending`; write one compact source-backed episode after the first validated
+  implementation checkpoint rather than recording plan-only churn.
+
+Next Bounded Action:
+
+- add one failing public-interface feed test and the minimum implementation
+  needed to navigate the Reddit home feed and return one canonical real post.
