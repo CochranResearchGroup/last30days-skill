@@ -25326,3 +25326,68 @@ Next Bounded Action:
 - obtain one fresh Reddit attempt, run the disabled 80-item specification on
   installed service 0.3.100, and accept only 80 unique canonical posts or a new
   typed terminal limitation. Keep Reddit disabled in recurring schedules.
+
+## Turn 400 | 2026-09-02
+
+Focus: close the deterministic MCP/service integration teardown failure before
+the next Reddit live-proof opportunity.
+
+Authority Consulted:
+
+- Plan 0063/C07; the repeated exact failing test; repository bug-diagnosis,
+  codegraph, validation, planning, and active-lane policy; current service
+  shutdown and tick-schedule flow.
+
+Decisions And Changes:
+
+- treated the repeated ten-second service termination timeout as a real red
+  validation signal rather than waiving it as a known failure;
+- traced shutdown structurally, then varied only the service configuration
+  root. The isolated root removed the failure without changing production
+  shutdown behavior;
+- updated only the integration test to pass a temporary
+  `LAST30DAYS_CONFIG_DIR` to its spawned service, preventing repository tests
+  from loading the operator's real scheduled-tick configuration;
+- committed and pushed test-isolation commit `c77cbb3`. No browser, provider,
+  schedule, installed runtime, or live database state was mutated.
+
+Validation Evidence:
+
+- the exact integration test failed twice before isolation and passed in under
+  two seconds with the isolated configuration root;
+- after the committed repair, the exact test passes and the complete 2,758-test
+  collection reaches 100% with no failures and seven skips;
+- the structural cause is the service startup contract: an inherited real
+  `tick-config-v1.json` starts `TickScheduleLoop`, whose production shutdown
+  correctly allows a finite 900-second active-poll drain. The test's ten-second
+  process wait was therefore observing unintended real-config work;
+- `git diff --check` passes before checkpoint publication.
+
+State Movement:
+
+- Plan 0063 advances to version 8/C08
+  `release_candidate_fully_validated_live_attempt_ceiling_reached`; P23 remains
+  OPEN because live 80-item proof is still absent.
+
+Progress Classification:
+
+- `acceptance_progress`; Acceptance Criterion 6 now has a genuinely green full
+  repository suite rather than an exception note.
+
+Authority Classification:
+
+- `inherited_authority`; this was an offline test-containment repair within the
+  approved release validation scope and consumed no live attempt.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; current repository and test evidence are authoritative.
+
+Next Bounded Action:
+
+- obtain one fresh Reddit attempt, run the disabled 80-item specification on
+  installed service 0.3.100, and keep Reddit disabled in recurring schedules.

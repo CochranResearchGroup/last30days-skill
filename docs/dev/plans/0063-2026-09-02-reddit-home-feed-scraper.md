@@ -6,7 +6,7 @@ Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 7
+Plan version: 8
 Date: 2026-09-02
 
 ## Objective
@@ -30,6 +30,9 @@ filtering, while preserving the existing Reddit search capability.
   dry-run evidence proves `routePoolEntryId=guacamole-rdp-b`, but the campaign's
   three-attempt ceiling prevents claiming live 80-item acceptance without a new
   explicit attempt allowance;
+- commit `c77cbb3` isolates the real MCP/service integration test from the
+  operator's configured tick runtime; the complete 2,758-test collection now
+  reaches 100% without failures, closing the remaining validation gap;
 - all 13 Reddit collection specifications remain disabled, and this plan has
   not enabled or otherwise mutated `daily-default`.
 
@@ -494,3 +497,47 @@ Next action: obtain one fresh Reddit acquisition attempt, then run the disabled
 80-item specification through installed service 0.3.100 and require either 80
 unique canonical posts or the next typed terminal limitation. Do not enable the
 recurring Reddit lane.
+
+### Checkpoint P0063-C08 | 2026-09-02
+
+Plan version: 8
+
+State: `release_candidate_fully_validated_live_attempt_ceiling_reached`
+
+Progress classification: `acceptance_progress`
+
+Authority classification:
+
+- `inherited_authority`; diagnosing and repairing the repository validation
+  failure was an offline, test-only continuation of the approved Reddit release
+  candidate. It consumed no provider request or browser acquisition attempt.
+
+Evidence:
+
+- the exact red-capable command
+  `uv run pytest tests/test_mcp_service_integration.py::test_real_service_mcp_discovery_query_refresh_and_poll -q`
+  reproduced the service-termination timeout twice;
+- structural tracing showed the test service inherited
+  `~/.config/last30days/tick-config-v1.json`, started a real-config
+  `TickScheduleLoop` against its temporary database, and then applied the
+  production 900-second graceful drain policy to unintended scheduled work;
+- changing only `LAST30DAYS_CONFIG_DIR` to an isolated temporary directory
+  made the same test pass in under two seconds, confirming configuration
+  inheritance rather than service socket, child-worker, or MCP connection
+  leakage as the cause;
+- commit `c77cbb3b3a7aa72b8bfef231f1f377c5770957fa` passes that isolated directory
+  explicitly to the spawned test service. The exact test passes, and the full
+  2,758-test repository collection reaches 100% with no failures and seven
+  skips;
+- service 0.3.100 remains installed and ready; this test-only repair does not
+  alter the reproducible runtime artifact or its previously recorded digest.
+
+Subagent status: `not_spawned`; current orchestration policy prohibits
+delegation.
+
+Graphiti write status: `not_written`; the repository test and commit are the
+authoritative evidence for this validation-only checkpoint.
+
+Next action: obtain one fresh Reddit acquisition attempt, then run the disabled
+80-item specification through installed service 0.3.100. Keep Reddit disabled
+in recurring schedules.

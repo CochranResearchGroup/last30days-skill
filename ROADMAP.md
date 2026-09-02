@@ -2291,7 +2291,10 @@ Current State:
   `routePoolEntryId=guacamole-rdp-b` and an item ceiling of 100, while the
   reproducible 0.3.100 artifact is transactionally installed and ready on
   schema 17;
-- Plan 0063 version 7/C07 owns one later fresh-budget 80-item proof. All 13
+- commit `c77cbb3` isolates MCP/service integration tests from the operator's
+  configured tick runtime; the full 2,758-test collection now reaches 100%
+  without failures;
+- Plan 0063 version 8/C08 owns one later fresh-budget 80-item proof. All 13
   Reddit collection specifications remain disabled, and no recurring schedule
   was enabled or changed.
 
