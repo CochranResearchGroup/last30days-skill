@@ -349,7 +349,8 @@ class CliAgentBrowserClient:
                 and compatible_live_browser_count == 0
             ):
                 self._service_request_route.pop("browserId", None)
-                self._service_request_route["sessionName"] = request.session_name
+                if not str(broker_request.get("sessionName") or ""):
+                    self._service_request_route["sessionName"] = request.session_name
             broker_timeout = min(request.timeout, 30)
             broker_started = time.monotonic()
             try:

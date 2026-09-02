@@ -327,6 +327,9 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             task=request.task_name,
             service=request.target_service_id,
         )
+        plan["decision"]["serviceRequest"]["request"]["sessionName"] = (
+            "terminal-profile-fresh"
+        )
         captured = []
         handle = {
             "browserId": "session:last30days-force",
@@ -359,7 +362,7 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             client.acquire_workspace(request)
 
         self.assertIs(True, captured[0]["allowDuplicateProfileLane"])
-        self.assertEqual("last30days-facebook", captured[0]["sessionName"])
+        self.assertEqual("terminal-profile-fresh", captured[0]["sessionName"])
         self.assertNotIn("browserId", captured[0])
 
     def test_reviewed_override_still_reuses_one_compatible_live_browser(self):

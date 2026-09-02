@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Broker-issued Agent Browser session preservation.** Service 0.3.95 keeps
+  the fresh terminal session selected by Agent Browser when the reviewed
+  duplicate-profile recovery lane proves there is no compatible live browser.
+  It removes the stale browser ID but falls back to the fixed profile session
+  name only when the broker did not supply one, preventing authenticated X and
+  LinkedIn feed acquisition from re-entering a stale session-identity conflict.
+
 - **Three-attempt provider persistence.** Service 0.3.93 and MCP 4.0.4 migrate database
   schema 16 to 17 without discarding provider attempt or result receipts and
   admits retry ordinal 2, matching the existing one-to-three-attempt tick
