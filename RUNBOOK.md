@@ -24650,3 +24650,59 @@ Next Bounded Action:
 - observe the September 3 ordinary timer tick, whose managed process has both
   required environment values, or obtain separate authority for one corrected
   manual tick with those values explicitly inherited by its parent process.
+
+## Turn 391 | 2026-09-02
+
+Focus: close the C08 durable-memory projection without repeating runtime work.
+
+Authority Consulted:
+
+- Plan 0062/C08; Runbook Turn 390; published incident checkpoint `d064450`;
+  Graphiti discovery and write policy.
+
+Decisions And Changes:
+
+- checked provider readiness successfully and verified by exact episode name,
+  source description, and group that no matching episode existed;
+- submitted one compact source-backed incident write after the initial write
+  timed out, then stopped when the bounded retry also timed out;
+- did not enqueue a third memory write, a second scrape tick, or any browser
+  operation;
+- advanced the active-lane checkpoint to the published C08 incident commit.
+
+Validation Evidence:
+
+- initial Graphiti job `b47c920c-2c3b-494b-9a66-5c66df5c9266` failed with
+  `TimeoutError` before episode creation after its 300-second ingestion bound;
+- an exact duplicate check returned zero matching episodes before retry;
+- compact retry job `db7cf2f3-43dd-4a8d-9762-7085ac05f574` failed with
+  `TimeoutError` before episode creation after its 600-second ingestion bound;
+- no Graphiti episode UUID exists to claim or verify.
+
+State Movement:
+
+- Plan 0062 remains C08 `manual_tick_environment_bypass_identified`; its
+  Graphiti status moves from `pending` to `graphiti_write_pending`.
+
+Progress Classification:
+
+- `durability_blocker_recorded`; repository evidence remains authoritative.
+
+Authority Classification:
+
+- `inherited_authority`; this closeout performed no new provider or browser
+  work.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; two bounded attempts timed out before episode
+  creation, and no third attempt is authorized from this checkpoint.
+
+Next Bounded Action:
+
+- observe the September 3 ordinary timer tick, or obtain separate authority
+  for one corrected manual tick whose parent inherits the managed environment.

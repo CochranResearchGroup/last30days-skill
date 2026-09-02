@@ -475,8 +475,10 @@ Evidence:
 
 Subagent status: `not_spawned`.
 
-Graphiti write status: `pending`; write one compact source-backed incident
-episode after this checkpoint is published.
+Graphiti write status: `graphiti_write_pending`; provider readiness passed and
+exact duplicate checks found no episode, but the initial 300-second job and one
+compact 600-second retry both failed with `TimeoutError` before creating an
+episode. Do not queue a third write from this checkpoint.
 
 Next action: either observe the September 3 ordinary service-owned tick, which
 will inherit the configured capability, or obtain authority for one corrected
