@@ -6,7 +6,7 @@ Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 4
+Plan version: 5
 Date: 2026-09-02
 
 ## Objective
@@ -313,3 +313,47 @@ Next action: repair Agent Browser so protected terminal-owner supersession can
 complete on its authority-derived daemon route, then request the Reddit manual-
 seeding handoff again and require `operatorVisible.state=ready` before sharing
 its durable `/remote-view/<handoff-id>` URL.
+
+### Checkpoint P0063-C05 | 2026-09-02
+
+Plan version: 5
+
+State: `manual_reddit_login_ready_operator_action_pending`
+
+Progress classification: `acceptance_progress`
+
+Authority classification:
+
+- `scope_expansion`; after the protected acquisition path repeatedly vetoed
+  its own exact-profile replacement, the operator explicitly directed a forced
+  direct launch. The fallback remained limited to the existing
+  `last30days-facebook` profile and its already-governed RDP display.
+
+Evidence:
+
+- immediately before launch, exact runtime status reported no live browser,
+  PID, DevTools endpoint, or targets; the exact user-data directory had no
+  `SingletonLock`, `SingletonSocket`, or `SingletonCookie`, and no process used
+  that path;
+- display `:11` passed a direct X11 readiness probe. A non-attachable
+  `runtime login` then opened `https://www.reddit.com/login/` with the exact
+  profile as headed manual PID 7511 and no DevTools port;
+- post-launch runtime readback reports PID 7511 alive in `manual` mode on
+  display `:11`. Service status identifies the same PID, profile, and target,
+  marks remote control available, and joins it to governed route
+  `guacamole:1`;
+- durable public handoff `/remote-view/r895695` remains ready for
+  `guacamole:1`, its presentation receipt is ready, and a direct public HTTP
+  check returned 200. No raw provider URL is exposed;
+- no Reddit acquisition attempt, timer change, recurring collection enablement,
+  provider mutation, profile replacement, or CDP attachment occurred.
+
+Subagent status: `not_spawned`; current orchestration policy prohibits
+delegation.
+
+Graphiti write status: `not_written`; the operator-login checkpoint is
+transient and repository/runtime readbacks remain authoritative.
+
+Next action: the operator completes Reddit sign-in through the durable handoff,
+closes the manual Chrome window, and reports completion. Then run a bounded
+post-close authentication probe before consuming the next Reddit feed attempt.

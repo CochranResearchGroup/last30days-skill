@@ -25089,3 +25089,71 @@ Next Bounded Action:
 - repair Agent Browser's protected terminal-owner supersession/daemon-route
   coherence, then repeat only the manual-seeding acquisition and require a
   ready durable handoff before asking the operator to log in.
+
+## Turn 397 | 2026-09-02
+
+Focus: force the exact existing social profile onto a governed RDP desktop for
+Reddit manual authentication.
+
+Authority Consulted:
+
+- operator explicit `force it` override; Plan 0063/C04; Agent Browser manual-
+  login and remote-view contracts; current exact runtime, lock, process,
+  display, service, and handoff readbacks.
+
+Decisions And Changes:
+
+- treated the operator instruction as authority for the narrow direct fallback
+  after protected recovery repeatedly rejected its own replacement plan;
+- launched only the existing `last30days-facebook` profile on existing display
+  `:11`, in non-attachable manual mode, at the Reddit login page;
+- retained the manual browser for operator interaction and did not attach CDP,
+  create a profile, expose the raw Guacamole URL, or run a Reddit scrape.
+
+Validation Evidence:
+
+- immediately before launch, exact runtime status showed no browser PID,
+  DevTools endpoint, or targets; the exact user-data directory had no singleton
+  lock artifacts and no process used that path;
+- `DISPLAY=:11 xdpyinfo` succeeded, and direct runtime login returned
+  `launched=true`, `manual=true`, `attachable=false`, profile
+  `last30days-facebook`, and PID 7511;
+- post-launch runtime status reports PID 7511 alive, headed, manual, without a
+  DevTools port. Service status identifies that same PID and profile, reports
+  remote control available, and maps it to `guacamole:1`;
+- durable handoff `/remote-view/r895695` is retained in ready state with a
+  ready presentation receipt for `guacamole:1`; its public endpoint returned
+  HTTP 200;
+- no acquisition attempt, recurring schedule mutation, provider mutation,
+  profile replacement, or unrelated browser interaction occurred.
+
+State Movement:
+
+- Plan 0063 advances to version 5/C05
+  `manual_reddit_login_ready_operator_action_pending`; P23 remains OPEN.
+
+Progress Classification:
+
+- `acceptance_progress`; the exact authenticated-profile login surface is now
+  live and awaiting the operator.
+
+Authority Classification:
+
+- `scope_expansion`; the forced direct fallback was expressly authorized and
+  stayed within the sole exact-profile and existing-route boundary. No Reddit
+  scraping retry budget was consumed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; this is a transient operator-login checkpoint and current
+  repository/runtime evidence is authoritative.
+
+Next Bounded Action:
+
+- operator completes Reddit sign-in through the durable handoff, closes the
+  manual browser, and reports completion; then run the post-close auth probe
+  before the next bounded Reddit feed acquisition.
