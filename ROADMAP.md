@@ -1081,7 +1081,7 @@ pause controls.
 
 Current State:
 
-- Plan 0062 version 5/C07 is the current actionable P08 plan. Service 0.3.94 is
+- Plan 0062 version 6/C09 is the current actionable P08 plan. Service 0.3.96 is
   installed ready with schema 17 and X's finite 40-scroll allowance. Saved recurring
   revision `operator-20260901-x-linkedin-80-v1` requests 80 X and 80 LinkedIn
   posts, retains three attempts for each, and provides 360 seconds per social
@@ -1110,9 +1110,14 @@ Current State:
   bypassed those settings because the direct CLI process does not load the
   systemd `EnvironmentFile`; all six attempts followed the old unauthenticated
   route and observed zero items. Cleanup is complete and the ordinary service
-  timer has both settings in its live process environment. Plan 0062 C08 now
-  owns either observation of that September 3 tick or a separately authorized
-  corrected manual execution.
+  timer has both settings in its live process environment. Follow-up diagnosis
+  repaired two Last30days routing defects, capability-rejoined the exact live
+  profile browser, and installed service 0.3.96. Manual tick
+  `tick-2fa1622b2c62fbd54a9880e456dbcbb9` then accepted 80 distinct canonical X
+  posts and 80 distinct canonical LinkedIn posts with both lanes successful,
+  clean lease/database cleanup, and unchanged September 3 schedule continuity.
+  Plan 0062 C09 now owns observation of that ordinary scheduled tick; manual
+  acceptance does not by itself close recurring-scheduler acceptance.
   Current authority:
   `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`.
 - Plan 0060 version 1/C06 is CLOSED after installing service 0.3.91 with finite

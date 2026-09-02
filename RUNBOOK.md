@@ -24706,3 +24706,90 @@ Next Bounded Action:
 
 - observe the September 3 ordinary timer tick, or obtain separate authority
   for one corrected manual tick whose parent inherits the managed environment.
+
+## Turn 392 | 2026-09-02
+
+Focus: prove installed 80+80 X and LinkedIn feed acquisition and repair every
+observed Last30days-side blocker inside the bounded acceptance lane.
+
+Authority Consulted:
+
+- operator proof requirement and standing exact-profile force-acquisition
+  instruction; Plan 0062/C08; Last30days administration, maintenance, TDD, and
+  Agent Browser service contracts; current source, installed runtime, protected
+  lease, tick receipts, schedule, and database readbacks.
+
+Decisions And Changes:
+
+- reproduced a capability-authenticated 0+0 tick and proved Last30days was
+  overwriting Agent Browser's fresh broker session with the stale configured
+  session name when the reviewed duplicate-profile lane was active;
+- added a red/green broker-session regression, shipped service 0.3.95, and
+  preserved the broker-issued session unless the broker supplies none;
+- classified the successor's six subsecond failures as cold Chrome launches
+  whose CDP port never became reachable, rather than scraper or auth failures;
+- force-launched only `last30days-facebook`. Agent Browser returned an identity
+  error after committing a healthy PID/CDP browser; exact capability-bound
+  rejoin converted its observation-only lease to active with zero blockers;
+- direct LinkedIn acquisition succeeded, while X exposed its remaining
+  presentation constraint. Added a red/green feed-request regression, removed
+  only X feed's `constrain_presentation=True`, and shipped service 0.3.96;
+- ran one final 80+80 proof and renewed the exact active protected browser lease
+  through one hour after the next scheduled boundary. No profile replacement,
+  broad cleanup, credential change, or content-quality policy change occurred.
+
+Validation Evidence:
+
+- source commits `c672b84` and `7b3b082` are pushed on
+  `origin/fix/tick-restart-recovery`;
+- focused Agent Browser/X/LinkedIn/acquisition/release suites pass. The broad
+  Python suite excluding the known baseline MCP teardown-timeout file passes;
+  a complete run reproduced only that same previously established timeout;
+- installed service 0.3.96/schema 17 is ready with runtime manifest
+  `a147cdf7e8e88d15cf7a324570940b7b27f7834063674beda0136a22a34ade1c`;
+- final tick `tick-2fa1622b2c62fbd54a9880e456dbcbb9` is terminal complete.
+  X accepted 80/80 unique canonical URLs on retry ordinal one after one
+  transient ambiguous-auth result; LinkedIn accepted 80/80 on ordinal zero;
+- X observed 255, rejecting 173 duplicate statuses and two result-limit items.
+  LinkedIn observed 1,775, rejecting 1,354 duplicates and 341 sponsored ads.
+  The source projection has 160 versions: 80 distinct canonical X URLs and 80
+  distinct canonical LinkedIn URLs, with zero missing URLs;
+- the tick consumed three of six attempts, 100 requests, and 386 of 720 wall
+  seconds. Both lanes and every downstream stage are successful and the head is
+  promoted;
+- active ticks, nonterminal provider attempts, and open tick leases are zero;
+  SQLite `quick_check` is `ok`; `daily-default` remains enabled and ready for
+  `2026-09-03T00:00:00Z` with its prior automatic tick unchanged;
+- protected lease `profile-lease-v1:fc553beb74ded8415f61dbf1` is active, has no
+  blocking identity axes, and expires `2026-09-03T01:00:00Z`.
+
+State Movement:
+
+- Plan 0062 advances to version 6/C09 `manual_80x80_accepted`; P08 remains OPEN
+  only for the next ordinary scheduled-tick acceptance criterion.
+
+Progress Classification:
+
+- `acceptance_progress`; manual 80+80 retrieval is proven, recurring timer
+  execution is the remaining gate.
+
+Authority Classification:
+
+- `inherited_authority`; all effects stayed inside the requested exact profile,
+  two named providers, configured attempt limits, and transactional release
+  path.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; two prior bounded writes timed out and repository plus durable
+  runtime receipts remain authoritative.
+
+Next Bounded Action:
+
+- observe the September 3 `daily-default` tick, verify X/LinkedIn/YouTube
+  terminal receipts and cleanup, and close P08 only if the recurring execution
+  itself satisfies Plan 0062 acceptance criterion 6.

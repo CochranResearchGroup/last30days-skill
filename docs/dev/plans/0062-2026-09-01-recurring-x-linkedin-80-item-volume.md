@@ -2,7 +2,7 @@
 
 State: OPEN
 Roadmap: P08
-Plan version: 5
+Plan version: 6
 Date: 2026-09-02
 Branch: `fix/tick-restart-recovery`
 Target: `main`
@@ -29,10 +29,12 @@ with enough installed scroll and wall-time budget to make those limits real.
 - schema 17 is installed and the September 2 ordinary tick durably recorded
   all three attempts for both social providers, but every acquisition failed
   before observation because protected profile capability was absent;
-- service 0.3.94 and MCP 4.0.4 are installed. The existing `last30days`
-  principal grant has now been rotated in place, its replacement capability is
-  stored in an owner-only 0600 file, and the restarted service is configured to
-  read that file without exposing the secret.
+- service 0.3.96 and MCP 4.0.4 are installed. The existing `last30days`
+  principal grant is active, its capability remains in an owner-only 0600 file,
+  and the service reads it without exposing the secret;
+- manual tick `tick-2fa1622b2c62fbd54a9880e456dbcbb9` is terminal complete
+  with 80 distinct canonical X URLs and 80 distinct canonical LinkedIn URLs.
+  The recurring schedule remains ready for `2026-09-03T00:00:00Z`.
 
 ## Scope
 
@@ -65,7 +67,7 @@ with enough installed scroll and wall-time budget to make those limits real.
    requests, and 2,280 wall seconds.
 3. Installed X explicit-feed policy permits 40 scrolls and a deterministic
    two-new-posts-per-scroll fixture reaches 80 unique items.
-4. Service 0.3.94/schema 17 and MCP 4.0.4 are installed, ready, compatible, and
+4. Service 0.3.96/schema 17 and MCP 4.0.4 are installed, ready, compatible, and
    bound to their exact runtime and contract manifests.
 5. `daily-default` remains enabled and ready at the unchanged September 2
    boundary under the new exact config digest, with no tick admitted by the
@@ -484,3 +486,63 @@ Next action: either observe the September 3 ordinary service-owned tick, which
 will inherit the configured capability, or obtain authority for one corrected
 manual tick whose parent process explicitly receives the same two non-secret
 environment values. Do not enqueue another manual tick under C07 authority.
+
+### Checkpoint P0062-C09 | 2026-09-02
+
+Plan version: 6
+
+State: `manual_80x80_accepted`
+
+Progress classification: `acceptance_progress`
+
+Authority classification:
+
+- `inherited_authority`; the operator required proof, authorized forced lease
+  acquisition for this sole-user profile, and retained the existing 80+80
+  three-attempt bounds.
+
+Evidence:
+
+- failed corrected tick `tick-3d5abd0280cf89e33acae1fde772fc81`
+  proved the capability itself was valid, then isolated a Last30days routing
+  defect: the reviewed duplicate-profile lane replaced Agent Browser's fresh
+  broker session with the stale fixed session name;
+- service 0.3.95 preserved the broker session. Its bounded successor
+  `tick-01d8786958e774376069a5134d673fc2` moved past identity selection but
+  exposed a separate cold-launch failure at CDP port 37747;
+- a forced exact-profile launch returned a false identity error after it had
+  actually committed PID 84749 and a reachable CDP browser. Capability-bound
+  rejoin of exact lease `profile-lease-v1:fc553beb74ded8415f61dbf1` removed all
+  identity blockers without broad cleanup or profile replacement;
+- direct LinkedIn acquisition then succeeded while X still failed. The final
+  Last30days defect was X feed's `constrain_presentation=True`, which discarded
+  the reusable authenticated route despite the presentation-neutral social
+  acquisition contract. The regression failed before removing that flag and
+  passed afterward;
+- published commits `c672b84` and `7b3b082` contain the two fixes. Installed
+  service 0.3.96 is ready on schema 17 with runtime manifest
+  `a147cdf7e8e88d15cf7a324570940b7b27f7834063674beda0136a22a34ade1c`;
+- final tick `tick-2fa1622b2c62fbd54a9880e456dbcbb9` completed with both
+  lanes successful. X accepted 80 after one transient ambiguous-auth attempt,
+  observing 255 and deterministically rejecting 173 duplicate statuses plus
+  two over-limit items. LinkedIn accepted 80 on attempt zero, observing 1,775
+  and rejecting 1,354 duplicates plus 341 sponsored ads;
+- the durable source projection contains exactly 80 X and 80 LinkedIn versions,
+  80 distinct canonical URLs per service, and zero missing URLs. The tick used
+  three of six attempts, 100 of 100 network requests, and 386 of 720 wall
+  seconds, then promoted its head with all collection, media, OCR, lexical,
+  semantic, and sidecar stages successful;
+- active ticks, nonterminal provider attempts, and open tick leases returned to
+  zero; SQLite `quick_check` is `ok`. `daily-default` remains enabled and ready
+  for `2026-09-03T00:00:00Z` with its prior automatic tick identity unchanged;
+- the exact protected browser lease is active with no identity blockers and was
+  renewed through `2026-09-03T01:00:00Z`, covering the next scheduled run.
+
+Subagent status: `not_spawned`.
+
+Graphiti write status: `not_written`; two prior bounded writes timed out, and
+the published repository plus durable tick receipt are the current authority.
+
+Next action: observe the September 3 ordinary timer tick under the now-proven
+80+80 configuration; do not infer that manual acceptance alone closes the
+recurring-scheduler acceptance criterion.
