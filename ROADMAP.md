@@ -2275,15 +2275,17 @@ only explicit ads and platform-marked spam as content-quality decisions.
 
 Current State:
 
-- Reddit has an Agent Browser search adapter with canonical permalink,
-  timestamp, subreddit, and relevance validation, but it has no feed interface;
-- X and LinkedIn already route `surface_kind=feed` through dedicated home-feed
-  methods, while Reddit sends every request through the topic-search access
-  order;
-- prior Reddit live proof established bounded healthy-zero observability, not
-  successful content yield;
-- Plan 0063 version 1 owns implementation and one bounded three-attempt,
-  80-item live proof. Reddit remains disabled in `daily-default`.
+- service 0.3.97 source now routes Reddit `surface_kind=feed` directly to an
+  authenticated home-feed interface while topic search retains its public-first
+  access order and relevance semantics;
+- offline behavior proves 80-item capacity, canonical dedupe, finite scrolling,
+  deterministic ad/platform-spam exclusion, and separate structural/date/
+  duplicate diagnostics;
+- all three approved live attempts are consumed. The final attempt proved exact-
+  profile local-headless acquisition, authentication, and Reddit home
+  navigation, then exposed the now-repaired asynchronous card-readiness gap;
+- Plan 0063 version 2/C02 owns installation and a later fresh-budget 80-item
+  proof. Reddit remains disabled in `daily-default`.
 
 Active Plan:
 
@@ -2297,8 +2299,8 @@ Dependencies:
 
 Next Action:
 
-- execute Packet A as a red/green public-interface tracer bullet, then add
-  scrolling and exclusion behaviors one at a time.
+- install and diagnose the validated service 0.3.97 artifact, then request a
+  fresh bounded live-attempt budget for the final 80-item acceptance proof.
 
 ## Goal-Compatible Plan Conversion
 

@@ -24864,3 +24864,86 @@ Next Bounded Action:
 
 - add one failing public-interface feed test and the minimum implementation
   needed to navigate the Reddit home feed and return one canonical real post.
+
+## Turn 394 | 2026-09-02
+
+Focus: implement, validate, package, and run the bounded live inspection for
+the authenticated Reddit home-feed scraper.
+
+Authority Consulted:
+
+- Plan 0063/C01; Last30days administration and maintenance contracts; Agent
+  Browser service and browser-control lifecycle guidance; current source,
+  tests, service/MCP status, profile runtime state, and attempt trace receipts.
+
+Decisions And Changes:
+
+- added a direct Reddit feed interface and acquisition-worker route without
+  changing the existing public-first topic-search chain;
+- made the feed retain every structurally valid in-range post regardless of
+  topical relevance, reject only explicit promoted cards and Reddit-marked
+  spam as quality decisions, and report structural limitations, date scope,
+  and duplicates separately;
+- added deterministic virtualized-feed accumulation with canonical URL dedupe,
+  an 80-item capacity proof, maximum 100 requested items, maximum 40 scrolls,
+  and three stagnant snapshots;
+- moved only Reddit feed acquisition to `local_headless` CDP control so it does
+  not depend on the stale RDP/Xvfb presentation allocator. Topic-search browser
+  posture remains unchanged;
+- added staged asynchronous post-card readiness through 11 seconds after the
+  third bounded attempt showed a valid authenticated Reddit home URL before
+  cards were visible to the original 2.5-second probe;
+- versioned and built service 0.3.97. No schedule, recurring collection,
+  credentials, account state, or provider content was mutated.
+
+Validation Evidence:
+
+- source commit `dc7a10e0510a4674201accb963d23ea7a9640bb7` is pushed on
+  `origin/feat/reddit-home-feed`;
+- focused Reddit, acquisition-worker, plan-authority, release, and package
+  suites pass; Python compilation, MCP Go tests, authority audit, manifest
+  validation, reproducible build, and `git diff --check` pass;
+- broad Python validation excluding the established MCP fixture teardown-
+  timeout file passes with 2,746 tests, seven skips, and nine subtests. A full
+  run reproduced that known teardown timeout plus the now-corrected active-plan
+  count expectation;
+- validated service artifact SHA-256 is
+  `afbf6338cc2fa67fed284d9fc424a0beb2491496f0c6cf520a8428d73aaa071b`;
+- attempt 1 stopped on a live but service-unmapped blank Chrome profile owner;
+  attempt 2 stopped on stale Xvfb display `:90`; attempt 3 successfully acquired
+  and authenticated the exact profile through local-headless CDP, navigated to
+  Reddit home, then returned `navigation_mismatch` because no cards were
+  rendered at the first probe;
+- exact cleanup closed the attempt browser and runtime status reports no live
+  `last30days-facebook` browser or lock. `daily-default` was not changed.
+
+State Movement:
+
+- Plan 0063 advances to version 2/C02
+  `release_candidate_validated_live_retry_exhausted`; live 80-item acceptance
+  remains open.
+
+Progress Classification:
+
+- `acceptance_progress`; implementation and release candidate are validated,
+  while live 80-item proof remains pending after the approved attempt budget.
+
+Authority Classification:
+
+- `inherited_authority`; all work stayed inside the operator-approved Reddit,
+  exact-profile, three-attempt, no-timer-mutation bounds.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `queued_unverified`; provider readiness passed and job
+  `851d9fb5-5cc1-419d-a3fa-0e725d720c5d` accepted the compact checkpoint, but
+  the status read lost Graphiti transport before visibility confirmation.
+
+Next Bounded Action:
+
+- install and diagnose service 0.3.97 from the validated artifact, then obtain
+  a fresh bounded live-attempt budget before another Reddit acquisition.

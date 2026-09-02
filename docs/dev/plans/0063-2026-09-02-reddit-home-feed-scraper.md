@@ -6,7 +6,7 @@ Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 1
+Plan version: 2
 Date: 2026-09-02
 
 ## Objective
@@ -170,3 +170,61 @@ first validated implementation checkpoint rather than storing plan-only churn.
 
 Next action: execute Packet A with one red/green public-interface test for an
 unrelated legitimate home-feed post and its canonical permalink.
+
+### Checkpoint P0063-C02 | 2026-09-02
+
+Plan version: 2
+
+State: `release_candidate_validated_live_retry_exhausted`
+
+Progress classification: `acceptance_progress`
+
+Authority classification:
+
+- `inherited_authority`; implementation, validation, packaging, and the three
+  live attempts stayed inside the approved Reddit-only profile, item, attempt,
+  and no-schedule-mutation bounds.
+
+Evidence:
+
+- commit `dc7a10e0510a4674201accb963d23ea7a9640bb7` adds direct Reddit
+  `surface_kind=feed` dispatch, authenticated home-feed navigation, canonical
+  permalink normalization, virtualized cross-snapshot deduplication, finite
+  100-item/40-scroll/three-stagnant-snapshot bounds, and separate ad/spam,
+  structural-limitation, date-scope, and duplicate diagnostics;
+- feed acquisition uses the exact `last30days-facebook` profile with a
+  `local_headless` CDP posture, so ordinary retrieval does not depend on an
+  RDP/Xvfb presentation route. Topic search retains its prior public-first
+  access order and relevance semantics;
+- focused Reddit, acquisition-worker, plan-authority, release, and runtime-
+  package suites pass. The broad suite excluding the known MCP fixture teardown
+  timeout passes with 2,746 tests, seven skips, and nine subtests; MCP Go tests,
+  Python compilation, authority audit, manifest refresh, reproducible build,
+  and `git diff --check` pass;
+- service artifact `last30days-service-0.3.97.tar.gz` has SHA-256
+  `afbf6338cc2fa67fed284d9fc424a0beb2491496f0c6cf520a8428d73aaa071b`;
+- live attempt 1 stopped before tab acquisition because Chrome PID 84749 held
+  the exact profile but was absent from Agent Browser service ownership;
+  supported exact-session close released that blank/new-tab-only process;
+- live attempt 2 stopped before Chrome because a stale protected Xvfb process
+  on display `:90` caused three internal remote-headed launch failures;
+- live attempt 3 used the corrected local-headless posture, acquired the exact
+  profile, passed the bounded authentication probe, and navigated to
+  `https://www.reddit.com/`, but the old 2.5-second page probe observed no post
+  cards and returned `navigation_mismatch`;
+- the final offline remediation now waits deterministically for asynchronous
+  post cards for up to 11 seconds and has a red/green regression. The agreed
+  three-attempt live budget is exhausted, so 80-item proof remains pending;
+- exact attempt cleanup closed the cold-launched browser and runtime status
+  reports no live browser or profile lock. No timer, recurring collection, or
+  provider state was enabled or changed.
+
+Subagent status: `not_spawned`.
+
+Graphiti write status: `queued_unverified`; readiness passed and job
+`851d9fb5-5cc1-419d-a3fa-0e725d720c5d` accepted the compact checkpoint, but
+the follow-up status read lost Graphiti transport before visibility could be
+confirmed. Repository source and this checkpoint remain authoritative.
+
+Next action: install and diagnose service 0.3.97 from the validated artifact,
+then obtain a fresh bounded live-attempt budget for the final 80-item proof.
