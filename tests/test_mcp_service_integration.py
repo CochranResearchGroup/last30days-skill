@@ -80,6 +80,10 @@ def test_real_service_mcp_discovery_query_refresh_and_poll(tmp_path):
         capture_output=True,
         text=True,
     )
+    service_env = {
+        **os.environ,
+        "LAST30DAYS_CONFIG_DIR": os.fspath(tmp_path / "isolated-config"),
+    }
     service = subprocess.Popen(
         [
             sys.executable,
@@ -93,6 +97,7 @@ def test_real_service_mcp_discovery_query_refresh_and_poll(tmp_path):
         cwd=SERVICE.parent,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.PIPE,
+        env=service_env,
         text=True,
     )
     try:
