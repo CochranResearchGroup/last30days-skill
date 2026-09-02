@@ -24947,3 +24947,73 @@ Next Bounded Action:
 
 - install and diagnose service 0.3.97 from the validated artifact, then obtain
   a fresh bounded live-attempt budget before another Reddit acquisition.
+
+## Turn 395 | 2026-09-02
+
+Focus: install and reconcile service 0.3.97 without exceeding the Reddit live-
+attempt budget.
+
+Authority Consulted:
+
+- Plan 0063/C02; Last30days service administration and maintenance contracts;
+  installed MCP, collection, tick-schedule, database, Agent Browser runtime,
+  Git, and release-artifact readbacks; documentation, roadmap/runbook, Git,
+  validation, active-lane, and closeout policy.
+
+Decisions And Changes:
+
+- transactionally installed the validated service 0.3.97 artifact and retained
+  0.3.96 as the rollback release;
+- did not run a fourth Reddit acquisition because the explicit three-attempt
+  live budget is exhausted;
+- left every existing Reddit collection disabled and made no schedule,
+  provider, credential, account, or profile mutation;
+- reconciled Plan 0063, P23, and the active-lane projection to the installed
+  checkpoint while leaving the plan open for live acceptance.
+
+Validation Evidence:
+
+- installed MCP reports service 0.3.97, adapter 4.0.4, database schema 17,
+  status `ready`, and compatibility state `compatible`;
+- installed and worktree hashes match for both changed runtime modules;
+- `research.db` and `service.db` each return `ok` from `PRAGMA quick_check`;
+- collection readback reports ten Reddit specifications and zero enabled;
+- the service-owned daily schedule remains `ready`, and exact Agent Browser
+  runtime status reports the `last30days-facebook` profile has no live browser,
+  DevTools endpoint, targets, or retained lock;
+- branch `feat/reddit-home-feed` was clean and synchronized with its remote
+  before this documentation checkpoint;
+- Graphiti job `851d9fb5-5cc1-419d-a3fa-0e725d720c5d` reached terminal
+  `failed` with a transport `TimeoutError` during node extraction and created
+  no visible episode. No duplicate write was queued.
+
+State Movement:
+
+- Plan 0063 advances to version 3/C03
+  `installed_live_proof_pending_fresh_budget`; P23 remains OPEN.
+
+Progress Classification:
+
+- `acceptance_progress`; the exact validated release is installed and healthy,
+  while the required live 80-item yield remains unproven.
+
+Authority Classification:
+
+- `inherited_authority`; installation and read-only reconciliation stayed
+  inside the approved implementation packet. Another acquisition requires a
+  fresh explicit attempt budget.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `failed_transport`; the existing job is terminal and no replacement job was
+  created.
+
+Next Bounded Action:
+
+- after the operator grants a fresh live-attempt budget, run one Reddit-only
+  80-item campaign on installed service 0.3.97 and preserve its receipt and
+  exact cleanup evidence.

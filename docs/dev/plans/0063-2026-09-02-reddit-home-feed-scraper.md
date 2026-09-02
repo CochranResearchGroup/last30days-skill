@@ -6,7 +6,7 @@ Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 2
+Plan version: 3
 Date: 2026-09-02
 
 ## Objective
@@ -228,3 +228,44 @@ confirmed. Repository source and this checkpoint remain authoritative.
 
 Next action: install and diagnose service 0.3.97 from the validated artifact,
 then obtain a fresh bounded live-attempt budget for the final 80-item proof.
+
+### Checkpoint P0063-C03 | 2026-09-02
+
+Plan version: 3
+
+State: `installed_live_proof_pending_fresh_budget`
+
+Progress classification: `acceptance_progress`
+
+Authority classification:
+
+- `inherited_authority`; installing and auditing the already-validated release
+  stayed inside Packet C. No additional Reddit acquisition attempt, schedule
+  mutation, provider mutation, or profile replacement occurred.
+
+Evidence:
+
+- the transactional installer advanced `current` to service 0.3.97 while
+  retaining 0.3.96 as `previous`; installed MCP readback reports service
+  0.3.97, adapter 4.0.4, database schema 17, status `ready`, and compatibility
+  state `compatible`;
+- installed `reddit_browser.py` and `service_acquisition_worker.py` SHA-256
+  values exactly match commit `dc7a10e0510a4674201accb963d23ea7a9640bb7`;
+- both live service databases return `ok` from `PRAGMA quick_check`;
+- all ten existing Reddit collection specifications remain disabled. The
+  service-owned daily schedule remains ready at its unchanged one-day cadence;
+- exact `last30days-facebook` runtime status reports no browser process, no
+  DevTools endpoint or targets, and no retained profile owner after cleanup;
+- the Graphiti checkpoint job was read back as terminal `failed` with a
+  transport `TimeoutError` during node extraction. No duplicate memory job or
+  retry was queued; repository and installed-state evidence remain
+  authoritative.
+
+Subagent status: `not_spawned`.
+
+Graphiti write status: `failed_transport`; job
+`851d9fb5-5cc1-419d-a3fa-0e725d720c5d` created no visible episode.
+
+Next action: obtain a fresh explicit live-attempt budget, then run one bounded
+Reddit-only campaign against installed service 0.3.97 to prove 80 unique
+canonical posts or preserve the next typed terminal limitation.

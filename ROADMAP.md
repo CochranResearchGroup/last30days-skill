@@ -2284,8 +2284,10 @@ Current State:
 - all three approved live attempts are consumed. The final attempt proved exact-
   profile local-headless acquisition, authentication, and Reddit home
   navigation, then exposed the now-repaired asynchronous card-readiness gap;
-- Plan 0063 version 2/C02 owns installation and a later fresh-budget 80-item
-  proof. Reddit remains disabled in `daily-default`.
+- service 0.3.97 is transactionally installed, MCP-ready and compatible on
+  schema 17, source-identical to the validated commit, and database-clean;
+- Plan 0063 version 3/C03 owns a later fresh-budget 80-item proof. All existing
+  Reddit collection specifications remain disabled.
 
 Active Plan:
 
@@ -2299,8 +2301,8 @@ Dependencies:
 
 Next Action:
 
-- install and diagnose the validated service 0.3.97 artifact, then request a
-  fresh bounded live-attempt budget for the final 80-item acceptance proof.
+- obtain a fresh bounded live-attempt budget, then run the installed Reddit
+  feed path for the final 80-item acceptance proof.
 
 ## Goal-Compatible Plan Conversion
 
