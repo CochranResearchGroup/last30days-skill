@@ -794,3 +794,54 @@ Agent Browser jobs are the authoritative checkpoint evidence.
 Next action: install service 0.3.107 transactionally, verify exact installed
 identity and retained exact-profile reuse, then spend retry 2 with a new
 disabled 80-item specification. Keep Reddit disabled in recurring schedules.
+
+### Checkpoint P0063-C13 | 2026-09-03
+
+Plan version: 13
+
+State: `presentation_neutral_reuse_repaired_retry_campaign_active`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`; retry 2 followed exact installed-identity and access-
+  plan preflight, then terminated before browser effects. Its diagnosis and
+  focused reuse repair are ordinary in-scope remediation. Three attempts
+  remain.
+
+Evidence:
+
+- service 0.3.107 installed ready on schema 17 with source/install Reddit
+  scraper SHA-256
+  `9f9e6d397a5347105538ec6dd22933bc80c2e1d50fdf3efb8d3d49076fd499d7`;
+- retry 2 used disabled specification `p0063-reddit-home-feed-live-v10`, run
+  `collection-run-998ae83753cb4884b891e70b454997f9`, and job
+  `acfcb7b2-9376-419c-a3c4-2d46b0277466`. It failed during workspace
+  acquisition in 192 ms with zero browser operations and zero observations;
+- the authenticated Agent Browser plan saw one healthy same-profile browser
+  and one active profile lease but zero compatible browsers because the Reddit
+  request constrained private RDP/CDP presentation while the retained browser
+  row reported `shared_display` and omitted presentation-provider fields. The
+  plan therefore returned `wait_for_profile_lease`;
+- the scraper needs exact browser/tab ownership, not a particular retained
+  presentation record. Commit `795ee50` keeps Reddit's remote-headed cold-
+  launch posture but makes the ordinary access-plan read presentation-neutral;
+- the exact regression failed before the change and passes afterward. A live
+  authenticated no-effect plan from the candidate selects
+  `reuse_existing_browser`, one compatible browser, exact browser/session
+  hints, an available service request, and no lifecycle-owner block;
+- focused Reddit, release-version, and runtime-package suites pass. Service
+  0.3.108 builds reproducibly with SHA-256
+  `2904926bb99c9be679e4a38619af62b18362bb7e225eca7596db56c08463d242`.
+
+Subagent status: `not_spawned`; current orchestration policy prohibits
+delegation.
+
+Graphiti write status: `not_written`; current repo, database, and live access-
+plan evidence are authoritative.
+
+Next action: install service 0.3.108 transactionally, verify exact installed
+identity and the presentation-neutral reuse plan, then spend retry 3 through a
+new disabled 80-item specification. Keep Reddit disabled in recurring
+schedules.

@@ -25693,3 +25693,80 @@ Next Bounded Action:
 - install service 0.3.107, verify exact installed identity and retained browser
   reuse, then spend retry 2 through a new disabled 80-item specification. Keep
   Reddit disabled in recurring schedules.
+
+## Turn 405 | 2026-09-03
+
+Focus: diagnose retry 2's pre-browser acquisition failure and make Reddit
+retained-browser reuse presentation-neutral.
+
+Authority Consulted:
+
+- Plan 0063/C12; the remaining reasoned-retry allowance; installed service
+  0.3.107; authenticated versus unauthenticated Agent Browser access plans;
+  retained browser metadata; repository TDD and release policy.
+
+Decisions And Changes:
+
+- installed exact service 0.3.107 and spent retry 2 only after source/install
+  hash parity, schema readiness, a clean database check, and an apparently
+  reusable exact profile;
+- did not classify the immediate failure as an Agent Browser page error: no
+  Agent Browser job or operation existed. Reproduced the worker's authenticated
+  access plan and found `wait_for_profile_lease` before acquisition;
+- isolated the incompatibility to presentation metadata. The same healthy
+  browser was retained under `shared_display` with provider fields absent,
+  while Reddit required private RDP/CDP metadata during planning;
+- used one red/green request-interface regression. Commit `795ee50` retains
+  remote-headed cold-launch inputs but stops constraining ordinary Reddit tab
+  reuse by presentation metadata;
+- candidate readback now selects one exact compatible browser with
+  `reuse_existing_browser` and an unblocked service request. Three retries
+  remain; retry 3 has not been spent.
+
+Validation Evidence:
+
+- retry 2: disabled spec `p0063-reddit-home-feed-live-v10`, run
+  `collection-run-998ae83753cb4884b891e70b454997f9`, job
+  `acfcb7b2-9376-419c-a3c4-2d46b0277466`; zero browser operations, observations,
+  accepted items, or stored items; terminal `agent_browser_error` at workspace
+  acquisition;
+- authenticated constrained plan: one same-profile live browser, one active
+  lease, zero compatible browsers, and `wait_for_profile_lease`;
+- authenticated candidate plan: `constrain_presentation=false`, one compatible
+  browser, exact reusable browser/session, `reuse_existing_browser`, service
+  request available, and no lifecycle-owner block;
+- all Reddit browser tests plus release-version and runtime-package tests pass;
+  `git diff --check` passes;
+- independent service 0.3.108 builds are byte-identical with SHA-256
+  `2904926bb99c9be679e4a38619af62b18362bb7e225eca7596db56c08463d242`;
+- all 20 Reddit collection specs remain disabled.
+
+State Movement:
+
+- Plan 0063 advances to version 13/C13
+  `presentation_neutral_reuse_repaired_retry_campaign_active`; P23 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; retry 2 never reached the scroll repair, but its exact
+  pre-effect plan mismatch is now removed.
+
+Authority Classification:
+
+- `inherited_authority`; retry 2 and its reuse repair stay within the approved
+  five-attempt Reddit-only campaign.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; repo, database, and live Agent Browser planning evidence are
+  authoritative.
+
+Next Bounded Action:
+
+- install service 0.3.108, verify exact identity and presentation-neutral
+  retained-browser reuse, then spend retry 3 through a new disabled 80-item
+  specification. Keep Reddit disabled in recurring schedules.
