@@ -396,6 +396,7 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
                     "guacamole-rdp-b": {
                         "state": "available",
                         "routeId": "guacamole:2",
+                        "target": {"displayName": ":10"},
                         "readiness": {"state": "ready"},
                     }
                 },
@@ -460,6 +461,11 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
         self.assertEqual("terminal-profile-replacement", remote_view["sessionName"])
         self.assertEqual("guacamole-rdp-b", remote_view["params"]["routePoolEntryId"])
         self.assertEqual("https://www.reddit.com/", remote_view["params"]["url"])
+        self.assertEqual(
+            "remote-view-display:terminal-profile-replacement",
+            remote_view["params"]["displayAllocationId"],
+        )
+        self.assertEqual(":10", remote_view["params"]["remoteHeadedDisplay"])
 
     def test_reviewed_duplicate_profile_lane_override_reaches_broker(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)

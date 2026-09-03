@@ -675,6 +675,33 @@ class CliAgentBrowserClient:
                     "viewStreamProvider": request.view_provider,
                 }
             )
+            route_pool = state.get("routePool") if isinstance(state, dict) else None
+            route_entry = (
+                route_pool.get(request.route_pool_entry_id_hint)
+                if isinstance(route_pool, dict)
+                else None
+            )
+            route_target = (
+                route_entry.get("target") if isinstance(route_entry, dict) else None
+            )
+            route_display_name = str(
+                route_target.get("displayName")
+                if isinstance(route_target, dict)
+                else ""
+            ).strip()
+            if route_display_name:
+                # Bind the allocation to the broker-selected replacement
+                # session. A display-number-derived global allocation ID can
+                # alias an unrelated released record retained from an older
+                # route, even though this route's live display is healthy.
+                route_params.update(
+                    {
+                        "displayAllocationId": (
+                            f"remote-view-display:{launch_session_name}"
+                        ),
+                        "remoteHeadedDisplay": route_display_name,
+                    }
+                )
             route_bound_service_request = {
                 key: value
                 for key, value in broker_request.items()

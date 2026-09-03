@@ -26,6 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Session-scoped Reddit display allocation.** Service 0.3.104 binds an
+  authenticated route-bound Reddit launch to a fresh display-allocation ID
+  derived from Agent Browser's broker-selected replacement session while
+  preserving the route's live display name. This prevents an unrelated
+  released allocation with a historically reused numeric ID from producing a
+  false `route_pool_target_mismatch` on a healthy Guacamole route.
+
 - **Authenticated route-bound Reddit launches.** Service 0.3.103 sends the
   cold `remote_view_open` through Agent Browser's authenticated service-request
   path, carrying the reviewed duplicate-profile-lane override and exact
