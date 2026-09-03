@@ -25770,3 +25770,78 @@ Next Bounded Action:
 - install service 0.3.108, verify exact identity and presentation-neutral
   retained-browser reuse, then spend retry 3 through a new disabled 80-item
   specification. Keep Reddit disabled in recurring schedules.
+
+## Turn 406 | 2026-09-03
+
+Focus: prove why successful Agent Browser scroll jobs did not advance Reddit's
+feed and prepare a document-targeted retry.
+
+Authority Consulted:
+
+- Plan 0063/C13; installed service 0.3.108; retry-3 acquisition and Agent
+  Browser receipts; one bounded exact-tab CDP diagnostic; repository TDD,
+  release, and checkpoint policy.
+
+Decisions And Changes:
+
+- installed exact service 0.3.108 and confirmed its authenticated plan reused
+  the exact retained browser before spending retry 3;
+- accepted retry 3's partial publication as evidence, not success: the new
+  counters proved three generic scroll actions caused no document progress;
+- acquired one exact diagnostic tab, verified authentication, measured the
+  document and nested scroll regions, compared one generic service scroll with
+  one page-native scroll, and released the exact tab;
+- found that generic scrolling followed focus into Reddit's left sidebar. It
+  moved the sidebar 1,400 pixels while the document remained at zero; exact-tab
+  `window.scrollBy` moved the document to 1,400 immediately;
+- used a red/green feed-interface regression and changed only Reddit feed
+  scrolling to the page-native pattern already used by the X adapter;
+- advanced the immutable candidate to service 0.3.109 and committed/pushed it
+  as `75e388d`. Two retries remain; retry 4 has not been spent.
+
+Validation Evidence:
+
+- retry 3: disabled spec `p0063-reddit-home-feed-live-v11`, run
+  `collection-run-d848cb5b7cfdf768d437c8e647a598d2`, job
+  `eaadbb6c-1769-4b5a-88af-a6ed0b302f11`; 112 observed, 28 accepted, 84
+  duplicates, zero document-progress scrolls, three no-progress scrolls;
+- all 13 matching Agent Browser jobs succeeded, including exact tab release;
+- live structural diagnostic: root scroll height 15,847, viewport 809, generic
+  scroll changed sidebar 0 to 1,400 and root 0 to 0, page-native scroll changed
+  root and window 0 to 1,400;
+- the new regression failed before implementation and passes afterward; all
+  Reddit browser, release-version, and runtime-package tests pass;
+- independent service 0.3.109 builds are byte-identical with SHA-256
+  `19580bc96bd1fa86f5f84760c78af435cb9ab7f6b09e546b7fb60389a0c2798d`;
+- all 21 Reddit collection specs remain disabled; database publication advanced
+  from 90 to 103 documents because 13 of retry 3's 28 posts were new globally.
+
+State Movement:
+
+- Plan 0063 advances to version 14/C14
+  `document_scroll_repaired_retry_campaign_active`; P23 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; exact browser reuse works and the remaining scroll target
+  failure has a live-proven focused repair.
+
+Authority Classification:
+
+- `inherited_authority`; retry 3 and the bounded exact-tab diagnostic stay
+  within the operator's Reddit-only reliability campaign.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; current repo, database, and exact-tab runtime evidence are
+  authoritative.
+
+Next Bounded Action:
+
+- install service 0.3.109, verify exact identity and retained-browser reuse,
+  then spend retry 4 through a new disabled 80-item specification. Keep Reddit
+  disabled in recurring schedules.

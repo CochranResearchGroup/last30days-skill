@@ -853,3 +853,53 @@ Next action: install service 0.3.108 transactionally, verify exact installed
 identity and the presentation-neutral reuse plan, then spend retry 3 through a
 new disabled 80-item specification. Keep Reddit disabled in recurring
 schedules.
+
+### Checkpoint P0063-C14 | 2026-09-03
+
+Plan version: 14
+
+State: `document_scroll_repaired_retry_campaign_active`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`; retry 3 followed installed identity and exact-browser
+  reuse proof. The post-run exact-tab diagnostic was bounded, released its own
+  handle, and isolated the remaining scroll target defect without consuming a
+  collection retry. Two retries remain.
+
+Evidence:
+
+- retry 3 used disabled specification `p0063-reddit-home-feed-live-v11`, run
+  `collection-run-d848cb5b7cfdf768d437c8e647a598d2`, and job
+  `eaadbb6c-1769-4b5a-88af-a6ed0b302f11`;
+- service 0.3.108 reused exact browser
+  `session:terminal-profile-519cefb206f3e65f70c67902`; all Agent Browser
+  tab, auth, navigation, evaluation, scroll, and release jobs succeeded;
+- the run published 28 unique posts from 112 observations. Diagnostics reported
+  84 duplicates, `page_scroll_progress_count=0`,
+  `page_scroll_no_progress_count=3`, and no other rejection or limitation;
+- a bounded exact-handle diagnostic confirmed authenticated Reddit with root
+  scroll height 15,847 and viewport 809. Agent Browser's generic scroll moved
+  only `reddit-sidebar-nav#left-sidebar` from 0 to 1,400 while document and
+  window scroll remained 0; exact-tab `window.scrollBy` then moved the document
+  and window to 1,400 immediately;
+- commit `75e388d` replaces generic focused-region scrolling only in the Reddit
+  feed path with page-native document scrolling. Reddit topic search and the
+  browser/profile lifecycle interface remain unchanged;
+- the new public-interface regression failed before the change and passes
+  afterward; the full Reddit browser file plus release-version and runtime-
+  package suites pass;
+- service 0.3.109 builds reproducibly with SHA-256
+  `19580bc96bd1fa86f5f84760c78af435cb9ab7f6b09e546b7fb60389a0c2798d`.
+
+Subagent status: `not_spawned`; current orchestration policy prohibits
+delegation.
+
+Graphiti write status: `not_written`; current repo, database, and exact-tab
+runtime evidence are authoritative.
+
+Next action: install service 0.3.109 transactionally, verify exact installed
+identity and retained-browser reuse, then spend retry 4 through a new disabled
+80-item specification. Keep Reddit disabled in recurring schedules.
