@@ -25531,3 +25531,88 @@ Next Bounded Action:
 - install service 0.3.102, verify exact installed identity plus clean profile
   and RDP route preconditions, then run retry 3 with a new disabled 80-item
   specification. Keep Reddit disabled in recurring schedules.
+
+## Turn 403 | 2026-09-02
+
+Focus: spend the remaining reasoned Reddit retries, repair each newly isolated
+Agent Browser boundary, and stop at the operator's five-attempt ceiling.
+
+Authority Consulted:
+
+- Plan 0063/C10; the operator's five-additional-attempt ceiling; installed
+  Agent Browser 0.28.0 service-request, protected-profile, remote-view,
+  route-pool, display-allocation, and service-tab-handle contracts; repository
+  testing, release, validation, and closeout policy.
+
+Decisions And Changes:
+
+- retry 3 proved direct `remote-view open` reached route B but lost protected
+  service authority at the stale-session identity guard. Moved the action to
+  authenticated `service_request` with the reviewed duplicate-lane override in
+  commit `a6e7178`;
+- retry 4 exposed a retained display-key collision: numeric allocation ID
+  `remote-view-display:10` contained historical display `:11`. Bound new route
+  work to a replacement-session-scoped allocation while retaining live display
+  `:10` in commit `d69467d`; the live dry-run plan then had zero blockers;
+- retry 5 successfully opened an authenticated Reddit browser and ready route
+  but failed its first evaluation because no exact service tab handle existed.
+  Direct handle-scoped auth evaluation was green. Commit `d1ff629` now performs
+  brokered `tab_new` after route open and validates/adopts the returned handle;
+- installed ready service 0.3.106. Did not run a sixth collection attempt.
+
+Validation Evidence:
+
+- retry 3: run `collection-run-e3e4a93eca1eb48fce3ecf6179de9df7`, job
+  `5e9445f6-9142-4a10-a490-85e4dc1e2196`, failure
+  `existing_session_profile_identity_unproven`;
+- retry 4: run `collection-run-4216a1d89238daec3eacf3b531b15aca`, job
+  `c9df0168-aa13-4256-bdfb-2f13a8f7b163`, failure
+  `route_pool_target_mismatch`;
+- retry 5: run `collection-run-a15de07b9397bee8683a459f61229fa7`, job
+  `9c015092-94e5-425c-a658-224e337e9a6f`; Agent Browser
+  `remote_view_open` succeeded and retained a ready Reddit tab, then evaluation
+  failed without `serviceTabHandle`;
+- direct exact-handle authentication returned authenticated with no login,
+  checkpoint, or network block; no post extraction or scrolling was performed;
+- focused Agent Browser runtime, Reddit, release-version, and runtime-package
+  suites pass; service 0.3.106 builds reproducibly as SHA-256
+  `a71acb60f20268690de9d40b43985ab8b9e2f9aca794a8ee8e3878b83feab9a6`;
+- the complete repository suite passes with 2,753 tests, seven skips, and nine
+  passing subtests;
+- installed service readback is ready at 0.3.106/schema 17 with runtime-manifest
+  SHA-256 `cd0703c5096cb8b675f756605e8f56bdf325d4775c18b4024417ce6c9b605d5a`;
+  database quick-check is `ok`, all 18 Reddit specs are disabled, and no
+  recurring Reddit schedule was enabled.
+
+State Movement:
+
+- Plan 0063 advances to version 11/C11
+  `authenticated_route_and_exact_handle_repaired_attempt_ceiling_reached`; P23
+  remains OPEN because no run has yet exercised service 0.3.106 to 80 items.
+
+Progress Classification:
+
+- `blocker_reduction`; browser/profile/route/authentication are now proven and
+  the exact post-launch handle defect is repaired, but live 80-item acceptance
+  remains outstanding.
+
+Authority Classification:
+
+- `inherited_authority`; all five retries were bounded and evidence-backed.
+  Another collection run requires new explicit authority.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; job
+  `78f1ab3e-7f6a-484c-ad18-d1f8fb2c1625` timed out. Repo, installed, database,
+  and Agent Browser evidence are authoritative.
+
+Next Bounded Action:
+
+- after explicit authorization, run one new disabled 80-item Reddit collection
+  against installed service 0.3.106. Keep Reddit disabled in recurring
+  schedules.

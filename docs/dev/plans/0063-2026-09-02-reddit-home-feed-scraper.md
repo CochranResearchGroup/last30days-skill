@@ -6,7 +6,7 @@ Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 10
+Plan version: 11
 Date: 2026-09-02
 
 ## Objective
@@ -17,7 +17,7 @@ filtering, while preserving the existing Reddit search capability.
 
 ## Current State
 
-- service 0.3.101 is installed and ready on schema 17 with a dedicated Reddit
+- service 0.3.106 is installed and ready on schema 17 with a dedicated Reddit
   home-feed path, 80-item collection capacity, remote-headed CDP control, typed
   network-security blocking, and broker-preserved RDP route-pool selection;
 - direct authenticated-profile inspection observed 62 rendered post containers
@@ -33,14 +33,21 @@ filtering, while preserving the existing Reddit search capability.
 - commit `dec7672` corrected that request-contract defect in installed service
   0.3.101. Retry 2 reached Agent Browser, which recorded the configured route-
   pool entry but still used generic `tab_new` auto-launch and stale Xvfb `:90`;
-- commit `880b82d` routes a cold remote-headed acquisition through Agent
-  Browser's dedicated `remote-view open` allocator and preserves the access-
-  plan replacement session. Candidate service 0.3.102 is reproducibly built,
-  and three authorized attempts remain;
+- retries 3 through 5 progressively proved the authenticated Agent Browser
+  path, repaired a stale numeric display-allocation alias, and reached a ready,
+  authenticated Reddit page. Retry 5 failed at the first evaluation because
+  the route-open path had no exact service tab handle;
+- commits `a6e7178`, `d69467d`, and `d1ff629` now preserve protected service
+  authority, use a replacement-session-scoped display allocation, and follow
+  successful `remote_view_open` with brokered `tab_new` handle acquisition;
+- all five operator-authorized successor attempts are consumed. Installed
+  service 0.3.106 is the first candidate containing the final handle repair,
+  but it has not received another collection attempt and 80-item live proof is
+  still absent;
 - commit `c77cbb3` isolates the real MCP/service integration test from the
   operator's configured tick runtime; the complete 2,758-test collection now
   reaches 100% without failures, closing the remaining validation gap;
-- all 13 Reddit collection specifications remain disabled, and this plan has
+- all 18 Reddit collection specifications remain disabled, and this plan has
   not enabled or otherwise mutated `daily-default`.
 
 ## Scope
@@ -648,3 +655,74 @@ Plan 0063 C10 replaces generic `tab_new` cold launch with route-bound
 Next action: install service 0.3.102 transactionally, verify its exact identity
 plus clean exact-profile and route state, then spend retry 3 with a new disabled
 80-item specification. Keep Reddit disabled in recurring schedules.
+
+### Checkpoint P0063-C11 | 2026-09-02
+
+Plan version: 11
+
+State: `authenticated_route_and_exact_handle_repaired_attempt_ceiling_reached`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`; retries 3, 4, and 5 each followed a distinct live
+  failure with a focused red/green repair and preflight. The five-attempt
+  allowance is now exhausted, so service 0.3.106 was installed and validated
+  without submitting a sixth collection run.
+
+Evidence:
+
+- retry 3 used disabled specification `p0063-reddit-home-feed-live-v6`, run
+  `collection-run-e3e4a93eca1eb48fce3ecf6179de9df7`, and job
+  `5e9445f6-9142-4a10-a490-85e4dc1e2196`. Agent Browser reached
+  `remote_view_open` on `guacamole-rdp-b` but rejected the direct CLI path with
+  `existing_session_profile_identity_unproven`;
+- commit `a6e7178` moved route opening into authenticated `service_request`,
+  preserving the protected principal authority and reviewed
+  `allowDuplicateProfileLane` override;
+- retry 4 used disabled specification `p0063-reddit-home-feed-live-v7`, run
+  `collection-run-4216a1d89238daec3eacf3b531b15aca`, and job
+  `c9df0168-aa13-4256-bdfb-2f13a8f7b163`. Agent Browser then reported
+  `route_pool_target_mismatch` because retained allocation
+  `remote-view-display:10` incorrectly named display `:11`, while route B
+  correctly targeted live display `:10`;
+- commit `d69467d` binds the route display to a fresh allocation ID scoped by
+  the broker-selected replacement session. A live no-effect Agent Browser
+  preflight returned `status=planned`, exact route `guacamole-rdp-b`, the
+  session-scoped allocation, and zero blockers;
+- retry 5 used disabled specification `p0063-reddit-home-feed-live-v8`, run
+  `collection-run-a15de07b9397bee8683a459f61229fa7`, and job
+  `9c015092-94e5-425c-a658-224e337e9a6f`. Agent Browser's
+  `remote_view_open` succeeded, route B became ready, and a live browser for
+  `last30days-facebook` exposed an active Reddit home-feed tab. The run failed
+  at its first evaluation because route opening did not return a service tab
+  handle and `tab_list` is discovery-only;
+- direct handle-scoped evaluation of that retained tab proved
+  `authenticated=true`, `login_form=false`, `checkpoint=false`, and
+  `network_blocked=false` without scrolling or extracting posts;
+- commit `d1ff629` follows successful route opening with authenticated,
+  browser/session-routed `tab_new`, validates the returned handle, and makes it
+  authoritative for subsequent evaluation. The exact regression failed before
+  this repair and passes afterward;
+- installed service 0.3.106 is ready with schema 17, contract SHA-256
+  `bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025`,
+  runtime-manifest SHA-256
+  `cd0703c5096cb8b675f756605e8f56bdf325d4775c18b4024417ce6c9b605d5a`,
+  and reproducible artifact SHA-256
+  `a71acb60f20268690de9d40b43985ab8b9e2f9aca794a8ee8e3878b83feab9a6`;
+- the complete repository suite passes with 2,753 tests, seven skips, and nine
+  passing subtests after the final exact-handle repair;
+- database `PRAGMA quick_check` is `ok`; all 18 Reddit specifications are
+  disabled and no recurring Reddit schedule was enabled.
+
+Subagent status: `not_spawned`; current orchestration policy prohibits
+delegation.
+
+Graphiti write status: `graphiti_write_pending`; the prior compact checkpoint
+job `78f1ab3e-7f6a-484c-ad18-d1f8fb2c1625` timed out. Current commits, installed
+identity, database receipts, and Agent Browser jobs remain authoritative.
+
+Next action: obtain explicit authority for one additional disabled 80-item
+collection attempt against installed service 0.3.106. Do not enable the
+recurring Reddit lane.
