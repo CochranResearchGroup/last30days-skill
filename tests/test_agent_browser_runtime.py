@@ -367,6 +367,7 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             agent="reddit-scraper",
             task="reddit-home-feed",
             service="reddit",
+            allow_duplicate_profile_lane=True,
             route_pool_entry_id_hint="guacamole-rdp-b",
         )
         plan = _access_plan(
@@ -401,29 +402,32 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             }
         }
         invocations = []
+        service_requests = []
 
         def invoke(args, **_kwargs):
             invocations.append(args)
             if args == ["service", "status"]:
                 return status
-            if "remote-view" in args:
-                return {
-                    "profileId": "last30days-facebook",
-                    "browserId": "session:reddit-route-bound",
-                    "sessionName": "terminal-profile-replacement",
-                    "targetId": "reddit-owned",
-                    "routeId": "guacamole:2",
-                    "displayAllocationId": "display:guacamole-rdp-b",
-                    "operatorVisible": {"state": "ready"},
-                }
             raise AssertionError(f"unexpected invocation: {args}")
+
+        def service_request(arguments, **_kwargs):
+            service_requests.append(arguments)
+            return {
+                "profileId": "last30days-facebook",
+                "browserId": "session:reddit-route-bound",
+                "sessionName": "terminal-profile-replacement",
+                "targetId": "reddit-owned",
+                "routeId": "guacamole:2",
+                "displayAllocationId": "display:guacamole-rdp-b",
+                "operatorVisible": {"state": "ready"},
+            }
 
         with (
             mock.patch.object(client, "_invoke", side_effect=invoke),
             mock.patch.object(
                 client,
                 "_invoke_service_request",
-                side_effect=AssertionError("cold route launch must not use tab_new"),
+                side_effect=service_request,
             ),
             mock.patch.object(
                 agent_browser_runtime.agent_browser_config,
@@ -448,13 +452,14 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             workspace = client.acquire_workspace(request, access_plan=plan)
 
         self.assertEqual("reddit-owned", workspace.target_id)
-        remote_view = invocations[-1]
-        self.assertEqual(
-            ["--session", "terminal-profile-replacement", "remote-view", "open"],
-            remote_view[:4],
-        )
-        route_index = remote_view.index("--route-pool-entry-id")
-        self.assertEqual("guacamole-rdp-b", remote_view[route_index + 1])
+        self.assertEqual([["service", "status"]], invocations)
+        self.assertEqual(1, len(service_requests))
+        remote_view = service_requests[0]
+        self.assertEqual("remote_view_open", remote_view["action"])
+        self.assertTrue(remote_view["allowDuplicateProfileLane"])
+        self.assertEqual("terminal-profile-replacement", remote_view["sessionName"])
+        self.assertEqual("guacamole-rdp-b", remote_view["params"]["routePoolEntryId"])
+        self.assertEqual("https://www.reddit.com/", remote_view["params"]["url"])
 
     def test_reviewed_duplicate_profile_lane_override_reaches_broker(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)

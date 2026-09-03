@@ -660,7 +660,49 @@ class CliAgentBrowserClient:
             remote_view_recommended
             and requested_target_service_id == "facebook"
         )
-        if remote_view_recommended:
+        route_bound_service_request: dict[str, Any] | None = None
+        if (
+            remote_view_recommended
+            and route_bound_cold_launch
+            and isinstance(broker_request, dict)
+        ):
+            route_params = broker_request.get("params")
+            route_params = dict(route_params) if isinstance(route_params, dict) else {}
+            route_params.update(
+                {
+                    "url": request.start_url,
+                    "routePoolEntryId": request.route_pool_entry_id_hint,
+                    "viewStreamProvider": request.view_provider,
+                }
+            )
+            route_bound_service_request = {
+                key: value
+                for key, value in broker_request.items()
+                if key not in {"action", "params", "url", "jobTimeoutMs"}
+            }
+            route_bound_service_request.update(
+                {
+                    "action": "remote_view_open",
+                    "serviceName": request.service_name,
+                    "agentName": request.agent_name,
+                    "taskName": request.task_name,
+                    "targetServiceIds": [requested_target_service_id],
+                    "runtimeProfile": selected_profile,
+                    "browserBuild": request.browser_build,
+                    "browserHost": request.browser_host,
+                    "viewStreamProvider": request.view_provider,
+                    "controlInputProvider": request.control_input_provider,
+                    "displayIsolation": request.display_isolation,
+                    "profileLeasePolicy": "wait",
+                    "jobTimeoutMs": self.job_timeout_ms,
+                    "params": route_params,
+                }
+            )
+            if request.allow_duplicate_profile_lane:
+                route_bound_service_request["allowDuplicateProfileLane"] = True
+            self._service_request_route = dict(route_bound_service_request)
+            cmd = []
+        elif remote_view_recommended:
             cmd = [
                 "--session", launch_session_name,
                 "remote-view", "open", request.start_url,
@@ -712,10 +754,34 @@ class CliAgentBrowserClient:
             )
 
         try:
-            opened = self._invoke(
-                cmd,
-                timeout=open_timeout,
-            )
+            if route_bound_service_request is not None:
+                remote_view_started = time.monotonic()
+                try:
+                    opened = self._invoke_service_request(
+                        route_bound_service_request,
+                        timeout=open_timeout,
+                    )
+                except (OSError, subprocess.TimeoutExpired, AgentBrowserRuntimeFailure):
+                    self.command_timings.append(
+                        {
+                            "operation": "service_request:remote_view_open",
+                            "duration_ms": _elapsed_ms(remote_view_started),
+                            "status": "failed",
+                        }
+                    )
+                    raise
+                self.command_timings.append(
+                    {
+                        "operation": "service_request:remote_view_open",
+                        "duration_ms": _elapsed_ms(remote_view_started),
+                        "status": "ok",
+                    }
+                )
+            else:
+                opened = self._invoke(
+                    cmd,
+                    timeout=open_timeout,
+                )
         except AgentBrowserRuntimeFailure as exc:
             newly_selected_lane = not isinstance(
                 sessions.get(launch_session_name) if isinstance(sessions, dict) else None,
@@ -788,6 +854,19 @@ class CliAgentBrowserClient:
                 "profile_mismatch",
                 f"agent-browser opened profile {observed_profile!r}, not {request.profile_id!r}",
                 operator_url=_operator_url(opened),
+            )
+        if route_bound_service_request is not None:
+            self._service_request_route.update(
+                {
+                    "browserId": str(
+                        opened.get("browserId") or visible.get("browserId") or browser_id
+                    ),
+                    "sessionName": str(
+                        opened.get("sessionName")
+                        or visible.get("sessionName")
+                        or launch_session_name
+                    ),
+                }
             )
         return BrowserWorkspace(
             profile_id=observed_profile,

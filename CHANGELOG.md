@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Authenticated route-bound Reddit launches.** Service 0.3.103 sends the
+  cold `remote_view_open` through Agent Browser's authenticated service-request
+  path, carrying the reviewed duplicate-profile-lane override and exact
+  route-pool entry. The prior direct CLI handoff retained the route but dropped
+  the service principal authority needed to supersede stale session identity.
+
 - **Route-bound cold Reddit launches.** Service 0.3.102 sends a cold
   remote-headed Reddit acquisition through Agent Browser's dedicated
   `remote-view open` route allocator when an exact route-pool entry is
