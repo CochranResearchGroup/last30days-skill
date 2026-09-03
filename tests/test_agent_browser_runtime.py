@@ -329,6 +329,9 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             task=request.task_name,
             service=request.target_service_id,
         )
+        plan["decision"]["serviceRequest"]["request"]["params"] = {
+            "provider": "rdp_gateway"
+        }
         captured = {}
 
         def service_request(arguments, **_kwargs):
@@ -349,7 +352,12 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
         ):
             client.acquire_workspace(request)
 
-        self.assertEqual("guacamole-rdp-b", captured["routePoolEntryId"])
+        self.assertNotIn("routePoolEntryId", captured)
+        self.assertEqual(
+            "guacamole-rdp-b",
+            captured["params"]["routePoolEntryId"],
+        )
+        self.assertEqual("rdp_gateway", captured["params"]["provider"])
 
     def test_reviewed_duplicate_profile_lane_override_reaches_broker(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)

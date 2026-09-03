@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Agent Browser MCP-compatible route selection.** Service 0.3.101 places
+  the configured Reddit route-pool entry under the `tab_new` request's
+  action-specific `params`, matching Agent Browser's service-request contract.
+  Service 0.3.100 sent that field at the MCP tool's top level, where schema
+  validation rejected it before Agent Browser could enqueue a browser job.
+
 - **Broker-preserved Reddit route selection.** Service 0.3.100 preserves the
   configured Reddit route-pool entry in the broker-first Agent Browser
   `tab_new` request. The installed worker was reading the hint correctly, but

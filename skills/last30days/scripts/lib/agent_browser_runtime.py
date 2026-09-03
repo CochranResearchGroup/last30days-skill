@@ -333,9 +333,13 @@ class CliAgentBrowserClient:
             if request.allow_duplicate_profile_lane:
                 self._service_request_route["allowDuplicateProfileLane"] = True
             if request.route_pool_entry_id_hint:
-                self._service_request_route["routePoolEntryId"] = (
-                    request.route_pool_entry_id_hint
-                )
+                route_params = self._service_request_route.get("params")
+                if not isinstance(route_params, dict):
+                    route_params = {}
+                else:
+                    route_params = dict(route_params)
+                route_params["routePoolEntryId"] = request.route_pool_entry_id_hint
+                self._service_request_route["params"] = route_params
             if route_browser_id and route_session_name:
                 self._service_request_route.update(
                     {
