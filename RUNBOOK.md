@@ -25616,3 +25616,80 @@ Next Bounded Action:
 - after explicit authorization, run one new disabled 80-item Reddit collection
   against installed service 0.3.106. Keep Reddit disabled in recurring
   schedules.
+
+## Turn 404 | 2026-09-03
+
+Focus: exercise the repaired Reddit browser lifecycle, diagnose its first
+successful partial publication, and prepare a materially different retry.
+
+Authority Consulted:
+
+- Plan 0063/C11; the operator's new five-retry allowance; installed service
+  0.3.106; durable collection and Agent Browser job receipts; repository TDD,
+  release, validation, and checkpoint policy.
+
+Decisions And Changes:
+
+- spent retry 1 because it was the first live exercise of the exact tab-handle
+  repair. It reached authenticated Reddit, published 28 unique posts, and
+  released its exact service tab cleanly;
+- classified all 84 rejected observations as repeats of those 28 posts. No ad,
+  spam, structural, date-scope, authentication, navigation, or Agent Browser
+  operation failed;
+- traced the shortfall to the Reddit scraper's stagnation rule: it stopped
+  after three duplicate content snapshots without measuring whether the
+  document had continued to scroll through already-rendered cards;
+- used a red/green public-interface regression, then changed only the scraper
+  implementation. It now observes document scroll position and height in the
+  existing extraction evaluation and counts stagnation only when neither page
+  position nor candidate identities advance;
+- advanced the immutable candidate to service 0.3.107 and committed/pushed the
+  repair as `58060a4`. Four retries remain; retry 2 has not yet been spent.
+
+Validation Evidence:
+
+- disabled spec `p0063-reddit-home-feed-live-v9`, run
+  `collection-run-c3e462a7f9eb6ce9cace3ce3e0d6ae3a`, job
+  `a20f27d6-9abf-4105-a704-fd891d1cde77`: 112 observed, 28 accepted/stored,
+  84 duplicate observations, zero other exclusions, terminal `published`;
+- Agent Browser completed 12 recorded operations successfully, including three
+  scrolls and exact `tab_handle_release`; its browser remained healthy and
+  reusable on profile `last30days-facebook`;
+- the new regression failed before implementation and passes afterward; all
+  tests in `tests/test_reddit_browser.py` pass, as do release-version and
+  runtime-package tests. Ruff was unavailable in the repository environment;
+  `git diff --check` passed;
+- two independent service 0.3.107 builds are byte-identical with SHA-256
+  `c83a39c6dbed9a9458126ab8f447109b67186be6a16cef83bfb7e6aaa52b181b`;
+- all 19 Reddit collection specs remain disabled.
+
+State Movement:
+
+- Plan 0063 advances to version 12/C12
+  `scroll_progress_repaired_retry_campaign_active`; P23 remains OPEN because
+  live 80-item proof is still outstanding.
+
+Progress Classification:
+
+- `blocker_reduction`; browser acquisition now works, and the measured
+  duplicate-only shortfall has a focused candidate repair.
+
+Authority Classification:
+
+- `inherited_authority`; retry 1 and its bounded repair stay within the new
+  five-attempt Reddit-only allowance.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; current repository, database, and Agent Browser evidence are
+  authoritative.
+
+Next Bounded Action:
+
+- install service 0.3.107, verify exact installed identity and retained browser
+  reuse, then spend retry 2 through a new disabled 80-item specification. Keep
+  Reddit disabled in recurring schedules.

@@ -735,3 +735,53 @@ identity, database receipts, and Agent Browser jobs remain authoritative.
 Next action: obtain explicit authority for one additional disabled 80-item
 collection attempt against installed service 0.3.106. Do not enable the
 recurring Reddit lane.
+
+### Checkpoint P0063-C12 | 2026-09-03
+
+Plan version: 12
+
+State: `scroll_progress_repaired_retry_campaign_active`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`; after the Agent Browser handoff note, the operator
+  authorized up to five more reasoned attempts. Retry 1 exercised installed
+  service 0.3.106, and four attempts remain. The diagnostic repair and
+  candidate installation stay within the exact-profile Reddit-only scope.
+
+Evidence:
+
+- retry 1 used disabled specification `p0063-reddit-home-feed-live-v9`, run
+  `collection-run-c3e462a7f9eb6ce9cace3ce3e0d6ae3a`, and job
+  `a20f27d6-9abf-4105-a704-fd891d1cde77`;
+- the run published 28 unique canonical posts from 112 observations. Its 84
+  rejected observations were all duplicates; there were zero promoted, spam,
+  malformed-link, missing-field, or date-scope exclusions;
+- Agent Browser completed route open, exact tab-handle acquisition,
+  authentication, navigation, three scrolls, all evaluations, and exact handle
+  release successfully. The run stopped only because the scraper saw the same
+  28 rendered post identities after each fixed scroll;
+- the live result isolated a scraper defect: three duplicate content snapshots
+  do not prove page stagnation when each small scroll is still traversing the
+  already-rendered cards before Reddit's next lazy-load boundary;
+- commit `58060a4` adds document scroll-position and height observations to the
+  existing extraction response, resets stagnation while either the page or
+  candidate set advances, and reports page-progress versus no-progress scroll
+  counts without changing the public feed interface;
+- the new public-interface regression failed before the repair and passes
+  afterward; the complete Reddit browser file plus release-version and runtime-
+  package suites pass;
+- service 0.3.107 builds reproducibly with SHA-256
+  `c83a39c6dbed9a9458126ab8f447109b67186be6a16cef83bfb7e6aaa52b181b`.
+
+Subagent status: `not_spawned`; current orchestration policy prohibits
+delegation.
+
+Graphiti write status: `not_written`; current repo, database receipts, and
+Agent Browser jobs are the authoritative checkpoint evidence.
+
+Next action: install service 0.3.107 transactionally, verify exact installed
+identity and retained exact-profile reuse, then spend retry 2 with a new
+disabled 80-item specification. Keep Reddit disabled in recurring schedules.
