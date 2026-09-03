@@ -47,6 +47,8 @@ class FakeClient:
     def evaluate(self, _workspace, script):
         if script == reddit_browser.PAGE_STATE_SCRIPT:
             return self.page
+        if script == reddit_browser.SCROLL_SCRIPT:
+            return {}
         return {"candidates": self.extracts}
 
     def release_workspace(self):
@@ -201,6 +203,8 @@ def test_feed_scrolls_until_accepted_unique_limit_despite_ads_and_duplicates():
         def evaluate(self, workspace, script):
             if script == reddit_browser.PAGE_STATE_SCRIPT:
                 return self.page
+            if script == reddit_browser.SCROLL_SCRIPT:
+                return {}
             batch = batches[min(self.batch_index, len(batches) - 1)]
             self.batch_index += 1
             return {"candidates": batch}
@@ -323,6 +327,8 @@ def test_feed_public_interface_can_collect_eighty_unique_posts(monkeypatch):
         def evaluate(self, workspace, script):
             if script == reddit_browser.PAGE_STATE_SCRIPT:
                 return self.page
+            if script == reddit_browser.SCROLL_SCRIPT:
+                return {}
             batch = batches[min(self.batch_index, len(batches) - 1)]
             self.batch_index += 1
             return {"candidates": batch}
@@ -430,6 +436,8 @@ def test_feed_keeps_scrolling_while_viewport_advances_toward_new_posts():
         def evaluate(self, workspace, script):
             if script == reddit_browser.PAGE_STATE_SCRIPT:
                 return self.page
+            if script == reddit_browser.SCROLL_SCRIPT:
+                return {}
             scroll_tops = [0, 1400, 2800, 4200, 5600]
             index = min(self.extract_index, len(scroll_tops) - 1)
             self.extract_index += 1
@@ -450,6 +458,63 @@ def test_feed_keeps_scrolling_while_viewport_advances_toward_new_posts():
     assert result["diagnostics"]["scroll_count"] == 4
     assert result["diagnostics"]["page_scroll_progress_count"] == 4
     assert result["diagnostics"]["page_scroll_no_progress_count"] == 0
+    assert result["diagnostics"]["stop_reason"] == "accepted_limit"
+
+
+def test_feed_scrolls_the_document_when_generic_scroll_targets_the_sidebar():
+    first = {
+        "title": "A post already rendered above the fold",
+        "permalink": "/r/example/comments/docscroll1/post/",
+        "subreddit": "r/example",
+        "created_at": "2026-09-02T09:15:00Z",
+    }
+    second = {
+        "title": "A post loaded after the document moves",
+        "permalink": "/r/example/comments/docscroll2/post/",
+        "subreddit": "r/example",
+        "created_at": "2026-09-02T09:16:00Z",
+    }
+
+    class SidebarFocusedClient(FakeClient):
+        def __init__(self):
+            super().__init__(
+                page={
+                    "url": "https://www.reddit.com/",
+                    "title": "Reddit - Dive into anything",
+                    "has_posts": True,
+                }
+            )
+            self.document_scroll_count = 0
+
+        def evaluate(self, workspace, script):
+            if script == reddit_browser.PAGE_STATE_SCRIPT:
+                return self.page
+            if "window.scrollBy" in script:
+                self.document_scroll_count += 1
+                return {"scroll_top": self.document_scroll_count * 1400}
+            candidates = (
+                [first]
+                if self.document_scroll_count == 0
+                else [first, second]
+            )
+            return {
+                "candidates": candidates,
+                "page_metrics": {
+                    "scroll_top": self.document_scroll_count * 1400,
+                    "scroll_height": 12000,
+                    "viewport_height": 900,
+                },
+            }
+
+    result = _feed_scraper(SidebarFocusedClient(), limit=2, scrolls=10).feed(
+        "2026-08-03", "2026-09-02"
+    )
+
+    assert [item["reddit_id"] for item in result["items"]] == [
+        "docscroll1",
+        "docscroll2",
+    ]
+    assert result["diagnostics"]["scroll_count"] == 1
     assert result["diagnostics"]["stop_reason"] == "accepted_limit"
 
 

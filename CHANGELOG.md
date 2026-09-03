@@ -26,6 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Document-targeted Reddit feed scrolling.** Service 0.3.109 scrolls Reddit's
+  document explicitly during home-feed acquisition. The generic Agent Browser
+  scroll action can follow the currently focused nested region and was moving
+  Reddit's left sidebar while reporting success; page-native scrolling reaches
+  the lazy-loaded post stream and remains scoped to the exact broker-issued
+  service tab.
+
 - **Presentation-neutral Reddit browser reuse.** Service 0.3.108 keeps the
   remote-headed cold-launch posture but no longer constrains Agent Browser's
   access plan by retained presentation metadata for ordinary Reddit scraping.

@@ -184,6 +184,26 @@ EXTRACT_SCRIPT = r"""
 """
 
 
+SCROLL_SCRIPT = r"""
+(() => {
+  const scrollingElement = document.scrollingElement || document.documentElement;
+  const amount = Math.max(window.innerHeight * 1.8, 1400);
+  window.scrollBy({top: amount, behavior: 'instant'});
+  return {
+    scroll_top: Math.max(window.scrollY || 0, scrollingElement?.scrollTop || 0),
+    scroll_height: Math.max(
+      scrollingElement?.scrollHeight || 0,
+      document.body?.scrollHeight || 0
+    ),
+    viewport_height: Math.max(
+      window.innerHeight || 0,
+      document.documentElement?.clientHeight || 0
+    ),
+  };
+})()
+"""
+
+
 @dataclass(frozen=True)
 class RedditPageState:
     url: str
@@ -439,7 +459,7 @@ class RedditBrowserScraper:
                 if self._accepted_unique_count(raw_candidates, from_date, to_date) >= self.limit:
                     diagnostics.stop_reason = "accepted_limit"
                     break
-                self.client.act(workspace, BrowserAction("scroll", value="1400"))
+                self.client.evaluate(workspace, SCROLL_SCRIPT)
                 diagnostics.scroll_count += 1
                 if self.scroll_wait:
                     time.sleep(self.scroll_wait)

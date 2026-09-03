@@ -6,7 +6,7 @@ Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 13
+Plan version: 14
 Date: 2026-09-03
 
 ## Objective
@@ -57,15 +57,23 @@ filtering, while preserving the existing Reddit search capability.
   incompatible because the browser row reported `shared_display` and omitted
   provider fields while Reddit constrained reuse to private RDP/CDP posture.
   Last30days stopped at `wait_for_profile_lease` before issuing any browser job;
-- candidate service 0.3.108 leaves cold-launch posture intact but makes ordinary
+- service 0.3.108 leaves cold-launch posture intact but makes ordinary
   Reddit scraping presentation-neutral. A live authenticated no-effect plan
   now selects the exact healthy browser with `reuse_existing_browser`, one
-  compatible live browser, and an available unblocked service request. Three
-  reasoned retries remain, and 80-item live proof is still absent;
+  compatible live browser, and an available unblocked service request;
+- retry 3 exercised both the retained-browser reuse repair and the scroll-
+  progress instrumentation. It again published 28 unique posts and reported
+  zero document progress across three successful generic scroll actions;
+- an exact-tab live diagnostic proved those actions moved Reddit's focused
+  `#left-sidebar` from scroll position 0 to 1,400 while the document stayed at
+  0. A page-native `window.scrollBy` immediately moved the document to 1,400;
+- candidate service 0.3.109 uses exact-tab page-native document scrolling for
+  Reddit feeds, matching the established X adapter pattern. Two reasoned
+  retries remain, and 80-item live proof is still absent;
 - commit `c77cbb3` isolates the real MCP/service integration test from the
   operator's configured tick runtime; the complete 2,758-test collection now
   reaches 100% without failures, closing the remaining validation gap;
-- all 20 Reddit collection specifications remain disabled, and this plan has
+- all 21 Reddit collection specifications remain disabled, and this plan has
   not enabled or otherwise mutated `daily-default`.
 
 ## Scope
