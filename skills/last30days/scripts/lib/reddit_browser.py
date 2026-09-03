@@ -165,7 +165,21 @@ EXTRACT_SCRIPT = r"""
       });
     }
   }
-  return {candidates: candidates.slice(0, 80)};
+  const scrollingElement = document.scrollingElement || document.documentElement;
+  return {
+    candidates: candidates.slice(0, 80),
+    page_metrics: {
+      scroll_top: Math.max(window.scrollY || 0, scrollingElement?.scrollTop || 0),
+      scroll_height: Math.max(
+        scrollingElement?.scrollHeight || 0,
+        document.body?.scrollHeight || 0
+      ),
+      viewport_height: Math.max(
+        window.innerHeight || 0,
+        document.documentElement?.clientHeight || 0
+      ),
+    },
+  };
 })()
 """
 
@@ -206,6 +220,8 @@ class RedditDiagnostics:
     failure_stage: str = "workspace_acquisition"
     verified_no_results: bool = False
     scroll_count: int = 0
+    page_scroll_progress_count: int = 0
+    page_scroll_no_progress_count: int = 0
     stagnant_scrolls: int = 0
     unique_observation_count: int = 0
     stop_reason: str = ""
@@ -221,6 +237,8 @@ class RedditDiagnostics:
             "duration_ms": self.duration_ms,
             "verified_no_results": self.verified_no_results,
             "scroll_count": self.scroll_count,
+            "page_scroll_progress_count": self.page_scroll_progress_count,
+            "page_scroll_no_progress_count": self.page_scroll_no_progress_count,
             "stagnant_scrolls": self.stagnant_scrolls,
             "unique_observation_count": self.unique_observation_count,
             "stop_reason": self.stop_reason,
@@ -410,7 +428,7 @@ class RedditBrowserScraper:
             if self.initial_wait:
                 time.sleep(self.initial_wait)
             diagnostics.failure_stage = "extraction"
-            raw_candidates = self._extract(workspace)
+            raw_candidates, page_metrics = self._extract_snapshot(workspace)
             seen_observations = {
                 _candidate_observation_key(item) for item in raw_candidates
             }
@@ -425,13 +443,24 @@ class RedditBrowserScraper:
                 diagnostics.scroll_count += 1
                 if self.scroll_wait:
                     time.sleep(self.scroll_wait)
-                batch = self._extract(workspace)
+                batch, next_page_metrics = self._extract_snapshot(workspace)
                 new_observations = {
                     _candidate_observation_key(item) for item in batch
                 } - seen_observations
                 seen_observations.update(new_observations)
                 raw_candidates.extend(batch)
-                stagnant_scrolls = 0 if new_observations else stagnant_scrolls + 1
+                page_progressed = _page_progressed(page_metrics, next_page_metrics)
+                if page_progressed:
+                    diagnostics.page_scroll_progress_count += 1
+                elif page_metrics is not None and next_page_metrics is not None:
+                    diagnostics.page_scroll_no_progress_count += 1
+                if next_page_metrics is not None:
+                    page_metrics = next_page_metrics
+                stagnant_scrolls = (
+                    0
+                    if new_observations or page_progressed
+                    else stagnant_scrolls + 1
+                )
                 diagnostics.stagnant_scrolls = stagnant_scrolls
                 diagnostics.unique_observation_count = len(seen_observations)
                 if stagnant_scrolls >= MAX_STAGNANT_SCROLLS:
@@ -588,13 +617,33 @@ class RedditBrowserScraper:
         return page
 
     def _extract(self, workspace: BrowserWorkspace) -> list[dict[str, Any]]:
+        candidates, _page_metrics = self._extract_snapshot(workspace)
+        return candidates
+
+    def _extract_snapshot(
+        self, workspace: BrowserWorkspace
+    ) -> tuple[list[dict[str, Any]], tuple[float, float, float] | None]:
         raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
         candidates = raw.get("candidates") if isinstance(raw, dict) else None
         if not isinstance(candidates, list):
             raise RedditBrowserFailure(
                 "agent_browser_error", "agent-browser returned malformed Reddit extraction data"
             )
-        return [item for item in candidates if isinstance(item, dict)][:80]
+        page_metrics = raw.get("page_metrics") if isinstance(raw, dict) else None
+        parsed_metrics: tuple[float, float, float] | None = None
+        if isinstance(page_metrics, dict):
+            try:
+                parsed_metrics = (
+                    float(page_metrics.get("scroll_top") or 0),
+                    float(page_metrics.get("scroll_height") or 0),
+                    float(page_metrics.get("viewport_height") or 0),
+                )
+            except (TypeError, ValueError):
+                parsed_metrics = None
+        return (
+            [item for item in candidates if isinstance(item, dict)][:80],
+            parsed_metrics,
+        )
 
     def _quality_gate(
         self,
@@ -981,6 +1030,17 @@ def _candidate_observation_key(candidate: dict[str, Any]) -> str:
             _clean(str(candidate.get("title") or "")).casefold()[:500],
         )
     )
+
+
+def _page_progressed(
+    previous: tuple[float, float, float] | None,
+    current: tuple[float, float, float] | None,
+) -> bool:
+    if previous is None or current is None:
+        return False
+    previous_top, previous_height, _previous_viewport = previous
+    current_top, current_height, _current_viewport = current
+    return current_top > previous_top + 1 or current_height > previous_height + 1
 
 
 def _timestamp(value: str) -> datetime | None:

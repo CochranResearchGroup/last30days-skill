@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "c8440c6e194c3bf0cd6e403d7b8b20898ef87c997268e5153b5bfbcb722b815b",
+      "sha256": "0ccb14c284705340c45dc84acff852478f391a17bf5727c065db55c3e31a0eab",
       "source": "service/VERSION"
     },
     {
@@ -222,7 +222,7 @@
     },
     {
       "path": "scripts/lib/reddit_browser.py",
-      "sha256": "5c68311cf831dd597fb4892b0b4d586079d6036af35c475b1ca38b7ca2e2e462",
+      "sha256": "9f9e6d397a5347105538ec6dd22933bc80c2e1d50fdf3efb8d3d49076fd499d7",
       "source": "skills/last30days/scripts/lib/reddit_browser.py"
     },
     {
@@ -658,5 +658,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.106"
+  "service_version": "0.3.107"
 }

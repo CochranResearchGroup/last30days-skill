@@ -6,8 +6,8 @@ Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 11
-Date: 2026-09-02
+Plan version: 12
+Date: 2026-09-03
 
 ## Objective
 
@@ -40,14 +40,23 @@ filtering, while preserving the existing Reddit search capability.
 - commits `a6e7178`, `d69467d`, and `d1ff629` now preserve protected service
   authority, use a replacement-session-scoped display allocation, and follow
   successful `remote_view_open` with brokered `tab_new` handle acquisition;
-- all five operator-authorized successor attempts are consumed. Installed
-  service 0.3.106 is the first candidate containing the final handle repair,
-  but it has not received another collection attempt and 80-item live proof is
-  still absent;
+- after explicit continuation authority, retry 1 of a new five-attempt
+  campaign exercised the final handle repair end to end. Run
+  `collection-run-c3e462a7f9eb6ce9cace3ce3e0d6ae3a` published 28 unique
+  canonical posts from 112 observations with zero ad, spam, structural, or
+  date-scope exclusions;
+- all 84 rejected observations were duplicates of those 28 posts. Every Agent
+  Browser operation succeeded, but three fixed 1,400-pixel scrolls produced
+  the same rendered snapshot and the scraper incorrectly treated that as page
+  stagnation even though it had not measured viewport progress;
+- candidate service 0.3.107 records document-scroll progress in each extraction
+  snapshot and stops for stagnation only when neither post observations nor
+  the page position/height advances. Four reasoned retries remain, and 80-item
+  live proof is still absent;
 - commit `c77cbb3` isolates the real MCP/service integration test from the
   operator's configured tick runtime; the complete 2,758-test collection now
   reaches 100% without failures, closing the remaining validation gap;
-- all 18 Reddit collection specifications remain disabled, and this plan has
+- all 19 Reddit collection specifications remain disabled, and this plan has
   not enabled or otherwise mutated `daily-default`.
 
 ## Scope
@@ -97,9 +106,9 @@ filtering, while preserving the existing Reddit search capability.
 6. The full relevant source, worker, contract, packaging, and release suites
    pass; the install artifact is reproducible and the installed service is
    ready on its expected schema.
-7. One live campaign uses no more than three Reddit acquisition attempts and
-   proves 80 unique canonical posts, or terminates with a typed receipt that
-   identifies the exact remaining scraper/provider limitation.
+7. The current successor campaign uses no more than five Reddit acquisition
+   attempts and proves 80 unique canonical posts, or terminates with a typed
+   receipt that identifies the exact remaining scraper/provider limitation.
 8. After live proof, active work, provider attempts, browser resource leases,
    and database integrity reconcile cleanly; `daily-default` still has Reddit
    disabled.

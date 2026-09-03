@@ -402,6 +402,57 @@ def test_feed_stops_after_three_stagnant_virtualized_snapshots():
     assert result["diagnostics"]["stop_reason"] == "stagnation_limit"
 
 
+def test_feed_keeps_scrolling_while_viewport_advances_toward_new_posts():
+    first = {
+        "title": "A rendered post near the top of the feed",
+        "permalink": "/r/example/comments/repeat1/post/",
+        "subreddit": "r/example",
+        "created_at": "2026-09-02T09:15:00Z",
+    }
+    second = {
+        "title": "A newly loaded post farther down the feed",
+        "permalink": "/r/example/comments/repeat2/post/",
+        "subreddit": "r/example",
+        "created_at": "2026-09-02T09:16:00Z",
+    }
+
+    class AdvancingFeedClient(FakeClient):
+        def __init__(self):
+            super().__init__(
+                page={
+                    "url": "https://www.reddit.com/",
+                    "title": "Reddit - Dive into anything",
+                    "has_posts": True,
+                }
+            )
+            self.extract_index = 0
+
+        def evaluate(self, workspace, script):
+            if script == reddit_browser.PAGE_STATE_SCRIPT:
+                return self.page
+            scroll_tops = [0, 1400, 2800, 4200, 5600]
+            index = min(self.extract_index, len(scroll_tops) - 1)
+            self.extract_index += 1
+            return {
+                "candidates": [first] if index < 4 else [first, second],
+                "page_metrics": {
+                    "scroll_top": scroll_tops[index],
+                    "scroll_height": 12000,
+                    "viewport_height": 900,
+                },
+            }
+
+    result = _feed_scraper(AdvancingFeedClient(), limit=2, scrolls=10).feed(
+        "2026-08-03", "2026-09-02"
+    )
+
+    assert [item["reddit_id"] for item in result["items"]] == ["repeat1", "repeat2"]
+    assert result["diagnostics"]["scroll_count"] == 4
+    assert result["diagnostics"]["page_scroll_progress_count"] == 4
+    assert result["diagnostics"]["page_scroll_no_progress_count"] == 0
+    assert result["diagnostics"]["stop_reason"] == "accepted_limit"
+
+
 def test_feed_request_uses_exact_profile_with_remote_headed_posture():
     request = reddit_browser.browser_request(
         {

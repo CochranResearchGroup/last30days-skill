@@ -26,6 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Reddit feed scroll-progress detection.** Service 0.3.107 distinguishes an
+  advancing document viewport from a truly stagnant feed. Repeated rendered
+  post snapshots no longer stop acquisition after three small scrolls while
+  the browser is still moving toward Reddit's next lazy-loaded batch, and
+  diagnostics now report page-scroll progress separately from no-progress
+  scrolls.
+
 - **Exact Reddit tab-handle acquisition.** Service 0.3.106 follows a successful
   route-bound `remote_view_open` with one authenticated, browser/session-routed
   `tab_new`, the Agent Browser action that returns a service tab handle.
