@@ -25976,3 +25976,70 @@ Graphiti Write Status:
 Next Bounded Action:
 
 - none for P23. Any recurring Reddit activation requires a new authorized plan.
+
+## Turn 409 | 2026-09-03
+
+Focus: open Plan 0064/P24 for guarded recurring Reddit home-feed activation.
+
+Authority Consulted:
+
+- operator instruction to activate recurring Reddit scraping;
+  `docs/dev/plans/0064-2026-09-03-recurring-reddit-home-feed.md`; closed Plan
+  0063/C15; P08/Plan 0062; live config, schedule, SQLite, and exact-profile
+  Agent Browser readbacks; planning, active-lane, runtime, validation, Git, and
+  Graphiti policy.
+
+Decisions And Changes:
+
+- selected `daily-default`, not a separate collection-spec timer, because it is
+  the established recurring all-source schedule and already owns X, LinkedIn,
+  and YouTube;
+- bounded the new lane at Reddit 80 items, three transient-only attempts, 360
+  seconds per attempt, and the existing authenticated profile/resource key;
+- preserved the disabled historical Reddit topic/QA specs and all non-Reddit
+  source settings;
+- repaired P23 catalog arrays to the deterministic auditor's supported inline
+  YAML form and registered P24 on its own short-lived branch/worktree.
+
+Validation Evidence:
+
+- live schedule `daily-default` is enabled/ready with next boundary
+  `2026-09-04T00:00:00Z` and no runtime error;
+- service 0.3.109 is active; SQLite `quick_check=ok`; active ticks, execution
+  attempts, provider attempts, tick leases, and collection profile leases are
+  all zero;
+- exact `last30days-facebook` access planning finds one compatible live browser,
+  zero active claims, reusable route hints, an available unblocked request,
+  and no manual-seeding requirement;
+- Graphiti `last30days_skill_main` discovery returned the older sourced
+  `daily-default` schedule decision; current runtime readbacks supersede its
+  historical timing details.
+
+State Movement:
+
+- Plan 0064/P24 opens at version 1/C01; P23 remains closed/integrated and P08
+  remains open.
+
+Progress Classification:
+
+- `outcome_progress`; activation scope, live preconditions, bounds, and owned
+  mutation surfaces are now explicit.
+
+Authority Classification:
+
+- `inherited_authority`; the requested recurring activation authorizes its
+  bounded user-config and exact schedule-binding mutation.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- discovery completed; defer the required compact write until the activation
+  reaches a validated material checkpoint.
+
+Next Bounded Action:
+
+- publish the P24 registration, preflight the prospective config, then perform
+  one guarded activation without manually enqueueing a tick.
