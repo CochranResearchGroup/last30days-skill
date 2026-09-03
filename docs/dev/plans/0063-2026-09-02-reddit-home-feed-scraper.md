@@ -6,7 +6,7 @@ Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 8
+Plan version: 10
 Date: 2026-09-02
 
 ## Objective
@@ -17,19 +17,26 @@ filtering, while preserving the existing Reddit search capability.
 
 ## Current State
 
-- service 0.3.100 is installed and ready on schema 17 with a dedicated Reddit
+- service 0.3.101 is installed and ready on schema 17 with a dedicated Reddit
   home-feed path, 80-item collection capacity, remote-headed CDP control, typed
   network-security blocking, and broker-preserved RDP route-pool selection;
 - direct authenticated-profile inspection observed 62 rendered post containers
   and 29 unique canonical post links before the bounded live campaign, proving
   that the profile and Reddit surface were usable;
-- all three campaign attempts are terminal. They exposed, in order, a Reddit
+- the original three-attempt campaign is terminal. It exposed, in order, a Reddit
   local-headless network-security block and two broker launches that discarded
   the configured route-pool hint and fell back to stale Xvfb display `:90`;
-- commit `28cfab2` repairs the final broker request boundary, and installed-code
-  dry-run evidence proves `routePoolEntryId=guacamole-rdp-b`, but the campaign's
-  three-attempt ceiling prevents claiming live 80-item acceptance without a new
-  explicit attempt allowance;
+- the operator authorized a fresh campaign of up to five reasoned attempts.
+  Retry 1, job `ec8ba8ad-888e-4c7b-b041-113993da98d1`, failed in 58 ms before
+  Agent Browser enqueued a job because service 0.3.100 sent the route-pool field
+  at the MCP tool's top level rather than under action-specific `params`;
+- commit `dec7672` corrected that request-contract defect in installed service
+  0.3.101. Retry 2 reached Agent Browser, which recorded the configured route-
+  pool entry but still used generic `tab_new` auto-launch and stale Xvfb `:90`;
+- commit `880b82d` routes a cold remote-headed acquisition through Agent
+  Browser's dedicated `remote-view open` allocator and preserves the access-
+  plan replacement session. Candidate service 0.3.102 is reproducibly built,
+  and three authorized attempts remain;
 - commit `c77cbb3` isolates the real MCP/service integration test from the
   operator's configured tick runtime; the complete 2,758-test collection now
   reaches 100% without failures, closing the remaining validation gap;
@@ -541,3 +548,103 @@ authoritative evidence for this validation-only checkpoint.
 Next action: obtain one fresh Reddit acquisition attempt, then run the disabled
 80-item specification through installed service 0.3.100. Keep Reddit disabled
 in recurring schedules.
+
+### Checkpoint P0063-C09 | 2026-09-02
+
+Plan version: 9
+
+State: `mcp_route_contract_repaired_retry_campaign_active`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`; the operator authorized up to five additional Reddit
+  attempts provided each retry has an evidence-backed reason. Retry 1 consumed
+  one attempt. The repository repair, candidate release build, and installation
+  preparation stay within the approved exact-profile, Reddit-only scope.
+
+Evidence:
+
+- retry 1 used disabled specification
+  `p0063-reddit-home-feed-live-v4`, collection run
+  `collection-run-8a0feed7763c128fa80c96c47e134109`, and job
+  `ec8ba8ad-888e-4c7b-b041-113993da98d1`. It failed with
+  `agent_browser_error` during `workspace_acquisition`; its only browser
+  operation was `service_request:tab_new`, failed after 58 ms, and Agent Browser
+  retained no corresponding job;
+- the installed Agent Browser 0.28.0 MCP schema admits `params` but does not
+  admit top-level `routePoolEntryId`. Its source contract explicitly requires
+  route-selection material such as `routePoolEntryId` under `params`;
+- the changed regression first failed because the outgoing request contained
+  top-level `routePoolEntryId`. Commit `dec7672` now emits
+  `params.routePoolEntryId` while preserving existing action parameters;
+- `uv run pytest tests/test_agent_browser_runtime.py tests/test_reddit_browser.py
+  tests/test_release_versions.py tests/test_service_runtime_package.py -q`
+  passes;
+- independent service 0.3.101 builds are byte-identical with SHA-256
+  `632df028ffb828240d623e998ae79570cf9318e2156aa819d7f20e0a68a9b33a`.
+
+Subagent status: `not_spawned`; current orchestration policy prohibits
+delegation.
+
+Graphiti write status: `pending_after_transport_timeout`; job
+`78f1ab3e-7f6a-484c-ad18-d1f8fb2c1625` timed out before an episode became
+visible. The intended compact C09 episode remains pending for a later closeout;
+checkpoint publication and live verification remain the source authorities.
+
+Next action: install service 0.3.101 transactionally, verify exact installed
+identity and readiness, then spend retry 2 only after confirming the exact
+profile has no live browser or collection lease and the configured RDP route is
+ready. Keep Reddit disabled in recurring schedules.
+
+### Checkpoint P0063-C10 | 2026-09-02
+
+Plan version: 10
+
+State: `route_bound_cold_launch_repaired_retry_campaign_active`
+
+Progress classification: `blocker_reduction`
+
+Authority classification:
+
+- `inherited_authority`; retry 2 was evidence-backed by installed service
+  0.3.101, a clean exact-profile lane, and a ready RDP route. The subsequent
+  diagnosis and 0.3.102 repair are ordinary in-scope remediation. Three of the
+  operator-authorized attempts remain.
+
+Evidence:
+
+- retry 2 used disabled specification
+  `p0063-reddit-home-feed-live-v5`, collection run
+  `collection-run-259f395f5128215dd2a04e6165a2f817`, and job
+  `5b48abb8-4802-4cd1-acef-2a21445e3165`;
+- Agent Browser job
+  `mcp-service-request-tab_new-33ba6452-3ef6-44f0-8302-30bc1b4f24f1`
+  proves the repaired request was accepted and retained
+  `routePoolEntryId=guacamole-rdp-b`, but generic `tab_new` auto-launch still
+  attempted Xvfb display `:90` three times and failed before navigation;
+- structural inspection shows Agent Browser's generic `auto_launch` path does
+  not resolve route-pool entries, while its `remote_view_open` path owns route-
+  pool and display selection. The live route remained available and ready on
+  `guacamole:2`, display `:10`;
+- the new regression failed before the repair because cold acquisition called
+  `service_request:tab_new`. Commit `880b82d` now selects `remote-view open`,
+  sends `--route-pool-entry-id guacamole-rdp-b`, and preserves the replacement
+  session selected by the access plan;
+- focused Agent Browser runtime, Reddit browser, release-version, and runtime-
+  package suites pass. Independent service 0.3.102 builds are byte-identical
+  with SHA-256
+  `b703d9311c01d01f408e55f26f12caa8640dc1e02905378a50dff702a8013d63`.
+
+Subagent status: `not_spawned`; current orchestration policy prohibits
+delegation.
+
+Graphiti write status: `graphiti_write_pending`; the prior compact C09 write
+timed out in job `78f1ab3e-7f6a-484c-ad18-d1f8fb2c1625`. Intended summary:
+Plan 0063 C10 replaces generic `tab_new` cold launch with route-bound
+`remote_view_open` in commit `880b82d`; three retries remain.
+
+Next action: install service 0.3.102 transactionally, verify its exact identity
+plus clean exact-profile and route state, then spend retry 3 with a new disabled
+80-item specification. Keep Reddit disabled in recurring schedules.

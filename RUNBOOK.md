@@ -25391,3 +25391,143 @@ Next Bounded Action:
 
 - obtain one fresh Reddit attempt, run the disabled 80-item specification on
   installed service 0.3.100, and keep Reddit disabled in recurring schedules.
+
+## Turn 401 | 2026-09-02
+
+Focus: diagnose the first operator-authorized successor attempt before spending
+another Reddit acquisition retry.
+
+Authority Consulted:
+
+- Plan 0063/C08; the operator's five-additional-attempt ceiling and requirement
+  that each retry have a good reason; current Agent Browser 0.28.0 MCP schema
+  and route-selection contract; repository testing, release, planning, and
+  checkpoint policy.
+
+Decisions And Changes:
+
+- treated retry 1's 58 ms `service_request:tab_new` failure and absence from the
+  Agent Browser job ledger as a request-contract failure, not a Reddit,
+  authentication, or browser-health result;
+- proved that `routePoolEntryId` is not an admitted MCP top-level field and that
+  Agent Browser requires route-selection material under action-specific
+  `params`;
+- changed last30days to emit `params.routePoolEntryId` while preserving any
+  access-plan parameters, advanced the immutable service candidate to 0.3.101,
+  and committed the repair as `dec7672`;
+- did not spend retry 2 during diagnosis, editing, tests, or packaging. Four of
+  the newly authorized attempts remain.
+
+Validation Evidence:
+
+- the regression failed before the repair with top-level
+  `routePoolEntryId=guacamole-rdp-b` and passes after the repair with that value
+  nested under `params`;
+- focused Agent Browser runtime, Reddit browser, release-version, and runtime-
+  package suites pass;
+- two independent service 0.3.101 builds are byte-identical with SHA-256
+  `632df028ffb828240d623e998ae79570cf9318e2156aa819d7f20e0a68a9b33a`;
+- no browser, provider content, recurring schedule, credentials, or profile was
+  mutated during this repair.
+
+State Movement:
+
+- Plan 0063 advances to version 9/C09
+  `mcp_route_contract_repaired_retry_campaign_active`; P23 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; the exact pre-queue rejection is repaired and a live
+  installed 80-item result is still required.
+
+Authority Classification:
+
+- `inherited_authority`; retry 1 was within the five-attempt allowance, and the
+  repair/release preparation is ordinary in-scope remediation.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; job
+  `78f1ab3e-7f6a-484c-ad18-d1f8fb2c1625` timed out before an episode became
+  visible. The committed repair, plan checkpoint, and live receipts are the
+  source authorities.
+
+Next Bounded Action:
+
+- install service 0.3.101, verify installed identity plus clean exact-profile
+  and route preconditions, then run retry 2 with a new disabled 80-item
+  specification. Keep Reddit disabled in recurring schedules.
+
+## Turn 402 | 2026-09-02
+
+Focus: diagnose retry 2's post-schema Agent Browser launch failure and prepare
+one materially different route-bound successor.
+
+Authority Consulted:
+
+- Plan 0063/C09; retry-2 last30days and Agent Browser receipts; Agent Browser
+  0.28.0 generic auto-launch and dedicated remote-view route-allocation flows;
+  repository codegraph, testing, release, and checkpoint policy.
+
+Decisions And Changes:
+
+- confirmed retry 2 crossed the repaired MCP boundary: Agent Browser accepted a
+  `tab_new` job and recorded `routePoolEntryId=guacamole-rdp-b`;
+- did not treat that metadata as route execution proof. The job failed because
+  generic cold auto-launch still started Xvfb `:90` three times;
+- traced the split contract: generic `auto_launch` does not select a route-pool
+  display, while `remote_view_open` does. Updated last30days to use that
+  dedicated path for route-bound cold remote-headed acquisition and to retain
+  the broker-selected replacement session;
+- advanced the immutable candidate to service 0.3.102 and committed the repair
+  as `880b82d`. Retry 3 has not yet been spent; three attempts remain.
+
+Validation Evidence:
+
+- last30days job `5b48abb8-4802-4cd1-acef-2a21445e3165` and collection run
+  `collection-run-259f395f5128215dd2a04e6165a2f817` failed with zero attempted,
+  observed, accepted, or stored items;
+- Agent Browser job
+  `mcp-service-request-tab_new-33ba6452-3ef6-44f0-8302-30bc1b4f24f1`
+  retained the right route-pool ID yet failed on display `:90`, isolating route
+  execution rather than request-schema handling;
+- the exact new regression failed before the repair and passes afterward;
+  relevant browser, Reddit, release, and runtime-package suites pass;
+- two independent 0.3.102 builds are byte-identical with SHA-256
+  `b703d9311c01d01f408e55f26f12caa8640dc1e02905378a50dff702a8013d63`.
+
+State Movement:
+
+- Plan 0063 advances to version 10/C10
+  `route_bound_cold_launch_repaired_retry_campaign_active`; P23 remains OPEN.
+
+Progress Classification:
+
+- `blocker_reduction`; route selection now occurs in the Agent Browser action
+  that owns RDP display allocation, but live 80-item proof remains outstanding.
+
+Authority Classification:
+
+- `inherited_authority`; retry 2 and its bounded repair stay within the
+  operator's five-attempt Reddit-only allowance.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; the prior compact C09 write timed out in job
+  `78f1ab3e-7f6a-484c-ad18-d1f8fb2c1625`. Intended summary: Plan 0063 C10
+  routes cold Reddit acquisition through `remote_view_open` in commit
+  `880b82d`; three retries remain.
+
+Next Bounded Action:
+
+- install service 0.3.102, verify exact installed identity plus clean profile
+  and RDP route preconditions, then run retry 3 with a new disabled 80-item
+  specification. Keep Reddit disabled in recurring schedules.
