@@ -26,6 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Presentation-neutral Reddit browser reuse.** Service 0.3.108 keeps the
+  remote-headed cold-launch posture but no longer constrains Agent Browser's
+  access plan by retained presentation metadata for ordinary Reddit scraping.
+  A healthy exact-profile browser can therefore be reused even when its
+  retained row omits RDP/CDP fields or describes a different display-isolation
+  mode; the service still uses an exact broker-issued tab handle.
+
 - **Reddit feed scroll-progress detection.** Service 0.3.107 distinguishes an
   advancing document viewport from a truly stagnant feed. Repeated rendered
   post snapshots no longer stop acquisition after three small scrolls while

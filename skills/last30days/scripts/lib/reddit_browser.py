@@ -317,7 +317,7 @@ def browser_request(
             config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION")
             or "private_virtual_display"
         ),
-        constrain_presentation=feed_surface,
+        constrain_presentation=False,
         allow_duplicate_profile_lane=browser_runtime.config_flag(
             config.get("LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE")
         ),

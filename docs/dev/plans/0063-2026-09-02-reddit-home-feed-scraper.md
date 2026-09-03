@@ -6,7 +6,7 @@ Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 12
+Plan version: 13
 Date: 2026-09-03
 
 ## Objective
@@ -49,14 +49,23 @@ filtering, while preserving the existing Reddit search capability.
   Browser operation succeeded, but three fixed 1,400-pixel scrolls produced
   the same rendered snapshot and the scraper incorrectly treated that as page
   stagnation even though it had not measured viewport progress;
-- candidate service 0.3.107 records document-scroll progress in each extraction
-  snapshot and stops for stagnation only when neither post observations nor
-  the page position/height advances. Four reasoned retries remain, and 80-item
-  live proof is still absent;
+- service 0.3.107 records document-scroll progress in each extraction snapshot
+  and stops for stagnation only when neither post observations nor the page
+  position/height advances;
+- retry 2 did not exercise that repair. After 0.3.107 retained the healthy
+  browser, Agent Browser's authenticated access plan treated it as presentation-
+  incompatible because the browser row reported `shared_display` and omitted
+  provider fields while Reddit constrained reuse to private RDP/CDP posture.
+  Last30days stopped at `wait_for_profile_lease` before issuing any browser job;
+- candidate service 0.3.108 leaves cold-launch posture intact but makes ordinary
+  Reddit scraping presentation-neutral. A live authenticated no-effect plan
+  now selects the exact healthy browser with `reuse_existing_browser`, one
+  compatible live browser, and an available unblocked service request. Three
+  reasoned retries remain, and 80-item live proof is still absent;
 - commit `c77cbb3` isolates the real MCP/service integration test from the
   operator's configured tick runtime; the complete 2,758-test collection now
   reaches 100% without failures, closing the remaining validation gap;
-- all 19 Reddit collection specifications remain disabled, and this plan has
+- all 20 Reddit collection specifications remain disabled, and this plan has
   not enabled or otherwise mutated `daily-default`.
 
 ## Scope

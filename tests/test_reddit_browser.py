@@ -479,7 +479,7 @@ def test_feed_request_uses_exact_profile_with_remote_headed_posture():
     assert request.browser_host == "remote_headed"
     assert request.view_provider == "rdp_gateway"
     assert request.control_input_provider == "cdp_input"
-    assert request.constrain_presentation is True
+    assert request.constrain_presentation is False
 
 
 def test_feed_network_security_block_is_typed_before_auth_ambiguity():
