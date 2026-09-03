@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Exact Reddit tab-handle adoption.** Service 0.3.105 adopts the selected
+  Reddit tab's valid Agent Browser service handle after retained-tab
+  consolidation. Authentication and extraction evaluations now target the
+  exact Reddit tab instead of relying on browser/session routing when the same
+  authenticated browser also retains X or LinkedIn tabs.
+
 - **Session-scoped Reddit display allocation.** Service 0.3.104 binds an
   authenticated route-bound Reddit launch to a fresh display-allocation ID
   derived from Agent Browser's broker-selected replacement session while

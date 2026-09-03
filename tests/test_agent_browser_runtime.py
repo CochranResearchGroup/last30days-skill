@@ -780,6 +780,42 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
         )
         self.assertEqual(["tab_new"], actions)
 
+    def test_prepare_site_tab_adopts_selected_service_handle(self):
+        client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
+        workspace = agent_browser_runtime.BrowserWorkspace(
+            profile_id="last30days-facebook",
+            browser_id="session:reddit-route-bound",
+            session_name="terminal-profile-replacement",
+            target_id="reddit-owned",
+        )
+        handle = {
+            "valid": True,
+            "browserId": workspace.browser_id,
+            "sessionName": workspace.session_name,
+            "targetId": workspace.target_id,
+            "tabId": f"target:{workspace.target_id}",
+        }
+        tab_list = {
+            "tabs": [
+                {
+                    "index": 0,
+                    "active": True,
+                    "url": "https://www.reddit.com/?feed=home",
+                    "serviceTabHandle": handle,
+                }
+            ]
+        }
+
+        with mock.patch.object(client, "_invoke", return_value=tab_list):
+            prepared = client.prepare_site_tab(workspace, "reddit.com")
+
+        self.assertTrue(prepared)
+        self.assertEqual(handle, client._service_tab_handle)
+        self.assertEqual(
+            "https://www.reddit.com/?feed=home",
+            client._service_tab_url,
+        )
+
     def test_non_facebook_providers_depend_on_provider_neutral_runtime(self):
         for module in (x_browser, linkedin, reddit_browser, youtube_yt, youtube_media):
             self.assertIs(agent_browser_runtime, module.browser_runtime)

@@ -1384,6 +1384,24 @@ class CliAgentBrowserClient:
                 ["--session", workspace.session_name, "tab", str(selected_index)],
                 timeout=min(self.timeout, 30),
             )
+        selected_handle = selected.get("serviceTabHandle")
+        if (
+            isinstance(selected_handle, dict)
+            and selected_handle.get("valid") is not False
+            and str(selected_handle.get("browserId") or "") == workspace.browser_id
+            and str(selected_handle.get("sessionName") or "")
+            == workspace.session_name
+            and str(selected_handle.get("targetId") or "")
+        ):
+            self._service_tab_handle = dict(selected_handle)
+            self._service_tab_url = str(selected.get("url") or "")
+            if isinstance(self._service_request_route, dict):
+                self._service_request_route.update(
+                    {
+                        "browserId": workspace.browser_id,
+                        "sessionName": workspace.session_name,
+                    }
+                )
         if consolidate:
             duplicate_indexes = []
             for tab in matches:
