@@ -26114,3 +26114,78 @@ Next Bounded Action:
 
 - observe the September 4 UTC ordinary tick and reconcile Reddit's terminal
   provider receipt without a manual enqueue.
+
+## Turn 411 | 2026-09-03
+
+Focus: execute and reconcile one operator-authorized full manual four-lane
+tick after recurring Reddit activation.
+
+Authority Consulted:
+
+- operator instruction to try one full manual tick; Plan 0064/C02; installed
+  service 0.3.109; current tick, Agent Browser service, planning, validation,
+  and closeout contracts.
+
+Decisions And Changes:
+
+- used the installed preflight for a rolling 30-day interval ending
+  `2026-09-03T17:24:33Z`, which predicted exactly YouTube, X, LinkedIn, and
+  Reddit under the saved recurring configuration;
+- explicitly inherited the managed unit environment so the direct invocation
+  received the private Agent Browser capability path and reviewed fresh-lane
+  setting that earlier manual executions had omitted;
+- enqueued exactly one tick,
+  `tick-98e14987fc5e9a7b7b63f8b8ea1abb95`, and performed no second tick, browser
+  intervention, schedule mutation, or config mutation.
+
+Validation Evidence:
+
+- the tick terminalized `complete_degraded` at
+  `2026-09-03T17:30:30.227271Z` with 163 accepted items total;
+- Reddit accepted 80 of 482 observed on its first attempt; all 80 items had
+  distinct native IDs and distinct non-empty URLs;
+- LinkedIn accepted 80 of 1,639 observed on its first attempt; all 80 items
+  had distinct native IDs and distinct non-empty URLs;
+- YouTube accepted three of eight observed;
+- X consumed its three retries in three seconds, observed no page items, and
+  failed each `tab_new` at `workspace_acquisition` with
+  `existing_session_profile_identity_unproven` and signature
+  `sha256:a489884adfd2a0f6f6d1247c8a3d924910ca0fcb65fe8c9d8f68d11ce58563ef`;
+- snapshot `tick-snapshot-de31ac40d29223cfb7d09ca7a37b341a` was promoted;
+  lexical index, semantic index, and head promotion succeeded;
+- aggregate use was six attempts, 58 network requests, 338 budgeted wall
+  seconds, 163 items, zero cost, and zero model tokens;
+- post-run SQLite `quick_check=ok`; all five active-work/lease counters are
+  zero; `daily-default` remains ready for the unchanged
+  `2026-09-04T00:00:00Z` boundary.
+
+State Movement:
+
+- Plan 0064/P24 advances to version 3/C03
+  `manual_four_lane_proof_complete_degraded` and remains open for the first
+  ordinary scheduled tick; P08 retains ownership of the X acquisition defect.
+
+Progress Classification:
+
+- `acceptance_progress`; recurring Reddit now has a current full-tick proof,
+  while the independent timer path and X lane remain unresolved.
+
+Authority Classification:
+
+- `explicit_authority_consumed`; the one requested manual tick completed and
+  no retry tick is inferred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the operator did not request a memory update, and repository
+  plus live runtime receipts remain authoritative.
+
+Next Bounded Action:
+
+- observe the first ordinary September 4 UTC tick. Diagnose or repair the X
+  acquisition route only under P08; do not infer authority for another manual
+  tick.

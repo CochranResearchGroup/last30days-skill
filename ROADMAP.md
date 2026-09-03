@@ -2335,10 +2335,16 @@ Current State:
   aggregate limits 243/10/500/3,360;
 - the one-row digest rebind preserved schedule/tick identity, admitted no work,
   and left all active-work and lease counts zero with SQLite integrity `ok`.
+- manual tick `tick-98e14987fc5e9a7b7b63f8b8ea1abb95` proved Reddit and
+  LinkedIn at 80 distinct linked posts each on their first attempts, plus three
+  YouTube items; X alone failed before observation on all three retries with
+  `existing_session_profile_identity_unproven`;
+- the manual tick promoted its degraded snapshot and left the recurring
+  schedule, database integrity, and all active-work/lease counters healthy.
 
 Active Plan:
 
-- `docs/dev/plans/0064-2026-09-03-recurring-reddit-home-feed.md` version 2/C02.
+- `docs/dev/plans/0064-2026-09-03-recurring-reddit-home-feed.md` version 3/C03.
 
 Dependencies:
 
