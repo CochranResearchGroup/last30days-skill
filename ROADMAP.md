@@ -2267,7 +2267,7 @@ Next Bounded Action:
 
 ## P23 | Reddit Home Feed Scraper
 
-State: OPEN
+State: CLOSED
 
 Objective: add a deterministic authenticated Reddit home-feed scraper that
 collects 80 unique canonical posts while preserving topic search and excluding
@@ -2275,32 +2275,33 @@ only explicit ads and platform-marked spam as content-quality decisions.
 
 Current State:
 
-- installed service 0.3.100 routes Reddit `surface_kind=feed` to the
-  authenticated home-feed interface while retaining topic search, 80-item
-  capacity, canonical dedupe, finite scrolling, deterministic ad/platform-spam
-  exclusion, and separate structural/date/duplicate diagnostics;
-- direct authenticated-profile inspection proved Reddit rendered 62 post
-  containers and 29 unique canonical post links. The profile itself is not the
-  current blocker;
-- the three-attempt live campaign is exhausted: attempt 1 exposed Reddit's
-  local-headless network-security block; attempts 2 and 3 exposed the modern
-  broker path dropping the ready RDP route hint and launching stale Xvfb
-  display `:90`;
-- commit `28cfab2` repairs those boundaries. Installed-code dry-run evidence
-  proves a remote-headed broker request with
-  `routePoolEntryId=guacamole-rdp-b` and an item ceiling of 100, while the
-  reproducible 0.3.100 artifact is transactionally installed and ready on
-  schema 17;
-- commit `c77cbb3` isolates MCP/service integration tests from the operator's
-  configured tick runtime; the full 2,758-test collection now reaches 100%
-  without failures;
-- Plan 0063 version 8/C08 owns one later fresh-budget 80-item proof. All 13
-  Reddit collection specifications remain disabled, and no recurring schedule
-  was enabled or changed.
+- Plan 0063 version 15/C15 is outcome-complete. Installed service 0.3.109
+  retains Reddit topic search and adds deterministic authenticated home-feed
+  acquisition with exact-profile planning, canonical links, finite scrolling,
+  and explicit ad/spam, structural, date-scope, duplicate, and scroll-progress
+  diagnostics;
+- run `collection-run-a5ace8c0bc857b17b1936245b21b17aa`, job
+  `3c7a87f3-bc88-48e0-8cc4-39816aa11888`, proves 80 accepted, stored, and
+  indexed posts from the authenticated feed. All 80 canonical URLs and their
+  URL-derived Reddit IDs are distinct;
+- the scraper reached the accepted limit after 25 document-progress scrolls
+  with zero no-progress scrolls, structural limitations, date exclusions, or
+  content-quality rejections. Exact service-tab release succeeded, the retained
+  browser is healthy/reusable, active profile leases are zero, and SQLite
+  integrity is `ok`;
+- all 22 Reddit collection specifications remain disabled and `daily-default`
+  was not changed. The comprehensive repository lane passes with 2,755 tests,
+  seven expected skips, and nine passing subtests.
 
 Active Plan:
 
+- none; Plan 0063/C15 satisfied the authenticated 80-item Reddit home-feed
+  objective and closed the lane.
+
+Closed Plan:
+
 - `docs/dev/plans/0063-2026-09-02-reddit-home-feed-scraper.md`
+  version 15/C15 is terminal and outcome-complete on installed service 0.3.109.
 
 Dependencies:
 
@@ -2310,9 +2311,8 @@ Dependencies:
 
 Next Action:
 
-- obtain one fresh Reddit attempt and run the disabled 80-item specification
-  through installed service 0.3.100; accept only an 80-unique-post receipt or
-  a new typed terminal limitation, and keep the recurring Reddit lane disabled.
+- none for P23. Adding Reddit to a recurring schedule remains separate future
+  scope and requires an explicit plan and authorization.
 
 ## Goal-Compatible Plan Conversion
 

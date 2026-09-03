@@ -1,12 +1,12 @@
 # Plan 0063 | Reddit Home Feed Scraper
 
-State: OPEN
+State: CLOSED
 Lane: P23
 Branch: feat/reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P23
-Plan version: 14
+Plan version: 15
 Date: 2026-09-03
 
 ## Objective
@@ -17,7 +17,7 @@ filtering, while preserving the existing Reddit search capability.
 
 ## Current State
 
-- service 0.3.106 is installed and ready on schema 17 with a dedicated Reddit
+- service 0.3.109 is installed and ready on schema 17 with a dedicated Reddit
   home-feed path, 80-item collection capacity, remote-headed CDP control, typed
   network-security blocking, and broker-preserved RDP route-pool selection;
 - direct authenticated-profile inspection observed 62 rendered post containers
@@ -67,13 +67,18 @@ filtering, while preserving the existing Reddit search capability.
 - an exact-tab live diagnostic proved those actions moved Reddit's focused
   `#left-sidebar` from scroll position 0 to 1,400 while the document stayed at
   0. A page-native `window.scrollBy` immediately moved the document to 1,400;
-- candidate service 0.3.109 uses exact-tab page-native document scrolling for
-  Reddit feeds, matching the established X adapter pattern. Two reasoned
-  retries remain, and 80-item live proof is still absent;
-- commit `c77cbb3` isolates the real MCP/service integration test from the
-  operator's configured tick runtime; the complete 2,758-test collection now
-  reaches 100% without failures, closing the remaining validation gap;
-- all 21 Reddit collection specifications remain disabled, and this plan has
+- service 0.3.109 uses exact-tab page-native document scrolling for Reddit
+  feeds, matching the established X adapter pattern. Retry 4 published 80
+  accepted, stored, and indexed feed posts after 25 document-progress scrolls;
+- the accepted result contains 80 distinct canonical Reddit post URLs and 80
+  distinct IDs derived from those URLs. It reached `accepted_limit` with zero
+  no-progress scrolls, structural limitations, date exclusions, or content-
+  quality rejections;
+- exact handle release succeeded, the retained browser remains healthy and
+  reusable, active profile leases are zero, and database integrity is `ok`;
+- the complete 2,755-test collection passes with seven expected skips and nine
+  passing subtests after the installed live acceptance run;
+- all 22 Reddit collection specifications remain disabled, and this plan has
   not enabled or otherwise mutated `daily-default`.
 
 ## Scope
@@ -903,3 +908,74 @@ runtime evidence are authoritative.
 Next action: install service 0.3.109 transactionally, verify exact installed
 identity and retained-browser reuse, then spend retry 4 through a new disabled
 80-item specification. Keep Reddit disabled in recurring schedules.
+
+### Checkpoint P0063-C15 | 2026-09-03
+
+Plan version: 15
+
+State: `installed_live_80_item_reddit_feed_accepted_closed`
+
+Progress classification: `objective_achieved`
+
+Authority classification:
+
+- `inherited_authority_consumed`; retry 4 used the fourth of at most five
+  reasoned attempts. Acceptance succeeded, so retry 5 was not spent.
+
+Installed-runtime evidence:
+
+- exact service 0.3.109 is installed ready on schema 17 from reproducible
+  artifact SHA-256
+  `19580bc96bd1fa86f5f84760c78af435cb9ab7f6b09e546b7fb60389a0c2798d`;
+- installed runtime-manifest SHA-256 is
+  `b49653681fc41f8de168f6744e301efdb4b380ca088bf271c6a53ad3b5d40644`;
+- committed and installed Reddit scraper files are byte-identical with SHA-256
+  `7bd61e4b60afe1a0dbda0f71ca8e50ea5dc0f4ab5c6cb8f07b8e82c4d0d44cdc`.
+
+Live acceptance evidence:
+
+- retry 4 used disabled spec `p0063-reddit-home-feed-live-v12`, run
+  `collection-run-a5ace8c0bc857b17b1936245b21b17aa`, and job
+  `3c7a87f3-bc88-48e0-8cc4-39816aa11888`;
+- the acquisition succeeded with 508 observations, 80 accepted items, 25
+  document-progress scrolls, zero no-progress scrolls, 103 unique observations,
+  and terminal `accepted_limit`;
+- the persisted work result contains exactly 80 distinct canonical Reddit post
+  URLs and 80 distinct Reddit IDs derived from those URLs. Diagnostics report
+  zero structural limitations, date-scope exclusions, promoted/platform-spam
+  quality rejections, or browser errors;
+- publication stored and indexed all 80 accepted items. Global corpus count
+  advanced from 103 to 157 because 54 were new across prior partial attempts;
+- exact `tab_handle_release` succeeded. The retained exact-profile browser is
+  `ready` and reusable, active profile leases are zero, the next access plan is
+  unblocked, and SQLite `PRAGMA quick_check` is `ok`;
+- all 22 Reddit collection specs remain disabled. No recurring schedule or
+  `daily-default` configuration changed.
+
+Validation evidence:
+
+- the document-scroll regression failed before commit `75e388d` and passes
+  afterward;
+- focused Reddit, release-version, and runtime-package suites pass;
+- the comprehensive suite passes once without retries: 2,755 passed, seven
+  skipped, and nine subtests passed in 145.30 seconds;
+- Ruff was unavailable in the repository environment; `git diff --check`
+  passes.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `pending_closeout_write`; repo, installed runtime, database receipts, and
+  Agent Browser jobs are the authoritative evidence.
+
+Closeout:
+
+- all eight acceptance criteria are satisfied. Plan 0063 and lane P23 close;
+- the unused fifth retry is retired. Any recurring Reddit schedule activation
+  is separate scope and remains unauthorized.
+
+Checkpoint P0063-C15 closes Plan 0063 with installed, durable 80-item
+authenticated Reddit home-feed acceptance.

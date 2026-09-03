@@ -25845,3 +25845,77 @@ Next Bounded Action:
 - install service 0.3.109, verify exact identity and retained-browser reuse,
   then spend retry 4 through a new disabled 80-item specification. Keep Reddit
   disabled in recurring schedules.
+
+## Turn 407 | 2026-09-03
+
+Focus: install the document-scroll repair, obtain durable 80-item Reddit feed
+acceptance, run comprehensive validation, and close Plan 0063/P23.
+
+Authority Consulted:
+
+- Plan 0063/C14; the fourth of at most five reasoned retries; installed service
+  identity and Agent Browser authenticated reuse plan; durable work/publication
+  receipts; roadmap, validation, release, integration, and closeout policy.
+
+Decisions And Changes:
+
+- installed exact service 0.3.109 and confirmed source/install hash parity plus
+  exact retained-browser reuse before spending retry 4;
+- accepted the run only after terminal publication, 80 distinct canonical URL
+  and URL-derived ID proof, exact service-tab release, healthy browser reuse,
+  zero active profile leases, SQLite integrity, and disabled-spec readback;
+- retired the unused fifth retry after acceptance;
+- ran the comprehensive repository suite once without retries;
+- closed Plan 0063 version 15/C15 and roadmap lane P23. Recurring Reddit
+  activation remains explicitly outside this plan.
+
+Validation Evidence:
+
+- installed service 0.3.109/schema 17; artifact SHA-256
+  `19580bc96bd1fa86f5f84760c78af435cb9ab7f6b09e546b7fb60389a0c2798d`,
+  runtime-manifest SHA-256
+  `b49653681fc41f8de168f6744e301efdb4b380ca088bf271c6a53ad3b5d40644`,
+  source/install scraper SHA-256
+  `7bd61e4b60afe1a0dbda0f71ca8e50ea5dc0f4ab5c6cb8f07b8e82c4d0d44cdc`;
+- disabled spec `p0063-reddit-home-feed-live-v12`, run
+  `collection-run-a5ace8c0bc857b17b1936245b21b17aa`, job
+  `3c7a87f3-bc88-48e0-8cc4-39816aa11888`: 508 observed, 80 accepted/stored/
+  indexed, 25 document-progress scrolls, zero no-progress scrolls, terminal
+  `accepted_limit`;
+- 80 unique canonical Reddit post URLs and 80 unique URL-derived Reddit IDs;
+  zero structural, date-scope, ad/spam, authentication, navigation, or browser
+  failures;
+- exact handle release succeeded; retained browser ready/reusable; active
+  leases zero; `PRAGMA quick_check=ok`; document count 103 to 157; all 22 Reddit
+  specs disabled;
+- comprehensive validation: 2,755 passed, seven skipped, nine subtests passed
+  in 145.30 seconds with no retries. Ruff unavailable; `git diff --check`
+  passes.
+
+State Movement:
+
+- Plan 0063 advances to version 15/C15 and `CLOSED`; P23 advances to `CLOSED`.
+
+Progress Classification:
+
+- `objective_achieved`; installed live proof satisfies the authenticated
+  80-item Reddit home-feed contract.
+
+Authority Classification:
+
+- `inherited_authority_consumed`; retry 4 succeeded and retry 5 was not used.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `pending_closeout_write`; current repo, installed runtime, database, and
+  Agent Browser evidence remain authoritative.
+
+Next Bounded Action:
+
+- publish the closeout checkpoint, mark branch custody integration-ready,
+  fast-forward `main`, record the integration receipt, and leave recurring
+  Reddit disabled.
