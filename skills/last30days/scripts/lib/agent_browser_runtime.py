@@ -253,6 +253,16 @@ class CliAgentBrowserClient:
             if isinstance(service_request_record, dict)
             else None
         )
+        compatible_live_browser_count = (
+            profile_reuse.get("compatibleLiveBrowserCount", 0)
+            if isinstance(profile_reuse, dict)
+            else 0
+        )
+        route_bound_cold_launch = (
+            request.browser_host == "remote_headed"
+            and bool(request.route_pool_entry_id_hint)
+            and compatible_live_browser_count == 0
+        )
         if (
             isinstance(service_request_record, dict)
             and service_request_record.get("available") is True
@@ -260,6 +270,7 @@ class CliAgentBrowserClient:
             and service_request_record.get("blockedByLifecycleOwner") is not True
             and isinstance(broker_request, dict)
             and broker_request.get("action") == "tab_new"
+            and not route_bound_cold_launch
         ):
             self._service_request_route = dict(broker_request)
             shared_acquisition = (
@@ -347,11 +358,6 @@ class CliAgentBrowserClient:
                         "sessionName": route_session_name,
                     }
                 )
-            compatible_live_browser_count = (
-                profile_reuse.get("compatibleLiveBrowserCount", 0)
-                if isinstance(profile_reuse, dict)
-                else 0
-            )
             if (
                 request.allow_duplicate_profile_lane
                 and compatible_live_browser_count == 0
@@ -588,6 +594,11 @@ class CliAgentBrowserClient:
         target_id = ""
         launch_session_name = request.session_name
         owner_session_name = request.session_name
+        if route_bound_cold_launch and isinstance(broker_request, dict):
+            planned_session_name = str(broker_request.get("sessionName") or "")
+            if planned_session_name:
+                launch_session_name = planned_session_name
+                owner_session_name = planned_session_name
 
         aliased_owner = _exact_retained_default_owner(
             session_name=request.session_name,

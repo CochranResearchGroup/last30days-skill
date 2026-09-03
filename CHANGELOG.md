@@ -26,6 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Route-bound cold Reddit launches.** Service 0.3.102 sends a cold
+  remote-headed Reddit acquisition through Agent Browser's dedicated
+  `remote-view open` route allocator when an exact route-pool entry is
+  configured. Agent Browser's generic `tab_new` auto-launch recorded the route
+  hint but still allocated a generic Xvfb display. The route-bound path also
+  preserves the replacement session selected by the access plan.
+
 - **Agent Browser MCP-compatible route selection.** Service 0.3.101 places
   the configured Reddit route-pool entry under the `tab_new` request's
   action-specific `params`, matching Agent Browser's service-request contract.

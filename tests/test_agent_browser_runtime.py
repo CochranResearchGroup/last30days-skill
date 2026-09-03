@@ -332,6 +332,7 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
         plan["decision"]["serviceRequest"]["request"]["params"] = {
             "provider": "rdp_gateway"
         }
+        plan["decision"]["profileReuse"]["compatibleLiveBrowserCount"] = 1
         captured = {}
 
         def service_request(arguments, **_kwargs):
@@ -358,6 +359,102 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             captured["params"]["routePoolEntryId"],
         )
         self.assertEqual("rdp_gateway", captured["params"]["provider"])
+
+    def test_route_bound_cold_launch_uses_remote_view_open(self):
+        client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
+        request = _request(
+            url="https://www.reddit.com/",
+            agent="reddit-scraper",
+            task="reddit-home-feed",
+            service="reddit",
+            route_pool_entry_id_hint="guacamole-rdp-b",
+        )
+        plan = _access_plan(
+            url=request.start_url,
+            agent=request.agent_name,
+            task=request.task_name,
+            service=request.target_service_id,
+        )
+        plan["decision"]["serviceRequest"]["request"]["sessionName"] = (
+            "terminal-profile-replacement"
+        )
+        plan["decision"]["profileReuse"].update(
+            {
+                "recommendedAction": "launch_new_browser",
+                "compatibleLiveBrowserCount": 0,
+                "activeLeaseSessionIds": [],
+                "sameProfileLiveBrowserIds": [],
+            }
+        )
+        status = {
+            "service_state": {
+                "sessions": {},
+                "browsers": {},
+                "tabs": {},
+                "routePool": {
+                    "guacamole-rdp-b": {
+                        "state": "available",
+                        "routeId": "guacamole:2",
+                        "readiness": {"state": "ready"},
+                    }
+                },
+            }
+        }
+        invocations = []
+
+        def invoke(args, **_kwargs):
+            invocations.append(args)
+            if args == ["service", "status"]:
+                return status
+            if "remote-view" in args:
+                return {
+                    "profileId": "last30days-facebook",
+                    "browserId": "session:reddit-route-bound",
+                    "sessionName": "terminal-profile-replacement",
+                    "targetId": "reddit-owned",
+                    "routeId": "guacamole:2",
+                    "displayAllocationId": "display:guacamole-rdp-b",
+                    "operatorVisible": {"state": "ready"},
+                }
+            raise AssertionError(f"unexpected invocation: {args}")
+
+        with (
+            mock.patch.object(client, "_invoke", side_effect=invoke),
+            mock.patch.object(
+                client,
+                "_invoke_service_request",
+                side_effect=AssertionError("cold route launch must not use tab_new"),
+            ),
+            mock.patch.object(
+                agent_browser_runtime.agent_browser_config,
+                "record_access_plan",
+            ),
+            mock.patch.object(
+                agent_browser_runtime.agent_browser_config,
+                "shared_acquisition_route",
+                return_value=None,
+            ),
+            mock.patch.object(
+                agent_browser_runtime.agent_browser_config,
+                "shared_profile_owner",
+                return_value=None,
+            ),
+            mock.patch.object(
+                agent_browser_runtime.agent_browser_config,
+                "needs_runtime_profile_owner_resolution",
+                return_value=False,
+            ),
+        ):
+            workspace = client.acquire_workspace(request, access_plan=plan)
+
+        self.assertEqual("reddit-owned", workspace.target_id)
+        remote_view = invocations[-1]
+        self.assertEqual(
+            ["--session", "terminal-profile-replacement", "remote-view", "open"],
+            remote_view[:4],
+        )
+        route_index = remote_view.index("--route-pool-entry-id")
+        self.assertEqual("guacamole-rdp-b", remote_view[route_index + 1])
 
     def test_reviewed_duplicate_profile_lane_override_reaches_broker(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
