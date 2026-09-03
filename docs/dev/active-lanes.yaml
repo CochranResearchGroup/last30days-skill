@@ -44,4 +44,5 @@ lanes:
     integration_receipt: null
     dependencies: [P23]
     overlaps: [user-scoped tick configuration, daily-default schedule binding]
+    reconciled_overlaps: [user-scoped tick configuration, daily-default schedule binding]
     updated_at: 2026-09-03

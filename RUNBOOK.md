@@ -26043,3 +26043,74 @@ Next Bounded Action:
 
 - publish the P24 registration, preflight the prospective config, then perform
   one guarded activation without manually enqueueing a tick.
+
+## Turn 410 | 2026-09-03
+
+Focus: activate Reddit on `daily-default` and prove the saved recurring state.
+
+Authority Consulted:
+
+- Plan 0064/C01; the operator's recurring Reddit instruction; installed
+  service preflight; exact schedule row and active-work census; current
+  config, database, systemd, and Agent Browser no-effect readbacks.
+
+Decisions And Changes:
+
+- created one exact private candidate from the current saved config, adding a
+  dedicated `reddit-home-feed` service and enabled authenticated feed target;
+- set Reddit to 80 items, three transient-only attempts, and 360 seconds, and
+  raised aggregate limits to 243 items, ten attempts, 500 requests, and 3,360
+  seconds;
+- stopped the service only after all active-work and lease counts were zero,
+  retained private config/database backups, atomically installed the candidate,
+  and changed exactly one guarded schedule-row digest;
+- restarted the existing installed service without launching a browser or
+  admitting a manual tick.
+
+Validation Evidence:
+
+- installed preflight returned `ready`, four lanes, the expected
+  `reddit_agent_browser` normalization proof, exact aggregate limits, and a
+  ready notification transport;
+- saved revision is `operator-20260903-reddit-home-feed-80-v1` with config
+  digest
+  `sha256:8e3811d5e9b561cfd3f97b3d9897770ee4c623fe9e74a443bc01d86fca4d3449`;
+- `daily-default` is enabled/ready for `2026-09-04T00:00:00Z` and preserves its
+  previous boundary, last tick, last tick state, cadence, anchor, and null
+  runtime error;
+- service 0.3.109 is active; tick count remains 119 with no post-boundary tick;
+  all five active-work/lease counters are zero; historical Reddit collection
+  specs enabled count is zero; SQLite `quick_check=ok`;
+- private pre-change config/database backups exist and the database backup also
+  passes `quick_check`.
+
+State Movement:
+
+- Plan 0064/P24 advances to version 2/C02
+  `recurring_reddit_active_awaiting_first_ordinary_tick` and remains `OPEN` only
+  for first scheduled-run observation.
+
+Progress Classification:
+
+- `outcome_progress`; recurring Reddit is installed in the saved production
+  schedule with current no-work activation proof.
+
+Authority Classification:
+
+- `inherited_authority`; one bounded reversible configuration and exact
+  schedule-binding mutation consumed the requested activation authority.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; provider readiness is degraded on a Codex
+  app-server `RuntimeError`, so no write was queued. Repo and live runtime
+  evidence remain authoritative.
+
+Next Bounded Action:
+
+- observe the September 4 UTC ordinary tick and reconcile Reddit's terminal
+  provider receipt without a manual enqueue.

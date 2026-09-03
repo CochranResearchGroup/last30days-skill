@@ -6,7 +6,7 @@ Branch: feat/recurring-reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P24
-Plan version: 1
+Plan version: 2
 Date: 2026-09-03
 
 ## Objective
@@ -21,11 +21,12 @@ as X and LinkedIn.
 - Plan 0063/C15 proved the installed service 0.3.109 Reddit feed adapter with
   80 accepted, stored, and indexed canonical posts after 25 document-progress
   scrolls;
-- `daily-default` is enabled and ready for `2026-09-04T00:00:00Z`, but its
-  saved configuration has no enabled Reddit feed target;
-- the saved configuration requests X 80/3/360, LinkedIn 80/3/360, and YouTube
-  3/1/120 with aggregate limits 163 items, seven attempts, 350 network
-  requests, and 2,280 wall seconds;
+- `daily-default` is enabled and ready for `2026-09-04T00:00:00Z` under saved
+  revision `operator-20260903-reddit-home-feed-80-v1` and validated digest
+  `sha256:8e3811d5e9b561cfd3f97b3d9897770ee4c623fe9e74a443bc01d86fca4d3449`;
+- the saved configuration now requests Reddit 80/3/360 alongside X 80/3/360,
+  LinkedIn 80/3/360, and YouTube 3/1/120 with aggregate limits 243 items, ten
+  attempts, 500 network requests, and 3,360 wall seconds;
 - the most recent ordinary tick is `complete_degraded`: YouTube succeeded while
   X and LinkedIn failed. P08 continues to own those existing failures; this
   plan does not reinterpret or repair them;
@@ -34,7 +35,12 @@ as X and LinkedIn.
 - an exact-profile Agent Browser access plan finds the healthy retained
   `last30days-facebook` browser reusable with one compatible live browser,
   zero active claims, an available unblocked service request, and no manual
-  seeding requirement.
+  seeding requirement;
+- the guarded activation affected exactly one schedule row, preserved the next
+  boundary and prior tick identity, admitted no tick/provider attempt, and
+  retained zero active work or leases with SQLite integrity `ok`;
+- private pre-change config and database backups are retained under the
+  user-scoped last30days backup directory.
 
 ## Scope
 
@@ -151,3 +157,59 @@ Next action:
 
 - publish P24 registration, preflight the prospective configuration, then
   perform the single guarded activation without admitting a manual tick.
+
+### Checkpoint P0064-C02 | 2026-09-03
+
+Plan version: 2
+
+State: `recurring_reddit_active_awaiting_first_ordinary_tick`
+
+Progress classification: `outcome_progress`
+
+Authority classification:
+
+- `inherited_authority`; the saved-config replacement, exact one-row digest
+  rebind, and service restart were ordinary in-scope activation steps.
+
+Evidence:
+
+- installed-runtime preflight returned `ready`, four enabled lane manifests,
+  `reddit_agent_browser`, aggregate limits 243/10/500/3,360, and Slack
+  notification readiness;
+- the saved config reads revision
+  `operator-20260903-reddit-home-feed-80-v1`, Reddit target
+  `operator-20260903-reddit-home-feed`, authenticated partition/profile, 80
+  items, three attempts, and 360 seconds;
+- the guarded database update matched exactly one `daily-default` row and moved
+  only its digest from
+  `sha256:069cf238586388e1e55924083e97161a403dd7fa488a6c2cf45d55fb29500074`
+  to
+  `sha256:8e3811d5e9b561cfd3f97b3d9897770ee4c623fe9e74a443bc01d86fca4d3449`;
+- post-restart schedule readback remains enabled/ready for
+  `2026-09-04T00:00:00Z`, preserving last tick
+  `tick-56c9c3b9a2f0a9897a09db4f45fe830e`, last boundary
+  `2026-09-03T00:00:00Z`, and zero runtime error;
+- tick count remains 119 with the latest created at
+  `2026-09-03T00:00:02.024013Z`; active ticks, execution attempts, provider
+  attempts, tick leases, and collection profile leases are zero;
+- all historical Reddit collection specs remain disabled and SQLite
+  `quick_check=ok`; service 0.3.109 is active after restart;
+- pre-change backups pass integrity/readback at
+  `backups/research-pre-reddit-recurring-20260903.db` and
+  `backups/tick-config-pre-reddit-recurring-20260903.json` under the private
+  last30days data directory.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; provider readiness is degraded on a Codex
+  app-server `RuntimeError`, so no write was queued. Repository and current
+  runtime readbacks remain authoritative.
+
+Next action:
+
+- observe the first ordinary four-lane tick after the September 4 UTC boundary
+  and close or checkpoint P24 from its terminal Reddit receipt.

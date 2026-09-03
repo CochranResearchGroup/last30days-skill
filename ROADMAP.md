@@ -2327,14 +2327,18 @@ Current State:
 - Plan 0063/C15 proved 80 accepted/stored/indexed Reddit feed posts on installed
   service 0.3.109;
 - the operator explicitly authorized recurring Reddit activation;
-- `daily-default` is enabled and ready for `2026-09-04T00:00:00Z`, but Reddit
-  is still disabled in its current saved configuration;
-- the guarded activation packet owns only the Reddit service/target addition,
-  aggregate-limit expansion, exact digest rebind, and activation readback.
+- `daily-default` is enabled and ready for `2026-09-04T00:00:00Z` with Reddit
+  active at 80 items, three transient-only attempts, and 360 seconds per
+  attempt;
+- saved revision `operator-20260903-reddit-home-feed-80-v1` passed installed
+  preflight and exact post-restart readback with four enabled lanes and
+  aggregate limits 243/10/500/3,360;
+- the one-row digest rebind preserved schedule/tick identity, admitted no work,
+  and left all active-work and lease counts zero with SQLite integrity `ok`.
 
 Active Plan:
 
-- `docs/dev/plans/0064-2026-09-03-recurring-reddit-home-feed.md` version 1/C01.
+- `docs/dev/plans/0064-2026-09-03-recurring-reddit-home-feed.md` version 2/C02.
 
 Dependencies:
 
@@ -2344,8 +2348,8 @@ Dependencies:
 
 Next Action:
 
-- preflight and atomically activate the 80-item Reddit feed target while
-  preserving the next `daily-default` boundary and admitting no manual tick.
+- observe the first ordinary four-lane tick after the September 4 UTC boundary
+  and adjudicate its terminal Reddit provider receipt.
 
 ## Goal-Compatible Plan Conversion
 
