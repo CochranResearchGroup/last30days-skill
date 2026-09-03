@@ -25919,3 +25919,60 @@ Next Bounded Action:
 - publish the closeout checkpoint, mark branch custody integration-ready,
   fast-forward `main`, record the integration receipt, and leave recurring
   Reddit disabled.
+
+## Turn 408 | 2026-09-03
+
+Focus: record Plan 0063/P23 integration and close the bounded Reddit feed lane.
+
+Authority Consulted:
+
+- Plan 0063/C15; branch/integration, active-lane, closeout, and Graphiti-memory
+  policy; current Git refs and Graphiti job readback.
+
+Decisions And Changes:
+
+- fast-forwarded `main` to closeout commit
+  `f80fc7ee020f991d667c8806cb454ba67daafd1b` without merge or rebase;
+- marked P23 custody `INTEGRATED` with that exact integration receipt;
+- retained the disabled recurring posture and did not spend retry 5;
+- requeued the compact Graphiti closeout write once after its first processing
+  attempt failed with a retryable provider transport timeout; its final attempt
+  also terminalized on a provider transport timeout without creating an
+  episode.
+
+Validation Evidence:
+
+- local `HEAD`, `origin/main`, and `origin/feat/reddit-home-feed` all resolved
+  to `f80fc7ee020f991d667c8806cb454ba67daafd1b` before this receipt-only commit;
+- the comprehensive implementation validation remains 2,755 passed, seven
+  skipped, and nine subtests passed; this receipt changes documentation only;
+- installed service 0.3.109 remains the accepted runtime, with the successful
+  run retaining 80 accepted/stored/indexed items and all Reddit specs disabled.
+
+State Movement:
+
+- P23 custody advances from `INTEGRATION_READY` to `INTEGRATED`; Plan 0063
+  remains `CLOSED`.
+
+Progress Classification:
+
+- `objective_achieved`; implementation, installed acceptance, and integration
+  receipts are durable.
+
+Authority Classification:
+
+- `inherited_authority_consumed`; no new runtime or scheduling authority used.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- job `1f4af97e-6ab6-4934-ba8f-d476a601684d` exhausted both allowed attempts on
+  provider transport timeouts. No episode UUID was created. Repository and
+  runtime receipts remain authoritative.
+
+Next Bounded Action:
+
+- none for P23. Any recurring Reddit activation requires a new authorized plan.

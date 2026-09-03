@@ -968,8 +968,9 @@ Subagent status and reconciliation:
 
 Graphiti write status:
 
-- `pending_closeout_write`; repo, installed runtime, database receipts, and
-  Agent Browser jobs are the authoritative evidence.
+- job `1f4af97e-6ab6-4934-ba8f-d476a601684d` exhausted two attempts on provider
+  transport timeouts. No episode UUID was created; repo, installed runtime,
+  database receipts, and Agent Browser jobs remain the authoritative evidence.
 
 Closeout:
 

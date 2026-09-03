@@ -22,11 +22,11 @@ lanes:
     branch: feat/reddit-home-feed
     target: main
     plan_state: CLOSED
-    custody_state: INTEGRATION_READY
+    custody_state: INTEGRATED
     checkpoint: fdd658a40b9e3799a602ae7009464b637b1affcc
     remote_ref: refs/remotes/origin/feat/reddit-home-feed
     integration: fast-forward
-    integration_receipt: null
+    integration_receipt: f80fc7ee020f991d667c8806cb454ba67daafd1b
     dependencies:
       - P08
     overlaps:
