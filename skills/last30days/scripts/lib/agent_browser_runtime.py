@@ -895,6 +895,78 @@ class CliAgentBrowserClient:
                     ),
                 }
             )
+            handle_request = {
+                key: value
+                for key, value in self._service_request_route.items()
+                if key not in {"action", "params", "url", "jobTimeoutMs"}
+            }
+            handle_request.update(
+                {
+                    "action": "tab_new",
+                    "url": request.start_url,
+                    "jobTimeoutMs": self.job_timeout_ms,
+                    "params": {},
+                }
+            )
+            handle_started = time.monotonic()
+            try:
+                handle_result = self._invoke_service_request(
+                    handle_request,
+                    timeout=min(open_timeout, 30),
+                )
+            except (OSError, subprocess.TimeoutExpired, AgentBrowserRuntimeFailure):
+                self.command_timings.append(
+                    {
+                        "operation": "service_request:tab_new",
+                        "duration_ms": _elapsed_ms(handle_started),
+                        "status": "failed",
+                    }
+                )
+                raise
+            self.command_timings.append(
+                {
+                    "operation": "service_request:tab_new",
+                    "duration_ms": _elapsed_ms(handle_started),
+                    "status": "ok",
+                }
+            )
+            service_tab_handle = handle_result.get("serviceTabHandle")
+            if not isinstance(service_tab_handle, dict):
+                raise AgentBrowserRuntimeFailure(
+                    "agent_browser_error",
+                    "agent-browser post-launch tab acquisition returned no service tab handle",
+                    reason_code="broker_service_tab_handle_missing",
+                )
+            handle_browser_id = str(service_tab_handle.get("browserId") or "")
+            handle_session_name = str(service_tab_handle.get("sessionName") or "")
+            handle_target_id = str(service_tab_handle.get("targetId") or "")
+            if (
+                service_tab_handle.get("valid") is False
+                or not handle_browser_id
+                or not handle_session_name
+                or not handle_target_id
+            ):
+                raise AgentBrowserRuntimeFailure(
+                    "agent_browser_error",
+                    "agent-browser post-launch tab handle has invalid target ownership",
+                    reason_code="broker_service_tab_handle_invalid",
+                )
+            self._service_tab_handle = dict(service_tab_handle)
+            self._service_tab_url = str(handle_result.get("url") or request.start_url)
+            self._service_request_route.update(
+                {
+                    "browserId": handle_browser_id,
+                    "sessionName": handle_session_name,
+                }
+            )
+            opened = dict(opened)
+            opened.update(
+                {
+                    "browserId": handle_browser_id,
+                    "sessionName": handle_session_name,
+                    "targetId": handle_target_id,
+                }
+            )
         return BrowserWorkspace(
             profile_id=observed_profile,
             browser_id=str(opened.get("browserId") or visible.get("browserId") or browser_id),

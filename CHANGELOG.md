@@ -26,11 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Exact Reddit tab-handle adoption.** Service 0.3.105 adopts the selected
-  Reddit tab's valid Agent Browser service handle after retained-tab
-  consolidation. Authentication and extraction evaluations now target the
-  exact Reddit tab instead of relying on browser/session routing when the same
-  authenticated browser also retains X or LinkedIn tabs.
+- **Exact Reddit tab-handle acquisition.** Service 0.3.106 follows a successful
+  route-bound `remote_view_open` with one authenticated, browser/session-routed
+  `tab_new`, the Agent Browser action that returns a service tab handle.
+  Authentication and extraction evaluations can therefore target the exact
+  Reddit tab even when the same authenticated browser retains X or LinkedIn
+  tabs; `tab_list` remains discovery-only and is not treated as a handle source.
 
 - **Session-scoped Reddit display allocation.** Service 0.3.104 binds an
   authenticated route-bound Reddit launch to a fresh display-allocation ID

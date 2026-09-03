@@ -413,15 +413,28 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
 
         def service_request(arguments, **_kwargs):
             service_requests.append(arguments)
-            return {
-                "profileId": "last30days-facebook",
-                "browserId": "session:reddit-route-bound",
-                "sessionName": "terminal-profile-replacement",
-                "targetId": "reddit-owned",
-                "routeId": "guacamole:2",
-                "displayAllocationId": "display:guacamole-rdp-b",
-                "operatorVisible": {"state": "ready"},
-            }
+            if arguments["action"] == "remote_view_open":
+                return {
+                    "profileId": "last30days-facebook",
+                    "browserId": "session:reddit-route-bound",
+                    "sessionName": "terminal-profile-replacement",
+                    "targetId": "reddit-owned",
+                    "routeId": "guacamole:2",
+                    "displayAllocationId": "display:guacamole-rdp-b",
+                    "operatorVisible": {"state": "ready"},
+                }
+            if arguments["action"] == "tab_new":
+                return {
+                    "url": "https://www.reddit.com/",
+                    "serviceTabHandle": {
+                        "valid": True,
+                        "browserId": "session:reddit-route-bound",
+                        "sessionName": "terminal-profile-replacement",
+                        "targetId": "reddit-owned-exact",
+                        "tabId": "target:reddit-owned-exact",
+                    },
+                }
+            raise AssertionError(f"unexpected service request: {arguments}")
 
         with (
             mock.patch.object(client, "_invoke", side_effect=invoke),
@@ -452,9 +465,9 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
         ):
             workspace = client.acquire_workspace(request, access_plan=plan)
 
-        self.assertEqual("reddit-owned", workspace.target_id)
+        self.assertEqual("reddit-owned-exact", workspace.target_id)
         self.assertEqual([["service", "status"]], invocations)
-        self.assertEqual(1, len(service_requests))
+        self.assertEqual(2, len(service_requests))
         remote_view = service_requests[0]
         self.assertEqual("remote_view_open", remote_view["action"])
         self.assertTrue(remote_view["allowDuplicateProfileLane"])
@@ -466,6 +479,14 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             remote_view["params"]["displayAllocationId"],
         )
         self.assertEqual(":10", remote_view["params"]["remoteHeadedDisplay"])
+        tab_new = service_requests[1]
+        self.assertEqual("tab_new", tab_new["action"])
+        self.assertEqual("session:reddit-route-bound", tab_new["browserId"])
+        self.assertEqual("terminal-profile-replacement", tab_new["sessionName"])
+        self.assertEqual(
+            "reddit-owned-exact",
+            client._service_tab_handle["targetId"],
+        )
 
     def test_reviewed_duplicate_profile_lane_override_reaches_broker(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
