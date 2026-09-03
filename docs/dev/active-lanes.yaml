@@ -21,9 +21,9 @@ lanes:
     plan_ref: refs/heads/feat/reddit-home-feed
     branch: feat/reddit-home-feed
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: c77cbb3b3a7aa72b8bfef231f1f377c5770957fa
+    plan_state: CLOSED
+    custody_state: INTEGRATION_READY
+    checkpoint: fdd658a40b9e3799a602ae7009464b637b1affcc
     remote_ref: refs/remotes/origin/feat/reddit-home-feed
     integration: fast-forward
     integration_receipt: null
@@ -31,4 +31,4 @@ lanes:
       - P08
     overlaps:
       - skills/last30days/scripts/lib/agent_browser_runtime.py
-    updated_at: 2026-09-02
+    updated_at: 2026-09-03
