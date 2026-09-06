@@ -26255,3 +26255,39 @@ Next Bounded Action:
 - Integrate `fix/installed-service-command` into the recurring release branch.
   Investigate the separate LinkedIn retry `contractvalidationerror` under P08;
   do not infer another tick from this closeout.
+
+## Turn 413 | 2026-09-06
+
+Focus: Plan 0066/P26 full-tick recovery under explicit five-cycle authority.
+
+Authority Consulted:
+
+- Operator goal: repair/retry, at most five full cycles, five minutes between
+  attempts; planning, goal, validation and installation policy.
+
+Decisions And Changes:
+
+- Own `fix/full-tick-recovery`, based on installed-command fix `233c6ed`.
+- Preserve full source/config scope and use an explicit durable attempt ledger.
+
+Validation Evidence:
+
+- Installed service 0.3.110 and daily-default ready; prior read-only replay
+  reproduced `wall_timeout_seconds must be between 1 and 3600` at zero budget.
+
+State Movement:
+
+- P26 OPEN, Plan 0066/C01; prior diagnosis is outcome_progress.
+
+Subagent Status And Reconciliation:
+
+- not_spawned; serialized primary owner.
+
+Graphiti Write Status:
+
+- deferred to validated cycle checkpoint; repo/attempt receipts are authority.
+
+Next Bounded Action:
+
+- Repair budget admission and LinkedIn result deadline; validate and install,
+  then reserve attempt 1 of 5.

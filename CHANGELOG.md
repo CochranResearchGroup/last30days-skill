@@ -26,6 +26,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Full-tick timeout isolation.** Service 0.3.111 refuses zero-time retries
+  before worker contract validation and allows later lanes to run. LinkedIn
+  feed collection returns accepted posts before the worker's hard deadline,
+  preserving pacing and the configured result ceiling.
+
 - **Installed operator command stays with the managed service.** Service
   0.3.110 refreshes existing frozen Skill service entrypoints during install
   and upgrade. Installed clients delegate before importing bundled libraries,

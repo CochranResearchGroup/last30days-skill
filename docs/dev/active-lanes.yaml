@@ -61,3 +61,18 @@ lanes:
     dependencies: [P24]
     overlaps: [service release metadata]
     updated_at: 2026-09-06
+  - id: P26
+    objective: Repair and complete one full tick within five spaced attempts
+    plan: docs/dev/plans/0066-2026-09-06-full-tick-recovery.md
+    plan_ref: refs/heads/fix/full-tick-recovery
+    branch: fix/full-tick-recovery
+    target: fix/installed-service-command
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 233c6ed
+    remote_ref: refs/remotes/origin/fix/full-tick-recovery
+    integration: fast-forward
+    integration_receipt: null
+    dependencies: [P25]
+    overlaps: [service release metadata, LinkedIn feed, tick runner]
+    updated_at: 2026-09-06

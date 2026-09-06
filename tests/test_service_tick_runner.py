@@ -1704,3 +1704,44 @@ def test_recovery_skips_terminal_lanes_and_rebuilds_snapshot_from_durable_eviden
            WHERE event_type = 'raw_published'"""
     ).fetchone()[0] == 2
     conn.close()
+
+
+def test_timed_out_provider_cannot_abort_next_lane_with_zero_wall_retry(tmp_path):
+    from lib.service_tick_builtin_adapters import build_acquisition_adapter_registry
+    from lib.service_worker import WorkerExecutionError
+
+    calls = []
+    class TimeoutWorker:
+        def run(self, request):
+            calls.append(request.source)
+            raise WorkerExecutionError("worker_timeout", contracts.RetryClass.TRANSIENT)
+
+    provider = _provider("linkedin-primary", "linkedin_agent_browser", "browser:social")
+    provider["limits"] = _limits(attempts=3)
+    def next_lane(context):
+        calls.append(context.source)
+        return ProviderResult.empty(usage=_usage())
+
+    spec = build_acquisition_adapter_registry(TimeoutWorker()).require(
+        "linkedin_agent_browser", source="linkedin", capability="collect"
+    )
+    coordinator, _, db, _, _, _ = _coordinator(
+        tmp_path,
+        [{"service_id": "linkedin", "source": "linkedin", "providers": [provider]},
+         {"service_id": "reddit", "source": "reddit", "providers": [
+             _provider("reddit-primary", "fixture", "browser:social")]}],
+        [_target("linkedin"), _target("reddit")],
+        [spec, AdapterSpec("fixture", frozenset({"collect"}), None, next_lane, "fixture:next")],
+        aggregate_limits={**_limits(attempts=4), "wall_seconds": 90},
+    )
+    receipt = coordinator.enqueue_tick(
+        _request("2026-08-03T00:00:00Z", "2026-08-04T00:00:00Z")
+    )
+    assert calls == ["linkedin", "reddit"], receipt.to_dict()
+    assert receipt.state is contracts.TickState.COMPLETE_DEGRADED
+    assert {l.service_id:l.state.value for l in receipt.lanes} == {
+        "linkedin": "budget_exhausted", "reddit": "empty"
+    }
+    with sqlite3.connect(db) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM service_tick_provider_attempts").fetchone()[0] == 2
+        assert conn.execute("SELECT COUNT(*) FROM service_tick_resource_leases WHERE released_at IS NULL").fetchone()[0] == 0

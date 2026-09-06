@@ -750,6 +750,8 @@ class TickRunner:
         }
         if admitted["attempts"] < 1:
             raise TickBudgetAdmissionExhausted("attempt budget is exhausted")
+        if admitted["wall_seconds"] < 1:
+            raise TickBudgetAdmissionExhausted("wall-time budget is exhausted")
         return admitted
 
     def _acquire_resources(

@@ -98,6 +98,13 @@ durable tick receipts preserve that same order.
 Each provider may declare one to three attempts. Automatic retries consume the
 second and third attempts only for transient failures, and the aggregate tick
 limits must budget every admitted attempt across enabled targets.
+A provider with no remaining wall time stops as `budget_exhausted` before a
+new worker request is created, allowing later lanes to continue. LinkedIn feed
+collection reserves up to 60 seconds (one third of shorter worker budgets) for
+normalization, media, cleanup, and result return. At that collection deadline,
+already accepted posts are returned with `collection_deadline_reached` in
+source diagnostics; the configured item ceiling and interaction pacing remain
+unchanged. No accepted posts still produces an explicit budget failure.
 Each target declares an explicit acquisition surface. Use
 `"surface_kind": "feed"` with a non-empty `"selector": {"feed": "home"}`
 for an authenticated home feed, or retain `"surface_kind": "topic"` with a

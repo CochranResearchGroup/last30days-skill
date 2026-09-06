@@ -2385,3 +2385,19 @@ schema17 reads. Thirty-eight focused tests passed, including stale-copy,
 upgrade/rollback, missing-launcher, and development-symlink preservation.
 The separate manual tick failed during LinkedIn retry after retaining 83 items;
 its failure does not invalidate the installed command compatibility proof.
+
+## P26 | Full Tick Recovery
+
+State: OPEN
+
+Objective: repair and complete one full tick within five attempts separated by
+at least five minutes.
+
+Current State:
+
+- Plan 0066 starts from installed 0.3.110 and the reproduced LinkedIn retry bug;
+- zero newly authorized attempts consumed; full four-source success remains.
+
+Active Plan:
+
+- `docs/dev/plans/0066-2026-09-06-full-tick-recovery.md`.

@@ -939,6 +939,8 @@ def test_feed_surface_dispatches_without_topic_search(
 
     assert observed["args"] == (request.from_date, request.to_date)
     assert observed["kwargs"]["limit"] == 20
+    if source == "linkedin":
+        assert observed["kwargs"]["collection_deadline"] > 0
     assert result["_network_request_count"] == 1
 
 

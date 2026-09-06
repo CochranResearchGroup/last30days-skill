@@ -1645,3 +1645,37 @@ class LinkedInLiveSmokeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_feed_returns_collected_posts_before_collection_deadline(monkeypatch):
+    clock = [0.0]
+    monkeypatch.setattr(linkedin.time, "monotonic", lambda: clock[0])
+    page = dict(FakeAgentBrowserClient().page)
+    page.update(url="https://www.linkedin.com/feed/", title="Feed | LinkedIn")
+    class DeadlineClient(FakeAgentBrowserClient):
+        def evaluate(self, workspace, script):
+            result = super().evaluate(workspace, script)
+            if script == linkedin.EXTRACT_SCRIPT:
+                clock[0] = 10.0
+            return result
+    client = DeadlineClient(page=page)
+    result = make_scraper(client, scrolls=32, collection_deadline=10.0).feed(
+        "2026-06-15", "2026-07-15"
+    )
+    assert result["error_type"] is None
+    assert len(result["items"]) == 1
+    assert result["diagnostics"]["collection_deadline_reached"] is True
+    assert not any(a.operation == "scroll" for a in client.actions)
+
+
+def test_limiter_declines_action_when_pacing_wait_would_use_collection_deadline(monkeypatch):
+    clock = [0.0]
+    monkeypatch.setattr(linkedin.time, "monotonic", lambda: clock[0])
+    sleeps = []
+    monkeypatch.setattr(linkedin.time, "sleep", sleeps.append)
+    limiter = linkedin.LinkedInInteractionLimiter(min_delay=4, max_actions_per_minute=6)
+    assert limiter.wait(deadline=10)
+    clock[0] = 1
+    assert not limiter.wait(deadline=3)
+    assert sleeps == []
+    assert list(limiter._events) == [0.0]

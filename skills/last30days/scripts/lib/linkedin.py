@@ -558,6 +558,10 @@ class LinkedInRunDiagnostics:
         }
 
 
+class LinkedInCollectionDeadline(Exception):
+    """Collection must yield retained candidates before the worker hard wall."""
+
+
 class LinkedInInteractionLimiter:
     """Bound user-like LinkedIn actions within one engine process."""
 
@@ -566,7 +570,7 @@ class LinkedInInteractionLimiter:
         self.max_actions_per_minute = max(1, max_actions_per_minute)
         self._events: deque[float] = deque()
 
-    def wait(self) -> None:
+    def wait(self, *, deadline: float | None = None) -> bool:
         now = time.monotonic()
         while self._events and now - self._events[0] >= 60.0:
             self._events.popleft()
@@ -575,12 +579,15 @@ class LinkedInInteractionLimiter:
             delay = max(delay, self.min_delay - (now - self._events[-1]))
         if len(self._events) >= self.max_actions_per_minute:
             delay = max(delay, 60.0 - (now - self._events[0]))
+        if deadline is not None and now + delay >= deadline:
+            return False
         if delay > 0:
             time.sleep(delay)
             now = time.monotonic()
             while self._events and now - self._events[0] >= 60.0:
                 self._events.popleft()
         self._events.append(now)
+        return True
 
 
 _INTERACTION_LIMITERS: dict[tuple[str, float, int], LinkedInInteractionLimiter] = {}
@@ -681,7 +688,9 @@ class LinkedInScraper:
         interaction_limiter: LinkedInInteractionLimiter | None = None,
         now: datetime | None = None,
         debug_dir: str = "",
+        collection_deadline: float | None = None,
     ) -> None:
+        self.collection_deadline = collection_deadline
         self.client = client
         self.request = request
         self.limit = limit
@@ -798,6 +807,7 @@ class LinkedInScraper:
         diagnostics = LinkedInRunDiagnostics()
         workspace: BrowserWorkspace | None = None
         page = LinkedInPageState(url="", title="")
+        raw_candidates: list[dict[str, Any]] = []
         try:
             _log(f"Acquiring agent-browser workspace profile={self.request.profile_id!r}")
             workspace = self.client.acquire_workspace(self.request)
@@ -975,6 +985,19 @@ class LinkedInScraper:
                     to_date,
                 )
             return self._result(items, None, None, workspace, page, diagnostics, from_date, to_date)
+        except LinkedInCollectionDeadline:
+            items = self._quality_gate(
+                raw_candidates, "", from_date, to_date, diagnostics, surface_kind="feed"
+            )
+            diagnostics.duration_ms = _elapsed_ms(started)
+            result = self._result(
+                items,
+                None if items else "wall_time_budget_exhausted",
+                None if items else "Collection deadline reached before any accepted posts",
+                workspace, page, diagnostics, from_date, to_date,
+            )
+            result["diagnostics"]["collection_deadline_reached"] = True
+            return result
         except LinkedInScraperFailure as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
             diagnostics.failure_reason_code = exc.reason_code
@@ -1060,7 +1083,12 @@ class LinkedInScraper:
             )
         return page
 
+    def _check_collection_deadline(self) -> None:
+        if self.collection_deadline is not None and time.monotonic() >= self.collection_deadline:
+            raise LinkedInCollectionDeadline()
+
     def _extract(self, workspace: BrowserWorkspace) -> list[dict[str, Any]]:
+        self._check_collection_deadline()
         raw = self.client.evaluate(workspace, EXTRACT_SCRIPT)
         if raw.get("rate_limited"):
             raise LinkedInScraperFailure(
@@ -1093,10 +1121,14 @@ class LinkedInScraper:
         )
 
     def _act(self, workspace: BrowserWorkspace, action: BrowserAction) -> BrowserState:
+        self._check_collection_deadline()
         if self.interaction_limiter and action.operation in {
             "navigate", "new_tab", "scroll", "click", "fill", "press"
         }:
-            self.interaction_limiter.wait()
+            if self.collection_deadline is None:
+                self.interaction_limiter.wait()
+            elif not self.interaction_limiter.wait(deadline=self.collection_deadline):
+                raise LinkedInCollectionDeadline()
         return self.client.act(workspace, action)
 
     def _quality_gate(
@@ -1383,6 +1415,7 @@ def scrape_linkedin_feed(
     depth: str = "default",
     config: dict[str, Any] | None = None,
     limit: int | None = None,
+    collection_deadline: float | None = None,
 ) -> dict[str, Any]:
     """Scrape the authenticated LinkedIn home feed without a topic query."""
     config = config or {}
@@ -1466,6 +1499,7 @@ def scrape_linkedin_feed(
             max_actions_per_minute,
         ),
         debug_dir=str(config.get("LAST30DAYS_LINKEDIN_DEBUG_DIR") or "").strip(),
+        collection_deadline=collection_deadline,
     )
     try:
         return scraper.feed(from_date, to_date)
