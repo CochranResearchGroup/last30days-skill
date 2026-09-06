@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Reddit retained-tab acquisition.** Service 0.3.113 keeps cold-launch route hints out of retained-browser tab requests, preventing broker invalid_bounded_recipe rejection.
+
 - **Retained browser reuse.** Service 0.3.112 suppresses a legacy duplicate-lane override when the broker selects a compatible live browser, preserving its exact profile and session.
 
 ### Added

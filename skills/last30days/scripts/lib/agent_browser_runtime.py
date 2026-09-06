@@ -347,7 +347,7 @@ class CliAgentBrowserClient:
                 # A reviewed cold-launch override must not disable exact
                 # retained-browser reuse selected by the broker.
                 self._service_request_route.pop("allowDuplicateProfileLane", None)
-            if request.route_pool_entry_id_hint:
+            if request.route_pool_entry_id_hint and compatible_live_browser_count == 0:
                 route_params = self._service_request_route.get("params")
                 if not isinstance(route_params, dict):
                     route_params = {}

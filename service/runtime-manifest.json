@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "8e3f8f70c5e4254c019d0a86face20883b5adc7520032cacf5c2c56768df9684",
+      "sha256": "6b40ae41ca3c8fa0942fe23ce2a13b775b2800e7272a273e76908c8007d68bc7",
       "source": "service/VERSION"
     },
     {
@@ -27,7 +27,7 @@
     },
     {
       "path": "scripts/lib/agent_browser_runtime.py",
-      "sha256": "04f7e788e2794158370d0d1339a717897cc3558ad96bde583b6aa45ca0579ff3",
+      "sha256": "0168b7ede72cb058e78a74ffe5b7c4bd1c35f27358cb6125da3ddb56b9ca268c",
       "source": "skills/last30days/scripts/lib/agent_browser_runtime.py"
     },
     {
@@ -658,5 +658,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.112"
+  "service_version": "0.3.113"
 }

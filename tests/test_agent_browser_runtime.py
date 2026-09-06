@@ -314,7 +314,7 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
         self.assertEqual("x-owned", workspace.target_id)
         self.assertEqual(["tab_new", "ui_action"], actions)
 
-    def test_broker_request_preserves_route_pool_entry_hint(self):
+    def test_retained_tab_ignores_launch_route_hint_and_preserves_broker_params(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
         request = _request(
             url="https://www.reddit.com/",
@@ -354,10 +354,7 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             client.acquire_workspace(request)
 
         self.assertNotIn("routePoolEntryId", captured)
-        self.assertEqual(
-            "guacamole-rdp-b",
-            captured["params"]["routePoolEntryId"],
-        )
+        self.assertNotIn("routePoolEntryId", captured["params"])
         self.assertEqual("rdp_gateway", captured["params"]["provider"])
 
     def test_route_bound_cold_launch_uses_remote_view_open(self):
@@ -549,6 +546,7 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             task="x-feed",
             service="x",
             allow_duplicate_profile_lane=True,
+            route_pool_entry_id_hint="guacamole-rdp-b",
         )
         plan = _access_plan(
             url=request.start_url,
@@ -594,6 +592,7 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
         )
         self.assertEqual("handoff-social", captured[0]["sessionName"])
         self.assertNotIn("allowDuplicateProfileLane", captured[0])
+        self.assertNotIn("routePoolEntryId", captured[0].get("params", {}))
 
     def test_direct_broker_timeout_is_typed_at_workspace_acquisition(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)

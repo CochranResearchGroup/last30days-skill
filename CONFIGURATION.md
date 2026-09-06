@@ -575,6 +575,7 @@ LAST30DAYS_YOUTUBE_BROWSER_FALLBACK=auto
 # named browser lane for the same exact profile.
 # Applies only when the broker finds no compatible live browser.
 # Retained browser reuse takes precedence over this cold-launch override.
+# Route-pool hints also apply only to cold launches, not retained-browser tabs.
 # LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE=1
 
 # Optional principal-bound Agent Browser authority. Set this to one absolute,
