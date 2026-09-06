@@ -341,8 +341,12 @@ class CliAgentBrowserClient:
                     "url": request.start_url,
                 }
             )
-            if request.allow_duplicate_profile_lane:
+            if request.allow_duplicate_profile_lane and compatible_live_browser_count == 0:
                 self._service_request_route["allowDuplicateProfileLane"] = True
+            else:
+                # A reviewed cold-launch override must not disable exact
+                # retained-browser reuse selected by the broker.
+                self._service_request_route.pop("allowDuplicateProfileLane", None)
             if request.route_pool_entry_id_hint:
                 route_params = self._service_request_route.get("params")
                 if not isinstance(route_params, dict):

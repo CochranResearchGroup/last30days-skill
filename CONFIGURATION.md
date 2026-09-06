@@ -573,6 +573,8 @@ LAST30DAYS_YOUTUBE_BROWSER_FALLBACK=auto
 # stale even though process and profile-lock absence have been proven. Leave
 # unset normally: this never creates another profile, but it permits a fresh
 # named browser lane for the same exact profile.
+# Applies only when the broker finds no compatible live browser.
+# Retained browser reuse takes precedence over this cold-launch override.
 # LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE=1
 
 # Optional principal-bound Agent Browser authority. Set this to one absolute,

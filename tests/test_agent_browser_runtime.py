@@ -593,6 +593,7 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             captured[0]["browserId"],
         )
         self.assertEqual("handoff-social", captured[0]["sessionName"])
+        self.assertNotIn("allowDuplicateProfileLane", captured[0])
 
     def test_direct_broker_timeout_is_typed_at_workspace_acquisition(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Retained browser reuse.** Service 0.3.112 suppresses a legacy duplicate-lane override when the broker selects a compatible live browser, preserving its exact profile and session.
+
 ### Added
 
 - **Authenticated Reddit home-feed acquisition.** Service 0.3.97 routes
