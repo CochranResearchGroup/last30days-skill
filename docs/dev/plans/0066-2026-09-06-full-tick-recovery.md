@@ -75,3 +75,15 @@ Plan version: 1
 - Attempt 2 earliest 21:27:44.292699Z; retain original config and managed environment.
 - Tests: focused tick runner/runtime, LinkedIn, acquisition worker and release version suites passed before install. Source commit a1bb7b2.
 - Authority classification: `inherited_authority`.
+
+### Checkpoint P0066-C03 | 2026-09-06
+
+Plan version: 1
+
+- State: attempt 2 complete_degraded -> client repair installed 0.3.112.
+- Progress: blocker_reduction. The authenticated lease rejoin removed identity mismatch; legacy allowDuplicateProfileLane=true still forced a conflicting launch against live PID 50967.
+- A bounded unmodified broker-request probe reused the exact browser and released its own tab successfully. Client repair d857d83 suppresses the cold-launch override when a compatible live browser exists.
+- Existing retained-reuse regression test failed before repair and passes afterward. Focused runtime/acquisition tests passed; version test initially detected pending manifest refresh, then all five version tests passed after refresh.
+- Installed manifest ada044f8f20786c098a3b3799d9feb2dfe735601e590c249ddc4eb00289e54e1, readiness 21:31:56Z. LinkedIn and Reddit blank-tab acquisition/release probes through the repaired client both succeeded on the original profile/session.
+- No full tick success yet. Attempt 3 earliest 21:34:07.690217Z; unchanged source limits and config digest.
+- Authority classification: `inherited_authority`.
