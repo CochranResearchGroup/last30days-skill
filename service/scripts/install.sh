@@ -508,6 +508,35 @@ def systemd_escape_path(path: Path) -> str:
     )
 
 
+def refresh_skill_entrypoints(release: Path) -> None:
+    """Refresh only existing frozen host copies; never follow checkout links."""
+    raw = (release / "scripts/service.py").read_bytes()
+    home = Path.home().resolve()
+    for host in (".agents", ".claude", ".codex"):
+        skill = home / host / "skills/last30days"
+        entrypoint = skill / "scripts/service.py"
+        # Refuse to edit through any symlink, including host aliases and
+        # per-host links to the canonical .agents copy (updated separately).
+        if any(
+            path.is_symlink()
+            for path in (entrypoint, *entrypoint.parents)
+            if path != home
+        ):
+            continue
+        metadata = skill / "SKILL.md"
+        if (
+            not entrypoint.is_file()
+            or not metadata.is_file()
+            or metadata.is_symlink()
+        ):
+            continue
+        if not re.search(
+            r"(?m)^name: last30days\s*$", metadata.read_text(encoding="utf-8")
+        ):
+            continue
+        atomic_write(entrypoint, raw, entrypoint.stat().st_mode & 0o777)
+
+
 def render_launcher(service_root: Path, python_bin: Path) -> None:
     launcher = service_root / "last30days-service"
     content = f"""#!/bin/sh
@@ -931,6 +960,7 @@ def main() -> None:
             args.timeout,
             receipt_path,
         )
+        refresh_skill_entrypoints(release)
     except (SystemExit, OSError, RuntimeError, sqlite3.Error) as failure:
         if old_current is None:
             manager_command(manager, "stop", UNIT_NAME, check=False)

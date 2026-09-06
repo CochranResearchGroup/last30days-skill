@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "60827afae6d968aec4df36eaab5a0e918558fb59eaeeef1b2eb6269f53cca82f",
+      "sha256": "54236f643142b5089e9da4341dcdfcc128056306a0afa0e17ece371285661ce8",
       "source": "service/VERSION"
     },
     {
@@ -647,7 +647,7 @@
     },
     {
       "path": "scripts/service.py",
-      "sha256": "dc11b6d57573c456e80b4008a3904619f2ff3088610710470723c4c09060a1f2",
+      "sha256": "263d34e40bedef7a5c3b0b36e17577840aca35877c2e1ce9705261c2ba1fa89b",
       "source": "skills/last30days/scripts/service.py"
     },
     {
@@ -658,5 +658,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.109"
+  "service_version": "0.3.110"
 }

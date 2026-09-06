@@ -2371,3 +2371,20 @@ Before moving a lane from `PLANNED` to `OPEN`, create or identify a plan that:
 8. records Graphiti and runbook checkpoint requirements;
 9. stops when acceptance is met, a hard gate is reached, or remaining work is
    unbounded polish.
+
+## P25 | Installed Service Command
+
+State: OPEN
+
+Objective: keep the installed Skill service command aligned with the selected
+managed runtime through service install, upgrade, and rollback.
+
+Current State:
+
+- the stale-client failure is reproduced and fixed in source;
+- focused lifecycle, packaging, release, and preflight checks pass;
+- the manual tick is running; installation waits for its terminal receipt.
+
+Active Plan:
+
+- `docs/dev/plans/0065-2026-09-06-installed-service-command.md`.

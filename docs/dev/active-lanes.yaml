@@ -46,3 +46,18 @@ lanes:
     overlaps: [user-scoped tick configuration, daily-default schedule binding]
     reconciled_overlaps: [user-scoped tick configuration, daily-default schedule binding]
     updated_at: 2026-09-03
+  - id: P25
+    objective: Keep the installed Skill service command aligned with the managed runtime
+    plan: docs/dev/plans/0065-2026-09-06-installed-service-command.md
+    plan_ref: refs/heads/fix/installed-service-command
+    branch: fix/installed-service-command
+    target: feat/recurring-reddit-home-feed
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: ecba6fc
+    remote_ref: refs/remotes/origin/fix/installed-service-command
+    integration: fast-forward
+    integration_receipt: null
+    dependencies: [P24]
+    overlaps: [service release metadata]
+    updated_at: 2026-09-06

@@ -26,6 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Installed operator command stays with the managed service.** Service
+  0.3.110 refreshes existing frozen Skill service entrypoints during install
+  and upgrade. Installed clients delegate before importing bundled libraries,
+  following managed release selection and rollback. This prevents stale Skill
+  config/schema validation from rejecting valid service settings. Symlinked
+  source checkouts remain development runtimes.
+
 - **Document-targeted Reddit feed scrolling.** Service 0.3.109 scrolls Reddit's
   document explicitly during home-feed acquisition. The generic Agent Browser
   scroll action can follow the currently focused nested region and was moving

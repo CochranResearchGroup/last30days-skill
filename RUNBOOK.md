@@ -26189,3 +26189,39 @@ Next Bounded Action:
 - observe the first ordinary September 4 UTC tick. Diagnose or repair the X
   acquisition route only under P08; do not infer authority for another manual
   tick.
+
+## Turn 412 | 2026-09-06
+
+Focus: run one manual tick and fix build/install ownership of the stale installed
+Skill operator command under Plan 0065/P25.
+
+Decisions And Changes:
+
+- The frozen Skill command incorrectly rejected the valid three-attempt config
+  and schema 17. Its temporary limit reductions were restored byte-for-byte;
+  the installed 0.3.109 launcher passed the original config preflight.
+- Ran one manual tick `tick-e38e517c62d8ec6eba1882af7e8586c2`, covering
+  September 5 18:45:40 UTC through September 6 18:45:40 UTC.
+- The tick failed at 18:58:31 UTC with `contractvalidationerror` during LinkedIn
+  retry ordinal one after its first transient failure consumed 360 wall seconds.
+  X retained 80 items and YouTube three. Reddit did not execute; no snapshot was
+  promoted. This is a separate runtime follow-up, not a successful refresh.
+- New source routes frozen Skill commands through the managed launcher before
+  library imports. Managed install/upgrade refreshes only existing real host
+  entrypoints; symlinked development checkouts remain untouched.
+
+Validation Evidence:
+
+- Existing install lifecycle regression failed with `stale service command`
+  before the fix; 20 lifecycle/release/Skill packaging tests pass after it.
+- Eighteen focused tick preflight tests pass; the service artifact builds at
+  version 0.3.110 with schema 17 unchanged.
+- Planning audit initially identified two inherited P24 findings (invalid C03
+  authority classification and missing Definition Of Done), outside this fix.
+
+Current State:
+
+- Plan 0065/C01 is implemented and tested. Installed upgrade/readback and source
+  custody are next; no additional tick is authorized by this checkpoint.
+- Subagents: not_spawned. Graphiti discovery returned older release facts only;
+  current runtime and source evidence were used for the command diagnosis.
