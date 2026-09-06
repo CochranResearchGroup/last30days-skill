@@ -63,3 +63,15 @@ Plan version: 1
 Authority classification:
 
 - `inherited_authority`
+
+### Checkpoint P0066-C02 | 2026-09-06
+
+Plan version: 1
+
+- State: installed 0.3.111 -> attempt 1 complete_degraded -> browser ownership repaired.
+- Progress: blocker_reduction. Tick tick-7881125257dc8a17ec8aed3ae2715a5d retained three YouTube items; browser lanes failed acquisition. No full success yet.
+- Trace: X and LinkedIn existing_session_profile_identity_inconsistent. The correct live profile retained PID 50967 and owner generation 79, but registered principal binding was stale.
+- Broker recovery/reconcile plans offered no replacement transition. The advertised capability-authenticated lease rejoin succeeded at 21:27:11Z; lease fc553beb74ded8415f61dbf1 is active with zero blocking identity axes, generation 79 unchanged. No browser terminated or profile changed.
+- Attempt 2 earliest 21:27:44.292699Z; retain original config and managed environment.
+- Tests: focused tick runner/runtime, LinkedIn, acquisition worker and release version suites passed before install. Source commit a1bb7b2.
+- Authority classification: `inherited_authority`.

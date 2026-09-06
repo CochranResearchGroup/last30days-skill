@@ -1,1 +1,66 @@
-{"schema_version":1,"goal":"repair and complete one full tick","maximum_attempts":5,"minimum_gap_seconds":300,"attempts":[]}
+{
+  "schema_version": 1,
+  "goal": "repair and complete one full tick",
+  "maximum_attempts": 5,
+  "minimum_gap_seconds": 300,
+  "attempts": [
+    {
+      "ordinal": 1,
+      "tick_id": "tick-7881125257dc8a17ec8aed3ae2715a5d",
+      "interval_from": "2026-09-05T21:22:33Z",
+      "interval_to": "2026-09-06T21:22:33Z",
+      "config_digest": "sha256:8e3811d5e9b561cfd3f97b3d9897770ee4c623fe9e74a443bc01d86fca4d3449",
+      "service_version": "0.3.111",
+      "started_at": "2026-09-06T21:22:34.058047Z",
+      "state": "complete_degraded",
+      "inherited_managed_environment": true,
+      "process_pid": 71749,
+      "command_exit_code": 0,
+      "head_promoted": true,
+      "snapshot_id": "tick-snapshot-3458c54a80fff68f1bb5df91007bc8db",
+      "retained_versions": 3,
+      "budget_consumed": {
+        "attempts": 10,
+        "cost_cents": 0,
+        "items": 3,
+        "model_tokens": 0,
+        "network_requests": 13,
+        "wall_seconds": 11
+      },
+      "lanes": [
+        {
+          "service_id": "youtube",
+          "state": "success"
+        },
+        {
+          "service_id": "x",
+          "state": "failure"
+        },
+        {
+          "service_id": "linkedin",
+          "state": "failure"
+        },
+        {
+          "service_id": "reddit-home-feed",
+          "state": "failure"
+        }
+      ],
+      "execution_attempts": [
+        {
+          "attempt": 1,
+          "completed_at": "2026-09-06T21:22:44.037750Z",
+          "created_at": "2026-09-06T21:22:34.286763Z",
+          "error_code": null,
+          "execution_attempt_id": "tick-attempt-b708ad86c607a1cc65698790d1c86757",
+          "lease_expires_at": null,
+          "lease_generation": 1,
+          "started_at": "2026-09-06T21:22:34.306595Z",
+          "state": "complete",
+          "tick_id": "tick-7881125257dc8a17ec8aed3ae2715a5d"
+        }
+      ],
+      "finished_at": "2026-09-06T21:22:44.292688Z",
+      "next_attempt_not_before": "2026-09-06T21:27:44.292699Z"
+    }
+  ]
+}
