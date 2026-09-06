@@ -87,3 +87,15 @@ Plan version: 1
 - Installed manifest ada044f8f20786c098a3b3799d9feb2dfe735601e590c249ddc4eb00289e54e1, readiness 21:31:56Z. LinkedIn and Reddit blank-tab acquisition/release probes through the repaired client both succeeded on the original profile/session.
 - No full tick success yet. Attempt 3 earliest 21:34:07.690217Z; unchanged source limits and config digest.
 - Authority classification: `inherited_authority`.
+
+### Checkpoint P0066-C04 | 2026-09-06
+
+Plan version: 1
+
+- State: attempt 3 complete_degraded -> Reddit request repair installed 0.3.113.
+- Progress: outcome_progress. Attempt 3 retained 80 X, 33 LinkedIn and 3 YouTube items. LinkedIn completed within its worker budget; Reddit alone failed acquisition.
+- Exact MCP ingress failure: invalid_bounded_recipe, tab_new cannot execute remote-view route intent. The actual Reddit configuration adds routePoolEntryId=guacamole-rdp-b to an existing-browser tab request; the earlier generic blank probe omitted that configuration.
+- Repair 9aa8f83 omits cold-launch route hints for compatible retained browsers. Regression failed before repair. Updated stale test that required the invalid request; runtime, Reddit, acquisition and release-version focused suites then passed.
+- Installed 0.3.113 readiness at 21:43:41Z, manifest f556daae3796c8be6b94f04e5a8dc3eb0603ae79a0a6e0c3ed5882e46fec979b. Installed actual-config Reddit acquisition/auth probe succeeded: authenticated true; login form, checkpoint and network block false. Exact probe tab released.
+- Attempt 4 earliest 21:45:59.547017Z. Original config digest and caps preserved; no complete tick yet.
+- Authority classification: `inherited_authority`.

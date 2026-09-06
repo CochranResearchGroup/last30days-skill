@@ -119,6 +119,64 @@
       ],
       "finished_at": "2026-09-06T21:29:07.690205Z",
       "next_attempt_not_before": "2026-09-06T21:34:07.690217Z"
+    },
+    {
+      "ordinal": 3,
+      "tick_id": "tick-7597a238858a00374e81227cc4663353",
+      "interval_from": "2026-09-05T21:34:20Z",
+      "interval_to": "2026-09-06T21:34:20Z",
+      "config_digest": "sha256:8e3811d5e9b561cfd3f97b3d9897770ee4c623fe9e74a443bc01d86fca4d3449",
+      "service_version": "0.3.112",
+      "started_at": "2026-09-06T21:34:21.242545Z",
+      "state": "complete_degraded",
+      "inherited_managed_environment": true,
+      "process_pid": 91750,
+      "command_exit_code": 0,
+      "head_promoted": true,
+      "snapshot_id": "tick-snapshot-98deeffa93d70283f253ec8a90d2eb15",
+      "retained_versions": 116,
+      "budget_consumed": {
+        "attempts": 6,
+        "cost_cents": 0,
+        "items": 116,
+        "model_tokens": 0,
+        "network_requests": 93,
+        "wall_seconds": 393
+      },
+      "lanes": [
+        {
+          "service_id": "youtube",
+          "state": "success"
+        },
+        {
+          "service_id": "x",
+          "state": "success"
+        },
+        {
+          "service_id": "linkedin",
+          "state": "success"
+        },
+        {
+          "service_id": "reddit-home-feed",
+          "state": "failure"
+        }
+      ],
+      "execution_attempts": [
+        {
+          "attempt": 1,
+          "completed_at": "2026-09-06T21:40:59.270254Z",
+          "created_at": "2026-09-06T21:34:21.456349Z",
+          "error_code": null,
+          "execution_attempt_id": "tick-attempt-089a108e9729f067f3ae141d22a59597",
+          "lease_expires_at": null,
+          "lease_generation": 1,
+          "started_at": "2026-09-06T21:34:21.481780Z",
+          "state": "complete",
+          "tick_id": "tick-7597a238858a00374e81227cc4663353"
+        }
+      ],
+      "finished_at": "2026-09-06T21:40:59.547006Z",
+      "next_attempt_not_before": "2026-09-06T21:45:59.547017Z"
     }
   ]
 }
