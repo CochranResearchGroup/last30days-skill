@@ -1,6 +1,6 @@
 # Plan 0065 | Installed Service Command
 
-State: OPEN
+State: CLOSED
 Lane: P25
 Branch: fix/installed-service-command
 Target: feat/recurring-reddit-home-feed
@@ -14,9 +14,10 @@ service after builds, installs, upgrades, and rollbacks.
 
 ## Current State
 
-The frozen Skill script rejected a valid three-attempt config and schema 17;
-the installed 0.3.109 launcher accepted both. The original config is restored.
-One authorized manual tick is running through the installed launcher.
+Service 0.3.110 is installed ready and compatible on schema 17. The exact legacy
+Skill command passes read-only preflight and tick receipt readback against the
+unchanged original config. All acceptance criteria are met; the separate
+manual tick failed during LinkedIn retry and is preserved without a retry.
 
 ## Scope and Sequence
 
@@ -58,6 +59,23 @@ Plan version: 1
   `contractvalidationerror` during LinkedIn retry; 80 X and three YouTube items
   were retained, Reddit did not run, and no snapshot was promoted.
 - Installation and post-install readback remain for C02. No retry tick.
+
+Authority classification:
+
+- `inherited_authority`
+
+### Checkpoint P0065-C02 | 2026-09-06
+
+Plan version: 1
+
+- Installed 0.3.110/schema17, manifest
+  `28825c3811ee95418b05007149a78efe7cf9364c44bdb8da649a9faa7d69c3f0`.
+- The installed frozen command matches the release entrypoint and passes both
+  original-config preflight and schema17 receipt reads. Config is byte-identical
+  to the original backup; daily-default remains ready at the same boundary.
+- Receipt: `docs/dev/notes/0065-installed-service-command-receipt.json`.
+- Implementation commit: `329fc89`. Plan closed at installed acceptance.
+- The failed tick remains a separate P08 runtime follow-up; no extra tick ran.
 
 Authority classification:
 

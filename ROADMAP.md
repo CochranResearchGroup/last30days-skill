@@ -2374,17 +2374,14 @@ Before moving a lane from `PLANNED` to `OPEN`, create or identify a plan that:
 
 ## P25 | Installed Service Command
 
-State: OPEN
+State: CLOSED
 
 Objective: keep the installed Skill service command aligned with the selected
 managed runtime through service install, upgrade, and rollback.
 
-Current State:
-
-- the stale-client failure is reproduced and fixed in source;
-- focused lifecycle, packaging, release, and preflight checks pass;
-- the manual tick is running; installation waits for its terminal receipt.
-
-Active Plan:
-
-- `docs/dev/plans/0065-2026-09-06-installed-service-command.md`.
+Plan `docs/dev/plans/0065-2026-09-06-installed-service-command.md` closed with
+service 0.3.110 installed ready. The previous command now passes preflight and
+schema17 reads. Thirty-eight focused tests passed, including stale-copy,
+upgrade/rollback, missing-launcher, and development-symlink preservation.
+The separate manual tick failed during LinkedIn retry after retaining 83 items;
+its failure does not invalidate the installed command compatibility proof.

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "implementation_commit": "329fc89",
+  "installed_service": {
+    "contract_sha256": "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025",
+    "database_schema_version": 17,
+    "release": "releases/0.3.110",
+    "runtime_manifest_sha256": "28825c3811ee95418b05007149a78efe7cf9364c44bdb8da649a9faa7d69c3f0",
+    "schema_version": 1,
+    "service_status": "ready",
+    "service_version": "0.3.110",
+    "verified_at": "2026-09-06T18:59:50.703207Z"
+  },
+  "manual_tick": {
+    "tick_id": "tick-e38e517c62d8ec6eba1882af7e8586c2",
+    "state": "failed",
+    "head_promoted": false,
+    "interval_from": "2026-09-05T18:45:40Z",
+    "interval_to": "2026-09-06T18:45:40Z",
+    "config_digest": "sha256:8e3811d5e9b561cfd3f97b3d9897770ee4c623fe9e74a443bc01d86fca4d3449"
+  },
+  "retained_versions": 83,
+  "execution_attempts": [
+    {
+      "attempt": 1,
+      "completed_at": "2026-09-06T18:58:31.073608Z",
+      "created_at": "2026-09-06T18:51:12.537282Z",
+      "error_code": "contractvalidationerror",
+      "execution_attempt_id": "tick-attempt-f1c542bc0b9c65f078323003081b3c92",
+      "lease_expires_at": null,
+      "lease_generation": 1,
+      "started_at": "2026-09-06T18:51:12.573991Z",
+      "state": "failed",
+      "tick_id": "tick-e38e517c62d8ec6eba1882af7e8586c2"
+    }
+  ],
+  "lanes": [
+    {
+      "service_id": "youtube",
+      "state": "success"
+    },
+    {
+      "service_id": "x",
+      "state": "success"
+    },
+    {
+      "service_id": "linkedin",
+      "state": "failure"
+    },
+    {
+      "service_id": "reddit-home-feed",
+      "state": "failure"
+    }
+  ],
+  "budget_consumed": {
+    "attempts": 3,
+    "cost_cents": 0,
+    "items": 83,
+    "model_tokens": 0,
+    "network_requests": 54,
+    "wall_seconds": 460
+  },
+  "original_config_preserved": true,
+  "frozen_entrypoint_matches_installed_release": true,
+  "validation": {
+    "focused_lifecycle_release_skill_tests": 20,
+    "focused_tick_preflight_tests": 18,
+    "installed_legacy_command_preflight": "ready",
+    "installed_legacy_command_get": "schema17_read_success",
+    "mcp_compatibility": "compatible",
+    "additional_tick_enqueued": false
+  }
+}

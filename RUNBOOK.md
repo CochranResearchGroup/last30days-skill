@@ -26225,3 +26225,33 @@ Current State:
   custody are next; no additional tick is authorized by this checkpoint.
 - Subagents: not_spawned. Graphiti discovery returned older release facts only;
   current runtime and source evidence were used for the command diagnosis.
+
+Authority Consulted:
+
+- Explicit operator request for one manual tick and build/install correction;
+  Plan 0065, current managed-service readback, and repo planning/validation policy.
+
+State Movement:
+
+- Plan 0065/C02 and P25 CLOSED at installed service 0.3.110/schema17 acceptance.
+- Source implementation is committed at `329fc89`; 38 focused tests pass.
+- The original installed Skill command now returns preflight `ready` and reads
+  the terminal schema17 receipt. Original config bytes and daily-default's
+  September 7 UTC boundary remain unchanged.
+- Durable evidence: `docs/dev/notes/0065-installed-service-command-receipt.json`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; one serialized implementation and live installation owner.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; compact Plan 0065 outcome queued as job
+  `d8a1cc01-0e1f-406e-b40b-dc3961924ed3` in `last30days_skill_main`.
+  Repository receipt and installed readback remain the completion authority.
+
+Next Bounded Action:
+
+- Integrate `fix/installed-service-command` into the recurring release branch.
+  Investigate the separate LinkedIn retry `contractvalidationerror` under P08;
+  do not infer another tick from this closeout.

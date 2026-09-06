@@ -52,9 +52,9 @@ lanes:
     plan_ref: refs/heads/fix/installed-service-command
     branch: fix/installed-service-command
     target: feat/recurring-reddit-home-feed
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: ecba6fc
+    plan_state: CLOSED
+    custody_state: INTEGRATION_READY
+    checkpoint: 329fc89
     remote_ref: refs/remotes/origin/fix/installed-service-command
     integration: fast-forward
     integration_receipt: null
