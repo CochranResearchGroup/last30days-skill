@@ -2388,16 +2388,13 @@ its failure does not invalidate the installed command compatibility proof.
 
 ## P26 | Full Tick Recovery
 
-State: OPEN
+State: CLOSED
 
 Objective: repair and complete one full tick within five attempts separated by
 at least five minutes.
 
-Current State:
-
-- Plan 0066 starts from installed 0.3.110 and the reproduced LinkedIn retry bug;
-- zero newly authorized attempts consumed; full four-source success remains.
-
-Active Plan:
-
-- `docs/dev/plans/0066-2026-09-06-full-tick-recovery.md`.
+Plan `docs/dev/plans/0066-2026-09-06-full-tick-recovery.md` closed on service
+0.3.113. Attempt 4 completed all four enabled lanes and promoted its snapshot,
+retaining 187 items (YouTube 3, X 80, LinkedIn 33, Reddit 71). All retry gaps
+exceeded 300 seconds; original config/caps preserved. Service and daily schedule
+are ready, with no abandoned tick work. Receipt: `docs/dev/notes/0066-full-tick-attempts.json`.

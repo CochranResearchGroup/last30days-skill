@@ -26291,3 +26291,38 @@ Next Bounded Action:
 
 - Repair budget admission and LinkedIn result deadline; validate and install,
   then reserve attempt 1 of 5.
+
+## Turn 414 | 2026-09-06
+
+Focus: Plan 0066/P26 full-tick recovery completed.
+
+Authority Consulted:
+
+- Operator five-cycle goal, minimum 300-second retry gaps; planning, validation, source testing, documentation, and closeout policies.
+
+Decisions And Changes:
+
+- Installed 0.3.113 with zero-wall retry admission guard, LinkedIn collection deadline, and correct retained-browser request handling. Rejoined the exact registered browser lease through the capability-authenticated broker command.
+- Preserve original config bytes, four enabled sources, pacing, caps and zero cost. No fifth attempt needed.
+
+Validation Evidence:
+
+- Focused runtime, worker, LinkedIn, Reddit, X, tick runner/runtime and release-version suites passed. Added regression assertions demonstrated failure before their fixes.
+- Attempt 4 tick-eb2d052248583ae432599ce037ae349c is complete, all lanes success, 187 retained items and snapshot promoted. Counts: YouTube 3, X 80, LinkedIn 33, Reddit 71. Durable attempt ledger records earlier degraded results and all gaps above 300 seconds.
+- Installed service ready/active; daily-default enabled/ready; zero active ticks or tick resource leases; original config unchanged.
+
+State Movement:
+
+- P26 OPEN -> CLOSED; Plan 0066/C05; outcome_progress, all acceptance criteria met.
+
+Subagent Status And Reconciliation:
+
+- not_spawned; serialized primary owner.
+
+Graphiti Write Status:
+
+- Failed: job d557aa24-24ec-4244-93a1-394c2c419e98 TimeoutError. No persisted episode claimed; source-backed repo receipts preserved.
+
+Next Bounded Action:
+
+- No more manual retries. Normal daily-default schedule remains enabled. Branch fix/full-tick-recovery retains the tested and installed repair history for later integration.

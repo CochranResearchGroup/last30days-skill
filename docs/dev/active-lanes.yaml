@@ -67,9 +67,9 @@ lanes:
     plan_ref: refs/heads/fix/full-tick-recovery
     branch: fix/full-tick-recovery
     target: fix/installed-service-command
-    plan_state: OPEN
+    plan_state: CLOSED
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 233c6ed
+    checkpoint: 9aa8f83
     remote_ref: refs/remotes/origin/fix/full-tick-recovery
     integration: fast-forward
     integration_receipt: null

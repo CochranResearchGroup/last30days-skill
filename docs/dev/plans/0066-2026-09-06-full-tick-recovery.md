@@ -1,6 +1,6 @@
 # Plan 0066 | Full Tick Recovery
 
-State: OPEN
+State: CLOSED
 Lane: P26
 Branch: fix/full-tick-recovery
 Target: fix/installed-service-command
@@ -16,10 +16,10 @@ before starting the next attempt. This is the operator's explicit goal.
 
 ## Current State
 
-Service 0.3.110 is installed. Prior diagnosis reproduced a zero-wall-budget
-LinkedIn retry contract error that aborts Reddit. LinkedIn lacks a collection
-deadline that leaves room for returning results; Reddit has historical
-browser-view acquisition failures. No attempt under this new authority has run.
+Service 0.3.113 is installed and ready. Attempt 4 completed all four enabled
+lanes and promoted its snapshot, retaining 187 items. Four of five authorized
+attempts were used; each retry gap exceeded 300 seconds. The original config
+is byte-identical to its pre-campaign backup. Full acceptance is met.
 
 ## Scope
 
@@ -99,3 +99,19 @@ Plan version: 1
 - Installed 0.3.113 readiness at 21:43:41Z, manifest f556daae3796c8be6b94f04e5a8dc3eb0603ae79a0a6e0c3ed5882e46fec979b. Installed actual-config Reddit acquisition/auth probe succeeded: authenticated true; login form, checkpoint and network block false. Exact probe tab released.
 - Attempt 4 earliest 21:45:59.547017Z. Original config digest and caps preserved; no complete tick yet.
 - Authority classification: `inherited_authority`.
+
+### Checkpoint P0066-C05 | 2026-09-06
+
+Plan version: 1
+
+- State: attempt 4 complete -> P26 CLOSED; progress: outcome_progress.
+- Tick tick-eb2d052248583ae432599ce037ae349c completed at 21:54:48Z; all four lanes success. Retained YouTube 3, X 80, LinkedIn 33, Reddit home-feed 71; total 187, reported cost zero.
+- Snapshot tick-snapshot-0193a2ffb2e35999f86a98b1439317fb promoted; lexical/semantic indexes succeeded. All stages terminal success or valid empty; no failed stage.
+- Service 0.3.113 ready and systemd active. Zero nonterminal ticks and zero unreleased tick resource leases. Daily-default remains enabled/ready with next boundary 2026-09-07T00:00:00Z; its previous scheduled degraded result is historical and was not rewritten by this manual run.
+- All four attempts bind unchanged config digest 8e3811d5e9b561cfd3f97b3d9897770ee4c623fe9e74a443bc01d86fca4d3449. Exact config bytes match pre-campaign backup. Retry gaps: 321.043353, 313.552340, 317.392909 seconds.
+- Source repair commits a1bb7b2, d857d83, 9aa8f83 validated and installed. Build/install continues to refresh the frozen skill service command inherited from Plan 0065.
+- Durable sanitized receipts: docs/dev/notes/0066-full-tick-attempts.json. Raw provider receipts stay private under the installed diagnostics/plan0066 directory.
+- Graphiti compact repair write job d557aa24-24ec-4244-93a1-394c2c419e98 failed with TimeoutError; no episode persistence claimed. Repo artifacts are authoritative.
+- Authority classification: `inherited_authority`. Goal complete; no fifth attempt.
+
+Closeout audit: Plan 0066 has no new findings. The repository-wide planning audit still reports the two pre-existing Plan 0064 issues (invalid authority classification and missing Definition Of Done). These are outside this recovery slice.

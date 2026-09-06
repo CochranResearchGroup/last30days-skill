@@ -177,6 +177,86 @@
       ],
       "finished_at": "2026-09-06T21:40:59.547006Z",
       "next_attempt_not_before": "2026-09-06T21:45:59.547017Z"
+    },
+    {
+      "ordinal": 4,
+      "tick_id": "tick-eb2d052248583ae432599ce037ae349c",
+      "interval_from": "2026-09-05T21:46:14Z",
+      "interval_to": "2026-09-06T21:46:14Z",
+      "config_digest": "sha256:8e3811d5e9b561cfd3f97b3d9897770ee4c623fe9e74a443bc01d86fca4d3449",
+      "service_version": "0.3.113",
+      "started_at": "2026-09-06T21:46:16.939915Z",
+      "state": "complete",
+      "inherited_managed_environment": true,
+      "process_pid": 12146,
+      "command_exit_code": 0,
+      "head_promoted": true,
+      "snapshot_id": "tick-snapshot-0193a2ffb2e35999f86a98b1439317fb",
+      "retained_versions": 187,
+      "budget_consumed": {
+        "attempts": 4,
+        "cost_cents": 0,
+        "items": 187,
+        "model_tokens": 0,
+        "network_requests": 91,
+        "wall_seconds": 506
+      },
+      "lanes": [
+        {
+          "service_id": "youtube",
+          "state": "success"
+        },
+        {
+          "service_id": "x",
+          "state": "success"
+        },
+        {
+          "service_id": "linkedin",
+          "state": "success"
+        },
+        {
+          "service_id": "reddit-home-feed",
+          "state": "success"
+        }
+      ],
+      "execution_attempts": [
+        {
+          "attempt": 1,
+          "completed_at": "2026-09-06T21:54:48.669601Z",
+          "created_at": "2026-09-06T21:46:17.138939Z",
+          "error_code": null,
+          "execution_attempt_id": "tick-attempt-d7077811c0d5187857df648ff178457b",
+          "lease_expires_at": null,
+          "lease_generation": 1,
+          "started_at": "2026-09-06T21:46:17.163052Z",
+          "state": "complete",
+          "tick_id": "tick-eb2d052248583ae432599ce037ae349c"
+        }
+      ],
+      "finished_at": "2026-09-06T21:54:48.900170Z",
+      "next_attempt_not_before": "2026-09-06T21:59:48.900179Z"
     }
-  ]
+  ],
+  "outcome": {
+    "state": "complete",
+    "successful_attempt": 4,
+    "tick_id": "tick-eb2d052248583ae432599ce037ae349c",
+    "retained_items": {
+      "youtube": 3,
+      "x": 80,
+      "linkedin": 33,
+      "reddit-home-feed": 71
+    },
+    "service_version": "0.3.113",
+    "config_unchanged": true,
+    "active_ticks": 0,
+    "open_resource_leases": 0,
+    "schedule_enabled": true,
+    "schedule_next_boundary": "2026-09-07T00:00:00Z",
+    "retry_gaps_seconds": [
+      321.043353,
+      313.55234,
+      317.392909
+    ]
+  }
 }
