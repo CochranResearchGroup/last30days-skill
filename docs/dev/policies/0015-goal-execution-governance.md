@@ -54,10 +54,10 @@
   Repo-local defaults may supply these values; an individual packet need not
   restate them, and missing packet metadata does not block a first safe attempt.
   Bounds prevent runaway work; they are not consumable approval tokens. When a
-  local bound is reached, first reassess, split the unit, change tactics, or
-  continue a different safe ready unit under the same authority. Escalate only
-  when no meaningful safe action remains or an exact action-specific gate is
-  reached.
+  local bound is reached, reassess, split the unit, change tactics, or continue
+  a different safe ready unit only within the remaining cumulative milestone
+  allowance. Escalate only when no meaningful safe action remains or an exact
+  action-specific gate is reached.
 - Keep one primary orchestrator responsible for authority, the critical path,
   work-unit selection, integration, progress classification, and the final
   completion claim.
@@ -193,3 +193,11 @@ max_hardening_checkpoints: 2
 checkpoint_interval: 1 slices
 checkpoint_record_fields: plan_version, state_transition, progress_classification, evidence, subagent_status, next_action_or_stop_reason, authority_classification
 authority_classification_values: inherited_authority | human_gate | scope_expansion
+Recommended companion modules:
+
+- `planning-discipline`
+- `parallel-plan-design`
+- `subagent-workflow-optimization`
+- `validation-and-handoff`
+- `commit-and-push-cadence`
+- `model-selection-and-calibration`
