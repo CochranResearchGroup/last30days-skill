@@ -1,6 +1,6 @@
 # Plan 0064 | Agent Browser Retry-Recourse Preservation
 
-State: OPEN
+State: CLOSED
 Roadmap: P08
 Plan version: 1
 Date: 2026-09-10
@@ -15,8 +15,7 @@ while configured independent provider fallback remains available.
 
 ## Current State
 
-The repair is integrated into the 0.3.113 source line and awaits its final
-validation and version-distinct installation. Agent Browser profile
+The repair is installed as service 0.3.114. Agent Browser profile
 recovery remains external and incomplete: request and job `r348638` stopped at
 `lease_authority_protocol_pending_effect_reconciliation`, and read-only
 diagnosis `r513089` proves no replacement browser was launched. No research
@@ -51,9 +50,12 @@ tick ran in this plan.
 
 ## Result
 
-All six criteria passed on the original implementation branch. They must run
-again on the installed-service source line before this plan closes. Ruff was
-unavailable in the environment and was not installed for this bounded repair.
+All six criteria pass on the 0.3.113 source line and installed service 0.3.114.
+The seven focused test modules, Python compilation, 21 release/install tests,
+artifact build, transactional install, ready status and SQLite quick check
+passed. Ruff was unavailable and was not installed for this bounded repair.
+The installed runtime manifest SHA-256 is
+`256656fb9f1584ed9f7c4ddf650c51a30de7749f58b639b2d371e10c3d6af7d6`.
 
 The Agent Browser boundary remains tracked in
 [incident note 0111](../notes/0111-2026-09-09-plan0063-agent-browser-tick-incident.md).

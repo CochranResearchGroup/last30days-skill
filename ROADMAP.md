@@ -1081,10 +1081,11 @@ pause controls.
 
 Current State:
 
-- Plan 0064 preserves bounded Agent Browser retry recourse and stops an affected
-  provider retry on `inspect_before_retry` or `blind_retry`; independent
+- Plan 0064 is CLOSED at installed service 0.3.114. It preserves bounded Agent
+  Browser retry recourse and stops an affected provider retry on
+  `inspect_before_retry` or `blind_retry`; independent
   configured fallback remains available. Agent Browser still owns profile
-  recovery, and no new tick ran. Plan authority:
+  recovery, and no new tick ran. Terminal authority:
   `docs/dev/plans/0064-2026-09-10-agent-browser-retry-recourse-preservation.md`.
 - Plan 0062 version 6/C09 is the current actionable P08 plan. Service 0.3.96 is
   installed ready with schema 17 and X's finite 40-scroll allowance. Saved recurring

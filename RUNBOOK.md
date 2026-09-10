@@ -26350,14 +26350,18 @@ Decisions And Changes:
 
 Validation Evidence:
 
-- focused tests, Python compilation and diff validation are required again on
-  this 0.3.113 source line before installation;
+- the seven focused test modules, Python compilation and 21 release/install
+  tests passed on the 0.3.113 source line;
+- service 0.3.114 installed ready with runtime manifest
+  `256656fb9f1584ed9f7c4ddf650c51a30de7749f58b639b2d371e10c3d6af7d6`;
+- `daily-default` remains enabled and ready for 2026-09-11 UTC, active ticks and
+  open resource leases are zero, and SQLite quick check is `ok`;
 - Agent Browser recovery `r348638` stopped uncertain and prohibited retry;
   diagnosis `r513089` proves no browser was launched.
 
 State Movement:
 
-- Plan 0064 is source-complete; P08 remains `OPEN` for ordinary recurrence.
+- Plan 0064 is `CLOSED`; P08 remains `OPEN` for ordinary recurrence.
 
 Subagent Status And Reconciliation:
 
@@ -26370,6 +26374,5 @@ Graphiti Write Status:
 
 Next Bounded Action:
 
-- validate and install a version-distinct service candidate without running a
-  tick. Agent Browser Plan 0161 must repair the profile before browser lanes can
-  collect again.
+- Agent Browser Plan 0161 must repair the profile before browser lanes can
+  collect again. No second tick is authorized by this closeout.
