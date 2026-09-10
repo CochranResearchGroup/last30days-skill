@@ -411,6 +411,8 @@ class RedditBrowserScraper:
             return self._result(items, None, None, workspace, page, diagnostics)
         except (RedditBrowserFailure, browser_runtime.AgentBrowserRuntimeFailure) as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
+            if isinstance(exc, browser_runtime.AgentBrowserRuntimeFailure):
+                diagnostics.agent_browser_guidance = dict(exc.guidance)
             return self._result(
                 [], exc.error_type, _safe_error_message(str(exc)), workspace, page, diagnostics
             )
@@ -517,6 +519,8 @@ class RedditBrowserScraper:
             return self._result(items, None, None, workspace, page, diagnostics)
         except (RedditBrowserFailure, browser_runtime.AgentBrowserRuntimeFailure) as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
+            if isinstance(exc, browser_runtime.AgentBrowserRuntimeFailure):
+                diagnostics.agent_browser_guidance = dict(exc.guidance)
             return self._result(
                 [], exc.error_type, _safe_error_message(str(exc)), workspace, page, diagnostics
             )
