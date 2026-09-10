@@ -1081,6 +1081,11 @@ pause controls.
 
 Current State:
 
+- Plan 0064 preserves bounded Agent Browser retry recourse and stops an affected
+  provider retry on `inspect_before_retry` or `blind_retry`; independent
+  configured fallback remains available. Agent Browser still owns profile
+  recovery, and no new tick ran. Plan authority:
+  `docs/dev/plans/0064-2026-09-10-agent-browser-retry-recourse-preservation.md`.
 - Plan 0062 version 6/C09 is the current actionable P08 plan. Service 0.3.96 is
   installed ready with schema 17 and X's finite 40-scroll allowance. Saved recurring
   revision `operator-20260901-x-linkedin-80-v1` requests 80 X and 80 LinkedIn

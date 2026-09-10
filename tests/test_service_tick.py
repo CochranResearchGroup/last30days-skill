@@ -1203,3 +1203,15 @@ def test_provider_fallback_is_sequential_and_retry_is_transient_only():
     assert not should_retry_provider(
         providers[0], failure_class="transient", retry_ordinal=1
     )
+    assert not should_retry_provider(
+        three_attempt_provider,
+        failure_class="transient",
+        retry_ordinal=0,
+        retry_disposition="inspect_before_retry",
+    )
+    assert not should_retry_provider(
+        three_attempt_provider,
+        failure_class="transient",
+        retry_ordinal=0,
+        hard_stops=("blind_retry",),
+    )

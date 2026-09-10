@@ -26326,3 +26326,50 @@ Graphiti Write Status:
 Next Bounded Action:
 
 - No more manual retries. Normal daily-default schedule remains enabled. Branch fix/full-tick-recovery retains the tested and installed repair history for later integration.
+
+
+## Turn 415 | 2026-09-10
+
+Focus: integrate Agent Browser terminal retry guidance into the installed-service
+source line and hand off the external profile blocker.
+
+Authority Consulted:
+
+- operator request; Plan 0064/P08; planning, validation, documentation,
+  integration and model-selection policy; incident note 0111; current Agent
+  Browser diagnosis and recovery result.
+
+Decisions And Changes:
+
+- carry bounded Agent Browser failure recourse through X, LinkedIn, Reddit,
+  provider results and persisted tick state;
+- stop only the affected provider retry on `inspect_before_retry` or
+  `blind_retry`, preserving configured independent fallback;
+- record the cross-repo boundary and exact recovery blocker in note 0111;
+- run no research tick.
+
+Validation Evidence:
+
+- focused tests, Python compilation and diff validation are required again on
+  this 0.3.113 source line before installation;
+- Agent Browser recovery `r348638` stopped uncertain and prohibited retry;
+  diagnosis `r513089` proves no browser was launched.
+
+State Movement:
+
+- Plan 0064 is source-complete; P08 remains `OPEN` for ordinary recurrence.
+
+Subagent Status And Reconciliation:
+
+- Terra worker supplied the bounded patch; primary combined it with newer Reddit
+  diagnostics and current Agent Browser nested-failure contracts.
+
+Graphiti Write Status:
+
+- `not_written`; repository plan, runbook and incident note are authoritative.
+
+Next Bounded Action:
+
+- validate and install a version-distinct service candidate without running a
+  tick. Agent Browser Plan 0161 must repair the profile before browser lanes can
+  collect again.

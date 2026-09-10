@@ -669,6 +669,16 @@ def test_provider_result_round_trip_preserves_failure_stage_and_signature(tmp_pa
         failure_stage="authentication",
         failure_reason_code="service_tab_target_unsettled",
         failure_signature=signature,
+        agent_browser_guidance={
+            "request_id": "mcp-service-request-ui_action-123",
+            "job_id": "mcp-service-request-ui_action-123",
+            "code": "service_job_timed_out",
+            "phase": "execute",
+            "effect_state": "uncertain",
+            "recommended_action": "inspect_job_and_refresh_plan",
+            "retry_disposition": "inspect_before_retry",
+            "hard_stops": ("blind_retry",),
+        },
     )
 
     payload = runner._serialize_provider_result(
@@ -679,6 +689,7 @@ def test_provider_result_round_trip_preserves_failure_stage_and_signature(tmp_pa
     assert restored.failure_stage == "authentication"
     assert restored.failure_reason_code == "service_tab_target_unsettled"
     assert restored.failure_signature == signature
+    assert restored.agent_browser_guidance == result.agent_browser_guidance
 
 
 def test_provider_result_round_trip_preserves_bounded_rejection_counts(tmp_path):

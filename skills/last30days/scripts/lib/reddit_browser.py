@@ -245,6 +245,7 @@ class RedditDiagnostics:
     stagnant_scrolls: int = 0
     unique_observation_count: int = 0
     stop_reason: str = ""
+    agent_browser_guidance: dict[str, object] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -262,6 +263,7 @@ class RedditDiagnostics:
             "stagnant_scrolls": self.stagnant_scrolls,
             "unique_observation_count": self.unique_observation_count,
             "stop_reason": self.stop_reason,
+            "agent_browser_guidance": self.agent_browser_guidance,
         }
 
 

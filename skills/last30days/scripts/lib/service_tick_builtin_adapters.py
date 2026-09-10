@@ -159,6 +159,32 @@ def _failure_signature(diagnostics: Mapping[str, object]) -> str | None:
     return value
 
 
+def _agent_browser_guidance(diagnostics: Mapping[str, object]) -> dict[str, object]:
+    raw = diagnostics.get("agent_browser_guidance")
+    if not isinstance(raw, Mapping):
+        return {}
+    aliases = {
+        "request_id": ("request_id", "requestId"),
+        "job_id": ("job_id", "jobId"),
+        "code": ("code",),
+        "phase": ("phase",),
+        "effect_state": ("effect_state", "effectState"),
+        "recommended_action": ("recommended_action", "recommendedAction"),
+        "retry_disposition": ("retry_disposition", "retryDisposition"),
+    }
+    guidance: dict[str, object] = {}
+    for field, names in aliases.items():
+        value = next((raw[name] for name in names if isinstance(raw.get(name), str)), None)
+        if value is not None and 0 < len(value) <= 128:
+            guidance[field] = value
+    hard_stops = raw.get("hard_stops", raw.get("hardStops", ()))
+    if isinstance(hard_stops, list):
+        guidance["hard_stops"] = [
+            value for value in hard_stops[:8] if isinstance(value, str) and 0 < len(value) <= 64
+        ]
+    return guidance
+
+
 class AcquisitionWorkerTickAdapter:
     def __init__(self, worker, *, adapter: str, adapter_version: str) -> None:
         self.worker = worker
@@ -274,6 +300,7 @@ class AcquisitionWorkerTickAdapter:
         failure_stage = _failure_stage(result.diagnostics)
         failure_reason_code = _failure_reason_code(result.diagnostics)
         failure_signature = _failure_signature(result.diagnostics)
+        agent_browser_guidance = _agent_browser_guidance(result.diagnostics)
         if items:
             return ProviderResult(
                 status=(
@@ -297,6 +324,7 @@ class AcquisitionWorkerTickAdapter:
                 outcome_counts=outcome_counts,
                 browser_operations=browser_operations,
                 rejection_counts=rejection_counts,
+                agent_browser_guidance=agent_browser_guidance,
             )
         if result.status is contracts.AcquisitionStatus.SUCCEEDED:
             return ProviderResult(
@@ -323,6 +351,7 @@ class AcquisitionWorkerTickAdapter:
             outcome_counts=outcome_counts,
             browser_operations=browser_operations,
             rejection_counts=rejection_counts,
+            agent_browser_guidance=agent_browser_guidance,
         )
 
 
