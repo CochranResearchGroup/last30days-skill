@@ -542,6 +542,7 @@ class LinkedInRunDiagnostics:
     feed_refresh_count: int = 0
     feed_reload_count: int = 0
     failure_reason_code: str = ""
+    agent_browser_guidance: dict[str, object] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -555,6 +556,7 @@ class LinkedInRunDiagnostics:
             "snapshot_renewal_count": self.snapshot_renewal_count,
             "feed_refresh_count": self.feed_refresh_count,
             "feed_reload_count": self.feed_reload_count,
+            "agent_browser_guidance": self.agent_browser_guidance,
         }
 
 
@@ -789,6 +791,14 @@ class LinkedInScraper:
                 [], exc.error_type, str(exc), workspace, page, diagnostics, from_date, to_date,
                 operator_url=exc.operator_url,
             )
+        except browser_runtime.AgentBrowserRuntimeFailure as exc:
+            diagnostics.duration_ms = _elapsed_ms(started)
+            diagnostics.failure_reason_code = exc.reason_code
+            diagnostics.agent_browser_guidance = dict(exc.guidance)
+            return self._result(
+                [], exc.error_type, str(exc), workspace, page, diagnostics, from_date, to_date,
+                operator_url=exc.operator_url,
+            )
 
     def feed(self, from_date: str, to_date: str) -> dict[str, Any]:
         """Collect structurally valid posts from the authenticated home feed."""
@@ -979,6 +989,14 @@ class LinkedInScraper:
             diagnostics.duration_ms = _elapsed_ms(started)
             diagnostics.failure_reason_code = exc.reason_code
             _log(f"Failed stage error_type={exc.error_type} message={exc}")
+            return self._result(
+                [], exc.error_type, str(exc), workspace, page, diagnostics, from_date, to_date,
+                operator_url=exc.operator_url,
+            )
+        except browser_runtime.AgentBrowserRuntimeFailure as exc:
+            diagnostics.duration_ms = _elapsed_ms(started)
+            diagnostics.failure_reason_code = exc.reason_code
+            diagnostics.agent_browser_guidance = dict(exc.guidance)
             return self._result(
                 [], exc.error_type, str(exc), workspace, page, diagnostics, from_date, to_date,
                 operator_url=exc.operator_url,

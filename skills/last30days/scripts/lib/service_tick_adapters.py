@@ -128,8 +128,10 @@ def should_retry_provider(
     *,
     failure_class: str,
     retry_ordinal: int,
+    retry_disposition: str | None = None,
+    hard_stops: tuple[str, ...] = (),
 ) -> bool:
-    """Retry transient failures while another configured attempt remains."""
+    """Retry transient failures only when upstream recovery permits it."""
     if (
         isinstance(retry_ordinal, bool)
         or not isinstance(retry_ordinal, int)
@@ -142,6 +144,8 @@ def should_retry_provider(
     attempts = limits.get("attempts")
     if isinstance(attempts, bool) or not isinstance(attempts, int):
         raise ValueError("provider attempts limit must be an integer")
+    if retry_disposition == "inspect_before_retry" or "blind_retry" in hard_stops:
+        return False
     return failure_class == "transient" and retry_ordinal + 1 < attempts
 
 

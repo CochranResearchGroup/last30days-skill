@@ -1081,6 +1081,12 @@ pause controls.
 
 Current State:
 
+- Plan 0064 is CLOSED. Last30days now preserves bounded Agent Browser failure
+  recourse through provider and persisted tick state and stops same-provider
+  retry on `inspect_before_retry` or `blind_retry`. Independent configured
+  fallback remains available. Agent Browser still owns profile recovery; no
+  new tick ran. Terminal authority:
+  `docs/dev/plans/0064-2026-09-10-agent-browser-retry-recourse-preservation.md`.
 - Plan 0063 version 2/C02 is CLOSED after exactly one additional
   schedule-disabled tick. Tick `tick-22c576498aff25c201ec855d75a947ae`
   terminalized `complete_degraded`: X accepted 80 and YouTube accepted three;

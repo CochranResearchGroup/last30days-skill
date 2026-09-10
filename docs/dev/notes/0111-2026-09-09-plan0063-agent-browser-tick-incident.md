@@ -148,3 +148,49 @@ tab creation, not before profile access. Reconcile the current
 through Plan 0161's preserving workflow. Treat supervisor presentation repair
 as a separate axis. Only after those current-state checks should a new
 Last30days canary be proposed under fresh authority.
+
+## Durable Consumer Handoff
+
+Agent Browser owns browser lifecycle, profile and session authority, service
+job execution, effect classification, and the decision that a failed operation
+must be inspected before it can safely be attempted again. Last30days owns
+provider-lane budgeting, retry control, and durable rendering of the safe
+incident correlation it receives. It must not turn an Agent Browser
+`inspect_before_retry` decision into another transient provider attempt.
+
+For every Agent Browser failure that includes `retryDisposition` set to
+`inspect_before_retry`, or `hardStops` containing `blind_retry`, Last30days
+must stop that provider lane without attempting its remaining configured
+retries. It must retain only the safe correlation fields: exact request ID,
+job ID, code, phase, effect state, recommended action, retry disposition, and
+hard stops. This retains the diagnostic boundary without persisting page
+content, authenticated URLs, capability values, or credentials.
+
+The five retained jobs in this incident are the current starting points:
+
+| Provider lane | Request and job ID | Code | Phase | Effect state | Recommended action |
+| --- | --- | --- | --- | --- | --- |
+| LinkedIn | `mcp-service-request-evaluate-38551e18-0cc8-4763-92d0-643dd3e6d4eb` | `service_state_lock_timeout` | `file_lock_wait` | uncertain | `inspect_job_and_refresh_plan` |
+| LinkedIn | `mcp-service-request-evaluate-4b2dc180-fddc-4b86-ba0b-6d780f2ed14d` | `service_state_lock_timeout` | `file_lock_wait` | uncertain | `inspect_job_and_refresh_plan` |
+| Reddit home feed | `mcp-service-request-ui_action-a5b9561a-7ce6-48e7-8b84-ddd202560810` | `service_job_timed_out` | `Page.enable` | uncertain | inspect before retry |
+| Reddit home feed | `mcp-service-request-ui_action-229f2444-3449-40c9-aa97-f29fd730b5db` | `service_job_timed_out` | `Page.enable` | uncertain | inspect before retry |
+| Reddit home feed | `mcp-service-request-ui_action-b842ba77-7d41-4aaf-980c-53f741e0de60` | `service_job_timed_out` | `Runtime.enable` | uncertain | inspect before retry |
+
+The bounded consumer repair preserves these fields through the isolated worker,
+tick provider result, and persisted retry receipt. It blocks only same-provider
+automatic retry. A separately configured next provider remains subject to its
+own fallback policy. Agent Browser repair, profile or runtime mutation, job
+inspection, and any new Last30days canary remain outside this repair and need
+their own current-state authority.
+
+### Interim profile recovery result, 2026-09-10
+
+Agent Browser protected recovery was attempted once for
+`last30days-facebook` with its exact active capability. Request and job `r348638`
+stopped at `lease_authority_protocol_pending_effect_reconciliation`, reported
+uncertain effect, required inspection and prohibited blind retry. Read-only
+diagnosis `r513089` immediately afterward still reported
+`runtime_browser_record_missing`, no browser record, PID, process or endpoint,
+and released Chrome locks. No browser was launched. Last30days can consume the
+retry-control repair in this change, but browser-backed lanes remain unavailable
+until Agent Browser reconciles that pending authority state through Plan 0161.

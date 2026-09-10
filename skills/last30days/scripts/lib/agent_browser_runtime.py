@@ -20,6 +20,7 @@ import stat
 import subprocess
 import threading
 import time
+from collections.abc import Mapping
 from typing import Any, Literal, Protocol
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
@@ -121,6 +122,7 @@ class AgentBrowserRuntimeFailure(RuntimeError):
         *,
         operator_url: str = "",
         reason_code: str = "",
+        guidance: Mapping[str, object] | None = None,
     ) -> None:
         if error_type not in ERROR_TYPES:
             error_type = "agent_browser_error"
@@ -135,6 +137,61 @@ class AgentBrowserRuntimeFailure(RuntimeError):
             self.reason_code = reason_code
         else:
             self.reason_code = ""
+        self.guidance = _safe_retry_guidance(guidance)
+
+
+def _safe_retry_guidance(value: Mapping[str, object] | None) -> dict[str, object]:
+    """Keep only bounded retry-control evidence from Agent Browser responses."""
+    if not isinstance(value, Mapping):
+        return {}
+    candidates: list[Mapping[str, object]] = [value]
+    for key in ("data", "failure", "terminalOutcome"):
+        nested = value.get(key)
+        if isinstance(nested, Mapping):
+            candidates.append(nested)
+    terminal = value.get("terminalOutcome")
+    if isinstance(terminal, Mapping):
+        for key in ("failure", "provenance"):
+            nested = terminal.get(key)
+            if isinstance(nested, Mapping):
+                candidates.append(nested)
+    aliases = {
+        "request_id": ("request_id", "requestId"),
+        "job_id": ("job_id", "jobId"),
+        "code": ("code",),
+        "phase": ("phase",),
+        "effect_state": ("effect_state", "effectState"),
+        "recommended_action": ("recommended_action", "recommendedAction"),
+        "retry_disposition": ("retry_disposition", "retryDisposition"),
+    }
+    guidance: dict[str, object] = {}
+    for field, names in aliases.items():
+        raw = next(
+            (
+                candidate[name]
+                for candidate in candidates
+                for name in names
+                if isinstance(candidate.get(name), str)
+            ),
+            None,
+        )
+        if raw is not None and 0 < len(raw) <= 128:
+            guidance[field] = raw
+    hard_stops = next(
+        (
+            candidate.get("hard_stops", candidate.get("hardStops"))
+            for candidate in candidates
+            if isinstance(
+                candidate.get("hard_stops", candidate.get("hardStops")), list
+            )
+        ),
+        (),
+    )
+    if isinstance(hard_stops, list):
+        guidance["hard_stops"] = [
+            item for item in hard_stops[:8] if isinstance(item, str) and 0 < len(item) <= 64
+        ]
+    return guidance
 
 
 class AgentBrowserClient(Protocol):
@@ -1562,6 +1619,7 @@ class CliAgentBrowserClient:
                 "agent_browser_error",
                 message,
                 reason_code=reason_match.group(1) if reason_match else "",
+                guidance=payload,
             )
         data = payload.get("data", payload)
         return data if isinstance(data, dict) else {"value": data}

@@ -150,6 +150,7 @@ class RedditDiagnostics:
     duration_ms: int = 0
     failure_stage: str = "workspace_acquisition"
     verified_no_results: bool = False
+    agent_browser_guidance: dict[str, object] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -158,6 +159,7 @@ class RedditDiagnostics:
             "accepted_count": self.accepted_count,
             "duration_ms": self.duration_ms,
             "verified_no_results": self.verified_no_results,
+            "agent_browser_guidance": self.agent_browser_guidance,
         }
 
 
@@ -270,6 +272,8 @@ class RedditBrowserScraper:
             return self._result(items, None, None, workspace, page, diagnostics)
         except (RedditBrowserFailure, browser_runtime.AgentBrowserRuntimeFailure) as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
+            if isinstance(exc, browser_runtime.AgentBrowserRuntimeFailure):
+                diagnostics.agent_browser_guidance = dict(exc.guidance)
             return self._result(
                 [], exc.error_type, _safe_error_message(str(exc)), workspace, page, diagnostics
             )

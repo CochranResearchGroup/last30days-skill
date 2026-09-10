@@ -24943,3 +24943,55 @@ Next Bounded Action:
   post-upgrade generation, address Plan 0142 lock contention, Plan 0161
   preserving lease repair, and the separate supervisor conflict, then propose
   any new Last30days canary under fresh authority.
+
+
+## Turn 395 | 2026-09-10
+
+Focus: preserve Agent Browser terminal retry guidance and hand off the external
+profile repair boundary.
+
+Authority Consulted:
+
+- operator request; Plan 0064/P08; planning, validation, documentation, branch,
+  commit, multi-agent and model-selection policy; incident note 0111; current
+  Agent Browser diagnosis and recovery result.
+
+Decisions And Changes:
+
+- carry bounded Agent Browser failure recourse through X, LinkedIn, Reddit,
+  provider results and persisted tick state;
+- stop only the affected provider's automatic retry on
+  `inspect_before_retry` or `blind_retry`, preserving configured fallback;
+- record the product boundary and five original correlations in note 0111;
+- keep Plan 0063 closed and close successor Plan 0064 after validation;
+- run no research tick and make no Agent Browser profile or runtime mutation
+  from Last30days.
+
+Validation Evidence:
+
+- primary ran seven focused pytest modules: 245 passed and two skipped;
+- primary ran Python compilation for all seven changed library modules and
+  `git diff --check`;
+- Ruff was unavailable and was not installed;
+- Agent Browser recovery `r348638` stopped uncertain and prohibited retry;
+  diagnosis `r513089` proves no browser was launched.
+
+State Movement:
+
+- Plan 0064: `CLOSED`; P08 remains `CLOSED`.
+
+Subagent Status And Reconciliation:
+
+- Terra worker implemented the bounded patch; primary reviewed it, added current
+  nested-failure coverage, and reran the focused validation.
+
+Graphiti Write Status:
+
+- `not_written`; the plan, runbook and incident note are the current durable
+  handoff.
+
+Next Bounded Action:
+
+- Agent Browser Plan 0161 must reconcile the pending authority state and perform
+  preserving repair. Do not run another tick until that profile is usable and
+  fresh tick authority exists.

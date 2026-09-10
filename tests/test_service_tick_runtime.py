@@ -297,6 +297,45 @@ def test_builtin_adapter_bridge_preserves_safe_failure_stage_and_signature():
     assert result.failure_signature == signature
 
 
+def test_builtin_adapter_bridge_preserves_agent_browser_inspection_guidance():
+    worker = FixtureWorker(
+        lambda request: _result(
+            request,
+            status="failed",
+            error="agent_browser_timeout",
+            retry="transient",
+            diagnostics={
+                "agent_browser_guidance": {
+                    "requestId": "mcp-service-request-ui_action-123",
+                    "jobId": "mcp-service-request-ui_action-123",
+                    "code": "service_job_timed_out",
+                    "phase": "execute",
+                    "effectState": "uncertain",
+                    "recommendedAction": "inspect_job_and_refresh_plan",
+                    "retryDisposition": "inspect_before_retry",
+                    "hardStops": ["blind_retry"],
+                    "url": "https://private.example/secret",
+                }
+            },
+        )
+    )
+
+    result = build_acquisition_adapter_registry(worker).require(
+        "reddit_agent_browser", source="reddit", capability="collect"
+    ).collect(_context("reddit_agent_browser", "reddit"))
+
+    assert result.agent_browser_guidance == {
+        "request_id": "mcp-service-request-ui_action-123",
+        "job_id": "mcp-service-request-ui_action-123",
+        "code": "service_job_timed_out",
+        "phase": "execute",
+        "effect_state": "uncertain",
+        "recommended_action": "inspect_job_and_refresh_plan",
+        "retry_disposition": "inspect_before_retry",
+        "hard_stops": ("blind_retry",),
+    }
+
+
 def test_builtin_adapter_bridge_preserves_bounded_rejection_counts():
     worker = FixtureWorker(
         lambda request: _result(
