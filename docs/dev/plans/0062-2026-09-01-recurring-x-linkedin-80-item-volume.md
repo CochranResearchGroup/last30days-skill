@@ -1,8 +1,8 @@
 # Plan 0062 | Recurring X And LinkedIn 80-Item Volume
 
-State: OPEN
+State: CLOSED
 Roadmap: P08
-Plan version: 6
+Plan version: 7
 Date: 2026-09-02
 Branch: `fix/tick-restart-recovery`
 Target: `main`
@@ -546,3 +546,38 @@ the published repository plus durable tick receipt are the current authority.
 Next action: observe the September 3 ordinary timer tick under the now-proven
 80+80 configuration; do not infer that manual acceptance alone closes the
 recurring-scheduler acceptance criterion.
+
+### Checkpoint P0062-C10 | 2026-09-09
+
+Plan version: 7
+
+State: `ordinary_tick_accepted_and_closed`
+
+Progress classification: `acceptance_completion`
+
+Authority classification:
+
+- `inherited_authority`; this checkpoint reconciles already-completed ordinary
+  timer evidence and performs no provider or browser effect.
+
+Evidence:
+
+- ordinary timer tick `tick-870c8451a9fac42792683a0fda4f7986`
+  for the September 7 boundary is terminal `complete` with successful X,
+  LinkedIn, Reddit home-feed, and YouTube lanes;
+- X accepted 80, LinkedIn accepted 28, Reddit accepted 31, and YouTube accepted
+  3 items; the tick promoted its head and recorded terminal provider receipts;
+- the September 9 live reconciliation found no active tick, provider, or
+  execution attempts, and SQLite `quick_check` returned `ok`;
+- the current saved schedule remains enabled and ready. Plan 0063 supersedes
+  further manual observation under a new explicit one-tick authority.
+
+Subagent status: `not_spawned`.
+
+Graphiti write status: `not_written`; the durable tick ledger and repository
+checkpoint remain authoritative.
+
+Remaining criteria or stop rule: all six Plan 0062 acceptance criteria are
+satisfied; do not reopen this plan for the September 9 manual attempt.
+
+Next action: execute only Plan 0063's bounded manual tick and incident capture.

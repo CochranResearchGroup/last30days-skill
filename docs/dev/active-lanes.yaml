@@ -1,17 +1,17 @@
 schema_version: 1
 lanes:
   - id: P08
-    objective: Make recurring ticks restart-safe and retry transient social failures
-    plan: docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md
+    objective: Run one bounded tick and capture any Agent Browser acquisition incident
+    plan: docs/dev/plans/0063-2026-09-09-bounded-tick-and-agent-browser-incident-capture.md
     plan_ref: refs/heads/fix/tick-restart-recovery
     branch: fix/tick-restart-recovery
     target: main
     plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 7b3b082587ff80d85c1c08e20b9e175119ee62f2
+    checkpoint: 5b25ea3
     remote_ref: refs/remotes/origin/fix/tick-restart-recovery
     integration: fast-forward
     integration_receipt: null
     dependencies: []
     overlaps: []
-    updated_at: 2026-09-02
+    updated_at: 2026-09-09

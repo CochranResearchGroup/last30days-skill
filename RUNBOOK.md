@@ -24793,3 +24793,72 @@ Next Bounded Action:
 - observe the September 3 `daily-default` tick, verify X/LinkedIn/YouTube
   terminal receipts and cleanup, and close P08 only if the recurring execution
   itself satisfies Plan 0062 acceptance criterion 6.
+
+## Turn 393 | 2026-09-09
+
+Focus: refresh Agent Browser authority and prepare one operator-authorized
+manual tick with durable incident capture.
+
+Authority Consulted:
+
+- operator request; Plan 0062/P08; current Last30days planning, documentation,
+  validation, Git, and closeout policy; Graphiti atlas and
+  `agent_browser_main`; installed Last30days and Agent Browser readbacks;
+  current Agent Browser Plan 0161, runbook, branch, and dirty-worktree custody.
+
+Decisions And Changes:
+
+- closed Plan 0062 at version 7/C10 after reconciling the September 7 ordinary
+  complete tick, which supplied terminal successful X, LinkedIn, Reddit, and
+  YouTube receipts and satisfied its last acceptance criterion;
+- opened Plan 0063 version 1/C01 for exactly one new schedule-disabled manual
+  tick and terminal Agent Browser incident capture;
+- retained the independent dirty Agent Browser source worktree and prohibited
+  consumer-side repair, installation, reconciliation, cleanup, or retry;
+- selected a distinct rolling 24-hour manual interval and required the direct
+  parent process to inherit only the managed Last30days Agent Browser
+  capability-file path and reviewed duplicate-profile-lane setting without
+  reading or exposing capability contents.
+
+Validation Evidence:
+
+- installed Last30days 0.3.113/schema 17 is ready; `daily-default` is enabled
+  for `2026-09-10T00:00:00Z`; SQLite `quick_check` is `ok`; active tick,
+  provider, and execution attempts are zero;
+- today's ordinary tick is `complete_degraded`: YouTube accepted three while
+  all three browser-backed lanes failed at `workspace_acquisition`;
+- Agent Browser workstation admission draining cleared after transaction
+  `upgrade-bb44488d-b625-4627-8e73-1c7973240c19` terminalized
+  `failed_preserved_old_generation`, and exact-profile access planning is
+  currently allowed;
+- Agent Browser doctor remains non-ready with zero runtime hosts; the
+  `runtime-host` supervisor is inactive/dead with `invalid_manifest`, and the
+  monitor remains in backoff. Current Agent Browser source work is newer than
+  Graphiti's useful facts and keeps graceful upgrade/runtime convergence open.
+
+State Movement:
+
+- Plan 0062 moves `OPEN -> CLOSED`; Plan 0063 becomes OPEN at version 1/C01;
+  P08 remains OPEN under Plan 0063.
+
+Progress Classification:
+
+- `planned_live_observation`; the requested effect has not yet been admitted.
+
+Authority Classification:
+
+- `explicit_authority`; exactly one new tick is authorized.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; current source/runtime receipts supersede the stale advisory
+  memory for this attempt.
+
+Next Bounded Action:
+
+- commit and publish the pre-effect authority checkpoint, preflight once,
+  enqueue exactly one tick, and reconcile its first terminal receipt.

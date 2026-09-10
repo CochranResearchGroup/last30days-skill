@@ -1081,7 +1081,19 @@ pause controls.
 
 Current State:
 
-- Plan 0062 version 6/C09 is the current actionable P08 plan. Service 0.3.96 is
+- Plan 0063 version 1/C01 is the current actionable P08 plan. The operator
+  authorized exactly one additional schedule-disabled tick with durable Agent
+  Browser incident capture. Installed Last30days 0.3.113/schema 17 and
+  `daily-default` are ready, but the September 9 ordinary tick produced only
+  three YouTube items while X, LinkedIn, and Reddit failed at browser workspace
+  acquisition. Agent Browser admission draining cleared after its candidate
+  upgrade preserved the old generation, while current doctor evidence still
+  reports zero runtime hosts and an inactive `runtime-host` supervisor with an
+  invalid manifest. The new plan permits one preflight and one enqueue, forbids
+  Agent Browser repair or retry, and requires terminal lane, job/trace, runtime,
+  schedule, database, and Git isolation evidence. Current authority:
+  `docs/dev/plans/0063-2026-09-09-bounded-tick-and-agent-browser-incident-capture.md`.
+- Plan 0062 version 7/C10 is CLOSED. Service 0.3.96 was
   installed ready with schema 17 and X's finite 40-scroll allowance. Saved recurring
   revision `operator-20260901-x-linkedin-80-v1` requests 80 X and 80 LinkedIn
   posts, retains three attempts for each, and provides 360 seconds per social
@@ -1116,9 +1128,11 @@ Current State:
   `tick-2fa1622b2c62fbd54a9880e456dbcbb9` then accepted 80 distinct canonical X
   posts and 80 distinct canonical LinkedIn posts with both lanes successful,
   clean lease/database cleanup, and unchanged September 3 schedule continuity.
-  Plan 0062 C09 now owns observation of that ordinary scheduled tick; manual
-  acceptance does not by itself close recurring-scheduler acceptance.
-  Current authority:
+  The September 7 ordinary tick subsequently completed with successful X,
+  LinkedIn, Reddit home-feed, and YouTube lanes, satisfying the remaining
+  recurring criterion. Plan 0062 version 7/C10 is CLOSED and superseded by
+  Plan 0063 for the separately authorized September 9 manual observation.
+  Historical authority:
   `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`.
 - Plan 0060 version 1/C06 is CLOSED after installing service 0.3.91 with finite
   active-tick drain semantics and genuine three-attempt transient retry budgets
