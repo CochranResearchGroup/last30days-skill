@@ -24862,3 +24862,84 @@ Next Bounded Action:
 
 - commit and publish the pre-effect authority checkpoint, preflight once,
   enqueue exactly one tick, and reconcile its first terminal receipt.
+
+## Turn 394 | 2026-09-09
+
+Focus: execute the one authorized manual tick and preserve Agent Browser
+failure evidence without repair or retry.
+
+Authority Consulted:
+
+- operator request; Plan 0063/P08; current planning, documentation, active-lane,
+  validation, and closeout policy; installed Last30days tick/schedule/database
+  readback; Agent Browser job/trace, doctor, supervisor, runtime, and current
+  source-plan/runbook evidence.
+
+Decisions And Changes:
+
+- ran exactly one preflight and exactly one enqueue for rolling interval
+  `2026-09-09T03:08:29Z` through `2026-09-10T03:08:29Z` under distinct manual
+  schedule `manual-p0063-20260910-030829`;
+- stopped at tick `tick-22c576498aff25c201ec855d75a947ae`'s first terminal
+  `complete_degraded` receipt and did not run a second tick;
+- preserved the complete bounded incident in note 0111, including five exact
+  Agent Browser failed job IDs and their typed inspect-before-retry recourse;
+- made no Agent Browser repair, restart, install, reconcile, cleanup, profile,
+  lease, route, supervisor, or presentation change and did not touch its dirty
+  independent source worktree.
+
+Validation Evidence:
+
+- X succeeded on its first attempt with 80 accepted from 254 observed;
+  YouTube succeeded with three accepted from eight observed;
+- LinkedIn acquired and navigated three tabs but terminalized with zero items;
+  two retained Agent Browser evaluate jobs report
+  `service_state_lock_timeout` during `file_lock_wait` after 2162 ms and
+  1001 ms;
+- Reddit created three tabs, then its three `ui_action` jobs timed out twice at
+  `Page.enable` and once at `Runtime.enable`; Agent Browser labels all five
+  retained failures `inspect_before_retry` and forbids blind retry;
+- the tick consumed eight attempts, 83 items, 60 requests, and 374 wall
+  seconds, then promoted an 83-source snapshot with truthful X/YouTube success
+  and LinkedIn/Reddit failure completeness;
+- post-terminal Agent Browser evidence is newer than the preflight snapshot:
+  generation `0.28.0-5928ff06d8d0-927b55137ad0` now has one steady-current
+  runtime and healthy reconciliation, while doctor remains red on a supervisor
+  `port_conflict` and `last30days-facebook` owner-binding/session-authority
+  warnings;
+- `daily-default` remains enabled/ready for `2026-09-11T00:00:00Z`; its
+  September 10 timer tick is separately recorded and was not changed by the
+  manual schedule; active ticks and open resource leases are zero and SQLite
+  `quick_check` is `ok`.
+
+State Movement:
+
+- Plan 0063 advances to version 2/C02 and `CLOSED`; P08 returns to `CLOSED`
+  because the separately authorized observation is fully reconciled. The
+  browser defects remain an Agent Browser follow-up, not an open-ended
+  Last30days retry lane.
+
+Progress Classification:
+
+- `complete_degraded_observation`; the bounded objective and evidence contract
+  are complete even though two provider lanes failed.
+
+Authority Classification:
+
+- `explicit_authority_consumed`; one preflight, one tick, no retry.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; current repository and installed runtime/job receipts are the
+  authoritative closeout evidence.
+
+Next Bounded Action:
+
+- Agent Browser should start from note 0111's five job IDs and current
+  post-upgrade generation, address Plan 0142 lock contention, Plan 0161
+  preserving lease repair, and the separate supervisor conflict, then propose
+  any new Last30days canary under fresh authority.

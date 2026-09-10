@@ -6,9 +6,9 @@ lanes:
     plan_ref: refs/heads/fix/tick-restart-recovery
     branch: fix/tick-restart-recovery
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 5b25ea3
+    plan_state: CLOSED
+    custody_state: INTEGRATION_READY
+    checkpoint: 1f3813a
     remote_ref: refs/remotes/origin/fix/tick-restart-recovery
     integration: fast-forward
     integration_receipt: null

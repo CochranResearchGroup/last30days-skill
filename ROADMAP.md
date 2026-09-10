@@ -1072,7 +1072,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: OPEN
+State: CLOSED
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1081,17 +1081,18 @@ pause controls.
 
 Current State:
 
-- Plan 0063 version 1/C01 is the current actionable P08 plan. The operator
-  authorized exactly one additional schedule-disabled tick with durable Agent
-  Browser incident capture. Installed Last30days 0.3.113/schema 17 and
-  `daily-default` are ready, but the September 9 ordinary tick produced only
-  three YouTube items while X, LinkedIn, and Reddit failed at browser workspace
-  acquisition. Agent Browser admission draining cleared after its candidate
-  upgrade preserved the old generation, while current doctor evidence still
-  reports zero runtime hosts and an inactive `runtime-host` supervisor with an
-  invalid manifest. The new plan permits one preflight and one enqueue, forbids
-  Agent Browser repair or retry, and requires terminal lane, job/trace, runtime,
-  schedule, database, and Git isolation evidence. Current authority:
+- Plan 0063 version 2/C02 is CLOSED after exactly one additional
+  schedule-disabled tick. Tick `tick-22c576498aff25c201ec855d75a947ae`
+  terminalized `complete_degraded`: X accepted 80 and YouTube accepted three;
+  LinkedIn exhausted three attempts around Agent Browser evaluation/file-lock
+  failures, and Reddit exhausted three attempts after tab creation on
+  `Page.enable` / `Runtime.enable` timeouts. Note 0111 preserves the five exact
+  failed Agent Browser job IDs, inspect-before-retry recourse, current runtime
+  generation, doctor/profile-lease warnings, and scheduler/database
+  postconditions. The manual schedule did not modify `daily-default`; active
+  work and open leases returned to zero. The bounded observation is complete,
+  while repair belongs to Agent Browser's current Plans 0142, 0161, and P116
+  before any separately authorized canary. Terminal authority:
   `docs/dev/plans/0063-2026-09-09-bounded-tick-and-agent-browser-incident-capture.md`.
 - Plan 0062 version 7/C10 is CLOSED. Service 0.3.96 was
   installed ready with schema 17 and X's finite 40-scroll allowance. Saved recurring
