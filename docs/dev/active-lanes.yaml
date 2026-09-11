@@ -8,7 +8,7 @@ lanes:
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATION_READY
-    checkpoint: 9bbb360
+    checkpoint: f02e4aa
     remote_ref: refs/remotes/origin/fix/tick-restart-recovery
     integration: fast-forward
     integration_receipt: null
