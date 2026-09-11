@@ -25105,3 +25105,63 @@ Next Bounded Action:
 
 - publish this pre-effect checkpoint, run one fresh no-state preflight, and
   enqueue its exact request once only if ready.
+
+## Turn 398 | 2026-09-11
+
+Focus: close the single post-reinstall tick with exact source and Agent Browser
+evidence.
+
+Authority Consulted:
+
+- operator request; Plan 0066/P08; current validation, documentation,
+  active-lane, and closeout policy; terminal Last30days receipt/database state;
+  Agent Browser job, trace, access-plan, profile-diagnosis, and fresh process
+  evidence.
+
+Decisions And Changes:
+
+- preflighted and enqueued exactly one request as authorized;
+- accepted the terminal `complete_degraded` receipt without retry;
+- recorded LinkedIn 52, Reddit 38, YouTube 3, and X 0 for 93 promoted sources;
+- preserved X's exact file-lock-timeout job, uncertain-effect recourse, and
+  successful tab release in note 0113;
+- recorded five Agent Browser job timestamp inversions as an observability
+  defect without asserting an unproven cause;
+- made no Agent Browser profile, freshness, runtime, repair, or retry mutation.
+
+Validation Evidence:
+
+- tick `tick-3fe4ae25a3fb7f6dce63e2881fedc504` is terminal
+  `complete_degraded`, head promoted, with four terminal provider attempts and
+  zero open resource leases;
+- the sole X failure is Agent Browser job
+  `mcp-service-request-evaluate-a45fc2da-b4ec-4d07-bac8-d43dd9528e04`,
+  `service_state_lock_timeout`, `effect_uncertain`, and `blind_retry` hard stop;
+- postflight profile diagnosis is ready with one current healthy retained
+  browser; fresh X access planning recommends shared-tab reuse;
+- `daily-default` remains enabled/ready for the September 12 UTC boundary;
+  SQLite `quick_check` is `ok`; installed service remains 0.3.114/schema 17.
+
+State Movement:
+
+- Plan 0066: `CLOSED`; P08 remains `CLOSED`.
+
+Progress Classification:
+
+- `material_runtime_improvement_with_one_retained_failure`; two browser-backed
+  sources now succeed, while X retains a precise Agent Browser lock defect.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; Plan 0066, note 0113, and this runbook entry are the current
+  source-backed durable record.
+
+Next Bounded Action:
+
+- Agent Browser should diagnose the exact X service-state file-lock timeout and
+  the five inverted job timestamps. Do not retry X from Last30days without new
+  authority and a refreshed access plan.

@@ -1,6 +1,6 @@
 # Plan 0066 | Post-Reinstall Bounded Tick
 
-State: OPEN
+State: CLOSED
 Roadmap: P08
 Plan version: 1
 Date: 2026-09-11
@@ -81,3 +81,55 @@ delegation.
 
 Graphiti discovery status: `healthy_but_stale`; current repository and runtime
 receipts are authoritative.
+
+### Checkpoint P0066-C01 | 2026-09-11
+
+Plan version: 1
+
+State: `terminal_complete_degraded`
+
+Progress classification: `material_runtime_improvement_with_one_retained_failure`
+
+Evidence:
+
+- the single preflight passed for interval `2026-09-10T10:25:42Z` through
+  `2026-09-11T10:25:42Z`, schedule
+  `manual-p0066-20260911-102542`, config digest
+  `sha256:8e3811d5e9b561cfd3f97b3d9897770ee4c623fe9e74a443bc01d86fca4d3449`,
+  and prospective tick `tick-3fe4ae25a3fb7f6dce63e2881fedc504`;
+- exactly that tick was enqueued once and terminalized `complete_degraded` at
+  `2026-09-11T10:38:08.446345Z`, with head promotion and snapshot
+  `tick-snapshot-63666743e2c95ded9a705bc7f7d22612`;
+- YouTube accepted 3 of 8 observed items, LinkedIn accepted 52 of 1,472, and
+  Reddit accepted 38 of 673. The promoted snapshot contains 93 source versions
+  and 16 media artifacts;
+- X failed its sole attempt during extraction after 12 successful bounded eval
+  operations. Agent Browser job
+  `mcp-service-request-evaluate-a45fc2da-b4ec-4d07-bac8-d43dd9528e04`
+  failed `service_state_lock_timeout: file lock; waited_ms=1002` while another
+  X evaluate job overlapped its recorded interval;
+- the X result preserves `effect_uncertain`, `inspect_before_retry`,
+  `inspect_job_and_refresh_plan`, and hard stop `blind_retry`; Last30days made
+  no second X attempt and the exact tab-handle release succeeded;
+- Agent Browser recorded 154 Last30days jobs in the interval: 5 successful and
+  1 failed for X, 60 successful for LinkedIn, 87 successful for Reddit, and one
+  unattributed successful job. Five successful evaluate jobs have inverted
+  `startedAt`/`completedAt` ordering; note 0113 preserves their IDs;
+- all Last30days resource leases are released, no tick remains active, the
+  recurring schedule is still enabled/ready for `2026-09-12T00:00:00Z`, and
+  SQLite `quick_check` is `ok`;
+- postflight Agent Browser diagnosis is `ready`; the retained shared browser is
+  current and healthy and a fresh X access plan recommends reuse. No profile
+  or runtime mutation was performed.
+
+Acceptance reconciliation:
+
+1. satisfied;
+2. satisfied;
+3. satisfied;
+4. satisfied;
+5. satisfied.
+
+Remaining gate: X remains unhealthy on a reproducible Agent Browser
+service-state lock timeout. This plan authorizes no retry or Agent Browser
+repair. Plan 0066 and the bounded observation are closed.

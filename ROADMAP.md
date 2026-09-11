@@ -1081,11 +1081,14 @@ pause controls.
 
 Current State:
 
-- Plan 0066 version 1 is OPEN for exactly one post-reinstall bounded tick.
-  Current Agent Browser admission is no longer draining; X and LinkedIn have
-  ready launch plans, while Reddit has an executable public-search request plus
-  advisory authentication-freshness guidance. The plan authorizes no profile
-  seeding or freshness mutation. Terminal authority:
+- Plan 0066 version 1/C01 is CLOSED after exactly one post-reinstall tick.
+  Tick `tick-3fe4ae25a3fb7f6dce63e2881fedc504` terminalized
+  `complete_degraded`: LinkedIn accepted 52, Reddit 38, and YouTube 3; X stopped
+  after one `service_state_lock_timeout` with typed inspect-before-retry
+  recourse and no blind retry. The promoted snapshot contains 93 sources.
+  Note 0113 preserves the X job correlation and five inverted Agent Browser job
+  timestamps. All leases are released and the recurring schedule is unchanged.
+  Terminal authority:
   `docs/dev/plans/0066-2026-09-11-post-reinstall-bounded-tick.md`.
 - Plan 0065 version 1/C01 is CLOSED at a no-effect external gate. Last30days
   0.3.114 and the repaired `last30days-facebook` profile are ready, and one
