@@ -1081,6 +1081,16 @@ pause controls.
 
 Current State:
 
+- Plan 0065 version 1/C01 is CLOSED at a no-effect external gate. Last30days
+  0.3.114 and the repaired `last30days-facebook` profile are ready, and one
+  prospective manual tick preflight passed, but all X, LinkedIn, and Reddit
+  access plans returned `runtime_admission_draining`. Agent Browser transaction
+  `upgrade-bc9935eb-9425-426b-a8bf-fe8e2d00fc14` is
+  `operator_recovery_required` with two runtime hosts, two generations, and one
+  outstanding owner obligation. No tick was enqueued. Note 0112 preserves the
+  exact handoff; another bounded tick requires a cleared admission gate and
+  fresh authority. Terminal authority:
+  `docs/dev/plans/0065-2026-09-10-post-repair-bounded-tick-gate.md`.
 - Plan 0064 is CLOSED. Last30days now preserves bounded Agent Browser failure
   recourse through provider and persisted tick state and stops same-provider
   retry on `inspect_before_retry` or `blind_retry`. Independent configured

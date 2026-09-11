@@ -1,17 +1,17 @@
 schema_version: 1
 lanes:
   - id: P08
-    objective: Run one bounded tick and capture any Agent Browser acquisition incident
-    plan: docs/dev/plans/0063-2026-09-09-bounded-tick-and-agent-browser-incident-capture.md
+    objective: Gate one post-repair bounded tick on current Agent Browser admission
+    plan: docs/dev/plans/0065-2026-09-10-post-repair-bounded-tick-gate.md
     plan_ref: refs/heads/fix/tick-restart-recovery
     branch: fix/tick-restart-recovery
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATION_READY
-    checkpoint: 642f558
+    checkpoint: dfe69f9
     remote_ref: refs/remotes/origin/fix/tick-restart-recovery
     integration: fast-forward
     integration_receipt: null
     dependencies: []
     overlaps: []
-    updated_at: 2026-09-09
+    updated_at: 2026-09-10

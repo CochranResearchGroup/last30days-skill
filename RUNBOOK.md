@@ -24995,3 +24995,76 @@ Next Bounded Action:
 - Agent Browser Plan 0161 must reconcile the pending authority state and perform
   preserving repair. Do not run another tick until that profile is usable and
   fresh tick authority exists.
+
+## Turn 396 | 2026-09-10
+
+Focus: attempt one post-repair bounded tick and stop before admission on a
+newer Agent Browser runtime transaction gate.
+
+Authority Consulted:
+
+- operator request; Plan 0065/P08; current planning, Graphiti, documentation,
+  validation, active-lane, and closeout policy; installed Last30days service,
+  schedule, preflight, and database evidence; current Agent Browser profile,
+  access-plan, transaction, doctor, runtime, and source-plan evidence.
+
+Decisions And Changes:
+
+- confirmed Last30days 0.3.114 and commit `dfe69f9` are installed and ready;
+- confirmed the repaired `last30days-facebook` profile is available without a
+  holder, browser, tab, conflict, wait, or profile-scoped doctor warning;
+- ran one no-state Last30days preflight for prospective tick
+  `tick-a3b3b349d40c412ae32aa8e2a81d613a` and received ready;
+- stopped before enqueue because all three browser-backed access plans failed
+  `runtime_admission_draining`; no tick or browser effect was created;
+- preserved the current transaction and runtime handoff in note 0112 without
+  running Agent Browser recover, rollback, finalize, reconcile, cleanup, or
+  installation.
+
+Validation Evidence:
+
+- the exact Agent Browser transaction is revision 12,
+  `operator_recovery_required`, stopped on
+  `candidate_dashboard_presentation_unproven`; its cooperative runtime handoff
+  is committed but source-finalization and one owner obligation remain;
+- doctor reports two runtime hosts, two executable generations, non-steady
+  multiplicity, runtime-monitor backoff, and active incident
+  `generation_gc_blocked_by_active_admission_drain`; the supervisor is ready;
+- the independent September 11 timer tick corroborates the gate: X and
+  LinkedIn report `runtime_admission_draining`, Reddit stops after one browser
+  failure under the new recourse contract, and YouTube accepts three;
+- the prospective manual tick is absent from `service_ticks`; active ticks and
+  open tick resource leases are zero and SQLite `quick_check` is `ok`;
+- `daily-default` remains enabled/ready for the September 12 UTC boundary.
+
+State Movement:
+
+- Plan 0065 closes at version 1/C01 `blocked_before_tick_admission`; P08 remains
+  CLOSED because this separately authorized attempt made no tick and the
+  recurring product criterion was already accepted.
+
+Progress Classification:
+
+- `no_effect_external_gate`; repair evidence improved, but the requested tick
+  was not admitted.
+
+Authority Classification:
+
+- `explicit_authority`; one prospective tick was allowed, but Agent Browser
+  transaction recovery was outside this consumer attempt.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; discovery was healthy but stale for these repairs, so current
+  repo and runtime receipts remain authoritative.
+
+Next Bounded Action:
+
+- Agent Browser's owning lane should resolve transaction
+  `upgrade-bc9935eb-9425-426b-a8bf-fe8e2d00fc14`, prove one-runtime steady
+  state and ready social access plans, then Last30days can consider another
+  bounded tick only under fresh authority.
