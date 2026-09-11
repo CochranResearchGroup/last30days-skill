@@ -25068,3 +25068,40 @@ Next Bounded Action:
   `upgrade-bc9935eb-9425-426b-a8bf-fe8e2d00fc14`, prove one-runtime steady
   state and ready social access plans, then Last30days can consider another
   bounded tick only under fresh authority.
+
+## Turn 397 | 2026-09-11
+
+Focus: admit one post-reinstall bounded tick only after fresh consumer and
+Agent Browser gates.
+
+Authority Consulted:
+
+- operator request; Plan 0066/P08; current planning, Graphiti, validation,
+  documentation, active-lane, and closeout policy; installed Last30days and
+  current Agent Browser access-plan/doctor evidence.
+
+Decisions And Changes:
+
+- opened Plan 0066 for one preflight and at most one enqueue;
+- confirmed Agent Browser admission is no longer draining, the installed
+  executable matches the live runtime host, and X/LinkedIn launch plans are
+  executable without identity conflict;
+- treated Reddit's missing freshness record as advisory because the enabled
+  adapter uses public search navigation; no profile seeding, freshness update,
+  Agent Browser repair, or runtime mutation is authorized;
+- preserved the exact one-attempt and no-second-retry stop rules before any
+  Last30days effect.
+
+State Movement:
+
+- Plan 0066: `OPEN`; P08 remains `CLOSED` as the recurring product lane while
+  this separately authorized observation runs.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next Bounded Action:
+
+- publish this pre-effect checkpoint, run one fresh no-state preflight, and
+  enqueue its exact request once only if ready.

@@ -1,17 +1,17 @@
 schema_version: 1
 lanes:
   - id: P08
-    objective: Gate one post-repair bounded tick on current Agent Browser admission
-    plan: docs/dev/plans/0065-2026-09-10-post-repair-bounded-tick-gate.md
+    objective: Run one post-reinstall bounded tick under current Agent Browser admission
+    plan: docs/dev/plans/0066-2026-09-11-post-reinstall-bounded-tick.md
     plan_ref: refs/heads/fix/tick-restart-recovery
     branch: fix/tick-restart-recovery
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATION_READY
-    checkpoint: 7781cdf
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 246bb8a
     remote_ref: refs/remotes/origin/fix/tick-restart-recovery
     integration: fast-forward
     integration_receipt: null
     dependencies: []
     overlaps: []
-    updated_at: 2026-09-10
+    updated_at: 2026-09-11
