@@ -217,6 +217,100 @@ def test_ordinary_query_uses_promoted_tick_head_with_filter_first_provenance(
     }
 
 
+def test_newer_refresh_index_wins_over_older_tick_snapshot(tmp_path):
+    """A completed ad-hoc refresh must be visible before the next tick."""
+
+    evidence = contracts.EvidenceItem.from_dict(
+        {
+            "schema_version": 1,
+            "evidence_id": "ev-x-refresh",
+            "document_id": "doc-x-refresh",
+            "source": "x",
+            "source_native_id": "status-001",
+            "url": "https://x.com/example/status/1",
+            "title": "AI agents update",
+            "snippet": "A newly refreshed X post about AI agents.",
+            "author": "example",
+            "published_at": "2026-09-12T12:00:00Z",
+            "fetched_at": "2026-09-12T12:05:00Z",
+            "acquisition_id": "acq-x-refresh",
+            "content_hash": "sha256:x-refresh",
+            "scores": {
+                "lexical": 1.0,
+                "semantic": 0.0,
+                "graph": 0.0,
+                "recency": 1.0,
+                "fused": 1.0,
+            },
+        }
+    )
+
+    class NewerRefreshRetriever(FakeRetriever):
+        def current_metadata(self):
+            return {
+                "index_version": "index-x-refresh",
+                "activated_at": "2026-09-12T12:06:00Z",
+            }
+
+        def search_snapshot(self, *args, **kwargs):
+            snapshot = super().search_snapshot(*args, **kwargs)
+            return SimpleNamespace(
+                index_version="index-x-refresh",
+                evidence=snapshot.evidence,
+            )
+
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    retriever = NewerRefreshRetriever([evidence])
+    tick_snapshots = FakeTickSnapshots()
+    app = CacheQueryApplication(
+        db_path,
+        retriever,
+        tick_snapshots=tick_snapshots,
+        clock=lambda: datetime(2026, 9, 12, 12, 7, tzinfo=timezone.utc),
+    )
+
+    response = app.query(
+        _request(
+            query="AI agents",
+            freshness_policy="cache_only",
+            filters={"sources": ["x"]},
+        )
+    )
+
+    assert response.index_version == "index-x-refresh"
+    assert response.tick_snapshot is None
+    assert [item.evidence_id for item in response.evidence] == ["ev-x-refresh"]
+    assert tick_snapshots.calls == []
+
+
+def test_newer_tick_snapshot_remains_query_authority(tmp_path):
+    class OlderRefreshRetriever(FakeRetriever):
+        def current_metadata(self):
+            return {
+                "index_version": "index-before-tick",
+                "activated_at": "2026-08-06T11:59:59Z",
+            }
+
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    retriever = OlderRefreshRetriever([])
+    tick_snapshots = FakeTickSnapshots()
+    app = CacheQueryApplication(
+        db_path,
+        retriever,
+        tick_snapshots=tick_snapshots,
+        clock=lambda: datetime(2026, 8, 6, 12, 5, tzinfo=timezone.utc),
+    )
+
+    response = app.query(_request(query="ChatGPT Voice"))
+
+    assert response.index_version == "tick-snapshot-001"
+    assert response.tick_snapshot["snapshot_id"] == "tick-snapshot-001"
+    assert retriever.calls == []
+    assert len(tick_snapshots.calls) == 1
+
+
 def test_warm_cache_query_returns_bounded_evidence_without_refresh(tmp_path):
     db_path = tmp_path / "research.db"
     ServiceStore(db_path).initialize()

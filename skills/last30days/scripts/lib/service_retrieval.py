@@ -227,6 +227,25 @@ class HybridRetriever:
         finally:
             conn.close()
 
+    def current_metadata(self) -> dict[str, object]:
+        """Return exact metadata for the active immutable retrieval head."""
+
+        conn = self._connect()
+        try:
+            row = conn.execute(
+                """SELECT index_version, activated_at
+                   FROM service_index_head
+                   WHERE singleton_id = 1"""
+            ).fetchone()
+            if row is None:
+                raise KeyError("retrieval index head is not initialized")
+            return {
+                "index_version": str(row["index_version"]),
+                "activated_at": str(row["activated_at"]),
+            }
+        finally:
+            conn.close()
+
     def initialize(self) -> None:
         """Create or migrate the authoritative database."""
 

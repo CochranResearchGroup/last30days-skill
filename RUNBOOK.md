@@ -26376,3 +26376,49 @@ Next Bounded Action:
 
 - Agent Browser Plan 0161 must repair the profile before browser lanes can
   collect again. No second tick is authorized by this closeout.
+
+## Turn 416 | 2026-09-12
+
+Focus: Plan 0069 refresh/query head arbitration source qualification.
+
+Authority Consulted:
+
+- operator diagnosis, repair, and test request; Plan 0068 X publication
+  receipt; planning, CodeGraph, testing, integration, validation, and closeout
+  policies.
+
+Decisions And Changes:
+
+- preserved the older dirty retry-recovery branch and moved implementation to
+  an isolated branch based on the installed 0.3.114 source lineage;
+- compare retrieval-head activation with tick-head promotion before ordinary
+  query selection;
+- prepared independent service candidate 0.3.115 with an exact refreshed
+  runtime manifest;
+- withheld production installation and any additional X acquisition.
+
+Validation Evidence:
+
+- regression failed before the fix and passes afterward;
+- 59 affected tests and 23 release/package/install tests pass;
+- the comprehensive provider-free suite passes with only the documented
+  pre-existing Plan 0064 authority audit excluded;
+- live read-only head timestamps prove the retrieval head is newer while
+  installed 0.3.114 still returns the older tick head.
+
+State Movement:
+
+- Plan 0069 `OPEN -> CLOSED`; source candidate qualified, installation pending.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; serialized primary owner.
+
+Graphiti Write Status:
+
+- pending final validated cross-repo closeout.
+
+Next Bounded Action:
+
+- integrate and install 0.3.115, then run one cache-only X readback without a
+  provider refresh.

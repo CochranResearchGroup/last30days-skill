@@ -55,6 +55,8 @@ class JobResumeConflictError(RuntimeError):
 
 
 class RetrievalBackend(Protocol):
+    def current_metadata(self) -> dict[str, object]: ...
+
     def search_snapshot(
         self,
         query: str,
@@ -1091,13 +1093,25 @@ class CacheQueryApplication:
             1024, max(128, request.max_chars // max(1, request.top_k))
         )
         tick_snapshot = None
+        retrieval_head = None
         evidence = None
         index_version = None
+        retrieval_metadata = getattr(self.retriever, "current_metadata", None)
+        if callable(retrieval_metadata):
+            try:
+                retrieval_head = retrieval_metadata()
+            except KeyError:
+                retrieval_head = None
         if self.tick_snapshots is not None:
             try:
                 tick_snapshot = self.tick_snapshots.current_metadata(sources=sources)
             except KeyError:
                 tick_snapshot = None
+            if tick_snapshot is not None and retrieval_head is not None:
+                if self._parse_timestamp(str(retrieval_head["activated_at"])) > (
+                    self._parse_timestamp(str(tick_snapshot["promoted_at"]))
+                ):
+                    tick_snapshot = None
             if tick_snapshot is not None:
                 results = self.tick_snapshots.query(
                     request.query,
