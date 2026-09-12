@@ -2365,10 +2365,11 @@ Next Action:
 
 ## P27 | Refresh Query Head Integration And Install
 
-State: OPEN
+State: CLOSED
 
-Current State: current `origin/main` is merged into the isolated branch and 66
-affected tests pass; fork integration and installed acceptance remain.
+Current State: pull request 1 is integrated at `905b9dbc`; exact service
+0.3.115 and its frozen Skill copy are installed, and the authorized-profile
+cache-only X query returns evidence from the current query head.
 
 Objective: integrate service 0.3.115, install the exact fork candidate, and
 prove the existing X publication cache-query-visible without provider refresh.
@@ -2376,6 +2377,12 @@ prove the existing X publication cache-query-visible without provider refresh.
 Plan `docs/dev/plans/0070-2026-09-12-refresh-query-head-integration-install.md`
 owns the bounded merge, validation, fork integration, install, Skill sync, and
 cache-only acceptance sequence. The dirty P08 worktree remains untouched.
+
+Completion receipt: service artifact SHA-256
+`82d4d4cb2838cf7f8a24665afd7067127c7489032d6034aab6170ad73a54ac8a`,
+accepted runtime manifest
+`1565301a364eba2d1a5a3f20169687bdc3f7c078a826a1fda0d723fbae614554`,
+and query index `index-e51e8df608f7374bd1d89b9b`.
 
 ## Goal-Compatible Plan Conversion
 

@@ -6,12 +6,12 @@ lanes:
     plan_ref: refs/heads/fix/refresh-query-head-arbitration
     branch: fix/refresh-query-head-arbitration
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 857ace5bc7e8e809dcea7ba8696f4176a973ed65
-    remote_ref: null
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 905b9dbc6773e26c0141b4a38355c471c59b84b6
+    remote_ref: refs/remotes/origin/main
     integration: merge
-    integration_receipt: null
+    integration_receipt: 905b9dbc6773e26c0141b4a38355c471c59b84b6
     dependencies: []
     overlaps: [docs/dev/active-lanes.yaml]
     reconciled_overlaps: [docs/dev/active-lanes.yaml]
