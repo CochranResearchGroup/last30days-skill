@@ -26416,7 +26416,11 @@ Subagent Status And Reconciliation:
 
 Graphiti Write Status:
 
-- pending final validated cross-repo closeout.
+- `graphiti_write_pending`: job
+  `63385d44-b14b-460d-8804-1627b63927e9` failed once with a retryable
+  `TimeoutError` before creating an episode. Preserve the failed job and retry
+  the intended Plan 0069 source-qualification summary at the next closeout;
+  do not enqueue a duplicate episode.
 
 Next Bounded Action:
 
