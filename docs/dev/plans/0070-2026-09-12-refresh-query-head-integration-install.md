@@ -1,6 +1,6 @@
 # Plan 0070 | Refresh Query Head Integration And Install
 
-State: OPEN
+State: CLOSED
 Lane: P27
 Branch: fix/refresh-query-head-arbitration
 Target: main
@@ -46,8 +46,10 @@ another provider refresh.
 3. The fork target contains the repair through its normal integration path.
 4. Installed service reports 0.3.115 with an exact accepted manifest and the
    user-scoped Skill copy matches the integrated source.
-5. One cache-only `AI agents` X query selects the newer retrieval index and
-   returns its matching published evidence; no refresh occurs.
+5. One cache-only `AI agents` X query under the authorized X profile selects
+   the newer retrieval index and returns its matching published evidence; no
+   refresh occurs. The public-only default profile continues to exclude the
+   private X partition.
 
 ## Execution Packet
 
@@ -78,3 +80,30 @@ cleanly and 66 affected tests pass on reconciled commit `a168115e`.
 
 Acceptance state: criteria 1-2 pass. Fork integration, Skill/service install,
 and cache-only acceptance remain.
+
+## Checkpoint P0070-C02 | 2026-09-12
+
+State transition: `integration_ready -> closed`.
+
+Progress classification: `verified_outcome`; pull request 1 merged to
+`origin/main` as `905b9dbc6773e26c0141b4a38355c471c59b84b6`. The exact
+integrated tree produced service artifact
+`last30days-service-0.3.115.tar.gz` with SHA-256
+`82d4d4cb2838cf7f8a24665afd7067127c7489032d6034aab6170ad73a54ac8a`.
+
+Installed acceptance: the guarded upgrade accepted service 0.3.115, schema 17,
+runtime manifest
+`1565301a364eba2d1a5a3f20169687bdc3f7c078a826a1fda0d723fbae614554`,
+and contract SHA-256
+`bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025`.
+The frozen user-scoped Skill copy was synchronized from the integrated tree.
+
+Query acceptance: cache-only `AI agents` against source `x` and authorized
+profile `last30days-facebook` returned eight evidence items from
+`index-e51e8df608f7374bd1d89b9b` with no refresh job. A default-profile probe
+returned no evidence because all 94 X entries are correctly held in the
+`profile:last30days-facebook` partition; this is the intended access boundary,
+not a retrieval failure.
+
+Acceptance state: criteria 1-5 pass. No provider acquisition or browser/profile
+mutation occurred.

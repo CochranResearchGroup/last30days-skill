@@ -26433,6 +26433,19 @@ Focus: Plan 0070
 `docs/dev/plans/0070-2026-09-12-refresh-query-head-integration-install.md`
 integration and installed acceptance.
 
+Authority Consulted:
+
+- Plan 0070 version 1, P27, the active-lane registry, repository integration,
+  validation, closeout, and documentation policies, and the operator's “Ok go”
+  execution authority.
+
+Decisions And Changes:
+
+- integrated the query-head repair through the public fork, installed the exact
+  integrated service artifact, synchronized the frozen Skill copy, and
+  adjudicated the default-profile empty result against the access-partition
+  contract.
+
 State Movement:
 
 - `ready -> active`; operator authorized the recommended integration and
@@ -26456,3 +26469,37 @@ Next Bounded Action:
 
 - complete planning/lane validation, publish and integrate the branch, install
   exact 0.3.115, synchronize the Skill copy, and run one cache-only X query.
+
+Final Receipt:
+
+- pull request 1 merged as `905b9dbc`; 66 affected tests passed before
+  integration;
+- exact artifact SHA-256
+  `82d4d4cb2838cf7f8a24665afd7067127c7489032d6034aab6170ad73a54ac8a`
+  installed as service 0.3.115 with accepted runtime manifest
+  `1565301a364eba2d1a5a3f20169687bdc3f7c078a826a1fda0d723fbae614554`;
+- frozen Skill copy synchronized; cache-only `AI agents` under authorized
+  profile `last30days-facebook` returned eight X evidence items from
+  `index-e51e8df608f7374bd1d89b9b` and created no refresh job;
+- the default-profile empty result was adjudicated as the intended private
+  partition boundary, not a retrieval defect.
+
+State Movement:
+
+- `active -> closed`; all Plan 0070 criteria pass and no provider acquisition
+  or browser/profile mutation occurred.
+
+Subagent Status And Reconciliation:
+
+- no subagent was spawned; primary-agent evidence is authoritative for this
+  turn.
+
+Graphiti Write Status:
+
+- pending a bounded closeout retry; repository and runtime receipts remain the
+  authoritative evidence if advisory memory publication is unavailable.
+
+Next Bounded Action:
+
+- none for P27; retain the accepted runtime and preserve the separate dirty P08
+  worktree for its owning lane.
