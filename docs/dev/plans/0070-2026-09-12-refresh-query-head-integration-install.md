@@ -68,3 +68,13 @@ delegation.
 
 All five acceptance criteria have current commit, runtime, and query receipts,
 or the plan records the exact terminal blocker without widening effects.
+
+## Checkpoint P0070-C01 | 2026-09-12
+
+State transition: `active -> integration_ready`.
+
+Progress classification: `blocker_reduction`; current `origin/main` merged
+cleanly and 66 affected tests pass on reconciled commit `a168115e`.
+
+Acceptance state: criteria 1-2 pass. Fork integration, Skill/service install,
+and cache-only acceptance remain.
