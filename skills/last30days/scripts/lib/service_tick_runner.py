@@ -178,6 +178,7 @@ class ProviderResult:
     outcome_counts: dict[str, int] | None = None
     browser_operations: tuple[dict[str, object], ...] = ()
     rejection_counts: dict[str, int] | None = None
+    agent_browser_guidance: dict[str, object] | None = None
 
     def __post_init__(self) -> None:
         if self.status not in {"success", "partial", "empty", "failure"}:
@@ -283,6 +284,25 @@ class ProviderResult:
                 raise ValueError("provider rejection count is invalid")
             normalized_rejections[reason] = count
         object.__setattr__(self, "rejection_counts", normalized_rejections)
+        guidance = self.agent_browser_guidance or {}
+        allowed = {
+            "request_id", "job_id", "code", "phase", "effect_state",
+            "recommended_action", "retry_disposition", "hard_stops",
+        }
+        if set(guidance) - allowed:
+            raise ValueError("agent-browser guidance has unknown fields")
+        normalized_guidance: dict[str, object] = {}
+        for field in allowed - {"hard_stops"}:
+            value = guidance.get(field)
+            if value is not None:
+                normalized_guidance[field] = _text(value, f"agent-browser {field}", 128)
+        hard_stops = guidance.get("hard_stops", ())
+        if not isinstance(hard_stops, (list, tuple)) or len(hard_stops) > 8:
+            raise ValueError("agent-browser hard stops are invalid")
+        normalized_guidance["hard_stops"] = tuple(
+            _text(value, "agent-browser hard stop", 64) for value in hard_stops
+        )
+        object.__setattr__(self, "agent_browser_guidance", normalized_guidance)
 
     @classmethod
     def success(
@@ -440,6 +460,7 @@ class TickRunner:
             "outcome_counts": result.outcome_counts,
             "browser_operations": list(result.browser_operations),
             "rejection_counts": result.rejection_counts,
+            "agent_browser_guidance": result.agent_browser_guidance,
         }
 
     def _restore_provider_result(self, payload: Mapping[str, object]) -> ProviderResult:
@@ -539,6 +560,7 @@ class TickRunner:
             outcome_counts=dict(payload.get("outcome_counts", {})),
             browser_operations=tuple(payload.get("browser_operations", ())),
             rejection_counts=dict(payload.get("rejection_counts", {})),
+            agent_browser_guidance=dict(payload.get("agent_browser_guidance", {})),
         )
 
     def _event(
@@ -750,6 +772,8 @@ class TickRunner:
         }
         if admitted["attempts"] < 1:
             raise TickBudgetAdmissionExhausted("attempt budget is exhausted")
+        if admitted["wall_seconds"] < 1:
+            raise TickBudgetAdmissionExhausted("wall-time budget is exhausted")
         return admitted
 
     def _acquire_resources(
@@ -1793,6 +1817,10 @@ class TickRunner:
                     },
                     failure_class=str(result.failure_class),
                     retry_ordinal=retry_ordinal,
+                    retry_disposition=str(
+                        result.agent_browser_guidance.get("retry_disposition") or ""
+                    ),
+                    hard_stops=tuple(result.agent_browser_guidance.get("hard_stops", ())),
                 ):
                     retry_ordinal += 1
                     continue

@@ -284,9 +284,38 @@ def _stop(env: dict[str, str]) -> None:
     )
 
 
+def _stale_skill(env: dict[str, str]) -> Path:
+    skill = Path(env["HOME"]) / ".agents/skills/last30days"
+    (skill / "scripts/lib").mkdir(parents=True)
+    (skill / "SKILL.md").write_text("---\nname: last30days\n---\n")
+    (skill / "scripts/lib/__init__.py").write_text(
+        "raise RuntimeError('stale bundled libraries were imported')\n"
+    )
+    entrypoint = skill / "scripts/service.py"
+    entrypoint.write_text("raise SystemExit('stale service command')\n")
+    return entrypoint
+
+
+def _assert_skill_command(env: dict[str, str], entrypoint: Path) -> None:
+    result = subprocess.run(
+        [sys.executable, str(entrypoint), "tick", "schedule", "status"],
+        env=env, capture_output=True, text=True, timeout=10,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "enabled" in json.loads(result.stdout)
+
+
 def test_clean_install_uses_independent_current_release_and_receipt(tmp_path):
     env = _environment(tmp_path)
     artifact = _artifact(tmp_path, CURRENT_VERSION)
+    entrypoint = _stale_skill(env)
+    checkout = Path(env["HOME"]) / "checkout"
+    (checkout / "scripts").mkdir(parents=True)
+    (checkout / "scripts/service.py").write_text("# developer-owned entrypoint\n")
+    (checkout / "SKILL.md").write_text("---\nname: last30days\n---\n")
+    linked_skill = Path(env["HOME"]) / ".claude/skills/last30days"
+    linked_skill.parent.mkdir(parents=True)
+    linked_skill.symlink_to(checkout, target_is_directory=True)
     try:
         result = _run(env, "install", artifact=artifact)
         receipt = json.loads(result.stdout)
@@ -333,6 +362,9 @@ def test_clean_install_uses_independent_current_release_and_receipt(tmp_path):
             .fetchone()[0]
             == 17
         )
+        _assert_skill_command(env, entrypoint)
+        assert (checkout / "scripts/service.py").read_text() == "# developer-owned entrypoint\n"
+        assert "stale bundled libraries" in (entrypoint.parent / "lib/__init__.py").read_text()
         diagnosed = json.loads(_run(env, "diagnose").stdout)
         assert diagnosed["service_version"] == CURRENT_VERSION
         _run(env, "stop")
@@ -347,6 +379,7 @@ def test_clean_install_uses_independent_current_release_and_receipt(tmp_path):
 
 def test_upgrade_manual_rollback_and_failed_upgrade_restore_state(tmp_path):
     env = _environment(tmp_path)
+    entrypoint = _stale_skill(env)
     first = _artifact(tmp_path, "0.2.7")
     second = _artifact(tmp_path, "0.2.8")
     failed = _artifact(tmp_path, "0.2.9")
@@ -363,11 +396,13 @@ def test_upgrade_manual_rollback_and_failed_upgrade_restore_state(tmp_path):
         connection.close()
 
         upgraded = json.loads(_run(env, "upgrade", artifact=second).stdout)
+        _assert_skill_command(env, entrypoint)
         assert upgraded["service_version"] == "0.2.8"
         assert (service_root / "current").readlink() == Path("releases/0.2.8")
         assert (service_root / "previous").readlink() == Path("releases/0.2.7")
 
         rolled_back = json.loads(_run(env, "rollback").stdout)
+        _assert_skill_command(env, entrypoint)
         assert rolled_back["service_version"] == "0.2.7"
         assert (service_root / "current").readlink() == Path("releases/0.2.7")
         assert (service_root / "previous").readlink() == Path("releases/0.2.8")
@@ -788,3 +823,36 @@ def test_installer_rejects_unverified_or_underspecified_operations(tmp_path):
     assert "unable to read service artifact" in invalid_artifact.stderr
     assert bad_retention.returncode != 0
     assert "--retain must be at least 2" in bad_retention.stderr
+
+
+@pytest.mark.parametrize("host", [".agents", ".claude", ".codex"])
+def test_fresh_skill_copy_routes_before_importing_bundled_libraries(tmp_path, host):
+    home = tmp_path / "home"
+    entrypoint = home / host / "skills/last30days/scripts/service.py"
+    entrypoint.parent.mkdir(parents=True)
+    shutil.copy2(ROOT / "skills/last30days/scripts/service.py", entrypoint)
+    # There are deliberately no bundled libraries. A freshly copied Skill must
+    # use the selected managed command, preserving argument boundaries/status.
+    data = tmp_path / "data with spaces"
+    launcher = data / "last30days/service/last30days-service"
+    launcher.parent.mkdir(parents=True)
+    launcher.write_text(
+        f"#!{sys.executable}\nimport json,sys\n"
+        "print(json.dumps(sys.argv[1:]))\nraise SystemExit(7)\n"
+    )
+    launcher.chmod(0o755)
+    env = {**os.environ, "HOME": str(home), "XDG_DATA_HOME": str(data)}
+    result = subprocess.run(
+        [sys.executable, str(entrypoint), "tick", "get", "identifier with spaces"],
+        env=env, capture_output=True, text=True, timeout=10,
+    )
+    assert result.returncode == 7
+    assert json.loads(result.stdout) == ["tick", "get", "identifier with spaces"]
+    launcher.unlink()
+    missing = subprocess.run(
+        [sys.executable, str(entrypoint), "tick", "get", "missing"],
+        env=env, capture_output=True, text=True, timeout=10,
+    )
+    assert missing.returncode != 0
+    assert "managed service launcher is unavailable" in missing.stderr
+    assert not (data / "last30days/research.db").exists()

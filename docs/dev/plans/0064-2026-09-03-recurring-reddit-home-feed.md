@@ -6,7 +6,7 @@ Branch: feat/recurring-reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P24
-Plan version: 2
+Plan version: 3
 Date: 2026-09-03
 
 ## Objective
@@ -39,6 +39,15 @@ as X and LinkedIn.
 - the guarded activation affected exactly one schedule row, preserved the next
   boundary and prior tick identity, admitted no tick/provider attempt, and
   retained zero active work or leases with SQLite integrity `ok`;
+- operator-authorized manual tick
+  `tick-98e14987fc5e9a7b7b63f8b8ea1abb95` proved the activated Reddit lane with
+  80 accepted items, 80 distinct native IDs, and 80 distinct non-empty post
+  URLs on its first attempt; LinkedIn also accepted 80 unique linked posts and
+  YouTube accepted three items, while X failed before page observation on all
+  three attempts with `existing_session_profile_identity_unproven`;
+- that manual tick terminalized `complete_degraded`, promoted its snapshot,
+  completed lexical and semantic indexing, released all work and leases, and
+  left `daily-default` ready for its unchanged September 4 UTC boundary;
 - private pre-change config and database backups are retained under the
   user-scoped last30days backup directory.
 
@@ -213,3 +222,65 @@ Next action:
 
 - observe the first ordinary four-lane tick after the September 4 UTC boundary
   and close or checkpoint P24 from its terminal Reddit receipt.
+
+### Checkpoint P0064-C03 | 2026-09-03
+
+Plan version: 3
+
+State: `manual_four_lane_proof_complete_degraded`
+
+Progress classification: `acceptance_progress`
+
+Authority classification:
+
+- `explicit_authority_consumed`; the operator requested one full manual tick
+  after recurring activation, and no second tick or browser intervention was
+  performed.
+
+Evidence:
+
+- no-state preflight predicted exactly four lanes under saved revision
+  `operator-20260903-reddit-home-feed-80-v1`: YouTube 3/1/120, X 80/3/360,
+  LinkedIn 80/3/360, and Reddit 80/3/360, with aggregate limits
+  243/10/500/3,360;
+- the direct installed 0.3.109 invocation explicitly inherited the managed
+  environment, including the private profile capability path and reviewed
+  fresh-lane setting, then admitted exactly
+  `tick-98e14987fc5e9a7b7b63f8b8ea1abb95` for the rolling 30-day interval ending
+  `2026-09-03T17:24:33Z`;
+- Reddit succeeded on retry ordinal 0 with 80 accepted from 482 observed; all
+  80 items had distinct native IDs and distinct non-empty post URLs;
+- LinkedIn succeeded on retry ordinal 0 with 80 accepted from 1,639 observed;
+  all 80 items had distinct native IDs and distinct non-empty post URLs;
+- YouTube succeeded with three accepted from eight observed;
+- X exhausted retry ordinals 0 through 2 before page observation. Every
+  attempt failed transiently at `workspace_acquisition` with safe code
+  `agent_browser_error`, reason
+  `existing_session_profile_identity_unproven`, and signature
+  `sha256:a489884adfd2a0f6f6d1247c8a3d924910ca0fcb65fe8c9d8f68d11ce58563ef`;
+- the tick terminalized `complete_degraded` at
+  `2026-09-03T17:30:30.227271Z`, promoted snapshot
+  `tick-snapshot-de31ac40d29223cfb7d09ca7a37b341a`, and completed lexical,
+  semantic, and head-promotion stages;
+- aggregate consumption was six attempts, 58 network requests, 338 budgeted
+  wall seconds, and 163 accepted items; no cost or model tokens were consumed;
+- post-run SQLite `quick_check=ok`; active ticks, execution attempts, provider
+  attempts, tick leases, and collection profile leases are all zero;
+  `daily-default` remains enabled and ready for `2026-09-04T00:00:00Z` with
+  its prior ordinary tick identity unchanged.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti write status:
+
+- `not_written`; the operator did not request a memory update, and current
+  repository plus live runtime receipts remain authoritative.
+
+Next action:
+
+- retain P24 open for the first ordinary scheduled four-lane receipt. The
+  manual proof accepts the recurring Reddit lane but does not substitute for
+  that separate timer-path observation; P08 continues to own the X acquisition
+  failure.

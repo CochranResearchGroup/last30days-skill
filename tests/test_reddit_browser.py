@@ -1209,6 +1209,32 @@ def test_agent_browser_timeout_is_terminal_and_preserves_the_failure_stage():
     assert result["diagnostics"]["failure_stage"] == "workspace_acquisition"
 
 
+def test_agent_browser_timeout_preserves_retry_guidance():
+    class TimeoutClient(FakeClient):
+        def acquire_workspace(self, _request):
+            from lib.agent_browser_runtime import AgentBrowserRuntimeFailure
+
+            raise AgentBrowserRuntimeFailure(
+                "agent_browser_timeout",
+                "agent-browser operation timed out",
+                guidance={
+                    "jobId": "r123",
+                    "retryDisposition": "inspect_before_retry",
+                    "hardStops": ["blind_retry"],
+                },
+            )
+
+    result = _scraper(TimeoutClient()).search(
+        "openclaw", "2026-07-01", "2026-07-31"
+    )
+
+    assert result["diagnostics"]["agent_browser_guidance"] == {
+        "job_id": "r123",
+        "retry_disposition": "inspect_before_retry",
+        "hard_stops": ["blind_retry"],
+    }
+
+
 @pytest.mark.parametrize(
     "error_type",
     ["agent_browser_error", "agent_browser_timeout", "profile_mismatch", "route_stale"],

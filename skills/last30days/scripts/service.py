@@ -14,6 +14,38 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
+
+def _delegate_installed_skill() -> None:
+    """Installed Skill copies are clients of the selected managed release."""
+    entrypoint = Path(__file__).resolve()
+    home = Path.home().resolve()
+    installed_paths = {
+        home / host / "skills/last30days/scripts/service.py"
+        for host in (".agents", ".claude", ".codex")
+    }
+    # Resolving the entrypoint preserves local execution for development
+    # checkouts linked into a host's Skill directory.
+    if entrypoint not in installed_paths:
+        return
+    data_home = Path(os.environ.get("XDG_DATA_HOME", home / ".local/share"))
+    launcher = data_home / "last30days/service/last30days-service"
+    if (
+        not launcher.is_absolute()
+        or not launcher.is_file()
+        or not os.access(launcher, os.X_OK)
+    ):
+        raise SystemExit(
+            "last30days managed service launcher is unavailable; "
+            "install the service with service/scripts/install.sh"
+        )
+    os.execv(str(launcher), [str(launcher), *sys.argv[1:]])
+
+
+# Dispatch before importing frozen runtime libraries or opening any database.
+if __name__ == "__main__":
+    _delegate_installed_skill()
+
+
 from lib import service_contracts as contracts
 from lib.service_app import initialize_application
 from lib.service_client import ServiceClient, ServiceClientError

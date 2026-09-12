@@ -26114,3 +26114,345 @@ Next Bounded Action:
 
 - observe the September 4 UTC ordinary tick and reconcile Reddit's terminal
   provider receipt without a manual enqueue.
+
+## Turn 411 | 2026-09-03
+
+Focus: execute and reconcile one operator-authorized full manual four-lane
+tick after recurring Reddit activation.
+
+Authority Consulted:
+
+- operator instruction to try one full manual tick; Plan 0064/C02; installed
+  service 0.3.109; current tick, Agent Browser service, planning, validation,
+  and closeout contracts.
+
+Decisions And Changes:
+
+- used the installed preflight for a rolling 30-day interval ending
+  `2026-09-03T17:24:33Z`, which predicted exactly YouTube, X, LinkedIn, and
+  Reddit under the saved recurring configuration;
+- explicitly inherited the managed unit environment so the direct invocation
+  received the private Agent Browser capability path and reviewed fresh-lane
+  setting that earlier manual executions had omitted;
+- enqueued exactly one tick,
+  `tick-98e14987fc5e9a7b7b63f8b8ea1abb95`, and performed no second tick, browser
+  intervention, schedule mutation, or config mutation.
+
+Validation Evidence:
+
+- the tick terminalized `complete_degraded` at
+  `2026-09-03T17:30:30.227271Z` with 163 accepted items total;
+- Reddit accepted 80 of 482 observed on its first attempt; all 80 items had
+  distinct native IDs and distinct non-empty URLs;
+- LinkedIn accepted 80 of 1,639 observed on its first attempt; all 80 items
+  had distinct native IDs and distinct non-empty URLs;
+- YouTube accepted three of eight observed;
+- X consumed its three retries in three seconds, observed no page items, and
+  failed each `tab_new` at `workspace_acquisition` with
+  `existing_session_profile_identity_unproven` and signature
+  `sha256:a489884adfd2a0f6f6d1247c8a3d924910ca0fcb65fe8c9d8f68d11ce58563ef`;
+- snapshot `tick-snapshot-de31ac40d29223cfb7d09ca7a37b341a` was promoted;
+  lexical index, semantic index, and head promotion succeeded;
+- aggregate use was six attempts, 58 network requests, 338 budgeted wall
+  seconds, 163 items, zero cost, and zero model tokens;
+- post-run SQLite `quick_check=ok`; all five active-work/lease counters are
+  zero; `daily-default` remains ready for the unchanged
+  `2026-09-04T00:00:00Z` boundary.
+
+State Movement:
+
+- Plan 0064/P24 advances to version 3/C03
+  `manual_four_lane_proof_complete_degraded` and remains open for the first
+  ordinary scheduled tick; P08 retains ownership of the X acquisition defect.
+
+Progress Classification:
+
+- `acceptance_progress`; recurring Reddit now has a current full-tick proof,
+  while the independent timer path and X lane remain unresolved.
+
+Authority Classification:
+
+- `explicit_authority_consumed`; the one requested manual tick completed and
+  no retry tick is inferred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; the operator did not request a memory update, and repository
+  plus live runtime receipts remain authoritative.
+
+Next Bounded Action:
+
+- observe the first ordinary September 4 UTC tick. Diagnose or repair the X
+  acquisition route only under P08; do not infer authority for another manual
+  tick.
+
+## Turn 412 | 2026-09-06
+
+Focus: run one manual tick and fix build/install ownership of the stale installed
+Skill operator command under Plan 0065/P25.
+
+Decisions And Changes:
+
+- The frozen Skill command incorrectly rejected the valid three-attempt config
+  and schema 17. Its temporary limit reductions were restored byte-for-byte;
+  the installed 0.3.109 launcher passed the original config preflight.
+- Ran one manual tick `tick-e38e517c62d8ec6eba1882af7e8586c2`, covering
+  September 5 18:45:40 UTC through September 6 18:45:40 UTC.
+- The tick failed at 18:58:31 UTC with `contractvalidationerror` during LinkedIn
+  retry ordinal one after its first transient failure consumed 360 wall seconds.
+  X retained 80 items and YouTube three. Reddit did not execute; no snapshot was
+  promoted. This is a separate runtime follow-up, not a successful refresh.
+- New source routes frozen Skill commands through the managed launcher before
+  library imports. Managed install/upgrade refreshes only existing real host
+  entrypoints; symlinked development checkouts remain untouched.
+
+Validation Evidence:
+
+- Existing install lifecycle regression failed with `stale service command`
+  before the fix; 20 lifecycle/release/Skill packaging tests pass after it.
+- Eighteen focused tick preflight tests pass; the service artifact builds at
+  version 0.3.110 with schema 17 unchanged.
+- Planning audit initially identified two inherited P24 findings (invalid C03
+  authority classification and missing Definition Of Done), outside this fix.
+
+Current State:
+
+- Plan 0065/C01 is implemented and tested. Installed upgrade/readback and source
+  custody are next; no additional tick is authorized by this checkpoint.
+- Subagents: not_spawned. Graphiti discovery returned older release facts only;
+  current runtime and source evidence were used for the command diagnosis.
+
+Authority Consulted:
+
+- Explicit operator request for one manual tick and build/install correction;
+  Plan 0065, current managed-service readback, and repo planning/validation policy.
+
+State Movement:
+
+- Plan 0065/C02 and P25 CLOSED at installed service 0.3.110/schema17 acceptance.
+- Source implementation is committed at `329fc89`; 38 focused tests pass.
+- The original installed Skill command now returns preflight `ready` and reads
+  the terminal schema17 receipt. Original config bytes and daily-default's
+  September 7 UTC boundary remain unchanged.
+- Durable evidence: `docs/dev/notes/0065-installed-service-command-receipt.json`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; one serialized implementation and live installation owner.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; compact Plan 0065 outcome queued as job
+  `d8a1cc01-0e1f-406e-b40b-dc3961924ed3` in `last30days_skill_main`.
+  Repository receipt and installed readback remain the completion authority.
+
+Next Bounded Action:
+
+- Integrate `fix/installed-service-command` into the recurring release branch.
+  Investigate the separate LinkedIn retry `contractvalidationerror` under P08;
+  do not infer another tick from this closeout.
+
+## Turn 413 | 2026-09-06
+
+Focus: Plan 0066/P26 full-tick recovery under explicit five-cycle authority.
+
+Authority Consulted:
+
+- Operator goal: repair/retry, at most five full cycles, five minutes between
+  attempts; planning, goal, validation and installation policy.
+
+Decisions And Changes:
+
+- Own `fix/full-tick-recovery`, based on installed-command fix `233c6ed`.
+- Preserve full source/config scope and use an explicit durable attempt ledger.
+
+Validation Evidence:
+
+- Installed service 0.3.110 and daily-default ready; prior read-only replay
+  reproduced `wall_timeout_seconds must be between 1 and 3600` at zero budget.
+
+State Movement:
+
+- P26 OPEN, Plan 0066/C01; prior diagnosis is outcome_progress.
+
+Subagent Status And Reconciliation:
+
+- not_spawned; serialized primary owner.
+
+Graphiti Write Status:
+
+- deferred to validated cycle checkpoint; repo/attempt receipts are authority.
+
+Next Bounded Action:
+
+- Repair budget admission and LinkedIn result deadline; validate and install,
+  then reserve attempt 1 of 5.
+
+## Turn 414 | 2026-09-06
+
+Focus: Plan 0066/P26 full-tick recovery completed.
+
+Authority Consulted:
+
+- Operator five-cycle goal, minimum 300-second retry gaps; planning, validation, source testing, documentation, and closeout policies.
+
+Decisions And Changes:
+
+- Installed 0.3.113 with zero-wall retry admission guard, LinkedIn collection deadline, and correct retained-browser request handling. Rejoined the exact registered browser lease through the capability-authenticated broker command.
+- Preserve original config bytes, four enabled sources, pacing, caps and zero cost. No fifth attempt needed.
+
+Validation Evidence:
+
+- Focused runtime, worker, LinkedIn, Reddit, X, tick runner/runtime and release-version suites passed. Added regression assertions demonstrated failure before their fixes.
+- Attempt 4 tick-eb2d052248583ae432599ce037ae349c is complete, all lanes success, 187 retained items and snapshot promoted. Counts: YouTube 3, X 80, LinkedIn 33, Reddit 71. Durable attempt ledger records earlier degraded results and all gaps above 300 seconds.
+- Installed service ready/active; daily-default enabled/ready; zero active ticks or tick resource leases; original config unchanged.
+
+State Movement:
+
+- P26 OPEN -> CLOSED; Plan 0066/C05; outcome_progress, all acceptance criteria met.
+
+Subagent Status And Reconciliation:
+
+- not_spawned; serialized primary owner.
+
+Graphiti Write Status:
+
+- Failed: job d557aa24-24ec-4244-93a1-394c2c419e98 TimeoutError. No persisted episode claimed; source-backed repo receipts preserved.
+
+Next Bounded Action:
+
+- No more manual retries. Normal daily-default schedule remains enabled. Branch fix/full-tick-recovery retains the tested and installed repair history for later integration.
+
+
+## Turn 415 | 2026-09-10
+
+Focus: integrate Agent Browser terminal retry guidance into the installed-service
+source line and hand off the external profile blocker.
+
+Authority Consulted:
+
+- operator request; Plan 0064/P08; planning, validation, documentation,
+  integration and model-selection policy; incident note 0111; current Agent
+  Browser diagnosis and recovery result.
+
+Decisions And Changes:
+
+- carry bounded Agent Browser failure recourse through X, LinkedIn, Reddit,
+  provider results and persisted tick state;
+- stop only the affected provider retry on `inspect_before_retry` or
+  `blind_retry`, preserving configured independent fallback;
+- record the cross-repo boundary and exact recovery blocker in note 0111;
+- run no research tick.
+
+Validation Evidence:
+
+- the seven focused test modules, Python compilation and 21 release/install
+  tests passed on the 0.3.113 source line;
+- service 0.3.114 installed ready with runtime manifest
+  `256656fb9f1584ed9f7c4ddf650c51a30de7749f58b639b2d371e10c3d6af7d6`;
+- `daily-default` remains enabled and ready for 2026-09-11 UTC, active ticks and
+  open resource leases are zero, and SQLite quick check is `ok`;
+- Agent Browser recovery `r348638` stopped uncertain and prohibited retry;
+  diagnosis `r513089` proves no browser was launched.
+
+State Movement:
+
+- Plan 0064 is `CLOSED`; P08 remains `OPEN` for ordinary recurrence.
+
+Subagent Status And Reconciliation:
+
+- Terra worker supplied the bounded patch; primary combined it with newer Reddit
+  diagnostics and current Agent Browser nested-failure contracts.
+
+Graphiti Write Status:
+
+- `not_written`; repository plan, runbook and incident note are authoritative.
+
+Next Bounded Action:
+
+- Agent Browser Plan 0161 must repair the profile before browser lanes can
+  collect again. No second tick is authorized by this closeout.
+
+## Turn 416 | 2026-09-12
+
+Focus: Plan 0069 refresh/query head arbitration source qualification.
+
+Authority Consulted:
+
+- operator diagnosis, repair, and test request; Plan 0068 X publication
+  receipt; planning, CodeGraph, testing, integration, validation, and closeout
+  policies.
+
+Decisions And Changes:
+
+- preserved the older dirty retry-recovery branch and moved implementation to
+  an isolated branch based on the installed 0.3.114 source lineage;
+- compare retrieval-head activation with tick-head promotion before ordinary
+  query selection;
+- prepared independent service candidate 0.3.115 with an exact refreshed
+  runtime manifest;
+- withheld production installation and any additional X acquisition.
+
+Validation Evidence:
+
+- regression failed before the fix and passes afterward;
+- 59 affected tests and 23 release/package/install tests pass;
+- the comprehensive provider-free suite passes with only the documented
+  pre-existing Plan 0064 authority audit excluded;
+- live read-only head timestamps prove the retrieval head is newer while
+  installed 0.3.114 still returns the older tick head.
+
+State Movement:
+
+- Plan 0069 `OPEN -> CLOSED`; source candidate qualified, installation pending.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; serialized primary owner.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`: job
+  `63385d44-b14b-460d-8804-1627b63927e9` failed once with a retryable
+  `TimeoutError` before creating an episode. Preserve the failed job and retry
+  the intended Plan 0069 source-qualification summary at the next closeout;
+  do not enqueue a duplicate episode.
+
+Next Bounded Action:
+
+- integrate and install 0.3.115, then run one cache-only X readback without a
+  provider refresh.
+
+## Turn 417 | 2026-09-12
+
+Focus: Plan 0070
+`docs/dev/plans/0070-2026-09-12-refresh-query-head-integration-install.md`
+integration and installed acceptance.
+
+State Movement:
+
+- `ready -> active`; operator authorized the recommended integration and
+  installation sequence.
+- current `origin/main` merged cleanly into the isolated repair lane; its two
+  incoming commits changed recurring-Reddit documentation only.
+
+Validation Evidence:
+
+- 66 affected application, retrieval, publication, job-runner, runtime,
+  lifecycle-install, service-install, and release tests pass on the reconciled
+  head.
+
+Boundaries:
+
+- the dirty P08 worktree remains untouched;
+- no provider refresh, browser/profile mutation, recurring tick, install, or
+  service restart has occurred at this checkpoint.
+
+Next Bounded Action:
+
+- complete planning/lane validation, publish and integrate the branch, install
+  exact 0.3.115, synchronize the Skill copy, and run one cache-only X query.

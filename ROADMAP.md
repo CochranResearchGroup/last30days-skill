@@ -1081,6 +1081,12 @@ pause controls.
 
 Current State:
 
+- Plan 0064 is CLOSED at installed service 0.3.114. It preserves bounded Agent
+  Browser retry recourse and stops an affected provider retry on
+  `inspect_before_retry` or `blind_retry`; independent
+  configured fallback remains available. Agent Browser still owns profile
+  recovery, and no new tick ran. Terminal authority:
+  `docs/dev/plans/0064-2026-09-10-agent-browser-retry-recourse-preservation.md`.
 - Plan 0062 version 6/C09 is the current actionable P08 plan. Service 0.3.96 is
   installed ready with schema 17 and X's finite 40-scroll allowance. Saved recurring
   revision `operator-20260901-x-linkedin-80-v1` requests 80 X and 80 LinkedIn
@@ -2335,10 +2341,16 @@ Current State:
   aggregate limits 243/10/500/3,360;
 - the one-row digest rebind preserved schedule/tick identity, admitted no work,
   and left all active-work and lease counts zero with SQLite integrity `ok`.
+- manual tick `tick-98e14987fc5e9a7b7b63f8b8ea1abb95` proved Reddit and
+  LinkedIn at 80 distinct linked posts each on their first attempts, plus three
+  YouTube items; X alone failed before observation on all three retries with
+  `existing_session_profile_identity_unproven`;
+- the manual tick promoted its degraded snapshot and left the recurring
+  schedule, database integrity, and all active-work/lease counters healthy.
 
 Active Plan:
 
-- `docs/dev/plans/0064-2026-09-03-recurring-reddit-home-feed.md` version 2/C02.
+- `docs/dev/plans/0064-2026-09-03-recurring-reddit-home-feed.md` version 3/C03.
 
 Dependencies:
 
@@ -2350,6 +2362,20 @@ Next Action:
 
 - observe the first ordinary four-lane tick after the September 4 UTC boundary
   and adjudicate its terminal Reddit provider receipt.
+
+## P27 | Refresh Query Head Integration And Install
+
+State: OPEN
+
+Current State: current `origin/main` is merged into the isolated branch and 66
+affected tests pass; fork integration and installed acceptance remain.
+
+Objective: integrate service 0.3.115, install the exact fork candidate, and
+prove the existing X publication cache-query-visible without provider refresh.
+
+Plan `docs/dev/plans/0070-2026-09-12-refresh-query-head-integration-install.md`
+owns the bounded merge, validation, fork integration, install, Skill sync, and
+cache-only acceptance sequence. The dirty P08 worktree remains untouched.
 
 ## Goal-Compatible Plan Conversion
 
@@ -2365,3 +2391,30 @@ Before moving a lane from `PLANNED` to `OPEN`, create or identify a plan that:
 8. records Graphiti and runbook checkpoint requirements;
 9. stops when acceptance is met, a hard gate is reached, or remaining work is
    unbounded polish.
+
+## P25 | Installed Service Command
+
+State: CLOSED
+
+Objective: keep the installed Skill service command aligned with the selected
+managed runtime through service install, upgrade, and rollback.
+
+Plan `docs/dev/plans/0065-2026-09-06-installed-service-command.md` closed with
+service 0.3.110 installed ready. The previous command now passes preflight and
+schema17 reads. Thirty-eight focused tests passed, including stale-copy,
+upgrade/rollback, missing-launcher, and development-symlink preservation.
+The separate manual tick failed during LinkedIn retry after retaining 83 items;
+its failure does not invalidate the installed command compatibility proof.
+
+## P26 | Full Tick Recovery
+
+State: CLOSED
+
+Objective: repair and complete one full tick within five attempts separated by
+at least five minutes.
+
+Plan `docs/dev/plans/0066-2026-09-06-full-tick-recovery.md` closed on service
+0.3.113. Attempt 4 completed all four enabled lanes and promoted its snapshot,
+retaining 187 items (YouTube 3, X 80, LinkedIn 33, Reddit 71). All retry gaps
+exceeded 300 seconds; original config/caps preserved. Service and daily schedule
+are ready, with no abandoned tick work. Receipt: `docs/dev/notes/0066-full-tick-attempts.json`.

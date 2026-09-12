@@ -245,6 +245,7 @@ class RedditDiagnostics:
     stagnant_scrolls: int = 0
     unique_observation_count: int = 0
     stop_reason: str = ""
+    agent_browser_guidance: dict[str, object] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -262,6 +263,7 @@ class RedditDiagnostics:
             "stagnant_scrolls": self.stagnant_scrolls,
             "unique_observation_count": self.unique_observation_count,
             "stop_reason": self.stop_reason,
+            "agent_browser_guidance": self.agent_browser_guidance,
         }
 
 
@@ -409,6 +411,8 @@ class RedditBrowserScraper:
             return self._result(items, None, None, workspace, page, diagnostics)
         except (RedditBrowserFailure, browser_runtime.AgentBrowserRuntimeFailure) as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
+            if isinstance(exc, browser_runtime.AgentBrowserRuntimeFailure):
+                diagnostics.agent_browser_guidance = dict(exc.guidance)
             return self._result(
                 [], exc.error_type, _safe_error_message(str(exc)), workspace, page, diagnostics
             )
@@ -515,6 +519,8 @@ class RedditBrowserScraper:
             return self._result(items, None, None, workspace, page, diagnostics)
         except (RedditBrowserFailure, browser_runtime.AgentBrowserRuntimeFailure) as exc:
             diagnostics.duration_ms = _elapsed_ms(started)
+            if isinstance(exc, browser_runtime.AgentBrowserRuntimeFailure):
+                diagnostics.agent_browser_guidance = dict(exc.guidance)
             return self._result(
                 [], exc.error_type, _safe_error_message(str(exc)), workspace, page, diagnostics
             )

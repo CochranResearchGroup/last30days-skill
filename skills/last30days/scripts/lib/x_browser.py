@@ -57,11 +57,13 @@ class XBrowserFailure(RuntimeError):
         *,
         operator_url: str = "",
         reason_code: str = "",
+        guidance: dict[str, object] | None = None,
     ) -> None:
         super().__init__(message)
         self.error_type = error_type if error_type in ERROR_TYPES else "agent_browser_error"
         self.operator_url = operator_url
         self.reason_code = reason_code
+        self.guidance = dict(guidance or {})
 
 
 AUTH_SCRIPT = r"""
@@ -299,6 +301,7 @@ class CliAgentBrowserClient(browser_runtime.CliAgentBrowserClient):
                 str(exc),
                 operator_url=exc.operator_url,
                 reason_code=exc.reason_code,
+                guidance=exc.guidance,
             ) from exc
 
     def inspect_auth(self, workspace: BrowserWorkspace) -> XAuthState:
@@ -665,6 +668,8 @@ def search_x_browser(
         diagnostics = {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0}
         if exc.reason_code:
             diagnostics["failure_reason_code"] = exc.reason_code
+        if exc.guidance:
+            diagnostics["agent_browser_guidance"] = exc.guidance
         if exc.operator_url:
             diagnostics["operator_url"] = exc.operator_url
         return {
@@ -683,6 +688,8 @@ def search_x_browser(
         diagnostics = {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0}
         if exc.reason_code:
             diagnostics["failure_reason_code"] = exc.reason_code
+        if exc.guidance:
+            diagnostics["agent_browser_guidance"] = exc.guidance
         if operator_url:
             diagnostics["operator_url"] = operator_url
         return {
@@ -792,6 +799,8 @@ def scrape_x_feed(
         diagnostics = _failure_diagnostics(scraper, client, exc.operator_url)
         if exc.reason_code:
             diagnostics["failure_reason_code"] = exc.reason_code
+        if exc.guidance:
+            diagnostics["agent_browser_guidance"] = exc.guidance
         return {
             "items": [],
             "error": str(exc),
@@ -808,6 +817,8 @@ def scrape_x_feed(
         diagnostics = _failure_diagnostics(scraper, client, operator_url)
         if exc.reason_code:
             diagnostics["failure_reason_code"] = exc.reason_code
+        if exc.guidance:
+            diagnostics["agent_browser_guidance"] = exc.guidance
         return {
             "items": [],
             "error": str(exc),

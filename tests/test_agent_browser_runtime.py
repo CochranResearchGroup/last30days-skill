@@ -314,7 +314,7 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
         self.assertEqual("x-owned", workspace.target_id)
         self.assertEqual(["tab_new", "ui_action"], actions)
 
-    def test_broker_request_preserves_route_pool_entry_hint(self):
+    def test_retained_tab_ignores_launch_route_hint_and_preserves_broker_params(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
         request = _request(
             url="https://www.reddit.com/",
@@ -354,10 +354,7 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             client.acquire_workspace(request)
 
         self.assertNotIn("routePoolEntryId", captured)
-        self.assertEqual(
-            "guacamole-rdp-b",
-            captured["params"]["routePoolEntryId"],
-        )
+        self.assertNotIn("routePoolEntryId", captured["params"])
         self.assertEqual("rdp_gateway", captured["params"]["provider"])
 
     def test_route_bound_cold_launch_uses_remote_view_open(self):
@@ -549,6 +546,7 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             task="x-feed",
             service="x",
             allow_duplicate_profile_lane=True,
+            route_pool_entry_id_hint="guacamole-rdp-b",
         )
         plan = _access_plan(
             url=request.start_url,
@@ -593,6 +591,8 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             captured[0]["browserId"],
         )
         self.assertEqual("handoff-social", captured[0]["sessionName"])
+        self.assertNotIn("allowDuplicateProfileLane", captured[0])
+        self.assertNotIn("routePoolEntryId", captured[0].get("params", {}))
 
     def test_direct_broker_timeout_is_typed_at_workspace_acquisition(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
@@ -684,6 +684,112 @@ class AgentBrowserRuntimeTests(unittest.TestCase):
             "runtime_owner_generation_stale", raised.exception.reason_code
         )
         self.assertEqual(error, str(raised.exception))
+
+    def test_broker_error_preserves_retry_guidance_without_payload_content(self):
+        client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
+        process = self._mcp_process(
+            {"jsonrpc": "2.0", "id": 1, "result": {}},
+            {
+                "jsonrpc": "2.0",
+                "id": 2,
+                "result": {
+                    "isError": True,
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": json.dumps(
+                                {
+                                    "success": False,
+                                    "error": "service_job_timed_out: timed out",
+                                    "data": {
+                                        "requestId": "mcp-service-request-ui_action-123",
+                                        "jobId": "mcp-service-request-ui_action-123",
+                                        "code": "service_job_timed_out",
+                                        "phase": "execute",
+                                        "effectState": "uncertain",
+                                        "recommendedAction": "inspect_job_and_refresh_plan",
+                                        "retryDisposition": "inspect_before_retry",
+                                        "hardStops": ["blind_retry"],
+                                        "url": "https://private.example/secret",
+                                    },
+                                }
+                            ),
+                        }
+                    ],
+                },
+            },
+        )
+
+        with (
+            mock.patch.object(agent_browser_runtime.subprocess, "Popen", return_value=process),
+            self.assertRaises(agent_browser_runtime.AgentBrowserRuntimeFailure) as raised,
+        ):
+            client._invoke_service_request(
+                {"action": "ui_action", "serviceName": "last30days"}, timeout=5
+            )
+
+        assert raised.exception.guidance == {
+            "request_id": "mcp-service-request-ui_action-123",
+            "job_id": "mcp-service-request-ui_action-123",
+            "code": "service_job_timed_out",
+            "phase": "execute",
+            "effect_state": "uncertain",
+            "recommended_action": "inspect_job_and_refresh_plan",
+            "retry_disposition": "inspect_before_retry",
+            "hard_stops": ["blind_retry"],
+        }
+
+    def test_broker_error_reads_current_nested_failure_recourse(self):
+        client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)
+        failure = {
+            "code": "service_operation_failed",
+            "phase": "execution",
+            "effectState": "effect_uncertain",
+            "recommendedAction": "inspect_failure",
+            "retryDisposition": "inspect_before_retry",
+            "hardStops": ["blind_retry"],
+            "jobId": "r348638",
+        }
+        process = self._mcp_process(
+            {"jsonrpc": "2.0", "id": 1, "result": {}},
+            {
+                "jsonrpc": "2.0",
+                "id": 2,
+                "result": {
+                    "isError": True,
+                    "content": [{"type": "text", "text": json.dumps({
+                        "success": False,
+                        "id": "r348638",
+                        "error": "lease_authority_protocol_pending_effect_reconciliation",
+                        "failure": failure,
+                        "terminalOutcome": {
+                            "failure": failure,
+                            "provenance": {"requestId": "r348638", "jobId": "r348638"},
+                        },
+                    })}],
+                },
+            },
+        )
+
+        with (
+            mock.patch.object(agent_browser_runtime.subprocess, "Popen", return_value=process),
+            self.assertRaises(agent_browser_runtime.AgentBrowserRuntimeFailure) as raised,
+        ):
+            client._invoke_service_request(
+                {"action": "service_profile_acquire", "serviceName": "last30days"},
+                timeout=5,
+            )
+
+        assert raised.exception.guidance == {
+            "request_id": "r348638",
+            "job_id": "r348638",
+            "code": "service_operation_failed",
+            "phase": "execution",
+            "effect_state": "effect_uncertain",
+            "recommended_action": "inspect_failure",
+            "retry_disposition": "inspect_before_retry",
+            "hard_stops": ["blind_retry"],
+        }
 
     def test_broker_requests_share_one_live_mcp_process(self):
         client = agent_browser_runtime.CliAgentBrowserClient(timeout=5)

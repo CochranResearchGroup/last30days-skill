@@ -245,6 +245,9 @@ def _linkedin_adapter(
             depth=_depth(request.depth),
             config=dict(config),
             limit=request.item_limit,
+            collection_deadline=time.monotonic() + max(
+                1.0, request.wall_timeout_seconds - min(60.0, request.wall_timeout_seconds / 3)
+            ),
         ))
     return _account_opaque_source_request(linkedin.search_linkedin(
         request.query,

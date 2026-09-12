@@ -669,6 +669,16 @@ def test_provider_result_round_trip_preserves_failure_stage_and_signature(tmp_pa
         failure_stage="authentication",
         failure_reason_code="service_tab_target_unsettled",
         failure_signature=signature,
+        agent_browser_guidance={
+            "request_id": "mcp-service-request-ui_action-123",
+            "job_id": "mcp-service-request-ui_action-123",
+            "code": "service_job_timed_out",
+            "phase": "execute",
+            "effect_state": "uncertain",
+            "recommended_action": "inspect_job_and_refresh_plan",
+            "retry_disposition": "inspect_before_retry",
+            "hard_stops": ("blind_retry",),
+        },
     )
 
     payload = runner._serialize_provider_result(
@@ -679,6 +689,7 @@ def test_provider_result_round_trip_preserves_failure_stage_and_signature(tmp_pa
     assert restored.failure_stage == "authentication"
     assert restored.failure_reason_code == "service_tab_target_unsettled"
     assert restored.failure_signature == signature
+    assert restored.agent_browser_guidance == result.agent_browser_guidance
 
 
 def test_provider_result_round_trip_preserves_bounded_rejection_counts(tmp_path):
@@ -1704,3 +1715,44 @@ def test_recovery_skips_terminal_lanes_and_rebuilds_snapshot_from_durable_eviden
            WHERE event_type = 'raw_published'"""
     ).fetchone()[0] == 2
     conn.close()
+
+
+def test_timed_out_provider_cannot_abort_next_lane_with_zero_wall_retry(tmp_path):
+    from lib.service_tick_builtin_adapters import build_acquisition_adapter_registry
+    from lib.service_worker import WorkerExecutionError
+
+    calls = []
+    class TimeoutWorker:
+        def run(self, request):
+            calls.append(request.source)
+            raise WorkerExecutionError("worker_timeout", contracts.RetryClass.TRANSIENT)
+
+    provider = _provider("linkedin-primary", "linkedin_agent_browser", "browser:social")
+    provider["limits"] = _limits(attempts=3)
+    def next_lane(context):
+        calls.append(context.source)
+        return ProviderResult.empty(usage=_usage())
+
+    spec = build_acquisition_adapter_registry(TimeoutWorker()).require(
+        "linkedin_agent_browser", source="linkedin", capability="collect"
+    )
+    coordinator, _, db, _, _, _ = _coordinator(
+        tmp_path,
+        [{"service_id": "linkedin", "source": "linkedin", "providers": [provider]},
+         {"service_id": "reddit", "source": "reddit", "providers": [
+             _provider("reddit-primary", "fixture", "browser:social")]}],
+        [_target("linkedin"), _target("reddit")],
+        [spec, AdapterSpec("fixture", frozenset({"collect"}), None, next_lane, "fixture:next")],
+        aggregate_limits={**_limits(attempts=4), "wall_seconds": 90},
+    )
+    receipt = coordinator.enqueue_tick(
+        _request("2026-08-03T00:00:00Z", "2026-08-04T00:00:00Z")
+    )
+    assert calls == ["linkedin", "reddit"], receipt.to_dict()
+    assert receipt.state is contracts.TickState.COMPLETE_DEGRADED
+    assert {l.service_id:l.state.value for l in receipt.lanes} == {
+        "linkedin": "budget_exhausted", "reddit": "empty"
+    }
+    with sqlite3.connect(db) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM service_tick_provider_attempts").fetchone()[0] == 2
+        assert conn.execute("SELECT COUNT(*) FROM service_tick_resource_leases WHERE released_at IS NULL").fetchone()[0] == 0

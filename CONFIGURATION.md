@@ -35,7 +35,7 @@ checkout, build and install its independently versioned artifact with:
 ```bash
 bash service/scripts/build-runtime.sh
 bash service/scripts/install.sh install \
-  --artifact dist/service/last30days-service-0.3.17.tar.gz
+  --artifact dist/service/last30days-service-0.3.110.tar.gz
 bash service/scripts/install.sh diagnose
 ```
 
@@ -43,10 +43,22 @@ The service release lives under
 `$XDG_DATA_HOME/last30days/service/releases/<version>`, independently of any
 installed Agent Skill. The managed unit resolves the atomic `current` selector
 through a stable launcher. A successful install records the loaded service
-version, contract digest, schema 16, and runtime-manifest digest in an
+version, contract digest, database schema, and runtime-manifest digest in an
 owner-readable readiness receipt. Skill-first installation remains a
 compatibility path during the migration; refreshing a frozen Skill copy is no
 longer the service upgrade contract.
+
+For operator commands, use the managed launcher:
+`"${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service"`.
+It follows the same atomic `current` release as the service, including rollback.
+Install and upgrade also refresh existing frozen `service.py` entrypoints under
+`~/.agents/skills/last30days`, `~/.claude/skills/last30days`, and
+`~/.codex/skills/last30days`. These entrypoints delegate before importing bundled
+libraries, so the older `python3 ~/.agents/skills/last30days/scripts/service.py`
+form remains compatible without reinstalling the entire Skill. Fresh Skill
+copies include the same routing behavior. Symlinked development checkouts are
+preserved and continue to run their own source. A frozen client fails with an
+installation diagnostic if the managed launcher is missing.
 
 The service handshake publishes product identity, semantic service version,
 service API version, contract schema and SHA-256, database schema, and the
@@ -86,6 +98,13 @@ durable tick receipts preserve that same order.
 Each provider may declare one to three attempts. Automatic retries consume the
 second and third attempts only for transient failures, and the aggregate tick
 limits must budget every admitted attempt across enabled targets.
+A provider with no remaining wall time stops as `budget_exhausted` before a
+new worker request is created, allowing later lanes to continue. LinkedIn feed
+collection reserves up to 60 seconds (one third of shorter worker budgets) for
+normalization, media, cleanup, and result return. At that collection deadline,
+already accepted posts are returned with `collection_deadline_reached` in
+source diagnostics; the configured item ceiling and interaction pacing remain
+unchanged. No accepted posts still produces an explicit budget failure.
 Each target declares an explicit acquisition surface. Use
 `"surface_kind": "feed"` with a non-empty `"selector": {"feed": "home"}`
 for an authenticated home feed, or retain `"surface_kind": "topic"` with a
@@ -150,7 +169,7 @@ timer, or legacy collection-spec enablement is created.
 Read the sanitized installed state without admitting work:
 
 ```bash
-python3 skills/last30days/scripts/service.py tick schedule status
+"${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service" tick schedule status
 ```
 
 The corresponding owner-private API is `GET /v1/tick-schedule`. Both expose
@@ -247,7 +266,7 @@ Before a gated manual run, validate the exact prospective interval and print a
 sanitized admission manifest with:
 
 ```bash
-python3 ~/.agents/skills/last30days/scripts/service.py tick preflight \
+"${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service" tick preflight \
   --interval-from 2026-08-03T00:00:00Z \
   --interval-to 2026-08-04T00:00:00Z
 ```
@@ -269,13 +288,13 @@ configured provider, add the same repeatable `--service SERVICE_ID` selector to
 both commands:
 
 ```bash
-python3 ~/.agents/skills/last30days/scripts/service.py tick preflight \
+"${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service" tick preflight \
   --interval-from 2026-08-03T00:00:00Z \
   --interval-to 2026-08-04T00:00:00Z \
   --schedule-id manual-facebook-check \
   --service facebook
 
-python3 ~/.agents/skills/last30days/scripts/service.py tick enqueue \
+"${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service" tick enqueue \
   --interval-from 2026-08-03T00:00:00Z \
   --interval-to 2026-08-04T00:00:00Z \
   --schedule-id manual-facebook-check \
@@ -295,15 +314,15 @@ Run the same explicit interval manually only after the preflight's
 `config_digest`, `tick_id`, and bounded manifest have been reviewed:
 
 ```bash
-python3 ~/.agents/skills/last30days/scripts/service.py tick enqueue \
+"${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service" tick enqueue \
   --interval-from 2026-08-03T00:00:00Z \
   --interval-to 2026-08-04T00:00:00Z
 
-python3 ~/.agents/skills/last30days/scripts/service.py tick get TICK_ID
+"${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service" tick get TICK_ID
 
-python3 ~/.agents/skills/last30days/scripts/service.py tick incident acknowledge \
+"${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service" tick incident acknowledge \
   INCIDENT_ID --actor-ref OPERATOR_REF
-python3 ~/.agents/skills/last30days/scripts/service.py tick incident observe \
+"${XDG_DATA_HOME:-$HOME/.local/share}/last30days/service/last30days-service" tick incident observe \
   INCIDENT_ID
 ```
 
@@ -554,6 +573,9 @@ LAST30DAYS_YOUTUBE_BROWSER_FALLBACK=auto
 # stale even though process and profile-lock absence have been proven. Leave
 # unset normally: this never creates another profile, but it permits a fresh
 # named browser lane for the same exact profile.
+# Applies only when the broker finds no compatible live browser.
+# Retained browser reuse takes precedence over this cold-launch override.
+# Route-pool hints also apply only to cold launches, not retained-browser tabs.
 # LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE=1
 
 # Optional principal-bound Agent Browser authority. Set this to one absolute,
