@@ -1,5 +1,20 @@
 schema_version: 1
 lanes:
+  - id: P27
+    objective: Integrate and install refresh query-head arbitration, then prove the existing X publication cache-visible
+    plan: docs/dev/plans/0070-2026-09-12-refresh-query-head-integration-install.md
+    plan_ref: refs/heads/fix/refresh-query-head-arbitration
+    branch: fix/refresh-query-head-arbitration
+    target: main
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 857ace5bc7e8e809dcea7ba8696f4176a973ed65
+    remote_ref: null
+    integration: merge
+    integration_receipt: null
+    dependencies: []
+    overlaps: [P08, P24]
+    updated_at: 2026-09-12
   - id: P08
     objective: Make recurring ticks restart-safe and retry transient social failures
     plan: docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md
