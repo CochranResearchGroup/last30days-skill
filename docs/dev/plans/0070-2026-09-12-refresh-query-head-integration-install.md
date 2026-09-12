@@ -1,11 +1,13 @@
 # Plan 0070 | Refresh Query Head Integration And Install
 
 State: OPEN
-Roadmap: P08
+Lane: P27
+Branch: fix/refresh-query-head-arbitration
+Target: main
+Integration: merge
+Roadmap: P27
 Plan version: 1
 Date: 2026-09-12
-Branch: `fix/refresh-query-head-arbitration`
-Target: `main`
 
 ## Objective
 

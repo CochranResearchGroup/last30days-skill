@@ -26426,3 +26426,33 @@ Next Bounded Action:
 
 - integrate and install 0.3.115, then run one cache-only X readback without a
   provider refresh.
+
+## Turn 417 | 2026-09-12
+
+Focus: Plan 0070
+`docs/dev/plans/0070-2026-09-12-refresh-query-head-integration-install.md`
+integration and installed acceptance.
+
+State Movement:
+
+- `ready -> active`; operator authorized the recommended integration and
+  installation sequence.
+- current `origin/main` merged cleanly into the isolated repair lane; its two
+  incoming commits changed recurring-Reddit documentation only.
+
+Validation Evidence:
+
+- 66 affected application, retrieval, publication, job-runner, runtime,
+  lifecycle-install, service-install, and release tests pass on the reconciled
+  head.
+
+Boundaries:
+
+- the dirty P08 worktree remains untouched;
+- no provider refresh, browser/profile mutation, recurring tick, install, or
+  service restart has occurred at this checkpoint.
+
+Next Bounded Action:
+
+- complete planning/lane validation, publish and integrate the branch, install
+  exact 0.3.115, synchronize the Skill copy, and run one cache-only X query.

@@ -2363,6 +2363,20 @@ Next Action:
 - observe the first ordinary four-lane tick after the September 4 UTC boundary
   and adjudicate its terminal Reddit provider receipt.
 
+## P27 | Refresh Query Head Integration And Install
+
+State: OPEN
+
+Current State: current `origin/main` is merged into the isolated branch and 66
+affected tests pass; fork integration and installed acceptance remain.
+
+Objective: integrate service 0.3.115, install the exact fork candidate, and
+prove the existing X publication cache-query-visible without provider refresh.
+
+Plan `docs/dev/plans/0070-2026-09-12-refresh-query-head-integration-install.md`
+owns the bounded merge, validation, fork integration, install, Skill sync, and
+cache-only acceptance sequence. The dirty P08 worktree remains untouched.
+
 ## Goal-Compatible Plan Conversion
 
 Before moving a lane from `PLANNED` to `OPEN`, create or identify a plan that:

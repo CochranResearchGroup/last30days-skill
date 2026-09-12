@@ -13,7 +13,8 @@ lanes:
     integration: merge
     integration_receipt: null
     dependencies: []
-    overlaps: [P08, P24]
+    overlaps: [docs/dev/active-lanes.yaml]
+    reconciled_overlaps: [docs/dev/active-lanes.yaml]
     updated_at: 2026-09-12
   - id: P08
     objective: Make recurring ticks restart-safe and retry transient social failures
