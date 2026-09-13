@@ -26716,3 +26716,60 @@ Next Bounded Action:
 - none for P29. When authorized, bootstrap the GitHub work-item surface and
   then instantiate independently owned Search, MCP, Tailored Follows, Runtime,
   and reserved Hotfix lanes under the new operating model.
+
+## Turn 422 | 2026-09-13
+
+Focus: Plan 0073/P30 canonical-worktree and P08 custody reconciliation.
+
+Authority Consulted:
+
+- operator “ok go” authorization after the canonical-worktree finding; Plan
+  0073; Git/worktree, branch/integration, active-lane, documentation,
+  validation, closeout, and multi-session policy; current Git refs and P08
+  artifacts; advisory Graphiti discovery.
+
+Decisions And Changes:
+
+- returned `main` custody to canonical
+  `/home/ecochran76/workspace.local/last30days-skill` and detached the clean
+  temporary ordinary-tick worktree at the same commit;
+- preserved divergent P08 tip `378788ba` under matching local and remote
+  `archive/p08-tick-restart-recovery-20260913` refs;
+- determined the retry-recourse implementation was re-applied on the later
+  integrated full-tick line, while nine historical plan/receipt artifacts were
+  missing from `main`;
+- restored only those historical artifacts, retained the newer integrated Plan
+  0064, and excluded the stale branch's obsolete embedded policy snapshot;
+- corrected P08 catalog custody to `ARCHIVED` and added durable canonical
+  worktree routing to `AGENTS.md` and policy 0028;
+- made no source-code, install, service, browser, provider, schedule,
+  credential, database, or runtime change.
+
+Validation Evidence:
+
+- canonical `main` is clean and equals `origin/main` at `af610bb7` before the
+  reconciliation branch;
+- both P08 archive refs resolve to exact tip `378788ba`;
+- restored-artifact byte comparison, focused authority and guidance tests,
+  P08 catalog audit disposition, and `git diff --check` remain to run on the
+  complete source candidate.
+
+State Movement:
+
+- Plan 0073/P30 `planned -> active`; P08 remains outcome-closed while Git
+  custody changes from false `INTEGRATED` to exact `ARCHIVED`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; one serialized primary owner controls Git and shared-doc
+  reconciliation.
+
+Graphiti Write Status:
+
+- `not_written`; discovery returned no current P08 merge receipt and repository
+  evidence remains authoritative.
+
+Next Bounded Action:
+
+- complete deterministic validation, publish and merge the reconciliation,
+  then record the exact integration receipt and close P30.

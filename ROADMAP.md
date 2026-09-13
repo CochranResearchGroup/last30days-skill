@@ -2503,3 +2503,34 @@ Next Bounded Action:
 - none for P29. Open a separately authorized governance-bootstrap successor to
   enable and configure the GitHub tracker before launching independent product
   lanes.
+
+## P30 | Canonical Worktree And P08 Custody Reconciliation
+
+State: OPEN
+
+Objective: restore canonical `main` worktree custody and reconcile the retained
+P08 branch without merging obsolete code or losing historical receipts.
+
+Current State:
+
+- canonical `/home/ecochran76/workspace.local/last30days-skill` is clean on
+  current `main`, equal to `origin/main`;
+- divergent P08 tip `378788ba` is preserved under matching local and remote
+  archive refs;
+- nine missing historical plan/receipt artifacts are restored on the bounded
+  reconciliation branch, and P08 catalog custody is corrected to `ARCHIVED`;
+- unrelated historical active-lane findings remain outside this plan.
+
+Active Plan:
+
+- `docs/dev/plans/0073-2026-09-13-canonical-worktree-and-p08-custody-reconciliation.md`.
+
+Dependencies:
+
+- consumes closed P08, P29, and the current public-fork `main` without changing
+  installed runtime state.
+
+Next Bounded Action:
+
+- validate and integrate the selective reconciliation, then close P30 with the
+  exact merge receipt.

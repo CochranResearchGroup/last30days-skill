@@ -41,6 +41,14 @@ uv run pytest --cov                        # with coverage (skips lib/vendor/)
 Python 3.12+ required. Use `uv` for the env; the venv lives at `.venv/`.
 
 ## Rules
+- The canonical default-branch worktree is
+  `/home/ecochran76/workspace.local/last30days-skill`. Keep `main` checked out
+  there for integration and current-state readback. Use sibling topic
+  worktrees for lane changes; a temporary worktree is not canonical merely
+  because it currently holds `main`.
+- Before reassigning default-branch custody, verify both worktrees are clean
+  and preserve every non-integrated branch through exact local and remote refs.
+  At closeout, verify the canonical path is back on current `main`.
 - `lib/__init__.py` must be bare package marker (comment only, NO eager imports)
 - Keep repo-only release/eval/media files outside `skills/last30days/`; `npx skills add` copies that directory recursively and does not honor `.skillignore`.
 - One-time setup: `npx skills add . -g -y` copies the skill into `~/.agents/skills/<name>/` (real directory) and, for harnesses that support symlinked skill dirs, drops a per-host symlink pointing at that copy. **Working-tree edits do NOT propagate automatically** — the `~/.agents/skills/<name>/` copy is frozen at install time. To sync after edits, re-run `npx skills add . -g -y`. For live-edit on a dev machine, replace the install copy with a symlink to the working tree: `ln -sfn "$PWD/skills/last30days" ~/.agents/skills/last30days` (run from the repo root).
