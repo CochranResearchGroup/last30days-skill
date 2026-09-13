@@ -1,6 +1,6 @@
 # Plan 0091 | Agent Question Answering Packet 1
 
-State: PLANNED
+State: OPEN
 Lane: P36
 Work item: WI-003
 Branch: feat/agent-question-answer-v1
@@ -9,7 +9,7 @@ Integration: merge
 Roadmap: P36
 Plan version: 1
 Date: 2026-09-13
-Session owner: unassigned
+Session owner: Codex thread 01a09cf4-c89c-7ad2-9b64-8dc95c4cbec6
 
 ## Objective
 
@@ -92,5 +92,85 @@ immutable citation/evidence contracts.
 
 ## Current Checkpoint
 
-No execution checkpoint yet. The plan-only launch ref is awaiting publication
-and canonical registration.
+### Checkpoint P0091-C01 | 2026-09-13
+
+Plan version: 1
+
+State transition: `PLANNED -> OPEN`.
+
+Progress classification: `outcome_progress`; the independent lane now has
+clean, reconciled, recoverable custody and is ready for Packet 1 implementation
+after coordinator integration of this ownership checkpoint.
+
+Authority classification:
+
+- `explicit_authority` for activation-only Git reconciliation, this
+  branch-local plan update, validation, commit, and branch push;
+- `not_authorized` in this turn for feature code, shared coordinator surfaces,
+  work-item changes, providers, browser, installed runtime, schedules, tracker,
+  staging, production, pull-request creation, or pull-request integration.
+
+Base, merge, and ref evidence:
+
+- before reconciliation, local and remote
+  `feat/agent-question-answer-v1` were clean and equal at
+  `856fb385137c679f06616384109a0f639e37d0f5`, whose merge base with fetched
+  `origin/main` was the registered launch base
+  `87a8cbac467f979237f85b7e9a96946a2f137613`;
+- fetched `origin/main` resolved to
+  `606272ab82ba2c97d833e8b06e2c1ea4092bac85`, four commits ahead of that
+  merge base;
+- merge commit `35c7a29574866e10606e888c2992f9782b099fb9`
+  preserves both parents in order: lane checkpoint
+  `856fb385137c679f06616384109a0f639e37d0f5` and `origin/main`
+  `606272ab82ba2c97d833e8b06e2c1ea4092bac85`;
+- the merge resolved automatically with only expected documentation ancestry;
+  `ROADMAP.md`, `RUNBOOK.md`, `docs/dev/active-lanes.yaml`, WI-003, Plan 0079,
+  and note 0120 remain byte-equal to fetched `origin/main`;
+- no open pull request targets this branch at activation time.
+
+Owned changes:
+
+- only this Plan 0091 file changes after the ancestry merge: plan state,
+  runtime-reported session owner, and this activation checkpoint;
+- no feature source, tests, shared contracts, installed runtime, provider, or
+  coordinator-owned authority was edited by this activation.
+
+Validation evidence:
+
+- `.venv/bin/python -m pytest tests/test_plan_authority_audit.py -q` passed all
+  10 tests;
+- `.venv/bin/python dev/last30days/scripts/audit_plan_authority.py` passed with
+  zero issues and current main-authority counts unchanged;
+- the active-only planning-contract audit reports only the expected
+  branch-local findings that this newly `OPEN` plan is not yet wired into
+  coordinator-owned `ROADMAP.md` and `RUNBOOK.md`; those surfaces are outside
+  this activation and remain byte-equal to `origin/main` for coordinator
+  ownership integration;
+- `git diff --check` passed and the owned diff against `origin/main` contains
+  only this Plan 0091 file; post-push local/remote equality is the terminal
+  readback required for handoff.
+
+Remaining acceptance criteria:
+
+- all five Packet 1 criteria remain unimplemented and unvalidated; feature
+  implementation may begin only after the coordinator integrates ownership.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; activation custody, ancestry reconciliation, and the sole
+  plan edit were performed directly by the independent top-level lane owner.
+
+Graphiti status:
+
+- runtime doctor was healthy for MCP, FalkorDB persistence, and Inspector;
+  one bounded read of `last30days_skill_main` returned five facts, three nodes,
+  and three episodes but no relevant P36/WI-003 activation recall;
+- `not_written`; discovery was advisory and read-only, and activation grants no
+  Graphiti/database mutation authority.
+
+Next action:
+
+- commit and push this activation checkpoint, verify the local and remote
+  branch tips are equal, then stop for coordinator ownership integration; do
+  not implement Packet 1 or open or merge a pull request in this turn.
