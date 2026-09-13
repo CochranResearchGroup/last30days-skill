@@ -28,6 +28,14 @@ SCHEMA_CATALOG_PATH = (
     / f"service-contracts-v{SCHEMA_VERSION}.json"
 )
 SCHEMA_CATALOG_SHA256 = hashlib.sha256(SCHEMA_CATALOG_PATH.read_bytes()).hexdigest()
+POST_SEARCH_SCHEMA_CATALOG_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "schemas"
+    / f"post-search-contracts-v{SCHEMA_VERSION}.json"
+)
+POST_SEARCH_SCHEMA_CATALOG_SHA256 = hashlib.sha256(
+    POST_SEARCH_SCHEMA_CATALOG_PATH.read_bytes()
+).hexdigest()
 MAX_ACQUISITION_BINARY_EVIDENCE_BYTES = 524_288
 FORBIDDEN_LEDGER_FIELDS = frozenset(
     {
@@ -76,6 +84,32 @@ def load_schema_catalog(path: Path | None = None) -> dict[str, Any]:
     contracts = payload.get("contracts")
     if not isinstance(contracts, dict):
         raise ContractValidationError("schema catalog contracts must be an object")
+    return payload
+
+
+def load_post_search_schema_catalog(path: Path | None = None) -> dict[str, Any]:
+    """Load the separately versioned Packet 1 search contract catalog."""
+    catalog_path = path or POST_SEARCH_SCHEMA_CATALOG_PATH
+    try:
+        payload = json.loads(catalog_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ContractValidationError(
+            f"unable to load post search schema catalog: {catalog_path}"
+        ) from exc
+    if (
+        not isinstance(payload, dict)
+        or payload.get("schema_version") != SCHEMA_VERSION
+    ):
+        raise ContractValidationError("post search schema catalog version is invalid")
+    contracts = payload.get("contracts")
+    required = {
+        "post_search_request",
+        "post_search_evidence_ref",
+        "post_search_hit",
+        "post_search_response",
+    }
+    if not isinstance(contracts, dict) or not required <= set(contracts):
+        raise ContractValidationError("post search schema catalog is incomplete")
     return payload
 
 
@@ -359,6 +393,125 @@ class QueryRequest:
         }
 
 
+def _validate_post_search_filters(value: Any) -> dict[str, Any]:
+    if not isinstance(value, Mapping):
+        raise ContractValidationError("filters must be an object")
+    filters = dict(value)
+    allowed = {"sources", "published_after", "published_before"}
+    unknown = sorted(set(filters) - allowed)
+    if unknown:
+        raise ContractValidationError(
+            f"unknown post search filter fields: {', '.join(unknown)}"
+        )
+    if "sources" in filters:
+        sources = filters["sources"]
+        if (
+            not isinstance(sources, list)
+            or not 1 <= len(sources) <= 32
+            or not all(
+                isinstance(source, str) and source.strip() and len(source) <= 64
+                for source in sources
+            )
+            or len(set(sources)) != len(sources)
+        ):
+            raise ContractValidationError(
+                "filters.sources must contain 1 to 32 unique bounded strings"
+            )
+        filters["sources"] = list(sources)
+    after = None
+    before = None
+    if "published_after" in filters:
+        after = _validate_timestamp(
+            filters["published_after"], "filters.published_after"
+        )
+        filters["published_after"] = after.isoformat().replace("+00:00", "Z")
+    if "published_before" in filters:
+        before = _validate_timestamp(
+            filters["published_before"], "filters.published_before"
+        )
+        filters["published_before"] = before.isoformat().replace("+00:00", "Z")
+    if after is not None and before is not None and after > before:
+        raise ContractValidationError(
+            "filters.published_after must not exceed filters.published_before"
+        )
+    return filters
+
+
+def _validate_post_search_query(value: Any) -> str:
+    query = _require_bounded_string(value, "query", 4096)
+    if re.search(r"[A-Za-z0-9]", query) is None:
+        raise ContractValidationError("query must contain a lexical token")
+    return query
+
+
+def _validate_post_search_profile(value: Any) -> str:
+    profile_id = _require_bounded_string(value, "profile_id", 128)
+    if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}", profile_id) is None:
+        raise ContractValidationError("profile_id is invalid")
+    return profile_id
+
+
+@dataclass(frozen=True)
+class PostSearchRequest:
+    """One cache-only lexical search over current stored-post revisions."""
+
+    schema_version: int
+    request_id: str
+    profile_id: str
+    query: str
+    filters: dict[str, Any]
+    page_size: int
+    cursor: str | None
+
+    CONTRACT_NAME: ClassVar[str] = "post_search_request"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> PostSearchRequest:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("post search request must be an object")
+        _require_exact_fields(
+            payload,
+            required=frozenset(
+                {
+                    "schema_version",
+                    "request_id",
+                    "profile_id",
+                    "query",
+                    "filters",
+                    "page_size",
+                    "cursor",
+                }
+            ),
+        )
+        cursor = payload["cursor"]
+        if cursor is not None:
+            cursor = _require_bounded_string(cursor, "cursor", 4096)
+        return cls(
+            schema_version=_validate_schema_version(payload["schema_version"]),
+            request_id=_require_bounded_string(
+                payload["request_id"], "request_id", 128
+            ),
+            profile_id=_validate_post_search_profile(payload["profile_id"]),
+            query=_validate_post_search_query(payload["query"]),
+            filters=_validate_post_search_filters(payload["filters"]),
+            page_size=_require_integer_between(
+                payload["page_size"], "page_size", 1, 100
+            ),
+            cursor=cursor,
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "request_id": self.request_id,
+            "profile_id": self.profile_id,
+            "query": self.query,
+            "filters": dict(self.filters),
+            "page_size": self.page_size,
+            "cursor": self.cursor,
+        }
+
+
 def _require_optional_string(value: Any, field: str) -> str | None:
     if value is None:
         return None
@@ -382,6 +535,272 @@ def _validate_timestamp(value: Any, field: str) -> datetime:
 
 def _canonical_timestamp(value: Any, field: str) -> str:
     return _validate_timestamp(value, field).isoformat().replace("+00:00", "Z")
+
+
+@dataclass(frozen=True)
+class PostSearchEvidenceRef:
+    """Immutable storage locator returned by post search."""
+
+    storage_family: str
+    version_id: str
+    content_hash: str
+    source_url: str
+
+    CONTRACT_NAME: ClassVar[str] = "post_search_evidence_ref"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> PostSearchEvidenceRef:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("post search evidence ref must be an object")
+        _require_exact_fields(
+            payload,
+            required=frozenset(
+                {"storage_family", "version_id", "content_hash", "source_url"}
+            ),
+        )
+        storage_family = payload["storage_family"]
+        if storage_family not in {"legacy", "temporal"}:
+            raise ContractValidationError("storage_family is invalid")
+        return cls(
+            storage_family=storage_family,
+            version_id=_require_bounded_string(
+                payload["version_id"], "version_id", 256
+            ),
+            content_hash=_require_bounded_string(
+                payload["content_hash"], "content_hash", 256
+            ),
+            source_url=_require_bounded_string(
+                payload["source_url"], "source_url", 4096
+            ),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "storage_family": self.storage_family,
+            "version_id": self.version_id,
+            "content_hash": self.content_hash,
+            "source_url": self.source_url,
+        }
+
+
+@dataclass(frozen=True)
+class PostSearchHit:
+    """One current stored-post revision and its lexical match evidence."""
+
+    post_id: str
+    revision_id: str
+    storage_family: str
+    source: str
+    source_native_id: str
+    url: str
+    title: str
+    author: str | None
+    text: str
+    published_at: str | None
+    observed_at: str
+    access_partition_id: str
+    score: float
+    matching_channels: tuple[str, ...]
+    evidence_ref: PostSearchEvidenceRef
+
+    CONTRACT_NAME: ClassVar[str] = "post_search_hit"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> PostSearchHit:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("post search hit must be an object")
+        _require_exact_fields(
+            payload,
+            required=frozenset(
+                {
+                    "post_id",
+                    "revision_id",
+                    "storage_family",
+                    "source",
+                    "source_native_id",
+                    "url",
+                    "title",
+                    "author",
+                    "text",
+                    "published_at",
+                    "observed_at",
+                    "access_partition_id",
+                    "score",
+                    "matching_channels",
+                    "evidence_ref",
+                }
+            ),
+        )
+        score = payload["score"]
+        if isinstance(score, bool) or not isinstance(score, (int, float)):
+            raise ContractValidationError("score must be numeric")
+        score = float(score)
+        if not 0.0 < score <= 1.0:
+            raise ContractValidationError("score must be between 0 and 1")
+        channels = payload["matching_channels"]
+        if channels != ["lexical"]:
+            raise ContractValidationError(
+                "Packet 1 matching_channels must be exactly lexical"
+            )
+        author = payload["author"]
+        if author is not None:
+            author = _require_bounded_string(author, "author", 1024)
+        published_at = payload["published_at"]
+        if published_at is not None:
+            published_at = _canonical_timestamp(published_at, "published_at")
+        evidence_ref = PostSearchEvidenceRef.from_dict(payload["evidence_ref"])
+        storage_family = payload["storage_family"]
+        if storage_family != evidence_ref.storage_family:
+            raise ContractValidationError(
+                "storage_family must match evidence_ref.storage_family"
+            )
+        revision_id = _require_bounded_string(
+            payload["revision_id"], "revision_id", 256
+        )
+        if revision_id != evidence_ref.version_id:
+            raise ContractValidationError(
+                "revision_id must match evidence_ref.version_id"
+            )
+        url = _require_bounded_string(payload["url"], "url", 4096)
+        if url != evidence_ref.source_url:
+            raise ContractValidationError("url must match evidence_ref.source_url")
+        return cls(
+            post_id=_require_bounded_string(payload["post_id"], "post_id", 128),
+            revision_id=revision_id,
+            storage_family=storage_family,
+            source=_require_bounded_string(payload["source"], "source", 64),
+            source_native_id=_require_bounded_string(
+                payload["source_native_id"], "source_native_id", 1024
+            ),
+            url=url,
+            title=_require_bounded_string(payload["title"], "title", 4096),
+            author=author,
+            text=_require_bounded_string(payload["text"], "text", 4096),
+            published_at=published_at,
+            observed_at=_canonical_timestamp(payload["observed_at"], "observed_at"),
+            access_partition_id=_require_bounded_string(
+                payload["access_partition_id"], "access_partition_id", 256
+            ),
+            score=score,
+            matching_channels=("lexical",),
+            evidence_ref=evidence_ref,
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "post_id": self.post_id,
+            "revision_id": self.revision_id,
+            "storage_family": self.storage_family,
+            "source": self.source,
+            "source_native_id": self.source_native_id,
+            "url": self.url,
+            "title": self.title,
+            "author": self.author,
+            "text": self.text,
+            "published_at": self.published_at,
+            "observed_at": self.observed_at,
+            "access_partition_id": self.access_partition_id,
+            "score": self.score,
+            "matching_channels": list(self.matching_channels),
+            "evidence_ref": self.evidence_ref.to_dict(),
+        }
+
+
+@dataclass(frozen=True)
+class PostSearchResponse:
+    """One deterministic page pinned to the current authorized corpus head."""
+
+    schema_version: int
+    request_id: str
+    search_head_id: str
+    generated_at: str
+    query: str
+    filters: dict[str, Any]
+    sort: str
+    revision_mode: str
+    hits: tuple[PostSearchHit, ...]
+    returned: int
+    truncated: bool
+    next_cursor: str | None
+    coverage: dict[str, Any]
+
+    CONTRACT_NAME: ClassVar[str] = "post_search_response"
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> PostSearchResponse:
+        if not isinstance(payload, Mapping):
+            raise ContractValidationError("post search response must be an object")
+        _require_exact_fields(
+            payload,
+            required=frozenset(
+                {
+                    "schema_version",
+                    "request_id",
+                    "search_head_id",
+                    "generated_at",
+                    "query",
+                    "filters",
+                    "sort",
+                    "revision_mode",
+                    "hits",
+                    "returned",
+                    "truncated",
+                    "next_cursor",
+                    "coverage",
+                }
+            ),
+        )
+        if payload["sort"] != "relevance" or payload["revision_mode"] != "current":
+            raise ContractValidationError("Packet 1 supports relevance/current only")
+        raw_hits = payload["hits"]
+        if not isinstance(raw_hits, list) or len(raw_hits) > 100:
+            raise ContractValidationError("hits must be a bounded list")
+        hits = tuple(PostSearchHit.from_dict(item) for item in raw_hits)
+        returned = _require_integer_between(payload["returned"], "returned", 0, 100)
+        if returned != len(hits):
+            raise ContractValidationError("returned must equal the hit count")
+        if not isinstance(payload["truncated"], bool):
+            raise ContractValidationError("truncated must be boolean")
+        cursor = payload["next_cursor"]
+        if cursor is not None:
+            cursor = _require_bounded_string(cursor, "next_cursor", 4096)
+        coverage = _validate_json_object(payload["coverage"], "coverage")
+        return cls(
+            schema_version=_validate_schema_version(payload["schema_version"]),
+            request_id=_require_bounded_string(
+                payload["request_id"], "request_id", 128
+            ),
+            search_head_id=_require_bounded_string(
+                payload["search_head_id"], "search_head_id", 128
+            ),
+            generated_at=_canonical_timestamp(payload["generated_at"], "generated_at"),
+            query=_validate_post_search_query(payload["query"]),
+            filters=_validate_post_search_filters(payload["filters"]),
+            sort="relevance",
+            revision_mode="current",
+            hits=hits,
+            returned=returned,
+            truncated=payload["truncated"],
+            next_cursor=cursor,
+            coverage=coverage,
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "request_id": self.request_id,
+            "search_head_id": self.search_head_id,
+            "generated_at": self.generated_at,
+            "query": self.query,
+            "filters": dict(self.filters),
+            "sort": self.sort,
+            "revision_mode": self.revision_mode,
+            "hits": [hit.to_dict() for hit in self.hits],
+            "returned": self.returned,
+            "truncated": self.truncated,
+            "next_cursor": self.next_cursor,
+            "coverage": dict(self.coverage),
+        }
 
 
 @dataclass(frozen=True)
@@ -2602,6 +3021,10 @@ class DecisionRecord:
 ContractEnvelope = (
     QueryRequest
     | QueryResponse
+    | PostSearchRequest
+    | PostSearchResponse
+    | PostSearchHit
+    | PostSearchEvidenceRef
     | ServiceInfo
     | EvidenceItem
     | TemporalEvidenceRef
@@ -2621,6 +3044,10 @@ ContractEnvelope = (
 _CONTRACT_TYPES = {
     QueryRequest.CONTRACT_NAME: QueryRequest,
     QueryResponse.CONTRACT_NAME: QueryResponse,
+    PostSearchRequest.CONTRACT_NAME: PostSearchRequest,
+    PostSearchResponse.CONTRACT_NAME: PostSearchResponse,
+    PostSearchHit.CONTRACT_NAME: PostSearchHit,
+    PostSearchEvidenceRef.CONTRACT_NAME: PostSearchEvidenceRef,
     ServiceInfo.CONTRACT_NAME: ServiceInfo,
     EvidenceItem.CONTRACT_NAME: EvidenceItem,
     TemporalEvidenceRef.CONTRACT_NAME: TemporalEvidenceRef,

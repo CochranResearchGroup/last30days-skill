@@ -93,6 +93,13 @@ class ServiceClient:
             self._request("POST", "/v1/query", request.to_dict())
         )
 
+    def search_posts(
+        self, request: contracts.PostSearchRequest
+    ) -> contracts.PostSearchResponse:
+        return contracts.PostSearchResponse.from_dict(
+            self._request("POST", "/v1/posts/search", request.to_dict())
+        )
+
     def job(self, job_id: str) -> contracts.JobRecord:
         encoded = urllib.parse.quote(job_id, safe="")
         return contracts.JobRecord.from_dict(

@@ -222,6 +222,32 @@ The coordinator/operator must first update the applicable forge target policy
 to allow PR creation for the owned fork (without activating GitHub Issues or
 tracker mutation), then resume with the exact instruction below.
 
+### Checkpoint P0086-C04 | 2026-09-13
+
+Plan version: 1
+
+State: `OPEN`; Packet 1 remains acceptance-complete and is reconciled with the
+integrated P34 runtime doctor and P33 stored-post search packets.
+
+Reconciliation evidence:
+
+- current `origin/main` is
+  `75e7771e006f52847e8e47c1059b2b2000fb8ac7`, containing merged PRs 35 and
+  36;
+- the only textual merge conflicts were generated MCP catalog facts and the
+  checked-in source runtime manifest; both were regenerated from the combined
+  canonical schemas and sources rather than hand-selected;
+- application, HTTP, MCP, documentation, and test joins merged automatically;
+- 122 combined search, follow, MCP integration, runtime-package, migration,
+  isolated-runtime, and plan-authority tests passed;
+- the complete Python suite passed, as did all MCP Go tests and `go vet`;
+- no installed runtime, database, provider, browser, schedule, tracker,
+  staging, production, release, or deployment state was touched.
+
+Next action or stop reason: commit and publish this exact reconciliation, then
+retain the C03 PR-creation policy gate until the operator explicitly authorizes
+that action after notice. Do not begin Packet 2 or merge this lane implicitly.
+
 ## Start Checklist
 
 - verify registered worktree/ref/checkpoint and current `origin/main`;
@@ -242,7 +268,7 @@ tracker mutation), then resume with the exact instruction below.
 
 Resume WI-004 / P35 in
 `/home/ecochran76/workspace.local/last30days-skill-wi004` on
-`feat/x-tailored-follows-v1` from published checkpoint P0086-C03 after the
+`feat/x-tailored-follows-v1` from published checkpoint P0086-C04 after the
 applicable forge target policy explicitly allows PR creation for
 `github.com/CochranResearchGroup/last30days-skill`; fetch and verify current
 `origin/main`, confirm local/remote branch equality, rerun duplicate PR

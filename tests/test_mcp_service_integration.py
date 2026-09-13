@@ -146,6 +146,7 @@ def test_real_service_mcp_discovery_query_refresh_and_poll(tmp_path):
                 [
                     "service_info",
                     "query",
+                    "search_posts",
                     "refresh",
                     "job_status",
                     "topic",
@@ -176,6 +177,25 @@ def test_real_service_mcp_discovery_query_refresh_and_poll(tmp_path):
             assert info_payload["mcp_supported_database_schema_max"] == 18
             assert info_payload["compatibility_state"] == "compatible"
             assert len(info_payload["runtime_manifest_sha256"]) == 64
+            search = _call(
+                mcp,
+                41,
+                "tools/call",
+                {
+                    "name": "search_posts",
+                    "arguments": {
+                        "query": "integration fixture",
+                        "page_size": 10,
+                    },
+                },
+            )
+            search_payload = json.loads(search["result"]["content"][0]["text"])
+            assert search_payload["returned"] == 0
+            assert search_payload["revision_mode"] == "current"
+            assert search_payload["coverage"]["storage_families"] == [
+                "legacy",
+                "temporal",
+            ]
             query = _call(
                 mcp,
                 4,

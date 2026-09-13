@@ -3,6 +3,8 @@ package tools
 import (
 	"context"
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
@@ -67,6 +69,7 @@ func TestToolSurfaceNamesAndAnnotations(t *testing.T) {
 			t.Fatalf("%s is not idempotent", registration.tool.Name)
 		}
 		wantReadOnly := registration.tool.Name == "service_info" ||
+			registration.tool.Name == "search_posts" ||
 			registration.tool.Name == "job_status" ||
 			registration.tool.Name == "temporal_query" ||
 			registration.tool.Name == "profile_history" ||
@@ -84,12 +87,69 @@ func TestToolSurfaceNamesAndAnnotations(t *testing.T) {
 		}
 	}
 	wantNames := []string{
-		"service_info", "query", "refresh", "job_status", "topic",
+		"service_info", "query", "search_posts", "refresh", "job_status", "topic",
 		"temporal_query", "profile_history", "coverage", "collection",
 		"maintenance_status",
 	}
 	if !reflect.DeepEqual(gotNames, wantNames) {
 		t.Fatalf("tool names = %v, want %v", gotNames, wantNames)
+	}
+}
+
+func TestSearchPostsBuildsStrictCacheOnlyContract(t *testing.T) {
+	fake := &fakeService{response: json.RawMessage(`{"returned":2}`)}
+	handler := makePostSearchHandler(fake)
+	raw, readErr := os.ReadFile(filepath.Join(
+		"..", "..", "..", "tests", "fixtures", "post_search_packet1.json",
+	))
+	if readErr != nil {
+		t.Fatal(readErr)
+	}
+	var fixture struct {
+		MCPArguments map[string]any `json:"mcp_arguments"`
+	}
+	if decodeErr := json.Unmarshal(raw, &fixture); decodeErr != nil {
+		t.Fatal(decodeErr)
+	}
+	args := fixture.MCPArguments
+
+	result, err := handler(context.Background(), callRequest(args))
+	if err != nil || result.IsError || fake.postPath != "/v1/posts/search" {
+		t.Fatalf("search result = %+v, path = %q, err = %v", result, fake.postPath, err)
+	}
+	if fake.postBody["profile_id"] != "default" ||
+		fake.postBody["query"] != "reliable browser agents" ||
+		fake.postBody["page_size"] != 20 ||
+		fake.postBody["cursor"] != nil {
+		t.Fatalf("search payload = %#v", fake.postBody)
+	}
+	filters := fake.postBody["filters"].(map[string]any)
+	if !reflect.DeepEqual(filters["sources"], []string{"reddit", "x"}) ||
+		filters["published_after"] != "2026-09-01T00:00:00Z" ||
+		filters["published_before"] != "2026-09-13T23:59:59Z" {
+		t.Fatalf("search filters = %#v", filters)
+	}
+	if fake.postBody["request_id"] == "" || textResult(result) != `{"returned":2}` {
+		t.Fatalf("search result = %q, payload = %#v", textResult(result), fake.postBody)
+	}
+
+	for _, invalid := range []map[string]any{
+		{},
+		{"query": "---"},
+		{"query": "x", "unknown": true},
+		{"query": "x", "sources": []any{"reddit", "reddit"}},
+		{"query": "x", "page_size": float64(101)},
+		{"query": "x", "profile_id": "invalid profile"},
+		{"query": "x", "published_after": "not-a-time"},
+		{"query": "x", "published_after": "2026-09-14T00:00:00Z", "published_before": "2026-09-13T00:00:00Z"},
+	} {
+		invalidFake := &fakeService{}
+		invalidResult, invalidErr := makePostSearchHandler(invalidFake)(
+			context.Background(), callRequest(invalid),
+		)
+		if invalidErr != nil || invalidResult == nil || !invalidResult.IsError || invalidFake.postPath != "" {
+			t.Fatalf("invalid args %#v: result = %+v, path = %q, err = %v", invalid, invalidResult, invalidFake.postPath, invalidErr)
+		}
 	}
 }
 

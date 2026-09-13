@@ -6,6 +6,11 @@
       "source": "service/VERSION"
     },
     {
+      "path": "schemas/post-search-contracts-v1.json",
+      "sha256": "420c8437d213fb67438a79ad4830f28352ad29c1b6db7dc72dc2f93842265ff4",
+      "source": "skills/last30days/schemas/post-search-contracts-v1.json"
+    },
+    {
       "path": "schemas/service-contracts-v1.json",
       "sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
       "source": "skills/last30days/schemas/service-contracts-v1.json"
@@ -297,12 +302,12 @@
     },
     {
       "path": "scripts/lib/service_app.py",
-      "sha256": "4d9c4df9c016851a3dfccbb6e3af57e3c90a1d14c517c9f6d0e4ae622ce65870",
+      "sha256": "9380fb2d8fb964a38c7c5f92753a2b146a417ffa42407e98037a6419aeac4bd0",
       "source": "skills/last30days/scripts/lib/service_app.py"
     },
     {
       "path": "scripts/lib/service_client.py",
-      "sha256": "6ba6fbaaacc3874e4808a97d99231e4da8f0c4946c7000871f23b5cbc356f078",
+      "sha256": "0bab8e9ce5ca4cf75da12a4c71d3203b76576b47b889e0c8208057919721789b",
       "source": "skills/last30days/scripts/lib/service_client.py"
     },
     {
@@ -312,7 +317,7 @@
     },
     {
       "path": "scripts/lib/service_contracts.py",
-      "sha256": "33f88389785221f315daec008e71bd9acc996f29a703651d1520a596fb98fc12",
+      "sha256": "d0133538e1753801ccc0ab69731c1ca73b1e8ab7718a5e53a6490cbbf390b373",
       "source": "skills/last30days/scripts/lib/service_contracts.py"
     },
     {
@@ -332,7 +337,7 @@
     },
     {
       "path": "scripts/lib/service_http.py",
-      "sha256": "8cc980ce0047868981d160a8d40f89a664c4cbcc1cae9c25e340307ff9c34463",
+      "sha256": "99abd6753523013e574f9e288812cbcd33a102dee43afc3cacf357555f5e9e8e",
       "source": "skills/last30days/scripts/lib/service_http.py"
     },
     {
@@ -354,6 +359,11 @@
       "path": "scripts/lib/service_knowledge.py",
       "sha256": "b0aecd40e5036c19d22349f5b0d896443f88850e04f9e4fa49157ba6a9a0921c",
       "source": "skills/last30days/scripts/lib/service_knowledge.py"
+    },
+    {
+      "path": "scripts/lib/service_post_search.py",
+      "sha256": "2a98725c7b7f02ad023539e9c68ab647f670b0b4d8ca0bc9111a7174fd5af916",
+      "source": "skills/last30days/scripts/lib/service_post_search.py"
     },
     {
       "path": "scripts/lib/service_profiles.py",

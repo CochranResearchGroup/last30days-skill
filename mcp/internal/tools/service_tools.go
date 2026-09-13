@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 
 	mcplib "github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
@@ -21,6 +22,7 @@ import (
 const serviceInfoURI = "last30days://capabilities"
 
 var profileIDPattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$`)
+var lexicalQueryPattern = regexp.MustCompile(`[A-Za-z0-9]`)
 
 // ServiceAPI is the narrow transport seam used by handlers and tests.
 type ServiceAPI interface {
@@ -171,6 +173,54 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 		),
 	}
 	queryOptions = append(queryOptions, commonAnnotations(false, true)...)
+
+	postSearchOptions := []mcplib.ToolOption{
+		mcplib.WithDescription(
+			"Search current stored-post revisions across the authorized cache. This tool is read-only and never acquires provider data.",
+		),
+		mcplib.WithString(
+			"query",
+			mcplib.Required(),
+			mcplib.Description("Lexical post search query."),
+			mcplib.MinLength(1),
+			mcplib.MaxLength(4096),
+		),
+		mcplib.WithString(
+			"profile_id",
+			mcplib.Description("Authorized profile whose public and private partitions may be searched."),
+			mcplib.MaxLength(128),
+			mcplib.DefaultString("default"),
+		),
+		mcplib.WithArray(
+			"sources",
+			mcplib.Description("Optional exact source names to include."),
+			mcplib.WithStringItems(mcplib.MinLength(1), mcplib.MaxLength(64)),
+			mcplib.MaxItems(32),
+		),
+		mcplib.WithString(
+			"published_after",
+			mcplib.Description("Optional inclusive ISO-8601 lower publication bound."),
+			mcplib.MaxLength(64),
+		),
+		mcplib.WithString(
+			"published_before",
+			mcplib.Description("Optional inclusive ISO-8601 upper publication bound."),
+			mcplib.MaxLength(64),
+		),
+		mcplib.WithInteger(
+			"page_size",
+			mcplib.Description("Maximum posts in this deterministic page."),
+			mcplib.Min(1),
+			mcplib.Max(100),
+			mcplib.DefaultNumber(20),
+		),
+		mcplib.WithString(
+			"cursor",
+			mcplib.Description("Opaque cursor returned by the preceding page."),
+			mcplib.MaxLength(4096),
+		),
+	}
+	postSearchOptions = append(postSearchOptions, commonAnnotations(true, false)...)
 
 	refreshOptions := []mcplib.ToolOption{
 		mcplib.WithDescription(
@@ -338,6 +388,10 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 			handler: makeQueryHandler(client, false),
 		},
 		{
+			tool:    mcplib.NewTool("search_posts", postSearchOptions...),
+			handler: makePostSearchHandler(client),
+		},
+		{
 			tool:    mcplib.NewTool("refresh", refreshOptions...),
 			handler: makeQueryHandler(client, true),
 		},
@@ -392,6 +446,20 @@ func makeQueryHandler(client ServiceAPI, forceRefresh bool) server.ToolHandlerFu
 			return mcplib.NewToolResultError(err.Error()), nil
 		}
 		response, err := client.Post(ctx, "/v1/query", payload)
+		return toolResult(response, err)
+	}
+}
+
+func makePostSearchHandler(client ServiceAPI) server.ToolHandlerFunc {
+	return func(
+		ctx context.Context,
+		req mcplib.CallToolRequest,
+	) (*mcplib.CallToolResult, error) {
+		payload, err := postSearchPayload(req.GetArguments())
+		if err != nil {
+			return mcplib.NewToolResultError(err.Error()), nil
+		}
+		response, err := client.Post(ctx, "/v1/posts/search", payload)
 		return toolResult(response, err)
 	}
 }
@@ -546,6 +614,94 @@ func queryPayload(args map[string]any, forceRefresh bool) (map[string]any, error
 		"top_k":            topK,
 		"max_chars":        maxChars,
 		"wait_ms":          0,
+	}
+	payload["request_id"] = stableRequestID(payload)
+	return payload, nil
+}
+
+func postSearchPayload(args map[string]any) (map[string]any, error) {
+	allowed := map[string]struct{}{
+		"query": {}, "profile_id": {}, "sources": {},
+		"published_after": {}, "published_before": {},
+		"page_size": {}, "cursor": {},
+	}
+	for name := range args {
+		if _, ok := allowed[name]; !ok {
+			return nil, fmt.Errorf("unknown argument: %s", name)
+		}
+	}
+	query, err := requireString(args, "query", 4096)
+	if err != nil {
+		return nil, err
+	}
+	if !lexicalQueryPattern.MatchString(query) {
+		return nil, errors.New("query must contain a lexical token")
+	}
+	profileID := "default"
+	if _, supplied := args["profile_id"]; supplied {
+		profileID, err = requireString(args, "profile_id", 128)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if !profileIDPattern.MatchString(profileID) {
+		return nil, errors.New("profile_id is invalid")
+	}
+	sources, err := stringArrayArgument(args, "sources", 32, 64)
+	if err != nil {
+		return nil, err
+	}
+	if raw, supplied := args["sources"]; supplied {
+		length := 0
+		switch values := raw.(type) {
+		case []any:
+			length = len(values)
+		case []string:
+			length = len(values)
+		}
+		if length == 0 || len(sources) != length {
+			return nil, errors.New("sources must contain unique values")
+		}
+	}
+	filters := map[string]any{}
+	if len(sources) > 0 {
+		filters["sources"] = sources
+	}
+	parsedTimes := map[string]time.Time{}
+	for _, name := range []string{"published_after", "published_before"} {
+		if value, ok, stringErr := optionalString(args, name, 64); stringErr != nil {
+			return nil, stringErr
+		} else if ok {
+			parsed, parseErr := time.Parse(time.RFC3339, value)
+			if parseErr != nil {
+				return nil, fmt.Errorf("%s must be an ISO-8601 timestamp with timezone", name)
+			}
+			parsedTimes[name] = parsed
+			filters[name] = value
+		}
+	}
+	if after, ok := parsedTimes["published_after"]; ok {
+		if before, exists := parsedTimes["published_before"]; exists && after.After(before) {
+			return nil, errors.New("published_after must not exceed published_before")
+		}
+	}
+	pageSize, err := integerArgument(args, "page_size", 20, 1, 100)
+	if err != nil {
+		return nil, err
+	}
+	cursor := any(nil)
+	if value, ok, stringErr := optionalString(args, "cursor", 4096); stringErr != nil {
+		return nil, stringErr
+	} else if ok {
+		cursor = value
+	}
+	payload := map[string]any{
+		"schema_version": servicecontracts.SchemaVersion,
+		"profile_id":     profileID,
+		"query":          query,
+		"filters":        filters,
+		"page_size":      pageSize,
+		"cursor":         cursor,
 	}
 	payload["request_id"] = stableRequestID(payload)
 	return payload, nil
