@@ -1,6 +1,6 @@
 # Plan 0088 | Implementation Lane Activation Reconciliation
 
-State: OPEN
+State: CLOSED
 Lane: P42
 Work item: WI-000
 Branch: docs/implementation-lane-activation-reconciliation
@@ -29,8 +29,11 @@ Packet 1 implementation resumes.
   `8b97f0b65f2ec62d84a26c9fc3c4fcd653f73d20`;
 - all three worktrees are clean and each local branch equals its owned-fork
   remote ref; Packet 1 implementation and feature PRs have not begun;
-- canonical projections still show the plan-only launch checkpoints and must be
-  reconciled by the coordinator before the lane sessions resume.
+- PR 33 merged the reconciled projections and branch-local planning-audit
+  support to canonical `main` at
+  `39dfd12610ca954557a53f5da7c3619b1bc208ba`;
+- the three original feature threads remain the owners of their clean Packet 1
+  worktrees and can now resume after reconciling that canonical merge.
 
 ## Scope
 
@@ -106,6 +109,30 @@ Final audits and PR integration remain.
 
 Next action or stop reason: validate and integrate the activation projection,
 close P42, then resume the same three threads on their Packet 1 scopes.
+
+### Checkpoint P0088-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `outcome_progress`; the activation projection and
+the branch-local plan audit contract are integrated on canonical `main`.
+
+Authority classification:
+
+- `inherited_authority` for coordinator closeout, cleanup, and exact-session
+  resume; installed/live/provider effects remain outside this packet.
+
+Evidence: PR 33 merged source checkpoint
+`58cb25491a24aff385e0185151e9e1de216c98b4` as
+`39dfd12610ca954557a53f5da7c3619b1bc208ba`; 34 focused tests and both planning
+audits passed, and the exact P33/P34/P35 lane audit reported
+`registered_active` with no problems.
+
+Next action or stop reason: close the P42 projection through a final
+documentation-only PR, remove only its coordinator worktree and refs, and
+resume the original P33/P34/P35 threads on Packet 1.
 
 ## Stop Rules
 

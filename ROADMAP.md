@@ -2912,21 +2912,21 @@ Next Bounded Action:
 
 ## P42 | Implementation Lane Activation Reconciliation
 
-State: OPEN
+State: CLOSED
 
 Objective: reconcile three independently owned `OPEN` Packet 1 checkpoints
 into the canonical shared projections before feature implementation resumes.
 
 Current State:
 
-- WI-001, WI-002, and WI-004 have distinct top-level Codex owners and clean,
-  published activation checkpoints;
-- this coordinator packet updates only shared roadmap, work-item, lane-catalog,
-  and chronological authority;
-- feature implementation and all installed/live/provider effects remain
-  untouched.
+- PR 33 integrated the exact WI-001, WI-002, and WI-004 activation checkpoints
+  plus planning-audit support for cataloged branch-local plans;
+- all three feature lanes remain clean, remotely custodied, and owned by their
+  original top-level Codex threads;
+- feature implementation and all installed/live/provider effects remained
+  untouched by P42.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0088-2026-09-13-implementation-lane-activation-reconciliation.md`.
 
@@ -2935,7 +2935,7 @@ Dependencies:
 - consumes the exact P33/P34/P35 activation refs; blocks their implementation
   resume until the canonical projection is integrated and audited.
 
-Next Bounded Action:
+Resume Action:
 
-- validate and integrate the activation projection, close P42, then resume the
-  same three owning sessions for Packet 1 only.
+- resume the same three owning sessions after they reconcile canonical `main`,
+  then execute Packet 1 only.
