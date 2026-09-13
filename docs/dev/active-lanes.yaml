@@ -8,11 +8,13 @@ lanes:
     branch: docs/next-wave-integration-reconciliation
     target: main
     plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 169a45b86735e1d4ccb48346d0f044f86105d610
+    custody_state: INTEGRATION_READY
+    checkpoint: a542c5e0ac701d4d91836873bf0de4c74edf50bb
     remote_ref: refs/remotes/origin/docs/next-wave-integration-reconciliation
     integration: merge
     integration_receipt: null
+    validation_status: passed
+    validation_ref: a542c5e0ac701d4d91836873bf0de4c74edf50bb
     dependencies: [P36, P37, P40]
     overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, service/runtime-manifest.json]
     reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, service/runtime-manifest.json]

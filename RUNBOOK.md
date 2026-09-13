@@ -28468,7 +28468,12 @@ Validation Evidence:
   issues, while the comprehensive planning audit adds zero findings beyond its
   accepted historical baseline;
 - Python compilation, reproducible service `0.3.116` runtime build, and patch
-  hygiene pass; published-ref lane-catalog verification follows the commit.
+  hygiene pass;
+- froze the validated coordinator branch clean and remote-equal at
+  `a542c5e0ac701d4d91836873bf0de4c74edf50bb`; the publication-only
+  `integration/next-wave-packet1-pr` branch records that immutable checkpoint
+  so the catalog does not depend on a self-referential SHA;
+- published-ref lane-catalog verification follows the projection commit.
 
 State Movement:
 

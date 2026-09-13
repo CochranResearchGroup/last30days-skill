@@ -173,6 +173,28 @@ Next action:
 
 Checkpoint P0094-C02 is the current authority.
 
+### Checkpoint P0094-C03 | 2026-09-13
+
+Plan version: 1
+
+State transition: none; Plan 0094 remains `OPEN` at the pull-request gate.
+
+Custody reconciliation:
+
+- the validated coordinator branch is frozen, clean, and remote-equal at
+  `a542c5e0ac701d4d91836873bf0de4c74edf50bb`;
+- the publication-only branch `integration/next-wave-packet1-pr` carries the
+  catalog projection that records that immutable checkpoint, avoiding an
+  impossible self-referential branch-tip value;
+- no feature code changed after the 2,838-test comprehensive pass.
+
+Next action:
+
+- publish the projection branch, require its active-lane audit to pass against
+  the published ref, then open the one owned-fork pull request.
+
+Checkpoint P0094-C03 is the current authority.
+
 ## Next Action
 
 Integrate and validate the exact P36/P37/P40 checkpoints, then open one
