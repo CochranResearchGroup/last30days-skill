@@ -1,6 +1,6 @@
 # Plan 0073 | Canonical Worktree And P08 Custody Reconciliation
 
-State: OPEN
+State: CLOSED
 Lane: P30
 Branch: docs/p08-custody-reconciliation
 Target: main
@@ -132,3 +132,44 @@ Next action:
 - validate restored artifacts, policy routing, P08 archive custody, and the
   unchanged set of unrelated catalog findings, then integrate through the
   public fork.
+
+### Checkpoint P0073-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `verified_outcome`; canonical custody, selective
+historical restoration, and P08 archive classification are integrated.
+
+Authority classification:
+
+- `inherited_authority`; public-fork integration and closeout complete the
+  operator-authorized reconciliation.
+
+Validation evidence:
+
+- pull request 8 merged source tip
+  `1b6fe5e094cf277c29b9e69e066688a11f0db2dd` as
+  `abf39f35af9ed6f95f1739bae80cf356cd9896e7` on `origin/main`;
+- the canonical worktree fast-forwarded cleanly to that exact merge and is
+  clean, on `main`, and equal to `origin/main`;
+- both archive refs still resolve to P08 tip `378788ba`; all nine restored
+  artifacts remain byte-equal to that archive;
+- 13 focused tests and the plan authority audit pass. P08's active-lane result
+  is exactly `archived_ref` with no P08 problem; the pre-existing
+  P23/P25/P26/P27 findings remain outside scope.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary agent retained end-to-end custody.
+
+Graphiti write status:
+
+- `not_written`; integrated Git and repository receipts are authoritative.
+
+Next action:
+
+- none for P30. Retain the archive and address the remaining catalog lanes as
+  separate bounded reconciliation work before deleting historical refs or
+  worktrees.

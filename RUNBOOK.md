@@ -26775,3 +26775,52 @@ Next Bounded Action:
 
 - complete deterministic validation, publish and merge the reconciliation,
   then record the exact integration receipt and close P30.
+
+## Turn 423 | 2026-09-13
+
+Focus: Plan 0073/P30 integration reconciliation and closeout.
+
+Authority Consulted:
+
+- Plan 0073/C01, P30, pull request 8 and `origin/main` readback, canonical
+  worktree policy, archive refs, validation, and closeout policy.
+
+Decisions And Changes:
+
+- verified pull request 8 integrated the selective P08 reconciliation;
+- fast-forwarded canonical `/home/ecochran76/workspace.local/last30days-skill`
+  to exact current `origin/main` before opening this closeout worktree;
+- reconciled Plan 0073, P30, runbook, and active-plan test expectation to the
+  closed state;
+- retained both original P08 branch refs and the exact archive refs; no
+  historical worktree or ref was deleted;
+- made no source-code, installed Skill, service, browser, provider, schedule,
+  credential, database, or runtime change.
+
+Validation Evidence:
+
+- source tip `1b6fe5e094cf277c29b9e69e066688a11f0db2dd` is integrated as
+  `abf39f35af9ed6f95f1739bae80cf356cd9896e7` on `origin/main`;
+- canonical `main` is clean and equal to `origin/main` at that merge;
+- both archive refs resolve to `378788ba`, all nine restored artifacts are
+  byte-equal, 13 focused tests pass, and the plan authority audit reports no
+  issues;
+- P08 audits only as `archived_ref`. Existing P23/P25/P26/P27 findings remain
+  visible and unchanged.
+
+State Movement:
+
+- Plan 0073/P30 `active -> closed`; P08 custody remains truthfully archived.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; primary-agent ref and integration evidence is authoritative.
+
+Graphiti Write Status:
+
+- `not_written`; integrated repository and Git receipts are authoritative.
+
+Next Bounded Action:
+
+- reconcile the remaining P23/P25/P26/P27 catalog and worktree debt in bounded
+  slices before deleting any historical branches or worktrees.
