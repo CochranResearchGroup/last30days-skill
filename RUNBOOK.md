@@ -28027,3 +28027,48 @@ Next Bounded Action:
 
 - validate/integrate this registration, close P41, and hand the three prepared
   worktrees to independent top-level sessions.
+
+## Turn 446 | 2026-09-13
+
+Focus: Plan 0087/P41 integration and launch-registration closeout.
+
+Authority Consulted:
+
+- Plan 0087/C01, P41, PR 31, `origin/main`, P33/P34/P35 plan refs, and current
+  worktree/remote custody evidence.
+
+Decisions And Changes:
+
+- verified PR 31 integrated exact Packet 1 plan/checkpoint projections;
+- fast-forwarded canonical Git to exact `origin/main` before closeout;
+- closed only the coordinator registration plan while leaving feature plans
+  `PLANNED` in clean dedicated worktrees for top-level session takeover;
+- preserved the coordinator as shared-contract owner and did not start feature
+  implementation or emulate sessions with subagents;
+- made no tracker, runtime, database, browser/provider, schedule, staging,
+  release, or production mutation.
+
+Validation Evidence:
+
+- PR 31 merged `46d3f6dc` as `7b4e0ef1`;
+- P33/P34/P35 refs resolve locally and remotely to `05955f75`, `8be96fb0`, and
+  `5d0acd12`, and their worktrees are clean;
+- final 62-test, plan, and lane audits remain to run after rendering.
+
+State Movement:
+
+- Plan 0087/P41 `active -> closed`; P33/P34/P35 remain
+  `PLANNED/ACTIVE_WORKTREE` awaiting distinct top-level session owners.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; separate top-level sessions remain the selected topology.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; no duplicate write was queued.
+
+Next Bounded Action:
+
+- integrate this closeout and remove only P41's temporary worktree/ref; keep
+  the three feature worktrees and refs intact for immediate session launch.
