@@ -1,6 +1,6 @@
 # Plan 0085 | Isolated Development Runtime Packet 1 Identity Tracer
 
-State: PLANNED
+State: OPEN
 Lane: P34
 Work item: WI-001
 Branch: feat/isolated-dev-runtime-v1
@@ -21,7 +21,10 @@ a read-only doctor that starts no process.
 - Plan 0077 and note 0118 are the accepted architecture;
 - production has one managed user service, socket, database, config, logs, and
   identity; no staging or per-lane runtime has been provisioned;
-- this launch ref contains only this plan and has not started implementation;
+- registered launch checkpoint `8be96fb07baed08c68b8935f405e7a7f70877795`
+  was verified clean and reconciled by merge with `origin/main` at
+  `b92160a600ee93f2b3bb21899d7e6f31cbb3a0ae`;
+- Packet 1 implementation has not started and no runtime state was mutated;
 - GitHub Issues remain disabled, so WI-001 is the work-item locator.
 
 ## Scope
@@ -51,7 +54,10 @@ a read-only doctor that starts no process.
 ## Execution Packet
 
 - accountable human owner: repository operator;
-- execution owner: next top-level Codex session opened in this worktree;
+- execution owner: top-level Codex thread/session
+  `01a09caa-90aa-78d0-af02-59d9a7d80eea`;
+- runtime-reported model: unavailable; the session environment exposed no
+  effective model identity, so none is inferred;
 - coordination owner: coordinator session for catalog/runtime joins;
 - expected writes: repo-only descriptor/doctor modules, CLI/dev helper surface,
   focused tests/fixtures, configuration/docs if a user-facing knob is added,
@@ -83,9 +89,38 @@ delegation without a plan revision.
 - stop before staging/production or provider/browser access;
 - stop and reconcile overlapping runtime/install work.
 
+## Activation Checkpoint
+
+### Checkpoint P0085-C01 | 2026-09-13
+
+- state transition: `PLANNED -> OPEN`;
+- progress classification: `outcome_progress`; the registered lane is owned,
+  reconciled, and recoverably ready for Packet 1 implementation;
+- authority classification: `inherited_authority` for this branch-local plan,
+  Git reconciliation, validation, commit, and push; `not_authorized` for shared
+  coordinator state, runtime/provider/tracker effects, or Packet 1 code in this
+  activation turn;
+- starting checkpoint: local, remote, and registered
+  `8be96fb07baed08c68b8935f405e7a7f70877795`, with a clean worktree;
+- reconciliation: merge commit
+  `08997a972a0ec543fbefa328174ffa325575c422` incorporates `origin/main`
+  `b92160a600ee93f2b3bb21899d7e6f31cbb3a0ae`; protected coordinator paths are
+  byte-equal to that remote main;
+- discovery: Graphiti was healthy but returned no relevant WI-001/P34 facts;
+  CodeGraph could not inspect this worktree because it has no `.codegraph/`
+  index, and activation scope did not authorize initialization;
+- validation: focused plan-authority tests and repo-native plan authority audit
+  pass; the general planning audit reports only the expected branch-local
+  ROADMAP/RUNBOOK wiring findings reserved to the coordinator;
+- Graphiti write status: `not_written`; this activation expressly forbids
+  database mutation;
+- remaining acceptance: all five Packet 1 criteria remain unimplemented.
+
 ## Next Action
 
-Open one independent top-level Codex session in
-`/home/ecochran76/workspace.local/last30days-skill-wi001`, take custody of this
-plan, register its `OPEN/ACTIVE_WORKTREE` transition through the coordinator,
-and implement only the descriptor and read-only doctor tracer.
+Resume this independent top-level lane in
+`/home/ecochran76/workspace.local/last30days-skill-wi001` on
+`feat/isolated-dev-runtime-v1`; verify the published activation checkpoint and
+clean local/remote equality, then implement only Packet 1's strict descriptor,
+deterministic paths, collision/environment-deny checks, read-only `doctor`, and
+provider-free fixtures without starting or mutating any runtime.
