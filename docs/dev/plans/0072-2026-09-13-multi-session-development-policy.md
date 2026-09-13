@@ -1,6 +1,6 @@
 # Plan 0072 | Multi-Session Development Policy
 
-State: OPEN
+State: CLOSED
 Lane: P29
 Branch: docs/multi-session-development-policy
 Target: main
@@ -113,3 +113,41 @@ Next action:
 - integrate the validated documentation candidate through the public fork,
   record the exact merge receipt, and close Plan 0072/P29 before using the new
   model to bootstrap the work-item tracker.
+
+### Checkpoint P0072-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `verified_outcome`; the policy source is integrated
+into the public fork and all acceptance criteria pass.
+
+Authority classification:
+
+- `inherited_authority`; public-fork integration and durable closeout complete
+  the operator-requested policy change.
+
+Validation evidence:
+
+- pull request 6 merged source commit `901c5216fb0045961d29ba877f9c45acd94e7107`
+  as `84eb9ee002fc47f0be2e680c93d88792ccfc989d` on `origin/main`;
+- the source commit is an ancestor of current `origin/main`;
+- focused plan-authority and canonical-guidance tests pass, the authority audit
+  reports no issues, every wired policy path exists, policy filename identities
+  are unique, and `git diff --check` passes.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the primary agent retained ownership through integration and
+  closeout.
+
+Graphiti write status:
+
+- `not_written`; integrated repository policy, this plan, and the runbook are
+  the authoritative record.
+
+Next action:
+
+- none for P29. A separately authorized successor may enable and configure the
+  GitHub work-item surface before the first parallel product lanes open.

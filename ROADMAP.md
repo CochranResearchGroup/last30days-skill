@@ -2473,7 +2473,7 @@ are ready, with no abandoned tick work. Receipt: `docs/dev/notes/0066-full-tick-
 
 ## P29 | Multi-Session Development Operating Model
 
-State: OPEN
+State: CLOSED
 
 Objective: make coordinator, feature-lane, hotfix, worktree, work-item, and
 runtime ownership durable before opening parallel product-development lanes.
@@ -2489,7 +2489,7 @@ Current State:
 - stale `AGENTS.md` pointers to nonexistent duplicate policies are removed and
   every new agent is routed to the durable operating model.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0072-2026-09-13-multi-session-development-policy.md`.
 
@@ -2500,6 +2500,6 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate Plan 0072 through the public fork and record its merge receipt;
-  then open a successor governance-bootstrap work item to enable and configure
-  the GitHub tracker.
+- none for P29. Open a separately authorized governance-bootstrap successor to
+  enable and configure the GitHub tracker before launching independent product
+  lanes.

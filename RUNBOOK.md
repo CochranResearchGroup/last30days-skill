@@ -26671,3 +26671,48 @@ Next Bounded Action:
 - integrate the candidate through the public fork, then open the bounded
   closeout receipt; only afterward open the bounded GitHub tracker bootstrap
   before launching independent feature sessions.
+
+## Turn 421 | 2026-09-13
+
+Focus: Plan 0072/P29 integration reconciliation and closeout.
+
+Authority Consulted:
+
+- Plan 0072/C01, P29, public-fork integration readback, and validation and
+  closeout policy.
+
+Decisions And Changes:
+
+- verified pull request 6 merged the exact source policy candidate into
+  `origin/main`;
+- reconciled plan, roadmap, runbook, and deterministic active-plan expectation
+  to the integrated closed state;
+- left GitHub Issues/Projects, branch protection, installations, services,
+  browsers, providers, schedules, credentials, and runtimes unchanged.
+
+Validation Evidence:
+
+- source commit `901c5216fb0045961d29ba877f9c45acd94e7107` is an ancestor of
+  merge commit `84eb9ee002fc47f0be2e680c93d88792ccfc989d` on `origin/main`;
+- focused plan-authority and canonical-guidance tests, the repository authority
+  audit, policy pointer and identity checks, and `git diff --check` pass.
+
+State Movement:
+
+- Plan 0072/P29 `active -> closed`; the external tracker and product lanes
+  remain unstarted successor work.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; primary-agent integration readback is authoritative.
+
+Graphiti Write Status:
+
+- `not_written`; the integrated policy, Plan 0072/C02, and this turn are the
+  authoritative durable record.
+
+Next Bounded Action:
+
+- none for P29. When authorized, bootstrap the GitHub work-item surface and
+  then instantiate independently owned Search, MCP, Tailored Follows, Runtime,
+  and reserved Hotfix lanes under the new operating model.
