@@ -2732,3 +2732,38 @@ Next Bounded Action:
 - retain P36 as planned until WI-002 Packet 1 integrates, then assign WI-003
   Packet 1 to one independent top-level lane session from current
   `origin/main` and register its `feat/agent-question-answer-v1` custody.
+
+## P37 | Corpus, Retrieval, And Grounding Quality
+
+State: OPEN
+
+Objective: give maintainers one replayable, denominator-aware view of
+acquisition coverage, corpus integrity, retrieval quality, and answer grounding
+without conflating fixture success with production quality.
+
+Current State:
+
+- WI-008 is `READY`; its provider-free Packet 1 has no product dependency;
+- current evaluators cover fragments of retrieval or slash-command ranking and
+  model judgments, but do not share a versioned set, threshold, report,
+  denominator, artifact, or effect contract;
+- the selected seam is a repo-only deterministic harness with four separate
+  axes, canonical JSON plus Markdown projection, and explicit blocking versus
+  observation tiers;
+- no implementation, evaluator run, judge call, runtime mutation, production
+  sample, or provider access has begun.
+
+Architecture Plan:
+
+- `docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md`.
+
+Dependencies:
+
+- Packet 1 is independent; retrieval integration/acceptance joins WI-002, and
+  grounding integration/acceptance joins WI-003. Shared contract/catalog and
+  CI overlaps remain coordinator-owned.
+
+Next Bounded Action:
+
+- validate and integrate this architecture packet, then assign WI-008 Packet 1
+  to one independent top-level lane session from current `origin/main`.
