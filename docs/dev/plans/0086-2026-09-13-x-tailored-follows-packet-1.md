@@ -27,8 +27,11 @@ identity, inactive creation, migration, get/list/archive, and persistence.
   `5d0acd12845aad940d89522749d37651e1ed0ff2` was clean and equal locally and
   remotely before this branch merged current `origin/main` at
   `b92160a600ee93f2b3bb21899d7e6f31cbb3a0ae`;
-- this plan is now owned and `OPEN`, but Packet 1 implementation has not
-  started;
+- the branch was reconciled again with canonical `origin/main` at
+  `4f322e0a3c2d4795305c3bdfb853de27fae1c558` before implementation;
+- Packet 1 acceptance is implemented and validated at implementation commit
+  `29631a48a8ae4ea1c867df5c5b242a4dee9c605d`; the plan remains `OPEN` pending
+  review and integration;
 - GitHub Issues remain disabled, so WI-004 is the work-item locator.
 
 ## Scope
@@ -128,6 +131,71 @@ Next action or stop reason: stop after publishing and verifying this activation
 checkpoint. Resume in this same worktree and top-level lane session with the
 exact instruction in `Next Action` below.
 
+### Checkpoint P0086-C02 | 2026-09-13
+
+Plan version: 1
+
+State: `OPEN`; Packet 1 is acceptance-complete and integration-ready, but is
+not integrated and no later packet is authorized by this checkpoint.
+
+Progress classification: `acceptance_progress`; the provider-free collection
+contract now represents typed X feed/topic/account/list follows with strict
+canonical selectors, deterministic partition-bound target identity, inactive
+creation, immutable revisions, duplicate-active-target exclusion, and
+irreversible archive history.
+
+Implementation evidence:
+
+- reconciled `origin/main` commit:
+  `4f322e0a3c2d4795305c3bdfb853de27fae1c558`;
+- reconciliation merge commit:
+  `f88a77d192ace590b0fe3699f0058f2ecd2c09ff`;
+- Packet 1 implementation commit:
+  `29631a48a8ae4ea1c867df5c5b242a4dee9c605d`;
+- database migration 18 backfills existing rows to
+  `general` / `standard` / `active` with no follow target and adds a partial
+  unique index for non-archived tailored-follow identities;
+- service compatibility advanced source-side to service `0.3.117`, MCP
+  `4.0.5`, and exact database schema `18`; generated contracts and the runtime
+  manifest were refreshed, but no artifact was installed or released;
+- `get`, default-hidden `list`, `list --include-archived`, and `archive` are
+  additive collection operations through the existing application and CLI
+  seams; post-search request/response/cursor/MCP search semantics and isolated
+  runtime identity were not changed.
+
+Validation evidence:
+
+- `uv run pytest tests/test_service_collection.py tests/test_service_product.py tests/test_service_migrations.py tests/test_service_process.py tests/test_service_contracts.py tests/test_plan_authority_audit.py -q`
+  passed (`99 passed`);
+- `uv run pytest -q` passed across the full Python suite;
+- `go test ./...` passed across all MCP packages;
+- `git diff --check` passed;
+- the initial broad run exposed only Packet-1-induced stale contract/version
+  locks; after advancing the documented compatibility identities and fixtures,
+  the full suite passed. The earlier reported broad-test selector-path failure
+  was not reproduced.
+
+Effects and authority:
+
+- source, temporary-test databases/artifacts, Git commits, branch publication,
+  and PR creation only;
+- no live X/provider call, installed database/runtime migration, job, timer,
+  browser/profile, tracker, staging, production, tag, release, or deployment;
+- coordinator-owned `ROADMAP.md`, `RUNBOOK.md`, `docs/dev/active-lanes.yaml`,
+  and shared work-item state were not lane-authored.
+
+Subagent status: `not_spawned`; this execution explicitly prohibited
+subagents.
+
+Graphiti closeout: no write was queued. Current Git and this branch-local
+checkpoint are the durable authority; the architecture handoff records the
+existing degraded Graphiti ingestion attempt, and this packet prohibited
+provider effects.
+
+Next action or stop reason: publish this checkpoint, verify local/remote branch
+equality, open the exact owned-fork PR to `main`, and stop without merging or
+starting Packet 2.
+
 ## Start Checklist
 
 - verify registered worktree/ref/checkpoint and current `origin/main`;
@@ -148,11 +216,9 @@ exact instruction in `Next Action` below.
 
 Resume WI-004 / P35 in
 `/home/ecochran76/workspace.local/last30days-skill-wi004` on
-`feat/x-tailored-follows-v1` from the published P0086-C01 checkpoint; reread
-AGENTS.md and the applicable policies, fetch and reconcile current
-`origin/main`, rerun focused Graphiti and CodeGraph discovery, reconcile shared
-collection/service-contract ownership with the coordinator and WI-002, then
-implement only Plan 0086 Packet 1's provider-free
-contract/migration/get/list/archive/persistence tracer. Do not start a job,
-timer, installed-database migration, browser/profile, provider call, staging,
-production, tracker mutation, WI-005 semantics, or Packet 2.
+`feat/x-tailored-follows-v1` from published checkpoint P0086-C02; fetch and
+verify the branch and its owned-fork PR, review CI and reviewer findings, and
+address only accepted Packet 1 blockers. Do not merge without explicit
+authority, start Packet 2, or mutate a job, timer, installed database/runtime,
+browser/profile, provider, tracker, staging, production, tag, release, or
+deployment.
