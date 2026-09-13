@@ -110,7 +110,13 @@ Validation evidence:
   `378788bab8315ebcae84aac90c88a49c98dff621`;
 - Git history and changed-line comparison show the P08 retry-recourse code was
   re-applied by `c960e34c` and extended by later integrated Reddit work; the
-  stale branch must not be merged wholesale.
+  stale branch must not be merged wholesale;
+- source reconciliation commit `95f6464d` restores all nine missing artifacts
+  byte-for-byte, retains the newer Plan 0064, and changes P08's only audit
+  finding to `archived_ref` with no P08 problem;
+- 13 focused authority and canonical-guidance tests pass, the plan authority
+  audit reports no issues, and `git diff --check` passes. The active-lane audit
+  still reports only the pre-existing P23/P25/P26/P27 findings outside scope.
 
 Subagent status and reconciliation:
 

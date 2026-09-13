@@ -26750,9 +26750,11 @@ Validation Evidence:
 - canonical `main` is clean and equals `origin/main` at `af610bb7` before the
   reconciliation branch;
 - both P08 archive refs resolve to exact tip `378788ba`;
-- restored-artifact byte comparison, focused authority and guidance tests,
-  P08 catalog audit disposition, and `git diff --check` remain to run on the
-  complete source candidate.
+- all nine restored artifacts match the archive byte-for-byte;
+- 13 focused authority and canonical-guidance tests pass, the plan authority
+  audit reports no issues, and `git diff --check` passes;
+- P08's active-lane audit result is exactly `archived_ref` with no P08 problem.
+  The pre-existing P23/P25/P26/P27 findings remain reported and unchanged.
 
 State Movement:
 
