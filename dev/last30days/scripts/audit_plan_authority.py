@@ -44,6 +44,43 @@ def _has_label(text: str, label: str) -> bool:
     return re.search(rf"^{re.escape(label)}\s*$", text, re.MULTILINE | re.IGNORECASE) is not None
 
 
+def _catalog_actionable_lanes(root: Path) -> frozenset[str]:
+    """Read branch-local actionable plan projections from the canonical catalog.
+
+    Exact ref, checkpoint, and plan metadata verification belongs to the
+    active-lane auditor; this authority audit only recognizes the projection.
+    """
+    path = root / "docs/dev/active-lanes.yaml"
+    if not path.is_file():
+        return frozenset()
+    lanes: dict[str, dict[str, str]] = {}
+    current: dict[str, str] | None = None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        lane_match = re.match(r"^\s*-\s+id:\s*(\S+)\s*$", line)
+        if lane_match:
+            if current is not None and current.get("id"):
+                lanes[current["id"].upper()] = current
+            current = {"id": lane_match.group(1).strip("'\"")}
+            continue
+        if current is None:
+            continue
+        field_match = re.match(
+            r"^\s+(plan|plan_ref|plan_state):\s*(.*?)\s*$", line
+        )
+        if field_match:
+            current[field_match.group(1)] = field_match.group(2).strip("'\"")
+    if current is not None and current.get("id"):
+        lanes[current["id"].upper()] = current
+
+    return frozenset(
+        lane_id
+        for lane_id, lane in lanes.items()
+        if lane.get("plan_state") in {"PLANNED", "OPEN", "BLOCKED"}
+        and lane.get("plan", "").startswith("docs/dev/plans/")
+        and lane.get("plan_ref", "") not in {"", "null", "~"}
+    )
+
+
 def _audit_roadmap(root: Path, issues: list[str]) -> tuple[str, ...]:
     path = root / "ROADMAP.md"
     if not path.is_file():
@@ -54,6 +91,7 @@ def _audit_roadmap(root: Path, issues: list[str]) -> tuple[str, ...]:
         issues.append("ROADMAP.md is missing its canonical-authority declaration")
 
     active_plans: set[str] = set()
+    catalog_actionable_lanes = _catalog_actionable_lanes(root)
     lanes = list(LANE_PATTERN.finditer(text))
     if not lanes:
         issues.append("ROADMAP.md has no P## lanes")
@@ -89,7 +127,7 @@ def _audit_roadmap(root: Path, issues: list[str]) -> tuple[str, ...]:
             )
             if candidate_state is not None and candidate_state.group(1) == "OPEN":
                 actionable.append(plan_path)
-        if not actionable:
+        if not actionable and lane_id not in catalog_actionable_lanes:
             issues.append(f"ROADMAP {lane_id} OPEN lane has no actionable plan")
         active_plans.update(actionable)
     return tuple(sorted(active_plans))

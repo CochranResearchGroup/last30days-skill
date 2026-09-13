@@ -296,6 +296,61 @@ class PlanningContractAuditTests(unittest.TestCase):
 
         self.assertTrue(report["ok"], report["problems"])
 
+    def test_open_roadmap_lane_accepts_branch_local_plan_catalog_projection(self):
+        root = self.make_repo(("planning-discipline", "roadmap-runbook-governance"))
+        (root / "docs/dev/plans").mkdir(parents=True)
+        (root / "ROADMAP.md").write_text(
+            "# Roadmap\n\n## P33 | Search\nState: OPEN\nCurrent State: Active elsewhere.\n",
+            encoding="utf-8",
+        )
+        (root / "RUNBOOK.md").write_text(
+            "# Runbook\n\n## Turn 1 | 2026-07-20\nBranch-local plan activated.\n",
+            encoding="utf-8",
+        )
+        (root / "docs/dev/active-lanes.yaml").write_text(
+            "schema_version: 1\n"
+            "lanes:\n"
+            "  - id: P33\n"
+            "    plan: docs/dev/plans/0084-2026-09-13-post-search-packet-1.md\n"
+            "    plan_ref: refs/heads/feat/post-search-v1\n"
+            "    plan_state: OPEN\n",
+            encoding="utf-8",
+        )
+
+        report = self.audit.audit_repo(root, active_only=True)
+
+        self.assertTrue(report["ok"], report["problems"])
+        self.assertEqual(report["catalog_actionable_plan_lanes"], ["P33"])
+
+    def test_closed_catalog_projection_does_not_cover_open_roadmap_lane(self):
+        root = self.make_repo(("planning-discipline", "roadmap-runbook-governance"))
+        (root / "docs/dev/plans").mkdir(parents=True)
+        (root / "ROADMAP.md").write_text(
+            "# Roadmap\n\n## P33 | Search\nState: OPEN\nCurrent State: Active elsewhere.\n",
+            encoding="utf-8",
+        )
+        (root / "RUNBOOK.md").write_text(
+            "# Runbook\n\n## Turn 1 | 2026-07-20\nBranch-local plan activated.\n",
+            encoding="utf-8",
+        )
+        (root / "docs/dev/active-lanes.yaml").write_text(
+            "schema_version: 1\n"
+            "lanes:\n"
+            "  - id: P33\n"
+            "    plan: docs/dev/plans/0084-2026-09-13-post-search-packet-1.md\n"
+            "    plan_ref: refs/heads/feat/post-search-v1\n"
+            "    plan_state: CLOSED\n",
+            encoding="utf-8",
+        )
+
+        report = self.audit.audit_repo(root, active_only=True)
+
+        self.assertFalse(report["ok"])
+        self.assertIn(
+            "OPEN roadmap lane missing actionable plan coverage: P33",
+            report["problems"],
+        )
+
     def test_active_only_excludes_closed_and_unclassified_legacy_plans(self):
         root = self.make_repo(("planning-discipline",))
         plans = root / "docs/dev/plans"
