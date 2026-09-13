@@ -1,13 +1,16 @@
 <!-- last30days-work-item:WI-003 -->
 # Answer agent questions through an evidence-rich MCP surface
 
-State: READY
+State: IN_PROGRESS
 Priority: P1
 Lane: MCP
 Parent: WI-000
 Blocked by: WI-002 Packet 1 contract integration; final acceptance by WI-002 closeout
 Architecture: docs/dev/notes/0120-2026-09-13-agent-question-answering-mcp-architecture.md
 Implementation plan seed: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md
+Current plan: docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md
+Branch: feat/agent-question-answer-v1
+Owner: Codex 01a09cf4-c89c-7ad2-9b64-8dc95c4cbec6
 
 ## Problem
 

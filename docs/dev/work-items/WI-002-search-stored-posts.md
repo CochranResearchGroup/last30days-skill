@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-002 -->
 # Search and retrieve stored posts as a product surface
 
-State: IN_PROGRESS
+State: READY
 Priority: P1
 Lane: Search
 Parent: WI-000
