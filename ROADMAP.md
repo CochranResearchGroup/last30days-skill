@@ -2809,7 +2809,7 @@ Next Bounded Action:
 
 ## P39 | Cross-Service Tailored Follow Product Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: extend tailored follows beyond X through provider-native target
 identity and capability discovery without duplicating collection scheduling or
@@ -2827,7 +2827,7 @@ Current State:
 - no product implementation, provider use, runtime mutation, or schedule
   change has begun.
 
-Active Plan:
+Closed Architecture Plan:
 
 - `docs/dev/plans/0082-2026-09-13-cross-service-tailored-follow-architecture-and-lane-handoff.md`.
 
@@ -2839,6 +2839,6 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate and close the architecture plan, then retain P39 as planned until
-  WI-004 Packet 1 integrates; afterward assign WI-005 Packet 1 to one
+- retain P39 as planned until WI-004 Packet 1 integrates; afterward assign
+  WI-005 Packet 1 to one
   independent top-level lane session from current `origin/main`.

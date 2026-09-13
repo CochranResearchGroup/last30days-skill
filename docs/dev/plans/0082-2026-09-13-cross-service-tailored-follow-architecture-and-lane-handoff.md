@@ -1,6 +1,6 @@
 # Plan 0082 | Cross-Service Tailored Follow Architecture And Lane Handoff
 
-State: OPEN
+State: CLOSED
 Lane: P39
 Work item: WI-005
 Branch: docs/cross-service-tailored-follow-architecture
@@ -122,6 +122,49 @@ Next action:
 
 - validate and integrate this architecture packet, close Plan 0082/P39
   planning work, and retain the exact WI-004 Packet 1 dependency.
+
+### Checkpoint P0082-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `verified_outcome`; the architecture and restart-safe
+lane handoff are integrated while implementation remains correctly gated.
+
+Authority classification:
+
+- `inherited_authority` for public-fork integration and repository closeout;
+- `not_authorized` for tracker, product implementation, installed runtime,
+  collection, browser/profile, provider, schedule, staging, or production.
+
+Validation evidence:
+
+- architecture source tip `4cd9d6f7a9ed1636d2f7a1e67522383b911f9b3e`
+  merged through pull request 27 as
+  `f054ad7a96cc19af7edd834fc087174f1cdf4b3e`;
+- canonical `main` was fast-forwarded to that exact merge before this isolated
+  closeout branch was created;
+- 62 focused tests, plan authority, JSON parsing, and patch hygiene passed on
+  the architecture packet;
+- final closeout validation and default-ref catalog audit remain to run after
+  this reconciliation is rendered.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; coordinator-owned architecture and merge receipts are
+  authoritative.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; no additional write was attempted while the known
+  ingestion path remains degraded.
+
+Next action:
+
+- retain WI-005/P39 as planned until WI-004 Packet 1 integrates, then assign
+  WI-005 Packet 1 to a separate top-level lane session from current
+  `origin/main` and register custody before implementation.
 
 ## Stop Rules
 
