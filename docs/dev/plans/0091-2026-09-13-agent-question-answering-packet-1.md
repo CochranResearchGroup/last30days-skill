@@ -22,9 +22,14 @@ immutable citation/evidence contracts.
 - P33 Packet 1 is merged and supplies stable post-search request, response,
   search-head, and evidence-reference contracts;
 - Plan 0079, note 0120, and WI-003 are the accepted architecture and handoff;
-- no question schema, durable queue, answer worker, model call, or MCP question
-  tool has been implemented;
-- this branch starts from exact canonical 87a8cbac.
+- Packet 1 now provides strict question contracts, a question-owned migration,
+  a durable bounded queue, immutable citation validation, and fake provider-free
+  search/worker seams;
+- no real model call or MCP question tool has been implemented, and transport
+  publication remains outside this packet;
+- the implementation is reconciled with exact canonical
+  `169a45b86735e1d4ccb48346d0f044f86105d610` through merge commit
+  `57d523c1fd5c23848b2e7a4cf9a1d95f01eef787`.
 
 ## Scope
 
@@ -89,6 +94,13 @@ immutable citation/evidence contracts.
 - stop before MCP transport publication; Packet 1 ends at the provider-free
   durable tracer;
 - stop and reconcile if another lane owns an overlapping shared contract.
+
+## Definition Of Done
+
+All five Packet 1 acceptance criteria pass on the provider-free branch, the
+global service/MCP compatibility contract remains unchanged, the accepted
+checkpoint is pushed and remote-equal, and review/integration returns to the
+coordinator without opening or merging a pull request.
 
 ## Current Checkpoint
 
@@ -174,3 +186,119 @@ Next action:
 - commit and push this activation checkpoint, verify the local and remote
   branch tips are equal, then stop for coordinator ownership integration; do
   not implement Packet 1 or open or merge a pull request in this turn.
+
+### Checkpoint P0091-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `implementation_active -> packet_1_acceptance_met`; the plan
+remains `OPEN` until coordinator integration.
+
+Progress classification: `verified_outcome`; all five Packet 1 criteria pass
+on the reconciled, provider-free branch.
+
+Authority classification:
+
+- `inherited_authority` from the operator's explicit Packet 1 instruction for
+  question-specific source, tests, migration, this plan, branch commit, and
+  branch push;
+- `not_authorized` for models, live search or source adapters, browser,
+  providers, refresh, follow, schedules, MCP transport publication, installed
+  runtime or database, staging, release, production, tracker, P35, pull-request
+  creation, or pull-request integration.
+
+Base, merge, and ref evidence:
+
+- fetched `origin/main` resolved exactly to the coordinator-provided
+  `169a45b86735e1d4ccb48346d0f044f86105d610`;
+- merge commit `57d523c1fd5c23848b2e7a4cf9a1d95f01eef787`
+  preserves parents `c4d985727c39c7cfe2a86a64eae318351eefd5d4`
+  and `169a45b86735e1d4ccb48346d0f044f86105d610`, with no rebase or
+  history rewrite;
+- `ROADMAP.md`, `RUNBOOK.md`, `docs/dev/active-lanes.yaml`, and all work-item
+  files remain byte-equal to that fetched `origin/main`.
+
+Owned changes:
+
+- `service_question_contracts.py` defines strict versioned request, answer,
+  statement, citation, status, coverage, and safe-error contracts with
+  deterministic canonical digests and identities;
+- `service_questions.py` defines the fake `PostSearchBackend`, fake no-tool
+  worker boundary, frozen retrieval receipts, a question-owned schema-v1
+  migration, durable task/attempt/failure ledgers, bounded lease recovery and
+  retries, replay/idempotency, host-only evidence/no-evidence completion, and
+  immutable citation/correlation validation;
+- focused provider-free tests cover deterministic replay, request conflicts,
+  head changes, lease expiry, retry exhaustion, transient and unavailable
+  workers, supported/conflicting/stale/partial/no-evidence/evidence-only
+  answers, partition escape, changed retrievals, fabricated or uncited claims,
+  and prompt-injection-shaped evidence as inert data;
+- the checked-in source runtime manifest includes the two additive modules so
+  later authorized runtime builds remain reproducible; no runtime was
+  installed.
+
+Shared-surface reconciliation:
+
+- no edits remain in `service_contracts.py`, `service_store.py`, the global
+  `store.py` schema, or `service-contracts-v1.json`; the service/MCP ABI,
+  database schema 17, release locks, and P40-owned catalog stay unchanged;
+- `service/runtime-manifest.json` is the only shared packaging overlap: it adds
+  the two question-specific source files and leaves all pre-existing source
+  digests unchanged.
+
+Acceptance evidence:
+
+1. strict contract tests reject unknown or malformed fields and prove stable
+   request, evidence, answer, statement, task, and output identities;
+2. SQLite fixtures prove one durable question migration, idempotent duplicate
+   submission/completion, generation-bound leases, one bounded retry, expiry
+   recovery, immutable attempts, and terminal failure receipts;
+3. fake search and no-tool worker fixtures exercise every required answer and
+   failure state without network, model, browser, provider, or acquisition;
+4. answer completion closes every citation over the frozen authorized evidence
+   tuple and rejects mismatched heads, digests, partitions, missing citations,
+   fabricated references, and changed retrieval records;
+5. focused migration, contract, queue, validation, service compatibility,
+   release-lock, lifecycle, and reproducible package-build checks pass.
+
+Validation evidence:
+
+- 17 question contract/queue/worker tests passed;
+- 121 focused question, migration, compatibility, store, temporal, tick,
+  release-lock, and isolated lifecycle tests passed outside the sandbox only
+  where temporary Unix sockets and installer fixtures required it;
+- the complete 2,821-test repository collection reached 100 percent with one
+  unrelated protected-authority failure: `RUNBOOK.md` does not contain a Plan
+  0091 locator. The coordinator-owned file is intentionally unchanged; every
+  other selected test passed or skipped normally;
+- the canonical source-runtime build passed with artifact digest
+  `39e247f18b8b5938143a9452b2a12358577bed2012f2e7853ae77c7aa6053bd2`;
+- Python bytecode compilation passed. Ruff is not installed in `.venv`, and
+  `uv run ruff` had no available executable, so no lint result is claimed.
+
+Remaining criteria and risks:
+
+- no Packet 1 acceptance criterion remains open;
+- MCP/HTTP publication, real backend composition, evidence dereference,
+  calibrated semantic entailment, model execution, and installed-runtime proof
+  remain later packets or coordinator gates;
+- the protected RUNBOOK locator is a coordinator reconciliation item and is
+  not repaired in this lane.
+
+Subagent status: `not_spawned`; the top-level owner performed implementation
+and validation directly as required.
+
+CodeGraph status: `.codegraph/` is absent; it was not initialized. Structural
+exploration used only the already identified source seams and narrow current
+source reads.
+
+Graphiti status: the runtime doctor was healthy and one bounded read-only
+discovery returned no relevant P36/WI-003 history. `not_written`; the operator
+forbade installed-runtime/database mutation and repository evidence is
+authoritative.
+
+Next action:
+
+- commit and push this accepted Packet 1 checkpoint, verify clean local/remote
+  equality, then stop for coordinator reconciliation; do not open or merge a
+  pull request or begin Packet 2.

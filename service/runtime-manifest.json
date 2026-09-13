@@ -376,6 +376,16 @@
       "source": "skills/last30days/scripts/lib/service_publication.py"
     },
     {
+      "path": "scripts/lib/service_question_contracts.py",
+      "sha256": "8b31664f3e68e990dfdbd17afd24cf1556eab6513ee80880fbd86cdfcd6c3927",
+      "source": "skills/last30days/scripts/lib/service_question_contracts.py"
+    },
+    {
+      "path": "scripts/lib/service_questions.py",
+      "sha256": "cbac24be73c4061aa18e560b8916f948805421921a0d484ee170393a85fb4268",
+      "source": "skills/last30days/scripts/lib/service_questions.py"
+    },
+    {
       "path": "scripts/lib/service_refresh.py",
       "sha256": "a764e3b59f78ef03fae3512a3913c8bf7315075ce28a8a02b7e5490531680f09",
       "source": "skills/last30days/scripts/lib/service_refresh.py"
