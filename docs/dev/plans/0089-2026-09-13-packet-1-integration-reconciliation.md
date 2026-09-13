@@ -1,6 +1,6 @@
 # Plan 0089 | Packet 1 Integration Reconciliation
 
-State: OPEN
+State: CLOSED
 Lane: P43
 Work item: WI-000
 Branch: docs/packet1-integration-reconciliation
@@ -121,6 +121,32 @@ Next action:
   post-merge readback.
 
 Checkpoint P0089-C01 is the current authority.
+
+### Checkpoint P0089-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED/INTEGRATED`.
+
+Progress classification: `verified_outcome`; PR 37 merged exact source
+`000682d4d411cae3c1cf263c01ad7d83774b8f83` as canonical main commit
+`ce8259392c76adcad15ec35740f2aa9c680b93d8`.
+
+Authority classification: `inherited_authority` for this repository-only
+closeout; the P35 PR action remains a separate informed operator gate.
+
+Validation evidence: post-merge plan-authority and active planning audits pass,
+and canonical Git/forge readback identifies the exact merge receipt.
+
+Subagent status and reconciliation: `not_spawned`.
+
+Graphiti write status: `not_attempted`; durable Git and plan receipts are
+authoritative.
+
+Next action: launch separately bounded provider-free P36/P37/P40 sessions from
+current main while retaining P35 at its explicit PR gate.
+
+Checkpoint P0089-C02 is terminal.
 
 ## Next Action
 

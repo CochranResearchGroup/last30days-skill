@@ -7,12 +7,12 @@ lanes:
     plan_ref: refs/heads/docs/packet1-integration-reconciliation
     branch: docs/packet1-integration-reconciliation
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 75e7771e006f52847e8e47c1059b2b2000fb8ac7
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 000682d4d411cae3c1cf263c01ad7d83774b8f83
     remote_ref: refs/remotes/origin/docs/packet1-integration-reconciliation
     integration: merge
-    integration_receipt: null
+    integration_receipt: ce8259392c76adcad15ec35740f2aa9c680b93d8
     dependencies: [P33, P34, P35]
     overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
     reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
