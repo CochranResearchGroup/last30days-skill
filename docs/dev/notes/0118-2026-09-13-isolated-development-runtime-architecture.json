@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "task_type": "architecture",
+  "secondary_task_type": "runtime and mixed-code-docs synthesis",
+  "path_type": "local git repository",
+  "persistence_mode": "stable-path",
+  "repo_profile": "Python Unix-socket service with a managed production installer and Go MCP adapter",
+  "work_item": "WI-001",
+  "plan": "0077",
+  "repository_checkpoint": "b71e652317bea4607ced38719a16b4d039c2609f",
+  "retrieval_posture": "hybrid structure-first",
+  "retrieval_trace": [
+    "Graphiti last30days_skill_main bounded service-runtime recall",
+    "CodeGraph status and focused service/bootstrap/source-policy exploration",
+    "targeted systemd installer and governance-document inspection",
+    "live read-only user-service and service-info readback"
+  ],
+  "decision": "Add a repo-only lane runtime controller around the existing serve seam, plus an authoritative cache-only service effect mode; keep production managed service and future staging separate.",
+  "evidence_packets": [
+    {
+      "kind": "live_runtime",
+      "summary": "Production is one active last30days.service using the managed launcher, shared env file and socket; service 0.3.116/schema 17 is ready."
+    },
+    {
+      "kind": "current_process_seam",
+      "summary": "service.py serve already accepts independent DB and socket paths but starts acquisition/enrichment loops and reads ambient config."
+    },
+    {
+      "kind": "isolation_gap",
+      "summary": "Source readiness defaults can activate keyless, subprocess, credential, or browser methods; the production installer owns one fixed shared identity."
+    },
+    {
+      "kind": "selected_boundary",
+      "summary": "A strict controller descriptor, environment allowlist, cache-only request gate, process birth identity and exact-target teardown provide defense in depth."
+    }
+  ],
+  "uncertainties": [
+    "measured startup and shutdown budgets",
+    "portable Linux process-birth token implementation",
+    "whether service-info needs a public runtime-mode field"
+  ],
+  "next_actions": [
+    "assign one top-level lane session to WI-001 Packet 1",
+    "create and register feat/isolated-dev-runtime from current origin/main",
+    "implement descriptor and doctor only without starting or installing a service"
+  ],
+  "state_location": "docs/dev/notes/0118-2026-09-13-isolated-development-runtime-architecture.md",
+  "persistence_bundle": null
+}

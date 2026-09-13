@@ -27147,3 +27147,61 @@ Next Bounded Action:
 - integrate this closeout, remove its fully integrated temporary worktrees and
   refs, then start WI-002 Packet 1 only in a dedicated top-level lane session
   with registered custody.
+
+## Turn 430 | 2026-09-13
+
+Focus: Plan 0077/P34 isolated development-runtime architecture and lane handoff.
+
+Authority Consulted:
+
+- active productization goal; WI-001; Plan 0077/P34; Graphiti, CodeGraph,
+  architecture, work-item, multi-session, testing, documentation, Git,
+  validation, and closeout policy; current source and live read-only service.
+
+Decisions And Changes:
+
+- classified the work as runtime architecture plus mixed code/docs synthesis
+  in a stable repository and used a hybrid structure-first posture;
+- verified that DB and socket paths are overridable while Tick config, source
+  readiness, optional loops, and provider subprocess behavior can still
+  inherit shared host state;
+- selected a repo-only lane-runtime controller, strict descriptor and
+  environment allowlist, service-side cache-only effect gate, process-birth
+  identity, exact-target teardown, and separate future staging identity;
+- split delivery into identity, offline lifecycle, developer surface, and
+  closeout packets, with Packet 1 starting no service;
+- moved WI-001 from `TRIAGE` to `READY` with an exact top-level lane handoff;
+- made no GitHub tracker, installed Skill, service, process, browser, provider,
+  schedule, credential, database, deployment, staging, or production mutation.
+
+Validation Evidence:
+
+- canonical `main` was clean and equal to `origin/main` at `b71e6523` before
+  the dedicated topic worktree was created;
+- Graphiti is healthy and returned one bounded service-first source episode;
+- CodeGraph is healthy at 353 files, 9,793 nodes, and 23,275 edges and exposed
+  the current bootstrap/config/source-policy/process seams;
+- live service PID `24968`, installed unit/launcher/env/socket, service
+  `0.3.116`, schema 17, runtime-manifest digest, and ready status were read
+  without mutation;
+- provider-free repository validation remains to be run after this packet is
+  fully rendered.
+
+State Movement:
+
+- WI-001 `TRIAGE -> READY`; Plan 0077/P34 `planned -> active`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator performed shared-interface exploration directly.
+
+Graphiti Write Status:
+
+- `pending_closeout`; one compact source-backed episode is due after durable
+  integration.
+
+Next Bounded Action:
+
+- validate and integrate the architecture packet, close Plan 0077/P34 planning
+  work, write and verify the required Graphiti episode, then hand Packet 1 to
+  one independent top-level lane session.
