@@ -26824,3 +26824,56 @@ Next Bounded Action:
 
 - reconcile the remaining P23/P25/P26/P27 catalog and worktree debt in bounded
   slices before deleting any historical branches or worktrees.
+
+## Turn 424 | 2026-09-13
+
+Focus: Plan 0074/P31 integrated lane catalog and worktree cleanup.
+
+Authority Consulted:
+
+- active goal continuation; Plan 0074; P23–P31; canonical-worktree, Git,
+  integration, active-lane, validation, documentation, and closeout policy;
+  current local/remote refs, worktree statuses, and catalog audit.
+
+Decisions And Changes:
+
+- proved P23–P28 branch tips are ancestors of `origin/main` and mapped their
+  first default-branch receipts to `905b9dbc`, `2943488e`, and `0349f3fe`;
+- qualified eleven clean auxiliary worktrees whose exact HEADs are ancestors of
+  `main`;
+- prepared catalog corrections for stale checkpoints, targets, receipts,
+  custody, remote refs, and overlap dispositions;
+- explicitly excluded canonical `main`, divergent `fix/tick-restart-recovery`,
+  and both P08 archive refs from cleanup;
+- made no source-code, installed Skill, service, browser, provider, schedule,
+  credential, database, or runtime change.
+
+Validation Evidence:
+
+- exact ancestry and clean-status preflight passes for every candidate;
+- the current catalog starts with eleven P23/P25/P26/P27 problems plus cleanup
+  findings for already integrated P24/P28;
+- recoverable source checkpoint `0d1c862e` was published before deletion;
+- eleven qualified worktrees were removed and 18 local plus 12 `origin` topic
+  refs were deleted without force; every deleted tip remains reachable from
+  `main`;
+- the post-cleanup catalog audit reports zero problems. P23–P28 have no
+  findings and P08 retains only its exact `archived_ref` finding;
+- canonical `main` remains clean and equal to `origin/main` at `deaa942c`.
+
+State Movement:
+
+- Plan 0074/P31 `planned -> active`; closed product outcomes remain unchanged.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; one primary owner controls destructive ref/worktree bounds.
+
+Graphiti Write Status:
+
+- `not_written`; current Git and repository receipts are authoritative.
+
+Next Bounded Action:
+
+- publish the final cleanup receipt, integrate it through the public fork, and
+  close Plan 0074/P31 from canonical `main`.
