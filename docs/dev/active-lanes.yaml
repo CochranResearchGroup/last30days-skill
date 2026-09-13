@@ -12,7 +12,7 @@ lanes:
     remote_ref: refs/remotes/origin/docs/isolated-dev-runtime-architecture
     integration: merge
     integration_receipt: 187129cd7f67487a3de81901a3c214e64557f039
-    dependencies: [P32]
+    dependencies: []
     overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-001-isolated-development-runtime.md]
     reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-001-isolated-development-runtime.md]
     updated_at: 2026-09-13
