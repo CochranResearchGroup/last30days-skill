@@ -8,10 +8,10 @@ lanes:
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATED
-    checkpoint: 6b4f604907acd61058bfb692f788efe89eb62d72
+    checkpoint: 0349f3fe306117e2dce0bad7df1a608fd9e82c7f
     remote_ref: refs/remotes/origin/main
     integration: merge
-    integration_receipt: 6b4f604907acd61058bfb692f788efe89eb62d72
+    integration_receipt: 0349f3fe306117e2dce0bad7df1a608fd9e82c7f
     dependencies: [P24]
     overlaps: [skills/last30days/scripts/lib/reddit_browser.py]
     reconciled_overlaps: [skills/last30days/scripts/lib/reddit_browser.py]
@@ -40,7 +40,7 @@ lanes:
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATED
-    checkpoint: 6b4f604907acd61058bfb692f788efe89eb62d72
+    checkpoint: 378788bab8315ebcae84aac90c88a49c98dff621
     remote_ref: refs/remotes/origin/main
     integration: merge
     integration_receipt: 6b4f604907acd61058bfb692f788efe89eb62d72
@@ -70,7 +70,7 @@ lanes:
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATED
-    checkpoint: 6b4f604907acd61058bfb692f788efe89eb62d72
+    checkpoint: ecba6fc324690ab5acf9209d5e4b4485b3118d4a
     remote_ref: refs/remotes/origin/main
     integration: merge
     integration_receipt: 6b4f604907acd61058bfb692f788efe89eb62d72
