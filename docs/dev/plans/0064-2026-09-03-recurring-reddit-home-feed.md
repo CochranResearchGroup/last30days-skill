@@ -4,7 +4,7 @@ State: CLOSED
 Lane: P24
 Branch: feat/recurring-reddit-home-feed
 Target: main
-Integration: fast-forward
+Integration: merge
 Roadmap: P24
 Plan version: 4
 Date: 2026-09-03

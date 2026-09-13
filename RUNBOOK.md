@@ -26565,3 +26565,55 @@ Next Bounded Action:
 - complete provider-free validation, integrate through the public fork, install
   exact service 0.3.116, synchronize the frozen Skill copy, and verify unchanged
   schedule plus zero active work without a live provider retry.
+
+## Turn 419 | 2026-09-13
+
+Focus: Plan 0071/P28 integration and installed acceptance.
+
+Authority Consulted:
+
+- Plan 0071 version 1/C02; P28; fork integration, release, install, validation,
+  frozen-Skill synchronization, and closeout policy; operator plan-and-execute
+  authority.
+
+Decisions And Changes:
+
+- integrated the provider-free repair through pull request 3;
+- upgraded the user-scoped service from 0.3.115 to exact integrated 0.3.116;
+- synchronized the frozen Last30days Skill copy from the integrated tree;
+- ran no provider refresh, browser operation, manual tick, profile mutation, or
+  schedule change.
+
+Validation Evidence:
+
+- source commit `94d4852f` is an ancestor of merge commit
+  `6b4f604907acd61058bfb692f788efe89eb62d72` on `origin/main`;
+- integrated artifact SHA-256 is
+  `64b1b2a2d99260c4411762c656a0d670e7e1278a9406a4b9433391247b0c37a0`;
+- service diagnose reports 0.3.116 ready/schema 17, runtime manifest
+  `19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8`,
+  and unchanged contract
+  `bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025`;
+- source, installed service, and frozen Skill Reddit adapters have identical
+  SHA-256 `a7d5c60f0dcc69ffaaebb8d6a8e1d6af981e5d7758d1a82bffc2aaf52a9f2c66`;
+- systemd reports the service enabled and active. The schedule remains ready
+  for September 14, active work and leases are zero, and SQLite quick check is
+  `ok`.
+
+State Movement:
+
+- Plan 0071/P28 `integration_ready -> closed`; P08 and P24 remain closed from
+  their ordinary tick receipts.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; primary-agent evidence is authoritative.
+
+Graphiti Write Status:
+
+- `not_written`; integrated repository and runtime receipts are authoritative.
+
+Next Bounded Action:
+
+- none for P28. Observe the normal timer only through its ordinary schedule; no
+  manual retry is required or authorized.
