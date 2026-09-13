@@ -6,15 +6,15 @@ lanes:
     plan_ref: refs/heads/docs/cross-service-tailored-follow-architecture
     branch: docs/cross-service-tailored-follow-architecture
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE
-    checkpoint: d20b82546d45050e0e02774d9780a2ed059b5e7f
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 4cd9d6f7a9ed1636d2f7a1e67522383b911f9b3e
     remote_ref: refs/remotes/origin/docs/cross-service-tailored-follow-architecture
     integration: merge
-    integration_receipt: null
+    integration_receipt: f054ad7a96cc19af7edd834fc087174f1cdf4b3e
     dependencies: [P35]
     overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-005-cross-service-tailored-follows.md]
-    reconciled_overlaps: []
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-005-cross-service-tailored-follows.md]
     updated_at: 2026-09-13
   - id: P38
     objective: Define a dormant priority hotfix path with staged deployment, rollback, and feature reconciliation
