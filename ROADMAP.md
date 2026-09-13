@@ -2627,15 +2627,15 @@ Next Bounded Action:
 
 ## P34 | Isolated Development Runtime
 
-State: OPEN
+State: PLANNED
 
 Objective: give each implementation lane a deterministic, provider-free local
 service identity that cannot collide with production or another lane.
 
 Current State:
 
-- WI-001 is `READY` with current code, installer, policy, and live read-only
-  runtime evidence;
+- WI-001 is `READY` with its architecture integrated by PR 16 at
+  `187129cd7f67487a3de81901a3c214e64557f039`;
 - the selected seam is a repo-only lane-runtime controller around the existing
   direct `serve` command plus an authoritative service-side cache-only effect
   gate;
@@ -2643,7 +2643,7 @@ Current State:
   production, staging, and provider-free acceptance contracts are defined;
 - no development runtime, staging runtime, or implementation has begun.
 
-Active Architecture Plan:
+Closed Architecture Plan:
 
 - `docs/dev/plans/0077-2026-09-13-isolated-development-runtime-architecture-and-lane-handoff.md`.
 
@@ -2654,6 +2654,5 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate the architecture packet, close its planning work, then assign
-  WI-001 Packet 1 to one independent top-level lane session and register its
-  `feat/isolated-dev-runtime` custody before implementation.
+- assign WI-001 Packet 1 to one independent top-level lane session and
+  register its `feat/isolated-dev-runtime` custody before implementation.

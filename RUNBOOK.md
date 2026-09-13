@@ -27205,3 +27205,58 @@ Next Bounded Action:
 - validate and integrate the architecture packet, close Plan 0077/P34 planning
   work, write and verify the required Graphiti episode, then hand Packet 1 to
   one independent top-level lane session.
+
+## Turn 431 | 2026-09-13
+
+Focus: Plan 0077/P34 integration, Graphiti reconciliation, and closeout.
+
+Authority Consulted:
+
+- Plan 0077/C01, P34, WI-001, pull request 16 and `origin/main` readback,
+  Graphiti write discipline, canonical-worktree, validation, and closeout
+  policy.
+
+Decisions And Changes:
+
+- verified pull request 16 integrated the isolated development-runtime
+  architecture, machine handoff, and WI-001 `READY` transition;
+- fast-forwarded canonical `/home/ecochran76/workspace.local/last30days-skill`
+  to exact current `origin/main` before opening this closeout worktree;
+- reconciled Plan 0077 to `CLOSED` and P34 to `PLANNED`, because architecture
+  is complete while implementation and runtime provisioning have not started;
+- retried the prior exact Plan 0076 Graphiti write only after readiness and
+  duplicate preflight, preserved its terminal failure, and did not queue a
+  Plan 0077 write behind the degraded ingestion path;
+- made no GitHub tracker, installed Skill, service, process, browser, provider,
+  schedule, credential, database, deployment, staging, or production mutation.
+
+Validation Evidence:
+
+- source tip `6498f38af705bc1a308f47eb18af014c2fa819da` is integrated as
+  `187129cd7f67487a3de81901a3c214e64557f039` on `origin/main`;
+- canonical `main` is clean and equal to `origin/main` at that merge;
+- the integrated 62 focused tests and plan authority checks pass;
+- Graphiti provider preflight resolved Codex `gpt-5.5` at low reasoning, but
+  job `a1ac5f6c-ee50-4388-87bb-7ab3f036c91b` failed during node deduplication
+  with a retryable transport timeout; no episode UUID exists and exact
+  duplicate readback found no episode.
+
+State Movement:
+
+- Plan 0077/P34 planning work `active -> closed/planned`; WI-001 remains
+  `READY` for a separately owned implementation lane.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator-owned evidence and integration are authoritative.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; both the prior Plan 0076 episode and the compact
+  Plan 0077 architecture episode await a later healthy, bounded write flow.
+
+Next Bounded Action:
+
+- integrate this closeout, remove only its fully integrated temporary
+  worktrees and refs, then start WI-001 Packet 1 only in a dedicated top-level
+  lane session with registered custody.
