@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "task_type": "architecture",
+  "secondary_task_type": "service and mixed-code-docs synthesis",
+  "path_type": "local git repository",
+  "persistence_mode": "stable-path",
+  "repo_profile": "Python Unix-socket temporal service with Go MCP adapter and authenticated Agent Browser sources",
+  "work_item": "WI-004",
+  "plan": "0078",
+  "repository_checkpoint": "16562fefc9b7f0f2c776a51ed727cd73a898ae66",
+  "retrieval_posture": "hybrid structure-first",
+  "retrieval_trace": [
+    "Graphiti last30days_skill_main bounded collection-spec recall",
+    "CodeGraph status and focused collection, acquisition, publication, X adapter and service-surface exploration",
+    "targeted migration, work-item and governance-document inspection"
+  ],
+  "decision": "Model an X tailored follow as a purpose- and attention-typed CollectionSpec, preserve the existing scheduler, pass exact typed collection context into acquisition/publication, and expose lifecycle through the existing CLI and MCP collection surfaces.",
+  "evidence_packets": [
+    {
+      "kind": "existing_authority",
+      "summary": "CollectionSpec and CollectionCoordinator already own immutable revisions, schedules, intervals, budgets, cursors, leases, coverage, gaps, retries and assessment."
+    },
+    {
+      "kind": "routing_gap",
+      "summary": "X routes feed distinctly but flattens all other collection surfaces into generic query text; no list adapter or typed target reaches the worker."
+    },
+    {
+      "kind": "provenance_gap",
+      "summary": "Publication supports multiple document-version sightings but currently discovers one collection cause using a job lookup with LIMIT 1."
+    },
+    {
+      "kind": "selected_boundary",
+      "summary": "Typed canonical targets, immutable collection context, append-only archive semantics and explicit attention preserve current scheduler ownership and evidence history."
+    }
+  ],
+  "uncertainties": [
+    "frozen account and list DOM fixture corpus",
+    "10,000-sighting collection-filter performance baseline",
+    "provider-visible distinction between empty and unavailable account timelines"
+  ],
+  "next_actions": [
+    "assign one top-level lane session to WI-004 Packet 1",
+    "create and register feat/x-tailored-follows-v1 from current origin/main",
+    "implement contracts, migration, target identity and lifecycle only without starting a job or browser"
+  ],
+  "state_location": "docs/dev/notes/0119-2026-09-13-x-tailored-follow-product-architecture.md",
+  "persistence_bundle": null
+}

@@ -1,5 +1,20 @@
 schema_version: 1
 lanes:
+  - id: P35
+    objective: Define typed X account, list, and topic follows on the existing collection authority
+    plan: docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md
+    plan_ref: refs/heads/docs/x-tailored-follow-architecture
+    branch: docs/x-tailored-follow-architecture
+    target: main
+    plan_state: OPEN
+    custody_state: ACTIVE
+    checkpoint: 16562fefc9b7f0f2c776a51ed727cd73a898ae66
+    remote_ref: refs/remotes/origin/docs/x-tailored-follow-architecture
+    integration: merge
+    dependencies: []
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-004-x-tailored-follow.md]
+    reconciled_overlaps: []
+    updated_at: 2026-09-13
   - id: P34
     objective: Define one fail-closed isolated development runtime per implementation lane
     plan: docs/dev/plans/0077-2026-09-13-isolated-development-runtime-architecture-and-lane-handoff.md
