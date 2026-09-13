@@ -1,5 +1,22 @@
 schema_version: 1
 lanes:
+  - id: P40
+    objective: Define cache-only saved monitors, accepted baselines, evidence digests, and gated delivery
+    work_items: [docs/dev/work-items/WI-006-saved-monitors-and-digests.md]
+    plan: docs/dev/plans/0083-2026-09-13-saved-monitor-and-digest-architecture-and-lane-handoff.md
+    plan_ref: refs/heads/docs/saved-monitors-digests-architecture
+    branch: docs/saved-monitors-digests-architecture
+    target: main
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 8d3c50a2
+    remote_ref: refs/remotes/origin/docs/saved-monitors-digests-architecture
+    integration: merge
+    integration_receipt: null
+    dependencies: [P33, P35]
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-006-saved-monitors-and-digests.md]
+    reconciled_overlaps: []
+    updated_at: 2026-09-13
   - id: P39
     objective: Define provider-native tailored follows across supported services
     plan: docs/dev/plans/0082-2026-09-13-cross-service-tailored-follow-architecture-and-lane-handoff.md

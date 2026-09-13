@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "task_type": "architecture",
+  "work_item": "WI-006",
+  "plan": "0083",
+  "repository_checkpoint": "8d3c50a2",
+  "retrieval_posture": "hybrid structure-first",
+  "decision": "A saved monitor is a versioned cache-view subscription with explicit baseline acceptance; digest preparation is local and delivery is a separate disabled-by-default idempotent effect intent.",
+  "evidence": [
+    "WI-002 immutable search snapshots and evidence refs",
+    "WI-004 immutable follow identity and collection causes",
+    "current retrieval snapshots and tick query heads",
+    "legacy watchlist direct acquisition and webhook gaps",
+    "incident notification readiness, idempotency and durable receipt patterns"
+  ],
+  "dependencies": {
+    "packet_1": "WI-002 Packet 1",
+    "packet_3": "WI-004 Packet 1",
+    "final_acceptance": "WI-002 and WI-004 closeout plus WI-001 fresh isolated runtime",
+    "optional_synthesis": "WI-003"
+  },
+  "next_actions": [
+    "assign one top-level lane session after WI-002 Packet 1",
+    "create and register feat/saved-monitors-v1 from current origin/main",
+    "implement the provider-free monitor kernel without acquisition or delivery"
+  ],
+  "state_location": "docs/dev/notes/0124-2026-09-13-saved-monitor-and-digest-product-architecture.md"
+}
