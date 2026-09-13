@@ -331,7 +331,7 @@ def test_clean_install_uses_independent_current_release_and_receipt(tmp_path):
         )
         assert not (service_root / "previous").exists()
         assert receipt["service_version"] == CURRENT_VERSION
-        assert receipt["database_schema_version"] == 17
+        assert receipt["database_schema_version"] == 18
         assert receipt["service_status"] == "ready"
         assert receipt == json.loads(
             (service_root / "readiness.json").read_text(encoding="utf-8")
@@ -360,7 +360,7 @@ def test_clean_install_uses_independent_current_release_and_receipt(tmp_path):
             )
             .execute("SELECT MAX(version) FROM schema_version")
             .fetchone()[0]
-            == 17
+            == 18
         )
         _assert_skill_command(env, entrypoint)
         assert (checkout / "scripts/service.py").read_text() == "# developer-owned entrypoint\n"
@@ -425,7 +425,7 @@ def test_upgrade_manual_rollback_and_failed_upgrade_restore_state(tmp_path):
         ).fetchone()[0] == 1
         assert connection.execute(
             "SELECT MAX(version) FROM schema_version"
-        ).fetchone()[0] == 17
+        ).fetchone()[0] == 18
         assert connection.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
         after_dump = "\n".join(connection.iterdump())
         connection.close()
@@ -440,7 +440,7 @@ def test_schema_changing_upgrade_rolls_database_back_and_forward_with_release(
     env = {
         **_environment(tmp_path),
         "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps(
-            {"0.2.29": 12, CURRENT_VERSION: 17}
+            {"0.2.29": 12, CURRENT_VERSION: 18}
         ),
     }
     previous_artifact = _artifact(tmp_path, "0.2.29")
@@ -461,7 +461,7 @@ def test_schema_changing_upgrade_rolls_database_back_and_forward_with_release(
         upgraded = json.loads(
             _run(env, "upgrade", artifact=candidate_artifact).stdout
         )
-        assert upgraded["database_schema_version"] == 17
+        assert upgraded["database_schema_version"] == 18
         connection = sqlite3.connect(db_path)
         connection.execute("INSERT INTO release_sentinel VALUES ('schema-16')")
         connection.commit()
@@ -478,7 +478,7 @@ def test_schema_changing_upgrade_rolls_database_back_and_forward_with_release(
 
         rolled_forward = json.loads(_run(env, "rollback").stdout)
         assert rolled_forward["service_version"] == CURRENT_VERSION
-        assert rolled_forward["database_schema_version"] == 17
+        assert rolled_forward["database_schema_version"] == 18
         connection = sqlite3.connect(db_path)
         assert connection.execute(
             "SELECT value FROM release_sentinel ORDER BY value"
@@ -499,7 +499,7 @@ def test_failed_schema_rollback_restores_current_release_and_database(tmp_path):
     env = {
         **_environment(tmp_path),
         "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps(
-            {"0.2.29": 12, CURRENT_VERSION: 17}
+            {"0.2.29": 12, CURRENT_VERSION: 18}
         ),
     }
     previous_artifact = _artifact(tmp_path, "0.2.29")
@@ -532,7 +532,7 @@ def test_failed_schema_rollback_restores_current_release_and_database(tmp_path):
         )
         assert (service_root / "previous").readlink() == Path("releases/0.2.29")
         diagnosed = json.loads(_run(env, "diagnose").stdout)
-        assert diagnosed["database_schema_version"] == 17
+        assert diagnosed["database_schema_version"] == 18
         connection = sqlite3.connect(db_path)
         assert connection.execute(
             "SELECT value FROM release_sentinel ORDER BY value"
@@ -547,7 +547,7 @@ def test_schema_upgrade_failure_restores_pre_migration_database(tmp_path):
     env = {
         **_environment(tmp_path),
         "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps(
-            {"0.2.29": 12, CURRENT_VERSION: 17}
+            {"0.2.29": 12, CURRENT_VERSION: 18}
         ),
     }
     previous_artifact = _artifact(tmp_path, "0.2.29")
@@ -588,7 +588,7 @@ def test_schema_upgrade_failure_restores_pre_migration_database(tmp_path):
 def test_runtime_manifest_mismatch_fails_initial_install_without_receipt(tmp_path):
     env = {
         **_environment(tmp_path),
-        "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps({CURRENT_VERSION: 17}),
+        "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps({CURRENT_VERSION: 18}),
         "FAKE_SCHEMA_SERVICE_MANIFEST_SHA256": "0" * 64,
     }
     artifact = _artifact(tmp_path, CURRENT_VERSION)
@@ -616,7 +616,7 @@ def test_upgrade_recovery_stop_failure_does_not_restore_database(tmp_path):
     env = {
         **_environment(tmp_path),
         "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps(
-            {"0.2.29": 12, CURRENT_VERSION: 17}
+            {"0.2.29": 12, CURRENT_VERSION: 18}
         ),
     }
     previous_artifact = _artifact(tmp_path, "0.2.29")
@@ -652,7 +652,7 @@ def test_upgrade_recovery_stop_failure_does_not_restore_database(tmp_path):
         connection = sqlite3.connect(db_path)
         assert connection.execute(
             "SELECT MAX(version) FROM schema_version"
-        ).fetchone()[0] == 17
+        ).fetchone()[0] == 18
         assert connection.execute(
             "SELECT value FROM release_sentinel"
         ).fetchall() == [("schema-12",)]
@@ -676,7 +676,7 @@ def test_rollback_recovery_stop_failure_does_not_restore_displaced_database(
     env = {
         **_environment(tmp_path),
         "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps(
-            {"0.2.29": 12, CURRENT_VERSION: 17}
+            {"0.2.29": 12, CURRENT_VERSION: 18}
         ),
     }
     previous_artifact = _artifact(tmp_path, "0.2.29")
@@ -726,7 +726,7 @@ def test_rollback_recovery_stop_failure_does_not_restore_displaced_database(
         snapshot_connection = sqlite3.connect(rollback_snapshot)
         assert snapshot_connection.execute(
             "SELECT MAX(version) FROM schema_version"
-        ).fetchone()[0] == 17
+        ).fetchone()[0] == 18
         assert snapshot_connection.execute(
             "SELECT value FROM release_sentinel ORDER BY value"
         ).fetchall() == [("schema-12",), ("schema-16",)]
@@ -739,7 +739,7 @@ def test_rollback_rejects_release_snapshot_mismatch_without_state_change(tmp_pat
     env = {
         **_environment(tmp_path),
         "FAKE_MANAGER_SCHEMA_BY_VERSION": json.dumps(
-            {"0.2.29": 12, CURRENT_VERSION: 17}
+            {"0.2.29": 12, CURRENT_VERSION: 18}
         ),
     }
     previous_artifact = _artifact(tmp_path, "0.2.29")
@@ -768,7 +768,7 @@ def test_rollback_rejects_release_snapshot_mismatch_without_state_change(tmp_pat
         )
         assert json.loads(_run(env, "diagnose").stdout)[
             "database_schema_version"
-        ] == 17
+        ] == 18
     finally:
         _stop(env)
 

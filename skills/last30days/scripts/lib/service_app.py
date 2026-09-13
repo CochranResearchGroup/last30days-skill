@@ -583,6 +583,7 @@ class CacheQueryApplication:
                     "spec",
                     "collection_spec_id",
                     "scheduled_for",
+                    "include_archived",
                 }
             ),
         }
@@ -686,9 +687,16 @@ class CacheQueryApplication:
             raise RuntimeError("collection authority is unavailable")
         operation = payload.get("operation")
         if operation == "list":
+            include_archived = payload.get("include_archived", False)
+            if not isinstance(include_archived, bool):
+                raise contracts.ContractValidationError(
+                    "include_archived must be boolean"
+                )
             visible = [
                 item
-                for item in self.collection_coordinator.list_specs()
+                for item in self.collection_coordinator.list_specs(
+                    include_archived=include_archived
+                )
                 if isinstance(item.get("spec"), Mapping)
                 and item["spec"].get("access_partition_id") in partitions
             ]
@@ -720,6 +728,23 @@ class CacheQueryApplication:
             raise contracts.ContractValidationError(
                 "collection spec is outside the authorized partition"
             )
+        if operation == "get":
+            return {
+                **base,
+                "operation": operation,
+                "collection": self.collection_coordinator.get_spec_detail(
+                    collection_spec_id
+                ),
+            }
+        if operation == "archive":
+            self.collection_coordinator.archive_spec(collection_spec_id)
+            return {
+                **base,
+                "operation": operation,
+                "collection": self.collection_coordinator.get_spec_detail(
+                    collection_spec_id
+                ),
+            }
         if operation in {"pause", "resume"}:
             spec = self.collection_coordinator.set_enabled(
                 collection_spec_id, enabled=operation == "resume"

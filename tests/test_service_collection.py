@@ -54,6 +54,28 @@ def _spec(**overrides: object) -> CollectionSpec:
     return CollectionSpec.from_dict(payload)
 
 
+def _follow_spec(**overrides: object) -> CollectionSpec:
+    payload: dict[str, object] = {
+        **_spec().to_dict(),
+        "collection_spec_id": "follow-x-account-alice",
+        "name": "Follow Alice on X",
+        "source": "x",
+        "surface_kind": "account",
+        "selector": {"account": "alice"},
+        "profile_id": "x-primary",
+        "redaction_class": "authenticated",
+        "assessment_enabled": False,
+        "enabled": False,
+        "collection_purpose": "tailored_follow",
+        "attention_class": "priority",
+        "lifecycle_state": "active",
+    }
+    payload.pop("follow_target_id", None)
+    payload.pop("access_partition_id", None)
+    payload.update(overrides)
+    return CollectionSpec.from_dict(payload)
+
+
 def _coordinator(tmp_path, *, now=NOW):
     db_path = tmp_path / "research.db"
     supervisor = RefreshSupervisor(db_path, clock=lambda: now)
@@ -107,6 +129,137 @@ def test_collection_spec_preserves_exact_access_method_without_breaking_legacy_s
     assert "required_access_method" not in legacy.to_dict()
     assert constrained.required_access_method == "keyless"
     assert constrained.to_dict()["required_access_method"] == "keyless"
+
+
+def test_legacy_collection_specs_receive_explicit_safe_follow_defaults():
+    legacy_payload = _spec().to_dict()
+    for field in ("collection_purpose", "attention_class", "lifecycle_state"):
+        legacy_payload.pop(field)
+
+    restored = CollectionSpec.from_dict(legacy_payload)
+
+    assert restored.collection_spec_id == "spec-reddit-ai"
+    assert restored.collection_purpose == "general"
+    assert restored.attention_class == "standard"
+    assert restored.lifecycle_state == "active"
+    assert restored.follow_target_id is None
+
+
+@pytest.mark.parametrize(
+    ("surface_kind", "selector"),
+    [
+        ("feed", {"feed": "home"}),
+        ("topic", {"topic": "AI OR agents"}),
+        ("account", {"account": "alice_1"}),
+        ("list", {"list_id": "123456789"}),
+    ],
+)
+def test_x_follow_targets_are_typed_canonical_and_partition_bound(
+    surface_kind, selector
+):
+    first = _follow_spec(surface_kind=surface_kind, selector=selector)
+    restored = CollectionSpec.from_dict(first.to_dict())
+    other_partition = _follow_spec(
+        surface_kind=surface_kind,
+        selector=selector,
+        profile_id="x-secondary",
+    )
+
+    assert restored == first
+    assert first.follow_target_id.startswith("follow-target-")
+    assert restored.follow_target_id == first.follow_target_id
+    assert other_partition.follow_target_id != first.follow_target_id
+
+
+@pytest.mark.parametrize(
+    ("surface_kind", "selector", "candidate"),
+    [
+        ("feed", {"feed": "Home"}, '"home"'),
+        ("topic", {"topic": "  AI   agents "}, '"AI agents"'),
+        ("account", {"account": "@Alice"}, '"alice"'),
+        ("list", {"list_id": "0012"}, '"12"'),
+    ],
+)
+def test_x_follow_targets_reject_noncanonical_input_with_safe_candidate(
+    surface_kind, selector, candidate
+):
+    with pytest.raises(
+        CollectionSpecValidationError,
+        match="noncanonical X",
+    ) as error:
+        _follow_spec(surface_kind=surface_kind, selector=selector)
+
+    assert candidate in str(error.value)
+
+
+def test_x_follow_targets_reject_malformed_or_public_inputs():
+    with pytest.raises(CollectionSpecValidationError, match="noncanonical X"):
+        _follow_spec(selector={"account": "bad-handle"})
+    with pytest.raises(CollectionSpecValidationError, match="authenticated"):
+        _follow_spec(profile_id="default", redaction_class="public")
+
+
+def test_tailored_follow_creation_is_inactive_and_duplicate_safe(tmp_path):
+    _db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
+
+    with pytest.raises(CollectionSpecValidationError, match="created disabled"):
+        coordinator.put_spec(_follow_spec(enabled=True))
+    first = coordinator.put_spec(_follow_spec())
+    with pytest.raises(CollectionSpecValidationError, match="already owns"):
+        coordinator.put_spec(
+            _follow_spec(
+                collection_spec_id="follow-x-account-alice-copy",
+                name="Duplicate Alice follow",
+            )
+        )
+
+    assert first.enabled is False
+    assert (
+        coordinator.set_enabled(first.collection_spec_id, enabled=True).enabled is True
+    )
+
+
+def test_tailored_follow_identity_is_immutable_across_revisions(tmp_path):
+    _db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
+    coordinator.put_spec(_follow_spec())
+
+    with pytest.raises(CollectionSpecValidationError, match="follow identity"):
+        coordinator.put_spec(
+            _follow_spec(
+                selector={"account": "bob"},
+                spec_version=2,
+            )
+        )
+
+
+def test_archive_is_an_irreversible_visible_tombstone_with_history(tmp_path):
+    _db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
+    stored = coordinator.put_spec(_follow_spec())
+
+    archived = coordinator.archive_spec(stored.collection_spec_id)
+    detail = coordinator.get_spec_detail(stored.collection_spec_id)
+
+    assert archived.lifecycle_state == "archived"
+    assert archived.enabled is False
+    assert archived.spec_version == 2
+    assert coordinator.list_specs() == ()
+    assert (
+        coordinator.list_specs(include_archived=True)[0]["spec"]
+        == archived.to_dict()
+    )
+    assert [item["lifecycle_state"] for item in detail["history"]] == [
+        "active",
+        "archived",
+    ]
+    assert coordinator.archive_spec(stored.collection_spec_id) == archived
+    with pytest.raises(CollectionSpecValidationError, match="irreversible"):
+        coordinator.set_enabled(stored.collection_spec_id, enabled=True)
+    with pytest.raises(CollectionSpecValidationError, match="cannot be run"):
+        coordinator.enqueue_interval(
+            stored.collection_spec_id,
+            scheduled_for="2026-07-25T12:17:00Z",
+            trigger="manual",
+        )
 
 
 def test_timer_and_manual_trigger_coalesce_into_one_interval_run(tmp_path):

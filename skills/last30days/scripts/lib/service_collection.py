@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import sqlite3
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -23,10 +24,15 @@ _SURFACE_SELECTORS = {
     "poster": "poster",
     "channel": "channel",
     "account": "account",
+    "list": "list_id",
     "profile": "profile_url",
 }
 _TRIGGERS = frozenset({"timer", "manual"})
 _BROWSER_SOURCES = frozenset({"x", "facebook", "linkedin"})
+_COLLECTION_PURPOSES = frozenset({"general", "tailored_follow"})
+_ATTENTION_CLASSES = frozenset({"standard", "priority"})
+_LIFECYCLE_STATES = frozenset({"active", "archived"})
+_X_FOLLOW_SURFACES = frozenset({"feed", "topic", "account", "list"})
 
 
 class CollectionSpecValidationError(ValueError):
@@ -92,6 +98,46 @@ def _nonempty(payload: Mapping[str, object], field: str, maximum: int = 512) -> 
     return value.strip()
 
 
+def _canonical_x_follow_selector(
+    surface_kind: str,
+    selector_field: str,
+    selector_value: str,
+) -> dict[str, str]:
+    if surface_kind not in _X_FOLLOW_SURFACES:
+        raise CollectionSpecValidationError(
+            "tailored_follow surface_kind must be feed, topic, account, or list"
+        )
+    if surface_kind == "feed":
+        candidate = "home"
+        valid = selector_value == candidate
+    elif surface_kind == "topic":
+        candidate = " ".join(selector_value.split())
+        valid = bool(candidate) and selector_value == candidate
+    elif surface_kind == "account":
+        candidate = selector_value.removeprefix("@").casefold()
+        valid = (
+            selector_value == candidate
+            and re.fullmatch(r"[a-z0-9_]{1,15}", candidate, re.ASCII) is not None
+        )
+    else:
+        candidate = (
+            selector_value.lstrip("0") or "0"
+            if re.fullmatch(r"[0-9]+", selector_value, re.ASCII)
+            else selector_value.strip()
+        )
+        valid = (
+            selector_value == candidate
+            and len(candidate) <= 32
+            and re.fullmatch(r"[1-9][0-9]*", candidate, re.ASCII) is not None
+        )
+    if not valid:
+        raise CollectionSpecValidationError(
+            f"noncanonical X {surface_kind} selector; canonical candidate is "
+            f"{_canonical_json({selector_field: candidate})}"
+        )
+    return {selector_field: candidate}
+
+
 @dataclass(frozen=True)
 class CollectionSpec:
     schema_version: int
@@ -113,6 +159,9 @@ class CollectionSpec:
     enabled: bool
     spec_version: int
     required_access_method: str | None = None
+    collection_purpose: str = "general"
+    attention_class: str = "standard"
+    lifecycle_state: str = "active"
 
     @classmethod
     def from_dict(cls, payload: Mapping[str, object]) -> CollectionSpec:
@@ -140,7 +189,14 @@ class CollectionSpec:
                 "spec_version",
             }
         )
-        allowed_fields = required_fields | {"required_access_method"}
+        allowed_fields = required_fields | {
+            "required_access_method",
+            "collection_purpose",
+            "attention_class",
+            "lifecycle_state",
+            "follow_target_id",
+            "access_partition_id",
+        }
         unknown = sorted(set(payload) - allowed_fields)
         missing = sorted(required_fields - set(payload))
         if missing:
@@ -167,7 +223,8 @@ class CollectionSpec:
             raise CollectionSpecValidationError(
                 f"selector for {surface_kind} must contain only {selector_field}"
             )
-        selector_value = str(selector[selector_field]).strip()
+        raw_selector_value = str(selector[selector_field])
+        selector_value = raw_selector_value.strip()
         if len(selector_value) > 4096:
             raise CollectionSpecValidationError("selector exceeds 4096 characters")
         profile_id = _nonempty(payload, "profile_id", 128)
@@ -178,9 +235,31 @@ class CollectionSpec:
         if redaction not in {"public", "authenticated", "restricted"}:
             raise CollectionSpecValidationError("redaction_class is invalid")
         source = _nonempty(payload, "source", 64).casefold()
+        collection_purpose = str(
+            payload.get("collection_purpose", "general")
+        ).casefold()
+        if collection_purpose not in _COLLECTION_PURPOSES:
+            raise CollectionSpecValidationError("collection_purpose is invalid")
+        attention_class = str(payload.get("attention_class", "standard")).casefold()
+        if attention_class not in _ATTENTION_CLASSES:
+            raise CollectionSpecValidationError("attention_class is invalid")
+        lifecycle_state = str(payload.get("lifecycle_state", "active")).casefold()
+        if lifecycle_state not in _LIFECYCLE_STATES:
+            raise CollectionSpecValidationError("lifecycle_state is invalid")
+        if collection_purpose == "tailored_follow":
+            if source != "x":
+                raise CollectionSpecValidationError(
+                    "tailored_follow source must be x"
+                )
+            selector_value = _canonical_x_follow_selector(
+                surface_kind, selector_field, raw_selector_value
+            )[selector_field]
         required_access_method = payload.get("required_access_method")
         if required_access_method is not None:
-            if not isinstance(required_access_method, str) or not required_access_method.strip():
+            if (
+                not isinstance(required_access_method, str)
+                or not required_access_method.strip()
+            ):
                 raise CollectionSpecValidationError(
                     "required_access_method must be a non-empty string"
                 )
@@ -200,7 +279,7 @@ class CollectionSpec:
         for field in ("assessment_enabled", "enabled"):
             if not isinstance(payload[field], bool):
                 raise CollectionSpecValidationError(f"{field} must be boolean")
-        return cls(
+        spec = cls(
             schema_version=1,
             collection_spec_id=_nonempty(payload, "collection_spec_id", 128),
             name=_nonempty(payload, "name", 256),
@@ -228,7 +307,33 @@ class CollectionSpec:
             enabled=bool(payload["enabled"]),
             spec_version=_bounded_int(payload, "spec_version", 1, 1_000_000),
             required_access_method=required_access_method,
+            collection_purpose=collection_purpose,
+            attention_class=attention_class,
+            lifecycle_state=lifecycle_state,
         )
+        supplied_follow_target_id = payload.get("follow_target_id")
+        if supplied_follow_target_id is not None:
+            if (
+                not isinstance(supplied_follow_target_id, str)
+                or supplied_follow_target_id != spec.follow_target_id
+            ):
+                raise CollectionSpecValidationError("follow_target_id is not canonical")
+        supplied_partition_id = payload.get("access_partition_id")
+        if (
+            supplied_partition_id is not None
+            and supplied_partition_id != spec.access_partition_id
+        ):
+            raise CollectionSpecValidationError("access_partition_id is not canonical")
+        if (
+            spec.collection_purpose == "tailored_follow"
+            and spec.access_partition_id == "public"
+        ):
+            raise CollectionSpecValidationError(
+                "tailored_follow requires an authenticated access partition"
+            )
+        if spec.lifecycle_state == "archived" and spec.enabled:
+            raise CollectionSpecValidationError("archived collection must be disabled")
+        return spec
 
     @property
     def selector_digest(self) -> str:
@@ -245,6 +350,20 @@ class CollectionSpec:
     @property
     def access_partition_id(self) -> str:
         return access_partition_id(self.redaction_class, self.profile_id)
+
+    @property
+    def follow_target_id(self) -> str | None:
+        if self.collection_purpose != "tailored_follow":
+            return None
+        return _stable_id(
+            "follow-target",
+            {
+                "source": self.source,
+                "surface_kind": self.surface_kind,
+                "selector": self.selector,
+                "access_partition_id": self.access_partition_id,
+            },
+        )
 
     def to_dict(self) -> dict[str, object]:
         payload: dict[str, object] = {
@@ -266,9 +385,15 @@ class CollectionSpec:
             "assessment_enabled": self.assessment_enabled,
             "enabled": self.enabled,
             "spec_version": self.spec_version,
+            "collection_purpose": self.collection_purpose,
+            "attention_class": self.attention_class,
+            "lifecycle_state": self.lifecycle_state,
+            "access_partition_id": self.access_partition_id,
         }
         if self.required_access_method is not None:
             payload["required_access_method"] = self.required_access_method
+        if self.follow_target_id is not None:
+            payload["follow_target_id"] = self.follow_target_id
         return payload
 
 
@@ -454,7 +579,12 @@ class CollectionCoordinator:
             (envelope_type, envelope_id, payload_json, payload_sha256),
         )
 
-    def put_spec(self, spec: CollectionSpec) -> CollectionSpec:
+    def put_spec(
+        self,
+        spec: CollectionSpec,
+        *,
+        _allow_archive: bool = False,
+    ) -> CollectionSpec:
         now = _timestamp(self._now())
         partition_kind = (
             "public" if spec.access_partition_id == "public" else "authenticated"
@@ -463,7 +593,7 @@ class CollectionCoordinator:
         try:
             conn.execute("BEGIN IMMEDIATE")
             current = conn.execute(
-                """SELECT s.spec_version, s.enabled, r.spec_digest
+                """SELECT s.spec_version, s.enabled, r.spec_digest, r.spec_json
                    FROM collection_specs AS s
                    JOIN collection_spec_revisions AS r
                      ON r.collection_spec_id = s.collection_spec_id
@@ -471,10 +601,24 @@ class CollectionCoordinator:
                    WHERE s.collection_spec_id = ?""",
                 (spec.collection_spec_id,),
             ).fetchone()
+            current_spec = (
+                CollectionSpec.from_dict(json.loads(current["spec_json"]))
+                if current is not None
+                else None
+            )
+            if (
+                current is None
+                and spec.collection_purpose == "tailored_follow"
+                and spec.enabled
+            ):
+                raise CollectionSpecValidationError(
+                    "tailored_follow must be created disabled"
+                )
             if current is not None:
                 current_version = int(current["spec_version"])
                 if spec.spec_version == current_version:
-                    if spec.spec_digest != current["spec_digest"]:
+                    assert current_spec is not None
+                    if spec.spec_digest != current_spec.spec_digest:
                         raise CollectionSpecValidationError(
                             "spec_version is immutable; increment it for edits"
                         )
@@ -482,6 +626,41 @@ class CollectionCoordinator:
                     raise CollectionSpecValidationError(
                         "spec_version must increment exactly once"
                     )
+                assert current_spec is not None
+                if current_spec.lifecycle_state == "archived":
+                    raise CollectionSpecValidationError(
+                        "archived collection is an irreversible tombstone"
+                    )
+                if spec.lifecycle_state != current_spec.lifecycle_state:
+                    if not (
+                        _allow_archive
+                        and current_spec.lifecycle_state == "active"
+                        and spec.lifecycle_state == "archived"
+                    ):
+                        raise CollectionSpecValidationError(
+                            "lifecycle_state may only change through archive"
+                        )
+                if spec.collection_purpose != current_spec.collection_purpose:
+                    raise CollectionSpecValidationError(
+                        "collection_purpose is immutable"
+                    )
+                if (
+                    spec.collection_purpose == "tailored_follow"
+                    and spec.follow_target_id != current_spec.follow_target_id
+                ):
+                    raise CollectionSpecValidationError(
+                        "tailored follow identity is immutable"
+                    )
+            duplicate = conn.execute(
+                """SELECT collection_spec_id FROM collection_specs
+                   WHERE follow_target_id = ? AND lifecycle_state = 'active'
+                     AND collection_spec_id <> ?""",
+                (spec.follow_target_id, spec.collection_spec_id),
+            ).fetchone()
+            if spec.follow_target_id is not None and duplicate is not None:
+                raise CollectionSpecValidationError(
+                    "an active tailored follow already owns this target"
+                )
             resuming = (
                 current is not None
                 and not bool(current["enabled"])
@@ -502,8 +681,10 @@ class CollectionCoordinator:
                 """INSERT INTO collection_specs
                    (collection_spec_id, name, source, surface_kind, selector_json,
                     profile_id, schedule, item_limit, enabled, spec_version,
-                    access_partition_id, created_at, updated_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    access_partition_id, created_at, updated_at,
+                    collection_purpose, attention_class, lifecycle_state,
+                    follow_target_id)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                    ON CONFLICT(collection_spec_id) DO UPDATE SET
                      name = excluded.name,
                      source = excluded.source,
@@ -515,6 +696,10 @@ class CollectionCoordinator:
                      enabled = excluded.enabled,
                      spec_version = excluded.spec_version,
                      access_partition_id = excluded.access_partition_id,
+                     collection_purpose = excluded.collection_purpose,
+                     attention_class = excluded.attention_class,
+                     lifecycle_state = excluded.lifecycle_state,
+                     follow_target_id = excluded.follow_target_id,
                      updated_at = excluded.updated_at""",
                 (
                     spec.collection_spec_id,
@@ -530,6 +715,10 @@ class CollectionCoordinator:
                     spec.access_partition_id,
                     now,
                     now,
+                    spec.collection_purpose,
+                    spec.attention_class,
+                    spec.lifecycle_state,
+                    spec.follow_target_id,
                 ),
             )
             conn.execute(
@@ -623,7 +812,43 @@ class CollectionCoordinator:
             )
         return CollectionSpec.from_dict(json.loads(row["spec_json"]))
 
-    def list_specs(self) -> tuple[dict[str, object], ...]:
+    def get_spec_history(
+        self, collection_spec_id: str
+    ) -> tuple[CollectionSpec, ...]:
+        conn = self._connect()
+        try:
+            rows = conn.execute(
+                """SELECT spec_json FROM collection_spec_revisions
+                   WHERE collection_spec_id = ? ORDER BY spec_version""",
+                (collection_spec_id,),
+            ).fetchall()
+        finally:
+            conn.close()
+        if not rows:
+            raise KeyError(f"collection spec not found: {collection_spec_id}")
+        return tuple(
+            CollectionSpec.from_dict(json.loads(row["spec_json"])) for row in rows
+        )
+
+    def get_spec_detail(self, collection_spec_id: str) -> dict[str, object]:
+        for item in self.list_specs(include_archived=True):
+            spec = item.get("spec")
+            if (
+                isinstance(spec, Mapping)
+                and spec.get("collection_spec_id") == collection_spec_id
+            ):
+                return {
+                    **item,
+                    "history": [
+                        revision.to_dict()
+                        for revision in self.get_spec_history(collection_spec_id)
+                    ],
+                }
+        raise KeyError(f"collection spec not found: {collection_spec_id}")
+
+    def list_specs(
+        self, *, include_archived: bool = False
+    ) -> tuple[dict[str, object], ...]:
         conn = self._connect()
         try:
             rows = conn.execute(
@@ -643,7 +868,9 @@ class CollectionCoordinator:
                     AND r.spec_version = s.spec_version
                    JOIN collection_schedule_state AS q
                      ON q.collection_spec_id = s.collection_spec_id
-                   ORDER BY s.name, s.collection_spec_id"""
+                   WHERE (? OR s.lifecycle_state = 'active')
+                   ORDER BY s.name, s.collection_spec_id""",
+                (int(include_archived),),
             ).fetchall()
             output: list[dict[str, object]] = []
             for row in rows:
@@ -676,7 +903,9 @@ class CollectionCoordinator:
                 )
                 output.append(
                     {
-                        "spec": json.loads(row["spec_json"]),
+                        "spec": CollectionSpec.from_dict(
+                            json.loads(row["spec_json"])
+                        ).to_dict(),
                         "schedule": {
                             "next_due_at": row["next_due_at"],
                             "last_scheduled_at": row["last_scheduled_at"],
@@ -694,6 +923,22 @@ class CollectionCoordinator:
         finally:
             conn.close()
         return tuple(output)
+
+    def archive_spec(self, collection_spec_id: str) -> CollectionSpec:
+        spec = self.get_spec(collection_spec_id)
+        if spec.lifecycle_state == "archived":
+            return spec
+        payload = spec.to_dict()
+        payload.pop("follow_target_id", None)
+        archived = CollectionSpec.from_dict(
+            {
+                **payload,
+                "enabled": False,
+                "lifecycle_state": "archived",
+                "spec_version": spec.spec_version + 1,
+            }
+        )
+        return self.put_spec(archived, _allow_archive=True)
 
     def policy_for_job(self, job_id: str) -> dict[str, object] | None:
         conn = self._connect()
@@ -722,9 +967,15 @@ class CollectionCoordinator:
 
     def set_enabled(self, collection_spec_id: str, *, enabled: bool) -> CollectionSpec:
         spec = self.get_spec(collection_spec_id)
+        if spec.lifecycle_state == "archived":
+            raise CollectionSpecValidationError(
+                "archived collection is an irreversible tombstone"
+            )
+        payload = spec.to_dict()
+        payload.pop("follow_target_id", None)
         updated = CollectionSpec.from_dict(
             {
-                **spec.to_dict(),
+                **payload,
                 "enabled": enabled,
                 "spec_version": spec.spec_version + 1,
             }
@@ -754,6 +1005,10 @@ class CollectionCoordinator:
             ):
                 raise ValueError("manual max_attempts must be 1 or 2")
         spec = self.get_spec(collection_spec_id)
+        if spec.lifecycle_state == "archived":
+            raise CollectionSpecValidationError(
+                "archived collection cannot be run"
+            )
         scheduled = _parse_timestamp(scheduled_for, "scheduled_for")
         interval_to_dt = self._floor_interval(scheduled, spec.interval_seconds)
         interval_from_dt = interval_to_dt - timedelta(seconds=spec.lookback_seconds)

@@ -210,3 +210,83 @@ def test_intelligence_rejects_unknown_fields_and_partition_injection(tmp_path):
                 "access_partitions": ["profile:other"],
             }
         )
+
+
+def test_collection_service_get_list_and_archive_expose_lifecycle_history(tmp_path):
+    db_path = tmp_path / "research.db"
+    ledger = ServiceStore(db_path)
+    ledger.initialize()
+    coordinator = CollectionCoordinator(db_path, FakeScheduler(ledger))
+    app = _app(tmp_path, coordinator=coordinator)
+    spec = CollectionSpec.from_dict(
+        {
+            "schema_version": 1,
+            "collection_spec_id": "follow-x-list-agents",
+            "name": "Follow X agents list",
+            "source": "x",
+            "surface_kind": "list",
+            "selector": {"list_id": "123456789"},
+            "profile_id": "x-primary",
+            "interval_seconds": 3600,
+            "lookback_seconds": 7200,
+            "item_limit": 20,
+            "wall_timeout_seconds": 90,
+            "network_request_limit": 50,
+            "budget_cents": 25,
+            "retention_class": "cache",
+            "redaction_class": "authenticated",
+            "assessment_enabled": False,
+            "enabled": False,
+            "spec_version": 1,
+            "collection_purpose": "tailored_follow",
+            "attention_class": "priority",
+            "lifecycle_state": "active",
+        }
+    )
+
+    created = app.intelligence(
+        {
+            "action": "collection",
+            "profile_id": "x-primary",
+            "operation": "put",
+            "spec": spec.to_dict(),
+        }
+    )
+    fetched = app.intelligence(
+        {
+            "action": "collection",
+            "profile_id": "x-primary",
+            "operation": "get",
+            "collection_spec_id": spec.collection_spec_id,
+        }
+    )
+    archived = app.intelligence(
+        {
+            "action": "collection",
+            "profile_id": "x-primary",
+            "operation": "archive",
+            "collection_spec_id": spec.collection_spec_id,
+        }
+    )
+    hidden = app.intelligence(
+        {
+            "action": "collection",
+            "profile_id": "x-primary",
+            "operation": "list",
+        }
+    )
+    visible = app.intelligence(
+        {
+            "action": "collection",
+            "profile_id": "x-primary",
+            "operation": "list",
+            "include_archived": True,
+        }
+    )
+
+    assert created["collection"]["enabled"] is False
+    assert len(fetched["collection"]["history"]) == 1
+    assert archived["collection"]["spec"]["lifecycle_state"] == "archived"
+    assert len(archived["collection"]["history"]) == 2
+    assert hidden["collections"] == []
+    assert len(visible["collections"]) == 1

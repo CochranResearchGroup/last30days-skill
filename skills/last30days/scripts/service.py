@@ -421,8 +421,15 @@ def _collection(args: argparse.Namespace) -> int:
     elif args.collection_action == "list":
         response = {
             "schema_version": contracts.SCHEMA_VERSION,
-            "collections": coordinator.list_specs(),
+            "collections": coordinator.list_specs(
+                include_archived=args.include_archived
+            ),
         }
+    elif args.collection_action == "get":
+        response = coordinator.get_spec_detail(args.collection_spec_id)
+    elif args.collection_action == "archive":
+        coordinator.archive_spec(args.collection_spec_id)
+        response = coordinator.get_spec_detail(args.collection_spec_id)
     elif args.collection_action in {"pause", "resume"}:
         response = coordinator.set_enabled(
             args.collection_spec_id,
@@ -705,8 +712,9 @@ def build_parser() -> argparse.ArgumentParser:
         "list", help="List collection specs and timer status"
     )
     collection_list.add_argument("--db")
+    collection_list.add_argument("--include-archived", action="store_true")
     collection_list.set_defaults(handler=_collection)
-    for action in ("pause", "resume"):
+    for action in ("get", "pause", "resume", "archive"):
         command = collection_subparsers.add_parser(action)
         command.add_argument("collection_spec_id")
         command.add_argument("--db")
