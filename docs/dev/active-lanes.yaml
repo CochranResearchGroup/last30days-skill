@@ -6,14 +6,15 @@ lanes:
     plan_ref: refs/heads/docs/corpus-quality-architecture
     branch: docs/corpus-quality-architecture
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE
-    checkpoint: aa7db9085fb54415c70bdad51c7f9aa821fb6e61
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 081dcb654cf84a4bf40e7af77c2e5620ef3f3c0c
     remote_ref: refs/remotes/origin/docs/corpus-quality-architecture
     integration: merge
+    integration_receipt: 6d5827e0c8f594d74bb5f043a9ea005bf711a3bd
     dependencies: []
     overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
-    reconciled_overlaps: []
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
     updated_at: 2026-09-13
   - id: P36
     objective: Define evidence-grounded agent questions over stable post search and immutable citations
