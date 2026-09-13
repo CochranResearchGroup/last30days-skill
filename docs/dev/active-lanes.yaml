@@ -58,9 +58,9 @@ lanes:
     plan_ref: refs/heads/feat/saved-monitors-v1
     branch: feat/saved-monitors-v1
     target: main
-    plan_state: PLANNED
+    plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 7c184e439973fb860c5d93b8450d513b59baa328
+    checkpoint: 0253e82dfad36877371cbdaaa41e846560cfbc8a
     remote_ref: refs/remotes/origin/feat/saved-monitors-v1
     integration: merge
     integration_receipt: null
@@ -108,9 +108,9 @@ lanes:
     plan_ref: refs/heads/feat/service-quality-v1
     branch: feat/service-quality-v1
     target: main
-    plan_state: PLANNED
+    plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 37638af57a9e01af42a177e13c57b87794649518
+    checkpoint: be4dec78db686132496b3b173a55ab534c1827a6
     remote_ref: refs/remotes/origin/feat/service-quality-v1
     integration: merge
     integration_receipt: null
@@ -125,9 +125,9 @@ lanes:
     plan_ref: refs/heads/feat/agent-question-answer-v1
     branch: feat/agent-question-answer-v1
     target: main
-    plan_state: PLANNED
+    plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 856fb385137c679f06616384109a0f639e37d0f5
+    checkpoint: c4d985727c39c7cfe2a86a64eae318351eefd5d4
     remote_ref: refs/remotes/origin/feat/agent-question-answer-v1
     integration: merge
     integration_receipt: null

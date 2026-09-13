@@ -1,6 +1,6 @@
 # Plan 0090 | Next Wave Launch Registration
 
-State: OPEN
+State: CLOSED
 Lane: P44
 Work item: WI-000
 Branch: docs/next-wave-launch-registration
@@ -134,6 +134,63 @@ Remaining acceptance criteria:
 The three plan-only refs and clean worktrees are canonically discoverable,
 their independent top-level sessions have exact bounded handoffs, and no
 feature or external effect has started in the coordinator lane.
+
+### Checkpoint P0090-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `verified_outcome`; the launch registration is merged
+and all three independent owners published clean activation checkpoints.
+
+Authority classification:
+
+- `inherited_authority` for ownership reconciliation, canonical projection,
+  validation, branch publication, and pull-request integration;
+- `not_authorized` for feature implementation in the coordinator, P35 pull
+  request action, tracker, runtime, provider, schedule, delivery, staging,
+  release, or production effects.
+
+Owned changes:
+
+- canonical P36/P37/P40 plan, work-item, roadmap, runbook, and catalog
+  ownership projections;
+- this closeout checkpoint and restoration of the repository active-plan test
+  to its durable source-plan count.
+
+Validation evidence:
+
+- launch registration PR 39 merged source `4db386ef` as canonical
+  `606272ab82ba2c97d833e8b06e2c1ea4092bac85`;
+- P36 activation `c4d985727c39c7cfe2a86a64eae318351eefd5d4`,
+  P37 activation `be4dec78db686132496b3b173a55ab534c1827a6`,
+  and P40 activation `0253e82dfad36877371cbdaaa41e846560cfbc8a`
+  are clean and local/remote equal;
+- each activation changed only its branch-local plan after merging exact
+  canonical main and passed 10 focused plan-authority tests;
+- final canonical planning and active-lane audits remain after rendering this
+  ownership projection.
+
+Remaining acceptance criteria:
+
+- none for launch registration; each feature plan retains all Packet 1 product
+  acceptance criteria for its owning thread.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; three independent top-level Codex threads own P36, P37, and
+  P40, and their exact identifiers are recorded in their plans and runbook.
+
+Graphiti write status:
+
+- `not_written`; read-only discovery was advisory and current Git/PR evidence
+  is authoritative.
+
+Next action:
+
+- merge this ownership projection, then resume the same three independent
+  threads for their bounded provider-free Packet 1 implementations.
 
 ## Stop Rules
 

@@ -1,13 +1,16 @@
 <!-- last30days-work-item:WI-008 -->
 # Measure corpus and retrieval quality continuously
 
-State: READY
+State: IN_PROGRESS
 Priority: P2
 Lane: Quality
 Parent: WI-000
 Blocked by: none for Packet 1; retrieval acceptance by WI-002 closeout; grounding integration by WI-003 Packet 3 and acceptance by WI-003 closeout
 Architecture: docs/dev/notes/0121-2026-09-13-corpus-retrieval-and-grounding-quality-architecture.md
 Implementation plan seed: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md
+Current plan: docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md
+Branch: feat/service-quality-v1
+Owner: Codex 01a09cf4-c89d-7b41-901a-37648171312a
 
 ## Problem
 
