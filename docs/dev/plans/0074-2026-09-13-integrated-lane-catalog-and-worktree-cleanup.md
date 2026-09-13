@@ -1,6 +1,6 @@
 # Plan 0074 | Integrated Lane Catalog And Worktree Cleanup
 
-State: OPEN
+State: CLOSED
 Lane: P31
 Branch: chore/integrated-lane-cleanup
 Target: main
@@ -129,3 +129,42 @@ Next action:
 
 - publish the final cleanup receipt, integrate through the public fork, and
   close Plan 0074/P31 from the canonical `main` readback.
+
+### Checkpoint P0074-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `verified_outcome`; catalog reconciliation and
+qualified worktree/ref cleanup are integrated with zero audit problems.
+
+Authority classification:
+
+- `inherited_authority`; integration and closeout complete the approved
+  cleanup packet.
+
+Validation evidence:
+
+- pull request 10 merged source tip
+  `afe7b668ae07b77fb0d0d045c5b4c5867d16a0bf` as
+  `ceb24923413c3ce997f9437ff498eb6aa352e439` on `origin/main`;
+- canonical `main` fast-forwarded cleanly to that exact merge;
+- the integrated catalog audit reports zero problems, P23–P28 have no
+  findings, and P08 retains only `archived_ref`;
+- 13 focused tests and the plan authority audit pass; canonical `main`, the
+  P08 source branch, and its matching archive refs remain preserved.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; primary-agent Git and audit evidence is authoritative.
+
+Graphiti write status:
+
+- `not_written`; integrated repository and Git receipts are authoritative.
+
+Next action:
+
+- remove the now-integrated Plan 0074 source and closeout worktrees/refs, then
+  verify the canonical worktree plus P08 source/archive are the only retained
+  local Last30days branches required by this program state.
