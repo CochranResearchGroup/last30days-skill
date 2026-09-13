@@ -2564,7 +2564,7 @@ Next Bounded Action:
 
 ## P32 | GitHub Work-Item Bootstrap Readiness
 
-State: OPEN
+State: CLOSED
 
 Objective: prepare the governed, idempotent repository and product-lane
 artifacts required for a separately authorized GitHub Issues and Project
@@ -2579,7 +2579,7 @@ Current State:
   disabled;
 - WI-000 through WI-008 are local review drafts, not remote issues.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0075-2026-09-13-github-work-item-bootstrap-readiness.md`.
 
@@ -2590,5 +2590,6 @@ Dependencies:
 
 Next Bounded Action:
 
-- validate and integrate the repo-only readiness packet, then obtain operator
-  acceptance of the issue graph and exact GitHub mutation scope.
+- none for P32. Obtain operator acceptance of the issue graph and separate
+  authority for the exact GitHub mutation scope before opening an activation
+  successor.

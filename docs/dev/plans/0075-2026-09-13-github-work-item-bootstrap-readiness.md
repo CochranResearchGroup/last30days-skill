@@ -1,6 +1,6 @@
 # Plan 0075 | GitHub Work-Item Bootstrap Readiness
 
-State: OPEN
+State: CLOSED
 Lane: P32
 Branch: chore/github-work-item-bootstrap
 Target: main
@@ -139,3 +139,44 @@ Next action:
 
 - publish and integrate the readiness branch, then ask the operator to accept
   or revise the issue graph before any tracker mutation.
+
+### Checkpoint P0075-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `verified_outcome`; the complete repo-only readiness
+packet is integrated and all external tracker effects remain gated.
+
+Authority classification:
+
+- `inherited_authority` for public-fork integration and closeout;
+- `not_authorized` for Issues, Projects, labels, and repository-setting writes.
+
+Validation evidence:
+
+- pull request 12 merged source tip
+  `703e4b3e3f442cffbfedc9ca468a97f9e86c270d` as
+  `eded1cfe229b9ef5452f3cd5aadf144457dc4e08` on `origin/main`;
+- canonical `main` fast-forwarded cleanly to that exact merge;
+- 102 embedded selector tests and 13 focused repository tests pass;
+- selector fit reports `already-aligned` with zero validation problems, plan
+  authority and active-lane audits pass, and the registry remains read-only;
+- GitHub Issues remain disabled and no issue, Project, label, or repository
+  setting was created or changed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; primary-agent Git, repository, and provider evidence is
+  authoritative.
+
+Graphiti write status:
+
+- `not_written`; integrated repository, Git, and live GitHub readback are the
+  authoritative durable record.
+
+Next action:
+
+- present the draft dependency graph for operator acceptance or revision, then
+  require separate explicit authority before the activation sequence begins.
