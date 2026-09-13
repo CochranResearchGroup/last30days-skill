@@ -1,8 +1,8 @@
 # Plan 0062 | Recurring X And LinkedIn 80-Item Volume
 
-State: OPEN
+State: CLOSED
 Roadmap: P08
-Plan version: 6
+Plan version: 7
 Date: 2026-09-02
 Branch: `fix/tick-restart-recovery`
 Target: `main`
@@ -546,3 +546,37 @@ the published repository plus durable tick receipt are the current authority.
 Next action: observe the September 3 ordinary timer tick under the now-proven
 80+80 configuration; do not infer that manual acceptance alone closes the
 recurring-scheduler acceptance criterion.
+
+### Checkpoint P0062-C10 | 2026-09-13
+
+Plan version: 7
+
+State: `ordinary_tick_accepted_and_closed`
+
+Progress classification: `verified_outcome`
+
+Authority classification:
+
+- `inherited_authority`; this checkpoint observes the existing timer receipt
+  and does not enqueue work or change runtime state.
+
+Evidence:
+
+- timer tick `tick-2a466080dc3c23c429ad788c88757ea4` terminalized
+  `complete_degraded` for the September 12-13 UTC interval;
+- X succeeded on ordinal 0 with 80 accepted from 193 observed, and LinkedIn
+  succeeded on ordinal 0 with 47 accepted from 1,611 observed; YouTube also
+  succeeded with 3 accepted from 8 observed;
+- the independent Reddit lane returned a typed `worker_timeout`; it does not
+  invalidate the X/LinkedIn terminal receipts required by criterion 6;
+- active ticks, execution attempts, provider attempts, and open resource
+  leases are zero, and SQLite `quick_check` is `ok`;
+- `daily-default` remains enabled and ready for the September 14 UTC boundary.
+
+Subagent status: `not_spawned`.
+
+Graphiti write status: `not_written`; note 0116, this plan, and current runtime
+readbacks are authoritative.
+
+Next action: none for Plan 0062/P08. Plan 0071/P28 separately owns the Reddit
+cumulative timeout repair without reopening this accepted recurrence proof.

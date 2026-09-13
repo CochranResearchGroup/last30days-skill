@@ -1,12 +1,12 @@
 # Plan 0064 | Recurring Reddit Home Feed
 
-State: OPEN
+State: CLOSED
 Lane: P24
 Branch: feat/recurring-reddit-home-feed
 Target: main
 Integration: fast-forward
 Roadmap: P24
-Plan version: 3
+Plan version: 4
 Date: 2026-09-03
 
 ## Objective
@@ -284,3 +284,42 @@ Next action:
   manual proof accepts the recurring Reddit lane but does not substitute for
   that separate timer-path observation; P08 continues to own the X acquisition
   failure.
+
+### Checkpoint P0064-C04 | 2026-09-13
+
+Plan version: 4
+
+State: `ordinary_reddit_terminal_blocker_recorded`
+
+Progress classification: `verified_outcome`
+
+Authority classification:
+
+- `inherited_authority`; this checkpoint reads the existing ordinary receipt
+  and does not enqueue work or operate Agent Browser.
+
+Evidence:
+
+- timer tick `tick-2a466080dc3c23c429ad788c88757ea4` exercised the enabled
+  recurring Reddit lane on ordinal 0;
+- exact provider attempt
+  `provider-attempt-149c5c51b5db6afd3ad451278a1cb25b` terminalized transient
+  with `safe_error_code=worker_timeout`, zero observed and accepted items, and
+  360 budgeted seconds;
+- the worker ended before structured stage, reason, or browser-operation
+  diagnostics were returned; read-only Agent Browser correlation found no
+  matching retained trace or failure record, so the stalled operation remains
+  unknown;
+- active work and leases returned to zero, SQLite `quick_check` is `ok`, and
+  the schedule remains enabled and ready for the September 14 UTC boundary.
+
+Acceptance state: criterion 6 is satisfied by its permitted exact typed blocker;
+criteria 1-5 were already accepted at C02. Plan 0064/P24 is outcome-complete.
+
+Subagent status: `not_spawned`.
+
+Graphiti write status: `not_written`; note 0116 and current durable runtime
+receipts are authoritative.
+
+Next action: none for P24. Plan 0071/P28 owns the bounded Last30days timeout
+repair; no manual retry is authorized.

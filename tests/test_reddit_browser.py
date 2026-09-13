@@ -24,6 +24,13 @@ class FakeClient:
         self.requests = []
         self.command_timings = []
         self.release_count = 0
+        self.run_budget_events = []
+
+    def begin_run_budget(self, timeout):
+        self.run_budget_events.append(("begin", timeout))
+
+    def end_run_budget(self):
+        self.run_budget_events.append(("end", None))
 
     def acquire_workspace(self, request):
         self.requests.append(request)
@@ -158,6 +165,7 @@ def test_feed_public_interface_keeps_unrelated_real_post_with_canonical_link(
         "new_tab", value="https://www.reddit.com/"
     )
     assert client.release_count == 1
+    assert client.run_budget_events == [("begin", 45), ("end", None)]
 
 
 def test_feed_scrolls_until_accepted_unique_limit_despite_ads_and_duplicates():
@@ -576,6 +584,7 @@ def test_feed_requires_authenticated_profile_before_navigation():
     assert result["error_type"] == "auth_required"
     assert result["diagnostics"]["failure_stage"] == "authentication"
     assert client.actions == []
+    assert client.run_budget_events == [("begin", 30), ("end", None)]
 
 
 def test_feed_waits_for_asynchronous_post_cards_before_navigation_mismatch():

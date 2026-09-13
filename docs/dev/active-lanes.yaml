@@ -1,5 +1,21 @@
 schema_version: 1
 lanes:
+  - id: P28
+    objective: Bound cumulative Reddit feed browser work below the provider worker deadline
+    plan: docs/dev/plans/0071-2026-09-13-reddit-feed-run-budget.md
+    plan_ref: refs/heads/fix/ordinary-tick-reconciliation
+    branch: fix/ordinary-tick-reconciliation
+    target: main
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 2943488e5ba1
+    remote_ref: refs/remotes/origin/fix/ordinary-tick-reconciliation
+    integration: merge
+    integration_receipt: null
+    dependencies: [P24]
+    overlaps: [skills/last30days/scripts/lib/reddit_browser.py]
+    reconciled_overlaps: []
+    updated_at: 2026-09-13
   - id: P27
     objective: Integrate and install refresh query-head arbitration, then prove the existing X publication cache-visible
     plan: docs/dev/plans/0070-2026-09-12-refresh-query-head-integration-install.md

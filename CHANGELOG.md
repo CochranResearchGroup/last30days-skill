@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Reddit feed timeout diagnostics.** Service 0.3.116 applies the shared
+  105-second cumulative Agent Browser budget to the complete Reddit home-feed
+  operation. A stalled sequence now returns a typed source failure with bounded
+  command diagnostics before the 360-second provider worker is terminated.
+
 - **Reddit retained-tab acquisition.** Service 0.3.113 keeps cold-launch route hints out of retained-browser tab requests, preventing broker invalid_bounded_recipe rejection.
 
 - **Retained browser reuse.** Service 0.3.112 suppresses a legacy duplicate-lane override when the broker selects a compatible live browser, preserving its exact profile and session.

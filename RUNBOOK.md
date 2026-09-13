@@ -26503,3 +26503,65 @@ Next Bounded Action:
 
 - none for P27; retain the accepted runtime and preserve the separate dirty P08
   worktree for its owning lane.
+
+## Turn 418 | 2026-09-13
+
+Focus: reconcile the latest ordinary timer tick and repair Reddit feed timeout
+diagnostics under Plan 0071/P28,
+`docs/dev/plans/0071-2026-09-13-reddit-feed-run-budget.md`.
+
+Authority Consulted:
+
+- operator direction to plan and execute within Last30days only; Plans 0062,
+  0064, and 0071; P08, P24, and P28; planning, testing, release, integration,
+  validation, active-lane, and closeout policies; Agent Browser postmortem
+  guidance.
+
+Decisions And Changes:
+
+- closed Plan 0062/P08 from the durable ordinary X, LinkedIn, and YouTube
+  receipts and closed Plan 0064/P24 from its permitted typed Reddit blocker;
+- preserved the exact limitation that the outer worker killed Reddit before a
+  stage, reason, or browser-operation receipt was returned;
+- opened Plan 0071/P28 for the missing Last30days cumulative browser budget;
+- added one public-interface regression, observed it fail, and applied the
+  minimal Reddit feed budget lifecycle repair;
+- prepared service 0.3.116 without running a provider, browser, or schedule
+  mutation.
+
+Validation Evidence:
+
+- the tracer test failed with no budget events before implementation and
+  passed with `begin(45)` then `end` afterward;
+- the complete Reddit browser test file and the focused Reddit, shared browser
+  runtime, acquisition worker, service worker, release, runtime-package, and
+  lifecycle-install set pass;
+- the complete suite passes all 2,774 collected tests with seven expected
+  skips; the canonical 0.3.116 candidate artifact has SHA-256
+  `64b1b2a2d99260c4411762c656a0d670e7e1278a9406a4b9433391247b0c37a0`;
+- planning, goal, and repository authority audits pass and `git diff --check`
+  passes. Ruff is unavailable in the project environment and was not installed;
+- Agent Browser 0.28.0 retained no matching trace or failure record for the
+  exact September 13 Reddit interval. This is an unknown-operation evidence gap,
+  not a browser-health conclusion.
+
+State Movement:
+
+- Plan 0062/P08 `OPEN -> CLOSED` at version 7/C10;
+- Plan 0064/P24 `OPEN -> CLOSED` at version 4/C04;
+- Plan 0071/P28 `PLANNED -> OPEN` at version 1/C01.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Graphiti Write Status:
+
+- `not_written`; note 0116, the plans, and current runtime receipts are the
+  authoritative evidence.
+
+Next Bounded Action:
+
+- complete provider-free validation, integrate through the public fork, install
+  exact service 0.3.116, synchronize the frozen Skill copy, and verify unchanged
+  schedule plus zero active work without a live provider retry.
