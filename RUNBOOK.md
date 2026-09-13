@@ -26924,3 +26924,61 @@ Next Bounded Action:
 
 - integrate this closeout, remove its two temporary worktrees/refs without
   force, and verify the final canonical branch/worktree inventory.
+
+## Turn 426 | 2026-09-13
+
+Focus: Plan 0075/P32 GitHub work-item bootstrap readiness.
+
+Authority Consulted:
+
+- active productization goal; Plan 0075/P32; work-item, multi-session,
+  policy-upgrade, forge/GitHub operation, documentation, Git, validation, and
+  closeout policy; exact read-only GitHub repository state.
+
+Decisions And Changes:
+
+- upgraded the embedded selector from `v0.1.22` to immutable `v0.1.25` and
+  adopted the three missing policy identities it recommended;
+- declared one exact read-only target for the owned public fork and reused only
+  its existing bug, documentation, and enhancement labels;
+- defined a proposed Project workflow with Status, Priority, Lane, and
+  Environment fields while creating no Project;
+- prepared stable WI-000 through WI-008 drafts and a dependency graph for the
+  search, MCP, tailored-follow, runtime, hotfix, monitor, and quality lanes;
+- made no GitHub issue, Project, label, repository-setting, service, browser,
+  provider, schedule, credential, database, deployment, or production change.
+
+Validation Evidence:
+
+- canonical `main` was clean and equal to `origin/main` at `2c1eaec7` before
+  the dedicated topic worktree was created;
+- live read-only GitHub inspection found the exact owned fork with `ADMIN`,
+  Issues disabled, Projects enabled, zero owner Projects, and the standard
+  existing label set;
+- selector installation resolved `v0.1.25` to source commit
+  `b22b1e9f6ca2e1733a3decd4f68e95660aa9b0bb`;
+- selector fit is `already-aligned` with zero validation problems; all 102
+  bundled selector tests and 13 focused repository tests pass;
+- plan authority passes with two legitimate active plans, the catalog-only
+  lane audit reports zero problems, all nine work-item markers are unique, JSON
+  parsing and `git diff --check` pass;
+- live read-only preflight returns the exact actor, `ADMIN` role, repository,
+  and disabled-Issues gate; create preflight fails closed without mutation.
+
+State Movement:
+
+- Plan 0075/P32 `planned -> active`; GitHub tracker activation remains gated.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; one primary owner controls shared governance artifacts.
+
+Graphiti Write Status:
+
+- `not_written`; current repo, Git, and live provider readback are authoritative.
+
+Next Bounded Action:
+
+- integrate the readiness packet through the public fork, then ask the
+  operator to accept or revise the issue graph and separately authorize exact
+  GitHub mutations.
