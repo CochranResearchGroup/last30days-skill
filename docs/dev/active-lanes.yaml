@@ -7,15 +7,15 @@ lanes:
     plan_ref: refs/heads/docs/saved-monitors-digests-architecture
     branch: docs/saved-monitors-digests-architecture
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 8d3c50a2
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: c959c15ebf134e120e5ae481bc1177336db69c41
     remote_ref: refs/remotes/origin/docs/saved-monitors-digests-architecture
     integration: merge
-    integration_receipt: null
+    integration_receipt: 3333410742f5e1115657d1cc64d6c41fe0faaea1
     dependencies: [P33, P35]
     overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-006-saved-monitors-and-digests.md]
-    reconciled_overlaps: []
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-006-saved-monitors-and-digests.md]
     updated_at: 2026-09-13
   - id: P39
     objective: Define provider-native tailored follows across supported services
@@ -112,6 +112,23 @@ lanes:
     dependencies: []
     overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-001-isolated-development-runtime.md]
     reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-001-isolated-development-runtime.md]
+    updated_at: 2026-09-13
+  - id: P33
+    objective: Define evidence-backed search and retrieval over stored posts
+    work_items: [docs/dev/work-items/WI-002-post-search-and-retrieval.md]
+    plan: docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md
+    plan_ref: refs/heads/docs/post-search-architecture
+    branch: docs/post-search-architecture
+    target: main
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 464a499b457504eca6b83a66ab8f3de15dbb2723
+    remote_ref: refs/remotes/origin/docs/post-search-architecture
+    integration: merge
+    integration_receipt: 2a98fddb339521c2b9c574c114f1d248708fd8b1
+    dependencies: []
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-002-post-search-and-retrieval.md]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-002-post-search-and-retrieval.md]
     updated_at: 2026-09-13
   - id: P28
     objective: Bound cumulative Reddit feed browser work below the provider worker deadline

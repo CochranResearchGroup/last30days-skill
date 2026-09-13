@@ -27927,3 +27927,53 @@ Next Bounded Action:
 
 - validate and integrate this architecture, close Plan 0083/P40 planning work,
   and retain exact WI-002/WI-004 gates.
+
+## Turn 444 | 2026-09-13
+
+Focus: Plan 0083/P40 integration and architecture closeout.
+
+Authority Consulted:
+
+- Plan 0083/C01, P40, WI-006, pull request 29, `origin/main`, and refreshed
+  policy v0.1.26 validation/integration contracts.
+
+Decisions And Changes:
+
+- verified PR 29 integrated saved-monitor, accepted-baseline, evidence-digest,
+  and idempotent delivery-intent architecture;
+- fast-forwarded canonical Git to exact `origin/main` before closeout;
+- reconciled Plan 0083 to `CLOSED` and P40 to `PLANNED`, preserving WI-002 and
+  WI-004 implementation/final-acceptance dependencies;
+- restored the previously omitted integrated P33/WI-002 catalog projection
+  from Plan 0076's exact source and merge receipts so P40's machine dependency
+  resolves under the v0.1.26 lane auditor;
+- left GitHub tracker activation disabled and Graphiti write pending;
+- made no implementation, installed runtime, acquisition, schedule, browser/
+  provider, notification, staging, deployment, or production mutation.
+
+Validation Evidence:
+
+- PR 29 merged `c959c15e` as `33334107` on `origin/main`;
+- 62 focused tests and plan-authority, active-planning, active-lane, JSON, and
+  patch checks passed on the architecture packet;
+- final closeout validation remains to run after rendering.
+
+State Movement:
+
+- Plan 0083/P40 `active -> closed/planned`; WI-006 remains `READY` behind exact
+  WI-002/WI-004 gates.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator-owned evidence and integration are authoritative.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; Plans 0076-0083 await a later healthy bounded write
+  path, and no duplicate write was issued.
+
+Next Bounded Action:
+
+- integrate this closeout, remove only fully integrated temporary WI-006 refs,
+  preserve P08 archives, then launch eligible implementation packets only in
+  separately owned top-level sessions within the WIP limit.
