@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-001 -->
 # Run one lane in an isolated development runtime
 
-State: IN_PROGRESS
+State: READY
 Priority: P1
 Lane: Runtime
 Parent: WI-000

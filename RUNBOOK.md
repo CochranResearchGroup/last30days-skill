@@ -28327,3 +28327,64 @@ Next Bounded Action:
 
 - validate and merge P44 registration, then launch the three independent
   sessions; leave P35 untouched at its explicit gate.
+
+## Turn 452 | 2026-09-13
+
+Focus: close Plan 0090/P44 after three independent activation checkpoints.
+
+Authority Consulted:
+
+- Plan 0090, PR 39, canonical `origin/main`, and exact P36/P37/P40 branch
+  plans, refs, worktrees, and top-level Codex session receipts.
+
+Decisions And Changes:
+
+- accepted three activation-only turns and projected P36/P37/P40 as OPEN with
+  WI-003/WI-008/WI-006 IN_PROGRESS;
+- returned integrated-but-idle WI-001/WI-002 to READY and marked WI-004
+  BLOCKED at its explicit PR gate, preserving the three-item IN_PROGRESS cap;
+- recorded exact session owners and remote-equal activation SHAs;
+- retained shared service-contract reconciliation with the coordinator and
+  kept P40 follow tracing behind P35 integration;
+- closed only the P44 launch-registration outcome;
+- made no feature, P35 pull-request, tracker, runtime/database, model,
+  browser/provider, schedule, delivery, staging, release, deployment, or
+  production mutation.
+
+Validation Evidence:
+
+- PR 39 merged `4db386ef` as `606272ab`;
+- P36 `c4d985727c39c7cfe2a86a64eae318351eefd5d4`, P37
+  `be4dec78db686132496b3b173a55ab534c1827a6`, and P40
+  `0253e82dfad36877371cbdaaa41e846560cfbc8a` are clean and remote-equal;
+- each lane merged exact canonical main, changed only its branch-local plan,
+  and passed 10 focused plan-authority tests;
+- transient ORIG_HEAD/worktree Git locks and uv cache locks each recovered on
+  immediate retry; one shell-quoting error created and then removed an empty
+  untracked OPEN file before any commit;
+- final coordinator planning and lane audits remain after rendering.
+
+State Movement:
+
+- Plan 0090/P44 `OPEN -> CLOSED`;
+- P36/P37/P40 `PLANNED -> OPEN` and WI-003/WI-008/WI-006
+  `READY -> IN_PROGRESS`;
+- WI-001/WI-002 `IN_PROGRESS -> READY` and WI-004
+  `IN_PROGRESS -> BLOCKED`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; independent top-level owners are P36
+  `01a09cf4-c89c-7ad2-9b64-8dc95c4cbec6`, P37
+  `01a09cf4-c89d-7b41-901a-37648171312a`, and P40
+  `01a09cf4-c89e-7660-9caf-66a78f34ded0`.
+
+Graphiti Write Status:
+
+- `not_written`; activation discovery was read-only and current Git receipts
+  are authoritative.
+
+Next Bounded Action:
+
+- merge this ownership projection and resume the same three sessions for
+  provider-free Packet 1 implementation; P35 remains untouched at its gate.
