@@ -196,6 +196,32 @@ Next action or stop reason: publish this checkpoint, verify local/remote branch
 equality, open the exact owned-fork PR to `main`, and stop without merging or
 starting Packet 2.
 
+### Checkpoint P0086-C03 | 2026-09-13
+
+Plan version: 1
+
+State: `OPEN`; Packet 1 remains acceptance-complete and published, while PR
+creation is policy-blocked before effect.
+
+Gate evidence:
+
+- local and remote `feat/x-tailored-follows-v1` were equal at published C02
+  commit `1bba5bd64c263ad9384ce1b2fe4867a1c4c2ec27` before the PR attempt;
+- current `origin/main` remained
+  `4f322e0a3c2d4795305c3bdfb853de27fae1c558`;
+- duplicate preflight returned no existing PR for the branch;
+- the exact target resolved to
+  `github.com/CochranResearchGroup/last30days-skill`, but
+  `docs/dev/forge-issue-targets.json` currently permits only `read`;
+- the governed `gh pr create` request was rejected before mutation because the
+  target registry did not allow PR creation. No PR exists and no retry or
+  workaround was attempted.
+
+Next action or stop reason: stop after publishing this failed-closed receipt.
+The coordinator/operator must first update the applicable forge target policy
+to allow PR creation for the owned fork (without activating GitHub Issues or
+tracker mutation), then resume with the exact instruction below.
+
 ## Start Checklist
 
 - verify registered worktree/ref/checkpoint and current `origin/main`;
@@ -216,9 +242,11 @@ starting Packet 2.
 
 Resume WI-004 / P35 in
 `/home/ecochran76/workspace.local/last30days-skill-wi004` on
-`feat/x-tailored-follows-v1` from published checkpoint P0086-C02; fetch and
-verify the branch and its owned-fork PR, review CI and reviewer findings, and
-address only accepted Packet 1 blockers. Do not merge without explicit
-authority, start Packet 2, or mutate a job, timer, installed database/runtime,
-browser/profile, provider, tracker, staging, production, tag, release, or
-deployment.
+`feat/x-tailored-follows-v1` from published checkpoint P0086-C03 after the
+applicable forge target policy explicitly allows PR creation for
+`github.com/CochranResearchGroup/last30days-skill`; fetch and verify current
+`origin/main`, confirm local/remote branch equality, rerun duplicate PR
+preflight, then open the Packet 1 PR to `main` and stop without merging. Do not
+activate or mutate GitHub Issues/Projects, start Packet 2, or mutate a job,
+timer, installed database/runtime, browser/profile, provider, tracker,
+staging, production, tag, release, or deployment.
