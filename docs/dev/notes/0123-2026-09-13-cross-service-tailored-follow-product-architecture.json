@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "task_type": "architecture",
+  "secondary_task_type": "service and mixed-code-docs synthesis",
+  "path_type": "local git repository",
+  "persistence_mode": "stable-path",
+  "repo_profile": "Python Unix-socket temporal service with Go MCP adapter and multi-source acquisition",
+  "work_item": "WI-005",
+  "plan": "0082",
+  "repository_checkpoint": "d20b82546d45050e0e02774d9780a2ed059b5e7f",
+  "retrieval_posture": "hybrid structure-first",
+  "retrieval_trace": [
+    "Graphiti last30days_skill_main bounded collection and provider-target recall",
+    "CodeGraph status and focused collection selector, source-policy and adapter-registry exploration",
+    "targeted WI-004 architecture and governance-document inspection"
+  ],
+  "decision": "Extend WI-004 CollectionSpec with a provider-owned capability registry and discriminated FollowTargetV1; preserve shared lifecycle and scheduling while each provider owns exact identity, validation, access and routing.",
+  "initial_targets": {
+    "x": ["topic", "account", "list"],
+    "reddit": ["community", "user"],
+    "youtube": ["channel"],
+    "facebook": [],
+    "linkedin": []
+  },
+  "evidence_packets": [
+    {
+      "kind": "existing_authority",
+      "summary": "CollectionSpec and the collection coordinator already own immutable revisions, schedules, bounds, leases, receipts and history."
+    },
+    {
+      "kind": "capability_gap",
+      "summary": "The current global surface selector table and coarse collect registry do not prove source-target combinations or operation readiness."
+    },
+    {
+      "kind": "selected_boundary",
+      "summary": "Provider-native stable IDs and validators sit behind a closed capability registry while one scheduler and lifecycle remain authoritative."
+    }
+  ],
+  "dependencies": {
+    "packet_1": "WI-004 Packet 1 integrated base target contract",
+    "final_acceptance": "WI-004 closeout and WI-001 isolated runtime for fresh-client runtime evidence"
+  },
+  "next_actions": [
+    "wait for WI-004 Packet 1 to freeze the base collection/follow contract",
+    "assign one top-level lane session to WI-005 Packet 1",
+    "create and register feat/cross-service-tailored-follows-v1 from current origin/main",
+    "implement registry, compatibility migration and fake-adapter tests without starting jobs"
+  ],
+  "state_location": "docs/dev/notes/0123-2026-09-13-cross-service-tailored-follow-product-architecture.md",
+  "persistence_bundle": null
+}

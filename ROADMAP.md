@@ -2806,3 +2806,39 @@ Next Bounded Action:
 - retain the slot as dormant reserved capacity; assign WI-007 Packet 1 to one
   independent top-level lane session from current `origin/main` when portfolio
   priority allows, or activate it only for a qualified production incident.
+
+## P39 | Cross-Service Tailored Follow Product Surface
+
+State: OPEN
+
+Objective: extend tailored follows beyond X through provider-native target
+identity and capability discovery without duplicating collection scheduling or
+flattening distinct service semantics.
+
+Current State:
+
+- WI-005 is `READY` behind an exact WI-004 dependency;
+- current global surface validation and coarse adapter capability declarations
+  cannot prove that a source-target-operation combination is supported;
+- the selected seam adds a closed provider capability registry and
+  discriminated target envelope to WI-004's shared collection authority;
+- provider-free packets cover registry/X compatibility, Reddit community/user,
+  YouTube channel, discovery/lifecycle/query parity, and fresh-client closure;
+- no product implementation, provider use, runtime mutation, or schedule
+  change has begun.
+
+Active Plan:
+
+- `docs/dev/plans/0082-2026-09-13-cross-service-tailored-follow-architecture-and-lane-handoff.md`.
+
+Dependencies:
+
+- Packet 1 waits for WI-004 Packet 1's base collection/follow contract; final
+  acceptance waits for WI-004 closeout and fresh isolated-runtime evidence
+  joins WI-001. Shared search/MCP joins remain coordinator-owned.
+
+Next Bounded Action:
+
+- integrate and close the architecture plan, then retain P39 as planned until
+  WI-004 Packet 1 integrates; afterward assign WI-005 Packet 1 to one
+  independent top-level lane session from current `origin/main`.

@@ -1,5 +1,21 @@
 schema_version: 1
 lanes:
+  - id: P39
+    objective: Define provider-native tailored follows across supported services
+    plan: docs/dev/plans/0082-2026-09-13-cross-service-tailored-follow-architecture-and-lane-handoff.md
+    plan_ref: refs/heads/docs/cross-service-tailored-follow-architecture
+    branch: docs/cross-service-tailored-follow-architecture
+    target: main
+    plan_state: OPEN
+    custody_state: ACTIVE
+    checkpoint: d20b82546d45050e0e02774d9780a2ed059b5e7f
+    remote_ref: refs/remotes/origin/docs/cross-service-tailored-follow-architecture
+    integration: merge
+    integration_receipt: null
+    dependencies: [P35]
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-005-cross-service-tailored-follows.md]
+    reconciled_overlaps: []
+    updated_at: 2026-09-13
   - id: P38
     objective: Define a dormant priority hotfix path with staged deployment, rollback, and feature reconciliation
     plan: docs/dev/plans/0081-2026-09-13-reserved-production-hotfix-path-architecture-and-lane-handoff.md

@@ -27767,3 +27767,57 @@ Next Bounded Action:
 - integrate this closeout, remove only its fully integrated temporary
   worktrees and refs, keep the hotfix slot dormant, and launch implementation
   only in separately owned top-level lane sessions within the WIP limit.
+
+## Turn 441 | 2026-09-13
+
+Focus: Plan 0082/P39 cross-service tailored-follow architecture.
+
+Authority Consulted:
+
+- active productization goal; WI-004/WI-005; Plans 0078/0082; Graphiti,
+  CodeGraph, planning, policy, worktree, branch/integration, validation,
+  documentation, and closeout authority.
+
+Decisions And Changes:
+
+- retained WI-004's one-scheduler, purpose-typed collection design;
+- selected a closed provider capability registry and discriminated provider-
+  native target envelope instead of a universal account/list abstraction;
+- preserved X follow identity and made Reddit community/user and YouTube
+  channel the first provider-free extension tracers;
+- made Facebook and LinkedIn target kinds explicitly unavailable until stable
+  identity, validation, access, routing, and fixtures are proven;
+- separated provider target resolution from disabled spec creation and from
+  schedule activation;
+- moved WI-005 from `TRIAGE` to `READY` with an exact WI-004 Packet 1 gate;
+- made no tracker, product source, installed runtime, database, browser,
+  provider, schedule, staging, deployment, or production mutation.
+
+Validation Evidence:
+
+- canonical `main` was clean and equal to `origin/main` at `d20b8254` before
+  the dedicated worktree was created;
+- bounded Graphiti discovery recovered advisory Plan 0011 collection history;
+- CodeGraph is healthy at 353 files, 9,793 nodes, and 23,275 edges and verified
+  the selector, source-policy, adapter-registry, and acquisition seams;
+- focused repository validation remains to run after rendering.
+
+State Movement:
+
+- WI-005 `TRIAGE -> READY`; Plan 0082/P39 `planned -> active`, with Packet 1
+  blocked only by WI-004 Packet 1 and final acceptance by WI-004 closeout.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator-owned shared-interface work stayed in this
+  session and no implementation lane was started.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; no duplicate write was queued behind the known
+  degraded ingestion path.
+
+Next Bounded Action:
+
+- validate and integrate this architecture packet, close Plan 0082/P39
+  planning work, and preserve the exact WI-004 dependency.
