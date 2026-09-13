@@ -2373,7 +2373,7 @@ Next Action:
 
 ## P28 | Reddit Feed Cumulative Run Budget
 
-State: OPEN
+State: CLOSED
 
 Objective: make recurring Reddit home-feed acquisition return a typed source
 failure with browser-operation diagnostics before the service worker's hard
@@ -2387,12 +2387,16 @@ Current State:
 - the shared adapter has a 105-second cumulative run budget, but Reddit feed
   acquisition does not activate it;
 - the regression failed before the minimal lifecycle repair and passes after
-  it. Broader validation, integration, installation, and runtime identity
-  checks remain.
+  it; all 2,774 collected tests pass with seven expected skips;
+- pull request 3 merged as `6b4f6049`, exact service 0.3.116 is installed
+  ready, and source, installed service, and frozen Skill copies have identical
+  Reddit adapter bytes;
+- the schedule is unchanged and ready for September 14, active work and leases
+  are zero, and SQLite integrity is `ok`.
 
-Active Plan:
+Closed Plan:
 
-- `docs/dev/plans/0071-2026-09-13-reddit-feed-run-budget.md` version 1/C01.
+- `docs/dev/plans/0071-2026-09-13-reddit-feed-run-budget.md` version 1/C03.
 
 Dependencies:
 
@@ -2401,9 +2405,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- validate, integrate, and install service 0.3.116; synchronize the frozen
-  Skill copy and confirm unchanged schedule and zero active work without a
-  provider run.
+- none for P28. The normal timer can provide a future operational observation;
+  this plan authorizes no manual retry.
 
 ## P27 | Refresh Query Head Integration And Install
 

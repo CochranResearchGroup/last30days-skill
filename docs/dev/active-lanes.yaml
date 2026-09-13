@@ -6,15 +6,15 @@ lanes:
     plan_ref: refs/heads/fix/ordinary-tick-reconciliation
     branch: fix/ordinary-tick-reconciliation
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 2943488e5ba1
-    remote_ref: refs/remotes/origin/fix/ordinary-tick-reconciliation
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 6b4f604907acd61058bfb692f788efe89eb62d72
+    remote_ref: refs/remotes/origin/main
     integration: merge
-    integration_receipt: null
+    integration_receipt: 6b4f604907acd61058bfb692f788efe89eb62d72
     dependencies: [P24]
     overlaps: [skills/last30days/scripts/lib/reddit_browser.py]
-    reconciled_overlaps: []
+    reconciled_overlaps: [skills/last30days/scripts/lib/reddit_browser.py]
     updated_at: 2026-09-13
   - id: P27
     objective: Integrate and install refresh query-head arbitration, then prove the existing X publication cache-visible
@@ -38,15 +38,15 @@ lanes:
     plan_ref: refs/heads/fix/tick-restart-recovery
     branch: fix/tick-restart-recovery
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 7b3b082587ff80d85c1c08e20b9e175119ee62f2
-    remote_ref: refs/remotes/origin/fix/tick-restart-recovery
-    integration: fast-forward
-    integration_receipt: null
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 6b4f604907acd61058bfb692f788efe89eb62d72
+    remote_ref: refs/remotes/origin/main
+    integration: merge
+    integration_receipt: 6b4f604907acd61058bfb692f788efe89eb62d72
     dependencies: []
     overlaps: []
-    updated_at: 2026-09-02
+    updated_at: 2026-09-13
   - id: P23
     objective: Build and prove an authenticated 80-item Reddit home-feed scraper
     plan: docs/dev/plans/0063-2026-09-02-reddit-home-feed-scraper.md
@@ -68,16 +68,16 @@ lanes:
     plan_ref: refs/heads/feat/recurring-reddit-home-feed
     branch: feat/recurring-reddit-home-feed
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: ecba6fc324690ab5acf9209d5e4b4485b3118d4a
-    remote_ref: refs/remotes/origin/feat/recurring-reddit-home-feed
-    integration: fast-forward
-    integration_receipt: null
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 6b4f604907acd61058bfb692f788efe89eb62d72
+    remote_ref: refs/remotes/origin/main
+    integration: merge
+    integration_receipt: 6b4f604907acd61058bfb692f788efe89eb62d72
     dependencies: [P23]
     overlaps: [user-scoped tick configuration, daily-default schedule binding]
     reconciled_overlaps: [user-scoped tick configuration, daily-default schedule binding]
-    updated_at: 2026-09-03
+    updated_at: 2026-09-13
   - id: P25
     objective: Keep the installed Skill service command aligned with the managed runtime
     plan: docs/dev/plans/0065-2026-09-06-installed-service-command.md

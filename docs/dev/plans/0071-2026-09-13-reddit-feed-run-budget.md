@@ -1,6 +1,6 @@
 # Plan 0071 | Reddit Feed Cumulative Run Budget
 
-State: OPEN
+State: CLOSED
 Lane: P28
 Branch: fix/ordinary-tick-reconciliation
 Target: main
@@ -139,3 +139,45 @@ authoritative.
 
 Next action: commit and publish the candidate, integrate it through the public
 fork, then install and verify the exact integrated artifact.
+
+### Checkpoint P0071-C03 | 2026-09-13
+
+Plan version: 1
+
+State transition: `integration_ready -> closed`.
+
+Progress classification: `verified_outcome`; all acceptance criteria pass.
+
+Authority classification:
+
+- `inherited_authority`; fork integration, guarded service upgrade, and frozen
+  Skill synchronization complete the operator-authorized execution packet.
+
+Validation evidence:
+
+- pull request 3 merged source commit `94d4852f` to the public fork as
+  `6b4f604907acd61058bfb692f788efe89eb62d72`;
+- the exact integrated artifact has SHA-256
+  `64b1b2a2d99260c4411762c656a0d670e7e1278a9406a4b9433391247b0c37a0`;
+- the guarded upgrade reports service 0.3.116 ready on schema 17 with runtime
+  manifest SHA-256
+  `19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8`
+  and contract SHA-256
+  `bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025`;
+- the source, installed service, and frozen Skill Reddit adapters all hash to
+  `a7d5c60f0dcc69ffaaebb8d6a8e1d6af981e5d7758d1a82bffc2aaf52a9f2c66`;
+- `last30days.service` is enabled and active with main PID 24968. The installer
+  synchronized Last30days and repo-policy-selector for supported hosts; its
+  optional PromptScript global target is unsupported and did not affect the
+  installed Codex/Agent Skills copies;
+- `daily-default` remains enabled and ready for
+  `2026-09-14T00:00:00Z`, with the September 13 ordinary receipt unchanged;
+  active work and open leases are zero and SQLite `quick_check` is `ok`.
+
+Subagent status: `not_spawned`.
+
+Graphiti write status: `not_written`; the integrated plan, note 0116, and exact
+runtime receipts are authoritative.
+
+Next action: none for P28. Let the ordinary timer exercise the repair; no
+manual retry is required or authorized by this plan.

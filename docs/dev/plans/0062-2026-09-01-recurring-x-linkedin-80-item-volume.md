@@ -2,10 +2,12 @@
 
 State: CLOSED
 Roadmap: P08
+Lane: P08
 Plan version: 7
 Date: 2026-09-02
 Branch: `fix/tick-restart-recovery`
 Target: `main`
+Integration: merge
 
 ## Objective
 
