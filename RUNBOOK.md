@@ -27876,3 +27876,54 @@ Next Bounded Action:
   architecture worktrees and refs, preserve P08 archive refs, and next
   architect WI-006 saved monitors/digests in the coordinator session or launch
   an eligible implementation packet in a separate top-level lane session.
+
+## Turn 443 | 2026-09-13
+
+Focus: Plan 0083/P40 saved-monitor and digest architecture.
+
+Authority Consulted:
+
+- WI-002/WI-004/WI-006; Plans 0076/0078/0083; Graphiti and CodeGraph;
+  refreshed policy v0.1.26 including collaborative development workflow,
+  tracker activation gates, planning, worktree, validation, and integration.
+- `docs/dev/plans/0083-2026-09-13-saved-monitor-and-digest-architecture-and-lane-handoff.md`.
+
+Decisions And Changes:
+
+- selected durable cache-view subscriptions with explicit accepted baselines;
+- defined evidence-version change classes and prohibited top-k absence from
+  proving removal;
+- separated deterministic digest preparation from idempotent, disabled-by-
+  default delivery intents;
+- treated legacy watchlists as importable disabled drafts rather than the new
+  service authority;
+- moved WI-006 `TRIAGE -> READY` behind exact WI-002/WI-004 gates;
+- made no tracker, implementation, runtime, schedule, provider/browser,
+  notification, staging, deployment, or production mutation.
+
+Validation Evidence:
+
+- a concurrent policy rollout advanced canonical `main`/`origin/main` to
+  `8d3c50a2`; the coordinator stopped, reconciled, and reread changed policy
+  before editing;
+- Graphiti returned bounded advisory notification history;
+- CodeGraph verified retrieval snapshot, tick head, watchlist, incident
+  delivery, and channel adapter seams;
+- focused validation remains to run after rendering.
+
+State Movement:
+
+- WI-006 `TRIAGE -> READY`; Plan 0083/P40 `planned -> active`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this coordinator-owned contract slice stayed serialized.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; no duplicate write was queued.
+
+Next Bounded Action:
+
+- validate and integrate this architecture, close Plan 0083/P40 planning work,
+  and retain exact WI-002/WI-004 gates.

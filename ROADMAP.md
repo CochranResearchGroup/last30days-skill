@@ -2842,3 +2842,37 @@ Next Bounded Action:
 - retain P39 as planned until WI-004 Packet 1 integrates; afterward assign
   WI-005 Packet 1 to one
   independent top-level lane session from current `origin/main`.
+
+## P40 | Saved Monitors And Evidence Digests
+
+State: OPEN
+
+Objective: let users save query/follow views, detect evidence-backed changes
+from an accepted baseline, and prepare reviewable digests without rescraping or
+duplicate delivery.
+
+Current State:
+
+- WI-006 is `READY` behind explicit WI-002/WI-004 dependencies;
+- current immutable retrieval heads, document versions, collection sightings,
+  and notification receipts provide seams, but no durable monitor/baseline/
+  digest authority exists;
+- the selected seam is a cache-only versioned view subscription with explicit
+  baseline acceptance and separately gated delivery intents;
+- no implementation, installed schedule, live delivery, or provider action has
+  begun.
+
+Active Plan:
+
+- `docs/dev/plans/0083-2026-09-13-saved-monitor-and-digest-architecture-and-lane-handoff.md`.
+
+Dependencies:
+
+- Packet 1 and query tracing wait for WI-002 Packet 1; follow tracing waits for
+  WI-004 Packet 1; final acceptance waits for both closeouts and joins WI-001
+  for fresh isolated-runtime proof. WI-003 synthesis is optional/later.
+
+Next Bounded Action:
+
+- integrate and close the architecture plan, then retain P40 as planned until
+  WI-002 Packet 1 integrates.
