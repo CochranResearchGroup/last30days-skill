@@ -2735,7 +2735,7 @@ Next Bounded Action:
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
-State: OPEN
+State: PLANNED
 
 Objective: give maintainers one replayable, denominator-aware view of
 acquisition coverage, corpus integrity, retrieval quality, and answer grounding
@@ -2753,7 +2753,7 @@ Current State:
 - no implementation, evaluator run, judge call, runtime mutation, production
   sample, or provider access has begun.
 
-Architecture Plan:
+Closed Architecture Plan:
 
 - `docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md`.
 
@@ -2765,5 +2765,6 @@ Dependencies:
 
 Next Bounded Action:
 
-- validate and integrate this architecture packet, then assign WI-008 Packet 1
-  to one independent top-level lane session from current `origin/main`.
+- assign WI-008 Packet 1 to one independent top-level lane session from current
+  `origin/main` and register its `feat/service-quality-v1` custody before
+  provider-free implementation.

@@ -1,6 +1,6 @@
 # Plan 0080 | Corpus Retrieval And Grounding Quality Architecture And Lane Handoff
 
-State: OPEN
+State: CLOSED
 Lane: P37
 Work item: WI-008
 Branch: docs/corpus-quality-architecture
@@ -142,3 +142,48 @@ Next action:
 - validate and integrate this architecture packet, close Plan 0080/P37
   planning work, and hand provider-free Packet 1 to a separate top-level lane
   session.
+
+### Checkpoint P0080-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `outcome_progress`; the quality architecture and
+machine handoff are integrated, while provider-free implementation remains
+correctly unstarted.
+
+Authority classification:
+
+- `inherited_authority` for public-fork integration and repository closeout;
+- `not_authorized` for tracker, implementation, evaluator execution, judge,
+  installed runtime/database, provider/browser, production sample, schedule,
+  CI, staging, or production mutations.
+
+Validation evidence:
+
+- architecture source tip `081dcb654cf84a4bf40e7af77c2e5620ef3f3c0c`
+  merged through pull request 23 as
+  `6d5827e0c8f594d74bb5f043a9ea005bf711a3bd`;
+- canonical `main` was fast-forwarded to the exact merge before this isolated
+  closeout branch was created;
+- 62 focused policy tests, plan authority, active planning contract, JSON
+  parsing, and patch hygiene passed on the architecture packet;
+- final closeout validation and default-ref catalog audit remain to run after
+  this state reconciliation is rendered.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; coordinator-owned architecture and merge receipts are
+  authoritative.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; no additional write was attempted while the known
+  ingestion path remains degraded.
+
+Next action:
+
+- assign WI-008 Packet 1 to one separate top-level lane session from current
+  `origin/main`, create and register `feat/service-quality-v1`, and keep the
+  packet strictly provider-free.
