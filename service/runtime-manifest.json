@@ -361,6 +361,16 @@
       "source": "skills/last30days/scripts/lib/service_knowledge.py"
     },
     {
+      "path": "scripts/lib/service_monitor_contracts.py",
+      "sha256": "5ddd475a18034b68952a57435840257eaa37a1686fe0c237235eb7d70ab6dc50",
+      "source": "skills/last30days/scripts/lib/service_monitor_contracts.py"
+    },
+    {
+      "path": "scripts/lib/service_monitors.py",
+      "sha256": "673e6b2e30adca73840ece0db9b57a64774bfb0a39e07641c1223702e3437c02",
+      "source": "skills/last30days/scripts/lib/service_monitors.py"
+    },
+    {
       "path": "scripts/lib/service_post_search.py",
       "sha256": "2a98725c7b7f02ad023539e9c68ab647f670b0b4d8ca0bc9111a7174fd5af916",
       "source": "skills/last30days/scripts/lib/service_post_search.py"

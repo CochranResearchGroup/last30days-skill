@@ -124,6 +124,55 @@ Next action:
 
 Checkpoint P0094-C01 is the current authority.
 
+### Checkpoint P0094-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `integration_pending -> integration_validated`; Plan 0094
+remains `OPEN` pending owned-fork review and canonical merge.
+
+Progress classification: `outcome_progress`; the exact three accepted feature
+checkpoints are joined without history rewriting, and their combined source and
+runtime package pass provider-free validation.
+
+Integration evidence:
+
+- P36 `d6c6ff78498b33534baa6fe0b7b63e29f793caf7` is joined through merge
+  `4bfa8fe4`; P37 `58020b04f8fe109062802abf5b794e9ff5e1024c`
+  through `0e691ccf`; and P40
+  `c97982506825e58f0ab8cae138ee557f7055cf91` through `58c4da8f`;
+- the refreshed runtime manifest adds only the two monitor modules beyond the
+  already registered question modules; global service schema and shared
+  service contracts remain unchanged by these packets;
+- the catalog records each feature ref at its exact remote-equal accepted tip
+  with passed validation and integration-ready custody.
+
+Validation evidence:
+
+- all 62 combined focused question, quality, monitor, runtime-package,
+  lifecycle, and authority tests pass;
+- all 2,838 collected repository tests pass, with only the suite's existing
+  skips;
+- active planning-contract and repository plan-authority audits pass with zero
+  issues; the comprehensive planning audit adds zero findings beyond its
+  accepted historical baseline;
+- Python compilation, reproducible runtime build for service `0.3.116`, and
+  `git diff --check` pass.
+
+Boundary evidence:
+
+- P35 is unchanged at `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`;
+- no tracker, installed runtime/database, provider/browser, model, schedule,
+  delivery, release, staging, deployment, or production effect occurred.
+
+Next action:
+
+- commit and publish this reconciliation, verify the active-lane catalog
+  against the published ref, then open the one owned-fork integration pull
+  request.
+
+Checkpoint P0094-C02 is the current authority.
+
 ## Next Action
 
 Integrate and validate the exact P36/P37/P40 checkpoints, then open one

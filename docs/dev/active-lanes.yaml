@@ -75,12 +75,14 @@ lanes:
     plan_ref: refs/heads/feat/saved-monitors-v1
     branch: feat/saved-monitors-v1
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 0253e82dfad36877371cbdaaa41e846560cfbc8a
+    plan_state: CLOSED
+    custody_state: INTEGRATION_READY
+    checkpoint: c97982506825e58f0ab8cae138ee557f7055cf91
     remote_ref: refs/remotes/origin/feat/saved-monitors-v1
     integration: merge
     integration_receipt: null
+    validation_status: passed
+    validation_ref: c97982506825e58f0ab8cae138ee557f7055cf91
     blocker: follow-view tracing remains gated by P35 integration and is excluded from Packet 1
     dependencies: [P33]
     overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_store.py]
@@ -126,11 +128,13 @@ lanes:
     branch: feat/service-quality-v1
     target: main
     plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: be4dec78db686132496b3b173a55ab534c1827a6
+    custody_state: INTEGRATION_READY
+    checkpoint: 58020b04f8fe109062802abf5b794e9ff5e1024c
     remote_ref: refs/remotes/origin/feat/service-quality-v1
     integration: merge
     integration_receipt: null
+    validation_status: passed
+    validation_ref: 58020b04f8fe109062802abf5b794e9ff5e1024c
     dependencies: []
     overlaps: []
     reconciled_overlaps: []
@@ -143,11 +147,13 @@ lanes:
     branch: feat/agent-question-answer-v1
     target: main
     plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: c4d985727c39c7cfe2a86a64eae318351eefd5d4
+    custody_state: INTEGRATION_READY
+    checkpoint: d6c6ff78498b33534baa6fe0b7b63e29f793caf7
     remote_ref: refs/remotes/origin/feat/agent-question-answer-v1
     integration: merge
     integration_receipt: null
+    validation_status: passed
+    validation_ref: d6c6ff78498b33534baa6fe0b7b63e29f793caf7
     dependencies: [P33]
     overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_store.py]
     reconciled_overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_store.py]
