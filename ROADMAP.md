@@ -2659,7 +2659,7 @@ Next Bounded Action:
 
 ## P35 | X Tailored Follow Product Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: let operators give selected X accounts, lists, and topics explicit
 collection identity, cadence, attention, provenance, and lifecycle separate
@@ -2667,7 +2667,8 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `READY` with a current collection/X/publication architecture;
+- WI-004 is `READY` with architecture integrated by PR 19 at
+  `ff1fe170f856a92f8118a97f79097ab24480f34e`;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
   lifecycle, canonical typed targets, and immutable acquisition context rather
   than creating a second scheduler;
@@ -2677,7 +2678,7 @@ Current State:
 - no implementation, installed-runtime mutation, schedule change, or live X
   access has begun.
 
-Architecture Plan:
+Closed Architecture Plan:
 
 - `docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md`.
 
@@ -2690,5 +2691,6 @@ Dependencies:
 
 Next Bounded Action:
 
-- validate and integrate the architecture packet, then assign WI-004 Packet 1
-  to one independent top-level lane session from current `origin/main`.
+- assign WI-004 Packet 1 to one independent top-level lane session from current
+  `origin/main` and register its `feat/x-tailored-follows-v1` custody before
+  implementation.

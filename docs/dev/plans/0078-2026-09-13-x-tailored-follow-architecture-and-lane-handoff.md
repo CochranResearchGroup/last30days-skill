@@ -1,6 +1,6 @@
 # Plan 0078 | X Tailored Follow Architecture And Lane Handoff
 
-State: OPEN
+State: CLOSED
 Lane: P35
 Work item: WI-004
 Branch: docs/x-tailored-follow-architecture
@@ -19,11 +19,16 @@ provider-free delivery packets.
 
 ## Current State
 
-- WI-004 is a repo-local `TRIAGE` draft and GitHub Issues remain disabled;
+- WI-004 began as a repo-local `TRIAGE` draft and GitHub Issues remain
+  disabled;
 - current source proves a mature collection scheduler but no typed X account
   or list acquisition and no archival delete operation;
 - the coordinator selected a purpose-typed evolution of `CollectionSpec` plus
-  immutable collection context at the acquisition/publication boundary;
+  immutable collection context at the acquisition/publication boundary, and
+  PR 19 integrated the architecture at
+  `ff1fe170f856a92f8118a97f79097ab24480f34e`;
+- WI-004 is `READY`; implementation and any runtime/provider use have not
+  started;
 - no product implementation, runtime provisioning, schedule change, or live
   provider use has begun.
 
@@ -134,3 +139,46 @@ Next action:
 
 - validate and integrate this architecture packet, close Plan 0078/P35
   planning work, and hand WI-004 Packet 1 to one independent top-level session.
+
+### Checkpoint P0078-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `verified_outcome`; WI-004's typed-target,
+evidence-preserving architecture and restart-safe Packet 1 handoff are
+integrated.
+
+Authority classification:
+
+- `inherited_authority` for integration and planning closeout;
+- `not_authorized` for tracker, implementation runtime, collection, browser/
+  profile, provider, schedule, staging, or production mutations.
+
+Validation evidence:
+
+- pull request 19 merged source tip
+  `c25caea6382cb9c4a11f8ff5a90331b323564f1a` as
+  `ff1fe170f856a92f8118a97f79097ab24480f34e` on `origin/main`;
+- canonical `main` fast-forwarded cleanly to that exact merge;
+- 62 focused planning/lane-policy tests, plan authority, active planning
+  contract, JSON parsing, work-item uniqueness, and patch hygiene pass;
+- the new P35 catalog entry is integrated and exact branch custody was
+  reconciled without touching installed or production runtime state.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; coordinator-owned architecture evidence is authoritative.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; the prior exact architecture-write retry remains a
+  terminal retryable transport failure with no episode UUID. No new write was
+  queued behind that degraded ingestion path.
+
+Next action:
+
+- assign WI-004 Packet 1 to one independent top-level lane session starting
+  from current `origin/main`; create and register its dedicated
+  `feat/x-tailored-follows-v1` branch/worktree before implementation.
