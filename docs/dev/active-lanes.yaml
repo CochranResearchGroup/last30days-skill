@@ -1,5 +1,22 @@
 schema_version: 1
 lanes:
+  - id: P42
+    objective: Reconcile three independent Packet 1 activations into canonical projections
+    work_items: [docs/dev/work-items/WI-000-productization-program.md]
+    plan: docs/dev/plans/0088-2026-09-13-implementation-lane-activation-reconciliation.md
+    plan_ref: refs/heads/docs/implementation-lane-activation-reconciliation
+    branch: docs/implementation-lane-activation-reconciliation
+    target: main
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 58cb25491a24aff385e0185151e9e1de216c98b4
+    remote_ref: refs/remotes/origin/docs/implementation-lane-activation-reconciliation
+    integration: merge
+    integration_receipt: 39dfd12610ca954557a53f5da7c3619b1bc208ba
+    dependencies: [P33, P34, P35]
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
+    updated_at: 2026-09-13
   - id: P41
     objective: Register three restart-safe Packet 1 implementation launch refs
     work_items: [docs/dev/work-items/WI-000-productization-program.md]
