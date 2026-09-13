@@ -2715,7 +2715,8 @@ authorized immutable evidence.
 
 Current State:
 
-- WI-003 is `READY` behind an exact WI-002 dependency;
+- WI-003 is `READY`; merged P33 Packet 1 satisfies its implementation
+  dependency;
 - current MCP query and temporal tools expose evidence, claims, events, and
   conflicts, but no validated synthesized answer, durable question status, or
   citation dereference surface;
@@ -2724,8 +2725,9 @@ Current State:
   control and a separate bounded no-tool answer worker;
 - provider-free packets cover contracts/queue, search/evidence composition,
   structured answers/validation, and fresh-client transport acceptance;
-- no implementation, model call, runtime mutation, or provider access has
-  begun.
+- a clean plan-only launch ref exists at `feat/agent-question-answer-v1`
+  commit `856fb385137c679f06616384109a0f639e37d0f5`; no implementation,
+  model call, runtime mutation, or provider access has begun.
 
 Closed Architecture Plan:
 
@@ -2739,8 +2741,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- assign WI-003 Packet 1 to one independent top-level lane session from current
-  `origin/main` and register its `feat/agent-question-answer-v1` custody.
+- open one independent top-level lane session in the registered WI-003
+  worktree and execute only Plan 0091's provider-free durable tracer.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
@@ -2759,8 +2761,10 @@ Current State:
 - the selected seam is a repo-only deterministic harness with four separate
   axes, canonical JSON plus Markdown projection, and explicit blocking versus
   observation tiers;
-- no implementation, evaluator run, judge call, runtime mutation, production
-  sample, or provider access has begun.
+- a clean plan-only launch ref exists at `feat/service-quality-v1` commit
+  `37638af57a9e01af42a177e13c57b87794649518`; no implementation, evaluator
+  run, judge call, runtime mutation, production sample, or provider access has
+  begun.
 
 Closed Architecture Plan:
 
@@ -2774,9 +2778,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- assign WI-008 Packet 1 to one independent top-level lane session from current
-  `origin/main` and register its `feat/service-quality-v1` custody before
-  provider-free implementation.
+- open one independent top-level lane session in the registered WI-008
+  worktree and execute only Plan 0092's provider-free quality tracer.
 
 ## P38 | Reserved Production Hotfix Path
 
@@ -2868,8 +2871,9 @@ Current State:
   digest authority exists;
 - the selected seam is a cache-only versioned view subscription with explicit
   baseline acceptance and separately gated delivery intents;
-- no implementation, installed schedule, live delivery, or provider action has
-  begun.
+- a clean plan-only launch ref exists at `feat/saved-monitors-v1` commit
+  `7c184e439973fb860c5d93b8450d513b59baa328`; no implementation, installed
+  schedule, live delivery, follow tracing, or provider action has begun.
 
 Closed Architecture Plan:
 
@@ -2883,9 +2887,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- assign WI-006 Packet 1 to one independent top-level lane session from current
-  `origin/main`; query tracing may consume merged P33 while follow tracing stays
-  gated by P35 integration.
+- open one independent top-level lane session in the registered WI-006
+  worktree and execute only Plan 0093's provider-free query-view monitor
+  kernel; follow tracing remains gated by P35 integration.
 
 ## P41 | Implementation Lane Launch Registration
 
@@ -2974,3 +2978,35 @@ Next Bounded Action:
 
 - launch only explicitly bounded provider-free successor lanes while retaining
   P35 at its separately informed PR gate.
+
+## P44 | Next Wave Launch Registration
+
+State: OPEN
+
+Objective: publish, register, and launch three isolated provider-free Packet 1
+sessions for agent questions, service quality, and the saved-monitor kernel.
+
+Current State:
+
+- P36, P37, and P40 each have a clean dedicated worktree and a remotely equal
+  plan-only branch from exact canonical `87a8cbac`;
+- Plan 0090 owns shared catalog, roadmap, runbook, dependency, and overlap
+  reconciliation;
+- P35 remains at its separate pull-request authorization gate and P40 follow
+  tracing is excluded;
+- no feature implementation or live/runtime/provider effect has begun in this
+  coordinator lane.
+
+Active Plan:
+
+- `docs/dev/plans/0090-2026-09-13-next-wave-launch-registration.md`.
+
+Dependencies:
+
+- consumes merged P33 Packet 1; P35 is not a launch dependency because its
+  follow-view surface is explicitly outside P40 Packet 1.
+
+Next Bounded Action:
+
+- validate and integrate this registration, then launch one independent
+  top-level Codex session in each of the three registered feature worktrees.
