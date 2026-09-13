@@ -9,7 +9,7 @@ lanes:
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATED
-    checkpoint: 000682d4d411cae3c1cf263c01ad7d83774b8f83
+    checkpoint: c225bd11a499a60c332ce4b7698f489e50e74b1b
     remote_ref: refs/remotes/origin/docs/packet1-integration-reconciliation
     integration: merge
     integration_receipt: ce8259392c76adcad15ec35740f2aa9c680b93d8
@@ -52,21 +52,22 @@ lanes:
     reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
     updated_at: 2026-09-13
   - id: P40
-    objective: Define cache-only saved monitors, accepted baselines, evidence digests, and gated delivery
+    objective: Implement a provider-free saved-monitor kernel over immutable query views
     work_items: [docs/dev/work-items/WI-006-saved-monitors-and-digests.md]
-    plan: docs/dev/plans/0083-2026-09-13-saved-monitor-and-digest-architecture-and-lane-handoff.md
-    plan_ref: refs/heads/docs/saved-monitors-digests-architecture
-    branch: docs/saved-monitors-digests-architecture
+    plan: docs/dev/plans/0093-2026-09-13-saved-monitors-packet-1.md
+    plan_ref: refs/heads/feat/saved-monitors-v1
+    branch: feat/saved-monitors-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: c959c15ebf134e120e5ae481bc1177336db69c41
-    remote_ref: refs/remotes/origin/docs/saved-monitors-digests-architecture
+    plan_state: PLANNED
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 7c184e439973fb860c5d93b8450d513b59baa328
+    remote_ref: refs/remotes/origin/feat/saved-monitors-v1
     integration: merge
-    integration_receipt: 3333410742f5e1115657d1cc64d6c41fe0faaea1
-    dependencies: [P33, P35]
-    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-006-saved-monitors-and-digests.md]
-    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-006-saved-monitors-and-digests.md]
+    integration_receipt: null
+    blocker: follow-view tracing remains gated by P35 integration and is excluded from Packet 1
+    dependencies: [P33]
+    overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_store.py]
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_store.py]
     updated_at: 2026-09-13
   - id: P39
     objective: Define provider-native tailored follows across supported services
@@ -101,36 +102,38 @@ lanes:
     reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-007-production-hotfix-path.md]
     updated_at: 2026-09-13
   - id: P37
-    objective: Define denominator-aware acquisition, corpus, retrieval, and grounding quality evaluation
-    plan: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md
-    plan_ref: refs/heads/docs/corpus-quality-architecture
-    branch: docs/corpus-quality-architecture
+    objective: Implement a deterministic provider-free four-axis quality tracer
+    work_items: [docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
+    plan: docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md
+    plan_ref: refs/heads/feat/service-quality-v1
+    branch: feat/service-quality-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 081dcb654cf84a4bf40e7af77c2e5620ef3f3c0c
-    remote_ref: refs/remotes/origin/docs/corpus-quality-architecture
+    plan_state: PLANNED
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 37638af57a9e01af42a177e13c57b87794649518
+    remote_ref: refs/remotes/origin/feat/service-quality-v1
     integration: merge
-    integration_receipt: 6d5827e0c8f594d74bb5f043a9ea005bf711a3bd
+    integration_receipt: null
     dependencies: []
-    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
-    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
+    overlaps: []
+    reconciled_overlaps: []
     updated_at: 2026-09-13
   - id: P36
-    objective: Define evidence-grounded agent questions over stable post search and immutable citations
-    plan: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md
-    plan_ref: refs/heads/docs/agent-question-answer-architecture
-    branch: docs/agent-question-answer-architecture
+    objective: Implement a durable provider-free agent-question tracer with immutable citations
+    work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    plan: docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md
+    plan_ref: refs/heads/feat/agent-question-answer-v1
+    branch: feat/agent-question-answer-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 96ae270827ec65d79e9665661c9e0811b748b89e
-    remote_ref: refs/remotes/origin/docs/agent-question-answer-architecture
+    plan_state: PLANNED
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 856fb385137c679f06616384109a0f639e37d0f5
+    remote_ref: refs/remotes/origin/feat/agent-question-answer-v1
     integration: merge
-    integration_receipt: 3c94c01c6c43f883c762b2cb674fabc416297992
-    dependencies: []
-    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
-    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    integration_receipt: null
+    dependencies: [P33]
+    overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_store.py]
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_store.py]
     updated_at: 2026-09-13
   - id: P35
     objective: Define typed X account, list, and topic follows on the existing collection authority
@@ -146,6 +149,8 @@ lanes:
     integration: merge
     integration_receipt: null
     blocker: PR creation requires explicit operator authorization after the read-only forge-policy gate was surfaced
+    validation_status: passed
+    validation_ref: d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py]
     reconciled_overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py]

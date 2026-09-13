@@ -28272,3 +28272,58 @@ Next Bounded Action:
 
 - launch separately bounded provider-free P36/P37/P40 sessions from current
   main; retain P35 at its explicit PR gate until the operator responds.
+
+## Turn 451 | 2026-09-13
+
+Focus: Plan 0090/P44
+(`docs/dev/plans/0090-2026-09-13-next-wave-launch-registration.md`)
+registration of the next provider-free implementation wave.
+
+Authority Consulted:
+
+- current canonical `origin/main`, Plans 0079/0080/0083, notes 0120/0121/0124,
+  WI-003/WI-008/WI-006, active-lane and multi-session policy, and the exact
+  published feature refs.
+
+Decisions And Changes:
+
+- created distinct worktrees and plan-only refs for P36, P37, and P40 from
+  exact canonical `87a8cbac`;
+- bounded P40 to the query-view monitor kernel and kept every follow tracer
+  behind P35 integration;
+- registered expected P36/P40 service-contract overlap under coordinator
+  reconciliation ownership;
+- corrected P43's stale local checkpoint projection and attached P35's already
+  established validation evidence without retrying its pull request;
+- made no feature, tracker, installed runtime/database, model,
+  browser/provider, schedule, delivery, staging, release, deployment, or
+  production mutation.
+
+Validation Evidence:
+
+- P36 plan ref `856fb385137c679f06616384109a0f639e37d0f5`;
+- P37 plan ref `37638af57a9e01af42a177e13c57b87794649518`;
+- P40 plan ref `7c184e439973fb860c5d93b8450d513b59baa328`;
+- each feature worktree is clean and local/remote equal;
+- Graphiti doctor is healthy; bounded advisory discovery returned 8 facts, 6
+  nodes, and 4 older episodes;
+- final planning/catalog validation remains after this projection is rendered.
+
+State Movement:
+
+- Plan 0090/P44 `PLANNED -> OPEN`; P36/P37/P40 remain `PLANNED` with
+  `ACTIVE_WORKTREE` custody until their independent sessions accept ownership.
+
+Subagent Status And Reconciliation:
+
+- no collaboration subagents were spawned; three independent top-level Codex
+  sessions remain to launch after canonical registration.
+
+Graphiti Write Status:
+
+- `not_attempted`; current Git refs and repository artifacts are authoritative.
+
+Next Bounded Action:
+
+- validate and merge P44 registration, then launch the three independent
+  sessions; leave P35 untouched at its explicit gate.
