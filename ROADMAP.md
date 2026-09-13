@@ -1072,7 +1072,7 @@ Next Bounded Action:
 
 ## P08 | Governed Recurring All-Source Tick
 
-State: OPEN
+State: CLOSED
 
 Objective: enable one service-owned daily UTC schedule that calls only the
 durable all-source tick accepted by Plan 0023, then prove one bounded automatic
@@ -1087,7 +1087,7 @@ Current State:
   configured fallback remains available. Agent Browser still owns profile
   recovery, and no new tick ran. Terminal authority:
   `docs/dev/plans/0064-2026-09-10-agent-browser-retry-recourse-preservation.md`.
-- Plan 0062 version 6/C09 is the current actionable P08 plan. Service 0.3.96 is
+- Plan 0062 version 7/C10 is outcome-complete. Service 0.3.96 is
   installed ready with schema 17 and X's finite 40-scroll allowance. Saved recurring
   revision `operator-20260901-x-linkedin-80-v1` requests 80 X and 80 LinkedIn
   posts, retains three attempts for each, and provides 360 seconds per social
@@ -1122,9 +1122,12 @@ Current State:
   `tick-2fa1622b2c62fbd54a9880e456dbcbb9` then accepted 80 distinct canonical X
   posts and 80 distinct canonical LinkedIn posts with both lanes successful,
   clean lease/database cleanup, and unchanged September 3 schedule continuity.
-  Plan 0062 C09 now owns observation of that ordinary scheduled tick; manual
-  acceptance does not by itself close recurring-scheduler acceptance.
-  Current authority:
+  The later ordinary timer tick
+  `tick-2a466080dc3c23c429ad788c88757ea4` satisfied the remaining recurrence
+  gate: X accepted 80 and LinkedIn accepted 47 on ordinal 0, YouTube accepted
+  three, all active work and leases returned to zero, and SQLite integrity is
+  `ok`. The independent Reddit lane's typed timeout is owned by P28 and does
+  not reopen P08. Terminal authority:
   `docs/dev/plans/0062-2026-09-01-recurring-x-linkedin-80-item-volume.md`.
 - Plan 0060 version 1/C06 is CLOSED after installing service 0.3.91 with finite
   active-tick drain semantics and genuine three-attempt transient retry budgets
@@ -2322,7 +2325,7 @@ Next Action:
 
 ## P24 | Recurring Reddit Home Feed
 
-State: OPEN
+State: CLOSED
 
 Objective: activate the proven authenticated Reddit home-feed adapter on the
 existing `daily-default` schedule for up to 80 unique canonical posts per
@@ -2347,10 +2350,15 @@ Current State:
   `existing_session_profile_identity_unproven`;
 - the manual tick promoted its degraded snapshot and left the recurring
   schedule, database integrity, and all active-work/lease counters healthy.
+- ordinary timer tick `tick-2a466080dc3c23c429ad788c88757ea4`
+  exercised the Reddit lane and returned the exact permitted terminal blocker:
+  provider attempt `provider-attempt-149c5c51b5db6afd3ad451278a1cb25b`
+  exhausted its 360-second worker envelope with `worker_timeout`; active work
+  and leases returned to zero and SQLite integrity remained `ok`.
 
-Active Plan:
+Closed Plan:
 
-- `docs/dev/plans/0064-2026-09-03-recurring-reddit-home-feed.md` version 3/C03.
+- `docs/dev/plans/0064-2026-09-03-recurring-reddit-home-feed.md` version 4/C04.
 
 Dependencies:
 
@@ -2360,8 +2368,42 @@ Dependencies:
 
 Next Action:
 
-- observe the first ordinary four-lane tick after the September 4 UTC boundary
-  and adjudicate its terminal Reddit provider receipt.
+- none for P24. P28 owns the missing cumulative Reddit browser budget without
+  authorizing another live tick.
+
+## P28 | Reddit Feed Cumulative Run Budget
+
+State: OPEN
+
+Objective: make recurring Reddit home-feed acquisition return a typed source
+failure with browser-operation diagnostics before the service worker's hard
+360-second timeout can terminate the provider process.
+
+Current State:
+
+- note 0116 reconciles the September 13 ordinary tick and confirms that Agent
+  Browser retains no matching job, trace, incident, or failure-journal record
+  for the exact Reddit interval;
+- the shared adapter has a 105-second cumulative run budget, but Reddit feed
+  acquisition does not activate it;
+- the regression failed before the minimal lifecycle repair and passes after
+  it. Broader validation, integration, installation, and runtime identity
+  checks remain.
+
+Active Plan:
+
+- `docs/dev/plans/0071-2026-09-13-reddit-feed-run-budget.md` version 1/C01.
+
+Dependencies:
+
+- consumes the terminal P24 ordinary-tick blocker and the shared Agent Browser
+  budget primitive without changing either external runtime's authority.
+
+Next Bounded Action:
+
+- validate, integrate, and install service 0.3.116; synchronize the frozen
+  Skill copy and confirm unchanged schedule and zero active work without a
+  provider run.
 
 ## P27 | Refresh Query Head Integration And Install
 

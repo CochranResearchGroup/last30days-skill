@@ -423,6 +423,9 @@ class RedditBrowserScraper:
         diagnostics = RedditDiagnostics()
         workspace: BrowserWorkspace | None = None
         page = RedditPageState(url="", title="")
+        begin_run_budget = getattr(self.client, "begin_run_budget", None)
+        if callable(begin_run_budget):
+            begin_run_budget(self.request.timeout)
         try:
             workspace = self.client.acquire_workspace(self.request)
             diagnostics.failure_stage = "authentication"
@@ -524,6 +527,10 @@ class RedditBrowserScraper:
             return self._result(
                 [], exc.error_type, _safe_error_message(str(exc)), workspace, page, diagnostics
             )
+        finally:
+            end_run_budget = getattr(self.client, "end_run_budget", None)
+            if callable(end_run_budget):
+                end_run_budget()
 
     def _accepted_unique_count(
         self,
