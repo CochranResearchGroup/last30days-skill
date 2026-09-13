@@ -109,7 +109,13 @@ Validation evidence:
 - P23–P28 tips are ancestors of `origin/main`;
 - eleven candidate temporary worktrees are clean and their HEADs are ancestors
   of `origin/main`;
-- P08 archive refs remain equal at `378788ba` and are excluded.
+- P08 archive refs remain equal at `378788ba` and are excluded;
+- recoverable checkpoint `0d1c862e` was published before cleanup;
+- all eleven qualified worktrees were removed, then 18 local and 12 `origin`
+  topic refs were deleted without force after Git's merged-ref checks passed;
+- the catalog-only audit now reports `ok: true`, zero problems, no findings for
+  P23–P28, and only the expected `archived_ref` finding for P08;
+- canonical `main` remains clean and equal to `origin/main` at `deaa942c`.
 
 Subagent status and reconciliation:
 
@@ -121,5 +127,5 @@ Graphiti write status:
 
 Next action:
 
-- commit and publish this cleanup checkpoint, remove only qualified worktrees
-  and refs, then run the full catalog audit.
+- publish the final cleanup receipt, integrate through the public fork, and
+  close Plan 0074/P31 from the canonical `main` readback.

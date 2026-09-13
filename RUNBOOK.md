@@ -26853,7 +26853,13 @@ Validation Evidence:
 - exact ancestry and clean-status preflight passes for every candidate;
 - the current catalog starts with eleven P23/P25/P26/P27 problems plus cleanup
   findings for already integrated P24/P28;
-- final ref deletion and zero-problem audit remain.
+- recoverable source checkpoint `0d1c862e` was published before deletion;
+- eleven qualified worktrees were removed and 18 local plus 12 `origin` topic
+  refs were deleted without force; every deleted tip remains reachable from
+  `main`;
+- the post-cleanup catalog audit reports zero problems. P23–P28 have no
+  findings and P08 retains only its exact `archived_ref` finding;
+- canonical `main` remains clean and equal to `origin/main` at `deaa942c`.
 
 State Movement:
 
@@ -26869,5 +26875,5 @@ Graphiti Write Status:
 
 Next Bounded Action:
 
-- commit and publish the plan checkpoint, then remove only preflight-qualified
-  worktrees and integrated refs and run the catalog audit.
+- publish the final cleanup receipt, integrate it through the public fork, and
+  close Plan 0074/P31 from canonical `main`.
