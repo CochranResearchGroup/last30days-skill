@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import os
 import subprocess
@@ -14,6 +15,13 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTROLLER = ROOT / "dev" / "last30days" / "scripts" / "lane_runtime.py"
+CONTROLLER_SPEC = importlib.util.spec_from_file_location(
+    "lane_runtime_under_test", CONTROLLER
+)
+assert CONTROLLER_SPEC is not None and CONTROLLER_SPEC.loader is not None
+LANE_RUNTIME = importlib.util.module_from_spec(CONTROLLER_SPEC)
+sys.modules[CONTROLLER_SPEC.name] = LANE_RUNTIME
+CONTROLLER_SPEC.loader.exec_module(LANE_RUNTIME)
 
 
 def _git(repo: Path, *args: str) -> str:
@@ -396,6 +404,29 @@ def test_doctor_fails_closed_on_owned_runtime_collisions(
     assert report["ok"] is False
     assert reason in report["reasons"]
     assert collision_path.read_text(encoding="utf-8") == "preserve me\n"
+
+
+def test_socket_owned_by_another_uid_fails_closed(tmp_path, monkeypatch):
+    repo = _repo(tmp_path)
+    state_root = tmp_path / "state"
+    runtime_root = tmp_path / "run"
+    descriptor = LANE_RUNTIME.build_descriptor(
+        lane_id="wi-001",
+        work_item="WI-001",
+        plan="0085",
+        worktree=repo,
+        state_base=state_root,
+        runtime_base=runtime_root,
+    )
+    socket_path = Path(descriptor.socket_path)
+    socket_path.parent.mkdir(parents=True)
+    socket_path.write_text("synthetic collision\n", encoding="utf-8")
+    current_uid = os.geteuid()
+    monkeypatch.setattr(LANE_RUNTIME.os, "geteuid", lambda: current_uid + 1)
+
+    reasons = LANE_RUNTIME._descriptor_reasons(descriptor, os.environ)
+
+    assert "runtime_socket_not_owned" in reasons
 
 
 def test_doctor_rejects_default_branch_custody(tmp_path):

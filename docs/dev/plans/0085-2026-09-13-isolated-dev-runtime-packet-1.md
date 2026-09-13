@@ -161,7 +161,7 @@ Owned changes:
 
 Validation evidence:
 
-- `uv run pytest tests/test_lane_runtime.py -q`: 22 passed;
+- `uv run pytest tests/test_lane_runtime.py -q`: 23 passed;
 - `uv run pytest tests/test_service_runtime_package.py
   tests/test_secret_hygiene.py -q`: 10 passed;
 - the helper exposes `doctor` only and its passing-path test verifies that no
