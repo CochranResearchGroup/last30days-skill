@@ -6,14 +6,15 @@ lanes:
     plan_ref: refs/heads/docs/production-hotfix-path-architecture
     branch: docs/production-hotfix-path-architecture
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE
-    checkpoint: 0950077e53c6a39e47df1385bf5ae32bec4f3dca
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 5842be158597db699a614b61a94753c6b474324c
     remote_ref: refs/remotes/origin/docs/production-hotfix-path-architecture
     integration: merge
+    integration_receipt: 4feb4524bdeed0730cfecee45a1c72460363fd58
     dependencies: []
     overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-007-production-hotfix-path.md]
-    reconciled_overlaps: []
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-007-production-hotfix-path.md]
     updated_at: 2026-09-13
   - id: P37
     objective: Define denominator-aware acquisition, corpus, retrieval, and grounding quality evaluation
