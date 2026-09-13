@@ -28232,3 +28232,43 @@ Next Bounded Action:
 - validate and integrate Plan 0089/P43, then launch provider-free P36, P37,
   and the query-only portion of P40 from current canonical main; keep P35 gated
   until explicit PR authorization.
+
+## Turn 450 | 2026-09-13
+
+Focus: close Plan 0089/P43 after canonical integration.
+
+Authority Consulted:
+
+- Plan 0089, PR 37, exact `origin/main`, and planning/validation closeout
+  policy.
+
+Decisions And Changes:
+
+- recorded PR 37 source `000682d4` and merge receipt `ce825939`;
+- closed P43 and restored the repository-snapshot assertion to the single
+  durable P22 active plan;
+- preserved P35 as `OPEN/INTEGRATION_READY` at its informed PR gate;
+- made no runtime, provider/browser, schedule, tracker, staging, production,
+  release, or deployment mutation.
+
+Validation Evidence:
+
+- post-merge plan-authority and active planning audits pass;
+- canonical main and PR 37 merge receipts match exactly.
+
+State Movement:
+
+- Plan 0089/P43 `OPEN -> CLOSED/INTEGRATED`; P35 remains unchanged.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; closeout is coordinator-owned.
+
+Graphiti Write Status:
+
+- `not_attempted`; repository and forge receipts are authoritative.
+
+Next Bounded Action:
+
+- launch separately bounded provider-free P36/P37/P40 sessions from current
+  main; retain P35 at its explicit PR gate until the operator responds.

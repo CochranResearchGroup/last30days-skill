@@ -2947,21 +2947,21 @@ Resume Action:
 
 ## P43 | Packet 1 Integration Reconciliation
 
-State: OPEN
+State: CLOSED
 
 Objective: reconcile the first implementation wave into canonical planning
 authority and expose the next safe provider-free lanes.
 
 Current State:
 
-- P34 merged through PR 35 as `c6bccab8` and P33 merged through PR 36 as
-  `75e7771e`;
+- P34 merged through PR 35 as `c6bccab8`, P33 merged through PR 36 as
+  `75e7771e`, and this reconciliation merged through PR 37 as `ce825939`;
 - P35 is combined with both integrations, fully validated, and remote-equal at
   `d2c9f8eb`, but PR creation remains explicitly policy-gated;
 - Plans 0084 and 0085 are closed as Packet 1 outcomes while their parent work
   items remain in progress for later packets.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0089-2026-09-13-packet-1-integration-reconciliation.md`.
 
@@ -2972,5 +2972,5 @@ Dependencies:
 
 Next Bounded Action:
 
-- validate and integrate the canonical projections, then close P43 and launch
-  only explicitly bounded provider-free successor lanes.
+- launch only explicitly bounded provider-free successor lanes while retaining
+  P35 at its separately informed PR gate.
