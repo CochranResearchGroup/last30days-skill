@@ -2845,7 +2845,7 @@ Next Bounded Action:
 
 ## P40 | Saved Monitors And Evidence Digests
 
-State: OPEN
+State: PLANNED
 
 Objective: let users save query/follow views, detect evidence-backed changes
 from an accepted baseline, and prepare reviewable digests without rescraping or
@@ -2862,7 +2862,7 @@ Current State:
 - no implementation, installed schedule, live delivery, or provider action has
   begun.
 
-Active Plan:
+Closed Architecture Plan:
 
 - `docs/dev/plans/0083-2026-09-13-saved-monitor-and-digest-architecture-and-lane-handoff.md`.
 
@@ -2874,5 +2874,6 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate and close the architecture plan, then retain P40 as planned until
-  WI-002 Packet 1 integrates.
+- retain P40 as planned until WI-002 Packet 1 integrates, then assign WI-006
+  Packet 1 to one independent top-level lane session from current
+  `origin/main`.

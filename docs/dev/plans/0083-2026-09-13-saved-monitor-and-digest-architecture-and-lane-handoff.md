@@ -1,6 +1,6 @@
 # Plan 0083 | Saved Monitor And Digest Architecture And Lane Handoff
 
-State: OPEN
+State: CLOSED
 Lane: P40
 Work item: WI-006
 Branch: docs/saved-monitors-digests-architecture
@@ -119,6 +119,44 @@ Next action:
 
 - validate/integrate this architecture, close Plan 0083/P40 planning work, and
   retain the exact WI-002/WI-004 implementation gates.
+
+### Checkpoint P0083-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `verified_outcome`; the architecture and restart-safe
+handoff are integrated while implementation remains dependency-gated.
+
+Authority classification:
+
+- `inherited_authority` for public-fork integration and repo closeout;
+- `not_authorized` for tracker, implementation, runtime, schedule, provider/
+  browser, notification, staging, deployment, or production.
+
+Validation evidence:
+
+- source tip `c959c15ebf134e120e5ae481bc1177336db69c41` merged through
+  pull request 29 as `3333410742f5e1115657d1cc64d6c41fe0faaea1`;
+- canonical `main` was fast-forwarded to the exact merge before this isolated
+  closeout worktree was created;
+- 62 focused tests plus plan-authority, active-planning, active-lane, JSON, and
+  patch checks passed on the architecture packet;
+- final integrated audits remain to run after this reconciliation.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; coordinator evidence and merge receipts are authoritative.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; no additional write was attempted.
+
+Next action:
+
+- retain WI-006/P40 as planned until WI-002 Packet 1 integrates, then assign
+  Packet 1 to a separate top-level lane session and register its custody.
 
 ## Stop Rules
 
