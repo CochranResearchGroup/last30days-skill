@@ -26877,3 +26877,50 @@ Next Bounded Action:
 
 - publish the final cleanup receipt, integrate it through the public fork, and
   close Plan 0074/P31 from canonical `main`.
+
+## Turn 425 | 2026-09-13
+
+Focus: Plan 0074/P31 integration reconciliation and closeout.
+
+Authority Consulted:
+
+- Plan 0074/C01, P31, pull request 10 and `origin/main` readback, canonical
+  worktree policy, active-lane audit, validation, and closeout policy.
+
+Decisions And Changes:
+
+- verified pull request 10 integrated the catalog reconciliation and cleanup
+  receipt;
+- fast-forwarded canonical `/home/ecochran76/workspace.local/last30days-skill`
+  to exact current `origin/main` before creating this closeout worktree;
+- reconciled Plan 0074, P31, runbook, and active-plan expectation to closed;
+- preserved `fix/tick-restart-recovery` plus its exact local/remote archive;
+- made no source-code, installed Skill, service, browser, provider, schedule,
+  credential, database, or runtime change.
+
+Validation Evidence:
+
+- source tip `afe7b668ae07b77fb0d0d045c5b4c5867d16a0bf` is integrated as
+  `ceb24923413c3ce997f9437ff498eb6aa352e439` on `origin/main`;
+- the catalog-only audit reports zero problems; 13 focused tests and the plan
+  authority audit pass;
+- canonical `main` is clean and equal to `origin/main` at the merge.
+
+State Movement:
+
+- Plan 0074/P31 `active -> closed`; all registered lane custody is reconciled.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; primary-agent integration and cleanup evidence is
+  authoritative.
+
+Graphiti Write Status:
+
+- `not_written`; integrated Git, plan, catalog, and runbook receipts are
+  authoritative.
+
+Next Bounded Action:
+
+- integrate this closeout, remove its two temporary worktrees/refs without
+  force, and verify the final canonical branch/worktree inventory.
