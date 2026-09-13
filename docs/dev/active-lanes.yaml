@@ -1,5 +1,20 @@
 schema_version: 1
 lanes:
+  - id: P36
+    objective: Define evidence-grounded agent questions over stable post search and immutable citations
+    plan: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md
+    plan_ref: refs/heads/docs/agent-question-answer-architecture
+    branch: docs/agent-question-answer-architecture
+    target: main
+    plan_state: OPEN
+    custody_state: ACTIVE
+    checkpoint: 4687a07465b16e634644f4a0419ca1632cfe4969
+    remote_ref: refs/remotes/origin/docs/agent-question-answer-architecture
+    integration: merge
+    dependencies: []
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    reconciled_overlaps: []
+    updated_at: 2026-09-13
   - id: P35
     objective: Define typed X account, list, and topic follows on the existing collection authority
     plan: docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md

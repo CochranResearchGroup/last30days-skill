@@ -27416,3 +27416,67 @@ Next Bounded Action:
 - integrate this closeout, remove only its fully integrated temporary
   worktrees and refs, then start WI-004 Packet 1 only in a dedicated top-level
   lane session with registered custody.
+
+## Turn 435 | 2026-09-13
+
+Focus: Plan 0079/P36 agent question-answering MCP architecture and dependent
+lane handoff.
+
+Authority Consulted:
+
+- active productization goal; WI-002/WI-003; Plans 0076/0079; Graphiti,
+  CodeGraph, architecture, work-item, multi-session, model, testing,
+  documentation, Git, validation, and closeout policy; current MCP/query/
+  temporal/evidence/worker source and live read-only service status;
+- executable authority:
+  `docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md`.
+
+Decisions And Changes:
+
+- classified the work as agent-facing service architecture plus mixed
+  code/docs synthesis and used a hybrid structure-first posture;
+- verified that current MCP query surfaces retrieve evidence and temporal
+  records but do not synthesize validated answers or dereference citations;
+- selected durable `ask_question`, `question_status`, and `read_evidence`
+  surfaces over WI-002 `search_posts`, with frozen retrieval heads and a
+  dedicated bounded no-tool answer worker;
+- defined statement/citation closure, stale/partial/conflict/no-evidence
+  states, partition-safe evidence reads, idempotent async execution, truthful
+  model/acquisition effects, and exact WI-002 joins;
+- moved WI-003 from `TRIAGE` to `READY` while preserving its Packet 1 and final
+  acceptance blockers;
+- made no GitHub tracker, source implementation, model, installed Skill,
+  service, browser/provider, collection, schedule, credential, database,
+  deployment, staging, or production mutation.
+
+Validation Evidence:
+
+- canonical `main` was clean and equal to `origin/main` at `4687a074` before
+  the dedicated architecture worktree was created;
+- Graphiti is healthy and returned source-backed Plan 0011/App Intelligence
+  evidence; current source verified the useful deterministic-host boundary;
+- CodeGraph is healthy at 353 files, 9,793 nodes, and 23,275 edges and exposed
+  the exact MCP, evidence-read, relevance, answer-contract, and worker gaps;
+- live read-only service status reports service `0.3.116`, schema 17, ready,
+  and 167 indexed documents across five sources;
+- provider-free repository validation remains to run after this packet is
+  fully rendered.
+
+State Movement:
+
+- WI-003 `TRIAGE -> READY`; Plan 0079/P36 `planned -> active`, with the WI-002
+  implementation join still blocking product implementation.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator performed shared-interface exploration directly.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; Plans 0076-0078 already await recovery of the
+  degraded ingestion path, so no new write was queued.
+
+Next Bounded Action:
+
+- validate and integrate the architecture packet, close Plan 0079/P36
+  planning work, and retain the exact WI-002 Packet 1 implementation gate.
