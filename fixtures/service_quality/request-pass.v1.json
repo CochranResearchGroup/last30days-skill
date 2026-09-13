@@ -1,0 +1,21 @@
+{
+  "schema_version": "quality_evaluation_request.v1",
+  "run_id": "service-quality-pass-v1",
+  "evaluation_set": {"id": "service-quality-pass-v1", "digest": "sha256:a4d6d44c85fb6ec0f1e16917776a62b62e1d498a8a320612f10880fc9e8a7843"},
+  "threshold_policy": {"id": "service-quality-packet-1-v1", "digest": "sha256:d8fc48ca43e8d0ab77c036f37423f7afad9ecba5efdf41770ccddc09d98f5fca"},
+  "candidate": {
+    "repository_commit": "169a45b86735e1d4ccb48346d0f044f86105d610",
+    "service_contract_version": "synthetic-packet-1-v1",
+    "database_schema_version": 0,
+    "index_head": "index:synthetic-packet-1-v1",
+    "embedding_config_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "ranking_config_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "baseline": null,
+  "evaluator_version": "service-quality-packet-1-v1",
+  "axes": ["acquisition", "corpus", "retrieval", "grounding"],
+  "case_ids": [],
+  "mode": "provider_free_fixture",
+  "environment": "fixture",
+  "limits": {"max_cases": 100, "max_wall_seconds": 10, "max_output_bytes": 100000, "per_case_limit": 20}
+}

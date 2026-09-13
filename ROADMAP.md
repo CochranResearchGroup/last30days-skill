@@ -2715,7 +2715,7 @@ authorized immutable evidence.
 
 Current State:
 
-- WI-003 is `READY`; merged P33 Packet 1 satisfies its implementation
+- WI-003 is `IN_PROGRESS`; merged P33 Packet 1 satisfies its implementation
   dependency;
 - current MCP query and temporal tools expose evidence, claims, events, and
   conflicts, but no validated synthesized answer, durable question status, or
@@ -2725,10 +2725,12 @@ Current State:
   control and a separate bounded no-tool answer worker;
 - provider-free packets cover contracts/queue, search/evidence composition,
   structured answers/validation, and fresh-client transport acceptance;
-- independent Codex thread `01a09cf4-c89c-7ad2-9b64-8dc95c4cbec6` owns
-  Plan 0091 at clean remote-equal activation checkpoint
-  `c4d985727c39c7cfe2a86a64eae318351eefd5d4`; no implementation, model call,
-  runtime mutation, or provider access has begun.
+- independent Codex thread `01a09cf4-c89c-7ad2-9b64-8dc95c4cbec6`
+  completed Packet 1 at clean remote-equal checkpoint
+  `d6c6ff78498b33534baa6fe0b7b63e29f793caf7`;
+- the provider-free durable question tracer and immutable citation contracts
+  are merged into P45 for combined validation; no model call, MCP publication,
+  installed-runtime mutation, or provider access occurred.
 
 Closed Architecture Plan:
 
@@ -2747,8 +2749,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- resume the recorded P36 owner and execute only Plan 0091's provider-free
-  durable tracer.
+- complete P45 combined validation and canonical integration; keep broader
+  search/model/MCP transport work for a separately planned Packet 2.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
@@ -2760,17 +2762,19 @@ without conflating fixture success with production quality.
 
 Current State:
 
-- WI-008 is `READY`; its provider-free Packet 1 has no product dependency;
+- WI-008 is `IN_PROGRESS`; its provider-free Packet 1 has no product dependency;
 - current evaluators cover fragments of retrieval or slash-command ranking and
   model judgments, but do not share a versioned set, threshold, report,
   denominator, artifact, or effect contract;
 - the selected seam is a repo-only deterministic harness with four separate
   axes, canonical JSON plus Markdown projection, and explicit blocking versus
   observation tiers;
-- independent Codex thread `01a09cf4-c89d-7b41-901a-37648171312a` owns Plan
-  0092 at clean remote-equal activation checkpoint
-  `be4dec78db686132496b3b173a55ab534c1827a6`; no implementation, evaluator run,
-  judge call, runtime mutation, production sample, or provider access has begun.
+- independent Codex thread `01a09cf4-c89d-7b41-901a-37648171312a`
+  completed Packet 1 at clean remote-equal checkpoint
+  `58020b04f8fe109062802abf5b794e9ff5e1024c`;
+- its deterministic four-axis provider-free tracer is merged into P45 for
+  combined validation; no judge call, runtime mutation, production sample, or
+  provider access occurred.
 
 Closed Architecture Plan:
 
@@ -2789,8 +2793,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- resume the recorded P37 owner and execute only Plan 0092's provider-free
-  quality tracer.
+- complete P45 combined validation and canonical integration; real retrieval
+  and grounding adapters remain later separately planned packets.
 
 ## P38 | Reserved Production Hotfix Path
 
@@ -2868,7 +2872,7 @@ Next Bounded Action:
 
 ## P40 | Saved Monitors And Evidence Digests
 
-State: OPEN
+State: PLANNED
 
 Objective: let users save query/follow views, detect evidence-backed changes
 from an accepted baseline, and prepare reviewable digests without rescraping or
@@ -2876,22 +2880,24 @@ duplicate delivery.
 
 Current State:
 
-- WI-006 is `READY` behind explicit WI-002/WI-004 dependencies;
+- WI-006 is `IN_PROGRESS` while accepted Packet 1 awaits canonical integration;
 - current immutable retrieval heads, document versions, collection sightings,
   and notification receipts provide seams, but no durable monitor/baseline/
   digest authority exists;
 - the selected seam is a cache-only versioned view subscription with explicit
   baseline acceptance and separately gated delivery intents;
-- independent Codex thread `01a09cf4-c89e-7660-9caf-66a78f34ded0` owns Plan
-  0093 at clean remote-equal activation checkpoint
-  `0253e82dfad36877371cbdaaa41e846560cfbc8a`; no implementation, installed
-  schedule, live delivery, follow tracing, or provider action has begun.
+- independent Codex thread `01a09cf4-c89e-7660-9caf-66a78f34ded0`
+  completed query-view Packet 1 at clean remote-equal checkpoint
+  `c97982506825e58f0ab8cae138ee557f7055cf91` and closed Plan 0093;
+- its provider-free monitor kernel is merged into P45 for combined validation;
+  no installed schedule, live delivery, follow tracing, or provider action
+  occurred.
 
 Closed Architecture Plan:
 
 - `docs/dev/plans/0083-2026-09-13-saved-monitor-and-digest-architecture-and-lane-handoff.md`.
 
-Active Implementation Plan:
+Closed Implementation Plan:
 
 - `docs/dev/plans/0093-2026-09-13-saved-monitors-packet-1.md` on
   `feat/saved-monitors-v1`.
@@ -2904,8 +2910,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- resume the recorded P40 owner and execute only Plan 0093's provider-free
-  query-view monitor kernel; follow tracing remains gated by P35 integration.
+- complete P45 canonical integration, then plan query-view composition as a
+  later packet; follow tracing remains gated by P35 integration.
 
 ## P41 | Implementation Lane Launch Registration
 
@@ -3026,3 +3032,33 @@ Next Bounded Action:
 
 - merge the ownership projection, then resume the same three independent
   top-level Codex sessions for bounded Packet 1 implementation.
+
+## P45 | Next Wave Integration Reconciliation
+
+State: OPEN
+
+Objective: reconcile the accepted P36, P37, and P40 Packet 1 checkpoints into
+one reviewed canonical integration without widening runtime or provider scope.
+
+Current State:
+
+- P36, P37, and P40 are clean, published, provider-free accepted, and ready for
+  coordinator reconciliation;
+- P36 and P40 use independent module-local schema ledgers, so their product
+  surfaces no longer overlap at the global service schema;
+- P35 remains at its separate pull-request authorization gate.
+
+Active Plan:
+
+- `docs/dev/plans/0094-2026-09-13-next-wave-integration-reconciliation.md`.
+
+Dependencies:
+
+- consumes exact accepted checkpoints P36 `d6c6ff78`, P37 `58020b04`, and P40
+  `c9798250`; P35 is explicitly not part of this integration.
+
+Next Bounded Action:
+
+- merge the exact three feature refs into the integration branch, reconcile
+  the combined runtime manifest, validate, and integrate through one fork-main
+  pull request without any installed/runtime/provider effect.

@@ -28388,3 +28388,109 @@ Next Bounded Action:
 
 - merge this ownership projection and resume the same three sessions for
   provider-free Packet 1 implementation; P35 remains untouched at its gate.
+
+## Turn 453 | 2026-09-13
+
+Focus: open Plan 0094/P45 for P36/P37/P40 Packet 1 integration.
+
+Authority Consulted:
+
+- `docs/dev/plans/0094-2026-09-13-next-wave-integration-reconciliation.md`,
+  exact remote P36/P37/P40 feature checkpoints, canonical
+  `origin/main`, and Git, planning, validation, documentation, and
+  multi-session policy.
+
+Decisions And Changes:
+
+- froze exact integration inputs P36 `d6c6ff78`, P37 `58020b04`, and P40
+  `c9798250`;
+- selected one coordinator-owned integration branch and one fork-main pull
+  request for the join;
+- retained P35 unchanged at its separate pull-request gate;
+- made no tracker, installed runtime/database, model, browser/provider,
+  schedule, delivery, release, staging, deployment, or production mutation.
+
+Validation Evidence:
+
+- canonical `main` is clean and equal to `origin/main` at `169a45b8`;
+- all three feature refs are published and remote-equal to their recorded
+  acceptance checkpoints;
+- final combined validation remains after integration rendering.
+
+State Movement:
+
+- Plan 0094/P45 `PLANNED -> OPEN`; P36/P37/P40 remain accepted and awaiting
+  coordinator integration.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; independent top-level session outputs are being reconciled by
+  the coordinator.
+
+Graphiti Write Status:
+
+- `not_written`; current Git evidence is authoritative.
+
+Next Bounded Action:
+
+- publish the planning checkpoint, merge exact P36/P37/P40 refs, reconcile the
+  manifest and projections, and run combined provider-free validation.
+
+## Turn 454 | 2026-09-13
+
+Focus: Plan 0094/P45 combined Packet 1 reconciliation and validation.
+
+Authority Consulted:
+
+- `docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md`,
+  `docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md`,
+  `docs/dev/plans/0093-2026-09-13-saved-monitors-packet-1.md`, and
+  `docs/dev/plans/0094-2026-09-13-next-wave-integration-reconciliation.md`;
+- exact remote feature checkpoints and current source/runtime package policy.
+
+Decisions And Changes:
+
+- merged P36 `d6c6ff78`, P37 `58020b04`, and P40 `c9798250` without rebasing
+  or rewriting feature custody;
+- refreshed the source-controlled runtime manifest to include the monitor
+  modules alongside the already registered question modules;
+- projected the three feature refs as validated and integration-ready while
+  preserving their distinct plan outcome states;
+- kept P35, installed runtimes, providers, schedules, delivery, releases,
+  staging, production, and GitHub tracker state unchanged.
+
+Validation Evidence:
+
+- the three exact feature checkpoints are ancestors of integration head
+  `58c4da8f` through merge commits `4bfa8fe4`, `0e691ccf`, and `58c4da8f`;
+- all 62 combined focused tests and all 2,838 collected repository tests pass;
+- active planning-contract and repository plan-authority audits pass with zero
+  issues, while the comprehensive planning audit adds zero findings beyond its
+  accepted historical baseline;
+- Python compilation, reproducible service `0.3.116` runtime build, and patch
+  hygiene pass;
+- froze the validated coordinator branch clean and remote-equal at
+  `a542c5e0ac701d4d91836873bf0de4c74edf50bb`; the publication-only
+  `integration/next-wave-packet1-pr` branch records that immutable checkpoint
+  so the catalog does not depend on a self-referential SHA;
+- published-ref lane-catalog verification follows the projection commit.
+
+State Movement:
+
+- P36/P37 remain `OPEN` pending canonical integration; Plan 0093/P40 is
+  `CLOSED`/`PLANNED`; Plan 0094/P45 remains `OPEN`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the coordinator directly reconciled the three independent
+  top-level session outputs.
+
+Graphiti Write Status:
+
+- `not_written`; Git, tests, and repository artifacts are authoritative.
+
+Next Bounded Action:
+
+- publish the validated integration branch, verify its catalog against the
+  published ref, and open its one owned-fork pull request; do not touch P35 or
+  any installed/runtime surface.
