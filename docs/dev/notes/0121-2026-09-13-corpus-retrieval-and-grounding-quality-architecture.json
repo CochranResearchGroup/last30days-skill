@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "task_type": "architecture",
+  "secondary_task_type": "quality system and mixed-code-docs synthesis",
+  "path_type": "local git repository",
+  "persistence_mode": "stable-path",
+  "repo_profile": "Python temporal service, SQLite corpus, provider-free quality harness, and Agent Skills product",
+  "work_item": "WI-008",
+  "plan": "0080",
+  "repository_checkpoint": "aa7db9085fb54415c70bdad51c7f9aa821fb6e61",
+  "retrieval_posture": "hybrid structure-first",
+  "retrieval_trace": [
+    "Graphiti last30days_skill_main bounded immutable-revision and coverage recall",
+    "CodeGraph status and focused retrieval, evaluation, coverage, evidence, and worker exploration",
+    "current work-item, architecture, fixture, evaluator, and test inspection",
+    "live read-only installed service and process identity"
+  ],
+  "decision": "Create one versioned replayable quality harness with separate acquisition coverage, corpus integrity, retrieval quality, and answer grounding axes; provider-free fixtures are blocking authority and optional judges or production samples remain labeled observation lanes.",
+  "evidence_packets": [
+    {
+      "kind": "live_runtime",
+      "summary": "Installed service 0.3.116/schema 17 is ready on PID 24968 with 167 indexed documents and immutable index-e51e8df608f7374bd1d89b9b."
+    },
+    {
+      "kind": "current_eval",
+      "summary": "service_eval is provider-free but aggregate and narrow; the older revision evaluator measures another pipeline and may invoke Gemini."
+    },
+    {
+      "kind": "quality_gap",
+      "summary": "No single fixture, threshold, report, denominator, artifact, or effect contract spans acquisition, integrity, search, and grounding."
+    },
+    {
+      "kind": "selected_boundary",
+      "summary": "Repo-only deterministic runner owns metrics and reports; WI-002 and WI-003 remain owners of search and answer behavior."
+    }
+  ],
+  "uncertainties": [
+    "measured focused and presubmit wall-clock budgets",
+    "smallest redistribution-safe five-source fixture corpus",
+    "future production-sample design and privacy review"
+  ],
+  "dependencies": [
+    "Packet 1 has no product dependency",
+    "retrieval integration requires WI-002 Packet 1 and acceptance requires WI-002 closeout",
+    "grounding integration requires WI-003 Packet 3 and acceptance requires WI-003 closeout"
+  ],
+  "next_actions": [
+    "assign one top-level lane session to WI-008 Packet 1",
+    "create and register feat/service-quality-v1 from current origin/main",
+    "implement contracts, fake axes, renderer, CLI exit semantics and provider-free self-tests only"
+  ],
+  "state_location": "docs/dev/notes/0121-2026-09-13-corpus-retrieval-and-grounding-quality-architecture.md",
+  "persistence_bundle": null
+}

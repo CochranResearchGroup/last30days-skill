@@ -1,5 +1,20 @@
 schema_version: 1
 lanes:
+  - id: P37
+    objective: Define denominator-aware acquisition, corpus, retrieval, and grounding quality evaluation
+    plan: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md
+    plan_ref: refs/heads/docs/corpus-quality-architecture
+    branch: docs/corpus-quality-architecture
+    target: main
+    plan_state: OPEN
+    custody_state: ACTIVE
+    checkpoint: aa7db9085fb54415c70bdad51c7f9aa821fb6e61
+    remote_ref: refs/remotes/origin/docs/corpus-quality-architecture
+    integration: merge
+    dependencies: []
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
+    reconciled_overlaps: []
+    updated_at: 2026-09-13
   - id: P36
     objective: Define evidence-grounded agent questions over stable post search and immutable citations
     plan: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md

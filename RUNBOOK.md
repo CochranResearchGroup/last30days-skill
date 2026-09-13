@@ -27534,3 +27534,67 @@ Next Bounded Action:
 - integrate this closeout, remove only its fully integrated temporary
   worktrees and refs, then start WI-002 Packet 1 in a dedicated top-level lane
   session with registered `feat/post-search-v1` custody.
+
+## Turn 437 | 2026-09-13
+
+Focus: Plan 0080/P37 corpus, retrieval, and grounding quality architecture.
+
+Authority Consulted:
+
+- active productization goal; WI-000/WI-002/WI-003/WI-008; Plans 0076/0079;
+  Graphiti, CodeGraph, architecture, work-item, multi-session, model, testing,
+  documentation, Git, validation, and closeout policy; current evaluator,
+  retrieval, coverage, revision, evidence, judgment, fixture, and live
+  read-only service evidence;
+- executable authority:
+  `docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md`.
+
+Decisions And Changes:
+
+- classified the work as quality-system architecture plus mixed code/docs
+  synthesis and used a hybrid structure-first posture;
+- verified that existing evaluation paths are fragmented across a narrow
+  provider-free service evaluator, an older optionally judged slash-command
+  comparator, coverage receipts, and proposal-shaped model judgments;
+- selected one versioned replayable harness with separate acquisition,
+  integrity, retrieval, and grounding axes, explicit denominators, canonical
+  reports, fixed threshold policy, and blocking versus observation tiers;
+- made Packet 1 independently ready while retaining exact WI-002 retrieval and
+  WI-003 grounding integration/acceptance joins;
+- moved WI-008 from `TRIAGE` to `READY`;
+- made no GitHub tracker, source implementation, evaluator execution, model,
+  installed Skill/database, service, browser/provider, production sample,
+  schedule, CI, deployment, staging, or production mutation.
+
+Validation Evidence:
+
+- canonical `main` was clean and equal to `origin/main` at `aa7db908` before
+  the dedicated architecture worktree was created;
+- Graphiti is healthy and recovered a source-backed immutable-revision rule;
+- CodeGraph is current at 353 files, 9,793 nodes, and 23,275 edges and exposed
+  the evaluator, retrieval, coverage, revision, evidence, judgment, and test
+  seams;
+- live read-only status reports PID 24968, service `0.3.116`, schema 17, ready,
+  immutable index head `index-e51e8df608f7374bd1d89b9b`, and 167 indexed
+  documents across five sources;
+- provider-free repository validation remains to run after this packet is
+  fully rendered.
+
+State Movement:
+
+- WI-008 `TRIAGE -> READY`; Plan 0080/P37 `planned -> active`, with Packet 1
+  unblocked and later WI-002/WI-003 joins explicit.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator performed shared-interface exploration directly.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; Plans 0076-0079 already await recovery of the
+  degraded ingestion path, so no new write was queued.
+
+Next Bounded Action:
+
+- validate and integrate the architecture packet, close Plan 0080/P37 planning
+  work, and hand provider-free Packet 1 to a separate top-level lane session.

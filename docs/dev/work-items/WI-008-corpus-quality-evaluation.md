@@ -1,11 +1,13 @@
 <!-- last30days-work-item:WI-008 -->
 # Measure corpus and retrieval quality continuously
 
-State: TRIAGE
+State: READY
 Priority: P2
 Lane: Quality
 Parent: WI-000
-Blocked by: WI-002
+Blocked by: none for Packet 1; retrieval acceptance by WI-002 closeout; grounding integration by WI-003 Packet 3 and acceptance by WI-003 closeout
+Architecture: docs/dev/notes/0121-2026-09-13-corpus-retrieval-and-grounding-quality-architecture.md
+Implementation plan seed: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md
 
 ## Problem
 
@@ -34,3 +36,14 @@ silently degrade agent answers.
 
 No automatic model promotion, data deletion, or live-provider expansion based
 only on a score.
+
+## Ready Handoff
+
+Assign one independent top-level lane session. Start from current
+`origin/main`, create and register `feat/service-quality-v1`, and implement
+Packet 1 from the architecture note: strict evaluation-set, threshold-policy,
+request/report, metric/result, effect, and artifact contracts; deterministic
+IDs/digests; fake four-axis adapters; JSON/Markdown projection; CLI exit
+semantics; and provider-free self-tests. Do not start a service, call a judge,
+read a live database, use a provider/browser, install a runtime, edit CI, or
+touch staging/production in Packet 1.
