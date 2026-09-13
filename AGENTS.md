@@ -88,6 +88,18 @@ Experimental changes get tested on `mvanhorn/last30days-skill-private`, which in
 - re-read validation and closeout policy before claiming work complete
 - re-read branch, commit, and integration policy before starting a multi-file or multi-step implementation slice
 
+## Development Operating Model
+
+- Before starting or resuming a substantive lane, assigning work to another
+  top-level session, delegating to subagents, creating a development runtime,
+  reconciling parallel branches, or handling a hotfix, read and follow
+  `docs/dev/policies/0028-multi-session-development-operating-model.md`.
+- Before creating, accepting, changing, or closing a work item, read and follow
+  `docs/dev/policies/0027-work-item-traceability.md`.
+- GitHub Issues and Projects are the intended coordination surface, but they
+  are not active authority until the transition gate in policy 0027 is
+  completed. Use roadmap lane and plan locators until then.
+
 ## Policy Entry
 
 This repo keeps its durable repo-local policy under `docs/dev/policies/`.
@@ -119,32 +131,8 @@ Read and follow:
 - `docs/dev/policies/0024-preview-artifact-review.md`
 - `docs/dev/policies/0025-active-lane-coordination.md`
 - `docs/dev/policies/0026-code-testing-discipline.md`
-- `docs/dev/policies/0027-policy-management.md`
-- `docs/dev/policies/0028-policy-upgrade-management.md`
-- `docs/dev/policies/0029-policy-adoption-feedback-loop.md`
-- `docs/dev/policies/0030-notes-and-memories.md`
-- `docs/dev/policies/0031-graph-backed-memory-usage.md`
-- `docs/dev/policies/0032-codegraph-usage.md`
-- `docs/dev/policies/0033-planning-discipline.md`
-- `docs/dev/policies/0034-goal-execution-governance.md`
-- `docs/dev/policies/0035-parallel-plan-design.md`
-- `docs/dev/policies/0036-roadmap-runbook-governance.md`
-- `docs/dev/policies/0037-architecture-guardrails.md`
-- `docs/dev/policies/0038-code-testing-discipline.md`
-- `docs/dev/policies/0039-documentation-change-control.md`
-- `docs/dev/policies/0040-git-worktree-hygiene.md`
-- `docs/dev/policies/0041-active-lane-coordination.md`
-- `docs/dev/policies/0042-commit-history-discipline.md`
-- `docs/dev/policies/0043-branch-and-integration-strategy.md`
-- `docs/dev/policies/0044-commit-and-push-cadence.md`
-- `docs/dev/policies/0045-multi-agent-reconciliation.md`
-- `docs/dev/policies/0046-subagent-workflow-optimization.md`
-- `docs/dev/policies/0047-versioning-and-release.md`
-- `docs/dev/policies/0048-turn-closeout.md`
-- `docs/dev/policies/0049-validation-and-handoff.md`
-- `docs/dev/policies/0050-subagent-runtime-governance.md`
-- `docs/dev/policies/0051-preview-artifact-review.md`
-- `docs/dev/policies/0052-upstream-fork-maintenance.md`
+- `docs/dev/policies/0027-work-item-traceability.md`
+- `docs/dev/policies/0028-multi-session-development-operating-model.md`
 
 ## Scope
 
