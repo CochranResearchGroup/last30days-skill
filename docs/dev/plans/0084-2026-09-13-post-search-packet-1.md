@@ -1,6 +1,6 @@
 # Plan 0084 | Post Search Packet 1 Contract Tracer
 
-State: OPEN
+State: CLOSED
 Lane: P33
 Work item: WI-002
 Branch: feat/post-search-v1
@@ -170,3 +170,24 @@ Next action:
 Review and integrate the Packet 1 pull request into `main`. After integration,
 the coordinator may register a separately bounded Packet 2 continuation; this
 session must not begin it under the current authority.
+
+### Checkpoint P0084-C03 | 2026-09-13
+
+Plan version: 1
+
+State transition: `packet_1_acceptance_met -> closed_integrated`.
+
+Integration evidence:
+
+- PR 36 merged reconciled head
+  `74a6fcfc96ca4b3d78329779ad066b737d899551` into `main` as
+  `75e7771e006f52847e8e47c1059b2b2000fb8ac7`;
+- the coordinator reran 43 combined Python checks, the plan-authority audit,
+  all MCP Go tests, and `go vet` after reconciling merged P34; all passed;
+- no installed runtime, provider, browser, schedule, tracker, staging,
+  production, release, or deployment effect occurred.
+
+Next action: retain WI-002 as `IN_PROGRESS` and create a separately bounded
+Packet 2 plan before changing filters, revision traversal, or deduplication.
+
+Checkpoint P0084-C03 is terminal for Packet 1.
