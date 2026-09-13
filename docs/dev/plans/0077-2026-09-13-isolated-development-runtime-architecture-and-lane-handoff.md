@@ -1,6 +1,6 @@
 # Plan 0077 | Isolated Development Runtime Architecture And Lane Handoff
 
-State: OPEN
+State: CLOSED
 Lane: P34
 Work item: WI-001
 Branch: docs/isolated-dev-runtime-architecture
@@ -23,8 +23,10 @@ lifecycle, and defining vertical delivery packets with provider-free evidence.
   has been provisioned or claimed;
 - current code provides independent DB/socket arguments but inherits config,
   source readiness, credentials, and optional runtime features from the host;
-- the coordinator has selected a repo-only controller plus a service-side
-  cache-only effect gate; implementation has not started.
+- the coordinator selected a repo-only controller plus a service-side
+  cache-only effect gate, and PR 16 integrated the architecture at
+  `187129cd7f67487a3de81901a3c214e64557f039`;
+- WI-001 is `READY`; implementation and runtime provisioning have not started.
 
 ## Scope
 
@@ -129,3 +131,49 @@ Next action:
 
 - validate and integrate this architecture packet, then close Plan 0077/P34
   planning work and hand WI-001 Packet 1 to one independent top-level session.
+
+### Checkpoint P0077-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `verified_outcome`; WI-001's fail-closed architecture
+and restart-safe Packet 1 handoff are integrated.
+
+Authority classification:
+
+- `inherited_authority` for integration and planning closeout;
+- `not_authorized` for tracker, implementation runtime, process, provider,
+  staging, or production mutation.
+
+Validation evidence:
+
+- pull request 16 merged source tip
+  `6498f38af705bc1a308f47eb18af014c2fa819da` as
+  `187129cd7f67487a3de81901a3c214e64557f039` on `origin/main`;
+- canonical `main` fast-forwarded cleanly to that exact merge;
+- 62 focused planning/lane-policy tests, plan authority, JSON parsing,
+  work-item uniqueness, and patch hygiene pass;
+- Graphiti provider preflight passed, but the exact pending Plan 0076 retry job
+  `a1ac5f6c-ee50-4388-87bb-7ab3f036c91b` failed with a retryable transport
+  timeout during node deduplication; `episode_uuid` is null and exact readback
+  found no episode;
+- no Plan 0077 write was queued behind the degraded ingestion path, and no
+  installed or production runtime state changed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; coordinator-owned architecture evidence is authoritative.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; Plan 0076 remains pending after the bounded retry,
+  and the compact Plan 0077 architecture episode is also pending. Retry only
+  through a later readiness, exact-find, single-write, poll, and readback flow.
+
+Next action:
+
+- assign WI-001 Packet 1 to one independent top-level lane session starting
+  from current `origin/main`; create and register its dedicated branch/worktree
+  before implementation.

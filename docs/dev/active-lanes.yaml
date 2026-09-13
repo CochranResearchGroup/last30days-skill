@@ -6,15 +6,15 @@ lanes:
     plan_ref: refs/heads/docs/isolated-dev-runtime-architecture
     branch: docs/isolated-dev-runtime-architecture
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE
-    checkpoint: b71e652317bea4607ced38719a16b4d039c2609f
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 6498f38af705bc1a308f47eb18af014c2fa819da
     remote_ref: refs/remotes/origin/docs/isolated-dev-runtime-architecture
     integration: merge
-    integration_receipt: null
+    integration_receipt: 187129cd7f67487a3de81901a3c214e64557f039
     dependencies: [P32]
     overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-001-isolated-development-runtime.md]
-    reconciled_overlaps: []
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-001-isolated-development-runtime.md]
     updated_at: 2026-09-13
   - id: P28
     objective: Bound cumulative Reddit feed browser work below the provider worker deadline
