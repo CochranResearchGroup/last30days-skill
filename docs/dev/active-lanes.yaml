@@ -83,52 +83,54 @@ lanes:
     updated_at: 2026-09-13
   - id: P35
     objective: Define typed X account, list, and topic follows on the existing collection authority
-    plan: docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md
-    plan_ref: refs/heads/docs/x-tailored-follow-architecture
-    branch: docs/x-tailored-follow-architecture
+    work_items: [docs/dev/work-items/WI-004-x-tailored-follow.md]
+    plan: docs/dev/plans/0086-2026-09-13-x-tailored-follows-packet-1.md
+    plan_ref: refs/heads/feat/x-tailored-follows-v1
+    branch: feat/x-tailored-follows-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: c25caea6382cb9c4a11f8ff5a90331b323564f1a
-    remote_ref: refs/remotes/origin/docs/x-tailored-follow-architecture
+    plan_state: PLANNED
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 5d0acd12845aad940d89522749d37651e1ed0ff2
+    remote_ref: refs/remotes/origin/feat/x-tailored-follows-v1
     integration: merge
-    integration_receipt: ff1fe170f856a92f8118a97f79097ab24480f34e
+    integration_receipt: null
     dependencies: []
-    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-004-x-tailored-follow.md]
-    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-004-x-tailored-follow.md]
+    overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py]
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py]
     updated_at: 2026-09-13
   - id: P34
     objective: Define one fail-closed isolated development runtime per implementation lane
-    plan: docs/dev/plans/0077-2026-09-13-isolated-development-runtime-architecture-and-lane-handoff.md
-    plan_ref: refs/heads/docs/isolated-dev-runtime-architecture
-    branch: docs/isolated-dev-runtime-architecture
+    work_items: [docs/dev/work-items/WI-001-isolated-development-runtime.md]
+    plan: docs/dev/plans/0085-2026-09-13-isolated-dev-runtime-packet-1.md
+    plan_ref: refs/heads/feat/isolated-dev-runtime-v1
+    branch: feat/isolated-dev-runtime-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 6498f38af705bc1a308f47eb18af014c2fa819da
-    remote_ref: refs/remotes/origin/docs/isolated-dev-runtime-architecture
+    plan_state: PLANNED
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 8be96fb07baed08c68b8935f405e7a7f70877795
+    remote_ref: refs/remotes/origin/feat/isolated-dev-runtime-v1
     integration: merge
-    integration_receipt: 187129cd7f67487a3de81901a3c214e64557f039
+    integration_receipt: null
     dependencies: []
-    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-001-isolated-development-runtime.md]
-    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-001-isolated-development-runtime.md]
+    overlaps: [skills/last30days/scripts/service.py, CONFIGURATION.md]
+    reconciled_overlaps: [skills/last30days/scripts/service.py, CONFIGURATION.md]
     updated_at: 2026-09-13
   - id: P33
     objective: Define evidence-backed search and retrieval over stored posts
-    work_items: [docs/dev/work-items/WI-002-post-search-and-retrieval.md]
-    plan: docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md
-    plan_ref: refs/heads/docs/post-search-architecture
-    branch: docs/post-search-architecture
+    work_items: [docs/dev/work-items/WI-002-search-stored-posts.md]
+    plan: docs/dev/plans/0084-2026-09-13-post-search-packet-1.md
+    plan_ref: refs/heads/feat/post-search-v1
+    branch: feat/post-search-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 464a499b457504eca6b83a66ab8f3de15dbb2723
-    remote_ref: refs/remotes/origin/docs/post-search-architecture
+    plan_state: PLANNED
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 05955f755409fc3bac062b2c74e88779a8e29439
+    remote_ref: refs/remotes/origin/feat/post-search-v1
     integration: merge
-    integration_receipt: 2a98fddb339521c2b9c574c114f1d248708fd8b1
+    integration_receipt: null
     dependencies: []
-    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-002-post-search-and-retrieval.md]
-    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-002-post-search-and-retrieval.md]
+    overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go]
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go]
     updated_at: 2026-09-13
   - id: P28
     objective: Bound cumulative Reddit feed browser work below the provider worker deadline

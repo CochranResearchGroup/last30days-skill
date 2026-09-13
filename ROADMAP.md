@@ -2622,8 +2622,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- assign WI-002 Packet 1 to one independent top-level lane session and
-  register its `feat/post-search-v1` branch custody before implementation.
+- open one independent top-level session in the prepared WI-002 worktree at
+  `feat/post-search-v1` checkpoint `05955f75`; take Plan 0084 custody and
+  transition it to `OPEN` before implementation.
 
 ## P34 | Isolated Development Runtime
 
@@ -2654,8 +2655,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- assign WI-001 Packet 1 to one independent top-level lane session and
-  register its `feat/isolated-dev-runtime` custody before implementation.
+- open one independent top-level session in the prepared WI-001 worktree at
+  `feat/isolated-dev-runtime-v1` checkpoint `8be96fb0`; take Plan 0085 custody
+  and transition it to `OPEN` before implementation.
 
 ## P35 | X Tailored Follow Product Surface
 
@@ -2691,9 +2693,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- assign WI-004 Packet 1 to one independent top-level lane session from current
-  `origin/main` and register its `feat/x-tailored-follows-v1` custody before
-  implementation.
+- open one independent top-level session in the prepared WI-004 worktree at
+  `feat/x-tailored-follows-v1` checkpoint `5d0acd12`; take Plan 0086 custody
+  and transition it to `OPEN` before implementation.
 
 ## P36 | Agent Question Answering MCP Surface
 
@@ -2877,3 +2879,31 @@ Next Bounded Action:
 - retain P40 as planned until WI-002 Packet 1 integrates, then assign WI-006
   Packet 1 to one independent top-level lane session from current
   `origin/main`.
+
+## P41 | Implementation Lane Launch Registration
+
+State: OPEN
+
+Objective: publish and register clean, bounded, restart-safe Packet 1 refs for
+the first three independent implementation sessions.
+
+Current State:
+
+- WI-002, WI-001, and WI-004 each have a distinct clean worktree, feature
+  branch, plan-only commit, and matching owned-fork remote ref;
+- P33/P34/P35 catalog entries project those refs and shared overlaps;
+- no feature implementation or runtime/provider effect has begun.
+
+Active Plan:
+
+- `docs/dev/plans/0087-2026-09-13-implementation-lane-launch-registration.md`.
+
+Dependencies:
+
+- none for registration; client-created top-level sessions remain the execution
+  owners and GitHub Issues remain disabled.
+
+Next Bounded Action:
+
+- validate and integrate the registration, close P41, then open the three
+  top-level lane sessions in the prepared worktrees.
