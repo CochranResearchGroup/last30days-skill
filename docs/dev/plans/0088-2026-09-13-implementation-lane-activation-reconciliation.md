@@ -40,6 +40,8 @@ Packet 1 implementation resumes.
   branch and Packet 1 plan;
 - update the three active-lane plan states and checkpoints;
 - append the activation receipt to `RUNBOOK.md`;
+- teach the planning auditor to accept cataloged branch-local actionable plans
+  while leaving ref and metadata verification to the active-lane auditor;
 - integrate the projection through the owned public fork.
 
 ## Non-Goals
@@ -63,7 +65,8 @@ Packet 1 implementation resumes.
 
 - owner: coordinator session;
 - expected writes: this plan, P33/P34/P35/P42, WI-001/WI-002/WI-004,
-  `docs/dev/active-lanes.yaml`, and one append-only runbook turn;
+  `docs/dev/active-lanes.yaml`, one append-only runbook turn, and the planning
+  auditor plus its focused tests;
 - inputs: current `origin/main` and exact remote lane checkpoints;
 - validation: Git/worktree/ref readback, lane/planning/plan-authority audits,
   focused policy tests, PR diff/checks, and post-merge canonical readback;
@@ -89,12 +92,17 @@ Progress classification: `blocker_reduction`; three independent lane owners
 and recoverable `OPEN` checkpoints now exist, and this packet removes their
 canonical projection gate.
 
-Authority classification: `inherited_authority` for the bounded coordinator
-join; `not_authorized` for feature or external/runtime effects.
+Authority classification:
+
+- `inherited_authority` for the bounded coordinator join; feature and
+  external/runtime effects remain outside this packet.
 
 Evidence: all three activation sessions terminated successfully after push;
 their worktrees are clean and exact local/remote checkpoints are recorded
-above. Final audits and PR integration remain.
+above. Validation exposed that the planning auditor only counted plan files on
+the checked-out ref even though the lane contract deliberately keeps active
+plans branch-local; the bounded auditor/test repair is now part of this packet.
+Final audits and PR integration remain.
 
 Next action or stop reason: validate and integrate the activation projection,
 close P42, then resume the same three threads on their Packet 1 scopes.
@@ -105,3 +113,9 @@ close P42, then resume the same three threads on their Packet 1 scopes.
   overlapping feature PR, or coordinator-owned file collision;
 - stop before feature implementation or any installed/live/provider/tracker
   effect.
+
+## Definition Of Done
+
+P42 is done when the canonical projections and both planning authority audits
+represent branch-local OPEN lane plans truthfully, the exact lane refs remain
+clean and remotely custodied, and the bounded coordinator PR is merged.

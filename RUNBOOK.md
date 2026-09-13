@@ -28075,7 +28075,8 @@ Next Bounded Action:
 
 ## Turn 447 | 2026-09-13
 
-Focus: Plan 0088/P42 independent-lane activation reconciliation.
+Focus: Plan 0088/P42 independent-lane activation reconciliation
+(`docs/dev/plans/0088-2026-09-13-implementation-lane-activation-reconciliation.md`).
 
 Authority Consulted:
 

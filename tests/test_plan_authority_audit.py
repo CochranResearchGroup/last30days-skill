@@ -178,9 +178,10 @@ def test_current_repository_authority_passes() -> None:
 
     assert report["status"] == "passed", report
     assert report["issues"] == []
-    assert report["active_plan_count"] == 1
+    assert report["active_plan_count"] == 2
     assert report["active_plans"] == [
         "docs/dev/plans/0046-2026-08-11-facebook-retained-browser-runtime-recovery.md",
+        "docs/dev/plans/0088-2026-09-13-implementation-lane-activation-reconciliation.md",
     ]
     assert report["campaign_plan_count"] == 0
 
@@ -219,6 +220,48 @@ def test_open_lane_requires_current_state_and_plan(tmp_path: Path) -> None:
 
     assert report["status"] == "failed"
     assert "ROADMAP P01 OPEN lane is missing Current State" in report["issues"]
+
+
+def test_open_lane_accepts_branch_local_plan_catalog_projection(tmp_path: Path) -> None:
+    auditor = _load_auditor()
+    _write_minimal_authority(tmp_path)
+    plan = next((tmp_path / "docs/dev/plans").glob("0011-*.md"))
+    plan.unlink()
+    (tmp_path / "docs/dev/active-lanes.yaml").write_text(
+        "schema_version: 1\n"
+        "lanes:\n"
+        "  - id: P01\n"
+        "    plan: docs/dev/plans/0084-2026-09-13-post-search-packet-1.md\n"
+        "    plan_ref: refs/heads/feat/post-search-v1\n"
+        "    plan_state: OPEN\n",
+        encoding="utf-8",
+    )
+
+    report = auditor.audit_repository(tmp_path)
+
+    assert report["status"] == "passed", report
+    assert report["active_plan_count"] == 0
+
+
+def test_closed_catalog_projection_does_not_cover_open_lane(tmp_path: Path) -> None:
+    auditor = _load_auditor()
+    _write_minimal_authority(tmp_path)
+    plan = next((tmp_path / "docs/dev/plans").glob("0011-*.md"))
+    plan.unlink()
+    (tmp_path / "docs/dev/active-lanes.yaml").write_text(
+        "schema_version: 1\n"
+        "lanes:\n"
+        "  - id: P01\n"
+        "    plan: docs/dev/plans/0084-2026-09-13-post-search-packet-1.md\n"
+        "    plan_ref: refs/heads/feat/post-search-v1\n"
+        "    plan_state: CLOSED\n",
+        encoding="utf-8",
+    )
+
+    report = auditor.audit_repository(tmp_path)
+
+    assert report["status"] == "failed"
+    assert "ROADMAP P01 OPEN lane has no actionable plan" in report["issues"]
 
 
 def test_latest_checkpoint_requires_graphiti_and_subagent_fields(tmp_path: Path) -> None:
