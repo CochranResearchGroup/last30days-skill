@@ -25165,3 +25165,174 @@ Next Bounded Action:
 - Agent Browser should diagnose the exact X service-state file-lock timeout and
   the five inverted job timestamps. Do not retry X from Last30days without new
   authority and a refreshed access plan.
+
+## Turn 399 | 2026-09-11
+
+Focus: run one X-only successor after the Agent Browser lock-timeout diagnosis.
+
+Authority Consulted:
+
+- operator retry request; Plan 0067/P08; installed Last30days service discovery;
+  fresh Agent Browser lowercase-service access plan; current planning,
+  administration, validation, documentation, and closeout policy.
+
+Decisions And Changes:
+
+- interpreted the request as one X-only refresh, not another all-source tick;
+- bounded the effect to query `AI agents`, source `x`, default public partition,
+  one durable job, and its first terminal state;
+- confirmed the exact lowercase service identity selects
+  `last30days-facebook` and retained-browser reuse; the title-cased diagnostic
+  identity instead selected a generated alias and is not the execution path;
+- prohibited a second refresh, duplicate browser, profile mutation, schedule
+  change, runtime maintenance, or Agent Browser repair.
+
+State Movement:
+
+- Plan 0067 becomes `OPEN`; P08 remains `CLOSED` because this is a separately
+  authorized bounded observation.
+
+Progress Classification:
+
+- `ready_for_one_x_successor`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next Bounded Action:
+
+- enqueue the one X-only refresh and poll only its returned job to the first
+  durable terminal state.
+
+## Turn 400 | 2026-09-11
+
+Focus: close Plan 0067 at the X successor's first terminal state.
+
+Decisions And Changes:
+
+- issued one X-only refresh call and followed only returned job
+  `45d7167e-9378-450e-98f6-09c7c0641da0`;
+- allowed its advertised, service-owned two-attempt lifecycle without issuing
+  another refresh or overriding retry policy;
+- stopped after terminal failure and preserved both Agent Browser correlations
+  in note 0114;
+- made no profile, browser, schedule, runtime, or Agent Browser source mutation.
+
+Validation Evidence:
+
+- the refresh terminalized `failed` after two of two attempts with
+  `agent_browser_error`, no published index version, and zero spend;
+- both X evaluate jobs failed `service_state_stale_revision` at commit by one
+  revision and report `effectState=no_effect` plus `blind_retry`;
+- installed Agent Browser generation
+  `0.28.0-842bb1beedbf-249db11e4fdb` internally replays a stale prepared
+  candidate once, so each terminal error followed two revision collisions;
+- postflight shows no active lock holder and retained browser PID 5681 healthy
+  on `last30days-facebook`, with no duplicate process.
+
+State Movement:
+
+- Plan 0067 closes at version 2/C01 `terminal_failed_no_effect`; P08 remains
+  `CLOSED`.
+
+Progress Classification:
+
+- `blocker_reclassified`; X remains unavailable, now on repeated optimistic
+  Service State commit collisions rather than the prior file-lock timeout.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next Bounded Action:
+
+- hand note 0114 to Agent Browser for a production-scale concurrent prepared-
+  commit reproducer and durable competing-mutation identity. Do not retry X
+  again from Plan 0067.
+
+## Turn 401 | 2026-09-12
+
+Focus: admit one changed-strategy X successor after retained-browser
+termination.
+
+Authority Consulted:
+
+- operator retry request; Plan 0068/P08; current Last30days discovery; fresh
+  Agent Browser access plan and installed/live identity readback; current
+  planning, administration, validation, documentation, and closeout policy.
+
+Decisions And Changes:
+
+- opened Plan 0068 rather than repeating closed Plan 0067;
+- accepted the changed browser acquisition state as the bounded strategy
+  change: the old process is absent and cleanup-satisfied, and same-profile
+  replacement is eligible without a lease conflict;
+- bounded execution to one X-only refresh call for `AI agents` and the returned
+  job's advertised lifecycle;
+- prohibited retry override, duplicate same-profile process, schedule/profile
+  mutation, runtime maintenance, or source changes.
+
+State Movement:
+
+- Plan 0068 becomes `OPEN`; P08 remains `CLOSED` as the accepted recurring
+  product lane.
+
+Progress Classification:
+
+- `ready_changed_strategy`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next Bounded Action:
+
+- issue the one refresh and poll only its returned job to terminal state.
+
+## Turn 402 | 2026-09-12
+
+Focus: close Plan 0068 after successful X acquisition and publication.
+
+Decisions And Changes:
+
+- issued exactly one X-only refresh and stopped at its first terminal state;
+- accepted Agent Browser acquisition/control as successful after all 11
+  correlated jobs completed with verified effects and no failure record;
+- kept research retrieval separate because both post-publication cache reads
+  returned empty evidence from an older promoted tick snapshot;
+- retained the healthy replacement browser for service reuse and performed no
+  profile, schedule, runtime-maintenance, or source mutation.
+
+Validation Evidence:
+
+- Last30days job `a56bc625-ac04-49c6-9051-b8d034b2525b` published on attempt
+  one at index `index-c80f2e3b565415cba5c54b81`;
+- replacement session `terminal-profile-a8f7a273f7938dbf1d762ec8` uses
+  `last30days-facebook`; OS readback confirms managed Chrome PID 12086;
+- seven evaluates plus navigation, tab creation, UI action, and exact tab
+  release all succeeded; current lock diagnostics show no timeout;
+- brief and evidence query modes both return fresh-but-empty results from older
+  snapshot `tick-snapshot-1182fab1bf8d9b99ef2a22bb91739b87`;
+- the tab-release job retains a 1.881-second submitted/started timestamp
+  inversion, so the separate Agent Browser clock-ordering defect remains.
+
+State Movement:
+
+- Plan 0068 closes at version 2/C01 `published_zero_query_yield`; P08 remains
+  `CLOSED`.
+
+Progress Classification:
+
+- `outcome_progress`; the previous Agent Browser contention failure did not
+  recur, while refresh-index retrieval remains an exact follow-up gap.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; current orchestration policy prohibits delegation.
+
+Next Bounded Action:
+
+- investigate Last30days refresh-index query projection and Agent Browser job
+  timestamp ordering; do not infer complete end-to-end success from publication
+  alone.
