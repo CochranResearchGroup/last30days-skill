@@ -2470,3 +2470,36 @@ Plan `docs/dev/plans/0066-2026-09-06-full-tick-recovery.md` closed on service
 retaining 187 items (YouTube 3, X 80, LinkedIn 33, Reddit 71). All retry gaps
 exceeded 300 seconds; original config/caps preserved. Service and daily schedule
 are ready, with no abandoned tick work. Receipt: `docs/dev/notes/0066-full-tick-attempts.json`.
+
+## P29 | Multi-Session Development Operating Model
+
+State: OPEN
+
+Objective: make coordinator, feature-lane, hotfix, worktree, work-item, and
+runtime ownership durable before opening parallel product-development lanes.
+
+Current State:
+
+- Plan 0072 defines the coordinator plus independent top-level lane-session
+  model, shallow bounded subagents, three-feature-plus-hotfix capacity,
+  protected releasable `main`, isolated lane runtimes, and serialized live
+  canaries;
+- tracker-neutral work-item traceability is adopted. GitHub Issues and Projects
+  remain a gated successor because they are not enabled or configured;
+- stale `AGENTS.md` pointers to nonexistent duplicate policies are removed and
+  every new agent is routed to the durable operating model.
+
+Active Plan:
+
+- `docs/dev/plans/0072-2026-09-13-multi-session-development-policy.md`.
+
+Dependencies:
+
+- consumes the existing planning, active-lane, Git, testing, release,
+  multi-agent, runtime, validation, and closeout policies.
+
+Next Bounded Action:
+
+- integrate Plan 0072 through the public fork and record its merge receipt;
+  then open a successor governance-bootstrap work item to enable and configure
+  the GitHub tracker.
