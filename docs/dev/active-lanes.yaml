@@ -1,5 +1,22 @@
 schema_version: 1
 lanes:
+  - id: P45
+    objective: Reconcile accepted P36 P37 and P40 Packet 1 checkpoints into canonical main
+    work_items: [docs/dev/work-items/WI-000-productization-program.md]
+    plan: docs/dev/plans/0094-2026-09-13-next-wave-integration-reconciliation.md
+    plan_ref: refs/heads/docs/next-wave-integration-reconciliation
+    branch: docs/next-wave-integration-reconciliation
+    target: main
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 169a45b86735e1d4ccb48346d0f044f86105d610
+    remote_ref: refs/remotes/origin/docs/next-wave-integration-reconciliation
+    integration: merge
+    integration_receipt: null
+    dependencies: [P36, P37, P40]
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, service/runtime-manifest.json]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, service/runtime-manifest.json]
+    updated_at: 2026-09-13
   - id: P43
     objective: Reconcile the first implementation wave and expose the next provider-free lanes
     work_items: [docs/dev/work-items/WI-000-productization-program.md]

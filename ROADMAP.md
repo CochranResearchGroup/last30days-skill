@@ -3026,3 +3026,33 @@ Next Bounded Action:
 
 - merge the ownership projection, then resume the same three independent
   top-level Codex sessions for bounded Packet 1 implementation.
+
+## P45 | Next Wave Integration Reconciliation
+
+State: OPEN
+
+Objective: reconcile the accepted P36, P37, and P40 Packet 1 checkpoints into
+one reviewed canonical integration without widening runtime or provider scope.
+
+Current State:
+
+- P36, P37, and P40 are clean, published, provider-free accepted, and ready for
+  coordinator reconciliation;
+- P36 and P40 use independent module-local schema ledgers, so their product
+  surfaces no longer overlap at the global service schema;
+- P35 remains at its separate pull-request authorization gate.
+
+Active Plan:
+
+- `docs/dev/plans/0094-2026-09-13-next-wave-integration-reconciliation.md`.
+
+Dependencies:
+
+- consumes exact accepted checkpoints P36 `d6c6ff78`, P37 `58020b04`, and P40
+  `c9798250`; P35 is explicitly not part of this integration.
+
+Next Bounded Action:
+
+- merge the exact three feature refs into the integration branch, reconcile
+  the combined runtime manifest, validate, and integrate through one fork-main
+  pull request without any installed/runtime/provider effect.

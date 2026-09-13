@@ -28388,3 +28388,50 @@ Next Bounded Action:
 
 - merge this ownership projection and resume the same three sessions for
   provider-free Packet 1 implementation; P35 remains untouched at its gate.
+
+## Turn 453 | 2026-09-13
+
+Focus: open Plan 0094/P45 for P36/P37/P40 Packet 1 integration.
+
+Authority Consulted:
+
+- `docs/dev/plans/0094-2026-09-13-next-wave-integration-reconciliation.md`,
+  exact remote P36/P37/P40 feature checkpoints, canonical
+  `origin/main`, and Git, planning, validation, documentation, and
+  multi-session policy.
+
+Decisions And Changes:
+
+- froze exact integration inputs P36 `d6c6ff78`, P37 `58020b04`, and P40
+  `c9798250`;
+- selected one coordinator-owned integration branch and one fork-main pull
+  request for the join;
+- retained P35 unchanged at its separate pull-request gate;
+- made no tracker, installed runtime/database, model, browser/provider,
+  schedule, delivery, release, staging, deployment, or production mutation.
+
+Validation Evidence:
+
+- canonical `main` is clean and equal to `origin/main` at `169a45b8`;
+- all three feature refs are published and remote-equal to their recorded
+  acceptance checkpoints;
+- final combined validation remains after integration rendering.
+
+State Movement:
+
+- Plan 0094/P45 `PLANNED -> OPEN`; P36/P37/P40 remain accepted and awaiting
+  coordinator integration.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; independent top-level session outputs are being reconciled by
+  the coordinator.
+
+Graphiti Write Status:
+
+- `not_written`; current Git evidence is authoritative.
+
+Next Bounded Action:
+
+- publish the planning checkpoint, merge exact P36/P37/P40 refs, reconcile the
+  manifest and projections, and run combined provider-free validation.
