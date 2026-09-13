@@ -28275,8 +28275,9 @@ Next Bounded Action:
 
 ## Turn 451 | 2026-09-13
 
-Focus: Plan 0090/P44 registration of the next provider-free implementation
-wave.
+Focus: Plan 0090/P44
+(`docs/dev/plans/0090-2026-09-13-next-wave-launch-registration.md`)
+registration of the next provider-free implementation wave.
 
 Authority Consulted:
 
