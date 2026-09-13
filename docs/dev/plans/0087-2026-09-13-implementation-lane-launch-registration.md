@@ -1,6 +1,6 @@
 # Plan 0087 | Implementation Lane Launch Registration
 
-State: OPEN
+State: CLOSED
 Lane: P41
 Work item: WI-000
 Branch: docs/implementation-lane-launch-registration
@@ -114,6 +114,44 @@ Next action:
 
 - validate/integrate this registration, close Plan 0087/P41, then have the
   client open one top-level Codex session in each prepared lane worktree.
+
+### Checkpoint P0087-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `verified_outcome`; three restart-safe implementation
+launch refs and clean worktrees are integrated into the canonical catalog.
+
+Authority classification:
+
+- `inherited_authority` for public-fork integration and repo closeout;
+- `not_authorized` for tracker, feature implementation, runtime, provider,
+  schedule, staging, release, or production.
+
+Validation evidence:
+
+- registration source tip `46d3f6dc5ca30ab57fe374e18c71c90176bae40a`
+  merged through PR 31 as `7b4e0ef1b2c42f24a7f8398cc747bfb690cad647`;
+- canonical `main` fast-forwarded to that exact merge before closeout;
+- active-lane audit proved P33/P34/P35 local and remote checkpoint equality;
+- 62 focused tests and plan-authority/active-planning checks passed;
+- final integrated catalog validation remains after rendering.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; no substitute implementation agents were launched.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; no write was attempted on the degraded path.
+
+Next action:
+
+- open independent top-level sessions in the three prepared worktrees; each
+  session transitions only its branch-local plan to `OPEN` and coordinates the
+  catalog state change before implementing Packet 1.
 
 ## Stop Rules
 

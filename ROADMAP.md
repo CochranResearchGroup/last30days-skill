@@ -2882,7 +2882,7 @@ Next Bounded Action:
 
 ## P41 | Implementation Lane Launch Registration
 
-State: OPEN
+State: CLOSED
 
 Objective: publish and register clean, bounded, restart-safe Packet 1 refs for
 the first three independent implementation sessions.
@@ -2894,7 +2894,7 @@ Current State:
 - P33/P34/P35 catalog entries project those refs and shared overlaps;
 - no feature implementation or runtime/provider effect has begun.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0087-2026-09-13-implementation-lane-launch-registration.md`.
 
@@ -2905,5 +2905,5 @@ Dependencies:
 
 Next Bounded Action:
 
-- validate and integrate the registration, close P41, then open the three
-  top-level lane sessions in the prepared worktrees.
+- open the three top-level lane sessions in the prepared worktrees; retain the
+  coordinator session for shared-contract and integration decisions.

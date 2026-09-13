@@ -1,5 +1,22 @@
 schema_version: 1
 lanes:
+  - id: P41
+    objective: Register three restart-safe Packet 1 implementation launch refs
+    work_items: [docs/dev/work-items/WI-000-productization-program.md]
+    plan: docs/dev/plans/0087-2026-09-13-implementation-lane-launch-registration.md
+    plan_ref: refs/heads/docs/implementation-lane-launch-registration
+    branch: docs/implementation-lane-launch-registration
+    target: main
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 46d3f6dc5ca30ab57fe374e18c71c90176bae40a
+    remote_ref: refs/remotes/origin/docs/implementation-lane-launch-registration
+    integration: merge
+    integration_receipt: 7b4e0ef1b2c42f24a7f8398cc747bfb690cad647
+    dependencies: []
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
+    updated_at: 2026-09-13
   - id: P40
     objective: Define cache-only saved monitors, accepted baselines, evidence digests, and gated delivery
     work_items: [docs/dev/work-items/WI-006-saved-monitors-and-digests.md]
