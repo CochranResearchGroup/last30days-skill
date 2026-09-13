@@ -104,9 +104,15 @@ Experimental changes get tested on `mvanhorn/last30days-skill-private`, which in
   `docs/dev/policies/0028-multi-session-development-operating-model.md`.
 - Before creating, accepting, changing, or closing a work item, read and follow
   `docs/dev/policies/0027-work-item-traceability.md`.
-- GitHub Issues and Projects are the intended coordination surface, but they
-  are not active authority until the transition gate in policy 0027 is
-  completed. Use roadmap lane and plan locators until then.
+- Before choosing a model, reasoning tier, or non-trivial delegation topology,
+  read `docs/dev/policies/0029-model-selection-and-calibration.md`.
+- Before reporting or changing work on a forge, read
+  `docs/dev/policies/0030-forge-issue-reporting.md`; for GitHub, also read
+  `docs/dev/policies/0031-github-issue-operations.md` and resolve the target
+  through `docs/dev/forge-issue-targets.json`.
+- The current tracker phase and proposed workflow live in
+  `docs/agents/issue-tracker.md`. GitHub Issues and Projects remain inactive
+  until that document's activation gate is explicitly accepted.
 
 ## Policy Entry
 
@@ -141,6 +147,9 @@ Read and follow:
 - `docs/dev/policies/0026-code-testing-discipline.md`
 - `docs/dev/policies/0027-work-item-traceability.md`
 - `docs/dev/policies/0028-multi-session-development-operating-model.md`
+- `docs/dev/policies/0029-model-selection-and-calibration.md`
+- `docs/dev/policies/0030-forge-issue-reporting.md`
+- `docs/dev/policies/0031-github-issue-operations.md`
 
 ## Scope
 

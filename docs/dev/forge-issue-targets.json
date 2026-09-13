@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "targets": [
+    {
+      "id": "last30days-public-fork",
+      "forge": "github",
+      "host": "github.com",
+      "repository": "CochranResearchGroup/last30days-skill",
+      "relationship": "owned",
+      "allowed_actions": [
+        "read"
+      ],
+      "security_route": "none",
+      "label_map": {
+        "intent/defect": {
+          "provider_label": "bug"
+        },
+        "intent/documentation": {
+          "provider_label": "documentation"
+        },
+        "intent/feature": {
+          "provider_label": "enhancement"
+        }
+      }
+    }
+  ]
+}

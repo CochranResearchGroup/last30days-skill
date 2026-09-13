@@ -2561,3 +2561,34 @@ Next Bounded Action:
 
 - none for P31. Remove its own integrated temporary refs/worktrees after
   closeout, then retain canonical `main` and the explicit P08 archive boundary.
+
+## P32 | GitHub Work-Item Bootstrap Readiness
+
+State: OPEN
+
+Objective: prepare the governed, idempotent repository and product-lane
+artifacts required for a separately authorized GitHub Issues and Project
+activation.
+
+Current State:
+
+- selector release `v0.1.25` is installed from an immutable tag and supplies
+  the missing provider preflight surface;
+- model-selection, forge-reporting, and GitHub-operation policies are adopted;
+- the exact public-fork registry remains read-only and GitHub Issues remain
+  disabled;
+- WI-000 through WI-008 are local review drafts, not remote issues.
+
+Active Plan:
+
+- `docs/dev/plans/0075-2026-09-13-github-work-item-bootstrap-readiness.md`.
+
+Dependencies:
+
+- consumes closed P29 and P31 plus current `origin/main`; external tracker
+  activation remains an explicit operator gate.
+
+Next Bounded Action:
+
+- validate and integrate the repo-only readiness packet, then obtain operator
+  acceptance of the issue graph and exact GitHub mutation scope.
