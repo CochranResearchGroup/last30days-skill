@@ -1,0 +1,161 @@
+{
+  "schema_version": "quality_evaluation_set.v1",
+  "evaluation_set_id": "service-quality-edge-v1",
+  "version": 1,
+  "description": "Reviewed synthetic Packet 1 fail-closed edge tracer.",
+  "source_status": "synthetic",
+  "source_licenses": [
+    {"source": "bluesky", "status": "synthetic", "license": "synthetic-no-third-party-content"},
+    {"source": "reddit", "status": "synthetic", "license": "synthetic-no-third-party-content"},
+    {"source": "web", "status": "synthetic", "license": "synthetic-no-third-party-content"},
+    {"source": "x", "status": "synthetic", "license": "synthetic-no-third-party-content"},
+    {"source": "youtube", "status": "synthetic", "license": "synthetic-no-third-party-content"}
+  ],
+  "created_date": "2026-09-13",
+  "reviewed_date": "2026-09-13",
+  "cases": [
+    {
+      "case_id": "acquisition-partial",
+      "axis": "acquisition",
+      "tags": ["partial", "synthetic"],
+      "outcome": {
+        "state": "failed",
+        "metrics": [{"name": "success_rate", "numerator": 3, "denominator": 5, "excluded": 0}],
+        "failure_codes": ["partial_acquisition"],
+        "observed_refs": ["fixture:acquisition-partial"]
+      }
+    },
+    {
+      "case_id": "acquisition-unknown-denominator",
+      "axis": "acquisition",
+      "tags": ["synthetic", "unknown-denominator"],
+      "outcome": {
+        "state": "not_measurable",
+        "metrics": [{"name": "success_rate", "numerator": 0, "denominator": null, "excluded": 2}],
+        "failure_codes": ["unknown_denominator"],
+        "observed_refs": ["fixture:acquisition-unknown-denominator"]
+      }
+    },
+    {
+      "case_id": "corpus-corrupt",
+      "axis": "corpus",
+      "tags": ["corrupt", "synthetic"],
+      "outcome": {
+        "state": "failed",
+        "metrics": [{"name": "success_rate", "numerator": 0, "denominator": 1, "excluded": 0}],
+        "failure_codes": ["digest_mismatch"],
+        "observed_refs": ["fixture:corpus-corrupt"]
+      }
+    },
+    {
+      "case_id": "corpus-cross-partition",
+      "axis": "corpus",
+      "tags": ["cross-partition", "synthetic"],
+      "outcome": {
+        "state": "failed",
+        "metrics": [{"name": "success_rate", "numerator": 0, "denominator": 1, "excluded": 0}],
+        "failure_codes": ["cross_partition_leakage"],
+        "observed_refs": ["fixture:corpus-cross-partition"]
+      }
+    },
+    {
+      "case_id": "corpus-duplicate",
+      "axis": "corpus",
+      "tags": ["duplicate", "synthetic"],
+      "outcome": {
+        "state": "failed",
+        "metrics": [{"name": "success_rate", "numerator": 0, "denominator": 1, "excluded": 0}],
+        "failure_codes": ["duplicate_identity"],
+        "observed_refs": ["fixture:corpus-duplicate"]
+      }
+    },
+    {
+      "case_id": "corpus-stale",
+      "axis": "corpus",
+      "tags": ["stale", "synthetic"],
+      "outcome": {
+        "state": "failed",
+        "metrics": [{"name": "success_rate", "numerator": 0, "denominator": 1, "excluded": 0}],
+        "failure_codes": ["stale_head"],
+        "observed_refs": ["fixture:corpus-stale"]
+      }
+    },
+    {
+      "case_id": "grounding-conflicting",
+      "axis": "grounding",
+      "tags": ["conflicting", "synthetic"],
+      "outcome": {
+        "state": "failed",
+        "metrics": [{"name": "success_rate", "numerator": 0, "denominator": 1, "excluded": 0}],
+        "failure_codes": ["contradiction_not_preserved"],
+        "observed_refs": ["fixture:grounding-conflicting"]
+      }
+    },
+    {
+      "case_id": "grounding-no-evidence",
+      "axis": "grounding",
+      "tags": ["no-evidence", "synthetic"],
+      "outcome": {
+        "state": "not_measurable",
+        "metrics": [{"name": "success_rate", "numerator": 0, "denominator": null, "excluded": 1}],
+        "failure_codes": ["no_evidence"],
+        "observed_refs": ["fixture:grounding-no-evidence"]
+      }
+    },
+    {
+      "case_id": "grounding-unsupported-claim",
+      "axis": "grounding",
+      "tags": ["synthetic", "unsupported-claim"],
+      "outcome": {
+        "state": "failed",
+        "metrics": [{"name": "success_rate", "numerator": 0, "denominator": 1, "excluded": 0}],
+        "failure_codes": ["unsupported_claim"],
+        "observed_refs": ["fixture:grounding-unsupported-claim"]
+      }
+    },
+    {
+      "case_id": "retrieval-empty",
+      "axis": "retrieval",
+      "tags": ["empty", "synthetic"],
+      "outcome": {
+        "state": "failed",
+        "metrics": [{"name": "success_rate", "numerator": 0, "denominator": 1, "excluded": 0}],
+        "failure_codes": ["empty_result"],
+        "observed_refs": ["fixture:retrieval-empty"]
+      }
+    },
+    {
+      "case_id": "retrieval-evaluator-crash",
+      "axis": "retrieval",
+      "tags": ["evaluator-crash", "synthetic"],
+      "outcome": {
+        "state": "incomplete",
+        "metrics": [{"name": "success_rate", "numerator": 0, "denominator": null, "excluded": 1}],
+        "failure_codes": ["evaluator_crash"],
+        "observed_refs": ["fixture:retrieval-evaluator-crash"]
+      }
+    },
+    {
+      "case_id": "retrieval-malformed-cursor",
+      "axis": "retrieval",
+      "tags": ["malformed-cursor", "synthetic"],
+      "outcome": {
+        "state": "failed",
+        "metrics": [{"name": "success_rate", "numerator": 0, "denominator": 1, "excluded": 0}],
+        "failure_codes": ["malformed_cursor"],
+        "observed_refs": ["fixture:retrieval-malformed-cursor"]
+      }
+    },
+    {
+      "case_id": "retrieval-skipped",
+      "axis": "retrieval",
+      "tags": ["skipped", "synthetic"],
+      "outcome": {
+        "state": "incomplete",
+        "metrics": [{"name": "success_rate", "numerator": 0, "denominator": null, "excluded": 1}],
+        "failure_codes": ["axis_skipped"],
+        "observed_refs": ["fixture:retrieval-skipped"]
+      }
+    }
+  ]
+}
