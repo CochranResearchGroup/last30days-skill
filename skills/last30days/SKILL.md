@@ -34,6 +34,9 @@ Follow this order for every ordinary request:
    When `tick_snapshot` is present, cite only its returned evidence and retain
    each result's matching channels, provenance, and access partition; the
    snapshot coverage and interval/promotion fields are the freshness authority.
+   When the user asks to find or page through individual stored posts instead
+   of requesting a synthesized answer, call `search_posts`; it searches only
+   current cached revisions and cannot acquire provider data.
 4. Use `freshness_policy=cache_only` whenever the user prohibits external work
    or asks only what the service already knows.
 5. If the result is stale or missing and the user asked for fresh research,
@@ -50,6 +53,9 @@ available service operation.
 Use the narrowest operation that answers the request:
 
 - `query` - current evidence-backed research from the shared cache.
+- `search_posts` - deterministic lexical search over current stored-post
+  revisions. Preserve each immutable evidence reference and reuse only the
+  opaque cursor returned for the same query, filters, profile, and page size.
 - `temporal_query` - `as_of`, `during`, `known_as_of`, timeline, entity
   dossier, event dossier, trend, comparison, and historical brief requests.
   This operation is cache-only.

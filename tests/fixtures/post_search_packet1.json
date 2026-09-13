@@ -1,0 +1,27 @@
+{
+  "mcp_arguments": {
+    "query": "reliable browser agents",
+    "profile_id": "default",
+    "sources": ["reddit", "x"],
+    "published_after": "2026-09-01T00:00:00Z",
+    "published_before": "2026-09-13T23:59:59Z",
+    "page_size": 20
+  },
+  "service_request": {
+    "schema_version": 1,
+    "request_id": "post-search-001",
+    "profile_id": "default",
+    "query": "reliable browser agents",
+    "filters": {
+      "sources": ["reddit", "x"],
+      "published_after": "2026-09-01T00:00:00Z",
+      "published_before": "2026-09-13T23:59:59Z"
+    },
+    "page_size": 20,
+    "cursor": null
+  },
+  "expected_revision_ids": [
+    "version-legacy-current",
+    "version-tick-public"
+  ]
+}

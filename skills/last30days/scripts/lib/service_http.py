@@ -39,6 +39,10 @@ class ServiceApplication(Protocol):
 
     def query(self, request: contracts.QueryRequest) -> contracts.QueryResponse: ...
 
+    def search_posts(
+        self, request: contracts.PostSearchRequest
+    ) -> contracts.PostSearchResponse: ...
+
     def topic(self, payload: dict[str, object]) -> dict[str, object]: ...
 
     def intelligence(self, payload: dict[str, object]) -> dict[str, object]: ...
@@ -227,7 +231,13 @@ class _RequestHandler(BaseHTTPRequestHandler):
             if encoded_job_id and "/" not in encoded_job_id:
                 resume_job_id = urllib.parse.unquote(encoded_job_id)
         if (
-            self.path not in {"/v1/query", "/v1/topic", "/v1/intelligence"}
+            self.path
+            not in {
+                "/v1/query",
+                "/v1/posts/search",
+                "/v1/topic",
+                "/v1/intelligence",
+            }
             and resume_job_id is None
         ):
             self._error(404, "not_found", "unknown service endpoint")
@@ -256,6 +266,9 @@ class _RequestHandler(BaseHTTPRequestHandler):
             elif self.path == "/v1/query":
                 request = contracts.QueryRequest.from_dict(payload)
                 response = self.application.query(request).to_dict()
+            elif self.path == "/v1/posts/search":
+                request = contracts.PostSearchRequest.from_dict(payload)
+                response = self.application.search_posts(request).to_dict()
             elif self.path == "/v1/topic":
                 response = self.application.topic(payload)
             else:
