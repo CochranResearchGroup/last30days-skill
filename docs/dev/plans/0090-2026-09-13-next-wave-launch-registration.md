@@ -90,9 +90,15 @@ bounded and their isolated worktrees exist.
 
 Authority classification:
 
-- inherited authority for plan refs, worktrees, catalog, and PR integration;
-- not authorized for tracker, feature implementation in this coordinator,
+- `inherited_authority` for plan refs, worktrees, catalog, and PR integration;
+- `not_authorized` for tracker, feature implementation in this coordinator,
   runtime, provider, schedule, delivery, staging, release, or production.
+
+Owned changes:
+
+- three plan-only feature refs and isolated worktrees;
+- this coordinator plan and the proposed roadmap, runbook, lane catalog, and
+  planning-audit projection.
 
 Validation evidence:
 
@@ -103,7 +109,7 @@ Validation evidence:
   feature branch names;
 - three plan-only refs were created and require final catalog validation.
 
-Agent status and reconciliation:
+Subagent Status And Reconciliation:
 
 - no collaboration subagents were spawned; independent top-level sessions have
   not yet started.
@@ -117,6 +123,17 @@ Next action:
 
 - publish this coordinator checkpoint, register the exact three feature refs,
   validate and merge the projection, then launch the sessions.
+
+Remaining acceptance criteria:
+
+- validate the catalog against the published refs, merge the registration
+  through the owned-fork pull-request path, and launch the three sessions.
+
+## Definition Of Done
+
+The three plan-only refs and clean worktrees are canonically discoverable,
+their independent top-level sessions have exact bounded handoffs, and no
+feature or external effect has started in the coordinator lane.
 
 ## Stop Rules
 
