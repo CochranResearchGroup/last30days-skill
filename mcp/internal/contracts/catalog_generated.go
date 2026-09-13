@@ -4,6 +4,7 @@ package contracts
 const (
 	SchemaVersion = 1
 	CatalogSHA256 = "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025"
+	PostSearchCatalogSHA256 = "420c8437d213fb67438a79ad4830f28352ad29c1b6db7dc72dc2f93842265ff4"
 	ProductIdentity = "last30days"
 	ServiceAPIMin = 1
 	ServiceAPIMax = 1
@@ -13,3 +14,5 @@ const (
 
 var QueryRequestFields = []string{"filters", "freshness_policy", "max_chars", "profile_id", "query", "request_id", "response_mode", "schema_version", "top_k", "wait_ms"}
 var QueryFilterFields = []string{"published_after", "published_before", "sources", "topic_ids"}
+var PostSearchRequestFields = []string{"cursor", "filters", "page_size", "profile_id", "query", "request_id", "schema_version"}
+var PostSearchFilterFields = []string{"published_after", "published_before", "sources"}

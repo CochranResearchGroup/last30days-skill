@@ -431,7 +431,7 @@ commands, or poll maintenance internals.
 ### Agent-facing versus operator-facing configuration
 
 The primary `/last30days` Skill has no per-run source flags and does not read
-source secrets. It calls `service_info`, then uses the ten MCP operations
+source secrets. It calls `service_info`, then uses the eleven MCP operations
 advertised by the compatible service. Source availability, cache freshness,
 coverage, and degradation come from that live response.
 
@@ -1125,11 +1125,14 @@ The installer builds the current checkout, atomically installs
 `~/.local/bin/last30days-pp-mcp`, and records the private service socket in the
 user-scoped Codex MCP configuration. Re-run it after MCP adapter changes.
 
-Service-enabled MCP clients expose ten compact operations:
+Service-enabled MCP clients expose eleven compact operations:
 
 - `service_info`: discover readiness, sources, capabilities, and index state;
 - `query`: read cached evidence or a compact brief under an explicit freshness
   policy;
+- `search_posts`: page deterministically through current stored-post revisions
+  using lexical matching, exact source/publication filters, immutable evidence
+  references, and a query-bound opaque cursor; this operation is cache-only;
 - `refresh`: create or join a bounded `force_refresh` job;
 - `job_status`: poll the typed durable job record;
 - `topic`: list or manage service-owned topics and request scheduled refreshes.
@@ -1153,8 +1156,8 @@ controls and may install/start it through the managed user-service path when
 absent. It never detaches raw `service.py` or owns the daemon. A query handler
 never launches the request-scoped research engine or operates a browser.
 
-`temporal_query`, `profile_history`, `coverage`, and `maintenance_status` are
-read-only and cache-only. The host derives authorized access partitions from
+`search_posts`, `temporal_query`, `profile_history`, `coverage`, and
+`maintenance_status` are read-only and cache-only. The host derives authorized access partitions from
 `profile_id`; clients cannot submit an arbitrary partition list. `default`
 authorizes public evidence only, while a named profile authorizes public plus
 that exact `profile:<id>` partition. MCP `query` and `refresh` accept the same

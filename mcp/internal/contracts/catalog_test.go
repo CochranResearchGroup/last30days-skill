@@ -47,3 +47,32 @@ func TestGeneratedCatalogIsCurrent(t *testing.T) {
 		t.Fatal("generated compatibility facts drifted")
 	}
 }
+
+func TestGeneratedPostSearchCatalogIsCurrent(t *testing.T) {
+	path := filepath.Join(
+		"..", "..", "..",
+		"skills", "last30days", "schemas", "post-search-contracts-v1.json",
+	)
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	digest := sha256.Sum256(raw)
+	if got := hex.EncodeToString(digest[:]); got != PostSearchCatalogSHA256 {
+		t.Fatalf(
+			"generated post search catalog is stale: got %s, want %s; run go generate ./internal/contracts",
+			PostSearchCatalogSHA256,
+			got,
+		)
+	}
+	wantRequest := []string{
+		"cursor", "filters", "page_size", "profile_id", "query", "request_id", "schema_version",
+	}
+	wantFilters := []string{"published_after", "published_before", "sources"}
+	if !reflect.DeepEqual(PostSearchRequestFields, wantRequest) {
+		t.Fatalf("post search request fields drifted: %#v", PostSearchRequestFields)
+	}
+	if !reflect.DeepEqual(PostSearchFilterFields, wantFilters) {
+		t.Fatalf("post search filter fields drifted: %#v", PostSearchFilterFields)
+	}
+}

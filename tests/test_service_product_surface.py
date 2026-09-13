@@ -13,7 +13,14 @@ def test_skill_routes_service_tools_before_engine_mechanics():
         skill_root / "references" / "direct-engine-compatibility.md"
     ).read_text()
 
-    for tool in ("service_info", "query", "refresh", "job_status", "topic"):
+    for tool in (
+        "service_info",
+        "query",
+        "search_posts",
+        "refresh",
+        "job_status",
+        "topic",
+    ):
         assert f"`{tool}`" in text
     assert "scripts/last30days.py" not in text
     assert "browser/scraper commands" not in text
@@ -27,7 +34,14 @@ def test_operator_docs_name_the_same_thin_service_surface():
     concepts = (ROOT / "CONCEPTS.md").read_text()
     onboarding = (ROOT / "docs" / "ONBOARDING.md").read_text()
 
-    for tool in ("service_info", "query", "refresh", "job_status", "topic"):
+    for tool in (
+        "service_info",
+        "query",
+        "search_posts",
+        "refresh",
+        "job_status",
+        "topic",
+    ):
         assert f"`{tool}`" in configuration
         assert f"`{tool}`" in onboarding
     assert "never launch a request-scoped research subprocess" in " ".join(
@@ -55,3 +69,4 @@ def test_mcpb_packages_runtime_and_verifies_canonical_contract():
     assert "managed user-service installer" in mcp_readme
     assert "does not detach" in mcp_readme
     assert "service-contracts-v1.json" in generator
+    assert "post-search-contracts-v1.json" in generator

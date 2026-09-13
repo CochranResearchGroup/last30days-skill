@@ -8,6 +8,8 @@ The adapter exposes:
 - `service_info`
 - `query` (`prefer_cache` by default; `cache_only` prohibits external work;
   optional `profile_id` adds that exact authorized partition to public evidence)
+- `search_posts` (read-only lexical search over current stored-post revisions;
+  exact source/publication filters and query-bound opaque pagination cursor)
 - `refresh` (`force_refresh`, durable and idempotent; optional `profile_id`)
 - `job_status`
 - `topic`
@@ -28,7 +30,7 @@ scraper.
 - `internal/tools/` - MCP tools, resource, schemas, annotations, and handlers
 - `internal/manifest/` - MCPB manifest validation
 - `internal/contracts/` - generated compatibility facts from the canonical
-  JSON Schema catalog
+  service and post-search JSON Schema catalogs
 - `compatibility-releases.json` - immutable adapter-version bindings to exact
   canonical catalog digests and supported service/database ranges
 - `internal/engine/` - unlinked legacy source retained temporarily for history

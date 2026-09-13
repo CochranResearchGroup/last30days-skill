@@ -18,6 +18,7 @@ from . import service_contracts as contracts
 from .service_collection import CollectionCoordinator, CollectionSpec
 from .service_intelligence_contracts import TaskContractRegistry
 from .service_knowledge import TemporalKnowledgeQuery
+from .service_post_search import PostSearchBackend
 from .service_retrieval import LocalHashEmbeddingProvider
 from .service_supervisor import InvalidTransitionError
 from .service_tick_query import TickSnapshotPublisher
@@ -127,6 +128,7 @@ class CacheQueryApplication:
         maintenance_enabled: bool = False,
         tick_schedule_status: Callable[[], Mapping[str, object]] | None = None,
         runtime_error: Callable[[], str | None] | None = None,
+        post_search_backend: PostSearchBackend | None = None,
         clock: Callable[[], datetime] | None = None,
         fresh_seconds: int = DEFAULT_FRESH_SECONDS,
     ):
@@ -159,6 +161,9 @@ class CacheQueryApplication:
         )
         self.runtime_error = runtime_error or (lambda: None)
         self.clock = clock or (lambda: datetime.now(timezone.utc))
+        self.post_search_backend = post_search_backend or PostSearchBackend(
+            self.db_path, clock=self.clock
+        )
         self.fresh_seconds = fresh_seconds
 
     def _connect(self) -> sqlite3.Connection:
@@ -301,7 +306,7 @@ class CacheQueryApplication:
 
     def service_info(self) -> contracts.ServiceInfo:
         index = self._index_info()
-        capabilities = ["cache_query", "lexical_search"]
+        capabilities = ["cache_query", "lexical_search", "post_search"]
         if self.refresh_scheduler is not None and self.acquisition_sources:
             capabilities.append("durable_refresh")
         if self.recurring_collection:
@@ -1202,6 +1207,15 @@ class CacheQueryApplication:
         payload["brief"] = brief
         payload["truncated"] = truncated
         return contracts.QueryResponse.from_dict(payload)
+
+    def search_posts(
+        self, request: contracts.PostSearchRequest
+    ) -> contracts.PostSearchResponse:
+        """Search stored posts without acquisition or query-answer semantics."""
+        return self.post_search_backend.search(
+            request,
+            access_partitions=self._access_partitions(request.profile_id),
+        )
 
     def _tick_evidence_item(
         self, result: object, snapshot: Mapping[str, object]

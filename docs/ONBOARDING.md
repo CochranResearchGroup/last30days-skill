@@ -137,11 +137,13 @@ runtime manifest `0.2.9`. The repository tag names the Skill release and must
 not be reused as the MCP binary version.
 
 Then connect the MCP bundle and verify its listed surface is `service_info`,
-`query`, `refresh`, `job_status`, `topic`, `temporal_query`,
+`query`, `search_posts`, `refresh`, `job_status`, `topic`, `temporal_query`,
 `profile_history`, `coverage`, `collection`, and `maintenance_status`. Verify
 the capability, source, and topic resources. Confirm that `temporal_query`
 with `profile_id=default` reports only the public partition and remains
-cache-only. A query handler must not launch
+cache-only. Confirm `search_posts` returns only current revisions with
+immutable evidence references and rejects reuse of a cursor after query,
+filter, or search-head drift. A query handler must not launch
 `last30days.py` or create a browser process.
 
 Dogfood the installed Skill with a fresh agent context. It should read only
