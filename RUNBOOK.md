@@ -27260,3 +27260,46 @@ Next Bounded Action:
 - integrate this closeout, remove only its fully integrated temporary
   worktrees and refs, then start WI-001 Packet 1 only in a dedicated top-level
   lane session with registered custody.
+
+## Turn 432 | 2026-09-13
+
+Focus: P34 post-closeout catalog and local-custody reconciliation.
+
+Authority Consulted:
+
+- integrated Plan 0077/P34; pull requests 16 and 17; active-lane, Git/worktree,
+  integration, validation, and closeout policy; current `origin/main` ancestry.
+
+Decisions And Changes:
+
+- removed the clean, fully integrated architecture worktree and local topic
+  branches after proving both tips are ancestors of `origin/main`;
+- removed P34's catalog dependency on P32 because P32 is a closed roadmap lane,
+  not a registered active-lane catalog identity; the narrative dependency
+  remains in the roadmap and architecture note;
+- preserved canonical `main` and the P08 local/remote archive refs unchanged.
+
+Validation Evidence:
+
+- source tips `6498f38a` and `db1ff310` are ancestors of `origin/main`;
+- both removed worktrees were clean before cleanup;
+- final catalog-only and canonical Git validation remain to run after this
+  correction is integrated.
+
+State Movement:
+
+- P34 remains `PLANNED`/`READY`; only completed architecture custody and
+  catalog representation were reconciled.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator performed exact local custody cleanup.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; unchanged from Turn 431.
+
+Next Bounded Action:
+
+- integrate this catalog correction, remove its clean temporary worktree/ref,
+  and hand WI-001 Packet 1 to a dedicated top-level lane session.
