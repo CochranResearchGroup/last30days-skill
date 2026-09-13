@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "task_type": "architecture",
+  "secondary_task_type": "agent-facing service and mixed-code-docs synthesis",
+  "path_type": "local git repository",
+  "persistence_mode": "stable-path",
+  "repo_profile": "Python temporal service with SQLite, structured Codex workers, Go MCP adapter, and Agent Skills UX",
+  "work_item": "WI-003",
+  "plan": "0079",
+  "repository_checkpoint": "4687a07465b16e634644f4a0419ca1632cfe4969",
+  "retrieval_posture": "hybrid structure-first",
+  "retrieval_trace": [
+    "Graphiti last30days_skill_main bounded temporal and App Intelligence recall",
+    "CodeGraph status and focused MCP, temporal-query, evidence, retrieval and structured-worker exploration",
+    "targeted WI-002 contract, work-item and governance-document inspection",
+    "live read-only installed service status"
+  ],
+  "decision": "Add durable cache-grounded ask_question, question_status and read_evidence surfaces that compose WI-002 search_posts; keep deterministic retrieval and validation host-owned and isolate bounded no-tool synthesis behind a dedicated answer contract.",
+  "evidence_packets": [
+    {
+      "kind": "live_runtime",
+      "summary": "Installed service 0.3.116/schema 17 is ready with 167 indexed documents across five sources."
+    },
+    {
+      "kind": "current_surface",
+      "summary": "MCP exposes query and temporal_query but no synthesized question workflow, status poll, post search or citation dereference tool."
+    },
+    {
+      "kind": "evidence_gap",
+      "summary": "Current brief is extractive, evidence is snippet-oriented, and temporal claims/events are not relevance-filtered by the question text."
+    },
+    {
+      "kind": "selected_boundary",
+      "summary": "Pinned post-search heads and immutable citations feed a separate structured answer worker under deterministic access, limits, validation, idempotency and receipts."
+    }
+  ],
+  "uncertainties": [
+    "measured prompt and fake-worker wait budgets",
+    "frozen provider-free grounding evaluation corpus",
+    "immutable citation retention duration inherited from WI-002"
+  ],
+  "dependencies": [
+    "WI-002 Packet 1 contract and PostSearchBackend before WI-003 Packet 1",
+    "WI-002 accepted search and evidence contract before WI-003 closeout"
+  ],
+  "next_actions": [
+    "hold implementation until WI-002 Packet 1 integrates",
+    "then assign one top-level lane session to WI-003 Packet 1",
+    "create and register feat/agent-question-answer-v1 from then-current origin/main",
+    "implement contracts, persistence, queue and provider-free fake seams only"
+  ],
+  "state_location": "docs/dev/notes/0120-2026-09-13-agent-question-answering-mcp-architecture.md",
+  "persistence_bundle": null
+}

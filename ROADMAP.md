@@ -2694,3 +2694,40 @@ Next Bounded Action:
 - assign WI-004 Packet 1 to one independent top-level lane session from current
   `origin/main` and register its `feat/x-tailored-follows-v1` custody before
   implementation.
+
+## P36 | Agent Question Answering MCP Surface
+
+State: OPEN
+
+Objective: let agents ask bounded cross-service questions and receive a
+validated answer whose every substantive statement can be followed to exact
+authorized immutable evidence.
+
+Current State:
+
+- WI-003 is `READY` behind an exact WI-002 dependency;
+- current MCP query and temporal tools expose evidence, claims, events, and
+  conflicts, but no validated synthesized answer, durable question status, or
+  citation dereference surface;
+- the selected seam adds durable `ask_question`, `question_status`, and
+  `read_evidence` tools over WI-002 `search_posts`, with deterministic host
+  control and a separate bounded no-tool answer worker;
+- provider-free packets cover contracts/queue, search/evidence composition,
+  structured answers/validation, and fresh-client transport acceptance;
+- no implementation, model call, runtime mutation, or provider access has
+  begun.
+
+Architecture Plan:
+
+- `docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md`.
+
+Dependencies:
+
+- Packet 1 waits for WI-002 Packet 1's stable search backend and evidence-ref
+  contracts; final acceptance waits for WI-002 closeout. Shared service and MCP
+  surfaces remain coordinator-owned integration joins.
+
+Next Bounded Action:
+
+- validate and integrate this architecture packet, then retain P36 as planned
+  until the WI-002 Packet 1 dependency is integrated.
