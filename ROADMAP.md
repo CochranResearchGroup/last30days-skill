@@ -2506,7 +2506,7 @@ Next Bounded Action:
 
 ## P30 | Canonical Worktree And P08 Custody Reconciliation
 
-State: OPEN
+State: CLOSED
 
 Objective: restore canonical `main` worktree custody and reconcile the retained
 P08 branch without merging obsolete code or losing historical receipts.
@@ -2521,7 +2521,7 @@ Current State:
   reconciliation branch, and P08 catalog custody is corrected to `ARCHIVED`;
 - unrelated historical active-lane findings remain outside this plan.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0073-2026-09-13-canonical-worktree-and-p08-custody-reconciliation.md`.
 
@@ -2532,5 +2532,5 @@ Dependencies:
 
 Next Bounded Action:
 
-- validate and integrate the selective reconciliation, then close P30 with the
-  exact merge receipt.
+- none for P30. Preserve the exact P08 archive and reconcile remaining
+  historical catalog lanes in separate bounded slices before cleanup.
