@@ -1,6 +1,6 @@
 # Plan 0079 | Agent Question Answering MCP Architecture And Lane Handoff
 
-State: OPEN
+State: CLOSED
 Lane: P36
 Work item: WI-003
 Branch: docs/agent-question-answer-architecture
@@ -137,3 +137,47 @@ Next action:
 
 - validate and integrate this architecture packet, close Plan 0079/P36
   planning work, and retain the WI-002 Packet 1 gate in the lane handoff.
+
+### Checkpoint P0079-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `active -> closed`.
+
+Progress classification: `outcome_progress`; the architecture and machine
+handoff are integrated, while implementation remains correctly unstarted and
+dependency-gated.
+
+Authority classification:
+
+- `inherited_authority` for public-fork integration and repository closeout;
+- `not_authorized` for tracker, implementation, model, installed runtime,
+  browser/provider, collection/schedule, staging, or production mutations.
+
+Validation evidence:
+
+- architecture source tip `96ae270827ec65d79e9665661c9e0811b748b89e`
+  merged through pull request 21 as
+  `3c94c01c6c43f883c762b2cb674fabc416297992`;
+- canonical `main` was fast-forwarded to the exact merge before this isolated
+  closeout branch was created;
+- 62 focused policy tests, plan authority, active-lane catalog, active planning
+  contract, JSON parsing, and patch hygiene passed on the architecture packet;
+- final closeout validation remains to run after the state reconciliation is
+  rendered.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; coordinator-owned architecture and merge receipts are
+  authoritative.
+
+Graphiti write status:
+
+- `graphiti_write_pending`; no additional write was attempted while the known
+  ingestion path remains degraded.
+
+Next action:
+
+- keep WI-003/P36 planned until WI-002 Packet 1 integrates its stable search
+  and evidence-ref contracts, then assign WI-003 Packet 1 to a separate
+  top-level lane session from then-current `origin/main`.

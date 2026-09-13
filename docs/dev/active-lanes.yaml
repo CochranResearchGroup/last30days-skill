@@ -6,14 +6,15 @@ lanes:
     plan_ref: refs/heads/docs/agent-question-answer-architecture
     branch: docs/agent-question-answer-architecture
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE
-    checkpoint: 4687a07465b16e634644f4a0419ca1632cfe4969
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 96ae270827ec65d79e9665661c9e0811b748b89e
     remote_ref: refs/remotes/origin/docs/agent-question-answer-architecture
     integration: merge
+    integration_receipt: 3c94c01c6c43f883c762b2cb674fabc416297992
     dependencies: []
     overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
-    reconciled_overlaps: []
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
     updated_at: 2026-09-13
   - id: P35
     objective: Define typed X account, list, and topic follows on the existing collection authority

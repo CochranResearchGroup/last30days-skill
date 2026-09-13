@@ -27480,3 +27480,57 @@ Next Bounded Action:
 
 - validate and integrate the architecture packet, close Plan 0079/P36
   planning work, and retain the exact WI-002 Packet 1 implementation gate.
+
+## Turn 436 | 2026-09-13
+
+Focus: Plan 0079/P36 integration and architecture closeout.
+
+Authority Consulted:
+
+- Plan 0079/C01, P36, WI-003, pull request 21 and `origin/main` readback;
+  canonical-worktree, active-lane, validation, Git integration, and closeout
+  policy.
+
+Decisions And Changes:
+
+- verified pull request 21 integrated the evidence-grounded question-answering
+  architecture, machine handoff, and WI-003 `READY` transition;
+- fast-forwarded canonical `/home/ecochran76/workspace.local/last30days-skill`
+  to exact current `origin/main` before creating this closeout worktree;
+- reconciled Plan 0079 to `CLOSED` and P36 to `PLANNED`, because architecture
+  is complete while implementation remains blocked by WI-002 Packet 1;
+- retained the compact Graphiti episode as pending while the known ingestion
+  path remains degraded;
+- made no GitHub tracker, product source, model, installed Skill, service,
+  browser/provider, collection, schedule, credential, database, deployment,
+  staging, or production mutation.
+
+Validation Evidence:
+
+- pull request 21 merged source tip `96ae2708` as `3c94c01c` on
+  `origin/main`, and canonical `main` equals that exact merge;
+- 62 focused tests, plan authority, active-lane catalog, active planning
+  contract, JSON parsing, and patch hygiene passed on the architecture packet;
+- final closeout validation and integrated catalog audit remain to run after
+  this reconciliation is rendered.
+
+State Movement:
+
+- Plan 0079/P36 planning work `active -> closed/planned`; WI-003 remains
+  `READY`, blocked by the WI-002 Packet 1 contract integration and final
+  acceptance dependency.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator-owned evidence and integration are authoritative.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; Plans 0076-0079 await a later healthy, bounded
+  write flow. No duplicate write was issued in this slice.
+
+Next Bounded Action:
+
+- integrate this closeout, remove only its fully integrated temporary
+  worktrees and refs, then start WI-002 Packet 1 in a dedicated top-level lane
+  session with registered `feat/post-search-v1` custody.

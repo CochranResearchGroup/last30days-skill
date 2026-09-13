@@ -2697,7 +2697,7 @@ Next Bounded Action:
 
 ## P36 | Agent Question Answering MCP Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: let agents ask bounded cross-service questions and receive a
 validated answer whose every substantive statement can be followed to exact
@@ -2717,7 +2717,7 @@ Current State:
 - no implementation, model call, runtime mutation, or provider access has
   begun.
 
-Architecture Plan:
+Closed Architecture Plan:
 
 - `docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md`.
 
@@ -2729,5 +2729,6 @@ Dependencies:
 
 Next Bounded Action:
 
-- validate and integrate this architecture packet, then retain P36 as planned
-  until the WI-002 Packet 1 dependency is integrated.
+- retain P36 as planned until WI-002 Packet 1 integrates, then assign WI-003
+  Packet 1 to one independent top-level lane session from current
+  `origin/main` and register its `feat/agent-question-answer-v1` custody.
