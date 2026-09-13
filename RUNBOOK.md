@@ -27977,3 +27977,53 @@ Next Bounded Action:
 - integrate this closeout, remove only fully integrated temporary WI-006 refs,
   preserve P08 archives, then launch eligible implementation packets only in
   separately owned top-level sessions within the WIP limit.
+
+## Turn 445 | 2026-09-13
+
+Focus: Plan 0087/P41 implementation-lane launch registration.
+
+Authority Consulted:
+
+- `docs/dev/plans/0087-2026-09-13-implementation-lane-launch-registration.md`;
+  WI-000/WI-001/WI-002/WI-004, Plans 0076-0078 and notes 0117-0119;
+  multi-session, collaborative workflow, worktree, active-lane, validation,
+  tracker-gate, and integration policies.
+
+Decisions And Changes:
+
+- verified canonical Git, owned-fork refs/PRs, local worktrees, lane catalog,
+  and provider-disabled Issues before assigning custody;
+- created distinct WI-002, WI-001, and WI-004 worktrees from `46233ba1`;
+- published plan-only Packet 1 refs at `05955f75`, `8be96fb0`, and `5d0acd12`;
+- registered P33/P34/P35 as planned clean-worktree custody with shared overlaps
+  explicitly coordinator-reconciled;
+- did not emulate top-level sessions with subagents and did not start feature
+  implementation;
+- made no tracker, installed runtime, database, browser/provider, schedule,
+  staging, release, or production mutation.
+
+Validation Evidence:
+
+- initial `main == origin/main == 46233ba1`, one canonical worktree, no owned-
+  fork open PRs, and zero implementation refs;
+- each plan-only feature branch is pushed and its dedicated worktree is clean;
+- final plan/lane/focused validation remains to run after rendering.
+
+State Movement:
+
+- P33/P34/P35 architecture custody `INTEGRATED -> PLANNED/ACTIVE_WORKTREE`
+  implementation-launch custody; Plan 0087/P41 `planned -> active`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the chosen topology requires separate top-level sessions.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; current launch state was absent from advisory
+  memory and no write was queued behind degraded ingestion.
+
+Next Bounded Action:
+
+- validate/integrate this registration, close P41, and hand the three prepared
+  worktrees to independent top-level sessions.
