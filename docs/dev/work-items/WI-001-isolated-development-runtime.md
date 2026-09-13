@@ -1,13 +1,15 @@
 <!-- last30days-work-item:WI-001 -->
 # Run one lane in an isolated development runtime
 
-State: READY
+State: IN_PROGRESS
 Priority: P1
 Lane: Runtime
 Parent: WI-000
 Blocked by: none
 Architecture: docs/dev/notes/0118-2026-09-13-isolated-development-runtime-architecture.md
 Implementation plan seed: docs/dev/plans/0077-2026-09-13-isolated-development-runtime-architecture-and-lane-handoff.md
+Active plan: docs/dev/plans/0085-2026-09-13-isolated-dev-runtime-packet-1.md
+Branch: feat/isolated-dev-runtime-v1
 
 ## Problem
 
@@ -34,11 +36,10 @@ service identity cannot collide with production or another lane.
 No production deployment, credential copying, authenticated provider canary,
 or permanent `develop` branch.
 
-## Ready Handoff
+## Active Handoff
 
-Assign one independent top-level lane session. Start from current
-`origin/main`, create a dedicated `feat/isolated-dev-runtime` worktree,
-register its active custody, and implement Packet 1 from the architecture note:
-the strict descriptor, deterministic paths, read-only `doctor`, collision and
+Resume the owning top-level session from published checkpoint
+`4a8080daf354fe90db9462dc65ec1b29109058cc` and implement only Packet 1's
+strict descriptor, deterministic paths, read-only `doctor`, collision and
 environment-deny checks, and provider-free fixtures. Do not start, install,
 restart, stop, or signal any service in Packet 1.
