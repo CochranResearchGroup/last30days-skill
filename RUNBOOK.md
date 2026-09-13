@@ -26982,3 +26982,54 @@ Next Bounded Action:
 - integrate the readiness packet through the public fork, then ask the
   operator to accept or revise the issue graph and separately authorize exact
   GitHub mutations.
+
+## Turn 427 | 2026-09-13
+
+Focus: Plan 0075/P32 integration reconciliation and closeout.
+
+Authority Consulted:
+
+- Plan 0075/C01, P32, pull request 12 and `origin/main` readback, forge/GitHub
+  operation, canonical-worktree, validation, and closeout policy.
+
+Decisions And Changes:
+
+- verified pull request 12 integrated the selector pin, policies, read-only
+  registry, tracker contract, and WI-000 through WI-008 drafts;
+- fast-forwarded canonical `/home/ecochran76/workspace.local/last30days-skill`
+  to exact current `origin/main` before opening this closeout worktree;
+- reconciled Plan 0075, P32, runbook, and active-plan test expectation to the
+  closed state;
+- preserved every issue draft in `TRIAGE` and retained the explicit activation
+  gate for operator review;
+- made no GitHub issue, Project, label, repository-setting, service, browser,
+  provider, schedule, credential, database, deployment, or production change.
+
+Validation Evidence:
+
+- source tip `703e4b3e3f442cffbfedc9ca468a97f9e86c270d` is integrated as
+  `eded1cfe229b9ef5452f3cd5aadf144457dc4e08` on `origin/main`;
+- canonical `main` is clean and equal to `origin/main` at that merge;
+- the integrated selector and repository suites pass, selector fit has zero
+  validation problems, and plan and lane authority audits pass;
+- the exact registry still permits `read` only and live preflight continues to
+  report the disabled-Issues gate.
+
+State Movement:
+
+- Plan 0075/P32 `active -> closed`; remote tracker activation remains unstarted.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; primary-agent integration evidence is authoritative.
+
+Graphiti Write Status:
+
+- `not_written`; integrated Git, repository, and provider readback are
+  authoritative.
+
+Next Bounded Action:
+
+- integrate this closeout, remove only its fully integrated temporary
+  worktrees/refs, and ask the operator to accept or revise the proposed issue
+  graph before any activation successor.
