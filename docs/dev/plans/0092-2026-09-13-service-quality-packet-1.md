@@ -20,10 +20,15 @@ across four separately inspectable fake axes.
 ## Current State
 
 - Plan 0080, note 0121, and WI-008 are the accepted architecture and handoff;
-- fragmented evaluators exist, but no unified versioned set, denominator-aware
-  threshold policy, canonical report, or four-axis runner exists;
-- Packet 1 has no product dependency and may use fake adapters exclusively;
-- this branch starts from exact canonical 87a8cbac.
+- Packet 1 is implemented at source checkpoint
+  `275c8bb60a86959c5978c409cfcc7db1d97161b0` with strict versioned contracts,
+  sealed synthetic fixtures, four fake adapters, canonical report renderers,
+  and distinct fail-closed exits;
+- the implementation branch incorporates exact canonical `origin/main`
+  `169a45b86735e1d4ccb48346d0f044f86105d610` through merge commit
+  `6dfec9673a0836dc7debf997c00469b959dc6950` without protected-surface drift;
+- all five Packet 1 criteria pass locally; coordinator review and integration
+  remain, and later WI-002/WI-003 adapters remain explicitly unstarted.
 
 ## Scope
 
@@ -88,6 +93,13 @@ across four separately inspectable fake axes.
 - stop before real WI-002/WI-003 adapter integration;
 - stop and reconcile shared schemas or CI surfaces with the coordinator.
 
+## Definition Of Done
+
+Packet 1 is done when all five acceptance criteria pass provider-free at one
+published clean checkpoint, the branch remains reconciled with its recorded
+canonical base, and the coordinator receives an exact restart-safe handoff for
+review and integration without any prohibited runtime or external effect.
+
 ## Current Checkpoint
 
 ### Checkpoint P0092-C01 | 2026-09-13
@@ -129,3 +141,112 @@ across four separately inspectable fake axes.
 - next action: publish this activation checkpoint, verify exact local/remote
   equality, then stop for the coordinator to integrate lane ownership before
   any Packet 1 implementation begins.
+
+### Checkpoint P0092-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition:
+
+- `implementation_active -> packet_1_acceptance_met`; Plan 0092 remains `OPEN`
+  pending coordinator review and integration.
+
+Progress classification:
+
+- `outcome_progress`; all five Packet 1 acceptance criteria now pass at source
+  checkpoint `275c8bb60a86959c5978c409cfcc7db1d97161b0`.
+
+Authority classification:
+
+- `inherited_authority` for provider-free repo-only implementation, fixtures,
+  tests, documentation, plan checkpointing, commit, and branch publication;
+- `not_authorized` for coordinator-owned ROADMAP, RUNBOOK, active-lane,
+  work-item, CI, or shared-schema edits, and for service, live database, real
+  WI-002/WI-003 adapters, judge/model, browser/provider, installed runtime,
+  production sample, schedule, tracker, staging, release, production, or P35
+  effects.
+
+Base and reconciliation evidence:
+
+- clean local and remote lane checkpoint
+  `be4dec78db686132496b3b173a55ab534c1827a6` was fetched before work;
+- exact canonical `origin/main`
+  `169a45b86735e1d4ccb48346d0f044f86105d610` was merged without rebasing as
+  `6dfec9673a0836dc7debf997c00469b959dc6950`, with parents `be4dec78` and
+  `169a45b8`; no conflict or manual resolution occurred;
+- ROADMAP, RUNBOOK, active-lane, work-item, and plan-audit coordinator surfaces
+  remain byte-equal to that canonical main.
+
+Owned changes:
+
+- added the repo-only deep quality module under `dev/last30days/quality/`, the
+  `evaluate_service_quality.py` maintainer command, reviewed synthetic fixtures
+  under `fixtures/service_quality/`, focused provider-free tests, and this plan;
+- strict set, source-license, policy, request, evidence-head, limit, metric,
+  result, effect, artifact, comparison, cleanup, and report contracts reject
+  unknown or inconsistent inputs and use canonical SHA-256 identities;
+- fake acquisition, corpus, retrieval, and grounding adapters remain behind
+  one runner interface and preserve fixed axis ordering, case evidence,
+  explicit numerator/denominator/exclusion data, threshold identity, minimum
+  denominator, missing-data policy, and baseline deltas;
+- canonical JSON is authoritative, Markdown is deterministic, and exits are
+  `0` pass, `2` quality failure, `3` invalid input, and `4` incomplete;
+- no shipped Skill, service source, shared schema, CI, runtime, database,
+  provider, browser, model, schedule, tracker, deployment, or production
+  surface changed.
+
+Acceptance state:
+
+1. `passed`: all versioned input and output contracts are strict, canonical,
+   round-trippable, and deterministically identified.
+2. `passed`: all four fake axes remain separately inspectable with explicit
+   denominators, exclusions, thresholds, and missing-data behavior.
+3. `passed`: repeated canonical JSON is byte-identical and its Markdown
+   projection preserves report state, axis order, metric state, and decision.
+4. `passed`: measured threshold failures, unknown denominators, skipped cases,
+   adapter crashes, invalid contracts, and incomplete axes cannot pass.
+5. `passed`: sealed fixture and CLI tests run without network, service,
+   database, model, provider, browser, installed-runtime, or writable external
+   state.
+
+Validation evidence:
+
+- focused `tests/test_service_quality.py`: `9 passed`;
+- comprehensive provider-free repository suite excluding exactly the
+  coordinator-owned branch-local main-authority assertion: `2805 passed`,
+  `7 skipped`, `1 deselected`, and `9 subtests passed` in 158.71 seconds;
+- repeated passing CLI reports are byte-equal at SHA-256
+  `6cba8cfb928b6dd6683ab276f53ad6b0e17c93af409f3afe807da136ee7e5555`;
+- direct CLI smokes return the declared pass, quality-failure, invalid, and
+  incomplete classifications and exit codes; compileall and patch hygiene
+  pass;
+- repo-native plan-authority validation has one expected coordinator-owned
+  RUNBOOK wiring/main-active-count gate on this branch; Plan 0092 now provides
+  the required Definition of Done and parseable checkpoint fields.
+
+Material blockers and remaining criteria:
+
+- no Packet 1 implementation or acceptance criterion remains;
+- coordinator review, protected-authority reconciliation, PR creation, and
+  integration remain outside this lane turn; later real retrieval and
+  grounding adapters remain gated by WI-002/WI-003.
+
+Subagent status:
+
+- `not_spawned`; the same independent top-level owner implemented, tested, and
+  reconciled Packet 1 without delegation.
+
+Graphiti and CodeGraph status:
+
+- Graphiti doctor was healthy, but one bounded read-only
+  `last30days_skill_main` query returned no useful WI-008-specific recall;
+  `not_written` because Packet 1 forbids installed-runtime/database mutation;
+- `.codegraph/` is absent in this worktree; it was not initialized as directed,
+  so narrow current-source inspection and behavioral tests supplied the
+  implementation evidence.
+
+Next action:
+
+- commit and publish this acceptance checkpoint, verify clean local/remote
+  equality, then stop for coordinator review and integration without opening
+  or merging a pull request from this lane.
