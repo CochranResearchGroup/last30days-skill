@@ -39,11 +39,14 @@ lanes:
     branch: fix/tick-restart-recovery
     target: main
     plan_state: CLOSED
-    custody_state: INTEGRATED
+    custody_state: ARCHIVED
     checkpoint: 378788bab8315ebcae84aac90c88a49c98dff621
-    remote_ref: refs/remotes/origin/main
+    remote_ref: refs/remotes/origin/archive/p08-tick-restart-recovery-20260913
     integration: merge
     integration_receipt: 6b4f604907acd61058bfb692f788efe89eb62d72
+    archive_ref: refs/heads/archive/p08-tick-restart-recovery-20260913
+    archive_remote_ref: refs/remotes/origin/archive/p08-tick-restart-recovery-20260913
+    disposition: retry-recourse code re-applied on the integrated full-tick line; missing historical artifacts reconciled separately; obsolete policy snapshot not merged
     dependencies: []
     overlaps: []
     updated_at: 2026-09-13

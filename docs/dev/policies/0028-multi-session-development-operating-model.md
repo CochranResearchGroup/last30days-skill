@@ -51,6 +51,14 @@ ownership and evidence.
 
 ## Git And Shared Authority
 
+- When `AGENTS.md` declares a canonical worktree, reserve that path for the
+  default integration branch and current-state readback. Create lane worktrees
+  alongside it. Do not treat a clean temporary worktree as canonical merely
+  because it holds the default branch, and do not leave default-branch custody
+  displaced after lane closeout.
+- Before moving default-branch custody between worktrees, prove both are clean
+  and preserve every non-integrated tip under an exact recoverable ref. Recheck
+  the canonical path, branch, HEAD, upstream equality, and status afterward.
 - Keep `main` releasable and use short-lived lane branches. Do not create a
   permanent `develop` branch; environments are deployment identities, not Git
   branches.
