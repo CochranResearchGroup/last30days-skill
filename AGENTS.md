@@ -150,6 +150,7 @@ Read and follow:
 - `docs/dev/policies/0029-model-selection-and-calibration.md`
 - `docs/dev/policies/0030-forge-issue-reporting.md`
 - `docs/dev/policies/0031-github-issue-operations.md`
+- `docs/dev/policies/0032-collaborative-development-workflow.md`
 
 ## Scope
 
