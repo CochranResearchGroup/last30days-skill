@@ -2656,3 +2656,39 @@ Next Bounded Action:
 
 - assign WI-001 Packet 1 to one independent top-level lane session and
   register its `feat/isolated-dev-runtime` custody before implementation.
+
+## P35 | X Tailored Follow Product Surface
+
+State: OPEN
+
+Objective: let operators give selected X accounts, lists, and topics explicit
+collection identity, cadence, attention, provenance, and lifecycle separate
+from the general feed.
+
+Current State:
+
+- WI-004 is `READY` with a current collection/X/publication architecture;
+- the selected seam evolves `CollectionSpec` with purpose, attention,
+  lifecycle, canonical typed targets, and immutable acquisition context rather
+  than creating a second scheduler;
+- provider-free packets cover contract/migration, account routing, list
+  routing, multi-cause sightings, lifecycle, scheduler attention, CLI/MCP
+  parity, and collection-filter integration;
+- no implementation, installed-runtime mutation, schedule change, or live X
+  access has begun.
+
+Architecture Plan:
+
+- `docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md`.
+
+Dependencies:
+
+- consumes the current collection scheduler and authenticated X adapter seams;
+  Packet 1 is provider-free and not blocked by tracker activation or a lane
+  runtime, while later runtime/canary work remains gated by WI-001 and explicit
+  provider authority.
+
+Next Bounded Action:
+
+- validate and integrate the architecture packet, then assign WI-004 Packet 1
+  to one independent top-level lane session from current `origin/main`.

@@ -27303,3 +27303,62 @@ Next Bounded Action:
 
 - integrate this catalog correction, remove its clean temporary worktree/ref,
   and hand WI-001 Packet 1 to a dedicated top-level lane session.
+
+## Turn 433 | 2026-09-13
+
+Focus: Plan 0078/P35 X tailored-follow architecture and lane handoff.
+
+Authority Consulted:
+
+- active productization goal; WI-004; Plan 0078/P35; Graphiti, CodeGraph,
+  architecture, work-item, multi-session, testing, documentation, Git,
+  validation, and closeout policy; current collection/X/publication source.
+- executable authority:
+  `docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md`.
+
+Decisions And Changes:
+
+- classified the work as service architecture plus mixed code/docs synthesis
+  in a stable repository and used a hybrid structure-first posture;
+- verified that current collection authority already owns revisions,
+  schedules, bounds, cursor state, leases, coverage, gaps, retries, and
+  sightings, while X account/list work is flattened into generic query text;
+- selected a purpose- and attention-typed evolution of `CollectionSpec`,
+  canonical X targets, immutable collection context through publication, and
+  history-preserving archive semantics;
+- retained the existing CLI and MCP collection surfaces and split delivery
+  into contract, account, list, and product/scheduler vertical packets;
+- moved WI-004 from `TRIAGE` to `READY` with an exact top-level lane handoff;
+- made no GitHub tracker, source implementation, installed Skill, service,
+  browser/profile, provider, collection, schedule, credential, database,
+  deployment, staging, or production mutation.
+
+Validation Evidence:
+
+- canonical `main` was clean and equal to `origin/main` at `16562fef` before
+  the dedicated topic worktree was created;
+- Graphiti discovery recovered the Plan 0011 collection contract and current
+  CodeGraph/source evidence verified it;
+- CodeGraph is healthy at 353 files, 9,793 nodes, and 23,275 edges and exposed
+  the exact typed-routing, lifecycle, publication-cause, and MCP/CLI gaps;
+- provider-free repository validation remains to run after this packet is
+  fully rendered.
+
+State Movement:
+
+- WI-004 `TRIAGE -> READY`; Plan 0078/P35 `planned -> active`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator performed shared-interface exploration directly.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; the prior exact architecture-write retry failed
+  during node deduplication without an episode UUID, so no new write was queued
+  behind the degraded ingestion path.
+
+Next Bounded Action:
+
+- validate and integrate the architecture packet, close Plan 0078/P35
+  planning work, then hand Packet 1 to one independent top-level lane session.
