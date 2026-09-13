@@ -27362,3 +27362,57 @@ Next Bounded Action:
 
 - validate and integrate the architecture packet, close Plan 0078/P35
   planning work, then hand Packet 1 to one independent top-level lane session.
+
+## Turn 434 | 2026-09-13
+
+Focus: Plan 0078/P35 integration and architecture closeout.
+
+Authority Consulted:
+
+- Plan 0078/C01, P35, WI-004, pull request 19 and `origin/main` readback;
+  Graphiti write, canonical-worktree, active-lane, validation, and closeout
+  policy.
+
+Decisions And Changes:
+
+- verified pull request 19 integrated the X tailored-follow architecture,
+  machine handoff, and WI-004 `READY` transition;
+- fast-forwarded canonical `/home/ecochran76/workspace.local/last30days-skill`
+  to exact current `origin/main` before opening this closeout worktree;
+- reconciled Plan 0078 to `CLOSED` and P35 to `PLANNED`, because architecture
+  is complete while implementation and any runtime/provider use have not
+  started;
+- retained the required compact Graphiti episode as pending because the prior
+  exact write retry failed in node deduplication without an episode UUID;
+- made no GitHub tracker, product source, installed Skill, service, browser/
+  profile, provider, collection, schedule, credential, database, deployment,
+  staging, or production mutation.
+
+Validation Evidence:
+
+- pull request 19 merged source tip `c25caea6` as `ff1fe170` on
+  `origin/main`, and canonical `main` equals that exact merge;
+- 62 focused tests, plan authority, active planning contract, JSON parsing,
+  work-item uniqueness, and patch hygiene passed on the architecture packet;
+- final closeout validation and integrated catalog audit remain to run after
+  this reconciliation is rendered.
+
+State Movement:
+
+- Plan 0078/P35 planning work `active -> closed/planned`; WI-004 remains
+  `READY` for a separately owned implementation lane.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator-owned evidence and integration are authoritative.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; Plans 0076-0078 await a later healthy, bounded
+  write flow. No duplicate write was issued in this slice.
+
+Next Bounded Action:
+
+- integrate this closeout, remove only its fully integrated temporary
+  worktrees and refs, then start WI-004 Packet 1 only in a dedicated top-level
+  lane session with registered custody.
