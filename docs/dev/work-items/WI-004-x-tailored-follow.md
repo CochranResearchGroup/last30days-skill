@@ -1,13 +1,15 @@
 <!-- last30days-work-item:WI-004 -->
 # Give selected X accounts and lists separate collection attention
 
-State: READY
+State: IN_PROGRESS
 Priority: P1
 Lane: Follows
 Parent: WI-000
 Blocked by: none
 Architecture: docs/dev/notes/0119-2026-09-13-x-tailored-follow-product-architecture.md
 Implementation plan seed: docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md
+Active plan: docs/dev/plans/0086-2026-09-13-x-tailored-follows-packet-1.md
+Branch: feat/x-tailored-follows-v1
 
 ## Problem
 
@@ -37,13 +39,11 @@ receipts, and query identity are distinct from the general-feed scrape.
 No follow action on the X platform itself, no production schedule change, and
 no cross-service abstraction until this vertical slice is accepted.
 
-## Ready Handoff
+## Active Handoff
 
-Assign one independent top-level lane session. Start from current
-`origin/main`, create a dedicated `feat/x-tailored-follows-v1` worktree,
-register its active custody, freeze the account/list fixture corpus, and
-implement Packet 1 from the architecture note: compatible collection-purpose,
-attention, lifecycle, canonical target identity, migration, get/list/archive,
-and provider-free persistence tests. Do not enqueue a job, open a browser, use
-a profile/provider, mutate an installed database or schedule, or install a
-runtime in Packet 1.
+Resume the owning top-level session from published checkpoint
+`8b97f0b65f2ec62d84a26c9fc3c4fcd653f73d20` and implement only Packet 1's
+compatible collection-purpose, attention, lifecycle, canonical target
+identity, migration, get/list/archive, and provider-free persistence tracer.
+Do not enqueue a job, open a browser, use a profile/provider, mutate an
+installed database or schedule, or install a runtime in Packet 1.

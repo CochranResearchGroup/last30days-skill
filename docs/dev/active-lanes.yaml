@@ -105,9 +105,9 @@ lanes:
     plan_ref: refs/heads/feat/x-tailored-follows-v1
     branch: feat/x-tailored-follows-v1
     target: main
-    plan_state: PLANNED
+    plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 5d0acd12845aad940d89522749d37651e1ed0ff2
+    checkpoint: 8b97f0b65f2ec62d84a26c9fc3c4fcd653f73d20
     remote_ref: refs/remotes/origin/feat/x-tailored-follows-v1
     integration: merge
     integration_receipt: null
@@ -122,9 +122,9 @@ lanes:
     plan_ref: refs/heads/feat/isolated-dev-runtime-v1
     branch: feat/isolated-dev-runtime-v1
     target: main
-    plan_state: PLANNED
+    plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 8be96fb07baed08c68b8935f405e7a7f70877795
+    checkpoint: 4a8080daf354fe90db9462dc65ec1b29109058cc
     remote_ref: refs/remotes/origin/feat/isolated-dev-runtime-v1
     integration: merge
     integration_receipt: null
@@ -139,9 +139,9 @@ lanes:
     plan_ref: refs/heads/feat/post-search-v1
     branch: feat/post-search-v1
     target: main
-    plan_state: PLANNED
+    plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 05955f755409fc3bac062b2c74e88779a8e29439
+    checkpoint: 49e9bb02377011b6dc6a28da27b15f0996acd6de
     remote_ref: refs/remotes/origin/feat/post-search-v1
     integration: merge
     integration_receipt: null

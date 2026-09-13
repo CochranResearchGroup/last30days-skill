@@ -1,13 +1,15 @@
 <!-- last30days-work-item:WI-002 -->
 # Search and retrieve stored posts as a product surface
 
-State: READY
+State: IN_PROGRESS
 Priority: P1
 Lane: Search
 Parent: WI-000
 Blocked by: none
 Architecture: docs/dev/notes/0117-2026-09-13-post-search-product-architecture.md
 Implementation plan seed: docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md
+Active plan: docs/dev/plans/0084-2026-09-13-post-search-packet-1.md
+Branch: feat/post-search-v1
 
 ## Problem
 
@@ -38,10 +40,9 @@ source provenance.
 No new live scraping, automatic follow scheduling, or free-form synthesized
 answers in this slice.
 
-## Ready Handoff
+## Active Handoff
 
-Assign one independent top-level lane session. Start from current
-`origin/main`, create a dedicated `feat/post-search-v1` worktree, register its
-active custody, measure the provider-free 10,000-post baseline, and implement
-Packet 1 from the architecture note. Do not change `/v1/query`, install a
-runtime, or use provider/browser access in that packet.
+Resume the owning top-level session from published checkpoint
+`49e9bb02377011b6dc6a28da27b15f0996acd6de` and implement only Packet 1's
+strict contract/catalog/cursor lexical tracer. Do not change `/v1/query`,
+install a runtime, or use provider/browser access in that packet.
