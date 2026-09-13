@@ -2596,7 +2596,7 @@ Next Bounded Action:
 
 ## P33 | Post Search Product Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: expose the complete authorized stored-post corpus through a stable,
 cache-only, evidence-preserving search and pagination contract for users and
@@ -2604,12 +2604,14 @@ agents.
 
 Current State:
 
-- WI-002 is `READY` with a source- and live-evidence-backed architecture;
+- WI-002 is `IN_PROGRESS`; top-level session
+  `01a09caa-9116-7453-8914-5cd7d7ce0fca` owns Plan 0084 at published
+  checkpoint `49e9bb02377011b6dc6a28da27b15f0996acd6de`;
 - the selected seam is additive `POST /v1/posts/search` plus MCP
   `search_posts`, leaving `/v1/query` unchanged for the dependent WI-003 lane;
 - provider-free vertical packets cover both storage families, filters, stable
   pagination, revisions, dedupe, ranking, HTTP/MCP parity, and quality bounds;
-- no implementation or runtime mutation has begun.
+- Packet 1 implementation and runtime mutation have not begun.
 
 Closed Architecture Plan:
 
@@ -2622,27 +2624,28 @@ Dependencies:
 
 Next Bounded Action:
 
-- open one independent top-level session in the prepared WI-002 worktree at
-  `feat/post-search-v1` checkpoint `05955f75`; take Plan 0084 custody and
-  transition it to `OPEN` before implementation.
+- resume the owning WI-002 session at `49e9bb02` and implement only Plan 0084
+  Packet 1's provider-free contract/catalog/cursor lexical tracer.
 
 ## P34 | Isolated Development Runtime
 
-State: PLANNED
+State: OPEN
 
 Objective: give each implementation lane a deterministic, provider-free local
 service identity that cannot collide with production or another lane.
 
 Current State:
 
-- WI-001 is `READY` with its architecture integrated by PR 16 at
-  `187129cd7f67487a3de81901a3c214e64557f039`;
+- WI-001 is `IN_PROGRESS`; top-level session
+  `01a09caa-90aa-78d0-af02-59d9a7d80eea` owns Plan 0085 at published
+  checkpoint `4a8080daf354fe90db9462dc65ec1b29109058cc`;
 - the selected seam is a repo-only lane-runtime controller around the existing
   direct `serve` command plus an authoritative service-side cache-only effect
   gate;
 - identity, paths, environment, collision, process, status, teardown,
   production, staging, and provider-free acceptance contracts are defined;
-- no development runtime, staging runtime, or implementation has begun.
+- no development runtime, staging runtime, or Packet 1 implementation has
+  begun.
 
 Closed Architecture Plan:
 
@@ -2655,13 +2658,12 @@ Dependencies:
 
 Next Bounded Action:
 
-- open one independent top-level session in the prepared WI-001 worktree at
-  `feat/isolated-dev-runtime-v1` checkpoint `8be96fb0`; take Plan 0085 custody
-  and transition it to `OPEN` before implementation.
+- resume the owning WI-001 session at `4a8080da` and implement only Plan 0085
+  Packet 1's strict descriptor and read-only doctor tracer.
 
 ## P35 | X Tailored Follow Product Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: let operators give selected X accounts, lists, and topics explicit
 collection identity, cadence, attention, provenance, and lifecycle separate
@@ -2669,16 +2671,17 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `READY` with architecture integrated by PR 19 at
-  `ff1fe170f856a92f8118a97f79097ab24480f34e`;
+- WI-004 is `IN_PROGRESS`; top-level session
+  `01a09caa-90d6-7350-a8ce-72d7ced7ef12` owns Plan 0086 at published
+  checkpoint `8b97f0b65f2ec62d84a26c9fc3c4fcd653f73d20`;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
   lifecycle, canonical typed targets, and immutable acquisition context rather
   than creating a second scheduler;
 - provider-free packets cover contract/migration, account routing, list
   routing, multi-cause sightings, lifecycle, scheduler attention, CLI/MCP
   parity, and collection-filter integration;
-- no implementation, installed-runtime mutation, schedule change, or live X
-  access has begun.
+- no Packet 1 implementation, installed-runtime mutation, schedule change, or
+  live X access has begun.
 
 Closed Architecture Plan:
 
@@ -2693,9 +2696,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- open one independent top-level session in the prepared WI-004 worktree at
-  `feat/x-tailored-follows-v1` checkpoint `5d0acd12`; take Plan 0086 custody
-  and transition it to `OPEN` before implementation.
+- resume the owning WI-004 session at `8b97f0b6` and implement only Plan 0086
+  Packet 1's provider-free contract/migration/lifecycle tracer.
 
 ## P36 | Agent Question Answering MCP Surface
 
@@ -2907,3 +2909,33 @@ Next Bounded Action:
 
 - open the three top-level lane sessions in the prepared worktrees; retain the
   coordinator session for shared-contract and integration decisions.
+
+## P42 | Implementation Lane Activation Reconciliation
+
+State: CLOSED
+
+Objective: reconcile three independently owned `OPEN` Packet 1 checkpoints
+into the canonical shared projections before feature implementation resumes.
+
+Current State:
+
+- PR 33 integrated the exact WI-001, WI-002, and WI-004 activation checkpoints
+  plus planning-audit support for cataloged branch-local plans;
+- all three feature lanes remain clean, remotely custodied, and owned by their
+  original top-level Codex threads;
+- feature implementation and all installed/live/provider effects remained
+  untouched by P42.
+
+Closed Plan:
+
+- `docs/dev/plans/0088-2026-09-13-implementation-lane-activation-reconciliation.md`.
+
+Dependencies:
+
+- consumes the exact P33/P34/P35 activation refs; blocks their implementation
+  resume until the canonical projection is integrated and audited.
+
+Resume Action:
+
+- resume the same three owning sessions after they reconcile canonical `main`,
+  then execute Packet 1 only.
