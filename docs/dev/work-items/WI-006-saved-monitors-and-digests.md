@@ -1,11 +1,14 @@
 <!-- last30days-work-item:WI-006 -->
 # Turn searches and follows into saved monitors and digests
 
-State: READY
+State: IN_PROGRESS
 Priority: P2
 Lane: MCP
 Parent: WI-000
 Blocked by: WI-002 Packet 1 for monitor kernel/query tracer; WI-004 Packet 1 for follow tracer; WI-002 and WI-004 closeout for final acceptance
+Current plan: docs/dev/plans/0093-2026-09-13-saved-monitors-packet-1.md
+Branch: feat/saved-monitors-v1
+Owner: Codex 01a09cf4-c89e-7660-9caf-66a78f34ded0
 
 ## Problem
 

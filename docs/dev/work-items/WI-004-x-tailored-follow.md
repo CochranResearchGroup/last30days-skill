@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-004 -->
 # Give selected X accounts and lists separate collection attention
 
-State: IN_PROGRESS
+State: BLOCKED
 Priority: P1
 Lane: Follows
 Parent: WI-000

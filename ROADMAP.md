@@ -2604,7 +2604,7 @@ agents.
 
 Current State:
 
-- WI-002 remains `IN_PROGRESS`; Packet 1 closed and integrated through PR 36 as
+- WI-002 is `READY` for a later Packet 2; Packet 1 closed and integrated through PR 36 as
   `75e7771e006f52847e8e47c1059b2b2000fb8ac7`;
 - the selected seam is additive `POST /v1/posts/search` plus MCP
   `search_posts`, leaving `/v1/query` unchanged for the dependent WI-003 lane;
@@ -2638,7 +2638,7 @@ service identity that cannot collide with production or another lane.
 
 Current State:
 
-- WI-001 remains `IN_PROGRESS`; Packet 1 closed and integrated through PR 35 as
+- WI-001 is `READY` for a later Packet 2; Packet 1 closed and integrated through PR 35 as
   `c6bccab86074e83067a624a57efbc9d9b485c87f`;
 - the selected seam is a repo-only lane-runtime controller around the existing
   direct `serve` command plus an authoritative service-side cache-only effect
@@ -2673,7 +2673,7 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `IN_PROGRESS`; Packet 1 is acceptance-complete, reconciled with
+- WI-004 is `BLOCKED` at its explicit PR gate; Packet 1 is acceptance-complete, reconciled with
   current main, and remote-equal at
   `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
@@ -2707,7 +2707,7 @@ Next Bounded Action:
 
 ## P36 | Agent Question Answering MCP Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: let agents ask bounded cross-service questions and receive a
 validated answer whose every substantive statement can be followed to exact
@@ -2725,13 +2725,19 @@ Current State:
   control and a separate bounded no-tool answer worker;
 - provider-free packets cover contracts/queue, search/evidence composition,
   structured answers/validation, and fresh-client transport acceptance;
-- a clean plan-only launch ref exists at `feat/agent-question-answer-v1`
-  commit `856fb385137c679f06616384109a0f639e37d0f5`; no implementation,
-  model call, runtime mutation, or provider access has begun.
+- independent Codex thread `01a09cf4-c89c-7ad2-9b64-8dc95c4cbec6` owns
+  Plan 0091 at clean remote-equal activation checkpoint
+  `c4d985727c39c7cfe2a86a64eae318351eefd5d4`; no implementation, model call,
+  runtime mutation, or provider access has begun.
 
 Closed Architecture Plan:
 
 - `docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md`.
+
+Active Implementation Plan:
+
+- `docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md` on
+  `feat/agent-question-answer-v1`.
 
 Dependencies:
 
@@ -2741,12 +2747,12 @@ Dependencies:
 
 Next Bounded Action:
 
-- open one independent top-level lane session in the registered WI-003
-  worktree and execute only Plan 0091's provider-free durable tracer.
+- resume the recorded P36 owner and execute only Plan 0091's provider-free
+  durable tracer.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
-State: PLANNED
+State: OPEN
 
 Objective: give maintainers one replayable, denominator-aware view of
 acquisition coverage, corpus integrity, retrieval quality, and answer grounding
@@ -2761,14 +2767,19 @@ Current State:
 - the selected seam is a repo-only deterministic harness with four separate
   axes, canonical JSON plus Markdown projection, and explicit blocking versus
   observation tiers;
-- a clean plan-only launch ref exists at `feat/service-quality-v1` commit
-  `37638af57a9e01af42a177e13c57b87794649518`; no implementation, evaluator
-  run, judge call, runtime mutation, production sample, or provider access has
-  begun.
+- independent Codex thread `01a09cf4-c89d-7b41-901a-37648171312a` owns Plan
+  0092 at clean remote-equal activation checkpoint
+  `be4dec78db686132496b3b173a55ab534c1827a6`; no implementation, evaluator run,
+  judge call, runtime mutation, production sample, or provider access has begun.
 
 Closed Architecture Plan:
 
 - `docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md`.
+
+Active Implementation Plan:
+
+- `docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md` on
+  `feat/service-quality-v1`.
 
 Dependencies:
 
@@ -2778,8 +2789,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- open one independent top-level lane session in the registered WI-008
-  worktree and execute only Plan 0092's provider-free quality tracer.
+- resume the recorded P37 owner and execute only Plan 0092's provider-free
+  quality tracer.
 
 ## P38 | Reserved Production Hotfix Path
 
@@ -2857,7 +2868,7 @@ Next Bounded Action:
 
 ## P40 | Saved Monitors And Evidence Digests
 
-State: PLANNED
+State: OPEN
 
 Objective: let users save query/follow views, detect evidence-backed changes
 from an accepted baseline, and prepare reviewable digests without rescraping or
@@ -2871,13 +2882,19 @@ Current State:
   digest authority exists;
 - the selected seam is a cache-only versioned view subscription with explicit
   baseline acceptance and separately gated delivery intents;
-- a clean plan-only launch ref exists at `feat/saved-monitors-v1` commit
-  `7c184e439973fb860c5d93b8450d513b59baa328`; no implementation, installed
+- independent Codex thread `01a09cf4-c89e-7660-9caf-66a78f34ded0` owns Plan
+  0093 at clean remote-equal activation checkpoint
+  `0253e82dfad36877371cbdaaa41e846560cfbc8a`; no implementation, installed
   schedule, live delivery, follow tracing, or provider action has begun.
 
 Closed Architecture Plan:
 
 - `docs/dev/plans/0083-2026-09-13-saved-monitor-and-digest-architecture-and-lane-handoff.md`.
+
+Active Implementation Plan:
+
+- `docs/dev/plans/0093-2026-09-13-saved-monitors-packet-1.md` on
+  `feat/saved-monitors-v1`.
 
 Dependencies:
 
@@ -2887,9 +2904,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- open one independent top-level lane session in the registered WI-006
-  worktree and execute only Plan 0093's provider-free query-view monitor
-  kernel; follow tracing remains gated by P35 integration.
+- resume the recorded P40 owner and execute only Plan 0093's provider-free
+  query-view monitor kernel; follow tracing remains gated by P35 integration.
 
 ## P41 | Implementation Lane Launch Registration
 
@@ -2981,7 +2997,7 @@ Next Bounded Action:
 
 ## P44 | Next Wave Launch Registration
 
-State: OPEN
+State: CLOSED
 
 Objective: publish, register, and launch three isolated provider-free Packet 1
 sessions for agent questions, service quality, and the saved-monitor kernel.
@@ -2989,15 +3005,15 @@ sessions for agent questions, service quality, and the saved-monitor kernel.
 Current State:
 
 - P36, P37, and P40 each have a clean dedicated worktree and a remotely equal
-  plan-only branch from exact canonical `87a8cbac`;
-- Plan 0090 owns shared catalog, roadmap, runbook, dependency, and overlap
-  reconciliation;
+  OPEN activation checkpoint incorporating canonical `606272ab`;
+- Plan 0090 reconciles their shared catalog, roadmap, runbook, dependency, and
+  overlap ownership;
 - P35 remains at its separate pull-request authorization gate and P40 follow
   tracing is excluded;
 - no feature implementation or live/runtime/provider effect has begun in this
   coordinator lane.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0090-2026-09-13-next-wave-launch-registration.md`.
 
@@ -3008,5 +3024,5 @@ Dependencies:
 
 Next Bounded Action:
 
-- validate and integrate this registration, then launch one independent
-  top-level Codex session in each of the three registered feature worktrees.
+- merge the ownership projection, then resume the same three independent
+  top-level Codex sessions for bounded Packet 1 implementation.
