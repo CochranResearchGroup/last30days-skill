@@ -2534,3 +2534,30 @@ Next Bounded Action:
 
 - none for P30. Preserve the exact P08 archive and reconcile remaining
   historical catalog lanes in separate bounded slices before cleanup.
+
+## P31 | Integrated Lane Catalog And Worktree Cleanup
+
+State: OPEN
+
+Objective: reconcile P23–P28 custody to exact integrated history and remove
+only clean temporary worktrees and refs already preserved by `main`.
+
+Current State:
+
+- all candidate lane and auxiliary worktree tips are proven ancestors of
+  `origin/main`, and every candidate worktree is clean;
+- catalog corrections name exact mainline receipts and overlap dispositions;
+- P08's archive and canonical `main` are excluded from deletion.
+
+Active Plan:
+
+- `docs/dev/plans/0074-2026-09-13-integrated-lane-catalog-and-worktree-cleanup.md`.
+
+Dependencies:
+
+- consumes closed P30 and exact `origin/main` ancestry; no runtime dependency.
+
+Next Bounded Action:
+
+- publish the recoverable checkpoint, remove only qualified worktrees and
+  integrated refs without force, and require a zero-problem catalog audit.

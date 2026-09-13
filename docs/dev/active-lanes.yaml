@@ -9,7 +9,7 @@ lanes:
     plan_state: CLOSED
     custody_state: INTEGRATED
     checkpoint: 0349f3fe306117e2dce0bad7df1a608fd9e82c7f
-    remote_ref: refs/remotes/origin/main
+    remote_ref: refs/remotes/origin/fix/ordinary-tick-reconciliation
     integration: merge
     integration_receipt: 0349f3fe306117e2dce0bad7df1a608fd9e82c7f
     dependencies: [P24]
@@ -24,10 +24,10 @@ lanes:
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATED
-    checkpoint: 905b9dbc6773e26c0141b4a38355c471c59b84b6
-    remote_ref: refs/remotes/origin/main
+    checkpoint: 2943488e5ba15859e3125081c8769004b46601c1
+    remote_ref: refs/remotes/origin/fix/refresh-query-head-arbitration
     integration: merge
-    integration_receipt: 905b9dbc6773e26c0141b4a38355c471c59b84b6
+    integration_receipt: 2943488e5ba15859e3125081c8769004b46601c1
     dependencies: []
     overlaps: [docs/dev/active-lanes.yaml]
     reconciled_overlaps: [docs/dev/active-lanes.yaml]
@@ -58,12 +58,13 @@ lanes:
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATED
-    checkpoint: fdd658a40b9e3799a602ae7009464b637b1affcc
+    checkpoint: 3b3cb72e71f3f8a999fa2b10ccdcb97b20e49c31
     remote_ref: refs/remotes/origin/feat/reddit-home-feed
-    integration: fast-forward
-    integration_receipt: f80fc7ee020f991d667c8806cb454ba67daafd1b
+    integration: merge
+    integration_receipt: 905b9dbc6773e26c0141b4a38355c471c59b84b6
     dependencies: [P08]
     overlaps: [skills/last30days/scripts/lib/agent_browser_runtime.py]
+    reconciled_overlaps: [skills/last30days/scripts/lib/agent_browser_runtime.py]
     updated_at: 2026-09-03
   - id: P24
     objective: Activate authenticated 80-item Reddit home-feed collection on daily-default
@@ -74,9 +75,9 @@ lanes:
     plan_state: CLOSED
     custody_state: INTEGRATED
     checkpoint: ecba6fc324690ab5acf9209d5e4b4485b3118d4a
-    remote_ref: refs/remotes/origin/main
+    remote_ref: refs/remotes/origin/feat/recurring-reddit-home-feed
     integration: merge
-    integration_receipt: 6b4f604907acd61058bfb692f788efe89eb62d72
+    integration_receipt: 905b9dbc6773e26c0141b4a38355c471c59b84b6
     dependencies: [P23]
     overlaps: [user-scoped tick configuration, daily-default schedule binding]
     reconciled_overlaps: [user-scoped tick configuration, daily-default schedule binding]
@@ -86,28 +87,30 @@ lanes:
     plan: docs/dev/plans/0065-2026-09-06-installed-service-command.md
     plan_ref: refs/heads/fix/installed-service-command
     branch: fix/installed-service-command
-    target: feat/recurring-reddit-home-feed
+    target: main
     plan_state: CLOSED
-    custody_state: INTEGRATION_READY
-    checkpoint: 329fc89
+    custody_state: INTEGRATED
+    checkpoint: 233c6ed24579eaa80deafe58709982afeee61b49
     remote_ref: refs/remotes/origin/fix/installed-service-command
-    integration: fast-forward
-    integration_receipt: null
+    integration: merge
+    integration_receipt: 905b9dbc6773e26c0141b4a38355c471c59b84b6
     dependencies: [P24]
     overlaps: [service release metadata]
+    reconciled_overlaps: [service release metadata]
     updated_at: 2026-09-06
   - id: P26
     objective: Repair and complete one full tick within five spaced attempts
     plan: docs/dev/plans/0066-2026-09-06-full-tick-recovery.md
     plan_ref: refs/heads/fix/full-tick-recovery
     branch: fix/full-tick-recovery
-    target: fix/installed-service-command
+    target: main
     plan_state: CLOSED
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 9aa8f83
+    custody_state: INTEGRATED
+    checkpoint: 1acdba8cd2e8d3112cf6bf154cc96280383750bf
     remote_ref: refs/remotes/origin/fix/full-tick-recovery
-    integration: fast-forward
-    integration_receipt: null
+    integration: merge
+    integration_receipt: 905b9dbc6773e26c0141b4a38355c471c59b84b6
     dependencies: [P25]
     overlaps: [service release metadata, LinkedIn feed, tick runner]
+    reconciled_overlaps: [service release metadata, LinkedIn feed, tick runner]
     updated_at: 2026-09-06
