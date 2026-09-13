@@ -2624,3 +2624,36 @@ Next Bounded Action:
 
 - assign WI-002 Packet 1 to one independent top-level lane session and
   register its `feat/post-search-v1` branch custody before implementation.
+
+## P34 | Isolated Development Runtime
+
+State: OPEN
+
+Objective: give each implementation lane a deterministic, provider-free local
+service identity that cannot collide with production or another lane.
+
+Current State:
+
+- WI-001 is `READY` with current code, installer, policy, and live read-only
+  runtime evidence;
+- the selected seam is a repo-only lane-runtime controller around the existing
+  direct `serve` command plus an authoritative service-side cache-only effect
+  gate;
+- identity, paths, environment, collision, process, status, teardown,
+  production, staging, and provider-free acceptance contracts are defined;
+- no development runtime, staging runtime, or implementation has begun.
+
+Active Architecture Plan:
+
+- `docs/dev/plans/0077-2026-09-13-isolated-development-runtime-architecture-and-lane-handoff.md`.
+
+Dependencies:
+
+- consumes the closed P32 operating model and current managed service seams;
+  implementation is not blocked by GitHub tracker activation or live providers.
+
+Next Bounded Action:
+
+- integrate the architecture packet, close its planning work, then assign
+  WI-001 Packet 1 to one independent top-level lane session and register its
+  `feat/isolated-dev-runtime` custody before implementation.

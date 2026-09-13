@@ -1,5 +1,21 @@
 schema_version: 1
 lanes:
+  - id: P34
+    objective: Define one fail-closed isolated development runtime per implementation lane
+    plan: docs/dev/plans/0077-2026-09-13-isolated-development-runtime-architecture-and-lane-handoff.md
+    plan_ref: refs/heads/docs/isolated-dev-runtime-architecture
+    branch: docs/isolated-dev-runtime-architecture
+    target: main
+    plan_state: OPEN
+    custody_state: ACTIVE
+    checkpoint: b71e652317bea4607ced38719a16b4d039c2609f
+    remote_ref: refs/remotes/origin/docs/isolated-dev-runtime-architecture
+    integration: merge
+    integration_receipt: null
+    dependencies: [P32]
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-001-isolated-development-runtime.md]
+    reconciled_overlaps: []
+    updated_at: 2026-09-13
   - id: P28
     objective: Bound cumulative Reddit feed browser work below the provider worker deadline
     plan: docs/dev/plans/0071-2026-09-13-reddit-feed-run-budget.md
