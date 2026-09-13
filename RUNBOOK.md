@@ -27093,3 +27093,57 @@ Next Bounded Action:
 - integrate the architecture packet, close Plan 0076/P33 planning work, write
   and verify the required Graphiti episode, then hand Packet 1 to one
   independent top-level lane session.
+
+## Turn 429 | 2026-09-13
+
+Focus: Plan 0076/P33 integration, Graphiti write attempt, and closeout.
+
+Authority Consulted:
+
+- Plan 0076/C01, P33, WI-002, pull request 14 and `origin/main` readback,
+  Graphiti write discipline, canonical-worktree, validation, and closeout
+  policy.
+
+Decisions And Changes:
+
+- verified pull request 14 integrated the post-search architecture, machine
+  handoff, and WI-002 `READY` transition;
+- fast-forwarded canonical `/home/ecochran76/workspace.local/last30days-skill`
+  to exact current `origin/main` before opening this closeout worktree;
+- reconciled Plan 0076 to `CLOSED` and P33 to `PLANNED`, because architecture is
+  complete while product implementation has not started;
+- attempted the one required compact Graphiti write only after durable
+  integration, then preserved its terminal failure without retrying;
+- made no GitHub tracker, product source, installed Skill, service, browser,
+  provider, schedule, credential, database, deployment, staging, or production
+  mutation.
+
+Validation Evidence:
+
+- source tip `464a499b457504eca6b83a66ab8f3de15dbb2723` is integrated as
+  `2a98fddb339521c2b9c574c114f1d248708fd8b1` on `origin/main`;
+- canonical `main` is clean and equal to `origin/main` at that merge;
+- 13 focused tests and plan authority pass on the integrated architecture;
+- Graphiti job `4618f678-7ff7-4bc0-815b-58c6dfd969a3` is terminal
+  `timed_out`, cancellation is settled, `episode_uuid` is null, and exact
+  duplicate readback finds no episode.
+
+State Movement:
+
+- Plan 0076/P33 planning work `active -> closed/planned`; WI-002 remains
+  `READY` for a separately owned implementation lane.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator-owned evidence and integration are authoritative.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; no duplicate write was issued after the verified
+  terminal timeout.
+
+Next Bounded Action:
+
+- integrate this closeout, remove its fully integrated temporary worktrees and
+  refs, then start WI-002 Packet 1 only in a dedicated top-level lane session
+  with registered custody.

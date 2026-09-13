@@ -2596,7 +2596,7 @@ Next Bounded Action:
 
 ## P33 | Post Search Product Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: expose the complete authorized stored-post corpus through a stable,
 cache-only, evidence-preserving search and pagination contract for users and
@@ -2611,7 +2611,7 @@ Current State:
   pagination, revisions, dedupe, ranking, HTTP/MCP parity, and quality bounds;
 - no implementation or runtime mutation has begun.
 
-Active Plan:
+Closed Architecture Plan:
 
 - `docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md`.
 
@@ -2622,5 +2622,5 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate and close the architecture handoff, then assign WI-002 Packet 1 to
-  one independent top-level lane session and register its branch custody.
+- assign WI-002 Packet 1 to one independent top-level lane session and
+  register its `feat/post-search-v1` branch custody before implementation.
