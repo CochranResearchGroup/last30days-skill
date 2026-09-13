@@ -8,7 +8,7 @@ Parent: WI-000
 Blocked by: none
 Architecture: docs/dev/notes/0118-2026-09-13-isolated-development-runtime-architecture.md
 Implementation plan seed: docs/dev/plans/0077-2026-09-13-isolated-development-runtime-architecture-and-lane-handoff.md
-Active plan: docs/dev/plans/0085-2026-09-13-isolated-dev-runtime-packet-1.md
+Last completed plan: docs/dev/plans/0085-2026-09-13-isolated-dev-runtime-packet-1.md
 Branch: feat/isolated-dev-runtime-v1
 
 ## Problem
@@ -38,8 +38,7 @@ or permanent `develop` branch.
 
 ## Active Handoff
 
-Resume the owning top-level session from published checkpoint
-`4a8080daf354fe90db9462dc65ec1b29109058cc` and implement only Packet 1's
-strict descriptor, deterministic paths, read-only `doctor`, collision and
-environment-deny checks, and provider-free fixtures. Do not start, install,
-restart, stop, or signal any service in Packet 1.
+Packet 1 merged through PR 35 as `c6bccab86074e83067a624a57efbc9d9b485c87f`.
+The coordinator should register a separate Packet 2 plan before implementing
+offline `up`/`status`/`down` or service-side cache-only effect gates. Do not
+start or mutate a runtime under the closed Packet 1 plan.

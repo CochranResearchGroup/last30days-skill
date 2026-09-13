@@ -1,6 +1,6 @@
 # Plan 0085 | Isolated Development Runtime Packet 1 Identity Tracer
 
-State: OPEN
+State: CLOSED
 Lane: P34
 Work item: WI-001
 Branch: feat/isolated-dev-runtime-v1
@@ -196,3 +196,26 @@ Next action:
   `main`, verify the remote ref and PR head, then stop without merging.
 
 Checkpoint P0085-C02 is the current authority.
+
+### Checkpoint P0085-C03 | 2026-09-13
+
+Plan version: 1
+
+State transition: `awaiting_review -> closed_integrated`.
+
+Integration evidence:
+
+- PR 35 merged exact head
+  `19d41c312dc49131650b9145c49e09b2e892f74b` into `main` as
+  `c6bccab86074e83067a624a57efbc9d9b485c87f`;
+- coordinator validation passed 43 focused runtime, package-boundary,
+  secret-hygiene, and plan-authority checks;
+- the real-worktree doctor stayed read-only and bound its descriptor to the
+  reviewed commit with cache-only and credential/browser/schedule deny policy;
+- no runtime process, socket, state root, installed service, provider,
+  schedule, staging, production, release, or deployment effect occurred.
+
+Next action: retain WI-001 as `IN_PROGRESS` and create a separately bounded
+Packet 2 plan for offline lifecycle and service-side effect gates.
+
+Checkpoint P0085-C03 is terminal for Packet 1.

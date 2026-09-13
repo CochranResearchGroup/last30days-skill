@@ -28175,3 +28175,60 @@ Next Bounded Action:
   resume threads `01a09caa-9116-7453-8914-5cd7d7ce0fca`,
   `01a09caa-90aa-78d0-af02-59d9a7d80eea`, and
   `01a09caa-90d6-7350-a8ce-72d7ced7ef12` for Packet 1 only.
+
+## Turn 449 | 2026-09-13
+
+Focus: Plans 0084-0086 first implementation wave and Plan 0089/P43 canonical
+integration reconciliation
+(`docs/dev/plans/0089-2026-09-13-packet-1-integration-reconciliation.md`).
+
+Authority Consulted:
+
+- exact P33/P34/P35 refs and plans, PRs 35/36, current `origin/main`, Git,
+  validation, active-lane, documentation, and forge-operation policies.
+
+Decisions And Changes:
+
+- accepted the three independent top-level sessions' published evidence and
+  independently reran integration-focused validation;
+- merged P34 through PR 35 and P33 through PR 36, then reconciled P35's two
+  generated-artifact conflicts by regeneration from combined canonical source;
+- preserved P35's failed-closed PR gate after notifying the operator; no retry
+  or indirect workaround occurred;
+- updated plans, work items, roadmap, and lane catalog with exact receipts and
+  next-packet boundaries;
+- made no installed runtime, provider/browser, schedule, tracker, staging,
+  production, release, or deployment mutation.
+
+Validation Evidence:
+
+- PR 35 exact head `19d41c31` merged as `c6bccab8`;
+- PR 36 reconciled head `74a6fcfc` merged as `75e7771e`;
+- P35 combined head `d2c9f8eb` is clean and remote-equal;
+- 122 combined focused Python checks, the full combined Python suite, all MCP
+  Go tests, and `go vet` passed before P35 reconciliation publication;
+- coordinator planning and lane audits remain to run after these projections
+  are rendered.
+
+State Movement:
+
+- Plans 0084/P33 and 0085/P34 `OPEN -> CLOSED/INTEGRATED` while WI-002 and
+  WI-001 remain `IN_PROGRESS` for later packets;
+- P35 remains `OPEN/INTEGRATION_READY` at the explicit PR-creation gate;
+- Plan 0089/P43 `PLANNED -> OPEN` for canonical reconciliation.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; separate top-level sessions completed implementation and the
+  coordinator performed integration directly.
+
+Graphiti Write Status:
+
+- `not_attempted`; Git, forge, tests, and repository projections are the
+  authoritative evidence for this packet.
+
+Next Bounded Action:
+
+- validate and integrate Plan 0089/P43, then launch provider-free P36, P37,
+  and the query-only portion of P40 from current canonical main; keep P35 gated
+  until explicit PR authorization.

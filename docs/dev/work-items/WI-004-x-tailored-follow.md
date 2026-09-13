@@ -41,9 +41,8 @@ no cross-service abstraction until this vertical slice is accepted.
 
 ## Active Handoff
 
-Resume the owning top-level session from published checkpoint
-`8b97f0b65f2ec62d84a26c9fc3c4fcd653f73d20` and implement only Packet 1's
-compatible collection-purpose, attention, lifecycle, canonical target
-identity, migration, get/list/archive, and provider-free persistence tracer.
-Do not enqueue a job, open a browser, use a profile/provider, mutate an
-installed database or schedule, or install a runtime in Packet 1.
+Packet 1 is acceptance-complete, reconciled with current main, and published at
+`d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`. PR creation remains gated until
+the operator explicitly authorizes that forge action after notice. Do not
+start Packet 2 or enqueue a job, open a browser, use a profile/provider, mutate
+an installed database or schedule, or install a runtime.

@@ -1,5 +1,22 @@
 schema_version: 1
 lanes:
+  - id: P43
+    objective: Reconcile the first implementation wave and expose the next provider-free lanes
+    work_items: [docs/dev/work-items/WI-000-productization-program.md]
+    plan: docs/dev/plans/0089-2026-09-13-packet-1-integration-reconciliation.md
+    plan_ref: refs/heads/docs/packet1-integration-reconciliation
+    branch: docs/packet1-integration-reconciliation
+    target: main
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 75e7771e006f52847e8e47c1059b2b2000fb8ac7
+    remote_ref: refs/remotes/origin/docs/packet1-integration-reconciliation
+    integration: merge
+    integration_receipt: null
+    dependencies: [P33, P34, P35]
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
+    updated_at: 2026-09-13
   - id: P42
     objective: Reconcile three independent Packet 1 activations into canonical projections
     work_items: [docs/dev/work-items/WI-000-productization-program.md]
@@ -123,11 +140,12 @@ lanes:
     branch: feat/x-tailored-follows-v1
     target: main
     plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 8b97f0b65f2ec62d84a26c9fc3c4fcd653f73d20
+    custody_state: INTEGRATION_READY
+    checkpoint: d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d
     remote_ref: refs/remotes/origin/feat/x-tailored-follows-v1
     integration: merge
     integration_receipt: null
+    blocker: PR creation requires explicit operator authorization after the read-only forge-policy gate was surfaced
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py]
     reconciled_overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py]
@@ -139,12 +157,12 @@ lanes:
     plan_ref: refs/heads/feat/isolated-dev-runtime-v1
     branch: feat/isolated-dev-runtime-v1
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 4a8080daf354fe90db9462dc65ec1b29109058cc
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 19d41c312dc49131650b9145c49e09b2e892f74b
     remote_ref: refs/remotes/origin/feat/isolated-dev-runtime-v1
     integration: merge
-    integration_receipt: null
+    integration_receipt: c6bccab86074e83067a624a57efbc9d9b485c87f
     dependencies: []
     overlaps: [skills/last30days/scripts/service.py, CONFIGURATION.md]
     reconciled_overlaps: [skills/last30days/scripts/service.py, CONFIGURATION.md]
@@ -156,12 +174,12 @@ lanes:
     plan_ref: refs/heads/feat/post-search-v1
     branch: feat/post-search-v1
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 49e9bb02377011b6dc6a28da27b15f0996acd6de
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 74a6fcfc96ca4b3d78329779ad066b737d899551
     remote_ref: refs/remotes/origin/feat/post-search-v1
     integration: merge
-    integration_receipt: null
+    integration_receipt: 75e7771e006f52847e8e47c1059b2b2000fb8ac7
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go]
     reconciled_overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go]
