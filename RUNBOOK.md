@@ -27033,3 +27033,63 @@ Next Bounded Action:
 - integrate this closeout, remove only its fully integrated temporary
   worktrees/refs, and ask the operator to accept or revise the proposed issue
   graph before any activation successor.
+
+## Turn 428 | 2026-09-13
+
+Focus: Plan 0076/P33 post-search architecture and lane handoff.
+
+Authority Consulted:
+
+- active productization goal; WI-002; Plan 0076/P33; Graphiti, CodeGraph,
+  architecture, work-item, multi-session, testing, documentation, Git,
+  validation, and closeout policy; current source and live cache-only service.
+
+Decisions And Changes:
+
+- classified the work as architecture plus mixed code/docs synthesis in a
+  stable repository and used a hybrid structure-first retrieval posture;
+- verified that ordinary `/v1/query` chooses one promoted tick or legacy head,
+  lacks usable pagination, and does not carry all documented filters through
+  the tick path;
+- selected additive cache-only `POST /v1/posts/search` and MCP `search_posts`
+  surfaces backed by a federated, filter-first post-search interface;
+- defined request/response, identity, revision, provenance, ranking, cursor,
+  coverage, access, compatibility, and vertical delivery contracts;
+- moved repo-local WI-002 from `TRIAGE` to `READY` with an exact top-level lane
+  handoff;
+- made no GitHub tracker, source implementation, installed Skill, service,
+  browser, provider, schedule, credential, database, deployment, staging, or
+  production mutation.
+
+Validation Evidence:
+
+- Graphiti doctor is healthy; bounded discovery returned eight facts, five
+  nodes, and five episodes in `last30days_skill_main`, and two cited episodes
+  were expanded and source-checked;
+- CodeGraph is healthy at 353 files, 9,793 nodes, and 23,275 edges and exposed
+  the query selection, request, ranking, storage, HTTP, and MCP seams;
+- live service `0.3.116`, database schema 17, and MCP `4.0.4` are compatible;
+  service-info reports 167 indexed documents and embeddings across five sources;
+- one `cache_only` query returned promoted-snapshot evidence with
+  `next_cursor: null` and no acquisition;
+- 13 focused policy/authority tests pass; plan authority reports the two
+  legitimate open plans with zero issues; both JSON files parse, all nine
+  work-item markers remain unique, and `git diff --check` passes.
+
+State Movement:
+
+- WI-002 `TRIAGE -> READY`; Plan 0076/P33 `planned -> active`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator performed shared-interface exploration directly.
+
+Graphiti Write Status:
+
+- `pending_closeout`; one compact episode is due after durable integration.
+
+Next Bounded Action:
+
+- integrate the architecture packet, close Plan 0076/P33 planning work, write
+  and verify the required Graphiti episode, then hand Packet 1 to one
+  independent top-level lane session.

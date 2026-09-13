@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "task_type": "architecture",
+  "secondary_task_type": "mixed-code-docs synthesis",
+  "path_type": "local git repository",
+  "persistence_mode": "stable-path",
+  "repo_profile": "Python service with SQLite, Go MCP adapter, and Agent Skills UX",
+  "work_item": "WI-002",
+  "plan": "0076",
+  "repository_checkpoint": "9ff37a72a813d4ce8140647079900d0186c08f9e",
+  "retrieval_posture": "hybrid structure-first",
+  "retrieval_trace": [
+    "Graphiti last30days_skill_main discovery and two cited episodes",
+    "CodeGraph status and focused service query-flow exploration",
+    "targeted SQL schema and contract literal inspection",
+    "live service_info and cache_only query readback"
+  ],
+  "decision": "Add cache-only POST /v1/posts/search and search_posts MCP surfaces backed by a federated PostSearchBackend; preserve /v1/query for WI-003 composition.",
+  "evidence_packets": [
+    {
+      "kind": "live_runtime",
+      "summary": "Service 0.3.116, schema 17, MCP 4.0.4 compatible; 167 documents and embeddings."
+    },
+    {
+      "kind": "current_flow",
+      "summary": "Ordinary query chooses promoted tick snapshot or legacy index, returns no cursor, and does not federate both corpora."
+    },
+    {
+      "kind": "filter_gap",
+      "summary": "Tick query receives only sources and publication bounds; author, collection, topic, observation, revisions, and pagination are absent."
+    },
+    {
+      "kind": "available_provenance",
+      "summary": "Existing schemas retain stable source identity, immutable revisions, authors, collection/topic or tick/target sightings, and observed/published time."
+    }
+  ],
+  "uncertainties": [
+    "federated adapter performance at 10000 posts",
+    "immutable head retention duration for cursor guarantees"
+  ],
+  "next_actions": [
+    "assign one top-level lane session to WI-002",
+    "measure the provider-free baseline before freezing latency and memory budgets",
+    "implement the tracer bullet across contract, both stores, HTTP, MCP, and fixtures"
+  ],
+  "state_location": "docs/dev/notes/0117-2026-09-13-post-search-product-architecture.md",
+  "persistence_bundle": null
+}

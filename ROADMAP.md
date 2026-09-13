@@ -2593,3 +2593,34 @@ Next Bounded Action:
 - none for P32. Obtain operator acceptance of the issue graph and separate
   authority for the exact GitHub mutation scope before opening an activation
   successor.
+
+## P33 | Post Search Product Surface
+
+State: OPEN
+
+Objective: expose the complete authorized stored-post corpus through a stable,
+cache-only, evidence-preserving search and pagination contract for users and
+agents.
+
+Current State:
+
+- WI-002 is `READY` with a source- and live-evidence-backed architecture;
+- the selected seam is additive `POST /v1/posts/search` plus MCP
+  `search_posts`, leaving `/v1/query` unchanged for the dependent WI-003 lane;
+- provider-free vertical packets cover both storage families, filters, stable
+  pagination, revisions, dedupe, ranking, HTTP/MCP parity, and quality bounds;
+- no implementation or runtime mutation has begun.
+
+Active Plan:
+
+- `docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md`.
+
+Dependencies:
+
+- consumes the closed P32 operating model and current service contracts;
+  implementation is not blocked by GitHub tracker activation or live providers.
+
+Next Bounded Action:
+
+- integrate and close the architecture handoff, then assign WI-002 Packet 1 to
+  one independent top-level lane session and register its branch custody.
