@@ -2768,3 +2768,40 @@ Next Bounded Action:
 - assign WI-008 Packet 1 to one independent top-level lane session from current
   `origin/main` and register its `feat/service-quality-v1` custody before
   provider-free implementation.
+
+## P38 | Reserved Production Hotfix Path
+
+State: OPEN
+
+Objective: keep one dormant zero-resource lane ready to take a qualified
+production defect from current-main source repair through priority integration,
+staging, explicit deployment authority, verification, rollback, and feature-
+lane reconciliation.
+
+Current State:
+
+- WI-007 is `READY`; its provider-free control-plane and Git drills have no
+  product dependency;
+- current policy reserves the slot, and builder/installer machinery already
+  provides reproducible artifacts, readiness, database snapshots, rollback,
+  and failed-upgrade restoration;
+- the selected seam joins those foundations with incident qualification,
+  dormant/active custody, promotion receipts, feature conflict/reconciliation,
+  staging, and action-specific deployment authority;
+- no drill, incident, implementation, release, runtime mutation, staging, or
+  production action has begun.
+
+Architecture Plan:
+
+- `docs/dev/plans/0081-2026-09-13-reserved-production-hotfix-path-architecture-and-lane-handoff.md`.
+
+Dependencies:
+
+- Packets 1-2 are provider-free and independent; the staging/runtime drill
+  joins WI-001, and every real deployment/rollback requires exact incident-
+  specific operator authority.
+
+Next Bounded Action:
+
+- validate and integrate this architecture packet, then assign WI-007 Packet 1
+  to one independent top-level lane session from current `origin/main`.

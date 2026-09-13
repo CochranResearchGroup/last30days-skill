@@ -27652,3 +27652,65 @@ Next Bounded Action:
   worktrees and refs, then start WI-002, WI-001, WI-004, or WI-008 Packet 1
   only in separately owned top-level lane sessions within the three-feature
   WIP limit.
+
+## Turn 439 | 2026-09-13
+
+Focus: Plan 0081/P38 reserved production-hotfix path architecture.
+
+Authority Consulted:
+
+- active productization goal; WI-000/WI-001/WI-007; current hotfix, release,
+  multi-session, Git, validation, architecture, and documentation policy;
+  Graphiti release/rollback recall; current builder, installer, lifecycle
+  tests, and live read-only production state;
+- executable authority:
+  `docs/dev/plans/0081-2026-09-13-reserved-production-hotfix-path-architecture-and-lane-handoff.md`.
+
+Decisions And Changes:
+
+- verified that the repository already has reproducible service artifacts,
+  atomic release selection, readiness, database snapshots, rollback, failed-
+  upgrade restoration, and fake-manager lifecycle tests;
+- selected one dormant zero-resource hotfix slot that activates only for a
+  qualified production defect from exact current `origin/main`;
+- separated incident qualification, source fix, priority integration, feature
+  reconciliation, staging, deployment authorization, production verification,
+  rollback, and closeout into explicit states and receipts;
+- made provider-free control-plane and Git drills independently ready while
+  retaining WI-001 staging and incident-specific deployment gates;
+- moved WI-007 from `TRIAGE` to `READY`;
+- made no GitHub tracker, incident, source implementation, build/release,
+  installed Skill/database, service/process, browser/provider, schedule,
+  staging, deployment, rollback, or production mutation.
+
+Validation Evidence:
+
+- canonical `main` was clean and equal to `origin/main` at `0950077e` before
+  the dedicated architecture worktree was created;
+- Graphiti is healthy; older artifact and rollback facts were treated as
+  advisory because their installed-version evidence is stale;
+- CodeGraph is current at 353 files, 9,793 nodes, and 23,275 edges; current
+  scripts/tests verified build, readiness, install, rollback, and restoration;
+- live read-only status reports PID 24968, service `0.3.116`, schema 17, ready,
+  immutable index head, and 167 indexed documents;
+- provider-free repository validation remains to run after this packet is
+  fully rendered.
+
+State Movement:
+
+- WI-007 `TRIAGE -> READY`; Plan 0081/P38 `planned -> active`, with dormant
+  capacity and later staging/deployment gates explicit.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; coordinator performed shared-interface exploration directly.
+
+Graphiti Write Status:
+
+- `graphiti_write_pending`; Plans 0076-0080 already await recovery of the
+  degraded ingestion path, so no new write was queued.
+
+Next Bounded Action:
+
+- validate and integrate the architecture packet, close Plan 0081/P38 planning
+  work, and hand provider-free Packet 1 to a separate top-level lane session.

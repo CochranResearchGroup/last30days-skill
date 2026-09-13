@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "task_type": "architecture",
+  "secondary_task_type": "release hotfix and mixed-code-docs synthesis",
+  "path_type": "local git repository",
+  "persistence_mode": "stable-path",
+  "repo_profile": "Python service with reproducible artifacts, atomic user-scoped installer, rollback snapshots, and governed multi-session development",
+  "work_item": "WI-007",
+  "plan": "0081",
+  "repository_checkpoint": "0950077e53c6a39e47df1385bf5ae32bec4f3dca",
+  "retrieval_posture": "hybrid structure-first",
+  "retrieval_trace": [
+    "Graphiti last30days_skill_main bounded release and rollback recall",
+    "CodeGraph status and focused health, readiness, release, and client exploration",
+    "current builder, installer, lifecycle tests, work-item, and policy inspection",
+    "live read-only production process and service-info readback"
+  ],
+  "decision": "Reserve one dormant zero-resource hotfix lane that activates from exact origin/main for a qualified production defect, integrates before conflicting feature work, and keeps source, staging, deploy authority, production verification, rollback, and feature reconciliation as separate receipts.",
+  "evidence_packets": [
+    {
+      "kind": "live_runtime",
+      "summary": "Production remains active/ready on PID 24968 at service 0.3.116/schema 17 with 167 documents."
+    },
+    {
+      "kind": "release_foundation",
+      "summary": "Current builder emits manifest-verified reproducible artifacts and installer owns snapshot-backed upgrade, readiness, rollback, and failed-upgrade restoration."
+    },
+    {
+      "kind": "coordination_gap",
+      "summary": "No durable incident qualification, promotion ledger, feature conflict/reconciliation report, staging receipt, deploy authorization, or closeout contract joins those mechanisms."
+    }
+  ],
+  "uncertainties": [
+    "smallest complete feature-conflict fixture",
+    "provider-free drill wall-clock budget",
+    "future operator preflight ownership after WI-001"
+  ],
+  "dependencies": [
+    "Packets 1 and 2 have no product dependency",
+    "Packet 3 staging identity requires WI-001 runtime implementation",
+    "all real deployments and rollbacks require incident-specific operator authority"
+  ],
+  "next_actions": [
+    "assign one top-level lane session to WI-007 Packet 1",
+    "create and register feat/production-hotfix-path-v1 from current origin/main",
+    "implement contracts, state machine, fake adapters, conflict matrix and provider-free tests only"
+  ],
+  "state_location": "docs/dev/notes/0122-2026-09-13-reserved-production-hotfix-path-architecture.md",
+  "persistence_bundle": null
+}
