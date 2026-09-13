@@ -1,6 +1,6 @@
 # Plan 0084 | Post Search Packet 1 Contract Tracer
 
-State: PLANNED
+State: OPEN
 Lane: P33
 Work item: WI-002
 Branch: feat/post-search-v1
@@ -9,6 +9,8 @@ Integration: merge
 Roadmap: P33
 Plan version: 1
 Date: 2026-09-13
+Session owner: Codex thread 01a09caa-9116-7453-8914-5cd7d7ce0fca
+Runtime model: unknown (not reported by runtime)
 
 ## Objective
 
@@ -22,7 +24,9 @@ end-to-end fixture.
 - the service has `/v1/query`, retrieval snapshots, immutable document
   versions, access partitions, collection sightings, and Go MCP transport, but
   no dedicated post-search product contract;
-- this launch ref contains only this plan and has not started implementation;
+- the registered launch checkpoint has been reconciled with current
+  `origin/main`, this plan is open under the recorded session owner, and Packet
+  1 implementation has not started;
 - GitHub Issues remain disabled, so WI-002 is the durable work-item locator.
 
 ## Scope
