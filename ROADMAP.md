@@ -2771,7 +2771,7 @@ Next Bounded Action:
 
 ## P38 | Reserved Production Hotfix Path
 
-State: OPEN
+State: PLANNED
 
 Objective: keep one dormant zero-resource lane ready to take a qualified
 production defect from current-main source repair through priority integration,
@@ -2791,7 +2791,7 @@ Current State:
 - no drill, incident, implementation, release, runtime mutation, staging, or
   production action has begun.
 
-Architecture Plan:
+Closed Architecture Plan:
 
 - `docs/dev/plans/0081-2026-09-13-reserved-production-hotfix-path-architecture-and-lane-handoff.md`.
 
@@ -2803,5 +2803,6 @@ Dependencies:
 
 Next Bounded Action:
 
-- validate and integrate this architecture packet, then assign WI-007 Packet 1
-  to one independent top-level lane session from current `origin/main`.
+- retain the slot as dormant reserved capacity; assign WI-007 Packet 1 to one
+  independent top-level lane session from current `origin/main` when portfolio
+  priority allows, or activate it only for a qualified production incident.
