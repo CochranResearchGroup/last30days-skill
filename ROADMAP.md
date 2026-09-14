@@ -2707,7 +2707,7 @@ Next Bounded Action:
 
 ## P36 | Agent Question Answering MCP Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: let agents ask bounded cross-service questions and receive a
 validated answer whose every substantive statement can be followed to exact
@@ -2735,19 +2735,20 @@ Current State:
   for the real-search and immutable-evidence Packet 2;
 - replacement independent Codex thread
   `01a09d44-49bf-73b2-a613-aee72c98f471` opened the plan and published clean
-  remote-equal activation `e566724c` before feature implementation.
+  remote-equal activation `e566724c` before feature implementation;
+- Packet 2 is now integration-ready at exact remote checkpoint `ddcb4201`:
+  the real search/evidence composition, immutable resolver, parent/version
+  partition closure, and refreshed source manifest pass 54 affected and all
+  2,844 comprehensive tests plus reproducible package validation.
 
 Closed Architecture Plan:
 
 - `docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md`.
 
-Closed Implementation Plan:
+Closed Implementation Plans:
 
 - `docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md` on
-  `feat/agent-question-answer-v1`.
-
-Planned Implementation Plan:
-
+  `feat/agent-question-answer-v1`;
 - `docs/dev/plans/0096-2026-09-13-agent-question-evidence-tracer-packet-2.md`
   on `feat/agent-question-evidence-v2`.
 
@@ -2759,9 +2760,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- let the recorded independent owner execute only Plan 0096's real-search and
-  immutable-evidence tracer, then return a clean checkpoint for coordinator
-  integration.
+- merge the reviewed Packet 2 candidate through the fork PR, then plan Packet
+  3 structured answer/validation behavior separately from current main.
 
 ## P47 | P36 Packet 2 Integration Reconciliation
 
@@ -2777,19 +2777,19 @@ Active Plan:
 
 Current State:
 
-- P36 feature checkpoint `4e937017` is clean and remote-equal with no PR;
-- delegated focused, affected, comprehensive, compilation, and temporary
-  source-package checks pass;
-- primary review accepted one blocking closed-world finding: both immutable
-  version reads must require an equal parent-row access partition;
+- exact feature checkpoint `4e937017` is preserved in the integration ancestry;
+- the closed-world parent/version partition regression failed red and passes
+  after both legacy and temporal joins were constrained;
+- integration checkpoint `ddcb4201` is clean, remote-equal, and passes 6
+  focused, 54 affected, and all 2,844 comprehensive tests, compilation,
+  planning checks, and byte-identical source-package builds;
 - installed runtimes, providers, public HTTP/MCP, models, P35, staging, and
   production remain outside scope.
 
 Next Bounded Action:
 
-- publish the integration plan, merge exact `4e937017`, add the partition-join
-  regression and repair, refresh the source manifest, and validate the combined
-  candidate before PR integration.
+- publish the immutable-candidate projection and open the one owned-fork PR;
+  after merge, record its exact canonical receipt in a closeout-only PR.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 

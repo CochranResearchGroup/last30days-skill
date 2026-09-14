@@ -28705,3 +28705,50 @@ Next Bounded Action:
 
 - publish this plan checkpoint, merge exact `4e937017`, and execute the bounded
   remediation and coordinator joins before review integration.
+
+## Turn 459 | 2026-09-13
+
+Focus: validate and publish the Plan 0097/P47 integration candidate.
+
+Authority Consulted:
+
+- `docs/dev/plans/0097-2026-09-13-p36-packet-2-integration-reconciliation.md`;
+  Plans 0096/0079, P36/P47, WI-003, exact Git refs, and validation, integration,
+  lane, test, and closeout policy.
+
+Decisions And Changes:
+
+- merged exact feature checkpoint `4e937017` without rewriting ancestry;
+- added one closed-world regression and constrained both immutable-version
+  parent joins to equal access partitions;
+- refreshed the repository source manifest and corrected the exact independent
+  session identity in Plan 0096;
+- froze clean remote-equal integration checkpoint `ddcb4201` and projected it
+  through a separate publication branch.
+
+Validation Evidence:
+
+- 6 focused and 54 affected tests pass;
+- all 2,844 collected repository tests pass with the existing seven skips;
+- compilation, plan authority, active planning, and patch hygiene pass;
+- two service `0.3.116` source packages are byte-identical at SHA-256
+  `bfaa5fe7ba3d91f7da63a47041362ccfb9626befd361dc4b37756c9a40e23ccb`.
+
+State Movement:
+
+- P36 Packet 2 `OPEN -> CLOSED/INTEGRATION_READY`; P47 remains `OPEN` and is
+  `INTEGRATION_READY` pending owned-fork PR merge.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the independent top-level session result was reviewed and
+  remediated in the coordinator lane.
+
+Graphiti Write Status:
+
+- `not_written`; current repository and Git evidence are authoritative.
+
+Next Bounded Action:
+
+- open and merge the owned-fork integration PR, then use a closeout-only PR to
+  record the exact canonical receipt and return WI-003 to `READY`.

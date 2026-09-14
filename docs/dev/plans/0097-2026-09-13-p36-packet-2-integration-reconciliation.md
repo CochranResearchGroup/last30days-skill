@@ -103,3 +103,45 @@ Authority classification:
 Next action: publish this plan checkpoint, merge exact feature checkpoint
 `4e937017`, and execute only the closed-world partition-join remediation and
 coordinator-owned joins above.
+
+### Checkpoint P0097-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `integration_pending -> integration_validated`; Plan 0097
+remains `OPEN` pending owned-fork review and canonical merge.
+
+Progress classification: `outcome_progress`; the exact Packet 2 ancestry and
+the coordinator's closed-world remediation are joined at a clean published
+candidate.
+
+Authority classification:
+
+- `inherited_authority` for publishing the immutable-candidate projection and
+  opening/merging the owned-fork integration PR;
+- `human_gate` remains in force for P35 and every installed/runtime/provider/
+  release/production effect;
+- `scope_expansion` remains in force for Packet 3 and Packet 4 behavior.
+
+Integration and validation evidence:
+
+- feature checkpoint `4e9370178bb7340c7269a34b46549a1b67644735` is preserved
+  through merge `5b4b42c4`;
+- the parent/version partition test failed with both rows exposed as
+  `available`, then passed after both SQL joins required equal partitions;
+- the source manifest contains the additive resolver and current hashes for
+  both changed question modules;
+- 6 focused and 54 affected tests pass; all 2,844 collected repository tests
+  pass with the existing seven skips; Python compilation, plan authority,
+  active planning, and patch-hygiene checks pass;
+- two service `0.3.116` source packages are byte-identical at SHA-256
+  `bfaa5fe7ba3d91f7da63a47041362ccfb9626befd361dc4b37756c9a40e23ccb`;
+- integration checkpoint `ddcb4201fc75463fa0aba59925343ed2530036ea` is
+  clean and remote-equal.
+
+Boundary evidence: no installed runtime/database, provider, browser, model,
+public HTTP/MCP, schedule, delivery, release, tracker, staging, production, or
+P35 effect occurred.
+
+Next action: publish this projection branch, validate the lane catalog against
+the immutable integration ref, then open the owned-fork integration PR.

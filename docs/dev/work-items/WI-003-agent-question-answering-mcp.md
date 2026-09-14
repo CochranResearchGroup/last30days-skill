@@ -9,9 +9,9 @@ Blocked by: WI-002 Packet 1 contract integration; final acceptance by WI-002 clo
 Architecture: docs/dev/notes/0120-2026-09-13-agent-question-answering-mcp-architecture.md
 Implementation plan seed: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md
 Last closed plan: docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md
-Current plan: docs/dev/plans/0096-2026-09-13-agent-question-evidence-tracer-packet-2.md
-Branch: feat/agent-question-evidence-v2
-Owner: Codex 01a09d44-49bf-73b2-a613-aee72c98f471
+Current plan: docs/dev/plans/0097-2026-09-13-p36-packet-2-integration-reconciliation.md
+Branch: integration/p36-packet2-reconciliation
+Owner: coordinator Codex session
 
 ## Problem
 
@@ -44,9 +44,9 @@ summaries replace source evidence.
 
 ## Next Owner Action
 
-Packet 1 integrated through PR 41 as canonical merge `6d5eb5d9`. Independent
-top-level Codex thread `01a09d44-49bf-73b2-a613-aee72c98f471` owns the clean
-Packet 2 worktree at activation checkpoint `e566724c`. Execute only real
-search/evidence composition and immutable dereference; keep model execution,
-public MCP transport, providers, installed runtimes, staging, and production
-behind their own explicit gates.
+Packet 2 is integration-ready at exact remote checkpoint `ddcb4201`; its
+immutable evidence resolver composes the real federated search backend and
+fails closed on parent/version partition disagreement. Merge the reviewed
+candidate through the fork PR, then return this item to `READY` and plan
+Packet 3 separately. Keep model execution, public MCP transport, providers,
+installed runtimes, staging, and production behind their own explicit gates.
