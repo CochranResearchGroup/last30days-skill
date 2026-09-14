@@ -7,7 +7,7 @@ Branch: docs/productization-prerequisite-gate
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 5
+Plan version: 6
 Date: 2026-09-13
 Execution owner: unassigned
 
@@ -19,7 +19,7 @@ before any new product feature packet begins.
 ## Current State
 
 - canonical `main` is clean and remote-equal at
-  `31342c9fed77bacadb3eec00945d0127be73b43e`;
+  `87858934c8498dccbdeda549ad73f626dbc143a7`;
 - stored-post search, saved monitors, quality tracing, the isolated-runtime
   doctor, and three question-answering packets are integrated in source;
 - Plan 0103 and PR 64 repaired and regression-locked both accepted
@@ -28,14 +28,15 @@ before any new product feature packet begins.
   initially described them as disabled, but PR 51
   corrected the authority boundary, and WI-000 through WI-009 are now live as
   issues #52 through #61 with exact repo-local mappings;
-- P35 tailored follows is clean and remote-equal at
-  `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`, but is 88 commits behind the
-  reviewed mainline and has no pull request. Plan 0104 owns its bounded
-  reconciliation and combined validation;
+- Plan 0104 reconciled and integrated P35 Packet 1 through PR 68 at canonical
+  merge `87858934c8498dccbdeda549ad73f626dbc143a7` after combined provider-free
+  validation;
 - production is the only running service. It reports service `0.3.116`, schema
   17, and installed manifest `19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8`;
-  source also says `0.3.116` but has a different 139-file manifest
-  `9494e8129b13875057dade22afb00935748cf4336b80281423d330a192aa0050`.
+  source is now distinctly versioned `0.3.117`, schema 18, with 139-file
+  manifest SHA-256
+  `8b0d3590801fc1732d8c52d02d5ab9c4a0b141858fe77809b91d517b56c57cf2`,
+  but no isolated development artifact/runtime has been built or installed.
 
 ## Scope And Ordered Packets
 
@@ -61,7 +62,7 @@ before any new product feature packet begins.
 
 Packet 1 completed through PRs 64 and 65. Packet 2 completed through PR 51.
 Packet 6 completed through issues #52-#61 and its repo projection through PR
-62. Packet 3 is active under Plan 0104; Packets 4 and 5 remain.
+62. Packet 3 completed through PRs 67 and 68; Packets 4 and 5 remain.
 
 Packet 6 was completed first under the operator's explicit direction so the
 tracker can coordinate subsequent work. Packets 1 and 2 may run in parallel on
@@ -144,9 +145,7 @@ and the roadmap explicitly releases the feature freeze.
 
 ## Next Action
 
-Execute Plan 0104 from current `origin/main`: merge the canonical mainline into
-the published P35 Packet 1 branch without rewriting history, regenerate the
-combined runtime manifest, run focused and comprehensive provider-free
-validation, and integrate through the normal governed pull-request workflow.
-Do not begin Packet 2 or perform any runtime, provider, release, deployment, or
-issue mutation.
+Create and register the bounded Packet 4 development-release lane from current
+`origin/main`. Separate source/artifact version proof from installed-runtime
+provisioning, preserve production unchanged, and do not infer provider,
+browser, dogfood, release-publication, deployment, or issue-mutation authority.

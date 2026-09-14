@@ -2673,7 +2673,7 @@ Next Bounded Action:
 
 ## P35 | X Tailored Follow Product Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: let operators give selected X accounts, lists, and topics explicit
 collection identity, cadence, attention, provenance, and lifecycle separate
@@ -2681,8 +2681,8 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `IN_PROGRESS`; Packet 1 is acceptance-complete and remote-equal at
-  `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`;
+- WI-004 is `BLOCKED` by the WI-009 program gate before Packet 2; Packet 1 is
+  integrated through PR 68 at canonical `87858934`;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
   lifecycle, canonical typed targets, and immutable acquisition context rather
   than creating a second scheduler;
@@ -2693,11 +2693,11 @@ Current State:
   creation, immutable identity, archive history, and additive lifecycle reads
   are implemented provider-free; no installed-runtime, schedule, or live X
   effect occurred;
-- the branch is 88 commits behind reviewed canonical main and has no pull
-  request. Plan 0104 owns its current-main reconciliation and combined
-  provider-free validation; PRs follow normal branch and integration policy.
+- validated feature head `434ac770` is contained in canonical main; combined
+  tailored-follow, search, questions, monitors, quality, package, and MCP
+  validation passed without a runtime or provider effect.
 
-Active Reconciliation Plan:
+Closed Reconciliation Plan:
 
 - `docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md`.
 
@@ -2714,9 +2714,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- execute Plan 0104: merge current `origin/main` into the published branch,
-  regenerate the combined manifest, rerun combined acceptance, and integrate
-  through its normal Packet 1 PR; do not begin Packet 2 implicitly.
+- retain Packet 2 behind WI-009. When that program gate closes, derive a new
+  bounded provider-free packet rather than extending closed Plan 0104.
 
 ## P36 | Agent Question Answering MCP Surface
 
@@ -3261,16 +3260,16 @@ Current State:
 - GitHub Issues are enabled; PR 51 corrected canonical tracker guidance and
   WI-000 through WI-009 are published as issues #52 through #61;
 - tracker-documentation reconciliation and issue publication are complete;
-  P35 integration, a versioned development runtime, and development dogfood
-  remain before the gate can close;
-- P35 tailored follows is validated on its own published branch but is 88
-  commits behind current main; Plan 0104 owns its active reconciliation;
+  a versioned development runtime and development dogfood remain before the
+  gate can close;
+- P35 Packet 1 is integrated through PR 68 at canonical `87858934` after
+  current-main reconciliation and combined provider-free validation;
 - `docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md` is
   closed through merged PR 64 at canonical `b753bcef`; both accepted
   question-contract defects are repaired and regression-locked;
-- production remains the only active runtime and does not contain the new
-  product surfaces; source and production currently reuse service version
-  `0.3.116` for different manifests.
+- production remains the only active runtime at service `0.3.116`, schema 17;
+  source is now distinctly versioned `0.3.117`, schema 18, but has not been
+  built or installed as an isolated development runtime.
 
 Plan:
 
@@ -3292,5 +3291,6 @@ Program Gate:
 
 Next Bounded Action:
 
-- execute Plan 0104 from canonical `31342c9f`, preserving both branch histories
-  and every runtime and provider gate.
+- create the bounded Packet 4 development-release plan from canonical
+  `87858934`, separating artifact proof, development-runtime mutation, and
+  later dogfood effects while preserving production unchanged.

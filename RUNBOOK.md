@@ -29569,3 +29569,65 @@ Next Bounded Action:
 - publish the integration-ready feature tip, bind canonical P35 lane custody to
   that exact remote checkpoint, then self-review and integrate its owned-fork
   pull request.
+
+## Turn 474 | 2026-09-14
+
+Focus: integrate and close Plan 0104 / P35 Packet 1.
+
+Authority Consulted:
+
+- Plan 0104/P51, Plan 0086/P35, WI-004/WI-009, canonical lane custody, owned-fork
+  PRs 67 and 68, Git ancestry, and collaboration, validation, closeout,
+  worktree, planning, and active-lane policy.
+
+Decisions And Changes:
+
+- published canonical catalog PR 67 to bind `INTEGRATION_READY` custody and
+  validation to exact remote feature tip `434ac770`;
+- opened PR 68 only after the catalog audit reported `integration_ready` with
+  no problem, then self-reviewed its exact 32-file remote diff and 11 commits;
+- merged PR 68 after GitHub reported `MERGEABLE/CLEAN` and no failing required
+  check;
+- closed Plan 0104, moved P35 custody to `INTEGRATED`, returned WI-004 to its
+  Packet 2 program gate, and advanced P51 to a separately planned versioned
+  development-runtime packet.
+
+Validation Evidence:
+
+- PR 67: https://github.com/CochranResearchGroup/last30days-skill/pull/67,
+  merged at `b2b1708f`;
+- PR 68: https://github.com/CochranResearchGroup/last30days-skill/pull/68,
+  merged at `2026-09-14T11:08:09Z` with canonical receipt
+  `87858934c8498dccbdeda549ad73f626dbc143a7`;
+- exact feature head `434ac770eb1b6aeda37f455c1a35e3ddb9a69ad0`
+  and original accepted head `d2c9f8eb` are both ancestors of canonical main;
+- the 99-test baseline, combined 20-module slice, comprehensive Python suite,
+  all MCP Go tests and vet, deterministic manifest, plan authority, planning,
+  lane, and diff gates passed;
+- canonical main is clean and remote-equal at the integration receipt before
+  this closeout branch.
+
+State Movement:
+
+- Plan 0104 `OPEN -> CLOSED`;
+- P35 custody `INTEGRATION_READY -> INTEGRATED`;
+- WI-004 `IN_PROGRESS -> BLOCKED` before Packet 2 under WI-009;
+- WI-009 remains `IN_PROGRESS`; Plan 0102 Packets 4 and 5 remain;
+- progress classification: `outcome_progress`;
+- every Plan 0104 criterion is satisfied without an external effect.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no delegated evidence was used.
+
+Graphiti Write Status:
+
+- `not_written`; session-level authority to write durable memory was not
+  explicitly granted, so merged plans, Git, tests, manifest, and PR receipts
+  remain authoritative.
+
+Next Bounded Action:
+
+- create a separate Packet 4 plan for deterministic development artifact proof
+  and isolated development-runtime provisioning; do not infer runtime,
+  provider, browser, release-publication, deployment, or dogfood authority.
