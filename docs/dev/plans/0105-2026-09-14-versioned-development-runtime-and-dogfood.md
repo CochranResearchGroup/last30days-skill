@@ -1,6 +1,6 @@
 # Plan 0105 | Versioned Development Runtime And Dogfood
 
-State: OPEN
+State: CLOSED
 Lane: P51
 Work item: WI-009
 Parent plan: docs/dev/plans/0102-2026-09-13-productization-readiness-prerequisites.md
@@ -8,7 +8,7 @@ Branch: feat/p51-isolated-runtime-v1
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 3
+Plan version: 4
 Date: 2026-09-14
 Session owner: primary Codex goal thread
 
@@ -22,18 +22,25 @@ quality reporting, and tailored-follow lifecycle.
 
 ## Current State
 
-- canonical `main` is clean and remote-equal at
-  `8f9bfb142cd64c6b17cbc8c67973cf38d668108d`;
-- source identifies service `0.3.117`, schema 18, with 139-file runtime manifest
-  SHA-256 `8b0d3590801fc1732d8c52d02d5ab9c4a0b141858fe77809b91d517b56c57cf2`;
-- production remains active at service `0.3.116`, schema 17, installed manifest
-  `19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8`;
-- Plan 0077's accepted architecture assigns the repo-only
-  `dev/last30days/scripts/lane_runtime.py` controller the isolated-runtime
-  lifecycle. Packet 1 currently supplies only a read-only `doctor`; lifecycle,
-  process-identity binding, effect denial, and stale-owner handling remain;
-- Plan 0102 Packets 1, 2, 3, and 6 are complete. This plan owns its remaining
-  Packets 4 and 5 under the operator's explicit isolated-development authority.
+- PRs 73 and 74 integrated the exact-owner cache-only runtime lifecycle and
+  canonical versioned artifact-root handling at canonical
+  `1168c62e0192ff33f71a07482a32b05721fb839a`;
+- two clean fixed-input builds from that commit are byte-identical at SHA-256
+  `cf64df41ed072b3d87085b537e0cbe4960d56e71d34d70891b386e152d15bff2`;
+  service `0.3.117`, schema 18, and runtime manifest
+  `a0a11ff4be28ac72048f1634221ef59d464802222f0f0ac571a6fe242d1e83c3`
+  agree;
+- exactly one isolated runtime, `l30d-p51-dogfood-cdbb3d9fd80b`, passed
+  `doctor`, `up`, and `status`, completed the five synthetic provider-free
+  dogfood surfaces, rejected a refresh-capable live-socket query, and stopped
+  through exact-owner `down` while retaining its state and receipts;
+- fresh post-dogfood production readback still reports PID 1428, service
+  `0.3.116`, schema 17, installed manifest
+  `19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8`,
+  and the original unit, database, socket, and config identities;
+- comprehensive Python, focused runtime/package/plan, MCP Go test/vet,
+  manifest, diff, and authority validation pass. Durable evidence is indexed by
+  `docs/dev/notes/0126-2026-09-14-p51-runtime-dogfood-closeout-receipt.json`.
 
 ## Scope And Ordered Slices
 
@@ -303,3 +310,77 @@ production unchanged, and integrate closeout.
 
 Next action: publish this integration-ready catalog, then open, self-review, and
 merge the exact feature PR without another feature-branch rewrite.
+
+### Checkpoint P0105-C04 | 2026-09-14
+
+Plan version: 4
+
+State transition: `OPEN -> CLOSED`; all seven acceptance criteria pass and the
+exact isolated runtime has been stopped through its verified owner identity.
+
+Progress classification: `outcome_complete`; Packets 4 and 5 are integrated,
+reproducible, dogfooded, reconciled, and closed without crossing any prohibited
+production, provider, browser, schedule, release, deployment, private-data, or
+GitHub issue boundary.
+
+Evidence:
+
+- reviewed implementation PR 73 merged at
+  `633297cb88b161bdd72c57fcd186d51364cb60d4`; focused hotfix PR 74 merged at
+  canonical `1168c62e0192ff33f71a07482a32b05721fb839a` after a production-shaped
+  archive regression test reproduced `artifact_manifest_invalid`;
+- two `SOURCE_DATE_EPOCH=0` builds from exact canonical `1168c62e` are
+  byte-identical at artifact SHA-256
+  `cf64df41ed072b3d87085b537e0cbe4960d56e71d34d70891b386e152d15bff2`;
+- runtime `l30d-p51-dogfood-cdbb3d9fd80b` bound descriptor digest
+  `a7551944051cd59d78b575022d5f4e81afc8663a0b7bbdd7ba2020ec7a8e3c76`,
+  PID 859669/start ticks 1166337, exact Unix peer PID/UID, service `0.3.117`,
+  schema 18, and manifest
+  `a0a11ff4be28ac72048f1634221ef59d464802222f0f0ac571a6fe242d1e83c3`;
+- the strict child environment contained only locale, private XDG/runtime
+  paths, and explicit deny/cache-only policy keys; no credential, provider,
+  browser, notification, or schedule input was inherited;
+- synthetic provider-free receipts pass stored search, structured and
+  evidence-only questions, saved monitors, four-axis quality reporting, and
+  tailored-follow create/read/archive history. Search also passed through the
+  live runtime socket, and `force_refresh` was denied with
+  `effect_disabled_by_runtime`;
+- exact-owner `down` stopped only PID 859669 and removed the dev socket while
+  retaining the private database, logs, descriptor, artifact, and 0600
+  receipts. The fresh process census then contained production PID 1428 alone;
+- fresh production readback preserved unit
+  `/home/ecochran76/.config/systemd/user/last30days.service`, config
+  `/home/ecochran76/.config/last30days/.env`, database
+  `/home/ecochran76/.local/share/last30days/research.db`, socket
+  `/run/user/1000/last30days/service.sock`, service `0.3.116`, schema 17, and
+  installed manifest
+  `19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8`;
+- full `uv run pytest -q`, the focused 38-test controller/package/authority
+  surface, MCP `go test ./...`, MCP `go vet ./...`, plan-authority audit,
+  deterministic manifest refresh, and `git diff --check` pass.
+
+Failure evidence retained:
+
+- the first provisioning attempt failed closed before process launch because
+  the controller expected a direct archive root; PR 74 repaired the canonical
+  single version-directory layout without weakening safe extraction;
+- one redundant validation process caused by unsafe PR-body shell quoting was
+  identified and terminated by exact PID before PR creation; no forge or
+  runtime state was affected;
+- the first dogfood script attempt wrote valid synthetic search/question/
+  monitor state before stopping on a quality receipt field-name mismatch. The
+  durable state was preserved and read back idempotently; the final receipt
+  records all five passes.
+
+Subagent status: `joined`; the artifact, isolation, and dogfood audits remained
+read-only advisory evidence. Requested routes were Luna/low, Sol/medium, and
+Luna/low; actual effective worker identities were not runtime-reported. The
+primary independently validated every acceptance surface and retained all
+runtime, integration, and acceptance decisions.
+
+Graphiti write status: `not_written`; no explicit durable-memory write authority
+was granted. Repo plans, receipt index, Git, tests, artifact hashes, and runtime
+readbacks are authoritative.
+
+Next action: close parent Plan 0102 and WI-009 in repo authority, release the P51
+feature freeze, and select later work only through a separately bounded plan.

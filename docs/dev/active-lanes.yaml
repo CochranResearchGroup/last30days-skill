@@ -7,14 +7,14 @@ lanes:
     plan_ref: refs/heads/feat/p51-isolated-runtime-v1
     branch: feat/p51-isolated-runtime-v1
     target: main
-    plan_state: OPEN
-    custody_state: INTEGRATION_READY
-    checkpoint: 5c1d62285f3bd834c9c7cdf060ca710d1bcbe928
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 1168c62e0192ff33f71a07482a32b05721fb839a
     remote_ref: refs/remotes/origin/feat/p51-isolated-runtime-v1
     integration: merge
-    integration_receipt: null
+    integration_receipt: 1168c62e0192ff33f71a07482a32b05721fb839a
     validation_status: passed
-    validation_ref: 5c1d62285f3bd834c9c7cdf060ca710d1bcbe928
+    validation_ref: 1168c62e0192ff33f71a07482a32b05721fb839a
     dependencies: []
     overlaps: [dev/last30days/scripts/lane_runtime.py, skills/last30days/scripts/service.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_http.py, service/runtime-manifest.json, tests/test_lane_runtime.py, tests/test_service_app.py, tests/test_service_process.py, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-009-productization-readiness-remediation.md]
     reconciled_overlaps: [dev/last30days/scripts/lane_runtime.py, skills/last30days/scripts/service.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_http.py, service/runtime-manifest.json, tests/test_lane_runtime.py, tests/test_service_app.py, tests/test_service_process.py, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-009-productization-readiness-remediation.md]

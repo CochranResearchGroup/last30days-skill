@@ -1,12 +1,12 @@
 <!-- last30days-work-item:WI-004 -->
 # Give selected X accounts and lists separate collection attention
 
-State: BLOCKED
+State: READY
 Priority: P1
 Lane: Follows
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/56
-Blocked by: WI-009 before Packet 2
+Blocked by: none
 Architecture: docs/dev/notes/0119-2026-09-13-x-tailored-follow-product-architecture.md
 Implementation plan seed: docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md
 Implementation plan: docs/dev/plans/0086-2026-09-13-x-tailored-follows-packet-1.md
@@ -45,7 +45,7 @@ no cross-service abstraction until this vertical slice is accepted.
 
 Packet 1 is integrated through PR 68 at canonical merge
 `87858934c8498dccbdeda549ad73f626dbc143a7`; its validated published head is
-`434ac770eb1b6aeda37f455c1a35e3ddb9a69ad0`. Packet 2 remains blocked by the
-WI-009 program gate. Do not enqueue a job, open a browser, use a
-profile/provider, mutate an installed database or schedule, or install a
-runtime under this work item.
+`434ac770eb1b6aeda37f455c1a35e3ddb9a69ad0`. WI-009 is now complete, so Packet
+2 is eligible for separate planning. This readiness does not authorize a job,
+browser, profile/provider, installed database or schedule mutation, or runtime
+installation.

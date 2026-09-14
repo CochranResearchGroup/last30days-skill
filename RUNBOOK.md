@@ -29803,3 +29803,94 @@ Graphiti Write Status:
 Next Bounded Action:
 
 - merge this custody catalog, then self-review and merge the exact feature PR.
+
+## Turn 478 | 2026-09-14
+
+Focus: complete Plan 0105 Packets 4/5 and close the Plan 0102/P51 readiness gate.
+
+Plan authority:
+`docs/dev/plans/0105-2026-09-14-versioned-development-runtime-and-dogfood.md`.
+
+Authority Consulted:
+
+- the active goal, Plans 0102/0105, WI-009, Plan 0077 runtime architecture,
+  note 0118, the joined read-only audits, current Git/forge/runtime evidence,
+  and planning, documentation, validation, work-item, model, subagent,
+  multi-session, branch, and collaborative-development policy.
+
+Decisions And Changes:
+
+- self-reviewed and merged runtime implementation PR 73, then preserved a
+  fail-closed provisioning receipt when the real artifact exposed a valid
+  single versioned top-level directory that the controller did not accept;
+- added a production-shaped failure-first regression, repaired only artifact
+  payload-root selection, passed the full suite, and merged focused PR 74;
+- built the service artifact twice from exact canonical `1168c62e` with
+  `SOURCE_DATE_EPOCH=0`, obtaining byte-identical SHA-256
+  `cf64df41ed072b3d87085b537e0cbe4960d56e71d34d70891b386e152d15bff2`;
+- provisioned exactly one isolated runtime, verified descriptor/process birth,
+  artifact entrypoint, socket peer, environment, service `0.3.117`, schema 18,
+  and manifest identity, and retained a fresh status receipt;
+- used only synthetic/local fixtures under the credential-free cache-only
+  environment to dogfood stored search, structured and evidence-only questions,
+  saved monitors, four-axis quality, and tailored-follow create/read/archive
+  history. Live Unix-socket search passed and force-refresh was denied;
+- re-read production without mutation, stopped only the exact dev owner through
+  pidfd-bound `down`, retained all private state/receipts, and confirmed the
+  final process census contains production PID 1428 alone;
+- created durable evidence index
+  `docs/dev/notes/0126-2026-09-14-p51-runtime-dogfood-closeout-receipt.json`.
+
+Validation Evidence:
+
+- full `uv run pytest -q` passes with expected skips at canonical `1168c62e`;
+- focused controller/runtime-package/plan-authority surface passes 38 tests;
+- MCP `go test ./...` and `go vet ./...` pass;
+- plan-authority audit passes with no issues; deterministic manifest refresh and
+  `git diff --check` pass;
+- runtime `l30d-p51-dogfood-cdbb3d9fd80b` used PID 859669 and descriptor digest
+  `a7551944051cd59d78b575022d5f4e81afc8663a0b7bbdd7ba2020ec7a8e3c76`;
+- all five dogfood surfaces and runtime transport receipt report `passed`,
+  `provider_free: true`, and `synthetic_only: true`;
+- fresh production readback preserves unit/config/database/socket identity,
+  PID 1428/start ticks 4893, service `0.3.116`, schema 17, and manifest
+  `19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8`.
+
+Failure Evidence And Disposition:
+
+- the first real-artifact `up` failed before process launch with
+  `artifact_manifest_invalid`; fixed and regression-locked in PR 74;
+- one redundant local pytest process was accidentally started by unsafe shell
+  interpolation in a PR body and stopped by exact owned PID before PR creation;
+- the initial dogfood driver stopped after durable synthetic search/question/
+  monitor writes because it checked a nonexistent quality-report attribute;
+  history was preserved, the driver resumed idempotently, and final receipts
+  prove all required surfaces.
+
+State Movement:
+
+- Plan 0105 `OPEN -> CLOSED`, version `3 -> 4`;
+- Plan 0102 `PLANNED -> CLOSED`, version `7 -> 8`;
+- P51 `OPEN -> CLOSED` and custody `INTEGRATION_READY -> INTEGRATED`;
+- WI-009 `IN_PROGRESS -> DONE` in repo-local authority; issue #55 remains open
+  because no GitHub issue mutation was authorized;
+- WI-000 and WI-004 move `BLOCKED -> READY`; later packets still require their
+  own bounded plans and action-specific authority;
+- progress classification: `outcome_complete`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; three one-level read-only audits were requested at Luna/low,
+  Sol/medium, and Luna/low. Actual effective worker identities were not
+  runtime-reported. The primary corrected the missed tailored-follow audit
+  surface and independently verified every integration/runtime/acceptance gate.
+
+Graphiti Write Status:
+
+- `not_written`; no explicit durable-memory write authority was granted.
+
+Next Bounded Action:
+
+- merge this closeout through the reviewed pull-request path, verify canonical
+  remote equality and the production-only census, then select a new `READY`
+  packet only under separate planning and effect authority.
