@@ -8,9 +8,9 @@ Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/58
 Blocked by: none for the provider-free runtime-closeout packet
 Last completed plan: docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md
-Active plan: none
-Branch: main
-Owner: /root
+Active plan: docs/dev/plans/0120-2026-09-14-cross-service-follow-runtime-closeout.md
+Branch: feat/cross-service-follow-runtime-closeout-v1
+Owner: unassigned
 
 ## Problem
 

@@ -688,6 +688,31 @@ Next action: integrate this closeout projection, then register Wave 5 at full
 capacity: WI-005 fresh-runtime closeout, WI-006 monitor/digest composition
 closeout, and WI-008 real grounding/quality closeout.
 
+### Checkpoint P0107-C15 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_4_integrated -> wave_5_registration_ready`.
+
+Progress classification: `blocker_reduction`; Plans 0120-0122 define three
+dependency-ready, provider-free closeouts that can complete WI-005, WI-006 and
+WI-008 without direct lane-source overlap.
+
+Authority classification:
+
+- `inherited_authority`: registration and later provider-free activation,
+  implementation, review, integration and repo-local reconciliation;
+- `human_gate`: every provider/model/browser/live-data/schedule/installed-
+  runtime/delivery/release/deployment/tracker effect remains prohibited.
+
+Subagent status and reconciliation:
+
+- `joined`; three read-only planning agents completed. Implementation owners
+  remain unassigned until registration merges and exact custody is published.
+
+Next action: integrate registration, create three isolated plan-only refs,
+reconcile activation, then run all three implementation owners concurrently.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;

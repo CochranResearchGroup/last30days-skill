@@ -10,9 +10,9 @@ Blocked by: none for the provider-free grounding/quality closeout packet
 Architecture: docs/dev/notes/0121-2026-09-13-corpus-retrieval-and-grounding-quality-architecture.md
 Implementation plan seed: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md
 Last closed plan: docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md
-Current plan: none
-Branch: main
-Owner: /root
+Current plan: docs/dev/plans/0122-2026-09-14-service-quality-grounding-closeout.md
+Branch: feat/service-quality-grounding-closeout-v1
+Owner: unassigned
 
 ## Problem
 

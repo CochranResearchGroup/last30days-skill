@@ -30727,3 +30727,53 @@ Next Bounded Action:
 
 - validate and integrate this closeout, then register three restart-safe Wave
   5 plans before publishing custody or assigning implementation owners.
+
+## Turn 494 | 2026-09-14
+
+Focus: register the full-capacity provider-free Wave 5 closeout portfolio.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`;
+`docs/dev/plans/0120-2026-09-14-cross-service-follow-runtime-closeout.md`;
+`docs/dev/plans/0121-2026-09-14-monitor-digest-product-closeout.md`;
+`docs/dev/plans/0122-2026-09-14-service-quality-grounding-closeout.md`.
+
+Authority Consulted:
+
+- canonical clean `b3a3a783`; WI-005/WI-006/WI-008; P37/P39/P40; current
+  follow, monitor, question, quality and isolated-runtime seams; planning,
+  testing, model-selection, multi-session and closeout policy.
+
+Decisions And Changes:
+
+- registered Plan 0120 for WI-005 stock cache-only runtime acceptance;
+- registered Plan 0121 for WI-006 follow monitors, deterministic digests,
+  disabled delivery intents, safe import and public runtime closeout;
+- registered Plan 0122 for WI-008 real structural answer-grounding closure;
+- selected one `gpt-6-astra` high-reasoning owner per future lane, no children,
+  while retaining all shared joins with the coordinator.
+
+Validation Evidence:
+
+- registration-only plans and authority projections; plan-authority, YAML and
+  diff validation are required before integration.
+
+State Movement:
+
+- Plans 0120-0122 `unplanned -> PLANNED`;
+- P37/P39/P40 remain `PLANNED`; WI-005/WI-006/WI-008 remain `READY`;
+- Plan 0107 `wave_4_integrated -> wave_5_registration_ready`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; three planning agents completed. Implementation remains unassigned
+  pending exact post-registration custody.
+
+Graphiti Write Status:
+
+- `not_written`; current repository and Git evidence are authoritative.
+
+Next Bounded Action:
+
+- validate and integrate registration, then publish three exact isolated
+  plan-only activations before assigning implementation owners.
