@@ -2626,6 +2626,10 @@ Current State:
   partition/source/publication filters, stable cursors, HTTP, MCP
   `search_posts`, and provider-free fixtures without runtime mutation.
 
+Active Plan:
+
+- `docs/dev/plans/0111-2026-09-14-post-search-packet-3.md`.
+
 Closed Architecture Plan:
 
 - `docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md`.
@@ -2711,6 +2715,10 @@ Current State:
 - validated feature head `434ac770` is contained in canonical main; combined
   tailored-follow, search, questions, monitors, quality, package, and MCP
   validation passed without a runtime or provider effect.
+
+Active Plan:
+
+- `docs/dev/plans/0112-2026-09-14-x-list-and-product-closure.md`.
 
 Closed Reconciliation Plan:
 
@@ -2957,6 +2965,10 @@ Current State:
 - provider-free Packets 1-2 are joined at source acceptance `4a6fdfda`; review
   remediation closes the fixture-containment escape. No real incident,
   release, runtime mutation, staging, or production action has begun.
+
+Active Plan:
+
+- `docs/dev/plans/0113-2026-09-14-hotfix-runtime-and-operator-closure.md`.
 
 Closed Architecture Plan:
 

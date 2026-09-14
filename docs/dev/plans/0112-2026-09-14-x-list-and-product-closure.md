@@ -103,7 +103,7 @@ Custody:
   existed at activation preflight; publish this checkpoint with its exact
   post-commit remote equality before implementation resumes.
 
-Authority and effect boundary:
+Authority classification:
 
 - `inherited_authority` covers only this branch-local plan activation,
   provider-free source/tests, branch publication, review, and later coordinator
