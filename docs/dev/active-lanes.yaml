@@ -7,12 +7,12 @@ lanes:
     plan_ref: refs/heads/docs/p36-packet3-integration
     branch: docs/p36-packet3-integration
     target: main
-    plan_state: OPEN
-    custody_state: INTEGRATION_READY
+    plan_state: CLOSED
+    custody_state: INTEGRATED
     checkpoint: 181465fa3f12e3feb2aee49a71cc353ee2a58fd9
     remote_ref: refs/remotes/origin/docs/p36-packet3-integration
     integration: merge
-    integration_receipt: null
+    integration_receipt: d41e1a6ef495b4e36530a1ed4f88c9b76da35224
     validation_status: passed
     validation_ref: 181465fa3f12e3feb2aee49a71cc353ee2a58fd9
     dependencies: [P36]
@@ -225,11 +225,11 @@ lanes:
     branch: feat/agent-question-answer-v3
     target: main
     plan_state: CLOSED
-    custody_state: INTEGRATION_READY
+    custody_state: INTEGRATED
     checkpoint: 75f2342e57ffb7c6d4c41e9d7825daf934ccb4c7
     remote_ref: refs/remotes/origin/feat/agent-question-answer-v3
     integration: merge
-    integration_receipt: null
+    integration_receipt: d41e1a6ef495b4e36530a1ed4f88c9b76da35224
     validation_status: passed
     validation_ref: 75f2342e57ffb7c6d4c41e9d7825daf934ccb4c7
     dependencies: [P33]
