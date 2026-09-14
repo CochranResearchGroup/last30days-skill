@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-004 -->
 # Give selected X accounts and lists separate collection attention
 
-State: READY
+State: IN_PROGRESS
 Priority: P1
 Lane: Follows
 Parent: WI-000
@@ -11,7 +11,8 @@ Architecture: docs/dev/notes/0119-2026-09-13-x-tailored-follow-product-architect
 Implementation plan seed: docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md
 Implementation plan: docs/dev/plans/0086-2026-09-13-x-tailored-follows-packet-1.md
 Completed reconciliation plan: docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md
-Branch: feat/x-tailored-follows-v1
+Active plan: docs/dev/plans/0109-2026-09-14-tailored-follows-packet-2.md
+Branch: feat/x-tailored-follows-v2
 
 ## Problem
 
@@ -49,3 +50,8 @@ Packet 1 is integrated through PR 68 at canonical merge
 2 is eligible for separate planning. This readiness does not authorize a job,
 browser, profile/provider, installed database or schedule mutation, or runtime
 installation.
+
+Packet 2 is active at published checkpoint `43f041f4` under Plan 0109. It owns
+typed X account context propagation, routing, provider-free outcome fixtures,
+and multi-cause publication only; list routing and every live effect remain
+outside scope.

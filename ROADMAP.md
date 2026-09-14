@@ -2604,7 +2604,7 @@ Next Bounded Action:
 
 ## P33 | Post Search Product Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: expose the complete authorized stored-post corpus through a stable,
 cache-only, evidence-preserving search and pagination contract for users and
@@ -2612,7 +2612,8 @@ agents.
 
 Current State:
 
-- WI-002 is `READY` for a later Packet 2; Packet 1 closed and integrated through PR 36 as
+- WI-002 is `IN_PROGRESS` under Plan 0108 at published activation `0d06d8e2`;
+  Packet 1 closed and integrated through PR 36 as
   `75e7771e006f52847e8e47c1059b2b2000fb8ac7`;
 - the selected seam is additive `POST /v1/posts/search` plus MCP
   `search_posts`, leaving `/v1/query` unchanged for the dependent WI-003 lane;
@@ -2681,7 +2682,7 @@ Disposition:
 
 ## P35 | X Tailored Follow Product Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: let operators give selected X accounts, lists, and topics explicit
 collection identity, cadence, attention, provenance, and lifecycle separate
@@ -2689,7 +2690,8 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `READY` for separately planned Packet 2 work; Packet 1 is
+- WI-004 is `IN_PROGRESS` under Plan 0109 at published activation `43f041f4`;
+  Packet 1 is
   integrated through PR 68 at canonical `87858934`;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
   lifecycle, canonical typed targets, and immutable acquisition context rather
@@ -2928,7 +2930,7 @@ Next Bounded Action:
 
 ## P38 | Reserved Production Hotfix Path
 
-State: PLANNED
+State: OPEN
 
 Objective: keep one dormant zero-resource lane ready to take a qualified
 production defect from current-main source repair through priority integration,
@@ -2937,7 +2939,8 @@ lane reconciliation.
 
 Current State:
 
-- WI-007 is `READY`; its provider-free control-plane and Git drills have no
+- WI-007 is `IN_PROGRESS` under Plan 0110 at published activation `28c721e0`;
+  its provider-free control-plane and Git drills have no
   product dependency;
 - current policy reserves the slot, and builder/installer machinery already
   provides reproducible artifacts, readiness, database snapshots, rollback,
