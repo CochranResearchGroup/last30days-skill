@@ -445,17 +445,24 @@ class MonitorRepository:
             )
 
     def current_spec(self, monitor_id: str) -> contracts.MonitorSpecV1:
+        return self.spec_revision(monitor_id)
+
+    def spec_revision(
+        self, monitor_id: str, revision: int | None = None
+    ) -> contracts.MonitorSpecV1:
         conn = self._connect()
         try:
             row = conn.execute(
                 """SELECT payload_json, payload_sha256 FROM service_monitor_specs
-                   WHERE monitor_id = ? ORDER BY revision DESC LIMIT 1""",
-                (monitor_id,),
+                   WHERE monitor_id = ? AND (? IS NULL OR revision = ?)
+                   ORDER BY revision DESC LIMIT 1""",
+                (monitor_id, revision, revision),
             ).fetchone()
         finally:
             conn.close()
         if row is None:
-            raise KeyError(f"monitor not found: {monitor_id}")
+            suffix = "" if revision is None else f"@{revision}"
+            raise KeyError(f"monitor not found: {monitor_id}{suffix}")
         if hashlib.sha256(row["payload_json"].encode()).hexdigest() != row["payload_sha256"]:
             raise MonitorKernelError(MonitorErrorCode.IMMUTABLE_CONFLICT, "monitor spec integrity failure")
         return contracts.MonitorSpecV1.from_dict(json.loads(row["payload_json"]))

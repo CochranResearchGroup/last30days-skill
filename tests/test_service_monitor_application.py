@@ -1,11 +1,14 @@
 """Provider-free behavior through the monitor product command interface."""
 
 import sqlite3
+import threading
 from datetime import UTC, datetime
 
 import pytest
 from lib import service_monitor_contracts as contracts
 from lib.service_monitor_application import MonitorApplication
+from lib.service_client import ServiceClient, ServiceClientError
+from lib.service_http import UnixServiceServer
 from lib.service_monitors import MonitorKernelError
 from lib.service_post_search import PostSearchBackend
 
@@ -207,6 +210,7 @@ def test_monitor_lifecycle_is_explicit_scoped_and_source_archive_pauses(tmp_path
 
 def test_monitor_names_are_partition_scoped_not_global_existence_oracles(tmp_path):
     app, _, _ = composition(tmp_path)
+    snapshots = {}
     for profile in ("x-primary", "other"):
         query = contracts.SavedQueryDefinitionV1.from_dict(
             {
@@ -241,3 +245,75 @@ def test_monitor_names_are_partition_scoped_not_global_existence_oracles(tmp_pat
         )
         assert result["monitor_id"] == "same-name"
         assert result["name"] == profile
+        app.command(
+            {
+                "profile_id": profile,
+                "command": {"action": "activate", "monitor_id": "same-name"},
+            }
+        )
+        snapshots[profile] = app.command(
+            {
+                "profile_id": profile,
+                "command": {
+                    "action": "capture",
+                    "monitor_id": "same-name",
+                    "capture_id": "partition-probe",
+                },
+            }
+        )["snapshot_id"]
+
+    for action in ("evaluate", "resume"):
+        if action == "resume":
+            app.command(
+                {
+                    "profile_id": "other",
+                    "command": {"action": "pause", "monitor_id": "same-name"},
+                }
+            )
+        observed = []
+        for snapshot_id in (snapshots["x-primary"], "absent-snapshot"):
+            with pytest.raises(MonitorKernelError) as denied:
+                app.command(
+                    {
+                        "profile_id": "other",
+                        "command": {
+                            "action": action,
+                            "monitor_id": "same-name",
+                            "snapshot_id": snapshot_id,
+                        },
+                    }
+                )
+            observed.append((denied.value.code, str(denied.value)))
+        assert observed[0] == observed[1]
+        assert observed[0][0] is contracts.MonitorErrorCode.VIEW_UNAVAILABLE
+        if action == "evaluate":
+            socket_path = tmp_path / "runtime" / "service.sock"
+
+            class MonitorTransport:
+                @staticmethod
+                def monitor(payload):
+                    return app.command(payload)
+
+            server = UnixServiceServer(socket_path, MonitorTransport())
+            thread = threading.Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                client = ServiceClient(socket_path)
+                public_errors = []
+                for snapshot_id in (snapshots["x-primary"], "absent-snapshot"):
+                    with pytest.raises(ServiceClientError) as denied:
+                        client.monitor(
+                            {
+                                "action": "evaluate",
+                                "monitor_id": "same-name",
+                                "snapshot_id": snapshot_id,
+                            },
+                            profile_id="other",
+                        )
+                    public_errors.append(str(denied.value))
+                assert public_errors[0] == public_errors[1]
+                assert public_errors[0].startswith("view_unavailable:")
+            finally:
+                server.shutdown()
+                server.server_close()
+                thread.join(timeout=2)

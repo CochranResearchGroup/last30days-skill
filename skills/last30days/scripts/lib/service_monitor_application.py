@@ -368,9 +368,14 @@ class MonitorApplication:
                 ).to_dict()
             if action == "evaluate":
                 run = self.kernel.evaluate(spec.monitor_id, cmd["snapshot_id"])
+                frozen_spec = self.repository.spec_revision(
+                    run.monitor_id, run.monitor_revision
+                )
                 return {
                     "run": run.to_dict(),
-                    "digest": prepare_digest(self.repository, self.records, run, spec),
+                    "digest": prepare_digest(
+                        self.repository, self.records, run, frozen_spec
+                    ),
                 }
             if action == "digest":
                 return self.records.get("digest", run.run_id, partition)
@@ -381,6 +386,12 @@ class MonitorApplication:
                 return getattr(self.kernel, action)(run.run_id, actor=profile).to_dict()
             baseline = self.repository.current_baseline(spec.monitor_id)
             return {"baseline": None if baseline is None else baseline.to_dict()}
+        except MonitorKernelError as exc:
+            if exc.code is c.MonitorErrorCode.VIEW_UNAVAILABLE:
+                raise MonitorKernelError(
+                    c.MonitorErrorCode.VIEW_UNAVAILABLE, "monitor unavailable"
+                ) from None
+            raise
         except KeyError:
             raise MonitorKernelError(
                 c.MonitorErrorCode.VIEW_UNAVAILABLE, "monitor unavailable"

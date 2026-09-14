@@ -301,6 +301,189 @@ def test_real_grounding_adapter_reads_durable_question_answers_without_effects(t
     assert db_path.read_bytes() == before
 
 
+def test_grounding_resolves_reused_citations_per_occurrence(tmp_path):
+    db_path = _sealed_corpus(tmp_path, partial=False)
+    clock = lambda: datetime(2026, 9, 14, tzinfo=timezone.utc)
+    service = QuestionService(db_path, PostSearchBackend(db_path), clock=clock)
+    service.submit(
+        _question_request(
+            request_id="grounding-reused-citation",
+            answer_mode="synthesized",
+            question="browser agents reliable",
+        ),
+        access_partitions=("public",),
+    )
+
+    class ReusedCitationWorker:
+        worker_ref = "provider-free-reused-citation-fixture"
+
+        def answer(self, payload):
+            citation_id = payload["allowed_citation_ids"][0]
+            return {
+                "answer_state": "answered",
+                "summary": "Two statements reuse one exact citation.",
+                "statements": [
+                    {
+                        "text": text,
+                        "statement_kind": "source_fact",
+                        "support_state": "supported",
+                        "citation_ids": [citation_id],
+                        "alternatives": [],
+                    }
+                    for text in ("First supported statement.", "Second supported statement.")
+                ],
+                "uncertainty_codes": [],
+            }
+
+    status = QuestionRunner(
+        service.queue, ReusedCitationWorker(), clock=clock
+    ).run_once(worker_id="grounding-fixture")
+    assert status is not None and status.answer is not None
+    with sqlite3.connect(db_path) as conn:
+        conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        conn.execute("PRAGMA journal_mode=DELETE")
+    outcome = QuestionGroundingAdapter(
+        FixtureCatalog({"sealed-corpus": db_path})
+    ).evaluate(_grounding_case(db_path, status), result_limit=20)
+    dereference = next(
+        metric for metric in outcome.metrics if metric.name == "citation_dereference"
+    )
+    assert outcome.state == "passed"
+    assert (dereference.numerator, dereference.denominator) == (2, 2)
+
+
+def test_grounding_resolves_more_than_twenty_distinct_citations_in_batches(tmp_path):
+    db_path = _sealed_corpus(tmp_path, partial=False)
+    with sqlite3.connect(db_path) as conn:
+        conn.row_factory = sqlite3.Row
+        document = dict(
+            conn.execute(
+                "SELECT * FROM documents WHERE document_id='doc-legacy'"
+            ).fetchone()
+        )
+        version = dict(
+            conn.execute(
+                "SELECT * FROM document_versions "
+                "WHERE version_id='version-legacy-current'"
+            ).fetchone()
+        )
+        for index in range(21):
+            document_id = f"extra-{index}"
+            version_id = f"version-extra-{index}"
+            url = f"https://example.invalid/{index}"
+            cloned_document = {
+                **document,
+                "document_id": document_id,
+                "source_native_id": document_id,
+                "canonical_url": url,
+                "current_version_id": version_id,
+            }
+            metadata = json.loads(version["source_metadata_json"])
+            content = {
+                "source_native_id": document_id,
+                "url": url,
+                "title": version["title"],
+                "text": version["normalized_text"],
+                "author": version["author"],
+                "published_at": version["published_at"],
+                "metadata": metadata,
+            }
+            media = json.loads(version["media_json"])
+            if media:
+                content["media"] = media
+            cloned_version = {
+                **version,
+                "document_id": document_id,
+                "version_id": version_id,
+                "content_hash": _json_digest(content),
+            }
+            conn.execute(
+                f"INSERT INTO documents ({','.join(cloned_document)}) "
+                f"VALUES ({','.join('?' for _ in cloned_document)})",
+                tuple(cloned_document.values()),
+            )
+            conn.execute(
+                f"INSERT INTO document_versions ({','.join(cloned_version)}) "
+                f"VALUES ({','.join('?' for _ in cloned_version)})",
+                tuple(cloned_version.values()),
+            )
+    clock = lambda: datetime(2026, 9, 14, tzinfo=timezone.utc)
+    service = QuestionService(db_path, PostSearchBackend(db_path), clock=clock)
+    status = service.submit(
+        _question_request(
+            request_id="grounding-many-citations",
+            limits={
+                "evidence_limit": 50,
+                "max_statements": 50,
+                "max_answer_characters": 16000,
+            },
+        ),
+        access_partitions=("public",),
+    )
+    assert status.answer is not None
+    citations = tuple(
+        citation
+        for statement in status.answer.statements
+        for citation in statement.citations
+    )
+    assert len({citation.evidence_id for citation in citations}) == 23
+    with sqlite3.connect(db_path) as conn:
+        conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        conn.execute("PRAGMA journal_mode=DELETE")
+    outcome = QuestionGroundingAdapter(
+        FixtureCatalog({"sealed-corpus": db_path})
+    ).evaluate(_grounding_case(db_path, status), result_limit=50)
+    assert outcome.state == "passed"
+
+
+@pytest.mark.parametrize(
+    ("table", "column"),
+    [
+        ("service_question_requests", "request_digest"),
+        ("service_question_retrievals", "retrieval_digest"),
+        ("service_question_answers", "output_digest"),
+        ("service_question_tasks", "answer_id"),
+    ],
+)
+def test_grounding_rejects_corrupt_durable_scalar_receipts(tmp_path, table, column):
+    db_path, statuses = _grounded_fixture(tmp_path)
+    status = statuses["supported"]
+    with sqlite3.connect(db_path) as conn:
+        triggers = conn.execute(
+            "SELECT name, sql FROM sqlite_master WHERE type='trigger' AND tbl_name=?",
+            (table,),
+        ).fetchall()
+        for name, _ in triggers:
+            conn.execute(f'DROP TRIGGER "{name}"')
+        key = "question_id" if table != "service_question_requests" else "request_id"
+        identity = (
+            status.question_id
+            if key == "question_id"
+            else json.loads(
+                conn.execute(
+                    "SELECT request_json FROM service_question_requests "
+                    "JOIN service_question_retrievals USING (request_id) "
+                    "WHERE question_id=?",
+                    (status.question_id,),
+                ).fetchone()[0]
+            )["request_id"]
+        )
+        conn.execute(
+            f"UPDATE {table} SET {column}=? WHERE {key}=?",
+            ("sha256:corrupt", identity),
+        )
+        for _, sql in triggers:
+            conn.execute(sql)
+    outcome = QuestionGroundingAdapter(
+        FixtureCatalog({"sealed-corpus": db_path})
+    ).evaluate(_grounding_case(db_path, status), result_limit=20)
+    correlation = next(
+        metric for metric in outcome.metrics if metric.name == "answer_correlation"
+    )
+    assert outcome.state == "failed"
+    assert correlation.numerator == 0
+
+
 def test_grounding_adapter_rejects_tampered_citations_and_unlabeled_coverage(tmp_path):
     db_path, statuses = _grounded_fixture(tmp_path)
     supported = statuses["supported"]

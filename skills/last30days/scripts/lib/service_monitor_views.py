@@ -339,7 +339,12 @@ class SavedQueryViewProvider:
         self.repository.get(ref, access_partition_id)
         receipt = self.repository.capture_receipt(snapshot_id)
         snapshot = contracts.SavedQueryViewSnapshotV1.from_dict(receipt["snapshot"])
-        if snapshot.view_ref != ref or snapshot.access_partition_id != access_partition_id:
+        if snapshot.access_partition_id != access_partition_id:
+            raise MonitorKernelError(
+                contracts.MonitorErrorCode.VIEW_UNAVAILABLE,
+                "saved view is unavailable",
+            )
+        if snapshot.view_ref != ref:
             raise MonitorKernelError(contracts.MonitorErrorCode.VIEW_MISMATCH,
                                      "saved view does not match this query and partition")
         return snapshot

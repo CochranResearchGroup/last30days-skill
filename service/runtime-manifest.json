@@ -387,7 +387,7 @@
     },
     {
       "path": "scripts/lib/service_monitor_application.py",
-      "sha256": "ce0791fcc79310c91e4633dcc7453b1a5f4a78f6109e0b3493bcaedf63678d73",
+      "sha256": "3d8cf304e5a19333a3f8243b51b636a9d39a392ed0b49ceac7a6ffd466db3ca6",
       "source": "skills/last30days/scripts/lib/service_monitor_application.py"
     },
     {
@@ -417,12 +417,12 @@
     },
     {
       "path": "scripts/lib/service_monitor_views.py",
-      "sha256": "a7d58663094c0eeaef01ec925b4c357c0c21f8c432a0d1e58361cbb4c9b3bd16",
+      "sha256": "8271c892e6a4147ff362ec181ae81a118ac6a6a40fe0e4f2868b98b76ff59a41",
       "source": "skills/last30days/scripts/lib/service_monitor_views.py"
     },
     {
       "path": "scripts/lib/service_monitors.py",
-      "sha256": "69c6dd877cc9bf48a8b481d078d4efacb2e86e1c9651e87a02afd6776ba7d7a2",
+      "sha256": "310f06ed29cd88d2ab2f474cfd0d7c55cd6b7933a8ebdca81909599946e81de3",
       "source": "skills/last30days/scripts/lib/service_monitors.py"
     },
     {

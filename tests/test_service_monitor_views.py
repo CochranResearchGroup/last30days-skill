@@ -229,8 +229,9 @@ def test_search_corpus_is_read_only_and_query_capture_partition_is_exact(tmp_pat
     before = backend.db_path.read_bytes()
     snapshot = provider.capture(definition.view_ref, "public", "read-only")
     assert backend.db_path.read_bytes() == before
-    with pytest.raises(MonitorKernelError):
+    with pytest.raises(MonitorKernelError) as denied:
         provider.read(definition.view_ref, "profile:other", snapshot.snapshot_id)
+    assert denied.value.code is contracts.MonitorErrorCode.PARTITION_MISMATCH
 
 
 def test_degraded_semantic_coverage_is_retained_but_not_accepted(tmp_path):

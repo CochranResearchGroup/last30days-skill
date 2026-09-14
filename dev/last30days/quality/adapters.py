@@ -457,7 +457,20 @@ class QuestionGroundingAdapter(_ReadOnlyAdapter):
         try:
             with self._connect(path) as conn:
                 row = conn.execute(
-                    "SELECT q.request_json, r.retrieval_json, a.answer_json "
+                    "SELECT t.question_id AS task_question_id, "
+                    "t.answer_id AS task_answer_id, t.state AS task_state, "
+                    "q.request_id AS stored_request_id, "
+                    "q.request_fingerprint AS stored_request_fingerprint, "
+                    "q.request_digest AS stored_request_digest, q.request_json, "
+                    "r.question_id AS stored_question_id, "
+                    "r.request_id AS retrieval_request_id, "
+                    "r.search_head_id AS stored_search_head_id, "
+                    "r.evidence_set_id AS stored_evidence_set_id, "
+                    "r.access_partitions_digest AS stored_access_partitions_digest, "
+                    "r.retrieval_digest AS stored_retrieval_digest, r.retrieval_json, "
+                    "a.answer_id AS stored_answer_id, "
+                    "a.question_id AS answer_question_id, "
+                    "a.output_digest AS stored_output_digest, a.answer_json "
                     "FROM service_question_tasks t "
                     "JOIN service_question_retrievals r ON r.question_id=t.question_id "
                     "JOIN service_question_requests q ON q.request_id=r.request_id "
@@ -501,21 +514,33 @@ class QuestionGroundingAdapter(_ReadOnlyAdapter):
                 for statement in answer.statements
                 for citation in statement.citations
             )
-            resolver_items = ()
+            unique_cited = tuple(
+                {
+                    citation.evidence_id: citation
+                    for citation in cited
+                }.values()
+            )
+            resolver_items = []
             if cited:
-                response = QuestionEvidenceResolver(path).read(
-                    question_contracts.EvidenceReadRequestV1.from_dict(
-                        {
-                            "schema_version": 1,
-                            "request_id": f"quality-{case.case_id}",
-                            "profile_id": profile_id,
-                            "refs": [citation.to_dict() for citation in cited],
-                            "max_response_bytes": 131072,
-                        }
-                    ),
-                    access_partitions=tuple(partitions),
-                )
-                resolver_items = response.items
+                resolver = QuestionEvidenceResolver(path)
+                for offset in range(0, len(unique_cited), 20):
+                    batch = unique_cited[offset : offset + 20]
+                    response = resolver.read(
+                        question_contracts.EvidenceReadRequestV1.from_dict(
+                            {
+                                "schema_version": 1,
+                                "request_id": question_contracts.stable_id(
+                                    "quality-read",
+                                    {"case_id": case.case_id, "offset": offset},
+                                ),
+                                "profile_id": profile_id,
+                                "refs": [citation.to_dict() for citation in batch],
+                                "max_response_bytes": 131072,
+                            }
+                        ),
+                        access_partitions=tuple(partitions),
+                    )
+                    resolver_items.extend(response.items)
         except (
             KeyError,
             TypeError,
@@ -528,6 +553,24 @@ class QuestionGroundingAdapter(_ReadOnlyAdapter):
 
         correlation = int(
             request.profile_id == profile_id
+            and row["task_question_id"] == question_id
+            and row["stored_question_id"] == question_id
+            and row["answer_question_id"] == question_id
+            and row["stored_request_id"] == request.request_id
+            and row["retrieval_request_id"] == request.request_id
+            and row["stored_request_fingerprint"] == request.request_fingerprint
+            and row["stored_request_digest"]
+            == question_contracts.digest(request.to_dict())
+            and row["stored_retrieval_digest"]
+            == question_contracts.digest(retrieval)
+            and row["stored_search_head_id"] == retrieval.get("search_head_id")
+            and row["stored_evidence_set_id"] == retrieval.get("evidence_set_id")
+            and row["stored_access_partitions_digest"]
+            == retrieval.get("access_partitions_digest")
+            and row["stored_answer_id"] == answer.answer_id
+            and row["task_answer_id"] == answer.answer_id
+            and row["stored_output_digest"] == answer.output_digest
+            and row["task_state"] == answer.answer_state
             and retrieval.get("question_id") == question_id
             and retrieval.get("request_fingerprint") == request.request_fingerprint
             and answer.question_id == question_id
@@ -550,7 +593,15 @@ class QuestionGroundingAdapter(_ReadOnlyAdapter):
                 for citation in cited
             )
         )
-        dereferenced = sum(item.status == "available" for item in resolver_items)
+        available_refs = {
+            question_contracts.canonical_json(item.ref.to_dict())
+            for item in resolver_items
+            if item.status == "available"
+        }
+        dereferenced = sum(
+            question_contracts.canonical_json(citation.to_dict()) in available_refs
+            for citation in cited
+        )
         dereference_denominator = len(cited) or 1
         if not cited:
             dereferenced = 1

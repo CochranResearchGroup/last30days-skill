@@ -128,3 +128,46 @@ def test_partial_capture_and_failed_renderer_cannot_advance_baseline(
             snapshot_id=snap["snapshot_id"],
         )
     assert command(app, "baseline", monitor_id="monitor-fixture") == {"baseline": None}
+
+
+def test_digest_uses_the_immutable_spec_revision_selected_by_the_run(
+    tmp_path, monkeypatch
+):
+    app, _, ref = composition(tmp_path)
+    create(app, ref)
+    command(app, "activate", monitor_id="monitor-fixture")
+    snapshot = command(
+        app, "capture", monitor_id="monitor-fixture", capture_id="revision-race"
+    )
+    original_evaluate = app.kernel.evaluate
+
+    def interleaved_evaluate(monitor_id, snapshot_id):
+        command(
+            app,
+            "revise",
+            monitor_id="monitor-fixture",
+            expected_revision=2,
+            name="Race-safe",
+            cadence_seconds=3600,
+            max_items=1,
+            retention_days=30,
+        )
+        return original_evaluate(monitor_id, snapshot_id)
+
+    def assert_frozen_spec(repository, records, run, spec):
+        del repository, records
+        assert spec.revision == run.monitor_revision == 3
+        assert spec.max_items == 1
+        return {"frozen_revision": spec.revision}
+
+    monkeypatch.setattr(app.kernel, "evaluate", interleaved_evaluate)
+    import lib.service_monitor_application as module
+
+    monkeypatch.setattr(module, "prepare_digest", assert_frozen_spec)
+    result = command(
+        app,
+        "evaluate",
+        monitor_id="monitor-fixture",
+        snapshot_id=snapshot["snapshot_id"],
+    )
+    assert result["digest"] == {"frozen_revision": 3}
