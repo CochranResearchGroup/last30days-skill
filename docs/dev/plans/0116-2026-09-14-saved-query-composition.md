@@ -23,9 +23,11 @@ evidence view into explicit baseline acceptance.
 ## Current State
 
 Packet 1's provider-free monitor kernel is integrated. WI-002's search contract
-and WI-004's follow contract are available, but the kernel still consumes a fake
-saved-query provider. This packet implements query composition only; follow
-composition and digest/delivery closure remain separate.
+and WI-004's follow contract are available. Packet 2 now supplies immutable
+saved-query definitions, a durable cursor-free capture repository, and a real
+search view provider alongside the fake provider. Source validation and shared
+CLI/MCP/runtime joins are tracked in C02; follow composition and digest/delivery
+closure remain separate.
 
 ## Scope
 
@@ -162,3 +164,133 @@ return its exact SHA, clean status and local/upstream/live remote equality,
 then stop. Do not start implementation from the plan's OPEN label. On a later
 coordinator continuation, re-anchor the integrated base and shared ownership
 before the first source edit; retain all plan stop rules.
+
+### Checkpoint P0116-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `activation_held -> source_checkpoint`; plan remains `OPEN`
+pending coordinator integration and public transport acceptance.
+
+Progress classification: `outcome_progress`; the real saved-query composition
+advances acceptance criteria 1-5, with a tested local JSON seam for criterion 6.
+No WI-006 completion or public CLI/MCP parity is claimed from local fixtures.
+
+Authority classification:
+
+- `inherited_authority`: coordinator continuation explicitly authorized this
+  bounded implementation covering monitor-owned source/tests, local synthetic
+  stores, validation, plan update and branch publication only;
+- fetched origin and fast-forwarded the existing lane to exact
+  `c4251dc12c905e513c9f37119b3442382741f31e`, preserving activation ancestry
+  `d764f2579e1e088d8ce4678e14fa5c489c742480`; clean HEAD equaled origin/main
+  before source editing;
+- owner/worktree/branch remain those in C01. Requested model is
+  `gpt-6-astra`, high reasoning; effective model/effort remain runtime-unknown;
+- one implementation attempt with incremental TDD, one self-review and bounded
+  remediation; no children, provider/browser/live/installed/runtime/schedule,
+  delivery, PR or issue effects;
+- all shared routes, schemas/catalogs, runtime manifest, roadmap/runbook,
+  active-lane and work-item changes remain coordinator-owned.
+
+Implemented source contract:
+
+- `SavedQueryDefinitionV1` strictly validates current-revision queries, stores
+  canonical immutable query bytes, excludes transport request IDs/cursors, and
+  exposes detached JSON projections. Query versions increase exactly by one;
+  query partition and profile identity cannot change across versions;
+- `SavedQueryRepository` adds monitor-local immutable query/capture tables to
+  the monitor store, without changing the shared corpus schema. Capture IDs
+  bind exact query version, partition and resource limits. Pending/failed IDs
+  never silently restart; completed captures replay after backend/repository
+  reopening without reading the corpus again;
+- `SavedQueryViewProvider` consumes real `PostSearchBackend` pages inside one
+  retained snapshot lifetime, pins query/head/component/coverage identity, and
+  freezes stable post IDs, exact version IDs, complete evidence references,
+  source coverage and the first page's UTC knowledge cutoff. Cursors are only
+  transient process variables, never durable capture/query/baseline state;
+- malformed/nonprogressing traversal, query/head/partition drift, expiry and
+  restart fail closed. Truncation or unavailable/degraded semantic coverage is
+  partial; complete means this bounded cache view, not provider acquisition
+  coverage. No search absence becomes a removal;
+- the monitor kernel accepts either real or fake view readers. Acceptance now
+  rejects partial first baselines and older-cutoff comparisons, closing two
+  defects demonstrated by RED tests. New/revised/unchanged evidence and prior
+  accepted-baseline compare-and-set remain deterministic;
+- default capture bounds are 1,000 evidence items, 100 pages, 2 MiB serialized
+  evidence and 10 seconds; hard configurable ceilings are 10,000 items, 1,000
+  pages, 32 MiB evidence and 60 seconds. Source pages are capped at 128 KiB.
+  Deadline checks are cooperative between synchronous calls, not cancellation
+  of an in-flight backend/SQLite call. Receipts add bounded page metadata to
+  the evidence-byte budget;
+- per coordinator decision, `revision_mode=all` is rejected with typed
+  `MonitorContractError`; the comparator has one current version per stable
+  post. Future all-revision semantics require a separately bounded evolution.
+
+Discovery, review and validation evidence:
+
+- re-read current AGENTS, applicable planning/validation/testing/custody/model
+  policies and this plan. TDD, CodeGraph and deep-module design skills guided
+  the small save/capture/read interface and real-backend behavior tests;
+- canonical CodeGraph supplied current search, monitor-contract and transport
+  context/impact; source bodies omitted by capped output were read directly.
+  Search response/request callers include question adapters and MCP tests;
+  no upstream search, question, or shared transport implementation was edited;
+- RED evidence: missing query module/provider/command seam, partial initial
+  acceptance, older-cutoff acceptance and unreported semantic incompleteness.
+  Each passed after its corresponding implementation; fixture import/SQL
+  setup errors were corrected without changing product acceptance;
+- focused tier: `uv run pytest tests/test_service_monitor_views.py
+  tests/test_service_monitors.py tests/test_service_post_search.py
+  tests/test_service_post_search_ranking.py tests/test_service_post_search_mcp.py
+  -o addopts='' -q` passed, 79 tests in 10.73 seconds;
+- `go test ./...` and `go vet ./...` passed in `mcp/`;
+- repo-native plan authority audit, generic active planning audit and
+  `git diff --check` passed. C01's registration-wiring findings are resolved
+  by the coordinator's integrated base, not by edits from this lane;
+- full safe Python suite: `uv run pytest -o addopts='' -q` ran once and
+  completed in 158.48 seconds: 3,007 passed, 8 skipped, 14 subtests passed,
+  11 failed. Eight failures are in `test_service_lifecycle_install.py` and
+  three in `test_service_runtime_package.py`; they are the unchanged generated
+  runtime-manifest gate, whose build failure states
+  `service/runtime-manifest.json is stale; run service/scripts/build-runtime.sh --refresh-manifest`.
+  This is not a full-suite pass. The coordinator must regenerate/review the
+  integrated manifest and repeat the package/lifecycle/full acceptance checks;
+- self-review/remediation checked immutable replay, no persisted cursors,
+  access isolation, malformed/pending traversal, semantic denominator validity,
+  bounded evidence accounting and numeric fractional timestamp ordering.
+  Independent joined review is still coordinator-owned;
+- Graphiti projection remains deferred to coordinator closeout; no provider
+  effect or shared RUNBOOK write was performed by this source lane.
+
+Exact coordinator-owned joins required for criterion 6:
+
+- proposed CLI command family: `service.py saved-query` with actions `save`,
+  `get`, `capture`, `receipt`; proposed MCP tool: `saved_query` with the same
+  closed action payloads. These names are join proposals, not existing public
+  routes. Add routing in `service.py`, application/client/HTTP as appropriate,
+  and `mcp/internal/tools/service_tools.go` plus Go/Python boundary fixtures;
+- both transports should call
+  `service_monitor_views.saved_query_command(provider, payload,
+  access_partition_id=trusted_partition)`; never accept the authorized partition
+  as an untrusted outer command field. `save` takes `definition` and returns
+  `SavedQueryDefinitionV1.to_dict()`; `get` takes `view_ref` and returns that
+  same typed definition; `capture` takes `view_ref`/`capture_id` and returns
+  `SavedQueryViewSnapshotV1.to_dict()`; `receipt` takes those same keys and
+  returns the hash-verified frozen receipt;
+- initialize `SavedQueryRepository` only against the explicitly owned monitor
+  store, construct `SavedQueryViewProvider` with the existing cache-only search
+  backend, and inject it into `MonitorKernel`. Do not wire acquisition,
+  scheduling or delivery as a side effect;
+- monitor evaluation uses `MonitorKernel.evaluate(monitor_id, snapshot_id)`
+  returning `MonitorRunV1`; explicit accept/reject use existing kernel methods
+  returning `MonitorDecisionV1`. Transport routing must preserve trusted actor
+  and partition checks; saving/capturing must not activate or accept a monitor;
+- register schemas/discovery and refresh the shared runtime manifest to include
+  `service_monitor_views.py`; prove actual local CLI/MCP parity in the integrated
+  isolated fixture join. The current test proves JSON command equivalence only.
+
+Next action or stop reason: publish the coherent source plus this plan after
+the completed single full-suite run, verify clean local/upstream/
+live remote equality, and stop for coordinator shared joins and independent
+integration review. No follow, digest, delivery or upstream search expansion.
