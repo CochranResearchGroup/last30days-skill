@@ -22,6 +22,7 @@ from .service_collection import CollectionCoordinator, CollectionSpec
 from .service_follow_capabilities import DEFAULT_FOLLOW_CAPABILITIES
 from .service_intelligence_contracts import TaskContractRegistry
 from .service_knowledge import TemporalKnowledgeQuery
+from .service_monitor_application import MonitorApplication
 from .service_monitor_views import (
     SavedQueryRepository,
     SavedQueryViewProvider,
@@ -148,6 +149,7 @@ class CacheQueryApplication:
         runtime_error: Callable[[], str | None] | None = None,
         post_search_backend: PostSearchBackend | None = None,
         saved_query_provider: SavedQueryViewProvider | None = None,
+        monitor_application: MonitorApplication | None = None,
         question_application: QuestionApplication | None = None,
         clock: Callable[[], datetime] | None = None,
         fresh_seconds: int = DEFAULT_FRESH_SECONDS,
@@ -197,6 +199,13 @@ class CacheQueryApplication:
                 max_bytes=65_536,
             )
         self.saved_query_provider = saved_query_provider
+        self.monitor_application = monitor_application or MonitorApplication(
+            self.db_path,
+            self.post_search_backend,
+            access_partitions=self._access_partitions,
+            collection_reader=self.collection_coordinator,
+            clock=self._generated_at,
+        )
         self.question_application = question_application or QuestionApplication(
             self.db_path,
             self.post_search_backend,
@@ -1346,6 +1355,10 @@ class CacheQueryApplication:
             command,
             access_partition_id=trusted_partition,
         )
+
+    def monitor(self, payload: Mapping[str, object]) -> dict[str, object]:
+        """Run one strict monitor command in the caller's trusted partition."""
+        return self.monitor_application.command(payload)
 
     def _tick_evidence_item(
         self, result: object, snapshot: Mapping[str, object]

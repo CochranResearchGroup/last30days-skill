@@ -105,7 +105,7 @@ def test_monitor_migration_creates_immutable_durable_tables(tmp_path):
     assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 18
     assert conn.execute(
         "SELECT MAX(version) FROM service_monitor_schema_version"
-    ).fetchone()[0] == 1
+    ).fetchone()[0] == 2
     conn.close()
 
 

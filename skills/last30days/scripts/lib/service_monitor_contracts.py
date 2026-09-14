@@ -213,6 +213,43 @@ class SavedQueryViewRefV1:
 
 
 @dataclass(frozen=True)
+class FollowViewRefV1:
+    schema_version: int
+    view_kind: str
+    collection_spec_id: str
+    spec_version: int
+
+    @classmethod
+    def from_dict(cls, value):
+        payload = _object(value, "follow_view")
+        _exact(payload, ("schema_version", "view_kind", "collection_spec_id", "spec_version"), "follow_view")
+        if type(payload["schema_version"]) is not int or payload["view_kind"] != "follow":
+            raise MonitorContractError("invalid follow view discriminator")
+        return cls(_schema(payload["schema_version"]), "follow",
+                   _bounded_text(payload["collection_spec_id"], "collection_spec_id"),
+                   _positive_int(payload["spec_version"], "spec_version"))
+
+    # Normalized storage columns retain their v1 names, not their wire shape.
+    @property
+    def saved_query_id(self):
+        return self.collection_spec_id
+
+    @property
+    def saved_query_version(self):
+        return self.spec_version
+
+    def to_dict(self):
+        return {"schema_version": 1, "view_kind": "follow",
+                "collection_spec_id": self.collection_spec_id, "spec_version": self.spec_version}
+
+
+def view_ref_from_dict(value):
+    payload = _object(value, "view_ref")
+    parser = FollowViewRefV1 if payload.get("view_kind") == "follow" else SavedQueryViewRefV1
+    return parser.from_dict(payload)
+
+
+@dataclass(frozen=True)
 class SavedQueryDefinitionV1:
     """An immutable current-revision query; transport IDs/cursors are not state."""
 
@@ -339,7 +376,7 @@ class ViewCoverageV1:
 class SavedQueryViewSnapshotV1:
     schema_version: int
     snapshot_id: str
-    view_ref: SavedQueryViewRefV1
+    view_ref: SavedQueryViewRefV1 | FollowViewRefV1
     access_partition_id: str
     evidence_head_id: str
     knowledge_cutoff: str
@@ -384,7 +421,7 @@ class SavedQueryViewSnapshotV1:
         return cls(
             schema_version=_schema(payload["schema_version"]),
             snapshot_id=_text(payload["snapshot_id"], "snapshot_id"),
-            view_ref=SavedQueryViewRefV1.from_dict(payload["view_ref"]),
+            view_ref=view_ref_from_dict(payload["view_ref"]),
             access_partition_id=_text(
                 payload["access_partition_id"], "access_partition_id"
             ),
@@ -417,7 +454,7 @@ class MonitorSpecV1:
     monitor_id: str
     revision: int
     name: str
-    view_ref: SavedQueryViewRefV1
+    view_ref: SavedQueryViewRefV1 | FollowViewRefV1
     access_partition_id: str
     lifecycle_state: MonitorLifecycle
     comparison_policy: str
@@ -463,7 +500,7 @@ class MonitorSpecV1:
             monitor_id=_text(payload["monitor_id"], "monitor_id"),
             revision=_positive_int(payload["revision"], "revision"),
             name=_text(payload["name"], "name"),
-            view_ref=SavedQueryViewRefV1.from_dict(payload["view_ref"]),
+            view_ref=view_ref_from_dict(payload["view_ref"]),
             access_partition_id=_text(
                 payload["access_partition_id"], "access_partition_id"
             ),

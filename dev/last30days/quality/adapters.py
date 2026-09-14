@@ -14,7 +14,9 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from lib import service_contracts as service_contracts
+from lib import service_question_contracts as question_contracts
 from lib.service_post_search import PostSearchBackend
+from lib.service_question_evidence import QuestionEvidenceResolver
 
 from .contracts import (
     ContractValidationError,
@@ -403,10 +405,248 @@ class PostSearchQualityAdapter(_ReadOnlyAdapter):
         )
 
 
+class QuestionGroundingAdapter(_ReadOnlyAdapter):
+    """Verify durable structural citation closure without judging meaning."""
+
+    axis = "grounding"
+
+    @staticmethod
+    def _invalid(case: EvaluationCaseV1, code: str) -> FakeOutcomeV1:
+        return _outcome(
+            state="incomplete",
+            metrics=(MetricInputV1("answer_correlation", 0, 1, 0),),
+            failure_codes=(code,),
+            observed_refs=(f"fixture:{case.fixture.fixture_id}",),  # type: ignore[union-attr]
+        )
+
+    def evaluate(self, case: EvaluationCaseV1, *, result_limit: int) -> FakeOutcomeV1:
+        path, failure = self._path(case)
+        if path is None:
+            return self._mismatch(case, failure or "fixture_unavailable")
+        values = case.adapter_input or {}
+        required = {
+            "question_id",
+            "profile_id",
+            "access_partitions",
+            "expected_answer_id",
+            "expected_answer_state",
+            "expected_evidence_ids",
+            "expected_uncertainty_codes",
+        }
+        if set(values) != required:
+            raise ContractValidationError("grounding adapter input has unsupported fields")
+        question_id = values["question_id"]
+        profile_id = values["profile_id"]
+        partitions = values["access_partitions"]
+        expected_answer_id = values["expected_answer_id"]
+        expected_state = values["expected_answer_state"]
+        expected_evidence = values["expected_evidence_ids"]
+        expected_uncertainty = values["expected_uncertainty_codes"]
+        if not all(isinstance(value, str) and value for value in (
+            question_id, profile_id, expected_answer_id, expected_state
+        )):
+            raise ContractValidationError("grounding identifiers must be non-empty strings")
+        if not all(
+            isinstance(value, list)
+            and all(isinstance(item, str) and item for item in value)
+            for value in (partitions, expected_evidence, expected_uncertainty)
+        ):
+            raise ContractValidationError("grounding lists must contain non-empty strings")
+        if not partitions or len(partitions) != len(set(partitions)):
+            raise ContractValidationError("grounding access partitions must be unique and non-empty")
+        try:
+            with self._connect(path) as conn:
+                row = conn.execute(
+                    "SELECT t.question_id AS task_question_id, "
+                    "t.answer_id AS task_answer_id, t.state AS task_state, "
+                    "q.request_id AS stored_request_id, "
+                    "q.request_fingerprint AS stored_request_fingerprint, "
+                    "q.request_digest AS stored_request_digest, q.request_json, "
+                    "r.question_id AS stored_question_id, "
+                    "r.request_id AS retrieval_request_id, "
+                    "r.search_head_id AS stored_search_head_id, "
+                    "r.evidence_set_id AS stored_evidence_set_id, "
+                    "r.access_partitions_digest AS stored_access_partitions_digest, "
+                    "r.retrieval_digest AS stored_retrieval_digest, r.retrieval_json, "
+                    "a.answer_id AS stored_answer_id, "
+                    "a.question_id AS answer_question_id, "
+                    "a.output_digest AS stored_output_digest, a.answer_json "
+                    "FROM service_question_tasks t "
+                    "JOIN service_question_retrievals r ON r.question_id=t.question_id "
+                    "JOIN service_question_requests q ON q.request_id=r.request_id "
+                    "JOIN service_question_answers a ON a.question_id=t.question_id "
+                    "WHERE t.question_id=?",
+                    (question_id,),
+                ).fetchone()
+            if row is None:
+                return self._invalid(case, "grounding_record_missing")
+            request = question_contracts.QuestionRequestV1.from_dict(
+                json.loads(row["request_json"])
+            )
+            retrieval = json.loads(row["retrieval_json"])
+            answer = question_contracts.QuestionAnswerV1.from_dict(
+                json.loads(row["answer_json"])
+            )
+            evidence = tuple(
+                question_contracts.QuestionCitationV1.from_dict(
+                    {
+                        key: item[key]
+                        for key in (
+                            "evidence_id",
+                            "storage_family",
+                            "version_id",
+                            "content_hash",
+                            "source_url",
+                            "access_partition_id",
+                        )
+                    }
+                )
+                for item in retrieval["evidence"]
+            )
+            retrieval_coverage = retrieval["coverage"]
+            if not isinstance(retrieval_coverage, dict) or set(retrieval_coverage) < {
+                "partial", "stale"
+            }:
+                return self._invalid(case, "grounding_retrieval_malformed")
+            evidence_by_id = {citation.evidence_id: citation for citation in evidence}
+            cited = tuple(
+                citation
+                for statement in answer.statements
+                for citation in statement.citations
+            )
+            unique_cited = tuple(
+                {
+                    citation.evidence_id: citation
+                    for citation in cited
+                }.values()
+            )
+            resolver_items = []
+            if cited:
+                resolver = QuestionEvidenceResolver(path)
+                for offset in range(0, len(unique_cited), 20):
+                    batch = unique_cited[offset : offset + 20]
+                    response = resolver.read(
+                        question_contracts.EvidenceReadRequestV1.from_dict(
+                            {
+                                "schema_version": 1,
+                                "request_id": question_contracts.stable_id(
+                                    "quality-read",
+                                    {"case_id": case.case_id, "offset": offset},
+                                ),
+                                "profile_id": profile_id,
+                                "refs": [citation.to_dict() for citation in batch],
+                                "max_response_bytes": 131072,
+                            }
+                        ),
+                        access_partitions=tuple(partitions),
+                    )
+                    resolver_items.extend(response.items)
+        except (
+            KeyError,
+            TypeError,
+            ValueError,
+            json.JSONDecodeError,
+            sqlite3.Error,
+            question_contracts.QuestionContractError,
+        ):
+            return self._invalid(case, "grounding_fixture_invalid")
+
+        correlation = int(
+            request.profile_id == profile_id
+            and row["task_question_id"] == question_id
+            and row["stored_question_id"] == question_id
+            and row["answer_question_id"] == question_id
+            and row["stored_request_id"] == request.request_id
+            and row["retrieval_request_id"] == request.request_id
+            and row["stored_request_fingerprint"] == request.request_fingerprint
+            and row["stored_request_digest"]
+            == question_contracts.digest(request.to_dict())
+            and row["stored_retrieval_digest"]
+            == question_contracts.digest(retrieval)
+            and row["stored_search_head_id"] == retrieval.get("search_head_id")
+            and row["stored_evidence_set_id"] == retrieval.get("evidence_set_id")
+            and row["stored_access_partitions_digest"]
+            == retrieval.get("access_partitions_digest")
+            and row["stored_answer_id"] == answer.answer_id
+            and row["task_answer_id"] == answer.answer_id
+            and row["stored_output_digest"] == answer.output_digest
+            and row["task_state"] == answer.answer_state
+            and retrieval.get("question_id") == question_id
+            and retrieval.get("request_fingerprint") == request.request_fingerprint
+            and answer.question_id == question_id
+            and answer.request_fingerprint == request.request_fingerprint
+            and answer.search_head_id == retrieval.get("search_head_id")
+            and answer.evidence_set_id == retrieval.get("evidence_set_id")
+            and answer.input_digest
+            == question_contracts.digest({"request": request.to_dict(), "retrieval": retrieval})
+        )
+        expected = int(
+            answer.answer_id == expected_answer_id
+            and answer.answer_state == expected_state
+            and tuple(item.evidence_id for item in evidence) == tuple(expected_evidence)
+            and answer.uncertainty_codes == tuple(expected_uncertainty)
+        )
+        citations_close = int(
+            all(
+                citation.evidence_id in evidence_by_id
+                and citation == evidence_by_id[citation.evidence_id]
+                for citation in cited
+            )
+        )
+        available_refs = {
+            question_contracts.canonical_json(item.ref.to_dict())
+            for item in resolver_items
+            if item.status == "available"
+        }
+        dereferenced = sum(
+            question_contracts.canonical_json(citation.to_dict()) in available_refs
+            for citation in cited
+        )
+        dereference_denominator = len(cited) or 1
+        if not cited:
+            dereferenced = 1
+        partition_closed = int(
+            all(citation.access_partition_id in set(partitions) for citation in cited)
+        )
+        disclosure = int(
+            answer.coverage == {
+                "partial": retrieval_coverage["partial"],
+                "stale": retrieval_coverage["stale"],
+            }
+            and (not retrieval_coverage["partial"] or "partial_coverage" in answer.uncertainty_codes)
+            and (not retrieval_coverage["stale"] or "stale_evidence" in answer.uncertainty_codes)
+        )
+        receipt = int(
+            answer.cache_only
+            and not answer.acquisition_performed
+            and not answer.model_invoked
+        )
+        metrics = (
+            MetricInputV1("answer_correlation", correlation, 1, 0),
+            MetricInputV1("citation_closure", citations_close, 1, 0),
+            MetricInputV1("citation_dereference", dereferenced, dereference_denominator, 0),
+            MetricInputV1("citation_partition_closure", partition_closed, 1, 0),
+            MetricInputV1("coverage_disclosure", disclosure, 1, 0),
+            MetricInputV1("expected_answer_outcome", expected, 1, 0),
+            MetricInputV1("provider_free_receipt", receipt, 1, 0),
+        )
+        passed = all(metric.numerator == metric.denominator for metric in metrics)
+        return _outcome(
+            state="passed" if passed else "failed",
+            metrics=metrics,
+            failure_codes=() if passed else ("grounding_structure_failed",),
+            observed_refs=(
+                f"fixture:{case.fixture.fixture_id}",  # type: ignore[union-attr]
+                f"question:{question_id}",
+                f"answer:{answer.answer_id}",
+            ),
+        )
+
+
 def real_fixture_adapters(
     fixtures: Mapping[str, Path], *, candidate: EvidenceHeadV1
 ):
-    """Return Packet 2 adapters while retaining the deferred fake grounding axis."""
+    """Return all four provider-free real-fixture adapters."""
 
     from .runner import default_fake_adapters
 
@@ -417,6 +657,7 @@ def real_fixture_adapters(
             "acquisition": AcquisitionCoverageAdapter(catalog),
             "corpus": CorpusIntegrityAdapter(catalog),
             "retrieval": PostSearchQualityAdapter(catalog),
+            "grounding": QuestionGroundingAdapter(catalog),
         }
     )
     return adapters

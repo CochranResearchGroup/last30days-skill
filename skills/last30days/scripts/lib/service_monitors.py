@@ -16,7 +16,7 @@ from . import service_monitor_contracts as contracts
 
 
 MonitorErrorCode = contracts.MonitorErrorCode
-MONITOR_SCHEMA_VERSION = 1
+MONITOR_SCHEMA_VERSION = 2
 
 MONITOR_SCHEMA_V1 = """
 BEGIN IMMEDIATE;
@@ -277,6 +277,28 @@ class MonitorRepository:
                     f"monitor schema {version} is newer than supported "
                     f"version {MONITOR_SCHEMA_VERSION}",
                 )
+            if version == 1:
+                # Rebuild only the monitor table to widen its discriminator.
+                # Copy opaque payload bytes/hashes; dependent FK names stay put.
+                conn.execute("PRAGMA foreign_keys=OFF")
+                conn.execute("BEGIN IMMEDIATE")
+                sql = conn.execute("SELECT sql FROM sqlite_master WHERE name='service_monitor_specs'").fetchone()[0]
+                sql = sql.replace("service_monitor_specs", "service_monitor_specs_v2", 1)
+                sql = sql.replace("view_kind = 'saved_query'", "view_kind IN ('saved_query', 'follow')")
+                conn.execute(sql)
+                conn.execute("INSERT INTO service_monitor_specs_v2 SELECT * FROM service_monitor_specs")
+                conn.execute("DROP TABLE service_monitor_specs")
+                conn.execute("ALTER TABLE service_monitor_specs_v2 RENAME TO service_monitor_specs")
+                monitor_tables = ("service_monitor_specs", "service_monitor_view_snapshots",
+                                  "service_monitor_runs", "service_monitor_baselines",
+                                  "service_monitor_decisions", "service_monitor_baseline_heads")
+                if any(conn.execute(f"PRAGMA foreign_key_check({table})").fetchone()
+                       for table in monitor_tables):
+                    raise MonitorKernelError(MonitorErrorCode.IMMUTABLE_CONFLICT, "monitor migration integrity failure")
+                conn.execute("INSERT INTO service_monitor_schema_version(version) VALUES (2)")
+                conn.commit()
+                conn.execute("PRAGMA foreign_keys=ON")
+                conn.executescript(MONITOR_SCHEMA_V1)  # restore indexes/triggers
         finally:
             conn.close()
 
@@ -366,7 +388,10 @@ class MonitorRepository:
                         MonitorErrorCode.INVALID_REVISION,
                         "view identity and partition cannot change across revisions",
                     )
-                self._validate_transition(prior.lifecycle_state, spec.lifecycle_state)
+                if prior.lifecycle_state != spec.lifecycle_state:
+                    self._validate_transition(prior.lifecycle_state, spec.lifecycle_state)
+                elif prior.lifecycle_state is contracts.MonitorLifecycle.ARCHIVED:
+                    raise MonitorKernelError(MonitorErrorCode.MONITOR_ARCHIVED, "archived monitor is immutable")
             conn.execute(
                 """INSERT INTO service_monitor_specs (
                        monitor_id, revision, access_partition_id, view_kind,
@@ -420,17 +445,26 @@ class MonitorRepository:
             )
 
     def current_spec(self, monitor_id: str) -> contracts.MonitorSpecV1:
+        return self.spec_revision(monitor_id)
+
+    def spec_revision(
+        self, monitor_id: str, revision: int | None = None
+    ) -> contracts.MonitorSpecV1:
         conn = self._connect()
         try:
             row = conn.execute(
-                """SELECT payload_json FROM service_monitor_specs
-                   WHERE monitor_id = ? ORDER BY revision DESC LIMIT 1""",
-                (monitor_id,),
+                """SELECT payload_json, payload_sha256 FROM service_monitor_specs
+                   WHERE monitor_id = ? AND (? IS NULL OR revision = ?)
+                   ORDER BY revision DESC LIMIT 1""",
+                (monitor_id, revision, revision),
             ).fetchone()
         finally:
             conn.close()
         if row is None:
-            raise KeyError(f"monitor not found: {monitor_id}")
+            suffix = "" if revision is None else f"@{revision}"
+            raise KeyError(f"monitor not found: {monitor_id}{suffix}")
+        if hashlib.sha256(row["payload_json"].encode()).hexdigest() != row["payload_sha256"]:
+            raise MonitorKernelError(MonitorErrorCode.IMMUTABLE_CONFLICT, "monitor spec integrity failure")
         return contracts.MonitorSpecV1.from_dict(json.loads(row["payload_json"]))
 
     def put_snapshot(self, snapshot: contracts.SavedQueryViewSnapshotV1) -> None:

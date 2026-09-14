@@ -68,6 +68,8 @@ class ServiceApplication(Protocol):
 
     def saved_query(self, payload: dict[str, object]) -> dict[str, object]: ...
 
+    def monitor(self, payload: dict[str, object]) -> dict[str, object]: ...
+
     def topic(self, payload: dict[str, object]) -> dict[str, object]: ...
 
     def intelligence(self, payload: dict[str, object]) -> dict[str, object]: ...
@@ -294,6 +296,7 @@ class _RequestHandler(BaseHTTPRequestHandler):
                 "/v1/questions",
                 "/v1/evidence/read",
                 "/v1/saved-query",
+                "/v1/monitor",
                 "/v1/topic",
                 "/v1/intelligence",
             }
@@ -336,6 +339,8 @@ class _RequestHandler(BaseHTTPRequestHandler):
                 response = self.application.read_evidence(request).to_dict()
             elif self.path == "/v1/saved-query":
                 response = self.application.saved_query(payload)
+            elif self.path == "/v1/monitor":
+                response = self.application.monitor(payload)
             elif self.path == "/v1/topic":
                 response = self.application.topic(payload)
             else:
@@ -376,10 +381,20 @@ class _RequestHandler(BaseHTTPRequestHandler):
             self._error(400, "invalid_contract", "request contract is invalid")
             return
         except MonitorContractError:
-            self._error(400, "invalid_monitor_contract", "saved query contract is invalid")
+            message = (
+                "monitor contract is invalid"
+                if self.path == "/v1/monitor"
+                else "saved query contract is invalid"
+            )
+            self._error(400, "invalid_monitor_contract", message)
             return
         except MonitorKernelError as exc:
-            self._error(409, exc.code.value, "saved query operation was rejected")
+            message = (
+                "monitor operation was rejected"
+                if self.path == "/v1/monitor"
+                else "saved query operation was rejected"
+            )
+            self._error(409, exc.code.value, message)
             return
         except KeyError:
             self._error(404, "job_not_found", "job was not found")
