@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-004 -->
 # Give selected X accounts and lists separate collection attention
 
-State: IN_PROGRESS
+State: DONE
 Priority: P1
 Lane: Follows
 Parent: WI-000
@@ -11,9 +11,9 @@ Architecture: docs/dev/notes/0119-2026-09-13-x-tailored-follow-product-architect
 Implementation plan seed: docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md
 Implementation plan: docs/dev/plans/0086-2026-09-13-x-tailored-follows-packet-1.md
 Completed reconciliation plan: docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md
-Last completed plan: docs/dev/plans/0109-2026-09-14-tailored-follows-packet-2.md
-Active plan: docs/dev/plans/0112-2026-09-14-x-list-and-product-closure.md
-Branch: feat/x-tailored-follows-v3
+Last completed plan: docs/dev/plans/0112-2026-09-14-x-list-and-product-closure.md
+Active plan: none
+Branch: main
 
 ## Problem
 
@@ -63,3 +63,10 @@ planned typed X-list routing and lifecycle/scheduler/search closure.
 
 The final provider-free packet is active at published plan-only checkpoint
 `69bf4d36`; product work remains held until canonical custody reconciliation.
+
+The final provider-free packet integrated through reviewed PR 83 as canonical
+merge `5aec7324` from source acceptance `a10604e9`. Joined validation and
+independent review accept typed list routing, exact collection provenance,
+scheduler priority semantics, lifecycle/MCP parity, and documentation. WI-004
+is `DONE` in repo-local authority; no live X canary or schedule mutation was
+performed. WI-005 and WI-006 may now consume the closed contract.

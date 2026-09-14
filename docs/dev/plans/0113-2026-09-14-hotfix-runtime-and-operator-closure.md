@@ -1,6 +1,6 @@
 # Plan 0113 | Hotfix Runtime And Operator Closure
 
-State: OPEN
+State: CLOSED
 Lane: P38
 Work item: WI-007
 Branch: feat/hotfix-runtime-drill-v1
@@ -357,3 +357,16 @@ Acceptance mapping and remaining coordinator gate:
 - next action: publish this receipt checkpoint and return exact SHA, clean
   remote equality, test/measurement evidence, and coordinator follow-ups.
   Stop before PR creation; preserve the dormant production slot.
+
+### Checkpoint P0113-C05 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`; WI-007 `IN_PROGRESS -> DONE`.
+
+Reviewed PR 83 merged validated integration head `b4e3123f` into canonical
+main as `5aec73245fa699b50ee74b4578cc891ffd239f0c`. Source checkpoint
+`d25f9df441aa6e92af9827f56fb3b75ffbbb363c` and retained receipt digest
+`5ee59e1630211c9510bff8279f0d3824a689c267450d978c2c8e6290daf24ae6`
+passed independent joined review and full provider-free acceptance. The real
+slot remains dormant with zero resources; no operational authority is granted.

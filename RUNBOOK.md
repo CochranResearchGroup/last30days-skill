@@ -30340,3 +30340,54 @@ Next Bounded Action:
 - publish this exact integration branch, open and review one owned-fork pull
   request, merge it, then record canonical Wave 2 closeout before planning the
   next dependency-ordered wave.
+
+## Turn 487 | 2026-09-14
+
+Focus: close Wave 2 against canonical owned-fork evidence.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`.
+
+Authority Consulted:
+
+- Plans 0107 and 0111-0113; P33/P35/P38/P52;
+  WI-002/WI-004/WI-007; PR 83; canonical Git readback; planning, validation,
+  work-item, integration, and closeout policy.
+
+Decisions And Changes:
+
+- confirmed PR 83 merged exact validated head `b4e3123f` as canonical
+  `5aec73245fa699b50ee74b4578cc891ffd239f0c`;
+- closed Plans 0111-0113, marked WI-004 and WI-007 `DONE`, and returned WI-002
+  to `READY` for its unplanned Packet 4;
+- closed P35/P38, returned P33 to planned continuation, and kept campaign P52
+  open for WI-002/WI-003/WI-005/WI-006/WI-008 completion.
+
+Validation Evidence:
+
+- PR 83 was non-draft, mergeable, and clean at the exact reviewed head;
+- canonical main fast-forwarded cleanly and equaled `origin/main` at the merge;
+- closeout plan-authority, active-lane, focused policy, and diff checks remain
+  required before the closeout PR.
+
+State Movement:
+
+- Plans 0111-0113 `OPEN -> CLOSED`;
+- WI-004/WI-007 `IN_PROGRESS -> DONE`; WI-002 `IN_PROGRESS -> READY`;
+- P35/P38 `OPEN -> CLOSED`; P33 `OPEN -> PLANNED`;
+- Plan 0107 `wave_2_integration_ready -> wave_2_integrated`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; all Wave 2 agents are complete and the coordinator retains the
+  campaign and next-wave registration path.
+
+Graphiti Write Status:
+
+- `not_written`; exact repository, forge, test, and retained receipt evidence
+  is authoritative.
+
+Next Bounded Action:
+
+- validate and merge this closeout projection, then register the next bounded
+  provider-free wave from canonical main.

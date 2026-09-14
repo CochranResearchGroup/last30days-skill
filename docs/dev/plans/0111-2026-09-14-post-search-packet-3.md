@@ -1,6 +1,6 @@
 # Plan 0111 | Bounded Hybrid Post Search Packet 3
 
-State: OPEN
+State: CLOSED
 Lane: P33
 Work item: WI-002
 Branch: feat/post-search-v3
@@ -345,3 +345,16 @@ Residual limits and stop:
 
 Graphiti write status: `not_written`; current repository evidence is the
 durable authority and the assignment excludes memory/provider effects.
+
+### Checkpoint P0111-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`.
+
+Reviewed PR 83 merged validated integration head `b4e3123f` into canonical
+main as `5aec73245fa699b50ee74b4578cc891ffd239f0c`. Source checkpoint
+`971f9ea94623850094518b7172e364ba8cb3be8a` is integrated; independent joined
+review found no remaining search blocker and full provider-free acceptance
+passed. This closes Packet 3 only. WI-002 returns to `READY` for separately
+planned Packet 4 isolated-runtime/fresh-client closeout.

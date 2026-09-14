@@ -418,6 +418,36 @@ Next action:
   owned-fork pull request, then close Plans 0111-0113 and the completed WI-004
   and WI-007 outcomes without overstating WI-002 Packet 4.
 
+### Checkpoint P0107-C08 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_2_integration_ready -> wave_2_integrated`.
+
+Progress classification: `outcome_progress`; reviewed PR 83 merged exact head
+`b4e3123f` as canonical `5aec73245fa699b50ee74b4578cc891ffd239f0c`.
+
+Canonical outcome:
+
+- Plans 0111-0113 are closed with exact source and merge receipts;
+- WI-004 and WI-007 are `DONE`; WI-002 is `READY` for Packet 4, so search is
+  not overstated as complete;
+- P35 and P38 close, P33 returns to planned continuation, and P52 remains open;
+- canonical main is clean and equal to the live owned-fork main before this
+  closeout projection; PR 83 is confirmed merged and no other PR is open.
+
+Authority classification:
+
+- `inherited_authority` covers this repo-local closeout and its reviewed PR;
+- no issue mutation or external provider/runtime/release/deployment effect is
+  authorized by the closeout.
+
+Next action:
+
+- integrate this closeout, then use read-only specialists to register the next
+  dependency-ordered wave: WI-002 Packet 4 plus newly unblocked WI-005 and
+  WI-006 work, with shared transport/runtime overlap reconciled before launch.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;

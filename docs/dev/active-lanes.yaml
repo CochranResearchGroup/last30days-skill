@@ -208,18 +208,17 @@ lanes:
     plan_ref: refs/heads/feat/hotfix-runtime-drill-v1
     branch: feat/hotfix-runtime-drill-v1
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 467aca4630e8532dcd59bb14fd198a043b1dd385
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: d25f9df441aa6e92af9827f56fb3b75ffbbb363c
     remote_ref: refs/remotes/origin/feat/hotfix-runtime-drill-v1
     integration: merge
-    integration_receipt: null
-    validation_status: activation_passed_with_expected_projection_gate
-    validation_ref: 467aca4630e8532dcd59bb14fd198a043b1dd385
-    session_owner: /root/wi007_packet3_planning
+    integration_receipt: 5aec73245fa699b50ee74b4578cc891ffd239f0c
+    validation_status: passed
+    validation_ref: d25f9df441aa6e92af9827f56fb3b75ffbbb363c
     dependencies: [P34]
-    overlaps: [dev/last30days/scripts/hotfix_runtime_drill.py, dev/last30days/scripts/hotfix_operator.py, tests/test_hotfix_runtime_drill.py, tests/test_hotfix_operator.py, docs/dev/notes/hotfix-operator-runbook.md]
-    reconciled_overlaps: [dev/last30days/scripts/hotfix_runtime_drill.py, dev/last30days/scripts/hotfix_operator.py, tests/test_hotfix_runtime_drill.py, tests/test_hotfix_operator.py, docs/dev/notes/hotfix-operator-runbook.md]
+    overlaps: [dev/last30days/scripts/hotfix_fixture_runtime.py, dev/last30days/scripts/hotfix_runtime_drill.py, dev/last30days/scripts/hotfix_operator.py, service/scripts/install.sh, tests/test_hotfix_runtime_drill.py, docs/agents/hotfix-operator.md]
+    reconciled_overlaps: [dev/last30days/scripts/hotfix_fixture_runtime.py, dev/last30days/scripts/hotfix_runtime_drill.py, dev/last30days/scripts/hotfix_operator.py, service/scripts/install.sh, tests/test_hotfix_runtime_drill.py, docs/agents/hotfix-operator.md]
     updated_at: 2026-09-14
   - id: P37
     objective: Implement a deterministic provider-free four-axis quality tracer
@@ -266,15 +265,14 @@ lanes:
     plan_ref: refs/heads/feat/x-tailored-follows-v3
     branch: feat/x-tailored-follows-v3
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 69bf4d36dbd1c8470b143b6af3f614e49ece0f30
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: a10604e9f85d6c5cd2f7c2deb178e8930336441c
     remote_ref: refs/remotes/origin/feat/x-tailored-follows-v3
     integration: merge
-    integration_receipt: null
-    validation_status: activation_passed
-    validation_ref: 69bf4d36dbd1c8470b143b6af3f614e49ece0f30
-    session_owner: /root/wi004_packet3_planning
+    integration_receipt: 5aec73245fa699b50ee74b4578cc891ffd239f0c
+    validation_status: passed
+    validation_ref: a10604e9f85d6c5cd2f7c2deb178e8930336441c
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_acquisition_worker.py, skills/last30days/scripts/lib/x_browser.py, mcp/internal/tools/service_tools.go]
     reconciled_overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_acquisition_worker.py, skills/last30days/scripts/lib/x_browser.py, mcp/internal/tools/service_tools.go]
@@ -309,15 +307,14 @@ lanes:
     plan_ref: refs/heads/feat/post-search-v3
     branch: feat/post-search-v3
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: f1f5f4dd915e7d6cbf75dccbbf51999b6c25f97f
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 971f9ea94623850094518b7172e364ba8cb3be8a
     remote_ref: refs/remotes/origin/feat/post-search-v3
     integration: merge
-    integration_receipt: null
-    validation_status: activation_passed
-    validation_ref: f1f5f4dd915e7d6cbf75dccbbf51999b6c25f97f
-    session_owner: /root/wi002_packet3_planning
+    integration_receipt: 5aec73245fa699b50ee74b4578cc891ffd239f0c
+    validation_status: passed
+    validation_ref: 971f9ea94623850094518b7172e364ba8cb3be8a
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_post_search.py, skills/last30days/scripts/lib/service_post_search_ranking.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/schemas/post-search-contracts-v1.json, mcp/internal/tools/service_tools.go]
     reconciled_overlaps: [skills/last30days/scripts/lib/service_post_search.py, skills/last30days/scripts/lib/service_post_search_ranking.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/schemas/post-search-contracts-v1.json, mcp/internal/tools/service_tools.go]
