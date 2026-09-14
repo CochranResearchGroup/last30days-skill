@@ -16,6 +16,7 @@ import store
 
 from . import service_contracts as contracts
 from . import service_monitor_contracts as monitor_contracts
+from . import service_question_contracts as question_contracts
 from .service_collection import CollectionCoordinator, CollectionSpec
 from .service_intelligence_contracts import TaskContractRegistry
 from .service_knowledge import TemporalKnowledgeQuery
@@ -25,6 +26,7 @@ from .service_monitor_views import (
     saved_query_command,
 )
 from .service_post_search import PostSearchBackend
+from .service_question_application import QuestionApplication
 from .service_retrieval import LocalHashEmbeddingProvider
 from .service_supervisor import InvalidTransitionError
 from .service_tick_query import TickSnapshotPublisher
@@ -144,6 +146,7 @@ class CacheQueryApplication:
         runtime_error: Callable[[], str | None] | None = None,
         post_search_backend: PostSearchBackend | None = None,
         saved_query_provider: SavedQueryViewProvider | None = None,
+        question_application: QuestionApplication | None = None,
         clock: Callable[[], datetime] | None = None,
         fresh_seconds: int = DEFAULT_FRESH_SECONDS,
         effect_mode: str = "normal",
@@ -192,6 +195,11 @@ class CacheQueryApplication:
                 max_bytes=65_536,
             )
         self.saved_query_provider = saved_query_provider
+        self.question_application = question_application or QuestionApplication(
+            self.db_path,
+            self.post_search_backend,
+            access_partitions=self._access_partitions,
+        )
         self.fresh_seconds = fresh_seconds
         self.effect_mode = effect_mode
 
@@ -1284,6 +1292,23 @@ class CacheQueryApplication:
             request,
             access_partitions=self._access_partitions(request.profile_id),
         )
+
+    def ask_question(
+        self, request: question_contracts.QuestionRequestV1
+    ) -> question_contracts.QuestionStatusV1:
+        return self.question_application.ask_question(request)
+
+    def question_status(
+        self, question_id: str, *, profile_id: str
+    ) -> question_contracts.QuestionStatusV1:
+        return self.question_application.question_status(
+            question_id, profile_id=profile_id
+        )
+
+    def read_evidence(
+        self, request: question_contracts.EvidenceReadRequestV1
+    ) -> question_contracts.EvidenceReadResponseV1:
+        return self.question_application.read_evidence(request)
 
     def saved_query(self, payload: Mapping[str, object]) -> dict[str, object]:
         """Run one explicit saved-query command in the caller's trusted partition."""

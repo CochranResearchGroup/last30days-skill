@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from . import service_contracts as contracts
+from . import service_question_contracts as question_contracts
 
 
 class ServiceClientError(RuntimeError):
@@ -98,6 +99,31 @@ class ServiceClient:
     ) -> contracts.PostSearchResponse:
         return contracts.PostSearchResponse.from_dict(
             self._request("POST", "/v1/posts/search", request.to_dict())
+        )
+
+    def ask_question(
+        self, request: question_contracts.QuestionRequestV1
+    ) -> question_contracts.QuestionStatusV1:
+        return question_contracts.QuestionStatusV1.from_dict(
+            self._request("POST", "/v1/questions", request.to_dict())
+        )
+
+    def question_status(
+        self, question_id: str, *, profile_id: str
+    ) -> question_contracts.QuestionStatusV1:
+        encoded_id = urllib.parse.quote(question_id, safe="")
+        encoded_profile = urllib.parse.quote(profile_id, safe="")
+        return question_contracts.QuestionStatusV1.from_dict(
+            self._request(
+                "GET", f"/v1/questions/{encoded_id}?profile_id={encoded_profile}"
+            )
+        )
+
+    def read_evidence(
+        self, request: question_contracts.EvidenceReadRequestV1
+    ) -> question_contracts.EvidenceReadResponseV1:
+        return question_contracts.EvidenceReadResponseV1.from_dict(
+            self._request("POST", "/v1/evidence/read", request.to_dict())
         )
 
     def saved_query(
