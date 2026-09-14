@@ -1,15 +1,16 @@
 # Plan 0096 | Agent Question Evidence Tracer Packet 2
 
-State: PLANNED
+State: OPEN
 Lane: P36
 Work item: WI-003
 Branch: feat/agent-question-evidence-v2
 Target: main
 Integration: merge
 Roadmap: P36
-Plan version: 1
+Plan version: 2
 Date: 2026-09-13
-Session owner: unassigned independent top-level Codex session
+Session owner: Codex `/root` (runtime-reported canonical task identity; no
+separate thread UUID exposed to this session)
 
 ## Objective
 
@@ -144,3 +145,50 @@ Subagent status: `not_spawned`; this is a plan-only launch checkpoint.
 Next action: publish this plan-only branch, let the coordinator register it on
 canonical main, then assign one independent top-level Codex session to open and
 execute Packet 2. Do not implement on the coordinator session.
+
+### Checkpoint P0096-C02 | 2026-09-13
+
+Plan version: 2
+
+State transition: `PLANNED -> OPEN`.
+
+Progress classification: `blocker_reduction`; the replacement independent lane
+owner accepted custody and established the required recoverable activation
+boundary before feature work.
+
+Authority classification:
+
+- `inherited_authority` for the Plan 0096 provider-free repository changes and
+  temporary SQLite fixtures;
+- `human_gate` remains in force for pull requests and all installed/runtime,
+  provider, browser, model, schedule, delivery, staging, production, release,
+  and tracker effects;
+- `scope_expansion` remains in force for Packet 3 worker behavior, Packet 4
+  public HTTP/MCP surfaces, and every coordinator-owned join.
+
+Evidence:
+
+- replacement owner identity is Codex `/root`, the canonical task identity
+  reported by this runtime; the runtime exposes no separate thread UUID to the
+  session;
+- the interrupted predecessor was stopped during preflight after printing
+  credential-bearing environment variables and made no feature or plan edits;
+  no environment, credential store, auth file, shell history, or prior
+  transcript was inspected during replacement activation;
+- the worktree was clean on `feat/agent-question-evidence-v2` at exact merge
+  `a28e08138312f61f094841d72c2a664cff0f32b0`, whose parents are the plan-only
+  checkpoint `07f961290acf9ab6fece4ebb9b4c9c6c7560acc5` and integrated
+  `origin/main` `5004df7f228059b2d2c154f1414de83fae16cfd5`;
+- remote `refs/heads/feat/agent-question-evidence-v2` remained exactly
+  `07f961290acf9ab6fece4ebb9b4c9c6c7560acc5` before this activation update;
+- Graphiti was healthy but returned no current P36/Plan 0096 evidence, so the
+  plan, WI-003, repository source, Git refs, and tests remain authoritative;
+- the worktree-local ignored CodeGraph index was initialized and is current at
+  372 files, 10,431 nodes, and 28,362 edges.
+
+Subagent status: `not_spawned`; replacement execution remains single-owner as
+required.
+
+Next action: validate and publish this plan-only activation checkpoint, verify
+remote equality, then begin Packet 2 with one acceptance-level red/green tracer
+at a time.
