@@ -649,6 +649,8 @@ class _SealedFakeAdapter:
     def evaluate(self, case: EvaluationCaseV1, *, result_limit: int) -> FakeOutcomeV1:
         if case.axis != self.axis:
             raise ContractValidationError("fake adapter received a case for another axis")
+        if case.outcome is None:
+            raise ContractValidationError("fake adapter requires a sealed outcome")
         if result_limit < len(case.outcome.observed_refs):
             raise RuntimeError("fake_result_limit_exceeded")
         return case.outcome
@@ -990,8 +992,8 @@ class QualityRunnerV1:
             ),
         )
 
-    @staticmethod
     def _build_report(
+        self,
         *,
         request: QualityEvaluationRequestV1,
         evaluation_set: QualityEvaluationSetV1,
@@ -1013,6 +1015,31 @@ class QualityRunnerV1:
             media_type="application/json",
             digest=policy.digest,
         )
+        fixture_artifacts_by_id = {
+            case.fixture.fixture_id: ArtifactRefV1(
+                artifact_id=case.fixture.fixture_id,
+                role="sealed_fixture",
+                media_type="application/vnd.sqlite3",
+                digest=case.fixture.digest,
+            )
+            for case in evaluation_set.cases
+            if case.fixture is not None
+        }
+        fixture_artifacts = tuple(
+            fixture_artifacts_by_id[fixture_id]
+            for fixture_id in sorted(fixture_artifacts_by_id)
+        )
+        adapter_identity = [
+            {"axis": axis, "adapter": type(adapter).__module__ + "." + type(adapter).__qualname__}
+            for axis, adapter in sorted(self._adapters.items())
+        ]
+        adapter_artifact = ArtifactRefV1(
+            artifact_id="quality-adapters-v1",
+            role="adapter_identity",
+            media_type="application/json",
+            digest=canonical_digest(adapter_identity),
+        )
+        artifacts = (evaluation_artifact, policy_artifact, *fixture_artifacts, adapter_artifact)
         fields = dict(
             schema_version="quality_evaluation_report.v1",
             report_id="",
@@ -1031,7 +1058,7 @@ class QualityRunnerV1:
             axes=axes,
             case_results=case_results,
             effect_receipt=EffectReceiptV1(),
-            artifacts=(evaluation_artifact, policy_artifact),
+            artifacts=artifacts,
             errors=(),
             truncated=False,
             cleanup=CleanupReceiptV1(),
