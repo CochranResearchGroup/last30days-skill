@@ -262,12 +262,12 @@ lanes:
     plan_ref: refs/heads/feat/x-tailored-follows-v1
     branch: feat/x-tailored-follows-v1
     target: main
-    plan_state: OPEN
-    custody_state: INTEGRATION_READY
+    plan_state: CLOSED
+    custody_state: INTEGRATED
     checkpoint: 434ac770eb1b6aeda37f455c1a35e3ddb9a69ad0
     remote_ref: refs/remotes/origin/feat/x-tailored-follows-v1
     integration: merge
-    integration_receipt: null
+    integration_receipt: 87858934c8498dccbdeda549ad73f626dbc143a7
     validation_status: passed
     validation_ref: 434ac770eb1b6aeda37f455c1a35e3ddb9a69ad0
     dependencies: [P51]

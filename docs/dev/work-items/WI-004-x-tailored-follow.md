@@ -1,16 +1,16 @@
 <!-- last30days-work-item:WI-004 -->
 # Give selected X accounts and lists separate collection attention
 
-State: IN_PROGRESS
+State: BLOCKED
 Priority: P1
 Lane: Follows
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/56
-Blocked by: WI-009 before Packet 2; Packet 1 reconciliation is active under Plan 0104
+Blocked by: WI-009 before Packet 2
 Architecture: docs/dev/notes/0119-2026-09-13-x-tailored-follow-product-architecture.md
 Implementation plan seed: docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md
 Implementation plan: docs/dev/plans/0086-2026-09-13-x-tailored-follows-packet-1.md
-Active plan: docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md
+Completed reconciliation plan: docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md
 Branch: feat/x-tailored-follows-v1
 
 ## Problem
@@ -43,9 +43,9 @@ no cross-service abstraction until this vertical slice is accepted.
 
 ## Active Handoff
 
-Packet 1 is acceptance-complete and published at
-`d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`. Plan 0104 owns its current-main
-reconciliation and combined provider-free validation through the normal
-pull-request workflow. Do not start Packet 2 or enqueue a job, open a browser,
-use a profile/provider, mutate an installed database or schedule, or install a
-runtime.
+Packet 1 is integrated through PR 68 at canonical merge
+`87858934c8498dccbdeda549ad73f626dbc143a7`; its validated published head is
+`434ac770eb1b6aeda37f455c1a35e3ddb9a69ad0`. Packet 2 remains blocked by the
+WI-009 program gate. Do not enqueue a job, open a browser, use a
+profile/provider, mutate an installed database or schedule, or install a
+runtime under this work item.

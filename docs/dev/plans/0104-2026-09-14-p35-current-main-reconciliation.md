@@ -1,6 +1,6 @@
 # Plan 0104 | P35 Current-Main Reconciliation
 
-State: OPEN
+State: CLOSED
 Lane: P35
 Work item: WI-009
 Related work item: WI-004
@@ -8,7 +8,7 @@ Branch: feat/x-tailored-follows-v1
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 3
+Plan version: 4
 Date: 2026-09-14
 Session owner: coordinator Codex thread `01a09f76-8024-7960-a7c5-c0469cf99153`
 
@@ -248,3 +248,44 @@ owned-fork pull request, and record canonical ancestry and closeout receipts.
 Next action: commit and publish this integration-ready checkpoint, then update
 the canonical lane catalog to the exact remote tip before opening the feature
 pull request.
+
+### Checkpoint P0104-C04 | 2026-09-14
+
+Plan version: 4
+
+State transition: `OPEN -> CLOSED`; custody advances from
+`INTEGRATION_READY` to `INTEGRATED` through PR 68 at
+`87858934c8498dccbdeda549ad73f626dbc143a7`.
+
+Progress classification: `outcome_progress`; all five acceptance criteria are
+proven on canonical main and P35 Packet 1 is complete without crossing an
+external-effect boundary.
+
+Authority classification:
+
+- `inherited_authority` covered the completed provider-free reconciliation and
+  normal pull-request integration; installed runtime, provider, browser,
+  release, deployment, production, and GitHub issue mutations remain
+  `human_gate`, while P35 Packet 2 remains `scope_expansion`.
+
+Evidence:
+
+- canonical catalog PR 67 bound `INTEGRATION_READY` custody, validation, remote
+  equality, and the reconciled manifest overlap to exact feature tip
+  `434ac770eb1b6aeda37f455c1a35e3ddb9a69ad0`;
+- remote PR 68 read back `MERGEABLE/CLEAN` with exact head `434ac770`, 32 changed
+  files, the expected Packet 1 implementation and compatibility surface, and
+  no failing required check;
+- GitHub read back PR 68 `MERGED` at `2026-09-14T11:08:09Z` with merge commit
+  `87858934c8498dccbdeda549ad73f626dbc143a7`;
+- Git proves both the published feature head and its original accepted
+  checkpoint `d2c9f8eb` are ancestors of current canonical main;
+- the baseline, reproduced compatibility failures, focused/combined tests,
+  comprehensive Python and Go validation, manifest regeneration, planning,
+  lane, plan-authority, and diff evidence from C01-C03 remains bound to the
+  integrated head.
+
+Subagent status: `not_spawned`.
+
+Next action: close the canonical projections and advance P51 to a separately
+planned versioned development-runtime packet; do not begin P35 Packet 2.
