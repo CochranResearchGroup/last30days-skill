@@ -24,8 +24,9 @@ owned-process teardown.
 ## Current State
 
 Plans 0115 and 0118 are closed and WI-001/WI-002/WI-004 are `DONE`. Native
-fixture execution is proven; only stock packaged-runtime readback, restart,
-denial, identity and teardown acceptance remains for WI-005.
+fixture execution and the complete stock packaged-runtime proof pass at C05,
+including restart, denial, identity and teardown. Independent joined review,
+canonical integration and coordinator WI-005 closeout remain.
 
 ## Definition Of Done
 
@@ -86,9 +87,9 @@ authority.
 
 ## Next Action
 
-Integrate this registration, publish exact isolated custody, then assign one
-implementation owner. Successful reviewed canonical integration may move
-WI-005 to `DONE`.
+Review and integrate the published C05 evidence, then reconcile WI-005 to
+`DONE` from accepted canonical ancestry. No further runtime or provider action
+is required by this lane's accepted proof.
 
 ### Checkpoint P0120-C01 | 2026-09-14
 
@@ -252,3 +253,98 @@ hotfix test baseline is coordinator-owned; no other shared join is needed.
 Next action: publish the repaired clean source, rebuild twice, and execute the
 second bounded proof in wholly fresh roots. Stop for coordinator disposition
 if that proof fails; do not open another attempt or erase the first failure.
+
+### Checkpoint P0120-C05 | 2026-09-14
+
+Plan version: 1
+
+State transition: `bounded_repair_ready -> acceptance_met_pending_integration`;
+plan remains `OPEN` for independent joined review and canonical integration.
+
+Progress classification: `outcome_progress`; the exact stock packaged runtime
+passes the complete two-cycle provider-free follow acceptance.
+
+Authority classification:
+
+- `inherited_authority`: isolated fixture/runtime acceptance, durable evidence
+  retention, validation and owned-branch publication only;
+- no provider/network/browser/live locator, installed runtime/database, real
+  schedule, release/deployment or issue effect occurred;
+- coordinator baseline fix `3110e258dd458945716530aaec340ac0c7ce2ff5`
+  was cherry-picked unchanged as `9684b105`. Shared composition and test fixes
+  remain attributable to the coordinator, not lane-owned edits.
+
+Exact acceptance identity:
+
+- source was clean and independently live-remote-equal at
+  `8c454f74f0e370060b0763df1e224c00e06d36fa` before building or starting;
+- the two fixed-epoch artifacts both hash to
+  `df29fc296cad3e1b99a6ffebc1a12ba9fdcd79a9b92d2b406b1d9a8cb70690b7`;
+- service 0.3.118, MCP 4.0.6, database schema 18, service API 1;
+- source/runtime manifest
+  `6c36b7040e9f033184f910c7c8c48ce9a8374e5d81965f3df6c52d39de6b55d3`;
+- public contract digest
+  `a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5`;
+- MCP binary
+  `7e67dc68a1d878aaaf4641988a4a423e075418697b290caca463350b7d585115`;
+- runtime `l30d-p39-follow-packet3-v2-d402ddee03fa`, socket
+  `/tmp/l30d-p39-v2-runtime.TN6ueu/d402ddee03fa/s`;
+- service PID/start-ticks 2891289/3917373 and 2892611/3917932; fresh MCP
+  PID/start-ticks 2891567/3917596 and 2892684/3917955;
+- raw successful receipt SHA-256
+  `d63359b0e3ac54d8d563d1f57d44ac5b9f64850c84d9a7523cdb4d28f245ce2b`.
+
+Durable evidence:
+
+- `dev/last30days/receipts/plan0120-follow-runtime.json` retains both complete
+  decoded attempt payloads, their original raw-file SHA-256 values and explicit
+  failed/accepted dispositions. Its SHA-256 is
+  `c7728e07e1904e82735be35158f70a9597fc421c8f70ce3a9d41b17275b44d61`;
+- deterministic comparison proves each retained payload equals its original
+  JSON receipt. The originals, synthetic stores, logs and artifacts remain in
+  their unique temporary roots; the committed receipt survives their expiry;
+- the accepted proof completed in 9.302 seconds. Both controller down receipts
+  are `stopped`; final controller `absent`, socket absent, owned-process census
+  empty. Fresh independent `ps` readback found none of the four exact PIDs;
+- the whole logical database digest is identical in both cycles:
+  `d1877d1d7db444afb233a58fe4c91a7f155b18e3b0062e16fced976cf667716e`.
+
+Acceptance mapping:
+
+1. Reproducible builds and actual controller/HTTP/MCP identities agree. The
+   probe verifies every production-source manifest entry before execution.
+2. HTTP, Python and fresh MCP catalogs are exact; native declared support is
+   distinct from dependency/execution unavailability, without activation.
+3. Seven authorized collections preserve native IDs, X history, revision-one
+   frozen work, receipts, quarantine and archive readback. Reddit's three and
+   YouTube's two collection sightings remain on their deduplicated versions.
+4. Eight search cases include exact follow/general refs and negative owner,
+   unrelated-profile and public-only partitions. Unauthorized list/get/search
+   contain no private target/history/provenance or eligible-result counts.
+5. Every public read and six denied collection/job mutations leave the entire
+   logical database unchanged; tick scheduling remains disabled. CLI's six
+   reads are scoped to the explicit disposable database and do not claim
+   profile authorization or mutation denial parity.
+6. The second fresh service/MCP cycle repeats identical public evidence,
+   catalog, CLI readbacks and whole-store digest after restart.
+7. Final focused selection passes 79 tests in 25.10 seconds. Go tests/vet,
+   focused Ruff, package/reproducibility, active planning audit (`ok: true`) and
+   diff checks pass. Comprehensive Python at `8c454f74` passes: **3,095 passed,
+   eight skipped, 14 subtests passed in 215.06 seconds**, using
+   `UV_PROJECT_ENVIRONMENT=/home/ecochran76/workspace.local/last30days-skill/.venv timeout 600 uv run --offline pytest -o addopts='' -q`.
+   This second full run includes the coordinator's corrected hotfix baseline;
+   no failure or timeout was erased by the rerun.
+
+The C04 authority-heading formatting audit initially failed; the header was
+normalized in `8c454f74`, and the current plan-authority audit passes. The
+first runtime failure and initial comprehensive failure remain recorded above.
+
+Subagent status and reconciliation: `joined`; one owner completed both bounded
+attempts, no children. The coordinator owns independent joined review,
+closed-world remediation if required, PR integration, and WI-005/P39/Plan0107
+authority reconciliation. Effective model/effort remains unreported.
+
+Next action: publish the evidence-only closeout checkpoint, verify clean
+HEAD/upstream/live-remote equality, then integrate through the coordinator's
+reviewed PR. WI-005 is eligible for `DONE` only after that accepted canonical
+integration; no additional runtime, provider or installed acceptance is claimed.
