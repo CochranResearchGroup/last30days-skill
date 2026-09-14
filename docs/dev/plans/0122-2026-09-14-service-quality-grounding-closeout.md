@@ -122,3 +122,42 @@ Subagent status and reconciliation: `assigned`; `/root/wave4_wi008_plan`, one
 owner, no children. Implementation waits for activation reconciliation.
 
 Next action: publish this plan-only checkpoint and return exact custody.
+
+### Checkpoint P0122-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> ready_for_independent_review`.
+
+Progress classification: `provider_free_implementation_complete`; the real
+fixture registry now supplies `QuestionGroundingAdapter`. It reads only the
+candidate-bound sealed fixture and measures request/retrieval/answer digest
+correlation, citation equality and dereference, partition closure, declared
+partial/stale coverage, expected outcomes, and the provider-free receipt. It
+does not assess semantic entailment or production quality.
+
+Acceptance evidence:
+
+- TDD started with an import failure before the adapter existed; the focused
+  real-adapter suite now passes `9` tests, including supported, no-evidence,
+  conflicting, partial/stale, tampered-correlation/citation/dereference,
+  partition-leakage, malformed-answer, unknown-partition, candidate-mismatch,
+  and unsealed-fixture paths.
+- `uv run pytest tests/test_service_quality.py tests/test_service_quality_real_adapters.py tests/test_service_question_evidence.py tests/test_service_questions.py tests/test_service_question_application.py tests/test_service_post_search.py tests/test_service_supervisor.py tests/test_service_publication.py -q` passed `102` tests.
+- `POST_SEARCH_PERFORMANCE=1 uv run pytest tests/test_service_post_search_performance.py -q`, compilation, and `git diff --check` passed.
+- `uv run pytest tests/test_hermes_skillignore.py tests/test_plugin_contract.py tests/test_build_skill_artifact.py -q` passed `7` package-boundary tests.
+- A full-suite attempt is blocked outside this lane by
+  `tests/test_hotfix_runtime_drill.py::test_upgrade_baseline_uses_disposable_installer_and_cleans_owned_processes`: the asserted baseline is `0.3.117` while current metadata is `0.3.118`. No version or runtime-drill change was made here.
+
+Effect receipt: zero network requests, model calls, browser actions, runtime
+mutations, provider calls, installed-database access, or live effects; all
+fixtures were temporary local SQLite files and adapters opened their owned
+reads query-only.
+
+Ownership/reconciliation: lane-only files changed. Coordinator joins remain
+independent review, shared authority/roadmap reconciliation, and any canonical
+integration/DONE decision. The full-suite version-baseline discrepancy is a
+coordinator-owned gate, not authorization to alter the runtime drill.
+
+Next action: review this isolated branch with the recorded non-lane full-suite
+gate, then integrate only after the coordinator's joined acceptance.

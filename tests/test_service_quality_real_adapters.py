@@ -7,6 +7,7 @@ import json
 import sqlite3
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -27,7 +28,11 @@ from dev.last30days.quality.adapters import (
     CorpusIntegrityAdapter,
     FixtureCatalog,
     PostSearchQualityAdapter,
+    QuestionGroundingAdapter,
 )
+from lib import service_question_contracts as question_contracts
+from lib.service_post_search import PostSearchBackend
+from lib.service_questions import QuestionRunner, QuestionService
 from tests.test_service_post_search import _seed_post_corpus
 
 
@@ -146,6 +151,262 @@ def _sealed_corpus(tmp_path: Path, *, partial: bool = True) -> Path:
             ],
         )
     return db_path
+
+
+def _question_request(
+    *,
+    request_id: str,
+    answer_mode: str = "evidence_only",
+    question: str = "reliable browser agents",
+    limits: dict[str, object] | None = None,
+):
+    payload = {
+            "schema_version": 1,
+            "request_id": request_id,
+            "profile_id": "public",
+            "question": question,
+            "filters": {},
+            "temporal": {
+                "as_of": None,
+                "during_from": None,
+                "during_to": None,
+                "known_as_of": None,
+            },
+            "answer_mode": answer_mode,
+            "model_fallback": "none",
+            "limits": {
+                "evidence_limit": 10,
+                "max_evidence_bytes": 65536,
+                "max_answer_characters": 4096,
+                "max_statements": 8,
+                "wait_ms": 0,
+                "max_evidence_age_seconds": None,
+                "max_attempts": 2,
+            },
+        }
+    if limits:
+        payload["limits"].update(limits)
+    return question_contracts.QuestionRequestV1.from_dict(payload)
+
+
+def _grounded_fixture(tmp_path: Path):
+    db_path = _sealed_corpus(tmp_path, partial=False)
+    clock = lambda: datetime(2026, 9, 14, tzinfo=timezone.utc)
+    service = QuestionService(db_path, PostSearchBackend(db_path), clock=clock)
+    supported = service.submit(
+        _question_request(request_id="grounding-supported"),
+        access_partitions=("public",),
+    )
+    no_evidence = service.submit(
+        _question_request(
+            request_id="grounding-empty", question="unmatched grounded fixture"
+        ),
+        access_partitions=("public",),
+    )
+    pending = service.submit(
+        _question_request(request_id="grounding-conflict", answer_mode="synthesized"),
+        access_partitions=("public",),
+    )
+
+    class ConflictWorker:
+        worker_ref = "provider-free-conflict-fixture"
+
+        def answer(self, payload):
+            return {
+                "answer_state": "conflicting_evidence",
+                "summary": "The sealed evidence has two structural sources.",
+                "statements": [
+                    {
+                        "text": "The retained fixture preserves both sources.",
+                        "statement_kind": "source_fact",
+                        "support_state": "mixed",
+                        "citation_ids": payload["allowed_citation_ids"],
+                        "alternatives": ["legacy", "temporal"],
+                    }
+                ],
+                "uncertainty_codes": ["conflicting_evidence"],
+            }
+
+    conflicting = QuestionRunner(service.queue, ConflictWorker(), clock=clock).run_once(
+        worker_id="grounding-fixture"
+    )
+    partial_stale = service.submit(
+        _question_request(
+            request_id="grounding-partial-stale",
+            limits={"max_evidence_bytes": 1024, "max_evidence_age_seconds": 1},
+        ),
+        access_partitions=("public",),
+    )
+    assert (
+        supported.answer is not None
+        and no_evidence.answer is not None
+        and conflicting is not None
+        and conflicting.answer is not None
+        and partial_stale.answer is not None
+    )
+    with sqlite3.connect(db_path) as conn:
+        conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        conn.execute("PRAGMA journal_mode=DELETE")
+    return db_path, {
+        "supported": supported,
+        "no_evidence": no_evidence,
+        "conflicting": conflicting,
+        "partial_stale": partial_stale,
+    }
+
+
+def _grounding_case(db_path: Path, status) -> EvaluationCaseV1:
+    assert status.answer is not None
+    with sqlite3.connect(db_path) as conn:
+        row = conn.execute(
+            "SELECT retrieval_json FROM service_question_retrievals "
+            "WHERE question_id=?",
+            (status.question_id,),
+        ).fetchone()
+    assert row is not None
+    citations = [item["evidence_id"] for item in json.loads(row[0])["evidence"]]
+    return _case(
+        "grounding",
+        db_path,
+        question_id=status.question_id,
+        profile_id="public",
+        access_partitions=["public"],
+        expected_answer_id=status.answer.answer_id,
+        expected_answer_state=status.answer.answer_state,
+        expected_evidence_ids=citations,
+        expected_uncertainty_codes=list(status.answer.uncertainty_codes),
+    )
+
+
+def test_real_grounding_adapter_reads_durable_question_answers_without_effects(tmp_path):
+    db_path, statuses = _grounded_fixture(tmp_path)
+    adapter = QuestionGroundingAdapter(FixtureCatalog({"sealed-corpus": db_path}))
+    before = db_path.read_bytes()
+
+    outcomes = {
+        name: adapter.evaluate(_grounding_case(db_path, status), result_limit=20)
+        for name, status in statuses.items()
+    }
+
+    assert statuses["supported"].answer.answer_state == "answered"
+    assert statuses["no_evidence"].answer.answer_state == "no_evidence"
+    assert statuses["conflicting"].answer.answer_state == "conflicting_evidence"
+    assert statuses["partial_stale"].answer.coverage == {"partial": True, "stale": True}
+    assert {
+        citation.storage_family
+        for statement in statuses["supported"].answer.statements
+        for citation in statement.citations
+    } == {"legacy", "temporal"}
+    assert all(outcome.state == "passed" for outcome in outcomes.values())
+    assert db_path.read_bytes() == before
+
+
+def test_grounding_adapter_rejects_tampered_citations_and_unlabeled_coverage(tmp_path):
+    db_path, statuses = _grounded_fixture(tmp_path)
+    supported = statuses["supported"]
+    partial_stale = statuses["partial_stale"]
+    assert supported.answer is not None and partial_stale.answer is not None
+    with sqlite3.connect(db_path) as conn:
+        triggers = conn.execute(
+            "SELECT name, sql FROM sqlite_master WHERE type='trigger' "
+            "AND tbl_name='service_question_answers'"
+        ).fetchall()
+        for name, _ in triggers:
+            conn.execute(f'DROP TRIGGER "{name}"')
+        answer = supported.answer
+        statement = answer.statements[0]
+        changed = question_contracts.QuestionCitationV1.from_dict(
+            {**statement.citations[0].to_dict(), "content_hash": "sha256:changed"}
+        )
+        rewritten_statement = question_contracts.AnswerStatementV1.create(
+            text=statement.text,
+            statement_kind=statement.statement_kind,
+            support_state=statement.support_state,
+            citations=(changed,),
+            alternatives=statement.alternatives,
+        )
+        values = answer.to_dict()
+        for key in ("schema_version", "answer_id", "output_digest", "cache_only", "acquisition_performed"):
+            values.pop(key)
+        rewritten = question_contracts.QuestionAnswerV1.create(
+            **{**values, "statements": (rewritten_statement,), "input_digest": "tampered-input"}
+        )
+        conn.execute(
+            "UPDATE service_question_answers SET answer_json=?, output_digest=? WHERE answer_id=?",
+            (question_contracts.canonical_json(rewritten.to_dict()), rewritten.output_digest, answer.answer_id),
+        )
+        answer = partial_stale.answer
+        values = answer.to_dict()
+        for key in ("schema_version", "answer_id", "output_digest", "cache_only", "acquisition_performed"):
+            values.pop(key)
+        unlabeled = question_contracts.QuestionAnswerV1.create(
+            **{
+                **values,
+                "statements": answer.statements,
+                "uncertainty_codes": (),
+            }
+        )
+        conn.execute(
+            "UPDATE service_question_answers SET answer_json=?, output_digest=? WHERE answer_id=?",
+            (question_contracts.canonical_json(unlabeled.to_dict()), unlabeled.output_digest, answer.answer_id),
+        )
+        for _, sql in triggers:
+            conn.execute(sql)
+    adapter = QuestionGroundingAdapter(FixtureCatalog({"sealed-corpus": db_path}))
+    tampered = adapter.evaluate(_grounding_case(db_path, supported), result_limit=20)
+    unlabeled = adapter.evaluate(_grounding_case(db_path, partial_stale), result_limit=20)
+    leaked_case = _grounding_case(db_path, statuses["conflicting"])
+    leaked = adapter.evaluate(
+        EvaluationCaseV1.from_dict(
+            {
+                **leaked_case.to_dict(),
+                "adapter_input": {
+                    **leaked_case.adapter_input,
+                    "access_partitions": ["private"],
+                },
+            },
+            "leaked_case",
+        ),
+        result_limit=20,
+    )
+    with sqlite3.connect(db_path) as conn:
+        triggers = conn.execute(
+            "SELECT name, sql FROM sqlite_master WHERE type='trigger' "
+            "AND tbl_name='service_question_answers'"
+        ).fetchall()
+        for name, _ in triggers:
+            conn.execute(f'DROP TRIGGER \"{name}\"')
+        conn.execute(
+            "UPDATE service_question_answers SET answer_json=? WHERE answer_id=?",
+            ('{"schema_version":1}', statuses["no_evidence"].answer.answer_id),
+        )
+        for _, sql in triggers:
+            conn.execute(sql)
+    malformed = adapter.evaluate(
+        _grounding_case(db_path, statuses["no_evidence"]), result_limit=20
+    )
+    unknown_partitions_case = EvaluationCaseV1.from_dict(
+        {
+            **_grounding_case(db_path, statuses["conflicting"]).to_dict(),
+            "adapter_input": {
+                **_grounding_case(db_path, statuses["conflicting"]).adapter_input,
+                "access_partitions": [],
+            },
+        },
+        "unknown_partitions_case",
+    )
+
+    assert tampered.state == "failed"
+    assert tampered.failure_codes == ("grounding_structure_failed",)
+    assert next(metric for metric in tampered.metrics if metric.name == "citation_dereference").numerator == 0
+    assert unlabeled.state == "failed"
+    assert unlabeled.failure_codes == ("grounding_structure_failed",)
+    assert leaked.state == "failed"
+    assert leaked.failure_codes == ("grounding_structure_failed",)
+    assert malformed.state == "incomplete"
+    assert malformed.failure_codes == ("grounding_fixture_invalid",)
+    with pytest.raises(ContractValidationError, match="access partitions"):
+        adapter.evaluate(unknown_partitions_case, result_limit=20)
 
 
 def test_real_adapters_are_read_only_digest_pinned_and_inspectable(tmp_path):
@@ -276,13 +537,16 @@ def test_partition_mismatch_and_source_filter_remain_inspectable(tmp_path):
     assert metrics["canonical_identity_uniqueness"].numerator < metrics["canonical_identity_uniqueness"].denominator
 
 
-def _real_payloads(db_path: Path):
+def _real_payloads(db_path: Path, *, grounding_status=None):
     fixture = {"fixture_id": "sealed-corpus", "digest": _digest(db_path)}
     cases = [
         {"case_id": "acquisition-real", "axis": "acquisition", "tags": ["provider-free"], "fixture": fixture, "adapter_input": {"profile_id": "fixture", "query": "reliable browser agents", "sources": ["reddit", "x"], "observed_at": "2026-09-11T00:00:00Z"}},
         {"case_id": "corpus-real", "axis": "corpus", "tags": ["provider-free"], "fixture": fixture, "adapter_input": {}},
         {"case_id": "retrieval-real", "axis": "retrieval", "tags": ["provider-free"], "fixture": fixture, "adapter_input": {"query": "reliable browser agents", "profile_id": "fixture", "access_partitions": ["public"], "expected_revision_ids": ["version-legacy-current", "version-tick-public"], "page_size": 1, "filters": {}}},
     ]
+    if grounding_status is not None:
+        cases.append(_grounding_case(db_path, grounding_status).to_dict())
+    cases.sort(key=lambda case: case["case_id"])
     evaluation = {
         "schema_version": "quality_evaluation_set.v1", "evaluation_set_id": "service-quality-real-v2",
         "version": 2, "description": "Synthetic sealed SQLite real-adapter cases.",
@@ -293,17 +557,23 @@ def _real_payloads(db_path: Path):
         "acquisition": ["coverage_rate"],
         "corpus": ["access_partition_closure", "canonical_identity_uniqueness", "content_digest_validity", "current_revision_closure", "provenance_completeness"],
         "retrieval": ["authorization_precision", "expected_revision_recall", "pagination_stability", "provenance_closure"],
+        "grounding": ["answer_correlation", "citation_closure", "citation_dereference", "citation_partition_closure", "coverage_disclosure", "expected_answer_outcome", "provider_free_receipt"],
     }
     policy = {
         "schema_version": "quality_threshold_policy.v1", "policy_id": "service-quality-real-v2", "version": 2,
-        "rules": [{"rule_id": f"{axis}-{metric}", "axis": axis, "metric": metric, "scope": "global", "comparator": "gte", "threshold": 1.0, "minimum_denominator": 1, "severity": "blocking", "missing_data": "not_measurable"} for axis, names in metrics.items() for metric in names],
+        "rules": sorted(
+            [{"rule_id": f"{axis}-{metric}", "axis": axis, "metric": metric, "scope": "global", "comparator": "gte", "threshold": 1.0, "minimum_denominator": 1, "severity": "blocking", "missing_data": "not_measurable"} for axis, names in metrics.items() for metric in names],
+            key=lambda rule: rule["rule_id"],
+        ),
     }
     return evaluation, policy
 
 
 def test_real_fixture_runner_and_cli_bind_adapter_and_fixture_digests(tmp_path):
-    db_path = _sealed_corpus(tmp_path, partial=False)
-    evaluation_payload, policy_payload = _real_payloads(db_path)
+    db_path, statuses = _grounded_fixture(tmp_path)
+    evaluation_payload, policy_payload = _real_payloads(
+        db_path, grounding_status=statuses["supported"]
+    )
     evaluation = QualityEvaluationSetV1.from_dict(evaluation_payload)
     policy = QualityThresholdPolicyV1.from_dict(policy_payload)
     request_payload = {
@@ -311,7 +581,7 @@ def test_real_fixture_runner_and_cli_bind_adapter_and_fixture_digests(tmp_path):
         "evaluation_set": {"id": evaluation.evaluation_set_id, "digest": evaluation.digest},
         "threshold_policy": {"id": policy.policy_id, "digest": policy.digest},
         "candidate": _candidate(),
-        "baseline": None, "evaluator_version": "packet-2-v1", "axes": ["acquisition", "corpus", "retrieval"], "case_ids": [],
+        "baseline": None, "evaluator_version": "packet-2-v1", "axes": ["acquisition", "corpus", "retrieval", "grounding"], "case_ids": [],
         "mode": "provider_free_fixture", "environment": "fixture",
         "limits": {"max_cases": 20, "max_wall_seconds": 10, "max_output_bytes": 100000, "per_case_limit": 20},
     }
