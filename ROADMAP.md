@@ -2635,9 +2635,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate the reviewed Wave 1 branch, record Packet 2's canonical receipt,
-  then plan Packet 3 semantic/RRF and bounded performance work. P36 and P40 may
-  continue consuming Packet 1's stable search/evidence contract.
+- register and activate Plan 0111 for Packet 3 semantic/RRF, response-budget,
+  coverage, and measured 10,000-post work. P36 and P40 may continue consuming
+  Packet 1's stable search/evidence contract.
 
 ## P34 | Isolated Development Runtime
 
@@ -2725,9 +2725,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- activate `docs/dev/plans/0109-2026-09-14-tailored-follows-packet-2.md` from
-  its exact published branch-local checkpoint. Readiness does not grant
-  provider, browser, schedule, or installed-runtime authority.
+- register and activate Plan 0112 for the final provider-free typed-list,
+  scheduler, lifecycle, MCP, exact-follow search, and documentation closure.
 
 ## P36 | Agent Question Answering MCP Surface
 
@@ -2965,9 +2964,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate provider-free Packets 1-2, retain the real slot as dormant
-  capacity, and plan Packet 3's isolated runtime/release drill. A qualified
-  production incident remains a separately authorized path.
+- register and activate Plan 0113 for a disposable runtime/release and operator
+  closeout drill while retaining the real slot as dormant capacity. A qualified
+  production incident remains separately authorized.
 
 ## P39 | Cross-Service Tailored Follow Product Surface
 
@@ -3343,6 +3342,5 @@ Wave 1 Planned Packets:
 
 Next Bounded Action:
 
-- integrate the Wave 1 closeout projection, then select and register the next
-  independent provider-free packets without exceeding three concurrent
-  implementation agents.
+- integrate Plans 0111-0113 registration, publish and reconcile their exact
+  plan-only activations, then run the three independent implementation lanes.

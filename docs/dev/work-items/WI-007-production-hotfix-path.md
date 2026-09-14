@@ -12,6 +12,7 @@ Implementation plan seed: docs/dev/plans/0081-2026-09-13-reserved-production-hot
 Last completed plan: docs/dev/plans/0110-2026-09-14-hotfix-control-and-git-drill.md
 Active plan: none
 Branch: none
+Next planned plan: docs/dev/plans/0113-2026-09-14-hotfix-runtime-and-operator-closure.md
 
 ## Problem
 

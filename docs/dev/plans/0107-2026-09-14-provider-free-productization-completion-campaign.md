@@ -275,6 +275,55 @@ Next action:
 - select and register up to three dependency-independent provider-free
   continuation packets from current canonical main.
 
+### Checkpoint P0107-C05 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_1_integrated -> wave_2_registration_ready`.
+
+Progress classification: `blocker_reduction`; three independent next packets
+are frozen with acceptance, ownership, model routing, overlap, and effect gates.
+
+Wave 2 selection:
+
+- Plan 0111/P33: bounded hybrid post search Packet 3, requested
+  `gpt-6-astra` at high reasoning;
+- Plan 0112/P35: combined typed X-list and provider-free product closure,
+  requested `gpt-5.6-terra` at medium reasoning;
+- Plan 0113/P38: disposable hotfix runtime/release drill and operator closure,
+  requested `gpt-6-astra` at high reasoning.
+
+Dependency and overlap decision:
+
+- the three normal lane write sets are independent; P33 owns search ranking,
+  P35 owns list/scheduler/lifecycle, and P38 owns repo-only hotfix tooling;
+- shared Python contracts, MCP/generated artifacts, runtime manifest, and all
+  authority projections remain coordinator-owned joins;
+- P35 completion unlocks WI-005, P33 Packet 3 feeds later WI-002/WI-003/WI-008
+  acceptance, and P38 completion removes an independent program gate.
+
+Authority classification:
+
+- `inherited_authority` covers plan registration, provider-free source/tests,
+  bounded local benchmarks/builds/disposable fixtures, publication, reviewed
+  PRs, and coordinator integration;
+- no provider, browser, live data, schedule, installed service, operational
+  staging, production, release publication, deployment, rollback, or issue
+  mutation is authorized.
+
+Subagent status and reconciliation:
+
+- `joined`; read-only planners `/root/wi002_packet3_planning`,
+  `/root/wi004_packet3_planning`, and `/root/wi007_packet3_planning` returned
+  evidence-backed packet boundaries. The primary reconciled P35 Packets 3-4
+  and P38 Packets 3-4 into one bounded final provider-free packet each.
+
+Next action:
+
+- integrate this registration, create exact branch/worktree custody from that
+  merge, publish plan-only activation checkpoints, reconcile the catalog, then
+  launch no more than three one-level implementation agents.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;

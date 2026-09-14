@@ -14,6 +14,7 @@ Completed reconciliation plan: docs/dev/plans/0104-2026-09-14-p35-current-main-r
 Last completed plan: docs/dev/plans/0109-2026-09-14-tailored-follows-packet-2.md
 Active plan: none
 Branch: none
+Next planned plan: docs/dev/plans/0112-2026-09-14-x-list-and-product-closure.md
 
 ## Problem
 
