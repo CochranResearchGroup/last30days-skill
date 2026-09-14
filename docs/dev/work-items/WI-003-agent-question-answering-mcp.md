@@ -10,8 +10,8 @@ Blocked by: WI-002 Packet 1 contract integration; final acceptance by WI-002 clo
 Architecture: docs/dev/notes/0120-2026-09-13-agent-question-answering-mcp-architecture.md
 Implementation plan seed: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md
 Last closed plan: docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md
-Current plan: none; Packet 4 is not yet planned
-Branch: main
+Current plan: docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md
+Branch: feat/question-public-runtime-closeout-v1 (planned; custody not yet published)
 Owner: unassigned
 
 ## Problem
@@ -45,8 +45,9 @@ summaries replace source evidence.
 
 ## Next Owner Action
 
-Packet 3 integrated through PR 48 as canonical merge `d41e1a6e`, containing
-exact feature checkpoint `75f2342e`, a current source manifest, and a fully
-green 2,860-test collection. Plan Packet 4's public HTTP/MCP and fresh-client
-surface separately. Keep real model execution, providers, installed runtimes,
-staging, and production behind their own explicit gates.
+Packet 3 integrated through PR 48 as canonical merge `d41e1a6e`. Plan 0117
+now registers Packet 4's full filters, authorization, bounded lifecycle,
+public HTTP/CLI/MCP surface, and fresh isolated-runtime acceptance. It remains
+`PLANNED` until exact branch/worktree custody is published. Keep real model
+execution, providers, installed runtimes, staging, and production behind their
+own explicit gates.

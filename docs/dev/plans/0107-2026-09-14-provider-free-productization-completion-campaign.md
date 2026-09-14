@@ -588,6 +588,37 @@ Next action:
   public question/runtime closure, WI-005 fixture tracers, and WI-008 corpus
   integrity/coverage unless a fresh dependency audit changes that selection.
 
+### Checkpoint P0107-C12 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_3_integrated -> wave_4_registration_ready`.
+
+Progress classification: `blocker_reduction`; three dependency-ordered,
+provider-free packets are fully bounded for parallel execution. Plan 0117 can
+close WI-003; Plans 0118 and 0119 make substantial product progress without
+overclaiming their later runtime and grounding gates.
+
+Authority classification:
+
+- `inherited_authority`: registration and later provider-free activation,
+  implementation, review, integration, and repo-local closeout remain inside
+  this campaign;
+- `human_gate`: providers, models, browsers, live data or locators, schedules,
+  installed runtimes/databases, staging, production, releases, deployments,
+  delivery, and forge issue mutations remain prohibited without exact authority.
+
+Subagent status and reconciliation:
+
+- `joined`; three read-only planning specialists produced Plans 0117-0119.
+  No implementation owner is assigned until registration integrates and exact
+  custody is published. The campaign retains the three-owner/no-child cap.
+
+Next action:
+
+- validate and integrate this registration checkpoint, then create and publish
+  the exact isolated lane refs before any plan changes to `OPEN`.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;
