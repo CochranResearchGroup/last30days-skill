@@ -207,6 +207,15 @@ def _x_adapter(
             config=dict(config),
             limit=request.item_limit,
         ))
+    if request.surface_kind == "list":
+        return _account_opaque_source_request(x_browser.scrape_x_list(
+            request.query,
+            request.from_date,
+            request.to_date,
+            depth=_depth(request.depth),
+            config=dict(config),
+            limit=request.item_limit,
+        ))
     return _account_opaque_source_request(x_browser.search_x_browser(
         request.query,
         request.from_date,

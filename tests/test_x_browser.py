@@ -212,6 +212,49 @@ class XBrowserSearchTests(TestCase):
                 self.assertEqual([], result["items"])
                 self.assertEqual(expected_error_type, result["error_type"])
 
+    def test_list_timeline_uses_canonical_list_route_and_preserves_typed_outcomes(self):
+        from lib import x_browser
+
+        cases = (
+            (FakeAgentBrowserClient(), None),
+            (
+                FakeAgentBrowserClient(
+                    page_state={"url": "https://x.com/i/lists/987654321"}
+                ),
+                "navigation_mismatch",
+            ),
+            (
+                FakeAgentBrowserClient(
+                    candidates=[], page_state={"error_page": True}
+                ),
+                "target_unavailable",
+            ),
+        )
+        for client, expected_error_type in cases:
+            with self.subTest(expected_error_type=expected_error_type):
+                with patch.object(
+                    x_browser, "CliAgentBrowserClient", return_value=client
+                ):
+                    result = x_browser.scrape_x_list(
+                        "123456789",
+                        "2026-06-20",
+                        "2026-07-20",
+                        depth="quick",
+                        config={
+                            "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                            "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                            "_NOW": NOW,
+                        },
+                    )
+
+                self.assertEqual(expected_error_type, result["error_type"])
+                if expected_error_type is None:
+                    self.assertEqual("https://x.com/i/lists/123456789", result["url"])
+                    self.assertEqual("x-list", client.requests[0].task_name)
+                    self.assertEqual(
+                        "Authenticated X list post", result["items"][0]["why_relevant"]
+                    )
+
     def test_home_feed_collects_posts_without_a_topic_query(self):
         from lib import x_browser
 

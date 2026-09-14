@@ -2051,7 +2051,7 @@ class AcquisitionWorkRequest:
             payload.get("surface_kind", "topic"), "surface_kind"
         )
         if surface_kind not in {
-            "feed", "topic", "poster", "channel", "account", "profile"
+            "feed", "topic", "poster", "channel", "account", "list", "profile"
         }:
             raise ContractValidationError("surface_kind is unsupported")
         collection_context = payload.get("collection_context")

@@ -16,6 +16,8 @@ The adapter exposes:
 - `refresh` (`force_refresh`, durable and idempotent; optional `profile_id`)
 - `job_status`
 - `topic`
+- `collection` (list/get/put/pause/resume/run/archive typed recurring
+  specifications; archived entries require explicit inclusion)
 - resources `last30days://capabilities`, `last30days://sources`, and
   `last30days://topics`
 

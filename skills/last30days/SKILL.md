@@ -83,8 +83,9 @@ These operations are not part of an ordinary query:
 
 - `refresh` - request fresh bounded work for the user's topic.
 - `topic` - list or govern service-owned scheduled topics.
-- `collection` - list or govern recurring feed, account, profile, channel, or
-  topic specifications.
+- `collection` - list or govern recurring feed, account, list, profile,
+  channel, or topic specifications. `get` and `archive` preserve immutable
+  follow history; archived follows are hidden unless explicitly requested.
 - `maintenance_status` - read safe maintenance readiness and receipt counts.
 
 Use `refresh` only under the ordinary-path rule above. Use `topic`,
