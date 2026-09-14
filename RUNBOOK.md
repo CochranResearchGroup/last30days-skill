@@ -28965,3 +28965,54 @@ Next Bounded Action:
 
 - merge this closeout-only PR and verify canonical main clean and remote-equal;
   then plan Packet 4's public HTTP/MCP surface separately if work continues.
+
+## Turn 464 | 2026-09-13
+
+Focus: Plan 0101/P50 GitHub Issues enablement.
+
+Authority Consulted:
+
+- operator instruction to enable issue tracking for this repository; closed
+  Plan 0075/P32; policies 0027, 0030, 0031, and 0032; exact target registry;
+  current GitHub repository and authenticated-role readback.
+
+Decisions And Changes:
+
+- resolved the exact target as the owned public fork
+  `github.com/CochranResearchGroup/last30days-skill`;
+- changed only the repository setting `has_issues` from `false` to `true`;
+- left the target registry read-only and created no issue, label, Project,
+  milestone, assignment, comment, or closure;
+- clarified that the prepared WI-000 through WI-008 files remain unpublished
+  drafts pending separate per-action authority.
+
+Validation Evidence:
+
+- pre-write GitHub readback reported the repository unarchived, Issues
+  disabled, and actor `ecochran76` with admin permission;
+- both the write response and a separate post-write readback report the exact
+  repository unarchived with Issues enabled and actor admin;
+- the pinned read-only forge preflight now passes for the exact target;
+- a post-write issue listing succeeds and is empty.
+
+State Movement:
+
+- Plan 0101/P50 `unplanned -> CLOSED`; GitHub Issues `disabled -> enabled`;
+- agent-side tracker mutations remain gated and WI-000 through WI-008 remain
+  repo-local drafts.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the coordinator performed and verified the single exact
+  repository-setting mutation.
+
+Graphiti Write Status:
+
+- `not_written`; the GitHub postcondition plus this repository receipt are the
+  authoritative evidence.
+
+Next Bounded Action:
+
+- publish and merge this receipt through the owned-fork PR workflow, verify
+  canonical main, then request the exact backlog-publication authority before
+  any issue content is created.

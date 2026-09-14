@@ -5,7 +5,7 @@ State: TRIAGE
 Priority: P1
 Lane: Program
 Parent: none
-Blocked by: tracker activation for remote publication only
+Blocked by: separate tracker-publication authority for remote issue creation
 
 ## Problem
 

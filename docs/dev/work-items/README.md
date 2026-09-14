@@ -1,8 +1,10 @@
 # Productization Work-Item Drafts
 
 These files are the review surface for the initial Last30days product lanes.
-They are not GitHub issues yet. Each contains a unique idempotency marker that
-must be searched before any eventual create request.
+GitHub Issues are enabled on the owned fork, but these drafts have not been
+published as issues. The target registry remains read-only, and each file's
+unique idempotency marker must be searched before any separately authorized
+create request.
 
 ## Proposed Dependency Graph
 
