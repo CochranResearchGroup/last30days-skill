@@ -2005,7 +2005,7 @@ class CollectionContext:
         selector_field = {
             "feed": "feed", "topic": "topic", "account": "account",
             "list": "list_id", "poster": "poster", "channel": "channel",
-            "profile": "profile",
+            "profile": "profile", "community": "community", "user": "user",
         }.get(surface_kind)
         selector = payload["selector"]
         if (
@@ -2118,7 +2118,8 @@ class AcquisitionWorkRequest:
             payload.get("surface_kind", "topic"), "surface_kind"
         )
         if surface_kind not in {
-            "feed", "topic", "poster", "channel", "account", "list", "profile"
+            "feed", "topic", "poster", "channel", "account", "list", "profile",
+            "community", "user",
         }:
             raise ContractValidationError("surface_kind is unsupported")
         collection_context = payload.get("collection_context")
