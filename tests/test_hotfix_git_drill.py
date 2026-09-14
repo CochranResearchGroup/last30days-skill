@@ -1,5 +1,6 @@
 """Real local Git proof, confined to disposable roots and local remotes."""
 
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -10,6 +11,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "dev/last30days/scr
 
 from hotfix_control import HotfixError
 from hotfix_git_drill import DisposableGitDrill, run_git_drill
+
+
+def _tree_snapshot(root: Path) -> dict[str, bytes]:
+    return {
+        str(path.relative_to(root)): path.read_bytes()
+        for path in root.rglob("*")
+        if path.is_file()
+    }
 
 
 def test_disposable_git_drill_proves_priority_reconciliation_and_exact_cleanup(
@@ -144,3 +153,21 @@ def test_linked_git_metadata_cannot_redirect_commands_to_a_foreign_repository(tm
         fixture.run()
     metadata.write_text(original)
     assert fixture.cleanup()["verified"]
+
+
+@pytest.mark.parametrize("repository", ["main", "origin"])
+def test_top_level_common_dir_redirect_fails_before_foreign_git_mutation(
+    tmp_path, repository
+):
+    fixture = DisposableGitDrill.create(tmp_path)
+    metadata = fixture.main / ".git" if repository == "main" else fixture.origin
+    foreign = tmp_path / f"foreign-{repository}.git"
+    shutil.copytree(metadata, foreign)
+    before = _tree_snapshot(foreign)
+    (metadata / "commondir").write_text(str(foreign))
+
+    with pytest.raises(HotfixError, match="foreign_git_directory"):
+        fixture.prepare()
+
+    assert _tree_snapshot(foreign) == before
+    assert not (fixture.root / "feature-unaffected").exists()

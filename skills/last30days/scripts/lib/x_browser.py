@@ -491,7 +491,7 @@ class XBrowserScraper:
             self.client.evaluate(workspace, SCROLL_SCRIPT)
             self.client.act(workspace, BrowserAction("wait", value=str(max(0, round(self.scroll_wait * 1000)))))
             raw.extend(self.client.evaluate(workspace, EXTRACT_SCRIPT).get("candidates") or [])
-        if not raw:
+        if not raw and page.article_count:
             raise XBrowserFailure("extraction_empty", "Verified X account timeline contained no post articles")
         diagnostics.candidate_count = len(raw)
         quality_items = _quality_gate(raw, "", from_date, to_date, diagnostics, surface_kind="account", expected_author=handle)
@@ -501,7 +501,15 @@ class XBrowserScraper:
         items = deduped_items[: self.limit]
         diagnostics.duration_ms = round((time.monotonic() - started) * 1000)
         diagnostics.accepted_count = len(items)
-        error_type = "quality_gate_failed" if raw and not items else None
+        only_out_of_range = (
+            bool(raw)
+            and set(diagnostics.rejection_counts) == {"out_of_range"}
+        )
+        error_type = (
+            "quality_gate_failed"
+            if raw and not items and not only_out_of_range
+            else None
+        )
         return {
             "items": items,
             "error": "X account candidates were found, but none passed the post quality gate" if error_type else None,

@@ -11,7 +11,14 @@ NOW = datetime(2026, 7, 19, 12, 0, tzinfo=timezone.utc)
 
 
 class FakeAgentBrowserClient:
-    def __init__(self, *, auth=None, candidates=None, candidate_batches=None):
+    def __init__(
+        self,
+        *,
+        auth=None,
+        candidates=None,
+        candidate_batches=None,
+        page_state=None,
+    ):
         self.url = "https://x.com/home"
         self.actions = []
         self.evaluations = []
@@ -19,6 +26,7 @@ class FakeAgentBrowserClient:
         self.auth = auth
         self.candidates = candidates
         self.candidate_batches = candidate_batches
+        self.page_state = page_state or {}
         self.capture_index = 0
         self.released_workspaces = []
 
@@ -74,6 +82,7 @@ class FakeAgentBrowserClient:
                 "checkpoint": False,
                 "restricted": False,
                 "error_page": False,
+                **self.page_state,
             }
         if script == x_browser.SCROLL_SCRIPT:
             self.capture_index += 1
@@ -115,6 +124,94 @@ class FakeAgentBrowserClient:
 
 
 class XBrowserSearchTests(TestCase):
+    def test_valid_empty_account_timeline_returns_successful_zero_yield(self):
+        from lib import x_browser
+
+        client = FakeAgentBrowserClient(
+            candidates=[],
+            page_state={"article_count": 0},
+        )
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.scrape_x_account(
+                "alice",
+                "2026-06-20",
+                "2026-07-20",
+                depth="quick",
+                config={
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertEqual([], result["items"])
+        self.assertIsNone(result["error"])
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(0, result["diagnostics"]["candidate_count"])
+
+    def test_account_timeline_with_only_out_of_window_posts_returns_successful_zero_yield(self):
+        from lib import x_browser
+
+        client = FakeAgentBrowserClient(candidates=[{
+            "text": "Alice shared an older update outside the requested collection window.",
+            "url": "https://x.com/alice/status/2078123456789012345",
+            "author_handle": "alice",
+            "timestamp": "2026-06-01T15:30:00.000Z",
+            "promoted": False,
+            "engagement": {},
+        }])
+        with patch.object(x_browser, "CliAgentBrowserClient", return_value=client):
+            result = x_browser.scrape_x_account(
+                "alice",
+                "2026-06-20",
+                "2026-07-20",
+                depth="quick",
+                config={
+                    "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                    "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                    "_NOW": NOW,
+                },
+            )
+
+        self.assertEqual([], result["items"])
+        self.assertIsNone(result["error"])
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(
+            {"out_of_range": 1}, result["diagnostics"]["rejection_counts"]
+        )
+
+    def test_account_extraction_and_target_failures_remain_typed(self):
+        from lib import x_browser
+
+        cases = (
+            (FakeAgentBrowserClient(candidates=[]), "extraction_empty"),
+            (
+                FakeAgentBrowserClient(
+                    candidates=[], page_state={"error_page": True}
+                ),
+                "target_unavailable",
+            ),
+        )
+        for client, expected_error_type in cases:
+            with self.subTest(expected_error_type=expected_error_type):
+                with patch.object(
+                    x_browser, "CliAgentBrowserClient", return_value=client
+                ):
+                    result = x_browser.scrape_x_account(
+                        "alice",
+                        "2026-06-20",
+                        "2026-07-20",
+                        depth="quick",
+                        config={
+                            "LAST30DAYS_X_BROWSER_INITIAL_WAIT": "0",
+                            "LAST30DAYS_X_BROWSER_SCROLL_WAIT": "0",
+                            "_NOW": NOW,
+                        },
+                    )
+
+                self.assertEqual([], result["items"])
+                self.assertEqual(expected_error_type, result["error_type"])
+
     def test_home_feed_collects_posts_without_a_topic_query(self):
         from lib import x_browser
 

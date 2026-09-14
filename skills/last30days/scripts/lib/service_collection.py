@@ -959,8 +959,8 @@ class CollectionCoordinator:
             conn.close()
         if row is None:
             return None
-        policy = json.loads(row["spec_json"])
-        spec = CollectionSpec.from_dict(policy)
+        spec = CollectionSpec.from_dict(json.loads(row["spec_json"]))
+        policy = spec.to_dict()
         policy["selector_digest"] = spec.selector_digest
         policy["_collection_run_id"] = row["collection_run_id"]
         policy["_manual_retry_budget"] = (

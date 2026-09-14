@@ -128,6 +128,14 @@ class DisposableGitDrill:
             raise HotfixError("unsafe_symlink")
         if any((self.root / "empty-hooks").iterdir()):
             raise HotfixError("hooks_changed")
+        # These are the fixture's fixed common metadata roots. A top-level
+        # commondir is never created by the drill and could redirect refs,
+        # objects, worktree records, or receive-pack writes elsewhere before a
+        # later linked-worktree check observes the changed layout.
+        for metadata_root in (self.main / ".git", self.origin):
+            common = metadata_root / "commondir"
+            if common.exists() or common.is_symlink():
+                raise HotfixError("foreign_git_directory")
         metadata_root = self.root / "main" / ".git" / "worktrees"
         if metadata_root.is_dir():
             for metadata in metadata_root.iterdir():
