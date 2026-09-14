@@ -29894,3 +29894,67 @@ Next Bounded Action:
 - merge this closeout through the reviewed pull-request path, verify canonical
   remote equality and the production-only census, then select a new `READY`
   packet only under separate planning and effect authority.
+
+## Turn 479 | 2026-09-14
+
+Focus: reconcile completed P51 runtime evidence and close WI-001/P34.
+
+Plan authority:
+`docs/dev/plans/0106-2026-09-14-wi001-runtime-evidence-reconciliation.md`.
+
+Authority Consulted:
+
+- the active goal; WI-001; P34; Plans 0077, 0085, 0105, and receipt 0126;
+  current Git and issue readback; planning, work-item, documentation, active-
+  lane, multi-session, integration, validation, and forge policy.
+
+Decisions And Changes:
+
+- adjudicated existing P51 evidence against all five WI-001 criteria rather
+  than starting the stale projected lifecycle Packet 2;
+- marked WI-001 `DONE` and P34 `CLOSED`, retained Plans 0077/0085 as historical
+  Packet 1 records, and added Plan 0106 as the bounded reconciliation record;
+- kept P34's exact Packet 1 branch/integration custody in the lane catalog while
+  adding its completed outcome disposition and P51 evidence locators;
+- corrected P51's catalog checkpoint from the canonical merge receipt to exact
+  branch tip `5c1d6228`; its integration and validation receipts remain
+  canonical `1168c62e`;
+- preserved issue 54 as `OPEN` because edit/close is not an allowlisted or
+  operator-authorized issue action;
+- performed no runtime, artifact, provider/browser, schedule, production,
+  staging, release, deployment, private-data, or historical-cleanup action.
+
+Validation Evidence:
+
+- Plan 0105 checkpoint C04 and receipt 0126 bind deterministic artifact,
+  private lane configuration, fail-closed startup/effects, live identity and
+  status, exact-owner teardown, and unchanged production evidence;
+- canonical main was clean and remote-equal at `b2741a86`, no pull request was
+  open, and issue 54 read back `OPEN` before this slice;
+- the first catalog-only audit failed solely on P51's branch-checkpoint
+  mismatch, providing the exact corrective input above;
+- documentation, planning authority, catalog custody, and published-diff checks
+  are the only validation required for this no-runtime reconciliation.
+
+State Movement:
+
+- Plan 0106 `unplanned -> CLOSED`;
+- WI-001 `READY -> DONE`;
+- P34 `PLANNED -> CLOSED` with its Packet 1 custody retained as integrated;
+- progress classification: `outcome_progress`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the user did not request delegation and this was one tightly
+  coupled coordinator-owned authority reconciliation.
+
+Graphiti Write Status:
+
+- `not_written`; discovery returned no relevant repository history and no
+  explicit durable-memory write authority exists.
+
+Next Bounded Action:
+
+- validate, publish, self-review, and merge this exact documentation-only pull
+  request; then verify canonical remote equality and production-only process
+  state without starting a runtime.
