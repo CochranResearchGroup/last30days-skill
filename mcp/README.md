@@ -24,6 +24,9 @@ The adapter exposes:
 - `topic`
 - `collection` (list/get/put/pause/resume/run/archive typed recurring
   specifications; archived entries require explicit inclusion)
+- `saved_query` (save, read, or freeze one immutable cache-only query view)
+- `monitor` (strict provider-free query/follow lifecycle, capture, digest,
+  baseline, legacy import, and disabled-delivery-intent commands; `send` is denied)
 - resources `last30days://capabilities`, `last30days://sources`, and
   `last30days://topics`
 

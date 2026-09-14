@@ -439,6 +439,21 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 	}
 	savedQueryOptions = append(savedQueryOptions, commonAnnotations(false, false)...)
 
+	monitorOptions := []mcplib.ToolOption{
+		mcplib.WithDescription(
+			"Run one strict provider-free monitor lifecycle, capture, digest, baseline, import, or disabled-delivery command.",
+		),
+		mcplib.WithString("profile_id", mcplib.MaxLength(128), mcplib.DefaultString("default")),
+		mcplib.WithObject(
+			"command",
+			mcplib.Required(),
+			mcplib.Description("Exact monitor command object."),
+			mcplib.AdditionalProperties(true),
+			mcplib.MaxProperties(12),
+		),
+	}
+	monitorOptions = append(monitorOptions, commonAnnotations(false, false)...)
+
 	maintenanceOptions := []mcplib.ToolOption{
 		mcplib.WithDescription(
 			"Read bounded App Intelligence task receipts, graph projection state, and adapter-repair safety gates.",
@@ -507,6 +522,10 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 		{
 			tool:    mcplib.NewTool("saved_query", savedQueryOptions...),
 			handler: makeSavedQueryHandler(client),
+		},
+		{
+			tool:    mcplib.NewTool("monitor", monitorOptions...),
+			handler: makeMonitorHandler(client),
 		},
 		{
 			tool:    mcplib.NewTool("maintenance_status", maintenanceOptions...),
@@ -680,6 +699,39 @@ func makeSavedQueryHandler(client ServiceAPI) server.ToolHandlerFunc {
 			return mcplib.NewToolResultError(err.Error()), nil
 		}
 		response, err := client.Post(ctx, "/v1/saved-query", payload)
+		return toolResult(response, err)
+	}
+}
+
+func makeMonitorHandler(client ServiceAPI) server.ToolHandlerFunc {
+	return func(
+		ctx context.Context,
+		req mcplib.CallToolRequest,
+	) (*mcplib.CallToolResult, error) {
+		args := req.GetArguments()
+		for name := range args {
+			if name != "profile_id" && name != "command" {
+				return mcplib.NewToolResultError(name + " is not valid for monitor"), nil
+			}
+		}
+		profileID := "default"
+		if value, ok, err := optionalString(args, "profile_id", 128); err != nil {
+			return mcplib.NewToolResultError(err.Error()), nil
+		} else if ok {
+			profileID = value
+		}
+		rawCommand, ok := args["command"]
+		if !ok {
+			return mcplib.NewToolResultError("command is required"), nil
+		}
+		command, ok := rawCommand.(map[string]any)
+		if !ok {
+			return mcplib.NewToolResultError("command must be an object"), nil
+		}
+		response, err := client.Post(ctx, "/v1/monitor", map[string]any{
+			"profile_id": profileID,
+			"command":    command,
+		})
 		return toolResult(response, err)
 	}
 }

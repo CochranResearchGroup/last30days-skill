@@ -74,6 +74,7 @@ from lib.service_runtime import (
     GraphProjectionLoop,
     TickScheduleLoop,
     build_acquisition_runtime,
+    build_collection_read_authority,
 )
 from lib.service_tick import TickConfigError, TickCoordinator
 from lib.service_tick_runtime import (
@@ -249,6 +250,11 @@ def _serve(args: argparse.Namespace) -> int:
             ),
             retriever,
         )
+    collection_read_authority = (
+        acquisition.collection_coordinator
+        if acquisition is not None
+        else build_collection_read_authority(db_path)
+    )
     codex_path = os.getenv("LAST30DAYS_CODEX_PATH", "codex")
     application = initialize_application(
         db_path,
@@ -259,7 +265,7 @@ def _serve(args: argparse.Namespace) -> int:
         acquisition_readiness=acquisition.source_readiness if acquisition else {},
         recurring_collection=acquisition is not None,
         assessment_processing=assessment_loop is not None,
-        collection_coordinator=(acquisition.collection_coordinator if acquisition else None),
+        collection_coordinator=collection_read_authority,
         graph_projection_enabled=graph_loop is not None,
         maintenance_enabled=effect_mode == "normal" and bool(shutil.which(codex_path)),
         tick_schedule_status=(tick_schedule.status if tick_schedule else None),
@@ -420,6 +426,24 @@ def _saved_query(args: argparse.Namespace) -> int:
     client = ServiceClient(socket_path, timeout=args.timeout)
     try:
         response = client.saved_query(command, profile_id=args.profile)
+    except ServiceClientError as exc:
+        print(json.dumps({"status": "error", "message": str(exc)}, sort_keys=True))
+        return 1
+    print(json.dumps(response, indent=2, sort_keys=True))
+    return 0
+
+
+def _monitor(args: argparse.Namespace) -> int:
+    try:
+        command = json.loads(Path(args.input).read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError("monitor command must be a readable JSON file") from exc
+    if not isinstance(command, dict):
+        raise RuntimeError("monitor command must be a JSON object")
+    socket_path = Path(args.socket) if args.socket else _default_socket_path()
+    client = ServiceClient(socket_path, timeout=args.timeout)
+    try:
+        response = client.monitor(command, profile_id=args.profile)
     except ServiceClientError as exc:
         print(json.dumps({"status": "error", "message": str(exc)}, sort_keys=True))
         return 1
@@ -780,6 +804,15 @@ def build_parser() -> argparse.ArgumentParser:
     saved_query.add_argument("--socket")
     saved_query.add_argument("--timeout", type=float, default=15.0)
     saved_query.set_defaults(handler=_saved_query)
+
+    monitor = subparsers.add_parser(
+        "monitor", help="Run one strict cache-only monitor command"
+    )
+    monitor.add_argument("--input", required=True)
+    monitor.add_argument("--profile", default="default")
+    monitor.add_argument("--socket")
+    monitor.add_argument("--timeout", type=float, default=15.0)
+    monitor.set_defaults(handler=_monitor)
 
     question = subparsers.add_parser(
         "question", help="Ask or inspect one bounded cache-grounded question"
