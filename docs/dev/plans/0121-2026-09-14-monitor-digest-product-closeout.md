@@ -135,3 +135,36 @@ Subagent status and reconciliation: `assigned`; `/root/wave4_wi003_plan`, one
 owner, no children. Implementation waits for activation reconciliation.
 
 Next action: publish this plan-only checkpoint and return exact custody.
+
+### Checkpoint P0121-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `implementation_ready -> first_tracer_green`; plan remains OPEN.
+
+Progress classification: `outcome_progress`; a real immutable collection revision
+and stored-post search now feed frozen follow capture, monitor evaluation,
+deterministic evidence-linked digest, explicit acceptance and restart readback.
+
+Authority classification: `inherited_authority`, restricted to registered
+monitor source/tests and this plan. Base and upstream were clean/equal at
+`a660a51cc0177cea258ddda94e5df215b1ac2e8e`. No shared transport, authority,
+provider, model, browser, installed state, schedule or delivery changes occurred.
+
+Execution owner: `/root/wave4_wi003_plan`; requested route gpt-6-astra/high,
+effective model and effort runtime-unknown. One implementation attempt is in
+progress, incremental TDD; no children. TDD/deep-module design and CodeGraph
+skills guided the command seam. The lane has no CodeGraph index; existing
+canonical graph context and direct source reads were used without indexing.
+
+Validation evidence: the first test failed with the missing application module
+before implementation; fixture constraint corrections were retained as setup
+failures. Focused monitor/application/view suite passes: 32 tests in 4.96 s.
+Monitor-local schema v2 widens the view discriminator while copying old
+payload bytes/hashes and checking only monitor foreign keys; shared corpus
+schema is unchanged. Full compatibility, lifecycle/privacy, delivery/import,
+public transport and packaged runtime acceptance remain unproven.
+
+Next action: publish this coherent tracer checkpoint, then complete the
+registered lifecycle/privacy, delivery/import and probe behaviors. Coordinator
+joins only against published source; this checkpoint is not WI-006 acceptance.
