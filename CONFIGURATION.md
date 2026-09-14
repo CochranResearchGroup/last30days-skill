@@ -1130,9 +1130,23 @@ Service-enabled MCP clients expose eleven compact operations:
 - `service_info`: discover readiness, sources, capabilities, and index state;
 - `query`: read cached evidence or a compact brief under an explicit freshness
   policy;
-- `search_posts`: page deterministically through current stored-post revisions
-  using lexical matching, exact source/publication filters, immutable evidence
-  references, and a query-bound opaque cursor; this operation is cache-only;
+- `search_posts`: cache-only lexical search or filter-only browse with exact
+  `sources`, `authors`, `topic_ids`, namespaced `collection_refs`, and inclusive
+  `published_after/before` or `observed_after/before` bounds. At least a query
+  or one narrowing filter is required. `revision_mode` is `current` (default)
+  or `all`; `sort` is `relevance` (default), `published_desc`, or `observed_desc`.
+  Causes use `legacy:spec:ID`, `legacy:run:ID`, `temporal:schedule:ID`,
+  `temporal:target:SERVICE:ID`, `temporal:tick:ID`, or `temporal:lane:ID`.
+  Topics require recorded evidence; temporal topics use immutable version
+  metadata. Observation bounds match one observed event in the interval.
+  Immutable evidence references survive cross-store deduplication. Cursors
+  bind the same request/access and component heads; they remain stable during
+  publication, but are retained only in the backend process for at most
+  15 minutes, 16 heads, or 32 MiB of serialized hits. Restart/eviction returns
+  `cursor_stale`; start a fresh search instead of combining its pages with the
+  old head. More than 10,000 filtered candidate revisions fails closed with
+  a request to narrow filters. These are local bounded-retention limits, not
+  performance or cross-restart retention guarantees;
 - `refresh`: create or join a bounded `force_refresh` job;
 - `job_status`: poll the typed durable job record;
 - `topic`: list or manage service-owned topics and request scheduled refreshes.

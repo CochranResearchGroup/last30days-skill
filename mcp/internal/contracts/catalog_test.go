@@ -66,9 +66,9 @@ func TestGeneratedPostSearchCatalogIsCurrent(t *testing.T) {
 		)
 	}
 	wantRequest := []string{
-		"cursor", "filters", "page_size", "profile_id", "query", "request_id", "schema_version",
+		"cursor", "filters", "page_size", "profile_id", "query", "request_id", "revision_mode", "schema_version", "sort",
 	}
-	wantFilters := []string{"published_after", "published_before", "sources"}
+	wantFilters := []string{"authors", "collection_refs", "observed_after", "observed_before", "published_after", "published_before", "sources", "topic_ids"}
 	if !reflect.DeepEqual(PostSearchRequestFields, wantRequest) {
 		t.Fatalf("post search request fields drifted: %#v", PostSearchRequestFields)
 	}
