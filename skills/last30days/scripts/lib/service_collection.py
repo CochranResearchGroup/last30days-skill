@@ -667,13 +667,32 @@ class CollectionCoordinator:
                     raise CollectionSpecValidationError(
                     "collection_purpose is immutable"
                 )
-                if current_spec.is_quarantined_follow and not (
-                    (not spec.enabled and spec.lifecycle_state == "active")
-                    or (_allow_archive and spec.lifecycle_state == "archived")
-                ):
-                    raise CollectionSpecValidationError(
-                        "unsupported legacy tailored target may only pause or archive"
+                if current_spec.is_quarantined_follow:
+                    current_payload = current_spec.to_dict()
+                    current_payload.pop("follow_target_id", None)
+                    pause = CollectionSpec.from_dict(
+                        {
+                            **current_payload,
+                            "enabled": False,
+                            "spec_version": current_spec.spec_version + 1,
+                        }
                     )
+                    archive = CollectionSpec.from_dict(
+                        {
+                            **current_payload,
+                            "enabled": False,
+                            "lifecycle_state": "archived",
+                            "spec_version": current_spec.spec_version + 1,
+                        }
+                    )
+                    if not (
+                        spec == current_spec
+                        or (current_spec.enabled and spec == pause)
+                        or (_allow_archive and spec == archive)
+                    ):
+                        raise CollectionSpecValidationError(
+                            "unsupported legacy tailored target may only pause or archive"
+                        )
                 if (
                     spec.collection_purpose == "tailored_follow"
                     and spec.follow_target_id != current_spec.follow_target_id

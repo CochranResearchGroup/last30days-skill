@@ -83,11 +83,26 @@ DEFAULT_FOLLOW_CAPABILITIES = FollowCapabilityRegistry(
 def compatibility_trace(rows: Iterable[Mapping[str, object]]) -> dict[str, object]:
     """Classify disposable historical payloads without changing them."""
     counts = {"preserved": 0, "mapped": 0, "quarantined": 0}
+    classified: dict[str, list[str]] = {key: [] for key in counts}
     for row in rows:
         if row.get("collection_purpose", "general") != "tailored_follow":
-            counts["preserved"] += 1
-            continue
-        capability = DEFAULT_FOLLOW_CAPABILITIES.capability(str(row.get("source", "")), str(row.get("surface_kind", "")))
-        counts["mapped" if capability.state == "available" else "quarantined"] += 1
-    encoded = json.dumps(counts, sort_keys=True, separators=(",", ":")).encode()
-    return {**counts, "digest": "sha256:" + hashlib.sha256(encoded).hexdigest()}
+            classification = "preserved"
+        else:
+            capability = DEFAULT_FOLLOW_CAPABILITIES.capability(str(row.get("source", "")), str(row.get("surface_kind", "")))
+            classification = "mapped" if capability.state == "available" else "quarantined"
+        identity = {
+            key: row.get(key)
+            for key in ("collection_spec_id", "spec_version", "source", "surface_kind", "selector_digest", "follow_target_id", "access_partition_id")
+            if row.get(key) is not None
+        }
+        encoded_identity = json.dumps(identity, sort_keys=True, separators=(",", ":")).encode()
+        classified[classification].append(hashlib.sha256(encoded_identity).hexdigest())
+        counts[classification] += 1
+    class_digests = {
+        key: "sha256:" + hashlib.sha256(
+            json.dumps(sorted(values), separators=(",", ":")).encode()
+        ).hexdigest()
+        for key, values in classified.items()
+    }
+    encoded = json.dumps({"counts": counts, "class_digests": class_digests}, sort_keys=True, separators=(",", ":")).encode()
+    return {**counts, "class_digests": class_digests, "digest": "sha256:" + hashlib.sha256(encoded).hexdigest()}
