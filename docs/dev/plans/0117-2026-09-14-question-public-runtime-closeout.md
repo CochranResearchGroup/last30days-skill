@@ -139,3 +139,68 @@ Subagent status and reconciliation:
 
 Next action: publish this activation checkpoint, reconcile canonical custody,
 then implement the acceptance criteria test-first within the lane write set.
+
+### Checkpoint P0117-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> OPEN`; lane-owned application checkpoint ready for
+the coordinator's public transport join, with further bounded acceptance tests
+and the repo-only dogfood probe still in progress.
+
+Authority classification: `inherited_authority` for source, synthetic SQLite
+fixtures, injected no-provider workers, tests and feature-branch publication.
+No shared app/transport/catalog/version/manifest/docs/authority file changed.
+
+Custody: activation `cfe4e719` was fast-forwarded to the freshly fetched
+canonical activation `ed84cd29d1cd46aba7dd1999c3a9f9d2a462a7fe` before edits.
+The worktree-local graph is absent; it was not initialized. Current source
+reads use the exact seams established during the canonical read-only audit.
+
+Acceptance progress:
+
+- the first real-backend tracer failed because five accepted WI-002 filter
+  fields were rejected; all eight now use the existing public search parser;
+- the temporal tracer failed for all four ignored fields; submission now
+  rejects non-null temporal intent with `unsupported_temporal_intent`, while
+  the accepted published/observed filters express supported time constraints;
+- scoped round-trip and unavailable-model tracers failed on the absent
+  application and pending default respectively, then passed with exact profile
+  and frozen access-digest checks, immutable evidence reads, targeted queue
+  claims, terminal model-unavailable and explicit evidence-only fallback;
+- the injected-worker tracer failed on the missing lifecycle, then passed
+  bounded pending waits, read-only status polls and truthful failed/successful
+  shutdown joins. No real model or provider process runs;
+- focused question validation passes 50 tests. One initial test import used
+  an incorrect tests-package path, then the seed was corrected to WI-002's
+  current topic/sighting fixture; both setup failures are retained here and
+  are not represented as product regressions.
+
+Interface for the coordinator:
+
+- `QuestionApplication(db_path, search_backend, *, access_partitions,
+  worker=None)` accepts the host's profile-to-partition callback;
+- `ask_question(QuestionRequestV1, *, wait_cancelled=None)` and
+  `question_status(question_id, *, profile_id)` return `QuestionStatusV1`;
+- `read_evidence(EvidenceReadRequestV1)` returns `EvidenceReadResponseV1`;
+- `start()` owns at most one injected worker thread; `stop(timeout=5)` returns
+  false if that exact thread remains alive. The default unavailable worker
+  starts no thread. Status/evidence never execute work;
+- `QuestionUnavailableError` has the same message for absent/unauthorized
+  identities; map it to a non-leaking 404. `QuestionRuntimeUnavailableError`
+  is a safe 503; `QuestionResponseTooLargeError` is a safe size error;
+  `QuestionContractError` and `QuestionRequestConflict` retain their existing
+  invalid-request/conflict roles;
+- serialize typed results with `to_dict()`. Public payloads are checked
+  against 131,072 bytes. Client request timeouts must exceed the 30-second
+  maximum wait budget without changing the request fingerprint.
+
+Attempt accounting: first implementation attempt remains active; no independent
+review, closed-world remediation, or runtime acceptance attempt was consumed.
+No children. Effective model and effort remain unknown because they were not
+reported by the runtime. TDD and its required codebase-design vocabulary
+guided one behavioral tracer at a time behind the application interface.
+
+Next action: publish this coherent application checkpoint for coordinator
+transport implementation, then finish bounded lane-owned adversarial/probe
+coverage without editing any shared join surface.
