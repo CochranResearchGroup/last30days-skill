@@ -2715,7 +2715,7 @@ authorized immutable evidence.
 
 Current State:
 
-- WI-003 is `READY`; merged P33 Packet 1 satisfies its implementation
+- WI-003 is `IN_PROGRESS`; merged P33 Packet 1 satisfies its implementation
   dependency;
 - current MCP query and temporal tools expose evidence, claims, events, and
   conflicts, but no validated synthesized answer, durable question status, or
@@ -2741,9 +2741,12 @@ Current State:
   the real search/evidence composition, immutable resolver, parent/version
   partition closure, and refreshed source manifest pass 54 affected and all
   2,844 comprehensive tests plus reproducible package validation;
-- Plan 0098 is clean and remote-equal plan-only at `77744112` for Packet 3's
-  provider-free structured-answer adapter, validation, fallback, and bounded
-  retry/replay behavior.
+- Plan 0098 is clean and remote-equal at `75f2342e`; Packet 3's provider-free
+  structured-answer adapter, runtime model receipt, citation-closed validation,
+  explicit fallback, and bounded retry/replay behavior are integration-ready;
+- Plan 0100 preserves that exact feature ancestry through merge `824b8627`,
+  refreshes the source manifest at `a304fbbf`, and passes all 2,860 collected
+  tests with seven skips plus reproducible source-package validation.
 
 Closed Architecture Plan:
 
@@ -2756,10 +2759,14 @@ Closed Implementation Plans:
 - `docs/dev/plans/0096-2026-09-13-agent-question-evidence-tracer-packet-2.md`
   on `feat/agent-question-evidence-v2`.
 
-Planned Implementation Plan:
+Integration-Ready Implementation Plan:
 
 - `docs/dev/plans/0098-2026-09-14-agent-question-answer-tracer-packet-3.md`
   on `feat/agent-question-answer-v3`.
+
+Active Plan:
+
+- `docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md`.
 
 Dependencies:
 
@@ -2769,9 +2776,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate the Packet 3 launch registration, then let one independent
-  top-level session execute only Plan 0098 without real model or public MCP
-  effects.
+- merge Plan 0100 through the owned fork, then plan Packet 4's public HTTP/MCP
+  and fresh-client acceptance separately; real model and runtime effects remain
+  gated.
 
 ## P47 | P36 Packet 2 Integration Reconciliation
 
@@ -2804,28 +2811,52 @@ Next Bounded Action:
 
 ## P48 | P36 Packet 3 Launch Registration
 
-State: OPEN
+State: CLOSED
 
 Objective: register and launch one independent provider-free answer-tracer
 session without moving feature work or external effects into the coordinator.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0099-2026-09-14-p36-packet-3-launch-registration.md`.
 
 Current State:
 
-- Plan 0098 is clean and remote-equal at exact plan-only checkpoint `77744112`
-  on `feat/agent-question-answer-v3`, based on canonical `20a36f91`;
-- the dedicated worktree exists and no competing PR owns the branch;
-- the coordinator retains all shared planning, manifest, public transport,
-  compatibility, release, installed-runtime, and production joins.
+- PR 47 merged the registration as canonical commit `487ec89e`;
+- the independent lane published activation `063c18b7` before source work;
+- after that process exhausted its usage allowance, the coordinator accepted
+  the bounded lane and advanced Plan 0098 to integration-ready `75f2342e`.
 
 Next Bounded Action:
 
-- publish and merge this registration through the owned fork, fast-forward
-  canonical main, then launch one credential-sanitized independent Codex
-  session to activate and execute Plan 0098.
+- integrate Packet 3 through Plan 0100; keep Packet 4 and every real model or
+  runtime effect separate.
+
+## P49 | P36 Packet 3 Integration Reconciliation
+
+State: OPEN
+
+Objective: integrate the exact provider-free Packet 3 answer-worker checkpoint,
+refresh the source runtime manifest, and reconcile WI-003 without external
+runtime effects.
+
+Active Plan:
+
+- `docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md`.
+
+Current State:
+
+- exact feature checkpoint `75f2342e` is preserved through merge `824b8627`;
+- manifest refresh `a304fbbf` restores package and lifecycle validation;
+- all 2,860 collected tests pass with seven skips, and two source packages are
+  byte-identical at SHA-256 `e9e47fa00dffa9e86c0dc439d42419326dc1d815d2746d47467f388477b2afda`;
+- real model, public transport, installed runtime, providers, P35, staging, and
+  production remain outside scope.
+
+Next Bounded Action:
+
+- publish and merge the reviewed candidate through the owned public fork, then
+  reconcile the canonical merge receipt and return WI-003 to `READY`.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
