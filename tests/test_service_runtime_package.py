@@ -49,9 +49,10 @@ def test_runtime_manifest_is_explicit_current_and_skill_free():
     assert paths == sorted(paths)
     assert len(paths) == len(set(paths))
     assert len(sources) == len(set(sources))
-    assert paths[:5] == [
+    assert paths[:6] == [
         "VERSION",
         "schemas/post-search-contracts-v1.json",
+        "schemas/saved-query-contracts-v1.json",
         "schemas/service-contracts-v1.json",
         "schemas/tick-config-v1.json",
         "scripts/lib/__init__.py",

@@ -1,0 +1,704 @@
+{
+  "descriptor": {
+    "artifacts_dir": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/artifacts",
+    "branch": "feat/post-search-runtime-closeout-v1",
+    "browser_policy": "deny",
+    "commit": "682794385e6b666e4f813847486bb7ae85e56b08",
+    "committed_at": "2026-09-14T13:36:25-05:00",
+    "config_dir": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/config",
+    "created_at": "2026-09-14T13:36:25-05:00",
+    "credential_policy": "deny",
+    "data_dir": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/data",
+    "database_path": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/data/research.db",
+    "descriptor_digest": "44684b4655696e903942c9e168e6bab5774e1b2ed2606a629b41a42c5e446b73",
+    "descriptor_path": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/descriptor.json",
+    "effect_mode": "cache_only",
+    "inherited_environment_policy": "allowlist",
+    "lane_id": "p33-search-packet4",
+    "lock_path": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/run/controller.lock",
+    "log_dir": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/logs",
+    "log_path": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/logs/service.log",
+    "pid_path": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/run/service.pid.json",
+    "plan": "0114",
+    "repository_identity": "github.com/cochranresearchgroup/last30days-skill",
+    "run_dir": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/run",
+    "runtime_id": "l30d-p33-search-packet4-65eaf9ba6469",
+    "runtime_kind": "development",
+    "schedule_policy": "deny",
+    "schema_version": 1,
+    "service_name": "last30days-dev-p33-search-packet4-65eaf9ba6469",
+    "socket_path": "/tmp/l30d-p33-runtime.LZHEqF/65eaf9ba6469/s",
+    "startup_receipt_path": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/receipts/startup.json",
+    "state_root": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469",
+    "status_receipt_path": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/receipts/status.json",
+    "tick_config_digest": "4f383dd25377af59eb63870c2f980c241bcf478d3e95ccce06f93194dfef4957",
+    "tick_config_path": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/config/tick.json",
+    "updated_at": "2026-09-14T13:36:25-05:00",
+    "work_item": "WI-002",
+    "worktree": "/home/ecochran76/workspace.local/last30days-skill-wi002-v4"
+  },
+  "doctor": {
+    "ok": true,
+    "reasons": []
+  },
+  "final_controller_status": {
+    "reasons": [],
+    "schema_version": 1,
+    "state": "absent"
+  },
+  "mcp_binary_sha256": "2c1e7d9544d2afbab6361458fee24e891dfedfd4af5c5738ded93b61181efb05",
+  "mcp_processes": [
+    {
+      "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+      "cmdline": [
+        "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/search-mcp"
+      ],
+      "executable": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/search-mcp",
+      "pid": 2052329,
+      "start_ticks": 2971351,
+      "uid": 1000
+    },
+    {
+      "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+      "cmdline": [
+        "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/search-mcp"
+      ],
+      "executable": "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/search-mcp",
+      "pid": 2052607,
+      "start_ticks": 2971545,
+      "uid": 1000
+    }
+  ],
+  "owned_process_census": [],
+  "plan": "0114",
+  "provider_free": true,
+  "restart_stale": true,
+  "runtime_cycles": [
+    {
+      "before_down": {
+        "artifact": {
+          "manifest_sha256": "21566b5da1acc4220c572356b4a83bc76f83265cc87413191fc916c39fe74abe",
+          "path": "/tmp/l30d-p33-build.2Z1QZL/first/last30days-service-0.3.117.tar.gz",
+          "sha256": "a103624e7aa64a86513c7d4c34c5c10152a9a0c0a8785e9f5fd86730a4ec2a44"
+        },
+        "descriptor_digest": "44684b4655696e903942c9e168e6bab5774e1b2ed2606a629b41a42c5e446b73",
+        "process": {
+          "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+          "cmdline": [
+            "/home/ecochran76/workspace.local/last30days-skill-wi002-v4/.venv/bin/python3",
+            "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/artifacts/a103624e7aa64a86513c7d4c34c5c10152a9a0c0a8785e9f5fd86730a4ec2a44/last30days-service-0.3.117/scripts/service.py",
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            "/tmp/l30d-p33-runtime.LZHEqF/65eaf9ba6469/s",
+            "--db",
+            "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/data/research.db"
+          ],
+          "executable": "/home/ecochran76/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12",
+          "pid": 2052166,
+          "start_ticks": 2971226,
+          "uid": 1000
+        },
+        "reasons": [],
+        "runtime_id": "l30d-p33-search-packet4-65eaf9ba6469",
+        "schema_version": 1,
+        "service_info": {
+          "capabilities": [
+            "cache_query",
+            "lexical_search",
+            "post_search",
+            "temporal_query",
+            "profile_history",
+            "event_timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend_query",
+            "coverage_query"
+          ],
+          "compatibility_state": "mcp_client_not_declared",
+          "contract_schema_version": 1,
+          "contract_sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+          "database_schema_version": 18,
+          "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ],
+          "index": {
+            "document_count": 0,
+            "embedding_count": 0,
+            "embedding_model": "local-hash-v1",
+            "relationship_count": 0,
+            "version": "index-c165dbdd59a7436f454ac3db"
+          },
+          "limits": {
+            "default_top_k": 8,
+            "max_chars": 65536,
+            "max_top_k": 100
+          },
+          "mcp_adapter_version": null,
+          "mcp_supported_database_schema_max": null,
+          "mcp_supported_database_schema_min": null,
+          "mcp_supported_service_api_max": null,
+          "mcp_supported_service_api_min": null,
+          "product": "last30days",
+          "response_modes": [
+            "evidence",
+            "brief"
+          ],
+          "runtime_manifest_sha256": "21566b5da1acc4220c572356b4a83bc76f83265cc87413191fc916c39fe74abe",
+          "schema_version": 1,
+          "service_api_version": 1,
+          "service_version": "0.3.117",
+          "sources": {
+            "reddit": {
+              "acquisition_ready": false,
+              "acquisition_status": "cache_only",
+              "configured": false,
+              "indexed_documents": 1,
+              "ready": true
+            }
+          },
+          "status": "ready",
+          "transport": "unix"
+        },
+        "socket_peer": {
+          "gid": 1000,
+          "pid": 2052166,
+          "uid": 1000
+        },
+        "state": "ready"
+      },
+      "down": {
+        "reasons": [],
+        "runtime_id": "l30d-p33-search-packet4-65eaf9ba6469",
+        "schema_version": 1,
+        "state": "stopped"
+      },
+      "mcp_service_info": {
+        "capabilities": [
+          "cache_query",
+          "lexical_search",
+          "post_search",
+          "temporal_query",
+          "profile_history",
+          "event_timeline",
+          "entity_dossier",
+          "event_dossier",
+          "trend_query",
+          "coverage_query"
+        ],
+        "compatibility_state": "compatible",
+        "contract_schema_version": 1,
+        "contract_sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+        "database_schema_version": 18,
+        "freshness_policies": [
+          "cache_only",
+          "prefer_cache",
+          "refresh_if_stale",
+          "force_refresh"
+        ],
+        "index": {
+          "document_count": 0,
+          "embedding_count": 0,
+          "embedding_model": "local-hash-v1",
+          "relationship_count": 0,
+          "version": "index-c165dbdd59a7436f454ac3db"
+        },
+        "limits": {
+          "default_top_k": 8,
+          "max_chars": 65536,
+          "max_top_k": 100
+        },
+        "mcp_adapter_version": "4.0.5",
+        "mcp_supported_database_schema_max": 18,
+        "mcp_supported_database_schema_min": 18,
+        "mcp_supported_service_api_max": 1,
+        "mcp_supported_service_api_min": 1,
+        "product": "last30days",
+        "response_modes": [
+          "evidence",
+          "brief"
+        ],
+        "runtime_manifest_sha256": "21566b5da1acc4220c572356b4a83bc76f83265cc87413191fc916c39fe74abe",
+        "schema_version": 1,
+        "service_api_version": 1,
+        "service_version": "0.3.117",
+        "sources": {
+          "reddit": {
+            "acquisition_ready": false,
+            "acquisition_status": "cache_only",
+            "configured": false,
+            "indexed_documents": 1,
+            "ready": true
+          }
+        },
+        "status": "ready",
+        "transport": "unix"
+      },
+      "startup": {
+        "artifact": {
+          "manifest_sha256": "21566b5da1acc4220c572356b4a83bc76f83265cc87413191fc916c39fe74abe",
+          "path": "/tmp/l30d-p33-build.2Z1QZL/first/last30days-service-0.3.117.tar.gz",
+          "sha256": "a103624e7aa64a86513c7d4c34c5c10152a9a0c0a8785e9f5fd86730a4ec2a44"
+        },
+        "descriptor_digest": "44684b4655696e903942c9e168e6bab5774e1b2ed2606a629b41a42c5e446b73",
+        "process": {
+          "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+          "cmdline": [
+            "/home/ecochran76/workspace.local/last30days-skill-wi002-v4/.venv/bin/python3",
+            "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/artifacts/a103624e7aa64a86513c7d4c34c5c10152a9a0c0a8785e9f5fd86730a4ec2a44/last30days-service-0.3.117/scripts/service.py",
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            "/tmp/l30d-p33-runtime.LZHEqF/65eaf9ba6469/s",
+            "--db",
+            "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/data/research.db"
+          ],
+          "executable": "/home/ecochran76/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12",
+          "pid": 2052166,
+          "start_ticks": 2971226,
+          "uid": 1000
+        },
+        "reasons": [],
+        "runtime_id": "l30d-p33-search-packet4-65eaf9ba6469",
+        "schema_version": 1,
+        "service_info": {
+          "capabilities": [
+            "cache_query",
+            "lexical_search",
+            "post_search",
+            "temporal_query",
+            "profile_history",
+            "event_timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend_query",
+            "coverage_query"
+          ],
+          "compatibility_state": "mcp_client_not_declared",
+          "contract_schema_version": 1,
+          "contract_sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+          "database_schema_version": 18,
+          "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ],
+          "index": {
+            "document_count": 0,
+            "embedding_count": 0,
+            "embedding_model": "local-hash-v1",
+            "relationship_count": 0,
+            "version": "index-c165dbdd59a7436f454ac3db"
+          },
+          "limits": {
+            "default_top_k": 8,
+            "max_chars": 65536,
+            "max_top_k": 100
+          },
+          "mcp_adapter_version": null,
+          "mcp_supported_database_schema_max": null,
+          "mcp_supported_database_schema_min": null,
+          "mcp_supported_service_api_max": null,
+          "mcp_supported_service_api_min": null,
+          "product": "last30days",
+          "response_modes": [
+            "evidence",
+            "brief"
+          ],
+          "runtime_manifest_sha256": "21566b5da1acc4220c572356b4a83bc76f83265cc87413191fc916c39fe74abe",
+          "schema_version": 1,
+          "service_api_version": 1,
+          "service_version": "0.3.117",
+          "sources": {},
+          "status": "ready",
+          "transport": "unix"
+        },
+        "socket_peer": {
+          "gid": 1000,
+          "pid": 2052166,
+          "uid": 1000
+        },
+        "state": "ready"
+      }
+    },
+    {
+      "before_down": {
+        "artifact": {
+          "manifest_sha256": "21566b5da1acc4220c572356b4a83bc76f83265cc87413191fc916c39fe74abe",
+          "path": "/tmp/l30d-p33-build.2Z1QZL/first/last30days-service-0.3.117.tar.gz",
+          "sha256": "a103624e7aa64a86513c7d4c34c5c10152a9a0c0a8785e9f5fd86730a4ec2a44"
+        },
+        "descriptor_digest": "44684b4655696e903942c9e168e6bab5774e1b2ed2606a629b41a42c5e446b73",
+        "process": {
+          "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+          "cmdline": [
+            "/home/ecochran76/workspace.local/last30days-skill-wi002-v4/.venv/bin/python3",
+            "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/artifacts/a103624e7aa64a86513c7d4c34c5c10152a9a0c0a8785e9f5fd86730a4ec2a44/last30days-service-0.3.117/scripts/service.py",
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            "/tmp/l30d-p33-runtime.LZHEqF/65eaf9ba6469/s",
+            "--db",
+            "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/data/research.db"
+          ],
+          "executable": "/home/ecochran76/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12",
+          "pid": 2052593,
+          "start_ticks": 2971519,
+          "uid": 1000
+        },
+        "reasons": [],
+        "runtime_id": "l30d-p33-search-packet4-65eaf9ba6469",
+        "schema_version": 1,
+        "service_info": {
+          "capabilities": [
+            "cache_query",
+            "lexical_search",
+            "post_search",
+            "temporal_query",
+            "profile_history",
+            "event_timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend_query",
+            "coverage_query"
+          ],
+          "compatibility_state": "mcp_client_not_declared",
+          "contract_schema_version": 1,
+          "contract_sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+          "database_schema_version": 18,
+          "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ],
+          "index": {
+            "document_count": 1,
+            "embedding_count": 0,
+            "embedding_model": "local-hash-v1",
+            "relationship_count": 0,
+            "version": "index-2b1a2fa5028f256733143238"
+          },
+          "limits": {
+            "default_top_k": 8,
+            "max_chars": 65536,
+            "max_top_k": 100
+          },
+          "mcp_adapter_version": null,
+          "mcp_supported_database_schema_max": null,
+          "mcp_supported_database_schema_min": null,
+          "mcp_supported_service_api_max": null,
+          "mcp_supported_service_api_min": null,
+          "product": "last30days",
+          "response_modes": [
+            "evidence",
+            "brief"
+          ],
+          "runtime_manifest_sha256": "21566b5da1acc4220c572356b4a83bc76f83265cc87413191fc916c39fe74abe",
+          "schema_version": 1,
+          "service_api_version": 1,
+          "service_version": "0.3.117",
+          "sources": {
+            "reddit": {
+              "acquisition_ready": false,
+              "acquisition_status": "cache_only",
+              "configured": false,
+              "indexed_documents": 1,
+              "ready": true
+            }
+          },
+          "status": "ready",
+          "transport": "unix"
+        },
+        "socket_peer": {
+          "gid": 1000,
+          "pid": 2052593,
+          "uid": 1000
+        },
+        "state": "ready"
+      },
+      "down": {
+        "reasons": [],
+        "runtime_id": "l30d-p33-search-packet4-65eaf9ba6469",
+        "schema_version": 1,
+        "state": "stopped"
+      },
+      "mcp_service_info": {
+        "capabilities": [
+          "cache_query",
+          "lexical_search",
+          "post_search",
+          "temporal_query",
+          "profile_history",
+          "event_timeline",
+          "entity_dossier",
+          "event_dossier",
+          "trend_query",
+          "coverage_query"
+        ],
+        "compatibility_state": "compatible",
+        "contract_schema_version": 1,
+        "contract_sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+        "database_schema_version": 18,
+        "freshness_policies": [
+          "cache_only",
+          "prefer_cache",
+          "refresh_if_stale",
+          "force_refresh"
+        ],
+        "index": {
+          "document_count": 1,
+          "embedding_count": 0,
+          "embedding_model": "local-hash-v1",
+          "relationship_count": 0,
+          "version": "index-2b1a2fa5028f256733143238"
+        },
+        "limits": {
+          "default_top_k": 8,
+          "max_chars": 65536,
+          "max_top_k": 100
+        },
+        "mcp_adapter_version": "4.0.5",
+        "mcp_supported_database_schema_max": 18,
+        "mcp_supported_database_schema_min": 18,
+        "mcp_supported_service_api_max": 1,
+        "mcp_supported_service_api_min": 1,
+        "product": "last30days",
+        "response_modes": [
+          "evidence",
+          "brief"
+        ],
+        "runtime_manifest_sha256": "21566b5da1acc4220c572356b4a83bc76f83265cc87413191fc916c39fe74abe",
+        "schema_version": 1,
+        "service_api_version": 1,
+        "service_version": "0.3.117",
+        "sources": {
+          "reddit": {
+            "acquisition_ready": false,
+            "acquisition_status": "cache_only",
+            "configured": false,
+            "indexed_documents": 1,
+            "ready": true
+          }
+        },
+        "status": "ready",
+        "transport": "unix"
+      },
+      "startup": {
+        "artifact": {
+          "manifest_sha256": "21566b5da1acc4220c572356b4a83bc76f83265cc87413191fc916c39fe74abe",
+          "path": "/tmp/l30d-p33-build.2Z1QZL/first/last30days-service-0.3.117.tar.gz",
+          "sha256": "a103624e7aa64a86513c7d4c34c5c10152a9a0c0a8785e9f5fd86730a4ec2a44"
+        },
+        "descriptor_digest": "44684b4655696e903942c9e168e6bab5774e1b2ed2606a629b41a42c5e446b73",
+        "process": {
+          "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+          "cmdline": [
+            "/home/ecochran76/workspace.local/last30days-skill-wi002-v4/.venv/bin/python3",
+            "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/artifacts/a103624e7aa64a86513c7d4c34c5c10152a9a0c0a8785e9f5fd86730a4ec2a44/last30days-service-0.3.117/scripts/service.py",
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            "/tmp/l30d-p33-runtime.LZHEqF/65eaf9ba6469/s",
+            "--db",
+            "/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/data/research.db"
+          ],
+          "executable": "/home/ecochran76/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12",
+          "pid": 2052593,
+          "start_ticks": 2971519,
+          "uid": 1000
+        },
+        "reasons": [],
+        "runtime_id": "l30d-p33-search-packet4-65eaf9ba6469",
+        "schema_version": 1,
+        "service_info": {
+          "capabilities": [
+            "cache_query",
+            "lexical_search",
+            "post_search",
+            "temporal_query",
+            "profile_history",
+            "event_timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend_query",
+            "coverage_query"
+          ],
+          "compatibility_state": "mcp_client_not_declared",
+          "contract_schema_version": 1,
+          "contract_sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+          "database_schema_version": 18,
+          "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ],
+          "index": {
+            "document_count": 1,
+            "embedding_count": 0,
+            "embedding_model": "local-hash-v1",
+            "relationship_count": 0,
+            "version": "index-2b1a2fa5028f256733143238"
+          },
+          "limits": {
+            "default_top_k": 8,
+            "max_chars": 65536,
+            "max_top_k": 100
+          },
+          "mcp_adapter_version": null,
+          "mcp_supported_database_schema_max": null,
+          "mcp_supported_database_schema_min": null,
+          "mcp_supported_service_api_max": null,
+          "mcp_supported_service_api_min": null,
+          "product": "last30days",
+          "response_modes": [
+            "evidence",
+            "brief"
+          ],
+          "runtime_manifest_sha256": "21566b5da1acc4220c572356b4a83bc76f83265cc87413191fc916c39fe74abe",
+          "schema_version": 1,
+          "service_api_version": 1,
+          "service_version": "0.3.117",
+          "sources": {
+            "reddit": {
+              "acquisition_ready": false,
+              "acquisition_status": "cache_only",
+              "configured": false,
+              "indexed_documents": 1,
+              "ready": true
+            }
+          },
+          "status": "ready",
+          "transport": "unix"
+        },
+        "socket_peer": {
+          "gid": 1000,
+          "pid": 2052593,
+          "uid": 1000
+        },
+        "state": "ready"
+      }
+    }
+  ],
+  "schema_version": 1,
+  "search": {
+    "case_count": 19,
+    "cases": [
+      {
+        "case": "federated_current",
+        "response_digest": "21072350a48c13776c1859a4d43b9b17725a735d008db0ff556154c8a8fa0d30",
+        "returned": 2
+      },
+      {
+        "case": "source",
+        "response_digest": "d39f367d6a9b9e01e74cf5092c5d1e33240c180bd0a1a7ae5fbfda6b654089a3",
+        "returned": 1
+      },
+      {
+        "case": "author_legacy",
+        "response_digest": "5a877170a247efd3d78a1dfc50ea134a9e59f8529b70805f14fbe5f1456b3bcc",
+        "returned": 1
+      },
+      {
+        "case": "author_temporal",
+        "response_digest": "f932295a3a1c74156569e0556413fc8752b31c7f6c6a010dc61985ae716756b8",
+        "returned": 1
+      },
+      {
+        "case": "topic",
+        "response_digest": "cdf43b4554f1722761461baaca50111e749544c658ec32bb3888c2b6c9b993fb",
+        "returned": 2
+      },
+      {
+        "case": "private_topic",
+        "response_digest": "9e4c128394f76e07dad3c4b1dde66e5d09c13f8344f49266f97838e1f241f2c5",
+        "returned": 0
+      },
+      {
+        "case": "legacy_spec",
+        "response_digest": "f29264b6badfebb440c50ba121bd2b7d6794831cdd9bbde45dce7bdbffd0c6bf",
+        "returned": 1
+      },
+      {
+        "case": "legacy_run",
+        "response_digest": "245c3a8508afe974386f3ad028eae582d4394d30115a59ef59bdd90b8b4cb8fa",
+        "returned": 1
+      },
+      {
+        "case": "temporal_schedule",
+        "response_digest": "e6e17b738465756fe010526ea77ea17ac1401d3fc21ae9278174d786bab84735",
+        "returned": 1
+      },
+      {
+        "case": "temporal_target",
+        "response_digest": "b1d11466a0c65e058779c0da9921e785a5049bb86520736fe2612939f169a91c",
+        "returned": 1
+      },
+      {
+        "case": "published_after",
+        "response_digest": "34a128216f6d8fffa966526b951facd12f470b0576ab602a483a53e6b0d007e8",
+        "returned": 1
+      },
+      {
+        "case": "published_before",
+        "response_digest": "05983e69cf3d78f62b3f1d4a4dbbed110778e97e7f2c09a546de9502ae0da720",
+        "returned": 1
+      },
+      {
+        "case": "observed_after",
+        "response_digest": "7b0b16aebef9127d3d97e755d3057bfef058e7c4722029b2d35a601e6bc2871f",
+        "returned": 2
+      },
+      {
+        "case": "observed_before",
+        "response_digest": "23dc05d01448de75d4aded85c15862a5cdc7eafecd3744e06ed9e83049c5115b",
+        "returned": 1
+      },
+      {
+        "case": "all_revisions",
+        "response_digest": "1690975bd2d0cd0ab5a5510335dded07c625b9c9bf31b3588fe82bf2d8c94fc8",
+        "returned": 4
+      },
+      {
+        "case": "private_partition",
+        "response_digest": "1be3cf826346d3a217980eb77ff0c6e08b2de4aa1234e0f1cbc6e5a8b163e35e",
+        "returned": 2
+      },
+      {
+        "case": "other_profile",
+        "response_digest": "94c450d72eeb243af89726a44eb277330c70434c9d043e028d9097783a1c6c9f",
+        "returned": 1
+      },
+      {
+        "case": "empty",
+        "response_digest": "db1ba97aeaffa24219fef0252bb2f252605f777fe5c2f589e1baa585546904fd",
+        "returned": 0
+      },
+      {
+        "case": "conjunctive",
+        "response_digest": "89e2d924494a0b84e80435738a0896930241b5848ce17d67e42aea18b8791ac5",
+        "returned": 0
+      }
+    ],
+    "database_after_publication": "9147049d431809c70d03f694f2deb4dcfc65124a8721c50dd4ef7c5bbbb7926d",
+    "database_before_publication": "ec55a6c56b375724eb8cff5511aae6559ff3acc33b5ec71af6da6bf26bb20991",
+    "discovery_digest": "a9777010c6d898e977f330e0d936d6da8048001661e00d059e399c75f17197a3",
+    "publication_pinned": true,
+    "read_only": true,
+    "retained_head": "search-head-ce1ee50908acf3d7b0fcb654cfd1b118",
+    "state": "passed"
+  },
+  "source_commit": "682794385e6b666e4f813847486bb7ae85e56b08",
+  "state": "passed",
+  "synthetic_only": true,
+  "work_item": "WI-002"
+}

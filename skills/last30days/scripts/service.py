@@ -408,6 +408,24 @@ def _job(args: argparse.Namespace) -> int:
     return 0
 
 
+def _saved_query(args: argparse.Namespace) -> int:
+    try:
+        command = json.loads(Path(args.input).read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError("saved query command must be a readable JSON file") from exc
+    if not isinstance(command, dict):
+        raise RuntimeError("saved query command must be a JSON object")
+    socket_path = Path(args.socket) if args.socket else _default_socket_path()
+    client = ServiceClient(socket_path, timeout=args.timeout)
+    try:
+        response = client.saved_query(command, profile_id=args.profile)
+    except ServiceClientError as exc:
+        print(json.dumps({"status": "error", "message": str(exc)}, sort_keys=True))
+        return 1
+    print(json.dumps(response, indent=2, sort_keys=True))
+    return 0
+
+
 def _collection_coordinator(args: argparse.Namespace):
     db_path = Path(args.db) if args.db else _default_db_path()
     _prepare_private_data_path(db_path)
@@ -709,6 +727,15 @@ def build_parser() -> argparse.ArgumentParser:
     job.add_argument("--socket")
     job.add_argument("--timeout", type=float, default=5.0)
     job.set_defaults(handler=_job)
+
+    saved_query = subparsers.add_parser(
+        "saved-query", help="Save or inspect one cache-only monitor query view"
+    )
+    saved_query.add_argument("--input", required=True)
+    saved_query.add_argument("--profile", default="default")
+    saved_query.add_argument("--socket")
+    saved_query.add_argument("--timeout", type=float, default=15.0)
+    saved_query.set_defaults(handler=_saved_query)
 
     collection = subparsers.add_parser(
         "collection",

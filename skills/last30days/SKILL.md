@@ -95,10 +95,12 @@ These operations are not part of an ordinary query:
 - `collection` - list or govern recurring feed, account, list, profile,
   channel, or topic specifications. `get` and `archive` preserve immutable
   follow history; archived follows are hidden unless explicitly requested.
+- `saved_query` - explicitly save, read, capture, or inspect one immutable,
+  cache-only query view for monitoring. Captures do not schedule or deliver work.
 - `maintenance_status` - read safe maintenance readiness and receipt counts.
 
 Use `refresh` only under the ordinary-path rule above. Use `topic`,
-`collection`, or maintenance-specific behavior only after the capability gates
+`collection`, `saved_query`, or maintenance-specific behavior only after the capability gates
 below are satisfied.
 
 ## Capability gates

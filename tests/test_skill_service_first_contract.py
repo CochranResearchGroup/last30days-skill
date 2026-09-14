@@ -30,6 +30,7 @@ def test_ordinary_skill_names_the_exact_product_surface():
         "profile_history",
         "coverage",
         "collection",
+        "saved_query",
         "maintenance_status",
     }
 

@@ -8,7 +8,7 @@ import hashlib
 import json
 from pathlib import Path
 import sqlite3
-from typing import Callable
+from typing import Callable, Protocol
 
 import store
 
@@ -209,6 +209,12 @@ def _digest(value: object) -> str:
 
 def _stable_id(prefix: str, value: object) -> str:
     return f"{prefix}-{_digest(value)[:32]}"
+
+
+class SavedQueryViewReader(Protocol):
+    def read(self, view_ref: contracts.SavedQueryViewRefV1,
+             access_partition_id: str, snapshot_id: str
+             ) -> contracts.SavedQueryViewSnapshotV1: ...
 
 
 class FakeSavedQueryViewProvider:
@@ -604,7 +610,12 @@ class MonitorRepository:
                 conn.commit()
                 return prior
             if decision.decision is contracts.DecisionKind.ACCEPTED:
-                if run.comparison.status is contracts.ComparisonStatus.INCOMPLETE:
+                snapshot = conn.execute(
+                    "SELECT coverage_status FROM service_monitor_view_snapshots "
+                    "WHERE snapshot_id=?", (run.snapshot_id,),
+                ).fetchone()
+                if (snapshot is None or snapshot["coverage_status"] != "complete"
+                        or run.comparison.status is contracts.ComparisonStatus.INCOMPLETE):
                     raise MonitorKernelError(
                         MonitorErrorCode.COMPARISON_INCOMPLETE,
                         "an incomplete comparison cannot advance the baseline",
@@ -667,7 +678,7 @@ class MonitorKernel:
     def __init__(
         self,
         repository: MonitorRepository,
-        view_provider: FakeSavedQueryViewProvider,
+        view_provider: SavedQueryViewReader,
         *,
         clock: Callable[[], str] | None = None,
     ) -> None:
@@ -814,6 +825,8 @@ class MonitorKernel:
             status = (
                 contracts.ComparisonStatus.COMPLETE
                 if snapshot.coverage.status is contracts.CoverageStatus.COMPLETE
+                and datetime.fromisoformat(snapshot.knowledge_cutoff.replace("Z", "+00:00"))
+                >= datetime.fromisoformat(prior.knowledge_cutoff.replace("Z", "+00:00"))
                 else contracts.ComparisonStatus.INCOMPLETE
             )
             changes = []

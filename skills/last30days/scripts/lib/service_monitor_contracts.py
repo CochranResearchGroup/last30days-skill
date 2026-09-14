@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
+import json
 from typing import Any, ClassVar, Iterable, Mapping
 
 
@@ -82,6 +83,13 @@ def _text(value: Any, field: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise MonitorContractError(f"{field} must be a non-empty string")
     return value
+
+
+def _bounded_text(value: Any, field: str, maximum: int = 128) -> str:
+    text = _text(value, field)
+    if len(text) > maximum:
+        raise MonitorContractError(f"{field} must contain at most {maximum} characters")
+    return text
 
 
 def _optional_text(value: Any, field: str) -> str | None:
@@ -189,7 +197,7 @@ class SavedQueryViewRefV1:
         return cls(
             schema_version=_schema(payload["schema_version"]),
             view_kind="saved_query",
-            saved_query_id=_text(payload["saved_query_id"], "saved_query_id"),
+            saved_query_id=_bounded_text(payload["saved_query_id"], "saved_query_id"),
             saved_query_version=_positive_int(
                 payload["saved_query_version"], "saved_query_version"
             ),
@@ -202,6 +210,60 @@ class SavedQueryViewRefV1:
             "saved_query_id": self.saved_query_id,
             "saved_query_version": self.saved_query_version,
         }
+
+
+@dataclass(frozen=True)
+class SavedQueryDefinitionV1:
+    """An immutable current-revision query; transport IDs/cursors are not state."""
+
+    saved_query_id: str
+    version: int
+    access_partition_id: str
+    search_json: str
+
+    @classmethod
+    def from_dict(cls, value: Mapping[str, Any]) -> SavedQueryDefinitionV1:
+        from .service_contracts import ContractValidationError, PostSearchRequest
+
+        payload = _object(value, "saved_query")
+        _exact(payload, ("schema_version", "saved_query_id", "version",
+                         "access_partition_id", "search"), "saved_query")
+        if type(payload["schema_version"]) is not int:
+            raise MonitorContractError("schema_version must be an integer")
+        _schema(payload["schema_version"])
+        search = _object(payload["search"], "search")
+        _exact(search, ("profile_id", "query", "filters", "page_size", "sort",
+                        "revision_mode"), "search")
+        if search["revision_mode"] != "current":
+            raise MonitorContractError("saved queries require revision_mode=current")
+        try:
+            request = PostSearchRequest.from_dict({
+                **search, "schema_version": 1, "request_id": "saved-query",
+                "cursor": None,
+            }).to_dict()
+        except ContractValidationError as exc:
+            raise MonitorContractError(str(exc)) from exc
+        for key in ("schema_version", "request_id", "cursor"):
+            request.pop(key)
+        return cls(
+            saved_query_id=_bounded_text(payload["saved_query_id"], "saved_query_id"),
+            version=_positive_int(payload["version"], "version"),
+            access_partition_id=_bounded_text(
+                payload["access_partition_id"], "access_partition_id", 136
+            ),
+            search_json=json.dumps(request, sort_keys=True, separators=(",", ":"),
+                                   allow_nan=False),
+        )
+
+    @property
+    def view_ref(self) -> SavedQueryViewRefV1:
+        return SavedQueryViewRefV1(SCHEMA_VERSION, "saved_query",
+                                  self.saved_query_id, self.version)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"schema_version": SCHEMA_VERSION, "saved_query_id": self.saved_query_id,
+                "version": self.version, "access_partition_id": self.access_partition_id,
+                "search": json.loads(self.search_json)}
 
 
 @dataclass(frozen=True)
@@ -313,7 +375,9 @@ class SavedQueryViewSnapshotV1:
         start = _timestamp(payload["coverage_start"], "coverage_start")
         end = _timestamp(payload["coverage_end"], "coverage_end")
         cutoff = _timestamp(payload["knowledge_cutoff"], "knowledge_cutoff")
-        if start > end or end > cutoff:
+        if not (datetime.fromisoformat(start[:-1] + "+00:00")
+                <= datetime.fromisoformat(end[:-1] + "+00:00")
+                <= datetime.fromisoformat(cutoff[:-1] + "+00:00")):
             raise MonitorContractError(
                 "coverage_start, coverage_end, and knowledge_cutoff are out of order"
             )

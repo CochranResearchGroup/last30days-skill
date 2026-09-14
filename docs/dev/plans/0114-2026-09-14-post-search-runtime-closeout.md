@@ -29,9 +29,11 @@ bounded pagination, HTTP/MCP parity fixtures, and a frozen 10,000-post
 performance sample. Remaining acceptance is versioned isolated-runtime and
 fresh-client product proof, not another ranking redesign.
 
-Activation custody is accepted at P0114-C01. Implementation remains held until
-the coordinator integrates the canonical activation projection and resumes this
-owner with the bounded implementation assignment.
+Activation custody is accepted at P0114-C01. The coordinator integrated that
+projection at `c4251dc12c905e513c9f37119b3442382741f31e` and resumed this owner
+for the bounded implementation and isolated-runtime acceptance. Source and
+exact-runtime acceptance pass at C03, bound to `68279438`; independent review,
+coordinator integration and repo-local WI-002 closeout remain outstanding.
 
 ## Scope
 
@@ -164,3 +166,160 @@ Stop and next action:
   policies, and shared-surface assignment. Stop on custody mismatch or newly
   conflicting ownership; do not infer implementation or runtime activation
   from publication alone.
+
+### Checkpoint P0114-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `activation_published -> source_probe_ready`; plan remains
+`OPEN` pending isolated-runtime evidence, independent review and integration.
+
+Progress classification: `outcome_progress`; one reusable repo-only probe now
+crosses typed HTTP and a freshly built MCP process over 19 fixture cases,
+malformed requests, sort modes, partition/cursor changes and publication.
+
+Authority classification:
+
+- `inherited_authority` under Plan 0107 and the coordinator's implementation
+  continuation covers the repo-only probe/fixtures/docs, this plan, safe
+  validation, exact WI-001 isolated-runtime acceptance, receipts, and branch
+  publication;
+- generated artifacts, runtime manifest, version metadata, shared transport,
+  roadmap/runbook, work-item/lane projections and PR integration remain
+  coordinator-owned; no provider, browser, installed runtime, schedule, staging,
+  production, release publication or issue effect is permitted.
+
+Custody and implementation evidence:
+
+- fetched `origin/main` and fast-forwarded the assigned branch to exact
+  `c4251dc12c905e513c9f37119b3442382741f31e`; Git verifies activation
+  `81cbfc09b197b8cde325e468e79d19115d4fc4fb` remains in ancestry;
+- `dev/last30days/scripts/post_search_dogfood.py` reuses existing synthetic
+  fixtures and the WI-001 controller without changing packaged product source;
+- it refuses existing lane state, builds the MCP adapter with offline Go
+  dependency resolution, supplies a private credential-free MCP environment,
+  compares complete HTTP/MCP responses except request ID and generated time,
+  and checks the whole logical database digest around read-only probes;
+- one explicit synthetic publication has separate before/after digests and
+  proves pinned traversal; it is never counted as a read-only search mutation;
+- the runtime bound is exactly two start/stop cycles of one unique isolated
+  identity, sequentially, to prove restart-stale cursors. Each MCP process is
+  terminated and reaped; final OS census includes both owned process sessions;
+- source checks first failed because the probe was absent, then passed with
+  the implementation. The probe also detects deliberately forged evidence
+  parity, refuses existing corpus seeding and detects an owned OS session;
+- 69 focused search/MCP/controller/package tests passed. Go tests and vet pass;
+  focused Ruff and patch checks pass after import/format cleanup. Comprehensive
+  Python validation is running and is not yet claimed passed;
+- two fixed-epoch service `0.3.117` builds are byte-identical at
+  `a103624e7aa64a86513c7d4c34c5c10152a9a0c0a8785e9f5fd86730a4ec2a44`;
+  no manifest/catalog/version changes were needed. Exact-runtime execution
+  waits for this clean source checkpoint.
+
+Model/topology remain unchanged: requested `gpt-5.6-terra` / medium, effective
+configuration unknown, one owner, no children. One implementation attempt is
+in progress; no broad independent review or remediation has been consumed.
+
+Next action: commit this source checkpoint, verify its clean custody, rebuild
+the exact artifact, exercise the isolated runtime, retain its raw receipt and
+record the final validation/teardown outcome. Any concrete transport or manifest
+blocker returns to the coordinator without widening the write set.
+
+### Checkpoint P0114-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `source_probe_ready -> acceptance_met_pending_integration`;
+plan remains `OPEN` for coordinator review and integration.
+
+Progress classification: `outcome_progress`; the remaining provider-free
+search product has exact versioned-runtime, fresh-client and teardown evidence.
+
+Authority classification:
+
+- `inherited_authority`: the bounded coordinator continuation authorized the
+  probe and this isolated development runtime; every provider, browser,
+  installed-service, live-data,
+  schedule, staging, production, release and issue effect remained excluded;
+- runtime acceptance used clean source commit
+  `682794385e6b666e4f813847486bb7ae85e56b08`, preserving both the activation and
+  `c4251dc1` integration ancestry. That exact source was committed before the
+  run and published afterward, before this receipt-only closeout commit;
+- the coordinator's later request for publication before runtime arrived after
+  the completed run. No prior-publication claim or second runtime run is made;
+- this C03 update and the retained raw receipt are receipt-only changes. They
+  do not change the source/artifact identity exercised by the run;
+- local HEAD, configured upstream and live remote were verified equal at
+  `682794385e6b666e4f813847486bb7ae85e56b08` before this closeout update.
+
+Exact runtime and artifact receipt:
+
+- durable raw receipt:
+  `dev/last30days/receipts/plan0114-search-runtime.json`;
+- its SHA-256 is
+  `4a5cab7e762b56a08af72787ba44f9ce3be829f51c989d633ec4855f844a3b61`,
+  byte-identical to the original
+  `/tmp/l30d-p33-state.bbWa33/last30days/lanes/l30d-p33-search-packet4-65eaf9ba6469/receipts/search-packet4.json`;
+- runtime identity: `l30d-p33-search-packet4-65eaf9ba6469`;
+  socket: `/tmp/l30d-p33-runtime.LZHEqF/65eaf9ba6469/s`;
+- service `0.3.117`, database schema 18, source manifest
+  `21566b5da1acc4220c572356b4a83bc76f83265cc87413191fc916c39fe74abe`,
+  and public contract digest
+  `ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6`
+  agree across controller, HTTP and fresh MCP readbacks;
+- two fixed-input builds from the exact clean source are byte-identical at
+  `a103624e7aa64a86513c7d4c34c5c10152a9a0c0a8785e9f5fd86730a4ec2a44`;
+  artifacts remain under `/tmp/l30d-p33-build.2Z1QZL/first` and `second`;
+- fresh MCP binary SHA-256:
+  `2c1e7d9544d2afbab6361458fee24e891dfedfd4af5c5738ded93b61181efb05`;
+- controller service cycles: PID 2052166/start ticks 2971226 and PID
+  2052593/start ticks 2971519; fresh MCP processes: PID 2052329/start ticks
+  2971351 and PID 2052607/start ticks 2971545;
+- both controller `down` receipts are `stopped`; final controller status is
+  `absent`, the socket is absent and the fresh owned-session OS census is empty.
+  A separate post-run `ps` readback found none of the four exact PIDs;
+- synthetic database, logs, adapter and original receipts are retained in the
+  unique temporary runtime roots. The committed raw receipt survives cleanup
+  or expiry of those temporary paths and names the exact reproducible source.
+
+Acceptance mapping:
+
+1. Both fresh MCP clients complete discovery/handshake against the artifact;
+   `search_posts` is read-only/closed-world and exposes the expected filters.
+2. Typed HTTP and MCP compare the entire validated response except their
+   generated request IDs and timestamps, preserving identity, revision,
+   provenance, ranking components, coverage, cursor and response bounds.
+3. Nineteen cases cover both families, source/author/topic/collection/time
+   filters, conjunctions, current/all revisions, cross-store deduplication,
+   private and unrelated profiles, private provenance exclusion and empty
+   results; malformed cases and both explicit date sorts also pass.
+4. A retained four-revision traversal survives an explicit synthetic
+   publication; a fresh search sees the new revision. Both HTTP and MCP reject
+   the old cursor with `cursor_stale` after the sequential runtime restart.
+5. Complete logical-database digests remain unchanged around read-only probes;
+   the explicit fixture publication alone changes its separately recorded
+   before/after digest. No acquisition or schedule work is admitted by search.
+6. Exact artifact/source, owner PID/birth, manifest, contract and teardown
+   evidence are retained above; no installed or production-runtime claim is
+   inferred from this development proof.
+7. Comprehensive Python passes: **2,999 passed, 8 skipped, 14 subtests passed**
+   in **197.92 seconds** using `uv run pytest --override-ini addopts='' -q`.
+   Focused search/probe/MCP/controller/package selection passes **69 tests** in
+   **14.66 seconds**. `go test ./...`, `go vet ./...`, focused Ruff, plan-authority
+   audit and `git diff --check` pass. Source packaging is reproducible without
+   any shared manifest edit. The opt-in 10,000-post benchmark remains skipped;
+   Packet 3's frozen ranking/performance evidence is unchanged.
+
+Review, bounds and handoff:
+
+- one implementation attempt and one successful isolated acceptance run used;
+  the two process cycles implement the planned restart scenario, not retries;
+- no children or independent reviewer were launched. The coordinator retains
+  the one broad independent review, any closed-world remediation, PR and join;
+- no coordinator-owned manifest/catalog/version/shared transport or product
+  documentation edits are required. Only the repo-only probe/test/docs, this
+  plan and the raw receipt changed;
+- next action: publish this receipt-only checkpoint and verify clean
+  local/upstream/live-remote equality. Coordinator reviews/integrates the exact
+  branch, then reconciles WI-002 to `DONE` only from accepted merged evidence.
+  WI-003 public question transport remains its separate packet.

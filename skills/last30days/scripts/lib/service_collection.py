@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Callable, Mapping
 
 from . import service_contracts as contracts
+from .service_follow_capabilities import DEFAULT_FOLLOW_CAPABILITIES, FollowTargetV1
 from .service_refresh import ServiceRefreshScheduler
 from .service_source_policy import SOURCE_ACCESS_METHODS
 from .service_temporal import access_partition_id
@@ -246,11 +247,7 @@ class CollectionSpec:
         lifecycle_state = str(payload.get("lifecycle_state", "active")).casefold()
         if lifecycle_state not in _LIFECYCLE_STATES:
             raise CollectionSpecValidationError("lifecycle_state is invalid")
-        if collection_purpose == "tailored_follow":
-            if source != "x":
-                raise CollectionSpecValidationError(
-                    "tailored_follow source must be x"
-                )
+        if collection_purpose == "tailored_follow" and source == "x":
             selector_value = _canonical_x_follow_selector(
                 surface_kind, selector_field, raw_selector_value
             )[selector_field]
@@ -364,6 +361,28 @@ class CollectionSpec:
                 "access_partition_id": self.access_partition_id,
             },
         )
+
+    @property
+    def follow_target(self) -> FollowTargetV1 | None:
+        if self.collection_purpose != "tailored_follow":
+            return None
+        return FollowTargetV1(
+            source=self.source,
+            target_kind=self.surface_kind,
+            canonical_id=self.follow_target_id or "",
+            selector=dict(self.selector),
+            access_partition_id=self.access_partition_id,
+        )
+
+    @property
+    def follow_capability(self):
+        if self.collection_purpose != "tailored_follow":
+            return None
+        return DEFAULT_FOLLOW_CAPABILITIES.capability(self.source, self.surface_kind)
+
+    @property
+    def is_quarantined_follow(self) -> bool:
+        return bool(self.follow_capability and self.follow_capability.state != "available")
 
     def to_dict(self) -> dict[str, object]:
         payload: dict[str, object] = {
@@ -614,6 +633,10 @@ class CollectionCoordinator:
                 raise CollectionSpecValidationError(
                     "tailored_follow must be created disabled"
                 )
+            if current is None and spec.is_quarantined_follow:
+                raise CollectionSpecValidationError(
+                    "unsupported tailored target cannot be created"
+                )
             if current is not None:
                 current_version = int(current["spec_version"])
                 if spec.spec_version == current_version:
@@ -642,8 +665,34 @@ class CollectionCoordinator:
                         )
                 if spec.collection_purpose != current_spec.collection_purpose:
                     raise CollectionSpecValidationError(
-                        "collection_purpose is immutable"
+                    "collection_purpose is immutable"
+                )
+                if current_spec.is_quarantined_follow:
+                    current_payload = current_spec.to_dict()
+                    current_payload.pop("follow_target_id", None)
+                    pause = CollectionSpec.from_dict(
+                        {
+                            **current_payload,
+                            "enabled": False,
+                            "spec_version": current_spec.spec_version + 1,
+                        }
                     )
+                    archive = CollectionSpec.from_dict(
+                        {
+                            **current_payload,
+                            "enabled": False,
+                            "lifecycle_state": "archived",
+                            "spec_version": current_spec.spec_version + 1,
+                        }
+                    )
+                    if not (
+                        spec == current_spec
+                        or (current_spec.enabled and spec == pause)
+                        or (_allow_archive and spec == archive)
+                    ):
+                        raise CollectionSpecValidationError(
+                            "unsupported legacy tailored target may only pause or archive"
+                        )
                 if (
                     spec.collection_purpose == "tailored_follow"
                     and spec.follow_target_id != current_spec.follow_target_id
@@ -974,6 +1023,10 @@ class CollectionCoordinator:
             raise CollectionSpecValidationError(
                 "archived collection is an irreversible tombstone"
             )
+        if enabled and spec.is_quarantined_follow:
+            raise CollectionSpecValidationError(
+                "unsupported legacy tailored target cannot be enabled"
+            )
         payload = spec.to_dict()
         payload.pop("follow_target_id", None)
         updated = CollectionSpec.from_dict(
@@ -1008,6 +1061,10 @@ class CollectionCoordinator:
             ):
                 raise ValueError("manual max_attempts must be 1 or 2")
         spec = self.get_spec(collection_spec_id)
+        if spec.is_quarantined_follow:
+            raise CollectionSpecValidationError(
+                "unsupported legacy tailored target cannot be scheduled"
+            )
         if spec.lifecycle_state == "archived":
             raise CollectionSpecValidationError(
                 "archived collection cannot be run"
@@ -1156,10 +1213,18 @@ class CollectionCoordinator:
         self.reconcile_terminal_jobs()
         now = self._now()
         now_text = _timestamp(now)
+        available_follow_targets = DEFAULT_FOLLOW_CAPABILITIES.available_targets
+        follow_filter = " OR ".join(
+            "(s.source = ? AND s.surface_kind = ?)"
+            for _ in available_follow_targets
+        ) or "0"
+        follow_args = tuple(
+            item for pair in available_follow_targets for item in pair
+        )
         conn = self._connect()
         try:
             rows = conn.execute(
-                """SELECT s.collection_spec_id, r.spec_json, q.next_due_at
+                f"""SELECT s.collection_spec_id, r.spec_json, q.next_due_at
                    FROM collection_specs AS s
                    JOIN collection_spec_revisions AS r
                      ON r.collection_spec_id = s.collection_spec_id
@@ -1167,6 +1232,10 @@ class CollectionCoordinator:
                    JOIN collection_schedule_state AS q
                      ON q.collection_spec_id = s.collection_spec_id
                    WHERE s.enabled = 1
+                     AND (
+                         s.collection_purpose != 'tailored_follow'
+                         OR ({follow_filter})
+                     )
                      AND q.next_due_at <= ?
                      AND (q.retry_after IS NULL OR q.retry_after <= ?)
                      AND NOT EXISTS (
@@ -1188,13 +1257,15 @@ class CollectionCoordinator:
                             END,
                             s.collection_spec_id
                    LIMIT ?""",
-                (now_text, now_text, limit),
+                (*follow_args, now_text, now_text, limit),
             ).fetchall()
         finally:
             conn.close()
         created: list[CollectionRun] = []
         for row in rows:
             spec = CollectionSpec.from_dict(json.loads(row["spec_json"]))
+            if spec.is_quarantined_follow:
+                continue
             run = self.enqueue_interval(
                 spec.collection_spec_id,
                 scheduled_for=row["next_due_at"],

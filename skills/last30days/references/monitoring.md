@@ -11,7 +11,9 @@ Monitoring is read-only:
    readiness plus receipt counts.
 4. Use `job_status` only with a job ID supplied by the user or returned by a
    service operation in this conversation.
-5. Use `topic` or `collection` only in their list/read form.
+5. Use `topic` or `collection` only in their list/read form. Use `saved_query`
+   only with `get` or `receipt` and an exact reference supplied by the user or
+   returned earlier in this conversation.
 
 Report service health separately from research yield. A ready process with no
 new evidence is healthy but did not produce a successful research outcome.
