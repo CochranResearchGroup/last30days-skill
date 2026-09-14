@@ -2128,6 +2128,13 @@ class AcquisitionWorkRequest:
             collection_context = CollectionContext.from_dict(collection_context)
             if collection_context.surface_kind != surface_kind:
                 raise ContractValidationError("collection_context surface_kind does not match request")
+        query = _require_bounded_string(payload["query"], "query", 8192)
+        if collection_context is not None:
+            selector_value = next(iter(collection_context.selector.values()))
+            if query != selector_value:
+                raise ContractValidationError(
+                    "collection_context selector does not match request query"
+                )
         return cls(
             schema_version=_validate_schema_version(payload["schema_version"]),
             work_id=_require_bounded_string(payload["work_id"], "work_id", 128),
@@ -2140,7 +2147,7 @@ class AcquisitionWorkRequest:
                 payload["profile_id"], "profile_id", 128
             ),
             source=_require_bounded_string(payload["source"], "source", 64),
-            query=_require_bounded_string(payload["query"], "query", 8192),
+            query=query,
             from_date=_require_bounded_string(
                 payload["from_date"], "from_date", 64
             ),
