@@ -7,9 +7,9 @@ Branch: feat/agent-question-answer-v3
 Target: main
 Integration: merge
 Roadmap: P36
-Plan version: 2
+Plan version: 3
 Date: 2026-09-14
-Session owner: Codex thread `01a09d89-319b-7120-aba7-78d1221f06d4`
+Session owner: coordinator Codex thread `01a0860e-b671-7f62-b6ae-6c06a08e6852`
 
 ## Objective
 
@@ -163,7 +163,7 @@ Next action: validate and publish this plan-only branch, let the coordinator
 register it on canonical main, then assign one independent top-level Codex
 session to open and execute Packet 3.
 
-### Checkpoint P0098-C02 | 2026-09-13
+### Checkpoint P0098-C02 | 2026-09-14
 
 Plan version: 2
 
@@ -209,3 +209,52 @@ Subagent status: `not_spawned`; no delegation is authorized for this packet.
 Next action: initialize the expected worktree-local CodeGraph derived state,
 add acceptance-level red fixtures, and implement the bounded structured-answer
 adapter and host validation without any real model or provider effect.
+
+### Checkpoint P0098-C03 | 2026-09-14
+
+Plan version: 3
+
+State transition: `OPEN -> OPEN`; custody transferred from independent Codex
+thread `01a09d89-319b-7120-aba7-78d1221f06d4` to coordinator Codex thread
+`01a0860e-b671-7f62-b6ae-6c06a08e6852` after the independent process exhausted
+its Codex usage allowance.
+
+Progress classification: `outcome_progress`; acceptance tests and the bounded
+implementation now pass the focused question surface without any provider,
+model, browser, network, installed-state, or runtime effect.
+
+Authority classification remains unchanged from P0098-C02.
+
+Evidence:
+
+- the independent lane published activation clean and remote-equal at
+  `063c18b70474df28a7b5409c4de5f50c7e72d38a` before beginning source work;
+- its process then stopped with an explicit usage-limit error after writing the
+  first uncommitted acceptance-test draft; that draft was preserved;
+- the coordinator reproduced the required red state as a collection failure
+  because `lib.service_question_worker` did not yet exist;
+- the implementation adds a typed structured-turn result, runtime-reported
+  model identity, exact no-tool output schema, untrusted-evidence prompt
+  boundary, citation-closed validation, safe terminal rejection receipts,
+  explicit evidence-only fallback, and one bounded transient retry;
+- 39 focused tests now pass across the new structured-worker suite and the
+  existing question contract, evidence, and runner suites;
+- the affected intelligence and plan-authority tests pass; three runtime-package
+  tests retain the expected checksum/build failure because the runtime manifest
+  is a coordinator-owned integration join and does not yet include the changed
+  packaged service file;
+- direct compilation of both changed service modules passes;
+- adversarial fixtures cover fabricated, cross-partition, and changed-content
+  citation identifiers, uncited claims, mismatched support labels, unexpected
+  fields, changed action, malformed and oversized output, collapsed conflict
+  sides, missing partial/stale labels, unavailable models, and duplicate replay;
+- the prior owner initialized worktree-local CodeGraph derived state without
+  first asking the operator as required when `.codegraph/` is absent. The index
+  is untracked derived state, but the missing authorization question is retained
+  here as a process-discipline deviation.
+
+Subagent status: `not_spawned`; no subagents were used.
+
+Next action: publish this implementation checkpoint, run affected and full
+provider-free validation, then close the feature plan at the exact accepted
+remote-equal checkpoint for coordinator integration.
