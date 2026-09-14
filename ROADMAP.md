@@ -2749,7 +2749,7 @@ Next Bounded Action:
 
 ## P36 | Agent Question Answering MCP Surface
 
-State: OPEN
+State: CLOSED
 
 Objective: let agents ask bounded cross-service questions and receive a
 validated answer whose every substantive statement can be followed to exact
@@ -2757,11 +2757,10 @@ authorized immutable evidence.
 
 Current State:
 
-- WI-003 is `READY`; merged P33 Packet 1 satisfies its implementation
-  dependency;
-- current MCP query and temporal tools expose evidence, claims, events, and
-  conflicts, but no validated synthesized answer, durable question status, or
-  citation dereference surface;
+- WI-003 is `DONE`; all provider-free implementation dependencies and
+  acceptance gates are satisfied;
+- current MCP query and temporal tools now include validated answers, durable
+  question status and citation dereference over authorized stored evidence;
 - the selected seam adds durable `ask_question`, `question_status`, and
   `read_evidence` tools over WI-002 `search_posts`, with deterministic host
   control and a separate bounded no-tool answer worker;
@@ -2813,11 +2812,11 @@ Closed Integration Plan:
 
 - `docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md`.
 
-Active Implementation Plan:
+Last Closed Implementation Plan:
 
 - `docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md` on
   `feat/question-public-runtime-closeout-v1`; activation `cfe4e719` is
-  published and reconciled for implementation.
+  superseded by reviewed PR 91 and canonical merge `f413458b`.
 
 Dependencies:
 
@@ -2827,8 +2826,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- plan Packet 4's public HTTP/MCP and fresh-client acceptance separately; real
-  model and runtime effects remain gated.
+- no provider-free work remains in P36. Real model/provider canaries remain
+  separately gated and require explicit authority.
 
 ## P47 | P36 Packet 2 Integration Reconciliation
 
@@ -2911,7 +2910,7 @@ Next Bounded Action:
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
-State: OPEN
+State: PLANNED
 
 Objective: give maintainers one replayable, denominator-aware view of
 acquisition coverage, corpus integrity, retrieval quality, and answer grounding
@@ -2919,10 +2918,11 @@ without conflating fixture success with production quality.
 
 Current State:
 
-- WI-008 is `READY`; its provider-free Packet 1 has no product dependency;
-- current evaluators cover fragments of retrieval or slash-command ranking and
-  model judgments, but do not share a versioned set, threshold, report,
-  denominator, artifact, or effect contract;
+- WI-008 is `READY`; its real grounding packet is now dependency-ready after
+  WI-003 closed;
+- current evaluators share a versioned set, thresholds, reports, denominators,
+  artifact/effect contracts, and real read-only acquisition/corpus/retrieval
+  adapters; the remaining axis is real answer grounding;
 - the selected seam is a repo-only deterministic harness with four separate
   axes, canonical JSON plus Markdown projection, and explicit blocking versus
   observation tiers;
@@ -2942,11 +2942,11 @@ Closed Implementation Plan:
 - `docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md` on
   `feat/service-quality-v1`.
 
-Active Implementation Plan:
+Last Closed Implementation Plan:
 
 - `docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md` on
   `feat/service-quality-real-adapters-v1`; activation `24614a18` is published
-  and reconciled for implementation.
+  and integrated through reviewed PR 91 as canonical merge `f413458b`.
 
 Dependencies:
 
@@ -2956,9 +2956,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate Plan 0119 registration and publish exact custody for the read-only
-  real-fixture integrity, coverage, and retrieval adapter packet; grounding
-  remains deferred until WI-003 closes.
+- register one bounded provider-free answer-grounding and quality-closeout
+  packet; do not infer model/judge or production-sample authority.
 
 ## P38 | Reserved Production Hotfix Path
 
@@ -3009,7 +3008,7 @@ Next Bounded Action:
 
 ## P39 | Cross-Service Tailored Follow Product Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: extend tailored follows beyond X through provider-native target
 identity and capability discovery without duplicating collection scheduling or
@@ -3027,18 +3026,18 @@ Current State:
 - Plan 0115 Packet 1 integrated through reviewed PR 87 as canonical merge
   `d2f15ed6`; the closed registry, exact X compatibility, identity-bound
   migration evidence, and scheduler-isolated legacy quarantine pass;
-- no Reddit/YouTube adapter, provider use, installed runtime mutation, or
-  schedule change is claimed.
+- Reddit/YouTube provider-free native tracers are integrated; no provider use,
+  installed runtime mutation, live locator, or schedule change is claimed.
 
 Last Closed Plan:
 
 - `docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md`.
 
-Active Implementation Plan:
+Last Closed Implementation Plan:
 
 - `docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md` on
   `feat/cross-service-follow-tracers-v1`; activation `f7ba978d` is published
-  and reconciled for implementation.
+  and integrated through reviewed PR 91 as canonical merge `f413458b`.
 
 Closed Architecture Plan:
 
@@ -3052,9 +3051,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate Plan 0118 registration, publish exact custody, and execute its
-  provider-free Reddit-community/user and YouTube-channel fixture tracers. Do
-  not use providers or live locators.
+- register one bounded provider-free fresh isolated-runtime closeout. Do not
+  use providers or live locators.
 
 ## P40 | Saved Monitors And Evidence Digests
 
@@ -3385,7 +3383,10 @@ Current State:
   `a10604e9`, and WI-007 runtime/operator closure `d25f9df4` at reviewed
   integration head `aa59b42c`; full joined validation and independent review
   pass with one closed documentation remediation;
-- WI-003, WI-005, WI-006, and WI-008 remain dependency-ordered later waves;
+- WI-005, WI-006, and WI-008 remain as dependency-ready closeout work;
+- Wave 4 integrated through reviewed PR 91 as canonical merge `f413458b`:
+  WI-003 is `DONE`, while WI-005 and WI-008 are `READY` for their final bounded
+  packets; all six reproduced joined-review findings were closed;
 - at most three one-level implementation agents may run concurrently, and the
   coordinator owns integration plus shared authority projections;
 - all providers, browsers, live data, schedules, installed service, staging,
@@ -3396,13 +3397,14 @@ Active Plan:
 
 - `docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`.
 
-Current Wave 2 Plans:
+Last Completed Wave 4 Plans:
 
-- `docs/dev/plans/0111-2026-09-14-post-search-packet-3.md`;
-- `docs/dev/plans/0112-2026-09-14-x-list-and-product-closure.md`;
-- `docs/dev/plans/0113-2026-09-14-hotfix-runtime-and-operator-closure.md`.
+- `docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md`;
+- `docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md`;
+- `docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md`.
 
 Next Bounded Action:
 
-- publish and merge the reviewed Wave 2 integration head, record canonical
-  closeout receipts, then register the next dependency-ordered wave.
+- register the next full-capacity provider-free wave: WI-005 fresh-runtime
+  closeout, WI-006 monitor/digest composition closeout, and WI-008 real
+  grounding/quality closeout.

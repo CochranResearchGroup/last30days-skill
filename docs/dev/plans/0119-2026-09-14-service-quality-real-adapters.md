@@ -1,6 +1,6 @@
 # Plan 0119 | Service Quality Real Adapters Packet 2
 
-State: OPEN
+State: CLOSED
 Lane: P37
 Work item: WI-008
 Branch: feat/service-quality-real-adapters-v1
@@ -224,3 +224,18 @@ Review and remediation evidence:
 
 Next action: integrate this reviewed Packet 2 head. WI-008 remains `READY`, not
 `DONE`; answer-grounding and wider quality closure remain later bounded work.
+
+### Checkpoint P0119-C05 | 2026-09-14
+
+Plan version: 1
+
+State transition: `integration_ready -> CLOSED`.
+
+Progress classification: `blocker_reduction`; PR 91 merged the exact reviewed
+Wave 4 head as canonical commit `f413458b4d1be8db0ae5a1347545f9f921875c58`.
+
+Authority classification: `inherited_authority`; this checkpoint records only
+repo-local Git and acceptance evidence. All external-effect gates remain held.
+
+WI-008 transitions `IN_PROGRESS -> READY`. Its grounding axis is dependency-
+ready after WI-003 closeout and must be registered as a separate packet.

@@ -1,6 +1,6 @@
 # Plan 0118 | Cross-Service Follow Tracers Packet 2
 
-State: OPEN
+State: CLOSED
 Lane: P39
 Work item: WI-005
 Branch: feat/cross-service-follow-tracers-v1
@@ -301,3 +301,18 @@ Joined evidence:
 
 Next action: integrate the reviewed head. WI-005 remains `READY`, not `DONE`,
 because its separately authorized fresh-runtime closeout is outside this packet.
+
+### Checkpoint P0118-C06 | 2026-09-14
+
+Plan version: 1
+
+State transition: `integration_ready -> CLOSED`.
+
+Progress classification: `outcome_progress`; PR 91 merged the exact reviewed
+Wave 4 head as canonical commit `f413458b4d1be8db0ae5a1347545f9f921875c58`.
+
+Authority classification: `inherited_authority`; this is repo-local Git and
+acceptance reconciliation only, with every external-effect gate retained.
+
+WI-005 transitions `IN_PROGRESS -> READY` for one separately registered
+provider-free fresh-runtime closeout packet.
