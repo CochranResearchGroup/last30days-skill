@@ -74,6 +74,7 @@ from lib.service_runtime import (
     GraphProjectionLoop,
     TickScheduleLoop,
     build_acquisition_runtime,
+    build_collection_read_authority,
 )
 from lib.service_tick import TickConfigError, TickCoordinator
 from lib.service_tick_runtime import (
@@ -249,6 +250,11 @@ def _serve(args: argparse.Namespace) -> int:
             ),
             retriever,
         )
+    collection_read_authority = (
+        acquisition.collection_coordinator
+        if acquisition is not None
+        else build_collection_read_authority(db_path)
+    )
     codex_path = os.getenv("LAST30DAYS_CODEX_PATH", "codex")
     application = initialize_application(
         db_path,
@@ -259,7 +265,7 @@ def _serve(args: argparse.Namespace) -> int:
         acquisition_readiness=acquisition.source_readiness if acquisition else {},
         recurring_collection=acquisition is not None,
         assessment_processing=assessment_loop is not None,
-        collection_coordinator=(acquisition.collection_coordinator if acquisition else None),
+        collection_coordinator=collection_read_authority,
         graph_projection_enabled=graph_loop is not None,
         maintenance_enabled=effect_mode == "normal" and bool(shutil.which(codex_path)),
         tick_schedule_status=(tick_schedule.status if tick_schedule else None),

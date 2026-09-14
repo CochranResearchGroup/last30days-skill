@@ -482,7 +482,7 @@
     },
     {
       "path": "scripts/lib/service_runtime.py",
-      "sha256": "94d84334a99907bb4dcc06ddf7647b49caabdb421e2b6db52586a675c1b9c53c",
+      "sha256": "6d3af6cffcff5ed0876daf5a234189ca3952270dfb5f3b13a5115915920d91f1",
       "source": "skills/last30days/scripts/lib/service_runtime.py"
     },
     {
@@ -752,7 +752,7 @@
     },
     {
       "path": "scripts/service.py",
-      "sha256": "38beb98875f4185be2fd2f59cc6c8b3be83db343dc21ec4ce04fa0c28840201d",
+      "sha256": "193e97b1776b4a8f003d5d79b58b4036baa7d6b728621024fb3ff7ee144c10d8",
       "source": "skills/last30days/scripts/service.py"
     },
     {
