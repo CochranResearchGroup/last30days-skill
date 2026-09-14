@@ -510,3 +510,24 @@ def build_acquisition_runtime(
         sources=sources,
         source_readiness=source_readiness,
     )
+
+
+def build_collection_read_authority(
+    db_path: Path,
+    *,
+    clock: Clock | None = None,
+) -> CollectionCoordinator:
+    """Build local collection read authority without an acquisition worker."""
+    supervisor = RefreshSupervisor(db_path, clock=clock)
+    supervisor.initialize()
+    ledger = ServiceStore(db_path)
+    ledger.initialize()
+    scheduler = ServiceRefreshScheduler(
+        supervisor,
+        ledger,
+        # Collection reads need the existing schema-aware coordinator, while
+        # cache-only application policy keeps every scheduling path denied.
+        RefreshPolicy(default_sources=("cache-only-read-authority",)),
+        clock=clock,
+    )
+    return CollectionCoordinator(db_path, scheduler, clock=clock)
