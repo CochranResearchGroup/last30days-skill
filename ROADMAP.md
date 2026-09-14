@@ -3201,3 +3201,32 @@ Next Bounded Action:
 
 - integrate this activation closeout while the independent owner executes
   Plan 0096; no coordinator feature work or runtime effect follows.
+
+## P50 | Enable GitHub Issues
+
+State: CLOSED
+
+Objective: enable the GitHub Issues surface on the exact owned public fork while
+leaving issue publication and all other tracker mutations separately gated.
+
+Current State:
+
+- GitHub reports `has_issues: true` for
+  `CochranResearchGroup/last30days-skill`;
+- the post-activation issue listing succeeds and is empty;
+- the repo-local target registry still allows read only, so WI-000 through
+  WI-008 remain unpublished drafts.
+
+Closed Plan:
+
+- `docs/dev/plans/0101-2026-09-13-enable-github-issues.md`.
+
+Dependencies:
+
+- consumes closed P32 readiness and the operator's explicit repository-setting
+  authority; no product, runtime, provider, or deployment dependency.
+
+Next Bounded Action:
+
+- integrate this receipt, then obtain a separate operator decision before
+  creating issues, applying labels, or creating a GitHub Project.
