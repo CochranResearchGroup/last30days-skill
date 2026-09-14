@@ -1,6 +1,6 @@
 # Plan 0097 | P36 Packet 2 Integration Reconciliation
 
-State: OPEN
+State: CLOSED
 Lane: P47
 Work item: WI-003
 Branch: integration/p36-packet2-reconciliation
@@ -145,3 +145,37 @@ P35 effect occurred.
 
 Next action: publish this projection branch, validate the lane catalog against
 the immutable integration ref, then open the owned-fork integration PR.
+
+### Checkpoint P0097-C03 | 2026-09-13
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`.
+
+Progress classification: `outcome_progress`; PR 45 merged the reviewed Packet
+2 candidate into canonical main.
+
+Authority classification:
+
+- `inherited_authority` for the closeout-only canonical projections and Git
+  readback;
+- `human_gate` remains in force for P35 and every installed/runtime/provider/
+  release/production effect;
+- `scope_expansion` remains in force for Packet 3 and Packet 4 behavior.
+
+Integration receipt:
+
+- PR 45 merged as canonical commit
+  `e4823ac72532b1c2c87442ca76419827b2cfb268`;
+- that merge contains exact feature checkpoint `4e937017` and validated
+  integration checkpoint `ddcb4201`;
+- P36 and P47 are integrated, and WI-003 returns to `READY` for a separately
+  planned Packet 3.
+
+Boundary evidence: no installed runtime/database, provider, browser, model,
+public HTTP/MCP, schedule, delivery, release, tracker, staging, production, or
+P35 effect occurred.
+
+Next action: merge the closeout-only projection PR, verify canonical main is
+clean and remote-equal, then plan Packet 3 separately if the operator continues
+the P36 lane.

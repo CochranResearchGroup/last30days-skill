@@ -28752,3 +28752,46 @@ Next Bounded Action:
 
 - open and merge the owned-fork integration PR, then use a closeout-only PR to
   record the exact canonical receipt and return WI-003 to `READY`.
+
+## Turn 460 | 2026-09-13
+
+Focus: record the canonical Plan 0097/P47 integration receipt.
+
+Authority Consulted:
+
+- `docs/dev/plans/0097-2026-09-13-p36-packet-2-integration-reconciliation.md`;
+  PR 45, exact Git refs, P36/P47, WI-003, and closeout policy.
+
+Decisions And Changes:
+
+- accepted PR 45 merge `e4823ac7` as the canonical Packet 2 receipt;
+- closed Plan 0097/P47, marked P36 Packet 2 integrated, and returned WI-003 to
+  `READY` for separately planned Packet 3 work;
+- preserved every installed/runtime/provider/model/public-transport gate and
+  left P35 unchanged.
+
+Validation Evidence:
+
+- GitHub reports PR 45 `MERGED` with merge commit `e4823ac7`;
+- the merge contains feature checkpoint `4e937017` and validated integration
+  checkpoint `ddcb4201`;
+- closeout plan authority, planning, lane-catalog, and patch-hygiene checks are
+  rerun on this projection branch.
+
+State Movement:
+
+- Plan 0097/P47 `OPEN -> CLOSED/INTEGRATED`; P36 Packet 2
+  `INTEGRATION_READY -> INTEGRATED`; WI-003 `IN_PROGRESS -> READY`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no independent execution remains active for Packet 2.
+
+Graphiti Write Status:
+
+- `not_written`; the canonical Git and plan receipts are authoritative.
+
+Next Bounded Action:
+
+- merge this closeout-only PR, verify canonical main clean and remote-equal,
+  then open a separate Packet 3 plan only if the operator continues P36.
