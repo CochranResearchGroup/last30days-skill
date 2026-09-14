@@ -4,20 +4,20 @@ lanes:
     objective: Build a deterministic development artifact and prove one isolated runtime through provider-free dogfood
     work_items: [docs/dev/work-items/WI-009-productization-readiness-remediation.md]
     plan: docs/dev/plans/0105-2026-09-14-versioned-development-runtime-and-dogfood.md
-    plan_ref: refs/heads/docs/p51-development-runtime-registration
-    branch: docs/p51-development-runtime-registration
+    plan_ref: refs/heads/feat/p51-isolated-runtime-v1
+    branch: feat/p51-isolated-runtime-v1
     target: main
     plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 8f9bfb142cd64c6b17cbc8c67973cf38d668108d
-    remote_ref: null
+    checkpoint: 3ac5728753abb57d5239d0812740323653cbfebb
+    remote_ref: refs/remotes/origin/feat/p51-isolated-runtime-v1
     integration: merge
     integration_receipt: null
-    validation_status: pending
-    validation_ref: null
+    validation_status: passed
+    validation_ref: a8c8114832df588e786891cd36fb69457f402250
     dependencies: []
-    overlaps: [dev/last30days/scripts/lane_runtime.py, skills/last30days/scripts/lib/service.py, skills/last30days/scripts/lib/service_app.py, service/runtime-manifest.json, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-009-productization-readiness-remediation.md]
-    reconciled_overlaps: []
+    overlaps: [dev/last30days/scripts/lane_runtime.py, skills/last30days/scripts/service.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_http.py, service/runtime-manifest.json, tests/test_lane_runtime.py, tests/test_service_app.py, tests/test_service_process.py, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-009-productization-readiness-remediation.md]
+    reconciled_overlaps: [dev/last30days/scripts/lane_runtime.py, skills/last30days/scripts/service.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_http.py, service/runtime-manifest.json, tests/test_lane_runtime.py, tests/test_service_app.py, tests/test_service_process.py, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-009-productization-readiness-remediation.md]
     updated_at: 2026-09-14
   - id: P49
     objective: Reconcile and integrate P36 structured answer Packet 3

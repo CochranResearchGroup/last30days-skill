@@ -29693,3 +29693,64 @@ Next Bounded Action:
 
 - validate and integrate this registration through a reviewed pull request,
   then execute and join the three read-only audits before source changes.
+
+## Turn 476 | 2026-09-14
+
+Focus: implement and validate Plan 0105 runtime containment.
+
+Plan authority:
+`docs/dev/plans/0105-2026-09-14-versioned-development-runtime-and-dogfood.md`.
+
+Authority Consulted:
+
+- Plan 0105 checkpoint C01; the three bounded read-only audit reports; accepted
+  Plan 0077/note 0118 architecture; current CodeGraph source; TDD, testing,
+  model, subagent, branch, integration, and validation policy.
+
+Decisions And Changes:
+
+- joined artifact, isolation, and corrected dogfood audits while retaining all
+  runtime and acceptance decisions with the primary;
+- kept the service process strictly cache-only and reserved allowed dogfood
+  writes for explicit provider-free kernels/CLI against the isolated database;
+- implemented artifact extraction/verification, exact-owner process and socket
+  identity, duplicate-owner denial, read-only status, and pidfd-only teardown;
+- added the early service cache-only startup seam and stable application/HTTP
+  denials for refresh-capable query, topic mutation, job resume, and collection
+  run before effect admission;
+- refreshed the deterministic runtime manifest and added failure-first public
+  lifecycle and effect-boundary tests.
+
+Validation Evidence:
+
+- implementation commit `a8c8114832df588e786891cd36fb69457f402250`;
+- published remote-equal candidate tip
+  `3ac5728753abb57d5239d0812740323653cbfebb`;
+- focused 65-test service/app/HTTP/controller slice and runtime-package tests
+  pass;
+- full Python suite passes with expected skips; MCP Go test and vet pass;
+- Python compilation, manifest regeneration, and `git diff --check` pass;
+- no runtime, artifact build, provider, browser, production, staging, release,
+  deployment, or GitHub issue effect occurred in this slice.
+
+State Movement:
+
+- Plan 0105 remains `OPEN`, version `1 -> 2`;
+- P51 custody remains `ACTIVE_WORKTREE`, now at validated source commit
+  `a8c81148`;
+- progress classification: `outcome_progress`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; requested routes were Luna/low, Sol/medium, and Luna/low. Actual
+  effective identities were not runtime-reported. The primary corrected the
+  dogfood report's initial missed tailored-follow contract before adoption.
+
+Graphiti Write Status:
+
+- `not_written`; no explicit durable-memory write authority was granted.
+
+Next Bounded Action:
+
+- integrate the immutable catalog checkpoint, review and merge the exact
+  implementation pull request, then build the canonical artifact twice.
