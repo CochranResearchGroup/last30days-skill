@@ -79,7 +79,7 @@ def test_upgrade_baseline_uses_disposable_installer_and_cleans_owned_processes(
     assert receipt["scenarios"][0]["name"] == "upgrade"
     assert (
         receipt["scenarios"][0]["observations"][-1]["readiness"]["service_version"]
-        == "0.3.118"
+        == "0.3.119"
     )
     assert receipt["cleanup"]["remaining_processes"] == []
     assert not Path(receipt["fixture_root"]).exists()

@@ -431,7 +431,7 @@ commands, or poll maintenance internals.
 ### Agent-facing versus operator-facing configuration
 
 The primary `/last30days` Skill has no per-run source flags and does not read
-  source secrets. It calls `service_info`, then uses the sixteen MCP operations
+source secrets. It calls `service_info`, then uses the eighteen MCP operations
 advertised by the compatible service. Source availability, cache freshness,
 coverage, and degradation come from that live response.
 
@@ -1134,7 +1134,7 @@ The installer builds the current checkout, atomically installs
 `~/.local/bin/last30days-pp-mcp`, and records the private service socket in the
 user-scoped Codex MCP configuration. Re-run it after MCP adapter changes.
 
-Service-enabled MCP clients expose sixteen compact operations:
+Service-enabled MCP clients expose eighteen compact operations:
 
 - `service_info`: discover readiness, sources, capabilities, and index state;
 - `follow_capabilities`: read native follow support separately from dependency
@@ -1179,6 +1179,14 @@ Service-enabled MCP clients expose sixteen compact operations:
   authorized profile;
 - `read_evidence`: dereference the unchanged immutable citation objects returned
   by an answer within the same authorized profile;
+- `saved_query`: save, get, list, or archive a versioned local cache-only query
+  definition. These operations write only the local saved-query ledger and do
+  not acquire source data;
+- `monitor`: create and operate local saved-query or follow-view monitors,
+  capture frozen evidence, evaluate deterministic digests, and prepare disabled
+  delivery intents. Monitor evaluation never schedules collection, and `send`
+  remains denied. The direct scripting fallback is
+  `service.py monitor --socket S --profile P --input FILE`;
 - `refresh`: create or join a bounded `force_refresh` job;
 - `job_status`: poll the typed durable job record;
 - `topic`: list or manage service-owned topics and request scheduled refreshes.
