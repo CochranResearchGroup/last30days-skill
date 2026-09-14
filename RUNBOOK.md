@@ -29754,3 +29754,52 @@ Next Bounded Action:
 
 - integrate the immutable catalog checkpoint, review and merge the exact
   implementation pull request, then build the canonical artifact twice.
+
+## Turn 477 | 2026-09-14
+
+Focus: bind Plan 0105 implementation-ready custody.
+
+Plan authority:
+`docs/dev/plans/0105-2026-09-14-versioned-development-runtime-and-dogfood.md`.
+
+Authority Consulted:
+
+- Plan 0105 checkpoint C02, PR 71 receipt, exact feature/canonical ancestry,
+  merge-conflict policy, and post-merge focused validation.
+
+Decisions And Changes:
+
+- merged the accepted catalog commit into the feature branch and resolved only
+  the three expected governance conflicts in favor of canonical catalog state;
+- retained the disjoint runtime/service implementation without semantic loss;
+- published exact remote feature tip `5c1d6228` and advanced custody to
+  `INTEGRATION_READY` before feature PR creation;
+- recorded and corrected an accidental local-only canonical cherry-pick before
+  any push, restoring canonical main to exact remote equality.
+
+Validation Evidence:
+
+- canonical catalog PR 71 merged at `ee97362d`;
+- remote feature head is exactly
+  `5c1d62285f3bd834c9c7cdf060ca710d1bcbe928`;
+- post-merge focused controller, app, HTTP, process, and package suite passes 69
+  tests; plan authority and conflict-marker/diff checks pass;
+- canonical main remains clean and remote-equal.
+
+State Movement:
+
+- Plan 0105 remains `OPEN`, version `2 -> 3`;
+- P51 custody `ACTIVE_WORKTREE -> INTEGRATION_READY`;
+- progress classification: `outcome_progress`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; no new delegation.
+
+Graphiti Write Status:
+
+- `not_written`; no explicit durable-memory write authority was granted.
+
+Next Bounded Action:
+
+- merge this custody catalog, then self-review and merge the exact feature PR.

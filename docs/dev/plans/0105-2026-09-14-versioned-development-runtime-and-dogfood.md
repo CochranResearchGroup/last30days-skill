@@ -8,7 +8,7 @@ Branch: feat/p51-isolated-runtime-v1
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 2
+Plan version: 3
 Date: 2026-09-14
 Session owner: primary Codex goal thread
 
@@ -260,3 +260,46 @@ and integrate closeout projections.
 
 Next action: integrate this catalog checkpoint, then self-review and merge the
 exact owned-fork implementation pull request.
+
+### Checkpoint P0105-C03 | 2026-09-14
+
+Plan version: 3
+
+State transition: `OPEN -> OPEN`; custody advances from `ACTIVE_WORKTREE` to
+`INTEGRATION_READY` at exact remote-equal feature tip
+`5c1d62285f3bd834c9c7cdf060ca710d1bcbe928`.
+
+Progress classification: `outcome_progress`; the canonical catalog join was
+merged through PR 71, its three expected governance conflicts were resolved by
+preserving the accepted canonical versions, and the combined feature branch
+passes its focused integration surface.
+
+Authority classification:
+
+- `inherited_authority` covers immutable custody publication, reviewed feature
+  PR integration, and provider-free validation;
+- every named external/live effect remains `human_gate`, while a second runtime
+  or new product API remains `scope_expansion`.
+
+Evidence:
+
+- PR 71 merged the audit/validation catalog at canonical
+  `ee97362d2777d7a9c5e24f82d7784e4adda69b0f`;
+- the feature branch merged that exact canonical commit and preserved its
+  governance versions while retaining implementation commit `a8c81148`;
+- post-merge focused controller, service app, HTTP, process, and runtime-package
+  validation passes 69 tests at remote-equal tip `5c1d6228`;
+- canonical `main` was restored to remote equality after one accidental local
+  cherry-pick was caught before push; the preserved commit remains recoverable
+  in reflog and no remote state was affected.
+
+Subagent status: `joined`; no further delegation is required for integration.
+
+Graphiti write status: `not_written`; no explicit memory-write authority exists.
+
+Remaining acceptance criteria: merge the reviewed feature PR, build the exact
+canonical artifact twice, provision/dogfood exactly one runtime, prove
+production unchanged, and integrate closeout.
+
+Next action: publish this integration-ready catalog, then open, self-review, and
+merge the exact feature PR without another feature-branch rewrite.
