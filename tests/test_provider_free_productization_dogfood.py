@@ -140,8 +140,9 @@ def test_run_composes_all_products_under_one_runtime_identity(tmp_path, monkeypa
 def test_database_reset_is_confined_to_the_campaign_state_root(tmp_path):
     module = _load()
     state_root = tmp_path / "state"
-    state_root.mkdir()
-    database = state_root / "research.db"
+    data_root = state_root / "data"
+    data_root.mkdir(parents=True)
+    database = data_root / "research.db"
     database.write_bytes(b"fixture")
     Path(str(database) + "-wal").write_bytes(b"wal")
     descriptor = SimpleNamespace(
@@ -153,7 +154,7 @@ def test_database_reset_is_confined_to_the_campaign_state_root(tmp_path):
     assert not database.exists()
     assert not Path(str(database) + "-wal").exists()
 
-    foreign = tmp_path / "foreign.db"
+    foreign = state_root / "foreign.db"
     foreign.write_bytes(b"preserve")
     descriptor.database_path = str(foreign)
     with pytest.raises(ValueError, match="database_outside_campaign_state"):

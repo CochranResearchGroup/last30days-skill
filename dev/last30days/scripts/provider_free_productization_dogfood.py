@@ -73,7 +73,8 @@ def _reset_database(descriptor) -> None:
     """Remove only the campaign descriptor's disposable working database."""
     database = Path(descriptor.database_path)
     state_root = Path(descriptor.state_root).resolve(strict=True)
-    if database.parent.resolve(strict=True) != state_root:
+    data_root = (state_root / "data").resolve(strict=True)
+    if database.resolve(strict=True).parent != data_root:
         raise ValueError("database_outside_campaign_state")
     for path in (database, Path(str(database) + "-wal"), Path(str(database) + "-shm")):
         path.unlink(missing_ok=True)
