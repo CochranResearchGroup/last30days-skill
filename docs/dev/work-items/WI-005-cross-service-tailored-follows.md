@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-005 -->
 # Extend tailored follows across supported services
 
-State: READY
+State: IN_PROGRESS
 Priority: P2
 Lane: Follows
 Parent: WI-000
@@ -10,7 +10,7 @@ Blocked by: none for the provider-free runtime-closeout packet
 Last completed plan: docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md
 Active plan: docs/dev/plans/0120-2026-09-14-cross-service-follow-runtime-closeout.md
 Branch: feat/cross-service-follow-runtime-closeout-v1
-Owner: unassigned
+Owner: /root/wave4_wi005_plan
 
 ## Problem
 

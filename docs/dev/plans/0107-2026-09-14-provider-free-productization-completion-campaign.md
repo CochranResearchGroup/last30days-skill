@@ -713,6 +713,29 @@ Subagent status and reconciliation:
 Next action: integrate registration, create three isolated plan-only refs,
 reconcile activation, then run all three implementation owners concurrently.
 
+### Checkpoint P0107-C16 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_5_registration_ready -> wave_5_activated`.
+
+Progress classification: `implementation_ready`; exact isolated activation
+refs are published for Plans 0120-0122.
+
+Canonical evidence: registration PR 93 merged as `e0fab676`; Plan 0120
+activation `f2c29475`, Plan 0121 `3b2faece`, and Plan 0122 `1f1c839d`.
+
+Authority classification:
+
+- `inherited_authority` covers each registered provider-free write set;
+- shared joins remain coordinator-owned and all C15 external-effect gates
+  remain held.
+
+Subagent status and reconciliation: `assigned`; three top-level owners, no
+children. Implementation begins only after this projection integrates.
+
+Next action: merge activation, then trigger all three owners concurrently.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;

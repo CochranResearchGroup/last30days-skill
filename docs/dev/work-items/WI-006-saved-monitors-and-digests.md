@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-006 -->
 # Turn searches and follows into saved monitors and digests
 
-State: READY
+State: IN_PROGRESS
 Priority: P2
 Lane: MCP
 Parent: WI-000
@@ -10,7 +10,7 @@ Blocked by: none for the next provider-free packet
 Last closed plan: docs/dev/plans/0116-2026-09-14-saved-query-composition.md
 Active plan: docs/dev/plans/0121-2026-09-14-monitor-digest-product-closeout.md
 Branch: feat/monitor-digest-product-closeout-v1
-Owner: unassigned
+Owner: /root/wave4_wi003_plan
 
 ## Problem
 

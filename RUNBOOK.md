@@ -30777,3 +30777,49 @@ Next Bounded Action:
 
 - validate and integrate registration, then publish three exact isolated
   plan-only activations before assigning implementation owners.
+
+## Turn 495 | 2026-09-14
+
+Focus: publish and reconcile Wave 5 implementation custody.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`;
+`docs/dev/plans/0120-2026-09-14-cross-service-follow-runtime-closeout.md`;
+`docs/dev/plans/0121-2026-09-14-monitor-digest-product-closeout.md`;
+`docs/dev/plans/0122-2026-09-14-service-quality-grounding-closeout.md`.
+
+Authority Consulted:
+
+- exact registration merge `e0fab676`; active-lane, work-item, testing,
+  branch/integration, model-selection and multi-session policy.
+
+Decisions And Changes:
+
+- published plan-only activations `f2c29475`, `3b2faece`, and `1f1c839d`;
+- assigned `/root/wave4_wi005_plan`, `/root/wave4_wi003_plan`, and
+  `/root/wave4_wi008_plan`, one owner each with no children;
+- retained all shared joins and final acceptance with the coordinator.
+
+Validation Evidence:
+
+- each plan-only branch is clean and remote-equal at its recorded checkpoint;
+- plan-authority and diff validation are required before this projection
+  integrates.
+
+State Movement:
+
+- Plans 0120-0122 and P37/P39/P40 `PLANNED -> OPEN`;
+- WI-005/WI-006/WI-008 `READY -> IN_PROGRESS`;
+- Plan 0107 `wave_5_registration_ready -> wave_5_activated`.
+
+Subagent Status And Reconciliation:
+
+- `assigned`; implementation remains frozen until activation integration.
+
+Graphiti Write Status:
+
+- `not_written`; exact repository and Git refs are authoritative.
+
+Next Bounded Action:
+
+- validate and integrate activation, then resume all three owners concurrently.

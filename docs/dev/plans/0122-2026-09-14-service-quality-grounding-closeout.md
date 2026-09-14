@@ -21,6 +21,18 @@ a digest-pinned read-only adapter over real durable question, frozen retrieval,
 answer, citation and evidence records, explicitly limited to structural
 grounding rather than semantic or production quality.
 
+## Current State
+
+Plans 0092 and 0119 are closed, WI-002/WI-003 are `DONE`, and three real
+quality axes are accepted. The remaining provider-free gap is real structural
+answer grounding over the durable question/evidence records.
+
+## Definition Of Done
+
+All four real axes pass their adversarial acceptance at one reviewed joined
+checkpoint, canonical integration is recorded, and WI-008 is reconciled to
+`DONE` without a semantic, model or production-quality claim.
+
 ## Scope
 
 - add `QuestionGroundingAdapter` to the real-fixture quality adapter registry;
@@ -101,8 +113,10 @@ State transition: `PLANNED -> OPEN`.
 Progress classification: `implementation_ready`; exact isolated custody is
 accepted from canonical registration merge `e0fab676`.
 
-Authority classification: `inherited_authority` for the registered
-provider-free write set only; every external-effect gate remains held.
+Authority classification:
+
+- `inherited_authority` covers the registered provider-free write set only;
+- every external-effect gate remains held.
 
 Subagent status and reconciliation: `assigned`; `/root/wave4_wi008_plan`, one
 owner, no children. Implementation waits for activation reconciliation.

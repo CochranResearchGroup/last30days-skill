@@ -21,6 +21,19 @@ lifecycle and baseline decisions, evidence-linked deterministic digests,
 disabled-by-default delivery intents, safe legacy import and fresh public
 runtime acceptance.
 
+## Current State
+
+Plans 0093 and 0116 are closed; WI-001/WI-002/WI-004 are `DONE`. The durable
+monitor kernel and saved-query composition exist. Follow views, deterministic
+digests, disabled delivery intents, safe import and complete public/runtime
+acceptance remain for WI-006.
+
+## Definition Of Done
+
+All acceptance criteria pass at one reviewed joined checkpoint, exact runtime
+and effect receipts are retained, canonical integration is recorded, and
+WI-006 is reconciled to `DONE` with schedules and live delivery still disabled.
+
 ## Scope
 
 - add backward-compatible discriminated follow-view capture over exact
@@ -113,8 +126,10 @@ State transition: `PLANNED -> OPEN`.
 Progress classification: `implementation_ready`; exact isolated custody is
 accepted from canonical registration merge `e0fab676`.
 
-Authority classification: `inherited_authority` for the registered
-provider-free write set only; every external-effect gate remains held.
+Authority classification:
+
+- `inherited_authority` covers the registered provider-free write set only;
+- every external-effect gate remains held.
 
 Subagent status and reconciliation: `assigned`; `/root/wave4_wi003_plan`, one
 owner, no children. Implementation waits for activation reconciliation.

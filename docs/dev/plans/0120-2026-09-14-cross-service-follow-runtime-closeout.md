@@ -21,6 +21,18 @@ product through a reproducible packaged cache-only runtime, fresh HTTP/CLI/MCP
 clients, restart durability, exact authorization, truthful readiness and
 owned-process teardown.
 
+## Current State
+
+Plans 0115 and 0118 are closed and WI-001/WI-002/WI-004 are `DONE`. Native
+fixture execution is proven; only stock packaged-runtime readback, restart,
+denial, identity and teardown acceptance remains for WI-005.
+
+## Definition Of Done
+
+Every acceptance criterion passes at one reviewed joined checkpoint, the exact
+artifact/runtime receipt is retained, canonical integration is recorded, and
+WI-005 is reconciled to `DONE` without widening external-effect authority.
+
 ## Scope
 
 - add a repo-only follow dogfood probe and focused adversarial harness tests;
@@ -104,8 +116,10 @@ State transition: `PLANNED -> OPEN`.
 Progress classification: `implementation_ready`; exact isolated custody is
 accepted from canonical registration merge `e0fab676`.
 
-Authority classification: `inherited_authority` for the registered
-provider-free write set only; every external-effect gate remains held.
+Authority classification:
+
+- `inherited_authority` covers the registered provider-free write set only;
+- every external-effect gate remains held.
 
 Subagent status and reconciliation: `assigned`; `/root/wave4_wi005_plan`, one
 owner, no children. Implementation waits for activation reconciliation.

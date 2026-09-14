@@ -172,12 +172,12 @@ lanes:
     plan_ref: refs/heads/feat/monitor-digest-product-closeout-v1
     branch: feat/monitor-digest-product-closeout-v1
     target: main
-    plan_state: PLANNED
-    custody_state: UNASSIGNED
-    checkpoint: null
+    plan_state: OPEN
+    custody_state: ACTIVE
+    checkpoint: 3b2faecef1c7406a01dd4bcbf725f3082ddfa3c3
     remote_ref: refs/remotes/origin/feat/monitor-digest-product-closeout-v1
     integration: merge
-    session_owner: unassigned
+    session_owner: /root/wave4_wi003_plan
     dependencies: [P33]
     overlaps: [skills/last30days/scripts/lib/service_monitor_contracts.py, skills/last30days/scripts/lib/service_monitors.py, skills/last30days/scripts/lib/service_monitor_views.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_client.py, skills/last30days/scripts/lib/service_http.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go, service/runtime-manifest.json]
     reconciled_overlaps: [skills/last30days/scripts/lib/service_monitor_contracts.py, skills/last30days/scripts/lib/service_monitors.py, skills/last30days/scripts/lib/service_monitor_views.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_client.py, skills/last30days/scripts/lib/service_http.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go, service/runtime-manifest.json]
@@ -189,12 +189,12 @@ lanes:
     plan_ref: refs/heads/feat/cross-service-follow-runtime-closeout-v1
     branch: feat/cross-service-follow-runtime-closeout-v1
     target: main
-    plan_state: PLANNED
-    custody_state: UNASSIGNED
-    checkpoint: null
+    plan_state: OPEN
+    custody_state: ACTIVE
+    checkpoint: f2c29475b51efcd5e6885c5dbc80f22dd60a49d1
     remote_ref: refs/remotes/origin/feat/cross-service-follow-runtime-closeout-v1
     integration: merge
-    session_owner: unassigned
+    session_owner: /root/wave4_wi005_plan
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_follow_capabilities.py, skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_acquisition_worker.py]
     reconciled_overlaps: [skills/last30days/scripts/lib/service_follow_capabilities.py, skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_acquisition_worker.py]
@@ -225,12 +225,12 @@ lanes:
     plan_ref: refs/heads/feat/service-quality-grounding-closeout-v1
     branch: feat/service-quality-grounding-closeout-v1
     target: main
-    plan_state: PLANNED
-    custody_state: UNASSIGNED
-    checkpoint: null
+    plan_state: OPEN
+    custody_state: ACTIVE
+    checkpoint: 1f1c839d1715bba0a3415b956f5edfb0ecd1c729
     remote_ref: refs/remotes/origin/feat/service-quality-grounding-closeout-v1
     integration: merge
-    session_owner: unassigned
+    session_owner: /root/wave4_wi008_plan
     dependencies: [P33]
     overlaps: []
     reconciled_overlaps: []
