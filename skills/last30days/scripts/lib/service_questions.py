@@ -383,6 +383,7 @@ class QuestionQueue:
         *,
         worker_id: str,
         lease_seconds: int = 120,
+        question_id: str | None = None,
     ) -> QuestionLease | None:
         if not isinstance(worker_id, str) or not worker_id.strip():
             raise ValueError("worker_id must be non-empty")
@@ -398,8 +399,9 @@ class QuestionQueue:
                 """SELECT question_id, attempt_count, max_attempts
                    FROM service_question_tasks
                    WHERE state = 'running' AND lease_expires_at <= ?
+                     AND (? IS NULL OR question_id = ?)
                    ORDER BY lease_expires_at, question_id""",
-                (now,),
+                (now, question_id, question_id),
             ).fetchall()
             for row in expired:
                 exhausted = int(row["attempt_count"]) >= int(row["max_attempts"])
@@ -438,9 +440,10 @@ class QuestionQueue:
                    FROM service_question_tasks AS t
                    JOIN service_question_retrievals AS r USING (question_id)
                    JOIN service_question_requests AS q USING (request_id)
-                   WHERE t.state = 'pending'
+                   WHERE t.state = 'pending' AND (? IS NULL OR t.question_id = ?)
                    ORDER BY t.created_at, t.question_id
-                   LIMIT 1"""
+                   LIMIT 1""",
+                (question_id, question_id),
             ).fetchone()
             if row is None:
                 conn.commit()
@@ -763,6 +766,10 @@ class QuestionService:
         *,
         access_partitions: Sequence[str],
     ) -> question_contracts.QuestionStatusV1:
+        if any(value is not None for value in request.temporal.to_dict().values()):
+            raise question_contracts.QuestionContractError(
+                "unsupported_temporal_intent: use published/observed search filters"
+            )
         partitions = tuple(dict.fromkeys(access_partitions))
         if not partitions or not all(isinstance(item, str) and item for item in partitions):
             raise question_contracts.QuestionContractError(
@@ -1209,8 +1216,10 @@ class QuestionRunner:
         self.worker = worker
         self.clock = clock or (lambda: datetime.now(timezone.utc))
 
-    def run_once(self, *, worker_id: str) -> question_contracts.QuestionStatusV1 | None:
-        lease = self.queue.claim_next(worker_id=worker_id)
+    def run_once(
+        self, *, worker_id: str, question_id: str | None = None
+    ) -> question_contracts.QuestionStatusV1 | None:
+        lease = self.queue.claim_next(worker_id=worker_id, question_id=question_id)
         if lease is None:
             return None
         evidence = lease.retrieval["evidence"]

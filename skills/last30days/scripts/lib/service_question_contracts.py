@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Mapping
 
+from .service_contracts import ContractValidationError, PostSearchRequest
+
 
 QUESTION_SCHEMA_VERSION = 1
 _PROFILE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$")
@@ -202,27 +204,21 @@ class QuestionTemporalV1:
 
 
 def _filters(value: Any) -> dict[str, Any]:
-    if not isinstance(value, Mapping):
-        raise QuestionContractError("filters must be an object")
-    allowed = frozenset({"sources", "published_after", "published_before"})
-    unknown = set(value) - allowed
-    if unknown:
-        raise QuestionContractError(f"filters has unknown fields: {sorted(unknown)}")
-    result: dict[str, Any] = {}
-    if "sources" in value:
-        result["sources"] = list(_string_list(value["sources"], "sources", maximum=20, item_maximum=64))
-    for field in ("published_after", "published_before"):
-        if field in value:
-            result[field] = _timestamp(value[field], field, optional=False)
-    if (
-        "published_after" in result
-        and "published_before" in result
-        and result["published_after"] > result["published_before"]
-    ):
-        raise QuestionContractError(
-            "published_after must not exceed published_before"
-        )
-    return result
+    # The public search parser owns filter validation and normalization.
+    try:
+        return PostSearchRequest.from_dict(
+            {
+                "schema_version": 1,
+                "request_id": "question-filter-validation",
+                "profile_id": "public",
+                "query": "question",
+                "filters": value,
+                "page_size": 1,
+                "cursor": None,
+            }
+        ).filters
+    except ContractValidationError as exc:
+        raise QuestionContractError(str(exc)) from exc
 
 
 @dataclass(frozen=True)
