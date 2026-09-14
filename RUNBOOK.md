@@ -30391,3 +30391,49 @@ Next Bounded Action:
 
 - validate and merge this closeout projection, then register the next bounded
   provider-free wave from canonical main.
+
+## Turn 488 | 2026-09-14
+
+Focus: register the next full-capacity provider-free implementation wave.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`.
+
+Authority Consulted:
+
+- WI-002/WI-003/WI-005/WI-006/WI-008, their architecture and completed plans,
+  current source/tests, P33/P36/P37/P39/P40/P52, and planning, work-item,
+  parallelism, model, documentation, and multi-session policy.
+
+Decisions And Changes:
+
+- registered Plan 0114 for WI-002 isolated-runtime/fresh-client closeout;
+- registered Plan 0115 for WI-005 capability/compatibility Packet 1;
+- registered Plan 0116 for WI-006 saved-query composition Packet 2;
+- serialized WI-003 behind WI-002 due shared public transport/runtime surfaces
+  and queued dependency-ready WI-008 behind the three-feature WIP cap.
+
+Validation Evidence:
+
+- three independent read-only planning agents returned bounded objectives,
+  dependencies, write sets, acceptance gates, model routes, and stop rules;
+- plan authority, work-item/roadmap consistency, and diff checks remain to run
+  before the registration PR.
+
+State Movement:
+
+- Plan 0107 `wave_2_integrated -> wave_3_registration_ready`;
+- Plans 0114-0116 `unplanned -> PLANNED`; work items remain `READY`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; all three planners completed without writes or external effects.
+
+Graphiti Write Status:
+
+- `not_written`; current repository authority was sufficient.
+
+Next Bounded Action:
+
+- validate and integrate registration, then create and reconcile exact
+  activation-only branch custody before implementation begins.

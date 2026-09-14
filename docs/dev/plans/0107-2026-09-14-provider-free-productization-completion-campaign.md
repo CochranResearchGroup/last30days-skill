@@ -448,6 +448,54 @@ Next action:
   dependency-ordered wave: WI-002 Packet 4 plus newly unblocked WI-005 and
   WI-006 work, with shared transport/runtime overlap reconciled before launch.
 
+### Checkpoint P0107-C09 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_2_integrated -> wave_3_registration_ready`.
+
+Progress classification: `blocker_reduction`; three independent provider-free
+packets are frozen for the next full-capacity implementation wave.
+
+Wave 3 selection and sequencing:
+
+- Plan 0114/P33 closes WI-002 through exact isolated-runtime and fresh-client
+  search acceptance, requested `gpt-5.6-terra` at medium reasoning;
+- Plan 0115/P39 establishes WI-005's closed capability registry, exact X
+  compatibility, and legacy quarantine, requested `gpt-6-astra` at high
+  reasoning;
+- Plan 0116/P40 composes immutable saved queries with real stored-post search,
+  requested `gpt-6-astra` at high reasoning;
+- WI-003 Packet 4 is intentionally serialized behind WI-002 because both own
+  overlapping HTTP/MCP/catalog/runtime surfaces. WI-008 is dependency-ready but
+  queued behind the three-feature WIP cap.
+
+Authority classification:
+
+- `inherited_authority` covers bounded provider-free plan registration,
+  branch/worktree activation, implementation, review, integration, and
+  repo-local closeout under the active goal;
+- one owner per packet, no children, no more than three implementation lanes;
+- normal lane writes are search dogfood/runtime fixtures, follow capability
+  identity, and monitor query composition respectively; shared transport,
+  contracts, catalogs, manifests, and authority remain coordinator-owned;
+- no provider, browser, live data, installed service, schedule, staging,
+  production, release, deployment, delivery, or issue mutation is authorized.
+
+Planning evidence:
+
+- three independent read-only audits reviewed current source, work items,
+  architecture, dependencies, acceptance, and model routing;
+- WI-002/WI-003 serialization prevents incompatible public transport work;
+  WI-006 is selected before WI-008 because it can consume both closed search
+  and follow foundations and advances the immediate product dependency chain.
+
+Next action:
+
+- integrate this registration, create three exact worktrees from its canonical
+  merge, publish plan-only activation checkpoints, reconcile lane custody, then
+  launch all three bounded implementation owners.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;

@@ -2618,6 +2618,8 @@ Current State:
   `75e7771e006f52847e8e47c1059b2b2000fb8ac7`;
 - Plan 0111 source acceptance `971f9ea9` is joined at Wave 2 integration head
   `aa59b42c`; independent review found no remaining search blocker;
+- Plan 0114 is registered for final isolated-runtime and fresh-client product
+  acceptance; it is not activated and has no branch custody yet;
 - the selected seam is additive `POST /v1/posts/search` plus MCP
   `search_posts`, leaving `/v1/query` unchanged for the dependent WI-003 lane;
 - provider-free vertical packets cover both storage families, filters, stable
@@ -2641,9 +2643,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate the reviewed Wave 2 head, close Plan 0111, and plan Packet 4's
-  isolated-runtime/client product closeout separately. P36 and P40 may
-  continue consuming the stable search/evidence contract.
+- activate Plan 0114 on a dedicated worktree and execute only Packet 4's
+  isolated-runtime/client closeout. P36 must remain serialized behind WI-002
+  closeout; P40 may consume the stable search/evidence contract in parallel.
 
 ## P34 | Isolated Development Runtime
 
@@ -2998,7 +3000,7 @@ flattening distinct service semantics.
 
 Current State:
 
-- WI-005 is `READY` behind an exact WI-004 dependency;
+- WI-005 is `READY`; WI-004 is `DONE` and its exact dependency is satisfied;
 - current global surface validation and coarse adapter capability declarations
   cannot prove that a source-target-operation combination is supported;
 - the selected seam adds a closed provider capability registry and
@@ -3007,6 +3009,12 @@ Current State:
   YouTube channel, discovery/lifecycle/query parity, and fresh-client closure;
 - no product implementation, provider use, runtime mutation, or schedule
   change has begun.
+- Plan 0115 is registered for the closed capability registry, exact X
+  compatibility, and legacy quarantine Packet 1; provider tracers remain later.
+
+Planned Packet:
+
+- `docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md`.
 
 Closed Architecture Plan:
 
@@ -3014,15 +3022,14 @@ Closed Architecture Plan:
 
 Dependencies:
 
-- Packet 1 waits for WI-004 Packet 1's base collection/follow contract; final
-  acceptance waits for WI-004 closeout and fresh isolated-runtime evidence
-  joins WI-001. Shared search/MCP joins remain coordinator-owned.
+- WI-004 is closed, so Packet 1 has no remaining implementation dependency;
+  fresh isolated-runtime acceptance remains a later WI-005 closeout gate.
+  Shared contract/search/MCP joins remain coordinator-owned.
 
 Next Bounded Action:
 
-- retain P39 as planned until WI-004 Packet 1 integrates; afterward assign
-  WI-005 Packet 1 to one
-  independent top-level lane session from current `origin/main`.
+- activate Plan 0115 on a dedicated worktree and execute only the provider-free
+  capability/compatibility foundation. Do not begin Reddit or YouTube tracers.
 
 ## P40 | Saved Monitors And Evidence Digests
 
@@ -3046,6 +3053,12 @@ Current State:
 - its provider-free monitor kernel integrated through PR 41 as canonical merge
   `6d5eb5d9`; no installed schedule, live delivery, follow tracing, or provider
   action occurred.
+- Plan 0116 is registered for real immutable saved-query composition over the
+  accepted WI-002 search contract; follow and digest/delivery remain later.
+
+Planned Packet:
+
+- `docs/dev/plans/0116-2026-09-14-saved-query-composition.md`.
 
 Closed Architecture Plan:
 
@@ -3058,14 +3071,14 @@ Closed Implementation Plan:
 
 Dependencies:
 
-- Packet 1 and query tracing wait for WI-002 Packet 1; follow tracing waits for
-  WI-004 Packet 1; final acceptance waits for both closeouts and joins WI-001
-  for fresh isolated-runtime proof. WI-003 synthesis is optional/later.
+- query composition can proceed on integrated WI-002 Packet 3; WI-004 is DONE,
+  so later follow composition is unblocked. Final WI-006 acceptance waits for
+  WI-002 closeout and WI-001 runtime proof. WI-003 synthesis is excluded.
 
 Next Bounded Action:
 
-- plan query-view composition as a later packet from current canonical main;
-  follow tracing remains gated by P35 integration.
+- activate Plan 0116 on a dedicated worktree and execute saved-query
+  composition only; do not fold follow or digest/delivery work into Packet 2.
 
 ## P41 | Implementation Lane Launch Registration
 
