@@ -170,7 +170,19 @@ class PostSearchBackend(Protocol):
 class NoToolAnswerWorker(Protocol):
     worker_ref: str
 
-    def answer(self, payload: Mapping[str, Any]) -> Mapping[str, Any]: ...
+    def answer(
+        self, payload: Mapping[str, Any]
+    ) -> Mapping[str, Any] | AnswerWorkerResult: ...
+
+
+@dataclass(frozen=True)
+class AnswerWorkerResult:
+    """Worker output plus host-owned execution identity and effect receipts."""
+
+    output: object
+    worker_ref: str
+    model_invoked: bool
+    evidence_only_fallback: bool = False
 
 
 def _timestamp(value: datetime) -> str:
@@ -514,8 +526,24 @@ class QuestionQueue:
             or answer.input_digest != expected_input_digest
             or answer.attempt_count != lease.attempt_count
             or answer.coverage != expected_coverage
-            or answer.model_invoked
             or not citations_close
+            or (answer.evidence_only_fallback and answer.model_invoked)
+            or (
+                answer.evidence_only_fallback
+                and answer.worker_ref != "deterministic-evidence-fallback-v1"
+            )
+            or (
+                answer.evidence_only_fallback
+                and (
+                    lease.request.model_fallback != "evidence_only"
+                    or answer.error is None
+                    or answer.error.code != "model_unavailable"
+                )
+            )
+            or (
+                answer.model_invoked
+                and not answer.worker_ref.startswith("structured-turn:")
+            )
         ):
             raise QuestionValidationError(
                 "correlation_mismatch",
@@ -937,6 +965,8 @@ def _worker_answer(
     *,
     worker_ref: str,
     generated_at: str,
+    model_invoked: bool = False,
+    evidence_only_fallback: bool = False,
 ) -> question_contracts.QuestionAnswerV1:
     expected = {
         "answer_state",
@@ -944,9 +974,15 @@ def _worker_answer(
         "statements",
         "uncertainty_codes",
     }
+    if model_invoked:
+        expected.add("action")
     if not isinstance(output, Mapping) or set(output) != expected:
         raise QuestionValidationError(
             "invalid_worker_contract", "worker output fields are invalid"
+        )
+    if model_invoked and output["action"] != "answer_from_evidence":
+        raise QuestionValidationError(
+            "invalid_worker_action", "worker action is invalid"
         )
     state = output["answer_state"]
     if state not in {"answered", "conflicting_evidence", "insufficient_evidence"}:
@@ -996,6 +1032,18 @@ def _worker_answer(
         if any(citation_id not in evidence for citation_id in citation_ids):
             raise QuestionValidationError(
                 "invalid_citation", "statement cites evidence outside the frozen set"
+            )
+        if raw["statement_kind"] == "source_fact" and raw["support_state"] == "insufficient":
+            raise QuestionValidationError(
+                "statement_support_mismatch",
+                "source_fact statements cannot claim insufficient support",
+            )
+        if raw["support_state"] == "mixed" and (
+            len(citation_ids) < 2 or len(raw["alternatives"]) < 2
+        ):
+            raise QuestionValidationError(
+                "conflict_sides_omitted",
+                "mixed statements must preserve both cited alternatives",
             )
         if raw["support_state"] in {"supported", "mixed"} and not citation_ids:
             raise QuestionValidationError(
@@ -1060,14 +1108,78 @@ def _worker_answer(
         generated_at=generated_at,
         input_digest=question_contracts.digest(input_payload),
         attempt_count=lease.attempt_count,
-        model_invoked=False,
-        evidence_only_fallback=False,
+        model_invoked=model_invoked,
+        evidence_only_fallback=evidence_only_fallback,
         error=None,
     )
 
 
+def _evidence_only_fallback_answer(
+    lease: QuestionLease,
+    *,
+    generated_at: str,
+    error: question_contracts.QuestionErrorV1,
+) -> question_contracts.QuestionAnswerV1:
+    evidence = lease.retrieval["evidence"]
+    summary = "Model unavailable; returning immutable evidence only."[
+        : lease.request.limits.max_answer_characters
+    ]
+    statement_budget = lease.request.limits.max_answer_characters - len(summary)
+    statements = tuple(
+        question_contracts.AnswerStatementV1.create(
+            text=str(item["text"])[:statement_budget],
+            statement_kind="source_fact",
+            support_state="supported",
+            citations=(
+                question_contracts.QuestionCitationV1.from_dict(
+                    {
+                        key: item[key]
+                        for key in (
+                            "evidence_id",
+                            "storage_family",
+                            "version_id",
+                            "content_hash",
+                            "source_url",
+                            "access_partition_id",
+                        )
+                    }
+                ),
+            ),
+            alternatives=(),
+        )
+        for item in evidence[:1]
+        if statement_budget > 0
+    )
+    flags = lease.retrieval["coverage"]
+    uncertainty = ["model_unavailable"]
+    if flags["partial"]:
+        uncertainty.append("partial_coverage")
+    if flags["stale"]:
+        uncertainty.append("stale_evidence")
+    return question_contracts.QuestionAnswerV1.create(
+        question_id=lease.question_id,
+        request_fingerprint=lease.request.request_fingerprint,
+        search_head_id=lease.retrieval["search_head_id"],
+        evidence_set_id=lease.retrieval["evidence_set_id"],
+        answer_state="answered" if statements else "insufficient_evidence",
+        summary=summary,
+        statements=statements,
+        uncertainty_codes=tuple(uncertainty),
+        coverage={"partial": flags["partial"], "stale": flags["stale"]},
+        worker_ref="deterministic-evidence-fallback-v1",
+        generated_at=generated_at,
+        input_digest=question_contracts.digest(
+            {"request": lease.request.to_dict(), "retrieval": lease.retrieval}
+        ),
+        attempt_count=lease.attempt_count,
+        model_invoked=False,
+        evidence_only_fallback=True,
+        error=error,
+    )
+
+
 class QuestionRunner:
-    """Run one fake/no-tool answer attempt under deterministic host validation."""
+    """Run one bounded answer attempt under deterministic host validation."""
 
     def __init__(
         self,
@@ -1099,15 +1211,37 @@ class QuestionRunner:
             },
         }
         generated_at = _timestamp(self.clock())
+        receipt_worker_ref = self.worker.worker_ref
+        model_invoked = False
+        evidence_only_fallback = False
         try:
-            output = self.worker.answer(payload)
+            worker_result = self.worker.answer(payload)
+            if isinstance(worker_result, AnswerWorkerResult):
+                output = worker_result.output
+                receipt_worker_ref = worker_result.worker_ref
+                model_invoked = worker_result.model_invoked
+                evidence_only_fallback = worker_result.evidence_only_fallback
+            else:
+                output = worker_result
             answer = _worker_answer(
                 lease,
                 output,
-                worker_ref=self.worker.worker_ref,
+                worker_ref=receipt_worker_ref,
                 generated_at=generated_at,
+                model_invoked=model_invoked,
+                evidence_only_fallback=evidence_only_fallback,
             )
         except QuestionWorkerError as exc:
+            if exc.code == "model_unavailable" and lease.request.model_fallback == "evidence_only":
+                error = question_contracts.QuestionErrorV1.from_dict(
+                    {"code": exc.code, "message": str(exc), "retryable": False}
+                )
+                return self.queue.complete(
+                    lease,
+                    _evidence_only_fallback_answer(
+                        lease, generated_at=generated_at, error=error
+                    ),
+                )
             return self.queue.fail(
                 lease,
                 code=exc.code,
@@ -1131,14 +1265,14 @@ class QuestionRunner:
                     "partial": lease.retrieval["coverage"]["partial"],
                     "stale": lease.retrieval["coverage"]["stale"],
                 },
-                worker_ref=self.worker.worker_ref,
+                worker_ref=receipt_worker_ref,
                 generated_at=generated_at,
                 input_digest=question_contracts.digest(
                     {"request": lease.request.to_dict(), "retrieval": lease.retrieval}
                 ),
                 attempt_count=lease.attempt_count,
-                model_invoked=False,
-                evidence_only_fallback=False,
+                model_invoked=model_invoked,
+                evidence_only_fallback=evidence_only_fallback,
                 error=error,
             )
         return self.queue.complete(lease, answer)
