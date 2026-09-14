@@ -197,3 +197,21 @@ Generated-artifact residual and stop:
 - the runtime manifest/catalog are coordinator-owned. This lane must not refresh
   or commit them; coordinator reconciliation and a fresh full suite are required
   before integration. Stop before Reddit/YouTube tracers or public MCP/CLI work.
+
+### Checkpoint P0115-C03 | 2026-09-14
+
+Plan version: 1
+
+State: `OPEN`; one closed-world remediation resolved the two accepted review
+findings without widening Packet 1.
+
+- quarantined existing follows now permit only an idempotent same-version
+  write, the exact enabled-to-disabled pause transition, or the exact archive
+  transition. Name, cadence, selector, or any other next-version edit fails
+  closed;
+- compatibility evidence now binds sanitized, hashed row identities to their
+  preserved/mapped/quarantined classification. Per-class and aggregate digests
+  are deterministic under reordering and change for distinct same-count rows;
+- focused new tests and the collection/product/process/contracts suite passed;
+  the C02 full-suite runtime-manifest residual is unchanged and remains solely
+  coordinator-owned. No external or runtime effect occurred.

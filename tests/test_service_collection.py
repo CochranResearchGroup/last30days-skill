@@ -184,18 +184,29 @@ def test_legacy_provider_invalid_tailored_target_is_quarantined_but_archivable(t
     )
     with sqlite3.connect(db_path) as conn:
         conn.execute(
-            "UPDATE collection_specs SET source = ?, surface_kind = ?, selector_json = ?, profile_id = ?, access_partition_id = ?, follow_target_id = ? WHERE collection_spec_id = ?",
+            "UPDATE collection_specs SET source = ?, surface_kind = ?, selector_json = ?, profile_id = ?, enabled = 1, access_partition_id = ?, follow_target_id = ? WHERE collection_spec_id = ?",
             (legacy.source, legacy.surface_kind, json.dumps(legacy.selector), legacy.profile_id, legacy.access_partition_id, legacy.follow_target_id, stored.collection_spec_id),
         )
         conn.execute(
             "UPDATE collection_spec_revisions SET spec_json = ?, spec_digest = ?, selector_digest = ?, access_partition_id = ? WHERE collection_spec_id = ? AND spec_version = 1",
-            (json.dumps(legacy.to_dict(), sort_keys=True, separators=(",", ":")), legacy.spec_digest, legacy.selector_digest, legacy.access_partition_id, stored.collection_spec_id),
+            (json.dumps({**legacy.to_dict(), "enabled": True}, sort_keys=True, separators=(",", ":")), legacy.spec_digest, legacy.selector_digest, legacy.access_partition_id, stored.collection_spec_id),
         )
 
     restored = coordinator.get_spec(stored.collection_spec_id)
     assert restored.is_quarantined_follow
+    assert coordinator.put_spec(restored) == restored
+    edit_payload = restored.to_dict()
+    edit_payload.pop("follow_target_id", None)
+    with pytest.raises(CollectionSpecValidationError, match="only pause or archive"):
+        coordinator.put_spec(CollectionSpec.from_dict({**edit_payload, "name": "Edited", "spec_version": 2}))
     with pytest.raises(CollectionSpecValidationError, match="cannot be enabled"):
         coordinator.set_enabled(stored.collection_spec_id, enabled=True)
+    paused = coordinator.set_enabled(stored.collection_spec_id, enabled=False)
+    assert paused.enabled is False
+    edit_payload = paused.to_dict()
+    edit_payload.pop("follow_target_id", None)
+    with pytest.raises(CollectionSpecValidationError, match="only pause or archive"):
+        coordinator.put_spec(CollectionSpec.from_dict({**edit_payload, "name": "Edited", "spec_version": 3}))
     with pytest.raises(CollectionSpecValidationError, match="cannot be scheduled"):
         coordinator.enqueue_interval(stored.collection_spec_id, scheduled_for="2026-07-25T12:00:00Z", trigger="manual")
     assert coordinator.archive_spec(stored.collection_spec_id).lifecycle_state == "archived"

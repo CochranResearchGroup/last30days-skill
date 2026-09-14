@@ -25,9 +25,9 @@ def test_closed_registry_distinguishes_available_unavailable_and_unsupported():
 
 def test_compatibility_trace_is_additive_idempotent_and_deterministic():
     rows = [
-        {"collection_purpose": "general", "source": "reddit", "surface_kind": "topic"},
-        {"collection_purpose": "tailored_follow", "source": "x", "surface_kind": "list"},
-        {"collection_purpose": "tailored_follow", "source": "reddit", "surface_kind": "account"},
+        {"collection_spec_id": "general-a", "collection_purpose": "general", "source": "reddit", "surface_kind": "topic"},
+        {"collection_spec_id": "x-list-a", "collection_purpose": "tailored_follow", "source": "x", "surface_kind": "list"},
+        {"collection_spec_id": "legacy-a", "collection_purpose": "tailored_follow", "source": "reddit", "surface_kind": "account"},
     ]
     first = compatibility_trace(rows)
     assert first == compatibility_trace(rows)
@@ -35,3 +35,10 @@ def test_compatibility_trace_is_additive_idempotent_and_deterministic():
     assert first["mapped"] == 1
     assert first["quarantined"] == 1
     assert first["digest"].startswith("sha256:")
+    assert first == compatibility_trace(reversed(rows))
+    same_counts_different_rows = [
+        {**row, "collection_spec_id": f"other-{index}"}
+        for index, row in enumerate(rows)
+    ]
+    assert first["digest"] != compatibility_trace(same_counts_different_rows)["digest"]
+    assert set(first["class_digests"]) == {"preserved", "mapped", "quarantined"}
