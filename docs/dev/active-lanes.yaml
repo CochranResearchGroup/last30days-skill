@@ -9,7 +9,7 @@ lanes:
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATED
-    checkpoint: 1168c62e0192ff33f71a07482a32b05721fb839a
+    checkpoint: 5c1d62285f3bd834c9c7cdf060ca710d1bcbe928
     remote_ref: refs/remotes/origin/feat/p51-isolated-runtime-v1
     integration: merge
     integration_receipt: 1168c62e0192ff33f71a07482a32b05721fb839a
@@ -287,6 +287,12 @@ lanes:
     remote_ref: refs/remotes/origin/feat/isolated-dev-runtime-v1
     integration: merge
     integration_receipt: c6bccab86074e83067a624a57efbc9d9b485c87f
+    validation_status: passed
+    validation_ref: 19d41c312dc49131650b9145c49e09b2e892f74b
+    outcome_state: DONE
+    outcome_evidence_plan: docs/dev/plans/0105-2026-09-14-versioned-development-runtime-and-dogfood.md
+    outcome_evidence_receipt: docs/dev/notes/0126-2026-09-14-p51-runtime-dogfood-closeout-receipt.json
+    disposition: Packet 1 custody retained; P51 lifecycle and dogfood evidence closes WI-001 without another runtime
     dependencies: []
     overlaps: [skills/last30days/scripts/service.py, CONFIGURATION.md]
     reconciled_overlaps: [skills/last30days/scripts/service.py, CONFIGURATION.md]

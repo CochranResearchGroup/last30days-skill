@@ -2639,37 +2639,44 @@ Next Bounded Action:
 
 ## P34 | Isolated Development Runtime
 
-State: PLANNED
+State: CLOSED
 
 Objective: give each implementation lane a deterministic, provider-free local
 service identity that cannot collide with production or another lane.
 
 Current State:
 
-- WI-001 is `READY` for a later Packet 2; Packet 1 closed and integrated through PR 35 as
-  `c6bccab86074e83067a624a57efbc9d9b485c87f`;
-- the selected seam is a repo-only lane-runtime controller around the existing
-  direct `serve` command plus an authoritative service-side cache-only effect
-  gate;
-- identity, paths, environment, collision, process, status, teardown,
-  production, staging, and provider-free acceptance contracts are defined;
-- the repo-only read-only doctor now derives strict deterministic lane identity
-  and rejects unsafe custody, environment, production-path, ownership, and
-  collision states; it still starts no runtime.
+- WI-001 is `DONE`. Packet 1 integrated the deterministic read-only identity
+  tracer through PR 35 as `c6bccab86074e83067a624a57efbc9d9b485c87f`;
+- P51 then integrated the offline `doctor`/`up`/`status`/`down` lifecycle and
+  authoritative cache-only service gates through PRs 73 and 74 at canonical
+  `1168c62e0192ff33f71a07482a32b05721fb839a`;
+- two fixed-input builds produced byte-identical service `0.3.117` artifacts,
+  and exactly one isolated runtime passed identity, status, provider-free
+  dogfood, effect denial, and exact-owner teardown;
+- receipt 0126 proves private per-lane paths and environment, descriptor/PID/
+  socket/artifact identity, final stopped state, and unchanged production PID
+  1428 at service `0.3.116` / schema 17;
+- staging remains a separate later deployment gate. No staging or production
+  mutation occurred.
 
-Closed Architecture Plan:
+Closed Plans And Evidence:
 
-- `docs/dev/plans/0077-2026-09-13-isolated-development-runtime-architecture-and-lane-handoff.md`.
+- `docs/dev/plans/0077-2026-09-13-isolated-development-runtime-architecture-and-lane-handoff.md`;
+- `docs/dev/plans/0085-2026-09-13-isolated-dev-runtime-packet-1.md`;
+- `docs/dev/plans/0105-2026-09-14-versioned-development-runtime-and-dogfood.md`;
+- `docs/dev/plans/0106-2026-09-14-wi001-runtime-evidence-reconciliation.md`;
+- `docs/dev/notes/0126-2026-09-14-p51-runtime-dogfood-closeout-receipt.json`.
 
 Dependencies:
 
 - consumes the closed P32 operating model and current managed service seams;
   implementation is not blocked by GitHub tracker activation or live providers.
 
-Next Bounded Action:
+Disposition:
 
-- register a separately bounded Packet 2 plan for offline lifecycle commands
-  and authoritative service-side cache-only effect gates.
+- no further P34 packet is required. Any staging, deployment, or new-runtime
+  work is a separately planned and authorized outcome.
 
 ## P35 | X Tailored Follow Product Surface
 
