@@ -1017,8 +1017,8 @@ Example:
 }
 ```
 
-`surface_kind` accepts `feed`, `topic`, `poster`, `channel`, `account`, or
-`profile`. Its selector must contain exactly the matching key (`feed`, `topic`,
+`surface_kind` accepts `feed`, `topic`, `poster`, `channel`, `account`, `list`,
+or `profile`. Its selector must contain exactly the matching key (`feed`, `topic`,
 `poster`, `channel`, `account`, `list_id`, or `profile_url`). Item, network, time, cost,
 lookback, and cadence bounds are mandatory. X, Facebook, and LinkedIn specs
 must use `redaction_class=authenticated`; their named profile is leased so two
@@ -1108,6 +1108,12 @@ Pass `--socket <absolute-path>` to install, upgrade, or diagnose a non-default
 owner-private socket. The installer records that same path in the stable unit
 and uses it for readiness; otherwise `LAST30DAYS_SERVICE_SOCKET` wins, followed
 by `$XDG_RUNTIME_DIR/last30days/service.sock`.
+
+Pass `--skill-host-root <absolute-path>` only when installation or upgrade must
+scope frozen host-entrypoint refresh away from the current user home, such as
+an isolated development drill. The directory must already exist, be owned by
+the current user, be non-writable by group and others, and have no symlinked
+path component. Omitting the flag preserves the existing user-home behavior.
 
 The installer writes `~/.config/systemd/user/last30days.service`, reloads the
 user manager, and enables the service. Its unit uses an owner-private umask,

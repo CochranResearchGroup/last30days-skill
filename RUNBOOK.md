@@ -30277,3 +30277,66 @@ Next Bounded Action:
 
 - validate and merge this projection, then resume the three bounded provider-
   free implementation owners with no nested agents.
+
+## Turn 486 | 2026-09-14
+
+Focus: join, review, remediate, and validate Wave 2 provider-free completion
+packets.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`;
+`docs/dev/plans/0111-2026-09-14-post-search-packet-3.md`;
+`docs/dev/plans/0112-2026-09-14-x-list-and-product-closure.md`;
+`docs/dev/plans/0113-2026-09-14-hotfix-runtime-and-operator-closure.md`.
+
+Authority Consulted:
+
+- Plans 0107 and 0111-0113; P33/P35/P38/P52;
+  WI-002/WI-004/WI-007; exact feature and integration refs; current planning,
+  testing, validation, documentation, branch, integration, and closeout policy.
+
+Decisions And Changes:
+
+- joined exact P35 `a10604e9`, P33 `971f9ea9`, and P38 `d25f9df4` source
+  checkpoints into coordinator branch `integration/provider-free-wave2`;
+- regenerated shared generated artifacts, bound collection context selectors
+  to exact worker queries, and documented isolated skill-host redirection;
+- accepted one independent review documentation finding and added `list` to
+  the supported surface-kind enumeration;
+- retained WI-007's synthetic-runtime boundary and dormant real hotfix slot.
+
+Validation Evidence:
+
+- independent full Python: 2,995 passed, 8 skipped, 14 subtests; focused joined:
+  162 passed, 1 skipped, 5 subtests; package/lifecycle: 36 passed;
+- Go MCP tests and vet, plan authority, diff checks, receipt replay, and two
+  byte-identical fixed-input runtime builds pass;
+- WI-007 fresh drill completed in 11.4195 seconds, reconciled 14 fixture
+  processes, and left a zero-process final census; receipt digest
+  `5ee59e1630211c9510bff8279f0d3824a689c267450d978c2c8e6290daf24ae6`;
+- no provider, browser, installed service, operational staging, production,
+  release, deployment, rollback, schedule, live-data, or issue effect occurred.
+
+State Movement:
+
+- Plan 0107 `wave_2_activated -> wave_2_integration_ready`;
+- Plans 0111-0113 and WI-002/WI-004/WI-007 remain `OPEN`/`IN_PROGRESS` until
+  the reviewed integration and canonical closeout receipts exist;
+- progress classification: `outcome_progress`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; three implementation owners and one independent reviewer are
+  complete. One primary review fix and one independent-review documentation
+  fix were reconciled on the coordinator branch.
+
+Graphiti Write Status:
+
+- `not_written`; exact repository, test, Git, and retained receipt evidence is
+  authoritative.
+
+Next Bounded Action:
+
+- publish this exact integration branch, open and review one owned-fork pull
+  request, merge it, then record canonical Wave 2 closeout before planning the
+  next dependency-ordered wave.

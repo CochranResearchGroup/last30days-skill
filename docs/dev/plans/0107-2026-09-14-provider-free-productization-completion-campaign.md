@@ -363,6 +363,61 @@ Next action:
 - validate and integrate this activation projection, then resume exactly those
   three owners on their frozen provider-free implementation packets.
 
+### Checkpoint P0107-C07 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_2_activated -> wave_2_integration_ready`.
+
+Progress classification: `outcome_progress`; all three Wave 2 source packets
+are joined, independently reviewed, remediated once, and fully validated on the
+coordinator-owned integration branch.
+
+Integrated source evidence:
+
+- P33/Plan 0111 hybrid search: `971f9ea94623850094518b7172e364ba8cb3be8a`;
+- P35/Plan 0112 X-list/product closure: `a10604e9f85d6c5cd2f7c2deb178e8930336441c`;
+- P38/Plan 0113 runtime/operator closure:
+  `d25f9df441aa6e92af9827f56fb3b75ffbbb363c`;
+- joined code head before final authority projection: `aa59b42c`.
+
+Review and remediation evidence:
+
+- the coordinator regenerated the contract catalog/runtime manifest, then
+  bound frozen collection selectors to exact worker queries after primary
+  cross-lane review;
+- independent joined review accepted all three specifications and found one
+  documentation blocker: the configuration surface-kind enumeration omitted
+  `list`. The same closed-world remediation also documents WI-007's isolated
+  `--skill-host-root` containment option;
+- independent full Python validation passed with 2,995 tests, 8 skips, and 14
+  subtests; focused joined validation passed with 162 tests, 1 skip, and 5
+  subtests; package/lifecycle validation passed 36 tests; Go tests and vet,
+  plan authority, diff checks, receipt replay, and reproducible builds pass;
+- WI-007's fresh five-scenario drill completed in 11.4195 seconds, reconciled
+  14 exact fixture process identities, and ended with an empty OS census. Its
+  retained receipt digest is
+  `5ee59e1630211c9510bff8279f0d3824a689c267450d978c2c8e6290daf24ae6`.
+
+Authority classification:
+
+- `inherited_authority` covers provider-free source integration, documentation
+  remediation, branch publication, and reviewed owned-fork pull-request merge;
+- no provider, browser, live data, schedule, installed service, operational
+  staging, production, release, deployment, rollback, or issue mutation was
+  performed or authorized.
+
+Subagent status and reconciliation:
+
+- `joined`; three implementation owners and one independent joined reviewer
+  completed. The coordinator owns the exact integration branch and closeout.
+
+Next action:
+
+- publish the fully validated integration branch, merge it through a reviewed
+  owned-fork pull request, then close Plans 0111-0113 and the completed WI-004
+  and WI-007 outcomes without overstating WI-002 Packet 4.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;
