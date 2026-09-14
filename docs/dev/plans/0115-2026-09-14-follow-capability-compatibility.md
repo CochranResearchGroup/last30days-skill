@@ -147,3 +147,53 @@ Validation and stop:
 - stop after publishing this checkpoint. Do not create a pull request, mutate
   WI-005 or GitHub, or begin Packet 1 until a subsequent explicit implementation
   assignment from current canonical coordination authority.
+
+### Checkpoint P0115-C02 | 2026-09-14
+
+Plan version: 1
+
+State: `OPEN`; provider-free source acceptance is complete pending coordinator
+generated-artifact reconciliation and integration.
+
+Custody and authority:
+
+- implementation fast-forwarded to exact canonical activation merge
+  `c4251dc12c905e513c9f37119b3442382741f31e`, preserving C01 ancestry;
+- one top-level owner made only the declared registry, collection, and focused
+  test changes. No child, provider, browser/profile, live data, job/schedule,
+  installed runtime, release, deployment, PR, or issue effect occurred;
+- requested model route remains `gpt-6-astra` at high reasoning; effective
+  runtime model/effort remains unknown.
+
+Implemented source boundary:
+
+- added the closed `FollowCapabilityV1` registry and derived `FollowTargetV1`
+  seam. X feed/topic/account/list stays available while Reddit community/user
+  and YouTube channel are distinctly `unavailable:adapter_not_implemented`;
+  unknown/Facebook/LinkedIn target kinds remain `unsupported`;
+- existing X canonicalization and `follow_target_id` computation are unchanged;
+  general collections remain outside the registry;
+- a non-X legacy tailored revision can be read and classified as quarantined,
+  cannot be newly created, enabled, revised, or scheduled, and may be archived;
+- the compatibility tracer is pure/additive and returns deterministic
+  preserved/mapped/quarantined counts plus a digest for disposable fixtures.
+
+Evidence:
+
+- RED then GREEN focused tests cover duplicate/missing-validator fail-close,
+  available/unavailable/unsupported distinction, deterministic compatibility,
+  exact X target IDs, and a directly persisted disposable SQLite legacy row;
+- `uv run pytest tests/test_service_follow_capabilities.py tests/test_service_collection.py -q -k 'follow_capabilities or legacy_provider_invalid or x_follow_targets_are_typed'` passed (7 tests);
+- `uv run pytest tests/test_service_collection.py tests/test_service_product.py tests/test_service_process.py tests/test_service_contracts.py -q` passed;
+- Python compilation and `git diff --check` passed. This worktree has no
+  CodeGraph index, so no derived index was created; direct current source and
+  focused tests are the implementation evidence.
+
+Generated-artifact residual and stop:
+
+- full `uv run pytest -q` completed with 11 failures, all runtime package or
+  lifecycle-install checks. The no-effect build preflight reports
+  `service/runtime-manifest.json is stale; run service/scripts/build-runtime.sh --refresh-manifest`;
+- the runtime manifest/catalog are coordinator-owned. This lane must not refresh
+  or commit them; coordinator reconciliation and a fresh full suite are required
+  before integration. Stop before Reddit/YouTube tracers or public MCP/CLI work.
