@@ -1,6 +1,6 @@
 # Plan 0094 | Next Wave Integration Reconciliation
 
-State: OPEN
+State: CLOSED
 Lane: P45
 Work item: WI-000
 Branch: docs/next-wave-integration-reconciliation
@@ -195,7 +195,21 @@ Next action:
 
 Checkpoint P0094-C03 is the current authority.
 
+### Checkpoint P0094-C04 | 2026-09-13
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`.
+
+PR 41 merged the validated integration into canonical `main` as
+`6d5eb5d972024cd584bfcc8bf57975f49fa90f45`. Canonical Git was then
+fast-forwarded cleanly and verified equal to `origin/main`. P36, P37, and P40
+Packet 1 are integrated; P35 remains unchanged at its separate authorization
+gate. No installed/runtime/provider/release/production effect occurred.
+
+Checkpoint P0094-C04 is the current authority.
+
 ## Next Action
 
-Integrate and validate the exact P36/P37/P40 checkpoints, then open one
-owned-fork pull request. Do not begin Packet 2 or touch P35.
+Plan the next provider-free packets independently from current canonical main.
+Do not begin Packet 2 implicitly or touch P35 without its separate authority.

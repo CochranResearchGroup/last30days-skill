@@ -2707,7 +2707,7 @@ Next Bounded Action:
 
 ## P36 | Agent Question Answering MCP Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: let agents ask bounded cross-service questions and receive a
 validated answer whose every substantive statement can be followed to exact
@@ -2715,7 +2715,7 @@ authorized immutable evidence.
 
 Current State:
 
-- WI-003 is `IN_PROGRESS`; merged P33 Packet 1 satisfies its implementation
+- WI-003 is `READY`; merged P33 Packet 1 satisfies its implementation
   dependency;
 - current MCP query and temporal tools expose evidence, claims, events, and
   conflicts, but no validated synthesized answer, durable question status, or
@@ -2729,14 +2729,14 @@ Current State:
   completed Packet 1 at clean remote-equal checkpoint
   `d6c6ff78498b33534baa6fe0b7b63e29f793caf7`;
 - the provider-free durable question tracer and immutable citation contracts
-  are merged into P45 for combined validation; no model call, MCP publication,
-  installed-runtime mutation, or provider access occurred.
+  integrated through PR 41 as canonical merge `6d5eb5d9`; no model call, MCP
+  publication, installed-runtime mutation, or provider access occurred.
 
 Closed Architecture Plan:
 
 - `docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md`.
 
-Active Implementation Plan:
+Closed Implementation Plan:
 
 - `docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md` on
   `feat/agent-question-answer-v1`.
@@ -2749,12 +2749,12 @@ Dependencies:
 
 Next Bounded Action:
 
-- complete P45 combined validation and canonical integration; keep broader
-  search/model/MCP transport work for a separately planned Packet 2.
+- plan broader search/model/MCP transport work as a separately bounded Packet
+  2 from current canonical main.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
-State: OPEN
+State: PLANNED
 
 Objective: give maintainers one replayable, denominator-aware view of
 acquisition coverage, corpus integrity, retrieval quality, and answer grounding
@@ -2762,7 +2762,7 @@ without conflating fixture success with production quality.
 
 Current State:
 
-- WI-008 is `IN_PROGRESS`; its provider-free Packet 1 has no product dependency;
+- WI-008 is `READY`; its provider-free Packet 1 has no product dependency;
 - current evaluators cover fragments of retrieval or slash-command ranking and
   model judgments, but do not share a versioned set, threshold, report,
   denominator, artifact, or effect contract;
@@ -2772,15 +2772,15 @@ Current State:
 - independent Codex thread `01a09cf4-c89d-7b41-901a-37648171312a`
   completed Packet 1 at clean remote-equal checkpoint
   `58020b04f8fe109062802abf5b794e9ff5e1024c`;
-- its deterministic four-axis provider-free tracer is merged into P45 for
-  combined validation; no judge call, runtime mutation, production sample, or
-  provider access occurred.
+- its deterministic four-axis provider-free tracer integrated through PR 41 as
+  canonical merge `6d5eb5d9`; no judge call, runtime mutation, production
+  sample, or provider access occurred.
 
 Closed Architecture Plan:
 
 - `docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md`.
 
-Active Implementation Plan:
+Closed Implementation Plan:
 
 - `docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md` on
   `feat/service-quality-v1`.
@@ -2793,8 +2793,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- complete P45 combined validation and canonical integration; real retrieval
-  and grounding adapters remain later separately planned packets.
+- plan real retrieval and grounding adapters as later separately bounded
+  packets from current canonical main.
 
 ## P38 | Reserved Production Hotfix Path
 
@@ -2880,7 +2880,7 @@ duplicate delivery.
 
 Current State:
 
-- WI-006 is `IN_PROGRESS` while accepted Packet 1 awaits canonical integration;
+- WI-006 is `READY` for a separately planned later packet;
 - current immutable retrieval heads, document versions, collection sightings,
   and notification receipts provide seams, but no durable monitor/baseline/
   digest authority exists;
@@ -2889,9 +2889,9 @@ Current State:
 - independent Codex thread `01a09cf4-c89e-7660-9caf-66a78f34ded0`
   completed query-view Packet 1 at clean remote-equal checkpoint
   `c97982506825e58f0ab8cae138ee557f7055cf91` and closed Plan 0093;
-- its provider-free monitor kernel is merged into P45 for combined validation;
-  no installed schedule, live delivery, follow tracing, or provider action
-  occurred.
+- its provider-free monitor kernel integrated through PR 41 as canonical merge
+  `6d5eb5d9`; no installed schedule, live delivery, follow tracing, or provider
+  action occurred.
 
 Closed Architecture Plan:
 
@@ -2910,8 +2910,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- complete P45 canonical integration, then plan query-view composition as a
-  later packet; follow tracing remains gated by P35 integration.
+- plan query-view composition as a later packet from current canonical main;
+  follow tracing remains gated by P35 integration.
 
 ## P41 | Implementation Lane Launch Registration
 
@@ -3035,20 +3035,20 @@ Next Bounded Action:
 
 ## P45 | Next Wave Integration Reconciliation
 
-State: OPEN
+State: CLOSED
 
 Objective: reconcile the accepted P36, P37, and P40 Packet 1 checkpoints into
 one reviewed canonical integration without widening runtime or provider scope.
 
 Current State:
 
-- P36, P37, and P40 are clean, published, provider-free accepted, and ready for
-  coordinator reconciliation;
+- P36, P37, and P40 Packet 1 integrated through PR 41 as canonical merge
+  `6d5eb5d972024cd584bfcc8bf57975f49fa90f45`;
 - P36 and P40 use independent module-local schema ledgers, so their product
   surfaces no longer overlap at the global service schema;
 - P35 remains at its separate pull-request authorization gate.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0094-2026-09-13-next-wave-integration-reconciliation.md`.
 
@@ -3059,6 +3059,5 @@ Dependencies:
 
 Next Bounded Action:
 
-- merge the exact three feature refs into the integration branch, reconcile
-  the combined runtime manifest, validate, and integrate through one fork-main
-  pull request without any installed/runtime/provider effect.
+- plan later Packet 2 work independently from current canonical main; keep P35
+  at its separate pull-request authorization gate.
