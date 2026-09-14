@@ -508,10 +508,10 @@ def systemd_escape_path(path: Path) -> str:
     )
 
 
-def refresh_skill_entrypoints(release: Path) -> None:
+def refresh_skill_entrypoints(release: Path, skill_host_root: Path | None = None) -> None:
     """Refresh only existing frozen host copies; never follow checkout links."""
     raw = (release / "scripts/service.py").read_bytes()
-    home = Path.home().resolve()
+    home = Path.home().resolve() if skill_host_root is None else skill_host_root
     for host in (".agents", ".claude", ".codex"):
         skill = home / host / "skills/last30days"
         entrypoint = skill / "scripts/service.py"
@@ -758,6 +758,8 @@ def main() -> None:
     parser.add_argument("--timeout", type=float, default=15.0)
     parser.add_argument("--systemctl", type=Path)
     parser.add_argument("--socket", type=Path)
+    parser.add_argument("--skill-host-root", type=Path,
+                        help="Scope frozen host entrypoint refresh to this owned directory (default: user home)")
     args = parser.parse_args()
 
     if sys.version_info < (3, 12):
@@ -766,6 +768,14 @@ def main() -> None:
         fail("--retain must be at least 2")
     if not 0 < args.timeout <= 300:
         fail("--timeout must be between 0 and 300 seconds")
+    if args.skill_host_root is not None:
+        skill_host_root = args.skill_host_root
+        if (not skill_host_root.is_absolute()
+                or not skill_host_root.is_dir()
+                or any(path.is_symlink() for path in (skill_host_root, *skill_host_root.parents))
+                or skill_host_root.stat().st_uid != os.geteuid()
+                or skill_host_root.stat().st_mode & 0o022):
+            fail("--skill-host-root must be an absolute, owner-private directory without symlinks")
 
     repo_root = Path(args.default_repo_root).resolve()
     home = Path.home()
@@ -960,7 +970,7 @@ def main() -> None:
             args.timeout,
             receipt_path,
         )
-        refresh_skill_entrypoints(release)
+        refresh_skill_entrypoints(release, args.skill_host_root)
     except (SystemExit, OSError, RuntimeError, sqlite3.Error) as failure:
         if old_current is None:
             manager_command(manager, "stop", UNIT_NAME, check=False)
