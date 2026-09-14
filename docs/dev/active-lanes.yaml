@@ -1,5 +1,24 @@
 schema_version: 1
 lanes:
+  - id: P46
+    objective: Register and launch the provider-free P36 evidence tracer Packet 2
+    work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    plan: docs/dev/plans/0095-2026-09-13-p36-packet-2-launch-registration.md
+    plan_ref: refs/heads/docs/p36-packet2-launch-registration
+    branch: docs/p36-packet2-launch-registration
+    target: main
+    plan_state: OPEN
+    custody_state: INTEGRATION_READY
+    checkpoint: 2b29bf199ae81cd4fe7c42cf74d782a560bfee53
+    remote_ref: refs/remotes/origin/docs/p36-packet2-launch-registration
+    integration: merge
+    integration_receipt: null
+    validation_status: passed
+    validation_ref: 2b29bf199ae81cd4fe7c42cf74d782a560bfee53
+    dependencies: []
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    updated_at: 2026-09-13
   - id: P45
     objective: Reconcile accepted P36 P37 and P40 Packet 1 checkpoints into canonical main
     work_items: [docs/dev/work-items/WI-000-productization-program.md]
@@ -142,23 +161,21 @@ lanes:
     reconciled_overlaps: []
     updated_at: 2026-09-13
   - id: P36
-    objective: Implement a durable provider-free agent-question tracer with immutable citations
+    objective: Compose real post search with durable questions and immutable evidence reads
     work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
-    plan: docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md
-    plan_ref: refs/heads/feat/agent-question-answer-v1
-    branch: feat/agent-question-answer-v1
+    plan: docs/dev/plans/0096-2026-09-13-agent-question-evidence-tracer-packet-2.md
+    plan_ref: refs/heads/feat/agent-question-evidence-v2
+    branch: feat/agent-question-evidence-v2
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: d6c6ff78498b33534baa6fe0b7b63e29f793caf7
-    remote_ref: refs/remotes/origin/feat/agent-question-answer-v1
+    plan_state: PLANNED
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 07f961290acf9ab6fece4ebb9b4c9c6c7560acc5
+    remote_ref: refs/remotes/origin/feat/agent-question-evidence-v2
     integration: merge
-    integration_receipt: 6d5eb5d972024cd584bfcc8bf57975f49fa90f45
-    validation_status: passed
-    validation_ref: d6c6ff78498b33534baa6fe0b7b63e29f793caf7
+    integration_receipt: null
     dependencies: [P33]
-    overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_store.py]
-    reconciled_overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_store.py]
+    overlaps: [service/runtime-manifest.json]
+    reconciled_overlaps: [service/runtime-manifest.json]
     updated_at: 2026-09-13
   - id: P35
     objective: Define typed X account, list, and topic follows on the existing collection authority

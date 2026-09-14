@@ -9,8 +9,9 @@ Blocked by: WI-002 Packet 1 contract integration; final acceptance by WI-002 clo
 Architecture: docs/dev/notes/0120-2026-09-13-agent-question-answering-mcp-architecture.md
 Implementation plan seed: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md
 Last closed plan: docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md
-Branch: feat/agent-question-answer-v1
-Owner: Codex 01a09cf4-c89c-7ad2-9b64-8dc95c4cbec6
+Current plan: docs/dev/plans/0096-2026-09-13-agent-question-evidence-tracer-packet-2.md
+Branch: feat/agent-question-evidence-v2
+Owner: unassigned independent top-level Codex session
 
 ## Problem
 
@@ -44,7 +45,8 @@ summaries replace source evidence.
 ## Next Owner Action
 
 Packet 1 integrated through PR 41 as canonical merge `6d5eb5d9`. Before any
-new implementation, write and register a separately bounded Packet 2 plan from
-current `origin/main` for real search/evidence composition or MCP publication.
-Keep model execution, providers, installed runtimes, staging, and production
-behind their own explicit gates.
+new implementation, integrate the Plan 0096 registration and assign its clean
+dedicated worktree to one independent top-level Codex session. Packet 2 is only
+real search/evidence composition and immutable dereference; keep model
+execution, public MCP transport, providers, installed runtimes, staging, and
+production behind their own explicit gates.
