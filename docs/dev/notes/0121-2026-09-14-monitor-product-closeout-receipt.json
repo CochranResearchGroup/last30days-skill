@@ -1,0 +1,717 @@
+{
+  "descriptor": {
+    "artifacts_dir": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/artifacts",
+    "branch": "feat/monitor-digest-product-closeout-v1",
+    "browser_policy": "deny",
+    "commit": "283da4dc95caebe11480c44d24c705a5e692e572",
+    "committed_at": "2026-09-14T16:19:12-05:00",
+    "config_dir": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/config",
+    "created_at": "2026-09-14T16:19:12-05:00",
+    "credential_policy": "deny",
+    "data_dir": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/data",
+    "database_path": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/data/research.db",
+    "descriptor_digest": "f265458e5c4c77f5946a7d07dbb078a213974a732934c4d214116d1efeeee40f",
+    "descriptor_path": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/descriptor.json",
+    "effect_mode": "cache_only",
+    "inherited_environment_policy": "allowlist",
+    "lane_id": "p40-monitor-closeout",
+    "lock_path": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/run/controller.lock",
+    "log_dir": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/logs",
+    "log_path": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/logs/service.log",
+    "pid_path": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/run/service.pid.json",
+    "plan": "0121",
+    "repository_identity": "github.com/cochranresearchgroup/last30days-skill",
+    "run_dir": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/run",
+    "runtime_id": "l30d-p40-monitor-closeout-cf1817be670a",
+    "runtime_kind": "development",
+    "schedule_policy": "deny",
+    "schema_version": 1,
+    "service_name": "last30days-dev-p40-monitor-closeout-cf1817be670a",
+    "socket_path": "/tmp/wi006-plan0121-ULyDNG/run/cf1817be670a/s",
+    "startup_receipt_path": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/receipts/startup.json",
+    "state_root": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a",
+    "status_receipt_path": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/receipts/status.json",
+    "tick_config_digest": "5975eadeb704e6057d150861697a632f28db72cda5f8653644cc40632a64455d",
+    "tick_config_path": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/config/tick.json",
+    "updated_at": "2026-09-14T16:19:12-05:00",
+    "work_item": "WI-006",
+    "worktree": "/home/ecochran76/workspace.local/last30days-skill-wi006-v5"
+  },
+  "durable_restart": true,
+  "final_controller_status": {
+    "reasons": [],
+    "schema_version": 1,
+    "state": "absent"
+  },
+  "mcp_binary_sha256": "cdf2bfe41aed082990233446c96bad5007268945b9517f7666132e70a3c76f8b",
+  "mcp_processes": [
+    {
+      "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+      "cmdline": [
+        "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/monitor-mcp"
+      ],
+      "executable": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/monitor-mcp",
+      "pid": 2949080,
+      "start_ticks": 3978941,
+      "uid": 1000
+    },
+    {
+      "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+      "cmdline": [
+        "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/monitor-mcp"
+      ],
+      "executable": "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/monitor-mcp",
+      "pid": 2949289,
+      "start_ticks": 3979128,
+      "uid": 1000
+    }
+  ],
+  "monitor": {
+    "case_count": 5,
+    "discovery_digest": "c1ce98ea893339537a7c45f9235edd04b26528c6b8c9c0b25ce874f942daa208",
+    "follow_digest": {
+      "access_partition_id": "profile:x-primary",
+      "candidate_baseline_id": "monitor-baseline-3f604e783c103cf0fb46ddaff5d2650e",
+      "comparator_version": "stable_evidence_v1",
+      "comparison_status": "complete",
+      "counts": {
+        "new": 0,
+        "removed": 0,
+        "revised": 0,
+        "unchanged": 1
+      },
+      "coverage": {
+        "gaps": [],
+        "sources": [
+          "x"
+        ],
+        "status": "complete"
+      },
+      "coverage_end": "2026-09-14T21:19:27.750619Z",
+      "coverage_scope": "bounded_cache_view_only",
+      "coverage_start": "2026-09-05T12:01:00Z",
+      "current_count": 1,
+      "current_head_id": "search-head-63f9f4d30568d1ee174000e75660f49a",
+      "digest_id": "digest-861896f6b78e2511cd9c86ba4796c78b",
+      "entries": [
+        {
+          "collection_refs": [
+            "legacy:run:fixture-run",
+            "legacy:spec:follow-x-account-alice"
+          ],
+          "current_version_id": "follow-version-1",
+          "evidence_id": "post-a3f4e6c97c162fe3c9d41a7c415bdeac",
+          "evidence_refs": [
+            {
+              "content_hash": "sha256:follow-version-1",
+              "source_url": "https://reddit.example/1",
+              "storage_family": "legacy",
+              "version_id": "follow-version-1"
+            }
+          ],
+          "kind": "unchanged",
+          "prior_version_id": "follow-version-1"
+        }
+      ],
+      "knowledge_cutoff": "2026-09-14T21:19:27.750619Z",
+      "monitor_id": "dogfood-follow",
+      "omitted_count": 0,
+      "prior_baseline_id": "monitor-baseline-5349d836a22d7e703d092bd9d7f8a0fc",
+      "prior_count": 1,
+      "prior_head_id": "search-head-63f9f4d30568d1ee174000e75660f49a",
+      "renderer_version": "deterministic_v1",
+      "run_id": "monitor-run-407f1712bb5b43e13a17e091721c915a",
+      "schema_version": 1
+    },
+    "intent": {
+      "access_partition_id": "profile:x-primary",
+      "authorization_receipt": null,
+      "channel_config_ref": "fixture-only",
+      "digest_id": "digest-861896f6b78e2511cd9c86ba4796c78b",
+      "idempotency_key": "delivery-e18a0a365c58c8baf93ecc38b45d8eda",
+      "intent_id": "delivery-e18a0a365c58c8baf93ecc38b45d8eda",
+      "mode": "disabled",
+      "monitor_id": "dogfood-follow",
+      "parent_intent_id": null,
+      "parent_receipt_id": null,
+      "preference_version": 1,
+      "request_id": null,
+      "resend_reason": null,
+      "run_id": "monitor-run-407f1712bb5b43e13a17e091721c915a",
+      "schema_version": 1
+    },
+    "non_monitor_digest": "24340d06b54175848db8893e6146f84170ebedc2d2351340a9f03422f1858414",
+    "query_digest": {
+      "access_partition_id": "public",
+      "candidate_baseline_id": "monitor-baseline-50d107118f3f37b9c55d40f6ca77eed2",
+      "comparator_version": "stable_evidence_v1",
+      "comparison_status": "baseline_only",
+      "counts": {
+        "new": 0,
+        "removed": 0,
+        "revised": 0,
+        "unchanged": 0
+      },
+      "coverage": {
+        "gaps": [],
+        "sources": [
+          "x"
+        ],
+        "status": "complete"
+      },
+      "coverage_end": "2026-09-14T21:19:28.008158Z",
+      "coverage_scope": "bounded_cache_view_only",
+      "coverage_start": "2026-09-08T12:01:00Z",
+      "current_count": 1,
+      "current_head_id": "search-head-7614b7c3627a8b544a389a106657c274",
+      "digest_id": "digest-92097c1623e568b11b36bdb5fe3b27db",
+      "entries": [],
+      "knowledge_cutoff": "2026-09-14T21:19:28.008158Z",
+      "monitor_id": "dogfood-query",
+      "omitted_count": 0,
+      "prior_baseline_id": null,
+      "prior_count": 0,
+      "prior_head_id": null,
+      "renderer_version": "deterministic_v1",
+      "run_id": "monitor-run-590815312ab73872ccd485427ac97121",
+      "schema_version": 1
+    },
+    "state": "passed"
+  },
+  "owned_process_census": [],
+  "plan": "0121",
+  "provider_free": true,
+  "runtime_cycles": [
+    {
+      "before_down": {
+        "artifact": {
+          "manifest_sha256": "a733e03f8fbcde8fac314a48da28442d92f6f456cf83fcc9907b52a21be0076f",
+          "path": "/tmp/wi006-plan0121-ULyDNG/build-clock-fixed/last30days-service-0.3.119.tar.gz",
+          "sha256": "6ba2ec626ace8cd7a67b770d01d13dd628e7c9f81720736181e831e4ebece586"
+        },
+        "descriptor_digest": "f265458e5c4c77f5946a7d07dbb078a213974a732934c4d214116d1efeeee40f",
+        "process": {
+          "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+          "cmdline": [
+            "/home/ecochran76/workspace.local/last30days-skill-wi006-v5/.venv/bin/python3",
+            "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/artifacts/6ba2ec626ace8cd7a67b770d01d13dd628e7c9f81720736181e831e4ebece586/last30days-service-0.3.119/scripts/service.py",
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            "/tmp/wi006-plan0121-ULyDNG/run/cf1817be670a/s",
+            "--db",
+            "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/data/research.db"
+          ],
+          "executable": "/home/ecochran76/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12",
+          "pid": 2948984,
+          "start_ticks": 3978846,
+          "uid": 1000
+        },
+        "reasons": [],
+        "runtime_id": "l30d-p40-monitor-closeout-cf1817be670a",
+        "schema_version": 1,
+        "service_info": {
+          "capabilities": [
+            "cache_query",
+            "lexical_search",
+            "post_search",
+            "temporal_query",
+            "profile_history",
+            "event_timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend_query",
+            "coverage_query",
+            "saved_query_views",
+            "follow_capability_discovery"
+          ],
+          "compatibility_state": "mcp_client_not_declared",
+          "contract_schema_version": 1,
+          "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+          "database_schema_version": 18,
+          "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ],
+          "index": {
+            "document_count": 0,
+            "embedding_count": 0,
+            "embedding_model": "local-hash-v1",
+            "relationship_count": 0,
+            "version": "index-c165dbdd59a7436f454ac3db"
+          },
+          "limits": {
+            "default_top_k": 8,
+            "max_chars": 65536,
+            "max_top_k": 100
+          },
+          "mcp_adapter_version": null,
+          "mcp_supported_database_schema_max": null,
+          "mcp_supported_database_schema_min": null,
+          "mcp_supported_service_api_max": null,
+          "mcp_supported_service_api_min": null,
+          "product": "last30days",
+          "response_modes": [
+            "evidence",
+            "brief"
+          ],
+          "runtime_manifest_sha256": "a733e03f8fbcde8fac314a48da28442d92f6f456cf83fcc9907b52a21be0076f",
+          "schema_version": 1,
+          "service_api_version": 1,
+          "service_version": "0.3.119",
+          "sources": {
+            "x": {
+              "acquisition_ready": false,
+              "acquisition_status": "cache_only",
+              "configured": false,
+              "indexed_documents": 1,
+              "ready": true
+            }
+          },
+          "status": "ready",
+          "transport": "unix"
+        },
+        "socket_peer": {
+          "gid": 1000,
+          "pid": 2948984,
+          "uid": 1000
+        },
+        "state": "ready"
+      },
+      "down": {
+        "reasons": [],
+        "runtime_id": "l30d-p40-monitor-closeout-cf1817be670a",
+        "schema_version": 1,
+        "state": "stopped"
+      },
+      "service_info": {
+        "capabilities": [
+          "cache_query",
+          "lexical_search",
+          "post_search",
+          "temporal_query",
+          "profile_history",
+          "event_timeline",
+          "entity_dossier",
+          "event_dossier",
+          "trend_query",
+          "coverage_query",
+          "saved_query_views",
+          "follow_capability_discovery"
+        ],
+        "compatibility_state": "compatible",
+        "contract_schema_version": 1,
+        "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+        "database_schema_version": 18,
+        "freshness_policies": [
+          "cache_only",
+          "prefer_cache",
+          "refresh_if_stale",
+          "force_refresh"
+        ],
+        "index": {
+          "document_count": 0,
+          "embedding_count": 0,
+          "embedding_model": "local-hash-v1",
+          "relationship_count": 0,
+          "version": "index-c165dbdd59a7436f454ac3db"
+        },
+        "limits": {
+          "default_top_k": 8,
+          "max_chars": 65536,
+          "max_top_k": 100
+        },
+        "mcp_adapter_version": "4.0.7",
+        "mcp_supported_database_schema_max": 18,
+        "mcp_supported_database_schema_min": 18,
+        "mcp_supported_service_api_max": 1,
+        "mcp_supported_service_api_min": 1,
+        "product": "last30days",
+        "response_modes": [
+          "evidence",
+          "brief"
+        ],
+        "runtime_manifest_sha256": "a733e03f8fbcde8fac314a48da28442d92f6f456cf83fcc9907b52a21be0076f",
+        "schema_version": 1,
+        "service_api_version": 1,
+        "service_version": "0.3.119",
+        "sources": {
+          "x": {
+            "acquisition_ready": false,
+            "acquisition_status": "cache_only",
+            "configured": false,
+            "indexed_documents": 1,
+            "ready": true
+          }
+        },
+        "status": "ready",
+        "transport": "unix"
+      },
+      "startup": {
+        "artifact": {
+          "manifest_sha256": "a733e03f8fbcde8fac314a48da28442d92f6f456cf83fcc9907b52a21be0076f",
+          "path": "/tmp/wi006-plan0121-ULyDNG/build-clock-fixed/last30days-service-0.3.119.tar.gz",
+          "sha256": "6ba2ec626ace8cd7a67b770d01d13dd628e7c9f81720736181e831e4ebece586"
+        },
+        "descriptor_digest": "f265458e5c4c77f5946a7d07dbb078a213974a732934c4d214116d1efeeee40f",
+        "process": {
+          "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+          "cmdline": [
+            "/home/ecochran76/workspace.local/last30days-skill-wi006-v5/.venv/bin/python3",
+            "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/artifacts/6ba2ec626ace8cd7a67b770d01d13dd628e7c9f81720736181e831e4ebece586/last30days-service-0.3.119/scripts/service.py",
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            "/tmp/wi006-plan0121-ULyDNG/run/cf1817be670a/s",
+            "--db",
+            "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/data/research.db"
+          ],
+          "executable": "/home/ecochran76/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12",
+          "pid": 2948984,
+          "start_ticks": 3978846,
+          "uid": 1000
+        },
+        "reasons": [],
+        "runtime_id": "l30d-p40-monitor-closeout-cf1817be670a",
+        "schema_version": 1,
+        "service_info": {
+          "capabilities": [
+            "cache_query",
+            "lexical_search",
+            "post_search",
+            "temporal_query",
+            "profile_history",
+            "event_timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend_query",
+            "coverage_query",
+            "saved_query_views",
+            "follow_capability_discovery"
+          ],
+          "compatibility_state": "mcp_client_not_declared",
+          "contract_schema_version": 1,
+          "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+          "database_schema_version": 18,
+          "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ],
+          "index": {
+            "document_count": 0,
+            "embedding_count": 0,
+            "embedding_model": "local-hash-v1",
+            "relationship_count": 0,
+            "version": "index-c165dbdd59a7436f454ac3db"
+          },
+          "limits": {
+            "default_top_k": 8,
+            "max_chars": 65536,
+            "max_top_k": 100
+          },
+          "mcp_adapter_version": null,
+          "mcp_supported_database_schema_max": null,
+          "mcp_supported_database_schema_min": null,
+          "mcp_supported_service_api_max": null,
+          "mcp_supported_service_api_min": null,
+          "product": "last30days",
+          "response_modes": [
+            "evidence",
+            "brief"
+          ],
+          "runtime_manifest_sha256": "a733e03f8fbcde8fac314a48da28442d92f6f456cf83fcc9907b52a21be0076f",
+          "schema_version": 1,
+          "service_api_version": 1,
+          "service_version": "0.3.119",
+          "sources": {},
+          "status": "ready",
+          "transport": "unix"
+        },
+        "socket_peer": {
+          "gid": 1000,
+          "pid": 2948984,
+          "uid": 1000
+        },
+        "state": "ready"
+      }
+    },
+    {
+      "before_down": {
+        "artifact": {
+          "manifest_sha256": "a733e03f8fbcde8fac314a48da28442d92f6f456cf83fcc9907b52a21be0076f",
+          "path": "/tmp/wi006-plan0121-ULyDNG/build-clock-fixed/last30days-service-0.3.119.tar.gz",
+          "sha256": "6ba2ec626ace8cd7a67b770d01d13dd628e7c9f81720736181e831e4ebece586"
+        },
+        "descriptor_digest": "f265458e5c4c77f5946a7d07dbb078a213974a732934c4d214116d1efeeee40f",
+        "process": {
+          "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+          "cmdline": [
+            "/home/ecochran76/workspace.local/last30days-skill-wi006-v5/.venv/bin/python3",
+            "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/artifacts/6ba2ec626ace8cd7a67b770d01d13dd628e7c9f81720736181e831e4ebece586/last30days-service-0.3.119/scripts/service.py",
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            "/tmp/wi006-plan0121-ULyDNG/run/cf1817be670a/s",
+            "--db",
+            "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/data/research.db"
+          ],
+          "executable": "/home/ecochran76/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12",
+          "pid": 2949286,
+          "start_ticks": 3979106,
+          "uid": 1000
+        },
+        "reasons": [],
+        "runtime_id": "l30d-p40-monitor-closeout-cf1817be670a",
+        "schema_version": 1,
+        "service_info": {
+          "capabilities": [
+            "cache_query",
+            "lexical_search",
+            "post_search",
+            "temporal_query",
+            "profile_history",
+            "event_timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend_query",
+            "coverage_query",
+            "saved_query_views",
+            "follow_capability_discovery"
+          ],
+          "compatibility_state": "mcp_client_not_declared",
+          "contract_schema_version": 1,
+          "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+          "database_schema_version": 18,
+          "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ],
+          "index": {
+            "document_count": 1,
+            "embedding_count": 0,
+            "embedding_model": "local-hash-v1",
+            "relationship_count": 0,
+            "version": "index-58f76cc87e7951af92401d55"
+          },
+          "limits": {
+            "default_top_k": 8,
+            "max_chars": 65536,
+            "max_top_k": 100
+          },
+          "mcp_adapter_version": null,
+          "mcp_supported_database_schema_max": null,
+          "mcp_supported_database_schema_min": null,
+          "mcp_supported_service_api_max": null,
+          "mcp_supported_service_api_min": null,
+          "product": "last30days",
+          "response_modes": [
+            "evidence",
+            "brief"
+          ],
+          "runtime_manifest_sha256": "a733e03f8fbcde8fac314a48da28442d92f6f456cf83fcc9907b52a21be0076f",
+          "schema_version": 1,
+          "service_api_version": 1,
+          "service_version": "0.3.119",
+          "sources": {
+            "x": {
+              "acquisition_ready": false,
+              "acquisition_status": "cache_only",
+              "configured": false,
+              "indexed_documents": 1,
+              "ready": true
+            }
+          },
+          "status": "ready",
+          "transport": "unix"
+        },
+        "socket_peer": {
+          "gid": 1000,
+          "pid": 2949286,
+          "uid": 1000
+        },
+        "state": "ready"
+      },
+      "down": {
+        "reasons": [],
+        "runtime_id": "l30d-p40-monitor-closeout-cf1817be670a",
+        "schema_version": 1,
+        "state": "stopped"
+      },
+      "service_info": {
+        "capabilities": [
+          "cache_query",
+          "lexical_search",
+          "post_search",
+          "temporal_query",
+          "profile_history",
+          "event_timeline",
+          "entity_dossier",
+          "event_dossier",
+          "trend_query",
+          "coverage_query",
+          "saved_query_views",
+          "follow_capability_discovery"
+        ],
+        "compatibility_state": "compatible",
+        "contract_schema_version": 1,
+        "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+        "database_schema_version": 18,
+        "freshness_policies": [
+          "cache_only",
+          "prefer_cache",
+          "refresh_if_stale",
+          "force_refresh"
+        ],
+        "index": {
+          "document_count": 1,
+          "embedding_count": 0,
+          "embedding_model": "local-hash-v1",
+          "relationship_count": 0,
+          "version": "index-58f76cc87e7951af92401d55"
+        },
+        "limits": {
+          "default_top_k": 8,
+          "max_chars": 65536,
+          "max_top_k": 100
+        },
+        "mcp_adapter_version": "4.0.7",
+        "mcp_supported_database_schema_max": 18,
+        "mcp_supported_database_schema_min": 18,
+        "mcp_supported_service_api_max": 1,
+        "mcp_supported_service_api_min": 1,
+        "product": "last30days",
+        "response_modes": [
+          "evidence",
+          "brief"
+        ],
+        "runtime_manifest_sha256": "a733e03f8fbcde8fac314a48da28442d92f6f456cf83fcc9907b52a21be0076f",
+        "schema_version": 1,
+        "service_api_version": 1,
+        "service_version": "0.3.119",
+        "sources": {
+          "x": {
+            "acquisition_ready": false,
+            "acquisition_status": "cache_only",
+            "configured": false,
+            "indexed_documents": 1,
+            "ready": true
+          }
+        },
+        "status": "ready",
+        "transport": "unix"
+      },
+      "startup": {
+        "artifact": {
+          "manifest_sha256": "a733e03f8fbcde8fac314a48da28442d92f6f456cf83fcc9907b52a21be0076f",
+          "path": "/tmp/wi006-plan0121-ULyDNG/build-clock-fixed/last30days-service-0.3.119.tar.gz",
+          "sha256": "6ba2ec626ace8cd7a67b770d01d13dd628e7c9f81720736181e831e4ebece586"
+        },
+        "descriptor_digest": "f265458e5c4c77f5946a7d07dbb078a213974a732934c4d214116d1efeeee40f",
+        "process": {
+          "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+          "cmdline": [
+            "/home/ecochran76/workspace.local/last30days-skill-wi006-v5/.venv/bin/python3",
+            "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/artifacts/6ba2ec626ace8cd7a67b770d01d13dd628e7c9f81720736181e831e4ebece586/last30days-service-0.3.119/scripts/service.py",
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            "/tmp/wi006-plan0121-ULyDNG/run/cf1817be670a/s",
+            "--db",
+            "/tmp/wi006-plan0121-ULyDNG/state/last30days/lanes/l30d-p40-monitor-closeout-cf1817be670a/data/research.db"
+          ],
+          "executable": "/home/ecochran76/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12",
+          "pid": 2949286,
+          "start_ticks": 3979106,
+          "uid": 1000
+        },
+        "reasons": [],
+        "runtime_id": "l30d-p40-monitor-closeout-cf1817be670a",
+        "schema_version": 1,
+        "service_info": {
+          "capabilities": [
+            "cache_query",
+            "lexical_search",
+            "post_search",
+            "temporal_query",
+            "profile_history",
+            "event_timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend_query",
+            "coverage_query",
+            "saved_query_views",
+            "follow_capability_discovery"
+          ],
+          "compatibility_state": "mcp_client_not_declared",
+          "contract_schema_version": 1,
+          "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+          "database_schema_version": 18,
+          "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ],
+          "index": {
+            "document_count": 1,
+            "embedding_count": 0,
+            "embedding_model": "local-hash-v1",
+            "relationship_count": 0,
+            "version": "index-58f76cc87e7951af92401d55"
+          },
+          "limits": {
+            "default_top_k": 8,
+            "max_chars": 65536,
+            "max_top_k": 100
+          },
+          "mcp_adapter_version": null,
+          "mcp_supported_database_schema_max": null,
+          "mcp_supported_database_schema_min": null,
+          "mcp_supported_service_api_max": null,
+          "mcp_supported_service_api_min": null,
+          "product": "last30days",
+          "response_modes": [
+            "evidence",
+            "brief"
+          ],
+          "runtime_manifest_sha256": "a733e03f8fbcde8fac314a48da28442d92f6f456cf83fcc9907b52a21be0076f",
+          "schema_version": 1,
+          "service_api_version": 1,
+          "service_version": "0.3.119",
+          "sources": {
+            "x": {
+              "acquisition_ready": false,
+              "acquisition_status": "cache_only",
+              "configured": false,
+              "indexed_documents": 1,
+              "ready": true
+            }
+          },
+          "status": "ready",
+          "transport": "unix"
+        },
+        "socket_peer": {
+          "gid": 1000,
+          "pid": 2949286,
+          "uid": 1000
+        },
+        "state": "ready"
+      }
+    }
+  ],
+  "schema_version": 1,
+  "source_commit": "283da4dc95caebe11480c44d24c705a5e692e572",
+  "state": "passed",
+  "synthetic_only": true,
+  "work_item": "WI-006"
+}

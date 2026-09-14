@@ -356,3 +356,69 @@ canonical integration remain coordinator-owned.
 Next action: publish the clean corrected fixture checkpoint, build the exact
 artifact, execute the packaged probe once, preserve the receipt and run final
 focused/full/package/audit acceptance without widening effect authority.
+
+### Checkpoint P0121-C08 | 2026-09-14
+
+Plan version: 1
+
+State transition: `joined_runtime_acceptance_ready -> acceptance_eligible`;
+plan remains OPEN pending independent joined review and canonical integration.
+
+Progress classification: `outcome_progress`; all executable acceptance tiers
+pass on clean published source `283da4dc95caebe11480c44d24c705a5e692e572`.
+This checkpoint adds only evidence custody and this append-only progress record.
+
+Authority classification:
+
+- `inherited_authority` covered exactly one guarded packaged monitor probe,
+  focused/full/package/audit checks, receipt retention and lane publication;
+- `human_gate` remains held for providers, models, browsers, live/installed
+  state, schedules, real delivery, issues, release and deployment.
+
+Runtime evidence:
+
+- The single packaged probe passed; it was not retried. Exact retained receipt:
+  `docs/dev/notes/0121-2026-09-14-monitor-product-closeout-receipt.json`, SHA256
+  `58ab6130f4e13dc26485a2c68a4d837f843ec368d9d98ff743d28154aff5fe96`.
+- Artifact `last30days-service-0.3.119.tar.gz` SHA256
+  `6ba2ec626ace8cd7a67b770d01d13dd628e7c9f81720736181e831e4ebece586`;
+  independently rebuilt bytes match exactly. Artifact and original receipt
+  remain under `/tmp/wi006-plan0121-ULyDNG`; the retained JSON binds source,
+  artifact, manifest, MCP binary, runtime owner identities and both cycles.
+- Both cycles reported service0.3.119/MCP4.0.7 compatible; query/follow digest,
+  explicit baseline, disabled intent, strict denials and CLI/HTTP/MCP parity
+  passed. Restart preserved immutable digest/intent readback. Non-monitor
+  ledgers retained digest
+  `24340d06b54175848db8893e6146f84170ebedc2d2351340a9f03422f1858414`.
+- Final controller state is `absent`, both down receipts are `stopped`, and
+  owned-process census is empty. A fresh OS `ps` readback independently found
+  none of service PIDs 2948984/2949286 or MCP PIDs 2949080/2949289 present.
+  No installed runtime was changed and no external delivery occurred.
+
+Validation on the joined source checkpoint:
+
+- Focused monitor/probe tier: 47 passed in 10.85 seconds, including the fresh
+  HTTP/MCP case; no guarded transport skip remains.
+- Full safe Python suite: 3102 passed, 8 skipped, 14 subtests passed in 219.10
+  seconds (`uv run pytest -q -o addopts='' --tb=short`). Source stayed unchanged
+  throughout this acceptance run; earlier diagnostic failures remain above.
+- Explicit package/lifecycle tier: 18 passed in 30.83 seconds.
+- Go `test ./...`, `vet ./...` and `generate ./...` passed; generated files
+  produced no tracked diff.
+- Cached local Ruff0.16.7 checked all new lane modules and focused tests with
+  no findings. `uv run ruff` initially found no lane-installed executable;
+  using the existing local cached binary needed no install or network access.
+- Repo-native authority audit passed with zero issues; active planning audit
+  returned `ok=true`, no problems and no unused baseline findings. Diff
+  whitespace checks passed.
+
+Subagent status and reconciliation: `/root/wave4_wi003_plan`, one owner, no
+children. Requested gpt-6-astra/high; effective model/effort runtime-unknown.
+One incremental implementation attempt and bounded joined corrections only.
+No code joins remain identified. Independent review, canonical integration,
+WI-006/P40 authority reconciliation and final plan closure are coordinator-owned.
+
+Next action: publish this evidence-only checkpoint clean and remote-equal;
+coordinator reviews and merges exact custody, then marks WI-006 DONE only if
+all acceptance criteria remain satisfied. Preserve this branch/worktree and
+all runtime evidence; no cleanup or external-effect authority is implied.
