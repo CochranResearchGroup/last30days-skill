@@ -137,3 +137,60 @@ remote equality, then stop. Resume only in this worktree with provider-free
 implementation of the typed account tracer; first re-read current lane
 overlaps, reconcile shared surfaces through the coordinator, and do not cross
 any listed effect boundary.
+
+### Checkpoint P0109-C02 | 2026-09-14
+
+Plan version: 1
+
+State: `OPEN`; Packet 2 is implementation- and provider-free-acceptance
+complete on this lane, pending coordinator review and integration.
+
+Progress classification: `outcome_progress`; a durable collection run now
+freezes its spec revision, typed selector, target identity, attention class,
+and access partition into an acquisition work request. X `account` work uses
+the dedicated account timeline route rather than topic search, and publication
+uses that frozen context to retain separate feed and account sightings for one
+document version.
+
+Implementation and validation evidence:
+
+- reconciled canonical base: `origin/main` at
+  `8a3b726918bcb5055db2294c897691a2171fa24c`; this lane preserves its prior
+  activation through merge `b2f0b8ec5ac796cb7ddff9474b76eb86cb28a1b5`;
+- `AcquisitionWorkRequest` has an optional, exact-field validated immutable
+  collection context; the job runner builds it only from a durable collection
+  run and publication rejects any context that disagrees with that run or its
+  frozen spec revision;
+- `scrape_x_account` navigates the canonical account timeline, preserves the
+  existing authenticated failure projection, maps unavailable targets to a
+  permanent safe outcome, and accepts only posts whose rendered author matches
+  the canonical requested handle;
+- focused provider-free validation passed:
+  `uv run pytest tests/test_service_contracts.py tests/test_service_acquisition_worker.py tests/test_service_collection.py tests/test_service_publication.py tests/test_service_migrations.py tests/test_service_product.py -q`;
+  `uv run pytest tests/test_x_browser.py -q`; and `git diff --check`;
+- added focused fixtures prove context round-trip, account adapter dispatch
+  without topic search, and idempotent same-version multi-cause feed/account
+  sightings. No browser, profile, provider, installed database/runtime,
+  schedule, generated catalog/runtime manifest, or coordinator-owned authority
+  was changed.
+
+Authority and residual risk:
+
+- `inherited_authority` covers only the provider-free source, temporary test
+  database, branch checkpoint, and publication work in this packet;
+- CodeGraph remains unavailable because this worktree has no `.codegraph/`
+  index and the repository instruction requires approval before initializing
+  it; the implementation used direct source evidence instead;
+- a comprehensive Python suite was started after focused acceptance but its
+  terminal result was not captured by the tool window, so it is not claimed as
+  validation evidence; coordinator-owned generated catalog/runtime manifests
+  remain intentionally unmodified;
+- list routing, scheduler closure, live X/browser/profile/provider effects,
+  installed runtime/database or schedule changes, issue/PR actions, release,
+  staging, production, and WI-005 remain excluded.
+
+Subagent status: `not_spawned`; this packet prohibits subagents.
+
+Next action or stop reason: self-review the exact branch diff, publish the
+acceptance checkpoint, verify remote equality, and stop for coordinator review
+and integration. Do not start Packet 3.

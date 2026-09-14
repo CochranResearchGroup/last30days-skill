@@ -499,6 +499,23 @@ class AcquisitionJobRunner:
                 )
                 reserved_cost = SOURCE_COST_RESERVATIONS_CENTS.get(source, 0)
             remaining_budget = job.budget_cents - job.spent_cents
+            collection_context = None
+            if collection_policy:
+                selector = collection_policy.get("selector")
+                if not isinstance(selector, Mapping):
+                    raise RuntimeError("collection policy selector is invalid")
+                collection_context = {
+                    "collection_spec_id": str(collection_policy["collection_spec_id"]),
+                    "spec_version": int(collection_policy["spec_version"]),
+                    "collection_run_id": str(collection_policy["_collection_run_id"]),
+                    "collection_purpose": str(collection_policy["collection_purpose"]),
+                    "surface_kind": str(collection_policy["surface_kind"]),
+                    "selector": dict(selector),
+                    "selector_digest": str(collection_policy["selector_digest"]),
+                    "follow_target_id": collection_policy.get("follow_target_id"),
+                    "attention_class": str(collection_policy["attention_class"]),
+                    "access_partition_id": str(collection_policy["access_partition_id"]),
+                }
             work = contracts.AcquisitionWorkRequest.from_dict(
                 {
                     "schema_version": contracts.SCHEMA_VERSION,
@@ -555,6 +572,7 @@ class AcquisitionJobRunner:
                         if collection_policy
                         else "topic"
                     ),
+                    "collection_context": collection_context,
                 }
             )
             if reserved_cost > remaining_budget:

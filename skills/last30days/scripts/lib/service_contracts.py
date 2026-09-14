@@ -1826,6 +1826,86 @@ class ServiceInfo:
 
 
 @dataclass(frozen=True)
+class CollectionContext:
+    """Frozen, typed collection cause carried through one worker attempt."""
+
+    collection_spec_id: str
+    spec_version: int
+    collection_run_id: str
+    collection_purpose: str
+    surface_kind: str
+    selector: dict[str, str]
+    selector_digest: str
+    follow_target_id: str | None
+    attention_class: str
+    access_partition_id: str
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> CollectionContext:
+        fields = frozenset(
+            {
+                "collection_spec_id", "spec_version", "collection_run_id",
+                "collection_purpose", "surface_kind", "selector",
+                "selector_digest", "follow_target_id", "attention_class",
+                "access_partition_id",
+            }
+        )
+        _require_exact_fields(payload, required=fields)
+        surface_kind = _require_non_empty_string(payload["surface_kind"], "collection_context.surface_kind")
+        selector_field = {
+            "feed": "feed", "topic": "topic", "account": "account",
+            "list": "list_id", "poster": "poster", "channel": "channel",
+            "profile": "profile",
+        }.get(surface_kind)
+        selector = payload["selector"]
+        if (
+            selector_field is None
+            or not isinstance(selector, Mapping)
+            or set(selector) != {selector_field}
+            or not isinstance(selector.get(selector_field), str)
+            or not str(selector[selector_field]).strip()
+        ):
+            raise ContractValidationError("collection_context selector is invalid")
+        purpose = _require_non_empty_string(payload["collection_purpose"], "collection_context.collection_purpose")
+        if purpose not in {"general", "tailored_follow"}:
+            raise ContractValidationError("collection_context collection_purpose is invalid")
+        attention = _require_non_empty_string(payload["attention_class"], "collection_context.attention_class")
+        if attention not in {"standard", "priority"}:
+            raise ContractValidationError("collection_context attention_class is invalid")
+        target_id = payload["follow_target_id"]
+        if target_id is not None:
+            target_id = _require_bounded_string(target_id, "collection_context.follow_target_id", 128)
+        if purpose == "tailored_follow" and target_id is None:
+            raise ContractValidationError("tailored collection_context requires follow_target_id")
+        return cls(
+            collection_spec_id=_require_bounded_string(payload["collection_spec_id"], "collection_context.collection_spec_id", 128),
+            spec_version=_require_integer_between(payload["spec_version"], "collection_context.spec_version", 1, 1_000_000),
+            collection_run_id=_require_bounded_string(payload["collection_run_id"], "collection_context.collection_run_id", 128),
+            collection_purpose=purpose,
+            surface_kind=surface_kind,
+            selector={selector_field: str(selector[selector_field])},
+            selector_digest=_require_bounded_string(payload["selector_digest"], "collection_context.selector_digest", 128),
+            follow_target_id=target_id,
+            attention_class=attention,
+            access_partition_id=_require_bounded_string(payload["access_partition_id"], "collection_context.access_partition_id", 128),
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "collection_spec_id": self.collection_spec_id,
+            "spec_version": self.spec_version,
+            "collection_run_id": self.collection_run_id,
+            "collection_purpose": self.collection_purpose,
+            "surface_kind": self.surface_kind,
+            "selector": dict(self.selector),
+            "selector_digest": self.selector_digest,
+            "follow_target_id": self.follow_target_id,
+            "attention_class": self.attention_class,
+            "access_partition_id": self.access_partition_id,
+        }
+
+
+@dataclass(frozen=True)
 class AcquisitionWorkRequest:
     """Bounded authority granted to one isolated source worker attempt."""
 
@@ -1847,6 +1927,7 @@ class AcquisitionWorkRequest:
     network_request_limit: int
     cost_budget_cents: int
     surface_kind: str = "topic"
+    collection_context: CollectionContext | None = None
 
     CONTRACT_NAME: ClassVar[str] = "acquisition_work_request"
 
@@ -1878,7 +1959,7 @@ class AcquisitionWorkRequest:
         _require_exact_fields(
             payload,
             required=fields,
-            optional=frozenset({"surface_kind"}),
+            optional=frozenset({"surface_kind", "collection_context"}),
         )
         depth = _require_non_empty_string(payload["depth"], "depth")
         if depth not in {"quick", "standard", "deep"}:
@@ -1890,6 +1971,13 @@ class AcquisitionWorkRequest:
             "feed", "topic", "poster", "channel", "account", "profile"
         }:
             raise ContractValidationError("surface_kind is unsupported")
+        collection_context = payload.get("collection_context")
+        if collection_context is not None:
+            if not isinstance(collection_context, Mapping):
+                raise ContractValidationError("collection_context must be an object")
+            collection_context = CollectionContext.from_dict(collection_context)
+            if collection_context.surface_kind != surface_kind:
+                raise ContractValidationError("collection_context surface_kind does not match request")
         return cls(
             schema_version=_validate_schema_version(payload["schema_version"]),
             work_id=_require_bounded_string(payload["work_id"], "work_id", 128),
@@ -1934,6 +2022,7 @@ class AcquisitionWorkRequest:
                 10_000_000,
             ),
             surface_kind=surface_kind,
+            collection_context=collection_context,
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -1958,6 +2047,8 @@ class AcquisitionWorkRequest:
         }
         if self.surface_kind != "topic":
             payload["surface_kind"] = self.surface_kind
+        if self.collection_context is not None:
+            payload["collection_context"] = self.collection_context.to_dict()
         return payload
 
 

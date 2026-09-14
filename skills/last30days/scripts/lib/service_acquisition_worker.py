@@ -77,6 +77,7 @@ _PERMANENT_ERRORS = frozenset(
         "unsafe_media_url",
         "wall_time_budget_exhausted",
         "media_redirect_limit_exceeded",
+        "target_unavailable",
     }
 )
 _RENDERED_PAGE_ERRORS = frozenset(
@@ -191,6 +192,15 @@ def _x_adapter(
 
     if request.surface_kind == "feed":
         return _account_opaque_source_request(x_browser.scrape_x_feed(
+            request.from_date,
+            request.to_date,
+            depth=_depth(request.depth),
+            config=dict(config),
+            limit=request.item_limit,
+        ))
+    if request.surface_kind == "account":
+        return _account_opaque_source_request(x_browser.scrape_x_account(
+            request.query,
             request.from_date,
             request.to_date,
             depth=_depth(request.depth),
