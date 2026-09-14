@@ -204,3 +204,96 @@ guided one behavioral tracer at a time behind the application interface.
 Next action: publish this coherent application checkpoint for coordinator
 transport implementation, then finish bounded lane-owned adversarial/probe
 coverage without editing any shared join surface.
+
+### Checkpoint P0117-C04 | 2026-09-14
+
+Plan version: 1
+
+State transition: `application_checkpoint -> lane_source_accepted_pending_join`;
+plan remains `OPEN` because public transport, generated artifacts, exact-runtime
+acceptance, independent review and canonical integration are coordinator joins.
+
+Progress classification: `outcome_progress`; the provider-free host interface,
+adversarial public-application tests and reusable runtime probe are complete.
+
+Authority classification:
+
+- `inherited_authority` covers the assigned question source/tests, repo-only
+  probe, plan and feature publication under Plan 0107;
+- all shared app/HTTP/client/CLI/MCP, schema/catalog, version/manifest, product
+  docs and portfolio authority files remain coordinator-owned and unchanged;
+- no provider, model, browser, installed service/database, live data, schedule,
+  delivery, release, deployment or issue mutation occurred. No isolated service
+  process was started by this lane; injected workers ran only in test threads.
+
+Source evidence and regression mapping:
+
+- first coherent source checkpoint `a9cfa8b12e64745dc768b086484bccce6d442bed`
+  was published clean and live-remote-equal for the coordinator's transport join;
+- public request identifiers now use a host-derived profile namespace. The
+  reproducer first leaked the other profile's request-id collision, then passed
+  independent profile admission, same-profile conflict and revoked-scope denial;
+- an otherwise valid Unicode worker answer first exceeded the 128 KiB public
+  envelope. It now persists a compact, non-retryable `answer_too_large` result
+  with a 4 KiB status-envelope reserve; the immutable result remains readable;
+- evidence-only overflow first returned an answer error without the matching
+  task error. Host completion now persists the same terminal failure receipt;
+- one-character direct answers remain durable; no-evidence results retain
+  `no_evidence`. Unsupported temporal meanings remain explicit errors and all
+  eight accepted search filters are preserved;
+- wait cancellation ends only the bounded caller wait. It does not rewrite
+  the durable request, grant retries or pretend to terminate worker execution;
+- the new question probe verifies flat strict discovery, six question cases,
+  exact HTTP/MCP answer/status/evidence parity, profile denial, temporal denial,
+  expected question-ledger-only writes, immutable reads after restart and exact
+  runtime/MCP ownership teardown. Its two-cycle runtime path is prepared but
+  unrun until the coordinator's joined artifact exists;
+- probe integrity tests reject a forged answer digest and distinguish expected
+  question-ledger writes from corpus mutation. Its real HTTP/fresh-MCP test is
+  explicitly skipped while the coordinator-owned client method is absent and
+  will execute automatically against the joined source.
+
+Validation:
+
+- `uv run pytest tests/test_service_question_application.py
+  tests/test_question_dogfood.py tests/test_service_question_contracts.py
+  tests/test_service_question_evidence.py tests/test_service_questions.py
+  tests/test_service_question_worker.py tests/test_service_post_search.py
+  tests/test_service_post_search_ranking.py tests/test_service_monitor_views.py
+  --override-ini addopts='' -q`: 128 passed, one coordinator-transport skip in
+  24.81 seconds;
+- the 15 application cases and existing Packet 1-3/corrective tests exercise
+  current real search/storage plus deterministic injected workers;
+- offline Ruff 0.16.7 checks the four new application/probe/test files; direct
+  Python compilation and `git diff --check` pass;
+- the first plan audit found C03's inline authority wording did not match the
+  auditor's latest-checkpoint header contract. This append supplies the exact
+  required header without rewriting historical evidence;
+- full Python, Go, catalog generation, package/lifecycle, reproducible builds
+  and runtime acceptance remain joined-head gates. The source manifest is
+  intentionally untouched and cannot yet package the new application module.
+
+Coordinator joins and exact next action:
+
+1. Merge this lane's published tip without rewriting its accepted ancestry.
+   Public method/exception types remain those recorded at C03; internal request
+   ID namespacing and durable size rejection do not change the transport shape.
+2. Join the shared transports, public contract catalog, compatible adapter
+   identity, source manifest, Skill/configuration guidance and CLI. Current
+   Python join `6f445309` was reported by the coordinator and was not modified
+   or claimed validated by this lane.
+3. Run `tests/test_question_dogfood.py` after the complete HTTP/MCP join; its
+   guarded test must pass rather than skip. Build and publish one exact clean
+   source artifact, then run `dev/last30days/scripts/question_dogfood.py` with
+   that artifact, exact worktree, and fresh isolated state/runtime roots. The
+   probe rejects existing lane state and writes its raw receipt under the
+   isolated controller's receipts directory. Retain that receipt in the
+   repo-approved receipts path with digest and exact source/artifact identity.
+4. Complete the full joined validation and independent review, preserve failed
+   receipts, verify teardown with a fresh OS census, integrate through the
+   owned-fork PR workflow and reconcile WI-003 only then.
+
+WI-003 is acceptance-eligible after those joins and evidence pass. It is not
+`DONE` from this source checkpoint alone. Effective model/effort remain unknown.
+No children; one implementation attempt used; independent review and its one
+closed-world remediation remain coordinator-owned and unconsumed here.
