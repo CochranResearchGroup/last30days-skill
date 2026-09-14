@@ -30437,3 +30437,65 @@ Next Bounded Action:
 
 - validate and integrate registration, then create and reconcile exact
   activation-only branch custody before implementation begins.
+
+## Turn 489 | 2026-09-14
+
+Focus: reconcile exact Wave 3 plan-only activation checkpoints into canonical
+lane custody.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`;
+`docs/dev/plans/0114-2026-09-14-post-search-runtime-closeout.md`;
+`docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md`;
+`docs/dev/plans/0116-2026-09-14-saved-query-composition.md`.
+
+Authority Consulted:
+
+- Plan 0107; Plans 0114-0116 at exact remote refs; P33/P39/P40/P52;
+  WI-002/WI-005/WI-006; current Git/worktree/remote evidence and planning,
+  work-item, lane, model, validation, and integration policy.
+
+Decisions And Changes:
+
+- accepted remote-equal activation checkpoints `81cbfc09`, `337866e0`, and
+  `d764f257` from three one-level owners;
+- moved P33/P39/P40 and WI-002/WI-005/WI-006 to `OPEN`/`IN_PROGRESS`, with
+  exact plans, branches, owners, refs, dependencies, and expected write sets;
+- retained shared contracts, transport, catalogs, manifests, runtime joins,
+  roadmap, runbook, work items, and active-lane reconciliation for coordinator.
+
+Custody Correction:
+
+- three activation merges were accidentally issued in the local canonical
+  checkout after the intended worktree was created. No remote ref changed;
+- exact merged tip `af647954` was preserved on both the intended activation
+  branch and `recovery/wave3-activation-misroute`, then canonical main was
+  restored clean and remote-equal at `bf12c730` before projection edits.
+
+Validation Evidence:
+
+- each activation changed only its plan and is clean with local, tracking, and
+  live remote refs equal; plan and diff checks pass;
+- canonical main is clean and equal to `origin/main`; activation projection
+  audits remain to run before its reviewed PR.
+
+State Movement:
+
+- Plans 0114-0116 `PLANNED -> OPEN` on exact branch refs;
+- P33/P39/P40 `PLANNED -> OPEN`;
+- WI-002/WI-005/WI-006 `READY -> IN_PROGRESS`;
+- Plan 0107 `wave_3_registration_ready -> wave_3_activated`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; all three activation-only agents completed and remain idle until
+  this coordinator projection integrates.
+
+Graphiti Write Status:
+
+- `not_written`; exact repository and remote evidence is authoritative.
+
+Next Bounded Action:
+
+- validate and merge this activation projection, then resume the three frozen
+  provider-free implementation packets with no nested agents.

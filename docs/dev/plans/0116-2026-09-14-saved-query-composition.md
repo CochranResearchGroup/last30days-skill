@@ -111,7 +111,7 @@ Custody and topology:
   remain two attempts, one independent review, one closed-world remediation;
   this activation consumes no implementation attempt.
 
-Authority classification and held evidence:
+Authority classification:
 
 - `inherited_authority` for this turn is limited by the coordinator's explicit
   assignment to editing this plan, validating it, committing, publishing this

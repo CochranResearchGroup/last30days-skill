@@ -1,13 +1,15 @@
 <!-- last30days-work-item:WI-005 -->
 # Extend tailored follows across supported services
 
-State: READY
+State: IN_PROGRESS
 Priority: P2
 Lane: Follows
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/58
 Blocked by: none for Packet 1; later provider tracers and product closure remain
-Planned plan: docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md
+Active plan: docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md
+Branch: feat/cross-service-follow-capabilities-v1
+Owner: /root/wi004_packet3_planning
 
 ## Problem
 
@@ -57,3 +59,6 @@ target envelope, exact X compatibility, legacy quarantine, and fake-adapter
 tests. It remains `PLANNED` until exact branch/worktree custody is published.
 Do not start a job, resolve a live locator, open a browser, or mutate an
 installed runtime.
+
+Activation checkpoint `337866e0` is published and awaits coordinator custody
+reconciliation before implementation begins.

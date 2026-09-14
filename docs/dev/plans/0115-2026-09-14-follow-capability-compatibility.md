@@ -101,9 +101,9 @@ Custody:
   to its same-named owned-fork branch and its exact remote equality verified
   before any implementation resumes.
 
-Authority and held implementation boundary:
+Authority classification:
 
-- inherited authority covers only this branch-local plan activation, later
+- `inherited_authority` covers only this branch-local plan activation, later
   provider-free source/tests, branch publication, bounded review, and
   coordinator integration under Plan 0107 and WI-005;
 - this activation authorizes no product implementation. The next implementation

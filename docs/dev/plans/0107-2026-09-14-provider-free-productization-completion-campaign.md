@@ -496,6 +496,50 @@ Next action:
   merge, publish plan-only activation checkpoints, reconcile lane custody, then
   launch all three bounded implementation owners.
 
+### Checkpoint P0107-C10 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_3_registration_ready -> wave_3_activated`.
+
+Progress classification: `outcome_progress`; three owners published clean,
+remote-equal plan-only activation checkpoints from canonical `bf12c730`.
+
+Activation evidence:
+
+- P33/Plan 0114: `81cbfc09b197b8cde325e468e79d19115d4fc4fb`;
+- P39/Plan 0115: `337866e0853b2458084cc05e616701038e43f470`;
+- P40/Plan 0116: `d764f2579e1e088d8ce4678e14fa5c489c742480`.
+
+Authority classification:
+
+- `inherited_authority` covers exact activation reconciliation and the three
+  frozen provider-free implementation packets;
+- plans and work items move to `OPEN`/`IN_PROGRESS` only through this
+  coordinator projection; implementation remains held until it integrates;
+- shared transport, catalogs, manifests, authority, and every excluded live or
+  installed effect remain coordinator-owned and gated.
+
+Custody correction:
+
+- the coordinator initially ran the three local activation merges from the
+  canonical checkout after creating the intended worktree. Nothing was pushed;
+- exact tip `af647954` was first fast-forwarded onto the intended
+  `docs/provider-free-wave3-activation` branch and preserved on
+  `recovery/wave3-activation-misroute`; canonical `main` was then restored
+  clean and equal to `origin/main` at `bf12c730` without discarding a commit;
+- this projection is authored only from the intended activation worktree.
+
+Subagent status and reconciliation:
+
+- `joined`; all three activation-only tasks completed and are idle pending
+  canonical reconciliation.
+
+Next action:
+
+- validate and merge this activation projection, then resume the same three
+  owners for implementation with no nested agents.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;
