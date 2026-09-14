@@ -138,3 +138,42 @@ Subagent status and reconciliation:
 
 Next action: publish this activation checkpoint, reconcile canonical custody,
 then implement the read-only adapters test-first within the lane write set.
+
+### Checkpoint P0119-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> OPEN`; Packet 2 implementation checkpoint accepted
+on the isolated lane, pending independent review and coordinator integration.
+
+Progress classification: `acceptance_met`; real acquisition, corpus, and
+retrieval adapters bind their digest-pinned synthetic SQLite fixture and
+adapter identity into the deterministic v2 report. Coverage fails closed for
+partial, stale, unavailable, and unknown opportunity evidence; corpus checks
+digest, current-revision, canonical-identity, provenance, and partition
+closure; retrieval exercises the existing PostSearchBackend's authorization,
+source filter, page cursor, revision, and provenance contracts.
+
+Validation receipt:
+
+- red test: real-adapter import was absent before implementation;
+- `uv run pytest tests/test_service_quality.py tests/test_service_quality_real_adapters.py -q` -> `13 passed`;
+- `POST_SEARCH_PERFORMANCE=1 uv run pytest tests/test_service_post_search_performance.py -q` -> `1 passed`;
+- `uv run python -m compileall -q dev/last30days/quality dev/last30days/scripts/evaluate_service_quality.py` -> pass;
+- `git diff --check` -> pass.
+
+Effect receipt: provider, model, browser, live/installed service, runtime,
+CI, schedule, release, deployment, and tracker effects remain zero. The
+fixture adapter opens only a supplied synthetic SQLite path with `mode=ro` and
+`PRAGMA query_only=ON`; it performs no repair or write.
+
+Deferred gate: WI-003 remains unresolved. Answer/citation grounding is neither
+evaluated nor implied by this packet, and WI-008 cannot transition to `DONE`.
+
+Coordination exception: the active-plan audit remains false only because its
+coordinator-owned `RUNBOOK.md` wiring has not yet been added for Plans 0117,
+0118, and 0119. This lane did not edit that authority surface.
+
+Next action: independent provider-free review, coordinator runbook
+reconciliation, then merge-only integration if all lane and authority checks
+remain accepted.
