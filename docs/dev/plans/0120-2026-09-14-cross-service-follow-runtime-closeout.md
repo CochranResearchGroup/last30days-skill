@@ -9,7 +9,7 @@ Integration: merge
 Roadmap: P39
 Plan version: 1
 Date: 2026-09-14
-Execution owner: unassigned
+Execution owner: /root/wave4_wi005_plan
 Coordination owner: /root
 Requested model route: gpt-6-astra, high reasoning
 Effective runtime model: unknown until reported
@@ -125,3 +125,73 @@ Subagent status and reconciliation: `assigned`; `/root/wave4_wi005_plan`, one
 owner, no children. Implementation waits for activation reconciliation.
 
 Next action: publish this plan-only checkpoint and return exact custody.
+
+### Checkpoint P0120-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `implementation_ready -> source_probe_ready`; plan remains
+`OPEN` pending exact packaged-runtime proof, joined review and integration.
+
+Progress classification: `outcome_progress`; the repo-only probe prepares
+synthetic native follow evidence and crosses real HTTP, CLI and fresh MCP
+read interfaces with per-operation no-mutation checks.
+
+Authority classification:
+
+- `inherited_authority`: the coordinator's implementation assignment covers
+  only the declared probe/tests/receipt/plan and one WI-001 isolated cache-only
+  acceptance run; every external-effect Non-Goal remains excluded;
+- exact clean activation was `a660a51cc0177cea258ddda94e5df215b1ac2e8e`,
+  independently equal to the owned-fork branch before edits;
+- coordinator fix `57ecad583a5e285b2cbc3d524d37fafc6293ae65` was
+  cherry-picked unchanged as `3d4b78a5`. No shared file was independently edited.
+
+Evidence and disposition:
+
+- TDD and codebase-design skills guided public-seam tracer tests. Initial RED
+  showed the absent probe; synthetic preparation then passed with three
+  versions, six sightings, four injected native transport calls and zero
+  external effects. The private decoy uses a distinct native post because
+  same-content cross-partition publication correctly fails closed. A separate
+  historical target avoids the active-follow uniqueness constraint;
+- DNS, socket connects and child-process creation are denied during fixture
+  preparation. Mutation and forged-history probes fail deliberately; existing
+  fixture state and source/artifact mismatch are rejected before acceptance;
+- real HTTP exposed missing collection authority in cache-only composition.
+  This was handed to the coordinator, not bypassed. The joined stock-service
+  subprocess regression now passes; all lifecycle mutations remain denied;
+- focused harness: eight tests passed in 14.22 seconds; expanded follow,
+  controller, package and process selection: 78 passed in 25.32 seconds;
+- Go tests and vet pass; focused Ruff passes. Full Python and exact packaged
+  acceptance are not yet claimed run;
+- public checks cover seven authorized collections, eight exact-filter and
+  partition cases, native/general overlap, preserved X and native history,
+  frozen revision-one work bound to current revision-three readback, private
+  provenance exclusion, and six cache-only collection/job effect denials;
+- CLI readback is explicitly the direct-database operator interface against
+  the disposable fixture. It is not claimed to implement profile-scoped HTTP
+  authorization, and no mutating CLI command is used.
+
+Bounds and invalidation map:
+
+- one owner, no children; first of at most two implementation attempts;
+- one acceptance run consists of two deliberate sequential service/MCP cycles,
+  with a 180-second overall watchdog and bounded client/process calls;
+- source/artifact mismatch invalidates identity and corresponding runtime
+  claims; unexpected writes or partition disclosure invalidates affected
+  correctness claims; cleanup failure makes overall acceptance incomplete
+  without erasing unaffected captured product evidence;
+- comprehensive validation has a 600-second ceiling. No benchmark, provider,
+  installed-runtime or schedule experiment is added;
+- independent review and any closed-world remediation remain coordinator-owned
+  under inherited campaign accounting. Requested route is gpt-6-astra/high;
+  effective runtime model/effort is unknown.
+
+Subagent status and reconciliation: `active`; this assigned owner has no
+children. The one shared composition defect is joined and no other shared
+change is currently required.
+
+Next action: validate and publish the clean source checkpoint, build it twice
+offline, run the exact two-cycle acceptance, retain the raw receipt, and return
+the published evidence for coordinator review and canonical integration.
