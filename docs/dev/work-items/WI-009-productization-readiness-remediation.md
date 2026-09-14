@@ -66,7 +66,7 @@ Pull requests follow the normal collaborative integration workflow.
 
 ## Next Owner Action
 
-Execute Plan 0103 on `fix/question-contract-repair-v1` for only the two accepted
-question-answering defects. Keep P35 reconciliation serialized behind that
-repair because both touch the service contract and application integration
-surface.
+Plan 0103 and PR 64 closed both accepted question-answering defects. Create the
+next bounded P51 packet to reconcile P35 from current canonical main, rerun the
+combined product validation, and integrate it through the normal owned-fork
+pull-request workflow without crossing any runtime or provider gate.

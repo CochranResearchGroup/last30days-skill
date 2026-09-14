@@ -4,20 +4,20 @@ lanes:
     objective: Repair the two accepted question-answering contract defects
     work_items: [docs/dev/work-items/WI-009-productization-readiness-remediation.md]
     plan: docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md
-    plan_ref: refs/heads/fix/question-contract-repair-v1
+    plan_ref: refs/heads/docs/p51-question-contract-closeout
     branch: fix/question-contract-repair-v1
     target: main
-    plan_state: OPEN
-    custody_state: INTEGRATION_READY
-    checkpoint: 773da0472b3684131bcbf4166c847b847d9859e6
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 0ae1e94de026428ec30fee4a1be8c579363100ec
     remote_ref: refs/remotes/origin/fix/question-contract-repair-v1
     integration: merge
-    integration_receipt: null
+    integration_receipt: b753bcef369d22a1774b7fa595e2b0d5d3014161
     validation_status: passed
     validation_ref: 773da0472b3684131bcbf4166c847b847d9859e6
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_questions.py, tests/test_service_questions.py, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-009-productization-readiness-remediation.md]
-    reconciled_overlaps: []
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_questions.py, tests/test_service_questions.py, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-009-productization-readiness-remediation.md]
     updated_at: 2026-09-14
   - id: P49
     objective: Reconcile and integrate P36 structured answer Packet 3
