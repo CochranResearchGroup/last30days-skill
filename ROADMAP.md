@@ -71,6 +71,14 @@ P08 Governed Recurring All-Source Tick
 
 P09 Facebook Agent-Browser Timeout Remediation
   └──> repairs the truthful Facebook gap observed by P08 without changing its schedule
+
+P51 Productization Readiness Prerequisites
+  ├──> repairs accepted Q&A contract defects and tracker-documentation drift
+  ├──> reconciles and integrates P35 tailored follows
+  ├──> establishes unique release identity and an isolated development runtime
+  ├──> dogfoods the integrated product surfaces and publishes governed issues
+  └──> blocks new WI-001 through WI-006 and WI-008 feature packets until closed;
+       WI-007 production hotfixes remain exempt
 ```
 
 P03 discovery and bounded source experiments may proceed alongside P01, but
@@ -2673,8 +2681,8 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `BLOCKED` at its explicit PR gate; Packet 1 is acceptance-complete, reconciled with
-  current main, and remote-equal at
+- WI-004 is `BLOCKED` pending mainline reconciliation; Packet 1 is
+  acceptance-complete and remote-equal at
   `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
   lifecycle, canonical typed targets, and immutable acquisition context rather
@@ -2686,8 +2694,9 @@ Current State:
   creation, immutable identity, archive history, and additive lifecycle reads
   are implemented provider-free; no installed-runtime, schedule, or live X
   effect occurred;
-- PR creation failed closed because the forge target registry exposes only
-  read authority; the user has been notified and no workaround was attempted.
+- the branch is 75 commits behind reviewed canonical main and has no pull
+  request. The earlier claim that the issue-operation registry blocked PR
+  creation was incorrect; PRs follow normal branch and integration policy.
 
 Closed Architecture Plan:
 
@@ -2702,8 +2711,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- after explicit operator authorization of PR creation, open the P35 Packet 1
-  PR from exact head `d2c9f8eb`; do not merge or begin Packet 2 implicitly.
+- after the P51 corrective mainline lands, reconcile P35 from then-current
+  `origin/main`, rerun combined acceptance, and open its normal Packet 1 PR;
+  do not begin Packet 2 implicitly.
 
 ## P36 | Agent Question Answering MCP Surface
 
@@ -3214,8 +3224,9 @@ Current State:
 - GitHub reports `has_issues: true` for
   `CochranResearchGroup/last30days-skill`;
 - the post-activation issue listing succeeds and is empty;
-- the repo-local target registry still allows read only, so WI-000 through
-  WI-008 remain unpublished drafts.
+- Plan 0102/P51 now proposes the accepted narrow registry expansion for
+  WI-000 through WI-009 creation and existing mapped-label application; issue
+  publication still requires that proposal to enter canonical main first.
 
 Closed Plan:
 
@@ -3228,5 +3239,49 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate this receipt, then obtain a separate operator decision before
-  creating issues, applying labels, or creating a GitHub Project.
+- P50 is complete. Continue issue publication through P51 under its exact
+  operator authority and registry actions; GitHub Projects remain separately
+  gated.
+
+## P51 | Productization Readiness Prerequisites
+
+State: PLANNED
+
+Objective: clear the accepted productization review findings and prove a
+coherent versioned development runtime before another feature packet starts.
+
+Current State:
+
+- search, question answering, saved monitors, quality tracing, and the
+  isolated-runtime doctor are integrated in source, but the review reproduced
+  two blocking question-contract failures;
+- GitHub Issues are enabled but canonical tracker guidance is contradictory and
+  the prepared work items remain unpublished;
+- P35 tailored follows is validated on its own published branch but is 75
+  commits behind current main and has no pull request;
+- production remains the only active runtime and does not contain the new
+  product surfaces; source and production currently reuse service version
+  `0.3.116` for different manifests.
+
+Plan:
+
+- `docs/dev/plans/0102-2026-09-13-productization-readiness-prerequisites.md`.
+
+Dependencies:
+
+- work may begin provider-free from current canonical main; development-runtime
+  provisioning, release, dogfood effects, and issue actions beyond the accepted
+  backlog creation retain their separate action-specific gates. P35 PR creation
+  follows the normal branch/integration workflow and is not registry-gated.
+
+Program Gate:
+
+- no new feature packet for WI-001 through WI-006 or WI-008 may activate until
+  P51 is `CLOSED` and WI-009 is `DONE`; corrective packets under P51 and the
+  reserved WI-007 production-hotfix lane are the only exceptions.
+
+Next Bounded Action:
+
+- create the Packet 1 corrective branch for the two Q&A defects and the
+  tracker-documentation contradiction, then register its exact ownership and
+  custody before implementation.

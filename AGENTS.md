@@ -111,8 +111,10 @@ Experimental changes get tested on `mvanhorn/last30days-skill-private`, which in
   `docs/dev/policies/0031-github-issue-operations.md` and resolve the target
   through `docs/dev/forge-issue-targets.json`.
 - The current tracker phase and proposed workflow live in
-  `docs/agents/issue-tracker.md`. GitHub Issues and Projects remain inactive
-  until that document's activation gate is explicitly accepted.
+  `docs/agents/issue-tracker.md`. GitHub Issues are enabled; each issue action
+  still requires current operator authority and an allowlisted registry action.
+  The issue registry does not govern pull-request creation, which follows the
+  normal branch and integration policy.
 
 ## Policy Entry
 

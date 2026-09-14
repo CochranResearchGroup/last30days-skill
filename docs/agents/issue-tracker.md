@@ -2,19 +2,22 @@
 
 ## Current Phase
 
-State: `REPO_NATIVE_PREACTIVATION`
+State: `GITHUB_ISSUES_ACTIVE`
 
-GitHub Issues are currently disabled for the owned public fork. The exact
-target registry permits read-only preflight, so files under
-`docs/dev/work-items/` are reviewable drafts rather than remote issues.
+GitHub Issues are enabled for the owned public fork. The operator authorized
+publication of the prepared WI-000 through WI-009 backlog. The exact target
+registry permits `read`, `create`, and `apply_labels`; all other issue actions
+and GitHub Projects remain separately gated.
 
-Until explicit activation is accepted:
+During publication and steady-state operation:
 
 - use the stable `WI-###` marker as the work-item locator;
-- keep actionable state in the work-item draft, roadmap lane, bounded plan,
-  and active-lane catalog as applicable;
-- do not claim an issue number, URL, Project item, assignment, or remote state;
-- do not enable Issues, create labels or Projects, or publish drafts.
+- search the exact marker before creation and read back every created issue;
+- record the issue URL in the matching repo-local work item without replacing
+  roadmap, plan, lane, Git, validation, or runtime authority;
+- apply only an existing mapped label; do not create or substitute labels;
+- do not comment, edit, close, reopen, assign, create milestones, or create a
+  Project without separate operator authority and registry support.
 
 ## Workflow
 
@@ -35,19 +38,18 @@ Existing repository labels are reused through the exact mappings in
 `docs/dev/forge-issue-targets.json`. Priority, lane, state, and environment
 belong in Project fields rather than a new label taxonomy.
 
-## Activation Sequence
+## Publication Sequence
 
-1. Review and accept the issue breakdown and dependency graph.
-2. Receive explicit operator direction for the exact GitHub mutations.
-3. Enable Issues on `CochranResearchGroup/last30days-skill`.
-4. Re-run read-only preflight and confirm templates and label mappings.
-5. Expand the registry only to the accepted actions.
-6. Create one Project with the fields above, then read it back.
-7. Publish parent and child issues idempotently, searching each stable marker
+1. Re-run preflight and confirm target, actor, templates, and label mappings.
+2. Publish parent and child issues idempotently, searching each stable marker
    before creation and recording every resulting URL.
-8. Link dependencies and Project metadata only after their separate gates pass.
-9. Replace each draft's provisional locator with a mapping that preserves its
+3. Replace each draft's provisional locator with a mapping that preserves its
    `WI-###` marker and records the exact GitHub issue URL.
+4. Link dependencies through issue-body references available at creation time;
+   later comments or edits remain separately gated.
+
+GitHub Projects remain planned but inactive. Project creation, fields, and item
+linkage require a separate operator decision and registry action.
 
 Security reports remain prohibited until an accepted private reporting route
 exists. The public issue tracker is never a fallback disclosure channel.

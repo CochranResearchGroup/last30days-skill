@@ -1,11 +1,11 @@
 <!-- last30days-work-item:WI-000 -->
 # Productize the temporal intelligence service
 
-State: TRIAGE
+State: BLOCKED
 Priority: P1
 Lane: Program
 Parent: none
-Blocked by: separate tracker-publication authority for remote issue creation
+Blocked by: WI-009 productization readiness remediation
 
 ## Problem
 
@@ -26,6 +26,8 @@ priority hotfix path, and measurable corpus quality.
 - the reserved hotfix path remains independently available;
 - production claims require integration, staging, deployment, and live
   readback rather than issue closure alone.
+- WI-009 is complete before any new WI-001 through WI-006 or WI-008 feature
+  packet starts; WI-007 remains reserved for production hotfixes.
 
 ## Non-Goals
 

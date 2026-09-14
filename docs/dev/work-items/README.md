@@ -1,15 +1,19 @@
 # Productization Work-Item Drafts
 
-These files are the review surface for the initial Last30days product lanes.
+These files are the review surface for the initial Last30days product lanes and
+their productization-readiness gate.
 GitHub Issues are enabled on the owned fork, but these drafts have not been
-published as issues. The target registry remains read-only, and each file's
-unique idempotency marker must be searched before any separately authorized
-create request.
+published as issues. The operator has now authorized WI-000 through WI-009
+creation and application of existing mapped labels. Each file's unique
+idempotency marker must be searched before creation and its resulting URL must
+be read back before the repo claims remote identity.
 
 ## Proposed Dependency Graph
 
 ```text
 WI-000 Productization program
+├── WI-009 Productization readiness remediation
+│   └── blocks new WI-001..WI-006 and WI-008 feature packets
 ├── WI-001 Isolated development runtime
 │   ├── WI-004 X tailored follow
 │   │   └── WI-005 Cross-service tailored follows

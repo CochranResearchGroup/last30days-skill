@@ -41,18 +41,18 @@
   cadence. Link duplicates, retain decision context, and cancel work
   explicitly rather than leaving an indefinitely active shadow backlog.
 
-## Repository Transition
+## Repository State
 
-- GitHub Issues and Projects are the intended shared work-item surface for this
-  repository, but they are not active authority until the operator enables
-  them and a bounded migration establishes target, labels, templates, and
-  provider-operation controls.
-- Until that migration is accepted, use stable roadmap lane and plan locators
-  as the governed repo-local work-item identifiers. Do not claim an issue URL,
-  issue state, or Project state that does not exist.
-- Adopt forge- and GitHub-specific issue-operation policy in the same bounded
-  slice that enables the tracker. Migrate existing active-lane locators before
-  making external work-item linkage a required catalog field.
+- GitHub Issues are enabled as the shared work-item surface for this repository.
+  Preserve stable `WI-###` markers across repo-local drafts and remote issues,
+  and record exact issue URLs only after provider readback.
+- The target registry currently permits issue read, creation, and application
+  of existing mapped labels. Every other issue or Project action remains gated
+  by explicit operator authority and registry support.
+- GitHub Projects are not active authority. Do not claim Project fields, items,
+  or linkage until a separately accepted migration creates and verifies them.
+- The issue-operation registry governs issue and Project mutations only. Pull
+  requests follow the repository's collaborative branch/integration workflow.
 
 ## Adoption Notes
 
