@@ -5,7 +5,7 @@ State: READY
 Priority: P0
 Lane: Program
 Parent: WI-000
-Blocked by: none for planning and provider-free repair; P35 pull-request creation, development-runtime provisioning, release, dogfood effects, and GitHub issue publication retain their separate authority gates
+Blocked by: none for planning, provider-free repair, normal pull requests, or the currently authorized WI-000 through WI-009 publication; development-runtime provisioning, release, dogfood effects, and all other GitHub issue actions retain separate authority gates
 Plan: docs/dev/plans/0102-2026-09-13-productization-readiness-prerequisites.md
 
 ## Problem
@@ -45,9 +45,8 @@ work-item backlog when separately authorized.
   answering, saved monitors, quality reporting, and tailored-follow lifecycle;
 - any live-provider dogfood is separately authorized, serialized, bounded, and
   recorded rather than inferred from provider-free evidence;
-- WI-000 through WI-009 are published idempotently to the enabled GitHub issue
-  tracker only after the target registry and operator authority permit the exact
-  mutations, with URLs read back into repo authority.
+- WI-000 through WI-009 are published idempotently under the current operator
+  authority and narrow registry actions, with URLs read back into repo authority.
 
 ## Program Gate
 
@@ -59,8 +58,9 @@ priority integration when production health requires it.
 ## Non-Goals
 
 This work item does not itself authorize a provider call, browser/profile use,
-installed-runtime mutation, release, deployment, GitHub issue mutation, P35 pull
-request, or production change. Each effect retains its existing explicit gate.
+installed-runtime mutation, release, deployment, GitHub issue action beyond the
+authorized backlog creation and mapped-label application, or production change.
+Pull requests follow the normal collaborative integration workflow.
 
 ## Next Owner Action
 

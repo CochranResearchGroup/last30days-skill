@@ -7,7 +7,7 @@ Branch: docs/productization-prerequisite-gate
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 1
+Plan version: 2
 Date: 2026-09-13
 Execution owner: unassigned
 
@@ -29,7 +29,8 @@ before any new product feature packet begins.
   `docs/agents/issue-tracker.md` still describe them as disabled;
 - P35 tailored follows is clean and remote-equal at
   `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`, but is 75 commits behind the
-  reviewed mainline, has no pull request, and retains its explicit PR gate;
+  reviewed mainline and has no pull request. The prior issue-registry PR gate
+  was a category error and is removed by this revision;
 - production is the only running service. It reports service `0.3.116`, schema
   17, and installed manifest `19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8`;
   source also says `0.3.116` but has a different 139-file manifest
@@ -44,7 +45,7 @@ before any new product feature packet begins.
    guidance without granting issue or pull-request mutation authority.
 3. **P35 reconciliation and integration.** Reconcile tailored follows after the
    corrective mainline lands, rerun combined tests, inspect the published diff,
-   and use the normal governed PR path when separately authorized.
+   and use the normal governed PR path.
 4. **Versioned development release.** Assign a new service version, update
    compatibility and release documentation, build a deterministic artifact,
    and provision one isolated development runtime without changing production.
@@ -52,9 +53,10 @@ before any new product feature packet begins.
    evidence-only questions, saved monitors, quality reports, and tailored-follow
    lifecycle against the isolated development runtime. Keep provider/browser
    effects out unless separately authorized.
-6. **Tracker publication.** After exact operator and registry authorization,
-   publish WI-000 through WI-009 idempotently, read back their URLs and state,
-   and preserve stable `WI-###` locators in repository authority.
+6. **Tracker publication.** Under the operator's current authorization and the
+   narrowly expanded registry, publish WI-000 through WI-009 idempotently, read
+   back their URLs and state, and preserve stable `WI-###` locators in
+   repository authority.
 
 Packets 1 and 2 may run in parallel on disjoint write surfaces. Packets 3 through
 6 are serialized in that order. A production hotfix may preempt this sequence.
@@ -69,7 +71,8 @@ plan and the reserved WI-007 hotfix lane are the only exceptions.
 
 - no new product capability beyond closing the accepted findings;
 - no production install, migration, schedule, provider, browser/profile, model,
-  release, deployment, or tracker mutation merely because this plan exists;
+  release, deployment, or tracker mutation beyond the currently authorized
+  WI-000 through WI-009 creation and mapped-label application;
 - no permanent `develop` branch and no shared development database, socket,
   credentials, logs, or service identity;
 - no cleanup or deletion of historical branches or worktrees in this plan.
@@ -87,8 +90,8 @@ plan and the reserved WI-007 hotfix lane are the only exceptions.
 5. Development dogfood produces inspectable evidence for all integrated product
    lanes and distinguishes provider-free proof from any separately authorized
    live canary.
-6. GitHub issue publication, if authorized, is duplicate-safe and read back;
-   until then the packet remains blocked rather than bypassed.
+6. GitHub issue publication is duplicate-safe and read back; actions other than
+   creation and mapped-label application remain blocked rather than bypassed.
 7. ROADMAP, RUNBOOK, work-item, plan, active-lane, Git, test, release, and
    runtime claims agree before the prerequisite gate closes.
 
@@ -112,8 +115,8 @@ plan and the reserved WI-007 hotfix lane are the only exceptions.
 - planning-contract and active-lane audits;
 - source-package reproducibility and exact source/install manifest comparison;
 - isolated-runtime doctor plus runtime status and dogfood receipts;
-- live GitHub preflight and post-write readback only for separately authorized
-  tracker or pull-request actions.
+- live GitHub preflight and post-write readback for authorized tracker actions;
+  pull requests use the normal collaborative workflow.
 
 ## Stop Rules
 
@@ -128,7 +131,7 @@ plan and the reserved WI-007 hotfix lane are the only exceptions.
 
 WI-009 is `DONE`; every criterion has durable evidence; P35 is integrated; a
 distinct development runtime matches a uniquely versioned source artifact;
-dogfood passes; governed issues are published and read back when authorized;
+dogfood passes; the authorized governed issues are published and read back;
 and the roadmap explicitly releases the feature freeze.
 
 ## Next Action
@@ -136,5 +139,6 @@ and the roadmap explicitly releases the feature freeze.
 Create and register the bounded Packet 1 corrective lane from current
 `origin/main` for the two question-answering defects and tracker-documentation
 reconciliation. Do not begin implementation from this planning branch and do
-not perform any runtime, provider, pull-request, release, deployment, or issue
-mutation as part of Plan 0102 registration.
+not perform any runtime, provider, release, or deployment mutation as part of
+Plan 0102 registration. The registration PR and authorized issue publication
+follow their normal governed workflows.

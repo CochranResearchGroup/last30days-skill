@@ -8,7 +8,9 @@
       "repository": "CochranResearchGroup/last30days-skill",
       "relationship": "owned",
       "allowed_actions": [
-        "read"
+        "read",
+        "create",
+        "apply_labels"
       ],
       "security_route": "none",
       "label_map": {

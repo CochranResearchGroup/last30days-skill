@@ -2681,8 +2681,8 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `BLOCKED` at its explicit PR gate; Packet 1 is acceptance-complete, reconciled with
-  current main, and remote-equal at
+- WI-004 is `BLOCKED` pending mainline reconciliation; Packet 1 is
+  acceptance-complete and remote-equal at
   `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
   lifecycle, canonical typed targets, and immutable acquisition context rather
@@ -2694,8 +2694,9 @@ Current State:
   creation, immutable identity, archive history, and additive lifecycle reads
   are implemented provider-free; no installed-runtime, schedule, or live X
   effect occurred;
-- PR creation failed closed because the forge target registry exposes only
-  read authority; the user has been notified and no workaround was attempted.
+- the branch is 75 commits behind reviewed canonical main and has no pull
+  request. The earlier claim that the issue-operation registry blocked PR
+  creation was incorrect; PRs follow normal branch and integration policy.
 
 Closed Architecture Plan:
 
@@ -2710,8 +2711,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- after explicit operator authorization of PR creation, open the P35 Packet 1
-  PR from exact head `d2c9f8eb`; do not merge or begin Packet 2 implicitly.
+- after the P51 corrective mainline lands, reconcile P35 from then-current
+  `origin/main`, rerun combined acceptance, and open its normal Packet 1 PR;
+  do not begin Packet 2 implicitly.
 
 ## P36 | Agent Question Answering MCP Surface
 
@@ -3222,8 +3224,9 @@ Current State:
 - GitHub reports `has_issues: true` for
   `CochranResearchGroup/last30days-skill`;
 - the post-activation issue listing succeeds and is empty;
-- the repo-local target registry still allows read only, so WI-000 through
-  WI-008 remain unpublished drafts.
+- Plan 0102/P51 now proposes the accepted narrow registry expansion for
+  WI-000 through WI-009 creation and existing mapped-label application; issue
+  publication still requires that proposal to enter canonical main first.
 
 Closed Plan:
 
@@ -3236,8 +3239,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate this receipt, then obtain a separate operator decision before
-  creating issues, applying labels, or creating a GitHub Project.
+- P50 is complete. Continue issue publication through P51 under its exact
+  operator authority and registry actions; GitHub Projects remain separately
+  gated.
 
 ## P51 | Productization Readiness Prerequisites
 
@@ -3265,9 +3269,10 @@ Plan:
 
 Dependencies:
 
-- work may begin provider-free from current canonical main; P35 PR creation,
-  development-runtime provisioning, release, dogfood effects, and issue
-  publication retain their separate action-specific gates.
+- work may begin provider-free from current canonical main; development-runtime
+  provisioning, release, dogfood effects, and issue actions beyond the accepted
+  backlog creation retain their separate action-specific gates. P35 PR creation
+  follows the normal branch/integration workflow and is not registry-gated.
 
 Program Gate:
 

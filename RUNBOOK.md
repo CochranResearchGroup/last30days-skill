@@ -29079,3 +29079,66 @@ Next Bounded Action:
   register the first corrective packet from current `origin/main`. Do not begin
   implementation or perform runtime, provider, pull-request, release,
   deployment, or issue mutations in this registration slice.
+
+## Turn 466 | 2026-09-13
+
+Focus: correct the issue-registry boundary and activate governed backlog
+publication.
+
+Authority Consulted:
+
+- operator direction to correct the prior interpretation, write the prepared
+  issues now, and produce a fresh-agent handoff; Plan 0102/P51 and WI-009;
+  `docs/dev/forge-issue-targets.json`; policies 0017, 0019, 0027, 0028, and
+  0030-0032; the `to-issues`, `handoff`, repo-policy-selector, and
+  graphiti-discovery skills; live GitHub target, labels, templates, and PR
+  inventory.
+
+Decisions And Changes:
+
+- corrected the category error: the forge issue registry governs issue and
+  Project actions, not pull requests;
+- retained pull-request creation under the normal collaborative branch and
+  integration workflow, including P35 after current-main reconciliation;
+- expanded the exact owned-fork issue registry only from `read` to `read`,
+  `create`, and `apply_labels` under the operator's current direction;
+- kept comment, edit, close, reopen, assign, milestone, Project, transfer, and
+  label-creation actions separately gated;
+- advanced Plan 0102 to version 2 and aligned current tracker, roadmap,
+  work-item, AGENTS, and policy guidance with the corrected boundary.
+
+Validation Evidence:
+
+- live GitHub readback confirms the exact owned fork, enabled Issues, existing
+  mapped labels `bug`, `documentation`, and `enhancement`, configured issue
+  forms, and no open pull request before this slice;
+- 21 focused plan-authority and forge-preflight tests pass;
+- the active-only planning audit and `git diff --check` pass;
+- one selector-library collaboration-contract test invocation was inapplicable
+  in this downstream repo because it expects the policy source-repository path;
+  its two `FileNotFoundError` results are not product validation failures and
+  were excluded from the correct downstream test set.
+
+State Movement:
+
+- Plan 0102 remains `PLANNED` at version 2;
+- issue publication moves from unauthorized to authorized only for WI-000
+  through WI-009 creation plus existing mapped-label application;
+- P35 moves from a false PR-authorization blocker to its real current-main
+  reconciliation and combined-validation gate.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this is coordinator-owned shared policy and tracker work.
+
+Graphiti Write Status:
+
+- `not_written`; focused discovery was healthy but returned older roadmap
+  history, so current repository and GitHub evidence remain authoritative.
+
+Next Bounded Action:
+
+- publish and merge this correction through the normal PR workflow, verify the
+  canonical registry, preflight each stable marker and mapped label, then create
+  and read back WI-000 through WI-009 in dependency order. Record exact URLs in
+  repo authority and write the durable fresh-agent handoff.

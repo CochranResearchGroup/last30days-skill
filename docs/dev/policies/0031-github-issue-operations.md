@@ -32,6 +32,11 @@
 - The only allowed remote target is the owned public fork
   `github.com/CochranResearchGroup/last30days-skill`; never create tracker
   content against `mvanhorn/last30days-skill`.
-- Until activation is explicitly accepted, repo-local files under
-  `docs/dev/work-items/` are drafts and `docs/dev/forge-issue-targets.json`
-  permits `read` only.
+- GitHub Issues are enabled. The accepted publication action allows creation of
+  WI-000 through WI-009 with existing mapped labels; exact URLs must be read
+  back before repo-local drafts claim remote identity.
+- `docs/dev/forge-issue-targets.json` governs issue and Project actions, not
+  pull requests. Pull requests follow branch and integration policy.
+- Comment, edit, close, reopen, assign, milestone, Project, and label-creation
+  actions remain separately gated unless the registry and current operator
+  authority explicitly allow them.
