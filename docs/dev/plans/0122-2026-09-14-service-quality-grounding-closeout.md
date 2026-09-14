@@ -1,6 +1,6 @@
 # Plan 0122 | Service Quality Grounding Closeout
 
-State: PLANNED
+State: OPEN
 Lane: P37
 Work item: WI-008
 Branch: feat/service-quality-grounding-closeout-v1
@@ -91,3 +91,20 @@ Subagent status and reconciliation: `joined`; one read-only planner completed.
 Implementation owner remains unassigned pending exact custody.
 
 Next action: integrate registration and publish a plan-only activation ref.
+
+### Checkpoint P0122-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `PLANNED -> OPEN`.
+
+Progress classification: `implementation_ready`; exact isolated custody is
+accepted from canonical registration merge `e0fab676`.
+
+Authority classification: `inherited_authority` for the registered
+provider-free write set only; every external-effect gate remains held.
+
+Subagent status and reconciliation: `assigned`; `/root/wave4_wi008_plan`, one
+owner, no children. Implementation waits for activation reconciliation.
+
+Next action: publish this plan-only checkpoint and return exact custody.
