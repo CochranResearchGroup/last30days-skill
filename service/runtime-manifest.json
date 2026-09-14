@@ -402,7 +402,7 @@
     },
     {
       "path": "scripts/lib/service_questions.py",
-      "sha256": "76156979277ffbc35728616db5ef9d515460b292a58c71fdc1ca578ac30cc7e7",
+      "sha256": "1056d2d7eaa10a9d8a1828c4f276afa04afcc18c54124adfab55f9d03e5dedba",
       "source": "skills/last30days/scripts/lib/service_questions.py"
     },
     {

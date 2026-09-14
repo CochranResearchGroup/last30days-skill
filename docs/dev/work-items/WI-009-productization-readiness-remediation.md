@@ -1,13 +1,14 @@
 <!-- last30days-work-item:WI-009 -->
 # Clear the productization readiness gate
 
-State: READY
+State: IN_PROGRESS
 Priority: P0
 Lane: Program
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/55
 Blocked by: none for planning, provider-free repair, normal pull requests, or the currently authorized WI-000 through WI-009 publication; development-runtime provisioning, release, dogfood effects, and all other GitHub issue actions retain separate authority gates
 Plan: docs/dev/plans/0102-2026-09-13-productization-readiness-prerequisites.md
+Active packet: docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md
 
 ## Problem
 
@@ -65,7 +66,7 @@ Pull requests follow the normal collaborative integration workflow.
 
 ## Next Owner Action
 
-Open the first bounded corrective packet from current `origin/main` for the two
-question-answering defects and the tracker-documentation contradiction. Keep
-P35 reconciliation serialized behind that repair because both touch the service
-contract and application integration surface.
+Execute Plan 0103 on `fix/question-contract-repair-v1` for only the two accepted
+question-answering defects. Keep P35 reconciliation serialized behind that
+repair because both touch the service contract and application integration
+surface.

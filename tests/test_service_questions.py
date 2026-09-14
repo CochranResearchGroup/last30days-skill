@@ -419,6 +419,40 @@ def test_invalid_or_uncited_worker_claims_fail_closed(
     assert status.answer.statements == ()
 
 
+def test_answered_worker_without_statements_fails_closed_durably(tmp_path):
+    service = QuestionService(
+        tmp_path / "questions.db",
+        FakePostSearchBackend(
+            [_hit("version-1", text="Reliability improved.", observed_at="2026-09-12T12:00:00Z")]
+        ),
+        clock=lambda: NOW,
+    )
+    submitted = service.submit(_request(), access_partitions=("public",))
+    worker = FakeNoToolAnswerWorker(
+        lambda payload: {
+            "answer_state": "answered",
+            "summary": "Reliability improved.",
+            "statements": [],
+            "uncertainty_codes": [],
+        }
+    )
+
+    status = QuestionRunner(service.queue, worker, clock=lambda: NOW).run_once(
+        worker_id="worker-1"
+    )
+
+    assert status is not None
+    assert status.state == "insufficient_evidence"
+    assert status.attempt_count == 1
+    assert status.lease_expires_at is None
+    assert status.error is not None
+    assert status.error.code == "invalid_worker_contract"
+    assert status.error.retryable is False
+    assert status.answer is not None
+    assert status.answer.statements == ()
+    assert service.status(submitted.question_id) == status
+
+
 def test_conflicting_evidence_preserves_both_citations_and_alternatives(tmp_path):
     backend = FakePostSearchBackend(
         [
@@ -613,6 +647,50 @@ def test_evidence_only_mode_completes_in_the_host_without_a_worker(tmp_path):
     assert QuestionRunner(service.queue, worker, clock=lambda: NOW).run_once(
         worker_id="worker-1"
     ) is None
+
+
+def test_evidence_only_mode_respects_total_answer_character_budget(tmp_path):
+    max_answer_characters = 128
+    service = QuestionService(
+        tmp_path / "questions.db",
+        FakePostSearchBackend(
+            [
+                _hit(
+                    "version-1",
+                    text="First evidence sentence. " * 30,
+                    observed_at="2026-09-12T12:00:00Z",
+                ),
+                _hit(
+                    "version-2",
+                    text="Second evidence sentence. " * 30,
+                    observed_at="2026-09-12T13:00:00Z",
+                ),
+            ]
+        ),
+        clock=lambda: NOW,
+    )
+    request = _request(
+        answer_mode="evidence_only",
+        limits={
+            "evidence_limit": 10,
+            "max_evidence_bytes": 65536,
+            "max_answer_characters": max_answer_characters,
+            "max_statements": 8,
+            "wait_ms": 0,
+            "max_evidence_age_seconds": 604800,
+            "max_attempts": 2,
+        },
+    )
+
+    status = service.submit(request, access_partitions=("public",))
+
+    assert status.state == "answered"
+    assert status.answer is not None
+    assert len(status.answer.summary) + sum(
+        len(statement.text) for statement in status.answer.statements
+    ) <= max_answer_characters
+    assert status.answer.statements
+    assert status.answer.statements[0].citations[0].version_id == "version-1"
 
 
 def test_queue_rejects_an_answer_that_does_not_match_the_frozen_retrieval(tmp_path):

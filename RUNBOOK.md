@@ -29263,3 +29263,126 @@ Next Bounded Action:
 - merge this handoff through the normal PR workflow, verify canonical main, and
   give a fresh top-level agent the exact Plan 0103 corrective packet described
   in note 0125.
+
+## Turn 469 | 2026-09-14
+
+Focus: activate Plan 0103 for the two accepted P51 question-contract repairs.
+
+Authority Consulted:
+
+- operator goal to continue Plan 0103; merged handoff PR 63; Plan 0102/P51;
+  WI-009/#55; note 0125; planning, goal, work-item, lane, testing,
+  documentation, Git, collaborative-development, validation, Graphiti, and
+  CodeGraph policy; current Git/worktree, forge, Graphiti, and CodeGraph
+  readback.
+
+Decisions And Changes:
+
+- created
+  `docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md` as
+  one bounded corrective packet on `fix/question-contract-repair-v1` from
+  current canonical `origin/main`;
+- registered P51 as an active worktree lane and advanced WI-009 from `READY` to
+  `IN_PROGRESS` without mutating GitHub issue state;
+- froze the public interfaces and limited implementation to durable handling of
+  contract-construction failures plus total direct evidence-only answer
+  budgeting;
+- retained all runtime, provider, browser, release, deployment, production,
+  issue-mutation, P35, and unrelated-feature gates.
+
+Validation Evidence:
+
+- canonical and lane base are clean at
+  `5422fc2bb7d1e39c87e2657c1551d58a525a3e17`;
+- every pre-existing registered worktree is clean and remote-equal;
+- issue #55 is open with the unique WI-009 marker, and the owned fork has no
+  open pull request;
+- CodeGraph is healthy at 376 files, 10,537 nodes, and 26,059 edges;
+- Graphiti is healthy, but focused discovery returned ten older unrelated
+  facts, so current repo and forge evidence remains authoritative;
+- active-only planning, goal-only planning, and catalog-only lane audits passed
+  before activation.
+
+State Movement:
+
+- Plan 0103 `unplanned -> OPEN`;
+- WI-009 `READY -> IN_PROGRESS`;
+- P51 custody `unregistered -> ACTIVE_WORKTREE` at the canonical base;
+- progress classification: `blocker_reduction`;
+- authority classification: `inherited_authority` for provider-free repository
+  repair and normal pull-request integration; all named external effects remain
+  `human_gate` or `scope_expansion`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this packet is owned by the top-level coordinator session.
+
+Graphiti Write Status:
+
+- `pending`; this activation checkpoint will be written after the repository
+  registration becomes a durable published commit.
+
+Next Bounded Action:
+
+- publish the Plan 0103 registration checkpoint, then run the first focused
+  red/green slice for malformed structured output.
+
+## Turn 470 | 2026-09-14
+
+Focus: reproduce and repair the two Plan 0103 question-contract defects.
+
+Authority Consulted:
+
+- Plan 0103/P51; WI-009/#55; current CodeGraph source and blast radius; the
+  diagnosing-bugs, TDD, and codebase-design skill contracts; provider-free
+  tests and deterministic runtime-package validation.
+
+Decisions And Changes:
+
+- added one public-seam regression for an `answered` worker result with no
+  statements and observed the exact escaped final-construction contract error;
+- normalized only that final worker-answer construction failure into the
+  existing non-retryable durable terminal rejection path;
+- added one public-seam regression with two oversized evidence items and a
+  128-character request, observing 1,576 returned answer characters;
+- applied one running budget across the deterministic summary and ordered
+  evidence statements, preserving citation closure and the existing interface;
+- refreshed only the packaged `service_questions.py` hash in the canonical
+  runtime manifest; no version, artifact installation, database, or runtime
+  state changed.
+
+Validation Evidence:
+
+- both new regressions were observed red independently and now pass together;
+- 41 focused question tests pass;
+- 71 affected service, package, MCP-integration, and Skill contract tests pass;
+- comprehensive Python passes: 2,855 tests, 7 skips, and 9 subtests in 137.22
+  seconds;
+- comprehensive MCP Go passes for every package;
+- plan-authority tests, direct Python compilation, exact source/manifest hash
+  equality, and `git diff --check` pass;
+- implementation checkpoint:
+  `773da0472b3684131bcbf4166c847b847d9859e6`.
+
+State Movement:
+
+- Plan 0103 remains `OPEN` pending merge;
+- P51 custody `ACTIVE_WORKTREE -> INTEGRATION_READY`;
+- progress classification: `outcome_progress`;
+- both defect criteria are satisfied on the branch; pull-request publication,
+  remote diff/check readback, merge, and canonical ancestry remain.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; all implementation and validation were performed by the
+  owning top-level session.
+
+Graphiti Write Status:
+
+- `pending`; the compact source-backed outcome will be written after canonical
+  integration so the episode can cite the merged commit.
+
+Next Bounded Action:
+
+- publish the integration-ready checkpoint, create and self-check the owned-fork
+  pull request, merge it, and verify canonical main ancestry.
