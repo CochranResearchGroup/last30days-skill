@@ -181,6 +181,65 @@ Next action:
 - integrate the canonical activation projection, then resume those same three
   agents on only their accepted implementation packets.
 
+### Checkpoint P0107-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_1_activated -> wave_1_integration_ready`.
+
+Progress classification: `outcome_progress`; all three Wave 1 packets are
+joined on one coordinator-owned branch, independently reviewed, repaired
+against exact reproducers, and fully revalidated within the provider-free
+boundary.
+
+Authority classification:
+
+- `inherited_authority` covers the exact P33/P35/P38 feature joins, generated
+  contract/runtime reconciliation, closed-world review remediation, branch
+  publication, and reviewed pull-request integration;
+- every provider, browser, live-data, schedule, installed-runtime, staging,
+  production, release, deployment, rollback, and issue effect remains gated.
+
+Integrated source evidence:
+
+- P33 source acceptance `37f7fac6aa820c7d1e9299564a3f1d4496dd3f88`;
+- P35 source acceptance `d39495208b1ad06c347e43acbe776b60c524aa7f`;
+- P38 source acceptance `4a6fdfdafe178555b9ac4c12db4240f5efa3651e`;
+- coordinator-generated contract/runtime reconciliation `828df15b`, review
+  remediation `80d447e9`, and refreshed runtime manifest `a86e8849`.
+
+Review and remediation evidence:
+
+- an independent high-reasoning review accepted P33 and found three blocking
+  cases: legacy collection revisions lost defaulted policy fields, valid empty
+  or out-of-window account timelines failed instead of yielding zero, and a
+  top-level Git `commondir` could redirect drill mutations outside its fixture;
+- two bounded remediation agents added exact red/green regressions. Legacy
+  policies now serialize the parsed/defaulted spec, account extraction keeps
+  truthful empty success distinct from extraction/target failures, and both
+  main and bare-origin top-level common-directory redirects fail before Git;
+- the combined focused service/hotfix selection, Python compilation, diff
+  checks, Go tests and vet, runtime-package tests, and full Python suite pass
+  after the manifest refresh. The intentionally broad whole-file Ruff scan
+  still reports pre-existing findings and is not claimed as a gate.
+
+Subagent status and reconciliation:
+
+- `joined`; three implementation agents, one independent reviewer, and two
+  non-overlapping remediation agents have completed. The coordinator owns the
+  resulting integration branch and all shared projections.
+
+Graphiti write status:
+
+- `not_written`; current repository evidence is authoritative and no durable
+  memory write was requested.
+
+Next action:
+
+- publish and independently review the exact integration diff, merge it by
+  reviewed pull request, then record canonical receipts before selecting the
+  next dependency-ordered Wave 1 continuation packets.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;

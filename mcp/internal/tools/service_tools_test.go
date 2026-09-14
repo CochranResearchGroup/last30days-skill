@@ -153,6 +153,46 @@ func TestSearchPostsBuildsStrictCacheOnlyContract(t *testing.T) {
 	}
 }
 
+func TestSearchPostsPacketTwoFiltersBrowseAndModes(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "..", "..", "tests", "fixtures", "post_search_packet2.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture struct {
+		Arguments map[string]any `json:"mcp_arguments"`
+	}
+	if err := json.Unmarshal(data, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	fake := &fakeService{response: json.RawMessage(`{"returned":1}`)}
+	result, err := makePostSearchHandler(fake)(context.Background(), callRequest(fixture.Arguments))
+	if err != nil || result.IsError || fake.postPath != "/v1/posts/search" {
+		t.Fatalf("result=%+v err=%v", result, err)
+	}
+	if fake.postBody["query"] != nil || fake.postBody["revision_mode"] != "all" || fake.postBody["sort"] != "observed_desc" {
+		t.Fatalf("payload=%#v", fake.postBody)
+	}
+	filters := fake.postBody["filters"].(map[string]any)
+	if len(filters) != 5 || !reflect.DeepEqual(filters["authors"], []string{"alice", "bob"}) || !reflect.DeepEqual(filters["topic_ids"], []string{"7"}) || !reflect.DeepEqual(filters["collection_refs"], []string{"legacy:spec:spec-1", "temporal:target:x-service:target-1"}) {
+		t.Fatalf("filters=%#v", filters)
+	}
+	for _, invalid := range []map[string]any{
+		{"query": nil}, {"query": ""}, {"query": "x", "authors": []any{}},
+		{"query": "x", "topic_ids": []any{"7", "7"}},
+		{"query": "x", "collection_refs": []any{"spec-1"}},
+		{"query": "x", "collection_refs": []any{"temporal:target:unscoped"}},
+		{"query": "x", "revision_mode": "latest"}, {"query": "x", "sort": ""},
+		{"query": "x", "observed_after": nil},
+		{"query": "x", "observed_after": "2026-09-09T00:00:00Z", "observed_before": "2026-09-08T00:00:00Z"},
+	} {
+		fake := &fakeService{}
+		result, err := makePostSearchHandler(fake)(context.Background(), callRequest(invalid))
+		if err != nil || !result.IsError || fake.postPath != "" {
+			t.Fatalf("invalid=%#v result=%+v err=%v", invalid, result, err)
+		}
+	}
+}
+
 func TestTemporalAndProfileToolsUseCompactIntelligenceBoundary(t *testing.T) {
 	fake := &fakeService{response: json.RawMessage(`{"cache_only":true}`)}
 	temporal := makeIntelligenceHandler(fake, "temporal_query")

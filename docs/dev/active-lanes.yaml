@@ -210,12 +210,12 @@ lanes:
     target: main
     plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 28c721e0612b8e669ab96d8dbe9c8c1b59e4ddb0
+    checkpoint: 4a6fdfdafe178555b9ac4c12db4240f5efa3651e
     remote_ref: refs/remotes/origin/feat/hotfix-control-v1
     integration: merge
     integration_receipt: null
-    validation_status: activation_passed
-    validation_ref: 28c721e0612b8e669ab96d8dbe9c8c1b59e4ddb0
+    validation_status: passed_after_independent_review_remediation
+    validation_ref: a86e8849ef8b69a6d0bfadac7b7d0da0fd4409cb
     session_owner: /root/wi007_hotfix_drill
     dependencies: []
     overlaps: [dev/last30days/scripts/hotfix_control.py, dev/last30days/scripts/hotfix_git_drill.py, tests/test_hotfix_control.py, tests/test_hotfix_git_drill.py]
@@ -268,12 +268,12 @@ lanes:
     target: main
     plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 43f041f4e8d3d9c20670ea46a6926d626e6e8feb
+    checkpoint: d39495208b1ad06c347e43acbe776b60c524aa7f
     remote_ref: refs/remotes/origin/feat/x-tailored-follows-v2
     integration: merge
     integration_receipt: null
-    validation_status: activation_passed_with_expected_projection_gate
-    validation_ref: 43f041f4e8d3d9c20670ea46a6926d626e6e8feb
+    validation_status: passed_after_independent_review_remediation
+    validation_ref: a86e8849ef8b69a6d0bfadac7b7d0da0fd4409cb
     session_owner: /root/wi004_follows_packet2
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_jobs.py, skills/last30days/scripts/lib/service_publication.py, skills/last30days/scripts/lib/x_browser.py]
@@ -311,12 +311,12 @@ lanes:
     target: main
     plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 0d06d8e2d428583c7d5fb58782069a6c54ec6ed9
+    checkpoint: 37f7fac6aa820c7d1e9299564a3f1d4496dd3f88
     remote_ref: refs/remotes/origin/feat/post-search-v2
     integration: merge
     integration_receipt: null
-    validation_status: activation_passed
-    validation_ref: 0d06d8e2d428583c7d5fb58782069a6c54ec6ed9
+    validation_status: passed_after_independent_review_remediation
+    validation_ref: a86e8849ef8b69a6d0bfadac7b7d0da0fd4409cb
     session_owner: /root/wi002_search_packet2
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_post_search.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/schemas/service-contracts-v1.json, mcp/internal/tools/service_tools.go, tests/test_service_post_search.py]

@@ -164,6 +164,47 @@ def test_acquisition_work_request_carries_feed_surface_across_worker_boundary():
     assert request.to_dict() == payload
 
 
+def test_acquisition_work_request_carries_frozen_tailored_account_context():
+    payload = {
+        "schema_version": 1,
+        "work_id": "work-account-001",
+        "job_id": "job-account-001",
+        "lease_generation": 1,
+        "attempt": 1,
+        "profile_id": "x-primary",
+        "source": "x",
+        "query": "alice",
+        "from_date": "2026-08-21",
+        "to_date": "2026-08-22",
+        "depth": "standard",
+        "adapter": "x_agent_browser",
+        "adapter_version": "1",
+        "wall_timeout_seconds": 90,
+        "item_limit": 20,
+        "network_request_limit": 50,
+        "cost_budget_cents": 0,
+        "surface_kind": "account",
+        "collection_context": {
+            "collection_spec_id": "follow-x-account-alice",
+            "spec_version": 1,
+            "collection_run_id": "collection-run-account-001",
+            "collection_purpose": "tailored_follow",
+            "surface_kind": "account",
+            "selector": {"account": "alice"},
+            "selector_digest": "sha256:selector",
+            "follow_target_id": "follow-target-alice",
+            "attention_class": "priority",
+            "access_partition_id": "authenticated:x-primary",
+        },
+    }
+
+    request = contracts.AcquisitionWorkRequest.from_dict(payload)
+
+    assert request.collection_context is not None
+    assert request.collection_context.selector == {"account": "alice"}
+    assert request.to_dict() == payload
+
+
 def test_acquisition_work_result_round_trips_sanitized_items_and_retry_state():
     payload = {
         "schema_version": 1,

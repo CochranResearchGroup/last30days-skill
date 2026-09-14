@@ -176,12 +176,11 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 
 	postSearchOptions := []mcplib.ToolOption{
 		mcplib.WithDescription(
-			"Search current stored-post revisions across the authorized cache. This tool is read-only and never acquires provider data.",
+			"Search or browse stored-post revisions across the authorized cache. Filters apply before ranking. Cursors last at most 15 minutes in this service process and may expire on eviction or restart. This tool is read-only and never acquires provider data.",
 		),
 		mcplib.WithString(
 			"query",
-			mcplib.Required(),
-			mcplib.Description("Lexical post search query."),
+			mcplib.Description("Optional lexical query; omit for browse with at least one narrowing filter."),
 			mcplib.MinLength(1),
 			mcplib.MaxLength(4096),
 		),
@@ -207,6 +206,13 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 			mcplib.Description("Optional inclusive ISO-8601 upper publication bound."),
 			mcplib.MaxLength(64),
 		),
+		mcplib.WithArray("authors", mcplib.Description("Exact authors/accounts; missing values do not match."), mcplib.WithStringItems(mcplib.MinLength(1), mcplib.MaxLength(1024)), mcplib.MinItems(1), mcplib.MaxItems(32)),
+		mcplib.WithArray("topic_ids", mcplib.Description("Exact recorded topic IDs; no inferred topic matching."), mcplib.WithStringItems(mcplib.MinLength(1), mcplib.MaxLength(128)), mcplib.MinItems(1), mcplib.MaxItems(32)),
+		mcplib.WithArray("collection_refs", mcplib.Description("Namespaced causes: legacy:spec:ID, legacy:run:ID, temporal:schedule:ID, temporal:target:SERVICE:ID, temporal:tick:ID, temporal:lane:ID."), mcplib.WithStringItems(mcplib.MinLength(1), mcplib.MaxLength(1024)), mcplib.MinItems(1), mcplib.MaxItems(32)),
+		mcplib.WithString("observed_after", mcplib.Description("Inclusive lower bound on a recorded observation, with timezone."), mcplib.MaxLength(64)),
+		mcplib.WithString("observed_before", mcplib.Description("Inclusive upper bound on the same observation, with timezone."), mcplib.MaxLength(64)),
+		mcplib.WithString("revision_mode", mcplib.Enum("current", "all"), mcplib.DefaultString("current")),
+		mcplib.WithString("sort", mcplib.Enum("relevance", "published_desc", "observed_desc"), mcplib.DefaultString("relevance")),
 		mcplib.WithInteger(
 			"page_size",
 			mcplib.Description("Maximum posts in this deterministic page."),
@@ -624,18 +630,24 @@ func postSearchPayload(args map[string]any) (map[string]any, error) {
 		"query": {}, "profile_id": {}, "sources": {},
 		"published_after": {}, "published_before": {},
 		"page_size": {}, "cursor": {},
+		"authors": {}, "topic_ids": {}, "collection_refs": {},
+		"observed_after": {}, "observed_before": {}, "revision_mode": {}, "sort": {},
 	}
 	for name := range args {
 		if _, ok := allowed[name]; !ok {
 			return nil, fmt.Errorf("unknown argument: %s", name)
 		}
 	}
-	query, err := requireString(args, "query", 4096)
-	if err != nil {
-		return nil, err
-	}
-	if !lexicalQueryPattern.MatchString(query) {
-		return nil, errors.New("query must contain a lexical token")
+	var query any
+	var err error
+	if raw, supplied := args["query"]; supplied && raw != nil {
+		query, err = requireString(args, "query", 4096)
+		if err != nil {
+			return nil, err
+		}
+		if !lexicalQueryPattern.MatchString(query.(string)) {
+			return nil, errors.New("query must contain a lexical token")
+		}
 	}
 	profileID := "default"
 	if _, supplied := args["profile_id"]; supplied {
@@ -647,31 +659,47 @@ func postSearchPayload(args map[string]any) (map[string]any, error) {
 	if !profileIDPattern.MatchString(profileID) {
 		return nil, errors.New("profile_id is invalid")
 	}
-	sources, err := stringArrayArgument(args, "sources", 32, 64)
-	if err != nil {
-		return nil, err
-	}
-	if raw, supplied := args["sources"]; supplied {
-		length := 0
-		switch values := raw.(type) {
-		case []any:
-			length = len(values)
-		case []string:
-			length = len(values)
-		}
-		if length == 0 || len(sources) != length {
-			return nil, errors.New("sources must contain unique values")
-		}
-	}
 	filters := map[string]any{}
-	if len(sources) > 0 {
-		filters["sources"] = sources
+	for _, field := range []struct {
+		name string
+		max  int
+	}{
+		{"sources", 64}, {"authors", 1024}, {"topic_ids", 128}, {"collection_refs", 1024},
+	} {
+		values, arrayErr := stringArrayArgument(args, field.name, 32, field.max)
+		if arrayErr != nil {
+			return nil, arrayErr
+		}
+		if raw, supplied := args[field.name]; supplied {
+			length := 0
+			switch values := raw.(type) {
+			case []any:
+				length = len(values)
+			case []string:
+				length = len(values)
+			}
+			if length == 0 || len(values) != length {
+				return nil, fmt.Errorf("%s must contain unique values", field.name)
+			}
+			if field.name == "collection_refs" {
+				pattern := regexp.MustCompile(`^(legacy:(spec|run):\S+|temporal:(schedule|tick|lane):\S+|temporal:target:[^:\s]+:\S+)$`)
+				for _, value := range values {
+					if !pattern.MatchString(value) {
+						return nil, errors.New("collection_refs must be namespaced")
+					}
+				}
+			}
+			filters[field.name] = values
+		}
 	}
 	parsedTimes := map[string]time.Time{}
-	for _, name := range []string{"published_after", "published_before"} {
-		if value, ok, stringErr := optionalString(args, name, 64); stringErr != nil {
+	for _, name := range []string{"published_after", "published_before", "observed_after", "observed_before"} {
+		if _, supplied := args[name]; !supplied {
+			continue
+		}
+		if value, stringErr := requireString(args, name, 64); stringErr != nil {
 			return nil, stringErr
-		} else if ok {
+		} else {
 			parsed, parseErr := time.Parse(time.RFC3339, value)
 			if parseErr != nil {
 				return nil, fmt.Errorf("%s must be an ISO-8601 timestamp with timezone", name)
@@ -680,9 +708,27 @@ func postSearchPayload(args map[string]any) (map[string]any, error) {
 			filters[name] = value
 		}
 	}
-	if after, ok := parsedTimes["published_after"]; ok {
-		if before, exists := parsedTimes["published_before"]; exists && after.After(before) {
-			return nil, errors.New("published_after must not exceed published_before")
+	for _, prefix := range []string{"published", "observed"} {
+		if after, ok := parsedTimes[prefix+"_after"]; ok {
+			if before, exists := parsedTimes[prefix+"_before"]; exists && after.After(before) {
+				return nil, fmt.Errorf("%s_after must not exceed %s_before", prefix, prefix)
+			}
+		}
+	}
+	if query == nil && len(filters) == 0 {
+		return nil, errors.New("query or a narrowing filter is required")
+	}
+	revisionMode, err := enumArgument(args, "revision_mode", "current", "current", "all")
+	if err != nil {
+		return nil, err
+	}
+	sortMode, err := enumArgument(args, "sort", "relevance", "relevance", "published_desc", "observed_desc")
+	if err != nil {
+		return nil, err
+	}
+	for _, name := range []string{"revision_mode", "sort"} {
+		if value, supplied := args[name]; supplied && value == "" {
+			return nil, fmt.Errorf("%s is invalid", name)
 		}
 	}
 	pageSize, err := integerArgument(args, "page_size", 20, 1, 100)
@@ -690,9 +736,11 @@ func postSearchPayload(args map[string]any) (map[string]any, error) {
 		return nil, err
 	}
 	cursor := any(nil)
-	if value, ok, stringErr := optionalString(args, "cursor", 4096); stringErr != nil {
-		return nil, stringErr
-	} else if ok {
+	if raw, supplied := args["cursor"]; supplied && raw != nil {
+		value, stringErr := requireString(args, "cursor", 4096)
+		if stringErr != nil {
+			return nil, stringErr
+		}
 		cursor = value
 	}
 	payload := map[string]any{
@@ -702,6 +750,8 @@ func postSearchPayload(args map[string]any) (map[string]any, error) {
 		"filters":        filters,
 		"page_size":      pageSize,
 		"cursor":         cursor,
+		"revision_mode":  revisionMode,
+		"sort":           sortMode,
 	}
 	payload["request_id"] = stableRequestID(payload)
 	return payload, nil

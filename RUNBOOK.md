@@ -30072,3 +30072,59 @@ Next Bounded Action:
 
 - validate and merge this activation projection, then resume the same three
   agents for provider-free implementation only.
+
+## Turn 482 | 2026-09-14
+
+Focus: join, independently review, remediate, and validate Wave 1 provider-free
+implementation.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`.
+
+Authority Consulted:
+
+- Plan 0107; Plans 0108-0110; P33/P35/P38/P52; WI-002/WI-004/WI-007;
+  exact feature and integration Git refs; independent review evidence; current
+  planning, validation, testing, branch, integration, lane, and model policy.
+
+Decisions And Changes:
+
+- merged exact P38 `4a6fdfda`, P35 `d3949520`, and P33 `37f7fac6` histories
+  into coordinator branch `integration/provider-free-wave1`;
+- regenerated the Go contract catalog and service runtime manifest after the
+  shared join;
+- accepted an independent review's three exact blockers and completed one
+  closed-world remediation pass without expanding packet scope;
+- refreshed P33/P35/P38 custody to their exact clean remote-equal source
+  checkpoints; all three work items remain `IN_PROGRESS` because later packets
+  remain outside this Wave 1 PR.
+
+Validation Evidence:
+
+- combined focused Python service/search/collection/hotfix tests passed;
+- Go MCP tests and vet passed, Python compilation and diff checks passed, and
+  runtime packaging tests passed after manifest regeneration;
+- the post-remediation full Python suite passed with only expected skips;
+- no provider, browser, network corpus, schedule, installed service, staging,
+  production, release, deployment, rollback, or issue mutation occurred.
+
+State Movement:
+
+- Plan 0107 `wave_1_activated -> wave_1_integration_ready`;
+- P33/P35/P38 remain `ACTIVE_WORKTREE` at exact accepted feature refs while the
+  coordinator-owned joined branch proceeds through its pull-request gate;
+- progress classification: `outcome_progress`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; all implementation, independent-review, and remediation agents
+  completed, and their disjoint edits are reconciled on the coordinator branch.
+
+Graphiti Write Status:
+
+- `not_written`; repository plans, tests, and Git receipts are authoritative.
+
+Next Bounded Action:
+
+- publish the exact integration branch, run the active-lane/plan audits, open
+  and review one owned-fork PR, merge it, then record canonical packet receipts.

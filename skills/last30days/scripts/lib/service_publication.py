@@ -356,15 +356,51 @@ class CorpusPublisher:
                     acquisition.fetched_at,
                 ),
             )
-            collection = conn.execute(
-                """SELECT collection_spec_id, collection_run_id,
-                          access_partition_id
-                   FROM collection_runs
-                   WHERE job_id = ?
-                   ORDER BY scheduled_for, collection_run_id
-                   LIMIT 1""",
-                (result.job_id,),
-            ).fetchone()
+            collection = None
+            if request.collection_context is not None:
+                context = request.collection_context
+                collection = conn.execute(
+                    """SELECT r.collection_spec_id, r.collection_run_id,
+                              r.spec_version, r.access_partition_id, sr.spec_json
+                       FROM collection_runs AS r
+                       JOIN collection_spec_revisions AS sr
+                         ON sr.collection_spec_id = r.collection_spec_id
+                        AND sr.spec_version = r.spec_version
+                       WHERE r.job_id = ? AND r.collection_run_id = ?""",
+                    (result.job_id, context.collection_run_id),
+                ).fetchone()
+                if collection is None:
+                    raise RuntimeError("collection context does not match a durable run")
+                try:
+                    from .service_collection import CollectionSpec
+
+                    spec = CollectionSpec.from_dict(json.loads(collection["spec_json"]))
+                except (KeyError, ValueError, json.JSONDecodeError) as exc:
+                    raise RuntimeError("collection context durable spec is invalid") from exc
+                if (
+                    collection["collection_spec_id"] != context.collection_spec_id
+                    or int(collection["spec_version"]) != context.spec_version
+                    or collection["access_partition_id"] != context.access_partition_id
+                    or spec.source != request.source
+                    or spec.profile_id != request.profile_id
+                    or spec.collection_purpose != context.collection_purpose
+                    or spec.surface_kind != context.surface_kind
+                    or spec.selector != context.selector
+                    or spec.selector_digest != context.selector_digest
+                    or spec.follow_target_id != context.follow_target_id
+                    or spec.attention_class != context.attention_class
+                ):
+                    raise RuntimeError("collection context does not match its frozen revision")
+            else:
+                collection = conn.execute(
+                    """SELECT collection_spec_id, collection_run_id,
+                              access_partition_id
+                       FROM collection_runs
+                       WHERE job_id = ?
+                       ORDER BY scheduled_for, collection_run_id
+                       LIMIT 1""",
+                    (result.job_id,),
+                ).fetchone()
             if (
                 collection is not None
                 and collection["access_partition_id"] != partition_id

@@ -944,7 +944,7 @@ class CollectionCoordinator:
         conn = self._connect()
         try:
             row = conn.execute(
-                """SELECT sr.spec_json, r.trigger_kind, j.max_attempts
+                """SELECT sr.spec_json, r.collection_run_id, r.trigger_kind, j.max_attempts
                    FROM collection_runs AS r
                    JOIN collection_spec_revisions AS sr
                      ON sr.collection_spec_id = r.collection_spec_id
@@ -959,7 +959,10 @@ class CollectionCoordinator:
             conn.close()
         if row is None:
             return None
-        policy = json.loads(row["spec_json"])
+        spec = CollectionSpec.from_dict(json.loads(row["spec_json"]))
+        policy = spec.to_dict()
+        policy["selector_digest"] = spec.selector_digest
+        policy["_collection_run_id"] = row["collection_run_id"]
         policy["_manual_retry_budget"] = (
             row["trigger_kind"] == "manual" and int(row["max_attempts"]) == 2
         )
