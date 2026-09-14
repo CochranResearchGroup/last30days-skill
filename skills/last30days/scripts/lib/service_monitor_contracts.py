@@ -85,6 +85,13 @@ def _text(value: Any, field: str) -> str:
     return value
 
 
+def _bounded_text(value: Any, field: str, maximum: int = 128) -> str:
+    text = _text(value, field)
+    if len(text) > maximum:
+        raise MonitorContractError(f"{field} must contain at most {maximum} characters")
+    return text
+
+
 def _optional_text(value: Any, field: str) -> str | None:
     if value is None:
         return None
@@ -190,7 +197,7 @@ class SavedQueryViewRefV1:
         return cls(
             schema_version=_schema(payload["schema_version"]),
             view_kind="saved_query",
-            saved_query_id=_text(payload["saved_query_id"], "saved_query_id"),
+            saved_query_id=_bounded_text(payload["saved_query_id"], "saved_query_id"),
             saved_query_version=_positive_int(
                 payload["saved_query_version"], "saved_query_version"
             ),
@@ -239,9 +246,11 @@ class SavedQueryDefinitionV1:
         for key in ("schema_version", "request_id", "cursor"):
             request.pop(key)
         return cls(
-            saved_query_id=_text(payload["saved_query_id"], "saved_query_id"),
+            saved_query_id=_bounded_text(payload["saved_query_id"], "saved_query_id"),
             version=_positive_int(payload["version"], "version"),
-            access_partition_id=_text(payload["access_partition_id"], "access_partition_id"),
+            access_partition_id=_bounded_text(
+                payload["access_partition_id"], "access_partition_id"
+            ),
             search_json=json.dumps(request, sort_keys=True, separators=(",", ":"),
                                    allow_nan=False),
         )

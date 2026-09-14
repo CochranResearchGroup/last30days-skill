@@ -1244,14 +1244,16 @@ class CollectionCoordinator:
                                 WHEN 'priority' THEN 0 ELSE 1
                             END,
                             s.collection_spec_id
-                   LIMIT ?""",
-                (now_text, now_text, limit),
+                   """,
+                (now_text, now_text),
             ).fetchall()
         finally:
             conn.close()
         created: list[CollectionRun] = []
         for row in rows:
             spec = CollectionSpec.from_dict(json.loads(row["spec_json"]))
+            if spec.is_quarantined_follow:
+                continue
             run = self.enqueue_interval(
                 spec.collection_spec_id,
                 scheduled_for=row["next_due_at"],
@@ -1272,6 +1274,8 @@ class CollectionCoordinator:
                 conn.commit()
             finally:
                 conn.close()
+            if len(created) >= limit:
+                break
         return tuple(created)
 
     def reconcile_terminal_jobs(self) -> int:

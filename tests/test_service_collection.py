@@ -212,6 +212,53 @@ def test_legacy_provider_invalid_tailored_target_is_quarantined_but_archivable(t
     assert coordinator.archive_spec(stored.collection_spec_id).lifecycle_state == "archived"
 
 
+def test_quarantined_legacy_follow_does_not_consume_or_abort_due_batch(tmp_path):
+    db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
+    quarantined = coordinator.put_spec(_follow_spec())
+    healthy = coordinator.put_spec(
+        _spec(collection_spec_id="healthy-general", name="Healthy general")
+    )
+    legacy = _follow_spec(
+        source="reddit",
+        surface_kind="account",
+        selector={"account": "legacy"},
+        profile_id="default",
+        redaction_class="authenticated",
+    )
+    legacy_payload = {**legacy.to_dict(), "enabled": True}
+    with sqlite3.connect(db_path) as conn:
+        conn.execute(
+            "UPDATE collection_specs SET source=?, surface_kind=?, selector_json=?, "
+            "profile_id=?, enabled=1, access_partition_id=?, follow_target_id=? "
+            "WHERE collection_spec_id=?",
+            (
+                legacy.source,
+                legacy.surface_kind,
+                json.dumps(legacy.selector),
+                legacy.profile_id,
+                legacy.access_partition_id,
+                legacy.follow_target_id,
+                quarantined.collection_spec_id,
+            ),
+        )
+        conn.execute(
+            "UPDATE collection_spec_revisions SET spec_json=?, spec_digest=?, "
+            "selector_digest=?, access_partition_id=? WHERE collection_spec_id=? "
+            "AND spec_version=1",
+            (
+                json.dumps(legacy_payload, sort_keys=True, separators=(",", ":")),
+                legacy.spec_digest,
+                legacy.selector_digest,
+                legacy.access_partition_id,
+                quarantined.collection_spec_id,
+            ),
+        )
+
+    runs = coordinator.enqueue_due(limit=1)
+
+    assert [run.collection_spec_id for run in runs] == [healthy.collection_spec_id]
+
+
 @pytest.mark.parametrize(
     ("surface_kind", "selector", "candidate"),
     [

@@ -317,7 +317,7 @@
     },
     {
       "path": "scripts/lib/service_collection.py",
-      "sha256": "f46d3797a550ad2753dac4ebaf09a715a5bddd0b6371574e6689ad2b239f7504",
+      "sha256": "2a8922e0715c0c3fb353f44d3f73b6fe56b54cbb8254cdfd494ff0eb0a3cdbda",
       "source": "skills/last30days/scripts/lib/service_collection.py"
     },
     {
@@ -372,7 +372,7 @@
     },
     {
       "path": "scripts/lib/service_monitor_contracts.py",
-      "sha256": "2f9f8150e8245f0e3713b55055d5674e5bd51f6350ba9b9a5fa284dbae3a9978",
+      "sha256": "b38297e2ef3141aaef942d4253074438e8352e4c961afc074a474049ac406e4b",
       "source": "skills/last30days/scripts/lib/service_monitor_contracts.py"
     },
     {
