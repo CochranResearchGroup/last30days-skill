@@ -773,6 +773,12 @@ class QualityRunnerV1:
             raise ContractValidationError("run_id conflict: request digest changed")
         self._run_requests[request.run_id] = request.digest
         self._validate_pins(request, evaluation_set, policy)
+        for adapter in self._adapters.values():
+            bound_candidate = getattr(adapter, "candidate", None)
+            if bound_candidate is not None and bound_candidate != request.candidate:
+                raise ContractValidationError(
+                    "real adapter candidate does not match request.candidate"
+                )
         selected = self._select_cases(request, evaluation_set)
         rules = {(rule.axis, rule.metric): rule for rule in policy.rules}
         case_results: list[CaseResultV1] = []

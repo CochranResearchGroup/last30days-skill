@@ -105,6 +105,10 @@ class FixtureCatalog:
         self._fixtures = {fixture_id: Path(path) for fixture_id, path in fixtures.items()}
         self._candidate = candidate
 
+    @property
+    def candidate(self) -> EvidenceHeadV1 | None:
+        return self._candidate
+
     def resolve(self, case: EvaluationCaseV1) -> Path:
         if case.fixture is None:
             raise ContractValidationError("real adapter requires a fixture reference")
@@ -143,6 +147,10 @@ class _ReadOnlyAdapter:
 
     def __init__(self, catalog: FixtureCatalog) -> None:
         self._catalog = catalog
+
+    @property
+    def candidate(self) -> EvidenceHeadV1 | None:
+        return self._catalog.candidate
 
     def _path(self, case: EvaluationCaseV1) -> tuple[Path | None, str | None]:
         if case.axis != self.axis:

@@ -9,7 +9,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 from dev.last30days.quality import (
+    ContractValidationError,
     EvaluationCaseV1,
     EvidenceHeadV1,
     QualityEvaluationRequestV1,
@@ -394,3 +397,13 @@ def test_real_adapter_candidate_must_match_sealed_fixture_metadata(tmp_path):
     assert report.state == "incomplete"
     assert report.blocking_decision == "do_not_pass"
     assert report.case_results[0].failure_codes == ("fixture_candidate_mismatch",)
+
+    verified = EvidenceHeadV1.from_dict(_candidate(), "candidate")
+    with pytest.raises(ContractValidationError, match="request.candidate"):
+        QualityRunnerV1(
+            real_fixture_adapters({"sealed-corpus": db_path}, candidate=verified)
+        ).run(
+            request,
+            QualityEvaluationSetV1.from_dict(evaluation_payload),
+            QualityThresholdPolicyV1.from_dict(policy_payload),
+        )
