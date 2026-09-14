@@ -1,13 +1,13 @@
 # Plan 0103 | Question Contract Corrective Packet
 
-State: OPEN
+State: CLOSED
 Lane: P51
 Work item: WI-009
 Branch: fix/question-contract-repair-v1
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 2
+Plan version: 3
 Date: 2026-09-14
 Session owner: coordinator Codex thread `01a09f76-8024-7960-a7c5-c0469cf99153`
 
@@ -21,13 +21,13 @@ durably inside the caller's contract and answer-character budget.
 
 - the lane starts from clean canonical `origin/main` at
   `5422fc2bb7d1e39c87e2657c1551d58a525a3e17`;
-- `QuestionRunner.run_once` converts `QuestionWorkerError` and
-  `QuestionValidationError` into durable outcomes, but a
-  `QuestionContractError` raised while constructing a structured answer can
-  escape and leave the task `running` until lease expiry;
-- direct `answer_mode=evidence_only` copies selected evidence text without
-  enforcing the request's total `max_answer_characters` bound;
-- the exact regressions are not covered by the currently green broad suite;
+- `QuestionRunner.run_once` now receives every final structured worker-answer
+  contract failure through the existing durable non-retryable rejection path;
+- direct `answer_mode=evidence_only` now shares one total
+  `max_answer_characters` budget across its summary and ordered evidence
+  statements;
+- both exact regressions are covered at the public question-service seam and
+  pass with the comprehensive provider-free suite;
 - tracker reconciliation and WI-000 through WI-009 publication are complete;
   P35 reconciliation remains serialized behind this packet.
 
@@ -191,3 +191,44 @@ Subagent status: `not_spawned`.
 Next action: publish this integration-ready checkpoint, inspect the remote pull
 request diff and checks, merge through the owned-fork workflow, then record
 canonical ancestry and close the plan.
+
+### Checkpoint P0103-C03 | 2026-09-14
+
+Plan version: 3
+
+State transition: `OPEN -> CLOSED`; custody advances from `INTEGRATION_READY`
+to `INTEGRATED` through PR 64 at
+`b753bcef369d22a1774b7fa595e2b0d5d3014161`.
+
+Progress classification: `outcome_progress`; every Plan 0103 acceptance
+criterion is proven on canonical `origin/main`, and the wider P51 gate can now
+advance to its serialized P35 reconciliation packet.
+
+Authority classification:
+
+- the provider-free repository repair and normal pull-request integration are
+  complete under `inherited_authority`;
+- all runtime, provider, browser, release, deployment, production, and GitHub
+  issue mutations remain `human_gate`;
+- P35 reconciliation is the next separately bounded in-scope P51 packet, not
+  part of this closed plan.
+
+Evidence:
+
+- remote PR 64 read back `MERGEABLE/CLEAN` before integration, with exact base
+  `5422fc2bb7d1e39c87e2657c1551d58a525a3e17`, exact head
+  `0ae1e94de026428ec30fee4a1be8c579363100ec`, the expected eight-file diff,
+  and no failing required check;
+- GitHub read back PR 64 `MERGED` at `2026-09-14T10:42:59Z` with merge commit
+  `b753bcef369d22a1774b7fa595e2b0d5d3014161`;
+- Git proves the published head is an ancestor of current canonical
+  `origin/main`, and the canonical worktree is clean and remote-equal at the
+  merge commit;
+- the red/green, focused, affected, comprehensive Python and Go, manifest,
+  planning, lane, compilation, and diff evidence from P0103-C02 remains bound
+  to the integrated implementation checkpoint.
+
+Subagent status: `not_spawned`.
+
+Next action: derive and execute the bounded P35 current-main reconciliation and
+combined-validation packet required by Plan 0102/P51.

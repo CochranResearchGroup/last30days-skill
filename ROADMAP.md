@@ -3263,8 +3263,8 @@ Current State:
 - P35 tailored follows is validated on its own published branch but is 75
   commits behind current main and has no pull request;
 - `docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md` is
-  active on `fix/question-contract-repair-v1` from canonical `5422fc2b` for
-  only the two accepted question-contract repairs;
+  closed through merged PR 64 at canonical `b753bcef`; both accepted
+  question-contract defects are repaired and regression-locked;
 - production remains the only active runtime and does not contain the new
   product surfaces; source and production currently reuse service version
   `0.3.116` for different manifests.
@@ -3289,6 +3289,5 @@ Program Gate:
 
 Next Bounded Action:
 
-- publish and self-check the integration-ready Plan 0103 pull request, merge it
-  through the owned-fork workflow, and verify canonical ancestry before P35
-  reconciliation begins.
+- create the bounded P35 current-main reconciliation and combined-validation
+  packet from canonical `b753bcef`, preserving every runtime and provider gate.
