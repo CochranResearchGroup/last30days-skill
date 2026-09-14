@@ -2612,7 +2612,8 @@ agents.
 
 Current State:
 
-- WI-002 is `IN_PROGRESS` under Plan 0108 at published activation `0d06d8e2`;
+- WI-002 is `IN_PROGRESS`; Packet 2 source acceptance `37f7fac6` is joined and
+  independently accepted on the Wave 1 integration branch;
   Packet 1 closed and integrated through PR 36 as
   `75e7771e006f52847e8e47c1059b2b2000fb8ac7`;
 - the selected seam is additive `POST /v1/posts/search` plus MCP
@@ -2634,9 +2635,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- activate `docs/dev/plans/0108-2026-09-14-post-search-packet-2.md` from its
-  exact published branch-local checkpoint, then implement broader filters,
-  all-revision traversal, and cross-store deduplication. P36 and P40 may
+- integrate the reviewed Wave 1 branch, record Packet 2's canonical receipt,
+  then plan Packet 3 semantic/RRF and bounded performance work. P36 and P40 may
   continue consuming Packet 1's stable search/evidence contract.
 
 ## P34 | Isolated Development Runtime
@@ -2690,7 +2690,8 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `IN_PROGRESS` under Plan 0109 at published activation `43f041f4`;
+- WI-004 is `IN_PROGRESS`; Packet 2 source acceptance `d3949520` plus bounded
+  review remediation is joined on the Wave 1 integration branch;
   Packet 1 is
   integrated through PR 68 at canonical `87858934`;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
@@ -2948,8 +2949,9 @@ Current State:
 - the selected seam joins those foundations with incident qualification,
   dormant/active custody, promotion receipts, feature conflict/reconciliation,
   staging, and action-specific deployment authority;
-- no drill, incident, implementation, release, runtime mutation, staging, or
-  production action has begun.
+- provider-free Packets 1-2 are joined at source acceptance `4a6fdfda`; review
+  remediation closes the fixture-containment escape. No real incident,
+  release, runtime mutation, staging, or production action has begun.
 
 Closed Architecture Plan:
 
@@ -2963,10 +2965,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- retain the real slot as dormant reserved capacity while activating
-  `docs/dev/plans/0110-2026-09-14-hotfix-control-and-git-drill.md` for its
-  provider-free Packets 1-2 only. A qualified production incident remains a
-  separately authorized path.
+- integrate provider-free Packets 1-2, retain the real slot as dormant
+  capacity, and plan Packet 3's isolated runtime/release drill. A qualified
+  production incident remains a separately authorized path.
 
 ## P39 | Cross-Service Tailored Follow Product Surface
 
@@ -3320,8 +3321,9 @@ Current State:
 
 - WI-001 and WI-009 are `DONE`, canonical main was clean and remote-equal at
   `2fa77a9b`, and no pull request was open at campaign registration;
-- Wave 1 is frozen as WI-002 Search Packet 2, WI-004 Tailored Follows Packet 2,
-  and WI-007 provider-free hotfix control/Git drills;
+- Wave 1's WI-002 Search Packet 2, WI-004 Tailored Follows Packet 2, and WI-007
+  provider-free hotfix control/Git drills are integration-ready after joined
+  validation and independent-review remediation;
 - WI-003, WI-005, WI-006, and WI-008 remain dependency-ordered later waves;
 - at most three one-level implementation agents may run concurrently, and the
   coordinator owns integration plus shared authority projections;
@@ -3341,6 +3343,6 @@ Wave 1 Planned Packets:
 
 Next Bounded Action:
 
-- integrate campaign registration, publish exact branch-local Wave 1
-  activation checkpoints, reconcile their custody, and launch the three
-  implementation agents.
+- merge the reviewed Wave 1 integration PR, record canonical receipts, and
+  select the next independent provider-free packets without exceeding three
+  concurrent implementation agents.
