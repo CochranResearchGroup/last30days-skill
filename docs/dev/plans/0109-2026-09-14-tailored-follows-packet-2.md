@@ -174,10 +174,13 @@ Implementation and validation evidence:
   schedule, generated catalog/runtime manifest, or coordinator-owned authority
   was changed.
 
-Authority and residual risk:
+Authority classification:
 
 - `inherited_authority` covers only the provider-free source, temporary test
   database, branch checkpoint, and publication work in this packet;
+
+Residual risk:
+
 - CodeGraph remains unavailable because this worktree has no `.codegraph/`
   index and the repository instruction requires approval before initializing
   it; the implementation used direct source evidence instead;
