@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-003 -->
 # Answer agent questions through an evidence-rich MCP surface
 
-State: READY
+State: IN_PROGRESS
 Priority: P1
 Lane: MCP
 Parent: WI-000
@@ -11,7 +11,7 @@ Implementation plan seed: docs/dev/plans/0079-2026-09-13-agent-question-answerin
 Last closed plan: docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md
 Current plan: docs/dev/plans/0096-2026-09-13-agent-question-evidence-tracer-packet-2.md
 Branch: feat/agent-question-evidence-v2
-Owner: unassigned independent top-level Codex session
+Owner: Codex 01a09d44-49bf-73b2-a613-aee72c98f471
 
 ## Problem
 
@@ -44,9 +44,9 @@ summaries replace source evidence.
 
 ## Next Owner Action
 
-Packet 1 integrated through PR 41 as canonical merge `6d5eb5d9`. Before any
-new implementation, integrate the Plan 0096 registration and assign its clean
-dedicated worktree to one independent top-level Codex session. Packet 2 is only
-real search/evidence composition and immutable dereference; keep model
-execution, public MCP transport, providers, installed runtimes, staging, and
-production behind their own explicit gates.
+Packet 1 integrated through PR 41 as canonical merge `6d5eb5d9`. Independent
+top-level Codex thread `01a09d44-49bf-73b2-a613-aee72c98f471` owns the clean
+Packet 2 worktree at activation checkpoint `e566724c`. Execute only real
+search/evidence composition and immutable dereference; keep model execution,
+public MCP transport, providers, installed runtimes, staging, and production
+behind their own explicit gates.

@@ -2707,7 +2707,7 @@ Next Bounded Action:
 
 ## P36 | Agent Question Answering MCP Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: let agents ask bounded cross-service questions and receive a
 validated answer whose every substantive statement can be followed to exact
@@ -2732,8 +2732,10 @@ Current State:
   integrated through PR 41 as canonical merge `6d5eb5d9`; no model call, MCP
   publication, installed-runtime mutation, or provider access occurred.
 - Plan 0096 is published plan-only at `07f96129` on a clean dedicated worktree
-  for the real-search and immutable-evidence Packet 2; its independent owner
-  has not yet been launched.
+  for the real-search and immutable-evidence Packet 2;
+- replacement independent Codex thread
+  `01a09d44-49bf-73b2-a613-aee72c98f471` opened the plan and published clean
+  remote-equal activation `e566724c` before feature implementation.
 
 Closed Architecture Plan:
 
@@ -2757,8 +2759,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- integrate Plan 0095/P46 registration, then launch one independent top-level
-  owner to execute only Plan 0096's real-search/evidence tracer.
+- let the recorded independent owner execute only Plan 0096's real-search and
+  immutable-evidence tracer, then return a clean checkpoint for coordinator
+  integration.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
@@ -3072,7 +3075,7 @@ Next Bounded Action:
 
 ## P46 | P36 Packet 2 Launch Registration
 
-State: OPEN
+State: CLOSED
 
 Objective: register and launch one independent provider-free evidence-tracer
 session without moving feature work or runtime effects into the coordinator.
@@ -3083,9 +3086,11 @@ Current State:
   `feat/agent-question-evidence-v2`, based on canonical `d4e3cd65`;
 - its dedicated worktree exists and no competing pull request owns the branch;
 - Plan 0095 freezes coordinator custody at `2b29bf19` for this registration;
-- feature implementation and the independent session remain unstarted.
+- PR 43 integrated the registration as `5004df7f`; replacement top-level
+  thread `01a09d44-49bf-73b2-a613-aee72c98f471` published activation
+  `e566724c` before feature implementation.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0095-2026-09-13-p36-packet-2-launch-registration.md`.
 
@@ -3096,6 +3101,5 @@ Dependencies:
 
 Next Bounded Action:
 
-- merge the registration projection, then launch one independent top-level
-  Codex session in the P36 Packet 2 worktree and require a clean activation
-  checkpoint before feature implementation.
+- integrate this activation closeout while the independent owner executes
+  Plan 0096; no coordinator feature work or runtime effect follows.
