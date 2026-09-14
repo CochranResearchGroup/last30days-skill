@@ -276,3 +276,13 @@ Next action:
 
 - publish a clean remote-equal Packet 1 checkpoint and stop for coordinator
   reconciliation; do not open or merge a pull request from this session.
+
+### Checkpoint P0093-C04 | 2026-09-13
+
+State transition: none; Plan 0093 remains `CLOSED`.
+
+Packet 1 integrated through PR 41 as canonical merge
+`6d5eb5d972024cd584bfcc8bf57975f49fa90f45`. Coordinator reconciliation added
+the two monitor modules to the source runtime manifest, and the combined branch
+passed all 62 focused tests and the full 2,838-test repository collection.
+WI-006 returns to `READY`; follow tracing remains gated by P35.

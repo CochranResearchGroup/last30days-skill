@@ -1,14 +1,14 @@
 <!-- last30days-work-item:WI-003 -->
 # Answer agent questions through an evidence-rich MCP surface
 
-State: IN_PROGRESS
+State: READY
 Priority: P1
 Lane: MCP
 Parent: WI-000
 Blocked by: WI-002 Packet 1 contract integration; final acceptance by WI-002 closeout
 Architecture: docs/dev/notes/0120-2026-09-13-agent-question-answering-mcp-architecture.md
 Implementation plan seed: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md
-Current plan: docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md
+Last closed plan: docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md
 Branch: feat/agent-question-answer-v1
 Owner: Codex 01a09cf4-c89c-7ad2-9b64-8dc95c4cbec6
 
@@ -41,13 +41,10 @@ contract.
 No autonomous provider mutation, follow creation, or claim that generated
 summaries replace source evidence.
 
-## Ready Handoff
+## Next Owner Action
 
-Do not start implementation until WI-002 Packet 1 integrates the stable
-`PostSearchBackend`, request/response, search-head, and evidence-ref contracts.
-Then assign one independent top-level lane session from current `origin/main`,
-create and register `feat/agent-question-answer-v1`, and implement Packet 1
-from the architecture note: strict question/answer/citation/status contracts,
-migration, durable queue/lease/idempotency, and fake search/worker tests. Do
-not invoke a model, source adapter, browser, refresh, follow, schedule,
-installed runtime, staging, or production service in Packet 1.
+Packet 1 integrated through PR 41 as canonical merge `6d5eb5d9`. Before any
+new implementation, write and register a separately bounded Packet 2 plan from
+current `origin/main` for real search/evidence composition or MCP publication.
+Keep model execution, providers, installed runtimes, staging, and production
+behind their own explicit gates.

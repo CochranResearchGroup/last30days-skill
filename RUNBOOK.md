@@ -28494,3 +28494,54 @@ Next Bounded Action:
 - publish the validated integration branch, verify its catalog against the
   published ref, and open its one owned-fork pull request; do not touch P35 or
   any installed/runtime surface.
+
+## Turn 455 | 2026-09-13
+
+Focus: Plan 0094/P45 canonical integration and Packet 1 closeout.
+
+Authority Consulted:
+
+- PR 41, canonical `origin/main`, Plans 0091 through 0094, P36/P37/P40/P45,
+  WI-003/WI-006/WI-008, and validation/closeout policy.
+
+Decisions And Changes:
+
+- verified PR 41 merged the three accepted Packet 1 lanes as canonical merge
+  `6d5eb5d972024cd584bfcc8bf57975f49fa90f45`;
+- fast-forwarded the canonical worktree cleanly to exact `origin/main`;
+- closed Plans 0091, 0092, and 0094, retained Plan 0093 closed, and returned
+  their broader roadmap lanes/work items to `PLANNED`/`READY` for separately
+  authorized later packets;
+- projected P36/P37/P40/P45 custody as integrated with the exact PR 41 receipt;
+- kept P35 unchanged at its separate pull-request authorization gate and made
+  no tracker, installed-runtime/database, provider/browser, model, schedule,
+  delivery, release, staging, deployment, or production mutation.
+
+Validation Evidence:
+
+- PR 41 is `MERGED` with merge commit `6d5eb5d9`;
+- canonical `main` and `origin/main` are clean and equal at `6d5eb5d9` before
+  this documentation-only closeout;
+- the integrated source already passed 62 focused tests, all 2,838 collected
+  repository tests, active planning and lane audits, compilation, reproducible
+  runtime build, and patch hygiene.
+
+State Movement:
+
+- Plans 0091/0092/0094 `OPEN -> CLOSED`; Plan 0093 remains `CLOSED`;
+- P36/P37/P40 `OPEN or active -> PLANNED`; P45 `OPEN -> CLOSED`;
+- WI-003/WI-006/WI-008 `IN_PROGRESS -> READY`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the coordinator performed integration and closeout directly.
+
+Graphiti Write Status:
+
+- `not_written`; canonical Git, PR, tests, and repository artifacts are the
+  authoritative receipts.
+
+Next Bounded Action:
+
+- integrate this closeout, then choose and plan the next provider-free packet
+  from canonical main; P35 remains untouched until separately authorized.
