@@ -1,15 +1,16 @@
 <!-- last30days-work-item:WI-005 -->
 # Extend tailored follows across supported services
 
-State: IN_PROGRESS
+State: READY
 Priority: P2
 Lane: Follows
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/58
 Blocked by: none for Packet 1; later provider tracers and product closure remain
-Active plan: docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md
-Branch: feat/cross-service-follow-capabilities-v1
-Owner: /root/wi004_packet3_planning
+Last completed plan: docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md
+Active plan: none
+Branch: main
+Owner: /root
 
 ## Problem
 
@@ -62,3 +63,10 @@ installed runtime.
 
 Activation checkpoint `337866e0` is published and awaits coordinator custody
 reconciliation before implementation begins.
+
+Packet 1 integrated through reviewed PR 87 as canonical merge `d2f15ed6`.
+The closed registry now preserves exact X identity, reports Reddit/YouTube
+adapters unavailable, quarantines unsupported legacy follows without starving
+healthy scheduler work, and retains identity-bound compatibility evidence.
+WI-005 is `READY` for a separately planned fixture-backed tracer packet; it is
+not yet `DONE`.

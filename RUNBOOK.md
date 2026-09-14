@@ -30499,3 +30499,75 @@ Next Bounded Action:
 
 - validate and merge this activation projection, then resume the three frozen
   provider-free implementation packets with no nested agents.
+
+## Turn 490 | 2026-09-14
+
+Focus: integrate, independently review, remediate, and close Wave 3 provider-
+free productization packets.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`;
+`docs/dev/plans/0114-2026-09-14-post-search-runtime-closeout.md`;
+`docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md`;
+`docs/dev/plans/0116-2026-09-14-saved-query-composition.md`.
+
+Authority Consulted:
+
+- Plans 0107 and 0114-0116; P33/P39/P40/P52; WI-002/WI-005/WI-006;
+  current planning, documentation, testing, validation, branch, integration,
+  model-routing, multi-session, forge, and closeout policy.
+
+Decisions And Changes:
+
+- joined exact P39 `c0fcd5fe`, P33 `3a161ba5`, and P40 `13745c9f` lane tips;
+- exposed immutable saved-query composition through strict local CLI, Unix
+  HTTP, and fresh MCP parity, registered its schema/discovery surface, and
+  regenerated the runtime manifest;
+- accepted two independent P2 findings: unbounded query IDs could create
+  unretrievable receipts, and a quarantined legacy follow could abort a healthy
+  scheduler batch. Closed them with bounded identifiers/receipts and
+  registry-derived bounded SQL admission;
+- corrected two remediation regressions found by the same reviewer: partition
+  bounds now match valid profile-derived identities, and scheduler SQL binds
+  capability/time parameters in placeholder order;
+- merged exact reviewed head `bbe5d62c` through PR 87 as canonical
+  `d2f15ed64ae608038cc5a8a82675fc149faa563c`.
+
+Validation Evidence:
+
+- independent final disposition passed every accepted reproducer at exact
+  `bbe5d62c`; runtime manifest and worktree were clean;
+- the final configured Python suite exited zero with 3,036 tests collected;
+  focused search/monitor/follow/transport/package/lifecycle suites, Go tests
+  and vet, plan-authority audit, and diff checks passed;
+- two byte-identical service 0.3.117 artifacts hashed
+  `bca5cb5e1e3ad9a68260ce27309d398ce056936bb0ac331d129e1a7245cfb44c`;
+- Plan 0114 retained receipt digest is
+  `4a5cab7e762b56a08af72787ba44f9ce3be829f51c989d633ec4855f844a3b61`,
+  proving nineteen cases, two stopped runtime cycles, and an empty final owned
+  process census;
+- no provider, browser, live-data, schedule, installed-runtime/database,
+  staging, production, release, deployment, delivery, or issue effect occurred.
+
+State Movement:
+
+- Plans 0114-0116 `OPEN -> CLOSED`;
+- WI-002 `IN_PROGRESS -> DONE`; WI-005/WI-006 `IN_PROGRESS -> READY`;
+- P33 `OPEN -> CLOSED`; P39/P40 `OPEN -> PLANNED` in roadmap custody;
+- Plan 0107 `wave_3_activated -> wave_3_integrated`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; all three implementation owners and the independent joined
+  reviewer completed. Coordinator owns this canonical closeout projection.
+
+Graphiti Write Status:
+
+- `not_written`; current repository, retained runtime receipt, Git/forge, and
+  validation evidence are authoritative.
+
+Next Bounded Action:
+
+- validate and integrate this closeout projection, then register the next
+  dependency-ordered provider-free wave from WI-003, WI-005, WI-006, and
+  WI-008 without crossing any held external-effect boundary.

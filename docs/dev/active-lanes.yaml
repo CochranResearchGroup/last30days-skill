@@ -172,18 +172,18 @@ lanes:
     plan_ref: refs/heads/feat/saved-query-composition-v2
     branch: feat/saved-query-composition-v2
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: d764f2579e1e088d8ce4678e14fa5c489c742480
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 13745c9f3652a696e9e5684bcf5205ded76d38f8
     remote_ref: refs/remotes/origin/feat/saved-query-composition-v2
     integration: merge
-    integration_receipt: null
-    validation_status: activation_passed_with_expected_projection_gate
-    validation_ref: d764f2579e1e088d8ce4678e14fa5c489c742480
-    session_owner: /root/wi002_search_packet2
+    integration_receipt: d2f15ed64ae608038cc5a8a82675fc149faa563c
+    validation_status: passed
+    validation_ref: bbe5d62c378bf80b801161aee67cf140b91815db
+    session_owner: /root
     dependencies: [P33]
-    overlaps: [skills/last30days/scripts/lib/service_monitor_contracts.py, skills/last30days/scripts/lib/service_monitors.py, skills/last30days/scripts/lib/service_monitor_views.py]
-    reconciled_overlaps: []
+    overlaps: [skills/last30days/scripts/lib/service_monitor_contracts.py, skills/last30days/scripts/lib/service_monitors.py, skills/last30days/scripts/lib/service_monitor_views.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_client.py, skills/last30days/scripts/lib/service_http.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go, service/runtime-manifest.json]
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_monitor_contracts.py, skills/last30days/scripts/lib/service_monitors.py, skills/last30days/scripts/lib/service_monitor_views.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_client.py, skills/last30days/scripts/lib/service_http.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go, service/runtime-manifest.json]
     updated_at: 2026-09-14
   - id: P39
     objective: Establish closed follow capabilities and exact X compatibility
@@ -192,18 +192,18 @@ lanes:
     plan_ref: refs/heads/feat/cross-service-follow-capabilities-v1
     branch: feat/cross-service-follow-capabilities-v1
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 337866e0853b2458084cc05e616701038e43f470
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: c0fcd5fed2673e95ef77c36f05c00b8dd9cf7862
     remote_ref: refs/remotes/origin/feat/cross-service-follow-capabilities-v1
     integration: merge
-    integration_receipt: null
-    validation_status: activation_passed
-    validation_ref: 337866e0853b2458084cc05e616701038e43f470
-    session_owner: /root/wi004_packet3_planning
+    integration_receipt: d2f15ed64ae608038cc5a8a82675fc149faa563c
+    validation_status: passed
+    validation_ref: bbe5d62c378bf80b801161aee67cf140b91815db
+    session_owner: /root
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_follow_capabilities.py, skills/last30days/scripts/lib/service_collection.py]
-    reconciled_overlaps: []
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_follow_capabilities.py, skills/last30days/scripts/lib/service_collection.py]
     updated_at: 2026-09-14
   - id: P38
     objective: Complete the provider-free hotfix runtime release and operator drill
@@ -311,18 +311,21 @@ lanes:
     plan_ref: refs/heads/feat/post-search-runtime-closeout-v1
     branch: feat/post-search-runtime-closeout-v1
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 81cbfc09b197b8cde325e468e79d19115d4fc4fb
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 3a161ba5b1d770c38d2c0c473c7501e513caca69
     remote_ref: refs/remotes/origin/feat/post-search-runtime-closeout-v1
     integration: merge
-    integration_receipt: null
-    validation_status: activation_passed
-    validation_ref: 81cbfc09b197b8cde325e468e79d19115d4fc4fb
-    session_owner: /root/next_search_qa_plan
+    integration_receipt: d2f15ed64ae608038cc5a8a82675fc149faa563c
+    validation_status: passed
+    validation_ref: bbe5d62c378bf80b801161aee67cf140b91815db
+    outcome_state: DONE
+    outcome_evidence_plan: docs/dev/plans/0114-2026-09-14-post-search-runtime-closeout.md
+    outcome_evidence_receipt: dev/last30days/receipts/plan0114-search-runtime.json
+    session_owner: /root
     dependencies: []
-    overlaps: [dev/last30days/scripts/service_search_dogfood.py, tests/test_service_post_search_runtime.py, docs/agents/service-search-dogfood.md]
-    reconciled_overlaps: []
+    overlaps: [dev/last30days/scripts/post_search_dogfood.py, dev/last30days/scripts/POST_SEARCH_DOGFOOD.md, tests/test_post_search_dogfood.py]
+    reconciled_overlaps: [dev/last30days/scripts/post_search_dogfood.py, dev/last30days/scripts/POST_SEARCH_DOGFOOD.md, tests/test_post_search_dogfood.py]
     updated_at: 2026-09-14
   - id: P28
     objective: Bound cumulative Reddit feed browser work below the provider worker deadline

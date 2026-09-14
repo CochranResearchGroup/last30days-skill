@@ -540,6 +540,54 @@ Next action:
 - validate and merge this activation projection, then resume the same three
   owners for implementation with no nested agents.
 
+### Checkpoint P0107-C11 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_3_activated -> wave_3_integrated`.
+
+Progress classification: `outcome_progress`; three provider-free packets are
+canonically integrated, WI-002 is complete, and WI-003's serialization gate is
+removed without widening any external-effect authority.
+
+Canonical evidence:
+
+- P33/Plan 0114 runtime-tested source `68279438`, retained receipt commit
+  `3a161ba5`, and receipt digest
+  `4a5cab7e762b56a08af72787ba44f9ce3be829f51c989d633ec4855f844a3b61`;
+- P39/Plan 0115 accepted source `c0fcd5fe` and P40/Plan 0116 accepted source
+  `13745c9f`;
+- coordinator public-transport join `6ee13b16`, final reviewed head
+  `bbe5d62c`, PR 87, and canonical merge
+  `d2f15ed64ae608038cc5a8a82675fc149faa563c`;
+- independent review accepted all remediation reproducers. The configured full
+  Python suite passed with 3,036 tests collected; Go tests/vet,
+  package/lifecycle, plan audit, focused integration, and reproducible builds
+  passed. Both service artifacts hashed
+  `bca5cb5e1e3ad9a68260ce27309d398ce056936bb0ac331d129e1a7245cfb44c`.
+
+Authority classification:
+
+- `inherited_authority`: this checkpoint closes Plans 0114-0116, moves WI-002
+  to `DONE`, returns WI-005/WI-006 to `READY`, and records canonical Git and
+  validation evidence only;
+- no provider, browser, live data, schedule, installed service/database,
+  staging, production, release, deployment, delivery, or issue mutation was
+  performed or authorized.
+
+Subagent status and reconciliation:
+
+- `joined`; three implementation owners and the independent joined reviewer
+  are complete. Accepted findings were resolved in one bounded coordinator
+  remediation sequence and verified at the final reviewed head.
+
+Next action:
+
+- integrate this closeout projection, then register the next full-capacity
+  provider-free wave from WI-003, WI-005, WI-006, and WI-008. Prefer WI-003
+  public question/runtime closure, WI-005 fixture tracers, and WI-008 corpus
+  integrity/coverage unless a fresh dependency audit changes that selection.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;

@@ -1,6 +1,6 @@
 # Plan 0114 | Post Search Runtime Closeout Packet 4
 
-State: OPEN
+State: CLOSED
 Lane: P33
 Work item: WI-002
 Branch: feat/post-search-runtime-closeout-v1
@@ -323,3 +323,32 @@ Review, bounds and handoff:
   local/upstream/live-remote equality. Coordinator reviews/integrates the exact
   branch, then reconciles WI-002 to `DONE` only from accepted merged evidence.
   WI-003 public question transport remains its separate packet.
+
+### Checkpoint P0114-C04 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`; all seven provider-free acceptance criteria
+are integrated through reviewed PR 87 as canonical merge
+`d2f15ed64ae608038cc5a8a82675fc149faa563c`.
+
+Authority classification:
+
+- `inherited_authority`: this closeout records the exact source, retained
+  receipt, independent joined review, canonical merge, and repo-local state
+  transition only. It grants no installed-runtime, provider, schedule,
+  production, release, deployment, or issue authority.
+
+Accepted evidence:
+
+- runtime-tested source `682794385e6b666e4f813847486bb7ae85e56b08`
+  and receipt digest
+  `4a5cab7e762b56a08af72787ba44f9ce3be829f51c989d633ec4855f844a3b61`;
+- nineteen fresh-client HTTP/MCP cases, two clean runtime teardowns, and an
+  empty final owned-process census;
+- joined head `bbe5d62c378bf80b801161aee67cf140b91815db` passed independent
+  review, the full configured Python suite, Go tests/vet, package/lifecycle
+  checks, plan audit, and reproducible service builds.
+
+Next action: none for Plan 0114. WI-002 may move to `DONE`; WI-003 may now
+enter its separately planned public question/runtime closeout packet.

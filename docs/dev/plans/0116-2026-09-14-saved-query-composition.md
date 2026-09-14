@@ -1,6 +1,6 @@
 # Plan 0116 | Saved Query Composition Packet 2
 
-State: OPEN
+State: CLOSED
 Lane: P40
 Work item: WI-006
 Branch: feat/saved-query-composition-v2
@@ -294,3 +294,35 @@ Next action or stop reason: publish the coherent source plus this plan after
 the completed single full-suite run, verify clean local/upstream/
 live remote equality, and stop for coordinator shared joins and independent
 integration review. No follow, digest, delivery or upstream search expansion.
+
+### Checkpoint P0116-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`; Packet 2 is integrated through reviewed
+PR 87 as canonical merge `d2f15ed64ae608038cc5a8a82675fc149faa563c`.
+
+Authority classification:
+
+- `inherited_authority`: this closeout covers saved-query composition, strict
+  local CLI/HTTP/MCP exposure, generated schema/manifest joins, reviewed
+  remediation, validation, and repo-local projections. It grants no follow,
+  digest delivery, schedule, provider, installed-runtime, production, release,
+  deployment, or issue authority.
+
+Accepted evidence:
+
+- exact lane source `13745c9f3652a696e9e5684bcf5205ded76d38f8`;
+- coordinator join `6ee13b16050ec7914a43f34fd03010dc64d09f1e`
+  added strict `saved-query`, `/v1/saved-query`, and `saved_query` parity;
+- independent review drove bounded identifier, receipt, and quarantine fixes,
+  then passed every accepted reproducer at exact reviewed head
+  `bbe5d62c378bf80b801161aee67cf140b91815db`;
+- the full configured Python suite passed with 3,036 tests collected; Go
+  tests/vet, focused transport/monitor/search, package/lifecycle, plan audit,
+  and two byte-identical service builds passed. Artifact SHA-256:
+  `bca5cb5e1e3ad9a68260ce27309d398ce056936bb0ac331d129e1a7245cfb44c`.
+
+Next action: return WI-006 and P40 to `READY` and `PLANNED` for separately
+bounded follow composition and deterministic digest/delivery-intent packets.
+Packet 2 does not claim WI-006 complete.
