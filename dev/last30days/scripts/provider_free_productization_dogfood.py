@@ -149,6 +149,13 @@ def _service_info(mcp) -> dict[str, object]:
     return json.loads(result["content"][0]["text"])
 
 
+def _check_search_question_quality(client, mcp, database: Path):
+    """Retain the question head before search tests publish a later revision."""
+    questions, anchor = question_dogfood.check_questions(client, mcp, database)
+    search, _ = post_search_dogfood.check_search(client, mcp, database)
+    return {"search": search, "questions": questions}, anchor
+
+
 def _execute_phase(args, descriptor, binary: Path, name: str) -> dict[str, object]:
     if Path(descriptor.database_path).exists():
         _reset_database(descriptor)
@@ -202,11 +209,9 @@ def _execute_phase(args, descriptor, binary: Path, name: str) -> dict[str, objec
             phase["http_service_info"] = http_info
             client = ServiceClient(Path(descriptor.socket_path), timeout=35)
             if name == "search_question_quality":
-                search, _ = post_search_dogfood.check_search(client, mcp, database)
-                questions, anchor = question_dogfood.check_questions(
+                phase["result"], anchor = _check_search_question_quality(
                     client, mcp, database
                 )
-                phase["result"] = {"search": search, "questions": questions}
             elif name == "follows":
                 follows = follow_dogfood.check_follows(client, mcp, database, seed)
                 cli = follow_dogfood.check_cli(
