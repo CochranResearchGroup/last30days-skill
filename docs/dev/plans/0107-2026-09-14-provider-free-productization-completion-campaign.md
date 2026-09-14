@@ -240,6 +240,41 @@ Next action:
   reviewed pull request, then record canonical receipts before selecting the
   next dependency-ordered Wave 1 continuation packets.
 
+### Checkpoint P0107-C04 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_1_integration_ready -> wave_1_integrated`.
+
+Progress classification: `outcome_progress`; reviewed PR 79 merged the exact
+validated Wave 1 head `c84b8a2d` into canonical main as
+`fae311987426fcfee681275f0a83b4c53fc7c6a7`.
+
+Authority classification:
+
+- `inherited_authority` covered the reviewed owned-fork merge and repo-local
+  closeout projection;
+- every excluded external effect remains untouched and separately gated.
+
+Canonical evidence:
+
+- GitHub reports PR 79 `MERGED` with head `c84b8a2d` and merge `fae31198`;
+- canonical main is clean and exactly equal to `origin/main` at that merge;
+- Plans 0108-0110 are closed and P33/P35/P38 retain their exact feature tips
+  with verified merge receipt `fae31198`;
+- WI-002, WI-004, and WI-007 return to `READY` for their separately planned
+  remaining packets; no work item is incorrectly claimed `DONE`.
+
+Subagent status and reconciliation:
+
+- `joined`; all Wave 1 agents are complete. No implementation agent remains
+  active and the coordinator retains campaign/integration ownership.
+
+Next action:
+
+- select and register up to three dependency-independent provider-free
+  continuation packets from current canonical main.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;

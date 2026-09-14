@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-002 -->
 # Search and retrieve stored posts as a product surface
 
-State: IN_PROGRESS
+State: READY
 Priority: P1
 Lane: Search
 Parent: WI-000
@@ -9,9 +9,9 @@ GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/53
 Blocked by: none
 Architecture: docs/dev/notes/0117-2026-09-13-post-search-product-architecture.md
 Implementation plan seed: docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md
-Last completed plan: docs/dev/plans/0084-2026-09-13-post-search-packet-1.md
-Active plan: docs/dev/plans/0108-2026-09-14-post-search-packet-2.md
-Branch: feat/post-search-v2
+Last completed plan: docs/dev/plans/0108-2026-09-14-post-search-packet-2.md
+Active plan: none
+Branch: none
 
 ## Problem
 
@@ -49,6 +49,10 @@ The coordinator should register a separate Packet 2 plan before adding the
 broader filter matrix, all-revision traversal, or cross-store deduplication.
 Do not change `/v1/query` or use provider/browser access under Packet 1.
 
-Packet 2 is active at published checkpoint `0d06d8e2` under Plan 0108. It owns
+Packet 2 was activated at checkpoint `0d06d8e2` under Plan 0108 and completed
 the broader filter matrix, revision traversal, cross-store identity, stable
-pagination, and focused public-boundary compatibility only.
+pagination, and focused public-boundary compatibility.
+
+Packet 2 integrated through PR 79 at canonical `fae31198` after independent
+review and joined acceptance. Next work is a separately planned Packet 3 for
+semantic/RRF ranking and bounded 10,000-post performance evidence.

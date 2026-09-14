@@ -2604,7 +2604,7 @@ Next Bounded Action:
 
 ## P33 | Post Search Product Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: expose the complete authorized stored-post corpus through a stable,
 cache-only, evidence-preserving search and pagination contract for users and
@@ -2612,8 +2612,8 @@ agents.
 
 Current State:
 
-- WI-002 is `IN_PROGRESS`; Packet 2 source acceptance `37f7fac6` is joined and
-  independently accepted on the Wave 1 integration branch;
+- WI-002 is `READY`; Packet 2 source acceptance `37f7fac6` integrated through
+  reviewed PR 79 at canonical `fae31198` after joined independent acceptance;
   Packet 1 closed and integrated through PR 36 as
   `75e7771e006f52847e8e47c1059b2b2000fb8ac7`;
 - the selected seam is additive `POST /v1/posts/search` plus MCP
@@ -2682,7 +2682,7 @@ Disposition:
 
 ## P35 | X Tailored Follow Product Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: let operators give selected X accounts, lists, and topics explicit
 collection identity, cadence, attention, provenance, and lifecycle separate
@@ -2690,8 +2690,8 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `IN_PROGRESS`; Packet 2 source acceptance `d3949520` plus bounded
-  review remediation is joined on the Wave 1 integration branch;
+- WI-004 is `READY`; Packet 2 source acceptance `d3949520` plus bounded review
+  remediation integrated through reviewed PR 79 at canonical `fae31198`;
   Packet 1 is
   integrated through PR 68 at canonical `87858934`;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
@@ -2931,7 +2931,7 @@ Next Bounded Action:
 
 ## P38 | Reserved Production Hotfix Path
 
-State: OPEN
+State: PLANNED
 
 Objective: keep one dormant zero-resource lane ready to take a qualified
 production defect from current-main source repair through priority integration,
@@ -2940,9 +2940,9 @@ lane reconciliation.
 
 Current State:
 
-- WI-007 is `IN_PROGRESS` under Plan 0110 at published activation `28c721e0`;
-  its provider-free control-plane and Git drills have no
-  product dependency;
+- WI-007 is `READY`; provider-free Packets 1-2 integrated through reviewed PR
+  79 at canonical `fae31198`, and the remaining runtime/release drill has no
+  provider dependency;
 - current policy reserves the slot, and builder/installer machinery already
   provides reproducible artifacts, readiness, database snapshots, rollback,
   and failed-upgrade restoration;
@@ -3322,8 +3322,8 @@ Current State:
 - WI-001 and WI-009 are `DONE`, canonical main was clean and remote-equal at
   `2fa77a9b`, and no pull request was open at campaign registration;
 - Wave 1's WI-002 Search Packet 2, WI-004 Tailored Follows Packet 2, and WI-007
-  provider-free hotfix control/Git drills are integration-ready after joined
-  validation and independent-review remediation;
+  provider-free hotfix control/Git drills integrated through reviewed PR 79 at
+  canonical `fae31198` after joined validation and review remediation;
 - WI-003, WI-005, WI-006, and WI-008 remain dependency-ordered later waves;
 - at most three one-level implementation agents may run concurrently, and the
   coordinator owns integration plus shared authority projections;
@@ -3343,6 +3343,6 @@ Wave 1 Planned Packets:
 
 Next Bounded Action:
 
-- merge the reviewed Wave 1 integration PR, record canonical receipts, and
-  select the next independent provider-free packets without exceeding three
-  concurrent implementation agents.
+- integrate the Wave 1 closeout projection, then select and register the next
+  independent provider-free packets without exceeding three concurrent
+  implementation agents.

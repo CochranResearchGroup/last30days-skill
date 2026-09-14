@@ -1,6 +1,6 @@
 # Plan 0109 | Tailored Follows Packet 2
 
-State: OPEN
+State: CLOSED
 Lane: P35
 Work item: WI-004
 Branch: feat/x-tailored-follows-v2
@@ -197,3 +197,16 @@ Subagent status: `not_spawned`; this packet prohibits subagents.
 Next action or stop reason: self-review the exact branch diff, publish the
 acceptance checkpoint, verify remote equality, and stop for coordinator review
 and integration. Do not start Packet 3.
+
+### Checkpoint P0109-C03 | 2026-09-14
+
+State transition: `implementation_acceptance_complete -> CLOSED`.
+
+Packet 2 integrated through reviewed owned-fork PR 79 at canonical merge
+`fae311987426fcfee681275f0a83b4c53fc7c6a7`. Independent review reproduced and
+the coordinator remediated two blockers: historical revision policies now use
+parsed/defaulted specs, and verified empty or out-of-window account timelines
+return successful zero yield while extraction and target failures stay typed.
+Exact regressions, the joined suites, generated artifacts, and authority audits
+pass. List routing and later lifecycle/scheduler closure remain separate; no
+provider/browser/runtime/schedule effect occurred.
