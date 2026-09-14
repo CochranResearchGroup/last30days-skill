@@ -2715,7 +2715,7 @@ authorized immutable evidence.
 
 Current State:
 
-- WI-003 is `IN_PROGRESS`; merged P33 Packet 1 satisfies its implementation
+- WI-003 is `READY`; merged P33 Packet 1 satisfies its implementation
   dependency;
 - current MCP query and temporal tools expose evidence, claims, events, and
   conflicts, but no validated synthesized answer, durable question status, or
@@ -2741,12 +2741,15 @@ Current State:
   the real search/evidence composition, immutable resolver, parent/version
   partition closure, and refreshed source manifest pass 54 affected and all
   2,844 comprehensive tests plus reproducible package validation;
-- Plan 0098 is clean and remote-equal at `75f2342e`; Packet 3's provider-free
-  structured-answer adapter, runtime model receipt, citation-closed validation,
-  explicit fallback, and bounded retry/replay behavior are integration-ready;
+- Plan 0098 closed clean and remote-equal at `75f2342e`; Packet 3's
+  provider-free structured-answer adapter, runtime model receipt,
+  citation-closed validation, explicit fallback, and bounded retry/replay
+  behavior are implemented;
 - Plan 0100 preserves that exact feature ancestry through merge `824b8627`,
   refreshes the source manifest at `a304fbbf`, and passes all 2,860 collected
-  tests with seven skips plus reproducible source-package validation.
+  tests with seven skips plus reproducible source-package validation;
+- PR 48 merged Packet 3 as canonical commit `d41e1a6e`, containing exact
+  feature checkpoint `75f2342e` and integration checkpoint `181465fa`.
 
 Closed Architecture Plan:
 
@@ -2759,12 +2762,12 @@ Closed Implementation Plans:
 - `docs/dev/plans/0096-2026-09-13-agent-question-evidence-tracer-packet-2.md`
   on `feat/agent-question-evidence-v2`.
 
-Integration-Ready Implementation Plan:
+Closed Implementation Plan:
 
 - `docs/dev/plans/0098-2026-09-14-agent-question-answer-tracer-packet-3.md`
   on `feat/agent-question-answer-v3`.
 
-Active Plan:
+Closed Integration Plan:
 
 - `docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md`.
 
@@ -2776,9 +2779,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- merge Plan 0100 through the owned fork, then plan Packet 4's public HTTP/MCP
-  and fresh-client acceptance separately; real model and runtime effects remain
-  gated.
+- plan Packet 4's public HTTP/MCP and fresh-client acceptance separately; real
+  model and runtime effects remain gated.
 
 ## P47 | P36 Packet 2 Integration Reconciliation
 
@@ -2834,13 +2836,13 @@ Next Bounded Action:
 
 ## P49 | P36 Packet 3 Integration Reconciliation
 
-State: OPEN
+State: CLOSED
 
 Objective: integrate the exact provider-free Packet 3 answer-worker checkpoint,
 refresh the source runtime manifest, and reconcile WI-003 without external
 runtime effects.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md`.
 
@@ -2851,12 +2853,13 @@ Current State:
 - all 2,860 collected tests pass with seven skips, and two source packages are
   byte-identical at SHA-256 `e9e47fa00dffa9e86c0dc439d42419326dc1d815d2746d47467f388477b2afda`;
 - real model, public transport, installed runtime, providers, P35, staging, and
-  production remain outside scope.
+  production remain outside scope;
+- PR 48 merged the candidate as canonical commit `d41e1a6e`.
 
 Next Bounded Action:
 
-- publish and merge the reviewed candidate through the owned public fork, then
-  reconcile the canonical merge receipt and return WI-003 to `READY`.
+- merge the closeout-only projections, verify canonical main, and plan Packet 4
+  separately if the operator continues P36.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 

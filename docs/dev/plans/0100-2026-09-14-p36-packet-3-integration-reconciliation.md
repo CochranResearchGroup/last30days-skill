@@ -1,6 +1,6 @@
 # Plan 0100 | P36 Packet 3 Integration Reconciliation
 
-State: OPEN
+State: CLOSED
 Lane: P49
 Work item: WI-003
 Branch: docs/p36-packet3-integration
@@ -141,3 +141,32 @@ occurred.
 Next action: publish the reconciled projections, validate lane and planning
 authority, open the owned-fork PR, and merge only while the candidate remains
 clean and reviewable.
+
+### Checkpoint P0100-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`.
+
+Progress classification: `outcome_progress`; PR 48 merged the reviewed Packet
+3 candidate as canonical commit
+`d41e1a6ef495b4e36530a1ed4f88c9b76da35224`.
+
+Authority classification:
+
+- `inherited_authority` for closeout-only repository projections and canonical
+  Git readback;
+- `human_gate` remains in force for P35 and every installed/runtime/provider/
+  model/release/production effect;
+- `scope_expansion` remains in force for Packet 4 public HTTP/MCP/client work.
+
+Integration receipt:
+
+- PR 48 is `MERGED` and canonical main contains exact feature checkpoint
+  `75f2342e`, integration checkpoint `181465fa`, and publication checkpoint
+  `742bbbff`;
+- canonical main was clean and remote-equal at `d41e1a6e` after fast-forward;
+- WI-003 returns to `READY` for separately planned Packet 4 work.
+
+Next action: merge the closeout-only projections, verify canonical main again,
+then plan Packet 4 separately if the operator continues P36.
