@@ -1,53 +1,5 @@
 schema_version: 1
 lanes:
-  - id: P36
-    objective: Close the provider-free question surface through public transports and isolated-runtime acceptance
-    work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
-    plan: docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md
-    plan_ref: refs/heads/feat/question-public-runtime-closeout-v1
-    branch: feat/question-public-runtime-closeout-v1
-    target: main
-    plan_state: PLANNED
-    custody_state: PLANNED
-    checkpoint: null
-    remote_ref: refs/remotes/origin/feat/question-public-runtime-closeout-v1
-    integration: merge
-    dependencies: [P33]
-    overlaps: [skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_http.py, skills/last30days/scripts/lib/service_client.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go, service/runtime-manifest.json]
-    reconciled_overlaps: []
-    updated_at: 2026-09-14
-  - id: P39
-    objective: Implement provider-free native Reddit and YouTube follow tracers
-    work_items: [docs/dev/work-items/WI-005-cross-service-tailored-follows.md]
-    plan: docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md
-    plan_ref: refs/heads/feat/cross-service-follow-tracers-v1
-    branch: feat/cross-service-follow-tracers-v1
-    target: main
-    plan_state: PLANNED
-    custody_state: PLANNED
-    checkpoint: null
-    remote_ref: refs/remotes/origin/feat/cross-service-follow-tracers-v1
-    integration: merge
-    dependencies: []
-    overlaps: [skills/last30days/scripts/lib/service_follow_capabilities.py, skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_acquisition_worker.py]
-    reconciled_overlaps: []
-    updated_at: 2026-09-14
-  - id: P37
-    objective: Replace fake service-quality axes with read-only real-fixture adapters
-    work_items: [docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
-    plan: docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md
-    plan_ref: refs/heads/feat/service-quality-real-adapters-v1
-    branch: feat/service-quality-real-adapters-v1
-    target: main
-    plan_state: PLANNED
-    custody_state: PLANNED
-    checkpoint: null
-    remote_ref: refs/remotes/origin/feat/service-quality-real-adapters-v1
-    integration: merge
-    dependencies: [P33]
-    overlaps: []
-    reconciled_overlaps: []
-    updated_at: 2026-09-14
   - id: P51
     objective: Build a deterministic development artifact and prove one isolated runtime through provider-free dogfood
     work_items: [docs/dev/work-items/WI-009-productization-readiness-remediation.md]
@@ -234,24 +186,21 @@ lanes:
     reconciled_overlaps: [skills/last30days/scripts/lib/service_monitor_contracts.py, skills/last30days/scripts/lib/service_monitors.py, skills/last30days/scripts/lib/service_monitor_views.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_client.py, skills/last30days/scripts/lib/service_http.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go, service/runtime-manifest.json]
     updated_at: 2026-09-14
   - id: P39
-    objective: Establish closed follow capabilities and exact X compatibility
+    objective: Implement provider-free native Reddit and YouTube follow tracers
     work_items: [docs/dev/work-items/WI-005-cross-service-tailored-follows.md]
-    plan: docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md
-    plan_ref: refs/heads/feat/cross-service-follow-capabilities-v1
-    branch: feat/cross-service-follow-capabilities-v1
+    plan: docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md
+    plan_ref: refs/heads/feat/cross-service-follow-tracers-v1
+    branch: feat/cross-service-follow-tracers-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: c0fcd5fed2673e95ef77c36f05c00b8dd9cf7862
-    remote_ref: refs/remotes/origin/feat/cross-service-follow-capabilities-v1
+    plan_state: OPEN
+    custody_state: ACTIVE
+    checkpoint: f7ba978dcea01a97ca343a177f99e1c3479a714a
+    remote_ref: refs/remotes/origin/feat/cross-service-follow-tracers-v1
     integration: merge
-    integration_receipt: d2f15ed64ae608038cc5a8a82675fc149faa563c
-    validation_status: passed
-    validation_ref: bbe5d62c378bf80b801161aee67cf140b91815db
-    session_owner: /root
+    session_owner: /root/wave4_wi005_plan
     dependencies: []
-    overlaps: [skills/last30days/scripts/lib/service_follow_capabilities.py, skills/last30days/scripts/lib/service_collection.py]
-    reconciled_overlaps: [skills/last30days/scripts/lib/service_follow_capabilities.py, skills/last30days/scripts/lib/service_collection.py]
+    overlaps: [skills/last30days/scripts/lib/service_follow_capabilities.py, skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_acquisition_worker.py]
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_follow_capabilities.py, skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_acquisition_worker.py]
     updated_at: 2026-09-14
   - id: P38
     objective: Complete the provider-free hotfix runtime release and operator drill
@@ -273,42 +222,38 @@ lanes:
     reconciled_overlaps: [dev/last30days/scripts/hotfix_fixture_runtime.py, dev/last30days/scripts/hotfix_runtime_drill.py, dev/last30days/scripts/hotfix_operator.py, service/scripts/install.sh, tests/test_hotfix_runtime_drill.py, docs/agents/hotfix-operator.md]
     updated_at: 2026-09-14
   - id: P37
-    objective: Implement a deterministic provider-free four-axis quality tracer
+    objective: Replace fake service-quality axes with read-only real-fixture adapters
     work_items: [docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
-    plan: docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md
-    plan_ref: refs/heads/feat/service-quality-v1
-    branch: feat/service-quality-v1
+    plan: docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md
+    plan_ref: refs/heads/feat/service-quality-real-adapters-v1
+    branch: feat/service-quality-real-adapters-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 58020b04f8fe109062802abf5b794e9ff5e1024c
-    remote_ref: refs/remotes/origin/feat/service-quality-v1
+    plan_state: OPEN
+    custody_state: ACTIVE
+    checkpoint: 24614a18d5f17805b4a17af40c8a3f3040d55ebb
+    remote_ref: refs/remotes/origin/feat/service-quality-real-adapters-v1
     integration: merge
-    integration_receipt: 6d5eb5d972024cd584bfcc8bf57975f49fa90f45
-    validation_status: passed
-    validation_ref: 58020b04f8fe109062802abf5b794e9ff5e1024c
-    dependencies: []
+    session_owner: /root/wave4_wi008_plan
+    dependencies: [P33]
     overlaps: []
     reconciled_overlaps: []
     updated_at: 2026-09-13
   - id: P36
-    objective: Add provider-free structured answer execution and validation
+    objective: Close the provider-free question surface through public transports and isolated-runtime acceptance
     work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
-    plan: docs/dev/plans/0098-2026-09-14-agent-question-answer-tracer-packet-3.md
-    plan_ref: refs/heads/feat/agent-question-answer-v3
-    branch: feat/agent-question-answer-v3
+    plan: docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md
+    plan_ref: refs/heads/feat/question-public-runtime-closeout-v1
+    branch: feat/question-public-runtime-closeout-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 75f2342e57ffb7c6d4c41e9d7825daf934ccb4c7
-    remote_ref: refs/remotes/origin/feat/agent-question-answer-v3
+    plan_state: OPEN
+    custody_state: ACTIVE
+    checkpoint: cfe4e719c5b561a585bd1cd4f9c2d7a1ef587328
+    remote_ref: refs/remotes/origin/feat/question-public-runtime-closeout-v1
     integration: merge
-    integration_receipt: d41e1a6ef495b4e36530a1ed4f88c9b76da35224
-    validation_status: passed
-    validation_ref: 75f2342e57ffb7c6d4c41e9d7825daf934ccb4c7
+    session_owner: /root/wave4_wi003_plan
     dependencies: [P33]
-    overlaps: [service/runtime-manifest.json]
-    reconciled_overlaps: [service/runtime-manifest.json]
+    overlaps: [skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_http.py, skills/last30days/scripts/lib/service_client.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go, service/runtime-manifest.json]
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_http.py, skills/last30days/scripts/lib/service_client.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go, service/runtime-manifest.json]
     updated_at: 2026-09-14
   - id: P35
     objective: Complete typed X list and provider-free tailored-follow product closure

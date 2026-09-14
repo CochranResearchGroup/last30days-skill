@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-008 -->
 # Measure corpus and retrieval quality continuously
 
-State: READY
+State: IN_PROGRESS
 Priority: P2
 Lane: Quality
 Parent: WI-000
@@ -10,9 +10,9 @@ Blocked by: none for Packet 1; retrieval acceptance by WI-002 closeout; groundin
 Architecture: docs/dev/notes/0121-2026-09-13-corpus-retrieval-and-grounding-quality-architecture.md
 Implementation plan seed: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md
 Last closed plan: docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md
-Current plan: docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md (planned)
-Branch: feat/service-quality-real-adapters-v1 (planned; custody not yet published)
-Owner: unassigned until activation
+Current plan: docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md
+Branch: feat/service-quality-real-adapters-v1
+Owner: /root/wave4_wi008_plan
 
 ## Problem
 
@@ -47,6 +47,6 @@ only on a score.
 Packet 1 integrated through PR 41 as canonical merge `6d5eb5d9`. Plan 0119
 now registers read-only real-fixture corpus-integrity, acquisition-coverage,
 and PostSearch quality adapters; grounding remains deferred until WI-003
-closes. The plan remains `PLANNED` until exact custody is published. Keep judge
+closes. The plan is `OPEN` at published activation `24614a18`. Keep judge
 calls, production samples, providers, installed runtimes, CI changes, staging,
 and production behind their own explicit gates.

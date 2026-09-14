@@ -619,6 +619,40 @@ Next action:
 - validate and integrate this registration checkpoint, then create and publish
   the exact isolated lane refs before any plan changes to `OPEN`.
 
+### Checkpoint P0107-C13 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_4_registration_ready -> wave_4_activated`.
+
+Progress classification: `outcome_progress`; all three plans have clean,
+published, exact isolated custody and can execute concurrently without direct
+lane-file overlap.
+
+Canonical evidence:
+
+- registration PR 89 merged as `d6cf8252`;
+- P36/Plan 0117 activation `cfe4e719`;
+- P39/Plan 0118 activation `f7ba978d`;
+- P37/Plan 0119 activation `24614a18`.
+
+Authority classification:
+
+- `inherited_authority`: the three assigned owners may implement and validate
+  only their registered provider-free lane write sets;
+- all shared joins stay coordinator-owned and every C12 external-effect gate
+  remains held.
+
+Subagent status and reconciliation:
+
+- `assigned`; three top-level owners, no children. Implementation begins only
+  after this activation projection integrates into canonical main.
+
+Next action:
+
+- validate and merge the activation projection, then trigger all three owners
+  concurrently and join only accepted exact checkpoints.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;
