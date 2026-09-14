@@ -276,6 +276,9 @@ class _RequestHandler(BaseHTTPRequestHandler):
         except (UnicodeDecodeError, json.JSONDecodeError):
             self._error(400, "invalid_json", "request body must be valid JSON")
             return
+        except contracts.PostSearchCursorStaleError:
+            self._error(409, "cursor_stale", "search head is no longer retained; start a new search")
+            return
         except contracts.ContractValidationError as exc:
             del exc
             self._error(400, "invalid_contract", "request contract is invalid")

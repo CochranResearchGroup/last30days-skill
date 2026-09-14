@@ -8,8 +8,11 @@ The adapter exposes:
 - `service_info`
 - `query` (`prefer_cache` by default; `cache_only` prohibits external work;
   optional `profile_id` adds that exact authorized partition to public evidence)
-- `search_posts` (read-only lexical search over current stored-post revisions;
-  exact source/publication filters and query-bound opaque pagination cursor)
+- `search_posts` (read-only lexical search or filter-only browse; exact source,
+  author, topic, namespaced collection, publication/observation filters;
+  `revision_mode=current|all`, `sort=relevance|published_desc|observed_desc`;
+  immutable pagination during publication, with process-local cursors expiring
+  after 15 minutes, eviction, or restart)
 - `refresh` (`force_refresh`, durable and idempotent; optional `profile_id`)
 - `job_status`
 - `topic`

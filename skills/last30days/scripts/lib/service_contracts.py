@@ -393,51 +393,81 @@ class QueryRequest:
         }
 
 
+class PostSearchCursorStaleError(ContractValidationError):
+    """The immutable post-search head referenced by a cursor was not retained."""
+
+
 def _validate_post_search_filters(value: Any) -> dict[str, Any]:
     if not isinstance(value, Mapping):
         raise ContractValidationError("filters must be an object")
     filters = dict(value)
-    allowed = {"sources", "published_after", "published_before"}
+    allowed = {
+        "sources",
+        "authors",
+        "topic_ids",
+        "collection_refs",
+        "published_after",
+        "published_before",
+        "observed_after",
+        "observed_before",
+    }
     unknown = sorted(set(filters) - allowed)
     if unknown:
         raise ContractValidationError(
             f"unknown post search filter fields: {', '.join(unknown)}"
         )
-    if "sources" in filters:
-        sources = filters["sources"]
+    for filter_name, maximum in (
+        ("sources", 64),
+        ("authors", 1024),
+        ("topic_ids", 128),
+        ("collection_refs", 1024),
+    ):
+        if filter_name not in filters:
+            continue
+        sources = filters[filter_name]
         if (
             not isinstance(sources, list)
             or not 1 <= len(sources) <= 32
             or not all(
-                isinstance(source, str) and source.strip() and len(source) <= 64
+                isinstance(source, str) and source.strip() and len(source) <= maximum
                 for source in sources
             )
             or len(set(sources)) != len(sources)
         ):
             raise ContractValidationError(
-                "filters.sources must contain 1 to 32 unique bounded strings"
+                f"filters.{filter_name} must contain 1 to 32 unique bounded strings"
             )
-        filters["sources"] = list(sources)
-    after = None
-    before = None
-    if "published_after" in filters:
-        after = _validate_timestamp(
-            filters["published_after"], "filters.published_after"
-        )
-        filters["published_after"] = after.isoformat().replace("+00:00", "Z")
-    if "published_before" in filters:
-        before = _validate_timestamp(
-            filters["published_before"], "filters.published_before"
-        )
-        filters["published_before"] = before.isoformat().replace("+00:00", "Z")
-    if after is not None and before is not None and after > before:
-        raise ContractValidationError(
-            "filters.published_after must not exceed filters.published_before"
-        )
+        if filter_name == "collection_refs" and any(
+            re.fullmatch(
+                r"(?:legacy:(?:spec|run):\S+|temporal:(?:schedule|tick|lane):\S+|temporal:target:[^:\s]+:\S+)",
+                ref,
+            )
+            is None
+            for ref in sources
+        ):
+            raise ContractValidationError("filters.collection_refs must be namespaced")
+        filters[filter_name] = list(sources)
+    for prefix in ("published", "observed"):
+        bounds = {}
+        for suffix in ("after", "before"):
+            name = f"{prefix}_{suffix}"
+            if name in filters:
+                bounds[suffix] = _validate_timestamp(filters[name], f"filters.{name}")
+                filters[name] = bounds[suffix].isoformat().replace("+00:00", "Z")
+        if (
+            "after" in bounds
+            and "before" in bounds
+            and bounds["after"] > bounds["before"]
+        ):
+            raise ContractValidationError(
+                f"filters.{prefix}_after must not exceed filters.{prefix}_before"
+            )
     return filters
 
 
-def _validate_post_search_query(value: Any) -> str:
+def _validate_post_search_query(value: Any) -> str | None:
+    if value is None:
+        return None
     query = _require_bounded_string(value, "query", 4096)
     if re.search(r"[A-Za-z0-9]", query) is None:
         raise ContractValidationError("query must contain a lexical token")
@@ -453,15 +483,17 @@ def _validate_post_search_profile(value: Any) -> str:
 
 @dataclass(frozen=True)
 class PostSearchRequest:
-    """One cache-only lexical search over current stored-post revisions."""
+    """One cache-only search or filtered browse over stored-post revisions."""
 
     schema_version: int
     request_id: str
     profile_id: str
-    query: str
+    query: str | None
     filters: dict[str, Any]
     page_size: int
     cursor: str | None
+    revision_mode: str = "current"
+    sort: str = "relevance"
 
     CONTRACT_NAME: ClassVar[str] = "post_search_request"
 
@@ -476,28 +508,40 @@ class PostSearchRequest:
                     "schema_version",
                     "request_id",
                     "profile_id",
-                    "query",
                     "filters",
                     "page_size",
                     "cursor",
                 }
             ),
+            optional=frozenset({"query", "revision_mode", "sort"}),
         )
         cursor = payload["cursor"]
         if cursor is not None:
             cursor = _require_bounded_string(cursor, "cursor", 4096)
+        query = _validate_post_search_query(payload.get("query"))
+        filters = _validate_post_search_filters(payload["filters"])
+        if query is None and not filters:
+            raise ContractValidationError("query or a narrowing filter is required")
+        revision_mode = payload.get("revision_mode", "current")
+        sort = payload.get("sort", "relevance")
+        if revision_mode not in ("current", "all"):
+            raise ContractValidationError("revision_mode is invalid")
+        if sort not in ("relevance", "published_desc", "observed_desc"):
+            raise ContractValidationError("sort is invalid")
         return cls(
             schema_version=_validate_schema_version(payload["schema_version"]),
             request_id=_require_bounded_string(
                 payload["request_id"], "request_id", 128
             ),
             profile_id=_validate_post_search_profile(payload["profile_id"]),
-            query=_validate_post_search_query(payload["query"]),
-            filters=_validate_post_search_filters(payload["filters"]),
+            query=query,
+            filters=filters,
             page_size=_require_integer_between(
                 payload["page_size"], "page_size", 1, 100
             ),
             cursor=cursor,
+            revision_mode=revision_mode,
+            sort=sort,
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -509,6 +553,8 @@ class PostSearchRequest:
             "filters": dict(self.filters),
             "page_size": self.page_size,
             "cursor": self.cursor,
+            "revision_mode": self.revision_mode,
+            "sort": self.sort,
         }
 
 
@@ -525,9 +571,7 @@ def _validate_timestamp(value: Any, field: str) -> datetime:
     try:
         parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
     except ValueError as exc:
-        raise ContractValidationError(
-            f"{field} must be an ISO-8601 timestamp"
-        ) from exc
+        raise ContractValidationError(f"{field} must be an ISO-8601 timestamp") from exc
     if parsed.tzinfo is None or parsed.utcoffset() is None:
         raise ContractValidationError(f"{field} must include a timezone")
     return parsed.astimezone(timezone.utc)
@@ -585,13 +629,13 @@ class PostSearchEvidenceRef:
 
 @dataclass(frozen=True)
 class PostSearchHit:
-    """One current stored-post revision and its lexical match evidence."""
+    """A post revision with its exact representative and merged provenance."""
 
     post_id: str
     revision_id: str
     storage_family: str
     source: str
-    source_native_id: str
+    source_native_id: str | None
     url: str
     title: str
     author: str | None
@@ -602,6 +646,9 @@ class PostSearchHit:
     score: float
     matching_channels: tuple[str, ...]
     evidence_ref: PostSearchEvidenceRef
+    evidence_refs: tuple[PostSearchEvidenceRef, ...] = ()
+    collection_refs: tuple[str, ...] = ()
+    topic_ids: tuple[str, ...] = ()
 
     CONTRACT_NAME: ClassVar[str] = "post_search_hit"
 
@@ -630,18 +677,21 @@ class PostSearchHit:
                     "evidence_ref",
                 }
             ),
+            optional=frozenset({"evidence_refs", "collection_refs", "topic_ids"}),
         )
         score = payload["score"]
         if isinstance(score, bool) or not isinstance(score, (int, float)):
             raise ContractValidationError("score must be numeric")
         score = float(score)
-        if not 0.0 < score <= 1.0:
+        if not 0.0 <= score <= 1.0:
             raise ContractValidationError("score must be between 0 and 1")
         channels = payload["matching_channels"]
-        if channels != ["lexical"]:
+        if channels not in (["lexical"], []):
             raise ContractValidationError(
-                "Packet 1 matching_channels must be exactly lexical"
+                "matching_channels must be lexical or empty for browse"
             )
+        if (channels == []) != (score == 0):
+            raise ContractValidationError("score must match the search channel")
         author = payload["author"]
         if author is not None:
             author = _require_bounded_string(author, "author", 1024)
@@ -649,6 +699,26 @@ class PostSearchHit:
         if published_at is not None:
             published_at = _canonical_timestamp(published_at, "published_at")
         evidence_ref = PostSearchEvidenceRef.from_dict(payload["evidence_ref"])
+        raw_refs = payload.get("evidence_refs", [payload["evidence_ref"]])
+        if not isinstance(raw_refs, list) or not raw_refs:
+            raise ContractValidationError("evidence_refs must be a non-empty list")
+        evidence_refs = tuple(PostSearchEvidenceRef.from_dict(ref) for ref in raw_refs)
+        if evidence_ref not in evidence_refs:
+            raise ContractValidationError(
+                "evidence_refs must retain the primary evidence_ref"
+            )
+        metadata = {}
+        for metadata_name in ("collection_refs", "topic_ids"):
+            values = payload.get(metadata_name, [])
+            if not isinstance(values, list) or any(
+                not isinstance(value, str) or not value for value in values
+            ):
+                raise ContractValidationError(
+                    f"{metadata_name} must be a list of non-empty strings"
+                )
+            if len(values) != len(set(values)):
+                raise ContractValidationError(f"{metadata_name} must be unique")
+            metadata[metadata_name] = tuple(values)
         storage_family = payload["storage_family"]
         if storage_family != evidence_ref.storage_family:
             raise ContractValidationError(
@@ -664,14 +734,17 @@ class PostSearchHit:
         url = _require_bounded_string(payload["url"], "url", 4096)
         if url != evidence_ref.source_url:
             raise ContractValidationError("url must match evidence_ref.source_url")
+        source_native_id = payload["source_native_id"]
+        if source_native_id is not None:
+            source_native_id = _require_bounded_string(
+                source_native_id, "source_native_id", 1024
+            )
         return cls(
             post_id=_require_bounded_string(payload["post_id"], "post_id", 128),
             revision_id=revision_id,
             storage_family=storage_family,
             source=_require_bounded_string(payload["source"], "source", 64),
-            source_native_id=_require_bounded_string(
-                payload["source_native_id"], "source_native_id", 1024
-            ),
+            source_native_id=source_native_id,
             url=url,
             title=_require_bounded_string(payload["title"], "title", 4096),
             author=author,
@@ -682,8 +755,11 @@ class PostSearchHit:
                 payload["access_partition_id"], "access_partition_id", 256
             ),
             score=score,
-            matching_channels=("lexical",),
+            matching_channels=tuple(channels),
             evidence_ref=evidence_ref,
+            evidence_refs=evidence_refs,
+            collection_refs=metadata["collection_refs"],
+            topic_ids=metadata["topic_ids"],
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -703,6 +779,9 @@ class PostSearchHit:
             "score": self.score,
             "matching_channels": list(self.matching_channels),
             "evidence_ref": self.evidence_ref.to_dict(),
+            "evidence_refs": [ref.to_dict() for ref in self.evidence_refs],
+            "collection_refs": list(self.collection_refs),
+            "topic_ids": list(self.topic_ids),
         }
 
 
@@ -714,7 +793,7 @@ class PostSearchResponse:
     request_id: str
     search_head_id: str
     generated_at: str
-    query: str
+    query: str | None
     filters: dict[str, Any]
     sort: str
     revision_mode: str
@@ -750,8 +829,12 @@ class PostSearchResponse:
                 }
             ),
         )
-        if payload["sort"] != "relevance" or payload["revision_mode"] != "current":
-            raise ContractValidationError("Packet 1 supports relevance/current only")
+        if payload["sort"] not in (
+            "relevance",
+            "published_desc",
+            "observed_desc",
+        ) or payload["revision_mode"] not in ("current", "all"):
+            raise ContractValidationError("sort or revision_mode is invalid")
         raw_hits = payload["hits"]
         if not isinstance(raw_hits, list) or len(raw_hits) > 100:
             raise ContractValidationError("hits must be a bounded list")
@@ -776,8 +859,8 @@ class PostSearchResponse:
             generated_at=_canonical_timestamp(payload["generated_at"], "generated_at"),
             query=_validate_post_search_query(payload["query"]),
             filters=_validate_post_search_filters(payload["filters"]),
-            sort="relevance",
-            revision_mode="current",
+            sort=payload["sort"],
+            revision_mode=payload["revision_mode"],
             hits=hits,
             returned=returned,
             truncated=payload["truncated"],

@@ -1,0 +1,13 @@
+{
+  "mcp_arguments": {
+    "authors": ["alice", "bob"],
+    "topic_ids": ["7"],
+    "collection_refs": ["legacy:spec:spec-1", "temporal:target:x-service:target-1"],
+    "observed_after": "2026-09-08T12:00:00Z",
+    "observed_before": "2026-09-08T12:02:00Z",
+    "revision_mode": "all",
+    "sort": "observed_desc",
+    "page_size": 1
+  },
+  "expected_version_ids": ["version-legacy-current", "version-tick-new"]
+}

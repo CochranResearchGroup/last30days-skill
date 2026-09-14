@@ -36,7 +36,8 @@ Follow this order for every ordinary request:
    snapshot coverage and interval/promotion fields are the freshness authority.
    When the user asks to find or page through individual stored posts instead
    of requesting a synthesized answer, call `search_posts`; it searches only
-   current cached revisions and cannot acquire provider data.
+   cached revisions and cannot acquire provider data. Use `revision_mode=all`
+   only when the user asks for revision history; the default is `current`.
 4. Use `freshness_policy=cache_only` whenever the user prohibits external work
    or asks only what the service already knows.
 5. If the result is stale or missing and the user asked for fresh research,
@@ -53,9 +54,18 @@ available service operation.
 Use the narrowest operation that answers the request:
 
 - `query` - current evidence-backed research from the shared cache.
-- `search_posts` - deterministic lexical search over current stored-post
-  revisions. Preserve each immutable evidence reference and reuse only the
-  opaque cursor returned for the same query, filters, profile, and page size.
+- `search_posts` - deterministic lexical search or filtered browse over stored
+  posts. Filter by `sources`, exact `authors`, `topic_ids`, namespaced
+  `collection_refs`, or inclusive `published_after/before` and
+  `observed_after/before` timestamps. Omit the query only with a narrowing
+  filter. Missing fields do not match; observation bounds match one recorded
+  observation. Use `revision_mode=current|all` and
+  `sort=relevance|published_desc|observed_desc`. Preserve the primary
+  `evidence_ref` and every merged `evidence_refs` entry and collection cause.
+  Reuse a cursor only with the same request, profile, modes, and page size.
+  Cursors retain an immutable page sequence during publication, but expire
+  after 15 minutes, capacity eviction, or service restart. On `cursor_stale`,
+  explain that a fresh search is required; do not silently join different heads.
 - `temporal_query` - `as_of`, `during`, `known_as_of`, timeline, entity
   dossier, event dossier, trend, comparison, and historical brief requests.
   This operation is cache-only.
