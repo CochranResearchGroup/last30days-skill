@@ -195,3 +195,58 @@ change is currently required.
 Next action: validate and publish the clean source checkpoint, build it twice
 offline, run the exact two-cycle acceptance, retain the raw receipt, and return
 the published evidence for coordinator review and canonical integration.
+
+### Checkpoint P0120-C04 | 2026-09-14
+
+Plan version: 1
+
+State transition: `source_probe_ready -> first_acceptance_failed -> bounded_repair_ready`.
+
+Progress classification: `blocker_reduction`; the strict restart check detected
+an incomplete synthetic preparation, and the fixture now matches the stock
+local-hash materialization path without weakening any acceptance assertion.
+
+Authority classification: `inherited_authority`; second and final bounded
+implementation attempt changes only fixture preparation and its regression.
+All original scope, acceptance and external-effect gates remain unchanged.
+
+Preserved first-attempt evidence:
+
+- clean published source `48a2e5d2dc6cd2ef0e68fa71bcdda9b4da24ba34`;
+- two fixed-epoch service 0.3.118 builds were byte-identical at
+  `df29fc296cad3e1b99a6ffebc1a12ba9fdcd79a9b92d2b406b1d9a8cb70690b7`;
+- both process cycles passed public HTTP/MCP/CLI catalog, history, receipt,
+  partition, provenance and denial probes. Final restart equality failed only
+  on the complete database digest, not on any public response field;
+- failed raw receipt SHA-256 is
+  `0758f61dac4f939156ca5f5606ec0e3f5510b3c74f06c95acb6c0bf8b6c9fe7b`,
+  retained at `/tmp/l30d-p39-state.s5KPcW/last30days/lanes/l30d-p39-follow-packet3-4265676f25ed/receipts/follow-packet3.json`;
+- first cycle stopped normally; second cycle failure cleanup reports stopped;
+  all service/MCP children were reaped and the fresh owned-process census was
+  empty. A separate OS readback found no process under the exact runtime roots;
+- complete Python at that source: 3,093 passed, eight skipped, 14 subtests,
+  one failed in 206.64 seconds. The sole failure is the shared hotfix test's
+  hardcoded 0.3.117 expectation against actual 0.3.118 fixture output, reported
+  to the coordinator without editing its file.
+
+Causal diagnosis and bounded repair:
+
+- preparation used a retriever without an embedding provider; stock startup
+  uses `LocalHashEmbeddingProvider`, so restart correctly created three
+  embeddings and a new index manifest. This is not a provider call;
+- a local, no-runtime regression reproduced `embeddings_indexed == 3` before
+  the fix. The production fixture publisher now uses the same local hasher as
+  stock startup. The regression passes with zero pending embeddings and exact
+  whole-database digest equality after replaying stock initialization;
+- all nine harness tests pass in 11.39 seconds. No no-mutation comparison,
+  identity binding, process gate or public expectation was loosened;
+- completed first-attempt public samples remain valid for their source and
+  conditions, but overall acceptance remains failed until a new complete
+  two-cycle proof passes. The durable receipt will retain both attempts.
+
+Subagent status and reconciliation: `active`; one owner, no children. Shared
+hotfix test baseline is coordinator-owned; no other shared join is needed.
+
+Next action: publish the repaired clean source, rebuild twice, and execute the
+second bounded proof in wholly fresh roots. Stop for coordinator disposition
+if that proof fails; do not open another attempt or erase the first failure.

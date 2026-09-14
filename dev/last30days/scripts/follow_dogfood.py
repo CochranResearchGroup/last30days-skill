@@ -37,7 +37,7 @@ from lib.service_contracts import PostSearchRequest
 from lib.service_job_runner import AcquisitionJobRunner, JobRunnerPolicy
 from lib.service_publication import CorpusPublisher
 from lib.service_refresh import RefreshPolicy, ServiceRefreshScheduler
-from lib.service_retrieval import HybridRetriever
+from lib.service_retrieval import HybridRetriever, LocalHashEmbeddingProvider
 from lib.service_store import ServiceStore
 from lib.service_supervisor import RefreshSupervisor
 from post_search_dogfood import (
@@ -258,7 +258,11 @@ def _seed_fixture(db):
     runner = AcquisitionJobRunner(
         supervisor,
         ledger,
-        CorpusPublisher(db, HybridRetriever(db), clock=lambda: NOW),
+        CorpusPublisher(
+            db,
+            HybridRetriever(db, embedding_provider=LocalHashEmbeddingProvider()),
+            clock=lambda: NOW,
+        ),
         Worker(),
         scheduler,
         JobRunnerPolicy(lease_seconds=121),

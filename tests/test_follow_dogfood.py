@@ -193,3 +193,16 @@ def test_cli_readback_preserves_entire_synthetic_database(tmp_path):
     )
     assert result["read_count"] == 6
     assert result["profile_authorization_claimed"] is False
+
+
+def test_fixture_is_already_materialized_for_stock_restart(tmp_path):
+    probe = _probe()
+    from lib.service_retrieval import LocalHashEmbeddingProvider
+
+    db = tmp_path / "research.db"
+    probe.seed_fixture(db)
+    before = probe.database_digest(db)
+    retriever = HybridRetriever(db, embedding_provider=LocalHashEmbeddingProvider())
+    replay = retriever.index_legacy_findings()
+    assert replay.embeddings_indexed == 0
+    assert probe.database_digest(db) == before
