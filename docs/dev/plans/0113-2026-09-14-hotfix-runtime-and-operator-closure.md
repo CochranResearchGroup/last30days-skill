@@ -30,12 +30,12 @@ Builder/installer tests cover low-level lifecycle recovery, but no reusable
 hotfix drill binds their artifact, database, process, and receipt identities to
 WI-007's state machine.
 
-The coordinator resumed implementation after activation PR 82 merged at
-`5471e928b1f4c7867ea15de1d4e203b3315bb6e4`; the lane fast-forwarded to that
-exact checkpoint while preserving activation ancestry. Read-only preflight
-and the first disposable builder/installer upgrade tracer now pass. Remaining
-work is recovery scenarios, evidence composition/reporting, operator guidance,
-fresh drill, and acceptance validation.
+Implementation is published at `6b278fce0debf9cd2ebb6b6253feade5c31fd773`.
+The fresh complete drill passed against exact canonical source
+`5471e928b1f4c7867ea15de1d4e203b3315bb6e4`; durable receipt 0127 binds source,
+tooling, artifacts, all five outcomes, and cleanup. Focused/comprehensive tests
+pass. Coordinator review/integration, three known shared RUNBOOK links, and the
+CONFIGURATION.md projection remain before repo-local work-item closeout.
 
 ## Scope
 
@@ -282,3 +282,78 @@ Implementation and evidence:
 Remaining acceptance: publish the tooling checkpoint, run one fresh complete
 drill against exact clean source, retain its bounded receipt, and return the
 clean published result for coordinator review/integration and shared-doc joins.
+
+### Checkpoint P0113-C04 | 2026-09-14
+
+Plan version: 1
+
+State transition: `implementation_validated -> integration_ready`.
+
+Progress classification: `outcome_progress`; one fresh complete provider-free
+drill now has durable, independently checkable source and runtime receipts.
+
+Authority classification:
+
+- `inherited_authority` for the exact fresh disposable drill, its owned cleanup,
+  receipt, plan update, and branch publication;
+- installed service, operational staging, production, providers, browsers,
+  credentials, schedules, releases, real incident activation, deployment,
+  operational rollback, and issue mutations remain excluded.
+
+Fresh receipt and measurement:
+
+- receipt: `docs/dev/notes/0127-2026-09-14-wi007-runtime-drill-receipt.json`,
+  98,758 bytes; content digest
+  `5ee59e1630211c9510bff8279f0d3824a689c267450d978c2c8e6290daf24ae6`;
+- tooling commit `6b278fce0debf9cd2ebb6b6253feade5c31fd773`, clean and
+  remote-equal before the fresh run; per-file hashes are retained in the receipt;
+- clean standalone source clone retained exact current owned-fork main
+  `5471e928b1f4c7867ea15de1d4e203b3315bb6e4`, verified by live remote readback
+  before cloning; previous source was exact ancestor
+  `94d4852fabd56e09f399ec77816ff25a690e294a`. No source was re-committed or
+  assigned a synthetic source identity;
+- current artifact 0.3.117, SHA-256
+  `81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80`,
+  built twice identically; manifest
+  `a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea`;
+- previous artifact 0.3.116, SHA-256
+  `64b1b2a2d99260c4411762c656a0d670e7e1278a9406a4b9433391247b0c37a0`;
+- measured drill 11.4195s; complete CLI wall 12.23s, peak RSS 28,864 KiB;
+  one run, no retries, no budget breach;
+- outcomes: upgrade verified, failed upgrade restored, backward rollback
+  restored, explicit rollback-forward verified, recovery failure blocked.
+  Every raw installer result and original failed-attempt outcome is retained;
+- report command passed with `done_eligible: true`, `mode: drill`, and
+  `operational_authority: false`. This is receipt eligibility for coordinator
+  disposition, not an automatic work-item or deployment authorization.
+
+Cleanup and current-state proof:
+
+- all 14 fixture process PID/start identities were reaped; receipt cleanup
+  records zero residual processes. A subsequent fresh OS command-line census
+  also found no fixture process;
+- fixture `/tmp/wi007-drill-_ungd9y1/wi007-1nzic09x` and its parent are absent;
+  disposable Git cleanup is verified in the receipt;
+- the exact source clone `/tmp/wi007-source-6ta1iJ` was checked clean at the
+  recorded source commit and removed without force. It is reproducible from
+  retained Git refs; the durable receipt remains available;
+- canonical worktree stayed clean on main at `5471e928`, equal to origin/main.
+  No installed database or live production-health readback is claimed;
+- no children or unknown delegated test results. Effective model/reasoning
+  remain unknown. Graphiti: `not_written`.
+
+Acceptance mapping and remaining coordinator gate:
+
+- criteria 1-6 have focused negative tests and fresh receipt evidence for
+  source/root isolation, reproducibility, exact lifecycle observations,
+  bounded attempts, exact teardown, and synthetic control/report separation;
+- criterion 7 has the focused/comprehensive results at C03 and the fresh run
+  above. Plan-authority/goal audits pass; three known RUNBOOK-link findings
+  remain coordinator-owned, as does the approved configuration projection;
+- synthetic schemas and services prove installer recovery behavior only;
+  no operational staging, real incident handling, or live migration acceptance
+  is inferred. Review/integration and truthful shared authority reconciliation
+  are still required before WI-007 is marked DONE locally;
+- next action: publish this receipt checkpoint and return exact SHA, clean
+  remote equality, test/measurement evidence, and coordinator follow-ups.
+  Stop before PR creation; preserve the dormant production slot.
