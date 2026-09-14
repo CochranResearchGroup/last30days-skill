@@ -5,6 +5,7 @@ State: READY
 Priority: P1
 Lane: MCP
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/57
 Blocked by: WI-002 Packet 1 contract integration; final acceptance by WI-002 closeout
 Architecture: docs/dev/notes/0120-2026-09-13-agent-question-answering-mcp-architecture.md
 Implementation plan seed: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md

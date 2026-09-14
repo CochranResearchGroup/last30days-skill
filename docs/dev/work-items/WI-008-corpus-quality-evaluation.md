@@ -5,6 +5,7 @@ State: READY
 Priority: P2
 Lane: Quality
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/60
 Blocked by: none for Packet 1; retrieval acceptance by WI-002 closeout; grounding integration by WI-003 Packet 3 and acceptance by WI-003 closeout
 Architecture: docs/dev/notes/0121-2026-09-13-corpus-retrieval-and-grounding-quality-architecture.md
 Implementation plan seed: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md

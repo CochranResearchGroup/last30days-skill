@@ -5,6 +5,7 @@ State: READY
 Priority: P0
 Lane: Program
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/55
 Blocked by: none for planning, provider-free repair, normal pull requests, or the currently authorized WI-000 through WI-009 publication; development-runtime provisioning, release, dogfood effects, and all other GitHub issue actions retain separate authority gates
 Plan: docs/dev/plans/0102-2026-09-13-productization-readiness-prerequisites.md
 
@@ -25,7 +26,7 @@ unverified behavior and increase reconciliation and release risk.
 Create one ordered prerequisite gate that repairs the accepted defects,
 reconciles and integrates P35, establishes an unambiguous versioned development
 runtime, dogfoods the integrated product surfaces, and publishes the governed
-work-item backlog when separately authorized.
+work-item backlog under the accepted publication authority.
 
 ## Acceptance Evidence
 

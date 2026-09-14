@@ -3255,8 +3255,8 @@ Current State:
 - search, question answering, saved monitors, quality tracing, and the
   isolated-runtime doctor are integrated in source, but the review reproduced
   two blocking question-contract failures;
-- GitHub Issues are enabled but canonical tracker guidance is contradictory and
-  the prepared work items remain unpublished;
+- GitHub Issues are enabled; PR 51 corrected canonical tracker guidance and
+  WI-000 through WI-009 are published as issues #52 through #61;
 - P35 tailored follows is validated on its own published branch but is 75
   commits behind current main and has no pull request;
 - production remains the only active runtime and does not contain the new
@@ -3269,7 +3269,8 @@ Plan:
 
 Dependencies:
 
-- work may begin provider-free from current canonical main; development-runtime
+- work may begin provider-free from current canonical main; tracker publication
+  is complete. Development-runtime
   provisioning, release, dogfood effects, and issue actions beyond the accepted
   backlog creation retain their separate action-specific gates. P35 PR creation
   follows the normal branch/integration workflow and is not registry-gated.

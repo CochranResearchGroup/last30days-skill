@@ -1,12 +1,23 @@
 # Productization Work-Item Drafts
 
-These files are the review surface for the initial Last30days product lanes and
-their productization-readiness gate.
-GitHub Issues are enabled on the owned fork, but these drafts have not been
-published as issues. The operator has now authorized WI-000 through WI-009
-creation and application of existing mapped labels. Each file's unique
-idempotency marker must be searched before creation and its resulting URL must
-be read back before the repo claims remote identity.
+These files are the repository projection for the initial Last30days product
+lanes and their productization-readiness gate. GitHub Issues are enabled on the
+owned fork, and WI-000 through WI-009 were published and read back under their
+stable idempotency markers. Creation and existing mapped-label application are
+allowed; other issue and Project actions remain separately gated.
+
+| Work item | GitHub issue |
+|---|---|
+| WI-000 | [#52](https://github.com/CochranResearchGroup/last30days-skill/issues/52) |
+| WI-001 | [#54](https://github.com/CochranResearchGroup/last30days-skill/issues/54) |
+| WI-002 | [#53](https://github.com/CochranResearchGroup/last30days-skill/issues/53) |
+| WI-003 | [#57](https://github.com/CochranResearchGroup/last30days-skill/issues/57) |
+| WI-004 | [#56](https://github.com/CochranResearchGroup/last30days-skill/issues/56) |
+| WI-005 | [#58](https://github.com/CochranResearchGroup/last30days-skill/issues/58) |
+| WI-006 | [#59](https://github.com/CochranResearchGroup/last30days-skill/issues/59) |
+| WI-007 | [#61](https://github.com/CochranResearchGroup/last30days-skill/issues/61) |
+| WI-008 | [#60](https://github.com/CochranResearchGroup/last30days-skill/issues/60) |
+| WI-009 | [#55](https://github.com/CochranResearchGroup/last30days-skill/issues/55) |
 
 ## Proposed Dependency Graph
 

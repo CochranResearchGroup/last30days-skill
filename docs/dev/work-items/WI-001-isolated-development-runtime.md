@@ -5,6 +5,7 @@ State: READY
 Priority: P1
 Lane: Runtime
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/54
 Blocked by: none
 Architecture: docs/dev/notes/0118-2026-09-13-isolated-development-runtime-architecture.md
 Implementation plan seed: docs/dev/plans/0077-2026-09-13-isolated-development-runtime-architecture-and-lane-handoff.md
