@@ -1,16 +1,16 @@
 <!-- last30days-work-item:WI-005 -->
 # Extend tailored follows across supported services
 
-State: READY
+State: IN_PROGRESS
 Priority: P2
 Lane: Follows
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/58
 Blocked by: none for Packet 1; later provider tracers and product closure remain
 Last completed plan: docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md
-Active plan: docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md (planned)
-Branch: feat/cross-service-follow-tracers-v1 (planned; custody not yet published)
-Owner: unassigned until activation
+Active plan: docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md
+Branch: feat/cross-service-follow-tracers-v1
+Owner: /root/wave4_wi005_plan
 
 ## Problem
 
@@ -70,4 +70,4 @@ adapters unavailable, quarantines unsupported legacy follows without starving
 healthy scheduler work, and retains identity-bound compatibility evidence.
 WI-005 is `READY` for a separately planned fixture-backed tracer packet; it is
 not yet `DONE`. Plan 0118 now registers that provider-free native Reddit and
-YouTube tracer packet and remains `PLANNED` until exact custody is published.
+YouTube tracer packet and is `OPEN` at published activation `f7ba978d`.

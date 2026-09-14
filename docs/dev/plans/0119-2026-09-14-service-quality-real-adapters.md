@@ -1,6 +1,6 @@
 # Plan 0119 | Service Quality Real Adapters Packet 2
 
-State: PLANNED
+State: OPEN
 Lane: P37
 Work item: WI-008
 Branch: feat/service-quality-real-adapters-v1
@@ -9,7 +9,7 @@ Integration: merge
 Roadmap: P37
 Plan version: 1
 Date: 2026-09-14
-Execution owner: unassigned until activation
+Execution owner: /root/wave4_wi008_plan
 Coordination owner: /root
 Requested model route: gpt-6-astra, high reasoning
 Effective runtime model: unknown until reported
@@ -112,3 +112,29 @@ Subagent status and reconciliation:
 
 Next action: integrate registration, publish exact isolated lane custody,
 reconcile activation, then assign one owner.
+
+### Checkpoint P0119-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `PLANNED -> OPEN`.
+
+Progress classification: `blocker_reduction`; exact isolated custody is
+accepted from canonical registration merge `d6cf8252` at
+`/home/ecochran76/workspace.local/last30days-skill-wi008-v2` on
+`feat/service-quality-real-adapters-v1`.
+
+Authority classification:
+
+- `inherited_authority`: provider-free implementation, validation, branch
+  publication, review, and integration under Plan 0107;
+- every external-effect boundary in C01 remains held.
+
+Subagent status and reconciliation:
+
+- `assigned`; `/root/wave4_wi008_plan`, one owner with no children. Public
+  transports, generated artifacts, docs, and authority remain coordinator-
+  owned.
+
+Next action: publish this activation checkpoint, reconcile canonical custody,
+then implement the read-only adapters test-first within the lane write set.

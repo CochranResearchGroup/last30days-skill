@@ -2749,7 +2749,7 @@ Next Bounded Action:
 
 ## P36 | Agent Question Answering MCP Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: let agents ask bounded cross-service questions and receive a
 validated answer whose every substantive statement can be followed to exact
@@ -2813,11 +2813,11 @@ Closed Integration Plan:
 
 - `docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md`.
 
-Planned Implementation Plan:
+Active Implementation Plan:
 
 - `docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md` on
-  `feat/question-public-runtime-closeout-v1`; registration is integrated only
-  after its exact branch/worktree custody is published.
+  `feat/question-public-runtime-closeout-v1`; activation `cfe4e719` is
+  published and reconciled for implementation.
 
 Dependencies:
 
@@ -2911,7 +2911,7 @@ Next Bounded Action:
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
-State: PLANNED
+State: OPEN
 
 Objective: give maintainers one replayable, denominator-aware view of
 acquisition coverage, corpus integrity, retrieval quality, and answer grounding
@@ -2942,10 +2942,11 @@ Closed Implementation Plan:
 - `docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md` on
   `feat/service-quality-v1`.
 
-Planned Implementation Plan:
+Active Implementation Plan:
 
 - `docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md` on
-  `feat/service-quality-real-adapters-v1`; custody is not yet published.
+  `feat/service-quality-real-adapters-v1`; activation `24614a18` is published
+  and reconciled for implementation.
 
 Dependencies:
 
@@ -3008,7 +3009,7 @@ Next Bounded Action:
 
 ## P39 | Cross-Service Tailored Follow Product Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: extend tailored follows beyond X through provider-native target
 identity and capability discovery without duplicating collection scheduling or
@@ -3033,10 +3034,11 @@ Last Closed Plan:
 
 - `docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md`.
 
-Planned Implementation Plan:
+Active Implementation Plan:
 
 - `docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md` on
-  `feat/cross-service-follow-tracers-v1`; custody is not yet published.
+  `feat/cross-service-follow-tracers-v1`; activation `f7ba978d` is published
+  and reconciled for implementation.
 
 Closed Architecture Plan:
 
