@@ -1,13 +1,13 @@
 # Plan 0096 | Agent Question Evidence Tracer Packet 2
 
-State: OPEN
+State: CLOSED
 Lane: P36
 Work item: WI-003
 Branch: feat/agent-question-evidence-v2
 Target: main
 Integration: merge
 Roadmap: P36
-Plan version: 2
+Plan version: 3
 Date: 2026-09-13
 Session owner: Codex `/root` (runtime-reported canonical task identity; no
 separate thread UUID exposed to this session)
@@ -192,3 +192,132 @@ required.
 Next action: validate and publish this plan-only activation checkpoint, verify
 remote equality, then begin Packet 2 with one acceptance-level red/green tracer
 at a time.
+
+### Checkpoint P0096-C03 | 2026-09-13
+
+Plan version: 3
+
+State transition: `OPEN -> CLOSED`.
+
+Progress classification: `outcome_progress`; acceptance criteria 1-4 and every
+branch-owned validation in criterion 5 pass. Criterion 5's lane projection
+gate remains an explicit coordinator-owned closeout join because this lane is
+forbidden to edit the active-lane catalog.
+
+Acceptance evidence:
+
+1. `test_question_service_freezes_real_federated_search_before_worker` uses a
+   temporary SQLite corpus and the real `PostSearchBackend` plus
+   `HybridRetriever`. It proves cache-only legacy/temporal composition and
+   freezes exact search head, component heads, ordered evidence IDs, version
+   refs, coverage, pagination, selection count, and byte receipt before a
+   worker executes.
+2. `EvidenceReadRequestV1`, `EvidenceReadItemV1`, and
+   `EvidenceReadResponseV1` use exact version-1 schemas and deterministic
+   canonical serialization. They reject unknown or malformed fields,
+   duplicate evidence IDs, duplicate immutable refs hidden behind different
+   IDs, more than 20 refs, mixed-profile partitions, structured overgrowth,
+   response-byte mismatch, and budgets too small to report all omitted refs.
+3. `QuestionEvidenceResolver` opens SQLite read-only with query-only mode and
+   dereferences only the cited row in `document_versions` or
+   `service_source_versions`. Storage family, stable evidence ID, exact
+   version, digest, canonical URL, and partition are verified before content
+   is exposed; current revision pointers are never consulted as substitutes.
+4. Missing, changed-digest, changed-URL, wrong-family, cross-partition,
+   unauthorized, and malformed stored records all collapse to the same
+   `unavailable` item. Requested order is stable, and the byte budget emits
+   only whole prefix items plus every omitted evidence ID.
+5. The focused suite passed 5 tests; the affected question/search/store suite
+   passed 53 tests; `python -m compileall -q
+   skills/last30days/scripts/lib` and `git diff --check` passed; and the
+   credential-free comprehensive temporary-source run completed all 2,843
+   collected tests as 2,836 passed and 7 skipped. The source-runtime package
+   built from that same tracked snapshot with a temporary refreshed manifest
+   at SHA-256
+   `87ef9990b1230472349a14eb9e2bf8f2c761aa3744ee8adb2e95526d19a070be`.
+   The planning audit passes with this closed plan excluded. The lane audit is
+   structurally blocked only on the forbidden catalog state/checkpoint
+   projection and is recorded below rather than misreported as passing.
+
+Test-first and retry receipts:
+
+- preserved red failures were missing `search_receipt`, missing evidence-read
+  contracts/module, missing `access_partition_id`, an unverified
+  `response_bytes`, leaking malformed stored content, disguised duplicate
+  refs, and an unrepresentable omitted-ref envelope;
+- the direct source-runtime build correctly stopped on the unchanged stale
+  coordinator-owned `service/runtime-manifest.json`; the read/build validation
+  therefore refreshed only a disposable tracked-source copy;
+- the first comprehensive current-worktree attempt produced 19 boundary/setup
+  failures from the stale forbidden manifest and sanitized-path assumptions;
+  a first archive snapshot excluded tests, one snapshot lacked Git metadata
+  for Go VCS discovery, and one otherwise valid retry produced 25 AF_UNIX
+  path-length failures. These infrastructure attempts made no repository or
+  external-state change. The final short-path, local-Git, credential-free
+  snapshot completed without failures;
+- Ruff was not claimed because its executable is not installed in the
+  repository environment.
+
+Validation commands:
+
+- `uv run pytest tests/test_service_question_evidence.py -q`;
+- `uv run pytest tests/test_service_question_contracts.py
+  tests/test_service_questions.py tests/test_service_post_search.py
+  tests/test_service_retrieval.py tests/test_service_migrations.py
+  tests/test_service_store.py tests/test_service_product.py
+  tests/test_service_question_evidence.py -q`;
+- `python -m compileall -q skills/last30days/scripts/lib`;
+- `uv run pytest tests/test_plan_authority_audit.py -q`;
+- `python .codex/skills/repo-policy-selector/scripts/audit_active_lanes.py
+  --repo-root . --default-ref refs/remotes/origin/main --branch
+  feat/agent-question-evidence-v2 --json`;
+- `python .codex/skills/repo-policy-selector/scripts/audit_planning_contract.py
+  --repo-root . --active-only --json`;
+- `git diff --check`;
+- comprehensive validation: copy `git ls-files` plus the four Packet 2 source
+  overlays into short disposable paths, initialize a local disposable Git
+  repository, run `service/scripts/build-runtime.sh --refresh-manifest` only
+  there, commit that temporary manifest, then run
+  `/home/ecochran76/workspace.local/last30days-skill-wi003-p2/.venv/bin/python
+  -m pytest -q` under `env -i` with only explicit credential-free HOME, USER,
+  LOGNAME, PATH, TMPDIR, cache, and Go cache values.
+
+Boundary confirmation:
+
+- changed source is limited to strict question contracts, frozen-retrieval
+  receipts, one additive evidence resolver, one focused provider-free test
+  module, and this plan;
+- no environment enumeration or credential/auth/history/transcript access, no
+  provider/browser/model/network acquisition, no installed runtime/database,
+  and no route, MCP, public service, generated artifact, Skill/configuration,
+  release, tracker, schedule, delivery, staging, production, P35, or pull-
+  request effect occurred;
+- Graphiti remained read-only because this packet explicitly forbids installed
+  runtime/database mutation; current repository evidence is authoritative;
+- no subagent was spawned. The ignored worktree-local CodeGraph index is
+  current at 374 files, 10,481 nodes, and 28,587 edges.
+
+Remaining risks and restart-safe coordinator handoff:
+
+1. Refresh and commit `service/runtime-manifest.json` during integration so it
+   includes the new `service_question_evidence.py` entry and current digests
+   for `service_question_contracts.py` and `service_questions.py`; then rerun
+   the source package and comprehensive suite against that integrated tree.
+2. Wire Plan 0096 into RUNBOOK.md. The branch-local planning audit reports only
+   `plan not wired in RUNBOOK.md:
+   0096-2026-09-13-agent-question-evidence-tracer-packet-2.md`, and RUNBOOK is
+   outside this lane's authority.
+3. Reconcile `docs/dev/active-lanes.yaml` from its plan-only checkpoint to this
+   closed published branch, then perform the coordinator's normal integration
+   and canonical-main readback. This lane did not open or merge a pull request.
+4. Packet 3 model/worker behavior and Packet 4 public HTTP/MCP exposure remain
+   unopened scope expansions; exact citation dereference must remain immutable
+   and partition-closed when those packets are authorized.
+
+Subagent status: `not_spawned`.
+
+Terminal condition: Packet 2 source acceptance is complete. Publish this
+checkpoint, verify the feature remote equals local HEAD with a clean worktree,
+then return custody to the coordinator for the three joins above. Full Plan
+0096 acceptance remains coordinator-gated only by criterion 5's catalog and
+runtime-manifest projections.

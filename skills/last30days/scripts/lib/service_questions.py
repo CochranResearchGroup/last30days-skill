@@ -837,6 +837,26 @@ class QuestionService:
                 "search": response.coverage,
                 "byte_truncated": byte_truncated,
             },
+            "search_receipt": {
+                "search_head_id": response.search_head_id,
+                "component_heads": response.coverage.get("component_heads", {}),
+                "ordered_evidence_ids": [
+                    item["evidence_id"] for item in selected
+                ],
+                "returned": response.returned,
+                "truncated": response.truncated,
+                "next_cursor": response.next_cursor,
+                "coverage": response.coverage,
+            },
+            "selection_receipt": {
+                "evidence_limit": request.limits.evidence_limit,
+                "max_evidence_bytes": request.limits.max_evidence_bytes,
+                "selected_count": len(selected),
+                "selected_bytes": len(
+                    question_contracts.canonical_json(selected).encode()
+                ),
+                "byte_truncated": byte_truncated,
+            },
             "cache_only": True,
             "acquisition_performed": False,
         }

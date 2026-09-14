@@ -37,6 +37,17 @@ def stable_id(prefix: str, value: object) -> str:
     return f"{prefix}-{digest(value).removeprefix('sha256:')[:32]}"
 
 
+def _serialized_size_with_counter(
+    payload: Mapping[str, Any], counter_field: str
+) -> int:
+    measured = 2
+    while True:
+        updated = len(canonical_json({**payload, counter_field: measured}).encode())
+        if updated == measured:
+            return updated
+        measured = updated
+
+
 def _exact(payload: Mapping[str, Any], fields: frozenset[str], name: str) -> None:
     actual = set(payload)
     if actual != fields:
@@ -352,6 +363,321 @@ class QuestionCitationV1:
             "content_hash": self.content_hash,
             "source_url": self.source_url,
             "access_partition_id": self.access_partition_id,
+        }
+
+
+@dataclass(frozen=True)
+class EvidenceReadRequestV1:
+    schema_version: int
+    request_id: str
+    profile_id: str
+    refs: tuple[QuestionCitationV1, ...]
+    max_response_bytes: int
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> EvidenceReadRequestV1:
+        if not isinstance(payload, Mapping):
+            raise QuestionContractError("evidence read request must be an object")
+        _exact(
+            payload,
+            frozenset(
+                {
+                    "schema_version",
+                    "request_id",
+                    "profile_id",
+                    "refs",
+                    "max_response_bytes",
+                }
+            ),
+            "evidence read request",
+        )
+        if payload["schema_version"] != QUESTION_SCHEMA_VERSION:
+            raise QuestionContractError(
+                f"schema_version must be {QUESTION_SCHEMA_VERSION}"
+            )
+        profile_id = _text(payload["profile_id"], "profile_id", 128)
+        if _PROFILE_ID.fullmatch(profile_id) is None:
+            raise QuestionContractError("profile_id is invalid")
+        raw_refs = payload["refs"]
+        if not isinstance(raw_refs, list) or not 1 <= len(raw_refs) <= 20:
+            raise QuestionContractError("refs must contain between 1 and 20 items")
+        refs = tuple(QuestionCitationV1.from_dict(item) for item in raw_refs)
+        evidence_ids = [item.evidence_id for item in refs]
+        if len(evidence_ids) != len(set(evidence_ids)):
+            raise QuestionContractError("refs must not contain duplicates")
+        ref_identities = [
+            (
+                item.storage_family,
+                item.version_id,
+                item.content_hash,
+                item.source_url,
+                item.access_partition_id,
+            )
+            for item in refs
+        ]
+        if len(ref_identities) != len(set(ref_identities)):
+            raise QuestionContractError("refs must not contain duplicates")
+        allowed_partitions = {"public", f"profile:{profile_id}"}
+        if any(item.access_partition_id not in allowed_partitions for item in refs):
+            raise QuestionContractError("refs contain a mixed-profile partition")
+        request_id = _text(payload["request_id"], "request_id", 128)
+        max_response_bytes = _integer(
+            payload["max_response_bytes"],
+            "max_response_bytes",
+            512,
+            131_072,
+        )
+        minimum_response_bytes = _serialized_size_with_counter(
+            {
+                "schema_version": QUESTION_SCHEMA_VERSION,
+                "request_id": request_id,
+                "items": [],
+                "omitted_refs": evidence_ids,
+                "truncated": True,
+            },
+            "response_bytes",
+        )
+        if max_response_bytes < minimum_response_bytes:
+            raise QuestionContractError(
+                "max_response_bytes cannot represent all omitted refs"
+            )
+        return cls(
+            schema_version=QUESTION_SCHEMA_VERSION,
+            request_id=request_id,
+            profile_id=profile_id,
+            refs=refs,
+            max_response_bytes=max_response_bytes,
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "request_id": self.request_id,
+            "profile_id": self.profile_id,
+            "refs": [item.to_dict() for item in self.refs],
+            "max_response_bytes": self.max_response_bytes,
+        }
+
+
+_EVIDENCE_FIELDS = frozenset(
+    {
+        "storage_family",
+        "version_id",
+        "source",
+        "source_native_id",
+        "canonical_url",
+        "author",
+        "title",
+        "text",
+        "text_truncated",
+        "content_hash",
+        "access_partition_id",
+        "published_at",
+        "observed_at",
+        "fetched_at",
+        "valid_from",
+        "valid_to",
+        "system_from",
+        "system_to",
+        "created_at",
+        "metadata",
+        "media",
+        "collection_refs",
+        "topic_ids",
+        "provenance",
+    }
+)
+
+
+def _evidence_record(
+    value: Any, ref: QuestionCitationV1
+) -> dict[str, Any]:
+    if not isinstance(value, Mapping):
+        raise QuestionContractError("available evidence must be an object")
+    _exact(value, _EVIDENCE_FIELDS, "available evidence")
+    for field, expected in (
+        ("storage_family", ref.storage_family),
+        ("version_id", ref.version_id),
+        ("content_hash", ref.content_hash),
+        ("canonical_url", ref.source_url),
+        ("access_partition_id", ref.access_partition_id),
+    ):
+        if value[field] != expected:
+            raise QuestionContractError(
+                f"available evidence {field} does not match ref"
+            )
+    author = value["author"]
+    if author is not None:
+        author = _text(author, "evidence author", 1024)
+    text_truncated = value["text_truncated"]
+    if not isinstance(text_truncated, bool):
+        raise QuestionContractError("evidence text_truncated must be a boolean")
+    observed_at = _timestamp(
+        value["observed_at"], "evidence observed_at", optional=False
+    )
+    metadata = value["metadata"]
+    provenance = value["provenance"]
+    media = value["media"]
+    if not isinstance(metadata, Mapping) or not isinstance(provenance, Mapping):
+        raise QuestionContractError("evidence metadata and provenance must be objects")
+    if not isinstance(media, list):
+        raise QuestionContractError("evidence media must be a list")
+    try:
+        structured_size = len(
+            canonical_json(
+                {"metadata": metadata, "media": media, "provenance": provenance}
+            ).encode()
+        )
+    except (TypeError, ValueError) as exc:
+        raise QuestionContractError("evidence structured fields are invalid") from exc
+    if structured_size > 65_536:
+        raise QuestionContractError("evidence structured fields are oversized")
+    return {
+        "storage_family": ref.storage_family,
+        "version_id": ref.version_id,
+        "source": _text(value["source"], "evidence source", 128),
+        "source_native_id": _text(
+            value["source_native_id"], "evidence source_native_id", 1024
+        ),
+        "canonical_url": ref.source_url,
+        "author": author,
+        "title": _text(value["title"], "evidence title", 4096),
+        "text": _text(value["text"], "evidence text", 32_768),
+        "text_truncated": text_truncated,
+        "content_hash": ref.content_hash,
+        "access_partition_id": ref.access_partition_id,
+        "published_at": _timestamp(
+            value["published_at"], "evidence published_at"
+        ),
+        "observed_at": observed_at,
+        "fetched_at": _timestamp(value["fetched_at"], "evidence fetched_at"),
+        "valid_from": _timestamp(value["valid_from"], "evidence valid_from"),
+        "valid_to": _timestamp(value["valid_to"], "evidence valid_to"),
+        "system_from": _timestamp(value["system_from"], "evidence system_from"),
+        "system_to": _timestamp(value["system_to"], "evidence system_to"),
+        "created_at": _timestamp(value["created_at"], "evidence created_at"),
+        "metadata": dict(metadata),
+        "media": list(media),
+        "collection_refs": list(
+            _string_list(
+                value["collection_refs"],
+                "evidence collection_refs",
+                maximum=100,
+                item_maximum=256,
+            )
+        ),
+        "topic_ids": list(
+            _string_list(
+                value["topic_ids"],
+                "evidence topic_ids",
+                maximum=100,
+                item_maximum=256,
+            )
+        ),
+        "provenance": dict(provenance),
+    }
+
+
+@dataclass(frozen=True)
+class EvidenceReadItemV1:
+    ref: QuestionCitationV1
+    status: str
+    evidence: Mapping[str, Any] | None
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> EvidenceReadItemV1:
+        if not isinstance(payload, Mapping):
+            raise QuestionContractError("evidence read item must be an object")
+        _exact(payload, frozenset({"ref", "status", "evidence"}), "evidence read item")
+        status = payload["status"]
+        if status not in {"available", "unavailable"}:
+            raise QuestionContractError("evidence read status is invalid")
+        evidence = payload["evidence"]
+        if status == "unavailable" and evidence is not None:
+            raise QuestionContractError("unavailable evidence must be null")
+        ref = QuestionCitationV1.from_dict(payload["ref"])
+        return cls(
+            ref=ref,
+            status=str(status),
+            evidence=_evidence_record(evidence, ref) if status == "available" else None,
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "ref": self.ref.to_dict(),
+            "status": self.status,
+            "evidence": dict(self.evidence) if self.evidence is not None else None,
+        }
+
+
+@dataclass(frozen=True)
+class EvidenceReadResponseV1:
+    schema_version: int
+    request_id: str
+    items: tuple[EvidenceReadItemV1, ...]
+    omitted_refs: tuple[str, ...]
+    truncated: bool
+    response_bytes: int
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> EvidenceReadResponseV1:
+        if not isinstance(payload, Mapping):
+            raise QuestionContractError("evidence read response must be an object")
+        _exact(
+            payload,
+            frozenset(
+                {
+                    "schema_version",
+                    "request_id",
+                    "items",
+                    "omitted_refs",
+                    "truncated",
+                    "response_bytes",
+                }
+            ),
+            "evidence read response",
+        )
+        if payload["schema_version"] != QUESTION_SCHEMA_VERSION:
+            raise QuestionContractError(
+                f"schema_version must be {QUESTION_SCHEMA_VERSION}"
+            )
+        raw_items = payload["items"]
+        if not isinstance(raw_items, list) or len(raw_items) > 20:
+            raise QuestionContractError("items must be a list of at most 20 items")
+        items = tuple(EvidenceReadItemV1.from_dict(item) for item in raw_items)
+        omitted_refs = _string_list(
+            payload["omitted_refs"], "omitted_refs", maximum=20, item_maximum=128
+        )
+        correlated = [item.ref.evidence_id for item in items] + list(omitted_refs)
+        if len(correlated) != len(set(correlated)):
+            raise QuestionContractError("response refs must not contain duplicates")
+        truncated = payload["truncated"]
+        if not isinstance(truncated, bool) or truncated != bool(omitted_refs):
+            raise QuestionContractError("truncated must match omitted_refs")
+        result = cls(
+            schema_version=QUESTION_SCHEMA_VERSION,
+            request_id=_text(payload["request_id"], "request_id", 128),
+            items=items,
+            omitted_refs=omitted_refs,
+            truncated=truncated,
+            response_bytes=_integer(
+                payload["response_bytes"], "response_bytes", 2, 131_072
+            ),
+        )
+        if result.response_bytes != len(canonical_json(result.to_dict()).encode()):
+            raise QuestionContractError(
+                "response_bytes does not match serialized response"
+            )
+        return result
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "request_id": self.request_id,
+            "items": [item.to_dict() for item in self.items],
+            "omitted_refs": list(self.omitted_refs),
+            "truncated": self.truncated,
+            "response_bytes": self.response_bytes,
         }
 
 
