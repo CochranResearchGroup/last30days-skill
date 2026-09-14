@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import sqlite3
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -185,3 +186,17 @@ def test_question_probe_precedes_search_publication(monkeypatch):
         "questions": {"state": "passed"},
     }
     assert actual_anchor is anchor
+
+
+def test_sealing_does_not_change_journal_mode_while_a_reader_is_open(tmp_path):
+    module = _load()
+    database = tmp_path / "fixture.sqlite"
+    with sqlite3.connect(database) as writer:
+        writer.execute("PRAGMA journal_mode=WAL")
+        writer.execute("CREATE TABLE evidence (id INTEGER PRIMARY KEY)")
+        writer.execute("INSERT INTO evidence VALUES (1)")
+    with sqlite3.connect(database) as reader:
+        reader.execute("BEGIN")
+        assert reader.execute("SELECT count(*) FROM evidence").fetchone() == (1,)
+        module._seal_database(database)
+        assert reader.execute("PRAGMA journal_mode").fetchone() == ("wal",)

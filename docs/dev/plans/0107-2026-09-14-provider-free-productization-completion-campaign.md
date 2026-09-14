@@ -7,7 +7,7 @@ Branch: docs/provider-free-productization-campaign
 Target: main
 Integration: merge
 Roadmap: P52
-Plan version: 1
+Plan version: 2
 Date: 2026-09-14
 Session owner: Codex thread 01a09f76-8024-7960-a7c5-c0469cf99153
 Runtime model: GPT-5 family primary; effective runtime identity not reported
@@ -735,6 +735,58 @@ Subagent status and reconciliation: `assigned`; three top-level owners, no
 children. Implementation begins only after this projection integrates.
 
 Next action: merge activation, then trigger all three owners concurrently.
+
+### Checkpoint P0107-C17 | 2026-09-14
+
+Plan version: 2
+
+State transition: `wave_5_activated -> final_runtime_successor_ready`.
+
+Progress classification: `blocker_reduction`; PR 95 integrated the reviewed
+Wave 5 join as canonical `ffb561df79e0bb457dac46012a01a11757d5d307`, PR 96
+integrated the campaign acceptance driver as `b44fda013e814be74cc30a1c1d159dcf20453ee6`,
+and PR 97 integrated the first runtime finding as
+`d1282409e6970595527cb45e869ecd2e37d383c3`. The original two-attempt runtime
+packet is closed and this version defines one terminal successor attempt.
+
+Authority classification:
+
+- `inherited_authority` covers the same provider-free repository repair,
+  deterministic rebuild, and one successor isolated-runtime attempt;
+- every provider, browser, live-data, schedule, installed-runtime mutation,
+  staging, production mutation, release, deployment, delivery and tracker
+  effect remains a `human_gate` and was not used;
+- no goal, system, data class, acceptance criterion or safety control expands.
+
+Evidence:
+
+- exact canonical Python validation passed 3,123 tests with 8 expected skips
+  and 14 subtests; Go tests/vet/generation and Ruff passed;
+- the first runtime attempt at `b44fda01` failed after the search probe's
+  intentional fixture publication preceded the question `all_filters` case.
+  Receipt SHA-256 is
+  `26ba9542c0dfb6904a468d4e92b4dc91257ba9449f965711a3d356bfe8049daa`;
+- the second attempt at `d1282409` passed the reordered product checks and
+  exact-owner teardown, then failed while changing the stopped working
+  database from WAL to DELETE mode. Receipt SHA-256 is
+  `eefc37b1f7391fbfe5fcefbfeebdba37d2a4c9a48f7544d319ccc7c574705119`;
+- fresh controller status after each failure was `absent`, both sockets were
+  absent, and the owned-process census found no surviving campaign service or
+  MCP process;
+- the successor keeps `wal_checkpoint(TRUNCATE)` but does not mutate journal
+  mode. It copies only the checkpointed main database into each retained sealed
+  fixture path, where no WAL or journal companion exists.
+
+Subagent status and reconciliation:
+
+- `joined`; the read-only runtime audit identified the missing campaign driver
+  and exact WI-000/0107 controller identity. The primary implemented, tested,
+  ran and diagnosed the bounded runtime packet.
+
+Next action: integrate this one-line runtime repair and regression through a
+reviewed PR, rebuild twice from its canonical merge, and execute exactly one
+terminal successor runtime attempt. Pass proceeds to repo-local closeout;
+failure records the exact remaining blocker without another autonomous run.
 
 ## Stop Rules
 

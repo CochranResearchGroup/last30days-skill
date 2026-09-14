@@ -82,7 +82,6 @@ def _reset_database(descriptor) -> None:
 def _seal_database(database: Path) -> None:
     with sqlite3.connect(database) as conn:
         conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
-        conn.execute("PRAGMA journal_mode=DELETE")
 
 
 def _grounding_case(database: Path, anchor: dict[str, object]) -> EvaluationCaseV1:
