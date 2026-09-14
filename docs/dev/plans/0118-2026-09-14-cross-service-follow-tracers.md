@@ -24,8 +24,11 @@ authorized search paths while preserving exact X and legacy compatibility.
 
 Plan 0115 closed the capability registry, exact X identity, identity-bound
 compatibility evidence, and scheduler-isolated legacy quarantine. Reddit and
-YouTube targets remain truthfully unavailable and their existing acquisition
-paths flatten tailored intent into generic search/feed behavior.
+YouTube now have fixture-backed native route implementations and truthful
+dependency/transport readiness. The source tracer is implemented; shared public
+discovery/parity, generated artifacts, joined validation and integration remain
+coordinator-owned. Native execution remains unavailable without explicit
+injected transport/readiness; no installed or live acquisition is claimed.
 
 ## Scope
 
@@ -137,3 +140,82 @@ Subagent status and reconciliation:
 
 Next action: publish this activation checkpoint, reconcile canonical custody,
 then implement both fixture tracers test-first within the lane write set.
+
+### Checkpoint P0118-C03 | 2026-09-14
+
+Plan version: 1
+
+State: `OPEN`; lane-owned source tracer accepted, coordinator joins pending.
+
+Custody and authority:
+
+- implementation fast-forwarded activation `f7ba978d` to canonical
+  `ed84cd29`; coordinator-owned native request contract `9ad0dcd0` was
+  cherry-picked exactly as `53465c84`, without editing shared files;
+- one owner, no children; first implementation attempt. TDD/codebase-design
+  skills supplied incremental public-seam tests and injected transport design;
+- no provider/network/browser/live locator, installed runtime/database,
+  real schedule, release, deployment, or issue mutation occurred;
+- requested route remains `gpt-6-astra`, high; effective configuration unknown.
+
+Accepted source evidence:
+
+- canonical Reddit community/user names and YouTube channel IDs retain distinct
+  native identity; X target hashes and revision bytes remain unchanged;
+- exact Reddit new/submitted and YouTube uploads-playlist routes validate
+  frozen selectors, identity digests, partition, provider payload identity,
+  dates, byte/item/page/request/time bounds, and measured transport usage;
+- injection is `execute_work(..., follow_transports={route: transport})`.
+  Transport returns `{status, network_request_count, payload}` and accepts
+  exact URL plus deadline, maximum bytes, remaining request bound, and YouTube
+  item limit. Missing injection returns `adapter_unavailable`; no default
+  network, browser, generic-search fallback, or opaque yt-dlp call is made;
+- native collection resume and issuance require explicit
+  `CollectionCoordinator(..., follow_execution_ready=predicate)`. The default
+  rejects with `transport_not_configured`; tests inject this only into
+  disposable stores. Dependency readiness never enables execution;
+- Reddit community/user/general overlap publishes one content version with
+  three sightings; YouTube channel/general overlap publishes one version with
+  two sightings. Replay, frozen old revisions, exact spec filters and negative
+  access-partition queries pass through the real production classes;
+- malformed historical native targets stay readable and can pause/archive,
+  but validation happens before bounded due selection so healthy work is not
+  starved. Compatibility tracing does not map incomplete/malformed native rows.
+
+Validation:
+
+- RED then GREEN for native creation, user/channel lifecycle, route execution,
+  legacy quarantine, error classification, metadata validation, malformed
+  compatibility, and absent-transport resume/issuance;
+- real YouTube publication/search exposed a missing timezone; native upload
+  dates now emit canonical UTC timestamps and the exact regression passes;
+- focused command: `uv run --offline pytest -o addopts='' tests/test_service_follow_tracers.py tests/test_service_follow_capabilities.py tests/test_service_collection.py tests/test_service_acquisition_worker.py tests/test_service_product.py tests/test_service_contracts.py -q`;
+- focused result: **153 passed in 16.38 seconds**. The existing canonical
+  dependency environment was selected with `UV_PROJECT_ENVIRONMENT`; no
+  dependencies were downloaded;
+- Ruff passes for the capability/provider modules and focused tests; changed
+  Python compiles and `git diff --check` passes;
+- fixed `wi005-packet2-10000-v1` fixture retains 10,000 sightings over one
+  content version: exact filter 0.019846 seconds and 10,000-row compatibility
+  trace 0.064521 seconds. These are a baseline, not performance thresholds;
+  unauthorized query returned zero and reorder replay retained the digest;
+- baseline input SHA-256:
+  `8305dbbbcef7260d190982075a90ad98b4d8899391d657178d3e669d36501271`;
+  compatibility digest:
+  `sha256:a8ea39e9eb113c13d2f94e9e44839e040934216bf81eaf3f6c54b580ed1ecc16`.
+
+Exact coordinator joins:
+
+- `DEFAULT_FOLLOW_CAPABILITIES.catalog(config, which=...)` returns
+  `{schema_version: 1, registry_digest, targets}`. Rows separate declared
+  `state`/`reason_code`, `dependency_readiness`, and `execution_readiness`;
+  native transport readiness remains `unavailable:transport_not_configured`;
+- publish that same catalog through the chosen service-info/collection,
+  CLI/HTTP/MCP projections. Preserve native safe errors rather than flattening
+  unavailable, unresolved, unsupported, malformed and unauthorized outcomes;
+- preserve the shared selector additions already supplied; no additional
+  job-runner edit was needed for the source tracer;
+- update product docs, regenerate contract catalog/Go constants/runtime
+  manifest, run joined full Python/Go/package/public-parity validation, review,
+  and integrate. None of these shared files was independently edited here;
+- fresh isolated-runtime closure remains a separately bounded WI-005 gate.
