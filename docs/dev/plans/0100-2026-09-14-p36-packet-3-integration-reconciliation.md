@@ -103,3 +103,41 @@ Subagent status: `not_spawned`; no subagents are planned.
 
 Next action: publish this plan-only checkpoint, merge exact feature checkpoint
 `75f2342e`, refresh the source manifest, and validate the integrated candidate.
+
+### Checkpoint P0100-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `integration_pending -> integration_validated`; Plan 0100
+remains `OPEN` pending owned-fork review and canonical merge.
+
+Progress classification: `outcome_progress`; the exact Packet 3 ancestry and
+coordinator-owned runtime manifest now form one fully validated candidate.
+
+Authority classification:
+
+- `inherited_authority` for candidate publication, owned-fork review and merge,
+  closeout projections, and canonical Git readback;
+- `human_gate` remains in force for P35 and every installed/runtime/provider/
+  model/release/production effect;
+- `scope_expansion` remains in force for Packet 4 public HTTP/MCP/client work.
+
+Integration and validation evidence:
+
+- exact feature checkpoint `75f2342e57ffb7c6d4c41e9d7825daf934ccb4c7`
+  is preserved through merge `824b86270cf51ae6bb42ed1cce9121c5d88a5e65`;
+- manifest refresh commit `a304fbbf` includes the new worker and current
+  question-runner hash;
+- all 2,860 collected repository tests pass with seven existing skips;
+- focused question, intelligence, package, and lifecycle validation passes;
+- direct Python compilation and patch hygiene pass;
+- two independently built service `0.3.116` source packages are byte-identical
+  at SHA-256 `e9e47fa00dffa9e86c0dc439d42419326dc1d815d2746d47467f388477b2afda`.
+
+Boundary evidence: no real model, provider, browser, acquisition, installed
+runtime/database, public HTTP/MCP, release, staging, production, or P35 effect
+occurred.
+
+Next action: publish the reconciled projections, validate lane and planning
+authority, open the owned-fork PR, and merge only while the candidate remains
+clean and reviewable.

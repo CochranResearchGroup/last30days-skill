@@ -1,6 +1,6 @@
 # Plan 0098 | Agent Question Answer Tracer Packet 3
 
-State: INTEGRATION_READY
+State: CLOSED
 Lane: P36
 Work item: WI-003
 Branch: feat/agent-question-answer-v3
@@ -263,7 +263,8 @@ remote-equal checkpoint for coordinator integration.
 
 Plan version: 4
 
-State transition: `OPEN -> INTEGRATION_READY`.
+State transition: `OPEN -> CLOSED`; the implementation packet is complete and
+its separate integration is owned by Plan 0100.
 
 Progress classification: `outcome_progress`; Packet 3 is implemented,
 reviewed against the refreshed worktree graph, and published for coordinator

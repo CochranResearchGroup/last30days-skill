@@ -1,6 +1,6 @@
 # Plan 0099 | P36 Packet 3 Launch Registration
 
-State: OPEN
+State: CLOSED
 Lane: P48
 Work item: WI-003
 Branch: docs/p36-packet3-launch-registration
@@ -129,3 +129,20 @@ Subagent status: `not_spawned`.
 Next action: publish this frozen plan checkpoint, add the compact coordinator
 projections, validate and merge the registration, then launch the independent
 Packet 3 session.
+
+### Checkpoint P0099-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`.
+
+Progress classification: `outcome_progress`; PR 47 merged the registration as
+canonical commit `487ec89e7a6c99d07f6623646c659111c5fbd270`, and the assigned
+lane published activation checkpoint `063c18b7` before source work.
+
+The independent process later exhausted its Codex usage allowance, so the
+coordinator explicitly accepted custody and completed the same bounded packet.
+No provider, model, browser, installed-runtime, release, or production effect
+occurred.
+
+Next action: Plan 0100 owns exact Packet 3 integration and canonical closeout.

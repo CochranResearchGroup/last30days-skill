@@ -181,7 +181,7 @@ def test_current_repository_authority_passes() -> None:
     assert report["active_plan_count"] == 2
     assert report["active_plans"] == [
         "docs/dev/plans/0046-2026-08-11-facebook-retained-browser-runtime-recovery.md",
-        "docs/dev/plans/0099-2026-09-14-p36-packet-3-launch-registration.md",
+        "docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md",
     ]
     assert report["campaign_plan_count"] == 0
 

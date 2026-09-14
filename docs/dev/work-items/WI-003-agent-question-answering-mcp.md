@@ -1,17 +1,17 @@
 <!-- last30days-work-item:WI-003 -->
 # Answer agent questions through an evidence-rich MCP surface
 
-State: READY
+State: IN_PROGRESS
 Priority: P1
 Lane: MCP
 Parent: WI-000
 Blocked by: WI-002 Packet 1 contract integration; final acceptance by WI-002 closeout
 Architecture: docs/dev/notes/0120-2026-09-13-agent-question-answering-mcp-architecture.md
 Implementation plan seed: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md
-Last closed plan: docs/dev/plans/0096-2026-09-13-agent-question-evidence-tracer-packet-2.md
-Current plan: docs/dev/plans/0098-2026-09-14-agent-question-answer-tracer-packet-3.md
-Branch: feat/agent-question-answer-v3
-Owner: unassigned independent top-level Codex session
+Last closed plan: docs/dev/plans/0099-2026-09-14-p36-packet-3-launch-registration.md
+Current plan: docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md
+Branch: docs/p36-packet3-integration
+Owner: coordinator Codex thread `01a0860e-b671-7f62-b6ae-6c06a08e6852`
 
 ## Problem
 
@@ -44,9 +44,10 @@ summaries replace source evidence.
 
 ## Next Owner Action
 
-Packet 2 integrated through PR 45 as canonical merge `e4823ac7`. Plan 0098 is
-published plan-only at `77744112` for provider-free structured answer execution,
-validation, fallback, and retry/replay proof. Integrate the launch registration,
-then assign its clean worktree to one independent top-level Codex session.
-Keep real model execution, public MCP transport, providers, installed runtimes,
-staging, and production behind their own explicit gates.
+Packet 3 is integration-ready at exact remote checkpoint `75f2342e`; the
+provider-free structured-turn adapter, model/effect receipts, citation-closed
+validation, fallback, and retry/replay tests are joined into Plan 0100 with a
+current source manifest and a fully green 2,860-test collection. Merge the
+reviewed integration candidate, return WI-003 to `READY`, and plan Packet 4's
+public HTTP/MCP surface separately. Keep real model execution, providers,
+installed runtimes, staging, and production behind their own explicit gates.
