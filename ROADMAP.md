@@ -71,6 +71,14 @@ P08 Governed Recurring All-Source Tick
 
 P09 Facebook Agent-Browser Timeout Remediation
   └──> repairs the truthful Facebook gap observed by P08 without changing its schedule
+
+P51 Productization Readiness Prerequisites
+  ├──> repairs accepted Q&A contract defects and tracker-documentation drift
+  ├──> reconciles and integrates P35 tailored follows
+  ├──> establishes unique release identity and an isolated development runtime
+  ├──> dogfoods the integrated product surfaces and publishes governed issues
+  └──> blocks new WI-001 through WI-006 and WI-008 feature packets until closed;
+       WI-007 production hotfixes remain exempt
 ```
 
 P03 discovery and bounded source experiments may proceed alongside P01, but
@@ -3230,3 +3238,45 @@ Next Bounded Action:
 
 - integrate this receipt, then obtain a separate operator decision before
   creating issues, applying labels, or creating a GitHub Project.
+
+## P51 | Productization Readiness Prerequisites
+
+State: PLANNED
+
+Objective: clear the accepted productization review findings and prove a
+coherent versioned development runtime before another feature packet starts.
+
+Current State:
+
+- search, question answering, saved monitors, quality tracing, and the
+  isolated-runtime doctor are integrated in source, but the review reproduced
+  two blocking question-contract failures;
+- GitHub Issues are enabled but canonical tracker guidance is contradictory and
+  the prepared work items remain unpublished;
+- P35 tailored follows is validated on its own published branch but is 75
+  commits behind current main and has no pull request;
+- production remains the only active runtime and does not contain the new
+  product surfaces; source and production currently reuse service version
+  `0.3.116` for different manifests.
+
+Plan:
+
+- `docs/dev/plans/0102-2026-09-13-productization-readiness-prerequisites.md`.
+
+Dependencies:
+
+- work may begin provider-free from current canonical main; P35 PR creation,
+  development-runtime provisioning, release, dogfood effects, and issue
+  publication retain their separate action-specific gates.
+
+Program Gate:
+
+- no new feature packet for WI-001 through WI-006 or WI-008 may activate until
+  P51 is `CLOSED` and WI-009 is `DONE`; corrective packets under P51 and the
+  reserved WI-007 production-hotfix lane are the only exceptions.
+
+Next Bounded Action:
+
+- create the Packet 1 corrective branch for the two Q&A defects and the
+  tracker-documentation contradiction, then register its exact ownership and
+  custody before implementation.
