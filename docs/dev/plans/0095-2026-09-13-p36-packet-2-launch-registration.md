@@ -1,6 +1,6 @@
 # Plan 0095 | P36 Packet 2 Launch Registration
 
-State: OPEN
+State: CLOSED
 Lane: P46
 Work item: WI-003
 Branch: docs/p36-packet2-launch-registration
@@ -114,3 +114,42 @@ Subagent status: `not_spawned`.
 Next action: publish this frozen coordinator checkpoint, create the
 publication projection, validate and merge it, then launch the independent
 Packet 2 session.
+
+### Checkpoint P0095-C02 | 2026-09-13
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`.
+
+Progress classification: `verified_outcome`; the registration is canonical and
+the replacement independent owner published a clean activation checkpoint
+before feature implementation.
+
+Authority classification:
+
+- `inherited_authority` for registration integration, canonical readback, and
+  independent source-only session launch;
+- all previously named human gates and scope-expansion boundaries remain.
+
+Evidence:
+
+- PR 43 merged the registration as canonical
+  `5004df7f228059b2d2c154f1414de83fae16cfd5`;
+- canonical main was fast-forwarded cleanly and verified equal to origin/main;
+- replacement top-level Codex thread
+  `01a09d44-49bf-73b2-a613-aee72c98f471` merged canonical main without
+  rebasing, opened Plan 0096, and published activation
+  `e566724c461aaf488020b1dc811dadcf44d6b72c` remote-equal;
+- the interrupted predecessor `01a09d41-e047-76c3-92b5-229017168752` was
+  stopped during preflight after exposing inherited credential values in its
+  transcript and made no feature or plan edit; the replacement process was
+  launched with those variables removed and has not repeated the exposure;
+- activation authority tests and patch hygiene passed; Plan 0096's expected
+  branch-local RUNBOOK wiring finding is resolved by this coordinator closeout.
+
+Subagent status: `not_spawned`; the feature owner is a separate top-level
+Codex CLI session.
+
+Next action: integrate this activation projection while the independent owner
+executes only Plan 0096; rotate the exposed credentials outside repository
+scope, and do not place their values in any further transcript or artifact.

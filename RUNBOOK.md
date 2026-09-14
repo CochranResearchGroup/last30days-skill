@@ -28602,3 +28602,56 @@ Next Bounded Action:
 
 - publish and merge the registration, fast-forward canonical main, then launch
   the independent P36 Packet 2 session for activation and implementation.
+
+## Turn 457 | 2026-09-13
+
+Focus: Plan 0095/P46 launch closeout and Plan 0096/P36 activation.
+
+Authority Consulted:
+
+- Plans 0095 and 0096, P36/P46, WI-003, canonical Git and fork PR state,
+  active-lane, planning, validation, closeout, and multi-session policy.
+
+Decisions And Changes:
+
+- closed the coordinator-only registration after PR 43 integrated it as
+  canonical merge `5004df7f228059b2d2c154f1414de83fae16cfd5`;
+- recorded independent top-level Codex thread
+  `01a09d44-49bf-73b2-a613-aee72c98f471` as WI-003 owner after it published
+  clean activation `e566724c461aaf488020b1dc811dadcf44d6b72c`;
+- stopped predecessor thread `01a09d41-e047-76c3-92b5-229017168752`
+  during preflight after inherited credential values appeared in its local
+  transcript, before it made a feature or plan edit; relaunched the replacement
+  process without those environment variables;
+- kept the credential values out of repository artifacts and preserved the
+  transcript as incident evidence pending operator rotation;
+- kept P35, installed runtimes, providers, model execution, public HTTP/MCP,
+  staging, production, delivery, tracker mutation, and releases untouched.
+
+Validation Evidence:
+
+- canonical main was clean and remote-equal at `5004df7f` before activation;
+- the replacement owner passed 10 plan-authority tests and patch hygiene before
+  feature implementation, and its activation checkpoint is remote-equal;
+- publication-closeout authority, active-lane, and patch-hygiene checks follow
+  this projection before integration.
+
+State Movement:
+
+- Plan 0095/P46 `OPEN -> CLOSED/INTEGRATED`;
+- Plan 0096/P36 `PLANNED -> OPEN`;
+- WI-003 `READY -> IN_PROGRESS`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the feature owner is a separate top-level Codex CLI session.
+
+Graphiti Write Status:
+
+- `not_written`; canonical Git, PR, test, and transcript identifiers are the
+  authoritative receipts.
+
+Next Bounded Action:
+
+- integrate this closeout while the independent owner executes only Plan 0096;
+  then review its exact clean checkpoint before any feature integration.
