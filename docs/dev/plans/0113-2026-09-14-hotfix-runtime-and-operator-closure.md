@@ -30,9 +30,12 @@ Builder/installer tests cover low-level lifecycle recovery, but no reusable
 hotfix drill binds their artifact, database, process, and receipt identities to
 WI-007's state machine.
 
-The assigned lane is activated for plan-only publication. Implementation,
-artifact builds, and disposable runtime execution remain held until the
-coordinator reconciles the activation and resumes this owner explicitly.
+The coordinator resumed implementation after activation PR 82 merged at
+`5471e928b1f4c7867ea15de1d4e203b3315bb6e4`; the lane fast-forwarded to that
+exact checkpoint while preserving activation ancestry. Read-only preflight
+and the first disposable builder/installer upgrade tracer now pass. Remaining
+work is recovery scenarios, evidence composition/reporting, operator guidance,
+fresh drill, and acceptance validation.
 
 ## Scope
 
@@ -173,3 +176,109 @@ Stop condition: do not implement, build, run a fixture/runtime, mutate shared
 authority, open a pull request, change issue state, or spawn children during
 this activation. Stop on unexpected dirt, branch/base mismatch, or publication
 divergence and return the exact evidence to the coordinator.
+
+### Checkpoint P0113-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `activation_published -> implementation_baseline_passed`.
+
+Progress classification: `outcome_progress`; a real reproducible builder and
+installer compose with the synthetic Unix service and exact-owned cleanup.
+
+Authority classification:
+
+- `inherited_authority`; coordinator resume permits the planned provider-free
+  implementation, disposable builds/runtime tests, validation, and branch
+  publication. Operational effects remain excluded.
+
+Evidence and fixed bounds:
+
+- TDD first red: missing preflight module; green: stale-source rejection test
+  passed. Lifecycle tracer red: missing run interface; implementation then
+  exposed absent native Python pidfd wrappers. The Linux syscall fallback
+  follows WI-001's established approach. Fresh OS search found no residual
+  fixture process after that failed attempt;
+- added short socket-root preflight before resource creation. Current baseline:
+  `uv run pytest tests/test_hotfix_runtime_drill.py -k baseline`: one passed,
+  one deselected in 2.84s; measured wall 3.00s, peak RSS 39,512 KiB;
+- source fixture uses two committed payloads (historical 0.3.116 and current
+  0.3.117), without editing versions or release metadata. The builder creates
+  two byte-identical candidate artifacts. The installer acts only inside
+  the owned temporary fixture with an explicit fake manager;
+- service/schema behavior is synthetic and labeled as such; these samples
+  prove installer selection/restoration, not product migration correctness;
+- freeze five scenarios: upgrade, failed-upgrade restoration, rollback,
+  separately declared rollback-forward, terminal recovery failure. At most
+  one upgrade per scenario; at most one recovery/backward rollback, with one
+  explicit forward operation only in rollback-forward. No automatic retries;
+- operation timeout 15s, builder timeout 30s, service readiness bound 1s,
+  child teardown bound 3s; total drill ceiling 60s, focused suite 60s,
+  selected lifecycle fallback 180s, comprehensive provider-free suite 600s.
+  A breach retains evidence and ends that run without expanding its bounds;
+- no children. Effective runtime model/reasoning remain unknown.
+
+Next action: implement one recovery tracer at a time, then report/control
+composition and focused negative tests. Preserve failed attempts and serialize
+the fresh drill after a clean published source checkpoint.
+
+### Checkpoint P0113-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `implementation_baseline_passed -> implementation_validated`.
+
+Progress classification: `outcome_progress`; five installer scenarios,
+read-only preflight/report, synthetic controller replay, operator guidance,
+and exact process/socket cleanup are implemented and validated.
+
+Authority classification:
+
+- `inherited_authority` for the resumed provider-free packet and publication;
+- coordinator approved one proven installer exception: add optional
+  `--skill-host-root PATH`, retaining default user-home behavior and changing
+  only frozen-host entrypoint refresh. XDG roots alone could not contain the
+  installer's unconditional user-home refresh. The fixture now passes its own
+  private empty directory and never overrides HOME or CODEX_HOME;
+- CONFIGURATION.md remains coordinator-owned because of Wave 2 overlap.
+  Required projection: document `service/scripts/install.sh --skill-host-root
+  PATH` as an optional absolute, owner-private, non-symlink directory scoping
+  frozen host-entrypoint refresh only, defaulting to the existing user home.
+
+Implementation and evidence:
+
+- repo-only runtime/controller adapter, synthetic Unix service/manager client,
+  and operator command are under `dev/last30days/scripts/hotfix_*`; operator
+  guidance is `docs/agents/hotfix-operator.md`;
+- tests clone source Git with `--no-hardlinks --no-checkout`, retain the exact
+  existing commits, and checkout the clone's exact origin/main. This supersedes
+  the initial synthetic re-commit test fixture; acceptance never attributes an
+  artifact to a synthetic Git commit;
+- preflight rejects `.git` pointer files, common-directory redirects, object
+  alternates, metadata symlinks, included configuration, dirty/stale source,
+  and ambient credential/configuration keys before building;
+- reports validate exact artifact/source/build hashes, expected contract,
+  manifest, version, synthetic schema, ready state, database content digests,
+  sentinels, process/socket birth identity, and replayed drill-only controls;
+- focused hotfix selection: 63 passed in 33.07s, wall 33.22s, peak RSS
+  42,320 KiB. One serial run, no retries; under the 60s focused budget;
+- comprehensive provider-free suite: `timeout 600 uv run pytest`: 2,979 passed,
+  7 expected skips, 11 subtests passed in 157.04s; measured wall 156.95s,
+  peak RSS 186,720 KiB. One serial run, no retries or budget breach. Existing
+  lifecycle/package tests ran in this comprehensive selection;
+- source seam before/after evidence: baseline installer at `5471e928` rejects
+  an explicit host root with a two-argument TypeError. Current tests prove
+  explicit-root containment, default behavior compatibility, and rejection of
+  relative, foreign-owner, symlinked, or shared-writable roots;
+- Ruff check/format, Python compilation, `bash -n service/scripts/install.sh`,
+  and diff checks passed. Plan-authority audit passed with five active plans
+  and zero issues; goal-only planning audit passed;
+- active planning audit retains exactly three shared findings: Plans 0111,
+  0112, and 0113 are not wired in RUNBOOK.md. Coordinator has been notified and
+  owns their reconciliation; no all-audits-passed claim is made;
+- subagent status: no children; this lane ran the recorded validation itself.
+  Effective model and reasoning remain unknown. Graphiti: `not_written`.
+
+Remaining acceptance: publish the tooling checkpoint, run one fresh complete
+drill against exact clean source, retain its bounded receipt, and return the
+clean published result for coordinator review/integration and shared-doc joins.
