@@ -3247,7 +3247,7 @@ Next Bounded Action:
 
 ## P51 | Productization Readiness Prerequisites
 
-State: PLANNED
+State: OPEN
 
 Objective: clear the accepted productization review findings and prove a
 coherent versioned development runtime before another feature packet starts.
@@ -3270,10 +3270,14 @@ Current State:
 - production remains the only active runtime at service `0.3.116`, schema 17;
   source is now distinctly versioned `0.3.117`, schema 18, but has not been
   built or installed as an isolated development runtime.
+- bounded successor Plan 0105 is active for Packets 4 and 5 under explicit
+  authority for exactly one isolated development runtime and provider-free
+  dogfood; all named external/live effects remain prohibited.
 
 Plan:
 
 - `docs/dev/plans/0102-2026-09-13-productization-readiness-prerequisites.md`.
+- `docs/dev/plans/0105-2026-09-14-versioned-development-runtime-and-dogfood.md`.
 
 Dependencies:
 
@@ -3291,6 +3295,5 @@ Program Gate:
 
 Next Bounded Action:
 
-- create the bounded Packet 4 development-release plan from canonical
-  `87858934`, separating artifact proof, development-runtime mutation, and
-  later dogfood effects while preserving production unchanged.
+- publish and merge Plan 0105 registration, then fan out its three read-only
+  audits before the primary implements runtime containment and artifact proof.
