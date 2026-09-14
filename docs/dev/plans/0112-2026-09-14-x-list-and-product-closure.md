@@ -160,6 +160,12 @@ State: `OPEN`; provider-free source acceptance is complete, but coordinator
 integration and generated-runtime reconciliation remain before the plan or
 WI-004 may close.
 
+Authority classification:
+
+- `inherited_authority` covers the provider-free source packet, local fixtures,
+  validation, branch publication, and coordinator integration; all live,
+  installed, provider, release, deployment, and issue effects remain gated.
+
 Custody and ancestry:
 
 - fetched `origin` and fast-forwarded this lane to exact canonical PR-82
