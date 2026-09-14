@@ -7,7 +7,7 @@
     },
     {
       "path": "schemas/post-search-contracts-v1.json",
-      "sha256": "ac42d96af99bef3518af89f9a56522ee178ac71afb975df4f35bf368df23d26e",
+      "sha256": "d0d5bb58fdb31bcb5b52c8e31129e7f5a857528886827215b5b50b2fcafc827e",
       "source": "skills/last30days/schemas/post-search-contracts-v1.json"
     },
     {
@@ -297,7 +297,7 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "ef664bcb8c46e994de57e209e3a05d2633e96e861280b310f6faf355f6d30044",
+      "sha256": "8eecbe3593a1385ffb0479ea84def9d7865b55b75bbc9357778e24bfbeaf81cb",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
@@ -312,12 +312,12 @@
     },
     {
       "path": "scripts/lib/service_collection.py",
-      "sha256": "d7d31d8b4a77283a0356b9f1b2cb8c6c426decc0badc9fe1ff028c58250a6036",
+      "sha256": "90d3fcfc0c4a3d2c9519af9990cbdf0cb426ea4ce926a8e05a4371b3699f1581",
       "source": "skills/last30days/scripts/lib/service_collection.py"
     },
     {
       "path": "scripts/lib/service_contracts.py",
-      "sha256": "9ec26c84f742d8cdd2b25c75c914684683c42f6af307b8e8e9ce0238f183397e",
+      "sha256": "b7731341dab75e43e5562c72c97579bc6ad44b92540ed7d976b78ade33708b88",
       "source": "skills/last30days/scripts/lib/service_contracts.py"
     },
     {
@@ -337,7 +337,7 @@
     },
     {
       "path": "scripts/lib/service_http.py",
-      "sha256": "5852c2dba59e0e44d00af43bb739b7d707fce2805cf57ea7c285394f4a0525e0",
+      "sha256": "72f9432377318c0e55d35b65508ab9fa3d13a150b3d05dd1ca5ffc4b18bd70cf",
       "source": "skills/last30days/scripts/lib/service_http.py"
     },
     {
@@ -372,8 +372,13 @@
     },
     {
       "path": "scripts/lib/service_post_search.py",
-      "sha256": "5db83f6db730acc410ca35271c36acf6121987e67d0cc1486eaef8f37ecc6b04",
+      "sha256": "1552284ca2cdc229807044d7820c8638dd5ddc7d7639d83332e3e195c0556ab6",
       "source": "skills/last30days/scripts/lib/service_post_search.py"
+    },
+    {
+      "path": "scripts/lib/service_post_search_ranking.py",
+      "sha256": "f01988d2f7da84bdf74cf0ef6e38f735e03913138102a54329c581192b30bff0",
+      "source": "skills/last30days/scripts/lib/service_post_search_ranking.py"
     },
     {
       "path": "scripts/lib/service_profiles.py",
@@ -652,7 +657,7 @@
     },
     {
       "path": "scripts/lib/x_browser.py",
-      "sha256": "c25d236a573c4c59051cc4d2de1f7dba5b0c831a631f71a6e5e7e8e985b6894f",
+      "sha256": "43d8b2837e009526daceaeeec2a3215f236229f9e9974f01791c246be228d16c",
       "source": "skills/last30days/scripts/lib/x_browser.py"
     },
     {
