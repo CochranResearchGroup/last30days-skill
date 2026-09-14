@@ -270,3 +270,34 @@ Next action: join the C03 catalog/error projection contract, repair shared
 runbook wiring, refresh generated contracts/runtime manifest, run final joined
 acceptance and review, and integrate. Keep WI-005 open for its separately
 bounded fresh isolated-runtime closeout.
+
+### Checkpoint P0118-C05 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> integration_ready`; plan remains `OPEN` pending the
+owned-fork PR merge and canonical reconciliation.
+
+Progress classification: `outcome_progress`; the Reddit and YouTube native
+tracers, capability discovery, public projections, generated artifacts and
+joined validation are complete.
+
+Authority classification:
+
+- `inherited_authority` covered only provider-free implementation, fixtures,
+  validation, review and owned-fork publication;
+- no provider/browser/live locator, installed runtime/database, real schedule,
+  release/deployment or tracker mutation occurred.
+
+Joined evidence:
+
+- reviewer reproduction found that Reddit could invoke transport with a zero
+  remaining request budget; checkpoint `c8bf22b0` now stops before invocation
+  and the independent replay observed exactly one call with budget `[2]`;
+- focused follow tests, the full 3,086-test Python suite, all Go tests, vet,
+  packaging checks and independent joined review pass;
+- public HTTP, Python and MCP capability discovery preserve separate declared,
+  dependency and execution readiness states.
+
+Next action: integrate the reviewed head. WI-005 remains `READY`, not `DONE`,
+because its separately authorized fresh-runtime closeout is outside this packet.

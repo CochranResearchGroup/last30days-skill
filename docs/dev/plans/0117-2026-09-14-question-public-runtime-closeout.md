@@ -297,3 +297,40 @@ WI-003 is acceptance-eligible after those joins and evidence pass. It is not
 `DONE` from this source checkpoint alone. Effective model/effort remain unknown.
 No children; one implementation attempt used; independent review and its one
 closed-world remediation remain coordinator-owned and unconsumed here.
+
+### Checkpoint P0117-C05 | 2026-09-14
+
+Plan version: 1
+
+State transition: `lane_source_accepted_pending_join -> integration_ready`;
+plan remains `OPEN` until the owned-fork PR is merged and canonical authority
+is reconciled.
+
+Progress classification: `outcome_progress`; Python, HTTP, CLI, MCP, schema,
+catalog, documentation, packaging and isolated-runtime joins are complete.
+
+Authority classification:
+
+- `inherited_authority` covered provider-free source, tests, two isolated
+  cache-only runtime cycles, independent review and owned-fork publication;
+- provider/model/browser/live-data/schedule/installed-runtime/release/
+  deployment/tracker effects remained zero.
+
+Acceptance evidence:
+
+- joined source checkpoint `c8bf22b09981a18fe970d1dc8cf92b70a71b6adb`;
+- independent review initially failed six reproducible integrity, pinning,
+  budget and public-contract cases; one closed-world remediation plus a
+  candidate-binding correction closed all six, and the reviewer returned
+  `PASS` at the exact joined checkpoint;
+- full Python acceptance: `3086 passed, 8 skipped, 14 subtests passed` in
+  198.17 seconds; complete Go tests and `go vet ./...` passed;
+- two independent builds produced SHA-256
+  `678f489b19b9565d01ed40d57189bb14f0565c7c7b72dabf0b6c84ff1545a4ad`;
+- the fresh isolated question probe passed six cases across two lifecycle
+  cycles. Its compact retained receipt is
+  `dev/last30days/receipts/plan0117-question-runtime-remediation.json`; final
+  controller state was absent and the owned-process census was empty.
+
+Next action: integrate through the owned-fork PR, then project WI-003 `DONE`
+and close this plan from the canonical merge receipt.

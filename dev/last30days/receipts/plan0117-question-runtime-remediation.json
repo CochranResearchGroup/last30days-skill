@@ -1,0 +1,25 @@
+{
+  "artifact": {
+    "first_path": "/tmp/l30d-wave4-remed-build1.3gZ83k/last30days-service-0.3.118.tar.gz",
+    "second_path": "/tmp/l30d-wave4-remed-build2.vyhEzX/last30days-service-0.3.118.tar.gz",
+    "sha256": "678f489b19b9565d01ed40d57189bb14f0565c7c7b72dabf0b6c84ff1545a4ad"
+  },
+  "cleanup": {
+    "controller_state": "absent",
+    "owned_process_census": []
+  },
+  "full_receipt": {
+    "path": "/tmp/l30d-wave4-remed-state.FuuryZ/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/receipts/question-packet4.json",
+    "sha256": "aeb1783e28de4667c272582299d4dc5fb1e5bfa5d6220c844b5fb30fcf712a8c"
+  },
+  "manifest_sha256": "c0bd2ee56226e65f93e0f2742cf7eb2dba6fbee7ebee7fcd76371479d7b906c2",
+  "plan": "0117",
+  "provider_free": true,
+  "question_case_count": 6,
+  "question_state": "passed",
+  "repository_commit": "c8bf22b09981a18fe970d1dc8cf92b70a71b6adb",
+  "runtime_cycles": 2,
+  "schema_version": 1,
+  "service_version": "0.3.118",
+  "work_item": "WI-003"
+}

@@ -190,3 +190,37 @@ coordinator-owned `RUNBOOK.md` wiring has not yet been added for Plans 0117,
 Next action: independent provider-free review, coordinator runbook
 reconciliation, then merge-only integration if all lane and authority checks
 remain accepted.
+
+### Checkpoint P0119-C04 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> integration_ready`; plan remains `OPEN` until the
+owned-fork PR merge and canonical reconciliation.
+
+Progress classification: `blocker_reduction`; joined review converted three
+false-pass paths into explicit failed/incomplete results and bound reports to
+the exact verified fixture candidate.
+
+Authority classification:
+
+- `inherited_authority` covered sealed provider-free fixtures, read-only
+  evaluation, tests, review and owned-fork publication;
+- network, provider, model, browser, live/installed runtime, schedule, release,
+  deployment and tracker effects remained zero.
+
+Review and remediation evidence:
+
+- actual canonical content hashes are recomputed, historical/current owner and
+  partition closure are verified, and corrupt or dangling revisions fail;
+- nonempty SQLite WAL/journal companions are rejected and reads use immutable,
+  query-only connections, so the pinned main-file digest is the data read;
+- fixture metadata binds all six candidate-head fields, and the runner rejects
+  an adapter/request candidate mismatch before evaluation;
+- the initial six-finding joined review returned `PASS` at exact checkpoint
+  `c8bf22b09981a18fe970d1dc8cf92b70a71b6adb` after focused remediation;
+- focused real-adapter regressions and the complete 3,086-test Python suite
+  pass. The full Go suite and vet pass.
+
+Next action: integrate this reviewed Packet 2 head. WI-008 remains `READY`, not
+`DONE`; answer-grounding and wider quality closure remain later bounded work.
