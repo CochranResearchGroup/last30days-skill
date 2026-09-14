@@ -12,6 +12,7 @@ Implementation plan seed: docs/dev/plans/0076-2026-09-13-post-search-architectur
 Last completed plan: docs/dev/plans/0108-2026-09-14-post-search-packet-2.md
 Active plan: none
 Branch: none
+Next planned plan: docs/dev/plans/0111-2026-09-14-post-search-packet-3.md
 
 ## Problem
 
