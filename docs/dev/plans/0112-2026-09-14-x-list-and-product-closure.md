@@ -151,3 +151,81 @@ Next action or stop reason: commit and publish this activation-only checkpoint,
 verify the remote ref resolves to the exact local commit, then stop. Resume
 only for the provider-free implementation packet after re-reading current lane
 overlaps and reconciling every shared surface through the coordinator.
+
+### Checkpoint P0112-C02 | 2026-09-14
+
+Plan version: 1
+
+State: `OPEN`; provider-free source acceptance is complete, but coordinator
+integration and generated-runtime reconciliation remain before the plan or
+WI-004 may close.
+
+Custody and ancestry:
+
+- fetched `origin` and fast-forwarded this lane to exact canonical PR-82
+  merge `5471e928b1f4c7867ea15de1d4e203b3315bb6e4`, preserving the C01
+  activation ancestry before implementation;
+- implementation remains confined to the registered P35 worktree and branch;
+  no children, provider, browser/profile, schedule/job, installed database or
+  runtime, WI-005, issue, release, or other live effect was invoked;
+- model requested by the plan remains `gpt-5.6-terra` at medium reasoning;
+  effective model/effort is still runtime-unknown.
+
+Implemented provider-free source boundary:
+
+- `AcquisitionWorkRequest` now admits only the typed `list` surface and the
+  X worker dispatches it exclusively to `scrape_x_list`; it cannot take the
+  generic X-search path;
+- X list retrieval uses canonical `/i/lists/<list_id>` navigation and the
+  established typed authentication, navigation, target, zero-yield, bounded
+  scroll, quality, and replay semantics;
+- due ordering is oldest `next_due_at` first, with `attention_class=priority`
+  only breaking equal-due ties;
+- the existing collection MCP tool has `get`, `archive`, and list-only
+  `include_archived` parity, while its Go test proves the forwarded payloads;
+- frozen feed/account/list context and three-sighting idempotency are covered,
+  and existing post search is proven to use the exact
+  `legacy:spec:<collection_spec_id>` partition reference without a new search
+  contract;
+- narrow SKILL, configuration, and MCP operator documentation records the
+  supported list selector and lifecycle behavior.
+
+Evidence:
+
+- RED then GREEN focused checks passed for the new list dispatch, list browser
+  route/outcomes, due-ordering, collection-context/search, and MCP lifecycle
+  tests;
+- `uv run pytest tests/test_service_contracts.py tests/test_service_acquisition_worker.py tests/test_service_collection.py tests/test_service_publication.py tests/test_service_post_search.py tests/test_service_product.py tests/test_x_browser.py -q` passed
+  (exit 0; one documented skip);
+- `go test ./internal/tools -count=1`, `go vet ./internal/tools`,
+  `go test ./...`, and `go vet ./...` passed;
+- existing CLI/app lifecycle parity was rechecked with
+  `uv run pytest tests/test_service_product.py tests/test_service_process.py -q -k 'collection_service_get_list_and_archive_expose_lifecycle_history or collection_cli_exposes_additive_get_archive_and_hidden_history_controls'`
+  (2 passed);
+- `git diff --check` passed and the scoped diff contains only declared
+  lane source/tests/docs plus this plan.
+
+Generated-authority stop boundary:
+
+- `uv run pytest -q` completed with 11 failures, all runtime-package or
+  lifecycle-install tests caused by the deliberately untouched stale
+  `service/runtime-manifest.json`; the direct no-effect build preflight says
+  `service/runtime-manifest.json is stale; run service/scripts/build-runtime.sh --refresh-manifest`;
+- generated runtime manifest/catalog and their authoritative join are
+  coordinator-owned, so this lane must not refresh or commit them. The
+  coordinator must regenerate/review those artifacts and repeat full
+  presubmit after merging this source slice. This is an integration residual,
+  not a provider or live-operation request.
+
+Discovery and closeout:
+
+- lane CodeGraph is not initialized and was not initialized as derived state;
+  the clean canonical worktree at exact `5471e928` supplied the pre-edit
+  structural readback. Current edited files are source/test authority until a
+  coordinator re-index after integration;
+- Graphiti discovery remained advisory and yielded no Plan-0112-specific
+  current fact. Repository files and test receipts control;
+- remaining gates are coordinator generated-artifact reconciliation, an
+  independent scoped review, integration, and resulting clean source/full
+  validation. Once those are complete, WI-004 has no known provider-free
+  acceptance gap and is eligible for DONE; this lane stops before PR or WI-005.

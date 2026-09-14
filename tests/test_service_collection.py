@@ -20,6 +20,7 @@ from lib.service_intelligence_contracts import (
 )
 from lib.service_job_runner import AcquisitionJobRunner, JobRunnerPolicy
 from lib.service_publication import CorpusPublisher
+from lib.service_post_search import PostSearchBackend
 from lib.service_refresh import RefreshPolicy, ServiceRefreshScheduler
 from lib.service_retrieval import HybridRetriever
 from lib.service_store import ServiceStore
@@ -453,6 +454,49 @@ def test_due_tick_respects_pause_and_advances_next_due_deterministically(tmp_pat
     assert next_due == "2026-07-25T13:00:00Z"
 
 
+def test_due_tick_ages_before_priority_and_uses_priority_for_equal_due_times(tmp_path):
+    db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
+    older = coordinator.put_spec(
+        _spec(
+            collection_spec_id="spec-old-standard",
+            name="Older standard",
+            selector={"topic": "older standard"},
+        )
+    )
+    standard = coordinator.put_spec(
+        _spec(
+            collection_spec_id="spec-same-aaa-standard",
+            name="Equal due standard",
+            selector={"topic": "equal standard"},
+        )
+    )
+    priority = coordinator.put_spec(
+        _spec(
+            collection_spec_id="spec-same-zzz-priority",
+            name="Equal due priority",
+            selector={"topic": "equal priority"},
+            attention_class="priority",
+        )
+    )
+    with sqlite3.connect(db_path) as conn:
+        conn.executemany(
+            "UPDATE collection_schedule_state SET next_due_at = ? WHERE collection_spec_id = ?",
+            [
+                ("2026-07-25T10:00:00Z", older.collection_spec_id),
+                ("2026-07-25T11:00:00Z", standard.collection_spec_id),
+                ("2026-07-25T11:00:00Z", priority.collection_spec_id),
+            ],
+        )
+
+    created = coordinator.enqueue_due(limit=3)
+
+    assert [run.collection_spec_id for run in created] == [
+        older.collection_spec_id,
+        priority.collection_spec_id,
+        standard.collection_spec_id,
+    ]
+
+
 def test_due_tick_waits_for_prior_spec_run_to_finish(tmp_path):
     current = [NOW]
     db_path = tmp_path / "research.db"
@@ -823,6 +867,17 @@ def test_account_collection_carries_frozen_context_and_retains_multi_cause_sight
     )
     account = coordinator.put_spec(_follow_spec())
     account = coordinator.set_enabled(account.collection_spec_id, enabled=True)
+    followed_list = coordinator.put_spec(
+        _follow_spec(
+            collection_spec_id="follow-x-list-agents",
+            name="Follow X agents list",
+            surface_kind="list",
+            selector={"list_id": "123456789"},
+        )
+    )
+    followed_list = coordinator.set_enabled(
+        followed_list.collection_spec_id, enabled=True
+    )
     feed_run = coordinator.enqueue_interval(
         feed.collection_spec_id,
         scheduled_for="2026-07-25T12:00:00Z",
@@ -830,6 +885,11 @@ def test_account_collection_carries_frozen_context_and_retains_multi_cause_sight
     )
     account_run = coordinator.enqueue_interval(
         account.collection_spec_id,
+        scheduled_for="2026-07-25T12:00:00Z",
+        trigger="timer",
+    )
+    list_run = coordinator.enqueue_interval(
+        followed_list.collection_spec_id,
         scheduled_for="2026-07-25T12:00:00Z",
         trigger="timer",
     )
@@ -847,6 +907,7 @@ def test_account_collection_carries_frozen_context_and_retains_multi_cause_sight
 
     assert runner.run_once(worker_id="collector-feed") is not None
     assert runner.run_once(worker_id="collector-account") is not None
+    assert runner.run_once(worker_id="collector-list") is not None
 
     account_request = next(
         request for request in worker.requests if request.job_id == account_run.job_id
@@ -858,6 +919,16 @@ def test_account_collection_carries_frozen_context_and_retains_multi_cause_sight
     assert account_request.collection_context.collection_run_id == account_run.collection_run_id
     assert account_request.collection_context.selector == {"account": "alice"}
     assert account_request.collection_context.access_partition_id == account.access_partition_id
+    list_request = next(
+        request for request in worker.requests if request.job_id == list_run.job_id
+    )
+    assert list_request.query == "123456789"
+    assert list_request.surface_kind == "list"
+    assert list_request.collection_context is not None
+    assert list_request.collection_context.collection_spec_id == followed_list.collection_spec_id
+    assert list_request.collection_context.collection_run_id == list_run.collection_run_id
+    assert list_request.collection_context.selector == {"list_id": "123456789"}
+    assert list_request.collection_context.access_partition_id == followed_list.access_partition_id
 
     conn = sqlite3.connect(db_path)
     try:
@@ -871,7 +942,28 @@ def test_account_collection_carries_frozen_context_and_retains_multi_cause_sight
     assert sightings == [
         (feed.collection_spec_id, feed_run.collection_run_id),
         (account.collection_spec_id, account_run.collection_run_id),
+        (followed_list.collection_spec_id, list_run.collection_run_id),
     ]
+    search = PostSearchBackend(db_path).search(
+        contracts.PostSearchRequest.from_dict(
+            {
+                "schema_version": 1,
+                "request_id": "list-follow-search",
+                "profile_id": "x-primary",
+                "query": None,
+                "filters": {
+                    "collection_refs": [
+                        f"legacy:spec:{followed_list.collection_spec_id}"
+                    ]
+                },
+                "page_size": 10,
+                "cursor": None,
+            }
+        ),
+        access_partitions=(followed_list.access_partition_id,),
+    )
+    assert search.returned == 1
+    assert f"legacy:spec:{followed_list.collection_spec_id}" in search.hits[0].collection_refs
 
 
 class _AssessmentClient:

@@ -256,6 +256,35 @@ func TestCoverageCollectionAndMaintenanceUseServiceAuthority(t *testing.T) {
 	}
 }
 
+func TestCollectionLifecycleExposesGetArchiveAndArchivedVisibility(t *testing.T) {
+	fake := &fakeService{response: json.RawMessage(`{"status":"ready"}`)}
+	handler := makeIntelligenceHandler(fake, "collection")
+	for _, operation := range []string{"get", "archive"} {
+		result, err := handler(
+			context.Background(),
+			callRequest(map[string]any{
+				"operation":          operation,
+				"collection_spec_id": "follow-x-list-agents",
+			}),
+		)
+		if err != nil || result.IsError || fake.postBody["operation"] != operation ||
+			fake.postBody["collection_spec_id"] != "follow-x-list-agents" {
+			t.Fatalf("%s result = %+v, payload = %#v, err = %v", operation, result, fake.postBody, err)
+		}
+	}
+
+	result, err := handler(
+		context.Background(),
+		callRequest(map[string]any{
+			"operation":        "list",
+			"include_archived": true,
+		}),
+	)
+	if err != nil || result.IsError || fake.postBody["include_archived"] != true {
+		t.Fatalf("list result = %+v, payload = %#v, err = %v", result, fake.postBody, err)
+	}
+}
+
 func TestCachedQueryBuildsBoundedCacheOnlyContract(t *testing.T) {
 	fake := &fakeService{response: json.RawMessage(`{"cache_status":"fresh"}`)}
 	handler := makeQueryHandler(fake, false)

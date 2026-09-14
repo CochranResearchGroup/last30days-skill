@@ -965,10 +965,13 @@ Create or revise a specification from a reviewed strict JSON file:
 ```bash
 python3 scripts/service.py collection put --input /path/to/collection.json
 python3 scripts/service.py collection list
+python3 scripts/service.py collection list --include-archived
+python3 scripts/service.py collection get spec-reddit-ai
 python3 scripts/service.py collection run spec-reddit-ai
 python3 scripts/service.py collection run spec-reddit-ai --max-attempts 2
 python3 scripts/service.py collection pause spec-reddit-ai
 python3 scripts/service.py collection resume spec-reddit-ai
+python3 scripts/service.py collection archive spec-reddit-ai
 ```
 
 Resuming a paused specification resets its due boundary to the current
@@ -1016,7 +1019,7 @@ Example:
 
 `surface_kind` accepts `feed`, `topic`, `poster`, `channel`, `account`, or
 `profile`. Its selector must contain exactly the matching key (`feed`, `topic`,
-`poster`, `channel`, `account`, or `profile_url`). Item, network, time, cost,
+`poster`, `channel`, `account`, `list_id`, or `profile_url`). Item, network, time, cost,
 lookback, and cadence bounds are mandatory. X, Facebook, and LinkedIn specs
 must use `redaction_class=authenticated`; their named profile is leased so two
 collection runs cannot operate the same retained browser profile
@@ -1157,8 +1160,9 @@ Service-enabled MCP clients expose eleven compact operations:
   section evidence without operating a browser;
 - `coverage`: inspect authorized collection specs, attempted intervals, yield,
   and unresolved gaps;
-- `collection`: list, put, pause, resume, or manually run typed recurring
-  collection specs through the durable supervisor;
+- `collection`: list (including explicit archived history), get, put, pause,
+  resume, manually run, or archive typed recurring collection specs through the
+  durable supervisor;
 - `maintenance_status`: read graph delivery and bounded App Intelligence
   receipts/safety gates plus canonical task contract names, versions, and
   validator-enforced limit ranges without prompts, raw provider events, or

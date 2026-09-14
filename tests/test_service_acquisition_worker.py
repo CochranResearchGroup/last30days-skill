@@ -902,6 +902,33 @@ def test_x_account_surface_dispatches_to_typed_account_adapter(monkeypatch):
     assert result["_network_request_count"] == 1
 
 
+def test_x_list_surface_dispatches_to_typed_list_adapter(monkeypatch):
+    from lib import x_browser
+
+    observed = {}
+
+    def list_timeline(*args, **kwargs):
+        observed["args"] = args
+        observed["kwargs"] = kwargs
+        return {"items": []}
+
+    monkeypatch.setattr(x_browser, "scrape_x_list", list_timeline, raising=False)
+    monkeypatch.setattr(
+        x_browser,
+        "search_x_browser",
+        lambda *_args, **_kwargs: pytest.fail("topic search must not run for list"),
+    )
+
+    result = service_acquisition_worker._x_adapter(
+        _request(query="123456789", surface_kind="list", item_limit=20),
+        {},
+    )
+
+    assert observed["args"] == ("123456789", "2026-06-24", "2026-07-24")
+    assert observed["kwargs"]["limit"] == 20
+    assert result["_network_request_count"] == 1
+
+
 def test_account_target_unavailable_is_a_permanent_provider_free_outcome():
     result = execute_work(
         _request(query="alice", surface_kind="account"),
