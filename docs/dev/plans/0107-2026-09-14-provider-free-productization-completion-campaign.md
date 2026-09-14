@@ -7,7 +7,7 @@ Branch: docs/provider-free-productization-campaign
 Target: main
 Integration: merge
 Roadmap: P52
-Plan version: 2
+Plan version: 3
 Date: 2026-09-14
 Session owner: Codex thread 01a09f76-8024-7960-a7c5-c0469cf99153
 Runtime model: GPT-5 family primary; effective runtime identity not reported
@@ -787,6 +787,68 @@ Next action: integrate this one-line runtime repair and regression through a
 reviewed PR, rebuild twice from its canonical merge, and execute exactly one
 terminal successor runtime attempt. Pass proceeds to repo-local closeout;
 failure records the exact remaining blocker without another autonomous run.
+
+### Checkpoint P0107-C18 | 2026-09-14
+
+Plan version: 3
+
+State transition: `final_runtime_successor_ready -> awaiting_human_gate`.
+
+Progress classification: `blocker_reduction`; the terminal successor proved
+the joined search, question, structural-grounding, HTTP/MCP identity and exact
+teardown phase, then exposed and locally repaired one incorrect fixture-reset
+path guard before the follows and monitor phases could run.
+
+Authority classification:
+
+- `inherited_authority` covers the repository-only guard correction, regression
+  test, validation and reviewed integration;
+- the C17 terminal runtime bound is exhausted. Starting another isolated
+  runtime is now a `human_gate`, even though its provider-free mutation class
+  would otherwise remain inside the campaign objective;
+- all provider, browser, live-data, schedule, installed-runtime mutation,
+  staging, production mutation, release, deployment, delivery and tracker
+  effects remain prohibited and unused.
+
+Evidence:
+
+- terminal source and artifact were canonical
+  `f0baee32bfe7dcae9316a2a5dcd21578e0e7a469`, service `0.3.119`, schema 18,
+  runtime manifest
+  `ef8a00185910f398c0d73b03c879a3c035dc50b68c2c14eb183672f2d833547b`,
+  and byte-identical artifact SHA-256
+  `2ebc0096bae81ed4432a92b976f6def4c4482d450545eaacce136a3d6111f625`;
+- receipt
+  `/home/ecochran76/.local/state/last30days-development/last30days/lanes/l30d-p52-final-f0baee32-927ab335a2f1/receipts/plan0107-final-runtime.json`
+  has SHA-256
+  `af664e2d4d148787301614a3feb4ddde86832a7e1e74a5e5d4245c2ef6825f56`;
+- its retained `search_question_quality` phase passed 19 search cases, 6
+  question cases, structural grounding with complete durable identity/digest/
+  citation/partition closure, service/MCP `0.3.119` parity, zero quality
+  network/model/browser/runtime effects, empty owned-process census, stopped
+  owner, absent final status and absent socket;
+- the next phase stopped before startup because the reset guard required the
+  database directly beneath `state_root`, while the accepted WI-001 descriptor
+  intentionally locates it at `state_root/data/research.db`;
+- the corrected guard now requires that exact controller-owned `data`
+  directory and still rejects any sibling or external database. No fourth
+  runtime was started.
+
+Subagent status and reconciliation:
+
+- `joined`; no new broad review was opened. The primary retained all three
+  failure receipts and adjudicated the terminal blocker against the frozen
+  campaign acceptance criteria.
+
+Remaining acceptance gate: after this repair is integrated, one fresh
+provider-free runtime must still prove the follows and monitor phases plus the
+full aggregate receipt on one canonical commit. WI-005, WI-006, WI-008 and
+WI-000 remain open in repo authority until that exact evidence exists.
+
+Next action or stop reason: stop after reviewed integration and current
+validation. Ask the operator whether to authorize one additional bounded
+isolated-runtime attempt under a new Plan 0107 version; do not infer that
+authority from the original goal or repeat the runtime autonomously.
 
 ## Stop Rules
 
