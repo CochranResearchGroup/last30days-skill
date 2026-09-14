@@ -2948,6 +2948,11 @@ Last Closed Implementation Plan:
   `feat/service-quality-real-adapters-v1`; activation `24614a18` is published
   and integrated through reviewed PR 91 as canonical merge `f413458b`.
 
+Planned Closeout:
+
+- `docs/dev/plans/0122-2026-09-14-service-quality-grounding-closeout.md` on
+  `feat/service-quality-grounding-closeout-v1`; custody is not yet published.
+
 Dependencies:
 
 - Packet 1 is independent; retrieval integration/acceptance joins WI-002, and
@@ -3039,6 +3044,11 @@ Last Closed Implementation Plan:
   `feat/cross-service-follow-tracers-v1`; activation `f7ba978d` is published
   and integrated through reviewed PR 91 as canonical merge `f413458b`.
 
+Planned Closeout:
+
+- `docs/dev/plans/0120-2026-09-14-cross-service-follow-runtime-closeout.md` on
+  `feat/cross-service-follow-runtime-closeout-v1`; custody is not yet published.
+
 Closed Architecture Plan:
 
 - `docs/dev/plans/0082-2026-09-13-cross-service-tailored-follow-architecture-and-lane-handoff.md`.
@@ -3084,6 +3094,11 @@ Last Closed Plan:
 
 - `docs/dev/plans/0116-2026-09-14-saved-query-composition.md`.
 
+Planned Closeout:
+
+- `docs/dev/plans/0121-2026-09-14-monitor-digest-product-closeout.md` on
+  `feat/monitor-digest-product-closeout-v1`; custody is not yet published.
+
 Closed Architecture Plan:
 
 - `docs/dev/plans/0083-2026-09-13-saved-monitor-and-digest-architecture-and-lane-handoff.md`.
@@ -3100,8 +3115,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- register separately bounded follow-composition and deterministic
-  digest/delivery-intent packets; live delivery and schedules remain excluded.
+- integrate Plan 0121 registration, publish exact custody, then execute the
+  combined provider-free follow-composition, digest and runtime closeout.
 
 ## P41 | Implementation Lane Launch Registration
 

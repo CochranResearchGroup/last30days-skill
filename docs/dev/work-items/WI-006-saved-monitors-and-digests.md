@@ -8,9 +8,9 @@ Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/59
 Blocked by: none for the next provider-free packet
 Last closed plan: docs/dev/plans/0116-2026-09-14-saved-query-composition.md
-Active plan: none
-Branch: main
-Owner: /root
+Active plan: docs/dev/plans/0121-2026-09-14-monitor-digest-product-closeout.md
+Branch: feat/monitor-digest-product-closeout-v1
+Owner: unassigned
 
 ## Problem
 

@@ -166,41 +166,35 @@ lanes:
     reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
     updated_at: 2026-09-13
   - id: P40
-    objective: Compose immutable saved queries with real stored-post search
+    objective: Close immutable query and follow monitors with deterministic digests
     work_items: [docs/dev/work-items/WI-006-saved-monitors-and-digests.md]
-    plan: docs/dev/plans/0116-2026-09-14-saved-query-composition.md
-    plan_ref: refs/heads/feat/saved-query-composition-v2
-    branch: feat/saved-query-composition-v2
+    plan: docs/dev/plans/0121-2026-09-14-monitor-digest-product-closeout.md
+    plan_ref: refs/heads/feat/monitor-digest-product-closeout-v1
+    branch: feat/monitor-digest-product-closeout-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 13745c9f3652a696e9e5684bcf5205ded76d38f8
-    remote_ref: refs/remotes/origin/feat/saved-query-composition-v2
+    plan_state: PLANNED
+    custody_state: UNASSIGNED
+    checkpoint: null
+    remote_ref: refs/remotes/origin/feat/monitor-digest-product-closeout-v1
     integration: merge
-    integration_receipt: d2f15ed64ae608038cc5a8a82675fc149faa563c
-    validation_status: passed
-    validation_ref: bbe5d62c378bf80b801161aee67cf140b91815db
-    session_owner: /root
+    session_owner: unassigned
     dependencies: [P33]
     overlaps: [skills/last30days/scripts/lib/service_monitor_contracts.py, skills/last30days/scripts/lib/service_monitors.py, skills/last30days/scripts/lib/service_monitor_views.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_client.py, skills/last30days/scripts/lib/service_http.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go, service/runtime-manifest.json]
     reconciled_overlaps: [skills/last30days/scripts/lib/service_monitor_contracts.py, skills/last30days/scripts/lib/service_monitors.py, skills/last30days/scripts/lib/service_monitor_views.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_client.py, skills/last30days/scripts/lib/service_http.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go, service/runtime-manifest.json]
     updated_at: 2026-09-14
   - id: P39
-    objective: Implement provider-free native Reddit and YouTube follow tracers
+    objective: Close cross-service follows through a stock isolated cache-only runtime
     work_items: [docs/dev/work-items/WI-005-cross-service-tailored-follows.md]
-    plan: docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md
-    plan_ref: refs/heads/feat/cross-service-follow-tracers-v1
-    branch: feat/cross-service-follow-tracers-v1
+    plan: docs/dev/plans/0120-2026-09-14-cross-service-follow-runtime-closeout.md
+    plan_ref: refs/heads/feat/cross-service-follow-runtime-closeout-v1
+    branch: feat/cross-service-follow-runtime-closeout-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 53c19e8c0ac6a3c49c1203df6c1a1dc3d70aa317
-    remote_ref: refs/remotes/origin/feat/cross-service-follow-tracers-v1
+    plan_state: PLANNED
+    custody_state: UNASSIGNED
+    checkpoint: null
+    remote_ref: refs/remotes/origin/feat/cross-service-follow-runtime-closeout-v1
     integration: merge
-    integration_receipt: f413458b4d1be8db0ae5a1347545f9f921875c58
-    validation_status: passed
-    validation_ref: c8bf22b09981a18fe970d1dc8cf92b70a71b6adb
-    session_owner: /root
+    session_owner: unassigned
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_follow_capabilities.py, skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_acquisition_worker.py]
     reconciled_overlaps: [skills/last30days/scripts/lib/service_follow_capabilities.py, skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_acquisition_worker.py]
@@ -225,21 +219,18 @@ lanes:
     reconciled_overlaps: [dev/last30days/scripts/hotfix_fixture_runtime.py, dev/last30days/scripts/hotfix_runtime_drill.py, dev/last30days/scripts/hotfix_operator.py, service/scripts/install.sh, tests/test_hotfix_runtime_drill.py, docs/agents/hotfix-operator.md]
     updated_at: 2026-09-14
   - id: P37
-    objective: Replace fake service-quality axes with read-only real-fixture adapters
+    objective: Close service quality with real structural answer-grounding evaluation
     work_items: [docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
-    plan: docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md
-    plan_ref: refs/heads/feat/service-quality-real-adapters-v1
-    branch: feat/service-quality-real-adapters-v1
+    plan: docs/dev/plans/0122-2026-09-14-service-quality-grounding-closeout.md
+    plan_ref: refs/heads/feat/service-quality-grounding-closeout-v1
+    branch: feat/service-quality-grounding-closeout-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 53c19e8c0ac6a3c49c1203df6c1a1dc3d70aa317
-    remote_ref: refs/remotes/origin/feat/service-quality-real-adapters-v1
+    plan_state: PLANNED
+    custody_state: UNASSIGNED
+    checkpoint: null
+    remote_ref: refs/remotes/origin/feat/service-quality-grounding-closeout-v1
     integration: merge
-    integration_receipt: f413458b4d1be8db0ae5a1347545f9f921875c58
-    validation_status: passed
-    validation_ref: c8bf22b09981a18fe970d1dc8cf92b70a71b6adb
-    session_owner: /root
+    session_owner: unassigned
     dependencies: [P33]
     overlaps: []
     reconciled_overlaps: []
