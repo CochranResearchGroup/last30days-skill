@@ -4,11 +4,11 @@ State: OPEN
 Lane: P51
 Work item: WI-009
 Parent plan: docs/dev/plans/0102-2026-09-13-productization-readiness-prerequisites.md
-Branch: docs/p51-development-runtime-registration
+Branch: feat/p51-isolated-runtime-v1
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 1
+Plan version: 2
 Date: 2026-09-14
 Session owner: primary Codex goal thread
 
@@ -198,3 +198,65 @@ Graphiti write status: `not_written`; no explicit memory-write authority exists.
 
 Next action: validate, publish, review, and merge this registration; then spawn
 and join the three bounded read-only audits before implementation.
+
+### Checkpoint P0105-C02 | 2026-09-14
+
+Plan version: 2
+
+State transition: `OPEN -> OPEN`; the implementation slice is validated on
+commit `a8c8114832df588e786891cd36fb69457f402250` and published with its governance
+checkpoint at remote-equal tip `3ac5728753abb57d5239d0812740323653cbfebb`.
+
+Progress classification: `outcome_progress`; the artifact, isolation, and
+dogfood audits were joined, the cache-only boundary and exact-owner lifecycle
+were implemented, and comprehensive provider-free validation passes.
+
+Authority classification:
+
+- `inherited_authority` covered source/tests, deterministic manifest refresh,
+  read-only subagent audits, and provider-free validation;
+- `human_gate` remains for every production/staging, provider/browser, schedule,
+  private/live data, release-publication, deployment, or GitHub issue effect;
+- `scope_expansion` remains any new product surface or second runtime.
+
+Evidence:
+
+- requested audit routes were artifact `gpt-5.6-luna`/low, isolation
+  `gpt-5.6-sol`/medium, and dogfood `gpt-5.6-luna`/low; no worker runtime exposed
+  an actual effective model/effort identity;
+- the artifact audit found the existing builder already canonicalizes inventory,
+  ownership, timestamps, gzip metadata, and manifest validation, so no builder
+  change was required;
+- the isolation audit identified every acquisition, Tick, assessment, Graphiti,
+  maintenance, enrichment, refresh, resume, topic-mutation, and collection-run
+  seam. The primary resolved the join by keeping the service process strictly
+  cache-only while permitting only explicit provider-free dogfood kernels/CLI
+  against the isolated database;
+- the corrected dogfood audit confirmed tailored-follow lifecycle through the
+  existing collection CLI and question/monitor proof through accepted direct
+  kernels, with no need to add a public product API;
+- controller `doctor/up/status/down` now verifies a safe extracted artifact,
+  signed descriptor, private state, Linux boot/start birth identity, exact
+  command, environment digest, Unix peer credentials, version/schema/manifest
+  handshake, duplicate-owner denial, and pidfd-only teardown;
+- cache-only service startup constructs no acquisition, Tick, assessment,
+  Graphiti, maintenance, or recurring-enrichment loop, advertises no effectful
+  capabilities, and denies refresh-capable query, topic mutation, job resume,
+  and collection-run actions before admission;
+- focused 65-test service/app/HTTP/controller validation, runtime-package tests,
+  full `uv run pytest -q`, MCP `go test ./...`, MCP `go vet ./...`, Python
+  compilation, manifest refresh, and `git diff --check` pass.
+
+Subagent status: `joined`; all three reports were advisory and read-only. The
+primary corrected the initial dogfood report's missed P35 collection contract
+before using it and retained every architecture and acceptance decision.
+
+Graphiti write status: `not_written`; no explicit memory-write authority exists.
+
+Remaining acceptance criteria: publish/review/merge the implementation, build
+two byte-identical artifacts from merged canonical main, provision exactly one
+runtime, execute and retain five dogfood receipts, prove production unchanged,
+and integrate closeout projections.
+
+Next action: integrate this catalog checkpoint, then self-review and merge the
+exact owned-fork implementation pull request.
