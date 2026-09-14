@@ -653,6 +653,41 @@ Next action:
 - validate and merge the activation projection, then trigger all three owners
   concurrently and join only accepted exact checkpoints.
 
+### Checkpoint P0107-C14 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_4_activated -> wave_4_integrated`.
+
+Progress classification: `outcome_progress`; PR 91 merged the exact reviewed
+Wave 4 head as canonical commit `f413458b4d1be8db0ae5a1347545f9f921875c58`.
+
+Authority classification:
+
+- `inherited_authority` covered provider-free implementation, isolated
+  cache-only runtime proof, review, integration and repo-local reconciliation;
+- providers, models, browsers, live data/locators, schedules, installed
+  runtimes/databases, staging, production, releases, deployments, delivery and
+  tracker mutations remained prohibited and unused.
+
+Subagent status and reconciliation:
+
+- `joined`; three implementation owners and one independent joined reviewer
+  completed. Six reproducible reviewer findings were fixed in one bounded
+  remediation sequence plus its candidate-binding correction; final review
+  passed at `c8bf22b0`.
+
+Acceptance and state:
+
+- full Python: 3,086 passed, 8 skipped, 14 subtests; Go tests/vet passed;
+- reproducible service artifact SHA-256 `678f489b19b9565d01ed40d57189bb14f0565c7c7b72dabf0b6c84ff1545a4ad`;
+- WI-003 `IN_PROGRESS -> DONE`; WI-005/WI-008 `IN_PROGRESS -> READY`;
+- Plans 0117-0119 close; P36 closes and P37/P39 return to planned custody.
+
+Next action: integrate this closeout projection, then register Wave 5 at full
+capacity: WI-005 fresh-runtime closeout, WI-006 monitor/digest composition
+closeout, and WI-008 real grounding/quality closeout.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;

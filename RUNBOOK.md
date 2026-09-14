@@ -30668,3 +30668,62 @@ Graphiti Write Status:
 Next Bounded Action:
 
 - validate and integrate activation, then resume all three owners concurrently.
+
+## Turn 493 | 2026-09-14
+
+Focus: reconcile reviewed Wave 4 integration and select the next full-capacity
+provider-free wave.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`;
+`docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md`;
+`docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md`;
+`docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md`.
+
+Authority Consulted:
+
+- exact PR 91 merge and canonical `f413458b`; planning, work-item, active-lane,
+  validation, testing, branch/integration, multi-agent and closeout policy;
+- final reviewer PASS at `c8bf22b0`, full-suite, Go/vet, reproducible artifact
+  and fresh isolated-runtime receipts.
+
+Decisions And Changes:
+
+- closed Plans 0117-0119 and projected P36/P37/P39 as integrated;
+- moved WI-003 to `DONE` and returned WI-005/WI-008 to `READY` without
+  overclaiming their later runtime/grounding gates;
+- selected the dependency-ready Wave 5 portfolio: WI-005 runtime closeout,
+  WI-006 monitor/digest composition closeout, and WI-008 grounding/quality
+  closeout. Registration remains the next step; no owner is assigned yet.
+
+Validation Evidence:
+
+- exact joined full suite: 3,086 passed, 8 skipped, 14 subtests in 198.17s;
+- all Go tests and vet passed; two artifacts shared SHA-256
+  `678f489b19b9565d01ed40d57189bb14f0565c7c7b72dabf0b6c84ff1545a4ad`;
+- isolated question acceptance passed six cases across two cycles, final
+  controller absent and owned process census empty;
+- independent review reproduced six blockers, verified every correction and
+  returned PASS before PR 91 merged.
+
+State Movement:
+
+- Plans 0117-0119 `OPEN -> CLOSED`;
+- WI-003 `IN_PROGRESS -> DONE`; WI-005/WI-008 `IN_PROGRESS -> READY`;
+- P36 `OPEN -> CLOSED`; P37/P39 `OPEN -> PLANNED`;
+- Plan 0107 `wave_4_activated -> wave_4_integrated`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; all Wave 4 agents are complete. Wave 5 planning agents remain
+  unassigned until this closeout integrates.
+
+Graphiti Write Status:
+
+- `not_written`; current repository, Git/forge state and retained receipts are
+  authoritative.
+
+Next Bounded Action:
+
+- validate and integrate this closeout, then register three restart-safe Wave
+  5 plans before publishing custody or assigning implementation owners.

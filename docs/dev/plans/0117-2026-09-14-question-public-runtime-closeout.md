@@ -1,6 +1,6 @@
 # Plan 0117 | Question Public Runtime Closeout Packet 4
 
-State: OPEN
+State: CLOSED
 Lane: P36
 Work item: WI-003
 Branch: feat/question-public-runtime-closeout-v1
@@ -334,3 +334,19 @@ Acceptance evidence:
 
 Next action: integrate through the owned-fork PR, then project WI-003 `DONE`
 and close this plan from the canonical merge receipt.
+
+### Checkpoint P0117-C06 | 2026-09-14
+
+Plan version: 1
+
+State transition: `integration_ready -> CLOSED`.
+
+Progress classification: `outcome_progress`; PR 91 merged the reviewed Wave 4
+head as canonical commit `f413458b4d1be8db0ae5a1347545f9f921875c58`.
+
+Authority classification: `inherited_authority`; this checkpoint records Git
+and repo-local acceptance only. All held external-effect boundaries remained
+unchanged.
+
+WI-003 transitions `IN_PROGRESS -> DONE`. No further action remains in this
+plan; model/provider canaries require a new explicit authorization and plan.

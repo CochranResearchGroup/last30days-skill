@@ -1,18 +1,18 @@
 <!-- last30days-work-item:WI-008 -->
 # Measure corpus and retrieval quality continuously
 
-State: IN_PROGRESS
+State: READY
 Priority: P2
 Lane: Quality
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/60
-Blocked by: none for Packet 1; retrieval acceptance by WI-002 closeout; grounding integration by WI-003 Packet 3 and acceptance by WI-003 closeout
+Blocked by: none for the provider-free grounding/quality closeout packet
 Architecture: docs/dev/notes/0121-2026-09-13-corpus-retrieval-and-grounding-quality-architecture.md
 Implementation plan seed: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md
-Last closed plan: docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md
-Current plan: docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md
-Branch: feat/service-quality-real-adapters-v1
-Owner: /root/wave4_wi008_plan
+Last closed plan: docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md
+Current plan: none
+Branch: main
+Owner: /root
 
 ## Problem
 
@@ -50,3 +50,9 @@ and PostSearch quality adapters; grounding remains deferred until WI-003
 closes. The plan is `OPEN` at published activation `24614a18`. Keep judge
 calls, production samples, providers, installed runtimes, CI changes, staging,
 and production behind their own explicit gates.
+
+Packet 2 integrated through reviewed PR 91 as canonical merge `f413458b`.
+Digest-pinned immutable fixtures now drive real acquisition, corpus and
+PostSearch adapters with candidate-head, content, owner, partition and WAL
+closure. WI-008 returns to `READY`; answer-grounding is now dependency-ready
+because WI-003 is `DONE`, but requires a separately bounded packet.

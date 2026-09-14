@@ -1,18 +1,18 @@
 <!-- last30days-work-item:WI-003 -->
 # Answer agent questions through an evidence-rich MCP surface
 
-State: IN_PROGRESS
+State: DONE
 Priority: P1
 Lane: MCP
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/57
-Blocked by: WI-002 Packet 1 contract integration; final acceptance by WI-002 closeout
+Blocked by: none
 Architecture: docs/dev/notes/0120-2026-09-13-agent-question-answering-mcp-architecture.md
 Implementation plan seed: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md
-Last closed plan: docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md
-Current plan: docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md
-Branch: feat/question-public-runtime-closeout-v1
-Owner: /root/wave4_wi003_plan
+Last closed plan: docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md
+Current plan: none
+Branch: main
+Owner: /root
 
 ## Problem
 
@@ -51,3 +51,9 @@ public HTTP/CLI/MCP surface, and fresh isolated-runtime acceptance. It remains
 `OPEN` at published activation `cfe4e719`. Keep real model
 execution, providers, installed runtimes, staging, and production behind their
 own explicit gates.
+
+Packet 4 integrated through reviewed PR 91 as canonical merge `f413458b`.
+Public HTTP, Python, CLI and MCP question/status/evidence surfaces, all search
+filters, authorization, bounded waits, unavailable-model behavior and a
+reproducible two-cycle isolated runtime are accepted. WI-003 is `DONE`; real
+model/provider execution remains separately gated and was not used.
