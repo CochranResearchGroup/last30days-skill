@@ -6,8 +6,12 @@ import hashlib
 import importlib.util
 import json
 import os
+import shutil
 import subprocess
 import sys
+import tarfile
+import tempfile
+import textwrap
 from pathlib import Path
 
 import pytest
@@ -111,6 +115,160 @@ def _resign_descriptor(descriptor: dict[str, object]) -> None:
             sort_keys=True,
         ).encode("utf-8")
     ).hexdigest()
+
+
+def _fake_runtime_artifact(tmp_path: Path) -> Path:
+    payload = tmp_path / "artifact-payload"
+    scripts = payload / "scripts"
+    scripts.mkdir(parents=True)
+    (payload / "VERSION").write_text("0.3.117\n", encoding="utf-8")
+    service_source = textwrap.dedent(
+        """
+        import argparse, hashlib, json, os, signal, socketserver, threading
+        from http.server import BaseHTTPRequestHandler
+        from pathlib import Path
+
+        parser = argparse.ArgumentParser()
+        parser.add_argument("command")
+        parser.add_argument("--effect-mode")
+        parser.add_argument("--socket", required=True)
+        parser.add_argument("--db", required=True)
+        args = parser.parse_args()
+        Path(args.db).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.db).touch()
+
+        class Handler(BaseHTTPRequestHandler):
+            protocol_version = "HTTP/1.1"
+            def do_GET(self):
+                manifest = Path(os.environ["LAST30DAYS_RUNTIME_MANIFEST_PATH"])
+                body = json.dumps({
+                    "service_version": os.environ["LAST30DAYS_SERVICE_VERSION"],
+                    "database_schema_version": 18,
+                    "runtime_manifest_sha256": hashlib.sha256(manifest.read_bytes()).hexdigest(),
+                }).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+            def log_message(self, *args):
+                pass
+
+        class Server(socketserver.ThreadingMixIn, socketserver.UnixStreamServer):
+            daemon_threads = True
+
+        server = Server(args.socket, Handler)
+        stop = threading.Event()
+        signal.signal(signal.SIGTERM, lambda *_: stop.set())
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        while not stop.wait(0.05):
+            pass
+        server.shutdown()
+        server.server_close()
+        Path(args.socket).unlink(missing_ok=True)
+        """
+    ).strip() + "\n"
+    (scripts / "service.py").write_text(service_source, encoding="utf-8")
+    files = []
+    for path in (payload / "VERSION", scripts / "service.py"):
+        files.append(
+            {
+                "path": path.relative_to(payload).as_posix(),
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "source": f"fixture/{path.name}",
+            }
+        )
+    manifest = {
+        "files": files,
+        "format": "last30days-service-runtime-v1",
+        "hash_algorithm": "sha256",
+        "service_version": "0.3.117",
+    }
+    (payload / "runtime-manifest.json").write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    artifact = tmp_path / "last30days-service-0.3.117.tar.gz"
+    with tarfile.open(artifact, "w:gz") as archive:
+        for path in sorted(payload.rglob("*")):
+            if path.is_file():
+                archive.add(path, arcname=path.relative_to(payload).as_posix())
+    return artifact
+
+
+def _lifecycle_command(
+    action: str,
+    repo: Path,
+    state_root: Path,
+    runtime_root: Path,
+    artifact: Path,
+) -> list[str]:
+    return [
+        sys.executable,
+        str(CONTROLLER),
+        action,
+        "--lane",
+        "wi-001",
+        "--work-item",
+        "WI-001",
+        "--plan",
+        "0105",
+        "--worktree",
+        str(repo),
+        "--state-root",
+        str(state_root),
+        "--runtime-root",
+        str(runtime_root),
+        "--artifact",
+        str(artifact),
+    ]
+
+
+def test_controller_runs_exactly_one_verified_artifact_and_stops_exact_owner(tmp_path):
+    repo = _repo(tmp_path)
+    artifact = _fake_runtime_artifact(tmp_path)
+    state_root = tmp_path / "state"
+    runtime_root = Path(tempfile.mkdtemp(prefix="l30d-test-", dir="/tmp"))
+
+    try:
+        up = subprocess.run(
+            _lifecycle_command("up", repo, state_root, runtime_root, artifact),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert up.returncode == 0, up.stdout
+        assert json.loads(up.stdout)["state"] == "ready"
+
+        status = subprocess.run(
+            _lifecycle_command("status", repo, state_root, runtime_root, artifact),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert status.returncode == 0
+        assert json.loads(status.stdout)["state"] == "ready"
+
+        duplicate = subprocess.run(
+            _lifecycle_command("up", repo, state_root, runtime_root, artifact),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert duplicate.returncode == 2
+        assert json.loads(duplicate.stdout)["reasons"] == ["existing_live_owner"]
+
+        down = subprocess.run(
+            _lifecycle_command("down", repo, state_root, runtime_root, artifact),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert down.returncode == 0
+        assert json.loads(down.stdout)["state"] == "stopped"
+    finally:
+        shutil.rmtree(runtime_root)
 
 
 def test_doctor_is_deterministic_and_creates_nothing(tmp_path):

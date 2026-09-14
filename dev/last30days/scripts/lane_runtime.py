@@ -1,19 +1,24 @@
 #!/usr/bin/env python3
-"""Read-only identity tracer for isolated last30days development runtimes.
-
-Packet 1 intentionally exposes only ``doctor``.  It derives and validates a
-lane descriptor without creating files, opening sockets, or starting services.
-"""
+"""Exact-owner controller for isolated last30days development runtimes."""
 
 from __future__ import annotations
 
 import argparse
+import ctypes
+import fcntl
 import hashlib
 import json
 import os
+import platform
 import re
+import signal
+import socket
+import stat
+import struct
 import subprocess
 import sys
+import tarfile
+import time
 from dataclasses import asdict, dataclass, fields
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -264,7 +269,7 @@ def build_descriptor(
     runtime_id = f"l30d-{lane_id}-{runtime_hash}"
     tick_configuration = build_offline_tick_configuration(runtime_id)
     state_root = state_base.resolve(strict=False) / "last30days" / "lanes" / runtime_id
-    socket_path = runtime_base.resolve(strict=False) / f"l30d-{runtime_hash}.sock"
+    socket_path = runtime_base.resolve(strict=False) / runtime_hash / "s"
     config_dir = state_root / "config"
     data_dir = state_root / "data"
     artifacts_dir = state_root / "artifacts"
@@ -564,20 +569,482 @@ def doctor(
     }
 
 
+def _atomic_json(path: Path, payload: Mapping[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    if temporary.exists() or temporary.is_symlink():
+        raise RuntimeError("temporary_receipt_collision")
+    try:
+        fd = os.open(
+            temporary,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_CLOEXEC | os.O_NOFOLLOW,
+            0o600,
+        )
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+
+
+def _sha256_path(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _extract_verified_artifact(
+    artifact: Path, descriptor: LaneRuntimeDescriptorV1
+) -> dict[str, str]:
+    artifact = artifact.resolve(strict=True)
+    if artifact.is_symlink() or not artifact.is_file():
+        raise RuntimeError("artifact_invalid")
+    artifact_sha256 = _sha256_path(artifact)
+    release_root = Path(descriptor.artifacts_dir) / artifact_sha256
+    if release_root.exists() or release_root.is_symlink():
+        manifest_path = release_root / "runtime-manifest.json"
+    else:
+        release_root.mkdir(parents=True, mode=0o700)
+        seen: set[str] = set()
+        total_size = 0
+        with tarfile.open(artifact, "r:gz") as archive:
+            for member in archive.getmembers():
+                parts = Path(member.name).parts
+                if (
+                    not member.isfile()
+                    or member.name in seen
+                    or member.name.startswith("/")
+                    or not parts
+                    or ".." in parts
+                ):
+                    raise RuntimeError("artifact_member_invalid")
+                seen.add(member.name)
+                total_size += member.size
+                if member.size > 16 * 1024 * 1024 or total_size > 128 * 1024 * 1024:
+                    raise RuntimeError("artifact_size_invalid")
+                destination = release_root.joinpath(*parts)
+                destination.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+                source = archive.extractfile(member)
+                if source is None:
+                    raise RuntimeError("artifact_member_invalid")
+                fd = os.open(
+                    destination,
+                    os.O_WRONLY
+                    | os.O_CREAT
+                    | os.O_EXCL
+                    | os.O_CLOEXEC
+                    | os.O_NOFOLLOW,
+                    0o600,
+                )
+                with source, os.fdopen(fd, "wb") as target:
+                    while chunk := source.read(1024 * 1024):
+                        target.write(chunk)
+        manifest_path = release_root / "runtime-manifest.json"
+    try:
+        manifest_raw = manifest_path.read_bytes()
+        manifest = json.loads(manifest_raw.decode("utf-8"))
+        version = (release_root / "VERSION").read_text(encoding="utf-8").strip()
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError("artifact_manifest_invalid") from exc
+    if (
+        not isinstance(manifest, dict)
+        or manifest.get("format") != "last30days-service-runtime-v1"
+        or manifest.get("hash_algorithm") != "sha256"
+        or manifest.get("service_version") != version
+        or not isinstance(manifest.get("files"), list)
+    ):
+        raise RuntimeError("artifact_manifest_invalid")
+    for item in manifest["files"]:
+        if not isinstance(item, dict) or set(item) != {"path", "sha256", "source"}:
+            raise RuntimeError("artifact_manifest_invalid")
+        relative = item.get("path")
+        expected = item.get("sha256")
+        if (
+            not isinstance(relative, str)
+            or relative.startswith("/")
+            or ".." in Path(relative).parts
+            or not isinstance(expected, str)
+        ):
+            raise RuntimeError("artifact_manifest_invalid")
+        candidate = release_root.joinpath(*Path(relative).parts)
+        if not candidate.is_file() or candidate.is_symlink() or _sha256_path(candidate) != expected:
+            raise RuntimeError("artifact_manifest_mismatch")
+    entrypoint = release_root / "scripts" / "service.py"
+    if not entrypoint.is_file() or entrypoint.is_symlink():
+        raise RuntimeError("artifact_entrypoint_invalid")
+    return {
+        "artifact_path": str(artifact),
+        "artifact_sha256": artifact_sha256,
+        "release_root": str(release_root),
+        "entrypoint": str(entrypoint),
+        "entrypoint_sha256": _sha256_path(entrypoint),
+        "manifest_path": str(manifest_path),
+        "manifest_sha256": hashlib.sha256(manifest_raw).hexdigest(),
+        "service_version": version,
+    }
+
+
+def _process_birth(pid: int) -> dict[str, object] | None:
+    try:
+        boot_id = Path("/proc/sys/kernel/random/boot_id").read_text().strip()
+        stat_text = Path(f"/proc/{pid}/stat").read_text()
+        start_ticks = int(stat_text.rsplit(") ", 1)[1].split()[19])
+        cmdline = [
+            part.decode("utf-8", "surrogateescape")
+            for part in Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
+            if part
+        ]
+        executable = os.readlink(f"/proc/{pid}/exe")
+        uid = Path(f"/proc/{pid}").stat().st_uid
+    except (OSError, ValueError, IndexError):
+        return None
+    return {
+        "pid": pid,
+        "uid": uid,
+        "boot_id": boot_id,
+        "start_ticks": start_ticks,
+        "cmdline": cmdline,
+        "executable": executable,
+    }
+
+
+def _pidfd_open(pid: int) -> int:
+    if hasattr(os, "pidfd_open"):
+        return os.pidfd_open(pid)
+    if platform.system() != "Linux" or platform.machine() not in {
+        "x86_64",
+        "aarch64",
+    }:
+        raise RuntimeError("unsupported_platform")
+    libc = ctypes.CDLL(None, use_errno=True)
+    result = libc.syscall(434, pid, 0)
+    if result < 0:
+        raise OSError(ctypes.get_errno(), "pidfd_open failed")
+    return int(result)
+
+
+def _pidfd_send_signal(pidfd: int, signum: int) -> None:
+    if hasattr(signal, "pidfd_send_signal"):
+        signal.pidfd_send_signal(pidfd, signum)
+        return
+    if platform.system() != "Linux" or platform.machine() not in {
+        "x86_64",
+        "aarch64",
+    }:
+        raise RuntimeError("unsupported_platform")
+    libc = ctypes.CDLL(None, use_errno=True)
+    result = libc.syscall(424, pidfd, signum, 0, 0)
+    if result < 0:
+        raise OSError(ctypes.get_errno(), "pidfd_send_signal failed")
+
+
+def _load_json(path: Path) -> dict[str, object]:
+    raw = path.read_bytes()
+    if len(raw) > 131_072:
+        raise RuntimeError("receipt_invalid")
+    payload = json.loads(raw.decode("utf-8"))
+    if not isinstance(payload, dict):
+        raise RuntimeError("receipt_invalid")
+    return payload
+
+
+def _socket_service_info(path: Path) -> tuple[dict[str, object], int, int, int]:
+    client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    client.settimeout(1.0)
+    try:
+        client.connect(str(path))
+        peer_pid, peer_uid, peer_gid = struct.unpack(
+            "3i", client.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12)
+        )
+        client.sendall(
+            b"GET /v1/service-info HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n"
+        )
+        chunks = []
+        total = 0
+        while True:
+            chunk = client.recv(65_536)
+            if not chunk:
+                break
+            total += len(chunk)
+            if total > 262_144:
+                raise RuntimeError("service_info_invalid")
+            chunks.append(chunk)
+    finally:
+        client.close()
+    raw = b"".join(chunks)
+    header, separator, body = raw.partition(b"\r\n\r\n")
+    if not separator or not header.startswith(b"HTTP/1.1 200"):
+        raise RuntimeError("service_info_invalid")
+    payload = json.loads(body.decode("utf-8"))
+    if not isinstance(payload, dict):
+        raise RuntimeError("service_info_invalid")
+    return payload, peer_pid, peer_uid, peer_gid
+
+
+def _expected_descriptor(args: argparse.Namespace) -> LaneRuntimeDescriptorV1:
+    return build_descriptor(
+        lane_id=args.lane,
+        work_item=args.work_item,
+        plan=args.plan,
+        worktree=args.worktree,
+        state_base=args.state_root,
+        runtime_base=args.runtime_root,
+    )
+
+
+def runtime_status(
+    descriptor: LaneRuntimeDescriptorV1, artifact: Path
+) -> dict[str, object]:
+    pid_path = Path(descriptor.pid_path)
+    if not pid_path.is_file() or pid_path.is_symlink():
+        return {"schema_version": SCHEMA_VERSION, "state": "absent", "reasons": []}
+    try:
+        record = _load_json(pid_path)
+        pid = int(record["pid"])
+        birth = _process_birth(pid)
+    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError, RuntimeError):
+        return {"schema_version": SCHEMA_VERSION, "state": "foreign", "reasons": ["pid_record_invalid"]}
+    if birth is None:
+        return {"schema_version": SCHEMA_VERSION, "state": "stale", "reasons": ["recorded_process_absent"]}
+    expected_command = record.get("command")
+    if (
+        record.get("descriptor_digest") != descriptor.descriptor_digest
+        or record.get("birth") != birth
+        or birth.get("uid") != os.geteuid()
+        or birth.get("cmdline") != expected_command
+        or record.get("artifact_sha256") != _sha256_path(artifact.resolve(strict=True))
+    ):
+        return {"schema_version": SCHEMA_VERSION, "state": "foreign", "reasons": ["process_identity_mismatch"]}
+    socket_path = Path(descriptor.socket_path)
+    try:
+        socket_stat = socket_path.lstat()
+    except OSError:
+        return {"schema_version": SCHEMA_VERSION, "state": "starting", "reasons": ["socket_not_ready"]}
+    if not stat.S_ISSOCK(socket_stat.st_mode) or socket_stat.st_uid != os.geteuid():
+        return {"schema_version": SCHEMA_VERSION, "state": "foreign", "reasons": ["socket_identity_mismatch"]}
+    try:
+        info, peer_pid, peer_uid, peer_gid = _socket_service_info(socket_path)
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, RuntimeError):
+        return {"schema_version": SCHEMA_VERSION, "state": "starting", "reasons": ["service_handshake_pending"]}
+    if (
+        peer_pid != pid
+        or peer_uid != os.geteuid()
+        or info.get("service_version") != record.get("service_version")
+        or info.get("database_schema_version") != 18
+        or info.get("runtime_manifest_sha256") != record.get("manifest_sha256")
+    ):
+        return {"schema_version": SCHEMA_VERSION, "state": "foreign", "reasons": ["service_identity_mismatch"]}
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "state": "ready",
+        "reasons": [],
+        "runtime_id": descriptor.runtime_id,
+        "descriptor_digest": descriptor.descriptor_digest,
+        "process": birth,
+        "socket_peer": {"pid": peer_pid, "uid": peer_uid, "gid": peer_gid},
+        "artifact": {
+            "path": str(artifact.resolve(strict=True)),
+            "sha256": record["artifact_sha256"],
+            "manifest_sha256": record["manifest_sha256"],
+        },
+        "service_info": info,
+    }
+
+
+def up(args: argparse.Namespace) -> dict[str, object]:
+    descriptor = _expected_descriptor(args)
+    existing = runtime_status(descriptor, args.artifact)
+    if existing["state"] == "ready":
+        return {"schema_version": SCHEMA_VERSION, "state": "blocked", "reasons": ["existing_live_owner"]}
+    if existing["state"] in {"starting", "stale", "foreign"}:
+        return {"schema_version": SCHEMA_VERSION, "state": "blocked", "reasons": [f"existing_{existing['state']}_owner"]}
+    readiness = doctor(
+        lane_id=args.lane,
+        work_item=args.work_item,
+        plan=args.plan,
+        worktree=args.worktree,
+        state_base=args.state_root,
+        runtime_base=args.runtime_root,
+        environ=os.environ,
+    )
+    if not readiness["ok"]:
+        return {"schema_version": SCHEMA_VERSION, "state": "blocked", "reasons": readiness["reasons"]}
+    lock_path = Path(descriptor.lock_path)
+    lock_path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    lock_fd = os.open(lock_path, os.O_RDWR | os.O_CREAT | os.O_CLOEXEC | os.O_NOFOLLOW, 0o600)
+    try:
+        try:
+            fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return {"schema_version": SCHEMA_VERSION, "state": "blocked", "reasons": ["runtime_lock_busy"]}
+        for directory in (
+            Path(descriptor.config_dir),
+            Path(descriptor.data_dir),
+            Path(descriptor.log_dir),
+            Path(descriptor.run_dir),
+            Path(descriptor.socket_path).parent,
+            Path(descriptor.startup_receipt_path).parent,
+            Path(descriptor.state_root) / "home",
+            Path(descriptor.state_root) / "tmp",
+            Path(descriptor.state_root) / "cache",
+        ):
+            directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+            if _contains_symlink(directory) or directory.stat().st_uid != os.geteuid():
+                raise RuntimeError("runtime_directory_invalid")
+            os.chmod(directory, 0o700)
+        artifact = _extract_verified_artifact(args.artifact, descriptor)
+        _atomic_json(Path(descriptor.descriptor_path), descriptor.to_dict())
+        _atomic_json(
+            Path(descriptor.tick_config_path),
+            build_offline_tick_configuration(descriptor.runtime_id),
+        )
+        environment = build_child_environment(descriptor, os.environ)
+        environment.update(
+            {
+                "LAST30DAYS_SERVICE_VERSION": artifact["service_version"],
+                "LAST30DAYS_RUNTIME_MANIFEST_PATH": artifact["manifest_path"],
+                "LAST30DAYS_DESCRIPTOR_DIGEST": descriptor.descriptor_digest,
+            }
+        )
+        command = [
+            sys.executable,
+            artifact["entrypoint"],
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            descriptor.socket_path,
+            "--db",
+            descriptor.database_path,
+        ]
+        log_handle = Path(descriptor.log_path).open("ab", buffering=0)
+        process = subprocess.Popen(
+            command,
+            cwd=artifact["release_root"],
+            env=environment,
+            stdin=subprocess.DEVNULL,
+            stdout=log_handle,
+            stderr=log_handle,
+            start_new_session=True,
+        )
+        log_handle.close()
+        birth = _process_birth(process.pid)
+        if birth is None:
+            process.terminate()
+            process.wait(timeout=5)
+            raise RuntimeError("process_identity_unavailable")
+        record: dict[str, object] = {
+            "schema_version": SCHEMA_VERSION,
+            "pid": process.pid,
+            "birth": birth,
+            "command": command,
+            "descriptor_digest": descriptor.descriptor_digest,
+            "environment_digest": _digest(environment),
+            "artifact_sha256": artifact["artifact_sha256"],
+            "entrypoint_sha256": artifact["entrypoint_sha256"],
+            "manifest_sha256": artifact["manifest_sha256"],
+            "service_version": artifact["service_version"],
+            "source_commit": descriptor.commit,
+        }
+        _atomic_json(Path(descriptor.pid_path), record)
+        _atomic_json(
+            Path(descriptor.startup_receipt_path),
+            {**record, "runtime_id": descriptor.runtime_id, "state": "starting"},
+        )
+        deadline = time.monotonic() + args.timeout
+        report = runtime_status(descriptor, args.artifact)
+        while report["state"] == "starting" and time.monotonic() < deadline:
+            if process.poll() is not None:
+                break
+            time.sleep(0.05)
+            report = runtime_status(descriptor, args.artifact)
+        if report["state"] != "ready":
+            if _process_birth(process.pid) == birth:
+                process.terminate()
+                process.wait(timeout=5)
+            return {"schema_version": SCHEMA_VERSION, "state": "blocked", "reasons": [f"startup_{report['state']}"]}
+        os.chmod(descriptor.socket_path, 0o600)
+        _atomic_json(
+            Path(descriptor.startup_receipt_path),
+            {**record, "runtime_id": descriptor.runtime_id, "state": "ready", "service_info": report["service_info"]},
+        )
+        return report
+    finally:
+        os.close(lock_fd)
+        try:
+            lock_path.unlink()
+        except FileNotFoundError:
+            pass
+
+
+def status(args: argparse.Namespace) -> dict[str, object]:
+    descriptor = _expected_descriptor(args)
+    descriptor_path = Path(descriptor.descriptor_path)
+    if descriptor_path.exists():
+        try:
+            stored = LaneRuntimeDescriptorV1.from_dict(_load_json(descriptor_path))
+        except (OSError, ValueError, json.JSONDecodeError, RuntimeError):
+            return {"schema_version": SCHEMA_VERSION, "state": "foreign", "reasons": ["descriptor_invalid"]}
+        if stored != descriptor:
+            return {"schema_version": SCHEMA_VERSION, "state": "foreign", "reasons": ["descriptor_mismatch"]}
+    return runtime_status(descriptor, args.artifact)
+
+
+def down(args: argparse.Namespace) -> dict[str, object]:
+    descriptor = _expected_descriptor(args)
+    report = status(args)
+    if report["state"] != "ready":
+        return {"schema_version": SCHEMA_VERSION, "state": "blocked", "reasons": [f"owner_{report['state']}"]}
+    pid = int(report["process"]["pid"])
+    try:
+        pidfd = _pidfd_open(pid)
+    except RuntimeError:
+        return {"schema_version": SCHEMA_VERSION, "state": "blocked", "reasons": ["unsupported_platform"]}
+    try:
+        if _process_birth(pid) != report["process"]:
+            return {"schema_version": SCHEMA_VERSION, "state": "blocked", "reasons": ["process_identity_changed"]}
+        _pidfd_send_signal(pidfd, signal.SIGTERM)
+        deadline = time.monotonic() + args.timeout
+        while _process_birth(pid) == report["process"] and time.monotonic() < deadline:
+            time.sleep(0.05)
+        if _process_birth(pid) == report["process"]:
+            return {"schema_version": SCHEMA_VERSION, "state": "blocked", "reasons": ["shutdown_timeout"]}
+    finally:
+        os.close(pidfd)
+    Path(descriptor.pid_path).unlink(missing_ok=True)
+    return {"schema_version": SCHEMA_VERSION, "state": "stopped", "reasons": [], "runtime_id": descriptor.runtime_id}
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Inspect an isolated last30days development runtime identity"
+        description="Control an isolated last30days development runtime identity"
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
-    doctor_parser = subparsers.add_parser(
-        "doctor", help="derive and validate a lane descriptor without writing state"
-    )
-    doctor_parser.add_argument("--lane", required=True)
-    doctor_parser.add_argument("--work-item", required=True)
-    doctor_parser.add_argument("--plan", required=True)
-    doctor_parser.add_argument("--worktree", type=Path, required=True)
-    doctor_parser.add_argument("--state-root", type=Path, required=True)
-    doctor_parser.add_argument("--runtime-root", type=Path, required=True)
+    commands = {
+        "doctor": "derive and validate a lane descriptor without writing state",
+        "up": "start exactly one verified cache-only development runtime",
+        "status": "read and verify the exact runtime owner",
+        "down": "stop only the exactly verified runtime owner",
+    }
+    command_parsers = {}
+    for name, help_text in commands.items():
+        command_parser = subparsers.add_parser(name, help=help_text)
+        command_parser.add_argument("--lane", required=True)
+        command_parser.add_argument("--work-item", required=True)
+        command_parser.add_argument("--plan", required=True)
+        command_parser.add_argument("--worktree", type=Path, required=True)
+        command_parser.add_argument("--state-root", type=Path, required=True)
+        command_parser.add_argument("--runtime-root", type=Path, required=True)
+        if name != "doctor":
+            command_parser.add_argument("--artifact", type=Path, required=True)
+            command_parser.add_argument("--timeout", type=float, default=10.0)
+        command_parsers[name] = command_parser
+    doctor_parser = command_parsers["doctor"]
     doctor_parser.add_argument(
         "--proposed-environment-json",
         help="validate optional locale-only child environment additions",
@@ -587,6 +1054,17 @@ def _parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    if args.command in {"up", "status", "down"}:
+        try:
+            report = {"up": up, "status": status, "down": down}[args.command](args)
+        except (OSError, subprocess.SubprocessError, ValueError, RuntimeError, tarfile.TarError) as exc:
+            report = {
+                "schema_version": SCHEMA_VERSION,
+                "state": "blocked",
+                "reasons": [str(exc)],
+            }
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0 if report["state"] in {"ready", "stopped", "absent"} else 2
     proposed_environment = None
     if args.proposed_environment_json is not None:
         try:

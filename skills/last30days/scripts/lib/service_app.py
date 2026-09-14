@@ -55,6 +55,14 @@ class JobResumeConflictError(RuntimeError):
     """Raised when an operator resume does not apply to the current job state."""
 
 
+class RuntimeEffectDisabledError(RuntimeError):
+    """Raised before an operation can cross a runtime's effect boundary."""
+
+    def __init__(self, operation: str):
+        super().__init__(f"effect_disabled_by_runtime:{operation}")
+        self.operation = operation
+
+
 class RetrievalBackend(Protocol):
     def current_metadata(self) -> dict[str, object]: ...
 
@@ -131,7 +139,10 @@ class CacheQueryApplication:
         post_search_backend: PostSearchBackend | None = None,
         clock: Callable[[], datetime] | None = None,
         fresh_seconds: int = DEFAULT_FRESH_SECONDS,
+        effect_mode: str = "normal",
     ):
+        if effect_mode not in {"normal", "cache_only"}:
+            raise ValueError("effect_mode is invalid")
         self.db_path = Path(db_path)
         self.retriever = retriever
         self.tick_snapshots = tick_snapshots
@@ -165,6 +176,7 @@ class CacheQueryApplication:
             self.db_path, clock=self.clock
         )
         self.fresh_seconds = fresh_seconds
+        self.effect_mode = effect_mode
 
     def _connect(self) -> sqlite3.Connection:
         conn = sqlite3.connect(str(self.db_path), timeout=5)
@@ -598,6 +610,10 @@ class CacheQueryApplication:
             raise contracts.ContractValidationError(
                 "intelligence request contains unknown fields"
             )
+        if action == "collection" and self.effect_mode == "cache_only":
+            operation = payload.get("operation")
+            if operation not in {"list", "get"}:
+                raise RuntimeEffectDisabledError(f"collection_{operation}")
         partitions = self._access_partitions(payload.get("profile_id", "default"))
         base: dict[str, object] = {
             "schema_version": contracts.SCHEMA_VERSION,
@@ -781,6 +797,8 @@ class CacheQueryApplication:
         return self.job_reader.get_job(job_id)
 
     def resume_job(self, job_id: str) -> contracts.JobRecord:
+        if self.effect_mode == "cache_only":
+            raise RuntimeEffectDisabledError("job_resume")
         if (
             self.job_reader is None
             or not isinstance(job_id, str)
@@ -820,6 +838,8 @@ class CacheQueryApplication:
             "request_refresh",
         }:
             raise contracts.ContractValidationError("invalid topic action")
+        if self.effect_mode == "cache_only" and action != "list":
+            raise RuntimeEffectDisabledError(f"topic_{action}")
         conn = self._connect()
         try:
             if action == "list":
@@ -1118,6 +1138,11 @@ class CacheQueryApplication:
         return selected, brief if isinstance(brief, str) else None, truncated
 
     def query(self, request: contracts.QueryRequest) -> contracts.QueryResponse:
+        if (
+            self.effect_mode == "cache_only"
+            and request.freshness_policy is not contracts.FreshnessPolicy.CACHE_ONLY
+        ):
+            raise RuntimeEffectDisabledError("query_refresh")
         sources = request.filters.get("sources")
         snippet_chars = min(
             1024, max(128, request.max_chars // max(1, request.top_k))
@@ -1350,6 +1375,7 @@ def initialize_application(
     maintenance_enabled: bool = False,
     tick_schedule_status: Callable[[], Mapping[str, object]] | None = None,
     runtime_error: Callable[[], str | None] | None = None,
+    effect_mode: str = "normal",
 ) -> CacheQueryApplication:
     """Initialize schema once and return the transport-independent application."""
     store.init_db(db_path)
@@ -1370,4 +1396,5 @@ def initialize_application(
         maintenance_enabled=maintenance_enabled,
         tick_schedule_status=tick_schedule_status,
         runtime_error=runtime_error,
+        effect_mode=effect_mode,
     )

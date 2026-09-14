@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from . import service_contracts as contracts
-from .service_app import JobResumeConflictError
+from .service_app import JobResumeConflictError, RuntimeEffectDisabledError
 
 
 MAX_REQUEST_BYTES = 131_072
@@ -288,6 +288,13 @@ class _RequestHandler(BaseHTTPRequestHandler):
                 409,
                 "job_not_awaiting_operator",
                 "only an awaiting-operator job with attempts remaining can be resumed",
+            )
+            return
+        except RuntimeEffectDisabledError as exc:
+            self._error(
+                403,
+                "effect_disabled_by_runtime",
+                f"runtime policy denies {exc.operation}",
             )
             return
         except Exception:

@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import pytest
 
 from lib import service_contracts as contracts
-from lib.service_app import CacheQueryApplication
+from lib.service_app import CacheQueryApplication, RuntimeEffectDisabledError
 from lib.service_retrieval import HybridRetriever
 from lib.service_store import ServiceStore
 
@@ -102,6 +102,86 @@ class FakeTickSnapshots:
                     },
                 },
             ),
+        )
+
+
+def test_cache_only_runtime_rejects_refresh_capable_query_before_admission(tmp_path):
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    scheduler = FakeRefreshScheduler()
+    app = CacheQueryApplication(
+        db_path,
+        FakeRetriever([]),
+        refresh_scheduler=scheduler,
+        effect_mode="cache_only",
+    )
+    request = contracts.QueryRequest.from_dict(
+        {
+            "schema_version": contracts.SCHEMA_VERSION,
+            "request_id": "cache-only-force-refresh",
+            "profile_id": "default",
+            "query": "synthetic cached evidence",
+            "freshness_policy": "force_refresh",
+            "response_mode": "evidence",
+            "filters": {},
+            "top_k": 8,
+            "max_chars": 8192,
+            "wait_ms": 0,
+        }
+    )
+
+    with pytest.raises(RuntimeEffectDisabledError, match="query_refresh"):
+        app.query(request)
+
+    assert scheduler.requests == []
+
+
+def test_cache_only_runtime_rejects_topic_mutation_before_database_write(tmp_path):
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    app = CacheQueryApplication(
+        db_path,
+        FakeRetriever([]),
+        effect_mode="cache_only",
+    )
+
+    with pytest.raises(RuntimeEffectDisabledError, match="topic_create"):
+        app.topic({"action": "create", "name": "Must not be created"})
+
+    with sqlite3.connect(db_path) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM topics").fetchone()[0] == 0
+
+
+def test_cache_only_runtime_rejects_job_resume_without_consulting_reader(tmp_path):
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    app = CacheQueryApplication(
+        db_path,
+        FakeRetriever([]),
+        effect_mode="cache_only",
+    )
+
+    with pytest.raises(RuntimeEffectDisabledError, match="job_resume"):
+        app.resume_job("synthetic-job")
+
+
+def test_cache_only_runtime_rejects_collection_run_before_authority_lookup(tmp_path):
+    db_path = tmp_path / "research.db"
+    ServiceStore(db_path).initialize()
+    app = CacheQueryApplication(
+        db_path,
+        FakeRetriever([]),
+        effect_mode="cache_only",
+    )
+
+    with pytest.raises(RuntimeEffectDisabledError, match="collection_run"):
+        app.intelligence(
+            {
+                "action": "collection",
+                "profile_id": "default",
+                "operation": "run",
+                "collection_spec_id": "synthetic-collection",
+            }
         )
 
 
