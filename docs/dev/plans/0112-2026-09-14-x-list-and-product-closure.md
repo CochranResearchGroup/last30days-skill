@@ -1,6 +1,6 @@
 # Plan 0112 | X List And Product Closure
 
-State: OPEN
+State: CLOSED
 Lane: P35
 Work item: WI-004
 Branch: feat/x-tailored-follows-v3
@@ -235,3 +235,16 @@ Discovery and closeout:
   independent scoped review, integration, and resulting clean source/full
   validation. Once those are complete, WI-004 has no known provider-free
   acceptance gap and is eligible for DONE; this lane stops before PR or WI-005.
+
+### Checkpoint P0112-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`; WI-004 `IN_PROGRESS -> DONE`.
+
+Reviewed PR 83 merged validated integration head `b4e3123f` into canonical
+main as `5aec73245fa699b50ee74b4578cc891ffd239f0c`. Source checkpoint
+`a10604e9f85d6c5cd2f7c2deb178e8930336441c`, generated artifacts, selector/query
+binding remediation, and corrected configuration enumeration pass independent
+joined review and full provider-free acceptance. No live X, schedule, or
+installed-runtime effect occurred. WI-005 and WI-006 are dependency-unblocked.

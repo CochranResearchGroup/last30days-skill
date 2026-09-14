@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-007 -->
 # Keep a priority production hotfix path available
 
-State: IN_PROGRESS
+State: DONE
 Priority: P1
 Lane: Hotfix
 Parent: WI-000
@@ -10,8 +10,9 @@ Blocked by: none for Packets 1-2; staging/runtime drill by WI-001; real deployme
 Architecture: docs/dev/notes/0122-2026-09-13-reserved-production-hotfix-path-architecture.md
 Implementation plan seed: docs/dev/plans/0081-2026-09-13-reserved-production-hotfix-path-architecture-and-lane-handoff.md
 Last completed plan: docs/dev/plans/0110-2026-09-14-hotfix-control-and-git-drill.md
-Active plan: docs/dev/plans/0113-2026-09-14-hotfix-runtime-and-operator-closure.md
-Branch: feat/hotfix-runtime-drill-v1
+Active plan: none
+Last completed plan: docs/dev/plans/0113-2026-09-14-hotfix-runtime-and-operator-closure.md
+Branch: main
 
 ## Problem
 
@@ -62,3 +63,11 @@ separately planned isolated runtime/release drill; the real slot stays dormant.
 
 The final provider-free drill is active at published plan-only checkpoint
 `467aca46`; implementation remains held until canonical custody reconciliation.
+
+The final provider-free drill integrated through reviewed PR 83 as canonical
+merge `5aec7324` from source acceptance `d25f9df4`. The retained five-scenario
+receipt validates at digest
+`5ee59e1630211c9510bff8279f0d3824a689c267450d978c2c8e6290daf24ae6` and
+proves exact fixture teardown. WI-007 is `DONE` for provider-free readiness;
+the real hotfix slot remains dormant and every incident, staging, deployment,
+or rollback effect still requires separate authority.

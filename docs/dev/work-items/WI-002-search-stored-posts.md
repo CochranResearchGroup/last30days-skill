@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-002 -->
 # Search and retrieve stored posts as a product surface
 
-State: IN_PROGRESS
+State: READY
 Priority: P1
 Lane: Search
 Parent: WI-000
@@ -9,9 +9,9 @@ GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/53
 Blocked by: none
 Architecture: docs/dev/notes/0117-2026-09-13-post-search-product-architecture.md
 Implementation plan seed: docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md
-Last completed plan: docs/dev/plans/0108-2026-09-14-post-search-packet-2.md
-Active plan: docs/dev/plans/0111-2026-09-14-post-search-packet-3.md
-Branch: feat/post-search-v3
+Last completed plan: docs/dev/plans/0111-2026-09-14-post-search-packet-3.md
+Active plan: none; Packet 4 is not yet planned
+Branch: main
 
 ## Problem
 
@@ -59,3 +59,10 @@ semantic/RRF ranking and bounded 10,000-post performance evidence.
 
 Packet 3 is active at published plan-only checkpoint `f1f5f4dd`; product work
 remains held until the coordinator integrates this custody projection.
+
+Packet 3 integrated through reviewed PR 83 as canonical merge `5aec7324` from
+source acceptance `971f9ea9`. Hybrid ranking, semantic coverage, bounded
+pagination, public MCP parity, and the frozen 10,000-post performance gate pass.
+WI-002 returns to `READY` for a separately planned Packet 4 isolated-runtime
+and fresh-client product closeout; no provider or installed-runtime authority
+is implied.

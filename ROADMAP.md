@@ -2604,7 +2604,7 @@ Next Bounded Action:
 
 ## P33 | Post Search Product Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: expose the complete authorized stored-post corpus through a stable,
 cache-only, evidence-preserving search and pagination contract for users and
@@ -2688,7 +2688,7 @@ Disposition:
 
 ## P35 | X Tailored Follow Product Surface
 
-State: OPEN
+State: CLOSED
 
 Objective: let operators give selected X accounts, lists, and topics explicit
 collection identity, cadence, attention, provenance, and lifecycle separate
@@ -2943,7 +2943,7 @@ Next Bounded Action:
 
 ## P38 | Reserved Production Hotfix Path
 
-State: OPEN
+State: CLOSED
 
 Objective: keep one dormant zero-resource lane ready to take a qualified
 production defect from current-main source repair through priority integration,
