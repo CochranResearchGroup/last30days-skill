@@ -309,7 +309,15 @@ Remaining risks and restart-safe coordinator handoff:
    outside this lane's authority.
 3. Reconcile `docs/dev/active-lanes.yaml` from its plan-only checkpoint to this
    closed published branch, then perform the coordinator's normal integration
-   and canonical-main readback. This lane did not open or merge a pull request.
+   and canonical-main readback. At the post-publication readback, tracked
+   `origin/main` had advanced from the required preflight base
+   `5004df7f228059b2d2c154f1414de83fae16cfd5` to
+   `62f187298182ec319b448ee2de0f936c55cb2ea7`; the branch still contains both
+   that required base and preserved merge
+   `a28e08138312f61f094841d72c2a664cff0f32b0`, and was then 5 commits ahead and
+   2 behind current main. Reconcile those two new mainline commits only in the
+   coordinator integration lane. This lane did not open or merge a pull
+   request.
 4. Packet 3 model/worker behavior and Packet 4 public HTTP/MCP exposure remain
    unopened scope expansions; exact citation dereference must remain immutable
    and partition-closed when those packets are authorized.
