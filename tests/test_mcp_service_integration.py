@@ -145,8 +145,12 @@ def test_real_service_mcp_discovery_query_refresh_and_poll(tmp_path):
             ) == sorted(
                 [
                     "service_info",
+                    "follow_capabilities",
                     "query",
                     "search_posts",
+                    "ask_question",
+                    "question_status",
+                    "read_evidence",
                     "refresh",
                     "job_status",
                     "topic",
