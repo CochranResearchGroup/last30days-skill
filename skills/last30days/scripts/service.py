@@ -47,6 +47,7 @@ if __name__ == "__main__":
 
 
 from lib import service_contracts as contracts
+from lib import service_question_contracts as question_contracts
 from lib.service_app import initialize_application
 from lib.service_client import ServiceClient, ServiceClientError
 from lib.service_collection import CollectionSpec, CollectionSpecValidationError
@@ -426,6 +427,49 @@ def _saved_query(args: argparse.Namespace) -> int:
     return 0
 
 
+def _question(args: argparse.Namespace) -> int:
+    socket_path = Path(args.socket) if args.socket else _default_socket_path()
+    client = ServiceClient(socket_path, timeout=args.timeout)
+    try:
+        if args.question_action == "ask":
+            try:
+                payload = json.loads(Path(args.input).read_text(encoding="utf-8"))
+            except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+                raise RuntimeError(
+                    "question request must be a readable JSON file"
+                ) from exc
+            response = client.ask_question(
+                question_contracts.QuestionRequestV1.from_dict(payload)
+            ).to_dict()
+        else:
+            response = client.question_status(
+                args.question_id, profile_id=args.profile
+            ).to_dict()
+    except ServiceClientError as exc:
+        print(json.dumps({"status": "error", "message": str(exc)}, sort_keys=True))
+        return 1
+    print(json.dumps(response, indent=2, sort_keys=True))
+    return 0
+
+
+def _evidence_read(args: argparse.Namespace) -> int:
+    try:
+        payload = json.loads(Path(args.input).read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError("evidence request must be a readable JSON file") from exc
+    socket_path = Path(args.socket) if args.socket else _default_socket_path()
+    client = ServiceClient(socket_path, timeout=args.timeout)
+    try:
+        response = client.read_evidence(
+            question_contracts.EvidenceReadRequestV1.from_dict(payload)
+        ).to_dict()
+    except ServiceClientError as exc:
+        print(json.dumps({"status": "error", "message": str(exc)}, sort_keys=True))
+        return 1
+    print(json.dumps(response, indent=2, sort_keys=True))
+    return 0
+
+
 def _collection_coordinator(args: argparse.Namespace):
     db_path = Path(args.db) if args.db else _default_db_path()
     _prepare_private_data_path(db_path)
@@ -736,6 +780,36 @@ def build_parser() -> argparse.ArgumentParser:
     saved_query.add_argument("--socket")
     saved_query.add_argument("--timeout", type=float, default=15.0)
     saved_query.set_defaults(handler=_saved_query)
+
+    question = subparsers.add_parser(
+        "question", help="Ask or inspect one bounded cache-grounded question"
+    )
+    question_subparsers = question.add_subparsers(
+        dest="question_action", required=True
+    )
+    question_ask = question_subparsers.add_parser(
+        "ask", help="Submit one strict QuestionRequestV1 JSON object"
+    )
+    question_ask.add_argument("--input", required=True)
+    question_ask.add_argument("--socket")
+    question_ask.add_argument("--timeout", type=float, default=35.0)
+    question_ask.set_defaults(handler=_question)
+    question_status = question_subparsers.add_parser(
+        "status", help="Read one question inside an exact profile scope"
+    )
+    question_status.add_argument("question_id")
+    question_status.add_argument("--profile", required=True)
+    question_status.add_argument("--socket")
+    question_status.add_argument("--timeout", type=float, default=5.0)
+    question_status.set_defaults(handler=_question)
+
+    evidence_read = subparsers.add_parser(
+        "evidence-read", help="Dereference strict immutable citation JSON"
+    )
+    evidence_read.add_argument("--input", required=True)
+    evidence_read.add_argument("--socket")
+    evidence_read.add_argument("--timeout", type=float, default=5.0)
+    evidence_read.set_defaults(handler=_evidence_read)
 
     collection = subparsers.add_parser(
         "collection",
