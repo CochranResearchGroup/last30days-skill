@@ -219,3 +219,54 @@ Exact coordinator joins:
   manifest, run joined full Python/Go/package/public-parity validation, review,
   and integrate. None of these shared files was independently edited here;
 - fresh isolated-runtime closure remains a separately bounded WI-005 gate.
+
+### Checkpoint P0118-C04 | 2026-09-14
+
+Plan version: 1
+
+State: `OPEN`; provider-free lane source and evidence handed to coordinator.
+
+Progress classification: `outcome_progress`; native acquisition, lifecycle,
+publication, provenance and partitioned query tracers are implemented and
+validated at source checkpoint `3b539c7537c225d33845b4ff7c4c624df6b7de19`.
+
+Authority classification:
+
+- `inherited_authority`: lane-owned provider-free implementation, disposable
+  test fixtures, tests, plan evidence, and owned-branch publication;
+- no provider/browser/live locator, installed runtime/database, real schedule,
+  release/deployment, issue, or shared-authority mutation is authorized.
+
+Validation evidence:
+
+- full command `uv run --offline pytest -o addopts='' -q` completed once:
+  **3,045 passed, 8 skipped, 14 subtests passed, 12 failed in 251.33 seconds**;
+- eleven failures are in `test_service_lifecycle_install.py` (eight) and
+  `test_service_runtime_package.py` (three), all gated by the coordinator-owned
+  stale `service/runtime-manifest.json`. The manifest was not refreshed here;
+- one failure was `test_current_repository_authority_passes`, whose exact
+  finding was `latest checkpoint P0118-C03 is missing Authority classification`.
+  This checkpoint supplies that required explicit classification. The focused
+  authority audit is rerun before publication rather than masking the initial
+  full-run failure;
+- `go test ./...` and `go vet ./...` pass from `mcp/`;
+- the separate active planning-contract audit identifies precisely three
+  coordinator-owned missing full-filename RUNBOOK links for Plans 0117, 0118
+  and 0119. That shared file remains untouched in this lane;
+- source checkpoint was clean and equal to the live owned-fork branch;
+  the post-suite OS readback found no surviving process matching this lane or
+  its exact `pytest-531` fixture root;
+- serialized registry digest is
+  `sha256:6a3b4f00c0b61caee91f6eebca3008c37b57a5bba25682cacea29a52b5c82f97`.
+
+Subagent status and reconciliation:
+
+- `joined`: one assigned implementation owner completed the first attempt;
+  no children or independent lane reviewer were spawned. The coordinator owns
+  shared public parity, generated artifacts, independent joined review,
+  integration, and final acceptance.
+
+Next action: join the C03 catalog/error projection contract, repair shared
+runbook wiring, refresh generated contracts/runtime manifest, run final joined
+acceptance and review, and integrate. Keep WI-005 open for its separately
+bounded fresh isolated-runtime closeout.
