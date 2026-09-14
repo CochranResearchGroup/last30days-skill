@@ -314,3 +314,45 @@ criteria; it is not DONE from this lane-source checkpoint alone.
 Next action: commit/push the exact source checkpoint, verify remote equality
 and cleanliness, and return concrete shared join requirements plus probe
 locator. Preserve the lane worktree/ref; no cleanup or forge issue action.
+
+### Checkpoint P0121-C07 | 2026-09-14
+
+Plan version: 1
+
+State transition: `lane_source_accepted -> joined_runtime_acceptance_ready`.
+
+Progress classification: `blocker_reduction`; exact shared service0.3.119/MCP4.0.7
+join `4204da5f017bd2352c4c53b95200250bf009ce0c` merged without conflicts as
+`6de679a2fcdb0683d74ca34104e380b3a103254b`. No shared file was independently
+edited by this lane. Coordinator clock fix
+`c21a729b5be4a9abd87427259d1be02a06a13503` was cherry-picked on explicit
+coordinator direction as `4e71f45b`.
+
+Authority classification:
+
+- `inherited_authority` for this exact join, focused/package checks and one
+  guarded packaged monitor dogfood in fresh isolated synthetic roots;
+- `human_gate` still applies to every provider/model/browser, live/installed
+  state, schedule or real delivery effect.
+
+Validation evidence and retained failures:
+
+- initial joined focused tier: 46 passed, 1 failed because the in-process
+  fixture omitted the read-only collection authority that packaged service.py
+  supplies. The lane-owned fixture now injects build_collection_read_authority;
+- the next focused reproducer correctly exposed the shared datetime-versus-
+  UTC-string monitor clock mismatch, fixed by the coordinator commit above;
+- package/lifecycle tests passed: 18 tests in 29.82 seconds before the clock
+  correction. Two pre-correction service builds were byte-identical at SHA256
+  `36d8301de965c7f0d38e74718db816a35b3808413e00f49e08a9465eecfc7103`;
+- the single packaged dogfood attempt has not yet started; its artifact must
+  be rebuilt after the accepted clock fix and bound to a clean source commit.
+
+Subagent status: existing lane owner, no children; effective model/effort
+runtime-unknown. Runtime evidence will be retained truthfully whether the
+single allowed attempt passes or fails. Independent joined review and final
+canonical integration remain coordinator-owned.
+
+Next action: publish the clean corrected fixture checkpoint, build the exact
+artifact, execute the packaged probe once, preserve the receipt and run final
+focused/full/package/audit acceptance without widening effect authority.

@@ -76,6 +76,7 @@ def test_monitor_probe_crosses_real_http_and_fresh_mcp(tmp_path):
     from lib.service_app import initialize_application
     from lib.service_client import ServiceClient
     from lib.service_http import UnixServiceServer
+    from lib.service_runtime import build_collection_read_authority
 
     if not hasattr(ServiceClient, "monitor"):
         pytest.skip("coordinator monitor transport join pending")
@@ -84,7 +85,12 @@ def test_monitor_probe_crosses_real_http_and_fresh_mcp(tmp_path):
     module = probe()
     db = tmp_path / "fixture.db"
     ref = module.seed_monitors(db)
-    app = initialize_application(db, retriever=object(), effect_mode="cache_only")
+    app = initialize_application(
+        db,
+        retriever=object(),
+        effect_mode="cache_only",
+        collection_coordinator=build_collection_read_authority(db),
+    )
     server = UnixServiceServer(tmp_path / "s", app)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
