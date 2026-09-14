@@ -1,0 +1,62 @@
+{
+  "schema_version": "quality_evaluation_set.v1",
+  "evaluation_set_id": "service-quality-pass-v1",
+  "version": 1,
+  "description": "Reviewed synthetic Packet 1 four-axis passing tracer.",
+  "source_status": "synthetic",
+  "source_licenses": [
+    {"source": "bluesky", "status": "synthetic", "license": "synthetic-no-third-party-content"},
+    {"source": "reddit", "status": "synthetic", "license": "synthetic-no-third-party-content"},
+    {"source": "web", "status": "synthetic", "license": "synthetic-no-third-party-content"},
+    {"source": "x", "status": "synthetic", "license": "synthetic-no-third-party-content"},
+    {"source": "youtube", "status": "synthetic", "license": "synthetic-no-third-party-content"}
+  ],
+  "created_date": "2026-09-13",
+  "reviewed_date": "2026-09-13",
+  "cases": [
+    {
+      "case_id": "acquisition-pass",
+      "axis": "acquisition",
+      "tags": ["positive", "synthetic"],
+      "outcome": {
+        "state": "passed",
+        "metrics": [{"name": "success_rate", "numerator": 5, "denominator": 5, "excluded": 0}],
+        "failure_codes": [],
+        "observed_refs": ["fixture:acquisition-pass"]
+      }
+    },
+    {
+      "case_id": "corpus-pass",
+      "axis": "corpus",
+      "tags": ["positive", "synthetic"],
+      "outcome": {
+        "state": "passed",
+        "metrics": [{"name": "success_rate", "numerator": 5, "denominator": 5, "excluded": 0}],
+        "failure_codes": [],
+        "observed_refs": ["fixture:corpus-pass"]
+      }
+    },
+    {
+      "case_id": "grounding-pass",
+      "axis": "grounding",
+      "tags": ["positive", "synthetic"],
+      "outcome": {
+        "state": "passed",
+        "metrics": [{"name": "success_rate", "numerator": 5, "denominator": 5, "excluded": 0}],
+        "failure_codes": [],
+        "observed_refs": ["fixture:grounding-pass"]
+      }
+    },
+    {
+      "case_id": "retrieval-pass",
+      "axis": "retrieval",
+      "tags": ["positive", "synthetic"],
+      "outcome": {
+        "state": "passed",
+        "metrics": [{"name": "success_rate", "numerator": 5, "denominator": 5, "excluded": 0}],
+        "failure_codes": [],
+        "observed_refs": ["fixture:retrieval-pass"]
+      }
+    }
+  ]
+}

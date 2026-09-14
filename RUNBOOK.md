@@ -28175,3 +28175,1337 @@ Next Bounded Action:
   resume threads `01a09caa-9116-7453-8914-5cd7d7ce0fca`,
   `01a09caa-90aa-78d0-af02-59d9a7d80eea`, and
   `01a09caa-90d6-7350-a8ce-72d7ced7ef12` for Packet 1 only.
+
+## Turn 449 | 2026-09-13
+
+Focus: Plans 0084-0086 first implementation wave and Plan 0089/P43 canonical
+integration reconciliation
+(`docs/dev/plans/0089-2026-09-13-packet-1-integration-reconciliation.md`).
+
+Authority Consulted:
+
+- exact P33/P34/P35 refs and plans, PRs 35/36, current `origin/main`, Git,
+  validation, active-lane, documentation, and forge-operation policies.
+
+Decisions And Changes:
+
+- accepted the three independent top-level sessions' published evidence and
+  independently reran integration-focused validation;
+- merged P34 through PR 35 and P33 through PR 36, then reconciled P35's two
+  generated-artifact conflicts by regeneration from combined canonical source;
+- preserved P35's failed-closed PR gate after notifying the operator; no retry
+  or indirect workaround occurred;
+- updated plans, work items, roadmap, and lane catalog with exact receipts and
+  next-packet boundaries;
+- made no installed runtime, provider/browser, schedule, tracker, staging,
+  production, release, or deployment mutation.
+
+Validation Evidence:
+
+- PR 35 exact head `19d41c31` merged as `c6bccab8`;
+- PR 36 reconciled head `74a6fcfc` merged as `75e7771e`;
+- P35 combined head `d2c9f8eb` is clean and remote-equal;
+- 122 combined focused Python checks, the full combined Python suite, all MCP
+  Go tests, and `go vet` passed before P35 reconciliation publication;
+- coordinator planning and lane audits remain to run after these projections
+  are rendered.
+
+State Movement:
+
+- Plans 0084/P33 and 0085/P34 `OPEN -> CLOSED/INTEGRATED` while WI-002 and
+  WI-001 remain `IN_PROGRESS` for later packets;
+- P35 remains `OPEN/INTEGRATION_READY` at the explicit PR-creation gate;
+- Plan 0089/P43 `PLANNED -> OPEN` for canonical reconciliation.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; separate top-level sessions completed implementation and the
+  coordinator performed integration directly.
+
+Graphiti Write Status:
+
+- `not_attempted`; Git, forge, tests, and repository projections are the
+  authoritative evidence for this packet.
+
+Next Bounded Action:
+
+- validate and integrate Plan 0089/P43, then launch provider-free P36, P37,
+  and the query-only portion of P40 from current canonical main; keep P35 gated
+  until explicit PR authorization.
+
+## Turn 450 | 2026-09-13
+
+Focus: close Plan 0089/P43 after canonical integration.
+
+Authority Consulted:
+
+- Plan 0089, PR 37, exact `origin/main`, and planning/validation closeout
+  policy.
+
+Decisions And Changes:
+
+- recorded PR 37 source `000682d4` and merge receipt `ce825939`;
+- closed P43 and restored the repository-snapshot assertion to the single
+  durable P22 active plan;
+- preserved P35 as `OPEN/INTEGRATION_READY` at its informed PR gate;
+- made no runtime, provider/browser, schedule, tracker, staging, production,
+  release, or deployment mutation.
+
+Validation Evidence:
+
+- post-merge plan-authority and active planning audits pass;
+- canonical main and PR 37 merge receipts match exactly.
+
+State Movement:
+
+- Plan 0089/P43 `OPEN -> CLOSED/INTEGRATED`; P35 remains unchanged.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; closeout is coordinator-owned.
+
+Graphiti Write Status:
+
+- `not_attempted`; repository and forge receipts are authoritative.
+
+Next Bounded Action:
+
+- launch separately bounded provider-free P36/P37/P40 sessions from current
+  main; retain P35 at its explicit PR gate until the operator responds.
+
+## Turn 451 | 2026-09-13
+
+Focus: Plan 0090/P44
+(`docs/dev/plans/0090-2026-09-13-next-wave-launch-registration.md`)
+registration of the next provider-free implementation wave.
+
+Authority Consulted:
+
+- current canonical `origin/main`, Plans 0079/0080/0083, notes 0120/0121/0124,
+  WI-003/WI-008/WI-006, active-lane and multi-session policy, and the exact
+  published feature refs.
+
+Decisions And Changes:
+
+- created distinct worktrees and plan-only refs for P36, P37, and P40 from
+  exact canonical `87a8cbac`;
+- bounded P40 to the query-view monitor kernel and kept every follow tracer
+  behind P35 integration;
+- registered expected P36/P40 service-contract overlap under coordinator
+  reconciliation ownership;
+- corrected P43's stale local checkpoint projection and attached P35's already
+  established validation evidence without retrying its pull request;
+- made no feature, tracker, installed runtime/database, model,
+  browser/provider, schedule, delivery, staging, release, deployment, or
+  production mutation.
+
+Validation Evidence:
+
+- P36 plan ref `856fb385137c679f06616384109a0f639e37d0f5`;
+- P37 plan ref `37638af57a9e01af42a177e13c57b87794649518`;
+- P40 plan ref `7c184e439973fb860c5d93b8450d513b59baa328`;
+- each feature worktree is clean and local/remote equal;
+- Graphiti doctor is healthy; bounded advisory discovery returned 8 facts, 6
+  nodes, and 4 older episodes;
+- final planning/catalog validation remains after this projection is rendered.
+
+State Movement:
+
+- Plan 0090/P44 `PLANNED -> OPEN`; P36/P37/P40 remain `PLANNED` with
+  `ACTIVE_WORKTREE` custody until their independent sessions accept ownership.
+
+Subagent Status And Reconciliation:
+
+- no collaboration subagents were spawned; three independent top-level Codex
+  sessions remain to launch after canonical registration.
+
+Graphiti Write Status:
+
+- `not_attempted`; current Git refs and repository artifacts are authoritative.
+
+Next Bounded Action:
+
+- validate and merge P44 registration, then launch the three independent
+  sessions; leave P35 untouched at its explicit gate.
+
+## Turn 452 | 2026-09-13
+
+Focus: close Plan 0090/P44 after three independent activation checkpoints.
+
+Authority Consulted:
+
+- Plan 0090, PR 39, canonical `origin/main`, and exact P36/P37/P40 branch
+  plans, refs, worktrees, and top-level Codex session receipts.
+
+Decisions And Changes:
+
+- accepted three activation-only turns and projected P36/P37/P40 as OPEN with
+  WI-003/WI-008/WI-006 IN_PROGRESS;
+- returned integrated-but-idle WI-001/WI-002 to READY and marked WI-004
+  BLOCKED at its explicit PR gate, preserving the three-item IN_PROGRESS cap;
+- recorded exact session owners and remote-equal activation SHAs;
+- retained shared service-contract reconciliation with the coordinator and
+  kept P40 follow tracing behind P35 integration;
+- closed only the P44 launch-registration outcome;
+- made no feature, P35 pull-request, tracker, runtime/database, model,
+  browser/provider, schedule, delivery, staging, release, deployment, or
+  production mutation.
+
+Validation Evidence:
+
+- PR 39 merged `4db386ef` as `606272ab`;
+- P36 `c4d985727c39c7cfe2a86a64eae318351eefd5d4`, P37
+  `be4dec78db686132496b3b173a55ab534c1827a6`, and P40
+  `0253e82dfad36877371cbdaaa41e846560cfbc8a` are clean and remote-equal;
+- each lane merged exact canonical main, changed only its branch-local plan,
+  and passed 10 focused plan-authority tests;
+- transient ORIG_HEAD/worktree Git locks and uv cache locks each recovered on
+  immediate retry; one shell-quoting error created and then removed an empty
+  untracked OPEN file before any commit;
+- final coordinator planning and lane audits remain after rendering.
+
+State Movement:
+
+- Plan 0090/P44 `OPEN -> CLOSED`;
+- P36/P37/P40 `PLANNED -> OPEN` and WI-003/WI-008/WI-006
+  `READY -> IN_PROGRESS`;
+- WI-001/WI-002 `IN_PROGRESS -> READY` and WI-004
+  `IN_PROGRESS -> BLOCKED`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; independent top-level owners are P36
+  `01a09cf4-c89c-7ad2-9b64-8dc95c4cbec6`, P37
+  `01a09cf4-c89d-7b41-901a-37648171312a`, and P40
+  `01a09cf4-c89e-7660-9caf-66a78f34ded0`.
+
+Graphiti Write Status:
+
+- `not_written`; activation discovery was read-only and current Git receipts
+  are authoritative.
+
+Next Bounded Action:
+
+- merge this ownership projection and resume the same three sessions for
+  provider-free Packet 1 implementation; P35 remains untouched at its gate.
+
+## Turn 453 | 2026-09-13
+
+Focus: open Plan 0094/P45 for P36/P37/P40 Packet 1 integration.
+
+Authority Consulted:
+
+- `docs/dev/plans/0094-2026-09-13-next-wave-integration-reconciliation.md`,
+  exact remote P36/P37/P40 feature checkpoints, canonical
+  `origin/main`, and Git, planning, validation, documentation, and
+  multi-session policy.
+
+Decisions And Changes:
+
+- froze exact integration inputs P36 `d6c6ff78`, P37 `58020b04`, and P40
+  `c9798250`;
+- selected one coordinator-owned integration branch and one fork-main pull
+  request for the join;
+- retained P35 unchanged at its separate pull-request gate;
+- made no tracker, installed runtime/database, model, browser/provider,
+  schedule, delivery, release, staging, deployment, or production mutation.
+
+Validation Evidence:
+
+- canonical `main` is clean and equal to `origin/main` at `169a45b8`;
+- all three feature refs are published and remote-equal to their recorded
+  acceptance checkpoints;
+- final combined validation remains after integration rendering.
+
+State Movement:
+
+- Plan 0094/P45 `PLANNED -> OPEN`; P36/P37/P40 remain accepted and awaiting
+  coordinator integration.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; independent top-level session outputs are being reconciled by
+  the coordinator.
+
+Graphiti Write Status:
+
+- `not_written`; current Git evidence is authoritative.
+
+Next Bounded Action:
+
+- publish the planning checkpoint, merge exact P36/P37/P40 refs, reconcile the
+  manifest and projections, and run combined provider-free validation.
+
+## Turn 454 | 2026-09-13
+
+Focus: Plan 0094/P45 combined Packet 1 reconciliation and validation.
+
+Authority Consulted:
+
+- `docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md`,
+  `docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md`,
+  `docs/dev/plans/0093-2026-09-13-saved-monitors-packet-1.md`, and
+  `docs/dev/plans/0094-2026-09-13-next-wave-integration-reconciliation.md`;
+- exact remote feature checkpoints and current source/runtime package policy.
+
+Decisions And Changes:
+
+- merged P36 `d6c6ff78`, P37 `58020b04`, and P40 `c9798250` without rebasing
+  or rewriting feature custody;
+- refreshed the source-controlled runtime manifest to include the monitor
+  modules alongside the already registered question modules;
+- projected the three feature refs as validated and integration-ready while
+  preserving their distinct plan outcome states;
+- kept P35, installed runtimes, providers, schedules, delivery, releases,
+  staging, production, and GitHub tracker state unchanged.
+
+Validation Evidence:
+
+- the three exact feature checkpoints are ancestors of integration head
+  `58c4da8f` through merge commits `4bfa8fe4`, `0e691ccf`, and `58c4da8f`;
+- all 62 combined focused tests and all 2,838 collected repository tests pass;
+- active planning-contract and repository plan-authority audits pass with zero
+  issues, while the comprehensive planning audit adds zero findings beyond its
+  accepted historical baseline;
+- Python compilation, reproducible service `0.3.116` runtime build, and patch
+  hygiene pass;
+- froze the validated coordinator branch clean and remote-equal at
+  `a542c5e0ac701d4d91836873bf0de4c74edf50bb`; the publication-only
+  `integration/next-wave-packet1-pr` branch records that immutable checkpoint
+  so the catalog does not depend on a self-referential SHA;
+- published-ref lane-catalog verification follows the projection commit.
+
+State Movement:
+
+- P36/P37 remain `OPEN` pending canonical integration; Plan 0093/P40 is
+  `CLOSED`/`PLANNED`; Plan 0094/P45 remains `OPEN`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the coordinator directly reconciled the three independent
+  top-level session outputs.
+
+Graphiti Write Status:
+
+- `not_written`; Git, tests, and repository artifacts are authoritative.
+
+Next Bounded Action:
+
+- publish the validated integration branch, verify its catalog against the
+  published ref, and open its one owned-fork pull request; do not touch P35 or
+  any installed/runtime surface.
+
+## Turn 455 | 2026-09-13
+
+Focus: Plan 0094/P45 canonical integration and Packet 1 closeout.
+
+Authority Consulted:
+
+- PR 41, canonical `origin/main`, Plans 0091 through 0094, P36/P37/P40/P45,
+  WI-003/WI-006/WI-008, and validation/closeout policy.
+
+Decisions And Changes:
+
+- verified PR 41 merged the three accepted Packet 1 lanes as canonical merge
+  `6d5eb5d972024cd584bfcc8bf57975f49fa90f45`;
+- fast-forwarded the canonical worktree cleanly to exact `origin/main`;
+- closed Plans 0091, 0092, and 0094, retained Plan 0093 closed, and returned
+  their broader roadmap lanes/work items to `PLANNED`/`READY` for separately
+  authorized later packets;
+- projected P36/P37/P40/P45 custody as integrated with the exact PR 41 receipt;
+- kept P35 unchanged at its separate pull-request authorization gate and made
+  no tracker, installed-runtime/database, provider/browser, model, schedule,
+  delivery, release, staging, deployment, or production mutation.
+
+Validation Evidence:
+
+- PR 41 is `MERGED` with merge commit `6d5eb5d9`;
+- canonical `main` and `origin/main` are clean and equal at `6d5eb5d9` before
+  this documentation-only closeout;
+- the integrated source already passed 62 focused tests, all 2,838 collected
+  repository tests, active planning and lane audits, compilation, reproducible
+  runtime build, and patch hygiene.
+
+State Movement:
+
+- Plans 0091/0092/0094 `OPEN -> CLOSED`; Plan 0093 remains `CLOSED`;
+- P36/P37/P40 `OPEN or active -> PLANNED`; P45 `OPEN -> CLOSED`;
+- WI-003/WI-006/WI-008 `IN_PROGRESS -> READY`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the coordinator performed integration and closeout directly.
+
+Graphiti Write Status:
+
+- `not_written`; canonical Git, PR, tests, and repository artifacts are the
+  authoritative receipts.
+
+Next Bounded Action:
+
+- integrate this closeout, then choose and plan the next provider-free packet
+  from canonical main; P35 remains untouched until separately authorized.
+
+## Turn 456 | 2026-09-13
+
+Focus: Plan 0095/P46
+(`docs/dev/plans/0095-2026-09-13-p36-packet-2-launch-registration.md`)
+registration of P36 evidence-tracer Packet 2.
+
+Authority Consulted:
+
+- Plans 0079, 0091, 0095, and 0096; note 0120; P36/WI-003; current CodeGraph,
+  Graphiti, Git, worktree, and fork PR state; planning, multi-session,
+  traceability, testing, and active-lane policy.
+
+Decisions And Changes:
+
+- selected architecture Packet 2 exactly: compose the real federated
+  PostSearchBackend, freeze its evidence receipt, and dereference immutable
+  citations across legacy and temporal storage;
+- deferred the structured worker to Packet 3 and HTTP/MCP publication to
+  Packet 4;
+- created a distinct feature worktree and published Plan 0096 plan-only at
+  `07f961290acf9ab6fece4ebb9b4c9c6c7560acc5`;
+- froze Plan 0095 coordinator custody at
+  `2b29bf199ae81cd4fe7c42cf74d782a560bfee53` and placed shared projections on
+  a separate publication branch;
+- kept P35, the stale frozen global install, providers, models, schedules,
+  delivery, tracker, releases, staging, and production untouched.
+
+Validation Evidence:
+
+- canonical main was clean and remote-equal at `d4e3cd65` before both
+  worktrees were created;
+- CodeGraph is current at 372 files, 10,433 nodes, and 25,653 edges and
+  confirms the protocol and immutable-version seams;
+- Graphiti doctor is healthy, but bounded discovery returned only older MCP
+  history, so current source and architecture records are authoritative;
+- Plan 0096's 10 focused authority tests and patch hygiene pass; final
+  published-ref planning and lane audits follow this projection.
+
+State Movement:
+
+- Plan 0095/P46 `unplanned -> OPEN`; Plan 0096/P36 remains `PLANNED`;
+- WI-003 remains `READY` until an independent owner accepts the lane.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the user-selected topology is one independent top-level Codex
+  session for the feature lane, not a coordinator subagent.
+
+Graphiti Write Status:
+
+- `not_written`; discovery was advisory and repository evidence is current.
+
+Next Bounded Action:
+
+- publish and merge the registration, fast-forward canonical main, then launch
+  the independent P36 Packet 2 session for activation and implementation.
+
+## Turn 457 | 2026-09-13
+
+Focus: Plan 0095/P46 launch closeout and Plan 0096/P36 activation.
+
+Authority Consulted:
+
+- Plans 0095 and 0096, P36/P46, WI-003, canonical Git and fork PR state,
+  active-lane, planning, validation, closeout, and multi-session policy.
+
+Decisions And Changes:
+
+- closed the coordinator-only registration after PR 43 integrated it as
+  canonical merge `5004df7f228059b2d2c154f1414de83fae16cfd5`;
+- recorded independent top-level Codex thread
+  `01a09d44-49bf-73b2-a613-aee72c98f471` as WI-003 owner after it published
+  clean activation `e566724c461aaf488020b1dc811dadcf44d6b72c`;
+- stopped predecessor thread `01a09d41-e047-76c3-92b5-229017168752`
+  during preflight after inherited credential values appeared in its local
+  transcript, before it made a feature or plan edit; relaunched the replacement
+  process without those environment variables;
+- kept the credential values out of repository artifacts and preserved the
+  transcript as incident evidence pending operator rotation;
+- kept P35, installed runtimes, providers, model execution, public HTTP/MCP,
+  staging, production, delivery, tracker mutation, and releases untouched.
+
+Validation Evidence:
+
+- canonical main was clean and remote-equal at `5004df7f` before activation;
+- the replacement owner passed 10 plan-authority tests and patch hygiene before
+  feature implementation, and its activation checkpoint is remote-equal;
+- publication-closeout authority, active-lane, and patch-hygiene checks follow
+  this projection before integration.
+
+State Movement:
+
+- Plan 0095/P46 `OPEN -> CLOSED/INTEGRATED`;
+- Plan 0096/P36 `PLANNED -> OPEN`;
+- WI-003 `READY -> IN_PROGRESS`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the feature owner is a separate top-level Codex CLI session.
+
+Graphiti Write Status:
+
+- `not_written`; canonical Git, PR, test, and transcript identifiers are the
+  authoritative receipts.
+
+Next Bounded Action:
+
+- integrate this closeout while the independent owner executes only Plan 0096;
+  then review its exact clean checkpoint before any feature integration.
+
+## Turn 458 | 2026-09-13
+
+Focus: Plan 0097/P47 integration of P36 Packet 2.
+
+Authority Consulted:
+
+- Plans 0079 and 0096;
+  `docs/dev/plans/0097-2026-09-13-p36-packet-2-integration-reconciliation.md`;
+  P36/P47; WI-003; exact Git refs; CodeGraph; branch, integration,
+  validation, test, documentation, and lane policy.
+
+Decisions And Changes:
+
+- accepted independent feature checkpoint `4e937017` into coordinator review;
+- froze one blocking closed-world finding: the legacy and temporal resolver
+  joins authorize version rows but must additionally require the parent row to
+  have the same access partition;
+- opened Plan 0097 for exact-commit merge, regression/repair, source-manifest
+  refresh, comprehensive validation, and canonical projection closeout;
+- kept P35, installed runtimes, providers, browsers, models, public HTTP/MCP,
+  schedules, delivery, tracker, releases, staging, and production untouched.
+
+Validation Evidence:
+
+- feature worktree and remote are equal at `4e937017` with only the five
+  Plan 0096 files changed;
+- delegated validation reports 5 focused, 53 affected, and 2,843 comprehensive
+  tests collected with 2,836 passed and 7 skipped;
+- primary CodeGraph review confirms exact immutable-version reads and the
+  parent-partition join gap in both storage-family queries.
+
+State Movement:
+
+- Plan 0097/P47 `unplanned -> OPEN`; Plan 0096 remains closed on its feature
+  ref pending integration; P36 and WI-003 remain active.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; independent top-level feature session evidence was reviewed
+  by the coordinator and is not treated as automatic acceptance.
+
+Graphiti Write Status:
+
+- `not_written`; current Git, source, tests, and plans are authoritative.
+
+Next Bounded Action:
+
+- publish this plan checkpoint, merge exact `4e937017`, and execute the bounded
+  remediation and coordinator joins before review integration.
+
+## Turn 459 | 2026-09-13
+
+Focus: validate and publish the Plan 0097/P47 integration candidate.
+
+Authority Consulted:
+
+- `docs/dev/plans/0097-2026-09-13-p36-packet-2-integration-reconciliation.md`;
+  Plans 0096/0079, P36/P47, WI-003, exact Git refs, and validation, integration,
+  lane, test, and closeout policy.
+
+Decisions And Changes:
+
+- merged exact feature checkpoint `4e937017` without rewriting ancestry;
+- added one closed-world regression and constrained both immutable-version
+  parent joins to equal access partitions;
+- refreshed the repository source manifest and corrected the exact independent
+  session identity in Plan 0096;
+- froze clean remote-equal integration checkpoint `ddcb4201` and projected it
+  through a separate publication branch.
+
+Validation Evidence:
+
+- 6 focused and 54 affected tests pass;
+- all 2,844 collected repository tests pass with the existing seven skips;
+- compilation, plan authority, active planning, and patch hygiene pass;
+- two service `0.3.116` source packages are byte-identical at SHA-256
+  `bfaa5fe7ba3d91f7da63a47041362ccfb9626befd361dc4b37756c9a40e23ccb`.
+
+State Movement:
+
+- P36 Packet 2 `OPEN -> CLOSED/INTEGRATION_READY`; P47 remains `OPEN` and is
+  `INTEGRATION_READY` pending owned-fork PR merge.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the independent top-level session result was reviewed and
+  remediated in the coordinator lane.
+
+Graphiti Write Status:
+
+- `not_written`; current repository and Git evidence are authoritative.
+
+Next Bounded Action:
+
+- open and merge the owned-fork integration PR, then use a closeout-only PR to
+  record the exact canonical receipt and return WI-003 to `READY`.
+
+## Turn 460 | 2026-09-13
+
+Focus: record the canonical Plan 0097/P47 integration receipt.
+
+Authority Consulted:
+
+- `docs/dev/plans/0097-2026-09-13-p36-packet-2-integration-reconciliation.md`;
+  PR 45, exact Git refs, P36/P47, WI-003, and closeout policy.
+
+Decisions And Changes:
+
+- accepted PR 45 merge `e4823ac7` as the canonical Packet 2 receipt;
+- closed Plan 0097/P47, marked P36 Packet 2 integrated, and returned WI-003 to
+  `READY` for separately planned Packet 3 work;
+- preserved every installed/runtime/provider/model/public-transport gate and
+  left P35 unchanged.
+
+Validation Evidence:
+
+- GitHub reports PR 45 `MERGED` with merge commit `e4823ac7`;
+- the merge contains feature checkpoint `4e937017` and validated integration
+  checkpoint `ddcb4201`;
+- closeout plan authority, planning, lane-catalog, and patch-hygiene checks are
+  rerun on this projection branch.
+
+State Movement:
+
+- Plan 0097/P47 `OPEN -> CLOSED/INTEGRATED`; P36 Packet 2
+  `INTEGRATION_READY -> INTEGRATED`; WI-003 `IN_PROGRESS -> READY`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no independent execution remains active for Packet 2.
+
+Graphiti Write Status:
+
+- `not_written`; the canonical Git and plan receipts are authoritative.
+
+Next Bounded Action:
+
+- merge this closeout-only PR, verify canonical main clean and remote-equal,
+  then open a separate Packet 3 plan only if the operator continues P36.
+
+## Turn 461 | 2026-09-14
+
+Focus: Plan 0099/P48 registration of P36 answer-tracer Packet 3.
+
+Authority Consulted:
+
+- Plans 0079, 0091, 0096, 0098, and
+  `docs/dev/plans/0099-2026-09-14-p36-packet-3-launch-registration.md`;
+  note 0120; P36/P48; WI-003; current CodeGraph, Graphiti, Git, worktree, and
+  fork state; planning, multi-session, testing, traceability, and lane policy.
+
+Decisions And Changes:
+
+- selected architecture Packet 3 exactly: add a provider-free no-tool
+  structured-answer adapter, truthful model/effect receipts, deterministic
+  validation, explicit fallback, and bounded retry/replay proof;
+- deferred real model execution and public HTTP/MCP publication to their
+  separate gates and Packet 4;
+- removed only the two clean integrated Packet 2 worktrees after remote custody
+  and canonical ancestry were verified; their branches remain recoverable;
+- created the dedicated Packet 3 worktree and published Plan 0098 plan-only at
+  `777441129e47f18e60f7956d765929c5e75e687e`;
+- kept P35, the frozen global install, providers, models, schedules, delivery,
+  tracker, releases, staging, and production untouched.
+
+Validation Evidence:
+
+- canonical main is clean and remote-equal at `20a36f91`;
+- CodeGraph is current at 374 files, 10,484 nodes, and 25,886 edges and
+  confirms the existing queue, lease, fake-runner, validator, and structured-
+  turn seams;
+- Graphiti is healthy but returned unrelated OpenClaw history, so current
+  source and architecture records are authoritative;
+- Plan 0098's authority tests and patch hygiene pass; registration planning
+  and lane validation follow on this publication branch.
+
+State Movement:
+
+- Plan 0099/P48 `unplanned -> OPEN`; Plan 0098/P36 remains `PLANNED`;
+- WI-003 remains `READY` until an independent owner accepts the lane.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the selected topology is one independent top-level Codex
+  session for the feature lane.
+
+Graphiti Write Status:
+
+- `not_written`; discovery was advisory and repository evidence is current.
+
+Next Bounded Action:
+
+- publish and merge the registration, fast-forward canonical main, then launch
+  the credential-sanitized independent Packet 3 session for activation and
+  implementation.
+
+## Turn 462 | 2026-09-14
+
+Focus: Plan 0098/P36 execution and Plan 0100/P49 Packet 3 integration.
+
+Authority Consulted:
+
+- `docs/dev/plans/0098-2026-09-14-agent-question-answer-tracer-packet-3.md`,
+  `docs/dev/plans/0099-2026-09-14-p36-packet-3-launch-registration.md`, and
+  `docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md`;
+  P36/P48/P49; WI-003; current Git/worktree refs, CodeGraph, repository policy,
+  full tests, package validation, and the installed/runtime/model boundary.
+
+Decisions And Changes:
+
+- PR 47 merged Packet 3 registration as canonical `487ec89e`, and the
+  independent lane published activation `063c18b7` before source work;
+- retained a process deviation: that lane initialized untracked worktree-local
+  CodeGraph state without first asking the operator as required when the index
+  was absent;
+- after the independent process exhausted its Codex usage allowance, the
+  coordinator accepted the same bounded worktree and preserved its uncommitted
+  red-test draft;
+- implemented the provider-free structured-turn worker, exact output schema,
+  untrusted-evidence prompt boundary, model/effect receipts, citation-closed
+  rejection, evidence-only fallback, and bounded retry/replay behavior;
+- published feature checkpoint `75f2342e`, then preserved it through
+  integration merge `824b8627` and refreshed the source runtime manifest at
+  `a304fbbf`;
+- removed the clean merged Packet 3 registration checkout only after remote
+  equality and canonical ancestry were verified; its branch remains.
+
+Validation Evidence:
+
+- 39 focused question tests pass, including fabricated, cross-partition,
+  changed-content, uncited, malformed, oversized, stale/partial, conflict,
+  unavailable-model, retry, and replay cases;
+- all 2,860 collected tests pass with seven existing skips after the
+  coordinator-owned manifest refresh;
+- Python compilation and patch hygiene pass;
+- two service `0.3.116` source packages are byte-identical at SHA-256
+  `e9e47fa00dffa9e86c0dc439d42419326dc1d815d2746d47467f388477b2afda`;
+- no real model, provider, browser, installed runtime/database, public HTTP/MCP,
+  release, staging, production, or P35 effect occurred.
+
+State Movement:
+
+- Plan 0099/P48 `OPEN -> CLOSED/INTEGRATED`;
+- Plan 0098/P36 `OPEN -> CLOSED/INTEGRATION_READY`;
+- Plan 0100/P49 `unplanned -> OPEN/integration_validated`;
+- WI-003 `READY -> IN_PROGRESS` pending canonical integration.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the independent top-level process ended at its explicit usage
+  limit and the coordinator owns the remaining integration.
+
+Graphiti Write Status:
+
+- `not_written`; current repository and Git receipts are authoritative.
+
+Next Bounded Action:
+
+- validate and publish the integration candidate, merge its owned-fork PR,
+  reconcile the canonical receipt, return WI-003 to `READY`, and plan Packet 4
+  separately.
+
+## Turn 463 | 2026-09-14
+
+Focus: Plan 0100/P49 canonical Packet 3 closeout.
+
+Authority Consulted:
+
+- PR 48; canonical `origin/main`; Plans 0098 through 0100; P36/P48/P49;
+  WI-003; integration, validation, closeout, and effect-boundary policy.
+
+Decisions And Changes:
+
+- confirmed PR 48 was clean and mergeable before merging it through the owned
+  public fork;
+- fast-forwarded canonical main to merge receipt
+  `d41e1a6ef495b4e36530a1ed4f88c9b76da35224`;
+- verified that receipt contains exact feature checkpoint `75f2342e` and exact
+  validated integration checkpoint `181465fa`;
+- closed Plan 0100/P49, marked Packet 3 integrated, returned WI-003 to `READY`,
+  and retained Packet 4 as a separate future plan.
+
+Validation Evidence:
+
+- canonical main was clean and remote-equal at `d41e1a6e` after merge;
+- the merged candidate previously passed all 2,860 collected tests with seven
+  skips, compilation, package reproducibility, planning, plan-authority,
+  lane-catalog, and patch-hygiene checks;
+- no real model, provider, browser, installed runtime/database, public HTTP/MCP,
+  release, staging, production, or P35 effect occurred.
+
+State Movement:
+
+- Plan 0100/P49 `OPEN/INTEGRATION_READY -> CLOSED/INTEGRATED`;
+- P36 Packet 3 `INTEGRATION_READY -> INTEGRATED`;
+- WI-003 `IN_PROGRESS -> READY`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no independent process remains active.
+
+Graphiti Write Status:
+
+- `not_written`; canonical repository and Git receipts are authoritative.
+
+Next Bounded Action:
+
+- merge this closeout-only PR and verify canonical main clean and remote-equal;
+  then plan Packet 4's public HTTP/MCP surface separately if work continues.
+
+## Turn 464 | 2026-09-13
+
+Focus: Plan 0101/P50 GitHub Issues enablement.
+
+Authority Consulted:
+
+- operator instruction to enable issue tracking for this repository; closed
+  Plan 0075/P32; policies 0027, 0030, 0031, and 0032; exact target registry;
+  current GitHub repository and authenticated-role readback.
+
+Decisions And Changes:
+
+- resolved the exact target as the owned public fork
+  `github.com/CochranResearchGroup/last30days-skill`;
+- changed only the repository setting `has_issues` from `false` to `true`;
+- left the target registry read-only and created no issue, label, Project,
+  milestone, assignment, comment, or closure;
+- clarified that the prepared WI-000 through WI-008 files remain unpublished
+  drafts pending separate per-action authority.
+
+Validation Evidence:
+
+- pre-write GitHub readback reported the repository unarchived, Issues
+  disabled, and actor `ecochran76` with admin permission;
+- both the write response and a separate post-write readback report the exact
+  repository unarchived with Issues enabled and actor admin;
+- the pinned read-only forge preflight now passes for the exact target;
+- a post-write issue listing succeeds and is empty.
+
+State Movement:
+
+- Plan 0101/P50 `unplanned -> CLOSED`; GitHub Issues `disabled -> enabled`;
+- agent-side tracker mutations remain gated and WI-000 through WI-008 remain
+  repo-local drafts.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the coordinator performed and verified the single exact
+  repository-setting mutation.
+
+Graphiti Write Status:
+
+- `not_written`; the GitHub postcondition plus this repository receipt are the
+  authoritative evidence.
+
+Next Bounded Action:
+
+- publish and merge this receipt through the owned-fork PR workflow, verify
+  canonical main, then request the exact backlog-publication authority before
+  any issue content is created.
+
+## Turn 465 | 2026-09-13
+
+Focus: register the productization review findings as prerequisites for all new
+feature work.
+
+Authority Consulted:
+
+- operator instruction to amend the plan; the accepted review evidence;
+  `ROADMAP.md`; WI-000 through WI-008; Plans 0086, 0098, 0100, and 0101;
+  `docs/dev/plans/0102-2026-09-13-productization-readiness-prerequisites.md`;
+  planning, documentation, work-item, versioning, runtime-isolation,
+  active-lane, collaborative-development, validation, and Git policy;
+  current Git/worktree, live GitHub, installed service, and Graphiti readback.
+
+Decisions And Changes:
+
+- created WI-009 and planned successor Plan 0102/P51 instead of reopening or
+  rewriting closed historical plans;
+- ordered six prerequisite packets: Q&A contract repair, tracker-authority
+  reconciliation, P35 reconciliation/integration, a uniquely versioned isolated
+  development runtime, development dogfood, and governed issue publication;
+- blocked new feature packets for WI-001 through WI-006 and WI-008 until the
+  gate closes, while preserving corrective work and WI-007 production hotfixes
+  as explicit exceptions;
+- retained separate authority gates for pull requests, installed runtimes,
+  releases, providers/browsers, deployments, and GitHub issue mutations.
+
+Validation Evidence:
+
+- canonical launch base `a9dcacfa01504b058dae7420d899a30db57e26dd`
+  matched local and remote main with a clean worktree;
+- Graphiti runtime was healthy; focused `last30days_skill_main` discovery
+  returned eight facts, five nodes, and five episodes but only older roadmap
+  history, so current repository and runtime evidence remained authoritative;
+- the deterministic repo-policy selector returned `already-aligned` with no
+  validation problems before the planning edit;
+- the active-only planning audit and catalog-only active-lane audit pass with no
+  findings; ten plan-authority tests and `git diff --check` pass.
+
+State Movement:
+
+- WI-000 `TRIAGE -> BLOCKED` by WI-009;
+- WI-009 `unplanned -> READY`;
+- Plan 0102/P51 `unplanned -> PLANNED`;
+- no implementation lane was activated and all existing work-item states remain
+  otherwise unchanged.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this was a coordinator-owned shared-authority planning slice.
+
+Graphiti Write Status:
+
+- `not_written`; current repo files and runtime/GitHub readbacks are the durable
+  authority, and this slice did not request a memory write.
+
+Next Bounded Action:
+
+- publish this planning checkpoint through the normal Git path, then create and
+  register the first corrective packet from current `origin/main`. Do not begin
+  implementation or perform runtime, provider, pull-request, release,
+  deployment, or issue mutations in this registration slice.
+
+## Turn 466 | 2026-09-13
+
+Focus: correct the issue-registry boundary and activate governed backlog
+publication.
+
+Authority Consulted:
+
+- operator direction to correct the prior interpretation, write the prepared
+  issues now, and produce a fresh-agent handoff; Plan 0102/P51 and WI-009;
+  `docs/dev/forge-issue-targets.json`; policies 0017, 0019, 0027, 0028, and
+  0030-0032; the `to-issues`, `handoff`, repo-policy-selector, and
+  graphiti-discovery skills; live GitHub target, labels, templates, and PR
+  inventory.
+
+Decisions And Changes:
+
+- corrected the category error: the forge issue registry governs issue and
+  Project actions, not pull requests;
+- retained pull-request creation under the normal collaborative branch and
+  integration workflow, including P35 after current-main reconciliation;
+- expanded the exact owned-fork issue registry only from `read` to `read`,
+  `create`, and `apply_labels` under the operator's current direction;
+- kept comment, edit, close, reopen, assign, milestone, Project, transfer, and
+  label-creation actions separately gated;
+- advanced Plan 0102 to version 2 and aligned current tracker, roadmap,
+  work-item, AGENTS, and policy guidance with the corrected boundary.
+
+Validation Evidence:
+
+- live GitHub readback confirms the exact owned fork, enabled Issues, existing
+  mapped labels `bug`, `documentation`, and `enhancement`, configured issue
+  forms, and no open pull request before this slice;
+- 21 focused plan-authority and forge-preflight tests pass;
+- the active-only planning audit and `git diff --check` pass;
+- one selector-library collaboration-contract test invocation was inapplicable
+  in this downstream repo because it expects the policy source-repository path;
+  its two `FileNotFoundError` results are not product validation failures and
+  were excluded from the correct downstream test set.
+
+State Movement:
+
+- Plan 0102 remains `PLANNED` at version 2;
+- issue publication moves from unauthorized to authorized only for WI-000
+  through WI-009 creation plus existing mapped-label application;
+- P35 moves from a false PR-authorization blocker to its real current-main
+  reconciliation and combined-validation gate.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this is coordinator-owned shared policy and tracker work.
+
+Graphiti Write Status:
+
+- `not_written`; focused discovery was healthy but returned older roadmap
+  history, so current repository and GitHub evidence remain authoritative.
+
+Next Bounded Action:
+
+- publish and merge this correction through the normal PR workflow, verify the
+  canonical registry, preflight each stable marker and mapped label, then create
+  and read back WI-000 through WI-009 in dependency order. Record exact URLs in
+  repo authority and write the durable fresh-agent handoff.
+
+## Turn 467 | 2026-09-13
+
+Focus: publish the governed WI-000 through WI-009 backlog and record exact
+provider identities.
+
+Authority Consulted:
+
+- operator instruction to write the issues now; merged PR 51; canonical main
+  `1255ee66f9b09fb6f74644738be6e5515167ae42`; Plan 0102 version 2; WI-000
+  through WI-009; target registry and policies 0027, 0030, 0031, and 0032;
+  GitHub issue forms, existing labels, actor/role, duplicate searches, and the
+  `to-issues` publication contract.
+
+Decisions And Changes:
+
+- verified PR 51 merged the registry correction and fast-forwarded canonical
+  main before any issue write;
+- preflighted every stable WI marker against the exact owned fork with no
+  duplicate candidate and resolved existing `enhancement` or `bug` labels;
+- published the parent first, then blockers and dependent vertical slices with
+  real issue references available at creation time;
+- advanced Plan 0102 to version 3 because the operator directed tracker
+  publication immediately; Packet 6 is now a completed prerequisite bootstrap,
+  while corrective Packets 1-5 retain their dependency order;
+- recorded every exact URL in the corresponding repo-local work item and index.
+
+Mutation And Readback Receipt:
+
+- actor: `ecochran76`; target:
+  `github.com/CochranResearchGroup/last30days-skill`;
+- WI-000 -> issue #52; WI-001 -> #54; WI-002 -> #53; WI-003 -> #57;
+  WI-004 -> #56; WI-005 -> #58; WI-006 -> #59; WI-007 -> #61;
+  WI-008 -> #60; WI-009 -> #55;
+- all ten issues read back open with their unique hidden WI marker;
+- WI-009 read back with `bug`; the other nine read back with `enhancement`;
+- no duplicate, comment, edit, close, reopen, assignment, milestone, Project,
+  transfer, label creation, or security-report action occurred.
+
+State Movement:
+
+- GitHub backlog WI-000 through WI-009 `unpublished -> published/open`;
+- Plan 0102 remains `PLANNED`, advances `version 2 -> version 3`, and records
+  tracker publication accepted while Packets 1-5 remain;
+- the P51 feature freeze and WI-007 hotfix exception are unchanged.
+
+Validation Evidence:
+
+- exact post-write issue listing returned ten unique issues, numbers 52-61,
+  expected titles, labels, markers, actor, creation times, and URLs;
+- every provider mutation was preceded by a successful exact-marker preflight;
+- no retry was needed and no write result was ambiguous.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; publication was serialized by dependency tier and reconciled
+  by the coordinator.
+
+Graphiti Write Status:
+
+- `not_written`; repo and GitHub receipts are the current authority.
+
+Next Bounded Action:
+
+- merge this URL/readback projection through a PR, fast-forward canonical main,
+  then publish the durable fresh-agent handoff from that exact integrated state.
+
+## Turn 468 | 2026-09-13
+
+Focus: publish a restart-safe fresh-agent handoff for P51 corrective execution.
+
+Authority Consulted:
+
+- operator request for a fresh-context handoff; merged PRs 51 and 62; canonical
+  main `b95b5548ffae852c4eb7a8523b8c1fb04ca1e10c`; Plan 0102/P51; WI-009/#55;
+  current GitHub issues, issue registry, Git/worktree/runtime/P35 readback;
+  notes policy and the `handoff` skill.
+
+Decisions And Changes:
+
+- created `docs/dev/notes/0125-2026-09-13-p51-fresh-agent-handoff.md` as the
+  durable authority-first restart artifact;
+- advanced Plan 0102 to version 4 and recorded that tracker reconciliation
+  Packet 2 and publication Packet 6 are complete, leaving Packets 1, 3, 4, and
+  5;
+- prescribed one exact next packet: Plan 0103 on a new current-main corrective
+  branch/worktree for only the two accepted Q&A defects;
+- retained the feature freeze, production-hotfix exception, P35 serialization,
+  runtime/provider boundaries, and the narrow issue-action registry.
+
+Validation Evidence:
+
+- canonical main was clean and remote-equal at `b95b5548` before the handoff
+  branch was created;
+- all ten issues read back open with unique markers and expected labels;
+- P35 read back remote-equal at `d2c9f8eb`, 80 commits behind and eight ahead
+  of current main;
+- the handoff records exact startup checks, paths, accepted reproductions,
+  validation requirements, hard stops, and suggested skills without copying
+  secrets or raw private data.
+
+State Movement:
+
+- Plan 0102 `version 3 -> version 4`, remaining `PLANNED`;
+- no work-item, implementation, runtime, provider, release, or production state
+  changed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; handoff reconciliation remained coordinator-owned.
+
+Graphiti Write Status:
+
+- `not_written`; the repo handoff is the durable source and no memory write was
+  requested.
+
+Next Bounded Action:
+
+- merge this handoff through the normal PR workflow, verify canonical main, and
+  give a fresh top-level agent the exact Plan 0103 corrective packet described
+  in note 0125.
+
+## Turn 469 | 2026-09-14
+
+Focus: activate Plan 0103 for the two accepted P51 question-contract repairs.
+
+Authority Consulted:
+
+- operator goal to continue Plan 0103; merged handoff PR 63; Plan 0102/P51;
+  WI-009/#55; note 0125; planning, goal, work-item, lane, testing,
+  documentation, Git, collaborative-development, validation, Graphiti, and
+  CodeGraph policy; current Git/worktree, forge, Graphiti, and CodeGraph
+  readback.
+
+Decisions And Changes:
+
+- created
+  `docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md` as
+  one bounded corrective packet on `fix/question-contract-repair-v1` from
+  current canonical `origin/main`;
+- registered P51 as an active worktree lane and advanced WI-009 from `READY` to
+  `IN_PROGRESS` without mutating GitHub issue state;
+- froze the public interfaces and limited implementation to durable handling of
+  contract-construction failures plus total direct evidence-only answer
+  budgeting;
+- retained all runtime, provider, browser, release, deployment, production,
+  issue-mutation, P35, and unrelated-feature gates.
+
+Validation Evidence:
+
+- canonical and lane base are clean at
+  `5422fc2bb7d1e39c87e2657c1551d58a525a3e17`;
+- every pre-existing registered worktree is clean and remote-equal;
+- issue #55 is open with the unique WI-009 marker, and the owned fork has no
+  open pull request;
+- CodeGraph is healthy at 376 files, 10,537 nodes, and 26,059 edges;
+- Graphiti is healthy, but focused discovery returned ten older unrelated
+  facts, so current repo and forge evidence remains authoritative;
+- active-only planning, goal-only planning, and catalog-only lane audits passed
+  before activation.
+
+State Movement:
+
+- Plan 0103 `unplanned -> OPEN`;
+- WI-009 `READY -> IN_PROGRESS`;
+- P51 custody `unregistered -> ACTIVE_WORKTREE` at the canonical base;
+- progress classification: `blocker_reduction`;
+- authority classification: `inherited_authority` for provider-free repository
+  repair and normal pull-request integration; all named external effects remain
+  `human_gate` or `scope_expansion`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this packet is owned by the top-level coordinator session.
+
+Graphiti Write Status:
+
+- `pending`; this activation checkpoint will be written after the repository
+  registration becomes a durable published commit.
+
+Next Bounded Action:
+
+- publish the Plan 0103 registration checkpoint, then run the first focused
+  red/green slice for malformed structured output.
+
+## Turn 470 | 2026-09-14
+
+Focus: reproduce and repair the two Plan 0103 question-contract defects.
+
+Authority Consulted:
+
+- Plan 0103/P51; WI-009/#55; current CodeGraph source and blast radius; the
+  diagnosing-bugs, TDD, and codebase-design skill contracts; provider-free
+  tests and deterministic runtime-package validation.
+
+Decisions And Changes:
+
+- added one public-seam regression for an `answered` worker result with no
+  statements and observed the exact escaped final-construction contract error;
+- normalized only that final worker-answer construction failure into the
+  existing non-retryable durable terminal rejection path;
+- added one public-seam regression with two oversized evidence items and a
+  128-character request, observing 1,576 returned answer characters;
+- applied one running budget across the deterministic summary and ordered
+  evidence statements, preserving citation closure and the existing interface;
+- refreshed only the packaged `service_questions.py` hash in the canonical
+  runtime manifest; no version, artifact installation, database, or runtime
+  state changed.
+
+Validation Evidence:
+
+- both new regressions were observed red independently and now pass together;
+- 41 focused question tests pass;
+- 71 affected service, package, MCP-integration, and Skill contract tests pass;
+- comprehensive Python passes: 2,855 tests, 7 skips, and 9 subtests in 137.22
+  seconds;
+- comprehensive MCP Go passes for every package;
+- plan-authority tests, direct Python compilation, exact source/manifest hash
+  equality, and `git diff --check` pass;
+- implementation checkpoint:
+  `773da0472b3684131bcbf4166c847b847d9859e6`.
+
+State Movement:
+
+- Plan 0103 remains `OPEN` pending merge;
+- P51 custody `ACTIVE_WORKTREE -> INTEGRATION_READY`;
+- progress classification: `outcome_progress`;
+- both defect criteria are satisfied on the branch; pull-request publication,
+  remote diff/check readback, merge, and canonical ancestry remain.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; all implementation and validation were performed by the
+  owning top-level session.
+
+Graphiti Write Status:
+
+- `pending`; the compact source-backed outcome will be written after canonical
+  integration so the episode can cite the merged commit.
+
+Next Bounded Action:
+
+- publish the integration-ready checkpoint, create and self-check the owned-fork
+  pull request, merge it, and verify canonical main ancestry.
+
+## Turn 471 | 2026-09-14
+
+Focus: integrate and close Plan 0103.
+
+Authority Consulted:
+
+- Plan 0103/P51 and WI-009; collaboration, Git, active-lane, validation,
+  closeout, and Graphiti policy; published branch and pull-request readback;
+  canonical remote ancestry and worktree state.
+
+Decisions And Changes:
+
+- opened owned-fork PR 64 from the clean remote-equal corrective branch;
+- self-checked the exact eight-file remote diff, three commits, base/head,
+  deployment-effect statement, and complete validation evidence;
+- merged only after GitHub reported `MERGEABLE/CLEAN` and no failing required
+  check;
+- closed Plan 0103 and moved P51 custody to `INTEGRATED` while correctly keeping
+  WI-009 `IN_PROGRESS` for the remaining Plan 0102 packets;
+- advanced the exact next action to bounded P35 current-main reconciliation and
+  combined validation.
+
+Validation Evidence:
+
+- PR: https://github.com/CochranResearchGroup/last30days-skill/pull/64;
+- published head:
+  `0ae1e94de026428ec30fee4a1be8c579363100ec`;
+- merge receipt:
+  `b753bcef369d22a1774b7fa595e2b0d5d3014161` at
+  `2026-09-14T10:42:59Z`;
+- Git ancestry proves the published head is contained in current
+  `origin/main`;
+- canonical `main` is clean and remote-equal at the merge receipt;
+- comprehensive acceptance remains 2,855 Python tests passed, 7 skipped, 9
+  subtests passed, plus every MCP Go package passed.
+
+State Movement:
+
+- Plan 0103 `OPEN -> CLOSED`;
+- P51 custody `INTEGRATION_READY -> INTEGRATED` for this packet;
+- WI-009 remains `IN_PROGRESS` under Plan 0102;
+- progress classification: `outcome_progress`;
+- all Plan 0103 criteria are satisfied; P35, development release, and
+  development dogfood remain in the wider prerequisite program.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no delegated evidence was used.
+
+Graphiti Write Status:
+
+- `not_written`; session-level authority to write durable memory was not
+  explicitly granted, so the merged plan, runbook, Git, test, and PR receipts
+  remain authoritative.
+
+Next Bounded Action:
+
+- create the successor P35 reconciliation plan from canonical `b753bcef`,
+  reconcile its published feature branch without history rewriting, run the
+  combined provider-free validation, and integrate through a new pull request.
+
+## Turn 472 | 2026-09-14
+
+Focus: activate bounded P35 current-main reconciliation under Plan 0104.
+
+Authority Consulted:
+
+- operator instruction to plan and execute the exact next packet; Plan
+  0102/P51, Plan 0086/P35, WI-004, WI-009/#55, note 0125, current Git/worktree
+  and forge readback, Graphiti and CodeGraph discovery, and planning, work-item,
+  reconciliation, Git, testing, documentation, validation, and collaborative
+  workflow policy.
+
+Decisions And Changes:
+
+- created Plan 0104 as the bounded P35 reconciliation and combined-validation
+  packet at
+  `docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md`, owned by
+  the top-level coordinator session;
+- registered P35 at `ACTIVE_WORKTREE`, corrected the stale issue-registry PR
+  blocker, and projected Plan 0104 through P51, WI-004, WI-009, and the roadmap;
+- froze an ordinary current-main merge with history preservation and required
+  deterministic regeneration for the sole overlapping generated manifest;
+- retained all Packet 2, runtime, provider, browser, release, deployment,
+  production, and GitHub issue gates.
+
+Validation Evidence:
+
+- canonical main is clean and remote-equal at `31342c9f`; the published P35
+  branch is clean and remote-equal at `d2c9f8eb`, 88 behind and 8 ahead;
+- merge base is `75e7771e`; the exact path audit found 61 main-only changes, 26
+  feature-only changes, and only `service/runtime-manifest.json` changed by
+  both lines;
+- the owned fork has no open pull request and issue #55 remains open;
+- CodeGraph and Graphiti were healthy; focused Graphiti recall was older and
+  unrelated, so repository and Git evidence is authoritative;
+- active-only planning, goal-only planning, and catalog-only lane audits passed
+  before activation.
+
+State Movement:
+
+- Plan 0104 `unplanned -> OPEN`;
+- WI-004 `BLOCKED -> IN_PROGRESS` for Packet 1 reconciliation while Packet 2
+  remains gated by WI-009;
+- P35 custody `INTEGRATION_READY -> ACTIVE_WORKTREE` under the current plan;
+- progress classification: `blocker_reduction`;
+- authority classification: `inherited_authority` for provider-free repository
+  and normal PR work; every named external effect remains a `human_gate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this bounded packet is owned by the top-level coordinator.
+
+Graphiti Write Status:
+
+- `not_written`; session-level authority to write durable memory was not
+  explicitly granted, so repository and Git receipts remain authoritative.
+
+Next Bounded Action:
+
+- publish Plan 0104 registration, baseline the exact P35 head, merge current
+  main without rewriting history, and regenerate the combined manifest.

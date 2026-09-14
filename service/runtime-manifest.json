@@ -361,6 +361,16 @@
       "source": "skills/last30days/scripts/lib/service_knowledge.py"
     },
     {
+      "path": "scripts/lib/service_monitor_contracts.py",
+      "sha256": "5ddd475a18034b68952a57435840257eaa37a1686fe0c237235eb7d70ab6dc50",
+      "source": "skills/last30days/scripts/lib/service_monitor_contracts.py"
+    },
+    {
+      "path": "scripts/lib/service_monitors.py",
+      "sha256": "673e6b2e30adca73840ece0db9b57a64774bfb0a39e07641c1223702e3437c02",
+      "source": "skills/last30days/scripts/lib/service_monitors.py"
+    },
+    {
       "path": "scripts/lib/service_post_search.py",
       "sha256": "2a98725c7b7f02ad023539e9c68ab647f670b0b4d8ca0bc9111a7174fd5af916",
       "source": "skills/last30days/scripts/lib/service_post_search.py"
@@ -374,6 +384,26 @@
       "path": "scripts/lib/service_publication.py",
       "sha256": "bfbf2c7526887c5f02099087925fb99323d512812747c85ba6f7896a6ceef208",
       "source": "skills/last30days/scripts/lib/service_publication.py"
+    },
+    {
+      "path": "scripts/lib/service_question_contracts.py",
+      "sha256": "34ef65c5ada3d19940f7394c2e42def51f95cf79eadef6abd33ed2427d19c1bc",
+      "source": "skills/last30days/scripts/lib/service_question_contracts.py"
+    },
+    {
+      "path": "scripts/lib/service_question_evidence.py",
+      "sha256": "157ba0f681ca7a5bd448c09f35c4758d46771f2011e732225bc2e6b2c57c631d",
+      "source": "skills/last30days/scripts/lib/service_question_evidence.py"
+    },
+    {
+      "path": "scripts/lib/service_question_worker.py",
+      "sha256": "9d1327eb428411a6e5fd8bbf305b76f81a28626033a1d4334dd7d1928b63658a",
+      "source": "skills/last30days/scripts/lib/service_question_worker.py"
+    },
+    {
+      "path": "scripts/lib/service_questions.py",
+      "sha256": "1056d2d7eaa10a9d8a1828c4f276afa04afcc18c54124adfab55f9d03e5dedba",
+      "source": "skills/last30days/scripts/lib/service_questions.py"
     },
     {
       "path": "scripts/lib/service_refresh.py",

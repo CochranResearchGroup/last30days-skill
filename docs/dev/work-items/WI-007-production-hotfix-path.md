@@ -5,6 +5,7 @@ State: READY
 Priority: P1
 Lane: Hotfix
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/61
 Blocked by: none for Packets 1-2; staging/runtime drill by WI-001; real deployment by incident-specific operator authority
 Architecture: docs/dev/notes/0122-2026-09-13-reserved-production-hotfix-path-architecture.md
 Implementation plan seed: docs/dev/plans/0081-2026-09-13-reserved-production-hotfix-path-architecture-and-lane-handoff.md

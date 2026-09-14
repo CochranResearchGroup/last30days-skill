@@ -1,0 +1,11 @@
+{
+  "schema_version": "quality_threshold_policy.v1",
+  "policy_id": "service-quality-packet-1-v1",
+  "version": 1,
+  "rules": [
+    {"rule_id": "acquisition-success-floor", "axis": "acquisition", "metric": "success_rate", "scope": "global", "comparator": "gte", "threshold": 1.0, "minimum_denominator": 1, "severity": "blocking", "missing_data": "not_measurable"},
+    {"rule_id": "corpus-success-floor", "axis": "corpus", "metric": "success_rate", "scope": "global", "comparator": "gte", "threshold": 1.0, "minimum_denominator": 1, "severity": "blocking", "missing_data": "not_measurable"},
+    {"rule_id": "grounding-success-floor", "axis": "grounding", "metric": "success_rate", "scope": "global", "comparator": "gte", "threshold": 1.0, "minimum_denominator": 1, "severity": "blocking", "missing_data": "not_measurable"},
+    {"rule_id": "retrieval-success-floor", "axis": "retrieval", "metric": "success_rate", "scope": "global", "comparator": "gte", "threshold": 1.0, "minimum_denominator": 1, "severity": "blocking", "missing_data": "not_measurable"}
+  ]
+}

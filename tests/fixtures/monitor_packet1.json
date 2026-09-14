@@ -1,0 +1,74 @@
+{
+  "monitor_spec": {
+    "schema_version": 1,
+    "monitor_id": "monitor-browser-agents",
+    "revision": 1,
+    "name": "Browser agent changes",
+    "view_ref": {
+      "schema_version": 1,
+      "view_kind": "saved_query",
+      "saved_query_id": "saved-query-browser-agents",
+      "saved_query_version": 3
+    },
+    "access_partition_id": "public",
+    "lifecycle_state": "disabled",
+    "comparison_policy": "stable_evidence_v1",
+    "cadence_seconds": 86400,
+    "max_items": 50,
+    "retention_days": 30,
+    "created_by": "operator",
+    "created_at": "2026-09-13T10:00:00Z"
+  },
+  "initial_snapshot": {
+    "schema_version": 1,
+    "snapshot_id": "snapshot-initial",
+    "view_ref": {
+      "schema_version": 1,
+      "view_kind": "saved_query",
+      "saved_query_id": "saved-query-browser-agents",
+      "saved_query_version": 3
+    },
+    "access_partition_id": "public",
+    "evidence_head_id": "search-head-001",
+    "knowledge_cutoff": "2026-09-13T11:00:00Z",
+    "coverage_start": "2026-08-14T00:00:00Z",
+    "coverage_end": "2026-09-13T10:59:59Z",
+    "coverage": {
+      "status": "complete",
+      "sources": ["reddit", "x"],
+      "gaps": []
+    },
+    "evidence": [
+      {"evidence_id": "evidence-a", "version_id": "version-a1", "tombstoned": false},
+      {"evidence_id": "evidence-b", "version_id": "version-b1", "tombstoned": false},
+      {"evidence_id": "evidence-gone-from-top-k", "version_id": "version-g1", "tombstoned": false},
+      {"evidence_id": "evidence-removed", "version_id": "version-r1", "tombstoned": false}
+    ]
+  },
+  "changed_snapshot": {
+    "schema_version": 1,
+    "snapshot_id": "snapshot-changed",
+    "view_ref": {
+      "schema_version": 1,
+      "view_kind": "saved_query",
+      "saved_query_id": "saved-query-browser-agents",
+      "saved_query_version": 3
+    },
+    "access_partition_id": "public",
+    "evidence_head_id": "search-head-002",
+    "knowledge_cutoff": "2026-09-13T12:00:00Z",
+    "coverage_start": "2026-08-14T00:00:00Z",
+    "coverage_end": "2026-09-13T11:59:59Z",
+    "coverage": {
+      "status": "complete",
+      "sources": ["reddit", "x"],
+      "gaps": []
+    },
+    "evidence": [
+      {"evidence_id": "evidence-a", "version_id": "version-a1", "tombstoned": false},
+      {"evidence_id": "evidence-b", "version_id": "version-b2", "tombstoned": false},
+      {"evidence_id": "evidence-c", "version_id": "version-c1", "tombstoned": false},
+      {"evidence_id": "evidence-removed", "version_id": "version-r1", "tombstoned": true}
+    ]
+  }
+}

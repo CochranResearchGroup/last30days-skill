@@ -5,7 +5,11 @@ State: READY
 Priority: P2
 Lane: MCP
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/59
 Blocked by: WI-002 Packet 1 for monitor kernel/query tracer; WI-004 Packet 1 for follow tracer; WI-002 and WI-004 closeout for final acceptance
+Last closed plan: docs/dev/plans/0093-2026-09-13-saved-monitors-packet-1.md
+Branch: feat/saved-monitors-v1
+Owner: Codex 01a09cf4-c89e-7660-9caf-66a78f34ded0
 
 ## Problem
 
@@ -48,8 +52,8 @@ Authority:
 
 ## Next Owner Action
 
-After WI-002 Packet 1 integrates, assign one independent top-level session,
-create `feat/saved-monitors-v1` from current `origin/main`, register custody,
-and execute Packet 1 only: immutable monitor/run/baseline contracts, fake view
-provider, comparison, acceptance, lifecycle, and replay tests. Do not refresh,
-scrape, schedule an installed service, or deliver externally.
+Packet 1 integrated through PR 41 as canonical merge `6d5eb5d9`. Before any
+new implementation, write and register a separately bounded packet from
+current `origin/main` for query-view composition. Follow tracing remains gated
+by P35 integration; refresh, scraping, installed scheduling, and delivery
+remain separately authorized effects.

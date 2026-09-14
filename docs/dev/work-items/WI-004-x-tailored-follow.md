@@ -5,10 +5,12 @@ State: IN_PROGRESS
 Priority: P1
 Lane: Follows
 Parent: WI-000
-Blocked by: none
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/56
+Blocked by: WI-009 before Packet 2; Packet 1 reconciliation is active under Plan 0104
 Architecture: docs/dev/notes/0119-2026-09-13-x-tailored-follow-product-architecture.md
 Implementation plan seed: docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md
-Active plan: docs/dev/plans/0086-2026-09-13-x-tailored-follows-packet-1.md
+Implementation plan: docs/dev/plans/0086-2026-09-13-x-tailored-follows-packet-1.md
+Active plan: docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md
 Branch: feat/x-tailored-follows-v1
 
 ## Problem
@@ -41,9 +43,9 @@ no cross-service abstraction until this vertical slice is accepted.
 
 ## Active Handoff
 
-Resume the owning top-level session from published checkpoint
-`8b97f0b65f2ec62d84a26c9fc3c4fcd653f73d20` and implement only Packet 1's
-compatible collection-purpose, attention, lifecycle, canonical target
-identity, migration, get/list/archive, and provider-free persistence tracer.
-Do not enqueue a job, open a browser, use a profile/provider, mutate an
-installed database or schedule, or install a runtime in Packet 1.
+Packet 1 is acceptance-complete and published at
+`d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`. Plan 0104 owns its current-main
+reconciliation and combined provider-free validation through the normal
+pull-request workflow. Do not start Packet 2 or enqueue a job, open a browser,
+use a profile/provider, mutate an installed database or schedule, or install a
+runtime.

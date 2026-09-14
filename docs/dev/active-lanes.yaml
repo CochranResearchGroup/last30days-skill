@@ -1,5 +1,136 @@
 schema_version: 1
 lanes:
+  - id: P51
+    objective: Repair the two accepted question-answering contract defects
+    work_items: [docs/dev/work-items/WI-009-productization-readiness-remediation.md]
+    plan: docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md
+    plan_ref: refs/heads/docs/p51-question-contract-closeout
+    branch: fix/question-contract-repair-v1
+    target: main
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 0ae1e94de026428ec30fee4a1be8c579363100ec
+    remote_ref: refs/remotes/origin/fix/question-contract-repair-v1
+    integration: merge
+    integration_receipt: b753bcef369d22a1774b7fa595e2b0d5d3014161
+    validation_status: passed
+    validation_ref: 773da0472b3684131bcbf4166c847b847d9859e6
+    dependencies: []
+    overlaps: [skills/last30days/scripts/lib/service_questions.py, tests/test_service_questions.py, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-009-productization-readiness-remediation.md]
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_questions.py, tests/test_service_questions.py, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-009-productization-readiness-remediation.md]
+    updated_at: 2026-09-14
+  - id: P49
+    objective: Reconcile and integrate P36 structured answer Packet 3
+    work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    plan: docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md
+    plan_ref: refs/heads/docs/p36-packet3-integration
+    branch: docs/p36-packet3-integration
+    target: main
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 181465fa3f12e3feb2aee49a71cc353ee2a58fd9
+    remote_ref: refs/remotes/origin/docs/p36-packet3-integration
+    integration: merge
+    integration_receipt: d41e1a6ef495b4e36530a1ed4f88c9b76da35224
+    validation_status: passed
+    validation_ref: 181465fa3f12e3feb2aee49a71cc353ee2a58fd9
+    dependencies: [P36]
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md, service/runtime-manifest.json]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md, service/runtime-manifest.json]
+    updated_at: 2026-09-14
+  - id: P48
+    objective: Register and launch the provider-free P36 answer tracer Packet 3
+    work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    plan: docs/dev/plans/0099-2026-09-14-p36-packet-3-launch-registration.md
+    plan_ref: refs/heads/docs/p36-packet3-launch-registration
+    branch: docs/p36-packet3-launch-registration
+    target: main
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: de99e1b923e1095d7b8ec22ecd006fd40089e789
+    remote_ref: refs/remotes/origin/docs/p36-packet3-launch-registration
+    integration: merge
+    integration_receipt: 487ec89e7a6c99d07f6623646c659111c5fbd270
+    validation_status: passed
+    validation_ref: de99e1b923e1095d7b8ec22ecd006fd40089e789
+    dependencies: []
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    updated_at: 2026-09-14
+  - id: P47
+    objective: Reconcile and integrate P36 immutable evidence Packet 2
+    work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    plan: docs/dev/plans/0097-2026-09-13-p36-packet-2-integration-reconciliation.md
+    plan_ref: refs/heads/integration/p36-packet2-reconciliation
+    branch: integration/p36-packet2-reconciliation
+    target: main
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: ddcb4201fc75463fa0aba59925343ed2530036ea
+    remote_ref: refs/remotes/origin/integration/p36-packet2-reconciliation
+    integration: merge
+    integration_receipt: e4823ac72532b1c2c87442ca76419827b2cfb268
+    validation_status: passed
+    validation_ref: ddcb4201fc75463fa0aba59925343ed2530036ea
+    dependencies: [P36]
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md, service/runtime-manifest.json]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md, service/runtime-manifest.json]
+    updated_at: 2026-09-13
+  - id: P46
+    objective: Register and launch the provider-free P36 evidence tracer Packet 2
+    work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    plan: docs/dev/plans/0095-2026-09-13-p36-packet-2-launch-registration.md
+    plan_ref: refs/heads/docs/p36-packet2-launch-registration
+    branch: docs/p36-packet2-launch-registration
+    target: main
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 2b29bf199ae81cd4fe7c42cf74d782a560bfee53
+    remote_ref: refs/remotes/origin/docs/p36-packet2-launch-registration
+    integration: merge
+    integration_receipt: 5004df7f228059b2d2c154f1414de83fae16cfd5
+    validation_status: passed
+    validation_ref: 2b29bf199ae81cd4fe7c42cf74d782a560bfee53
+    dependencies: []
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    updated_at: 2026-09-13
+  - id: P45
+    objective: Reconcile accepted P36 P37 and P40 Packet 1 checkpoints into canonical main
+    work_items: [docs/dev/work-items/WI-000-productization-program.md]
+    plan: docs/dev/plans/0094-2026-09-13-next-wave-integration-reconciliation.md
+    plan_ref: refs/heads/docs/next-wave-integration-reconciliation
+    branch: docs/next-wave-integration-reconciliation
+    target: main
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: a542c5e0ac701d4d91836873bf0de4c74edf50bb
+    remote_ref: refs/remotes/origin/docs/next-wave-integration-reconciliation
+    integration: merge
+    integration_receipt: 6d5eb5d972024cd584bfcc8bf57975f49fa90f45
+    validation_status: passed
+    validation_ref: a542c5e0ac701d4d91836873bf0de4c74edf50bb
+    dependencies: [P36, P37, P40]
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, service/runtime-manifest.json]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, service/runtime-manifest.json]
+    updated_at: 2026-09-13
+  - id: P43
+    objective: Reconcile the first implementation wave and expose the next provider-free lanes
+    work_items: [docs/dev/work-items/WI-000-productization-program.md]
+    plan: docs/dev/plans/0089-2026-09-13-packet-1-integration-reconciliation.md
+    plan_ref: refs/heads/docs/packet1-integration-reconciliation
+    branch: docs/packet1-integration-reconciliation
+    target: main
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: c225bd11a499a60c332ce4b7698f489e50e74b1b
+    remote_ref: refs/remotes/origin/docs/packet1-integration-reconciliation
+    integration: merge
+    integration_receipt: ce8259392c76adcad15ec35740f2aa9c680b93d8
+    dependencies: [P33, P34, P35]
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
+    updated_at: 2026-09-13
   - id: P42
     objective: Reconcile three independent Packet 1 activations into canonical projections
     work_items: [docs/dev/work-items/WI-000-productization-program.md]
@@ -35,21 +166,24 @@ lanes:
     reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml]
     updated_at: 2026-09-13
   - id: P40
-    objective: Define cache-only saved monitors, accepted baselines, evidence digests, and gated delivery
+    objective: Implement a provider-free saved-monitor kernel over immutable query views
     work_items: [docs/dev/work-items/WI-006-saved-monitors-and-digests.md]
-    plan: docs/dev/plans/0083-2026-09-13-saved-monitor-and-digest-architecture-and-lane-handoff.md
-    plan_ref: refs/heads/docs/saved-monitors-digests-architecture
-    branch: docs/saved-monitors-digests-architecture
+    plan: docs/dev/plans/0093-2026-09-13-saved-monitors-packet-1.md
+    plan_ref: refs/heads/feat/saved-monitors-v1
+    branch: feat/saved-monitors-v1
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATED
-    checkpoint: c959c15ebf134e120e5ae481bc1177336db69c41
-    remote_ref: refs/remotes/origin/docs/saved-monitors-digests-architecture
+    checkpoint: c97982506825e58f0ab8cae138ee557f7055cf91
+    remote_ref: refs/remotes/origin/feat/saved-monitors-v1
     integration: merge
-    integration_receipt: 3333410742f5e1115657d1cc64d6c41fe0faaea1
-    dependencies: [P33, P35]
-    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-006-saved-monitors-and-digests.md]
-    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-006-saved-monitors-and-digests.md]
+    integration_receipt: 6d5eb5d972024cd584bfcc8bf57975f49fa90f45
+    validation_status: passed
+    validation_ref: c97982506825e58f0ab8cae138ee557f7055cf91
+    blocker: follow-view tracing remains gated by P35 integration and is excluded from Packet 1
+    dependencies: [P33]
+    overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_store.py]
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_store.py]
     updated_at: 2026-09-13
   - id: P39
     objective: Define provider-native tailored follows across supported services
@@ -84,54 +218,62 @@ lanes:
     reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-007-production-hotfix-path.md]
     updated_at: 2026-09-13
   - id: P37
-    objective: Define denominator-aware acquisition, corpus, retrieval, and grounding quality evaluation
-    plan: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md
-    plan_ref: refs/heads/docs/corpus-quality-architecture
-    branch: docs/corpus-quality-architecture
+    objective: Implement a deterministic provider-free four-axis quality tracer
+    work_items: [docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
+    plan: docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md
+    plan_ref: refs/heads/feat/service-quality-v1
+    branch: feat/service-quality-v1
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATED
-    checkpoint: 081dcb654cf84a4bf40e7af77c2e5620ef3f3c0c
-    remote_ref: refs/remotes/origin/docs/corpus-quality-architecture
+    checkpoint: 58020b04f8fe109062802abf5b794e9ff5e1024c
+    remote_ref: refs/remotes/origin/feat/service-quality-v1
     integration: merge
-    integration_receipt: 6d5827e0c8f594d74bb5f043a9ea005bf711a3bd
+    integration_receipt: 6d5eb5d972024cd584bfcc8bf57975f49fa90f45
+    validation_status: passed
+    validation_ref: 58020b04f8fe109062802abf5b794e9ff5e1024c
     dependencies: []
-    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
-    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
+    overlaps: []
+    reconciled_overlaps: []
     updated_at: 2026-09-13
   - id: P36
-    objective: Define evidence-grounded agent questions over stable post search and immutable citations
-    plan: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md
-    plan_ref: refs/heads/docs/agent-question-answer-architecture
-    branch: docs/agent-question-answer-architecture
+    objective: Add provider-free structured answer execution and validation
+    work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    plan: docs/dev/plans/0098-2026-09-14-agent-question-answer-tracer-packet-3.md
+    plan_ref: refs/heads/feat/agent-question-answer-v3
+    branch: feat/agent-question-answer-v3
     target: main
     plan_state: CLOSED
     custody_state: INTEGRATED
-    checkpoint: 96ae270827ec65d79e9665661c9e0811b748b89e
-    remote_ref: refs/remotes/origin/docs/agent-question-answer-architecture
+    checkpoint: 75f2342e57ffb7c6d4c41e9d7825daf934ccb4c7
+    remote_ref: refs/remotes/origin/feat/agent-question-answer-v3
     integration: merge
-    integration_receipt: 3c94c01c6c43f883c762b2cb674fabc416297992
-    dependencies: []
-    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
-    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
-    updated_at: 2026-09-13
+    integration_receipt: d41e1a6ef495b4e36530a1ed4f88c9b76da35224
+    validation_status: passed
+    validation_ref: 75f2342e57ffb7c6d4c41e9d7825daf934ccb4c7
+    dependencies: [P33]
+    overlaps: [service/runtime-manifest.json]
+    reconciled_overlaps: [service/runtime-manifest.json]
+    updated_at: 2026-09-14
   - id: P35
     objective: Define typed X account, list, and topic follows on the existing collection authority
-    work_items: [docs/dev/work-items/WI-004-x-tailored-follow.md]
-    plan: docs/dev/plans/0086-2026-09-13-x-tailored-follows-packet-1.md
-    plan_ref: refs/heads/feat/x-tailored-follows-v1
+    work_items: [docs/dev/work-items/WI-004-x-tailored-follow.md, docs/dev/work-items/WI-009-productization-readiness-remediation.md]
+    plan: docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md
+    plan_ref: refs/heads/docs/p35-current-main-reconciliation
     branch: feat/x-tailored-follows-v1
     target: main
     plan_state: OPEN
     custody_state: ACTIVE_WORKTREE
-    checkpoint: 8b97f0b65f2ec62d84a26c9fc3c4fcd653f73d20
+    checkpoint: d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d
     remote_ref: refs/remotes/origin/feat/x-tailored-follows-v1
     integration: merge
     integration_receipt: null
-    dependencies: []
-    overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py]
-    reconciled_overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py]
-    updated_at: 2026-09-13
+    validation_status: pending
+    validation_ref: null
+    dependencies: [P51]
+    overlaps: [service/runtime-manifest.json]
+    reconciled_overlaps: []
+    updated_at: 2026-09-14
   - id: P34
     objective: Define one fail-closed isolated development runtime per implementation lane
     work_items: [docs/dev/work-items/WI-001-isolated-development-runtime.md]
@@ -139,12 +281,12 @@ lanes:
     plan_ref: refs/heads/feat/isolated-dev-runtime-v1
     branch: feat/isolated-dev-runtime-v1
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 4a8080daf354fe90db9462dc65ec1b29109058cc
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 19d41c312dc49131650b9145c49e09b2e892f74b
     remote_ref: refs/remotes/origin/feat/isolated-dev-runtime-v1
     integration: merge
-    integration_receipt: null
+    integration_receipt: c6bccab86074e83067a624a57efbc9d9b485c87f
     dependencies: []
     overlaps: [skills/last30days/scripts/service.py, CONFIGURATION.md]
     reconciled_overlaps: [skills/last30days/scripts/service.py, CONFIGURATION.md]
@@ -156,12 +298,12 @@ lanes:
     plan_ref: refs/heads/feat/post-search-v1
     branch: feat/post-search-v1
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 49e9bb02377011b6dc6a28da27b15f0996acd6de
+    plan_state: CLOSED
+    custody_state: INTEGRATED
+    checkpoint: 74a6fcfc96ca4b3d78329779ad066b737d899551
     remote_ref: refs/remotes/origin/feat/post-search-v1
     integration: merge
-    integration_receipt: null
+    integration_receipt: 75e7771e006f52847e8e47c1059b2b2000fb8ac7
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go]
     reconciled_overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go]

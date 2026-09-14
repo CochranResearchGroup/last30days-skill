@@ -5,9 +5,14 @@ State: READY
 Priority: P1
 Lane: MCP
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/57
 Blocked by: WI-002 Packet 1 contract integration; final acceptance by WI-002 closeout
 Architecture: docs/dev/notes/0120-2026-09-13-agent-question-answering-mcp-architecture.md
 Implementation plan seed: docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md
+Last closed plan: docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md
+Current plan: none; Packet 4 is not yet planned
+Branch: main
+Owner: unassigned
 
 ## Problem
 
@@ -38,13 +43,10 @@ contract.
 No autonomous provider mutation, follow creation, or claim that generated
 summaries replace source evidence.
 
-## Ready Handoff
+## Next Owner Action
 
-Do not start implementation until WI-002 Packet 1 integrates the stable
-`PostSearchBackend`, request/response, search-head, and evidence-ref contracts.
-Then assign one independent top-level lane session from current `origin/main`,
-create and register `feat/agent-question-answer-v1`, and implement Packet 1
-from the architecture note: strict question/answer/citation/status contracts,
-migration, durable queue/lease/idempotency, and fake search/worker tests. Do
-not invoke a model, source adapter, browser, refresh, follow, schedule,
-installed runtime, staging, or production service in Packet 1.
+Packet 3 integrated through PR 48 as canonical merge `d41e1a6e`, containing
+exact feature checkpoint `75f2342e`, a current source manifest, and a fully
+green 2,860-test collection. Plan Packet 4's public HTTP/MCP and fresh-client
+surface separately. Keep real model execution, providers, installed runtimes,
+staging, and production behind their own explicit gates.

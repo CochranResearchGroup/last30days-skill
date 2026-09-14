@@ -1,14 +1,15 @@
 <!-- last30days-work-item:WI-002 -->
 # Search and retrieve stored posts as a product surface
 
-State: IN_PROGRESS
+State: READY
 Priority: P1
 Lane: Search
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/53
 Blocked by: none
 Architecture: docs/dev/notes/0117-2026-09-13-post-search-product-architecture.md
 Implementation plan seed: docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md
-Active plan: docs/dev/plans/0084-2026-09-13-post-search-packet-1.md
+Last completed plan: docs/dev/plans/0084-2026-09-13-post-search-packet-1.md
 Branch: feat/post-search-v1
 
 ## Problem
@@ -42,7 +43,7 @@ answers in this slice.
 
 ## Active Handoff
 
-Resume the owning top-level session from published checkpoint
-`49e9bb02377011b6dc6a28da27b15f0996acd6de` and implement only Packet 1's
-strict contract/catalog/cursor lexical tracer. Do not change `/v1/query`,
-install a runtime, or use provider/browser access in that packet.
+Packet 1 merged through PR 36 as `75e7771e006f52847e8e47c1059b2b2000fb8ac7`.
+The coordinator should register a separate Packet 2 plan before adding the
+broader filter matrix, all-revision traversal, or cross-store deduplication.
+Do not change `/v1/query` or use provider/browser access under Packet 1.

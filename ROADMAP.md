@@ -71,6 +71,14 @@ P08 Governed Recurring All-Source Tick
 
 P09 Facebook Agent-Browser Timeout Remediation
   └──> repairs the truthful Facebook gap observed by P08 without changing its schedule
+
+P51 Productization Readiness Prerequisites
+  ├──> repairs accepted Q&A contract defects and tracker-documentation drift
+  ├──> reconciles and integrates P35 tailored follows
+  ├──> establishes unique release identity and an isolated development runtime
+  ├──> dogfoods the integrated product surfaces and publishes governed issues
+  └──> blocks new WI-001 through WI-006 and WI-008 feature packets until closed;
+       WI-007 production hotfixes remain exempt
 ```
 
 P03 discovery and bounded source experiments may proceed alongside P01, but
@@ -2596,7 +2604,7 @@ Next Bounded Action:
 
 ## P33 | Post Search Product Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: expose the complete authorized stored-post corpus through a stable,
 cache-only, evidence-preserving search and pagination contract for users and
@@ -2604,14 +2612,15 @@ agents.
 
 Current State:
 
-- WI-002 is `IN_PROGRESS`; top-level session
-  `01a09caa-9116-7453-8914-5cd7d7ce0fca` owns Plan 0084 at published
-  checkpoint `49e9bb02377011b6dc6a28da27b15f0996acd6de`;
+- WI-002 is `READY` for a later Packet 2; Packet 1 closed and integrated through PR 36 as
+  `75e7771e006f52847e8e47c1059b2b2000fb8ac7`;
 - the selected seam is additive `POST /v1/posts/search` plus MCP
   `search_posts`, leaving `/v1/query` unchanged for the dependent WI-003 lane;
 - provider-free vertical packets cover both storage families, filters, stable
   pagination, revisions, dedupe, ranking, HTTP/MCP parity, and quality bounds;
-- Packet 1 implementation and runtime mutation have not begun.
+- Packet 1 now provides strict contracts, both lexical storage adapters,
+  partition/source/publication filters, stable cursors, HTTP, MCP
+  `search_posts`, and provider-free fixtures without runtime mutation.
 
 Closed Architecture Plan:
 
@@ -2624,28 +2633,29 @@ Dependencies:
 
 Next Bounded Action:
 
-- resume the owning WI-002 session at `49e9bb02` and implement only Plan 0084
-  Packet 1's provider-free contract/catalog/cursor lexical tracer.
+- register a separately bounded Packet 2 plan for broader filters,
+  all-revision traversal, and cross-store deduplication; P36 and P40 may now
+  consume Packet 1's stable search/evidence contract.
 
 ## P34 | Isolated Development Runtime
 
-State: OPEN
+State: PLANNED
 
 Objective: give each implementation lane a deterministic, provider-free local
 service identity that cannot collide with production or another lane.
 
 Current State:
 
-- WI-001 is `IN_PROGRESS`; top-level session
-  `01a09caa-90aa-78d0-af02-59d9a7d80eea` owns Plan 0085 at published
-  checkpoint `4a8080daf354fe90db9462dc65ec1b29109058cc`;
+- WI-001 is `READY` for a later Packet 2; Packet 1 closed and integrated through PR 35 as
+  `c6bccab86074e83067a624a57efbc9d9b485c87f`;
 - the selected seam is a repo-only lane-runtime controller around the existing
   direct `serve` command plus an authoritative service-side cache-only effect
   gate;
 - identity, paths, environment, collision, process, status, teardown,
   production, staging, and provider-free acceptance contracts are defined;
-- no development runtime, staging runtime, or Packet 1 implementation has
-  begun.
+- the repo-only read-only doctor now derives strict deterministic lane identity
+  and rejects unsafe custody, environment, production-path, ownership, and
+  collision states; it still starts no runtime.
 
 Closed Architecture Plan:
 
@@ -2658,8 +2668,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- resume the owning WI-001 session at `4a8080da` and implement only Plan 0085
-  Packet 1's strict descriptor and read-only doctor tracer.
+- register a separately bounded Packet 2 plan for offline lifecycle commands
+  and authoritative service-side cache-only effect gates.
 
 ## P35 | X Tailored Follow Product Surface
 
@@ -2671,17 +2681,25 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `IN_PROGRESS`; top-level session
-  `01a09caa-90d6-7350-a8ce-72d7ced7ef12` owns Plan 0086 at published
-  checkpoint `8b97f0b65f2ec62d84a26c9fc3c4fcd653f73d20`;
+- WI-004 is `IN_PROGRESS`; Packet 1 is acceptance-complete and remote-equal at
+  `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
   lifecycle, canonical typed targets, and immutable acquisition context rather
   than creating a second scheduler;
 - provider-free packets cover contract/migration, account routing, list
   routing, multi-cause sightings, lifecycle, scheduler attention, CLI/MCP
   parity, and collection-filter integration;
-- no Packet 1 implementation, installed-runtime mutation, schedule change, or
-  live X access has begun.
+- typed X feed/topic/account/list follow contracts, migration 18, inactive
+  creation, immutable identity, archive history, and additive lifecycle reads
+  are implemented provider-free; no installed-runtime, schedule, or live X
+  effect occurred;
+- the branch is 88 commits behind reviewed canonical main and has no pull
+  request. Plan 0104 owns its current-main reconciliation and combined
+  provider-free validation; PRs follow normal branch and integration policy.
+
+Active Reconciliation Plan:
+
+- `docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md`.
 
 Closed Architecture Plan:
 
@@ -2696,8 +2714,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- resume the owning WI-004 session at `8b97f0b6` and implement only Plan 0086
-  Packet 1's provider-free contract/migration/lifecycle tracer.
+- execute Plan 0104: merge current `origin/main` into the published branch,
+  regenerate the combined manifest, rerun combined acceptance, and integrate
+  through its normal Packet 1 PR; do not begin Packet 2 implicitly.
 
 ## P36 | Agent Question Answering MCP Surface
 
@@ -2709,7 +2728,8 @@ authorized immutable evidence.
 
 Current State:
 
-- WI-003 is `READY` behind an exact WI-002 dependency;
+- WI-003 is `READY`; merged P33 Packet 1 satisfies its implementation
+  dependency;
 - current MCP query and temporal tools expose evidence, claims, events, and
   conflicts, but no validated synthesized answer, durable question status, or
   citation dereference surface;
@@ -2718,24 +2738,141 @@ Current State:
   control and a separate bounded no-tool answer worker;
 - provider-free packets cover contracts/queue, search/evidence composition,
   structured answers/validation, and fresh-client transport acceptance;
-- no implementation, model call, runtime mutation, or provider access has
-  begun.
+- independent Codex thread `01a09cf4-c89c-7ad2-9b64-8dc95c4cbec6`
+  completed Packet 1 at clean remote-equal checkpoint
+  `d6c6ff78498b33534baa6fe0b7b63e29f793caf7`;
+- the provider-free durable question tracer and immutable citation contracts
+  integrated through PR 41 as canonical merge `6d5eb5d9`; no model call, MCP
+  publication, installed-runtime mutation, or provider access occurred.
+- Plan 0096 is published plan-only at `07f96129` on a clean dedicated worktree
+  for the real-search and immutable-evidence Packet 2;
+- replacement independent Codex thread
+  `01a09d44-49bf-73b2-a613-aee72c98f471` opened the plan and published clean
+  remote-equal activation `e566724c` before feature implementation;
+- Packet 2 integrated through PR 45 as canonical merge `e4823ac7` from exact
+  remote checkpoint `ddcb4201`:
+  the real search/evidence composition, immutable resolver, parent/version
+  partition closure, and refreshed source manifest pass 54 affected and all
+  2,844 comprehensive tests plus reproducible package validation;
+- Plan 0098 closed clean and remote-equal at `75f2342e`; Packet 3's
+  provider-free structured-answer adapter, runtime model receipt,
+  citation-closed validation, explicit fallback, and bounded retry/replay
+  behavior are implemented;
+- Plan 0100 preserves that exact feature ancestry through merge `824b8627`,
+  refreshes the source manifest at `a304fbbf`, and passes all 2,860 collected
+  tests with seven skips plus reproducible source-package validation;
+- PR 48 merged Packet 3 as canonical commit `d41e1a6e`, containing exact
+  feature checkpoint `75f2342e` and integration checkpoint `181465fa`.
 
 Closed Architecture Plan:
 
 - `docs/dev/plans/0079-2026-09-13-agent-question-answering-mcp-architecture-and-lane-handoff.md`.
 
+Closed Implementation Plans:
+
+- `docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md` on
+  `feat/agent-question-answer-v1`;
+- `docs/dev/plans/0096-2026-09-13-agent-question-evidence-tracer-packet-2.md`
+  on `feat/agent-question-evidence-v2`.
+
+Closed Implementation Plan:
+
+- `docs/dev/plans/0098-2026-09-14-agent-question-answer-tracer-packet-3.md`
+  on `feat/agent-question-answer-v3`.
+
+Closed Integration Plan:
+
+- `docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md`.
+
 Dependencies:
 
-- Packet 1 waits for WI-002 Packet 1's stable search backend and evidence-ref
-  contracts; final acceptance waits for WI-002 closeout. Shared service and MCP
-  surfaces remain coordinator-owned integration joins.
+- Packet 1's stable search backend and evidence-ref dependency is satisfied by
+  merged P33; final acceptance still waits for WI-002 closeout. Shared service
+  and MCP surfaces remain coordinator-owned integration joins.
 
 Next Bounded Action:
 
-- retain P36 as planned until WI-002 Packet 1 integrates, then assign WI-003
-  Packet 1 to one independent top-level lane session from current
-  `origin/main` and register its `feat/agent-question-answer-v1` custody.
+- plan Packet 4's public HTTP/MCP and fresh-client acceptance separately; real
+  model and runtime effects remain gated.
+
+## P47 | P36 Packet 2 Integration Reconciliation
+
+State: CLOSED
+
+Objective: review and integrate the exact Packet 2 checkpoint, close the
+parent/version partition-integrity seam, and reconcile its source-manifest and
+canonical planning joins.
+
+Closed Plan:
+
+- `docs/dev/plans/0097-2026-09-13-p36-packet-2-integration-reconciliation.md`.
+
+Current State:
+
+- exact feature checkpoint `4e937017` is preserved in the integration ancestry;
+- the closed-world parent/version partition regression failed red and passes
+  after both legacy and temporal joins were constrained;
+- integration checkpoint `ddcb4201` was clean, remote-equal, and passes 6
+  focused, 54 affected, and all 2,844 comprehensive tests, compilation,
+  planning checks, and byte-identical source-package builds;
+- PR 45 merged the candidate as canonical commit `e4823ac7`;
+- installed runtimes, providers, public HTTP/MCP, models, P35, staging, and
+  production remain outside scope.
+
+Next Bounded Action:
+
+- plan P36 Packet 3 separately from current canonical main; keep all runtime,
+  model, public transport, provider, and P35 effects behind their own gates.
+
+## P48 | P36 Packet 3 Launch Registration
+
+State: CLOSED
+
+Objective: register and launch one independent provider-free answer-tracer
+session without moving feature work or external effects into the coordinator.
+
+Closed Plan:
+
+- `docs/dev/plans/0099-2026-09-14-p36-packet-3-launch-registration.md`.
+
+Current State:
+
+- PR 47 merged the registration as canonical commit `487ec89e`;
+- the independent lane published activation `063c18b7` before source work;
+- after that process exhausted its usage allowance, the coordinator accepted
+  the bounded lane and advanced Plan 0098 to integration-ready `75f2342e`.
+
+Next Bounded Action:
+
+- integrate Packet 3 through Plan 0100; keep Packet 4 and every real model or
+  runtime effect separate.
+
+## P49 | P36 Packet 3 Integration Reconciliation
+
+State: CLOSED
+
+Objective: integrate the exact provider-free Packet 3 answer-worker checkpoint,
+refresh the source runtime manifest, and reconcile WI-003 without external
+runtime effects.
+
+Closed Plan:
+
+- `docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md`.
+
+Current State:
+
+- exact feature checkpoint `75f2342e` is preserved through merge `824b8627`;
+- manifest refresh `a304fbbf` restores package and lifecycle validation;
+- all 2,860 collected tests pass with seven skips, and two source packages are
+  byte-identical at SHA-256 `e9e47fa00dffa9e86c0dc439d42419326dc1d815d2746d47467f388477b2afda`;
+- real model, public transport, installed runtime, providers, P35, staging, and
+  production remain outside scope;
+- PR 48 merged the candidate as canonical commit `d41e1a6e`.
+
+Next Bounded Action:
+
+- merge the closeout-only projections, verify canonical main, and plan Packet 4
+  separately if the operator continues P36.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
@@ -2754,12 +2891,21 @@ Current State:
 - the selected seam is a repo-only deterministic harness with four separate
   axes, canonical JSON plus Markdown projection, and explicit blocking versus
   observation tiers;
-- no implementation, evaluator run, judge call, runtime mutation, production
-  sample, or provider access has begun.
+- independent Codex thread `01a09cf4-c89d-7b41-901a-37648171312a`
+  completed Packet 1 at clean remote-equal checkpoint
+  `58020b04f8fe109062802abf5b794e9ff5e1024c`;
+- its deterministic four-axis provider-free tracer integrated through PR 41 as
+  canonical merge `6d5eb5d9`; no judge call, runtime mutation, production
+  sample, or provider access occurred.
 
 Closed Architecture Plan:
 
 - `docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md`.
+
+Closed Implementation Plan:
+
+- `docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md` on
+  `feat/service-quality-v1`.
 
 Dependencies:
 
@@ -2769,9 +2915,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- assign WI-008 Packet 1 to one independent top-level lane session from current
-  `origin/main` and register its `feat/service-quality-v1` custody before
-  provider-free implementation.
+- plan real retrieval and grounding adapters as later separately bounded
+  packets from current canonical main.
 
 ## P38 | Reserved Production Hotfix Path
 
@@ -2857,18 +3002,27 @@ duplicate delivery.
 
 Current State:
 
-- WI-006 is `READY` behind explicit WI-002/WI-004 dependencies;
+- WI-006 is `READY` for a separately planned later packet;
 - current immutable retrieval heads, document versions, collection sightings,
   and notification receipts provide seams, but no durable monitor/baseline/
   digest authority exists;
 - the selected seam is a cache-only versioned view subscription with explicit
   baseline acceptance and separately gated delivery intents;
-- no implementation, installed schedule, live delivery, or provider action has
-  begun.
+- independent Codex thread `01a09cf4-c89e-7660-9caf-66a78f34ded0`
+  completed query-view Packet 1 at clean remote-equal checkpoint
+  `c97982506825e58f0ab8cae138ee557f7055cf91` and closed Plan 0093;
+- its provider-free monitor kernel integrated through PR 41 as canonical merge
+  `6d5eb5d9`; no installed schedule, live delivery, follow tracing, or provider
+  action occurred.
 
 Closed Architecture Plan:
 
 - `docs/dev/plans/0083-2026-09-13-saved-monitor-and-digest-architecture-and-lane-handoff.md`.
+
+Closed Implementation Plan:
+
+- `docs/dev/plans/0093-2026-09-13-saved-monitors-packet-1.md` on
+  `feat/saved-monitors-v1`.
 
 Dependencies:
 
@@ -2878,9 +3032,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- retain P40 as planned until WI-002 Packet 1 integrates, then assign WI-006
-  Packet 1 to one independent top-level lane session from current
-  `origin/main`.
+- plan query-view composition as a later packet from current canonical main;
+  follow tracing remains gated by P35 integration.
 
 ## P41 | Implementation Lane Launch Registration
 
@@ -2939,3 +3092,205 @@ Resume Action:
 
 - resume the same three owning sessions after they reconcile canonical `main`,
   then execute Packet 1 only.
+
+## P43 | Packet 1 Integration Reconciliation
+
+State: CLOSED
+
+Objective: reconcile the first implementation wave into canonical planning
+authority and expose the next safe provider-free lanes.
+
+Current State:
+
+- P34 merged through PR 35 as `c6bccab8`, P33 merged through PR 36 as
+  `75e7771e`, and this reconciliation merged through PR 37 as `ce825939`;
+- P35 is combined with both integrations, fully validated, and remote-equal at
+  `d2c9f8eb`, but PR creation remains explicitly policy-gated;
+- Plans 0084 and 0085 are closed as Packet 1 outcomes while their parent work
+  items remain in progress for later packets.
+
+Closed Plan:
+
+- `docs/dev/plans/0089-2026-09-13-packet-1-integration-reconciliation.md`.
+
+Dependencies:
+
+- consumes P33/P34 merge receipts and P35's exact published reconciliation;
+  no runtime, provider, tracker, release, or deployment dependency.
+
+Next Bounded Action:
+
+- launch only explicitly bounded provider-free successor lanes while retaining
+  P35 at its separately informed PR gate.
+
+## P44 | Next Wave Launch Registration
+
+State: CLOSED
+
+Objective: publish, register, and launch three isolated provider-free Packet 1
+sessions for agent questions, service quality, and the saved-monitor kernel.
+
+Current State:
+
+- P36, P37, and P40 each have a clean dedicated worktree and a remotely equal
+  OPEN activation checkpoint incorporating canonical `606272ab`;
+- Plan 0090 reconciles their shared catalog, roadmap, runbook, dependency, and
+  overlap ownership;
+- P35 remains at its separate pull-request authorization gate and P40 follow
+  tracing is excluded;
+- no feature implementation or live/runtime/provider effect has begun in this
+  coordinator lane.
+
+Closed Plan:
+
+- `docs/dev/plans/0090-2026-09-13-next-wave-launch-registration.md`.
+
+Dependencies:
+
+- consumes merged P33 Packet 1; P35 is not a launch dependency because its
+  follow-view surface is explicitly outside P40 Packet 1.
+
+Next Bounded Action:
+
+- merge the ownership projection, then resume the same three independent
+  top-level Codex sessions for bounded Packet 1 implementation.
+
+## P45 | Next Wave Integration Reconciliation
+
+State: CLOSED
+
+Objective: reconcile the accepted P36, P37, and P40 Packet 1 checkpoints into
+one reviewed canonical integration without widening runtime or provider scope.
+
+Current State:
+
+- P36, P37, and P40 Packet 1 integrated through PR 41 as canonical merge
+  `6d5eb5d972024cd584bfcc8bf57975f49fa90f45`;
+- P36 and P40 use independent module-local schema ledgers, so their product
+  surfaces no longer overlap at the global service schema;
+- P35 remains at its separate pull-request authorization gate.
+
+Closed Plan:
+
+- `docs/dev/plans/0094-2026-09-13-next-wave-integration-reconciliation.md`.
+
+Dependencies:
+
+- consumes exact accepted checkpoints P36 `d6c6ff78`, P37 `58020b04`, and P40
+  `c9798250`; P35 is explicitly not part of this integration.
+
+Next Bounded Action:
+
+- plan later Packet 2 work independently from current canonical main; keep P35
+  at its separate pull-request authorization gate.
+
+## P46 | P36 Packet 2 Launch Registration
+
+State: CLOSED
+
+Objective: register and launch one independent provider-free evidence-tracer
+session without moving feature work or runtime effects into the coordinator.
+
+Current State:
+
+- Plan 0096 is clean and remote-equal at `07f96129` on
+  `feat/agent-question-evidence-v2`, based on canonical `d4e3cd65`;
+- its dedicated worktree exists and no competing pull request owns the branch;
+- Plan 0095 freezes coordinator custody at `2b29bf19` for this registration;
+- PR 43 integrated the registration as `5004df7f`; replacement top-level
+  thread `01a09d44-49bf-73b2-a613-aee72c98f471` published activation
+  `e566724c` before feature implementation.
+
+Closed Plan:
+
+- `docs/dev/plans/0095-2026-09-13-p36-packet-2-launch-registration.md`.
+
+Dependencies:
+
+- consumes integrated P33 and P36 Packet 1 contracts; no P35, model, public
+  transport, installed-runtime, provider, tracker, or production dependency.
+
+Next Bounded Action:
+
+- integrate this activation closeout while the independent owner executes
+  Plan 0096; no coordinator feature work or runtime effect follows.
+
+## P50 | Enable GitHub Issues
+
+State: CLOSED
+
+Objective: enable the GitHub Issues surface on the exact owned public fork while
+leaving issue publication and all other tracker mutations separately gated.
+
+Current State:
+
+- GitHub reports `has_issues: true` for
+  `CochranResearchGroup/last30days-skill`;
+- the post-activation issue listing succeeds and is empty;
+- Plan 0102/P51 now proposes the accepted narrow registry expansion for
+  WI-000 through WI-009 creation and existing mapped-label application; issue
+  publication still requires that proposal to enter canonical main first.
+
+Closed Plan:
+
+- `docs/dev/plans/0101-2026-09-13-enable-github-issues.md`.
+
+Dependencies:
+
+- consumes closed P32 readiness and the operator's explicit repository-setting
+  authority; no product, runtime, provider, or deployment dependency.
+
+Next Bounded Action:
+
+- P50 is complete. Continue issue publication through P51 under its exact
+  operator authority and registry actions; GitHub Projects remain separately
+  gated.
+
+## P51 | Productization Readiness Prerequisites
+
+State: PLANNED
+
+Objective: clear the accepted productization review findings and prove a
+coherent versioned development runtime before another feature packet starts.
+
+Current State:
+
+- search, question answering, saved monitors, quality tracing, and the
+  isolated-runtime doctor are integrated in source; Plan 0103 and PR 64 closed
+  both accepted question-contract failures;
+- GitHub Issues are enabled; PR 51 corrected canonical tracker guidance and
+  WI-000 through WI-009 are published as issues #52 through #61;
+- tracker-documentation reconciliation and issue publication are complete;
+  P35 integration, a versioned development runtime, and development dogfood
+  remain before the gate can close;
+- P35 tailored follows is validated on its own published branch but is 88
+  commits behind current main; Plan 0104 owns its active reconciliation;
+- `docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md` is
+  closed through merged PR 64 at canonical `b753bcef`; both accepted
+  question-contract defects are repaired and regression-locked;
+- production remains the only active runtime and does not contain the new
+  product surfaces; source and production currently reuse service version
+  `0.3.116` for different manifests.
+
+Plan:
+
+- `docs/dev/plans/0102-2026-09-13-productization-readiness-prerequisites.md`.
+
+Dependencies:
+
+- work may begin provider-free from current canonical main; tracker publication
+  is complete. Development-runtime
+  provisioning, release, dogfood effects, and issue actions beyond the accepted
+  backlog creation retain their separate action-specific gates. P35 PR creation
+  follows the normal branch/integration workflow and is not registry-gated.
+
+Program Gate:
+
+- no new feature packet for WI-001 through WI-006 or WI-008 may activate until
+  P51 is `CLOSED` and WI-009 is `DONE`; corrective packets under P51 and the
+  reserved WI-007 production-hotfix lane are the only exceptions.
+
+Next Bounded Action:
+
+- execute Plan 0104 from canonical `31342c9f`, preserving both branch histories
+  and every runtime and provider gate.

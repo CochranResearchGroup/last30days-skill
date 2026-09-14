@@ -5,6 +5,7 @@ State: READY
 Priority: P2
 Lane: Follows
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/58
 Blocked by: WI-004 Packet 1 for implementation; WI-004 closeout for final acceptance
 
 ## Problem

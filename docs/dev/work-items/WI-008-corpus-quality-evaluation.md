@@ -5,9 +5,13 @@ State: READY
 Priority: P2
 Lane: Quality
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/60
 Blocked by: none for Packet 1; retrieval acceptance by WI-002 closeout; grounding integration by WI-003 Packet 3 and acceptance by WI-003 closeout
 Architecture: docs/dev/notes/0121-2026-09-13-corpus-retrieval-and-grounding-quality-architecture.md
 Implementation plan seed: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md
+Last closed plan: docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md
+Branch: feat/service-quality-v1
+Owner: Codex 01a09cf4-c89d-7b41-901a-37648171312a
 
 ## Problem
 
@@ -37,13 +41,10 @@ silently degrade agent answers.
 No automatic model promotion, data deletion, or live-provider expansion based
 only on a score.
 
-## Ready Handoff
+## Next Owner Action
 
-Assign one independent top-level lane session. Start from current
-`origin/main`, create and register `feat/service-quality-v1`, and implement
-Packet 1 from the architecture note: strict evaluation-set, threshold-policy,
-request/report, metric/result, effect, and artifact contracts; deterministic
-IDs/digests; fake four-axis adapters; JSON/Markdown projection; CLI exit
-semantics; and provider-free self-tests. Do not start a service, call a judge,
-read a live database, use a provider/browser, install a runtime, edit CI, or
-touch staging/production in Packet 1.
+Packet 1 integrated through PR 41 as canonical merge `6d5eb5d9`. Before any
+new implementation, write and register a separately bounded packet from
+current `origin/main` for a real retrieval or grounding adapter. Keep judge
+calls, production samples, providers, installed runtimes, CI changes, staging,
+and production behind their own explicit gates.
