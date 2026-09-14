@@ -28655,3 +28655,51 @@ Next Bounded Action:
 
 - integrate this closeout while the independent owner executes only Plan 0096;
   then review its exact clean checkpoint before any feature integration.
+
+## Turn 458 | 2026-09-13
+
+Focus: Plan 0097/P47 integration of P36 Packet 2.
+
+Authority Consulted:
+
+- Plans 0079, 0096, and 0097; P36/P47; WI-003; exact Git refs; CodeGraph;
+  branch, integration, validation, test, documentation, and lane policy.
+
+Decisions And Changes:
+
+- accepted independent feature checkpoint `4e937017` into coordinator review;
+- froze one blocking closed-world finding: the legacy and temporal resolver
+  joins authorize version rows but must additionally require the parent row to
+  have the same access partition;
+- opened Plan 0097 for exact-commit merge, regression/repair, source-manifest
+  refresh, comprehensive validation, and canonical projection closeout;
+- kept P35, installed runtimes, providers, browsers, models, public HTTP/MCP,
+  schedules, delivery, tracker, releases, staging, and production untouched.
+
+Validation Evidence:
+
+- feature worktree and remote are equal at `4e937017` with only the five
+  Plan 0096 files changed;
+- delegated validation reports 5 focused, 53 affected, and 2,843 comprehensive
+  tests collected with 2,836 passed and 7 skipped;
+- primary CodeGraph review confirms exact immutable-version reads and the
+  parent-partition join gap in both storage-family queries.
+
+State Movement:
+
+- Plan 0097/P47 `unplanned -> OPEN`; Plan 0096 remains closed on its feature
+  ref pending integration; P36 and WI-003 remain active.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; independent top-level feature session evidence was reviewed
+  by the coordinator and is not treated as automatic acceptance.
+
+Graphiti Write Status:
+
+- `not_written`; current Git, source, tests, and plans are authoritative.
+
+Next Bounded Action:
+
+- publish this plan checkpoint, merge exact `4e937017`, and execute the bounded
+  remediation and coordinator joins before review integration.

@@ -1,5 +1,22 @@
 schema_version: 1
 lanes:
+  - id: P47
+    objective: Reconcile and integrate P36 immutable evidence Packet 2
+    work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    plan: docs/dev/plans/0097-2026-09-13-p36-packet-2-integration-reconciliation.md
+    plan_ref: refs/heads/integration/p36-packet2-reconciliation
+    branch: integration/p36-packet2-reconciliation
+    target: main
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 9080c43399eabba00dd4d1e92ca93cd3665bf459
+    remote_ref: refs/remotes/origin/integration/p36-packet2-reconciliation
+    integration: merge
+    integration_receipt: null
+    dependencies: [P36]
+    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md, service/runtime-manifest.json]
+    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md, service/runtime-manifest.json]
+    updated_at: 2026-09-13
   - id: P46
     objective: Register and launch the provider-free P36 evidence tracer Packet 2
     work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]

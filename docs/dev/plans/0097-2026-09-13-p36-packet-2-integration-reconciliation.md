@@ -74,14 +74,31 @@ planning projections without producing an installed or live runtime effect.
 - terminal condition: all five criteria pass at one merged canonical commit or
   the exact blocking gate is recorded without widening scope.
 
+## Definition Of Done
+
+The exact feature ancestry plus the partition-join repair and current source
+manifest are merged through a reviewed PR, canonical main is clean and
+remote-equal, and all plan, lane, work-item, validation, and non-effect claims
+are reconciled to that merge receipt.
+
 ## Current Checkpoint
 
 ### Checkpoint P0097-C01 | 2026-09-13
+
+Plan version: 1
 
 State transition: `unplanned -> OPEN`.
 
 Progress classification: `blocker_reduction`; integration custody and the sole
 accepted review finding are frozen before source reconciliation.
+
+Authority classification:
+
+- `inherited_authority` for exact feature integration, closed-world repair,
+  source-manifest refresh, validation, repository projections, and fork PR;
+- `human_gate` for all installed/runtime/provider/release/production effects
+  and for P35;
+- `scope_expansion` for Packet 3 worker or Packet 4 public transport behavior.
 
 Next action: publish this plan checkpoint, merge exact feature checkpoint
 `4e937017`, and execute only the closed-world partition-join remediation and

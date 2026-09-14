@@ -2763,6 +2763,34 @@ Next Bounded Action:
   immutable-evidence tracer, then return a clean checkpoint for coordinator
   integration.
 
+## P47 | P36 Packet 2 Integration Reconciliation
+
+State: OPEN
+
+Objective: review and integrate the exact Packet 2 checkpoint, close the
+parent/version partition-integrity seam, and reconcile its source-manifest and
+canonical planning joins.
+
+Active Plan:
+
+- `docs/dev/plans/0097-2026-09-13-p36-packet-2-integration-reconciliation.md`.
+
+Current State:
+
+- P36 feature checkpoint `4e937017` is clean and remote-equal with no PR;
+- delegated focused, affected, comprehensive, compilation, and temporary
+  source-package checks pass;
+- primary review accepted one blocking closed-world finding: both immutable
+  version reads must require an equal parent-row access partition;
+- installed runtimes, providers, public HTTP/MCP, models, P35, staging, and
+  production remain outside scope.
+
+Next Bounded Action:
+
+- publish the integration plan, merge exact `4e937017`, add the partition-join
+  regression and repair, refresh the source manifest, and validate the combined
+  candidate before PR integration.
+
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
 State: PLANNED
