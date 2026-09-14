@@ -20,6 +20,13 @@ from lib.service_http import ServiceAlreadyRunningError, UnixServiceServer
 
 
 class StubApplication:
+    def follow_capabilities(self):
+        return {
+            "schema_version": 1,
+            "registry_digest": "sha256:" + "a" * 64,
+            "targets": [],
+        }
+
     @staticmethod
     def _question_status():
         return question_contracts.QuestionStatusV1.from_dict(
@@ -195,6 +202,7 @@ def test_unix_service_exposes_health_and_capabilities_with_private_socket(tmp_pa
 
         assert client.health()["status"] == "ready"
         assert client.tick_schedule_status()["state"] == "disabled"
+        assert client.follow_capabilities()["targets"] == []
         info = client.service_info()
         assert info.status is contracts.ServiceStatus.READY
         assert info.product == "last30days"

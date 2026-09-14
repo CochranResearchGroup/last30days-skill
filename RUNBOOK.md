@@ -30626,7 +30626,11 @@ Next Bounded Action:
 
 Focus: publish and reconcile Wave 4 implementation custody.
 
-Plan authority: Plan 0107 and Plans 0117-0119.
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`;
+`docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md`;
+`docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md`;
+`docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md`.
 
 Authority Consulted:
 

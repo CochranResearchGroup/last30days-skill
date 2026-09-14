@@ -89,6 +89,9 @@ class ServiceClient:
     def tick_schedule_status(self) -> dict[str, Any]:
         return self._request("GET", "/v1/tick-schedule")
 
+    def follow_capabilities(self) -> dict[str, Any]:
+        return self._request("GET", "/v1/follow-capabilities")
+
     def query(self, request: contracts.QueryRequest) -> contracts.QueryResponse:
         return contracts.QueryResponse.from_dict(
             self._request("POST", "/v1/query", request.to_dict())

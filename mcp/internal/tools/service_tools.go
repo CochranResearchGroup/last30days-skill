@@ -106,6 +106,10 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 		),
 	}
 	infoOptions = append(infoOptions, commonAnnotations(true, false)...)
+	followCapabilityOptions := []mcplib.ToolOption{
+		mcplib.WithDescription("Discover provider-native tailored-follow support, dependency readiness, execution readiness, routes, identities, and bounds without executing work."),
+	}
+	followCapabilityOptions = append(followCapabilityOptions, commonAnnotations(true, false)...)
 
 	queryOptions := []mcplib.ToolOption{
 		mcplib.WithDescription(
@@ -449,6 +453,10 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 			handler: makeServiceInfoHandler(client),
 		},
 		{
+			tool:    mcplib.NewTool("follow_capabilities", followCapabilityOptions...),
+			handler: makeFollowCapabilitiesHandler(client),
+		},
+		{
 			tool:    mcplib.NewTool("query", queryOptions...),
 			handler: makeQueryHandler(client, false),
 		},
@@ -513,6 +521,16 @@ func makeServiceInfoHandler(client ServiceAPI) server.ToolHandlerFunc {
 		_ mcplib.CallToolRequest,
 	) (*mcplib.CallToolResult, error) {
 		payload, err := client.Get(ctx, "/v1/service-info")
+		return toolResult(payload, err)
+	}
+}
+
+func makeFollowCapabilitiesHandler(client ServiceAPI) server.ToolHandlerFunc {
+	return func(
+		ctx context.Context,
+		_ mcplib.CallToolRequest,
+	) (*mcplib.CallToolResult, error) {
+		payload, err := client.Get(ctx, "/v1/follow-capabilities")
 		return toolResult(payload, err)
 	}
 }

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Provider-free question and native follow surfaces.** Service 0.3.118 and
+  MCP 4.0.6 add bounded question admission, profile-scoped status, immutable
+  citation reads, and explicit native Reddit/YouTube follow capability
+  discovery. Default question execution and native follow execution remain
+  fail-closed unless their bounded dependencies are explicitly injected.
+
 - **Typed X tailored-follow contracts.** Service 0.3.117 and MCP 4.0.5 add
   provider-free account, list, topic, and home-feed follow specifications with
   canonical partition-bound identities, disabled creation, immutable revision

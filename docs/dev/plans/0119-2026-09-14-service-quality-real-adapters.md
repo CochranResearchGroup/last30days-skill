@@ -170,6 +170,11 @@ The complete non-integration suite was started once but this execution
 environment detached before retaining its terminal output; it is not claimed
 as passed and remains a review/integration validation gate.
 
+Authority classification:
+
+- `inherited_authority`; all implementation and validation used only sealed,
+  provider-free repository fixtures and read-only database access.
+
 Effect receipt: provider, model, browser, live/installed service, runtime,
 CI, schedule, release, deployment, and tracker effects remain zero. The
 fixture adapter opens only a supplied synthetic SQLite path with `mode=ro` and

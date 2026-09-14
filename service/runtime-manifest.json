@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "92950d8631e263f8f868b3c097bdd13a8d6492c1e65395893165c28112432f00",
+      "sha256": "2c8d9ca62c8a9e84d1801f4e7f73b588b6634c4b30a14db9b0baf1ae38be078b",
       "source": "service/VERSION"
     },
     {
@@ -11,13 +11,18 @@
       "source": "skills/last30days/schemas/post-search-contracts-v1.json"
     },
     {
+      "path": "schemas/question-contracts-v1.json",
+      "sha256": "63e0314be2618b0d353deba7ad20a28aee44d1cf1aa8b06c9bf3dc17319693a4",
+      "source": "skills/last30days/schemas/question-contracts-v1.json"
+    },
+    {
       "path": "schemas/saved-query-contracts-v1.json",
       "sha256": "5dc80b79fd7b9555eba51c0c860f9ea49d03fe26721d2d5e167854b2b8b6fdc4",
       "source": "skills/last30days/schemas/saved-query-contracts-v1.json"
     },
     {
       "path": "schemas/service-contracts-v1.json",
-      "sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+      "sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
       "source": "skills/last30days/schemas/service-contracts-v1.json"
     },
     {
@@ -302,27 +307,27 @@
     },
     {
       "path": "scripts/lib/service_acquisition_worker.py",
-      "sha256": "8eecbe3593a1385ffb0479ea84def9d7865b55b75bbc9357778e24bfbeaf81cb",
+      "sha256": "4a5bf139adb5f2adb3f740d7f1b90c18fca1c28f7b6e1fb5d20467afa72086b7",
       "source": "skills/last30days/scripts/lib/service_acquisition_worker.py"
     },
     {
       "path": "scripts/lib/service_app.py",
-      "sha256": "b7169942d2054aa7af1b950bbe023f757c1dd4cd3a11fc9e7a41eeb26cebfac5",
+      "sha256": "605d45c2569b5e8b2d1699b4d6172cf3630d2e254bda9a497c357aefd20d4ae0",
       "source": "skills/last30days/scripts/lib/service_app.py"
     },
     {
       "path": "scripts/lib/service_client.py",
-      "sha256": "027ae27a4023d5e62e24a24608f0a858d4e9927755720dac70acb7db746db354",
+      "sha256": "b89cdba575627564db91b8b4a46f8774405dfabd2e1475a733d8c4c1527cc49d",
       "source": "skills/last30days/scripts/lib/service_client.py"
     },
     {
       "path": "scripts/lib/service_collection.py",
-      "sha256": "de40dd91f748cfa9eb6d2f05dd0b911048e8e84ea5beee81319036cb2a8d529c",
+      "sha256": "a2bc7ebc0cb77f121d76d9e3050ae3a46bd79bbe384fb8e9770890e16f9cc1cf",
       "source": "skills/last30days/scripts/lib/service_collection.py"
     },
     {
       "path": "scripts/lib/service_contracts.py",
-      "sha256": "3da1925fd0eeb86b76b140d2188cdde1fba05614004cd79c8e69969ec9a53eab",
+      "sha256": "9d220274c5f19210ed8007b547e60d3b5c22f88bcb81697876179561546f534c",
       "source": "skills/last30days/scripts/lib/service_contracts.py"
     },
     {
@@ -337,8 +342,18 @@
     },
     {
       "path": "scripts/lib/service_follow_capabilities.py",
-      "sha256": "e7fcbe7e93e4b121f3b5ecf2c1b6ef71265a5d241f82a207bc057dfffc9747c2",
+      "sha256": "2ece05b1c03fd0c371941e0a3b4d681a7510a13788c0369078cb9937ba73769b",
       "source": "skills/last30days/scripts/lib/service_follow_capabilities.py"
+    },
+    {
+      "path": "scripts/lib/service_follow_reddit.py",
+      "sha256": "b6844b1eebc5393aed96477d9a3ce66f8829d5358d13eb35ccb1ea956cef9692",
+      "source": "skills/last30days/scripts/lib/service_follow_reddit.py"
+    },
+    {
+      "path": "scripts/lib/service_follow_youtube.py",
+      "sha256": "ed7d6815c828e85baefb69229ca3bb85ed3e125f7399ef3f79b05b5fb84040a7",
+      "source": "skills/last30days/scripts/lib/service_follow_youtube.py"
     },
     {
       "path": "scripts/lib/service_graphiti.py",
@@ -347,7 +362,7 @@
     },
     {
       "path": "scripts/lib/service_http.py",
-      "sha256": "9c9b13bc9011b7d77117811f10caf800fa0e8581aebc02d3026d57805ac98046",
+      "sha256": "7570b0f93b2ea84f22e66ff9d76eeb2cf7474958b25d2079a7cdb53480f872be",
       "source": "skills/last30days/scripts/lib/service_http.py"
     },
     {
@@ -406,8 +421,13 @@
       "source": "skills/last30days/scripts/lib/service_publication.py"
     },
     {
+      "path": "scripts/lib/service_question_application.py",
+      "sha256": "c9c38e89eca5cb05cc2e5be8c4cccda91e7f6750d5f9fea68f08e531157378da",
+      "source": "skills/last30days/scripts/lib/service_question_application.py"
+    },
+    {
       "path": "scripts/lib/service_question_contracts.py",
-      "sha256": "34ef65c5ada3d19940f7394c2e42def51f95cf79eadef6abd33ed2427d19c1bc",
+      "sha256": "065fcf4e9ef74cacedf0222b9f86fd01c6882e907819cc22a57c5df371cf88cc",
       "source": "skills/last30days/scripts/lib/service_question_contracts.py"
     },
     {
@@ -422,7 +442,7 @@
     },
     {
       "path": "scripts/lib/service_questions.py",
-      "sha256": "1056d2d7eaa10a9d8a1828c4f276afa04afcc18c54124adfab55f9d03e5dedba",
+      "sha256": "58c7f20f6c7df5da9e0a9a0979b6e82cc5e4a75c2324425a177cc94c69ddf93b",
       "source": "skills/last30days/scripts/lib/service_questions.py"
     },
     {
@@ -707,7 +727,7 @@
     },
     {
       "path": "scripts/service.py",
-      "sha256": "a0758198baeaa5c6d4e6b99ade02c3e313209e1e066da631e1e61c6012a2ca46",
+      "sha256": "44666f158e7af5c10824ca2c7dfaf6f69718c5215832d09d6fc1e11654aba6de",
       "source": "skills/last30days/scripts/service.py"
     },
     {
@@ -718,5 +738,5 @@
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.117"
+  "service_version": "0.3.118"
 }

@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import sqlite3
 from collections.abc import Callable, Mapping, Sequence
 from datetime import datetime, timezone
@@ -18,6 +19,7 @@ from . import service_contracts as contracts
 from . import service_monitor_contracts as monitor_contracts
 from . import service_question_contracts as question_contracts
 from .service_collection import CollectionCoordinator, CollectionSpec
+from .service_follow_capabilities import DEFAULT_FOLLOW_CAPABILITIES
 from .service_intelligence_contracts import TaskContractRegistry
 from .service_knowledge import TemporalKnowledgeQuery
 from .service_monitor_views import (
@@ -341,6 +343,10 @@ class CacheQueryApplication:
             raise RuntimeError("tick schedule status fields are invalid")
         return status
 
+    def follow_capabilities(self) -> dict[str, object]:
+        """Report support and readiness without enabling or executing a target."""
+        return DEFAULT_FOLLOW_CAPABILITIES.catalog(os.environ, which=shutil.which)
+
     def service_info(self) -> contracts.ServiceInfo:
         index = self._index_info()
         capabilities = ["cache_query", "lexical_search", "post_search"]
@@ -362,6 +368,7 @@ class CacheQueryApplication:
                 "trend_query",
                 "coverage_query",
                 "saved_query_views",
+                "follow_capability_discovery",
             )
         )
         if self.graph_projection_enabled:

@@ -69,6 +69,7 @@ func TestToolSurfaceNamesAndAnnotations(t *testing.T) {
 			t.Fatalf("%s is not idempotent", registration.tool.Name)
 		}
 		wantReadOnly := registration.tool.Name == "service_info" ||
+			registration.tool.Name == "follow_capabilities" ||
 			registration.tool.Name == "search_posts" ||
 			registration.tool.Name == "question_status" ||
 			registration.tool.Name == "read_evidence" ||
@@ -90,7 +91,7 @@ func TestToolSurfaceNamesAndAnnotations(t *testing.T) {
 		}
 	}
 	wantNames := []string{
-		"service_info", "query", "search_posts", "ask_question", "question_status", "read_evidence", "refresh", "job_status", "topic",
+		"service_info", "follow_capabilities", "query", "search_posts", "ask_question", "question_status", "read_evidence", "refresh", "job_status", "topic",
 		"temporal_query", "profile_history", "coverage", "collection",
 		"saved_query", "maintenance_status",
 	}
