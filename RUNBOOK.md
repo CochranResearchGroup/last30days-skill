@@ -29263,3 +29263,66 @@ Next Bounded Action:
 - merge this handoff through the normal PR workflow, verify canonical main, and
   give a fresh top-level agent the exact Plan 0103 corrective packet described
   in note 0125.
+
+## Turn 469 | 2026-09-14
+
+Focus: activate Plan 0103 for the two accepted P51 question-contract repairs.
+
+Authority Consulted:
+
+- operator goal to continue Plan 0103; merged handoff PR 63; Plan 0102/P51;
+  WI-009/#55; note 0125; planning, goal, work-item, lane, testing,
+  documentation, Git, collaborative-development, validation, Graphiti, and
+  CodeGraph policy; current Git/worktree, forge, Graphiti, and CodeGraph
+  readback.
+
+Decisions And Changes:
+
+- created
+  `docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md` as
+  one bounded corrective packet on `fix/question-contract-repair-v1` from
+  current canonical `origin/main`;
+- registered P51 as an active worktree lane and advanced WI-009 from `READY` to
+  `IN_PROGRESS` without mutating GitHub issue state;
+- froze the public interfaces and limited implementation to durable handling of
+  contract-construction failures plus total direct evidence-only answer
+  budgeting;
+- retained all runtime, provider, browser, release, deployment, production,
+  issue-mutation, P35, and unrelated-feature gates.
+
+Validation Evidence:
+
+- canonical and lane base are clean at
+  `5422fc2bb7d1e39c87e2657c1551d58a525a3e17`;
+- every pre-existing registered worktree is clean and remote-equal;
+- issue #55 is open with the unique WI-009 marker, and the owned fork has no
+  open pull request;
+- CodeGraph is healthy at 376 files, 10,537 nodes, and 26,059 edges;
+- Graphiti is healthy, but focused discovery returned ten older unrelated
+  facts, so current repo and forge evidence remains authoritative;
+- active-only planning, goal-only planning, and catalog-only lane audits passed
+  before activation.
+
+State Movement:
+
+- Plan 0103 `unplanned -> OPEN`;
+- WI-009 `READY -> IN_PROGRESS`;
+- P51 custody `unregistered -> ACTIVE_WORKTREE` at the canonical base;
+- progress classification: `blocker_reduction`;
+- authority classification: `inherited_authority` for provider-free repository
+  repair and normal pull-request integration; all named external effects remain
+  `human_gate` or `scope_expansion`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this packet is owned by the top-level coordinator session.
+
+Graphiti Write Status:
+
+- `pending`; this activation checkpoint will be written after the repository
+  registration becomes a durable published commit.
+
+Next Bounded Action:
+
+- publish the Plan 0103 registration checkpoint, then run the first focused
+  red/green slice for malformed structured output.

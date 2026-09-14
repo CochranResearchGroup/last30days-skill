@@ -3262,6 +3262,9 @@ Current State:
   dogfood remain before the gate can close;
 - P35 tailored follows is validated on its own published branch but is 75
   commits behind current main and has no pull request;
+- `docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md` is
+  active on `fix/question-contract-repair-v1` from canonical `5422fc2b` for
+  only the two accepted question-contract repairs;
 - production remains the only active runtime and does not contain the new
   product surfaces; source and production currently reuse service version
   `0.3.116` for different manifests.
@@ -3286,6 +3289,5 @@ Program Gate:
 
 Next Bounded Action:
 
-- create the Packet 1 corrective branch for the two Q&A defects and the
-  tracker-documentation contradiction, then register its exact ownership and
-  custody before implementation.
+- publish the Plan 0103 lane-registration checkpoint, then execute the two
+  regression-first Q&A contract repairs without runtime or provider effects.
