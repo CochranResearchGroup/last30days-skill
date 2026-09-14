@@ -9,8 +9,8 @@ Integration: merge
 Roadmap: P36
 Plan version: 3
 Date: 2026-09-13
-Session owner: Codex `/root` (runtime-reported canonical task identity; no
-separate thread UUID exposed to this session)
+Session owner: independent Codex thread
+`01a09d44-49bf-73b2-a613-aee72c98f471`
 
 ## Objective
 
@@ -168,9 +168,8 @@ Authority classification:
 
 Evidence:
 
-- replacement owner identity is Codex `/root`, the canonical task identity
-  reported by this runtime; the runtime exposes no separate thread UUID to the
-  session;
+- replacement owner identity is independent Codex thread
+  `01a09d44-49bf-73b2-a613-aee72c98f471`;
 - the interrupted predecessor was stopped during preflight after printing
   credential-bearing environment variables and made no feature or plan edits;
   no environment, credential store, auth file, shell history, or prior

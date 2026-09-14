@@ -157,7 +157,9 @@ class QuestionEvidenceResolver:
                       v.redaction_class, v.access_partition_id,
                       v.transformation_version
                  FROM document_versions AS v
-                 JOIN documents AS d ON d.document_id = v.document_id
+                 JOIN documents AS d
+                   ON d.document_id = v.document_id
+                  AND d.access_partition_id = v.access_partition_id
                 WHERE v.version_id = ? AND v.access_partition_id = ?""",
             (ref.version_id, ref.access_partition_id),
         ).fetchone()
@@ -231,7 +233,9 @@ class QuestionEvidenceResolver:
                       v.published_at, v.metadata_json, v.observed_at,
                       v.access_partition_id, v.retention_class, v.created_at
                  FROM service_source_versions AS v
-                 JOIN service_source_records AS r ON r.record_id = v.record_id
+                 JOIN service_source_records AS r
+                   ON r.record_id = v.record_id
+                  AND r.access_partition_id = v.access_partition_id
                 WHERE v.version_id = ? AND v.access_partition_id = ?""",
             (ref.version_id, ref.access_partition_id),
         ).fetchone()

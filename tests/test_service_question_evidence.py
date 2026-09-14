@@ -465,6 +465,41 @@ def test_evidence_resolver_collapses_all_ref_failures_to_unavailable(tmp_path):
     ]
 
 
+def test_evidence_resolver_rejects_parent_version_partition_mismatches(tmp_path):
+    db_path = tmp_path / "question-evidence.db"
+    _seed_corpus(db_path)
+    conn = sqlite3.connect(db_path)
+    conn.execute(
+        "UPDATE documents SET access_partition_id = 'profile:other' "
+        "WHERE document_id = 'doc-legacy'"
+    )
+    conn.execute(
+        "UPDATE service_source_records SET access_partition_id = 'profile:other' "
+        "WHERE record_id = 'record-temporal-public'"
+    )
+    conn.commit()
+    conn.close()
+    refs = [
+        _citation(),
+        _citation(
+            storage_family="temporal",
+            version_id="version-temporal-public",
+            content_hash="sha256:version-temporal-public",
+            source_url="https://x.example/current",
+        ),
+    ]
+    request = question_contracts.EvidenceReadRequestV1.from_dict(
+        _read_request(refs=refs)
+    )
+
+    response = QuestionEvidenceResolver(db_path).read(
+        request, access_partitions=("public",)
+    )
+
+    assert [item.status for item in response.items] == ["unavailable", "unavailable"]
+    assert all(item.evidence is None for item in response.items)
+
+
 def _serialized_response_size(payload):
     measured = 2
     while True:
