@@ -2604,7 +2604,7 @@ Next Bounded Action:
 
 ## P33 | Post Search Product Surface
 
-State: OPEN
+State: CLOSED
 
 Objective: expose the complete authorized stored-post corpus through a stable,
 cache-only, evidence-preserving search and pagination contract for users and
@@ -2612,15 +2612,15 @@ agents.
 
 Current State:
 
-- WI-002 is `IN_PROGRESS`; Packet 2 source acceptance `37f7fac6` integrated through
+- WI-002 is `DONE`; Packet 2 source acceptance `37f7fac6` integrated through
   reviewed PR 79 at canonical `fae31198` after joined independent acceptance;
   Packet 1 closed and integrated through PR 36 as
   `75e7771e006f52847e8e47c1059b2b2000fb8ac7`;
 - Plan 0111 source acceptance `971f9ea9` is joined at Wave 2 integration head
   `aa59b42c`; independent review found no remaining search blocker;
-- Plan 0114 is activated at remote-equal checkpoint `81cbfc09` for final
-  isolated-runtime and fresh-client product acceptance; implementation remains
-  held until this custody projection integrates;
+- Plan 0114 completed final isolated-runtime and fresh-client acceptance at
+  runtime-tested source `68279438`; reviewed PR 87 integrated it as canonical
+  merge `d2f15ed6` with retained receipt digest `4a5cab7e762b56a08af72787ba44f9ce3be829f51c989d633ec4855f844a3b61`;
 - the selected seam is additive `POST /v1/posts/search` plus MCP
   `search_posts`, leaving `/v1/query` unchanged for the dependent WI-003 lane;
 - provider-free vertical packets cover both storage families, filters, stable
@@ -2629,11 +2629,11 @@ Current State:
   partition/source/publication filters, stable cursors, HTTP, MCP
   `search_posts`, and provider-free fixtures without runtime mutation.
 
-Active Plan:
+Last Closed Plan:
 
 - `docs/dev/plans/0114-2026-09-14-post-search-runtime-closeout.md`.
 
-Last Closed Plan:
+Prior Closed Plan:
 
 - `docs/dev/plans/0111-2026-09-14-post-search-packet-3.md`.
 
@@ -2648,9 +2648,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- reconcile Plan 0114 custody, then execute only Packet 4's
-  isolated-runtime/client closeout. P36 must remain serialized behind WI-002
-  closeout; P40 may consume the stable search/evidence contract in parallel.
+- none for P33. WI-003 may consume the closed search/runtime surface through
+  its own separately planned public question closeout packet.
 
 ## P34 | Isolated Development Runtime
 
@@ -2997,7 +2996,7 @@ Next Bounded Action:
 
 ## P39 | Cross-Service Tailored Follow Product Surface
 
-State: OPEN
+State: PLANNED
 
 Objective: extend tailored follows beyond X through provider-native target
 identity and capability discovery without duplicating collection scheduling or
@@ -3005,20 +3004,20 @@ flattening distinct service semantics.
 
 Current State:
 
-- WI-005 is `IN_PROGRESS`; WI-004 is `DONE` and its exact dependency is satisfied;
+- WI-005 is `READY`; WI-004 is `DONE` and its exact dependency is satisfied;
 - current global surface validation and coarse adapter capability declarations
   cannot prove that a source-target-operation combination is supported;
 - the selected seam adds a closed provider capability registry and
   discriminated target envelope to WI-004's shared collection authority;
 - provider-free packets cover registry/X compatibility, Reddit community/user,
   YouTube channel, discovery/lifecycle/query parity, and fresh-client closure;
-- no product implementation, provider use, runtime mutation, or schedule
-  change has begun;
-- Plan 0115 is activated at remote-equal checkpoint `337866e0` for the closed
-  capability registry, exact X compatibility, and legacy quarantine Packet 1;
-  implementation remains held until this custody projection integrates.
+- Plan 0115 Packet 1 integrated through reviewed PR 87 as canonical merge
+  `d2f15ed6`; the closed registry, exact X compatibility, identity-bound
+  migration evidence, and scheduler-isolated legacy quarantine pass;
+- no Reddit/YouTube adapter, provider use, installed runtime mutation, or
+  schedule change is claimed.
 
-Active Plan:
+Last Closed Plan:
 
 - `docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md`.
 
@@ -3034,12 +3033,12 @@ Dependencies:
 
 Next Bounded Action:
 
-- reconcile Plan 0115 custody, then execute only the provider-free
-  capability/compatibility foundation. Do not begin Reddit or YouTube tracers.
+- register a separately bounded provider-free Reddit-community/user and
+  YouTube-channel fixture tracer packet. Do not use providers or live locators.
 
 ## P40 | Saved Monitors And Evidence Digests
 
-State: OPEN
+State: PLANNED
 
 Objective: let users save query/follow views, detect evidence-backed changes
 from an accepted baseline, and prepare reviewable digests without rescraping or
@@ -3047,7 +3046,7 @@ duplicate delivery.
 
 Current State:
 
-- WI-006 is `IN_PROGRESS` on its separately bounded Packet 2;
+- WI-006 is `READY`; Packet 2 is closed and integrated;
 - current immutable retrieval heads, document versions, collection sightings,
   and notification receipts provide seams, but no durable monitor/baseline/
   digest authority exists;
@@ -3059,11 +3058,11 @@ Current State:
 - its provider-free monitor kernel integrated through PR 41 as canonical merge
   `6d5eb5d9`; no installed schedule, live delivery, follow tracing, or provider
   action occurred.
-- Plan 0116 is activated at remote-equal checkpoint `d764f257` for real
-  immutable saved-query composition over the accepted WI-002 search contract;
-  implementation remains held until this custody projection integrates.
+- Plan 0116 integrated through reviewed PR 87 as canonical merge `d2f15ed6`.
+  Immutable saved queries now compose real cache-only search and expose strict
+  local CLI/HTTP/MCP parity without scheduling or delivery.
 
-Active Plan:
+Last Closed Plan:
 
 - `docs/dev/plans/0116-2026-09-14-saved-query-composition.md`.
 
@@ -3078,14 +3077,13 @@ Closed Implementation Plan:
 
 Dependencies:
 
-- query composition can proceed on integrated WI-002 Packet 3; WI-004 is DONE,
-  so later follow composition is unblocked. Final WI-006 acceptance waits for
-  WI-002 closeout and WI-001 runtime proof. WI-003 synthesis is excluded.
+- WI-002, WI-001, and WI-004 are `DONE`, so follow composition and later digest
+  preparation are unblocked. WI-003 synthesis remains excluded from P40.
 
 Next Bounded Action:
 
-- reconcile Plan 0116 custody, then execute saved-query
-  composition only; do not fold follow or digest/delivery work into Packet 2.
+- register separately bounded follow-composition and deterministic
+  digest/delivery-intent packets; live delivery and schedules remain excluded.
 
 ## P41 | Implementation Lane Launch Registration
 

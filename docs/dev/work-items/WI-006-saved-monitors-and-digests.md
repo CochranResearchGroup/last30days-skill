@@ -1,16 +1,16 @@
 <!-- last30days-work-item:WI-006 -->
 # Turn searches and follows into saved monitors and digests
 
-State: IN_PROGRESS
+State: READY
 Priority: P2
 Lane: MCP
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/59
-Blocked by: none for Packet 2 query composition; final acceptance waits for WI-002 closeout
-Last closed plan: docs/dev/plans/0093-2026-09-13-saved-monitors-packet-1.md
-Active plan: docs/dev/plans/0116-2026-09-14-saved-query-composition.md
-Branch: feat/saved-query-composition-v2
-Owner: /root/wi002_search_packet2
+Blocked by: none for the next provider-free packet
+Last closed plan: docs/dev/plans/0116-2026-09-14-saved-query-composition.md
+Active plan: none
+Branch: main
+Owner: /root
 
 ## Problem
 
@@ -66,3 +66,10 @@ exact branch/worktree custody is published and reconciled.
 
 Activation checkpoint `d764f257` is published and awaits coordinator custody
 reconciliation before implementation begins.
+
+Packet 2 integrated through reviewed PR 87 as canonical merge `d2f15ed6`.
+Immutable saved queries now capture and replay bounded current-revision search
+views through strict local CLI/HTTP/MCP parity, with explicit baseline
+acceptance and no schedule or delivery side effect. WI-002 is `DONE`; WI-006
+returns to `READY` for separately planned follow composition and deterministic
+digest/delivery-intent packets.

@@ -1,6 +1,6 @@
 # Plan 0115 | Follow Capability And Compatibility Packet 1
 
-State: OPEN
+State: CLOSED
 Lane: P39
 Work item: WI-005
 Branch: feat/cross-service-follow-capabilities-v1
@@ -221,3 +221,31 @@ Authority classification:
 - focused new tests and the collection/product/process/contracts suite passed;
   the C02 full-suite runtime-manifest residual is unchanged and remains solely
   coordinator-owned. No external or runtime effect occurred.
+
+### Checkpoint P0115-C04 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`; Packet 1 is integrated through reviewed
+PR 87 as canonical merge `d2f15ed64ae608038cc5a8a82675fc149faa563c`.
+
+Authority classification:
+
+- `inherited_authority`: this closeout covers only provider-free capability
+  declarations, exact X compatibility, legacy quarantine, joined remediation,
+  validation, and repo-local projections. It grants no provider, browser,
+  schedule, installed-runtime, release, deployment, or issue authority.
+
+Accepted evidence:
+
+- exact lane source `c0fcd5fed2673e95ef77c36f05c00b8dd9cf7862`;
+- independent review verified that quarantined legacy rows cannot be revised,
+  enabled, scheduled, or allowed to consume or abort a healthy bounded due
+  batch;
+- registry-derived SQL admission remains bounded, compatibility receipts bind
+  sanitized row identities, and joined Python, Go, and package acceptance
+  passed.
+
+Next action: return WI-005 and P39 to `READY` and `PLANNED` for a separately
+bounded Reddit-community/user and YouTube-channel fixture tracer packet. Packet
+1 does not claim those adapters or final product closure.
