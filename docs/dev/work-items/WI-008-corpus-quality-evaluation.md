@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-008 -->
 # Measure corpus and retrieval quality continuously
 
-State: READY
+State: IN_PROGRESS
 Priority: P2
 Lane: Quality
 Parent: WI-000
@@ -12,7 +12,7 @@ Implementation plan seed: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-gr
 Last closed plan: docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md
 Current plan: docs/dev/plans/0122-2026-09-14-service-quality-grounding-closeout.md
 Branch: feat/service-quality-grounding-closeout-v1
-Owner: unassigned
+Owner: /root/wave4_wi008_plan
 
 ## Problem
 

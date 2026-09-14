@@ -1,6 +1,6 @@
 # Plan 0122 | Service Quality Grounding Closeout
 
-State: PLANNED
+State: OPEN
 Lane: P37
 Work item: WI-008
 Branch: feat/service-quality-grounding-closeout-v1
@@ -20,6 +20,18 @@ Close WI-008 provider-free by replacing the remaining fake grounding axis with
 a digest-pinned read-only adapter over real durable question, frozen retrieval,
 answer, citation and evidence records, explicitly limited to structural
 grounding rather than semantic or production quality.
+
+## Current State
+
+Plans 0092 and 0119 are closed, WI-002/WI-003 are `DONE`, and three real
+quality axes are accepted. The remaining provider-free gap is real structural
+answer grounding over the durable question/evidence records.
+
+## Definition Of Done
+
+All four real axes pass their adversarial acceptance at one reviewed joined
+checkpoint, canonical integration is recorded, and WI-008 is reconciled to
+`DONE` without a semantic, model or production-quality claim.
 
 ## Scope
 
@@ -91,3 +103,22 @@ Subagent status and reconciliation: `joined`; one read-only planner completed.
 Implementation owner remains unassigned pending exact custody.
 
 Next action: integrate registration and publish a plan-only activation ref.
+
+### Checkpoint P0122-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `PLANNED -> OPEN`.
+
+Progress classification: `implementation_ready`; exact isolated custody is
+accepted from canonical registration merge `e0fab676`.
+
+Authority classification:
+
+- `inherited_authority` covers the registered provider-free write set only;
+- every external-effect gate remains held.
+
+Subagent status and reconciliation: `assigned`; `/root/wave4_wi008_plan`, one
+owner, no children. Implementation waits for activation reconciliation.
+
+Next action: publish this plan-only checkpoint and return exact custody.

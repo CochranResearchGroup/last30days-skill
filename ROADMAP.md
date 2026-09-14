@@ -2910,7 +2910,7 @@ Next Bounded Action:
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
-State: PLANNED
+State: OPEN
 
 Objective: give maintainers one replayable, denominator-aware view of
 acquisition coverage, corpus integrity, retrieval quality, and answer grounding
@@ -3013,7 +3013,7 @@ Next Bounded Action:
 
 ## P39 | Cross-Service Tailored Follow Product Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: extend tailored follows beyond X through provider-native target
 identity and capability discovery without duplicating collection scheduling or
@@ -3066,7 +3066,7 @@ Next Bounded Action:
 
 ## P40 | Saved Monitors And Evidence Digests
 
-State: PLANNED
+State: OPEN
 
 Objective: let users save query/follow views, detect evidence-backed changes
 from an accepted baseline, and prepare reviewable digests without rescraping or

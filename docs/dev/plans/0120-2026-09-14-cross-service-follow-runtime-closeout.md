@@ -1,6 +1,6 @@
 # Plan 0120 | Cross-Service Follow Runtime Closeout
 
-State: PLANNED
+State: OPEN
 Lane: P39
 Work item: WI-005
 Branch: feat/cross-service-follow-runtime-closeout-v1
@@ -20,6 +20,18 @@ Close WI-005 provider-free by proving the integrated cross-service follow
 product through a reproducible packaged cache-only runtime, fresh HTTP/CLI/MCP
 clients, restart durability, exact authorization, truthful readiness and
 owned-process teardown.
+
+## Current State
+
+Plans 0115 and 0118 are closed and WI-001/WI-002/WI-004 are `DONE`. Native
+fixture execution is proven; only stock packaged-runtime readback, restart,
+denial, identity and teardown acceptance remains for WI-005.
+
+## Definition Of Done
+
+Every acceptance criterion passes at one reviewed joined checkpoint, the exact
+artifact/runtime receipt is retained, canonical integration is recorded, and
+WI-005 is reconciled to `DONE` without widening external-effect authority.
 
 ## Scope
 
@@ -94,3 +106,22 @@ Subagent status and reconciliation: `joined`; one read-only planner completed.
 Implementation owner remains unassigned pending exact custody.
 
 Next action: integrate registration and publish a plan-only activation ref.
+
+### Checkpoint P0120-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `PLANNED -> OPEN`.
+
+Progress classification: `implementation_ready`; exact isolated custody is
+accepted from canonical registration merge `e0fab676`.
+
+Authority classification:
+
+- `inherited_authority` covers the registered provider-free write set only;
+- every external-effect gate remains held.
+
+Subagent status and reconciliation: `assigned`; `/root/wave4_wi005_plan`, one
+owner, no children. Implementation waits for activation reconciliation.
+
+Next action: publish this plan-only checkpoint and return exact custody.

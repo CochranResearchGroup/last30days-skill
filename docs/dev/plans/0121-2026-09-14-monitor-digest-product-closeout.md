@@ -1,6 +1,6 @@
 # Plan 0121 | Monitor And Digest Product Closeout
 
-State: PLANNED
+State: OPEN
 Lane: P40
 Work item: WI-006
 Branch: feat/monitor-digest-product-closeout-v1
@@ -20,6 +20,19 @@ Close WI-006 provider-free with immutable query/follow monitors, explicit
 lifecycle and baseline decisions, evidence-linked deterministic digests,
 disabled-by-default delivery intents, safe legacy import and fresh public
 runtime acceptance.
+
+## Current State
+
+Plans 0093 and 0116 are closed; WI-001/WI-002/WI-004 are `DONE`. The durable
+monitor kernel and saved-query composition exist. Follow views, deterministic
+digests, disabled delivery intents, safe import and complete public/runtime
+acceptance remain for WI-006.
+
+## Definition Of Done
+
+All acceptance criteria pass at one reviewed joined checkpoint, exact runtime
+and effect receipts are retained, canonical integration is recorded, and
+WI-006 is reconciled to `DONE` with schedules and live delivery still disabled.
 
 ## Scope
 
@@ -103,3 +116,22 @@ Subagent status and reconciliation: `joined`; one read-only planner completed.
 Implementation owner remains unassigned pending exact custody.
 
 Next action: integrate registration and publish a plan-only activation ref.
+
+### Checkpoint P0121-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `PLANNED -> OPEN`.
+
+Progress classification: `implementation_ready`; exact isolated custody is
+accepted from canonical registration merge `e0fab676`.
+
+Authority classification:
+
+- `inherited_authority` covers the registered provider-free write set only;
+- every external-effect gate remains held.
+
+Subagent status and reconciliation: `assigned`; `/root/wave4_wi003_plan`, one
+owner, no children. Implementation waits for activation reconciliation.
+
+Next action: publish this plan-only checkpoint and return exact custody.
