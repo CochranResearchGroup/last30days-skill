@@ -6,10 +6,10 @@ Priority: P0
 Lane: Program
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/55
-Blocked by: none for planning, provider-free repair, normal pull requests, or the currently authorized WI-000 through WI-009 publication; development-runtime provisioning, release, dogfood effects, and all other GitHub issue actions retain separate authority gates
+Blocked by: none for repository work, normal pull requests, deterministic builds, exactly one isolated development runtime, or provider-free dogfood; production/staging, provider/browser, schedule, private-data, release-publication, deployment, and GitHub issue actions remain prohibited
 Plan: docs/dev/plans/0102-2026-09-13-productization-readiness-prerequisites.md
 Completed P35 packet: docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md
-Active packet: none; next packet is not yet registered
+Active packet: docs/dev/plans/0105-2026-09-14-versioned-development-runtime-and-dogfood.md
 
 ## Problem
 
@@ -67,7 +67,6 @@ Pull requests follow the normal collaborative integration workflow.
 
 ## Next Owner Action
 
-Create the next bounded P51 packet for a uniquely versioned development build
-and isolated development runtime. Preserve production unchanged, and treat
-artifact build, installed-runtime mutation, release, and later dogfood effects
-as distinct gates rather than implicit authority from this completed packet.
+Execute Plan 0105 through its reviewed-PR joins, then close this work item only
+after deterministic artifact, isolated-runtime, all five provider-free dogfood,
+fresh production readback, and governance reconciliation criteria pass.

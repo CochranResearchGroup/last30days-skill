@@ -7,7 +7,7 @@ Branch: docs/productization-prerequisite-gate
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 6
+Plan version: 7
 Date: 2026-09-13
 Execution owner: unassigned
 
@@ -19,7 +19,7 @@ before any new product feature packet begins.
 ## Current State
 
 - canonical `main` is clean and remote-equal at
-  `87858934c8498dccbdeda549ad73f626dbc143a7`;
+  `8f9bfb142cd64c6b17cbc8c67973cf38d668108d`;
 - stored-post search, saved monitors, quality tracing, the isolated-runtime
   doctor, and three question-answering packets are integrated in source;
 - Plan 0103 and PR 64 repaired and regression-locked both accepted
@@ -63,6 +63,11 @@ before any new product feature packet begins.
 Packet 1 completed through PRs 64 and 65. Packet 2 completed through PR 51.
 Packet 6 completed through issues #52-#61 and its repo projection through PR
 62. Packet 3 completed through PRs 67 and 68; Packets 4 and 5 remain.
+
+Packets 4 and 5 are active under bounded successor Plan 0105. The operator has
+authorized exactly one isolated development runtime plus provider-free dogfood;
+all production, staging, provider, browser, schedule, private-data, release,
+deployment, and GitHub issue effects remain prohibited.
 
 Packet 6 was completed first under the operator's explicit direction so the
 tracker can coordinate subsequent work. Packets 1 and 2 may run in parallel on
@@ -145,7 +150,7 @@ and the roadmap explicitly releases the feature freeze.
 
 ## Next Action
 
-Create and register the bounded Packet 4 development-release lane from current
-`origin/main`. Separate source/artifact version proof from installed-runtime
-provisioning, preserve production unchanged, and do not infer provider,
-browser, dogfood, release-publication, deployment, or issue-mutation authority.
+Execute bounded successor Plan 0105 from current `origin/main`: integrate the
+runtime containment change, prove a deterministic artifact, provision exactly
+one isolated development runtime, and run provider-free dogfood while
+preserving production unchanged.

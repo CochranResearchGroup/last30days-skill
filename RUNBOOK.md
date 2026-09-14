@@ -29631,3 +29631,65 @@ Next Bounded Action:
 - create a separate Packet 4 plan for deterministic development artifact proof
   and isolated development-runtime provisioning; do not infer runtime,
   provider, browser, release-publication, deployment, or dogfood authority.
+
+## Turn 475 | 2026-09-14
+
+Focus: register Plan 0105 for P51 Packets 4 and 5.
+
+Plan authority:
+`docs/dev/plans/0105-2026-09-14-versioned-development-runtime-and-dogfood.md`.
+
+Authority Consulted:
+
+- the operator's exact active goal; Plans 0077, 0102, and 0104; note 0118;
+  WI-001/WI-009; current Git, forge, CodeGraph, Graphiti, and production
+  read-only evidence; planning, goal, model, subagent, worktree, integration,
+  validation, work-item, and collaborative-development policy.
+
+Decisions And Changes:
+
+- created bounded Plan 0105 for deterministic service `0.3.117` artifact proof,
+  exactly one isolated development runtime, and all five provider-free dogfood
+  surfaces;
+- separated registration, audit, containment implementation, canonical build,
+  runtime provisioning, dogfood, and closeout through reviewed-PR joins;
+- selected one primary plus three one-level read-only audits, routing mechanical
+  artifact and dogfood work to economical models and retaining isolation,
+  integration, runtime mutation, and acceptance with the primary;
+- froze production/staging, provider/browser, schedules, private/live data,
+  public release, tags, deployment, and GitHub issue mutation out of scope.
+
+Validation Evidence:
+
+- canonical main is clean and remote-equal at
+  `8f9bfb142cd64c6b17cbc8c67973cf38d668108d`;
+- fresh production diagnosis reports service `0.3.116`, schema 17, installed
+  manifest `19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8`,
+  PID 1428, its production unit/environment file, and no timer;
+- source reports service `0.3.117`, schema 18, manifest
+  `8b0d3590801fc1732d8c52d02d5ab9c4a0b141858fe77809b91d517b56c57cf2`;
+- current controller inspection confirms only read-only `doctor`; service
+  startup inspection confirms recurring/effectful loops need an explicit
+  cache-only development gate.
+
+State Movement:
+
+- Plan 0105 `unplanned -> OPEN`;
+- P51 `PLANNED -> OPEN` and custody `INTEGRATED -> ACTIVE_WORKTREE` for the
+  new packet;
+- WI-009 remains `IN_PROGRESS`;
+- progress classification: `blocker_reduction`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the three bounded audits begin only after the registration PR
+  is validated, reviewed, and merged.
+
+Graphiti Write Status:
+
+- `not_written`; no explicit durable-memory write authority was granted.
+
+Next Bounded Action:
+
+- validate and integrate this registration through a reviewed pull request,
+  then execute and join the three read-only audits before source changes.
