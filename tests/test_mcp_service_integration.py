@@ -145,8 +145,12 @@ def test_real_service_mcp_discovery_query_refresh_and_poll(tmp_path):
             ) == sorted(
                 [
                     "service_info",
+                    "follow_capabilities",
                     "query",
                     "search_posts",
+                    "ask_question",
+                    "question_status",
+                    "read_evidence",
                     "refresh",
                     "job_status",
                     "topic",
@@ -171,7 +175,7 @@ def test_real_service_mcp_discovery_query_refresh_and_poll(tmp_path):
             }
             assert info_payload["product"] == "last30days"
             assert info_payload["service_api_version"] == 1
-            assert info_payload["mcp_adapter_version"] == "4.0.5"
+            assert info_payload["mcp_adapter_version"] == "4.0.6"
             assert info_payload["mcp_supported_service_api_min"] == 1
             assert info_payload["mcp_supported_service_api_max"] == 1
             assert info_payload["mcp_supported_database_schema_min"] == 18

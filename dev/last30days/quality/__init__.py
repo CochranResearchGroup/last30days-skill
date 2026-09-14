@@ -6,6 +6,7 @@ from .contracts import (
     ContractRefV1,
     EvidenceHeadV1,
     EvaluationCaseV1,
+    FixtureRefV1,
     MetricInputV1,
     QualityEvaluationRequestV1,
     QualityEvaluationSetV1,
@@ -15,6 +16,13 @@ from .contracts import (
     ThresholdRuleV1,
     canonical_digest,
     canonical_json,
+)
+from .adapters import (
+    AcquisitionCoverageAdapter,
+    CorpusIntegrityAdapter,
+    FixtureCatalog,
+    PostSearchQualityAdapter,
+    real_fixture_adapters,
 )
 from .runner import (
     ArtifactRefV1,
@@ -41,11 +49,14 @@ __all__ = [
     "AxisResultV1",
     "CaseResultV1",
     "ComparisonV1",
+    "AcquisitionCoverageAdapter",
     "ContractValidationError",
     "ContractRefV1",
     "EvidenceHeadV1",
     "EffectReceiptV1",
     "EvaluationCaseV1",
+    "FixtureCatalog",
+    "FixtureRefV1",
     "ExitCode",
     "FakeAcquisitionAdapter",
     "FakeCorpusAdapter",
@@ -53,6 +64,8 @@ __all__ = [
     "FakeRetrievalAdapter",
     "MetricInputV1",
     "MetricResultV1",
+    "CorpusIntegrityAdapter",
+    "PostSearchQualityAdapter",
     "QualityEvaluationReportV1",
     "QualityEvaluationRequestV1",
     "QualityEvaluationSetV1",
@@ -66,4 +79,5 @@ __all__ = [
     "default_fake_adapters",
     "render_report_json",
     "render_report_markdown",
+    "real_fixture_adapters",
 ]

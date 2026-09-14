@@ -138,3 +138,89 @@ Subagent status and reconciliation:
 
 Next action: publish this activation checkpoint, reconcile canonical custody,
 then implement the read-only adapters test-first within the lane write set.
+
+### Checkpoint P0119-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> OPEN`; Packet 2 implementation checkpoint accepted
+on the isolated lane, pending independent review and coordinator integration.
+
+Progress classification: `implementation_ready_for_review`; real acquisition, corpus, and
+retrieval adapters bind their digest-pinned synthetic SQLite fixture and
+adapter identity into the deterministic v2 report. Coverage fails closed for
+partial, stale, unavailable, and unknown opportunity evidence; corpus checks
+digest, current-revision, canonical-identity, provenance, and partition
+closure; retrieval exercises the existing PostSearchBackend's authorization,
+source filter, page cursor, revision, and provenance contracts.
+
+Validation receipt:
+
+- red test: real-adapter import was absent before implementation;
+- `uv run pytest tests/test_service_quality.py tests/test_service_quality_real_adapters.py -q` -> `13 passed`;
+- `POST_SEARCH_PERFORMANCE=1 uv run pytest tests/test_service_post_search_performance.py -q` -> `1 passed`;
+- `uv run python -m compileall -q dev/last30days/quality dev/last30days/scripts/evaluate_service_quality.py` -> pass;
+- `git diff --check` -> pass.
+
+Broader compatibility receipt:
+
+- `uv run pytest tests/test_service_quality.py tests/test_service_quality_real_adapters.py tests/test_service_post_search.py tests/test_service_supervisor.py tests/test_service_publication.py -q` -> `59 passed`.
+
+The complete non-integration suite was started once but this execution
+environment detached before retaining its terminal output; it is not claimed
+as passed and remains a review/integration validation gate.
+
+Authority classification:
+
+- `inherited_authority`; all implementation and validation used only sealed,
+  provider-free repository fixtures and read-only database access.
+
+Effect receipt: provider, model, browser, live/installed service, runtime,
+CI, schedule, release, deployment, and tracker effects remain zero. The
+fixture adapter opens only a supplied synthetic SQLite path with `mode=ro` and
+`PRAGMA query_only=ON`; it performs no repair or write.
+
+Deferred gate: WI-003 remains unresolved. Answer/citation grounding is neither
+evaluated nor implied by this packet, and WI-008 cannot transition to `DONE`.
+
+Coordination exception: the active-plan audit remains false only because its
+coordinator-owned `RUNBOOK.md` wiring has not yet been added for Plans 0117,
+0118, and 0119. This lane did not edit that authority surface.
+
+Next action: independent provider-free review, coordinator runbook
+reconciliation, then merge-only integration if all lane and authority checks
+remain accepted.
+
+### Checkpoint P0119-C04 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> integration_ready`; plan remains `OPEN` until the
+owned-fork PR merge and canonical reconciliation.
+
+Progress classification: `blocker_reduction`; joined review converted three
+false-pass paths into explicit failed/incomplete results and bound reports to
+the exact verified fixture candidate.
+
+Authority classification:
+
+- `inherited_authority` covered sealed provider-free fixtures, read-only
+  evaluation, tests, review and owned-fork publication;
+- network, provider, model, browser, live/installed runtime, schedule, release,
+  deployment and tracker effects remained zero.
+
+Review and remediation evidence:
+
+- actual canonical content hashes are recomputed, historical/current owner and
+  partition closure are verified, and corrupt or dangling revisions fail;
+- nonempty SQLite WAL/journal companions are rejected and reads use immutable,
+  query-only connections, so the pinned main-file digest is the data read;
+- fixture metadata binds all six candidate-head fields, and the runner rejects
+  an adapter/request candidate mismatch before evaluation;
+- the initial six-finding joined review returned `PASS` at exact checkpoint
+  `c8bf22b09981a18fe970d1dc8cf92b70a71b6adb` after focused remediation;
+- focused real-adapter regressions and the complete 3,086-test Python suite
+  pass. The full Go suite and vet pass.
+
+Next action: integrate this reviewed Packet 2 head. WI-008 remains `READY`, not
+`DONE`; answer-grounding and wider quality closure remain later bounded work.

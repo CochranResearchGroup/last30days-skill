@@ -13,6 +13,9 @@ from typing import Sequence
 ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+SKILL_SCRIPTS = ROOT / "skills" / "last30days" / "scripts"
+if str(SKILL_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SKILL_SCRIPTS))
 
 from dev.last30days.quality import (  # noqa: E402
     ContractValidationError,
@@ -23,6 +26,7 @@ from dev.last30days.quality import (  # noqa: E402
     QualityThresholdPolicyV1,
     canonical_json,
     default_fake_adapters,
+    real_fixture_adapters,
     render_report_json,
     render_report_markdown,
 )
@@ -62,6 +66,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--evaluation-set", type=Path, required=True)
     parser.add_argument("--threshold-policy", type=Path, required=True)
     parser.add_argument("--request", type=Path, required=True)
+    parser.add_argument(
+        "--fixture",
+        action="append",
+        default=[],
+        metavar="ID=PATH",
+        help="sealed local SQLite fixture; repeat for each fixture id",
+    )
     parser.add_argument("--emit", choices=("json", "markdown"), default="json")
     return parser
 
@@ -76,7 +87,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             _load_json(args.threshold_policy)
         )
         request = QualityEvaluationRequestV1.from_dict(_load_json(args.request))
-        report = QualityRunnerV1(default_fake_adapters()).run(
+        fixtures: dict[str, Path] = {}
+        for raw in args.fixture:
+            fixture_id, separator, fixture_path = raw.partition("=")
+            if not separator or not fixture_id or not fixture_path or fixture_id in fixtures:
+                raise ContractValidationError("--fixture must be unique ID=PATH")
+            fixtures[fixture_id] = Path(fixture_path)
+        adapters = (
+            real_fixture_adapters(fixtures, candidate=request.candidate)
+            if fixtures
+            else default_fake_adapters()
+        )
+        report = QualityRunnerV1(adapters).run(
             request, evaluation_set, threshold_policy
         )
         rendered = (

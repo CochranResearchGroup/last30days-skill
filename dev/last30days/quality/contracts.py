@@ -249,38 +249,111 @@ class FakeOutcomeV1:
         return result
 
 
+def _json_value(value: object, context: str) -> object:
+    """Validate a small canonical JSON value used as adapter-local input."""
+
+    if value is None or isinstance(value, (str, int, float, bool)):
+        if isinstance(value, float) and not math.isfinite(value):
+            raise ContractValidationError(f"{context} must be finite")
+        return value
+    if isinstance(value, list):
+        return [_json_value(item, f"{context}[{index}]") for index, item in enumerate(value)]
+    if isinstance(value, Mapping) and all(isinstance(key, str) for key in value):
+        return {
+            key: _json_value(value[key], f"{context}.{key}")
+            for key in sorted(value)
+        }
+    raise ContractValidationError(f"{context} must be canonical JSON data")
+
+
+@dataclass(frozen=True)
+class FixtureRefV1:
+    """Immutable local-fixture identity consumed by a real adapter."""
+
+    fixture_id: str
+    digest: str
+
+    @classmethod
+    def from_dict(cls, raw: object, context: str) -> FixtureRefV1:
+        payload = _mapping(raw, context)
+        _strict_fields(payload, required={"fixture_id", "digest"}, context=context)
+        return cls(
+            fixture_id=_string(payload["fixture_id"], f"{context}.fixture_id", identifier=True),
+            digest=_sha256(payload["digest"], f"{context}.digest"),
+        )
+
+    def to_dict(self) -> dict[str, object]:
+        return {"fixture_id": self.fixture_id, "digest": self.digest}
+
+
 @dataclass(frozen=True)
 class EvaluationCaseV1:
     case_id: str
     axis: str
     tags: tuple[str, ...]
-    outcome: FakeOutcomeV1
+    outcome: FakeOutcomeV1 | None
+    fixture: FixtureRefV1 | None
+    adapter_input: dict[str, object] | None
 
     @classmethod
     def from_dict(cls, raw: object, context: str) -> EvaluationCaseV1:
         payload = _mapping(raw, context)
         _strict_fields(
             payload,
-            required={"case_id", "axis", "tags", "outcome"},
+            required={"case_id", "axis", "tags"},
+            optional={"outcome", "fixture", "adapter_input"},
             context=context,
         )
         axis = _string(payload["axis"], f"{context}.axis")
         if axis not in AXES:
             raise ContractValidationError(f"{context}.axis is unsupported")
+        outcome = (
+            None
+            if "outcome" not in payload
+            else FakeOutcomeV1.from_dict(payload["outcome"], f"{context}.outcome")
+        )
+        fixture = (
+            None
+            if "fixture" not in payload
+            else FixtureRefV1.from_dict(payload["fixture"], f"{context}.fixture")
+        )
+        adapter_input = (
+            None
+            if "adapter_input" not in payload
+            else _json_value(payload["adapter_input"], f"{context}.adapter_input")
+        )
+        if adapter_input is not None and not isinstance(adapter_input, dict):
+            raise ContractValidationError(f"{context}.adapter_input must be an object")
+        if outcome is None and (fixture is None or adapter_input is None):
+            raise ContractValidationError(
+                f"{context} requires outcome or fixture with adapter_input"
+            )
+        if (fixture is None) != (adapter_input is None):
+            raise ContractValidationError(
+                f"{context}.fixture and adapter_input must be provided together"
+            )
         return cls(
             case_id=_string(payload["case_id"], f"{context}.case_id", identifier=True),
             axis=axis,
             tags=_unique_strings(payload["tags"], f"{context}.tags"),
-            outcome=FakeOutcomeV1.from_dict(payload["outcome"], f"{context}.outcome"),
+            outcome=outcome,
+            fixture=fixture,
+            adapter_input=adapter_input,
         )
 
     def to_dict(self) -> dict[str, object]:
-        return {
+        result: dict[str, object] = {
             "case_id": self.case_id,
             "axis": self.axis,
             "tags": list(self.tags),
-            "outcome": self.outcome.to_dict(),
         }
+        if self.outcome is not None:
+            result["outcome"] = self.outcome.to_dict()
+        if self.fixture is not None:
+            result["fixture"] = self.fixture.to_dict()
+        if self.adapter_input is not None:
+            result["adapter_input"] = self.adapter_input
+        return result
 
 
 @dataclass(frozen=True)

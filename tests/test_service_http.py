@@ -9,6 +9,7 @@ import threading
 import pytest
 
 from lib import service_contracts as contracts
+from lib import service_question_contracts as question_contracts
 from lib.service_app import JobResumeConflictError
 from lib.service_client import (
     ServiceClient,
@@ -19,6 +20,38 @@ from lib.service_http import ServiceAlreadyRunningError, UnixServiceServer
 
 
 class StubApplication:
+    def follow_capabilities(self):
+        return {
+            "schema_version": 1,
+            "registry_digest": "sha256:" + "a" * 64,
+            "targets": [],
+        }
+
+    @staticmethod
+    def _question_status():
+        return question_contracts.QuestionStatusV1.from_dict(
+            {
+                "schema_version": 1,
+                "question_id": "question-001",
+                "state": "pending",
+                "attempt_count": 0,
+                "max_attempts": 2,
+                "lease_generation": 0,
+                "lease_expires_at": None,
+                "answer": None,
+                "error": None,
+            }
+        )
+
+    def ask_question(self, request):
+        assert request.profile_id == "default"
+        return self._question_status()
+
+    def question_status(self, question_id, *, profile_id):
+        assert question_id == "question-001"
+        assert profile_id == "default"
+        return self._question_status()
+
     def health(self):
         return {
             "status": "ready",
@@ -169,6 +202,7 @@ def test_unix_service_exposes_health_and_capabilities_with_private_socket(tmp_pa
 
         assert client.health()["status"] == "ready"
         assert client.tick_schedule_status()["state"] == "disabled"
+        assert client.follow_capabilities()["targets"] == []
         info = client.service_info()
         assert info.status is contracts.ServiceStatus.READY
         assert info.product == "last30days"
@@ -206,6 +240,51 @@ def test_unix_service_exposes_health_and_capabilities_with_private_socket(tmp_pa
         thread.join(timeout=2)
 
     assert not socket_path.exists()
+
+
+def test_question_submit_and_profile_scoped_status_round_trip(tmp_path):
+    socket_path = tmp_path / "runtime" / "service.sock"
+    server = UnixServiceServer(socket_path, StubApplication())
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        client = ServiceClient(socket_path)
+        request = question_contracts.QuestionRequestV1.from_dict(
+            {
+                "schema_version": 1,
+                "request_id": "request-001",
+                "profile_id": "default",
+                "question": "What changed?",
+                "filters": {},
+                "temporal": {
+                    "as_of": None,
+                    "during_from": None,
+                    "during_to": None,
+                    "known_as_of": None,
+                },
+                "answer_mode": "evidence_only",
+                "model_fallback": "none",
+                "limits": {
+                    "evidence_limit": 8,
+                    "max_evidence_bytes": 32768,
+                    "max_answer_characters": 4096,
+                    "max_statements": 8,
+                    "wait_ms": 0,
+                    "max_evidence_age_seconds": None,
+                    "max_attempts": 2,
+                },
+            }
+        )
+
+        submitted = client.ask_question(request)
+        status = client.question_status("question-001", profile_id="default")
+
+        assert submitted.question_id == status.question_id == "question-001"
+        assert status.state == "pending"
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=2)
 
 
 def test_service_info_body_and_header_publish_the_same_contract_digest(tmp_path):

@@ -6,6 +6,8 @@ user-scoped last30days intelligence service over its private Unix socket.
 The adapter exposes:
 
 - `service_info`
+- `follow_capabilities` (read-only support, dependency-readiness, and
+  execution-readiness catalog; never enables a target)
 - `query` (`prefer_cache` by default; `cache_only` prohibits external work;
   optional `profile_id` adds that exact authorized partition to public evidence)
 - `search_posts` (read-only lexical search or filter-only browse; exact source,
@@ -13,6 +15,10 @@ The adapter exposes:
   `revision_mode=current|all`, `sort=relevance|published_desc|observed_desc`;
   immutable pagination during publication, with process-local cursors expiring
   after 15 minutes, eviction, or restart)
+- `ask_question` (bounded durable cache-grounded question admission; no source
+  acquisition)
+- `question_status` (read-only, exact-profile durable status)
+- `read_evidence` (read-only immutable citation dereference)
 - `refresh` (`force_refresh`, durable and idempotent; optional `profile_id`)
 - `job_status`
 - `topic`
@@ -35,7 +41,7 @@ scraper.
 - `internal/tools/` - MCP tools, resource, schemas, annotations, and handlers
 - `internal/manifest/` - MCPB manifest validation
 - `internal/contracts/` - generated compatibility facts from the canonical
-  service and post-search JSON Schema catalogs
+  service, post-search, and question JSON Schema catalogs
 - `compatibility-releases.json` - immutable adapter-version bindings to exact
   canonical catalog digests and supported service/database ranges
 - `internal/engine/` - unlinked legacy source retained temporarily for history

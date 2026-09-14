@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/url"
 	"regexp"
 	"strings"
 	"time"
@@ -105,6 +106,10 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 		),
 	}
 	infoOptions = append(infoOptions, commonAnnotations(true, false)...)
+	followCapabilityOptions := []mcplib.ToolOption{
+		mcplib.WithDescription("Discover provider-native tailored-follow support, dependency readiness, execution readiness, routes, identities, and bounds without executing work."),
+	}
+	followCapabilityOptions = append(followCapabilityOptions, commonAnnotations(true, false)...)
 
 	queryOptions := []mcplib.ToolOption{
 		mcplib.WithDescription(
@@ -227,6 +232,37 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 		),
 	}
 	postSearchOptions = append(postSearchOptions, commonAnnotations(true, false)...)
+
+	questionOptions := []mcplib.ToolOption{
+		mcplib.WithDescription("Ask a bounded cache-grounded question. This writes only the durable question ledger and never acquires provider data."),
+		mcplib.WithInteger("schema_version", mcplib.Required(), mcplib.Min(1), mcplib.Max(1)),
+		mcplib.WithString("request_id", mcplib.Required(), mcplib.MinLength(1), mcplib.MaxLength(128)),
+		mcplib.WithString("profile_id", mcplib.Required(), mcplib.MinLength(1), mcplib.MaxLength(128)),
+		mcplib.WithString("question", mcplib.Required(), mcplib.MinLength(1), mcplib.MaxLength(4096)),
+		mcplib.WithObject("filters", mcplib.Required(), mcplib.AdditionalProperties(true), mcplib.MaxProperties(12)),
+		mcplib.WithObject("temporal", mcplib.Required(), mcplib.AdditionalProperties(true), mcplib.MaxProperties(4)),
+		mcplib.WithString("answer_mode", mcplib.Required(), mcplib.Enum("synthesized", "evidence_only")),
+		mcplib.WithString("model_fallback", mcplib.Required(), mcplib.Enum("none", "evidence_only")),
+		mcplib.WithObject("limits", mcplib.Required(), mcplib.AdditionalProperties(true), mcplib.MaxProperties(7)),
+	}
+	questionOptions = append(questionOptions, commonAnnotations(false, true)...)
+
+	questionStatusOptions := []mcplib.ToolOption{
+		mcplib.WithDescription("Read one durable question result within the caller's exact authorized profile scope."),
+		mcplib.WithString("question_id", mcplib.Required(), mcplib.MinLength(1), mcplib.MaxLength(128)),
+		mcplib.WithString("profile_id", mcplib.Required(), mcplib.MinLength(1), mcplib.MaxLength(128)),
+	}
+	questionStatusOptions = append(questionStatusOptions, commonAnnotations(true, false)...)
+
+	evidenceReadOptions := []mcplib.ToolOption{
+		mcplib.WithDescription("Dereference exact immutable citations within the caller's authorized profile scope."),
+		mcplib.WithInteger("schema_version", mcplib.Required(), mcplib.Min(1), mcplib.Max(1)),
+		mcplib.WithString("request_id", mcplib.Required(), mcplib.MinLength(1), mcplib.MaxLength(128)),
+		mcplib.WithString("profile_id", mcplib.Required(), mcplib.MinLength(1), mcplib.MaxLength(128)),
+		mcplib.WithArray("refs", mcplib.Required(), mcplib.MinItems(1), mcplib.MaxItems(20)),
+		mcplib.WithInteger("max_response_bytes", mcplib.Required(), mcplib.Min(512), mcplib.Max(131072)),
+	}
+	evidenceReadOptions = append(evidenceReadOptions, commonAnnotations(true, false)...)
 
 	refreshOptions := []mcplib.ToolOption{
 		mcplib.WithDescription(
@@ -417,12 +453,28 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 			handler: makeServiceInfoHandler(client),
 		},
 		{
+			tool:    mcplib.NewTool("follow_capabilities", followCapabilityOptions...),
+			handler: makeFollowCapabilitiesHandler(client),
+		},
+		{
 			tool:    mcplib.NewTool("query", queryOptions...),
 			handler: makeQueryHandler(client, false),
 		},
 		{
 			tool:    mcplib.NewTool("search_posts", postSearchOptions...),
 			handler: makePostSearchHandler(client),
+		},
+		{
+			tool:    mcplib.NewTool("ask_question", questionOptions...),
+			handler: makeQuestionHandler(client),
+		},
+		{
+			tool:    mcplib.NewTool("question_status", questionStatusOptions...),
+			handler: makeQuestionStatusHandler(client),
+		},
+		{
+			tool:    mcplib.NewTool("read_evidence", evidenceReadOptions...),
+			handler: makeEvidenceReadHandler(client),
 		},
 		{
 			tool:    mcplib.NewTool("refresh", refreshOptions...),
@@ -473,6 +525,16 @@ func makeServiceInfoHandler(client ServiceAPI) server.ToolHandlerFunc {
 	}
 }
 
+func makeFollowCapabilitiesHandler(client ServiceAPI) server.ToolHandlerFunc {
+	return func(
+		ctx context.Context,
+		_ mcplib.CallToolRequest,
+	) (*mcplib.CallToolResult, error) {
+		payload, err := client.Get(ctx, "/v1/follow-capabilities")
+		return toolResult(payload, err)
+	}
+}
+
 func makeQueryHandler(client ServiceAPI, forceRefresh bool) server.ToolHandlerFunc {
 	return func(
 		ctx context.Context,
@@ -499,6 +561,68 @@ func makePostSearchHandler(client ServiceAPI) server.ToolHandlerFunc {
 		response, err := client.Post(ctx, "/v1/posts/search", payload)
 		return toolResult(response, err)
 	}
+}
+
+func makeQuestionHandler(client ServiceAPI) server.ToolHandlerFunc {
+	return func(ctx context.Context, req mcplib.CallToolRequest) (*mcplib.CallToolResult, error) {
+		payload, err := strictPayload(req.GetArguments(), []string{
+			"schema_version", "request_id", "profile_id", "question", "filters",
+			"temporal", "answer_mode", "model_fallback", "limits",
+		})
+		if err != nil {
+			return mcplib.NewToolResultError(err.Error()), nil
+		}
+		response, err := client.Post(ctx, "/v1/questions", payload)
+		return toolResult(response, err)
+	}
+}
+
+func makeQuestionStatusHandler(client ServiceAPI) server.ToolHandlerFunc {
+	return func(ctx context.Context, req mcplib.CallToolRequest) (*mcplib.CallToolResult, error) {
+		args := req.GetArguments()
+		if len(args) != 2 {
+			return mcplib.NewToolResultError("question status arguments are invalid"), nil
+		}
+		questionID, err := requireString(args, "question_id", 128)
+		if err != nil {
+			return mcplib.NewToolResultError(err.Error()), nil
+		}
+		profileID, err := requireString(args, "profile_id", 128)
+		if err != nil || !profileIDPattern.MatchString(profileID) {
+			return mcplib.NewToolResultError("profile_id is invalid"), nil
+		}
+		path := "/v1/questions/" + url.PathEscape(questionID) + "?profile_id=" + url.QueryEscape(profileID)
+		response, err := client.Get(ctx, path)
+		return toolResult(response, err)
+	}
+}
+
+func makeEvidenceReadHandler(client ServiceAPI) server.ToolHandlerFunc {
+	return func(ctx context.Context, req mcplib.CallToolRequest) (*mcplib.CallToolResult, error) {
+		payload, err := strictPayload(req.GetArguments(), []string{
+			"schema_version", "request_id", "profile_id", "refs", "max_response_bytes",
+		})
+		if err != nil {
+			return mcplib.NewToolResultError(err.Error()), nil
+		}
+		response, err := client.Post(ctx, "/v1/evidence/read", payload)
+		return toolResult(response, err)
+	}
+}
+
+func strictPayload(args map[string]any, required []string) (map[string]any, error) {
+	if len(args) != len(required) {
+		return nil, errors.New("arguments do not match the strict contract")
+	}
+	payload := make(map[string]any, len(required))
+	for _, name := range required {
+		value, ok := args[name]
+		if !ok {
+			return nil, fmt.Errorf("%s is required", name)
+		}
+		payload[name] = value
+	}
+	return payload, nil
 }
 
 func makeJobStatusHandler(client ServiceAPI) server.ToolHandlerFunc {

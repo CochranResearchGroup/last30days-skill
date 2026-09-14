@@ -75,12 +75,23 @@ Use the narrowest operation that answers the request:
   Responses fit 131,072 UTF-8 bytes; follow `next_cursor` even when a page is
   shorter than requested. `post_search_response_too_large` means indivisible
   post provenance cannot fit; report it and narrow filters without dropping refs.
+- `ask_question` - create or replay one bounded, cache-grounded question task.
+  Pass the exact profile and all intended search filters. The default service
+  returns evidence-only or explicit model-unavailable results and never starts
+  acquisition. Poll only its returned ID with `question_status`, always passing
+  the same profile, then dereference exact citations with `read_evidence`.
+- `question_status` and `read_evidence` - read durable question state and exact
+  immutable evidence within the caller's authorized profile. Treat unavailable
+  as non-disclosing; never guess another profile or alter citation refs.
 - `temporal_query` - `as_of`, `during`, `known_as_of`, timeline, entity
   dossier, event dossier, trend, comparison, and historical brief requests.
   This operation is cache-only.
 - `profile_history` - immutable, section-evidence-linked source-account
   history. Treat `not_observed` as absence of observation, not proof of change.
 - `coverage` - attempted intervals, yield, gaps, and source coverage.
+- `follow_capabilities` - provider-native target contracts with support,
+  dependency readiness, execution readiness, routes, identity forms, and
+  bounds. Readiness never enables or runs a follow.
 - `job_status` - the current state of one durable job returned by the service.
 
 Never infer identity equality from similar names or handles. Preserve

@@ -7,6 +7,11 @@
     "service_api": {"min": 1, "max": 1},
     "database_schema": {"min": 18, "max": 18}
   },
+  "related_catalogs": {
+    "post_search": "post-search-contracts-v1.json",
+    "questions": "question-contracts-v1.json",
+    "saved_queries": "saved-query-contracts-v1.json"
+  },
   "contracts": {
     "tick_request": {
       "type": "object",

@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import copy
+import json
+from pathlib import Path
 
 import pytest
 
 from lib import service_question_contracts as question_contracts
+from lib.service_client import ServiceClient
 
 
 def _request_payload() -> dict[str, object]:
@@ -71,6 +74,29 @@ def test_question_request_is_strict_and_has_a_stable_fingerprint():
     invalid_limits["limits"] = {**payload["limits"], "max_attempts": 3}
     with pytest.raises(question_contracts.QuestionContractError, match="max_attempts"):
         question_contracts.QuestionRequestV1.from_dict(invalid_limits)
+
+
+def test_published_question_limit_bounds_match_runtime_and_client_wait(monkeypatch):
+    schema = json.loads(
+        (Path(__file__).parents[1] / "skills/last30days/schemas/question-contracts-v1.json").read_text()
+    )
+    limits = schema["contracts"]["question_request"]["properties"]["limits"]["properties"]
+    assert (limits["evidence_limit"]["minimum"], limits["evidence_limit"]["maximum"]) == (1, 50)
+    assert (limits["max_evidence_bytes"]["minimum"], limits["max_evidence_bytes"]["maximum"]) == (1024, 1_048_576)
+    for evidence_limit, evidence_bytes in ((1, 1024), (50, 1_048_576)):
+        payload = copy.deepcopy(_request_payload())
+        payload["limits"] = {**payload["limits"], "evidence_limit": evidence_limit, "max_evidence_bytes": evidence_bytes, "wait_ms": 30_000}
+        assert question_contracts.QuestionRequestV1.from_dict(payload).to_dict() == payload
+
+    observed = {}
+    client = ServiceClient(Path("/tmp/unused-question-test.sock"))
+    request = question_contracts.QuestionRequestV1.from_dict({**_request_payload(), "limits": {**_request_payload()["limits"], "wait_ms": 30_000}})
+    def fake_request(method, path, payload=None, *, timeout=None):
+        observed["timeout"] = timeout
+        return {"schema_version": 1, "question_id": "question-001", "state": "pending", "attempt_count": 0, "max_attempts": 2, "lease_generation": 0, "lease_expires_at": None, "answer": None, "error": None}
+    monkeypatch.setattr(client, "_request", fake_request)
+    client.ask_question(request)
+    assert observed["timeout"] == 35.0
 
 
 def test_answer_statement_citation_status_and_error_contracts_are_closed():

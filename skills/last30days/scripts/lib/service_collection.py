@@ -12,7 +12,11 @@ from pathlib import Path
 from typing import Callable, Mapping
 
 from . import service_contracts as contracts
-from .service_follow_capabilities import DEFAULT_FOLLOW_CAPABILITIES, FollowTargetV1
+from .service_follow_capabilities import (
+    DEFAULT_FOLLOW_CAPABILITIES,
+    FollowCapabilityError,
+    FollowTargetV1,
+)
 from .service_refresh import ServiceRefreshScheduler
 from .service_source_policy import SOURCE_ACCESS_METHODS
 from .service_temporal import access_partition_id
@@ -27,6 +31,8 @@ _SURFACE_SELECTORS = {
     "account": "account",
     "list": "list_id",
     "profile": "profile_url",
+    "community": "community",
+    "user": "user",
 }
 _TRIGGERS = frozenset({"timer", "manual"})
 _BROWSER_SOURCES = frozenset({"x", "facebook", "linkedin"})
@@ -251,7 +257,26 @@ class CollectionSpec:
             selector_value = _canonical_x_follow_selector(
                 surface_kind, selector_field, raw_selector_value
             )[selector_field]
+        if (
+            collection_purpose == "tailored_follow"
+            and source != "x"
+            and "follow_target_id" not in payload
+        ):
+            capability = DEFAULT_FOLLOW_CAPABILITIES.capability(source, surface_kind)
+            if capability.validator is not None:
+                try:
+                    selector_value = capability.validator(raw_selector_value)
+                except FollowCapabilityError as exc:
+                    raise CollectionSpecValidationError(str(exc)) from exc
         required_access_method = payload.get("required_access_method")
+        if (
+            collection_purpose == "tailored_follow"
+            and source in {"reddit", "youtube"}
+            and "follow_target_id" not in payload
+        ):
+            capability = DEFAULT_FOLLOW_CAPABILITIES.capability(source, surface_kind)
+            if capability.state == "available":
+                required_access_method = required_access_method or capability.access_method
         if required_access_method is not None:
             if (
                 not isinstance(required_access_method, str)
@@ -369,7 +394,7 @@ class CollectionSpec:
         return FollowTargetV1(
             source=self.source,
             target_kind=self.surface_kind,
-            canonical_id=self.follow_target_id or "",
+            canonical_id=(self.follow_target_id or "") if self.source == "x" else self.query,
             selector=dict(self.selector),
             access_partition_id=self.access_partition_id,
         )
@@ -382,7 +407,31 @@ class CollectionSpec:
 
     @property
     def is_quarantined_follow(self) -> bool:
-        return bool(self.follow_capability and self.follow_capability.state != "available")
+        capability = self.follow_capability
+        if capability is None:
+            return False
+        if capability.state != "available":
+            return True
+        if self.source != "x":
+            try:
+                if (
+                    capability.validator is None
+                    or capability.validator(self.query) != self.query
+                ):
+                    return True
+            except FollowCapabilityError:
+                return True
+            if self.required_access_method != capability.access_method:
+                return True
+            if not (
+                capability.interval_seconds_min
+                <= self.interval_seconds
+                <= capability.interval_seconds_max
+            ):
+                return True
+            if self.item_limit > capability.item_limit_max:
+                return True
+        return False
 
     def to_dict(self) -> dict[str, object]:
         payload: dict[str, object] = {
@@ -497,11 +546,22 @@ class CollectionCoordinator:
         scheduler: ServiceRefreshScheduler,
         *,
         clock: Clock | None = None,
+        follow_execution_ready: Callable[[CollectionSpec], bool] | None = None,
     ) -> None:
         self.db_path = Path(db_path)
         self.scheduler = scheduler
         self._clock = clock or (lambda: datetime.now(timezone.utc))
+        self._follow_execution_ready = follow_execution_ready
         self.scheduler.ledger.initialize()
+
+    def _execution_ready(self, spec: CollectionSpec) -> bool:
+        capability = spec.follow_capability
+        if capability is None or not capability.injected_transport:
+            return True
+        try:
+            return bool(self._follow_execution_ready and self._follow_execution_ready(spec))
+        except Exception:
+            return False
 
     def _now(self) -> datetime:
         value = self._clock()
@@ -515,6 +575,15 @@ class CollectionCoordinator:
         conn.execute("PRAGMA busy_timeout=5000")
         conn.execute("PRAGMA journal_mode=WAL")
         conn.execute("PRAGMA foreign_keys=ON")
+
+        def admitted(payload):
+            try:
+                spec = CollectionSpec.from_dict(json.loads(payload))
+                return int(not spec.is_quarantined_follow and self._execution_ready(spec))
+            except (ValueError, TypeError, KeyError):
+                return 0
+
+        conn.create_function("follow_spec_admitted", 1, admitted)
         return conn
 
     @staticmethod
@@ -637,6 +706,8 @@ class CollectionCoordinator:
                 raise CollectionSpecValidationError(
                     "unsupported tailored target cannot be created"
                 )
+            if spec.enabled and spec != current_spec and not self._execution_ready(spec):
+                raise CollectionSpecValidationError("transport_not_configured")
             if current is not None:
                 current_version = int(current["spec_version"])
                 if spec.spec_version == current_version:
@@ -669,7 +740,6 @@ class CollectionCoordinator:
                 )
                 if current_spec.is_quarantined_follow:
                     current_payload = current_spec.to_dict()
-                    current_payload.pop("follow_target_id", None)
                     pause = CollectionSpec.from_dict(
                         {
                             **current_payload,
@@ -978,7 +1048,6 @@ class CollectionCoordinator:
         if spec.lifecycle_state == "archived":
             return spec
         payload = spec.to_dict()
-        payload.pop("follow_target_id", None)
         archived = CollectionSpec.from_dict(
             {
                 **payload,
@@ -1028,7 +1097,6 @@ class CollectionCoordinator:
                 "unsupported legacy tailored target cannot be enabled"
             )
         payload = spec.to_dict()
-        payload.pop("follow_target_id", None)
         updated = CollectionSpec.from_dict(
             {
                 **payload,
@@ -1065,6 +1133,8 @@ class CollectionCoordinator:
             raise CollectionSpecValidationError(
                 "unsupported legacy tailored target cannot be scheduled"
             )
+        if not self._execution_ready(spec):
+            raise CollectionSpecValidationError("transport_not_configured")
         if spec.lifecycle_state == "archived":
             raise CollectionSpecValidationError(
                 "archived collection cannot be run"
@@ -1234,7 +1304,7 @@ class CollectionCoordinator:
                    WHERE s.enabled = 1
                      AND (
                          s.collection_purpose != 'tailored_follow'
-                         OR ({follow_filter})
+                         OR (({follow_filter}) AND follow_spec_admitted(r.spec_json))
                      )
                      AND q.next_due_at <= ?
                      AND (q.retry_after IS NULL OR q.retry_after <= ?)

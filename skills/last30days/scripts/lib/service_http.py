@@ -15,9 +15,16 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from . import service_contracts as contracts
+from . import service_question_contracts as question_contracts
 from .service_app import JobResumeConflictError, RuntimeEffectDisabledError
 from .service_monitor_contracts import MonitorContractError
 from .service_monitors import MonitorKernelError
+from .service_question_application import (
+    QuestionResponseTooLargeError,
+    QuestionRuntimeUnavailableError,
+    QuestionUnavailableError,
+)
+from .service_questions import QuestionRequestConflict
 
 
 MAX_REQUEST_BYTES = 131_072
@@ -35,6 +42,8 @@ class ServiceApplication(Protocol):
 
     def tick_schedule_status(self) -> dict[str, object]: ...
 
+    def follow_capabilities(self) -> dict[str, object]: ...
+
     def job(self, job_id: str) -> contracts.JobRecord: ...
 
     def resume_job(self, job_id: str) -> contracts.JobRecord: ...
@@ -44,6 +53,18 @@ class ServiceApplication(Protocol):
     def search_posts(
         self, request: contracts.PostSearchRequest
     ) -> contracts.PostSearchResponse: ...
+
+    def ask_question(
+        self, request: question_contracts.QuestionRequestV1
+    ) -> question_contracts.QuestionStatusV1: ...
+
+    def question_status(
+        self, question_id: str, *, profile_id: str
+    ) -> question_contracts.QuestionStatusV1: ...
+
+    def read_evidence(
+        self, request: question_contracts.EvidenceReadRequestV1
+    ) -> question_contracts.EvidenceReadResponseV1: ...
 
     def saved_query(self, payload: dict[str, object]) -> dict[str, object]: ...
 
@@ -186,6 +207,30 @@ class _RequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         try:
+            parsed = urllib.parse.urlsplit(self.path)
+            question_prefix = "/v1/questions/"
+            if parsed.path.startswith(question_prefix):
+                encoded_question_id = parsed.path.removeprefix(question_prefix)
+                parameters = urllib.parse.parse_qs(
+                    parsed.query, keep_blank_values=True, strict_parsing=True
+                )
+                if (
+                    not encoded_question_id
+                    or "/" in encoded_question_id
+                    or set(parameters) != {"profile_id"}
+                    or len(parameters["profile_id"]) != 1
+                ):
+                    raise question_contracts.QuestionContractError(
+                        "question status request is invalid"
+                    )
+                self._write_json(
+                    200,
+                    self.application.question_status(
+                        urllib.parse.unquote(encoded_question_id),
+                        profile_id=parameters["profile_id"][0],
+                    ).to_dict(),
+                )
+                return
             if self.path == "/v1/health":
                 self._write_json(200, self.application.health())
                 return
@@ -199,6 +244,9 @@ class _RequestHandler(BaseHTTPRequestHandler):
                 return
             if self.path == "/v1/tick-schedule":
                 self._write_json(200, self.application.tick_schedule_status())
+                return
+            if self.path == "/v1/follow-capabilities":
+                self._write_json(200, self.application.follow_capabilities())
                 return
             if self.path in {"/v1/capabilities", "/v1/sources"}:
                 info = self.application.service_info().to_dict()
@@ -219,6 +267,10 @@ class _RequestHandler(BaseHTTPRequestHandler):
                 self._write_json(200, self.application.job(job_id).to_dict())
                 return
             self._error(404, "not_found", "unknown service endpoint")
+        except question_contracts.QuestionContractError:
+            self._error(400, "invalid_question_contract", "question contract is invalid")
+        except QuestionUnavailableError:
+            self._error(404, "question_unavailable", "question unavailable")
         except KeyError:
             self._error(404, "job_not_found", "job was not found")
         except Exception:
@@ -239,6 +291,8 @@ class _RequestHandler(BaseHTTPRequestHandler):
             not in {
                 "/v1/query",
                 "/v1/posts/search",
+                "/v1/questions",
+                "/v1/evidence/read",
                 "/v1/saved-query",
                 "/v1/topic",
                 "/v1/intelligence",
@@ -274,6 +328,12 @@ class _RequestHandler(BaseHTTPRequestHandler):
             elif self.path == "/v1/posts/search":
                 request = contracts.PostSearchRequest.from_dict(payload)
                 response = self.application.search_posts(request).to_dict()
+            elif self.path == "/v1/questions":
+                request = question_contracts.QuestionRequestV1.from_dict(payload)
+                response = self.application.ask_question(request).to_dict()
+            elif self.path == "/v1/evidence/read":
+                request = question_contracts.EvidenceReadRequestV1.from_dict(payload)
+                response = self.application.read_evidence(request).to_dict()
             elif self.path == "/v1/saved-query":
                 response = self.application.saved_query(payload)
             elif self.path == "/v1/topic":
@@ -295,6 +355,21 @@ class _RequestHandler(BaseHTTPRequestHandler):
                 )
             else:
                 self._error(400, "invalid_contract", "request contract is invalid")
+            return
+        except question_contracts.QuestionContractError:
+            self._error(400, "invalid_question_contract", "question contract is invalid")
+            return
+        except QuestionRequestConflict:
+            self._error(409, "question_request_conflict", "question request was reused")
+            return
+        except QuestionUnavailableError:
+            self._error(404, "question_unavailable", "question unavailable")
+            return
+        except QuestionRuntimeUnavailableError:
+            self._error(503, "question_runtime_unavailable", "question runtime is unavailable")
+            return
+        except QuestionResponseTooLargeError:
+            self._error(413, "question_response_too_large", "question response exceeds the transport limit")
             return
         except contracts.ContractValidationError as exc:
             del exc

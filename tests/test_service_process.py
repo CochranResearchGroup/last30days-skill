@@ -468,6 +468,27 @@ def test_job_cli_exposes_explicit_operator_resume():
     assert args.resume is True
 
 
+def test_question_and_evidence_cli_parsers_preserve_explicit_scope():
+    ask = build_parser().parse_args(
+        ["question", "ask", "--input", "question.json", "--timeout", "12"]
+    )
+    assert ask.question_action == "ask"
+    assert ask.input == "question.json"
+    assert ask.timeout == 12
+
+    status = build_parser().parse_args(
+        ["question", "status", "question-1", "--profile", "research"]
+    )
+    assert status.question_action == "status"
+    assert status.question_id == "question-1"
+    assert status.profile == "research"
+
+    evidence = build_parser().parse_args(
+        ["evidence-read", "--input", "evidence.json"]
+    )
+    assert evidence.input == "evidence.json"
+
+
 def test_manual_collection_cli_exposes_bounded_attempt_override():
     args = build_parser().parse_args(
         ["collection", "run", "spec-x", "--max-attempts", "2"]

@@ -383,6 +383,7 @@ class QuestionQueue:
         *,
         worker_id: str,
         lease_seconds: int = 120,
+        question_id: str | None = None,
     ) -> QuestionLease | None:
         if not isinstance(worker_id, str) or not worker_id.strip():
             raise ValueError("worker_id must be non-empty")
@@ -398,8 +399,9 @@ class QuestionQueue:
                 """SELECT question_id, attempt_count, max_attempts
                    FROM service_question_tasks
                    WHERE state = 'running' AND lease_expires_at <= ?
+                     AND (? IS NULL OR question_id = ?)
                    ORDER BY lease_expires_at, question_id""",
-                (now,),
+                (now, question_id, question_id),
             ).fetchall()
             for row in expired:
                 exhausted = int(row["attempt_count"]) >= int(row["max_attempts"])
@@ -438,9 +440,10 @@ class QuestionQueue:
                    FROM service_question_tasks AS t
                    JOIN service_question_retrievals AS r USING (question_id)
                    JOIN service_question_requests AS q USING (request_id)
-                   WHERE t.state = 'pending'
+                   WHERE t.state = 'pending' AND (? IS NULL OR t.question_id = ?)
                    ORDER BY t.created_at, t.question_id
-                   LIMIT 1"""
+                   LIMIT 1""",
+                (question_id, question_id),
             ).fetchone()
             if row is None:
                 conn.commit()
@@ -632,7 +635,7 @@ class QuestionQueue:
             answer.attempt_count != 0
             or answer.model_invoked
             or answer.worker_ref != "deterministic-host-v1"
-            or answer.answer_state not in {"answered", "no_evidence"}
+            or answer.answer_state not in {"answered", "no_evidence", "insufficient_evidence"}
         ):
             raise QuestionLeaseError("answer is not eligible for host completion")
         now = _timestamp(self._now())
@@ -650,6 +653,11 @@ class QuestionQueue:
                 return self.status(answer.question_id)
             if row["state"] != "pending" or int(row["attempt_count"]) != 0:
                 raise QuestionLeaseError("question is not eligible for host completion")
+            if answer.error is not None:
+                self._record_failure(
+                    conn, question_id=answer.question_id, attempt_count=0,
+                    error=answer.error, created_at=now,
+                )
             conn.execute(
                 """INSERT INTO service_question_answers
                    (answer_id, question_id, answer_json, output_digest, created_at)
@@ -664,9 +672,13 @@ class QuestionQueue:
             )
             conn.execute(
                 """UPDATE service_question_tasks
-                   SET state = ?, answer_id = ?, updated_at = ?
+                   SET state = ?, answer_id = ?, error_json = ?, updated_at = ?
                    WHERE question_id = ?""",
-                (answer.answer_state, answer.answer_id, now, answer.question_id),
+                (
+                    answer.answer_state, answer.answer_id,
+                    question_contracts.canonical_json(answer.error.to_dict()) if answer.error else None,
+                    now, answer.question_id,
+                ),
             )
             conn.commit()
         except Exception:
@@ -763,6 +775,10 @@ class QuestionService:
         *,
         access_partitions: Sequence[str],
     ) -> question_contracts.QuestionStatusV1:
+        if any(value is not None for value in request.temporal.to_dict().values()):
+            raise question_contracts.QuestionContractError(
+                "unsupported_temporal_intent: use published/observed search filters"
+            )
         partitions = tuple(dict.fromkeys(access_partitions))
         if not partitions or not all(isinstance(item, str) and item for item in partitions):
             raise question_contracts.QuestionContractError(
@@ -903,7 +919,7 @@ class QuestionService:
         )
         statements: tuple[question_contracts.AnswerStatementV1, ...] = ()
         answer_state = "no_evidence"
-        summary = "No authorized evidence was found."
+        summary = "No authorized evidence was found."[:request.limits.max_answer_characters]
         if selected:
             answer_budget = request.limits.max_answer_characters
             summary = f"Evidence-only result from {len(selected)} immutable item(s)."[
@@ -914,7 +930,7 @@ class QuestionService:
             for item in selected[: request.limits.max_statements]:
                 if remaining_characters <= 0:
                     break
-                text = str(item["text"])[:remaining_characters]
+                text = str(item["text"])[:min(remaining_characters, 8192)]
                 if not text:
                     continue
                 bounded_statements.append(
@@ -967,10 +983,36 @@ class QuestionService:
             evidence_only_fallback=False,
             error=None,
         )
-        return self.queue.complete_without_worker(answer)
+        return self.queue.complete_without_worker(
+            _bounded_public_answer(answer, request.limits.max_answer_characters)
+        )
 
     def status(self, question_id: str) -> question_contracts.QuestionStatusV1:
         return self.queue.status(question_id)
+
+
+def _bounded_public_answer(
+    answer: question_contracts.QuestionAnswerV1, max_characters: int
+) -> question_contracts.QuestionAnswerV1:
+    """Persist a compact rejection, never an answer the public client cannot read."""
+    characters = len(answer.summary) + sum(len(item.text) for item in answer.statements)
+    # Reserve 4 KiB for the enclosing status fields and its repeated error.
+    if (characters <= max_characters
+            and len(question_contracts.canonical_json(answer.to_dict()).encode()) <= 126_976):
+        return answer
+    values = answer.to_dict()
+    for key in ("schema_version", "answer_id", "output_digest", "cache_only", "acquisition_performed"):
+        values.pop(key)
+    values.update(
+        answer_state="insufficient_evidence",
+        summary="Answer exceeds the public response budget."[:max_characters],
+        statements=(),
+        uncertainty_codes=tuple(dict.fromkeys((*answer.uncertainty_codes, "answer_too_large"))),
+        error=question_contracts.QuestionErrorV1.from_dict({
+            "code": "answer_too_large", "message": "answer exceeds the public response budget", "retryable": False,
+        }),
+    )
+    return question_contracts.QuestionAnswerV1.create(**values)
 
 
 def _worker_answer(
@@ -1144,7 +1186,7 @@ def _evidence_only_fallback_answer(
     statement_budget = lease.request.limits.max_answer_characters - len(summary)
     statements = tuple(
         question_contracts.AnswerStatementV1.create(
-            text=str(item["text"])[:statement_budget],
+            text=str(item["text"])[:min(statement_budget, 8192)],
             statement_kind="source_fact",
             support_state="supported",
             citations=(
@@ -1209,8 +1251,10 @@ class QuestionRunner:
         self.worker = worker
         self.clock = clock or (lambda: datetime.now(timezone.utc))
 
-    def run_once(self, *, worker_id: str) -> question_contracts.QuestionStatusV1 | None:
-        lease = self.queue.claim_next(worker_id=worker_id)
+    def run_once(
+        self, *, worker_id: str, question_id: str | None = None
+    ) -> question_contracts.QuestionStatusV1 | None:
+        lease = self.queue.claim_next(worker_id=worker_id, question_id=question_id)
         if lease is None:
             return None
         evidence = lease.retrieval["evidence"]
@@ -1255,8 +1299,9 @@ class QuestionRunner:
                 )
                 return self.queue.complete(
                     lease,
-                    _evidence_only_fallback_answer(
-                        lease, generated_at=generated_at, error=error
+                    _bounded_public_answer(
+                        _evidence_only_fallback_answer(lease, generated_at=generated_at, error=error),
+                        lease.request.limits.max_answer_characters,
                     ),
                 )
             return self.queue.fail(
@@ -1292,4 +1337,6 @@ class QuestionRunner:
                 evidence_only_fallback=evidence_only_fallback,
                 error=error,
             )
-        return self.queue.complete(lease, answer)
+        return self.queue.complete(
+            lease, _bounded_public_answer(answer, lease.request.limits.max_answer_characters)
+        )

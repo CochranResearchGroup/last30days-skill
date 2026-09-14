@@ -24,7 +24,7 @@ const (
 	// SocketEnvOverride is the shared Python/Go user-scoped socket override.
 	SocketEnvOverride = "LAST30DAYS_SERVICE_SOCKET"
 	// DefaultTimeout bounds local service calls without imposing crawl timeouts.
-	DefaultTimeout = 10 * time.Second
+	DefaultTimeout = 35 * time.Second
 	// MaxResponseBytes mirrors the Python service's transport bound.
 	MaxResponseBytes = 131_072
 )

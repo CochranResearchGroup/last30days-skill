@@ -1,0 +1,16 @@
+{
+  "status": 200,
+  "network_request_count": 1,
+  "payload": {
+    "id": "UUabcdefghijklmnopqrstuv",
+    "channel_id": "UCabcdefghijklmnopqrstuv",
+    "entries": [{
+      "id": "abcDEF123_-",
+      "channel_id": "UCabcdefghijklmnopqrstuv",
+      "channel": "Fixture Channel",
+      "title": "Native fixture evidence",
+      "description": "Fixture evidence for native follow collection.",
+      "upload_date": "20260723"
+    }]
+  }
+}

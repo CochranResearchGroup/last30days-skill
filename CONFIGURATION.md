@@ -431,7 +431,7 @@ commands, or poll maintenance internals.
 ### Agent-facing versus operator-facing configuration
 
 The primary `/last30days` Skill has no per-run source flags and does not read
-source secrets. It calls `service_info`, then uses the eleven MCP operations
+  source secrets. It calls `service_info`, then uses the sixteen MCP operations
 advertised by the compatible service. Source availability, cache freshness,
 coverage, and degradation come from that live response.
 
@@ -1134,9 +1134,11 @@ The installer builds the current checkout, atomically installs
 `~/.local/bin/last30days-pp-mcp`, and records the private service socket in the
 user-scoped Codex MCP configuration. Re-run it after MCP adapter changes.
 
-Service-enabled MCP clients expose eleven compact operations:
+Service-enabled MCP clients expose sixteen compact operations:
 
 - `service_info`: discover readiness, sources, capabilities, and index state;
+- `follow_capabilities`: read native follow support separately from dependency
+  and execution readiness; discovery never enables or runs a target;
 - `query`: read cached evidence or a compact brief under an explicit freshness
   policy;
 - `search_posts`: cache-only hybrid search or filter-only browse with exact
@@ -1170,6 +1172,13 @@ Service-enabled MCP clients expose eleven compact operations:
   continue with `next_cursor`. HTTP 413 `post_search_response_too_large` means
   one indivisible post/provenance payload cannot fit. Search never drops exact
   provenance to disguise that condition;
+- `ask_question`: submit an exact `QuestionRequestV1` for bounded cache-grounded
+  evidence-only or configured synthesis; it writes only the question ledger
+  and never acquires source data;
+- `question_status`: read one durable result with both its opaque ID and exact
+  authorized profile;
+- `read_evidence`: dereference the unchanged immutable citation objects returned
+  by an answer within the same authorized profile;
 - `refresh`: create or join a bounded `force_refresh` job;
 - `job_status`: poll the typed durable job record;
 - `topic`: list or manage service-owned topics and request scheduled refreshes.
@@ -1194,7 +1203,8 @@ controls and may install/start it through the managed user-service path when
 absent. It never detaches raw `service.py` or owns the daemon. A query handler
 never launches the request-scoped research engine or operates a browser.
 
-`search_posts`, `temporal_query`, `profile_history`, `coverage`, and
+`search_posts`, `question_status`, `read_evidence`, `follow_capabilities`,
+`temporal_query`, `profile_history`, `coverage`, and
 `maintenance_status` are read-only and cache-only. The host derives authorized access partitions from
 `profile_id`; clients cannot submit an arbitrary partition list. `default`
 authorizes public evidence only, while a named profile authorizes public plus

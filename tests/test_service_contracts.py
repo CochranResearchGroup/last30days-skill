@@ -205,6 +205,56 @@ def test_acquisition_work_request_carries_frozen_tailored_account_context():
     assert request.to_dict() == payload
 
 
+@pytest.mark.parametrize(
+    ("surface_kind", "selector_key", "selector_value", "source"),
+    [
+        ("community", "community", "python", "reddit"),
+        ("user", "user", "alice", "reddit"),
+    ],
+)
+def test_acquisition_work_request_carries_frozen_reddit_follow_context(
+    surface_kind, selector_key, selector_value, source
+):
+    payload = {
+        "schema_version": 1,
+        "work_id": f"work-{surface_kind}-001",
+        "job_id": f"job-{surface_kind}-001",
+        "lease_generation": 1,
+        "attempt": 1,
+        "profile_id": "reddit-primary",
+        "source": source,
+        "query": selector_value,
+        "from_date": "2026-08-21",
+        "to_date": "2026-08-22",
+        "depth": "standard",
+        "adapter": "reddit_keyless",
+        "adapter_version": "1",
+        "wall_timeout_seconds": 90,
+        "item_limit": 20,
+        "network_request_limit": 50,
+        "cost_budget_cents": 0,
+        "surface_kind": surface_kind,
+        "collection_context": {
+            "collection_spec_id": f"follow-reddit-{surface_kind}-001",
+            "spec_version": 1,
+            "collection_run_id": f"collection-run-{surface_kind}-001",
+            "collection_purpose": "tailored_follow",
+            "surface_kind": surface_kind,
+            "selector": {selector_key: selector_value},
+            "selector_digest": "sha256:selector",
+            "follow_target_id": f"follow-target-{surface_kind}-001",
+            "attention_class": "priority",
+            "access_partition_id": "authenticated:reddit-primary",
+        },
+    }
+
+    request = contracts.AcquisitionWorkRequest.from_dict(payload)
+
+    assert request.collection_context is not None
+    assert request.collection_context.selector == {selector_key: selector_value}
+    assert request.to_dict() == payload
+
+
 def test_acquisition_work_request_rejects_collection_selector_query_mismatch():
     payload = {
         "schema_version": 1,

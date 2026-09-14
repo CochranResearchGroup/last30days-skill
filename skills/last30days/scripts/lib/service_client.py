@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from . import service_contracts as contracts
+from . import service_question_contracts as question_contracts
 
 
 class ServiceClientError(RuntimeError):
@@ -39,8 +40,12 @@ class ServiceClient:
         method: str,
         path: str,
         payload: dict[str, Any] | None = None,
+        *,
+        timeout: float | None = None,
     ) -> dict[str, Any]:
-        connection = _UnixHTTPConnection(self.socket_path, self.timeout)
+        connection = _UnixHTTPConnection(
+            self.socket_path, self.timeout if timeout is None else timeout
+        )
         body = None
         headers = {"Accept": "application/json"}
         if payload is not None:
@@ -88,6 +93,9 @@ class ServiceClient:
     def tick_schedule_status(self) -> dict[str, Any]:
         return self._request("GET", "/v1/tick-schedule")
 
+    def follow_capabilities(self) -> dict[str, Any]:
+        return self._request("GET", "/v1/follow-capabilities")
+
     def query(self, request: contracts.QueryRequest) -> contracts.QueryResponse:
         return contracts.QueryResponse.from_dict(
             self._request("POST", "/v1/query", request.to_dict())
@@ -98,6 +106,34 @@ class ServiceClient:
     ) -> contracts.PostSearchResponse:
         return contracts.PostSearchResponse.from_dict(
             self._request("POST", "/v1/posts/search", request.to_dict())
+        )
+
+    def ask_question(
+        self, request: question_contracts.QuestionRequestV1
+    ) -> question_contracts.QuestionStatusV1:
+        timeout = max(self.timeout, request.limits.wait_ms / 1000 + 5.0)
+        return question_contracts.QuestionStatusV1.from_dict(
+            self._request(
+                "POST", "/v1/questions", request.to_dict(), timeout=timeout
+            )
+        )
+
+    def question_status(
+        self, question_id: str, *, profile_id: str
+    ) -> question_contracts.QuestionStatusV1:
+        encoded_id = urllib.parse.quote(question_id, safe="")
+        encoded_profile = urllib.parse.quote(profile_id, safe="")
+        return question_contracts.QuestionStatusV1.from_dict(
+            self._request(
+                "GET", f"/v1/questions/{encoded_id}?profile_id={encoded_profile}"
+            )
+        )
+
+    def read_evidence(
+        self, request: question_contracts.EvidenceReadRequestV1
+    ) -> question_contracts.EvidenceReadResponseV1:
+        return question_contracts.EvidenceReadResponseV1.from_dict(
+            self._request("POST", "/v1/evidence/read", request.to_dict())
         )
 
     def saved_query(

@@ -45,7 +45,7 @@ Adapter = Callable[
 
 _PROFILE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 _OPERATOR_ERRORS = frozenset(
-    {"auth_required", "checkpoint_required", "profile_mismatch"}
+    {"auth_required", "checkpoint_required", "profile_mismatch", "unauthorized_target"}
 )
 _RATE_LIMIT_ERRORS = frozenset(
     {"rate_limited", "rate_limit_detected", "http_429"}
@@ -58,6 +58,8 @@ _CONFIGURATION_ERRORS = frozenset(
         "unsupported_source",
         "invalid_profile",
         "invalid_configuration",
+        "adapter_unavailable",
+        "unsupported_target",
     }
 )
 _CONTENT_ERRORS = frozenset(
@@ -78,6 +80,11 @@ _PERMANENT_ERRORS = frozenset(
         "wall_time_budget_exhausted",
         "media_redirect_limit_exceeded",
         "target_unavailable",
+        "malformed_target",
+        "unresolved_target",
+        "route_mismatch",
+        "pagination_cycle",
+        "pagination_bound_reached",
     }
 )
 _RENDERED_PAGE_ERRORS = frozenset(
@@ -291,6 +298,13 @@ def _linkedin_profile_adapter(
 def _youtube_adapter(
     request: contracts.AcquisitionWorkRequest, config: Mapping[str, str]
 ) -> dict[str, Any]:
+    if (
+        request.collection_context
+        and request.collection_context.collection_purpose == "tailored_follow"
+    ):
+        from . import service_follow_youtube
+
+        return service_follow_youtube.collect(request, config)
     del config
     from . import youtube_yt
 
@@ -306,6 +320,13 @@ def _youtube_adapter(
 def _reddit_adapter(
     request: contracts.AcquisitionWorkRequest, config: Mapping[str, str]
 ) -> dict[str, Any]:
+    if request.surface_kind in {"community", "user"} or (
+        request.collection_context
+        and request.collection_context.collection_purpose == "tailored_follow"
+    ):
+        from . import service_follow_reddit
+
+        return service_follow_reddit.collect(request, config)
     from . import reddit, reddit_browser, reddit_public
 
     if request.surface_kind == "feed":
@@ -800,10 +821,31 @@ def execute_work(
     media_transport: service_tick_http.MediaTransport | None = None,
     address_resolver: Callable[..., Any] | None = None,
     monotonic_clock: Callable[[], float] | None = None,
+    follow_transports: Mapping[str, Callable] | None = None,
 ) -> contracts.AcquisitionWorkResult:
     """Execute one adapter and return a proposal; never mutate service state."""
     adapter_registry = adapters or _DEFAULT_ADAPTERS
     adapter = adapter_registry.get(request.adapter)
+    native_follow = (
+        request.collection_context
+        and request.collection_context.collection_purpose == "tailored_follow"
+    )
+    if request.source in {"reddit", "youtube"} and (
+        native_follow or request.surface_kind in {"community", "user"}
+    ):
+        from . import service_follow_reddit, service_follow_youtube
+        from .service_follow_capabilities import DEFAULT_FOLLOW_CAPABILITIES
+
+        route = DEFAULT_FOLLOW_CAPABILITIES.capability(
+            request.source, request.surface_kind
+        ).route
+        module = service_follow_reddit if request.source == "reddit" else service_follow_youtube
+
+        def adapter(work, settings):
+            return module.collect(
+                work, settings, transport=(follow_transports or {}).get(route),
+                monotonic_clock=monotonic_clock or time.monotonic,
+            )
     now = clock or (lambda: datetime.now(timezone.utc))
     monotonic = monotonic_clock or time.monotonic
     started_monotonic = monotonic()
