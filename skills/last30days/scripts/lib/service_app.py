@@ -204,7 +204,7 @@ class CacheQueryApplication:
             self.post_search_backend,
             access_partitions=self._access_partitions,
             collection_reader=self.collection_coordinator,
-            clock=self.clock,
+            clock=self._generated_at,
         )
         self.question_application = question_application or QuestionApplication(
             self.db_path,
