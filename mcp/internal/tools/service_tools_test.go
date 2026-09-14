@@ -93,7 +93,7 @@ func TestToolSurfaceNamesAndAnnotations(t *testing.T) {
 	wantNames := []string{
 		"service_info", "follow_capabilities", "query", "search_posts", "ask_question", "question_status", "read_evidence", "refresh", "job_status", "topic",
 		"temporal_query", "profile_history", "coverage", "collection",
-		"saved_query", "maintenance_status",
+		"saved_query", "monitor", "maintenance_status",
 	}
 	if !reflect.DeepEqual(gotNames, wantNames) {
 		t.Fatalf("tool names = %v, want %v", gotNames, wantNames)
@@ -170,6 +170,28 @@ func TestSavedQueryUsesClosedLocalServiceBoundary(t *testing.T) {
 	}))
 	if badErr != nil || !bad.IsError {
 		t.Fatalf("action-specific fields were accepted: %+v, %v", bad, badErr)
+	}
+}
+
+func TestMonitorUsesStrictClosedLocalServiceBoundary(t *testing.T) {
+	fake := &fakeService{response: json.RawMessage(`{"monitor_id":"monitor-one"}`)}
+	handler := makeMonitorHandler(fake)
+	command := map[string]any{"action": "get", "monitor_id": "monitor-one"}
+	result, err := handler(context.Background(), callRequest(map[string]any{
+		"profile_id": "research", "command": command,
+	}))
+	if err != nil || result.IsError || fake.postPath != "/v1/monitor" {
+		t.Fatalf("monitor result = %+v, path = %q, err = %v", result, fake.postPath, err)
+	}
+	if fake.postBody["profile_id"] != "research" ||
+		!reflect.DeepEqual(fake.postBody["command"], command) {
+		t.Fatalf("monitor body = %#v", fake.postBody)
+	}
+	bad, badErr := handler(context.Background(), callRequest(map[string]any{
+		"command": command, "unknown": true,
+	}))
+	if badErr != nil || !bad.IsError {
+		t.Fatalf("monitor accepted unknown outer field: %+v, %v", bad, badErr)
 	}
 }
 

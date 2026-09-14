@@ -78,6 +78,19 @@
         "min": 18,
         "max": 18
       }
+    },
+    {
+      "adapter_version": "4.0.7",
+      "contract_schema_version": 1,
+      "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+      "service_api": {
+        "min": 1,
+        "max": 1
+      },
+      "database_schema": {
+        "min": 18,
+        "max": 18
+      }
     }
   ]
 }
