@@ -138,6 +138,7 @@ def _prepare_private_data_path(db_path: Path) -> None:
 
 
 def _serve(args: argparse.Namespace) -> int:
+    effect_mode = args.effect_mode
     socket_path = Path(args.socket) if args.socket else _default_socket_path()
     db_path = Path(args.db) if args.db else _default_db_path()
     shutdown_drain_seconds = _shutdown_drain_seconds()
@@ -148,15 +149,12 @@ def _serve(args: argparse.Namespace) -> int:
     retriever.initialize()
     retriever.index_legacy_findings()
     os.chmod(db_path, 0o600)
-    acquisition = build_acquisition_runtime(db_path, retriever)
-    acquisition_loop = AcquisitionLoop(
-        acquisition.runner,
-        due_scheduler=acquisition.collection_coordinator,
-    )
+    acquisition = None
+    acquisition_loop = None
     tick_schedule = None
     tick_schedule_loop = None
     tick_config_path = default_tick_config_path()
-    if tick_config_path.is_file():
+    if effect_mode == "normal" and tick_config_path.is_file():
         tick_runtime = build_tick_runtime(db_path, config_path=tick_config_path)
         tick_schedule = TickScheduleCoordinator(
             db_path,
@@ -173,7 +171,7 @@ def _serve(args: argparse.Namespace) -> int:
         "yes",
         "on",
     }
-    if assessment_enabled:
+    if effect_mode == "normal" and assessment_enabled:
         assessment_loop = AssessmentLoop(
             ContentAssessmentWorker(
                 acquisition.assessment_queue,
@@ -193,29 +191,10 @@ def _serve(args: argparse.Namespace) -> int:
                 model=os.getenv("LAST30DAYS_APP_INTELLIGENCE_MODEL") or None,
             )
         )
-    enrichment_loop = EnrichmentLoop(
-        EnrichmentService(
-            db_path,
-            embedding_provider=embedding_provider,
-            extractor_version="generic-entities-v1",
-            generic_entity_extraction=True,
-            relationship_predicates=(
-                "acquired",
-                "announced",
-                "built",
-                "created",
-                "integrates",
-                "maintains",
-                "released",
-                "supports",
-                "uses",
-            ),
-        ),
-        retriever,
-    )
+    enrichment_loop = None
     graph_url = os.getenv("LAST30DAYS_GRAPHITI_URL", "").strip()
     graph_loop = None
-    if graph_url:
+    if effect_mode == "normal" and graph_url:
         graph_loop = GraphProjectionLoop(
             GraphProjectionWorker(
                 db_path,
@@ -243,19 +222,45 @@ def _serve(args: argparse.Namespace) -> int:
                 ),
             ),
         )
+    if effect_mode == "normal":
+        acquisition = build_acquisition_runtime(db_path, retriever)
+        acquisition_loop = AcquisitionLoop(
+            acquisition.runner,
+            due_scheduler=acquisition.collection_coordinator,
+        )
+        enrichment_loop = EnrichmentLoop(
+            EnrichmentService(
+                db_path,
+                embedding_provider=embedding_provider,
+                extractor_version="generic-entities-v1",
+                generic_entity_extraction=True,
+                relationship_predicates=(
+                    "acquired",
+                    "announced",
+                    "built",
+                    "created",
+                    "integrates",
+                    "maintains",
+                    "released",
+                    "supports",
+                    "uses",
+                ),
+            ),
+            retriever,
+        )
     codex_path = os.getenv("LAST30DAYS_CODEX_PATH", "codex")
     application = initialize_application(
         db_path,
         retriever,
-        refresh_scheduler=acquisition.scheduler,
-        job_reader=acquisition.supervisor,
-        acquisition_sources=acquisition.sources,
-        acquisition_readiness=acquisition.source_readiness,
-        recurring_collection=True,
-        assessment_processing=assessment_enabled,
-        collection_coordinator=acquisition.collection_coordinator,
+        refresh_scheduler=acquisition.scheduler if acquisition else None,
+        job_reader=acquisition.supervisor if acquisition else None,
+        acquisition_sources=acquisition.sources if acquisition else (),
+        acquisition_readiness=acquisition.source_readiness if acquisition else {},
+        recurring_collection=acquisition is not None,
+        assessment_processing=assessment_loop is not None,
+        collection_coordinator=(acquisition.collection_coordinator if acquisition else None),
         graph_projection_enabled=graph_loop is not None,
-        maintenance_enabled=bool(shutil.which(codex_path)),
+        maintenance_enabled=effect_mode == "normal" and bool(shutil.which(codex_path)),
         tick_schedule_status=(tick_schedule.status if tick_schedule else None),
         runtime_error=lambda: (
             (
@@ -264,11 +269,12 @@ def _serve(args: argparse.Namespace) -> int:
                 else None
             )
             or (tick_schedule_loop.last_error_code if tick_schedule_loop else None)
-            or acquisition_loop.last_error_code
-            or enrichment_loop.last_error_code
+            or (acquisition_loop.last_error_code if acquisition_loop else None)
+            or (enrichment_loop.last_error_code if enrichment_loop else None)
             or (assessment_loop.last_error_code if assessment_loop else None)
             or (graph_loop.last_error_code if graph_loop else None)
         ),
+        effect_mode=effect_mode,
     )
     server = UnixServiceServer(socket_path, application)
     stop_event = threading.Event()
@@ -287,8 +293,10 @@ def _serve(args: argparse.Namespace) -> int:
     thread.start()
     if tick_schedule_loop is not None:
         tick_schedule_loop.start()
-    acquisition_loop.start()
-    enrichment_loop.start()
+    if acquisition_loop is not None:
+        acquisition_loop.start()
+    if enrichment_loop is not None:
+        enrichment_loop.start()
     if assessment_loop is not None:
         assessment_loop.start()
     if graph_loop is not None:
@@ -308,8 +316,10 @@ def _serve(args: argparse.Namespace) -> int:
             graph_loop.stop(timeout=5)
         if assessment_loop is not None:
             assessment_loop.stop(timeout=5)
-        enrichment_loop.stop(timeout=5)
-        acquisition_loop.stop(timeout=5)
+        if enrichment_loop is not None:
+            enrichment_loop.stop(timeout=5)
+        if acquisition_loop is not None:
+            acquisition_loop.stop(timeout=5)
         server.shutdown()
         server.server_close()
         thread.join(timeout=5)
@@ -652,6 +662,11 @@ def build_parser() -> argparse.ArgumentParser:
     serve = subparsers.add_parser("serve", help="Run the user-scoped service")
     serve.add_argument("--socket")
     serve.add_argument("--db")
+    serve.add_argument(
+        "--effect-mode",
+        choices=("normal", "cache_only"),
+        default="normal",
+    )
     serve.set_defaults(handler=_serve)
 
     status = subparsers.add_parser("status", help="Read service capabilities")

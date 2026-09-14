@@ -53,6 +53,67 @@ def _wait_ready(client: ServiceClient, process: subprocess.Popen, timeout=8):
     raise AssertionError("service did not become ready")
 
 
+def test_cache_only_service_ignores_ambient_effect_configuration(tmp_path):
+    socket_path = tmp_path / "runtime" / "service.sock"
+    db_path = tmp_path / "data" / "research.db"
+    env = {
+        **os.environ,
+        "LAST30DAYS_APP_INTELLIGENCE_ASSESSMENT": "true",
+        "LAST30DAYS_GRAPHITI_URL": "https://graphiti.invalid",
+        "LAST30DAYS_CODEX_PATH": sys.executable,
+        "LAST30DAYS_CONFIG_DIR": str(tmp_path / "config"),
+    }
+    process = subprocess.Popen(
+        [
+            sys.executable,
+            str(SERVICE),
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            str(socket_path),
+            "--db",
+            str(db_path),
+        ],
+        cwd=ROOT,
+        env=env,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    client = ServiceClient(socket_path)
+    try:
+        info = _wait_ready(client, process)
+        assert "durable_refresh" not in info.capabilities
+        assert "recurring_collection" not in info.capabilities
+        assert "content_assessment" not in info.capabilities
+        assert "graph_projection" not in info.capabilities
+        assert "bounded_adapter_maintenance" not in info.capabilities
+        with pytest.raises(
+            ServiceClientError,
+            match="effect_disabled_by_runtime: runtime policy denies query_refresh",
+        ):
+            client.query(
+                contracts.QueryRequest.from_dict(
+                    {
+                        "schema_version": contracts.SCHEMA_VERSION,
+                        "request_id": "cache-only-force-refresh",
+                        "profile_id": "default",
+                        "query": "synthetic evidence",
+                        "freshness_policy": "force_refresh",
+                        "response_mode": "evidence",
+                        "filters": {},
+                        "top_k": 8,
+                        "max_chars": 8192,
+                        "wait_ms": 0,
+                    }
+                )
+            )
+    finally:
+        process.terminate()
+        process.wait(timeout=8)
+
+
 def test_service_subprocess_drains_cleanly_and_warm_path_has_no_network(tmp_path):
     runtime_dir = tmp_path / "runtime"
     data_dir = tmp_path / "data"

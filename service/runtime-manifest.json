@@ -302,7 +302,7 @@
     },
     {
       "path": "scripts/lib/service_app.py",
-      "sha256": "9380fb2d8fb964a38c7c5f92753a2b146a417ffa42407e98037a6419aeac4bd0",
+      "sha256": "835cc03f5d9f34f9168a8c73ed08fb298bd1e30215272af2c9436e4155389ff4",
       "source": "skills/last30days/scripts/lib/service_app.py"
     },
     {
@@ -337,7 +337,7 @@
     },
     {
       "path": "scripts/lib/service_http.py",
-      "sha256": "99abd6753523013e574f9e288812cbcd33a102dee43afc3cacf357555f5e9e8e",
+      "sha256": "3ebdb64a3d7b0ea629e9d62ad2d2b23cb25225e3a895533f8b01252c6a6f4dc0",
       "source": "skills/last30days/scripts/lib/service_http.py"
     },
     {
@@ -687,7 +687,7 @@
     },
     {
       "path": "scripts/service.py",
-      "sha256": "2a9f5238a7ebfbc8e4167ac4b09c7cf9ababf877eb06b1978ceaffe79d6aa975",
+      "sha256": "527adeba194591a2aefa39bb99bbc6d3bd1a32a3fba372c8677ce7012cd89032",
       "source": "skills/last30days/scripts/service.py"
     },
     {
