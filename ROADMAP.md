@@ -2731,6 +2731,9 @@ Current State:
 - the provider-free durable question tracer and immutable citation contracts
   integrated through PR 41 as canonical merge `6d5eb5d9`; no model call, MCP
   publication, installed-runtime mutation, or provider access occurred.
+- Plan 0096 is published plan-only at `07f96129` on a clean dedicated worktree
+  for the real-search and immutable-evidence Packet 2; its independent owner
+  has not yet been launched.
 
 Closed Architecture Plan:
 
@@ -2741,6 +2744,11 @@ Closed Implementation Plan:
 - `docs/dev/plans/0091-2026-09-13-agent-question-answering-packet-1.md` on
   `feat/agent-question-answer-v1`.
 
+Planned Implementation Plan:
+
+- `docs/dev/plans/0096-2026-09-13-agent-question-evidence-tracer-packet-2.md`
+  on `feat/agent-question-evidence-v2`.
+
 Dependencies:
 
 - Packet 1's stable search backend and evidence-ref dependency is satisfied by
@@ -2749,8 +2757,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- plan broader search/model/MCP transport work as a separately bounded Packet
-  2 from current canonical main.
+- integrate Plan 0095/P46 registration, then launch one independent top-level
+  owner to execute only Plan 0096's real-search/evidence tracer.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
@@ -3061,3 +3069,33 @@ Next Bounded Action:
 
 - plan later Packet 2 work independently from current canonical main; keep P35
   at its separate pull-request authorization gate.
+
+## P46 | P36 Packet 2 Launch Registration
+
+State: OPEN
+
+Objective: register and launch one independent provider-free evidence-tracer
+session without moving feature work or runtime effects into the coordinator.
+
+Current State:
+
+- Plan 0096 is clean and remote-equal at `07f96129` on
+  `feat/agent-question-evidence-v2`, based on canonical `d4e3cd65`;
+- its dedicated worktree exists and no competing pull request owns the branch;
+- Plan 0095 freezes coordinator custody at `2b29bf19` for this registration;
+- feature implementation and the independent session remain unstarted.
+
+Active Plan:
+
+- `docs/dev/plans/0095-2026-09-13-p36-packet-2-launch-registration.md`.
+
+Dependencies:
+
+- consumes integrated P33 and P36 Packet 1 contracts; no P35, model, public
+  transport, installed-runtime, provider, tracker, or production dependency.
+
+Next Bounded Action:
+
+- merge the registration projection, then launch one independent top-level
+  Codex session in the P36 Packet 2 worktree and require a clean activation
+  checkpoint before feature implementation.

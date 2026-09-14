@@ -28545,3 +28545,60 @@ Next Bounded Action:
 
 - integrate this closeout, then choose and plan the next provider-free packet
   from canonical main; P35 remains untouched until separately authorized.
+
+## Turn 456 | 2026-09-13
+
+Focus: Plan 0095/P46
+(`docs/dev/plans/0095-2026-09-13-p36-packet-2-launch-registration.md`)
+registration of P36 evidence-tracer Packet 2.
+
+Authority Consulted:
+
+- Plans 0079, 0091, 0095, and 0096; note 0120; P36/WI-003; current CodeGraph,
+  Graphiti, Git, worktree, and fork PR state; planning, multi-session,
+  traceability, testing, and active-lane policy.
+
+Decisions And Changes:
+
+- selected architecture Packet 2 exactly: compose the real federated
+  PostSearchBackend, freeze its evidence receipt, and dereference immutable
+  citations across legacy and temporal storage;
+- deferred the structured worker to Packet 3 and HTTP/MCP publication to
+  Packet 4;
+- created a distinct feature worktree and published Plan 0096 plan-only at
+  `07f961290acf9ab6fece4ebb9b4c9c6c7560acc5`;
+- froze Plan 0095 coordinator custody at
+  `2b29bf199ae81cd4fe7c42cf74d782a560bfee53` and placed shared projections on
+  a separate publication branch;
+- kept P35, the stale frozen global install, providers, models, schedules,
+  delivery, tracker, releases, staging, and production untouched.
+
+Validation Evidence:
+
+- canonical main was clean and remote-equal at `d4e3cd65` before both
+  worktrees were created;
+- CodeGraph is current at 372 files, 10,433 nodes, and 25,653 edges and
+  confirms the protocol and immutable-version seams;
+- Graphiti doctor is healthy, but bounded discovery returned only older MCP
+  history, so current source and architecture records are authoritative;
+- Plan 0096's 10 focused authority tests and patch hygiene pass; final
+  published-ref planning and lane audits follow this projection.
+
+State Movement:
+
+- Plan 0095/P46 `unplanned -> OPEN`; Plan 0096/P36 remains `PLANNED`;
+- WI-003 remains `READY` until an independent owner accepts the lane.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the user-selected topology is one independent top-level Codex
+  session for the feature lane, not a coordinator subagent.
+
+Graphiti Write Status:
+
+- `not_written`; discovery was advisory and repository evidence is current.
+
+Next Bounded Action:
+
+- publish and merge the registration, fast-forward canonical main, then launch
+  the independent P36 Packet 2 session for activation and implementation.
