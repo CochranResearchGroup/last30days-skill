@@ -875,6 +875,49 @@ def test_x_adapter_propagates_the_admitted_item_limit(monkeypatch):
     assert result["_network_request_count"] == 1
 
 
+def test_x_account_surface_dispatches_to_typed_account_adapter(monkeypatch):
+    from lib import x_browser
+
+    observed = {}
+
+    def account(*args, **kwargs):
+        observed["args"] = args
+        observed["kwargs"] = kwargs
+        return {"items": []}
+
+    monkeypatch.setattr(x_browser, "scrape_x_account", account)
+    monkeypatch.setattr(
+        x_browser,
+        "search_x_browser",
+        lambda *_args, **_kwargs: pytest.fail("topic search must not run for account"),
+    )
+
+    result = service_acquisition_worker._x_adapter(
+        _request(query="alice", surface_kind="account", item_limit=20),
+        {},
+    )
+
+    assert observed["args"] == ("alice", "2026-06-24", "2026-07-24")
+    assert observed["kwargs"]["limit"] == 20
+    assert result["_network_request_count"] == 1
+
+
+def test_account_target_unavailable_is_a_permanent_provider_free_outcome():
+    result = execute_work(
+        _request(query="alice", surface_kind="account"),
+        {},
+        adapters={
+            "x_agent_browser": lambda _request, _config: {
+                "items": [],
+                "error_type": "target_unavailable",
+            }
+        },
+    )
+
+    assert result.safe_error_code == "target_unavailable"
+    assert result.retry_class is contracts.RetryClass.PERMANENT
+
+
 def test_linkedin_adapter_propagates_the_admitted_item_limit(monkeypatch):
     from lib import linkedin
 

@@ -41,6 +41,7 @@ ERROR_TYPES = {
     "checkpoint_required",
     "rate_limited",
     "navigation_mismatch",
+    "target_unavailable",
     "search_unavailable",
     "extraction_empty",
     "quality_gate_failed",
@@ -454,6 +455,64 @@ class XBrowserScraper:
             "diagnostics": diagnostics.as_dict(),
         }
 
+    def account(self, handle: str, from_date: str, to_date: str) -> dict[str, Any]:
+        """Collect posts from one canonical authenticated account timeline."""
+        started = time.monotonic()
+        diagnostics = XRunDiagnostics()
+        workspace = self.client.acquire_workspace(self.request)
+        auth = self.client.inspect_auth(workspace)
+        if auth.checkpoint:
+            raise XBrowserFailure("checkpoint_required", "X requires an operator security checkpoint", operator_url=workspace.operator_url)
+        if auth.restricted:
+            raise XBrowserFailure("rate_limited", "X reports that the authenticated account is restricted or rate limited", operator_url=workspace.operator_url)
+        if auth.login_form:
+            raise XBrowserFailure("auth_required", "X authentication is required", operator_url=workspace.operator_url)
+        if not auth.authenticated:
+            raise XBrowserFailure("auth_state_ambiguous", "X authentication state could not be determined from the rendered page", operator_url=workspace.operator_url)
+        timeline_url = f"https://x.com/{handle}"
+        retained = self.client.prepare_site_tab(workspace, "x.com", consolidate=True)
+        self.client.act(workspace, BrowserAction("navigate" if retained else "new_tab", value=timeline_url))
+        self.client.act(workspace, BrowserAction("wait", value=str(max(0, round(self.initial_wait * 1000)))))
+        page = _page_state(self.client.evaluate(workspace, PAGE_STATE_SCRIPT))
+        if page.checkpoint:
+            raise XBrowserFailure("checkpoint_required", "X account opened a security checkpoint", operator_url=workspace.operator_url)
+        if page.restricted:
+            raise XBrowserFailure("rate_limited", "X account reported an account restriction or rate limit")
+        if page.login_page:
+            raise XBrowserFailure("auth_required", "X account redirected to login", operator_url=workspace.operator_url)
+        if page.error_page:
+            raise XBrowserFailure("target_unavailable", "X account returned an unavailable target page")
+        if not _page_matches_account(page, handle):
+            raise XBrowserFailure("navigation_mismatch", "X account state did not match the requested handle")
+        raw = list(self.client.evaluate(workspace, EXTRACT_SCRIPT).get("candidates") or [])
+        for _ in range(self.scrolls):
+            if _accepted_unique_count(raw, "", from_date, to_date, surface_kind="account", expected_author=handle) >= self.limit:
+                break
+            self.client.evaluate(workspace, SCROLL_SCRIPT)
+            self.client.act(workspace, BrowserAction("wait", value=str(max(0, round(self.scroll_wait * 1000)))))
+            raw.extend(self.client.evaluate(workspace, EXTRACT_SCRIPT).get("candidates") or [])
+        if not raw:
+            raise XBrowserFailure("extraction_empty", "Verified X account timeline contained no post articles")
+        diagnostics.candidate_count = len(raw)
+        quality_items = _quality_gate(raw, "", from_date, to_date, diagnostics, surface_kind="account", expected_author=handle)
+        deduped_items = _dedupe_items(quality_items, diagnostics)
+        for item in deduped_items[self.limit:]:
+            _record_item_rejection(diagnostics, "result_limit", item)
+        items = deduped_items[: self.limit]
+        diagnostics.duration_ms = round((time.monotonic() - started) * 1000)
+        diagnostics.accepted_count = len(items)
+        error_type = "quality_gate_failed" if raw and not items else None
+        return {
+            "items": items,
+            "error": "X account candidates were found, but none passed the post quality gate" if error_type else None,
+            "error_type": error_type,
+            "url": page.url,
+            "title": page.title,
+            "profile": workspace.profile_id,
+            "session": workspace.session_name,
+            "diagnostics": diagnostics.as_dict(),
+        }
+
     def feed(self, from_date: str, to_date: str) -> dict[str, Any]:
         """Collect structurally valid posts from the authenticated home feed."""
         started = time.monotonic()
@@ -708,6 +767,63 @@ def search_x_browser(
             _log(f"Best-effort X service tab release did not complete: {exc}")
 
 
+def scrape_x_account(
+    handle: str,
+    from_date: str,
+    to_date: str,
+    *,
+    depth: str = "default",
+    config: dict[str, Any] | None = None,
+    limit: int | None = None,
+) -> dict[str, Any]:
+    """Scrape one canonical X account Posts timeline without a topic search."""
+    config = config or {}
+    stable = agent_browser_config.load_target_config("x")
+    settings = DEPTH_CONFIG.get(depth, DEPTH_CONFIG["default"])
+    result_limit = settings["results"] if limit is None else max(1, min(MAX_EXPLICIT_RESULTS, int(limit)))
+    scrolls = settings["scrolls"] if limit is None else max(settings["scrolls"], min(MAX_EXPLICIT_SCROLLS, (result_limit + ACCEPTED_ITEMS_PER_SCROLL_BUDGET - 1) // ACCEPTED_ITEMS_PER_SCROLL_BUDGET))
+    request = BrowserWorkspaceRequest(
+        profile_id=str(config.get("LAST30DAYS_X_BROWSER_PROFILE") or stable.get("profile_id") or "last30days-facebook"),
+        session_name=str(config.get("LAST30DAYS_X_BROWSER_SESSION") or "last30days-facebook"),
+        browser_build=str(config.get("LAST30DAYS_X_BROWSER_BUILD") or stable.get("browser_build") or "stealthcdp_chromium"),
+        view_provider=str(config.get("LAST30DAYS_X_BROWSER_VIEW_PROVIDER") or stable.get("view_stream_provider") or "rdp_gateway"),
+        timeout=int(config.get("LAST30DAYS_X_BROWSER_TIMEOUT") or settings["timeout"]),
+        start_url=f"https://x.com/{handle}",
+        service_name="last30days",
+        agent_name="x-scraper",
+        task_name="x-account",
+        target_service_id="x",
+        display_isolation=str(config.get("LAST30DAYS_AGENT_BROWSER_DISPLAY_ISOLATION") or stable.get("display_isolation") or "shared_display"),
+        browser_host=str(stable.get("browser_host") or "remote_headed"),
+        control_input_provider=str(stable.get("control_input_provider") or "manual_attached_desktop"),
+        constrain_presentation=True,
+        allow_duplicate_profile_lane=browser_runtime.config_flag(config.get("LAST30DAYS_AGENT_BROWSER_ALLOW_DUPLICATE_PROFILE_LANE")),
+    )
+    client = CliAgentBrowserClient(timeout=request.timeout, **({"job_timeout_ms": int(config["LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS"])} if config.get("LAST30DAYS_AGENT_BROWSER_JOB_TIMEOUT_MS") else {}))
+    scraper = XBrowserScraper(client, request, limit=result_limit, scrolls=scrolls, initial_wait=float(config.get("LAST30DAYS_X_BROWSER_INITIAL_WAIT") or 2), scroll_wait=float(config.get("LAST30DAYS_X_BROWSER_SCROLL_WAIT") or 1), now=config.get("_NOW"))
+    try:
+        return scraper.account(handle, from_date, to_date)
+    except XBrowserFailure as exc:
+        _log(f"Failed error_type={exc.error_type} message={exc}")
+        diagnostics = {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0}
+        if exc.reason_code:
+            diagnostics["failure_reason_code"] = exc.reason_code
+        if exc.guidance:
+            diagnostics["agent_browser_guidance"] = exc.guidance
+        if exc.operator_url:
+            diagnostics["operator_url"] = exc.operator_url
+        return {"items": [], "error": str(exc), "error_type": exc.error_type, "profile": request.profile_id, "session": request.session_name, "operator_url": exc.operator_url or None, "diagnostics": diagnostics}
+    except browser_runtime.AgentBrowserRuntimeFailure as exc:
+        error_type = exc.error_type if exc.error_type in ERROR_TYPES else "agent_browser_error"
+        _log(f"Failed error_type={error_type} message={exc}")
+        return {"items": [], "error": str(exc), "error_type": error_type, "profile": request.profile_id, "session": request.session_name, "operator_url": getattr(exc, "operator_url", None) or None, "diagnostics": {"rejection_counts": {}, "accepted_count": 0, "duration_ms": 0}}
+    finally:
+        try:
+            client.release_workspace()
+        except browser_runtime.AgentBrowserRuntimeFailure as exc:
+            _log(f"Best-effort X service tab release did not complete: {exc}")
+
+
 def scrape_x_feed(
     from_date: str,
     to_date: str,
@@ -895,6 +1011,18 @@ def _page_matches_feed(page: XPageState) -> bool:
     )
 
 
+def _page_matches_account(page: XPageState, handle: str) -> bool:
+    parsed = urlsplit(page.url)
+    return (
+        parsed.hostname in {"x.com", "www.x.com", "twitter.com", "www.twitter.com"}
+        and parsed.path.rstrip("/").casefold() == f"/{handle}".casefold()
+        and not page.login_page
+        and not page.checkpoint
+        and not page.restricted
+        and not page.error_page
+    )
+
+
 def _quality_gate(
     candidates: list[dict[str, Any]],
     topic: str,
@@ -903,6 +1031,7 @@ def _quality_gate(
     diagnostics: XRunDiagnostics,
     *,
     surface_kind: str = "topic",
+    expected_author: str | None = None,
 ) -> list[dict[str, Any]]:
     items = []
     for index, raw in enumerate(candidates):
@@ -929,6 +1058,8 @@ def _quality_gate(
             reason = "missing_permalink"
         elif not handle:
             reason = "missing_author"
+        elif expected_author is not None and handle.casefold() != expected_author.casefold():
+            reason = "author_mismatch"
         elif raw.get("promoted"):
             reason = "promoted"
         elif not date or not (from_date <= date <= to_date):
@@ -958,7 +1089,11 @@ def _quality_gate(
             "why_relevant": (
                 "Authenticated X search result"
                 if surface_kind == "topic"
-                else "Authenticated X home feed post"
+                else (
+                    "Authenticated X account post"
+                    if surface_kind == "account"
+                    else "Authenticated X home feed post"
+                )
             ),
             "relevance": relevance,
             "metadata": {
@@ -984,6 +1119,7 @@ def _accepted_unique_count(
     to_date: str,
     *,
     surface_kind: str = "topic",
+    expected_author: str | None = None,
 ) -> int:
     """Preview accepted unique yield without mutating the run diagnostics."""
     preview = XRunDiagnostics()
@@ -996,6 +1132,7 @@ def _accepted_unique_count(
                 to_date,
                 preview,
                 surface_kind=surface_kind,
+                expected_author=expected_author,
             )
         )
     )

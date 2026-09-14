@@ -744,6 +744,75 @@ class _FailingAssessment:
         raise RuntimeError("synthetic assessment outage")
 
 
+def test_account_collection_carries_frozen_context_and_retains_multi_cause_sightings(
+    tmp_path,
+):
+    db_path, supervisor, ledger, scheduler, coordinator = _coordinator(tmp_path)
+    feed = coordinator.put_spec(
+        _spec(
+            collection_spec_id="feed-x-home",
+            name="X home feed",
+            source="x",
+            surface_kind="feed",
+            selector={"feed": "home"},
+            profile_id="x-primary",
+            redaction_class="authenticated",
+            assessment_enabled=False,
+        )
+    )
+    account = coordinator.put_spec(_follow_spec())
+    account = coordinator.set_enabled(account.collection_spec_id, enabled=True)
+    feed_run = coordinator.enqueue_interval(
+        feed.collection_spec_id,
+        scheduled_for="2026-07-25T12:00:00Z",
+        trigger="timer",
+    )
+    account_run = coordinator.enqueue_interval(
+        account.collection_spec_id,
+        scheduled_for="2026-07-25T12:00:00Z",
+        trigger="timer",
+    )
+    worker = _Worker()
+    runner = AcquisitionJobRunner(
+        supervisor,
+        ledger,
+        CorpusPublisher(db_path, HybridRetriever(db_path), clock=lambda: NOW),
+        worker,
+        scheduler,
+        JobRunnerPolicy(lease_seconds=121),
+        clock=lambda: NOW,
+        collection_coordinator=coordinator,
+    )
+
+    assert runner.run_once(worker_id="collector-feed") is not None
+    assert runner.run_once(worker_id="collector-account") is not None
+
+    account_request = next(
+        request for request in worker.requests if request.job_id == account_run.job_id
+    )
+    assert account_request.query == "alice"
+    assert account_request.surface_kind == "account"
+    assert account_request.collection_context is not None
+    assert account_request.collection_context.collection_spec_id == account.collection_spec_id
+    assert account_request.collection_context.collection_run_id == account_run.collection_run_id
+    assert account_request.collection_context.selector == {"account": "alice"}
+    assert account_request.collection_context.access_partition_id == account.access_partition_id
+
+    conn = sqlite3.connect(db_path)
+    try:
+        sightings = conn.execute(
+            """SELECT collection_spec_id, collection_run_id
+               FROM document_version_sightings
+               ORDER BY collection_spec_id"""
+        ).fetchall()
+    finally:
+        conn.close()
+    assert sightings == [
+        (feed.collection_spec_id, feed_run.collection_run_id),
+        (account.collection_spec_id, account_run.collection_run_id),
+    ]
+
+
 class _AssessmentClient:
     def __init__(self):
         self.calls = []
