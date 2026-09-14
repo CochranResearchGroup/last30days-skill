@@ -1257,7 +1257,7 @@ class CollectionCoordinator:
                             END,
                             s.collection_spec_id
                    LIMIT ?""",
-                (now_text, now_text, *follow_args, limit),
+                (*follow_args, now_text, now_text, limit),
             ).fetchall()
         finally:
             conn.close()

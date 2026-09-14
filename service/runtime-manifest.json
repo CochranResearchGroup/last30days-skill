@@ -317,7 +317,7 @@
     },
     {
       "path": "scripts/lib/service_collection.py",
-      "sha256": "1cd018f135b3a5f2e4acd76c665541c0b24ca29126da4ce419b04f79deda2cc4",
+      "sha256": "de40dd91f748cfa9eb6d2f05dd0b911048e8e84ea5beee81319036cb2a8d529c",
       "source": "skills/last30days/scripts/lib/service_collection.py"
     },
     {

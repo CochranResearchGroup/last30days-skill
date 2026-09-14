@@ -220,6 +220,15 @@ def test_quarantined_legacy_follow_does_not_consume_or_abort_due_batch(
     healthy = coordinator.put_spec(
         _spec(collection_spec_id="healthy-general", name="Healthy general")
     )
+    future = coordinator.put_spec(
+        _spec(collection_spec_id="future-general", name="Future general")
+    )
+    with sqlite3.connect(db_path) as conn:
+        conn.execute(
+            "UPDATE collection_schedule_state SET next_due_at=? "
+            "WHERE collection_spec_id=?",
+            ("2099-01-01T00:00:00Z", future.collection_spec_id),
+        )
     legacy = _follow_spec(
         source="reddit",
         surface_kind="account",
@@ -265,7 +274,7 @@ def test_quarantined_legacy_follow_does_not_consume_or_abort_due_batch(
         return connection
 
     monkeypatch.setattr(coordinator, "_connect", traced_connect)
-    runs = coordinator.enqueue_due(limit=1)
+    runs = coordinator.enqueue_due(limit=2)
 
     assert [run.collection_spec_id for run in runs] == [healthy.collection_spec_id]
     due_select = next(
@@ -273,7 +282,7 @@ def test_quarantined_legacy_follow_does_not_consume_or_abort_due_batch(
         for statement in statements
         if "FROM collection_specs AS s" in statement
     )
-    assert "LIMIT 1" in due_select
+    assert "LIMIT 2" in due_select
     assert "collection_purpose != 'tailored_follow'" in due_select
 
 
