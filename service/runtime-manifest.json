@@ -396,8 +396,13 @@
       "source": "skills/last30days/scripts/lib/service_question_evidence.py"
     },
     {
+      "path": "scripts/lib/service_question_worker.py",
+      "sha256": "9d1327eb428411a6e5fd8bbf305b76f81a28626033a1d4334dd7d1928b63658a",
+      "source": "skills/last30days/scripts/lib/service_question_worker.py"
+    },
+    {
       "path": "scripts/lib/service_questions.py",
-      "sha256": "0794a2ed8ce9ed845124a24bfe126a3fd1230b59c267286819d0a0ca31e9e283",
+      "sha256": "76156979277ffbc35728616db5ef9d515460b292a58c71fdc1ca578ac30cc7e7",
       "source": "skills/last30days/scripts/lib/service_questions.py"
     },
     {
