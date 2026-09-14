@@ -29447,3 +29447,65 @@ Next Bounded Action:
 - create the successor P35 reconciliation plan from canonical `b753bcef`,
   reconcile its published feature branch without history rewriting, run the
   combined provider-free validation, and integrate through a new pull request.
+
+## Turn 472 | 2026-09-14
+
+Focus: activate bounded P35 current-main reconciliation under Plan 0104.
+
+Authority Consulted:
+
+- operator instruction to plan and execute the exact next packet; Plan
+  0102/P51, Plan 0086/P35, WI-004, WI-009/#55, note 0125, current Git/worktree
+  and forge readback, Graphiti and CodeGraph discovery, and planning, work-item,
+  reconciliation, Git, testing, documentation, validation, and collaborative
+  workflow policy.
+
+Decisions And Changes:
+
+- created Plan 0104 as the bounded P35 reconciliation and combined-validation
+  packet at
+  `docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md`, owned by
+  the top-level coordinator session;
+- registered P35 at `ACTIVE_WORKTREE`, corrected the stale issue-registry PR
+  blocker, and projected Plan 0104 through P51, WI-004, WI-009, and the roadmap;
+- froze an ordinary current-main merge with history preservation and required
+  deterministic regeneration for the sole overlapping generated manifest;
+- retained all Packet 2, runtime, provider, browser, release, deployment,
+  production, and GitHub issue gates.
+
+Validation Evidence:
+
+- canonical main is clean and remote-equal at `31342c9f`; the published P35
+  branch is clean and remote-equal at `d2c9f8eb`, 88 behind and 8 ahead;
+- merge base is `75e7771e`; the exact path audit found 61 main-only changes, 26
+  feature-only changes, and only `service/runtime-manifest.json` changed by
+  both lines;
+- the owned fork has no open pull request and issue #55 remains open;
+- CodeGraph and Graphiti were healthy; focused Graphiti recall was older and
+  unrelated, so repository and Git evidence is authoritative;
+- active-only planning, goal-only planning, and catalog-only lane audits passed
+  before activation.
+
+State Movement:
+
+- Plan 0104 `unplanned -> OPEN`;
+- WI-004 `BLOCKED -> IN_PROGRESS` for Packet 1 reconciliation while Packet 2
+  remains gated by WI-009;
+- P35 custody `INTEGRATION_READY -> ACTIVE_WORKTREE` under the current plan;
+- progress classification: `blocker_reduction`;
+- authority classification: `inherited_authority` for provider-free repository
+  and normal PR work; every named external effect remains a `human_gate`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; this bounded packet is owned by the top-level coordinator.
+
+Graphiti Write Status:
+
+- `not_written`; session-level authority to write durable memory was not
+  explicitly granted, so repository and Git receipts remain authoritative.
+
+Next Bounded Action:
+
+- publish Plan 0104 registration, baseline the exact P35 head, merge current
+  main without rewriting history, and regenerate the combined manifest.
