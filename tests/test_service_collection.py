@@ -172,6 +172,35 @@ def test_x_follow_targets_are_typed_canonical_and_partition_bound(
     assert other_partition.follow_target_id != first.follow_target_id
 
 
+def test_legacy_provider_invalid_tailored_target_is_quarantined_but_archivable(tmp_path):
+    db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
+    stored = coordinator.put_spec(_follow_spec())
+    legacy = _follow_spec(
+        source="reddit",
+        surface_kind="account",
+        selector={"account": "legacy"},
+        profile_id="default",
+        redaction_class="authenticated",
+    )
+    with sqlite3.connect(db_path) as conn:
+        conn.execute(
+            "UPDATE collection_specs SET source = ?, surface_kind = ?, selector_json = ?, profile_id = ?, access_partition_id = ?, follow_target_id = ? WHERE collection_spec_id = ?",
+            (legacy.source, legacy.surface_kind, json.dumps(legacy.selector), legacy.profile_id, legacy.access_partition_id, legacy.follow_target_id, stored.collection_spec_id),
+        )
+        conn.execute(
+            "UPDATE collection_spec_revisions SET spec_json = ?, spec_digest = ?, selector_digest = ?, access_partition_id = ? WHERE collection_spec_id = ? AND spec_version = 1",
+            (json.dumps(legacy.to_dict(), sort_keys=True, separators=(",", ":")), legacy.spec_digest, legacy.selector_digest, legacy.access_partition_id, stored.collection_spec_id),
+        )
+
+    restored = coordinator.get_spec(stored.collection_spec_id)
+    assert restored.is_quarantined_follow
+    with pytest.raises(CollectionSpecValidationError, match="cannot be enabled"):
+        coordinator.set_enabled(stored.collection_spec_id, enabled=True)
+    with pytest.raises(CollectionSpecValidationError, match="cannot be scheduled"):
+        coordinator.enqueue_interval(stored.collection_spec_id, scheduled_for="2026-07-25T12:00:00Z", trigger="manual")
+    assert coordinator.archive_spec(stored.collection_spec_id).lifecycle_state == "archived"
+
+
 @pytest.mark.parametrize(
     ("surface_kind", "selector", "candidate"),
     [
