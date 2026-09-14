@@ -387,12 +387,17 @@
     },
     {
       "path": "scripts/lib/service_question_contracts.py",
-      "sha256": "8b31664f3e68e990dfdbd17afd24cf1556eab6513ee80880fbd86cdfcd6c3927",
+      "sha256": "34ef65c5ada3d19940f7394c2e42def51f95cf79eadef6abd33ed2427d19c1bc",
       "source": "skills/last30days/scripts/lib/service_question_contracts.py"
     },
     {
+      "path": "scripts/lib/service_question_evidence.py",
+      "sha256": "157ba0f681ca7a5bd448c09f35c4758d46771f2011e732225bc2e6b2c57c631d",
+      "source": "skills/last30days/scripts/lib/service_question_evidence.py"
+    },
+    {
       "path": "scripts/lib/service_questions.py",
-      "sha256": "cbac24be73c4061aa18e560b8916f948805421921a0d484ee170393a85fb4268",
+      "sha256": "0794a2ed8ce9ed845124a24bfe126a3fd1230b59c267286819d0a0ca31e9e283",
       "source": "skills/last30days/scripts/lib/service_questions.py"
     },
     {
