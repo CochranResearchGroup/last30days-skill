@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-002 -->
 # Search and retrieve stored posts as a product surface
 
-State: READY
+State: IN_PROGRESS
 Priority: P1
 Lane: Search
 Parent: WI-000
@@ -10,9 +10,8 @@ Blocked by: none
 Architecture: docs/dev/notes/0117-2026-09-13-post-search-product-architecture.md
 Implementation plan seed: docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md
 Last completed plan: docs/dev/plans/0108-2026-09-14-post-search-packet-2.md
-Active plan: none
-Branch: none
-Next planned plan: docs/dev/plans/0111-2026-09-14-post-search-packet-3.md
+Active plan: docs/dev/plans/0111-2026-09-14-post-search-packet-3.md
+Branch: feat/post-search-v3
 
 ## Problem
 
@@ -57,3 +56,6 @@ pagination, and focused public-boundary compatibility.
 Packet 2 integrated through PR 79 at canonical `fae31198` after independent
 review and joined acceptance. Next work is a separately planned Packet 3 for
 semantic/RRF ranking and bounded 10,000-post performance evidence.
+
+Packet 3 is active at published plan-only checkpoint `f1f5f4dd`; product work
+remains held until the coordinator integrates this custody projection.

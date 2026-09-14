@@ -30226,3 +30226,54 @@ Next Bounded Action:
 
 - validate and merge this registration, then create and publish exact
   activation-only branch custody before implementation begins.
+
+## Turn 485 | 2026-09-14
+
+Focus: reconcile exact Wave 2 plan-only activation checkpoints into canonical
+lane custody.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`.
+
+Authority Consulted:
+
+- Plan 0107; Plans 0111-0113 at exact branch refs; P33/P35/P38/P52;
+  WI-002/WI-004/WI-007; current Git/worktree/remote evidence; planning,
+  work-item, lane, model, validation, and integration policy.
+
+Decisions And Changes:
+
+- accepted remote-equal activation checkpoints `f1f5f4dd`, `69bf4d36`, and
+  `467aca46` from three one-level owners;
+- moved P33/P35/P38 and WI-002/WI-004/WI-007 to `OPEN`/`IN_PROGRESS` and bound
+  exact new plans, branches, owners, checkpoints, remote refs, and overlaps;
+- retained all shared authority and generated-artifact joins with the
+  coordinator and kept implementation held until this projection merges.
+
+Validation Evidence:
+
+- each activation changed only its branch-local plan, passed its plan/diff
+  checks, and is clean with local HEAD, tracking ref, and remote equal;
+- canonical registration base `7f65c428` was clean and remote-equal before all
+  three worktrees were created.
+
+State Movement:
+
+- Plans 0111-0113 `PLANNED -> OPEN` on exact branch refs;
+- P33/P35/P38 `PLANNED -> OPEN`;
+- WI-002/WI-004/WI-007 `READY -> IN_PROGRESS`;
+- Plan 0107 `wave_2_registration_ready -> wave_2_activated`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; all three activation-only agents completed and are idle pending
+  canonical reconciliation.
+
+Graphiti Write Status:
+
+- `not_written`; exact repository and remote refs are authoritative.
+
+Next Bounded Action:
+
+- validate and merge this projection, then resume the three bounded provider-
+  free implementation owners with no nested agents.

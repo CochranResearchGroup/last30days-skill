@@ -1,6 +1,6 @@
 # Plan 0112 | X List And Product Closure
 
-State: PLANNED
+State: OPEN
 Lane: P35
 Work item: WI-004
 Branch: feat/x-tailored-follows-v3
@@ -9,7 +9,7 @@ Integration: merge
 Roadmap: P35
 Plan version: 1
 Date: 2026-09-14
-Execution owner: unassigned until activation
+Execution owner: /root/wi004_packet3_planning
 Coordination owner: /root
 Requested model route: gpt-5.6-terra, medium reasoning
 Effective runtime model: unknown until reported
@@ -79,3 +79,75 @@ release, staging, deployment, or live canary.
 All seven criteria pass at an integration-ready checkpoint and coordinator
 evidence can truthfully close WI-004 without any live canary.
 
+## Current Checkpoint
+
+### Checkpoint P0112-C01 | 2026-09-14
+
+Plan version: 1
+
+State transition: `PLANNED -> OPEN`.
+
+Progress classification: `blocker_reduction`; this activation establishes
+accountable branch custody and a recoverable provider-free implementation
+boundary. No product source, test, generated artifact, shared authority, or
+runtime state changed.
+
+Custody:
+
+- execution owner: `/root/wi004_packet3_planning` in
+  `/home/ecochran76/workspace.local/last30days-skill-wi004-v3` on
+  `feat/x-tailored-follows-v3`;
+- registered base and local `HEAD` are
+  `7f65c4285146e8d4dabd417617584fe7042a582f`, the Wave-2 registration merge;
+- the branch was clean before this plan-only edit and no remote lane ref
+  existed at activation preflight; publish this checkpoint with its exact
+  post-commit remote equality before implementation resumes.
+
+Authority classification:
+
+- `inherited_authority` covers only this branch-local plan activation,
+  provider-free source/tests, branch publication, review, and later coordinator
+  integration under Plan 0107, WI-004, and this bounded plan;
+- `human_gate` remains for browser/profile/provider access, live data, jobs or
+  schedule starts, installed database/runtime, release, staging, production,
+  deployment, rollback, and issue mutation;
+- coordinator-owned `ROADMAP.md`, `RUNBOOK.md`,
+  `docs/dev/active-lanes.yaml`, work-item projections, generated catalog,
+  runtime manifest, and shared-contract joins were not edited by this lane.
+
+Overlap and dependency boundary:
+
+- lane-owned intended implementation surfaces are list acquisition/browser
+  routing, collection scheduler ordering, focused Python fixtures/tests, MCP
+  collection tool/tests, narrow operator guidance, and this plan;
+- shared `service_contracts.py`, publication/search seams, generated artifacts,
+  and MCP catalog/manifest reconciliation require coordinator ownership before
+  any edit; P33 owns search ranking and P38 owns hotfix tooling;
+- WI-005 remains outside this packet and may not start from this lane. P35
+  completion is its Wave-2 prerequisite.
+
+Discovery and validation evidence:
+
+- Graphiti runtime doctor was healthy; focused `last30days_skill_main`
+  discovery returned no WI-004/Plan-0112-specific fact, so current repository
+  authorities are controlling;
+- this worktree's CodeGraph status is `not initialized`. The activation makes
+  no structural source claim and does not initialize derived state; an
+  implementation turn must establish or document the required structural
+  impact readback before changing code;
+- pre-edit custody readback, `git diff --check`, and clean status passed. The
+  activation validation after this edit is plan authority/audit validation,
+  `git diff --check`, scoped diff review, commit, push, and exact remote
+  equality. Product tests are intentionally not run because product files are
+  out of scope.
+
+Model and topology:
+
+- requested route is `gpt-5.6-terra` at medium reasoning; effective runtime
+  model and effort are `unknown` because the runtime did not report them;
+- this packet has one top-level owner and no children. No subagent was spawned.
+
+Next action or stop reason: commit and publish this activation-only checkpoint,
+verify the remote ref resolves to the exact local commit, then stop. Resume
+only for the provider-free implementation packet after re-reading current lane
+overlaps and reconciling every shared surface through the coordinator.
