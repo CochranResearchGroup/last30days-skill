@@ -29,9 +29,10 @@ bounded pagination, HTTP/MCP parity fixtures, and a frozen 10,000-post
 performance sample. Remaining acceptance is versioned isolated-runtime and
 fresh-client product proof, not another ranking redesign.
 
-Activation custody is accepted at P0114-C01. Implementation remains held until
-the coordinator integrates the canonical activation projection and resumes this
-owner with the bounded implementation assignment.
+Activation custody is accepted at P0114-C01. The coordinator integrated that
+projection at `c4251dc12c905e513c9f37119b3442382741f31e` and resumed this owner
+for the bounded implementation and isolated-runtime acceptance. The repo-only
+probe has focused acceptance; exact-runtime evidence remains pending C03.
 
 ## Scope
 
@@ -164,3 +165,61 @@ Stop and next action:
   policies, and shared-surface assignment. Stop on custody mismatch or newly
   conflicting ownership; do not infer implementation or runtime activation
   from publication alone.
+
+### Checkpoint P0114-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `activation_published -> source_probe_ready`; plan remains
+`OPEN` pending isolated-runtime evidence, independent review and integration.
+
+Progress classification: `outcome_progress`; one reusable repo-only probe now
+crosses typed HTTP and a freshly built MCP process over 19 fixture cases,
+malformed requests, sort modes, partition/cursor changes and publication.
+
+Authority classification:
+
+- `inherited_authority` under Plan 0107 and the coordinator's implementation
+  continuation covers the repo-only probe/fixtures/docs, this plan, safe
+  validation, exact WI-001 isolated-runtime acceptance, receipts, and branch
+  publication;
+- generated artifacts, runtime manifest, version metadata, shared transport,
+  roadmap/runbook, work-item/lane projections and PR integration remain
+  coordinator-owned; no provider, browser, installed runtime, schedule, staging,
+  production, release publication or issue effect is permitted.
+
+Custody and implementation evidence:
+
+- fetched `origin/main` and fast-forwarded the assigned branch to exact
+  `c4251dc12c905e513c9f37119b3442382741f31e`; Git verifies activation
+  `81cbfc09b197b8cde325e468e79d19115d4fc4fb` remains in ancestry;
+- `dev/last30days/scripts/post_search_dogfood.py` reuses existing synthetic
+  fixtures and the WI-001 controller without changing packaged product source;
+- it refuses existing lane state, builds the MCP adapter with offline Go
+  dependency resolution, supplies a private credential-free MCP environment,
+  compares complete HTTP/MCP responses except request ID and generated time,
+  and checks the whole logical database digest around read-only probes;
+- one explicit synthetic publication has separate before/after digests and
+  proves pinned traversal; it is never counted as a read-only search mutation;
+- the runtime bound is exactly two start/stop cycles of one unique isolated
+  identity, sequentially, to prove restart-stale cursors. Each MCP process is
+  terminated and reaped; final OS census includes both owned process sessions;
+- source checks first failed because the probe was absent, then passed with
+  the implementation. The probe also detects deliberately forged evidence
+  parity, refuses existing corpus seeding and detects an owned OS session;
+- 69 focused search/MCP/controller/package tests passed. Go tests and vet pass;
+  focused Ruff and patch checks pass after import/format cleanup. Comprehensive
+  Python validation is running and is not yet claimed passed;
+- two fixed-epoch service `0.3.117` builds are byte-identical at
+  `a103624e7aa64a86513c7d4c34c5c10152a9a0c0a8785e9f5fd86730a4ec2a44`;
+  no manifest/catalog/version changes were needed. Exact-runtime execution
+  waits for this clean source checkpoint.
+
+Model/topology remain unchanged: requested `gpt-5.6-terra` / medium, effective
+configuration unknown, one owner, no children. One implementation attempt is
+in progress; no broad independent review or remediation has been consumed.
+
+Next action: commit this source checkpoint, verify its clean custody, rebuild
+the exact artifact, exercise the isolated runtime, retain its raw receipt and
+record the final validation/teardown outcome. Any concrete transport or manifest
+blocker returns to the coordinator without widening the write set.
