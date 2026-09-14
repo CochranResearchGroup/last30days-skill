@@ -1,0 +1,66 @@
+{
+  "artifact": {
+    "build_commit": "1168c62e0192ff33f71a07482a32b05721fb839a",
+    "build_root": "/home/ecochran76/.local/state/last30days-development-builds/p51-1168c62e.EKhG9s",
+    "byte_identical_builds": true,
+    "manifest_sha256": "a0a11ff4be28ac72048f1634221ef59d464802222f0f0ac571a6fe242d1e83c3",
+    "service_version": "0.3.117",
+    "sha256": "cf64df41ed072b3d87085b537e0cbe4960d56e71d34d70891b386e152d15bff2",
+    "source_date_epoch": 0
+  },
+  "dogfood": {
+    "database_sha256": "50c4b99a2d48461a85394873727766643d0a50b28a7b6890531985e0f74895f2",
+    "provider_free": true,
+    "receipt_root": "/home/ecochran76/.local/state/last30days-development/last30days/lanes/l30d-p51-dogfood-cdbb3d9fd80b/receipts/dogfood",
+    "runtime_transport_receipt_sha256": "0368d38eb7d586c4a88a9b447a8ac31beede85fef26fa10443f48613981d1111",
+    "summary_sha256": "2410dc9cefc66fdcf761104d86d40d089feb9f2e84758822c9f8c895af8102a5",
+    "surfaces": {
+      "quality_reporting": "passed",
+      "questions_structured_and_evidence_only": "passed",
+      "saved_monitors": "passed",
+      "stored_search": "passed",
+      "tailored_follow_create_read_archive_history": "passed"
+    },
+    "synthetic_only": true
+  },
+  "git": {
+    "artifact_root_hotfix_pr": 74,
+    "artifact_root_hotfix_merge": "1168c62e0192ff33f71a07482a32b05721fb839a",
+    "implementation_pr": 73,
+    "implementation_merge": "633297cb88b161bdd72c57fcd186d51364cb60d4",
+    "repository": "github.com/CochranResearchGroup/last30days-skill"
+  },
+  "production_post_readback": {
+    "config_path": "/home/ecochran76/.config/last30days/.env",
+    "config_sha256": "69c5590e31dc71a4d5197a14e9f88225768e0bebcdc233ccd18093f22d3ee9fc",
+    "database_path": "/home/ecochran76/.local/share/last30days/research.db",
+    "database_schema_version": 17,
+    "installed_manifest_sha256": "19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8",
+    "pid": 1428,
+    "process_start_ticks": 4893,
+    "service_version": "0.3.116",
+    "socket_path": "/run/user/1000/last30days/service.sock",
+    "unit_path": "/home/ecochran76/.config/systemd/user/last30days.service",
+    "unit_sha256": "3089c36c482610575f358ec70664bcfe3980b64e6ee080b5eb035761644de1ea"
+  },
+  "runtime": {
+    "database_schema_version": 18,
+    "descriptor_digest": "a7551944051cd59d78b575022d5f4e81afc8663a0b7bbdd7ba2020ec7a8e3c76",
+    "descriptor_sha256": "222159d4a9745e42b91b2ae7ff1e04cd9c0e00f22b431c9c80c4940256848fb3",
+    "effect_mode": "cache_only",
+    "final_state": "stopped",
+    "pid_during_dogfood": 859669,
+    "runtime_id": "l30d-p51-dogfood-cdbb3d9fd80b",
+    "socket_path": "/run/user/1000/last30days-development/cdbb3d9fd80b/s",
+    "startup_receipt_sha256": "f3d29634f3461ff690e32b8f9273d92382a5ca90eccc00b43cd299c168bb98fd"
+  },
+  "schema_version": 1,
+  "state": "passed",
+  "validation": {
+    "full_python": "passed_with_expected_skips",
+    "mcp_go_test": "passed",
+    "mcp_go_vet": "passed",
+    "plan_authority_audit": "passed",
+    "runtime_package_and_controller_tests": "38_passed"
+  }
+}

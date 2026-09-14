@@ -1,12 +1,12 @@
 <!-- last30days-work-item:WI-000 -->
 # Productize the temporal intelligence service
 
-State: BLOCKED
+State: READY
 Priority: P1
 Lane: Program
 Parent: none
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/52
-Blocked by: WI-009 productization readiness remediation
+Blocked by: none
 
 ## Problem
 
@@ -29,6 +29,12 @@ priority hotfix path, and measurable corpus quality.
   readback rather than issue closure alone.
 - WI-009 is complete before any new WI-001 through WI-006 or WI-008 feature
   packet starts; WI-007 remains reserved for production hotfixes.
+
+## Current Readiness
+
+WI-009 is `DONE` through the accepted P51 artifact, isolated-runtime, dogfood,
+production-readback, and governance receipts. Child work may now be selected,
+but each packet still needs its own plan and action-specific authority.
 
 ## Non-Goals
 

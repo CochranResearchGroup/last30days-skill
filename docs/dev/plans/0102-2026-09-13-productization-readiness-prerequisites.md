@@ -1,15 +1,15 @@
 # Plan 0102 | Productization Readiness Prerequisites
 
-State: PLANNED
+State: CLOSED
 Lane: P51
 Work item: WI-009
 Branch: docs/productization-prerequisite-gate
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 7
+Plan version: 8
 Date: 2026-09-13
-Execution owner: unassigned
+Execution owner: primary Codex goal thread
 
 ## Objective
 
@@ -18,25 +18,22 @@ before any new product feature packet begins.
 
 ## Current State
 
-- canonical `main` is clean and remote-equal at
-  `8f9bfb142cd64c6b17cbc8c67973cf38d668108d`;
-- stored-post search, saved monitors, quality tracing, the isolated-runtime
-  doctor, and three question-answering packets are integrated in source;
-- Plan 0103 and PR 64 repaired and regression-locked both accepted
-  question-contract defects; comprehensive Python and MCP Go tests pass;
-- GitHub Issues are enabled. `AGENTS.md` and `docs/agents/issue-tracker.md`
-  initially described them as disabled, but PR 51
-  corrected the authority boundary, and WI-000 through WI-009 are now live as
-  issues #52 through #61 with exact repo-local mappings;
-- Plan 0104 reconciled and integrated P35 Packet 1 through PR 68 at canonical
-  merge `87858934c8498dccbdeda549ad73f626dbc143a7` after combined provider-free
-  validation;
-- production is the only running service. It reports service `0.3.116`, schema
-  17, and installed manifest `19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8`;
-  source is now distinctly versioned `0.3.117`, schema 18, with 139-file
-  manifest SHA-256
-  `8b0d3590801fc1732d8c52d02d5ab9c4a0b141858fe77809b91d517b56c57cf2`,
-  but no isolated development artifact/runtime has been built or installed.
+- all six ordered packets are accepted. Plans 0103, 0104, and 0105 are closed,
+  and WI-009 is `DONE` in repo-local authority;
+- question contract repairs, tracker reconciliation/publication, and P35
+  reconciliation are integrated through their recorded reviewed pull requests;
+- PRs 73 and 74 integrated the exact-owner cache-only runtime at canonical
+  `1168c62e0192ff33f71a07482a32b05721fb839a`;
+- two fixed-input builds from that exact commit are byte-identical at SHA-256
+  `cf64df41ed072b3d87085b537e0cbe4960d56e71d34d70891b386e152d15bff2`;
+- exactly one isolated service `0.3.117`/schema 18 runtime passed lifecycle,
+  identity, effect-denial, and five-surface synthetic provider-free dogfood,
+  then stopped through exact-owner teardown with its evidence retained;
+- production remains PID 1428 at service `0.3.116`, schema 17, installed
+  manifest `19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8`,
+  and its original unit/config/database/socket identities;
+- the durable Packet 4/5 evidence index is
+  `docs/dev/notes/0126-2026-09-14-p51-runtime-dogfood-closeout-receipt.json`.
 
 ## Scope And Ordered Packets
 
@@ -62,12 +59,8 @@ before any new product feature packet begins.
 
 Packet 1 completed through PRs 64 and 65. Packet 2 completed through PR 51.
 Packet 6 completed through issues #52-#61 and its repo projection through PR
-62. Packet 3 completed through PRs 67 and 68; Packets 4 and 5 remain.
-
-Packets 4 and 5 are active under bounded successor Plan 0105. The operator has
-authorized exactly one isolated development runtime plus provider-free dogfood;
-all production, staging, provider, browser, schedule, private-data, release,
-deployment, and GitHub issue effects remain prohibited.
+62. Packet 3 completed through PRs 67 and 68. Packets 4 and 5 completed under
+Plan 0105 through PRs 70-74 plus the retained build/runtime/dogfood receipts.
 
 Packet 6 was completed first under the operator's explicit direction so the
 tracker can coordinate subsequent work. Packets 1 and 2 may run in parallel on
@@ -150,7 +143,32 @@ and the roadmap explicitly releases the feature freeze.
 
 ## Next Action
 
-Execute bounded successor Plan 0105 from current `origin/main`: integrate the
-runtime containment change, prove a deterministic artifact, provision exactly
-one isolated development runtime, and run provider-free dogfood while
-preserving production unchanged.
+The prerequisite gate is closed. Select the highest-priority `READY` child
+under a new bounded plan; do not infer provider, browser, schedule,
+installed-runtime, release, deployment, private-data, or tracker-mutation
+authority from this provider-free acceptance.
+
+## Closeout Receipt | 2026-09-14
+
+Plan version: 8
+
+State transition: `PLANNED -> CLOSED`; WI-009 moves `IN_PROGRESS -> DONE`, P51
+moves `OPEN -> CLOSED`, and the feature freeze is released.
+
+Acceptance reconciliation:
+
+1. question-contract regressions pass in the comprehensive suite;
+2. canonical tracker documentation and issues #52-#61 retain their accepted
+   mappings and per-action gates;
+3. P35 Packet 1 is integrated at canonical `87858934`;
+4. the canonical service `0.3.117` artifact is reproducible and the isolated
+   runtime agrees at schema 18/manifest `a0a11ff4...e83c3` while production is
+   unchanged;
+5. inspectable synthetic-only receipts pass stored search, both question modes,
+   saved monitors, quality, and tailored-follow lifecycle;
+6. no GitHub issue mutation occurred during Packets 4/5; issue #55 remains open
+   and repo-local completion is explicitly distinct from remote issue state;
+7. this plan, Plan 0105, WI-009, ROADMAP, RUNBOOK, active lanes, Git, tests,
+   artifact, runtime, dogfood, and production readback now agree.
+
+Evidence: `docs/dev/notes/0126-2026-09-14-p51-runtime-dogfood-closeout-receipt.json`.

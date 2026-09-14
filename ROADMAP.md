@@ -2681,7 +2681,7 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `BLOCKED` by the WI-009 program gate before Packet 2; Packet 1 is
+- WI-004 is `READY` for separately planned Packet 2 work; Packet 1 is
   integrated through PR 68 at canonical `87858934`;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
   lifecycle, canonical typed targets, and immutable acquisition context rather
@@ -2714,8 +2714,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- retain Packet 2 behind WI-009. When that program gate closes, derive a new
-  bounded provider-free packet rather than extending closed Plan 0104.
+- derive a new bounded provider-free Packet 2 plan rather than extending closed
+  Plan 0104; readiness does not grant provider, browser, schedule, or installed
+  runtime authority.
 
 ## P36 | Agent Question Answering MCP Surface
 
@@ -3247,37 +3248,32 @@ Next Bounded Action:
 
 ## P51 | Productization Readiness Prerequisites
 
-State: OPEN
+State: CLOSED
 
 Objective: clear the accepted productization review findings and prove a
 coherent versioned development runtime before another feature packet starts.
 
 Current State:
 
-- search, question answering, saved monitors, quality tracing, and the
-  isolated-runtime doctor are integrated in source; Plan 0103 and PR 64 closed
-  both accepted question-contract failures;
-- GitHub Issues are enabled; PR 51 corrected canonical tracker guidance and
-  WI-000 through WI-009 are published as issues #52 through #61;
-- tracker-documentation reconciliation and issue publication are complete;
-  a versioned development runtime and development dogfood remain before the
-  gate can close;
-- P35 Packet 1 is integrated through PR 68 at canonical `87858934` after
-  current-main reconciliation and combined provider-free validation;
-- `docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md` is
-  closed through merged PR 64 at canonical `b753bcef`; both accepted
-  question-contract defects are repaired and regression-locked;
-- production remains the only active runtime at service `0.3.116`, schema 17;
-  source is now distinctly versioned `0.3.117`, schema 18, but has not been
-  built or installed as an isolated development runtime.
-- bounded successor Plan 0105 is active for Packets 4 and 5 under explicit
-  authority for exactly one isolated development runtime and provider-free
-  dogfood; all named external/live effects remain prohibited.
-- Plan 0105's containment implementation is provider-free validated at
-  `a8c81148`; canonical artifact build, one-runtime provisioning, dogfood, and
-  closeout remain after reviewed integration.
-- exact remote feature tip `5c1d6228` is integration-ready after merging the
-  accepted catalog join and rerunning the focused 69-test surface.
+- all six Plan 0102 packets are accepted and WI-009 is `DONE` in repo-local
+  authority; issue #55 remains open because no GitHub issue mutation was
+  authorized;
+- PR 73 integrated the cache-only exact-owner lifecycle, and PR 74 repaired
+  canonical versioned artifact-root handling at `1168c62e`;
+- two fixed-input builds from exact canonical commit `1168c62e` are
+  byte-identical at artifact SHA-256 `cf64df41...bff2`; service `0.3.117`,
+  schema 18, and manifest `a0a11ff4...e83c3` agree;
+- runtime `l30d-p51-dogfood-cdbb3d9fd80b` passed `doctor`, `up`, and `status`
+  with exact PID/birth/socket-peer binding, strict credential/schedule/browser
+  denial, and cache-only effects, then stopped through verified `down`;
+- synthetic provider-free receipts pass stored search, structured and
+  evidence-only questions, saved monitors, four-axis quality reporting, and
+  tailored-follow create/read/archive history. Live socket search also passed,
+  while a refresh-capable query returned `effect_disabled_by_runtime`;
+- fresh post-dogfood readback preserves production PID 1428, unit/config/socket
+  identity, service `0.3.116`, schema 17, and installed manifest `19707a46...29e8`;
+- the durable evidence index is
+  `docs/dev/notes/0126-2026-09-14-p51-runtime-dogfood-closeout-receipt.json`.
 
 Plan:
 
@@ -3286,19 +3282,16 @@ Plan:
 
 Dependencies:
 
-- work may begin provider-free from current canonical main; tracker publication
-  is complete. Development-runtime
-  provisioning, release, dogfood effects, and issue actions beyond the accepted
-  backlog creation retain their separate action-specific gates. P35 PR creation
-  follows the normal branch/integration workflow and is not registry-gated.
+- none for closing the readiness prerequisite. Every later provider, browser,
+  schedule, installed-runtime, release, deployment, or tracker mutation keeps
+  its own action-specific gate.
 
 Program Gate:
 
-- no new feature packet for WI-001 through WI-006 or WI-008 may activate until
-  P51 is `CLOSED` and WI-009 is `DONE`; corrective packets under P51 and the
-  reserved WI-007 production-hotfix lane are the only exceptions.
+- released. WI-001 through WI-006 and WI-008 may be selected under normal WIP,
+  planning, and authority rules; WI-007 remains the reserved hotfix path.
 
 Next Bounded Action:
 
-- integrate the immutable custody catalog and reviewed feature PR, then build
-  twice from merged canonical main before provisioning one runtime.
+- select the highest-priority `READY` work item and register one bounded packet;
+  do not infer live-effect authority from this provider-free gate closure.
