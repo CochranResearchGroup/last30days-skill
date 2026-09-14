@@ -28662,8 +28662,10 @@ Focus: Plan 0097/P47 integration of P36 Packet 2.
 
 Authority Consulted:
 
-- Plans 0079, 0096, and 0097; P36/P47; WI-003; exact Git refs; CodeGraph;
-  branch, integration, validation, test, documentation, and lane policy.
+- Plans 0079 and 0096;
+  `docs/dev/plans/0097-2026-09-13-p36-packet-2-integration-reconciliation.md`;
+  P36/P47; WI-003; exact Git refs; CodeGraph; branch, integration,
+  validation, test, documentation, and lane policy.
 
 Decisions And Changes:
 
