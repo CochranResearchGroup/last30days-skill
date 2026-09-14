@@ -2604,7 +2604,7 @@ Next Bounded Action:
 
 ## P33 | Post Search Product Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: expose the complete authorized stored-post corpus through a stable,
 cache-only, evidence-preserving search and pagination contract for users and
@@ -2618,8 +2618,9 @@ Current State:
   `75e7771e006f52847e8e47c1059b2b2000fb8ac7`;
 - Plan 0111 source acceptance `971f9ea9` is joined at Wave 2 integration head
   `aa59b42c`; independent review found no remaining search blocker;
-- Plan 0114 is registered for final isolated-runtime and fresh-client product
-  acceptance; it is not activated and has no branch custody yet;
+- Plan 0114 is activated at remote-equal checkpoint `81cbfc09` for final
+  isolated-runtime and fresh-client product acceptance; implementation remains
+  held until this custody projection integrates;
 - the selected seam is additive `POST /v1/posts/search` plus MCP
   `search_posts`, leaving `/v1/query` unchanged for the dependent WI-003 lane;
 - provider-free vertical packets cover both storage families, filters, stable
@@ -2629,6 +2630,10 @@ Current State:
   `search_posts`, and provider-free fixtures without runtime mutation.
 
 Active Plan:
+
+- `docs/dev/plans/0114-2026-09-14-post-search-runtime-closeout.md`.
+
+Last Closed Plan:
 
 - `docs/dev/plans/0111-2026-09-14-post-search-packet-3.md`.
 
@@ -2643,7 +2648,7 @@ Dependencies:
 
 Next Bounded Action:
 
-- activate Plan 0114 on a dedicated worktree and execute only Packet 4's
+- reconcile Plan 0114 custody, then execute only Packet 4's
   isolated-runtime/client closeout. P36 must remain serialized behind WI-002
   closeout; P40 may consume the stable search/evidence contract in parallel.
 
@@ -2992,7 +2997,7 @@ Next Bounded Action:
 
 ## P39 | Cross-Service Tailored Follow Product Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: extend tailored follows beyond X through provider-native target
 identity and capability discovery without duplicating collection scheduling or
@@ -3000,7 +3005,7 @@ flattening distinct service semantics.
 
 Current State:
 
-- WI-005 is `READY`; WI-004 is `DONE` and its exact dependency is satisfied;
+- WI-005 is `IN_PROGRESS`; WI-004 is `DONE` and its exact dependency is satisfied;
 - current global surface validation and coarse adapter capability declarations
   cannot prove that a source-target-operation combination is supported;
 - the selected seam adds a closed provider capability registry and
@@ -3008,11 +3013,12 @@ Current State:
 - provider-free packets cover registry/X compatibility, Reddit community/user,
   YouTube channel, discovery/lifecycle/query parity, and fresh-client closure;
 - no product implementation, provider use, runtime mutation, or schedule
-  change has begun.
-- Plan 0115 is registered for the closed capability registry, exact X
-  compatibility, and legacy quarantine Packet 1; provider tracers remain later.
+  change has begun;
+- Plan 0115 is activated at remote-equal checkpoint `337866e0` for the closed
+  capability registry, exact X compatibility, and legacy quarantine Packet 1;
+  implementation remains held until this custody projection integrates.
 
-Planned Packet:
+Active Plan:
 
 - `docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md`.
 
@@ -3028,12 +3034,12 @@ Dependencies:
 
 Next Bounded Action:
 
-- activate Plan 0115 on a dedicated worktree and execute only the provider-free
+- reconcile Plan 0115 custody, then execute only the provider-free
   capability/compatibility foundation. Do not begin Reddit or YouTube tracers.
 
 ## P40 | Saved Monitors And Evidence Digests
 
-State: PLANNED
+State: OPEN
 
 Objective: let users save query/follow views, detect evidence-backed changes
 from an accepted baseline, and prepare reviewable digests without rescraping or
@@ -3041,7 +3047,7 @@ duplicate delivery.
 
 Current State:
 
-- WI-006 is `READY` for a separately planned later packet;
+- WI-006 is `IN_PROGRESS` on its separately bounded Packet 2;
 - current immutable retrieval heads, document versions, collection sightings,
   and notification receipts provide seams, but no durable monitor/baseline/
   digest authority exists;
@@ -3053,10 +3059,11 @@ Current State:
 - its provider-free monitor kernel integrated through PR 41 as canonical merge
   `6d5eb5d9`; no installed schedule, live delivery, follow tracing, or provider
   action occurred.
-- Plan 0116 is registered for real immutable saved-query composition over the
-  accepted WI-002 search contract; follow and digest/delivery remain later.
+- Plan 0116 is activated at remote-equal checkpoint `d764f257` for real
+  immutable saved-query composition over the accepted WI-002 search contract;
+  implementation remains held until this custody projection integrates.
 
-Planned Packet:
+Active Plan:
 
 - `docs/dev/plans/0116-2026-09-14-saved-query-composition.md`.
 
@@ -3077,7 +3084,7 @@ Dependencies:
 
 Next Bounded Action:
 
-- activate Plan 0116 on a dedicated worktree and execute saved-query
+- reconcile Plan 0116 custody, then execute saved-query
   composition only; do not fold follow or digest/delivery work into Packet 2.
 
 ## P41 | Implementation Lane Launch Registration

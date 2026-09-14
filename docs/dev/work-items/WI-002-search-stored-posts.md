@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-002 -->
 # Search and retrieve stored posts as a product surface
 
-State: READY
+State: IN_PROGRESS
 Priority: P1
 Lane: Search
 Parent: WI-000
@@ -10,8 +10,9 @@ Blocked by: none
 Architecture: docs/dev/notes/0117-2026-09-13-post-search-product-architecture.md
 Implementation plan seed: docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md
 Last completed plan: docs/dev/plans/0111-2026-09-14-post-search-packet-3.md
-Planned plan: docs/dev/plans/0114-2026-09-14-post-search-runtime-closeout.md
-Branch: main
+Active plan: docs/dev/plans/0114-2026-09-14-post-search-runtime-closeout.md
+Branch: feat/post-search-runtime-closeout-v1
+Owner: /root/next_search_qa_plan
 
 ## Problem
 
@@ -69,3 +70,6 @@ is implied.
 
 Plan 0114 now freezes that final provider-free closeout. It remains `PLANNED`
 until exact branch/worktree custody is published and reconciled.
+
+Activation checkpoint `81cbfc09` is published and awaits coordinator custody
+reconciliation before implementation begins.
