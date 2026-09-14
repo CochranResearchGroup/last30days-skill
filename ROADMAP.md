@@ -3257,6 +3257,9 @@ Current State:
   two blocking question-contract failures;
 - GitHub Issues are enabled; PR 51 corrected canonical tracker guidance and
   WI-000 through WI-009 are published as issues #52 through #61;
+- tracker-documentation reconciliation and issue publication are complete;
+  Q&A repair, P35 integration, a versioned development runtime, and development
+  dogfood remain before the gate can close;
 - P35 tailored follows is validated on its own published branch but is 75
   commits behind current main and has no pull request;
 - production remains the only active runtime and does not contain the new

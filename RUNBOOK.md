@@ -29208,3 +29208,58 @@ Next Bounded Action:
 
 - merge this URL/readback projection through a PR, fast-forward canonical main,
   then publish the durable fresh-agent handoff from that exact integrated state.
+
+## Turn 468 | 2026-09-13
+
+Focus: publish a restart-safe fresh-agent handoff for P51 corrective execution.
+
+Authority Consulted:
+
+- operator request for a fresh-context handoff; merged PRs 51 and 62; canonical
+  main `b95b5548ffae852c4eb7a8523b8c1fb04ca1e10c`; Plan 0102/P51; WI-009/#55;
+  current GitHub issues, issue registry, Git/worktree/runtime/P35 readback;
+  notes policy and the `handoff` skill.
+
+Decisions And Changes:
+
+- created `docs/dev/notes/0125-2026-09-13-p51-fresh-agent-handoff.md` as the
+  durable authority-first restart artifact;
+- advanced Plan 0102 to version 4 and recorded that tracker reconciliation
+  Packet 2 and publication Packet 6 are complete, leaving Packets 1, 3, 4, and
+  5;
+- prescribed one exact next packet: Plan 0103 on a new current-main corrective
+  branch/worktree for only the two accepted Q&A defects;
+- retained the feature freeze, production-hotfix exception, P35 serialization,
+  runtime/provider boundaries, and the narrow issue-action registry.
+
+Validation Evidence:
+
+- canonical main was clean and remote-equal at `b95b5548` before the handoff
+  branch was created;
+- all ten issues read back open with unique markers and expected labels;
+- P35 read back remote-equal at `d2c9f8eb`, 80 commits behind and eight ahead
+  of current main;
+- the handoff records exact startup checks, paths, accepted reproductions,
+  validation requirements, hard stops, and suggested skills without copying
+  secrets or raw private data.
+
+State Movement:
+
+- Plan 0102 `version 3 -> version 4`, remaining `PLANNED`;
+- no work-item, implementation, runtime, provider, release, or production state
+  changed.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; handoff reconciliation remained coordinator-owned.
+
+Graphiti Write Status:
+
+- `not_written`; the repo handoff is the durable source and no memory write was
+  requested.
+
+Next Bounded Action:
+
+- merge this handoff through the normal PR workflow, verify canonical main, and
+  give a fresh top-level agent the exact Plan 0103 corrective packet described
+  in note 0125.
