@@ -4,10 +4,10 @@
 
 State: `GITHUB_ISSUES_ACTIVE`
 
-GitHub Issues are enabled for the owned public fork. The operator authorized
-publication of the prepared WI-000 through WI-009 backlog. The exact target
-registry permits `read`, `create`, and `apply_labels`; all other issue actions
-and GitHub Projects remain separately gated.
+GitHub Issues are enabled for the owned public fork. WI-000 through WI-009 are
+published as issues #52 through #61 and mapped in `docs/dev/work-items/README.md`.
+The exact target registry permits `read`, `create`, and `apply_labels`; all
+other issue actions and GitHub Projects remain separately gated.
 
 During publication and steady-state operation:
 

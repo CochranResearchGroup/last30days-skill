@@ -5,6 +5,7 @@ State: BLOCKED
 Priority: P1
 Lane: Program
 Parent: none
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/52
 Blocked by: WI-009 productization readiness remediation
 
 ## Problem

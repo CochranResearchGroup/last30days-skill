@@ -29142,3 +29142,69 @@ Next Bounded Action:
   canonical registry, preflight each stable marker and mapped label, then create
   and read back WI-000 through WI-009 in dependency order. Record exact URLs in
   repo authority and write the durable fresh-agent handoff.
+
+## Turn 467 | 2026-09-13
+
+Focus: publish the governed WI-000 through WI-009 backlog and record exact
+provider identities.
+
+Authority Consulted:
+
+- operator instruction to write the issues now; merged PR 51; canonical main
+  `1255ee66f9b09fb6f74644738be6e5515167ae42`; Plan 0102 version 2; WI-000
+  through WI-009; target registry and policies 0027, 0030, 0031, and 0032;
+  GitHub issue forms, existing labels, actor/role, duplicate searches, and the
+  `to-issues` publication contract.
+
+Decisions And Changes:
+
+- verified PR 51 merged the registry correction and fast-forwarded canonical
+  main before any issue write;
+- preflighted every stable WI marker against the exact owned fork with no
+  duplicate candidate and resolved existing `enhancement` or `bug` labels;
+- published the parent first, then blockers and dependent vertical slices with
+  real issue references available at creation time;
+- advanced Plan 0102 to version 3 because the operator directed tracker
+  publication immediately; Packet 6 is now a completed prerequisite bootstrap,
+  while corrective Packets 1-5 retain their dependency order;
+- recorded every exact URL in the corresponding repo-local work item and index.
+
+Mutation And Readback Receipt:
+
+- actor: `ecochran76`; target:
+  `github.com/CochranResearchGroup/last30days-skill`;
+- WI-000 -> issue #52; WI-001 -> #54; WI-002 -> #53; WI-003 -> #57;
+  WI-004 -> #56; WI-005 -> #58; WI-006 -> #59; WI-007 -> #61;
+  WI-008 -> #60; WI-009 -> #55;
+- all ten issues read back open with their unique hidden WI marker;
+- WI-009 read back with `bug`; the other nine read back with `enhancement`;
+- no duplicate, comment, edit, close, reopen, assignment, milestone, Project,
+  transfer, label creation, or security-report action occurred.
+
+State Movement:
+
+- GitHub backlog WI-000 through WI-009 `unpublished -> published/open`;
+- Plan 0102 remains `PLANNED`, advances `version 2 -> version 3`, and records
+  tracker publication accepted while Packets 1-5 remain;
+- the P51 feature freeze and WI-007 hotfix exception are unchanged.
+
+Validation Evidence:
+
+- exact post-write issue listing returned ten unique issues, numbers 52-61,
+  expected titles, labels, markers, actor, creation times, and URLs;
+- every provider mutation was preceded by a successful exact-marker preflight;
+- no retry was needed and no write result was ambiguous.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; publication was serialized by dependency tier and reconciled
+  by the coordinator.
+
+Graphiti Write Status:
+
+- `not_written`; repo and GitHub receipts are the current authority.
+
+Next Bounded Action:
+
+- merge this URL/readback projection through a PR, fast-forward canonical main,
+  then publish the durable fresh-agent handoff from that exact integrated state.

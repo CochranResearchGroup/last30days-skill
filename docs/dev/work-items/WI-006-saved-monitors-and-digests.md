@@ -5,6 +5,7 @@ State: READY
 Priority: P2
 Lane: MCP
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/59
 Blocked by: WI-002 Packet 1 for monitor kernel/query tracer; WI-004 Packet 1 for follow tracer; WI-002 and WI-004 closeout for final acceptance
 Last closed plan: docs/dev/plans/0093-2026-09-13-saved-monitors-packet-1.md
 Branch: feat/saved-monitors-v1

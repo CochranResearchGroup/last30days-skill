@@ -5,6 +5,7 @@ State: READY
 Priority: P1
 Lane: Search
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/53
 Blocked by: none
 Architecture: docs/dev/notes/0117-2026-09-13-post-search-product-architecture.md
 Implementation plan seed: docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md

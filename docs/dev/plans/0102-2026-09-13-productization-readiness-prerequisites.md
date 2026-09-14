@@ -7,7 +7,7 @@ Branch: docs/productization-prerequisite-gate
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 2
+Plan version: 3
 Date: 2026-09-13
 Execution owner: unassigned
 
@@ -25,8 +25,10 @@ before any new product feature packet begins.
 - comprehensive Python and MCP Go tests pass, but focused reproduction found
   that one malformed structured answer escapes the runner and remains leased,
   and the deterministic evidence-only path ignores `max_answer_characters`;
-- GitHub Issues are enabled and empty, while `AGENTS.md` and
-  `docs/agents/issue-tracker.md` still describe them as disabled;
+- GitHub Issues are enabled. `AGENTS.md` and `docs/agents/issue-tracker.md`
+  initially described them as disabled, but PR 51
+  corrected the authority boundary, and WI-000 through WI-009 are now live as
+  issues #52 through #61 with exact repo-local mappings;
 - P35 tailored follows is clean and remote-equal at
   `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`, but is 75 commits behind the
   reviewed mainline and has no pull request. The prior issue-registry PR gate
@@ -53,13 +55,15 @@ before any new product feature packet begins.
    evidence-only questions, saved monitors, quality reports, and tailored-follow
    lifecycle against the isolated development runtime. Keep provider/browser
    effects out unless separately authorized.
-6. **Tracker publication.** Under the operator's current authorization and the
-   narrowly expanded registry, publish WI-000 through WI-009 idempotently, read
-   back their URLs and state, and preserve stable `WI-###` locators in
-   repository authority.
+6. **Tracker publication — completed prerequisite bootstrap.** Under the
+   operator's authorization and the narrowly expanded registry, WI-000 through
+   WI-009 were published idempotently as issues #52 through #61, read back, and
+   mapped without replacing stable `WI-###` locators.
 
-Packets 1 and 2 may run in parallel on disjoint write surfaces. Packets 3 through
-6 are serialized in that order. A production hotfix may preempt this sequence.
+Packet 6 was completed first under the operator's explicit direction so the
+tracker can coordinate subsequent work. Packets 1 and 2 may run in parallel on
+disjoint write surfaces. Packets 3 through 5 are serialized in that order. A
+production hotfix may preempt this sequence.
 
 ## Program Prerequisite
 
@@ -90,8 +94,9 @@ plan and the reserved WI-007 hotfix lane are the only exceptions.
 5. Development dogfood produces inspectable evidence for all integrated product
    lanes and distinguishes provider-free proof from any separately authorized
    live canary.
-6. GitHub issue publication is duplicate-safe and read back; actions other than
-   creation and mapped-label application remain blocked rather than bypassed.
+6. GitHub issues #52 through #61 preserve unique WI-000 through WI-009 markers,
+   expected mapped labels, dependency references, and provider readback; actions
+   other than creation and mapped-label application remain gated.
 7. ROADMAP, RUNBOOK, work-item, plan, active-lane, Git, test, release, and
    runtime claims agree before the prerequisite gate closes.
 

@@ -5,6 +5,7 @@ State: BLOCKED
 Priority: P1
 Lane: Follows
 Parent: WI-000
+GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/56
 Blocked by: none
 Architecture: docs/dev/notes/0119-2026-09-13-x-tailored-follow-product-architecture.md
 Implementation plan seed: docs/dev/plans/0078-2026-09-13-x-tailored-follow-architecture-and-lane-handoff.md
@@ -41,8 +42,9 @@ no cross-service abstraction until this vertical slice is accepted.
 
 ## Active Handoff
 
-Packet 1 is acceptance-complete, reconciled with current main, and published at
-`d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`. PR creation remains gated until
-the operator explicitly authorizes that forge action after notice. Do not
-start Packet 2 or enqueue a job, open a browser, use a profile/provider, mutate
-an installed database or schedule, or install a runtime.
+Packet 1 is acceptance-complete and published at
+`d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`, but it is behind current main and
+must be reconciled after the P51 corrective mainline. Pull requests follow the
+normal integration workflow and are not controlled by the issue registry. Do
+not start Packet 2 or enqueue a job, open a browser, use a profile/provider,
+mutate an installed database or schedule, or install a runtime.
