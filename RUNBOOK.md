@@ -28795,3 +28795,59 @@ Next Bounded Action:
 
 - merge this closeout-only PR, verify canonical main clean and remote-equal,
   then open a separate Packet 3 plan only if the operator continues P36.
+
+## Turn 461 | 2026-09-14
+
+Focus: Plan 0099/P48 registration of P36 answer-tracer Packet 3.
+
+Authority Consulted:
+
+- Plans 0079, 0091, 0096, 0098, and
+  `docs/dev/plans/0099-2026-09-14-p36-packet-3-launch-registration.md`;
+  note 0120; P36/P48; WI-003; current CodeGraph, Graphiti, Git, worktree, and
+  fork state; planning, multi-session, testing, traceability, and lane policy.
+
+Decisions And Changes:
+
+- selected architecture Packet 3 exactly: add a provider-free no-tool
+  structured-answer adapter, truthful model/effect receipts, deterministic
+  validation, explicit fallback, and bounded retry/replay proof;
+- deferred real model execution and public HTTP/MCP publication to their
+  separate gates and Packet 4;
+- removed only the two clean integrated Packet 2 worktrees after remote custody
+  and canonical ancestry were verified; their branches remain recoverable;
+- created the dedicated Packet 3 worktree and published Plan 0098 plan-only at
+  `777441129e47f18e60f7956d765929c5e75e687e`;
+- kept P35, the frozen global install, providers, models, schedules, delivery,
+  tracker, releases, staging, and production untouched.
+
+Validation Evidence:
+
+- canonical main is clean and remote-equal at `20a36f91`;
+- CodeGraph is current at 374 files, 10,484 nodes, and 25,886 edges and
+  confirms the existing queue, lease, fake-runner, validator, and structured-
+  turn seams;
+- Graphiti is healthy but returned unrelated OpenClaw history, so current
+  source and architecture records are authoritative;
+- Plan 0098's authority tests and patch hygiene pass; registration planning
+  and lane validation follow on this publication branch.
+
+State Movement:
+
+- Plan 0099/P48 `unplanned -> OPEN`; Plan 0098/P36 remains `PLANNED`;
+- WI-003 remains `READY` until an independent owner accepts the lane.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the selected topology is one independent top-level Codex
+  session for the feature lane.
+
+Graphiti Write Status:
+
+- `not_written`; discovery was advisory and repository evidence is current.
+
+Next Bounded Action:
+
+- publish and merge the registration, fast-forward canonical main, then launch
+  the credential-sanitized independent Packet 3 session for activation and
+  implementation.

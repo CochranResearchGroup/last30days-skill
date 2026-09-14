@@ -2740,7 +2740,10 @@ Current State:
   remote checkpoint `ddcb4201`:
   the real search/evidence composition, immutable resolver, parent/version
   partition closure, and refreshed source manifest pass 54 affected and all
-  2,844 comprehensive tests plus reproducible package validation.
+  2,844 comprehensive tests plus reproducible package validation;
+- Plan 0098 is clean and remote-equal plan-only at `77744112` for Packet 3's
+  provider-free structured-answer adapter, validation, fallback, and bounded
+  retry/replay behavior.
 
 Closed Architecture Plan:
 
@@ -2753,6 +2756,11 @@ Closed Implementation Plans:
 - `docs/dev/plans/0096-2026-09-13-agent-question-evidence-tracer-packet-2.md`
   on `feat/agent-question-evidence-v2`.
 
+Planned Implementation Plan:
+
+- `docs/dev/plans/0098-2026-09-14-agent-question-answer-tracer-packet-3.md`
+  on `feat/agent-question-answer-v3`.
+
 Dependencies:
 
 - Packet 1's stable search backend and evidence-ref dependency is satisfied by
@@ -2761,8 +2769,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- plan Packet 3 structured answer/validation behavior separately from current
-  main; do not infer model execution or public MCP authority.
+- integrate the Packet 3 launch registration, then let one independent
+  top-level session execute only Plan 0098 without real model or public MCP
+  effects.
 
 ## P47 | P36 Packet 2 Integration Reconciliation
 
@@ -2792,6 +2801,31 @@ Next Bounded Action:
 
 - plan P36 Packet 3 separately from current canonical main; keep all runtime,
   model, public transport, provider, and P35 effects behind their own gates.
+
+## P48 | P36 Packet 3 Launch Registration
+
+State: OPEN
+
+Objective: register and launch one independent provider-free answer-tracer
+session without moving feature work or external effects into the coordinator.
+
+Active Plan:
+
+- `docs/dev/plans/0099-2026-09-14-p36-packet-3-launch-registration.md`.
+
+Current State:
+
+- Plan 0098 is clean and remote-equal at exact plan-only checkpoint `77744112`
+  on `feat/agent-question-answer-v3`, based on canonical `20a36f91`;
+- the dedicated worktree exists and no competing PR owns the branch;
+- the coordinator retains all shared planning, manifest, public transport,
+  compatibility, release, installed-runtime, and production joins.
+
+Next Bounded Action:
+
+- publish and merge this registration through the owned fork, fast-forward
+  canonical main, then launch one credential-sanitized independent Codex
+  session to activate and execute Plan 0098.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
