@@ -1,13 +1,13 @@
 # Plan 0086 | X Tailored Follows Packet 1 Contract Tracer
 
-State: OPEN
+State: CLOSED
 Lane: P35
 Work item: WI-004
 Branch: feat/x-tailored-follows-v1
 Target: main
 Integration: merge
 Roadmap: P35
-Plan version: 1
+Plan version: 2
 Date: 2026-09-13
 Execution owner: top-level Codex session `01a09caa-90d6-7350-a8ce-72d7ced7ef12`
 Runtime-reported model: unavailable
@@ -248,6 +248,40 @@ Next action or stop reason: commit and publish this exact reconciliation, then
 retain the C03 PR-creation policy gate until the operator explicitly authorizes
 that action after notice. Do not begin Packet 2 or merge this lane implicitly.
 
+### Checkpoint P0086-C05 | 2026-09-14
+
+Plan version: 2
+
+State transition: `OPEN -> CLOSED`; Packet 1 implementation acceptance is
+complete and integration ownership transfers to Plan 0104.
+
+Progress classification: `outcome_progress`; the provider-free contract tracer
+is preserved on the history-retaining current-main merge and passes together
+with every subsequently integrated product surface.
+
+Authority classification:
+
+- `inherited_authority` covers the completed provider-free repository packet;
+  runtime/provider effects remain `human_gate`, and Packet 2 remains
+  `scope_expansion`.
+
+Evidence:
+
+- the accepted implementation checkpoint remains
+  `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`;
+- Plan 0104 merge commit `397db7779a8c6a4a59d1d14a53972321f06c78ac`
+  preserves that checkpoint as its first parent and current canonical main as
+  its second parent;
+- the 99-test Packet 1 baseline passed before reconciliation, and the combined
+  product slice plus comprehensive Python and MCP Go suites pass afterward;
+- the stale C03 pull-request gate was a category error corrected by canonical
+  tracker policy; Plan 0104 owns normal pull-request integration.
+
+Subagent status: `not_spawned`.
+
+Next action: Plan 0104 publishes, self-reviews, and integrates the combined
+branch; Packet 2 remains separately gated.
+
 ## Start Checklist
 
 - verify registered worktree/ref/checkpoint and current `origin/main`;
@@ -266,13 +300,8 @@ that action after notice. Do not begin Packet 2 or merge this lane implicitly.
 
 ## Next Action
 
-Resume WI-004 / P35 in
-`/home/ecochran76/workspace.local/last30days-skill-wi004` on
-`feat/x-tailored-follows-v1` from published checkpoint P0086-C04 after the
-applicable forge target policy explicitly allows PR creation for
-`github.com/CochranResearchGroup/last30days-skill`; fetch and verify current
-`origin/main`, confirm local/remote branch equality, rerun duplicate PR
-preflight, then open the Packet 1 PR to `main` and stop without merging. Do not
-activate or mutate GitHub Issues/Projects, start Packet 2, or mutate a job,
-timer, installed database/runtime, browser/profile, provider, tracker,
-staging, production, tag, release, or deployment.
+Continue through Plan 0104 on `feat/x-tailored-follows-v1`: publish the combined
+provider-free validation checkpoint, self-review the exact owned-fork pull
+request, and integrate Packet 1 without beginning Packet 2 or mutating a job,
+timer, installed database/runtime, browser/profile, provider, tracker, staging,
+production, tag, release, or deployment.

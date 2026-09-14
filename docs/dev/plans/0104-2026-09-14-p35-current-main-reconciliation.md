@@ -8,7 +8,7 @@ Branch: feat/x-tailored-follows-v1
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 2
+Plan version: 3
 Date: 2026-09-14
 Session owner: coordinator Codex thread `01a09f76-8024-7960-a7c5-c0469cf99153`
 
@@ -203,3 +203,48 @@ Subagent status: `not_spawned`.
 
 Next action: update only the three named compatibility assertions, rerun the
 combined suite, then proceed to comprehensive validation.
+
+### Checkpoint P0104-C03 | 2026-09-14
+
+Plan version: 3
+
+State transition: `OPEN -> OPEN`; the reconciled branch is
+`INTEGRATION_READY` pending publication and pull-request integration.
+
+Progress classification: `outcome_progress`; all provider-free behavior,
+compatibility, comprehensive validation, and history-preservation criteria are
+satisfied on the combined tree.
+
+Authority classification:
+
+- `inherited_authority` remains the controlling classification for repository
+  validation and normal pull-request integration; named external effects remain
+  `human_gate`, and Packet 2 or unrelated features remain `scope_expansion`.
+
+Evidence:
+
+- merge commit `397db7779a8c6a4a59d1d14a53972321f06c78ac` retains exact P35 and
+  canonical-main parents, and deterministic manifest regeneration remained
+  byte-identical;
+- the three stale compatibility assertions first reproduced exactly, then pass
+  after only schema-18 and active-P35 authority expectations were corrected;
+- the combined 20-module product slice passes, covering tailored follows,
+  migration, search, retrieval, questions, monitors, quality, app/runtime,
+  package, MCP integration, Skill routing, and plan authority;
+- comprehensive `uv run pytest -q` passes with seven expected skips and no
+  failure; every MCP package passes `go test ./...` and `go vet ./...`;
+- the first Go commands were invoked from the repository root and failed only
+  because the Go module lives under `mcp/`; the immediate module-root rerun
+  passed without a repository change;
+- repository plan authority passes with exactly P22 and P35 active; manifest
+  refresh, `git diff --check`, and goal-only planning checks pass.
+
+Subagent status: `not_spawned`.
+
+Remaining acceptance criteria: publish the exact branch tip, update canonical
+lane custody to that immutable remote checkpoint, self-review and merge the
+owned-fork pull request, and record canonical ancestry and closeout receipts.
+
+Next action: commit and publish this integration-ready checkpoint, then update
+the canonical lane catalog to the exact remote tip before opening the feature
+pull request.
