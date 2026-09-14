@@ -317,7 +317,7 @@
     },
     {
       "path": "scripts/lib/service_contracts.py",
-      "sha256": "b7731341dab75e43e5562c72c97579bc6ad44b92540ed7d976b78ade33708b88",
+      "sha256": "3da1925fd0eeb86b76b140d2188cdde1fba05614004cd79c8e69969ec9a53eab",
       "source": "skills/last30days/scripts/lib/service_contracts.py"
     },
     {
