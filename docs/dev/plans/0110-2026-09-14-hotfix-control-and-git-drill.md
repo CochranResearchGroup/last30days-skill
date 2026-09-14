@@ -1,6 +1,6 @@
 # Plan 0110 | Hotfix Control And Git Drill
 
-State: OPEN
+State: CLOSED
 Lane: P38
 Work item: WI-007
 Branch: feat/hotfix-control-v1
@@ -331,3 +331,15 @@ Next action:
   deployment, rollback, or production mutation;
 - stop and notify the coordinator before changing shared release, installer,
   manifest, roadmap, runbook, or catalog surfaces.
+
+### Checkpoint P0110-C03 | 2026-09-14
+
+State transition: `integration_ready -> CLOSED`.
+
+Provider-free Packets 1-2 integrated through reviewed owned-fork PR 79 at
+canonical merge `fae311987426fcfee681275f0a83b4c53fc7c6a7`. Independent review
+reproduced one fixture-containment escape through top-level Git `commondir`;
+the remediation now rejects redirects in both main and bare-origin metadata
+before any Git mutation, with exact regressions. Hotfix-focused, joined full,
+Go, packaging, and authority validation pass. The real slot remains dormant;
+Packet 3 runtime/release drill and Packet 4 operator closure remain separate.
