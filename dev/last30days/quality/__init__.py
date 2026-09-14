@@ -22,6 +22,7 @@ from .adapters import (
     CorpusIntegrityAdapter,
     FixtureCatalog,
     PostSearchQualityAdapter,
+    QuestionGroundingAdapter,
     real_fixture_adapters,
 )
 from .runner import (
@@ -66,6 +67,7 @@ __all__ = [
     "MetricResultV1",
     "CorpusIntegrityAdapter",
     "PostSearchQualityAdapter",
+    "QuestionGroundingAdapter",
     "QualityEvaluationReportV1",
     "QualityEvaluationRequestV1",
     "QualityEvaluationSetV1",
