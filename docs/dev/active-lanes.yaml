@@ -8,13 +8,13 @@ lanes:
     branch: docs/p36-packet3-integration
     target: main
     plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: f5b4f4ea697cee3c8f78dca1d40393d6a2608797
+    custody_state: INTEGRATION_READY
+    checkpoint: 181465fa3f12e3feb2aee49a71cc353ee2a58fd9
     remote_ref: refs/remotes/origin/docs/p36-packet3-integration
     integration: merge
     integration_receipt: null
     validation_status: passed
-    validation_ref: a304fbbfee06b54a8f8a4f91f77438b61cff0c1a
+    validation_ref: 181465fa3f12e3feb2aee49a71cc353ee2a58fd9
     dependencies: [P36]
     overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md, service/runtime-manifest.json]
     reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md, service/runtime-manifest.json]
@@ -231,7 +231,7 @@ lanes:
     integration: merge
     integration_receipt: null
     validation_status: passed
-    validation_ref: fa6a33dd7c63616f4f2622047598587fa5cbf80c
+    validation_ref: 75f2342e57ffb7c6d4c41e9d7825daf934ccb4c7
     dependencies: [P33]
     overlaps: [service/runtime-manifest.json]
     reconciled_overlaps: [service/runtime-manifest.json]
