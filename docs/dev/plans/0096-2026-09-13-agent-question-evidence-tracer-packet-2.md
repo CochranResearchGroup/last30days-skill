@@ -314,6 +314,16 @@ Remaining risks and restart-safe coordinator handoff:
    unopened scope expansions; exact citation dereference must remain immutable
    and partition-closed when those packets are authorized.
 
+Publication receipt:
+
+- the implementation checkpoint was published remote-equal at full SHA
+  `7f7411dc10ac2eec324e3ea79f45c92d15e6047e` with a clean worktree;
+- the remote-equal lane audit then reported exactly two coordinator-owned
+  projection findings: `P36: plan state CLOSED does not match catalog state
+  OPEN` and `P36: catalog checkpoint does not match the local branch tip`;
+- the earlier `active local checkpoint is ahead of remote custody` finding
+  cleared on publication. No source, test, or worktree-state finding remains.
+
 Subagent status: `not_spawned`.
 
 Terminal condition: Packet 2 source acceptance is complete. Publish this
