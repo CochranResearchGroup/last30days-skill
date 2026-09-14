@@ -29509,3 +29509,63 @@ Next Bounded Action:
 
 - publish Plan 0104 registration, baseline the exact P35 head, merge current
   main without rewriting history, and regenerate the combined manifest.
+
+## Turn 473 | 2026-09-14
+
+Focus: reconcile and validate P35 Packet 1 against current canonical main.
+
+Authority Consulted:
+
+- Plan 0104, Plan 0086, P35/P51, WI-004/WI-009, current branch ancestry,
+  deterministic runtime packaging, CodeGraph readback, and reconciliation,
+  testing, plan-authority, lane, validation, and closeout policy.
+
+Decisions And Changes:
+
+- merged exact canonical `4bb03b5f` into published P35 head `d2c9f8eb` with an
+  ordinary two-parent merge and no history rewriting;
+- confirmed the generated runtime manifest auto-merge by regenerating it from
+  the combined sources and obtaining the identical blob;
+- revised Plan 0104 only after combined tests exposed two stale schema-17
+  expectations and one stale single-active-plan expectation;
+- corrected only those compatibility assertions, closed the acceptance-complete
+  implementation Plan 0086, and retained every external-effect and Packet 2
+  gate.
+
+Validation Evidence:
+
+- all 99 P35 baseline tests passed before reconciliation;
+- the exact merge commit is `397db7779a8c6a4a59d1d14a53972321f06c78ac`
+  with the intended P35 and canonical-main parents;
+- the runtime manifest remained blob `2855fee0` after deterministic refresh;
+- all three reproduced compatibility assertions and the combined 20-module
+  product slice pass;
+- comprehensive Python passes with seven expected skips; all MCP Go tests and
+  `go vet` pass from the `mcp/` module root;
+- plan authority passes with exactly P22 and P35 active; patch and manifest
+  checks pass.
+
+State Movement:
+
+- Plan 0086 `OPEN -> CLOSED` with implementation acceptance retained;
+- Plan 0104 remains `OPEN` and advances to `INTEGRATION_READY`;
+- progress classification: `outcome_progress`;
+- no runtime, provider, browser, release, deployment, production, schedule,
+  database, or GitHub issue effect occurred.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the top-level coordinator performed the bounded merge and
+  validation.
+
+Graphiti Write Status:
+
+- `not_written`; session-level authority to write durable memory was not
+  explicitly granted, so plan, test, Git, and manifest receipts remain the
+  authority.
+
+Next Bounded Action:
+
+- publish the integration-ready feature tip, bind canonical P35 lane custody to
+  that exact remote checkpoint, then self-review and integrate its owned-fork
+  pull request.

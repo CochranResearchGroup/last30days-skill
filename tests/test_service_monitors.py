@@ -102,7 +102,7 @@ def test_monitor_migration_creates_immutable_durable_tables(tmp_path):
         "service_monitor_decisions",
         "service_monitor_baseline_heads",
     } <= tables
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 18
     assert conn.execute(
         "SELECT MAX(version) FROM service_monitor_schema_version"
     ).fetchone()[0] == 1

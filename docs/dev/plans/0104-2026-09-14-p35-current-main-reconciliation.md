@@ -8,7 +8,7 @@ Branch: feat/x-tailored-follows-v1
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 1
+Plan version: 3
 Date: 2026-09-14
 Session owner: coordinator Codex thread `01a09f76-8024-7960-a7c5-c0469cf99153`
 
@@ -35,7 +35,13 @@ without rewriting either line of history or crossing a runtime/provider gate.
   owned-fork pull requests are in scope under repository integration policy;
 - a three-way path audit found one shared changed file since the merge base:
   generated `service/runtime-manifest.json`. It must be regenerated from the
-  combined source tree rather than resolved by choosing either side.
+  combined source tree rather than resolved by choosing either side;
+- the history-preserving merge completed without a textual conflict and
+  deterministic regeneration reproduced the merged manifest byte-for-byte;
+  combined tests then exposed three stale integration assertions: two later
+  feature tests still name shared schema 17 although P35 adds accepted migration
+  18, and the repository-authority fixture still expects only P22 while P35 is
+  now correctly active under this plan.
 
 ## Scope
 
@@ -89,8 +95,11 @@ without rewriting either line of history or crossing a runtime/provider gate.
 - `service/runtime-manifest.json`, regenerated from the combined tree;
 - Plan 0086 and this plan plus coordinator-owned projections in `ROADMAP.md`,
   `RUNBOOK.md`, `docs/dev/active-lanes.yaml`, and WI-004/WI-009;
-- no new behavior file is expected. Any source conflict or failed invariant
-  outside the generated manifest requires a plan revision before repair.
+- three narrow compatibility assertions in `tests/test_service_questions.py`,
+  `tests/test_service_monitors.py`, and `tests/test_plan_authority_audit.py`;
+- no behavior file is expected. Any source conflict or failed invariant outside
+  the generated manifest and named compatibility assertions requires another
+  plan revision before repair.
 
 ## Execution Packet
 
@@ -156,3 +165,86 @@ Subagent status: `not_spawned`.
 
 Next action: publish this registration checkpoint, then baseline and reconcile
 the exact published P35 branch with current canonical main.
+
+### Checkpoint P0104-C02 | 2026-09-14
+
+Plan version: 2
+
+State transition: `OPEN -> OPEN`; the current-main merge is complete and the
+packet remains in compatibility reconciliation.
+
+Progress classification: `outcome_progress`; both histories and all product
+sources merged without semantic intervention, the generated manifest was
+reproduced exactly, and the first combined run reduced the remaining work to
+three explicit stale assertions.
+
+Authority classification:
+
+- `inherited_authority` remains the controlling classification for repository
+  reconciliation; named external effects remain `human_gate`, and Packet 2 or
+  unrelated features remain `scope_expansion`.
+
+Evidence:
+
+- merge commit `397db7779a8c6a4a59d1d14a53972321f06c78ac` has exact parents
+  `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d` and
+  `4bb03b5fe583b37a4f354a644b55d3cd9ecd3f84`;
+- the pre-merge P35 focused baseline passed all 99 tests;
+- `build-runtime.sh --refresh-manifest` left manifest blob
+  `2855fee00f1f1b1ea3d1ac7ca44eef33c8a68a3d` unchanged after the merge;
+- combined focused validation failed only two assertions expecting shared
+  schema 17 instead of accepted P35 schema 18 and one
+  repository-authority assertion expecting one active plan instead of the
+  correct P22 plus P35 set;
+- the underlying migrations, tailored-follow behavior, and later product
+  behavior did not fail.
+
+Subagent status: `not_spawned`.
+
+Next action: update only the three named compatibility assertions, rerun the
+combined suite, then proceed to comprehensive validation.
+
+### Checkpoint P0104-C03 | 2026-09-14
+
+Plan version: 3
+
+State transition: `OPEN -> OPEN`; the reconciled branch is
+`INTEGRATION_READY` pending publication and pull-request integration.
+
+Progress classification: `outcome_progress`; all provider-free behavior,
+compatibility, comprehensive validation, and history-preservation criteria are
+satisfied on the combined tree.
+
+Authority classification:
+
+- `inherited_authority` remains the controlling classification for repository
+  validation and normal pull-request integration; named external effects remain
+  `human_gate`, and Packet 2 or unrelated features remain `scope_expansion`.
+
+Evidence:
+
+- merge commit `397db7779a8c6a4a59d1d14a53972321f06c78ac` retains exact P35 and
+  canonical-main parents, and deterministic manifest regeneration remained
+  byte-identical;
+- the three stale compatibility assertions first reproduced exactly, then pass
+  after only schema-18 and active-P35 authority expectations were corrected;
+- the combined 20-module product slice passes, covering tailored follows,
+  migration, search, retrieval, questions, monitors, quality, app/runtime,
+  package, MCP integration, Skill routing, and plan authority;
+- comprehensive `uv run pytest -q` passes with seven expected skips and no
+  failure; every MCP package passes `go test ./...` and `go vet ./...`;
+- the first Go commands were invoked from the repository root and failed only
+  because the Go module lives under `mcp/`; the immediate module-root rerun
+  passed without a repository change;
+- repository plan authority passes with exactly P22 and P35 active; manifest
+  refresh, `git diff --check`, and goal-only planning checks pass.
+
+Subagent status: `not_spawned`.
+
+Remaining acceptance criteria: publish the exact branch tip, update canonical
+lane custody to that immutable remote checkpoint, self-review and merge the
+owned-fork pull request, and record canonical ancestry and closeout receipts.
+
+Next action: commit and publish this integration-ready checkpoint, then update
+the canonical lane catalog to the exact remote tip before opening the feature
+pull request.

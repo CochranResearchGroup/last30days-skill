@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Typed X tailored-follow contracts.** Service 0.3.117 and MCP 4.0.5 add
+  provider-free account, list, topic, and home-feed follow specifications with
+  canonical partition-bound identities, disabled creation, immutable revision
+  history, duplicate prevention, and irreversible archive tombstones. Legacy
+  collections migrate to explicit general/standard/active defaults; no follow
+  is enabled or collected by the migration.
+
 ### Fixed
 
 - **Reddit feed timeout diagnostics.** Service 0.3.116 applies the shared

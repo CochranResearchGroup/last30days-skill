@@ -416,6 +416,20 @@ def test_manual_collection_cli_exposes_bounded_attempt_override():
     assert args.max_attempts == 2
 
 
+def test_collection_cli_exposes_additive_get_archive_and_hidden_history_controls():
+    parser = build_parser()
+
+    get_args = parser.parse_args(["collection", "get", "spec-x"])
+    archive_args = parser.parse_args(["collection", "archive", "spec-x"])
+    list_args = parser.parse_args(
+        ["collection", "list", "--include-archived"]
+    )
+
+    assert get_args.collection_spec_id == "spec-x"
+    assert archive_args.collection_spec_id == "spec-x"
+    assert list_args.include_archived is True
+
+
 def test_operator_intelligence_entrypoint_is_explicit_and_bounded():
     args = build_parser().parse_args(
         [

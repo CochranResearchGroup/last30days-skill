@@ -192,7 +192,7 @@ def test_submission_freezes_evidence_and_is_durable_and_idempotent(tmp_path):
     assert changed_head.question_id != first.question_id
 
 
-def test_question_owned_migration_is_versioned_without_changing_service_schema(tmp_path):
+def test_question_owned_migration_preserves_current_service_schema_version(tmp_path):
     db_path = tmp_path / "questions.db"
 
     QuestionService(db_path, FakePostSearchBackend([]), clock=lambda: NOW)
@@ -201,7 +201,7 @@ def test_question_owned_migration_is_versioned_without_changing_service_schema(t
     try:
         assert conn.execute(
             "SELECT MAX(version) FROM schema_version"
-        ).fetchone()[0] == 17
+        ).fetchone()[0] == 18
         assert conn.execute(
             "SELECT MAX(version) FROM service_question_schema_version"
         ).fetchone()[0] == 1

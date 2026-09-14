@@ -5,7 +5,7 @@
   "compatibility": {
     "product": "last30days",
     "service_api": {"min": 1, "max": 1},
-    "database_schema": {"min": 17, "max": 17}
+    "database_schema": {"min": 18, "max": 18}
   },
   "contracts": {
     "tick_request": {
@@ -371,7 +371,7 @@
         "limit": {"type": "integer", "minimum": 1, "maximum": 100},
         "operation": {
           "type": "string",
-          "enum": ["list", "put", "pause", "resume", "run"]
+          "enum": ["list", "get", "put", "pause", "resume", "archive", "run"]
         },
         "spec": {"$ref": "#/contracts/collection_spec"},
         "collection_spec_id": {
@@ -379,7 +379,8 @@
           "minLength": 1,
           "maxLength": 128
         },
-        "scheduled_for": {"type": "string", "minLength": 1, "maxLength": 64}
+        "scheduled_for": {"type": "string", "minLength": 1, "maxLength": 64},
+        "include_archived": {"type": "boolean"}
       }
     },
     "query_response": {
@@ -1099,7 +1100,7 @@
         "source": {"type": "string", "minLength": 1, "maxLength": 64},
         "surface_kind": {
           "type": "string",
-          "enum": ["feed", "topic", "poster", "channel", "account", "profile"]
+          "enum": ["feed", "topic", "poster", "channel", "account", "list", "profile"]
         },
         "selector": {
           "type": "object",
@@ -1132,7 +1133,21 @@
         },
         "assessment_enabled": {"type": "boolean"},
         "enabled": {"type": "boolean"},
-        "spec_version": {"type": "integer", "minimum": 1, "maximum": 1000000}
+        "spec_version": {"type": "integer", "minimum": 1, "maximum": 1000000},
+        "collection_purpose": {
+          "type": "string",
+          "enum": ["general", "tailored_follow"]
+        },
+        "attention_class": {
+          "type": "string",
+          "enum": ["standard", "priority"]
+        },
+        "lifecycle_state": {
+          "type": "string",
+          "enum": ["active", "archived"]
+        },
+        "access_partition_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "follow_target_id": {"type": "string", "minLength": 1, "maxLength": 128}
       }
     },
     "intelligence_evidence_ref": {

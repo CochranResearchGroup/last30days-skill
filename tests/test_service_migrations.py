@@ -40,7 +40,7 @@ def test_v8_migration_preserves_legacy_data_and_creates_service_authority(tmp_pa
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 18
     assert conn.execute("SELECT name FROM topics").fetchone()[0] == "Existing Topic"
     tables = {
         row[0]
@@ -235,7 +235,7 @@ def test_v8_migration_backfills_an_immutable_current_document_version(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 18
     version = conn.execute(
         """SELECT v.document_id, v.content_hash, v.access_partition_id,
                   v.system_from, v.system_to
@@ -341,6 +341,7 @@ def test_concurrent_initializers_publish_each_schema_version_once(tmp_path):
         (15, 1),
         (16, 1),
         (17, 1),
+        (18, 1),
     ]
     conn.close()
 
@@ -350,7 +351,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     store.init_db(db_path)
     monkeypatch.setitem(
         store.MIGRATIONS,
-        18,
+        19,
         """
         CREATE TABLE should_be_rolled_back (id INTEGER PRIMARY KEY);
         THIS IS NOT VALID SQL;
@@ -364,7 +365,7 @@ def test_failed_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'should_be_rolled_back'"
     ).fetchone() is None
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 18
     conn.close()
 
 
@@ -421,7 +422,7 @@ def test_v15_migration_preserves_observation_and_adds_viewer_lease_proof(tmp_pat
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 18
     assert conn.execute(
         """SELECT public_operator_url, viewer_lease_id, lease_acquired_at
            FROM service_incident_observations"""
@@ -554,7 +555,7 @@ def test_v17_migration_preserves_provider_receipts_and_admits_third_attempt(tmp_
 
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys=ON")
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 18
     assert conn.execute(
         """SELECT a.retry_ordinal, r.result_digest
            FROM service_tick_provider_attempts AS a
@@ -597,6 +598,54 @@ def test_v17_migration_preserves_provider_receipts_and_admits_third_attempt(tmp_
     conn.close()
 
 
+def test_v18_migration_backfills_safe_collection_follow_defaults(tmp_path):
+    db_path = tmp_path / "v17-collections.db"
+    conn = sqlite3.connect(db_path)
+    conn.executescript(store.SCHEMA_V1)
+    conn.executescript(store.SCHEMA_V1_DEFAULTS)
+    for version in range(2, 18):
+        conn.executescript(store.MIGRATIONS[version])
+        conn.execute("INSERT INTO schema_version(version) VALUES (?)", (version,))
+    conn.execute(
+        """INSERT INTO collection_specs (
+               collection_spec_id, name, source, surface_kind, selector_json,
+               profile_id, schedule, item_limit, enabled, spec_version,
+               access_partition_id, created_at, updated_at
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            "legacy-collection",
+            "Legacy collection",
+            "reddit",
+            "topic",
+            '{"topic":"agents"}',
+            "default",
+            "every:3600",
+            20,
+            1,
+            1,
+            "public",
+            "2026-09-13T00:00:00Z",
+            "2026-09-13T00:00:00Z",
+        ),
+    )
+    conn.commit()
+    conn.close()
+
+    store.init_db(db_path)
+    store.init_db(db_path)
+
+    conn = sqlite3.connect(db_path)
+    assert conn.execute(
+        """SELECT collection_purpose, attention_class, lifecycle_state,
+                  follow_target_id
+           FROM collection_specs WHERE collection_spec_id = 'legacy-collection'"""
+    ).fetchone() == ("general", "standard", "active", None)
+    assert conn.execute(
+        "SELECT COUNT(*) FROM schema_version WHERE version = 18"
+    ).fetchone()[0] == 1
+    conn.close()
+
+
 def test_applied_v3_database_receives_replay_and_supervisor_schema(tmp_path):
     db_path = tmp_path / "applied-v3.db"
     conn = sqlite3.connect(db_path)
@@ -614,7 +663,7 @@ def test_applied_v3_database_receives_replay_and_supervisor_schema(tmp_path):
     store.init_db(db_path)
 
     conn = sqlite3.connect(db_path)
-    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 17
+    assert conn.execute("SELECT MAX(version) FROM schema_version").fetchone()[0] == 18
     assert conn.execute(
         "SELECT name FROM sqlite_master WHERE name = 'index_documents'"
     ).fetchone()[0] == "index_documents"

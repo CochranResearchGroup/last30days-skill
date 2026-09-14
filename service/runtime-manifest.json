@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "VERSION",
-      "sha256": "f12a31c43097a09502238b883008cd88fda1cc7df926a8ffe4cd93cf29d8b9fb",
+      "sha256": "92950d8631e263f8f868b3c097bdd13a8d6492c1e65395893165c28112432f00",
       "source": "service/VERSION"
     },
     {
@@ -12,7 +12,7 @@
     },
     {
       "path": "schemas/service-contracts-v1.json",
-      "sha256": "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025",
+      "sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
       "source": "skills/last30days/schemas/service-contracts-v1.json"
     },
     {
@@ -302,7 +302,7 @@
     },
     {
       "path": "scripts/lib/service_app.py",
-      "sha256": "ddfe1ef540791924f35ffcb149d21258f7a53b13cc0aec3c5175adcd3168c33d",
+      "sha256": "9380fb2d8fb964a38c7c5f92753a2b146a417ffa42407e98037a6419aeac4bd0",
       "source": "skills/last30days/scripts/lib/service_app.py"
     },
     {
@@ -312,7 +312,7 @@
     },
     {
       "path": "scripts/lib/service_collection.py",
-      "sha256": "fca2056a49790417ab5a02e0ff0a1190faf327772657500f7c8882b8d1e77765",
+      "sha256": "93d95143906876d82f539c3fa6a79f29a2ac97cbf4b5bdfe349ee17d6ce9490c",
       "source": "skills/last30days/scripts/lib/service_collection.py"
     },
     {
@@ -687,16 +687,16 @@
     },
     {
       "path": "scripts/service.py",
-      "sha256": "263d34e40bedef7a5c3b0b36e17577840aca35877c2e1ce9705261c2ba1fa89b",
+      "sha256": "2a9f5238a7ebfbc8e4167ac4b09c7cf9ababf877eb06b1978ceaffe79d6aa975",
       "source": "skills/last30days/scripts/service.py"
     },
     {
       "path": "scripts/store.py",
-      "sha256": "771a032a6cd37ec5fc43a7da49a8c78b3064e22389547ce65a3e92edc5930e8f",
+      "sha256": "ece3fc0c141c7686841798001d43eb80e29a4036f5b10457cf29404b366ed894",
       "source": "skills/last30days/scripts/store.py"
     }
   ],
   "format": "last30days-service-runtime-v1",
   "hash_algorithm": "sha256",
-  "service_version": "0.3.116"
+  "service_version": "0.3.117"
 }

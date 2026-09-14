@@ -2157,6 +2157,22 @@ DROP TABLE service_tick_provider_attempts_v16;
 PRAGMA legacy_alter_table=OFF;
 PRAGMA foreign_keys=ON;
 """,
+    18: """
+ALTER TABLE collection_specs
+    ADD COLUMN collection_purpose TEXT NOT NULL DEFAULT 'general'
+    CHECK (collection_purpose IN ('general', 'tailored_follow'));
+ALTER TABLE collection_specs
+    ADD COLUMN attention_class TEXT NOT NULL DEFAULT 'standard'
+    CHECK (attention_class IN ('standard', 'priority'));
+ALTER TABLE collection_specs
+    ADD COLUMN lifecycle_state TEXT NOT NULL DEFAULT 'active'
+    CHECK (lifecycle_state IN ('active', 'archived'));
+ALTER TABLE collection_specs ADD COLUMN follow_target_id TEXT;
+
+CREATE UNIQUE INDEX idx_collection_specs_active_follow_target
+    ON collection_specs(follow_target_id)
+    WHERE follow_target_id IS NOT NULL AND lifecycle_state = 'active';
+""",
 }
 
 _FOREIGN_KEYS_OFF_MIGRATIONS = frozenset({17})
