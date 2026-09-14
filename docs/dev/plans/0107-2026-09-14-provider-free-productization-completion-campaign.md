@@ -145,6 +145,42 @@ Next action:
   Plans 0108-0110, reconcile their custody into canonical projections, and
   launch the three bounded Wave 1 implementation agents.
 
+### Checkpoint P0107-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `campaign_registration_active -> wave_1_activated`.
+
+Progress classification: `outcome_progress`; three distinct agents accepted
+their exact plan-only branches and published clean remote-equal activation
+checkpoints before product implementation.
+
+Authority classification:
+
+- `inherited_authority` for the three bounded provider-free Wave 1 packets and
+  coordinator reconciliation;
+- `human_gate` remains unchanged for every excluded external effect.
+
+Validation evidence:
+
+- P33 activation `0d06d8e2`, P35 activation `43f041f4`, and P38 activation
+  `28c721e0` each descend from canonical campaign merge `bca720d0`;
+- each worktree is clean, its local branch equals its owned-fork remote, and
+  only its branch-local plan changed during activation;
+- overlap review isolates P38 completely and reserves shared service-contract/
+  generated-artifact reconciliation between P33/P35 for the coordinator.
+
+Subagent status and reconciliation:
+
+- `joined`; `/root/wi002_search_packet2`, `/root/wi004_follows_packet2`, and
+  `/root/wi007_hotfix_drill` completed activation only. Their requested model
+  routes are preserved; effective runtime identities remain unknown.
+
+Next action:
+
+- integrate the canonical activation projection, then resume those same three
+  agents on only their accepted implementation packets.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;

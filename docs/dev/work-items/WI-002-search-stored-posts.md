@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-002 -->
 # Search and retrieve stored posts as a product surface
 
-State: READY
+State: IN_PROGRESS
 Priority: P1
 Lane: Search
 Parent: WI-000
@@ -10,7 +10,8 @@ Blocked by: none
 Architecture: docs/dev/notes/0117-2026-09-13-post-search-product-architecture.md
 Implementation plan seed: docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md
 Last completed plan: docs/dev/plans/0084-2026-09-13-post-search-packet-1.md
-Branch: feat/post-search-v1
+Active plan: docs/dev/plans/0108-2026-09-14-post-search-packet-2.md
+Branch: feat/post-search-v2
 
 ## Problem
 
@@ -47,3 +48,7 @@ Packet 1 merged through PR 36 as `75e7771e006f52847e8e47c1059b2b2000fb8ac7`.
 The coordinator should register a separate Packet 2 plan before adding the
 broader filter matrix, all-revision traversal, or cross-store deduplication.
 Do not change `/v1/query` or use provider/browser access under Packet 1.
+
+Packet 2 is active at published checkpoint `0d06d8e2` under Plan 0108. It owns
+the broader filter matrix, revision traversal, cross-store identity, stable
+pagination, and focused public-boundary compatibility only.
