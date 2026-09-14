@@ -190,10 +190,16 @@ def _fake_runtime_artifact(tmp_path: Path) -> Path:
         encoding="utf-8",
     )
     artifact = tmp_path / "last30days-service-0.3.117.tar.gz"
+    release_directory = "last30days-service-0.3.117"
     with tarfile.open(artifact, "w:gz") as archive:
         for path in sorted(payload.rglob("*")):
             if path.is_file():
-                archive.add(path, arcname=path.relative_to(payload).as_posix())
+                archive.add(
+                    path,
+                    arcname=(
+                        Path(release_directory) / path.relative_to(payload)
+                    ).as_posix(),
+                )
     return artifact
 
 

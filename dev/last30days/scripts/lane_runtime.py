@@ -606,9 +606,11 @@ def _extract_verified_artifact(
         raise RuntimeError("artifact_invalid")
     artifact_sha256 = _sha256_path(artifact)
     release_root = Path(descriptor.artifacts_dir) / artifact_sha256
-    if release_root.exists() or release_root.is_symlink():
-        manifest_path = release_root / "runtime-manifest.json"
-    else:
+    if release_root.is_symlink() or (
+        release_root.exists() and not release_root.is_dir()
+    ):
+        raise RuntimeError("artifact_manifest_invalid")
+    if not release_root.exists():
         release_root.mkdir(parents=True, mode=0o700)
         seen: set[str] = set()
         total_size = 0
@@ -644,11 +646,22 @@ def _extract_verified_artifact(
                 with source, os.fdopen(fd, "wb") as target:
                     while chunk := source.read(1024 * 1024):
                         target.write(chunk)
-        manifest_path = release_root / "runtime-manifest.json"
+    payload_root = release_root
+    manifest_path = payload_root / "runtime-manifest.json"
+    if not manifest_path.is_file() or manifest_path.is_symlink():
+        entries = list(release_root.iterdir())
+        if (
+            len(entries) != 1
+            or not entries[0].is_dir()
+            or entries[0].is_symlink()
+        ):
+            raise RuntimeError("artifact_manifest_invalid")
+        payload_root = entries[0]
+        manifest_path = payload_root / "runtime-manifest.json"
     try:
         manifest_raw = manifest_path.read_bytes()
         manifest = json.loads(manifest_raw.decode("utf-8"))
-        version = (release_root / "VERSION").read_text(encoding="utf-8").strip()
+        version = (payload_root / "VERSION").read_text(encoding="utf-8").strip()
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise RuntimeError("artifact_manifest_invalid") from exc
     if (
@@ -671,16 +684,16 @@ def _extract_verified_artifact(
             or not isinstance(expected, str)
         ):
             raise RuntimeError("artifact_manifest_invalid")
-        candidate = release_root.joinpath(*Path(relative).parts)
+        candidate = payload_root.joinpath(*Path(relative).parts)
         if not candidate.is_file() or candidate.is_symlink() or _sha256_path(candidate) != expected:
             raise RuntimeError("artifact_manifest_mismatch")
-    entrypoint = release_root / "scripts" / "service.py"
+    entrypoint = payload_root / "scripts" / "service.py"
     if not entrypoint.is_file() or entrypoint.is_symlink():
         raise RuntimeError("artifact_entrypoint_invalid")
     return {
         "artifact_path": str(artifact),
         "artifact_sha256": artifact_sha256,
-        "release_root": str(release_root),
+        "release_root": str(payload_root),
         "entrypoint": str(entrypoint),
         "entrypoint_sha256": _sha256_path(entrypoint),
         "manifest_path": str(manifest_path),
