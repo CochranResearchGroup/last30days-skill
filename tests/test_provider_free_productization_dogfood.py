@@ -158,3 +158,30 @@ def test_database_reset_is_confined_to_the_campaign_state_root(tmp_path):
     with pytest.raises(ValueError, match="database_outside_campaign_state"):
         module._reset_database(descriptor)
     assert foreign.read_bytes() == b"preserve"
+
+
+def test_question_probe_precedes_search_publication(monkeypatch):
+    module = _load()
+    order = []
+    anchor = {"status": {"question_id": "question-1"}}
+    monkeypatch.setattr(
+        module.question_dogfood,
+        "check_questions",
+        lambda *_args: (order.append("questions") or {"state": "passed"}, anchor),
+    )
+    monkeypatch.setattr(
+        module.post_search_dogfood,
+        "check_search",
+        lambda *_args: (order.append("search") or {"state": "passed"}, {}),
+    )
+
+    result, actual_anchor = module._check_search_question_quality(
+        object(), object(), Path("fixture.sqlite")
+    )
+
+    assert order == ["questions", "search"]
+    assert result == {
+        "search": {"state": "passed"},
+        "questions": {"state": "passed"},
+    }
+    assert actual_anchor is anchor
