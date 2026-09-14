@@ -312,7 +312,7 @@
     },
     {
       "path": "scripts/lib/service_app.py",
-      "sha256": "ff1020ea536b4888f71cff1d847c5d41ede45258f9cb84a0ef45ca7e30b59a33",
+      "sha256": "cc339b0758ec448ea153dc613a83dd92d219181b82ba11d1bba7265e864f8ce2",
       "source": "skills/last30days/scripts/lib/service_app.py"
     },
     {
