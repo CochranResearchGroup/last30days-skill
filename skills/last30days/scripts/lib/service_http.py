@@ -279,6 +279,16 @@ class _RequestHandler(BaseHTTPRequestHandler):
         except contracts.PostSearchCursorStaleError:
             self._error(409, "cursor_stale", "search head is no longer retained; start a new search")
             return
+        except contracts.PostSearchResponseTooLargeError:
+            if self.path == "/v1/posts/search":
+                self._error(
+                    413,
+                    "post_search_response_too_large",
+                    "post evidence exceeds the response budget; narrow filters",
+                )
+            else:
+                self._error(400, "invalid_contract", "request contract is invalid")
+            return
         except contracts.ContractValidationError as exc:
             del exc
             self._error(400, "invalid_contract", "request contract is invalid")

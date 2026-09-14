@@ -1133,7 +1133,7 @@ Service-enabled MCP clients expose eleven compact operations:
 - `service_info`: discover readiness, sources, capabilities, and index state;
 - `query`: read cached evidence or a compact brief under an explicit freshness
   policy;
-- `search_posts`: cache-only lexical search or filter-only browse with exact
+- `search_posts`: cache-only hybrid search or filter-only browse with exact
   `sources`, `authors`, `topic_ids`, namespaced `collection_refs`, and inclusive
   `published_after/before` or `observed_after/before` bounds. At least a query
   or one narrowing filter is required. `revision_mode` is `current` (default)
@@ -1150,6 +1150,20 @@ Service-enabled MCP clients expose eleven compact operations:
   old head. More than 10,000 filtered candidate revisions fails closed with
   a request to narrow filters. These are local bounded-retention limits, not
   performance or cross-restart retention guarantees;
+  relevance fuses lexical and compatible stored source vectors using
+  `post-rrf-v1` and `sum(1 / (60 + channel_rank))`. The query encoder is the
+  built-in `local-hash-v1` (256 dimensions); external embedding configuration
+  is not inherited and search never writes corpus embeddings. Hit `ranking`
+  includes raw scores, ranks, and exact semantic embedding locators/digests.
+  `coverage.semantic.families` distinguishes missing, incompatible, invalid,
+  zero-vector, and available evidence. These local hash vectors are a
+  deterministic baseline, not proof of general semantic quality. Both storage
+  adapters remain bounded to 20,000 stored vector rows each; exceeding the
+  bound requires narrower filters. Complete responses are limited to 131,072
+  UTF-8 bytes, so a successful page may contain fewer than `page_size` hits;
+  continue with `next_cursor`. HTTP 413 `post_search_response_too_large` means
+  one indivisible post/provenance payload cannot fit. Search never drops exact
+  provenance to disguise that condition;
 - `refresh`: create or join a bounded `force_refresh` job;
 - `job_status`: poll the typed durable job record;
 - `topic`: list or manage service-owned topics and request scheduled refreshes.

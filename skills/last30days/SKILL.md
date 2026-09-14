@@ -54,7 +54,7 @@ available service operation.
 Use the narrowest operation that answers the request:
 
 - `query` - current evidence-backed research from the shared cache.
-- `search_posts` - deterministic lexical search or filtered browse over stored
+- `search_posts` - deterministic hybrid search or filtered browse over stored
   posts. Filter by `sources`, exact `authors`, `topic_ids`, namespaced
   `collection_refs`, or inclusive `published_after/before` and
   `observed_after/before` timestamps. Omit the query only with a narrowing
@@ -66,6 +66,15 @@ Use the narrowest operation that answers the request:
   Cursors retain an immutable page sequence during publication, but expire
   after 15 minutes, capacity eviction, or service restart. On `cursor_stale`,
   explain that a fresh search is required; do not silently join different heads.
+  Relevance uses `post-rrf-v1`: lexical and available stored source vectors in
+  `local-hash-v1`, fused as the sum of `1 / (60 + channel_rank)`. Preserve each
+  hit's `ranking` explanation and `matching_channels`. Read `coverage.semantic`
+  for missing, incompatible, invalid, or zero-vector evidence by storage family;
+  a local hash baseline does not establish general semantic quality. Search
+  creates no corpus embeddings and invokes no external embedding provider.
+  Responses fit 131,072 UTF-8 bytes; follow `next_cursor` even when a page is
+  shorter than requested. `post_search_response_too_large` means indivisible
+  post provenance cannot fit; report it and narrow filters without dropping refs.
 - `temporal_query` - `as_of`, `during`, `known_as_of`, timeline, entity
   dossier, event dossier, trend, comparison, and historical brief requests.
   This operation is cache-only.

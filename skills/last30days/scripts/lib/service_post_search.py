@@ -11,15 +11,18 @@ import sqlite3
 import threading
 import time
 from collections import OrderedDict
+from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Sequence
 
 from . import service_contracts as contracts
+from .service_post_search_ranking import RANKING_VERSION, RRF_K, attach_semantic
 
 _TOKEN = re.compile(r"[a-z0-9]+")
 MAX_SNAPSHOT_ROWS = 10_000
 MAX_RETAINED_BYTES = 32 * 1024 * 1024
+MAX_RESPONSE_BYTES = 131_072
 
 
 def _canonical_json(value: object) -> str:
@@ -280,10 +283,10 @@ class PostSearchBackend:
             )
         return value, hit.post_id, hit.revision_id
 
-    def _rank(
-        self, rows: list[dict], request: contracts.PostSearchRequest
-    ) -> tuple[contracts.PostSearchHit, ...]:
-        tokens = set(_TOKEN.findall((request.query or "").casefold()))
+    @staticmethod
+    def _groups(
+        rows: list[dict], request: contracts.PostSearchRequest
+    ) -> list[list[dict]]:
         groups: dict[tuple, list] = {}
         for row in rows:
             identity = {
@@ -300,7 +303,6 @@ class PostSearchBackend:
                 else (row["post_id"],)
             )
             groups.setdefault(key, []).append(row)
-        hits = []
         for group in groups.values():
             # Resolve current conflicts before scoring so a stale matching
             # replica cannot replace a newer nonmatching current revision.
@@ -313,6 +315,15 @@ class PostSearchBackend:
                     row["version_id"],
                 )
             )
+        return list(groups.values())
+
+    def _rank(
+        self, rows: list[dict], request: contracts.PostSearchRequest
+    ) -> tuple[contracts.PostSearchHit, ...]:
+        tokens = set(_TOKEN.findall((request.query or "").casefold()))
+        hits = []
+        raw_scores = {}
+        for group in self._groups(rows, request):
             row = group[0]
             candidate = " ".join(
                 str(row[field] or "")
@@ -323,8 +334,18 @@ class PostSearchBackend:
                 if tokens
                 else 0.0
             )
-            if tokens and score == 0:
+            semantic_score = row.get("semantic_score", 0.0)
+            if tokens and score == 0 and semantic_score == 0:
                 continue
+            channels = {}
+            if score > 0:
+                channels["lexical"] = {"score": score}
+            if semantic_score > 0:
+                channels["semantic"] = {
+                    "score": semantic_score,
+                    "evidence": row["semantic_evidence"],
+                }
+            raw_scores[(row["post_id"], row["version_id"])] = channels
             refs = [
                 {
                     "storage_family": r["storage_family"],
@@ -356,8 +377,8 @@ class PostSearchBackend:
                         "published_at": row["published_at"],
                         "observed_at": observed,
                         "access_partition_id": row["access_partition_id"],
-                        "score": score,
-                        "matching_channels": ["lexical"] if tokens else [],
+                        "score": max(score, semantic_score),
+                        "matching_channels": list(channels),
                         "evidence_ref": refs[0],
                         "evidence_refs": refs,
                         "collection_refs": sorted(
@@ -377,7 +398,32 @@ class PostSearchBackend:
                     }
                 )
             )
-        return tuple(sorted(hits, key=lambda hit: self._sort_key(hit, request.sort)))
+        for channel in ("lexical", "semantic"):
+            ranked = sorted(
+                (hit for hit in hits if channel in hit.matching_channels),
+                key=lambda hit: (
+                    -raw_scores[(hit.post_id, hit.revision_id)][channel]["score"],
+                    hit.post_id,
+                    hit.revision_id,
+                ),
+            )
+            for rank, hit in enumerate(ranked, 1):
+                raw_scores[(hit.post_id, hit.revision_id)][channel]["rank"] = rank
+        fused = []
+        for hit in hits:
+            channels = raw_scores[(hit.post_id, hit.revision_id)]
+            fused.append(
+                replace(
+                    hit,
+                    score=sum(1 / (RRF_K + part["rank"]) for part in channels.values()),
+                    ranking={
+                        "version": RANKING_VERSION,
+                        "rrf_k": RRF_K,
+                        "channels": channels,
+                    },
+                )
+            )
+        return tuple(sorted(fused, key=lambda hit: self._sort_key(hit, request.sort)))
 
     def _expire(self, now: float) -> None:
         for key, snapshot in list(self._snapshots.items()):
@@ -412,7 +458,7 @@ class PostSearchBackend:
                 raise contracts.PostSearchCursorStaleError(
                     "cursor_stale: search head is no longer retained"
                 )
-            _, components, hits, _ = snapshot
+            _, components, hits, _, semantic = snapshot
             if cursor["component_heads"] != components:
                 raise contracts.ContractValidationError(
                     "cursor component heads do not match"
@@ -422,6 +468,11 @@ class PostSearchBackend:
             try:
                 conn.execute("BEGIN")
                 rows = self._rows(conn, request, partitions)
+                semantic = attach_semantic(
+                    conn,
+                    [group[0] for group in self._groups(rows, request)],
+                    request.query,
+                )
             finally:
                 conn.close()
             components = {
@@ -430,27 +481,10 @@ class PostSearchBackend:
                 )
                 for family in ("legacy", "temporal")
             }
-            head = _stable_id("search-head", components)
+            head = _stable_id(
+                "search-head", {"components": components, "ranking": RANKING_VERSION}
+            )
             hits = self._rank(rows, request)
-            if len(hits) > request.page_size:
-                size = len(_canonical_json([hit.to_dict() for hit in hits]).encode())
-                if size > MAX_RETAINED_BYTES:
-                    raise contracts.ContractValidationError(
-                        "search_snapshot_too_large: narrow filters"
-                    )
-                with self._snapshot_lock:
-                    now = self.monotonic()
-                    self._expire(now)
-                    key = (head, fingerprint)
-                    if key not in self._snapshots:
-                        while self._snapshots and (
-                            len(self._snapshots) >= self.snapshot_capacity
-                            or sum(snapshot[3] for snapshot in self._snapshots.values())
-                            + size
-                            > MAX_RETAINED_BYTES
-                        ):
-                            self._snapshots.popitem(last=False)
-                        self._snapshots[key] = (now, components, hits, size)
         offset = 0
         if cursor:
             positions = [list(self._sort_key(hit, request.sort)) for hit in hits]
@@ -460,46 +494,98 @@ class PostSearchBackend:
                 raise contracts.ContractValidationError(
                     "cursor position is invalid"
                 ) from exc
-        selected = hits[offset : offset + request.page_size]
-        truncated = offset + len(selected) < len(hits)
-        next_cursor = (
-            self._encode_cursor(
-                fingerprint,
-                head,
-                components,
-                self._sort_key(selected[-1], request.sort),
-            )
-            if truncated
-            else None
-        )
-        return contracts.PostSearchResponse.from_dict(
-            {
-                "schema_version": contracts.SCHEMA_VERSION,
-                "request_id": request.request_id,
-                "search_head_id": head,
-                "generated_at": self.clock()
-                .astimezone(timezone.utc)
-                .isoformat()
-                .replace("+00:00", "Z"),
-                "query": request.query,
-                "filters": request.filters,
-                "sort": request.sort,
-                "revision_mode": request.revision_mode,
-                "hits": [hit.to_dict() for hit in selected],
-                "returned": len(selected),
-                "truncated": truncated,
-                "next_cursor": next_cursor,
-                "coverage": {
-                    "component_heads": dict(components),
-                    "storage_families": ["legacy", "temporal"],
-                    "unavailable_filters": [],
-                    "temporal_topics": "explicit_version_metadata_only",
-                    "cursor_retention": {
-                        "scope": "backend_process",
-                        "capacity": self.snapshot_capacity,
-                        "ttl_seconds": self.snapshot_ttl_seconds,
-                        "max_bytes": MAX_RETAINED_BYTES,
-                    },
+        payload = {
+            "schema_version": contracts.SCHEMA_VERSION,
+            "request_id": request.request_id,
+            "search_head_id": head,
+            "generated_at": self.clock()
+            .astimezone(timezone.utc)
+            .isoformat()
+            .replace("+00:00", "Z"),
+            "query": request.query,
+            "filters": request.filters,
+            "sort": request.sort,
+            "revision_mode": request.revision_mode,
+            "hits": [],
+            "returned": 0,
+            "truncated": False,
+            "next_cursor": None,
+            "coverage": {
+                "semantic": semantic,
+                "ranking_version": RANKING_VERSION,
+                "candidate_limit": MAX_SNAPSHOT_ROWS,
+                "response_max_bytes": MAX_RESPONSE_BYTES,
+                "component_heads": dict(components),
+                "storage_families": ["legacy", "temporal"],
+                "unavailable_filters": [],
+                "temporal_topics": "explicit_version_metadata_only",
+                "cursor_retention": {
+                    "scope": "backend_process",
+                    "capacity": self.snapshot_capacity,
+                    "ttl_seconds": self.snapshot_ttl_seconds,
+                    "max_bytes": MAX_RETAINED_BYTES,
                 },
+            },
+        }
+        available = hits[offset : offset + request.page_size]
+        encoded_hits = [hit.to_dict() for hit in available]
+
+        def page(count: int) -> dict:
+            truncated = offset + count < len(hits)
+            return {
+                **payload,
+                "hits": encoded_hits[:count],
+                "returned": count,
+                "truncated": truncated,
+                "next_cursor": self._encode_cursor(
+                    fingerprint,
+                    head,
+                    components,
+                    self._sort_key(available[count - 1], request.sort),
+                )
+                if truncated and count
+                else None,
             }
+
+        # Find the largest complete page that fits, including its cursor and
+        # all provenance. A shortened final-sized request still needs retention.
+        low, high, result = 1, len(available), None
+        if not available:
+            result = page(0)
+        else:
+            while low <= high:
+                count = (low + high) // 2
+                candidate = page(count)
+                if len(_canonical_json(candidate).encode()) <= MAX_RESPONSE_BYTES:
+                    result, low = candidate, count + 1
+                else:
+                    high = count - 1
+        if result is None or len(_canonical_json(result).encode()) > MAX_RESPONSE_BYTES:
+            raise contracts.PostSearchResponseTooLargeError(
+                "post_search_response_too_large: narrow filters"
+            )
+        if result["truncated"] and not cursor:
+            size = len(_canonical_json([hit.to_dict() for hit in hits]).encode()) + len(
+                _canonical_json(semantic).encode()
+            )
+            if size > MAX_RETAINED_BYTES:
+                raise contracts.ContractValidationError(
+                    "search_snapshot_too_large: narrow filters"
+                )
+            with self._snapshot_lock:
+                now = self.monotonic()
+                self._expire(now)
+                key = (head, fingerprint)
+                if key not in self._snapshots:
+                    while self._snapshots and (
+                        len(self._snapshots) >= self.snapshot_capacity
+                        or sum(snapshot[3] for snapshot in self._snapshots.values())
+                        + size
+                        > MAX_RETAINED_BYTES
+                    ):
+                        self._snapshots.popitem(last=False)
+                    self._snapshots[key] = (now, components, hits, size, semantic)
+        # Public DTO dictionaries must never alias the retained immutable head.
+        return contracts.PostSearchResponse.from_dict(
+            json.loads(_canonical_json(result))
         )

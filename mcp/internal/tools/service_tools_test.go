@@ -193,6 +193,32 @@ func TestSearchPostsPacketTwoFiltersBrowseAndModes(t *testing.T) {
 	}
 }
 
+func TestSearchPostsPacketThreePreservesRankingAndCoverage(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "..", "..", "tests", "fixtures", "post_search_packet3.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture struct {
+		Arguments      map[string]any `json:"mcp_arguments"`
+		RankingVersion string         `json:"ranking_version"`
+	}
+	if err := json.Unmarshal(data, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	payload, err := json.Marshal(map[string]any{
+		"coverage": map[string]any{"ranking_version": fixture.RankingVersion, "semantic": map[string]any{"mode": "stored_vectors_local_query"}},
+		"hits":     []any{map[string]any{"matching_channels": []string{"semantic"}, "ranking": map[string]any{"version": fixture.RankingVersion}}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	fake := &fakeService{response: payload}
+	result, err := makePostSearchHandler(fake)(context.Background(), callRequest(fixture.Arguments))
+	if err != nil || result.IsError || textResult(result) != string(payload) || fake.postPath != "/v1/posts/search" {
+		t.Fatalf("result=%+v path=%q err=%v", result, fake.postPath, err)
+	}
+}
+
 func TestTemporalAndProfileToolsUseCompactIntelligenceBoundary(t *testing.T) {
 	fake := &fakeService{response: json.RawMessage(`{"cache_only":true}`)}
 	temporal := makeIntelligenceHandler(fake, "temporal_query")
