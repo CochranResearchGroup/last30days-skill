@@ -2736,7 +2736,8 @@ Current State:
 - replacement independent Codex thread
   `01a09d44-49bf-73b2-a613-aee72c98f471` opened the plan and published clean
   remote-equal activation `e566724c` before feature implementation;
-- Packet 2 is now integration-ready at exact remote checkpoint `ddcb4201`:
+- Packet 2 integrated through PR 45 as canonical merge `e4823ac7` from exact
+  remote checkpoint `ddcb4201`:
   the real search/evidence composition, immutable resolver, parent/version
   partition closure, and refreshed source manifest pass 54 affected and all
   2,844 comprehensive tests plus reproducible package validation.
@@ -2760,18 +2761,18 @@ Dependencies:
 
 Next Bounded Action:
 
-- merge the reviewed Packet 2 candidate through the fork PR, then plan Packet
-  3 structured answer/validation behavior separately from current main.
+- plan Packet 3 structured answer/validation behavior separately from current
+  main; do not infer model execution or public MCP authority.
 
 ## P47 | P36 Packet 2 Integration Reconciliation
 
-State: OPEN
+State: CLOSED
 
 Objective: review and integrate the exact Packet 2 checkpoint, close the
 parent/version partition-integrity seam, and reconcile its source-manifest and
 canonical planning joins.
 
-Active Plan:
+Closed Plan:
 
 - `docs/dev/plans/0097-2026-09-13-p36-packet-2-integration-reconciliation.md`.
 
@@ -2780,16 +2781,17 @@ Current State:
 - exact feature checkpoint `4e937017` is preserved in the integration ancestry;
 - the closed-world parent/version partition regression failed red and passes
   after both legacy and temporal joins were constrained;
-- integration checkpoint `ddcb4201` is clean, remote-equal, and passes 6
+- integration checkpoint `ddcb4201` was clean, remote-equal, and passes 6
   focused, 54 affected, and all 2,844 comprehensive tests, compilation,
   planning checks, and byte-identical source-package builds;
+- PR 45 merged the candidate as canonical commit `e4823ac7`;
 - installed runtimes, providers, public HTTP/MCP, models, P35, staging, and
   production remain outside scope.
 
 Next Bounded Action:
 
-- publish the immutable-candidate projection and open the one owned-fork PR;
-  after merge, record its exact canonical receipt in a closeout-only PR.
+- plan P36 Packet 3 separately from current canonical main; keep all runtime,
+  model, public transport, provider, and P35 effects behind their own gates.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
