@@ -10,8 +10,9 @@ Blocked by: none for Packet 1; retrieval acceptance by WI-002 closeout; groundin
 Architecture: docs/dev/notes/0121-2026-09-13-corpus-retrieval-and-grounding-quality-architecture.md
 Implementation plan seed: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md
 Last closed plan: docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md
-Branch: feat/service-quality-v1
-Owner: Codex 01a09cf4-c89d-7b41-901a-37648171312a
+Current plan: docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md (planned)
+Branch: feat/service-quality-real-adapters-v1 (planned; custody not yet published)
+Owner: unassigned until activation
 
 ## Problem
 
@@ -43,8 +44,9 @@ only on a score.
 
 ## Next Owner Action
 
-Packet 1 integrated through PR 41 as canonical merge `6d5eb5d9`. Before any
-new implementation, write and register a separately bounded packet from
-current `origin/main` for a real retrieval or grounding adapter. Keep judge
+Packet 1 integrated through PR 41 as canonical merge `6d5eb5d9`. Plan 0119
+now registers read-only real-fixture corpus-integrity, acquisition-coverage,
+and PostSearch quality adapters; grounding remains deferred until WI-003
+closes. The plan remains `PLANNED` until exact custody is published. Keep judge
 calls, production samples, providers, installed runtimes, CI changes, staging,
 and production behind their own explicit gates.

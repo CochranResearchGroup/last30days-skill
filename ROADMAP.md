@@ -2813,6 +2813,12 @@ Closed Integration Plan:
 
 - `docs/dev/plans/0100-2026-09-14-p36-packet-3-integration-reconciliation.md`.
 
+Planned Implementation Plan:
+
+- `docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md` on
+  `feat/question-public-runtime-closeout-v1`; registration is integrated only
+  after its exact branch/worktree custody is published.
+
 Dependencies:
 
 - Packet 1's stable search backend and evidence-ref dependency is satisfied by
@@ -2900,8 +2906,8 @@ Current State:
 
 Next Bounded Action:
 
-- merge the closeout-only projections, verify canonical main, and plan Packet 4
-  separately if the operator continues P36.
+- integrate Plan 0117 registration, publish exact Packet 4 custody, and execute
+  the provider-free public/runtime closeout without model or provider effects.
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
@@ -2936,6 +2942,11 @@ Closed Implementation Plan:
 - `docs/dev/plans/0092-2026-09-13-service-quality-packet-1.md` on
   `feat/service-quality-v1`.
 
+Planned Implementation Plan:
+
+- `docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md` on
+  `feat/service-quality-real-adapters-v1`; custody is not yet published.
+
 Dependencies:
 
 - Packet 1 is independent; retrieval integration/acceptance joins WI-002, and
@@ -2944,8 +2955,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- plan real retrieval and grounding adapters as later separately bounded
-  packets from current canonical main.
+- integrate Plan 0119 registration and publish exact custody for the read-only
+  real-fixture integrity, coverage, and retrieval adapter packet; grounding
+  remains deferred until WI-003 closes.
 
 ## P38 | Reserved Production Hotfix Path
 
@@ -3021,6 +3033,11 @@ Last Closed Plan:
 
 - `docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md`.
 
+Planned Implementation Plan:
+
+- `docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md` on
+  `feat/cross-service-follow-tracers-v1`; custody is not yet published.
+
 Closed Architecture Plan:
 
 - `docs/dev/plans/0082-2026-09-13-cross-service-tailored-follow-architecture-and-lane-handoff.md`.
@@ -3033,8 +3050,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- register a separately bounded provider-free Reddit-community/user and
-  YouTube-channel fixture tracer packet. Do not use providers or live locators.
+- integrate Plan 0118 registration, publish exact custody, and execute its
+  provider-free Reddit-community/user and YouTube-channel fixture tracers. Do
+  not use providers or live locators.
 
 ## P40 | Saved Monitors And Evidence Digests
 

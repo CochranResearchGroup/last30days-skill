@@ -1,5 +1,53 @@
 schema_version: 1
 lanes:
+  - id: P36
+    objective: Close the provider-free question surface through public transports and isolated-runtime acceptance
+    work_items: [docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
+    plan: docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md
+    plan_ref: refs/heads/feat/question-public-runtime-closeout-v1
+    branch: feat/question-public-runtime-closeout-v1
+    target: main
+    plan_state: PLANNED
+    custody_state: PLANNED
+    checkpoint: null
+    remote_ref: refs/remotes/origin/feat/question-public-runtime-closeout-v1
+    integration: merge
+    dependencies: [P33]
+    overlaps: [skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/lib/service_http.py, skills/last30days/scripts/lib/service_client.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go, service/runtime-manifest.json]
+    reconciled_overlaps: []
+    updated_at: 2026-09-14
+  - id: P39
+    objective: Implement provider-free native Reddit and YouTube follow tracers
+    work_items: [docs/dev/work-items/WI-005-cross-service-tailored-follows.md]
+    plan: docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md
+    plan_ref: refs/heads/feat/cross-service-follow-tracers-v1
+    branch: feat/cross-service-follow-tracers-v1
+    target: main
+    plan_state: PLANNED
+    custody_state: PLANNED
+    checkpoint: null
+    remote_ref: refs/remotes/origin/feat/cross-service-follow-tracers-v1
+    integration: merge
+    dependencies: []
+    overlaps: [skills/last30days/scripts/lib/service_follow_capabilities.py, skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_acquisition_worker.py]
+    reconciled_overlaps: []
+    updated_at: 2026-09-14
+  - id: P37
+    objective: Replace fake service-quality axes with read-only real-fixture adapters
+    work_items: [docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
+    plan: docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md
+    plan_ref: refs/heads/feat/service-quality-real-adapters-v1
+    branch: feat/service-quality-real-adapters-v1
+    target: main
+    plan_state: PLANNED
+    custody_state: PLANNED
+    checkpoint: null
+    remote_ref: refs/remotes/origin/feat/service-quality-real-adapters-v1
+    integration: merge
+    dependencies: [P33]
+    overlaps: []
+    reconciled_overlaps: []
+    updated_at: 2026-09-14
   - id: P51
     objective: Build a deterministic development artifact and prove one isolated runtime through provider-free dogfood
     work_items: [docs/dev/work-items/WI-009-productization-readiness-remediation.md]
