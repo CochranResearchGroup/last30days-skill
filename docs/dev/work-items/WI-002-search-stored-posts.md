@@ -10,7 +10,7 @@ Blocked by: none
 Architecture: docs/dev/notes/0117-2026-09-13-post-search-product-architecture.md
 Implementation plan seed: docs/dev/plans/0076-2026-09-13-post-search-architecture-and-lane-handoff.md
 Last completed plan: docs/dev/plans/0111-2026-09-14-post-search-packet-3.md
-Active plan: none; Packet 4 is not yet planned
+Planned plan: docs/dev/plans/0114-2026-09-14-post-search-runtime-closeout.md
 Branch: main
 
 ## Problem
@@ -66,3 +66,6 @@ pagination, public MCP parity, and the frozen 10,000-post performance gate pass.
 WI-002 returns to `READY` for a separately planned Packet 4 isolated-runtime
 and fresh-client product closeout; no provider or installed-runtime authority
 is implied.
+
+Plan 0114 now freezes that final provider-free closeout. It remains `PLANNED`
+until exact branch/worktree custody is published and reconciled.

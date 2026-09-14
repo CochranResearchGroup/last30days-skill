@@ -6,10 +6,11 @@ Priority: P2
 Lane: MCP
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/59
-Blocked by: WI-002 Packet 1 for monitor kernel/query tracer; WI-004 Packet 1 for follow tracer; WI-002 and WI-004 closeout for final acceptance
+Blocked by: none for Packet 2 query composition; final acceptance waits for WI-002 closeout
 Last closed plan: docs/dev/plans/0093-2026-09-13-saved-monitors-packet-1.md
-Branch: feat/saved-monitors-v1
-Owner: Codex 01a09cf4-c89e-7660-9caf-66a78f34ded0
+Planned plan: docs/dev/plans/0116-2026-09-14-saved-query-composition.md
+Branch: main
+Owner: unassigned
 
 ## Problem
 
@@ -57,3 +58,8 @@ new implementation, write and register a separately bounded packet from
 current `origin/main` for query-view composition. Follow tracing remains gated
 by P35 integration; refresh, scraping, installed scheduling, and delivery
 remain separately authorized effects.
+
+Plan 0116 registers Packet 2 for immutable saved-query composition over the
+accepted WI-002 search contract. WI-004 is now DONE, but follow composition is
+still deliberately reserved for Packet 3. Plan 0116 remains `PLANNED` until
+exact branch/worktree custody is published and reconciled.

@@ -6,7 +6,8 @@ Priority: P2
 Lane: Follows
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/58
-Blocked by: WI-004 Packet 1 for implementation; WI-004 closeout for final acceptance
+Blocked by: none for Packet 1; later provider tracers and product closure remain
+Planned plan: docs/dev/plans/0115-2026-09-14-follow-capability-compatibility.md
 
 ## Problem
 
@@ -51,9 +52,8 @@ Authority:
 
 ## Next Owner Action
 
-After WI-004 Packet 1 integrates, assign one independent top-level session,
-create `feat/cross-service-tailored-follows-v1` from current `origin/main`,
-register custody, and execute Packet 1 only: capability registry, target
-envelope, X-compatible migration, legacy quarantine, and fake-adapter tests.
+WI-004 is `DONE`. Plan 0115 registers Packet 1 for the capability registry,
+target envelope, exact X compatibility, legacy quarantine, and fake-adapter
+tests. It remains `PLANNED` until exact branch/worktree custody is published.
 Do not start a job, resolve a live locator, open a browser, or mutate an
 installed runtime.
