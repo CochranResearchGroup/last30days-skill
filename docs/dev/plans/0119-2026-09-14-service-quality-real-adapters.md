@@ -146,7 +146,7 @@ Plan version: 1
 State transition: `OPEN -> OPEN`; Packet 2 implementation checkpoint accepted
 on the isolated lane, pending independent review and coordinator integration.
 
-Progress classification: `acceptance_met`; real acquisition, corpus, and
+Progress classification: `implementation_ready_for_review`; real acquisition, corpus, and
 retrieval adapters bind their digest-pinned synthetic SQLite fixture and
 adapter identity into the deterministic v2 report. Coverage fails closed for
 partial, stale, unavailable, and unknown opportunity evidence; corpus checks
@@ -161,6 +161,14 @@ Validation receipt:
 - `POST_SEARCH_PERFORMANCE=1 uv run pytest tests/test_service_post_search_performance.py -q` -> `1 passed`;
 - `uv run python -m compileall -q dev/last30days/quality dev/last30days/scripts/evaluate_service_quality.py` -> pass;
 - `git diff --check` -> pass.
+
+Broader compatibility receipt:
+
+- `uv run pytest tests/test_service_quality.py tests/test_service_quality_real_adapters.py tests/test_service_post_search.py tests/test_service_supervisor.py tests/test_service_publication.py -q` -> `59 passed`.
+
+The complete non-integration suite was started once but this execution
+environment detached before retaining its terminal output; it is not claimed
+as passed and remains a review/integration validation gate.
 
 Effect receipt: provider, model, browser, live/installed service, runtime,
 CI, schedule, release, deployment, and tracker effects remain zero. The
