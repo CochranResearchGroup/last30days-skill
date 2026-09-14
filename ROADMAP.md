@@ -3276,6 +3276,8 @@ Current State:
 - Plan 0105's containment implementation is provider-free validated at
   `a8c81148`; canonical artifact build, one-runtime provisioning, dogfood, and
   closeout remain after reviewed integration.
+- exact remote feature tip `5c1d6228` is integration-ready after merging the
+  accepted catalog join and rerunning the focused 69-test surface.
 
 Plan:
 
@@ -3298,5 +3300,5 @@ Program Gate:
 
 Next Bounded Action:
 
-- publish, review, and integrate the validated Plan 0105 containment candidate,
-  then build twice from merged canonical main before provisioning one runtime.
+- integrate the immutable custody catalog and reviewed feature PR, then build
+  twice from merged canonical main before provisioning one runtime.
