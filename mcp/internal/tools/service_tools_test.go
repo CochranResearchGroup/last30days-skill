@@ -70,12 +70,15 @@ func TestToolSurfaceNamesAndAnnotations(t *testing.T) {
 		}
 		wantReadOnly := registration.tool.Name == "service_info" ||
 			registration.tool.Name == "search_posts" ||
+			registration.tool.Name == "question_status" ||
+			registration.tool.Name == "read_evidence" ||
 			registration.tool.Name == "job_status" ||
 			registration.tool.Name == "temporal_query" ||
 			registration.tool.Name == "profile_history" ||
 			registration.tool.Name == "coverage" ||
 			registration.tool.Name == "maintenance_status"
 		wantOpenWorld := registration.tool.Name == "query" ||
+			registration.tool.Name == "ask_question" ||
 			registration.tool.Name == "refresh" ||
 			registration.tool.Name == "topic" ||
 			registration.tool.Name == "collection"
@@ -87,12 +90,55 @@ func TestToolSurfaceNamesAndAnnotations(t *testing.T) {
 		}
 	}
 	wantNames := []string{
-		"service_info", "query", "search_posts", "refresh", "job_status", "topic",
+		"service_info", "query", "search_posts", "ask_question", "question_status", "read_evidence", "refresh", "job_status", "topic",
 		"temporal_query", "profile_history", "coverage", "collection",
 		"saved_query", "maintenance_status",
 	}
 	if !reflect.DeepEqual(gotNames, wantNames) {
 		t.Fatalf("tool names = %v, want %v", gotNames, wantNames)
+	}
+}
+
+func TestQuestionToolsUseStrictScopedServiceBoundaries(t *testing.T) {
+	fake := &fakeService{response: json.RawMessage(`{"state":"answered"}`)}
+	question := map[string]any{
+		"schema_version": float64(1), "request_id": "request-1", "profile_id": "default",
+		"question": "What changed?", "filters": map[string]any{},
+		"temporal":    map[string]any{"as_of": nil, "during_from": nil, "during_to": nil, "known_as_of": nil},
+		"answer_mode": "evidence_only", "model_fallback": "none",
+		"limits": map[string]any{"evidence_limit": float64(8)},
+	}
+	result, err := makeQuestionHandler(fake)(context.Background(), callRequest(question))
+	if err != nil || result.IsError || fake.postPath != "/v1/questions" || !reflect.DeepEqual(fake.postBody, question) {
+		t.Fatalf("question result=%+v path=%q body=%#v err=%v", result, fake.postPath, fake.postBody, err)
+	}
+
+	fake = &fakeService{response: json.RawMessage(`{"state":"answered"}`)}
+	result, err = makeQuestionStatusHandler(fake)(context.Background(), callRequest(map[string]any{
+		"question_id": "question/a", "profile_id": "profile:one",
+	}))
+	if err != nil || result.IsError || fake.getPath != "/v1/questions/question%2Fa?profile_id=profile%3Aone" {
+		t.Fatalf("status result=%+v path=%q err=%v", result, fake.getPath, err)
+	}
+
+	fake = &fakeService{response: json.RawMessage(`{"items":[]}`)}
+	read := map[string]any{
+		"schema_version": float64(1), "request_id": "read-1", "profile_id": "default",
+		"refs": []any{map[string]any{"evidence_id": "evidence-1"}}, "max_response_bytes": float64(65536),
+	}
+	result, err = makeEvidenceReadHandler(fake)(context.Background(), callRequest(read))
+	if err != nil || result.IsError || fake.postPath != "/v1/evidence/read" || !reflect.DeepEqual(fake.postBody, read) {
+		t.Fatalf("read result=%+v path=%q body=%#v err=%v", result, fake.postPath, fake.postBody, err)
+	}
+
+	bad := make(map[string]any, len(question)+1)
+	for key, value := range question {
+		bad[key] = value
+	}
+	bad["unknown"] = true
+	badResult, badErr := makeQuestionHandler(&fakeService{})(context.Background(), callRequest(bad))
+	if badErr != nil || !badResult.IsError {
+		t.Fatalf("strict question accepted unknown field: %+v %v", badResult, badErr)
 	}
 }
 

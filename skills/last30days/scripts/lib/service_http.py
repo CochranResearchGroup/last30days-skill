@@ -265,7 +265,7 @@ class _RequestHandler(BaseHTTPRequestHandler):
         except question_contracts.QuestionContractError:
             self._error(400, "invalid_question_contract", "question contract is invalid")
         except QuestionUnavailableError:
-            self._error(404, "question_unavailable", "question is unavailable")
+            self._error(404, "question_unavailable", "question unavailable")
         except KeyError:
             self._error(404, "job_not_found", "job was not found")
         except Exception:
@@ -358,7 +358,7 @@ class _RequestHandler(BaseHTTPRequestHandler):
             self._error(409, "question_request_conflict", "question request was reused")
             return
         except QuestionUnavailableError:
-            self._error(404, "question_unavailable", "question is unavailable")
+            self._error(404, "question_unavailable", "question unavailable")
             return
         except QuestionRuntimeUnavailableError:
             self._error(503, "question_runtime_unavailable", "question runtime is unavailable")
