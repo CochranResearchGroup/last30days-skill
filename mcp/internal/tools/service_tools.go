@@ -176,7 +176,7 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 
 	postSearchOptions := []mcplib.ToolOption{
 		mcplib.WithDescription(
-			"Search or browse stored-post revisions across the authorized cache. Filters apply before ranking. Cursors last at most 15 minutes in this service process and may expire on eviction or restart. This tool is read-only and never acquires provider data.",
+			"Hybrid search or browse stored-post revisions across the authorized cache. Filters precede lexical/local stored-vector ranking; preserve RRF explanations and semantic coverage gaps. Complete responses are byte-bounded, so a page may be shorter than page_size. Cursors last at most 15 minutes in this service process and may expire on eviction or restart. This tool is read-only and never acquires provider data.",
 		),
 		mcplib.WithString(
 			"query",

@@ -1,0 +1,8 @@
+{
+  "mcp_arguments": {"query": "automated assistants", "profile_id": "default", "sources": ["reddit", "x"], "page_size": 1},
+  "ranking_version": "post-rrf-v1",
+  "embedding_model": "local-hash-v1",
+  "rrf_k": 60,
+  "semantic_only_families": ["legacy", "temporal"],
+  "response_max_bytes": 131072
+}
