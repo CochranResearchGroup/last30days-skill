@@ -81,8 +81,9 @@ durably inside the caller's contract and answer-character budget.
 - this plan and coordinator-owned projections in `ROADMAP.md`, `RUNBOOK.md`,
   `docs/dev/active-lanes.yaml`, and
   `docs/dev/work-items/WI-009-productization-readiness-remediation.md`;
-- no service runtime manifest change is expected because the packaged source
-  set does not change shape, but manifest drift must still be checked.
+- `service/runtime-manifest.json` receives only the deterministic packaged-file
+  hash refresh required by the changed host-owned source; service version and
+  runtime state remain unchanged.
 
 ## Execution Packet
 

@@ -905,32 +905,46 @@ class QuestionService:
         answer_state = "no_evidence"
         summary = "No authorized evidence was found."
         if selected:
-            answer_state = "answered"
-            summary = f"Evidence-only result from {len(selected)} immutable item(s)."
-            statements = tuple(
-                question_contracts.AnswerStatementV1.create(
-                    text=str(item["text"]),
-                    statement_kind="source_fact",
-                    support_state="supported",
-                    citations=(
-                        question_contracts.QuestionCitationV1.from_dict(
-                            {
-                                key: item[key]
-                                for key in (
-                                    "evidence_id",
-                                    "storage_family",
-                                    "version_id",
-                                    "content_hash",
-                                    "source_url",
-                                    "access_partition_id",
-                                )
-                            }
+            answer_budget = request.limits.max_answer_characters
+            summary = f"Evidence-only result from {len(selected)} immutable item(s)."[
+                : max(1, answer_budget - 1)
+            ]
+            remaining_characters = answer_budget - len(summary)
+            bounded_statements: list[question_contracts.AnswerStatementV1] = []
+            for item in selected[: request.limits.max_statements]:
+                if remaining_characters <= 0:
+                    break
+                text = str(item["text"])[:remaining_characters]
+                if not text:
+                    continue
+                bounded_statements.append(
+                    question_contracts.AnswerStatementV1.create(
+                        text=text,
+                        statement_kind="source_fact",
+                        support_state="supported",
+                        citations=(
+                            question_contracts.QuestionCitationV1.from_dict(
+                                {
+                                    key: item[key]
+                                    for key in (
+                                        "evidence_id",
+                                        "storage_family",
+                                        "version_id",
+                                        "content_hash",
+                                        "source_url",
+                                        "access_partition_id",
+                                    )
+                                }
+                            ),
                         ),
-                    ),
-                    alternatives=(),
+                        alternatives=(),
+                    )
                 )
-                for item in selected[: request.limits.max_statements]
-            )
+                remaining_characters -= len(text)
+            statements = tuple(bounded_statements)
+            answer_state = "answered" if statements else "insufficient_evidence"
+            if not statements:
+                uncertainty_codes = (*uncertainty_codes, "answer_too_large")
         elif "no_evidence" not in uncertainty_codes:
             uncertainty_codes = (*uncertainty_codes, "no_evidence")
         answer = question_contracts.QuestionAnswerV1.create(
@@ -1094,24 +1108,27 @@ def _worker_answer(
         "request": lease.request.to_dict(),
         "retrieval": lease.retrieval,
     }
-    return question_contracts.QuestionAnswerV1.create(
-        question_id=lease.question_id,
-        request_fingerprint=lease.request.request_fingerprint,
-        search_head_id=lease.retrieval["search_head_id"],
-        evidence_set_id=lease.retrieval["evidence_set_id"],
-        answer_state=state,
-        summary=summary,
-        statements=tuple(statements),
-        uncertainty_codes=tuple(uncertainty),
-        coverage={"partial": flags["partial"], "stale": flags["stale"]},
-        worker_ref=worker_ref,
-        generated_at=generated_at,
-        input_digest=question_contracts.digest(input_payload),
-        attempt_count=lease.attempt_count,
-        model_invoked=model_invoked,
-        evidence_only_fallback=evidence_only_fallback,
-        error=None,
-    )
+    try:
+        return question_contracts.QuestionAnswerV1.create(
+            question_id=lease.question_id,
+            request_fingerprint=lease.request.request_fingerprint,
+            search_head_id=lease.retrieval["search_head_id"],
+            evidence_set_id=lease.retrieval["evidence_set_id"],
+            answer_state=state,
+            summary=summary,
+            statements=tuple(statements),
+            uncertainty_codes=tuple(uncertainty),
+            coverage={"partial": flags["partial"], "stale": flags["stale"]},
+            worker_ref=worker_ref,
+            generated_at=generated_at,
+            input_digest=question_contracts.digest(input_payload),
+            attempt_count=lease.attempt_count,
+            model_invoked=model_invoked,
+            evidence_only_fallback=evidence_only_fallback,
+            error=None,
+        )
+    except question_contracts.QuestionContractError as exc:
+        raise QuestionValidationError("invalid_worker_contract", str(exc)) from exc
 
 
 def _evidence_only_fallback_answer(
