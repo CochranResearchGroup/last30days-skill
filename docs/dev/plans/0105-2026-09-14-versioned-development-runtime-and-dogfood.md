@@ -204,7 +204,8 @@ and join the three bounded read-only audits before implementation.
 Plan version: 2
 
 State transition: `OPEN -> OPEN`; the implementation slice is validated on
-commit `a8c8114832df588e786891cd36fb69457f402250` pending publication and PR review.
+commit `a8c8114832df588e786891cd36fb69457f402250` and published with its governance
+checkpoint at remote-equal tip `3ac5728753abb57d5239d0812740323653cbfebb`.
 
 Progress classification: `outcome_progress`; the artifact, isolation, and
 dogfood audits were joined, the cache-only boundary and exact-owner lifecycle
@@ -257,5 +258,5 @@ two byte-identical artifacts from merged canonical main, provision exactly one
 runtime, execute and retain five dogfood receipts, prove production unchanged,
 and integrate closeout projections.
 
-Next action: publish this exact implementation candidate and update immutable
-remote custody, then self-review and merge its owned-fork pull request.
+Next action: integrate this catalog checkpoint, then self-review and merge the
+exact owned-fork implementation pull request.

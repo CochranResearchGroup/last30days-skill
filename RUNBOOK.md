@@ -29724,6 +29724,8 @@ Decisions And Changes:
 Validation Evidence:
 
 - implementation commit `a8c8114832df588e786891cd36fb69457f402250`;
+- published remote-equal candidate tip
+  `3ac5728753abb57d5239d0812740323653cbfebb`;
 - focused 65-test service/app/HTTP/controller slice and runtime-package tests
   pass;
 - full Python suite passes with expected skips; MCP Go test and vet pass;
@@ -29750,5 +29752,5 @@ Graphiti Write Status:
 
 Next Bounded Action:
 
-- publish this exact implementation candidate, bind remote custody, review and
-  merge its pull request, then build the exact canonical artifact twice.
+- integrate the immutable catalog checkpoint, review and merge the exact
+  implementation pull request, then build the canonical artifact twice.
