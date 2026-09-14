@@ -2604,7 +2604,7 @@ Next Bounded Action:
 
 ## P33 | Post Search Product Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: expose the complete authorized stored-post corpus through a stable,
 cache-only, evidence-preserving search and pagination contract for users and
@@ -2612,10 +2612,12 @@ agents.
 
 Current State:
 
-- WI-002 is `READY`; Packet 2 source acceptance `37f7fac6` integrated through
+- WI-002 is `IN_PROGRESS`; Packet 2 source acceptance `37f7fac6` integrated through
   reviewed PR 79 at canonical `fae31198` after joined independent acceptance;
   Packet 1 closed and integrated through PR 36 as
   `75e7771e006f52847e8e47c1059b2b2000fb8ac7`;
+- Plan 0111 is activated at remote-equal checkpoint `f1f5f4dd`; implementation
+  begins only after canonical custody reconciliation;
 - the selected seam is additive `POST /v1/posts/search` plus MCP
   `search_posts`, leaving `/v1/query` unchanged for the dependent WI-003 lane;
 - provider-free vertical packets cover both storage families, filters, stable
@@ -2682,7 +2684,7 @@ Disposition:
 
 ## P35 | X Tailored Follow Product Surface
 
-State: PLANNED
+State: OPEN
 
 Objective: let operators give selected X accounts, lists, and topics explicit
 collection identity, cadence, attention, provenance, and lifecycle separate
@@ -2690,10 +2692,12 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `READY`; Packet 2 source acceptance `d3949520` plus bounded review
+- WI-004 is `IN_PROGRESS`; Packet 2 source acceptance `d3949520` plus bounded review
   remediation integrated through reviewed PR 79 at canonical `fae31198`;
   Packet 1 is
   integrated through PR 68 at canonical `87858934`;
+- Plan 0112 is activated at remote-equal checkpoint `69bf4d36`; implementation
+  begins only after canonical custody reconciliation;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
   lifecycle, canonical typed targets, and immutable acquisition context rather
   than creating a second scheduler;
@@ -2930,7 +2934,7 @@ Next Bounded Action:
 
 ## P38 | Reserved Production Hotfix Path
 
-State: PLANNED
+State: OPEN
 
 Objective: keep one dormant zero-resource lane ready to take a qualified
 production defect from current-main source repair through priority integration,
@@ -2939,9 +2943,11 @@ lane reconciliation.
 
 Current State:
 
-- WI-007 is `READY`; provider-free Packets 1-2 integrated through reviewed PR
+- WI-007 is `IN_PROGRESS`; provider-free Packets 1-2 integrated through reviewed PR
   79 at canonical `fae31198`, and the remaining runtime/release drill has no
   provider dependency;
+- Plan 0113 is activated at remote-equal checkpoint `467aca46`; the real
+  hotfix slot remains dormant and implementation awaits catalog reconciliation;
 - current policy reserves the slot, and builder/installer machinery already
   provides reproducible artifacts, readiness, database snapshots, rollback,
   and failed-upgrade restoration;

@@ -324,6 +324,45 @@ Next action:
   merge, publish plan-only activation checkpoints, reconcile the catalog, then
   launch no more than three one-level implementation agents.
 
+### Checkpoint P0107-C06 | 2026-09-14
+
+Plan version: 1
+
+State transition: `wave_2_registration_ready -> wave_2_activated`.
+
+Progress classification: `outcome_progress`; three owners accepted exact
+branch-local packets from canonical registration merge `7f65c428`, changed only
+their plans, and published clean remote-equal activation checkpoints.
+
+Activation evidence:
+
+- P33/Plan 0111: `f1f5f4dd915e7d6cbf75dccbbf51999b6c25f97f`;
+- P35/Plan 0112: `69bf4d36dbd1c8470b143b6af3f614e49ece0f30`;
+- P38/Plan 0113: `467aca4630e8532dcd59bb14fd198a043b1dd385`.
+
+Authority classification:
+
+- `inherited_authority`; P33/P35/P38 and WI-002/WI-004/WI-007 move to
+  `OPEN`/`IN_PROGRESS` only in
+  this coordinator projection; each owner remains held from implementation
+  until this projection integrates;
+- feature write sets remain independent, and the coordinator owns all shared
+  contract, generated artifact, manifest, roadmap, runbook, catalog, and
+  work-item reconciliation;
+- requested model routes remain those in Plans 0111-0113; effective model and
+  reasoning are unknown because the runtime did not report them.
+
+Subagent status and reconciliation:
+
+- `joined`; `/root/wi002_packet3_planning`, `/root/wi004_packet3_planning`, and
+  `/root/wi007_packet3_planning` completed activation-only turns and await
+  implementation continuation after integration.
+
+Next action:
+
+- validate and integrate this activation projection, then resume exactly those
+  three owners on their frozen provider-free implementation packets.
+
 ## Stop Rules
 
 - stop before any forbidden external effect or issue mutation;
