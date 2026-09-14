@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Provider-free monitor and digest product.** Service 0.3.119 and MCP 4.0.7
+  expose strict profile-scoped query/follow monitor lifecycle, immutable
+  capture and deterministic evidence-linked digests, explicit baseline
+  decisions, safe disabled legacy import, and disabled-by-default delivery
+  intents. The stock runtime rejects every send operation.
+
 - **Provider-free question and native follow surfaces.** Service 0.3.118 and
   MCP 4.0.6 add bounded question admission, profile-scoped status, immutable
   citation reads, and explicit native Reddit/YouTube follow capability

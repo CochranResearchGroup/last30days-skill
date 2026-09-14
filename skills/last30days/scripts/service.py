@@ -433,6 +433,24 @@ def _saved_query(args: argparse.Namespace) -> int:
     return 0
 
 
+def _monitor(args: argparse.Namespace) -> int:
+    try:
+        command = json.loads(Path(args.input).read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError("monitor command must be a readable JSON file") from exc
+    if not isinstance(command, dict):
+        raise RuntimeError("monitor command must be a JSON object")
+    socket_path = Path(args.socket) if args.socket else _default_socket_path()
+    client = ServiceClient(socket_path, timeout=args.timeout)
+    try:
+        response = client.monitor(command, profile_id=args.profile)
+    except ServiceClientError as exc:
+        print(json.dumps({"status": "error", "message": str(exc)}, sort_keys=True))
+        return 1
+    print(json.dumps(response, indent=2, sort_keys=True))
+    return 0
+
+
 def _question(args: argparse.Namespace) -> int:
     socket_path = Path(args.socket) if args.socket else _default_socket_path()
     client = ServiceClient(socket_path, timeout=args.timeout)
@@ -786,6 +804,15 @@ def build_parser() -> argparse.ArgumentParser:
     saved_query.add_argument("--socket")
     saved_query.add_argument("--timeout", type=float, default=15.0)
     saved_query.set_defaults(handler=_saved_query)
+
+    monitor = subparsers.add_parser(
+        "monitor", help="Run one strict cache-only monitor command"
+    )
+    monitor.add_argument("--input", required=True)
+    monitor.add_argument("--profile", default="default")
+    monitor.add_argument("--socket")
+    monitor.add_argument("--timeout", type=float, default=15.0)
+    monitor.set_defaults(handler=_monitor)
 
     question = subparsers.add_parser(
         "question", help="Ask or inspect one bounded cache-grounded question"

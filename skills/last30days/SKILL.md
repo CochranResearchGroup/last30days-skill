@@ -108,10 +108,13 @@ These operations are not part of an ordinary query:
   follow history; archived follows are hidden unless explicitly requested.
 - `saved_query` - explicitly save, read, capture, or inspect one immutable,
   cache-only query view for monitoring. Captures do not schedule or deliver work.
+- `monitor` - explicitly create, inspect, capture, evaluate, and decide one
+  immutable query or follow monitor. Delivery remains disabled by default;
+  `send` is denied by the stock runtime.
 - `maintenance_status` - read safe maintenance readiness and receipt counts.
 
 Use `refresh` only under the ordinary-path rule above. Use `topic`,
-`collection`, `saved_query`, or maintenance-specific behavior only after the capability gates
+`collection`, `saved_query`, `monitor`, or maintenance-specific behavior only after the capability gates
 below are satisfied.
 
 ## Capability gates
