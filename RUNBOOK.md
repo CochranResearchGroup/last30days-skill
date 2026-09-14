@@ -30017,3 +30017,58 @@ Next Bounded Action:
 
 - validate and integrate this campaign registration, publish and reconcile
   Wave 1 activation checkpoints, then launch the three bounded agents.
+
+## Turn 481 | 2026-09-14
+
+Focus: reconcile exact Wave 1 agent activation checkpoints into canonical
+custody before implementation.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`.
+
+Authority Consulted:
+
+- Plan 0107; Plans 0108-0110 on their exact branch refs; P33/P35/P38/P52;
+  WI-002/WI-004/WI-007; current Git/worktree/remote evidence; active-lane,
+  work-item, multi-session, model, validation, and integration policy.
+
+Decisions And Changes:
+
+- accepted plan-only activation checkpoints `0d06d8e2`, `43f041f4`, and
+  `28c721e0` from three distinct one-level agents;
+- moved P33/P35/P38 and WI-002/WI-004/WI-007 to `OPEN`/`IN_PROGRESS` and bound
+  exact branches, owners, remote refs, checkpoints, and intended overlaps;
+- reserved generated catalogs, runtime manifest, roadmap, runbook, work items,
+  and cross-lane schema reconciliation to the coordinator;
+- kept the P38 implementation drill separate from any real incident or hotfix
+  capacity, and preserved every external-effect gate.
+
+Validation Evidence:
+
+- each lane branch descends from exact canonical `bca720d0`, is clean, and is
+  equal to its remote checkpoint;
+- activation changed only the applicable branch-local plan;
+- the canonical active-lane and plan-authority audits plus pull-request review
+  remain to run after this projection is rendered.
+
+State Movement:
+
+- P33/P35/P38 `PLANNED -> OPEN`;
+- WI-002/WI-004/WI-007 `READY -> IN_PROGRESS`;
+- Plan 0107 `campaign_registration_active -> wave_1_activated`;
+- progress classification: `outcome_progress`.
+
+Subagent Status And Reconciliation:
+
+- `joined`; all three activation-only tasks completed successfully. The P35
+  branch's planning fixture failure was the expected pre-projection count drift
+  and is resolved by canonical catalog projection, not a product defect.
+
+Graphiti Write Status:
+
+- `not_written`; current Git, plans, and catalog refs are authoritative.
+
+Next Bounded Action:
+
+- validate and merge this activation projection, then resume the same three
+  agents for provider-free implementation only.

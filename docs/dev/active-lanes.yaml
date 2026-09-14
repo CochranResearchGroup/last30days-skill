@@ -202,21 +202,25 @@ lanes:
     reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-005-cross-service-tailored-follows.md]
     updated_at: 2026-09-13
   - id: P38
-    objective: Define a dormant priority hotfix path with staged deployment, rollback, and feature reconciliation
-    plan: docs/dev/plans/0081-2026-09-13-reserved-production-hotfix-path-architecture-and-lane-handoff.md
-    plan_ref: refs/heads/docs/production-hotfix-path-architecture
-    branch: docs/production-hotfix-path-architecture
+    objective: Implement provider-free hotfix control and disposable Git integration drills
+    work_items: [docs/dev/work-items/WI-007-production-hotfix-path.md]
+    plan: docs/dev/plans/0110-2026-09-14-hotfix-control-and-git-drill.md
+    plan_ref: refs/heads/feat/hotfix-control-v1
+    branch: feat/hotfix-control-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 5842be158597db699a614b61a94753c6b474324c
-    remote_ref: refs/remotes/origin/docs/production-hotfix-path-architecture
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 28c721e0612b8e669ab96d8dbe9c8c1b59e4ddb0
+    remote_ref: refs/remotes/origin/feat/hotfix-control-v1
     integration: merge
-    integration_receipt: 4feb4524bdeed0730cfecee45a1c72460363fd58
+    integration_receipt: null
+    validation_status: activation_passed
+    validation_ref: 28c721e0612b8e669ab96d8dbe9c8c1b59e4ddb0
+    session_owner: /root/wi007_hotfix_drill
     dependencies: []
-    overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-007-production-hotfix-path.md]
-    reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/work-items/WI-007-production-hotfix-path.md]
-    updated_at: 2026-09-13
+    overlaps: [dev/last30days/scripts/hotfix_control.py, dev/last30days/scripts/hotfix_git_drill.py, tests/test_hotfix_control.py, tests/test_hotfix_git_drill.py]
+    reconciled_overlaps: [dev/last30days/scripts/hotfix_control.py, dev/last30days/scripts/hotfix_git_drill.py, tests/test_hotfix_control.py, tests/test_hotfix_git_drill.py]
+    updated_at: 2026-09-14
   - id: P37
     objective: Implement a deterministic provider-free four-axis quality tracer
     work_items: [docs/dev/work-items/WI-008-corpus-quality-evaluation.md]
@@ -256,23 +260,24 @@ lanes:
     reconciled_overlaps: [service/runtime-manifest.json]
     updated_at: 2026-09-14
   - id: P35
-    objective: Define typed X account, list, and topic follows on the existing collection authority
-    work_items: [docs/dev/work-items/WI-004-x-tailored-follow.md, docs/dev/work-items/WI-009-productization-readiness-remediation.md]
-    plan: docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md
-    plan_ref: refs/heads/feat/x-tailored-follows-v1
-    branch: feat/x-tailored-follows-v1
+    objective: Propagate immutable tailored-follow context through typed X account acquisition and publication
+    work_items: [docs/dev/work-items/WI-004-x-tailored-follow.md]
+    plan: docs/dev/plans/0109-2026-09-14-tailored-follows-packet-2.md
+    plan_ref: refs/heads/feat/x-tailored-follows-v2
+    branch: feat/x-tailored-follows-v2
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 434ac770eb1b6aeda37f455c1a35e3ddb9a69ad0
-    remote_ref: refs/remotes/origin/feat/x-tailored-follows-v1
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 43f041f4e8d3d9c20670ea46a6926d626e6e8feb
+    remote_ref: refs/remotes/origin/feat/x-tailored-follows-v2
     integration: merge
-    integration_receipt: 87858934c8498dccbdeda549ad73f626dbc143a7
-    validation_status: passed
-    validation_ref: 434ac770eb1b6aeda37f455c1a35e3ddb9a69ad0
-    dependencies: [P51]
-    overlaps: [service/runtime-manifest.json]
-    reconciled_overlaps: [service/runtime-manifest.json]
+    integration_receipt: null
+    validation_status: activation_passed_with_expected_projection_gate
+    validation_ref: 43f041f4e8d3d9c20670ea46a6926d626e6e8feb
+    session_owner: /root/wi004_follows_packet2
+    dependencies: []
+    overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_jobs.py, skills/last30days/scripts/lib/service_publication.py, skills/last30days/scripts/lib/x_browser.py]
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_collection.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_jobs.py, skills/last30days/scripts/lib/service_publication.py, skills/last30days/scripts/lib/x_browser.py]
     updated_at: 2026-09-14
   - id: P34
     objective: Define one fail-closed isolated development runtime per implementation lane
@@ -298,22 +303,25 @@ lanes:
     reconciled_overlaps: [skills/last30days/scripts/service.py, CONFIGURATION.md]
     updated_at: 2026-09-13
   - id: P33
-    objective: Define evidence-backed search and retrieval over stored posts
+    objective: Complete stored-post filters, revision traversal, cross-store identity, and stable pagination
     work_items: [docs/dev/work-items/WI-002-search-stored-posts.md]
-    plan: docs/dev/plans/0084-2026-09-13-post-search-packet-1.md
-    plan_ref: refs/heads/feat/post-search-v1
-    branch: feat/post-search-v1
+    plan: docs/dev/plans/0108-2026-09-14-post-search-packet-2.md
+    plan_ref: refs/heads/feat/post-search-v2
+    branch: feat/post-search-v2
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 74a6fcfc96ca4b3d78329779ad066b737d899551
-    remote_ref: refs/remotes/origin/feat/post-search-v1
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 0d06d8e2d428583c7d5fb58782069a6c54ec6ed9
+    remote_ref: refs/remotes/origin/feat/post-search-v2
     integration: merge
-    integration_receipt: 75e7771e006f52847e8e47c1059b2b2000fb8ac7
+    integration_receipt: null
+    validation_status: activation_passed
+    validation_ref: 0d06d8e2d428583c7d5fb58782069a6c54ec6ed9
+    session_owner: /root/wi002_search_packet2
     dependencies: []
-    overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go]
-    reconciled_overlaps: [skills/last30days/scripts/lib/service_contracts.py, skills/last30days/scripts/lib/service_app.py, skills/last30days/scripts/service.py, mcp/internal/tools/service_tools.go]
-    updated_at: 2026-09-13
+    overlaps: [skills/last30days/scripts/lib/service_post_search.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/schemas/service-contracts-v1.json, mcp/internal/tools/service_tools.go, tests/test_service_post_search.py]
+    reconciled_overlaps: [skills/last30days/scripts/lib/service_post_search.py, skills/last30days/scripts/lib/service_contracts.py, skills/last30days/schemas/service-contracts-v1.json, mcp/internal/tools/service_tools.go, tests/test_service_post_search.py]
+    updated_at: 2026-09-14
   - id: P28
     objective: Bound cumulative Reddit feed browser work below the provider worker deadline
     plan: docs/dev/plans/0071-2026-09-13-reddit-feed-run-budget.md
