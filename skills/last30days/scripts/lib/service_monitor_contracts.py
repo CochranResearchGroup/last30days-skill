@@ -249,7 +249,7 @@ class SavedQueryDefinitionV1:
             saved_query_id=_bounded_text(payload["saved_query_id"], "saved_query_id"),
             version=_positive_int(payload["version"], "version"),
             access_partition_id=_bounded_text(
-                payload["access_partition_id"], "access_partition_id"
+                payload["access_partition_id"], "access_partition_id", 136
             ),
             search_json=json.dumps(request, sort_keys=True, separators=(",", ":"),
                                    allow_nan=False),

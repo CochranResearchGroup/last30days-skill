@@ -205,6 +205,12 @@ Plan version: 1
 State: `OPEN`; one closed-world remediation resolved the two accepted review
 findings without widening Packet 1.
 
+Authority classification:
+
+- `inherited_authority`: the coordinator-requested closed-world remediation
+  was limited to the accepted repository-only review findings, focused tests,
+  this checkpoint, and publication on the owned lane.
+
 - quarantined existing follows now permit only an idempotent same-version
   write, the exact enabled-to-disabled pause transition, or the exact archive
   transition. Name, cadence, selector, or any other next-version edit fails

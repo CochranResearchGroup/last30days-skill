@@ -212,7 +212,9 @@ def test_legacy_provider_invalid_tailored_target_is_quarantined_but_archivable(t
     assert coordinator.archive_spec(stored.collection_spec_id).lifecycle_state == "archived"
 
 
-def test_quarantined_legacy_follow_does_not_consume_or_abort_due_batch(tmp_path):
+def test_quarantined_legacy_follow_does_not_consume_or_abort_due_batch(
+    tmp_path, monkeypatch
+):
     db_path, _supervisor, _ledger, _scheduler, coordinator = _coordinator(tmp_path)
     quarantined = coordinator.put_spec(_follow_spec())
     healthy = coordinator.put_spec(
@@ -254,9 +256,25 @@ def test_quarantined_legacy_follow_does_not_consume_or_abort_due_batch(tmp_path)
             ),
         )
 
+    statements = []
+    original_connect = coordinator._connect
+
+    def traced_connect():
+        connection = original_connect()
+        connection.set_trace_callback(statements.append)
+        return connection
+
+    monkeypatch.setattr(coordinator, "_connect", traced_connect)
     runs = coordinator.enqueue_due(limit=1)
 
     assert [run.collection_spec_id for run in runs] == [healthy.collection_spec_id]
+    due_select = next(
+        statement
+        for statement in statements
+        if "FROM collection_specs AS s" in statement
+    )
+    assert "LIMIT 1" in due_select
+    assert "collection_purpose != 'tailored_follow'" in due_select
 
 
 @pytest.mark.parametrize(

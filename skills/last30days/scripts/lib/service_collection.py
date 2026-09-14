@@ -1213,10 +1213,18 @@ class CollectionCoordinator:
         self.reconcile_terminal_jobs()
         now = self._now()
         now_text = _timestamp(now)
+        available_follow_targets = DEFAULT_FOLLOW_CAPABILITIES.available_targets
+        follow_filter = " OR ".join(
+            "(s.source = ? AND s.surface_kind = ?)"
+            for _ in available_follow_targets
+        ) or "0"
+        follow_args = tuple(
+            item for pair in available_follow_targets for item in pair
+        )
         conn = self._connect()
         try:
             rows = conn.execute(
-                """SELECT s.collection_spec_id, r.spec_json, q.next_due_at
+                f"""SELECT s.collection_spec_id, r.spec_json, q.next_due_at
                    FROM collection_specs AS s
                    JOIN collection_spec_revisions AS r
                      ON r.collection_spec_id = s.collection_spec_id
@@ -1224,6 +1232,10 @@ class CollectionCoordinator:
                    JOIN collection_schedule_state AS q
                      ON q.collection_spec_id = s.collection_spec_id
                    WHERE s.enabled = 1
+                     AND (
+                         s.collection_purpose != 'tailored_follow'
+                         OR ({follow_filter})
+                     )
                      AND q.next_due_at <= ?
                      AND (q.retry_after IS NULL OR q.retry_after <= ?)
                      AND NOT EXISTS (
@@ -1244,8 +1256,8 @@ class CollectionCoordinator:
                                 WHEN 'priority' THEN 0 ELSE 1
                             END,
                             s.collection_spec_id
-                   """,
-                (now_text, now_text),
+                   LIMIT ?""",
+                (now_text, now_text, *follow_args, limit),
             ).fetchall()
         finally:
             conn.close()
@@ -1274,8 +1286,6 @@ class CollectionCoordinator:
                 conn.commit()
             finally:
                 conn.close()
-            if len(created) >= limit:
-                break
         return tuple(created)
 
     def reconcile_terminal_jobs(self) -> int:

@@ -56,7 +56,7 @@ def test_saved_query_versions_are_immutable_partition_bound_and_restart_safe(tmp
     bad["search"]["cursor"] = "opaque"
     with pytest.raises(contracts.MonitorContractError):
         contracts.SavedQueryDefinitionV1.from_dict(bad)
-    for field in ("saved_query_id", "access_partition_id"):
+    for field in ("saved_query_id",):
         unbounded = definition.to_dict()
         unbounded[field] = "q" * 129
         with pytest.raises(contracts.MonitorContractError, match="at most 128"):
@@ -65,6 +65,13 @@ def test_saved_query_versions_are_immutable_partition_bound_and_restart_safe(tmp
     unbounded_ref["saved_query_id"] = "q" * 129
     with pytest.raises(contracts.MonitorContractError, match="at most 128"):
         contracts.SavedQueryViewRefV1.from_dict(unbounded_ref)
+    longest_partition = definition.to_dict()
+    longest_partition["access_partition_id"] = "profile:" + "p" * 128
+    assert (
+        contracts.SavedQueryDefinitionV1.from_dict(longest_partition)
+        .access_partition_id
+        == longest_partition["access_partition_id"]
+    )
 
 
 def _composition(tmp_path, **options):

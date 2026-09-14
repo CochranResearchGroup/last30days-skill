@@ -74,6 +74,15 @@ def test_saved_query_cli_http_and_fresh_mcp_share_one_closed_contract(tmp_path):
     mismatched["search"]["profile_id"] = "other"
     with pytest.raises(ServiceClientError, match="invalid_contract"):
         client.saved_query({"action": "save", "definition": mismatched})
+    long_profile = "p" * 128
+    private_definition = _definition()
+    private_definition["saved_query_id"] = "query-long-profile"
+    private_definition["access_partition_id"] = f"profile:{long_profile}"
+    private_definition["search"]["profile_id"] = long_profile
+    assert client.saved_query(
+        {"action": "save", "definition": private_definition},
+        profile_id=long_profile,
+    )["access_partition_id"] == f"profile:{long_profile}"
     view_ref = {
         "schema_version": 1,
         "view_kind": "saved_query",

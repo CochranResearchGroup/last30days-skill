@@ -55,6 +55,12 @@ class FollowCapabilityRegistry:
         )
 
     @property
+    def available_targets(self) -> tuple[tuple[str, str], ...]:
+        return tuple(
+            sorted(key for key, value in self._indexed.items() if value.state == "available")
+        )
+
+    @property
     def digest(self) -> str:
         rows = [
             {"source": item.source, "target_kind": item.target_kind, "state": item.state, "reason_code": item.reason_code}
