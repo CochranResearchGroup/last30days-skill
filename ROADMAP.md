@@ -3289,5 +3289,6 @@ Program Gate:
 
 Next Bounded Action:
 
-- publish the Plan 0103 lane-registration checkpoint, then execute the two
-  regression-first Q&A contract repairs without runtime or provider effects.
+- publish and self-check the integration-ready Plan 0103 pull request, merge it
+  through the owned-fork workflow, and verify canonical ancestry before P35
+  reconciliation begins.

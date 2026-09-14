@@ -29326,3 +29326,63 @@ Next Bounded Action:
 
 - publish the Plan 0103 registration checkpoint, then run the first focused
   red/green slice for malformed structured output.
+
+## Turn 470 | 2026-09-14
+
+Focus: reproduce and repair the two Plan 0103 question-contract defects.
+
+Authority Consulted:
+
+- Plan 0103/P51; WI-009/#55; current CodeGraph source and blast radius; the
+  diagnosing-bugs, TDD, and codebase-design skill contracts; provider-free
+  tests and deterministic runtime-package validation.
+
+Decisions And Changes:
+
+- added one public-seam regression for an `answered` worker result with no
+  statements and observed the exact escaped final-construction contract error;
+- normalized only that final worker-answer construction failure into the
+  existing non-retryable durable terminal rejection path;
+- added one public-seam regression with two oversized evidence items and a
+  128-character request, observing 1,576 returned answer characters;
+- applied one running budget across the deterministic summary and ordered
+  evidence statements, preserving citation closure and the existing interface;
+- refreshed only the packaged `service_questions.py` hash in the canonical
+  runtime manifest; no version, artifact installation, database, or runtime
+  state changed.
+
+Validation Evidence:
+
+- both new regressions were observed red independently and now pass together;
+- 41 focused question tests pass;
+- 71 affected service, package, MCP-integration, and Skill contract tests pass;
+- comprehensive Python passes: 2,855 tests, 7 skips, and 9 subtests in 137.22
+  seconds;
+- comprehensive MCP Go passes for every package;
+- plan-authority tests, direct Python compilation, exact source/manifest hash
+  equality, and `git diff --check` pass;
+- implementation checkpoint:
+  `773da0472b3684131bcbf4166c847b847d9859e6`.
+
+State Movement:
+
+- Plan 0103 remains `OPEN` pending merge;
+- P51 custody `ACTIVE_WORKTREE -> INTEGRATION_READY`;
+- progress classification: `outcome_progress`;
+- both defect criteria are satisfied on the branch; pull-request publication,
+  remote diff/check readback, merge, and canonical ancestry remain.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; all implementation and validation were performed by the
+  owning top-level session.
+
+Graphiti Write Status:
+
+- `pending`; the compact source-backed outcome will be written after canonical
+  integration so the episode can cite the merged commit.
+
+Next Bounded Action:
+
+- publish the integration-ready checkpoint, create and self-check the owned-fork
+  pull request, merge it, and verify canonical main ancestry.

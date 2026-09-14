@@ -8,12 +8,13 @@ lanes:
     branch: fix/question-contract-repair-v1
     target: main
     plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: 5422fc2bb7d1e39c87e2657c1551d58a525a3e17
+    custody_state: INTEGRATION_READY
+    checkpoint: 773da0472b3684131bcbf4166c847b847d9859e6
     remote_ref: refs/remotes/origin/fix/question-contract-repair-v1
     integration: merge
     integration_receipt: null
-    validation_status: pending
+    validation_status: passed
+    validation_ref: 773da0472b3684131bcbf4166c847b847d9859e6
     dependencies: []
     overlaps: [skills/last30days/scripts/lib/service_questions.py, tests/test_service_questions.py, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-009-productization-readiness-remediation.md]
     reconciled_overlaps: []

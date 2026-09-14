@@ -7,7 +7,7 @@ Branch: fix/question-contract-repair-v1
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 1
+Plan version: 2
 Date: 2026-09-14
 Session owner: coordinator Codex thread `01a09f76-8024-7960-a7c5-c0469cf99153`
 
@@ -150,3 +150,44 @@ Subagent status: `not_spawned`.
 
 Next action: publish this registration checkpoint, then execute the two
 regression-first vertical slices without any runtime or provider effect.
+
+### Checkpoint P0103-C02 | 2026-09-14
+
+Plan version: 2
+
+State transition: `OPEN -> OPEN`; custody advances from implementation to
+`INTEGRATION_READY` at `773da0472b3684131bcbf4166c847b847d9859e6`.
+
+Progress classification: `outcome_progress`; both accepted defects are now
+reproduced, regression-locked, corrected through existing public interfaces,
+and comprehensive-provider-free clean.
+
+Authority classification remains unchanged from P0103-C01.
+
+Evidence:
+
+- `test_answered_worker_without_statements_fails_closed_durably` first failed
+  with the exact escaped `QuestionContractError: answered result requires
+  statements`, then passed after final worker-answer construction was
+  normalized to `invalid_worker_contract`;
+- `test_evidence_only_mode_respects_total_answer_character_budget` first
+  measured 1,576 answer characters against a 128-character request, then
+  passed after one host-owned running budget was applied to summary and ordered
+  evidence statements;
+- all 41 question contract, evidence, worker, and runner tests pass;
+- all 71 affected service, contract, HTTP, runtime-package, MCP-integration,
+  and Skill service-first tests pass after the deterministic runtime-manifest
+  hash refresh;
+- comprehensive `uv run pytest` passes with 2,855 tests, 7 skips, and 9
+  subtests in 137.22 seconds;
+- comprehensive `go test ./...` passes for every MCP package;
+- `tests/test_plan_authority_audit.py`, direct compilation, manifest hash
+  equality, and `git diff --check` pass;
+- closed-world self-review found no scope expansion, interface change, retry
+  widening, live effect, or unresolved accepted finding.
+
+Subagent status: `not_spawned`.
+
+Next action: publish this integration-ready checkpoint, inspect the remote pull
+request diff and checks, merge through the owned-fork workflow, then record
+canonical ancestry and close the plan.
