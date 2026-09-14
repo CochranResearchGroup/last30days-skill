@@ -168,3 +168,43 @@ public transport and packaged runtime acceptance remain unproven.
 Next action: publish this coherent tracer checkpoint, then complete the
 registered lifecycle/privacy, delivery/import and probe behaviors. Coordinator
 joins only against published source; this checkpoint is not WI-006 acceptance.
+
+### Checkpoint P0121-C04 | 2026-09-14
+
+Plan version: 1
+
+State transition: `first_tracer_green -> product_source_green`; plan remains OPEN.
+
+Progress classification: `outcome_progress`; scoped monitor names, bounded
+lifecycle/list/history, source-archive pause, durable baseline evidence references,
+disabled preferences/intents, recording-sink retry/resend, ambiguous-effect
+lockout and export-only legacy import now pass their provider-free behaviors.
+
+Authority classification: `inherited_authority`; no shared transports,
+source/follow adapters, providers/models/browsers, installed state, schedules,
+real delivery or authority projections changed. One implementation attempt
+continues; no children or independent review was started. Effective runtime
+model/effort remain unknown.
+
+Evidence: incremental RED tests demonstrated missing lifecycle/import/delivery
+behavior, globally colliding monitor names and missing prior evidence after an
+accepted absent view; each is now GREEN. Existing query snapshots keep v1 wire
+bytes. Focused monitor/search/collection tier: 122 passed in 17.20 seconds.
+Ruff import fixes and formatting affected only new lane files. Full-suite,
+generated/package and public runtime gates remain coordinator-join dependent.
+
+Shared contract: `MonitorApplication(db_path, search_backend, *,
+access_partitions, collection_reader=None, clock=None).command(payload)` takes
+exactly `{profile_id, command}`. `COMMAND_FIELDS` exports every strict action's
+required keys. The collection reader needs only `get_spec` and
+`get_spec_revision`; it receives no enqueue/schedule authority. The public
+`send` action always raises `MonitorKernelError(INVALID_LIFECYCLE,
+"delivery disabled")`; fixture dispatch accepts only an explicit in-memory
+`RecordingSink`. Return projections use caller-facing partition-scoped monitor
+names while durable identities are namespaced internally. Every command is
+bounded to 64 KiB input and 124 KiB output; captures freeze at 32 KiB evidence,
+100 pages, 1,000 items and a cooperative 10-second deadline.
+
+Next action: publish this source checkpoint for coordinator CLI/HTTP/MCP joins;
+finish probe integrity tests and source regression checks. No WI-006 DONE or
+packaged-runtime claim is made from this source checkpoint.

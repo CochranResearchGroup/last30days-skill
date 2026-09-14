@@ -1,0 +1,60 @@
+"""Frozen evidence history, byte bounds and acceptance safety."""
+
+import sqlite3
+
+from tests.test_service_monitor_application import command, composition, create
+
+
+def evaluate(app, capture_id):
+    snapshot = command(
+        app, "capture", monitor_id="monitor-fixture", capture_id=capture_id
+    )
+    return command(
+        app,
+        "evaluate",
+        monitor_id="monitor-fixture",
+        snapshot_id=snapshot["snapshot_id"],
+    )
+
+
+def test_digest_retains_prior_evidence_across_absent_views_and_later_revision(tmp_path):
+    app, _, ref = composition(tmp_path)
+    create(app, ref)
+    command(app, "activate", monitor_id="monitor-fixture")
+    first = evaluate(app, "first")
+    command(app, "accept", run_id=first["run"]["run_id"])
+    with sqlite3.connect(app.db_path) as conn:
+        conn.execute(
+            "UPDATE documents SET current_version_id=NULL WHERE document_id='doc-legacy'"
+        )
+    absent = evaluate(app, "absent")
+    assert absent["digest"]["counts"]["removed"] == 0
+    command(app, "accept", run_id=absent["run"]["run_id"])
+    with sqlite3.connect(app.db_path) as conn:
+        conn.row_factory = sqlite3.Row
+        row = dict(
+            conn.execute(
+                "SELECT * FROM document_versions WHERE version_id='follow-version-1'"
+            ).fetchone()
+        )
+        row.update(
+            version_id="follow-version-2",
+            content_hash="sha256:follow-version-2",
+            normalized_text="revised browser evidence",
+        )
+        conn.execute(
+            f"INSERT INTO document_versions ({','.join(row)}) VALUES ({','.join('?' for _ in row)})",
+            tuple(row.values()),
+        )
+        conn.execute(
+            "UPDATE documents SET current_version_id='follow-version-2' WHERE document_id='doc-legacy'"
+        )
+        conn.execute("""INSERT INTO document_version_sightings
+            SELECT 'follow-version-2', 'second-acquisition', topic_id, collection_spec_id,
+                   collection_run_id, observed_at, access_partition_id
+            FROM document_version_sightings WHERE version_id='follow-version-1'""")
+    revised = evaluate(app, "revised")
+    assert revised["digest"]["counts"]["revised"] == 1
+    assert {
+        ref["version_id"] for ref in revised["digest"]["entries"][0]["evidence_refs"]
+    } == {"follow-version-1", "follow-version-2"}

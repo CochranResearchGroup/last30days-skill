@@ -388,7 +388,10 @@ class MonitorRepository:
                         MonitorErrorCode.INVALID_REVISION,
                         "view identity and partition cannot change across revisions",
                     )
-                self._validate_transition(prior.lifecycle_state, spec.lifecycle_state)
+                if prior.lifecycle_state != spec.lifecycle_state:
+                    self._validate_transition(prior.lifecycle_state, spec.lifecycle_state)
+                elif prior.lifecycle_state is contracts.MonitorLifecycle.ARCHIVED:
+                    raise MonitorKernelError(MonitorErrorCode.MONITOR_ARCHIVED, "archived monitor is immutable")
             conn.execute(
                 """INSERT INTO service_monitor_specs (
                        monitor_id, revision, access_partition_id, view_kind,
@@ -445,7 +448,7 @@ class MonitorRepository:
         conn = self._connect()
         try:
             row = conn.execute(
-                """SELECT payload_json FROM service_monitor_specs
+                """SELECT payload_json, payload_sha256 FROM service_monitor_specs
                    WHERE monitor_id = ? ORDER BY revision DESC LIMIT 1""",
                 (monitor_id,),
             ).fetchone()
@@ -453,6 +456,8 @@ class MonitorRepository:
             conn.close()
         if row is None:
             raise KeyError(f"monitor not found: {monitor_id}")
+        if hashlib.sha256(row["payload_json"].encode()).hexdigest() != row["payload_sha256"]:
+            raise MonitorKernelError(MonitorErrorCode.IMMUTABLE_CONFLICT, "monitor spec integrity failure")
         return contracts.MonitorSpecV1.from_dict(json.loads(row["payload_json"]))
 
     def put_snapshot(self, snapshot: contracts.SavedQueryViewSnapshotV1) -> None:
