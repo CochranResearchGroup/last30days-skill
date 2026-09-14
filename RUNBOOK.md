@@ -29958,3 +29958,62 @@ Next Bounded Action:
 - validate, publish, self-review, and merge this exact documentation-only pull
   request; then verify canonical remote equality and production-only process
   state without starting a runtime.
+
+## Turn 480 | 2026-09-14
+
+Focus: register the provider-free productization completion campaign and its
+first three dependency-independent packets.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`.
+
+Authority Consulted:
+
+- the active goal; WI-000 through WI-009; P33/P35/P38/P51; notes 0117, 0119,
+  and 0122; their accepted packet plans; current Git/worktree/PR/issue/runtime
+  readback; planning, goal, parallel, subagent, work-item, multi-session, model,
+  branch, integration, documentation, validation, and collaboration policy.
+
+Decisions And Changes:
+
+- classified the preceding planning-only turn as `no_progress` and corrected
+  it by opening Plan 0107 with the full seven-child completion outcome;
+- froze Wave 1 as Plan 0108/WI-002 Search Packet 2, Plan 0109/WI-004 Tailored
+  Follows Packet 2, and Plan 0110/WI-007 provider-free hotfix control/Git drills;
+- fixed the topology at no more than three one-level implementation agents,
+  with coordinator-owned integration and shared authority projections;
+- moved WI-000 `READY -> IN_PROGRESS` while leaving the Wave 1 work items
+  `READY` until their exact branch-local activation checkpoints are published;
+- preserved Plan 0046/P22 as operator-paused and performed no issue mutation or
+  provider/browser/live/runtime/schedule/release/deployment effect.
+
+Validation Evidence:
+
+- canonical `main == origin/main == 2fa77a9b` and was clean at registration;
+- no open pull request or active feature catalog custody existed;
+- WI-001 and WI-009 are locally `DONE`; WI-002 through WI-008 are `READY`;
+- plan-authority, focused policy, patch, branch publication, and pull-request
+  evidence remain to run after rendering this registration.
+
+State Movement:
+
+- Plan 0107 `unplanned -> OPEN` and P52 `unplanned -> OPEN`;
+- Plans 0108-0110 `unplanned -> PLANNED`;
+- WI-000 `READY -> IN_PROGRESS`;
+- progress classification: `blocker_reduction`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; implementation agents begin only after exact lane custody is
+  published and reconciled. Earlier read-only readiness audits informed packet
+  selection; one unavailable architecture audit was ignored.
+
+Graphiti Write Status:
+
+- `not_written`; discovery returned no useful current repository history and
+  no durable-memory write authority exists.
+
+Next Bounded Action:
+
+- validate and integrate this campaign registration, publish and reconcile
+  Wave 1 activation checkpoints, then launch the three bounded agents.

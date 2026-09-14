@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-000 -->
 # Productize the temporal intelligence service
 
-State: READY
+State: IN_PROGRESS
 Priority: P1
 Lane: Program
 Parent: none
@@ -35,6 +35,12 @@ priority hotfix path, and measurable corpus quality.
 WI-009 is `DONE` through the accepted P51 artifact, isolated-runtime, dogfood,
 production-readback, and governance receipts. Child work may now be selected,
 but each packet still needs its own plan and action-specific authority.
+
+Plan 0107 is the active provider-free completion campaign. Wave 1 registers
+WI-002 Packet 2, WI-004 Packet 2, and WI-007 provider-free Packets 1-2; later
+waves remain dependency-gated. No provider, browser, live-data, schedule,
+installed-runtime, staging, production, release, deployment, or GitHub issue
+mutation is authorized.
 
 ## Non-Goals
 

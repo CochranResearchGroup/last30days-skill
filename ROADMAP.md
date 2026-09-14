@@ -2633,9 +2633,10 @@ Dependencies:
 
 Next Bounded Action:
 
-- register a separately bounded Packet 2 plan for broader filters,
-  all-revision traversal, and cross-store deduplication; P36 and P40 may now
-  consume Packet 1's stable search/evidence contract.
+- activate `docs/dev/plans/0108-2026-09-14-post-search-packet-2.md` from its
+  exact published branch-local checkpoint, then implement broader filters,
+  all-revision traversal, and cross-store deduplication. P36 and P40 may
+  continue consuming Packet 1's stable search/evidence contract.
 
 ## P34 | Isolated Development Runtime
 
@@ -2721,9 +2722,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- derive a new bounded provider-free Packet 2 plan rather than extending closed
-  Plan 0104; readiness does not grant provider, browser, schedule, or installed
-  runtime authority.
+- activate `docs/dev/plans/0109-2026-09-14-tailored-follows-packet-2.md` from
+  its exact published branch-local checkpoint. Readiness does not grant
+  provider, browser, schedule, or installed-runtime authority.
 
 ## P36 | Agent Question Answering MCP Surface
 
@@ -2959,9 +2960,10 @@ Dependencies:
 
 Next Bounded Action:
 
-- retain the slot as dormant reserved capacity; assign WI-007 Packet 1 to one
-  independent top-level lane session from current `origin/main` when portfolio
-  priority allows, or activate it only for a qualified production incident.
+- retain the real slot as dormant reserved capacity while activating
+  `docs/dev/plans/0110-2026-09-14-hotfix-control-and-git-drill.md` for its
+  provider-free Packets 1-2 only. A qualified production incident remains a
+  separately authorized path.
 
 ## P39 | Cross-Service Tailored Follow Product Surface
 
@@ -3302,3 +3304,40 @@ Next Bounded Action:
 
 - select the highest-priority `READY` work item and register one bounded packet;
   do not infer live-effect authority from this provider-free gate closure.
+
+## P52 | Provider-Free Productization Completion Campaign
+
+State: OPEN
+
+Objective: complete WI-002 through WI-008 in dependency-ordered waves, prove
+their joined provider-free product behavior in isolated development runtimes,
+and close WI-000 in repo-local authority.
+
+Current State:
+
+- WI-001 and WI-009 are `DONE`, canonical main was clean and remote-equal at
+  `2fa77a9b`, and no pull request was open at campaign registration;
+- Wave 1 is frozen as WI-002 Search Packet 2, WI-004 Tailored Follows Packet 2,
+  and WI-007 provider-free hotfix control/Git drills;
+- WI-003, WI-005, WI-006, and WI-008 remain dependency-ordered later waves;
+- at most three one-level implementation agents may run concurrently, and the
+  coordinator owns integration plus shared authority projections;
+- all providers, browsers, live data, schedules, installed service, staging,
+  production, releases, deployments, rollbacks, and issue mutations remain
+  outside authority.
+
+Active Plan:
+
+- `docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`.
+
+Wave 1 Planned Packets:
+
+- `docs/dev/plans/0108-2026-09-14-post-search-packet-2.md`;
+- `docs/dev/plans/0109-2026-09-14-tailored-follows-packet-2.md`;
+- `docs/dev/plans/0110-2026-09-14-hotfix-control-and-git-drill.md`.
+
+Next Bounded Action:
+
+- integrate campaign registration, publish exact branch-local Wave 1
+  activation checkpoints, reconcile their custody, and launch the three
+  implementation agents.
