@@ -1,13 +1,13 @@
 # Plan 0098 | Agent Question Answer Tracer Packet 3
 
-State: OPEN
+State: INTEGRATION_READY
 Lane: P36
 Work item: WI-003
 Branch: feat/agent-question-answer-v3
 Target: main
 Integration: merge
 Roadmap: P36
-Plan version: 3
+Plan version: 4
 Date: 2026-09-14
 Session owner: coordinator Codex thread `01a0860e-b671-7f62-b6ae-6c06a08e6852`
 
@@ -258,3 +258,34 @@ Subagent status: `not_spawned`; no subagents were used.
 Next action: publish this implementation checkpoint, run affected and full
 provider-free validation, then close the feature plan at the exact accepted
 remote-equal checkpoint for coordinator integration.
+
+### Checkpoint P0098-C04 | 2026-09-14
+
+Plan version: 4
+
+State transition: `OPEN -> INTEGRATION_READY`.
+
+Progress classification: `outcome_progress`; Packet 3 is implemented,
+reviewed against the refreshed worktree graph, and published for coordinator
+integration with only the declared runtime-manifest join outstanding.
+
+Evidence:
+
+- implementation checkpoint `fa6a33dd7c63616f4f2622047598587fa5cbf80c`
+  was clean and remote-equal before full validation;
+- CodeGraph was synchronized after implementation and is current at 376 files,
+  10,535 nodes, and 28,768 edges; impact readback keeps the changed runner and
+  queue behavior bounded to the question workflow and its tests;
+- the full 2,860-test collection produced 2,842 passes, 7 skips, and 11
+  expected failures, all caused by the intentionally stale coordinator-owned
+  runtime manifest: 8 lifecycle tests that build the artifact and the 3 direct
+  runtime-package checks;
+- no other test failed, and the focused 39-test question surface remains green;
+- no real model, provider, network, browser, installed-state, release, staging,
+  or production effect occurred.
+
+Subagent status: `not_spawned`; no subagents were used.
+
+Next action: the coordinator creates the integration plan, merges this exact
+feature history without rebase, refreshes the runtime manifest, runs the full
+suite green, and reconciles P36, WI-003, ROADMAP, RUNBOOK, and the lane catalog.
