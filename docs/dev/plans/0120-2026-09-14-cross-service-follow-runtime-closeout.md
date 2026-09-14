@@ -206,7 +206,9 @@ Progress classification: `blocker_reduction`; the strict restart check detected
 an incomplete synthetic preparation, and the fixture now matches the stock
 local-hash materialization path without weakening any acceptance assertion.
 
-Authority classification: `inherited_authority`; second and final bounded
+Authority classification:
+
+- `inherited_authority`; second and final bounded
 implementation attempt changes only fixture preparation and its regression.
 All original scope, acceptance and external-effect gates remain unchanged.
 
