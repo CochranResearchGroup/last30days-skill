@@ -7,7 +7,7 @@ Branch: docs/productization-prerequisite-gate
 Target: main
 Integration: merge
 Roadmap: P51
-Plan version: 4
+Plan version: 5
 Date: 2026-09-13
 Execution owner: unassigned
 
@@ -19,20 +19,19 @@ before any new product feature packet begins.
 ## Current State
 
 - canonical `main` is clean and remote-equal at
-  `a9dcacfa01504b058dae7420d899a30db57e26dd`;
+  `31342c9fed77bacadb3eec00945d0127be73b43e`;
 - stored-post search, saved monitors, quality tracing, the isolated-runtime
   doctor, and three question-answering packets are integrated in source;
-- comprehensive Python and MCP Go tests pass, but focused reproduction found
-  that one malformed structured answer escapes the runner and remains leased,
-  and the deterministic evidence-only path ignores `max_answer_characters`;
+- Plan 0103 and PR 64 repaired and regression-locked both accepted
+  question-contract defects; comprehensive Python and MCP Go tests pass;
 - GitHub Issues are enabled. `AGENTS.md` and `docs/agents/issue-tracker.md`
   initially described them as disabled, but PR 51
   corrected the authority boundary, and WI-000 through WI-009 are now live as
   issues #52 through #61 with exact repo-local mappings;
 - P35 tailored follows is clean and remote-equal at
-  `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`, but is 75 commits behind the
-  reviewed mainline and has no pull request. The prior issue-registry PR gate
-  was a category error and is removed by this revision;
+  `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`, but is 88 commits behind the
+  reviewed mainline and has no pull request. Plan 0104 owns its bounded
+  reconciliation and combined validation;
 - production is the only running service. It reports service `0.3.116`, schema
   17, and installed manifest `19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8`;
   source also says `0.3.116` but has a different 139-file manifest
@@ -60,8 +59,9 @@ before any new product feature packet begins.
    WI-009 were published idempotently as issues #52 through #61, read back, and
    mapped without replacing stable `WI-###` locators.
 
-Packet 2 completed through PR 51. Packet 6 completed through issues #52-#61
-and its repo projection through PR 62. Packets 1, 3, 4, and 5 remain.
+Packet 1 completed through PRs 64 and 65. Packet 2 completed through PR 51.
+Packet 6 completed through issues #52-#61 and its repo projection through PR
+62. Packet 3 is active under Plan 0104; Packets 4 and 5 remain.
 
 Packet 6 was completed first under the operator's explicit direction so the
 tracker can coordinate subsequent work. Packets 1 and 2 may run in parallel on
@@ -144,9 +144,9 @@ and the roadmap explicitly releases the feature freeze.
 
 ## Next Action
 
-Create and register the bounded Packet 1 corrective lane from current
-`origin/main` for the two question-answering defects. Tracker-documentation
-reconciliation is already complete through PR 51. Use Plan 0103 and a fresh
-corrective branch/worktree; do not reuse an old WI-003 checkout. Do not perform
-any runtime, provider, release, or deployment mutation. Pull requests follow
-their normal governed workflow; issue actions remain bounded by the registry.
+Execute Plan 0104 from current `origin/main`: merge the canonical mainline into
+the published P35 Packet 1 branch without rewriting history, regenerate the
+combined runtime manifest, run focused and comprehensive provider-free
+validation, and integrate through the normal governed pull-request workflow.
+Do not begin Packet 2 or perform any runtime, provider, release, deployment, or
+issue mutation.

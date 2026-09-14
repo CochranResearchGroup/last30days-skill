@@ -8,7 +8,7 @@ Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/55
 Blocked by: none for planning, provider-free repair, normal pull requests, or the currently authorized WI-000 through WI-009 publication; development-runtime provisioning, release, dogfood effects, and all other GitHub issue actions retain separate authority gates
 Plan: docs/dev/plans/0102-2026-09-13-productization-readiness-prerequisites.md
-Active packet: docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md
+Active packet: docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md
 
 ## Problem
 
@@ -66,7 +66,7 @@ Pull requests follow the normal collaborative integration workflow.
 
 ## Next Owner Action
 
-Plan 0103 and PR 64 closed both accepted question-answering defects. Create the
-next bounded P51 packet to reconcile P35 from current canonical main, rerun the
-combined product validation, and integrate it through the normal owned-fork
-pull-request workflow without crossing any runtime or provider gate.
+Execute Plan 0104: reconcile the published P35 Packet 1 branch from current
+canonical main, rerun combined product validation, and integrate it through the
+normal owned-fork pull-request workflow without crossing any runtime or
+provider gate.

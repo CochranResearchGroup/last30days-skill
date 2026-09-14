@@ -2681,8 +2681,7 @@ from the general feed.
 
 Current State:
 
-- WI-004 is `BLOCKED` pending mainline reconciliation; Packet 1 is
-  acceptance-complete and remote-equal at
+- WI-004 is `IN_PROGRESS`; Packet 1 is acceptance-complete and remote-equal at
   `d2c9f8ebfa79e99eb501910c7d606ce3bcbcf07d`;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
   lifecycle, canonical typed targets, and immutable acquisition context rather
@@ -2694,9 +2693,13 @@ Current State:
   creation, immutable identity, archive history, and additive lifecycle reads
   are implemented provider-free; no installed-runtime, schedule, or live X
   effect occurred;
-- the branch is 75 commits behind reviewed canonical main and has no pull
-  request. The earlier claim that the issue-operation registry blocked PR
-  creation was incorrect; PRs follow normal branch and integration policy.
+- the branch is 88 commits behind reviewed canonical main and has no pull
+  request. Plan 0104 owns its current-main reconciliation and combined
+  provider-free validation; PRs follow normal branch and integration policy.
+
+Active Reconciliation Plan:
+
+- `docs/dev/plans/0104-2026-09-14-p35-current-main-reconciliation.md`.
 
 Closed Architecture Plan:
 
@@ -2711,9 +2714,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- after the P51 corrective mainline lands, reconcile P35 from then-current
-  `origin/main`, rerun combined acceptance, and open its normal Packet 1 PR;
-  do not begin Packet 2 implicitly.
+- execute Plan 0104: merge current `origin/main` into the published branch,
+  regenerate the combined manifest, rerun combined acceptance, and integrate
+  through its normal Packet 1 PR; do not begin Packet 2 implicitly.
 
 ## P36 | Agent Question Answering MCP Surface
 
@@ -3253,15 +3256,15 @@ coherent versioned development runtime before another feature packet starts.
 Current State:
 
 - search, question answering, saved monitors, quality tracing, and the
-  isolated-runtime doctor are integrated in source, but the review reproduced
-  two blocking question-contract failures;
+  isolated-runtime doctor are integrated in source; Plan 0103 and PR 64 closed
+  both accepted question-contract failures;
 - GitHub Issues are enabled; PR 51 corrected canonical tracker guidance and
   WI-000 through WI-009 are published as issues #52 through #61;
 - tracker-documentation reconciliation and issue publication are complete;
-  Q&A repair, P35 integration, a versioned development runtime, and development
-  dogfood remain before the gate can close;
-- P35 tailored follows is validated on its own published branch but is 75
-  commits behind current main and has no pull request;
+  P35 integration, a versioned development runtime, and development dogfood
+  remain before the gate can close;
+- P35 tailored follows is validated on its own published branch but is 88
+  commits behind current main; Plan 0104 owns its active reconciliation;
 - `docs/dev/plans/0103-2026-09-14-question-contract-corrective-packet.md` is
   closed through merged PR 64 at canonical `b753bcef`; both accepted
   question-contract defects are repaired and regression-locked;
@@ -3289,5 +3292,5 @@ Program Gate:
 
 Next Bounded Action:
 
-- create the bounded P35 current-main reconciliation and combined-validation
-  packet from canonical `b753bcef`, preserving every runtime and provider gate.
+- execute Plan 0104 from canonical `31342c9f`, preserving both branch histories
+  and every runtime and provider gate.
