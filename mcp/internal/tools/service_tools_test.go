@@ -89,10 +89,40 @@ func TestToolSurfaceNamesAndAnnotations(t *testing.T) {
 	wantNames := []string{
 		"service_info", "query", "search_posts", "refresh", "job_status", "topic",
 		"temporal_query", "profile_history", "coverage", "collection",
-		"maintenance_status",
+		"saved_query", "maintenance_status",
 	}
 	if !reflect.DeepEqual(gotNames, wantNames) {
 		t.Fatalf("tool names = %v, want %v", gotNames, wantNames)
+	}
+}
+
+func TestSavedQueryUsesClosedLocalServiceBoundary(t *testing.T) {
+	fake := &fakeService{response: json.RawMessage(`{"saved_query_id":"query-one"}`)}
+	handler := makeSavedQueryHandler(fake)
+	viewRef := map[string]any{
+		"schema_version": float64(1), "view_kind": "saved_query",
+		"saved_query_id": "query-one", "saved_query_version": float64(1),
+	}
+	result, err := handler(context.Background(), callRequest(map[string]any{
+		"action": "capture", "profile_id": "research", "view_ref": viewRef,
+		"capture_id": "capture-one",
+	}))
+	if err != nil || result.IsError || fake.postPath != "/v1/saved-query" {
+		t.Fatalf("saved query result = %+v, path = %q, err = %v", result, fake.postPath, err)
+	}
+	if fake.postBody["profile_id"] != "research" {
+		t.Fatalf("profile = %#v", fake.postBody)
+	}
+	command := fake.postBody["command"].(map[string]any)
+	if command["action"] != "capture" || command["capture_id"] != "capture-one" ||
+		!reflect.DeepEqual(command["view_ref"], viewRef) {
+		t.Fatalf("command = %#v", command)
+	}
+	bad, badErr := handler(context.Background(), callRequest(map[string]any{
+		"action": "get", "view_ref": viewRef, "capture_id": "unexpected",
+	}))
+	if badErr != nil || !bad.IsError {
+		t.Fatalf("action-specific fields were accepted: %+v, %v", bad, badErr)
 	}
 }
 

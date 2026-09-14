@@ -100,6 +100,15 @@ class ServiceClient:
             self._request("POST", "/v1/posts/search", request.to_dict())
         )
 
+    def saved_query(
+        self, command: dict[str, object], *, profile_id: str = "default"
+    ) -> dict[str, Any]:
+        return self._request(
+            "POST",
+            "/v1/saved-query",
+            {"profile_id": profile_id, "command": command},
+        )
+
     def job(self, job_id: str) -> contracts.JobRecord:
         encoded = urllib.parse.quote(job_id, safe="")
         return contracts.JobRecord.from_dict(

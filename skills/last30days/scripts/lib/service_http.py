@@ -16,6 +16,8 @@ from typing import Any, Protocol
 
 from . import service_contracts as contracts
 from .service_app import JobResumeConflictError, RuntimeEffectDisabledError
+from .service_monitor_contracts import MonitorContractError
+from .service_monitors import MonitorKernelError
 
 
 MAX_REQUEST_BYTES = 131_072
@@ -42,6 +44,8 @@ class ServiceApplication(Protocol):
     def search_posts(
         self, request: contracts.PostSearchRequest
     ) -> contracts.PostSearchResponse: ...
+
+    def saved_query(self, payload: dict[str, object]) -> dict[str, object]: ...
 
     def topic(self, payload: dict[str, object]) -> dict[str, object]: ...
 
@@ -235,6 +239,7 @@ class _RequestHandler(BaseHTTPRequestHandler):
             not in {
                 "/v1/query",
                 "/v1/posts/search",
+                "/v1/saved-query",
                 "/v1/topic",
                 "/v1/intelligence",
             }
@@ -269,6 +274,8 @@ class _RequestHandler(BaseHTTPRequestHandler):
             elif self.path == "/v1/posts/search":
                 request = contracts.PostSearchRequest.from_dict(payload)
                 response = self.application.search_posts(request).to_dict()
+            elif self.path == "/v1/saved-query":
+                response = self.application.saved_query(payload)
             elif self.path == "/v1/topic":
                 response = self.application.topic(payload)
             else:
@@ -292,6 +299,12 @@ class _RequestHandler(BaseHTTPRequestHandler):
         except contracts.ContractValidationError as exc:
             del exc
             self._error(400, "invalid_contract", "request contract is invalid")
+            return
+        except MonitorContractError:
+            self._error(400, "invalid_monitor_contract", "saved query contract is invalid")
+            return
+        except MonitorKernelError as exc:
+            self._error(409, exc.code.value, "saved query operation was rejected")
             return
         except KeyError:
             self._error(404, "job_not_found", "job was not found")

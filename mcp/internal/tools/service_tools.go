@@ -377,6 +377,32 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 	}
 	collectionOptions = append(collectionOptions, commonAnnotations(false, true)...)
 
+	savedQueryOptions := []mcplib.ToolOption{
+		mcplib.WithDescription(
+			"Save, read, or freeze one immutable cache-only query view for monitoring.",
+		),
+		mcplib.WithString(
+			"action",
+			mcplib.Required(),
+			mcplib.Enum("save", "get", "capture", "receipt"),
+		),
+		mcplib.WithString("profile_id", mcplib.MaxLength(128), mcplib.DefaultString("default")),
+		mcplib.WithObject(
+			"definition",
+			mcplib.Description("Complete immutable saved-query definition for save."),
+			mcplib.AdditionalProperties(true),
+			mcplib.MaxProperties(8),
+		),
+		mcplib.WithObject(
+			"view_ref",
+			mcplib.Description("Exact saved-query version reference."),
+			mcplib.AdditionalProperties(true),
+			mcplib.MaxProperties(8),
+		),
+		mcplib.WithString("capture_id", mcplib.MaxLength(128)),
+	}
+	savedQueryOptions = append(savedQueryOptions, commonAnnotations(false, false)...)
+
 	maintenanceOptions := []mcplib.ToolOption{
 		mcplib.WithDescription(
 			"Read bounded App Intelligence task receipts, graph projection state, and adapter-repair safety gates.",
@@ -425,6 +451,10 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 		{
 			tool:    mcplib.NewTool("collection", collectionOptions...),
 			handler: makeIntelligenceHandler(client, "collection"),
+		},
+		{
+			tool:    mcplib.NewTool("saved_query", savedQueryOptions...),
+			handler: makeSavedQueryHandler(client),
 		},
 		{
 			tool:    mcplib.NewTool("maintenance_status", maintenanceOptions...),
@@ -512,6 +542,20 @@ func makeIntelligenceHandler(
 			return mcplib.NewToolResultError(err.Error()), nil
 		}
 		response, err := client.Post(ctx, "/v1/intelligence", payload)
+		return toolResult(response, err)
+	}
+}
+
+func makeSavedQueryHandler(client ServiceAPI) server.ToolHandlerFunc {
+	return func(
+		ctx context.Context,
+		req mcplib.CallToolRequest,
+	) (*mcplib.CallToolResult, error) {
+		payload, err := savedQueryPayload(req.GetArguments())
+		if err != nil {
+			return mcplib.NewToolResultError(err.Error()), nil
+		}
+		response, err := client.Post(ctx, "/v1/saved-query", payload)
 		return toolResult(response, err)
 	}
 }
@@ -810,6 +854,55 @@ func topicPayload(args map[string]any) (map[string]any, error) {
 		}
 	}
 	return payload, nil
+}
+
+func savedQueryPayload(args map[string]any) (map[string]any, error) {
+	action, err := enumArgument(args, "action", "", "save", "get", "capture", "receipt")
+	if err != nil || action == "" {
+		return nil, errors.New("action is required and must be supported")
+	}
+	allowed := map[string]bool{"action": true, "profile_id": true}
+	if action == "save" {
+		allowed["definition"] = true
+	} else {
+		allowed["view_ref"] = true
+	}
+	if action == "capture" || action == "receipt" {
+		allowed["capture_id"] = true
+	}
+	for name := range args {
+		if !allowed[name] {
+			return nil, fmt.Errorf("%s is not valid for %s", name, action)
+		}
+	}
+	profileID := "default"
+	if value, ok, profileErr := optionalString(args, "profile_id", 128); profileErr != nil {
+		return nil, profileErr
+	} else if ok {
+		profileID = value
+	}
+	command := map[string]any{"action": action}
+	requiredObject := "view_ref"
+	if action == "save" {
+		requiredObject = "definition"
+	}
+	rawObject, ok := args[requiredObject]
+	if !ok {
+		return nil, fmt.Errorf("%s is required for %s", requiredObject, action)
+	}
+	object, ok := rawObject.(map[string]any)
+	if !ok {
+		return nil, fmt.Errorf("%s must be an object", requiredObject)
+	}
+	command[requiredObject] = object
+	if action == "capture" || action == "receipt" {
+		captureID, captureErr := requireString(args, "capture_id", 128)
+		if captureErr != nil {
+			return nil, captureErr
+		}
+		command["capture_id"] = captureID
+	}
+	return map[string]any{"profile_id": profileID, "command": command}, nil
 }
 
 func intelligencePayload(args map[string]any, action string) (map[string]any, error) {

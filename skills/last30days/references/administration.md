@@ -1,12 +1,13 @@
 # Administration reference
 
 Load this reference only for an explicit request to govern a service-owned
-topic, collection, refresh, or waiting job.
+topic, collection, saved query, refresh, or waiting job.
 
 ## Authority order
 
 1. Call `service_info` and require compatibility.
-2. Read the current object with `topic`, `collection`, or `job_status`.
+2. Read the current object with `topic`, `collection`, `saved_query`, or
+   `job_status`.
 3. State the exact intended mutation, target identifier, and bounded effect.
 4. Use only the operation and fields exposed by current MCP discovery.
 5. Read the resulting object or job and report its durable state.
@@ -17,6 +18,9 @@ topic, collection, refresh, or waiting job.
 - create or update a scheduled topic through `topic`;
 - create, update, pause, resume, or manually enqueue one recurring
   specification through `collection`;
+- save an explicitly supplied immutable query definition or capture one exact
+  cache-only view through `saved_query`; neither action activates a monitor,
+  changes a baseline, schedules work, or delivers a notification;
 - after the user completes a required human action, resume only the exact
   `awaiting_operator` job when the exposed product contract provides that
   action.

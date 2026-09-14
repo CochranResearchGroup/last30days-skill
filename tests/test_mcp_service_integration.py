@@ -154,6 +154,7 @@ def test_real_service_mcp_discovery_query_refresh_and_poll(tmp_path):
                     "profile_history",
                     "coverage",
                     "collection",
+                    "saved_query",
                     "maintenance_status",
                 ]
             )

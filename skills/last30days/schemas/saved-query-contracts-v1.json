@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "last30days saved-query monitor contracts",
+  "schema_version": 1,
+  "contracts": {
+    "saved_query_view_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "view_kind", "saved_query_id", "saved_query_version"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "view_kind": {"const": "saved_query"},
+        "saved_query_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "saved_query_version": {"type": "integer", "minimum": 1}
+      }
+    },
+    "saved_query_definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "saved_query_id", "version", "access_partition_id", "search"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "saved_query_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "version": {"type": "integer", "minimum": 1},
+        "access_partition_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "search": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["profile_id", "query", "filters", "page_size", "sort", "revision_mode"],
+          "properties": {
+            "profile_id": {"type": "string", "minLength": 1, "maxLength": 128},
+            "query": {"type": ["string", "null"], "maxLength": 4096},
+            "filters": {"type": "object"},
+            "page_size": {"type": "integer", "minimum": 1, "maximum": 100},
+            "sort": {"enum": ["relevance", "published_desc", "observed_desc"]},
+            "revision_mode": {"const": "current"}
+          }
+        }
+      }
+    },
+    "saved_query_command_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile_id", "command"],
+      "properties": {
+        "profile_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "command": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["action", "definition"],
+              "properties": {
+                "action": {"const": "save"},
+                "definition": {"$ref": "#/contracts/saved_query_definition"}
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["action", "view_ref"],
+              "properties": {
+                "action": {"const": "get"},
+                "view_ref": {"$ref": "#/contracts/saved_query_view_ref"}
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["action", "view_ref", "capture_id"],
+              "properties": {
+                "action": {"enum": ["capture", "receipt"]},
+                "view_ref": {"$ref": "#/contracts/saved_query_view_ref"},
+                "capture_id": {"type": "string", "minLength": 1, "maxLength": 128}
+              }
+            }
+          ]
+        }
+      }
+    },
+    "saved_query_view_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "snapshot_id", "view_ref", "access_partition_id", "evidence_head_id", "knowledge_cutoff", "coverage_start", "coverage_end", "coverage", "evidence"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "snapshot_id": {"type": "string", "minLength": 1},
+        "view_ref": {"$ref": "#/contracts/saved_query_view_ref"},
+        "access_partition_id": {"type": "string", "minLength": 1},
+        "evidence_head_id": {"type": "string", "minLength": 1},
+        "knowledge_cutoff": {"type": "string", "format": "date-time"},
+        "coverage_start": {"type": "string", "format": "date-time"},
+        "coverage_end": {"type": "string", "format": "date-time"},
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "sources", "gaps"],
+          "properties": {
+            "status": {"enum": ["complete", "partial"]},
+            "sources": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+            "gaps": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["evidence_id", "version_id", "tombstoned"],
+            "properties": {
+              "evidence_id": {"type": "string", "minLength": 1},
+              "version_id": {"type": "string", "minLength": 1},
+              "tombstoned": {"type": "boolean"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

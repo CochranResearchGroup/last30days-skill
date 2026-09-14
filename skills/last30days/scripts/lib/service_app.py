@@ -15,9 +15,15 @@ from typing import Any, Protocol
 import store
 
 from . import service_contracts as contracts
+from . import service_monitor_contracts as monitor_contracts
 from .service_collection import CollectionCoordinator, CollectionSpec
 from .service_intelligence_contracts import TaskContractRegistry
 from .service_knowledge import TemporalKnowledgeQuery
+from .service_monitor_views import (
+    SavedQueryRepository,
+    SavedQueryViewProvider,
+    saved_query_command,
+)
 from .service_post_search import PostSearchBackend
 from .service_retrieval import LocalHashEmbeddingProvider
 from .service_supervisor import InvalidTransitionError
@@ -137,6 +143,7 @@ class CacheQueryApplication:
         tick_schedule_status: Callable[[], Mapping[str, object]] | None = None,
         runtime_error: Callable[[], str | None] | None = None,
         post_search_backend: PostSearchBackend | None = None,
+        saved_query_provider: SavedQueryViewProvider | None = None,
         clock: Callable[[], datetime] | None = None,
         fresh_seconds: int = DEFAULT_FRESH_SECONDS,
         effect_mode: str = "normal",
@@ -175,6 +182,16 @@ class CacheQueryApplication:
         self.post_search_backend = post_search_backend or PostSearchBackend(
             self.db_path, clock=self.clock
         )
+        if saved_query_provider is None:
+            saved_query_repository = SavedQueryRepository(self.db_path)
+            saved_query_repository.initialize()
+            saved_query_provider = SavedQueryViewProvider(
+                saved_query_repository,
+                self.post_search_backend,
+                # Keep the frozen receipt below the 128 KiB Unix HTTP bound.
+                max_bytes=65_536,
+            )
+        self.saved_query_provider = saved_query_provider
         self.fresh_seconds = fresh_seconds
         self.effect_mode = effect_mode
 
@@ -336,6 +353,7 @@ class CacheQueryApplication:
                 "event_dossier",
                 "trend_query",
                 "coverage_query",
+                "saved_query_views",
             )
         )
         if self.graph_projection_enabled:
@@ -1265,6 +1283,36 @@ class CacheQueryApplication:
         return self.post_search_backend.search(
             request,
             access_partitions=self._access_partitions(request.profile_id),
+        )
+
+    def saved_query(self, payload: Mapping[str, object]) -> dict[str, object]:
+        """Run one explicit saved-query command in the caller's trusted partition."""
+        if set(payload) != {"profile_id", "command"}:
+            raise contracts.ContractValidationError(
+                "saved query request fields are invalid"
+            )
+        profile_id = payload.get("profile_id")
+        partitions = self._access_partitions(profile_id)
+        command = payload.get("command")
+        if not isinstance(command, dict):
+            raise contracts.ContractValidationError(
+                "saved query command must be an object"
+            )
+        trusted_partition = (
+            "public" if profile_id == "default" else partitions[-1]
+        )
+        if command.get("action") == "save":
+            definition = monitor_contracts.SavedQueryDefinitionV1.from_dict(
+                command.get("definition")
+            )
+            if definition.to_dict()["search"]["profile_id"] != profile_id:
+                raise contracts.ContractValidationError(
+                    "saved query profile does not match the authorized profile"
+                )
+        return saved_query_command(
+            self.saved_query_provider,
+            command,
+            access_partition_id=trusted_partition,
         )
 
     def _tick_evidence_item(
