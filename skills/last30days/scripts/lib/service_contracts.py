@@ -397,6 +397,10 @@ class PostSearchCursorStaleError(ContractValidationError):
     """The immutable post-search head referenced by a cursor was not retained."""
 
 
+class PostSearchResponseTooLargeError(ContractValidationError):
+    """A post and its indivisible provenance cannot fit the transport budget."""
+
+
 def _validate_post_search_filters(value: Any) -> dict[str, Any]:
     if not isinstance(value, Mapping):
         raise ContractValidationError("filters must be an object")
@@ -649,6 +653,7 @@ class PostSearchHit:
     evidence_refs: tuple[PostSearchEvidenceRef, ...] = ()
     collection_refs: tuple[str, ...] = ()
     topic_ids: tuple[str, ...] = ()
+    ranking: dict[str, Any] = field(default_factory=dict)
 
     CONTRACT_NAME: ClassVar[str] = "post_search_hit"
 
@@ -677,7 +682,9 @@ class PostSearchHit:
                     "evidence_ref",
                 }
             ),
-            optional=frozenset({"evidence_refs", "collection_refs", "topic_ids"}),
+            optional=frozenset(
+                {"evidence_refs", "collection_refs", "topic_ids", "ranking"}
+            ),
         )
         score = payload["score"]
         if isinstance(score, bool) or not isinstance(score, (int, float)):
@@ -686,9 +693,9 @@ class PostSearchHit:
         if not 0.0 <= score <= 1.0:
             raise ContractValidationError("score must be between 0 and 1")
         channels = payload["matching_channels"]
-        if channels not in (["lexical"], []):
+        if channels not in (["lexical"], ["semantic"], ["lexical", "semantic"], []):
             raise ContractValidationError(
-                "matching_channels must be lexical or empty for browse"
+                "matching_channels must be lexical, semantic, both, or empty for browse"
             )
         if (channels == []) != (score == 0):
             raise ContractValidationError("score must match the search channel")
@@ -760,6 +767,9 @@ class PostSearchHit:
             evidence_refs=evidence_refs,
             collection_refs=metadata["collection_refs"],
             topic_ids=metadata["topic_ids"],
+            ranking=_validate_post_search_ranking(
+                payload.get("ranking", {}), channels, score
+            ),
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -782,7 +792,64 @@ class PostSearchHit:
             "evidence_refs": [ref.to_dict() for ref in self.evidence_refs],
             "collection_refs": list(self.collection_refs),
             "topic_ids": list(self.topic_ids),
+            "ranking": dict(self.ranking),
         }
+
+
+def _validate_post_search_ranking(
+    value: Any, channels: list[str], score: float
+) -> dict[str, Any]:
+    ranking = _validate_json_object(value, "ranking")
+    if not ranking:  # Earlier cache-only clients may omit explanations.
+        return ranking
+    _require_exact_fields(ranking, required=frozenset({"version", "rrf_k", "channels"}))
+    if (
+        ranking["version"] != "post-rrf-v1"
+        or type(ranking["rrf_k"]) is not int
+        or ranking["rrf_k"] != 60
+    ):
+        raise ContractValidationError("ranking version or RRF constant is invalid")
+    parts = ranking["channels"]
+    if not isinstance(parts, dict) or set(parts) != set(channels):
+        raise ContractValidationError("ranking channels must match matching_channels")
+    expected = 0.0
+    for channel, part in parts.items():
+        if not isinstance(part, dict):
+            raise ContractValidationError("ranking channel must be an object")
+        required = {"rank", "score"} | ({"evidence"} if channel == "semantic" else set())
+        _require_exact_fields(part, required=frozenset(required))
+        rank = _require_integer_between(part["rank"], "ranking rank", 1, 10_000)
+        raw_score = part["score"]
+        if (
+            isinstance(raw_score, bool)
+            or not isinstance(raw_score, (int, float))
+            or not 0 < raw_score <= 1
+        ):
+            raise ContractValidationError("ranking channel score must be finite and positive")
+        if channel == "semantic":
+            evidence = part["evidence"]
+            if not isinstance(evidence, dict):
+                raise ContractValidationError("ranking semantic evidence must be an object")
+            _require_exact_fields(
+                evidence,
+                required=frozenset({"locator", "vector_sha256", "model", "dimensions"}),
+            )
+            _require_bounded_string(evidence["locator"], "ranking embedding locator", 1024)
+            if (
+                not isinstance(evidence["vector_sha256"], str)
+                or re.fullmatch(r"[0-9a-f]{64}", evidence["vector_sha256"]) is None
+            ):
+                raise ContractValidationError("ranking vector digest is invalid")
+            if (
+                evidence["model"] != "local-hash-v1"
+                or type(evidence["dimensions"]) is not int
+                or evidence["dimensions"] != 256
+            ):
+                raise ContractValidationError("ranking embedding space is invalid")
+        expected += 1 / (60 + rank)
+    if abs(expected - score) > 1e-12:
+        raise ContractValidationError("ranking does not reproduce the fused score")
+    return json.loads(json.dumps(ranking, allow_nan=False))
 
 
 @dataclass(frozen=True)
@@ -2051,7 +2118,7 @@ class AcquisitionWorkRequest:
             payload.get("surface_kind", "topic"), "surface_kind"
         )
         if surface_kind not in {
-            "feed", "topic", "poster", "channel", "account", "profile"
+            "feed", "topic", "poster", "channel", "account", "list", "profile"
         }:
             raise ContractValidationError("surface_kind is unsupported")
         collection_context = payload.get("collection_context")
@@ -2061,6 +2128,13 @@ class AcquisitionWorkRequest:
             collection_context = CollectionContext.from_dict(collection_context)
             if collection_context.surface_kind != surface_kind:
                 raise ContractValidationError("collection_context surface_kind does not match request")
+        query = _require_bounded_string(payload["query"], "query", 8192)
+        if collection_context is not None:
+            selector_value = next(iter(collection_context.selector.values()))
+            if query != selector_value:
+                raise ContractValidationError(
+                    "collection_context selector does not match request query"
+                )
         return cls(
             schema_version=_validate_schema_version(payload["schema_version"]),
             work_id=_require_bounded_string(payload["work_id"], "work_id", 128),
@@ -2073,7 +2147,7 @@ class AcquisitionWorkRequest:
                 payload["profile_id"], "profile_id", 128
             ),
             source=_require_bounded_string(payload["source"], "source", 64),
-            query=_require_bounded_string(payload["query"], "query", 8192),
+            query=query,
             from_date=_require_bounded_string(
                 payload["from_date"], "from_date", 64
             ),

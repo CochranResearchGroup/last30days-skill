@@ -1,0 +1,2600 @@
+{
+  "artifacts": {
+    "candidate": {
+      "build_count": 2,
+      "build_sha256": [
+        "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+        "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80"
+      ],
+      "commit": "5471e928b1f4c7867ea15de1d4e203b3315bb6e4",
+      "contract_sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+      "fixture_schema": 18,
+      "manifest_sha256": "a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea",
+      "path": "/tmp/wi007-drill-_ungd9y1/wi007-1nzic09x/build-candidate-0/last30days-service-0.3.117.tar.gz",
+      "sha256": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+      "version": "0.3.117"
+    },
+    "previous": {
+      "build_count": 1,
+      "build_sha256": [
+        "64b1b2a2d99260c4411762c656a0d670e7e1278a9406a4b9433391247b0c37a0"
+      ],
+      "commit": "94d4852fabd56e09f399ec77816ff25a690e294a",
+      "contract_sha256": "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025",
+      "fixture_schema": 17,
+      "manifest_sha256": "19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8",
+      "path": "/tmp/wi007-drill-_ungd9y1/wi007-1nzic09x/build-previous-0/last30days-service-0.3.116.tar.gz",
+      "sha256": "64b1b2a2d99260c4411762c656a0d670e7e1278a9406a4b9433391247b0c37a0",
+      "version": "0.3.116"
+    }
+  },
+  "cleanup": {
+    "processes": [
+      {
+        "pid": 1871471,
+        "scenario": "upgrade",
+        "start_ticks": 2692337
+      },
+      {
+        "pid": 1871548,
+        "scenario": "upgrade",
+        "start_ticks": 2692388
+      },
+      {
+        "pid": 1871606,
+        "scenario": "failed_upgrade",
+        "start_ticks": 2692439
+      },
+      {
+        "pid": 1871656,
+        "scenario": "failed_upgrade",
+        "start_ticks": 2692490
+      },
+      {
+        "pid": 1871811,
+        "scenario": "failed_upgrade",
+        "start_ticks": 2692606
+      },
+      {
+        "pid": 1871845,
+        "scenario": "rollback",
+        "start_ticks": 2692660
+      },
+      {
+        "pid": 1871875,
+        "scenario": "rollback",
+        "start_ticks": 2692714
+      },
+      {
+        "pid": 1871926,
+        "scenario": "rollback",
+        "start_ticks": 2692756
+      },
+      {
+        "pid": 1871991,
+        "scenario": "rollback_forward",
+        "start_ticks": 2692809
+      },
+      {
+        "pid": 1872004,
+        "scenario": "rollback_forward",
+        "start_ticks": 2692865
+      },
+      {
+        "pid": 1872015,
+        "scenario": "rollback_forward",
+        "start_ticks": 2692910
+      },
+      {
+        "pid": 1872031,
+        "scenario": "rollback_forward",
+        "start_ticks": 2692956
+      },
+      {
+        "pid": 1872052,
+        "scenario": "recovery_failure",
+        "start_ticks": 2693012
+      },
+      {
+        "pid": 1872082,
+        "scenario": "recovery_failure",
+        "start_ticks": 2693069
+      }
+    ],
+    "remaining_processes": [],
+    "verified": true
+  },
+  "controls": {
+    "failed_upgrade": [
+      {
+        "evidence": {
+          "containment": "effects disabled",
+          "evidence": "fixture://app.py/before",
+          "expected": "VALUE is correct",
+          "impact": "incorrect",
+          "incident": "fixture-incident",
+          "mode": "drill",
+          "non_goals": "No live effects",
+          "observed": "VALUE is broken",
+          "observed_at": "2026-09-14T00:00:00+00:00",
+          "overlaps": [
+            "reconciled",
+            "paused",
+            "superseded",
+            "cancelled"
+          ],
+          "production_identity": "fixture-service/v1",
+          "reporter": "fixture-operator",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "rollback_evidence": "fixture://base-tree",
+          "schema_version": 1,
+          "stop_conditions": "Any unowned effect",
+          "surfaces": [
+            "app.py"
+          ],
+          "work_item": "WI-007"
+        },
+        "previous_digest": null,
+        "sequence": 1,
+        "state": "reported"
+      },
+      {
+        "evidence": {
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7"
+        },
+        "previous_digest": "5e1c5104de0ce92d1a15b369e56459ba802e1605d7bf9747a30ff8f1ab1831a9",
+        "sequence": 2,
+        "state": "qualified"
+      },
+      {
+        "evidence": {
+          "active_hotfixes": 0,
+          "clean": true,
+          "lanes": [
+            {
+              "head_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "lane": "unaffected",
+              "mode": "drill",
+              "remote_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "notes.txt"
+              ]
+            },
+            {
+              "head_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "lane": "reconciled",
+              "mode": "drill",
+              "remote_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "lane": "paused",
+              "mode": "drill",
+              "remote_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "lane": "superseded",
+              "mode": "drill",
+              "remote_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "schema_version": 1,
+              "status": "superseded",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "lane": "cancelled",
+              "mode": "drill",
+              "remote_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "schema_version": 1,
+              "status": "cancelled",
+              "surfaces": [
+                "app.py"
+              ]
+            }
+          ],
+          "main_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "mode": "drill",
+          "remote_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1
+        },
+        "previous_digest": "afa288c47b854789179c7e9021e6a86eaaa3e1437103608ce23a8f38ea31c968",
+        "sequence": 3,
+        "state": "active"
+      },
+      {
+        "evidence": {
+          "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "blocking_findings": [],
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7",
+          "changed_files": [
+            "app.py"
+          ],
+          "compatibility": "fixture schema unchanged",
+          "fallback_tests": [
+            "fixture-tree-check"
+          ],
+          "focused_tests": [
+            "fixture-value-check"
+          ],
+          "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+          "mode": "drill",
+          "regression_after": "fixture://VALUE-correct",
+          "regression_before": "fixture://VALUE-broken",
+          "review": "fixture://priority-review",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1
+        },
+        "previous_digest": "ff054703644fb7ed01e52417301a0beca67d092010885b41c9178af37f469c0c",
+        "sequence": 4,
+        "state": "fix_ready"
+      },
+      {
+        "evidence": {
+          "ancestry_verified": true,
+          "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "candidate_digest": "a644726e7199c7829d4fab11441c3ded0581035179d5f66a23291ed9875e3a80",
+          "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+          "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "priority_review": "fixture://priority-review",
+          "schema_version": 1,
+          "target_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502"
+        },
+        "previous_digest": "9a7e8dc3b2ebeaa39acd3b3e5fd0473dbfa4e260a0bddea35ce45c59492d9b3f",
+        "sequence": 5,
+        "state": "integrated"
+      },
+      {
+        "evidence": {
+          "lanes": [
+            {
+              "disposition": "unaffected",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "unaffected",
+              "mode": "drill",
+              "new_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "old_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "schema_version": 1,
+              "validation": "fixture://unaffected-disposition"
+            },
+            {
+              "disposition": "reconciled",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "reconciled",
+              "mode": "drill",
+              "new_commit": "57f8cd840b05dd8ef5c8c9496ba1bd97498d9934",
+              "old_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "schema_version": 1,
+              "validation": "fixture://reconciled-disposition"
+            },
+            {
+              "disposition": "paused",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "paused",
+              "mode": "drill",
+              "new_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "old_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "schema_version": 1,
+              "validation": "fixture://paused-disposition"
+            },
+            {
+              "disposition": "superseded",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "superseded",
+              "mode": "drill",
+              "new_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "old_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "schema_version": 1,
+              "validation": "fixture://superseded-disposition"
+            },
+            {
+              "disposition": "cancelled",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "cancelled",
+              "mode": "drill",
+              "new_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "old_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "schema_version": 1,
+              "validation": "fixture://cancelled-disposition"
+            }
+          ],
+          "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "schema_version": 1
+        },
+        "previous_digest": "ecaf35abd2ec52f8a9dfe49380569e08e1a89f388385d29ca5f9b7c2b8cc3ab7",
+        "sequence": 6,
+        "state": "integrated"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "effects_disabled": true,
+          "identity": "fixture-staging",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "manifest_digest": "a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea",
+          "mode": "drill",
+          "rollback_verified": true,
+          "schema_version": 1,
+          "validation": "receipt://scenarios/rollback"
+        },
+        "previous_digest": "e39e6b701e09e70bcd334723fb6d48b3f165403eb394cafacc22f169a3cb75af",
+        "sequence": 7,
+        "state": "staging_accepted"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "attempt_limit": 1,
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "operator": "fixture-operator",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1,
+          "stop_conditions": "first failed postcondition",
+          "target": "fixture-production:failed_upgrade",
+          "window": "single-disposable-scenario"
+        },
+        "previous_digest": "ae322e55e7b91d3b3a080a008ad93b0fe545ccd4046b245c7c46e2ae67e8fb92",
+        "sequence": 8,
+        "state": "deploy_authorized"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "attempt": 1,
+          "evidence": "receipt://scenarios/failed_upgrade",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "schema_version": 1,
+          "target": "fixture-production:failed_upgrade"
+        },
+        "previous_digest": "b1b1f2e1fdac373f3f4bf2c6bbdf44e56d083070e2651b3a4ccbb1ab4748baff",
+        "sequence": 9,
+        "state": "deployed"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "effects_disabled": true,
+          "evidence": "receipt://scenarios/failed_upgrade",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "integrity_verified": true,
+          "mode": "drill",
+          "ready": false,
+          "regression_fixed": false,
+          "schema_version": 1,
+          "target": "fixture-production:failed_upgrade"
+        },
+        "previous_digest": "7b751503a1d8ef048c2ab546ef1607eab63f7691f73dbdb923992cc05332cf88",
+        "sequence": 10,
+        "state": "verification_failed"
+      },
+      {
+        "evidence": {
+          "attempt": 1,
+          "effects_disabled": true,
+          "evidence": "receipt://scenarios/failed_upgrade",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "integrity_verified": true,
+          "mode": "drill",
+          "ready": true,
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1,
+          "target": "fixture-production:failed_upgrade"
+        },
+        "previous_digest": "6dc42b5eb5db3e91b8cf1c61970ce4777518b4d551d35926589b490514ee6fcb",
+        "sequence": 11,
+        "state": "rolled_back"
+      },
+      {
+        "evidence": {
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7",
+          "cleanup_verified": true,
+          "evidence": "receipt://scenarios/failed_upgrade",
+          "mode": "drill",
+          "outcome": "rolled_back",
+          "residual_risks": "Synthetic service/schema and incident; no operational staging or deployment proof",
+          "schema_version": 1
+        },
+        "previous_digest": "bb57cda2548d6bfaac730322aef5b6e362924093b06d865ceea20cb7bd05128c",
+        "sequence": 12,
+        "state": "closed"
+      }
+    ],
+    "recovery_failure": [
+      {
+        "evidence": {
+          "containment": "effects disabled",
+          "evidence": "fixture://app.py/before",
+          "expected": "VALUE is correct",
+          "impact": "incorrect",
+          "incident": "fixture-incident",
+          "mode": "drill",
+          "non_goals": "No live effects",
+          "observed": "VALUE is broken",
+          "observed_at": "2026-09-14T00:00:00+00:00",
+          "overlaps": [
+            "reconciled",
+            "paused",
+            "superseded",
+            "cancelled"
+          ],
+          "production_identity": "fixture-service/v1",
+          "reporter": "fixture-operator",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "rollback_evidence": "fixture://base-tree",
+          "schema_version": 1,
+          "stop_conditions": "Any unowned effect",
+          "surfaces": [
+            "app.py"
+          ],
+          "work_item": "WI-007"
+        },
+        "previous_digest": null,
+        "sequence": 1,
+        "state": "reported"
+      },
+      {
+        "evidence": {
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7"
+        },
+        "previous_digest": "5e1c5104de0ce92d1a15b369e56459ba802e1605d7bf9747a30ff8f1ab1831a9",
+        "sequence": 2,
+        "state": "qualified"
+      },
+      {
+        "evidence": {
+          "active_hotfixes": 0,
+          "clean": true,
+          "lanes": [
+            {
+              "head_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "lane": "unaffected",
+              "mode": "drill",
+              "remote_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "notes.txt"
+              ]
+            },
+            {
+              "head_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "lane": "reconciled",
+              "mode": "drill",
+              "remote_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "lane": "paused",
+              "mode": "drill",
+              "remote_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "lane": "superseded",
+              "mode": "drill",
+              "remote_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "schema_version": 1,
+              "status": "superseded",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "lane": "cancelled",
+              "mode": "drill",
+              "remote_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "schema_version": 1,
+              "status": "cancelled",
+              "surfaces": [
+                "app.py"
+              ]
+            }
+          ],
+          "main_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "mode": "drill",
+          "remote_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1
+        },
+        "previous_digest": "afa288c47b854789179c7e9021e6a86eaaa3e1437103608ce23a8f38ea31c968",
+        "sequence": 3,
+        "state": "active"
+      },
+      {
+        "evidence": {
+          "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "blocking_findings": [],
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7",
+          "changed_files": [
+            "app.py"
+          ],
+          "compatibility": "fixture schema unchanged",
+          "fallback_tests": [
+            "fixture-tree-check"
+          ],
+          "focused_tests": [
+            "fixture-value-check"
+          ],
+          "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+          "mode": "drill",
+          "regression_after": "fixture://VALUE-correct",
+          "regression_before": "fixture://VALUE-broken",
+          "review": "fixture://priority-review",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1
+        },
+        "previous_digest": "ff054703644fb7ed01e52417301a0beca67d092010885b41c9178af37f469c0c",
+        "sequence": 4,
+        "state": "fix_ready"
+      },
+      {
+        "evidence": {
+          "ancestry_verified": true,
+          "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "candidate_digest": "a644726e7199c7829d4fab11441c3ded0581035179d5f66a23291ed9875e3a80",
+          "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+          "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "priority_review": "fixture://priority-review",
+          "schema_version": 1,
+          "target_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502"
+        },
+        "previous_digest": "9a7e8dc3b2ebeaa39acd3b3e5fd0473dbfa4e260a0bddea35ce45c59492d9b3f",
+        "sequence": 5,
+        "state": "integrated"
+      },
+      {
+        "evidence": {
+          "lanes": [
+            {
+              "disposition": "unaffected",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "unaffected",
+              "mode": "drill",
+              "new_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "old_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "schema_version": 1,
+              "validation": "fixture://unaffected-disposition"
+            },
+            {
+              "disposition": "reconciled",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "reconciled",
+              "mode": "drill",
+              "new_commit": "57f8cd840b05dd8ef5c8c9496ba1bd97498d9934",
+              "old_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "schema_version": 1,
+              "validation": "fixture://reconciled-disposition"
+            },
+            {
+              "disposition": "paused",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "paused",
+              "mode": "drill",
+              "new_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "old_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "schema_version": 1,
+              "validation": "fixture://paused-disposition"
+            },
+            {
+              "disposition": "superseded",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "superseded",
+              "mode": "drill",
+              "new_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "old_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "schema_version": 1,
+              "validation": "fixture://superseded-disposition"
+            },
+            {
+              "disposition": "cancelled",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "cancelled",
+              "mode": "drill",
+              "new_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "old_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "schema_version": 1,
+              "validation": "fixture://cancelled-disposition"
+            }
+          ],
+          "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "schema_version": 1
+        },
+        "previous_digest": "ecaf35abd2ec52f8a9dfe49380569e08e1a89f388385d29ca5f9b7c2b8cc3ab7",
+        "sequence": 6,
+        "state": "integrated"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "effects_disabled": true,
+          "identity": "fixture-staging",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "manifest_digest": "a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea",
+          "mode": "drill",
+          "rollback_verified": true,
+          "schema_version": 1,
+          "validation": "receipt://scenarios/rollback"
+        },
+        "previous_digest": "e39e6b701e09e70bcd334723fb6d48b3f165403eb394cafacc22f169a3cb75af",
+        "sequence": 7,
+        "state": "staging_accepted"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "attempt_limit": 1,
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "operator": "fixture-operator",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1,
+          "stop_conditions": "first failed postcondition",
+          "target": "fixture-production:recovery_failure",
+          "window": "single-disposable-scenario"
+        },
+        "previous_digest": "ae322e55e7b91d3b3a080a008ad93b0fe545ccd4046b245c7c46e2ae67e8fb92",
+        "sequence": 8,
+        "state": "deploy_authorized"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "attempt": 1,
+          "evidence": "receipt://scenarios/recovery_failure",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "schema_version": 1,
+          "target": "fixture-production:recovery_failure"
+        },
+        "previous_digest": "86e1d89ce898b50d368001a6fc96e6998bdb8a32deb7289f62fa3a64cdc0367a",
+        "sequence": 9,
+        "state": "deployed"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "effects_disabled": true,
+          "evidence": "receipt://scenarios/recovery_failure",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "integrity_verified": true,
+          "mode": "drill",
+          "ready": false,
+          "regression_fixed": false,
+          "schema_version": 1,
+          "target": "fixture-production:recovery_failure"
+        },
+        "previous_digest": "3808c2f278b50d813d2b7ffb9ee51f8b68c85e6bf5baaa5ce90dfaec7dc4dcf7",
+        "sequence": 10,
+        "state": "verification_failed"
+      },
+      {
+        "evidence": {
+          "attempt": 1,
+          "effects_disabled": true,
+          "evidence": "receipt://scenarios/recovery_failure",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "integrity_verified": false,
+          "mode": "drill",
+          "ready": false,
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1,
+          "target": "fixture-production:recovery_failure"
+        },
+        "previous_digest": "5fda07f53359db3f4e82d47e2ffa667e933617bc4aea5a6f56695640ef94679b",
+        "sequence": 11,
+        "state": "blocked"
+      },
+      {
+        "evidence": {
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7",
+          "cleanup_verified": true,
+          "evidence": "receipt://scenarios/recovery_failure",
+          "mode": "drill",
+          "outcome": "blocked",
+          "residual_risks": "Synthetic service/schema and incident; no operational staging or deployment proof",
+          "schema_version": 1
+        },
+        "previous_digest": "ccd3e68022ba001801499ab7fd4efae449e7a4ddd01f4d936789ca503e84f3ae",
+        "sequence": 12,
+        "state": "closed"
+      }
+    ],
+    "rollback": [
+      {
+        "evidence": {
+          "containment": "effects disabled",
+          "evidence": "fixture://app.py/before",
+          "expected": "VALUE is correct",
+          "impact": "incorrect",
+          "incident": "fixture-incident",
+          "mode": "drill",
+          "non_goals": "No live effects",
+          "observed": "VALUE is broken",
+          "observed_at": "2026-09-14T00:00:00+00:00",
+          "overlaps": [
+            "reconciled",
+            "paused",
+            "superseded",
+            "cancelled"
+          ],
+          "production_identity": "fixture-service/v1",
+          "reporter": "fixture-operator",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "rollback_evidence": "fixture://base-tree",
+          "schema_version": 1,
+          "stop_conditions": "Any unowned effect",
+          "surfaces": [
+            "app.py"
+          ],
+          "work_item": "WI-007"
+        },
+        "previous_digest": null,
+        "sequence": 1,
+        "state": "reported"
+      },
+      {
+        "evidence": {
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7"
+        },
+        "previous_digest": "5e1c5104de0ce92d1a15b369e56459ba802e1605d7bf9747a30ff8f1ab1831a9",
+        "sequence": 2,
+        "state": "qualified"
+      },
+      {
+        "evidence": {
+          "active_hotfixes": 0,
+          "clean": true,
+          "lanes": [
+            {
+              "head_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "lane": "unaffected",
+              "mode": "drill",
+              "remote_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "notes.txt"
+              ]
+            },
+            {
+              "head_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "lane": "reconciled",
+              "mode": "drill",
+              "remote_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "lane": "paused",
+              "mode": "drill",
+              "remote_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "lane": "superseded",
+              "mode": "drill",
+              "remote_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "schema_version": 1,
+              "status": "superseded",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "lane": "cancelled",
+              "mode": "drill",
+              "remote_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "schema_version": 1,
+              "status": "cancelled",
+              "surfaces": [
+                "app.py"
+              ]
+            }
+          ],
+          "main_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "mode": "drill",
+          "remote_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1
+        },
+        "previous_digest": "afa288c47b854789179c7e9021e6a86eaaa3e1437103608ce23a8f38ea31c968",
+        "sequence": 3,
+        "state": "active"
+      },
+      {
+        "evidence": {
+          "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "blocking_findings": [],
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7",
+          "changed_files": [
+            "app.py"
+          ],
+          "compatibility": "fixture schema unchanged",
+          "fallback_tests": [
+            "fixture-tree-check"
+          ],
+          "focused_tests": [
+            "fixture-value-check"
+          ],
+          "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+          "mode": "drill",
+          "regression_after": "fixture://VALUE-correct",
+          "regression_before": "fixture://VALUE-broken",
+          "review": "fixture://priority-review",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1
+        },
+        "previous_digest": "ff054703644fb7ed01e52417301a0beca67d092010885b41c9178af37f469c0c",
+        "sequence": 4,
+        "state": "fix_ready"
+      },
+      {
+        "evidence": {
+          "ancestry_verified": true,
+          "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "candidate_digest": "a644726e7199c7829d4fab11441c3ded0581035179d5f66a23291ed9875e3a80",
+          "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+          "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "priority_review": "fixture://priority-review",
+          "schema_version": 1,
+          "target_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502"
+        },
+        "previous_digest": "9a7e8dc3b2ebeaa39acd3b3e5fd0473dbfa4e260a0bddea35ce45c59492d9b3f",
+        "sequence": 5,
+        "state": "integrated"
+      },
+      {
+        "evidence": {
+          "lanes": [
+            {
+              "disposition": "unaffected",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "unaffected",
+              "mode": "drill",
+              "new_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "old_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "schema_version": 1,
+              "validation": "fixture://unaffected-disposition"
+            },
+            {
+              "disposition": "reconciled",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "reconciled",
+              "mode": "drill",
+              "new_commit": "57f8cd840b05dd8ef5c8c9496ba1bd97498d9934",
+              "old_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "schema_version": 1,
+              "validation": "fixture://reconciled-disposition"
+            },
+            {
+              "disposition": "paused",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "paused",
+              "mode": "drill",
+              "new_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "old_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "schema_version": 1,
+              "validation": "fixture://paused-disposition"
+            },
+            {
+              "disposition": "superseded",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "superseded",
+              "mode": "drill",
+              "new_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "old_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "schema_version": 1,
+              "validation": "fixture://superseded-disposition"
+            },
+            {
+              "disposition": "cancelled",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "cancelled",
+              "mode": "drill",
+              "new_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "old_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "schema_version": 1,
+              "validation": "fixture://cancelled-disposition"
+            }
+          ],
+          "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "schema_version": 1
+        },
+        "previous_digest": "ecaf35abd2ec52f8a9dfe49380569e08e1a89f388385d29ca5f9b7c2b8cc3ab7",
+        "sequence": 6,
+        "state": "integrated"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "effects_disabled": true,
+          "identity": "fixture-staging",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "manifest_digest": "a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea",
+          "mode": "drill",
+          "rollback_verified": true,
+          "schema_version": 1,
+          "validation": "receipt://scenarios/rollback"
+        },
+        "previous_digest": "e39e6b701e09e70bcd334723fb6d48b3f165403eb394cafacc22f169a3cb75af",
+        "sequence": 7,
+        "state": "staging_accepted"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "attempt_limit": 1,
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "operator": "fixture-operator",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1,
+          "stop_conditions": "first failed postcondition",
+          "target": "fixture-production:rollback",
+          "window": "single-disposable-scenario"
+        },
+        "previous_digest": "ae322e55e7b91d3b3a080a008ad93b0fe545ccd4046b245c7c46e2ae67e8fb92",
+        "sequence": 8,
+        "state": "deploy_authorized"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "attempt": 1,
+          "evidence": "receipt://scenarios/rollback",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "schema_version": 1,
+          "target": "fixture-production:rollback"
+        },
+        "previous_digest": "0115ca397d56effe2cb51f899b10b95b478c432aebf5f0509dcd30c2c7b09171",
+        "sequence": 9,
+        "state": "deployed"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "effects_disabled": true,
+          "evidence": "receipt://scenarios/rollback",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "integrity_verified": true,
+          "mode": "drill",
+          "ready": false,
+          "regression_fixed": false,
+          "schema_version": 1,
+          "target": "fixture-production:rollback"
+        },
+        "previous_digest": "4d48077f396457e092a8b0bdef51de9dbc1bf0378a32d62000ecc28f302423f7",
+        "sequence": 10,
+        "state": "verification_failed"
+      },
+      {
+        "evidence": {
+          "attempt": 1,
+          "effects_disabled": true,
+          "evidence": "receipt://scenarios/rollback",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "integrity_verified": true,
+          "mode": "drill",
+          "ready": true,
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1,
+          "target": "fixture-production:rollback"
+        },
+        "previous_digest": "cef241664577ee3942d47456ec07892daffe732068e94cf8a46e16a673b60183",
+        "sequence": 11,
+        "state": "rolled_back"
+      },
+      {
+        "evidence": {
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7",
+          "cleanup_verified": true,
+          "evidence": "receipt://scenarios/rollback",
+          "mode": "drill",
+          "outcome": "rolled_back",
+          "residual_risks": "Synthetic service/schema and incident; no operational staging or deployment proof",
+          "schema_version": 1
+        },
+        "previous_digest": "0201a225a3bfecbfbf52ffadd981793b0fc1cc4dfbaaab2fa97d5ae7c63187f0",
+        "sequence": 12,
+        "state": "closed"
+      }
+    ],
+    "rollback_forward": [
+      {
+        "evidence": {
+          "containment": "effects disabled",
+          "evidence": "fixture://app.py/before",
+          "expected": "VALUE is correct",
+          "impact": "incorrect",
+          "incident": "fixture-incident",
+          "mode": "drill",
+          "non_goals": "No live effects",
+          "observed": "VALUE is broken",
+          "observed_at": "2026-09-14T00:00:00+00:00",
+          "overlaps": [
+            "reconciled",
+            "paused",
+            "superseded",
+            "cancelled"
+          ],
+          "production_identity": "fixture-service/v1",
+          "reporter": "fixture-operator",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "rollback_evidence": "fixture://base-tree",
+          "schema_version": 1,
+          "stop_conditions": "Any unowned effect",
+          "surfaces": [
+            "app.py"
+          ],
+          "work_item": "WI-007"
+        },
+        "previous_digest": null,
+        "sequence": 1,
+        "state": "reported"
+      },
+      {
+        "evidence": {
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7"
+        },
+        "previous_digest": "5e1c5104de0ce92d1a15b369e56459ba802e1605d7bf9747a30ff8f1ab1831a9",
+        "sequence": 2,
+        "state": "qualified"
+      },
+      {
+        "evidence": {
+          "active_hotfixes": 0,
+          "clean": true,
+          "lanes": [
+            {
+              "head_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "lane": "unaffected",
+              "mode": "drill",
+              "remote_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "notes.txt"
+              ]
+            },
+            {
+              "head_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "lane": "reconciled",
+              "mode": "drill",
+              "remote_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "lane": "paused",
+              "mode": "drill",
+              "remote_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "lane": "superseded",
+              "mode": "drill",
+              "remote_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "schema_version": 1,
+              "status": "superseded",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "lane": "cancelled",
+              "mode": "drill",
+              "remote_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "schema_version": 1,
+              "status": "cancelled",
+              "surfaces": [
+                "app.py"
+              ]
+            }
+          ],
+          "main_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "mode": "drill",
+          "remote_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1
+        },
+        "previous_digest": "afa288c47b854789179c7e9021e6a86eaaa3e1437103608ce23a8f38ea31c968",
+        "sequence": 3,
+        "state": "active"
+      },
+      {
+        "evidence": {
+          "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "blocking_findings": [],
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7",
+          "changed_files": [
+            "app.py"
+          ],
+          "compatibility": "fixture schema unchanged",
+          "fallback_tests": [
+            "fixture-tree-check"
+          ],
+          "focused_tests": [
+            "fixture-value-check"
+          ],
+          "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+          "mode": "drill",
+          "regression_after": "fixture://VALUE-correct",
+          "regression_before": "fixture://VALUE-broken",
+          "review": "fixture://priority-review",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1
+        },
+        "previous_digest": "ff054703644fb7ed01e52417301a0beca67d092010885b41c9178af37f469c0c",
+        "sequence": 4,
+        "state": "fix_ready"
+      },
+      {
+        "evidence": {
+          "ancestry_verified": true,
+          "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "candidate_digest": "a644726e7199c7829d4fab11441c3ded0581035179d5f66a23291ed9875e3a80",
+          "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+          "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "priority_review": "fixture://priority-review",
+          "schema_version": 1,
+          "target_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502"
+        },
+        "previous_digest": "9a7e8dc3b2ebeaa39acd3b3e5fd0473dbfa4e260a0bddea35ce45c59492d9b3f",
+        "sequence": 5,
+        "state": "integrated"
+      },
+      {
+        "evidence": {
+          "lanes": [
+            {
+              "disposition": "unaffected",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "unaffected",
+              "mode": "drill",
+              "new_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "old_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "schema_version": 1,
+              "validation": "fixture://unaffected-disposition"
+            },
+            {
+              "disposition": "reconciled",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "reconciled",
+              "mode": "drill",
+              "new_commit": "57f8cd840b05dd8ef5c8c9496ba1bd97498d9934",
+              "old_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "schema_version": 1,
+              "validation": "fixture://reconciled-disposition"
+            },
+            {
+              "disposition": "paused",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "paused",
+              "mode": "drill",
+              "new_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "old_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "schema_version": 1,
+              "validation": "fixture://paused-disposition"
+            },
+            {
+              "disposition": "superseded",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "superseded",
+              "mode": "drill",
+              "new_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "old_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "schema_version": 1,
+              "validation": "fixture://superseded-disposition"
+            },
+            {
+              "disposition": "cancelled",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "cancelled",
+              "mode": "drill",
+              "new_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "old_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "schema_version": 1,
+              "validation": "fixture://cancelled-disposition"
+            }
+          ],
+          "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "schema_version": 1
+        },
+        "previous_digest": "ecaf35abd2ec52f8a9dfe49380569e08e1a89f388385d29ca5f9b7c2b8cc3ab7",
+        "sequence": 6,
+        "state": "integrated"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "effects_disabled": true,
+          "identity": "fixture-staging",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "manifest_digest": "a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea",
+          "mode": "drill",
+          "rollback_verified": true,
+          "schema_version": 1,
+          "validation": "receipt://scenarios/rollback"
+        },
+        "previous_digest": "e39e6b701e09e70bcd334723fb6d48b3f165403eb394cafacc22f169a3cb75af",
+        "sequence": 7,
+        "state": "staging_accepted"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "attempt_limit": 1,
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "operator": "fixture-operator",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1,
+          "stop_conditions": "first failed postcondition",
+          "target": "fixture-production:rollback_forward",
+          "window": "single-disposable-scenario"
+        },
+        "previous_digest": "ae322e55e7b91d3b3a080a008ad93b0fe545ccd4046b245c7c46e2ae67e8fb92",
+        "sequence": 8,
+        "state": "deploy_authorized"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "attempt": 1,
+          "evidence": "receipt://scenarios/rollback_forward",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "schema_version": 1,
+          "target": "fixture-production:rollback_forward"
+        },
+        "previous_digest": "17913e17e92c33b3554a2d14ebe2a4f4a41f0759bcd3d0e0e578cbb9456cec49",
+        "sequence": 9,
+        "state": "deployed"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "effects_disabled": true,
+          "evidence": "receipt://scenarios/rollback_forward",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "integrity_verified": true,
+          "mode": "drill",
+          "ready": true,
+          "regression_fixed": true,
+          "schema_version": 1,
+          "target": "fixture-production:rollback_forward"
+        },
+        "previous_digest": "b335d2e3092866338fd2216066f379350dcb212bb12252a8c8a75399edab8d12",
+        "sequence": 10,
+        "state": "deployed_verified"
+      },
+      {
+        "evidence": {
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7",
+          "cleanup_verified": true,
+          "evidence": "receipt://scenarios/rollback_forward",
+          "mode": "drill",
+          "outcome": "fixed",
+          "residual_risks": "Synthetic service/schema and incident; no operational staging or deployment proof",
+          "schema_version": 1
+        },
+        "previous_digest": "46d7bc66b01e0c1d2eb000e6d2c74a32bad256f3c5e87039bb58a0d5494c70a5",
+        "sequence": 11,
+        "state": "closed"
+      }
+    ],
+    "upgrade": [
+      {
+        "evidence": {
+          "containment": "effects disabled",
+          "evidence": "fixture://app.py/before",
+          "expected": "VALUE is correct",
+          "impact": "incorrect",
+          "incident": "fixture-incident",
+          "mode": "drill",
+          "non_goals": "No live effects",
+          "observed": "VALUE is broken",
+          "observed_at": "2026-09-14T00:00:00+00:00",
+          "overlaps": [
+            "reconciled",
+            "paused",
+            "superseded",
+            "cancelled"
+          ],
+          "production_identity": "fixture-service/v1",
+          "reporter": "fixture-operator",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "rollback_evidence": "fixture://base-tree",
+          "schema_version": 1,
+          "stop_conditions": "Any unowned effect",
+          "surfaces": [
+            "app.py"
+          ],
+          "work_item": "WI-007"
+        },
+        "previous_digest": null,
+        "sequence": 1,
+        "state": "reported"
+      },
+      {
+        "evidence": {
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7"
+        },
+        "previous_digest": "5e1c5104de0ce92d1a15b369e56459ba802e1605d7bf9747a30ff8f1ab1831a9",
+        "sequence": 2,
+        "state": "qualified"
+      },
+      {
+        "evidence": {
+          "active_hotfixes": 0,
+          "clean": true,
+          "lanes": [
+            {
+              "head_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "lane": "unaffected",
+              "mode": "drill",
+              "remote_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "notes.txt"
+              ]
+            },
+            {
+              "head_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "lane": "reconciled",
+              "mode": "drill",
+              "remote_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "lane": "paused",
+              "mode": "drill",
+              "remote_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "lane": "superseded",
+              "mode": "drill",
+              "remote_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "schema_version": 1,
+              "status": "superseded",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "lane": "cancelled",
+              "mode": "drill",
+              "remote_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "schema_version": 1,
+              "status": "cancelled",
+              "surfaces": [
+                "app.py"
+              ]
+            }
+          ],
+          "main_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "mode": "drill",
+          "remote_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1
+        },
+        "previous_digest": "afa288c47b854789179c7e9021e6a86eaaa3e1437103608ce23a8f38ea31c968",
+        "sequence": 3,
+        "state": "active"
+      },
+      {
+        "evidence": {
+          "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "blocking_findings": [],
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7",
+          "changed_files": [
+            "app.py"
+          ],
+          "compatibility": "fixture schema unchanged",
+          "fallback_tests": [
+            "fixture-tree-check"
+          ],
+          "focused_tests": [
+            "fixture-value-check"
+          ],
+          "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+          "mode": "drill",
+          "regression_after": "fixture://VALUE-correct",
+          "regression_before": "fixture://VALUE-broken",
+          "review": "fixture://priority-review",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1
+        },
+        "previous_digest": "ff054703644fb7ed01e52417301a0beca67d092010885b41c9178af37f469c0c",
+        "sequence": 4,
+        "state": "fix_ready"
+      },
+      {
+        "evidence": {
+          "ancestry_verified": true,
+          "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "candidate_digest": "a644726e7199c7829d4fab11441c3ded0581035179d5f66a23291ed9875e3a80",
+          "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+          "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "priority_review": "fixture://priority-review",
+          "schema_version": 1,
+          "target_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502"
+        },
+        "previous_digest": "9a7e8dc3b2ebeaa39acd3b3e5fd0473dbfa4e260a0bddea35ce45c59492d9b3f",
+        "sequence": 5,
+        "state": "integrated"
+      },
+      {
+        "evidence": {
+          "lanes": [
+            {
+              "disposition": "unaffected",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "unaffected",
+              "mode": "drill",
+              "new_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "old_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "schema_version": 1,
+              "validation": "fixture://unaffected-disposition"
+            },
+            {
+              "disposition": "reconciled",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "reconciled",
+              "mode": "drill",
+              "new_commit": "57f8cd840b05dd8ef5c8c9496ba1bd97498d9934",
+              "old_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "schema_version": 1,
+              "validation": "fixture://reconciled-disposition"
+            },
+            {
+              "disposition": "paused",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "paused",
+              "mode": "drill",
+              "new_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "old_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "schema_version": 1,
+              "validation": "fixture://paused-disposition"
+            },
+            {
+              "disposition": "superseded",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "superseded",
+              "mode": "drill",
+              "new_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "old_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "schema_version": 1,
+              "validation": "fixture://superseded-disposition"
+            },
+            {
+              "disposition": "cancelled",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "cancelled",
+              "mode": "drill",
+              "new_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "old_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "schema_version": 1,
+              "validation": "fixture://cancelled-disposition"
+            }
+          ],
+          "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "schema_version": 1
+        },
+        "previous_digest": "ecaf35abd2ec52f8a9dfe49380569e08e1a89f388385d29ca5f9b7c2b8cc3ab7",
+        "sequence": 6,
+        "state": "integrated"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "effects_disabled": true,
+          "identity": "fixture-staging",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "manifest_digest": "a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea",
+          "mode": "drill",
+          "rollback_verified": true,
+          "schema_version": 1,
+          "validation": "receipt://scenarios/rollback"
+        },
+        "previous_digest": "e39e6b701e09e70bcd334723fb6d48b3f165403eb394cafacc22f169a3cb75af",
+        "sequence": 7,
+        "state": "staging_accepted"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "attempt_limit": 1,
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "operator": "fixture-operator",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1,
+          "stop_conditions": "first failed postcondition",
+          "target": "fixture-production:upgrade",
+          "window": "single-disposable-scenario"
+        },
+        "previous_digest": "ae322e55e7b91d3b3a080a008ad93b0fe545ccd4046b245c7c46e2ae67e8fb92",
+        "sequence": 8,
+        "state": "deploy_authorized"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "attempt": 1,
+          "evidence": "receipt://scenarios/upgrade",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "schema_version": 1,
+          "target": "fixture-production:upgrade"
+        },
+        "previous_digest": "fa826bf33b54f33662cdcf0454dd9ce7bb24f60df1d820090a4858a2e7f4a2e8",
+        "sequence": 9,
+        "state": "deployed"
+      },
+      {
+        "evidence": {
+          "artifact_digest": "81a3fb2af355c1e7b15343441ad09a59db3ddb40eff0a7b56a96a58ac3a95c80",
+          "effects_disabled": true,
+          "evidence": "receipt://scenarios/upgrade",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "integrity_verified": true,
+          "mode": "drill",
+          "ready": true,
+          "regression_fixed": true,
+          "schema_version": 1,
+          "target": "fixture-production:upgrade"
+        },
+        "previous_digest": "6c293232f6b244337913d9173fb69d68f9a022f9b5ccca4e0e8a58da231f479c",
+        "sequence": 10,
+        "state": "deployed_verified"
+      },
+      {
+        "evidence": {
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7",
+          "cleanup_verified": true,
+          "evidence": "receipt://scenarios/upgrade",
+          "mode": "drill",
+          "outcome": "fixed",
+          "residual_risks": "Synthetic service/schema and incident; no operational staging or deployment proof",
+          "schema_version": 1
+        },
+        "previous_digest": "b6b354bcb3473467ab93d8f93f479d95df96c8822adf5a434deb660cec8803bb",
+        "sequence": 11,
+        "state": "closed"
+      }
+    ]
+  },
+  "effects": {
+    "browser": false,
+    "installed_user_service": false,
+    "operational_staging": false,
+    "provider": false,
+    "schedule": false
+  },
+  "elapsed_seconds": 11.4195,
+  "fixture_root": "/tmp/wi007-drill-_ungd9y1/wi007-1nzic09x",
+  "git": {
+    "activation_remote_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+    "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+    "cleanup": {
+      "branch_checkpoints": {
+        "feature/cancelled": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+        "feature/paused": "3954960889af3e446538b9e58618003c81b48b37",
+        "feature/reconciled": "57f8cd840b05dd8ef5c8c9496ba1bd97498d9934",
+        "feature/superseded": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+        "feature/unaffected": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+        "hotfix/WI-007-fixture": "b106a87f7a5f9ebbb23088143c4a62a71fec1270"
+      },
+      "remaining_refs": [],
+      "remaining_worktrees": [],
+      "root": "/tmp/wi007-drill-_ungd9y1/wi007-1nzic09x/l30d-hotfix-o5lrl7re",
+      "verified": true
+    },
+    "effects": {
+      "network": false,
+      "provider": false,
+      "runtime": false
+    },
+    "final_main_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+    "fixture_root": "/tmp/wi007-drill-_ungd9y1/wi007-1nzic09x/l30d-hotfix-o5lrl7re",
+    "history": [
+      {
+        "evidence": {
+          "containment": "effects disabled",
+          "evidence": "fixture://app.py/before",
+          "expected": "VALUE is correct",
+          "impact": "incorrect",
+          "incident": "fixture-incident",
+          "mode": "drill",
+          "non_goals": "No live effects",
+          "observed": "VALUE is broken",
+          "observed_at": "2026-09-14T00:00:00+00:00",
+          "overlaps": [
+            "reconciled",
+            "paused",
+            "superseded",
+            "cancelled"
+          ],
+          "production_identity": "fixture-service/v1",
+          "reporter": "fixture-operator",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "rollback_evidence": "fixture://base-tree",
+          "schema_version": 1,
+          "stop_conditions": "Any unowned effect",
+          "surfaces": [
+            "app.py"
+          ],
+          "work_item": "WI-007"
+        },
+        "previous_digest": null,
+        "sequence": 1,
+        "state": "reported"
+      },
+      {
+        "evidence": {
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7"
+        },
+        "previous_digest": "5e1c5104de0ce92d1a15b369e56459ba802e1605d7bf9747a30ff8f1ab1831a9",
+        "sequence": 2,
+        "state": "qualified"
+      },
+      {
+        "evidence": {
+          "active_hotfixes": 0,
+          "clean": true,
+          "lanes": [
+            {
+              "head_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "lane": "unaffected",
+              "mode": "drill",
+              "remote_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "notes.txt"
+              ]
+            },
+            {
+              "head_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "lane": "reconciled",
+              "mode": "drill",
+              "remote_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "lane": "paused",
+              "mode": "drill",
+              "remote_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "schema_version": 1,
+              "status": "active",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "lane": "superseded",
+              "mode": "drill",
+              "remote_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "schema_version": 1,
+              "status": "superseded",
+              "surfaces": [
+                "app.py"
+              ]
+            },
+            {
+              "head_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "lane": "cancelled",
+              "mode": "drill",
+              "remote_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "schema_version": 1,
+              "status": "cancelled",
+              "surfaces": [
+                "app.py"
+              ]
+            }
+          ],
+          "main_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "mode": "drill",
+          "remote_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1
+        },
+        "previous_digest": "afa288c47b854789179c7e9021e6a86eaaa3e1437103608ce23a8f38ea31c968",
+        "sequence": 3,
+        "state": "active"
+      },
+      {
+        "evidence": {
+          "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "blocking_findings": [],
+          "case_digest": "3c0cbc36d401ece1a87990def167ccac820ad822e1b8972b588ab2b2bf65b3b7",
+          "changed_files": [
+            "app.py"
+          ],
+          "compatibility": "fixture schema unchanged",
+          "fallback_tests": [
+            "fixture-tree-check"
+          ],
+          "focused_tests": [
+            "fixture-value-check"
+          ],
+          "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+          "mode": "drill",
+          "regression_after": "fixture://VALUE-correct",
+          "regression_before": "fixture://VALUE-broken",
+          "review": "fixture://priority-review",
+          "rollback_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "schema_version": 1
+        },
+        "previous_digest": "ff054703644fb7ed01e52417301a0beca67d092010885b41c9178af37f469c0c",
+        "sequence": 4,
+        "state": "fix_ready"
+      },
+      {
+        "evidence": {
+          "ancestry_verified": true,
+          "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+          "candidate_digest": "a644726e7199c7829d4fab11441c3ded0581035179d5f66a23291ed9875e3a80",
+          "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+          "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "priority_review": "fixture://priority-review",
+          "schema_version": 1,
+          "target_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502"
+        },
+        "previous_digest": "9a7e8dc3b2ebeaa39acd3b3e5fd0473dbfa4e260a0bddea35ce45c59492d9b3f",
+        "sequence": 5,
+        "state": "integrated"
+      },
+      {
+        "evidence": {
+          "lanes": [
+            {
+              "disposition": "unaffected",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "unaffected",
+              "mode": "drill",
+              "new_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "old_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+              "schema_version": 1,
+              "validation": "fixture://unaffected-disposition"
+            },
+            {
+              "disposition": "reconciled",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "reconciled",
+              "mode": "drill",
+              "new_commit": "57f8cd840b05dd8ef5c8c9496ba1bd97498d9934",
+              "old_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+              "schema_version": 1,
+              "validation": "fixture://reconciled-disposition"
+            },
+            {
+              "disposition": "paused",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "paused",
+              "mode": "drill",
+              "new_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "old_commit": "3954960889af3e446538b9e58618003c81b48b37",
+              "schema_version": 1,
+              "validation": "fixture://paused-disposition"
+            },
+            {
+              "disposition": "superseded",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "superseded",
+              "mode": "drill",
+              "new_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "old_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+              "schema_version": 1,
+              "validation": "fixture://superseded-disposition"
+            },
+            {
+              "disposition": "cancelled",
+              "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+              "lane": "cancelled",
+              "mode": "drill",
+              "new_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "old_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+              "schema_version": 1,
+              "validation": "fixture://cancelled-disposition"
+            }
+          ],
+          "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "mode": "drill",
+          "schema_version": 1
+        },
+        "previous_digest": "ecaf35abd2ec52f8a9dfe49380569e08e1a89f388385d29ca5f9b7c2b8cc3ab7",
+        "sequence": 6,
+        "state": "integrated"
+      }
+    ],
+    "integration": {
+      "ancestry_verified": true,
+      "base_commit": "a4c6865ac20dbf5e66d5c28fa11e080ddc2a5c51",
+      "candidate_digest": "a644726e7199c7829d4fab11441c3ded0581035179d5f66a23291ed9875e3a80",
+      "head_commit": "b106a87f7a5f9ebbb23088143c4a62a71fec1270",
+      "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+      "mode": "drill",
+      "priority_review": "fixture://priority-review",
+      "schema_version": 1,
+      "target_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502"
+    },
+    "mode": "drill",
+    "priority_gate": "affected_feature_blocked_before_hotfix",
+    "reconciliation": {
+      "lanes": [
+        {
+          "disposition": "unaffected",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "lane": "unaffected",
+          "mode": "drill",
+          "new_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+          "old_commit": "0e17bff0c1d03f4d308e430bf9e8be69247558c1",
+          "schema_version": 1,
+          "validation": "fixture://unaffected-disposition"
+        },
+        {
+          "disposition": "reconciled",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "lane": "reconciled",
+          "mode": "drill",
+          "new_commit": "57f8cd840b05dd8ef5c8c9496ba1bd97498d9934",
+          "old_commit": "5efd5881ca720ea9b40c783e1814df2104c9dc16",
+          "schema_version": 1,
+          "validation": "fixture://reconciled-disposition"
+        },
+        {
+          "disposition": "paused",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "lane": "paused",
+          "mode": "drill",
+          "new_commit": "3954960889af3e446538b9e58618003c81b48b37",
+          "old_commit": "3954960889af3e446538b9e58618003c81b48b37",
+          "schema_version": 1,
+          "validation": "fixture://paused-disposition"
+        },
+        {
+          "disposition": "superseded",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "lane": "superseded",
+          "mode": "drill",
+          "new_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+          "old_commit": "e69e8816e842f2b08ffa3af01a527a0640bf786d",
+          "schema_version": 1,
+          "validation": "fixture://superseded-disposition"
+        },
+        {
+          "disposition": "cancelled",
+          "integrated_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+          "lane": "cancelled",
+          "mode": "drill",
+          "new_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+          "old_commit": "8bbda7933dbb42948a5111c6af0cc379dd77419a",
+          "schema_version": 1,
+          "validation": "fixture://cancelled-disposition"
+        }
+      ],
+      "merge_commit": "ce42b9fbb0095cecf8732bdf40137f40f42aa502",
+      "mode": "drill",
+      "schema_version": 1
+    },
+    "schema_version": 1,
+    "status": "passed",
+    "work_item": "WI-007"
+  },
+  "manager_commands": [
+    {
+      "command": "daemon-reload",
+      "scenario": "upgrade"
+    },
+    {
+      "command": "enable",
+      "scenario": "upgrade"
+    },
+    {
+      "command": "restart",
+      "scenario": "upgrade"
+    },
+    {
+      "command": "daemon-reload",
+      "scenario": "upgrade"
+    },
+    {
+      "command": "enable",
+      "scenario": "upgrade"
+    },
+    {
+      "command": "restart",
+      "scenario": "upgrade"
+    },
+    {
+      "command": "daemon-reload",
+      "scenario": "failed_upgrade"
+    },
+    {
+      "command": "enable",
+      "scenario": "failed_upgrade"
+    },
+    {
+      "command": "restart",
+      "scenario": "failed_upgrade"
+    },
+    {
+      "command": "daemon-reload",
+      "scenario": "failed_upgrade"
+    },
+    {
+      "command": "enable",
+      "scenario": "failed_upgrade"
+    },
+    {
+      "command": "restart",
+      "scenario": "failed_upgrade"
+    },
+    {
+      "command": "stop",
+      "scenario": "failed_upgrade"
+    },
+    {
+      "command": "start",
+      "scenario": "failed_upgrade"
+    },
+    {
+      "command": "daemon-reload",
+      "scenario": "rollback"
+    },
+    {
+      "command": "enable",
+      "scenario": "rollback"
+    },
+    {
+      "command": "restart",
+      "scenario": "rollback"
+    },
+    {
+      "command": "daemon-reload",
+      "scenario": "rollback"
+    },
+    {
+      "command": "enable",
+      "scenario": "rollback"
+    },
+    {
+      "command": "restart",
+      "scenario": "rollback"
+    },
+    {
+      "command": "stop",
+      "scenario": "rollback"
+    },
+    {
+      "command": "start",
+      "scenario": "rollback"
+    },
+    {
+      "command": "daemon-reload",
+      "scenario": "rollback_forward"
+    },
+    {
+      "command": "enable",
+      "scenario": "rollback_forward"
+    },
+    {
+      "command": "restart",
+      "scenario": "rollback_forward"
+    },
+    {
+      "command": "daemon-reload",
+      "scenario": "rollback_forward"
+    },
+    {
+      "command": "enable",
+      "scenario": "rollback_forward"
+    },
+    {
+      "command": "restart",
+      "scenario": "rollback_forward"
+    },
+    {
+      "command": "stop",
+      "scenario": "rollback_forward"
+    },
+    {
+      "command": "start",
+      "scenario": "rollback_forward"
+    },
+    {
+      "command": "stop",
+      "scenario": "rollback_forward"
+    },
+    {
+      "command": "start",
+      "scenario": "rollback_forward"
+    },
+    {
+      "command": "daemon-reload",
+      "scenario": "recovery_failure"
+    },
+    {
+      "command": "enable",
+      "scenario": "recovery_failure"
+    },
+    {
+      "command": "restart",
+      "scenario": "recovery_failure"
+    },
+    {
+      "command": "daemon-reload",
+      "scenario": "recovery_failure"
+    },
+    {
+      "command": "enable",
+      "scenario": "recovery_failure"
+    },
+    {
+      "command": "restart",
+      "scenario": "recovery_failure"
+    },
+    {
+      "command": "stop",
+      "scenario": "recovery_failure"
+    },
+    {
+      "command": "start",
+      "scenario": "recovery_failure"
+    }
+  ],
+  "mode": "drill",
+  "operational_authority": false,
+  "proof_kind": "real_installer_synthetic_service_and_schema",
+  "real_slot": {
+    "live_authority": false,
+    "resources": [],
+    "state": "dormant"
+  },
+  "receipt_digest": "5ee59e1630211c9510bff8279f0d3824a689c267450d978c2c8e6290daf24ae6",
+  "scenarios": [
+    {
+      "actions": [
+        {
+          "command": "install",
+          "elapsed_seconds": 0.3768,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\n  \"contract_sha256\": \"bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025\",\n  \"database_schema_version\": 17,\n  \"release\": \"releases/0.3.116\",\n  \"runtime_manifest_sha256\": \"19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8\",\n  \"schema_version\": 1,\n  \"service_status\": \"ready\",\n  \"service_version\": \"0.3.116\",\n  \"verified_at\": \"2026-09-14T17:51:23.517156Z\"\n}\n"
+        },
+        {
+          "command": "upgrade",
+          "elapsed_seconds": 0.4382,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\n  \"contract_sha256\": \"ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6\",\n  \"database_schema_version\": 18,\n  \"release\": \"releases/0.3.117\",\n  \"runtime_manifest_sha256\": \"a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea\",\n  \"schema_version\": 1,\n  \"service_status\": \"ready\",\n  \"service_version\": \"0.3.117\",\n  \"verified_at\": \"2026-09-14T17:51:24.024037Z\"\n}\n"
+        }
+      ],
+      "name": "upgrade",
+      "observations": [
+        {
+          "current": "releases/0.3.116",
+          "database_digest": "929394dfe35aa99da90ac3d18fdd36a6ba1d1a73192edbe03a783a882c06ccc0",
+          "foreign_keys": [],
+          "integrity": "ok",
+          "previous": null,
+          "readiness": {
+            "contract_sha256": "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025",
+            "database_schema_version": 17,
+            "release": "releases/0.3.116",
+            "runtime_manifest_sha256": "19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8",
+            "schema_version": 1,
+            "service_status": "ready",
+            "service_version": "0.3.116",
+            "verified_at": "2026-09-14T17:51:23.586903Z"
+          },
+          "sentinels": [
+            "before-upgrade"
+          ],
+          "socket_peer": {
+            "pid": 1871471,
+            "start_ticks": 2692337,
+            "uid": 1000
+          }
+        },
+        {
+          "current": "releases/0.3.117",
+          "database_digest": "23ab2121f4aad6387d6721e3d36930d48893eb6f2f67e28d5d5f236e53b9a9a9",
+          "foreign_keys": [],
+          "integrity": "ok",
+          "previous": "releases/0.3.116",
+          "readiness": {
+            "contract_sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+            "database_schema_version": 18,
+            "release": "releases/0.3.117",
+            "runtime_manifest_sha256": "a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea",
+            "schema_version": 1,
+            "service_status": "ready",
+            "service_version": "0.3.117",
+            "verified_at": "2026-09-14T17:51:24.101775Z"
+          },
+          "sentinels": [
+            "before-upgrade"
+          ],
+          "socket_peer": {
+            "pid": 1871548,
+            "start_ticks": 2692388,
+            "uid": 1000
+          }
+        }
+      ],
+      "outcome": "verified"
+    },
+    {
+      "actions": [
+        {
+          "command": "install",
+          "elapsed_seconds": 0.409,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\n  \"contract_sha256\": \"bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025\",\n  \"database_schema_version\": 17,\n  \"release\": \"releases/0.3.116\",\n  \"runtime_manifest_sha256\": \"19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8\",\n  \"schema_version\": 1,\n  \"service_status\": \"ready\",\n  \"service_version\": \"0.3.116\",\n  \"verified_at\": \"2026-09-14T17:51:24.529936Z\"\n}\n"
+        },
+        {
+          "command": "upgrade",
+          "elapsed_seconds": 1.5829,
+          "returncode": 1,
+          "stderr": "last30days service install error: upgrade failed; previous release restored and ready: last30days service install error: readiness failed for 0.3.117: service readiness mismatch: status\n",
+          "stdout": ""
+        }
+      ],
+      "name": "failed_upgrade",
+      "observations": [
+        {
+          "current": "releases/0.3.116",
+          "database_digest": "929394dfe35aa99da90ac3d18fdd36a6ba1d1a73192edbe03a783a882c06ccc0",
+          "foreign_keys": [],
+          "integrity": "ok",
+          "previous": null,
+          "readiness": {
+            "contract_sha256": "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025",
+            "database_schema_version": 17,
+            "release": "releases/0.3.116",
+            "runtime_manifest_sha256": "19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8",
+            "schema_version": 1,
+            "service_status": "ready",
+            "service_version": "0.3.116",
+            "verified_at": "2026-09-14T17:51:24.610513Z"
+          },
+          "sentinels": [
+            "before-upgrade"
+          ],
+          "socket_peer": {
+            "pid": 1871606,
+            "start_ticks": 2692439,
+            "uid": 1000
+          }
+        },
+        {
+          "current": "releases/0.3.116",
+          "database_digest": "929394dfe35aa99da90ac3d18fdd36a6ba1d1a73192edbe03a783a882c06ccc0",
+          "foreign_keys": [],
+          "integrity": "ok",
+          "previous": null,
+          "readiness": {
+            "contract_sha256": "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025",
+            "database_schema_version": 17,
+            "release": "releases/0.3.116",
+            "runtime_manifest_sha256": "19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8",
+            "schema_version": 1,
+            "service_status": "ready",
+            "service_version": "0.3.116",
+            "verified_at": "2026-09-14T17:51:26.280643Z"
+          },
+          "sentinels": [
+            "before-upgrade"
+          ],
+          "socket_peer": {
+            "pid": 1871811,
+            "start_ticks": 2692606,
+            "uid": 1000
+          }
+        }
+      ],
+      "outcome": "restored"
+    },
+    {
+      "actions": [
+        {
+          "command": "install",
+          "elapsed_seconds": 0.4467,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\n  \"contract_sha256\": \"bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025\",\n  \"database_schema_version\": 17,\n  \"release\": \"releases/0.3.116\",\n  \"runtime_manifest_sha256\": \"19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8\",\n  \"schema_version\": 1,\n  \"service_status\": \"ready\",\n  \"service_version\": \"0.3.116\",\n  \"verified_at\": \"2026-09-14T17:51:26.740842Z\"\n}\n"
+        },
+        {
+          "command": "upgrade",
+          "elapsed_seconds": 0.4419,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\n  \"contract_sha256\": \"ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6\",\n  \"database_schema_version\": 18,\n  \"release\": \"releases/0.3.117\",\n  \"runtime_manifest_sha256\": \"a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea\",\n  \"schema_version\": 1,\n  \"service_status\": \"ready\",\n  \"service_version\": \"0.3.117\",\n  \"verified_at\": \"2026-09-14T17:51:27.281058Z\"\n}\n"
+        },
+        {
+          "command": "rollback",
+          "direction": "backward",
+          "elapsed_seconds": 0.3259,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\n  \"contract_sha256\": \"bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025\",\n  \"database_schema_version\": 17,\n  \"release\": \"releases/0.3.116\",\n  \"runtime_manifest_sha256\": \"19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8\",\n  \"schema_version\": 1,\n  \"service_status\": \"ready\",\n  \"service_version\": \"0.3.116\",\n  \"verified_at\": \"2026-09-14T17:51:27.700490Z\"\n}\n"
+        }
+      ],
+      "name": "rollback",
+      "observations": [
+        {
+          "current": "releases/0.3.116",
+          "database_digest": "929394dfe35aa99da90ac3d18fdd36a6ba1d1a73192edbe03a783a882c06ccc0",
+          "foreign_keys": [],
+          "integrity": "ok",
+          "previous": null,
+          "readiness": {
+            "contract_sha256": "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025",
+            "database_schema_version": 17,
+            "release": "releases/0.3.116",
+            "runtime_manifest_sha256": "19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8",
+            "schema_version": 1,
+            "service_status": "ready",
+            "service_version": "0.3.116",
+            "verified_at": "2026-09-14T17:51:26.830772Z"
+          },
+          "sentinels": [
+            "before-upgrade"
+          ],
+          "socket_peer": {
+            "pid": 1871845,
+            "start_ticks": 2692660,
+            "uid": 1000
+          }
+        },
+        {
+          "current": "releases/0.3.117",
+          "database_digest": "900694210a6677673291f3e54624df2de8a802f3280784d79bae622ae0527b16",
+          "foreign_keys": [],
+          "integrity": "ok",
+          "previous": "releases/0.3.116",
+          "readiness": {
+            "contract_sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+            "database_schema_version": 18,
+            "release": "releases/0.3.117",
+            "runtime_manifest_sha256": "a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea",
+            "schema_version": 1,
+            "service_status": "ready",
+            "service_version": "0.3.117",
+            "verified_at": "2026-09-14T17:51:27.365794Z"
+          },
+          "sentinels": [
+            "after-upgrade",
+            "before-upgrade"
+          ],
+          "socket_peer": {
+            "pid": 1871875,
+            "start_ticks": 2692714,
+            "uid": 1000
+          }
+        },
+        {
+          "current": "releases/0.3.116",
+          "database_digest": "929394dfe35aa99da90ac3d18fdd36a6ba1d1a73192edbe03a783a882c06ccc0",
+          "foreign_keys": [],
+          "integrity": "ok",
+          "previous": "releases/0.3.117",
+          "readiness": {
+            "contract_sha256": "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025",
+            "database_schema_version": 17,
+            "release": "releases/0.3.116",
+            "runtime_manifest_sha256": "19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8",
+            "schema_version": 1,
+            "service_status": "ready",
+            "service_version": "0.3.116",
+            "verified_at": "2026-09-14T17:51:27.786441Z"
+          },
+          "sentinels": [
+            "before-upgrade"
+          ],
+          "socket_peer": {
+            "pid": 1871926,
+            "start_ticks": 2692756,
+            "uid": 1000
+          }
+        }
+      ],
+      "outcome": "restored"
+    },
+    {
+      "actions": [
+        {
+          "command": "install",
+          "elapsed_seconds": 0.4173,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\n  \"contract_sha256\": \"bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025\",\n  \"database_schema_version\": 17,\n  \"release\": \"releases/0.3.116\",\n  \"runtime_manifest_sha256\": \"19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8\",\n  \"schema_version\": 1,\n  \"service_status\": \"ready\",\n  \"service_version\": \"0.3.116\",\n  \"verified_at\": \"2026-09-14T17:51:28.231877Z\"\n}\n"
+        },
+        {
+          "command": "upgrade",
+          "elapsed_seconds": 0.4644,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\n  \"contract_sha256\": \"ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6\",\n  \"database_schema_version\": 18,\n  \"release\": \"releases/0.3.117\",\n  \"runtime_manifest_sha256\": \"a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea\",\n  \"schema_version\": 1,\n  \"service_status\": \"ready\",\n  \"service_version\": \"0.3.117\",\n  \"verified_at\": \"2026-09-14T17:51:28.788682Z\"\n}\n"
+        },
+        {
+          "command": "rollback",
+          "direction": "backward",
+          "elapsed_seconds": 0.3475,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\n  \"contract_sha256\": \"bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025\",\n  \"database_schema_version\": 17,\n  \"release\": \"releases/0.3.116\",\n  \"runtime_manifest_sha256\": \"19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8\",\n  \"schema_version\": 1,\n  \"service_status\": \"ready\",\n  \"service_version\": \"0.3.116\",\n  \"verified_at\": \"2026-09-14T17:51:29.247023Z\"\n}\n"
+        },
+        {
+          "command": "rollback",
+          "direction": "forward",
+          "elapsed_seconds": 0.3425,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\n  \"contract_sha256\": \"ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6\",\n  \"database_schema_version\": 18,\n  \"release\": \"releases/0.3.117\",\n  \"runtime_manifest_sha256\": \"a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea\",\n  \"schema_version\": 1,\n  \"service_status\": \"ready\",\n  \"service_version\": \"0.3.117\",\n  \"verified_at\": \"2026-09-14T17:51:29.704721Z\"\n}\n"
+        }
+      ],
+      "name": "rollback_forward",
+      "observations": [
+        {
+          "current": "releases/0.3.116",
+          "database_digest": "929394dfe35aa99da90ac3d18fdd36a6ba1d1a73192edbe03a783a882c06ccc0",
+          "foreign_keys": [],
+          "integrity": "ok",
+          "previous": null,
+          "readiness": {
+            "contract_sha256": "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025",
+            "database_schema_version": 17,
+            "release": "releases/0.3.116",
+            "runtime_manifest_sha256": "19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8",
+            "schema_version": 1,
+            "service_status": "ready",
+            "service_version": "0.3.116",
+            "verified_at": "2026-09-14T17:51:28.317899Z"
+          },
+          "sentinels": [
+            "before-upgrade"
+          ],
+          "socket_peer": {
+            "pid": 1871991,
+            "start_ticks": 2692809,
+            "uid": 1000
+          }
+        },
+        {
+          "current": "releases/0.3.117",
+          "database_digest": "900694210a6677673291f3e54624df2de8a802f3280784d79bae622ae0527b16",
+          "foreign_keys": [],
+          "integrity": "ok",
+          "previous": "releases/0.3.116",
+          "readiness": {
+            "contract_sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+            "database_schema_version": 18,
+            "release": "releases/0.3.117",
+            "runtime_manifest_sha256": "a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea",
+            "schema_version": 1,
+            "service_status": "ready",
+            "service_version": "0.3.117",
+            "verified_at": "2026-09-14T17:51:28.888605Z"
+          },
+          "sentinels": [
+            "after-upgrade",
+            "before-upgrade"
+          ],
+          "socket_peer": {
+            "pid": 1872004,
+            "start_ticks": 2692865,
+            "uid": 1000
+          }
+        },
+        {
+          "current": "releases/0.3.116",
+          "database_digest": "929394dfe35aa99da90ac3d18fdd36a6ba1d1a73192edbe03a783a882c06ccc0",
+          "foreign_keys": [],
+          "integrity": "ok",
+          "previous": "releases/0.3.117",
+          "readiness": {
+            "contract_sha256": "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025",
+            "database_schema_version": 17,
+            "release": "releases/0.3.116",
+            "runtime_manifest_sha256": "19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8",
+            "schema_version": 1,
+            "service_status": "ready",
+            "service_version": "0.3.116",
+            "verified_at": "2026-09-14T17:51:29.347974Z"
+          },
+          "sentinels": [
+            "before-upgrade"
+          ],
+          "socket_peer": {
+            "pid": 1872015,
+            "start_ticks": 2692910,
+            "uid": 1000
+          }
+        },
+        {
+          "current": "releases/0.3.117",
+          "database_digest": "900694210a6677673291f3e54624df2de8a802f3280784d79bae622ae0527b16",
+          "foreign_keys": [],
+          "integrity": "ok",
+          "previous": "releases/0.3.116",
+          "readiness": {
+            "contract_sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+            "database_schema_version": 18,
+            "release": "releases/0.3.117",
+            "runtime_manifest_sha256": "a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea",
+            "schema_version": 1,
+            "service_status": "ready",
+            "service_version": "0.3.117",
+            "verified_at": "2026-09-14T17:51:29.790859Z"
+          },
+          "sentinels": [
+            "after-upgrade",
+            "before-upgrade"
+          ],
+          "socket_peer": {
+            "pid": 1872031,
+            "start_ticks": 2692956,
+            "uid": 1000
+          }
+        }
+      ],
+      "outcome": "verified"
+    },
+    {
+      "actions": [
+        {
+          "command": "install",
+          "elapsed_seconds": 0.4447,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\n  \"contract_sha256\": \"bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025\",\n  \"database_schema_version\": 17,\n  \"release\": \"releases/0.3.116\",\n  \"runtime_manifest_sha256\": \"19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8\",\n  \"schema_version\": 1,\n  \"service_status\": \"ready\",\n  \"service_version\": \"0.3.116\",\n  \"verified_at\": \"2026-09-14T17:51:30.264852Z\"\n}\n"
+        },
+        {
+          "command": "upgrade",
+          "elapsed_seconds": 1.5182,
+          "returncode": 1,
+          "stderr": "last30days service install error: upgrade failed and previous release readiness was not restored\n",
+          "stdout": ""
+        }
+      ],
+      "name": "recovery_failure",
+      "observations": [
+        {
+          "current": "releases/0.3.116",
+          "database_digest": "929394dfe35aa99da90ac3d18fdd36a6ba1d1a73192edbe03a783a882c06ccc0",
+          "foreign_keys": [],
+          "integrity": "ok",
+          "previous": null,
+          "readiness": {
+            "contract_sha256": "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025",
+            "database_schema_version": 17,
+            "release": "releases/0.3.116",
+            "runtime_manifest_sha256": "19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8",
+            "schema_version": 1,
+            "service_status": "ready",
+            "service_version": "0.3.116",
+            "verified_at": "2026-09-14T17:51:30.358605Z"
+          },
+          "sentinels": [
+            "before-upgrade"
+          ],
+          "socket_peer": {
+            "pid": 1872052,
+            "start_ticks": 2693012,
+            "uid": 1000
+          }
+        }
+      ],
+      "outcome": "blocked"
+    }
+  ],
+  "schema_version": 1,
+  "source_root": "/tmp/wi007-source-6ta1iJ",
+  "sources": {
+    "candidate": {
+      "commit": "5471e928b1f4c7867ea15de1d4e203b3315bb6e4",
+      "contract_sha256": "ff7923059768032111fe47af144a060bb95180c90214b6a19e73ec4844a2edb6",
+      "fixture_schema": 18,
+      "manifest_sha256": "a05bc0c480ecdde3b49cb7c647992b4215d2b1b14b8643b9a3bf6fb791cde7ea",
+      "version": "0.3.117"
+    },
+    "previous": {
+      "commit": "94d4852fabd56e09f399ec77816ff25a690e294a",
+      "contract_sha256": "bcbac11ae75e30f52b8d654efabbc965fd9812447093d2f821ae687301cf3025",
+      "fixture_schema": 17,
+      "manifest_sha256": "19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8",
+      "version": "0.3.116"
+    }
+  },
+  "status": "passed",
+  "tooling": {
+    "commit": "6b278fce0debf9cd2ebb6b6253feade5c31fd773",
+    "files": {
+      "dev/last30days/scripts/hotfix_control.py": "60d01e6316b3dbc24b986f5df0103fa2e72d394071bb48cffecda409aa912652",
+      "dev/last30days/scripts/hotfix_fixture_runtime.py": "056ac18d915804732f9789e63db3002f1a804793f77deb485d7af062d2e8b1c4",
+      "dev/last30days/scripts/hotfix_git_drill.py": "baa2fd6dca639c3e0d9ead3081cbd343afae06d3053639849e8a3ea73d55f6b2",
+      "dev/last30days/scripts/hotfix_runtime_drill.py": "444fbeeb26351dcecdddeab0eec72bc83491aed45404d2d4043aa0e40b651665",
+      "service/scripts/install.sh": "33de73f0b9d8cceb63b56b7cef63538ef115669ff73ed41a6ea4efc881034037",
+      "service/systemd/last30days.service.in": "624b4fd8cecb7e1855a5c64280a5158c85b0316ceaa154f6c1d2e4467937ee0d"
+    }
+  },
+  "work_item": "WI-007"
+}

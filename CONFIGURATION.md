@@ -965,10 +965,13 @@ Create or revise a specification from a reviewed strict JSON file:
 ```bash
 python3 scripts/service.py collection put --input /path/to/collection.json
 python3 scripts/service.py collection list
+python3 scripts/service.py collection list --include-archived
+python3 scripts/service.py collection get spec-reddit-ai
 python3 scripts/service.py collection run spec-reddit-ai
 python3 scripts/service.py collection run spec-reddit-ai --max-attempts 2
 python3 scripts/service.py collection pause spec-reddit-ai
 python3 scripts/service.py collection resume spec-reddit-ai
+python3 scripts/service.py collection archive spec-reddit-ai
 ```
 
 Resuming a paused specification resets its due boundary to the current
@@ -1014,9 +1017,9 @@ Example:
 }
 ```
 
-`surface_kind` accepts `feed`, `topic`, `poster`, `channel`, `account`, or
-`profile`. Its selector must contain exactly the matching key (`feed`, `topic`,
-`poster`, `channel`, `account`, or `profile_url`). Item, network, time, cost,
+`surface_kind` accepts `feed`, `topic`, `poster`, `channel`, `account`, `list`,
+or `profile`. Its selector must contain exactly the matching key (`feed`, `topic`,
+`poster`, `channel`, `account`, `list_id`, or `profile_url`). Item, network, time, cost,
 lookback, and cadence bounds are mandatory. X, Facebook, and LinkedIn specs
 must use `redaction_class=authenticated`; their named profile is leased so two
 collection runs cannot operate the same retained browser profile
@@ -1106,6 +1109,12 @@ owner-private socket. The installer records that same path in the stable unit
 and uses it for readiness; otherwise `LAST30DAYS_SERVICE_SOCKET` wins, followed
 by `$XDG_RUNTIME_DIR/last30days/service.sock`.
 
+Pass `--skill-host-root <absolute-path>` only when installation or upgrade must
+scope frozen host-entrypoint refresh away from the current user home, such as
+an isolated development drill. The directory must already exist, be owned by
+the current user, be non-writable by group and others, and have no symlinked
+path component. Omitting the flag preserves the existing user-home behavior.
+
 The installer writes `~/.config/systemd/user/last30days.service`, reloads the
 user manager, and enables the service. Its unit uses an owner-private umask,
 restart-on-failure, `NoNewPrivileges`, and a stable PATH containing
@@ -1130,7 +1139,7 @@ Service-enabled MCP clients expose eleven compact operations:
 - `service_info`: discover readiness, sources, capabilities, and index state;
 - `query`: read cached evidence or a compact brief under an explicit freshness
   policy;
-- `search_posts`: cache-only lexical search or filter-only browse with exact
+- `search_posts`: cache-only hybrid search or filter-only browse with exact
   `sources`, `authors`, `topic_ids`, namespaced `collection_refs`, and inclusive
   `published_after/before` or `observed_after/before` bounds. At least a query
   or one narrowing filter is required. `revision_mode` is `current` (default)
@@ -1147,6 +1156,20 @@ Service-enabled MCP clients expose eleven compact operations:
   old head. More than 10,000 filtered candidate revisions fails closed with
   a request to narrow filters. These are local bounded-retention limits, not
   performance or cross-restart retention guarantees;
+  relevance fuses lexical and compatible stored source vectors using
+  `post-rrf-v1` and `sum(1 / (60 + channel_rank))`. The query encoder is the
+  built-in `local-hash-v1` (256 dimensions); external embedding configuration
+  is not inherited and search never writes corpus embeddings. Hit `ranking`
+  includes raw scores, ranks, and exact semantic embedding locators/digests.
+  `coverage.semantic.families` distinguishes missing, incompatible, invalid,
+  zero-vector, and available evidence. These local hash vectors are a
+  deterministic baseline, not proof of general semantic quality. Both storage
+  adapters remain bounded to 20,000 stored vector rows each; exceeding the
+  bound requires narrower filters. Complete responses are limited to 131,072
+  UTF-8 bytes, so a successful page may contain fewer than `page_size` hits;
+  continue with `next_cursor`. HTTP 413 `post_search_response_too_large` means
+  one indivisible post/provenance payload cannot fit. Search never drops exact
+  provenance to disguise that condition;
 - `refresh`: create or join a bounded `force_refresh` job;
 - `job_status`: poll the typed durable job record;
 - `topic`: list or manage service-owned topics and request scheduled refreshes.
@@ -1157,8 +1180,9 @@ Service-enabled MCP clients expose eleven compact operations:
   section evidence without operating a browser;
 - `coverage`: inspect authorized collection specs, attempted intervals, yield,
   and unresolved gaps;
-- `collection`: list, put, pause, resume, or manually run typed recurring
-  collection specs through the durable supervisor;
+- `collection`: list (including explicit archived history), get, put, pause,
+  resume, manually run, or archive typed recurring collection specs through the
+  durable supervisor;
 - `maintenance_status`: read graph delivery and bounded App Intelligence
   receipts/safety gates plus canonical task contract names, versions, and
   validator-enforced limit ranges without prompts, raw provider events, or

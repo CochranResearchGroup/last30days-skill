@@ -176,7 +176,7 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 
 	postSearchOptions := []mcplib.ToolOption{
 		mcplib.WithDescription(
-			"Search or browse stored-post revisions across the authorized cache. Filters apply before ranking. Cursors last at most 15 minutes in this service process and may expire on eviction or restart. This tool is read-only and never acquires provider data.",
+			"Hybrid search or browse stored-post revisions across the authorized cache. Filters precede lexical/local stored-vector ranking; preserve RRF explanations and semantic coverage gaps. Complete responses are byte-bounded, so a page may be shorter than page_size. Cursors last at most 15 minutes in this service process and may expire on eviction or restart. This tool is read-only and never acquires provider data.",
 		),
 		mcplib.WithString(
 			"query",
@@ -362,7 +362,7 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 		mcplib.WithString(
 			"operation",
 			mcplib.Required(),
-			mcplib.Enum("list", "put", "pause", "resume", "run"),
+			mcplib.Enum("list", "get", "put", "pause", "resume", "run", "archive"),
 		),
 		mcplib.WithString("profile_id", mcplib.MaxLength(128), mcplib.DefaultString("default")),
 		mcplib.WithObject(
@@ -373,6 +373,7 @@ func toolRegistrations(client ServiceAPI) []toolRegistration {
 		),
 		mcplib.WithString("collection_spec_id", mcplib.MaxLength(128)),
 		mcplib.WithString("scheduled_for", mcplib.MaxLength(64)),
+		mcplib.WithBoolean("include_archived"),
 	}
 	collectionOptions = append(collectionOptions, commonAnnotations(false, true)...)
 
@@ -880,7 +881,7 @@ func intelligencePayload(args map[string]any, action string) (map[string]any, er
 		return payload, nil
 	case "collection":
 		operation, err := enumArgument(
-			args, "operation", "", "list", "put", "pause", "resume", "run",
+			args, "operation", "", "list", "get", "put", "pause", "resume", "run", "archive",
 		)
 		if err != nil || operation == "" {
 			return nil, errors.New("operation is required and must be supported")
@@ -905,6 +906,16 @@ func intelligencePayload(args map[string]any, action string) (map[string]any, er
 			} else if ok {
 				payload[item.name] = value
 			}
+		}
+		if raw, ok := args["include_archived"]; ok {
+			value, valid := raw.(bool)
+			if !valid {
+				return nil, errors.New("include_archived must be boolean")
+			}
+			if operation != "list" {
+				return nil, errors.New("include_archived is only valid for list")
+			}
+			payload["include_archived"] = value
 		}
 	default:
 		return nil, errors.New("unsupported intelligence action")

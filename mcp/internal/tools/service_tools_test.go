@@ -193,6 +193,32 @@ func TestSearchPostsPacketTwoFiltersBrowseAndModes(t *testing.T) {
 	}
 }
 
+func TestSearchPostsPacketThreePreservesRankingAndCoverage(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "..", "..", "tests", "fixtures", "post_search_packet3.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var fixture struct {
+		Arguments      map[string]any `json:"mcp_arguments"`
+		RankingVersion string         `json:"ranking_version"`
+	}
+	if err := json.Unmarshal(data, &fixture); err != nil {
+		t.Fatal(err)
+	}
+	payload, err := json.Marshal(map[string]any{
+		"coverage": map[string]any{"ranking_version": fixture.RankingVersion, "semantic": map[string]any{"mode": "stored_vectors_local_query"}},
+		"hits":     []any{map[string]any{"matching_channels": []string{"semantic"}, "ranking": map[string]any{"version": fixture.RankingVersion}}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	fake := &fakeService{response: payload}
+	result, err := makePostSearchHandler(fake)(context.Background(), callRequest(fixture.Arguments))
+	if err != nil || result.IsError || textResult(result) != string(payload) || fake.postPath != "/v1/posts/search" {
+		t.Fatalf("result=%+v path=%q err=%v", result, fake.postPath, err)
+	}
+}
+
 func TestTemporalAndProfileToolsUseCompactIntelligenceBoundary(t *testing.T) {
 	fake := &fakeService{response: json.RawMessage(`{"cache_only":true}`)}
 	temporal := makeIntelligenceHandler(fake, "temporal_query")
@@ -253,6 +279,35 @@ func TestCoverageCollectionAndMaintenanceUseServiceAuthority(t *testing.T) {
 		fake.postBody["operation"] != "pause" ||
 		fake.postBody["collection_spec_id"] != "linkedin-profiles" {
 		t.Fatalf("collection result = %+v, payload = %#v, err = %v", result, fake.postBody, err)
+	}
+}
+
+func TestCollectionLifecycleExposesGetArchiveAndArchivedVisibility(t *testing.T) {
+	fake := &fakeService{response: json.RawMessage(`{"status":"ready"}`)}
+	handler := makeIntelligenceHandler(fake, "collection")
+	for _, operation := range []string{"get", "archive"} {
+		result, err := handler(
+			context.Background(),
+			callRequest(map[string]any{
+				"operation":          operation,
+				"collection_spec_id": "follow-x-list-agents",
+			}),
+		)
+		if err != nil || result.IsError || fake.postBody["operation"] != operation ||
+			fake.postBody["collection_spec_id"] != "follow-x-list-agents" {
+			t.Fatalf("%s result = %+v, payload = %#v, err = %v", operation, result, fake.postBody, err)
+		}
+	}
+
+	result, err := handler(
+		context.Background(),
+		callRequest(map[string]any{
+			"operation":        "list",
+			"include_archived": true,
+		}),
+	)
+	if err != nil || result.IsError || fake.postBody["include_archived"] != true {
+		t.Fatalf("list result = %+v, payload = %#v, err = %v", result, fake.postBody, err)
 	}
 }
 

@@ -205,6 +205,47 @@ def test_acquisition_work_request_carries_frozen_tailored_account_context():
     assert request.to_dict() == payload
 
 
+def test_acquisition_work_request_rejects_collection_selector_query_mismatch():
+    payload = {
+        "schema_version": 1,
+        "work_id": "work-list-001",
+        "job_id": "job-list-001",
+        "lease_generation": 1,
+        "attempt": 1,
+        "profile_id": "x-primary",
+        "source": "x",
+        "query": "different-list",
+        "from_date": "2026-08-21",
+        "to_date": "2026-08-22",
+        "depth": "standard",
+        "adapter": "x_agent_browser",
+        "adapter_version": "1",
+        "wall_timeout_seconds": 90,
+        "item_limit": 20,
+        "network_request_limit": 50,
+        "cost_budget_cents": 0,
+        "surface_kind": "list",
+        "collection_context": {
+            "collection_spec_id": "follow-x-list-agents",
+            "spec_version": 1,
+            "collection_run_id": "collection-run-list-001",
+            "collection_purpose": "tailored_follow",
+            "surface_kind": "list",
+            "selector": {"list_id": "123456789"},
+            "selector_digest": "sha256:selector",
+            "follow_target_id": "follow-target-agents",
+            "attention_class": "priority",
+            "access_partition_id": "authenticated:x-primary",
+        },
+    }
+
+    with pytest.raises(
+        contracts.ContractValidationError,
+        match="collection_context selector does not match request query",
+    ):
+        contracts.AcquisitionWorkRequest.from_dict(payload)
+
+
 def test_acquisition_work_result_round_trips_sanitized_items_and_retry_state():
     payload = {
         "schema_version": 1,

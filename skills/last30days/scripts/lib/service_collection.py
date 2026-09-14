@@ -1182,7 +1182,11 @@ class CollectionCoordinator:
                                OR job.state NOT IN ('published', 'partial', 'failed')
                            )
                      )
-                   ORDER BY q.next_due_at, s.collection_spec_id
+                   ORDER BY q.next_due_at,
+                            CASE json_extract(r.spec_json, '$.attention_class')
+                                WHEN 'priority' THEN 0 ELSE 1
+                            END,
+                            s.collection_spec_id
                    LIMIT ?""",
                 (now_text, now_text, limit),
             ).fetchall()

@@ -25,11 +25,42 @@ responses and coverage diagnostics, plus measured 10,000-post local evidence.
 
 Packets 1-2 are integrated through PRs 36 and 79. Both storage families,
 complete filters, current/all revisions, cross-store identity, and stable
-snapshot pagination exist. Ranking remains lexical-only; the existing 10,000
-candidate and 32 MiB limits are admission controls, not performance evidence.
-Checkpoint P0111-C01 activates plan ownership and publication only. Product
-implementation and all seven acceptance criteria remain outstanding; the
-coordinator must reconcile shared-surface ownership before assigning execution.
+snapshot pagination exist. Packet 3 source acceptance is complete at
+P0111-C02: local stored-vector ranking, reproducible RRF, byte-bounded pages,
+public transport parity, and the frozen 10,000-post measurement pass.
+Generated catalog/runtime-manifest reconciliation, independent review, joined
+validation, and integration remain coordinator-owned; the plan stays OPEN.
+
+Implementation resumed on coordinator assignment after activation PR 82 at
+`5471e928b1f4c7867ea15de1d4e203b3315bb6e4`; merging exact `origin/main` was a
+fast-forward retaining activation ancestry. Search-specific shared sections
+listed below are now assigned; generated artifacts remain coordinator-owned.
+
+## Frozen Measurement Gate | 2026-09-14
+
+Before product edits, the synthetic 5,000-legacy/5,000-temporal current-post
+fixture measured first page **0.468072 seconds**, cursor page **0.008679
+seconds**, peak process RSS **88,348 KiB**, and first response **18,888 bytes**.
+The database SHA-256 is
+`1905f0a5684ff9538f3588702040e80aa926517e0d4c891c831921a9524d8c9f`.
+Environment: CPython 3.12.13, Linux 6.6.87.2 WSL2 x86_64, glibc 2.39.
+Command: `POST_SEARCH_PERFORMANCE=1 uv run pytest
+tests/test_service_post_search_performance.py --override-ini addopts='' -q -s`.
+Two fixture-construction failures (import path and duplicate synthetic URL)
+preceded the valid baseline; neither reached search measurement.
+
+Freeze before implementation: first page <= **5.0 seconds**, retained cursor
+page <= **0.1 seconds**, peak complete measurement-process RSS <= **262,144
+KiB**, complete UTF-8 response <= **131,072 bytes**. The roughly tenfold
+first-page margin accommodates reading/validating 10,000 stored vectors;
+the threefold memory ceiling is a bounded process gate, not serialized cache
+size. One baseline and one final sample are the primary measurement; one
+diagnostic rerun is allowed only after a declared failure. No percentile,
+large-text, all-revision, production latency, or semantic-quality claim follows
+from this short-text fixture. Correctness, resources, and evidence integrity
+receive separate verdicts; a resource failure does not erase valid correctness
+tests. Schema/source-data drift invalidates the affected benchmark comparison;
+database mutation invalidates its effect-free verdict.
 
 ## Scope
 
@@ -175,3 +206,142 @@ Stop and next action:
   implementation assignment and exact shared-surface ownership;
 - stop and report any custody mismatch or newly conflicting write ownership;
   no automatic implementation, benchmark, provider, or runtime continuation.
+
+### Checkpoint P0111-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `activation_published -> source_acceptance_met_pending_generated_join`.
+
+Progress classification: `outcome_progress`; all Packet 3 source behavior and
+measurement criteria have provider-free evidence. Generated/joined acceptance
+and integration are not claimed by this checkpoint.
+
+Authority classification:
+
+- `inherited_authority` under Plan 0107 and the coordinator's implementation
+  continuation covers source changes, fixture tests, this plan, commit, and
+  exact branch publication;
+- coordinator explicitly assigned search-specific contracts/schema, MCP and
+  guidance sections. A later exact allocation also covered the search-only
+  `PostSearchResponseTooLargeError` and sibling HTTP 413 mapping; other HTTP
+  endpoint behavior remains unchanged;
+- no generated catalog, runtime manifest, roadmap, runbook, active-lane,
+  work-item, issue, release, installed runtime, provider/browser, schedule,
+  staging, production, or durable-memory write is included.
+
+Custody and scope:
+
+- the assigned worktree and branch remain those in C01;
+- freshly fetched `origin/main` resolved to
+  `5471e928b1f4c7867ea15de1d4e203b3315bb6e4` (activation PR 82). The merge was
+  a fast-forward retaining `f1f5f4dd915e7d6cbf75dccbbf51999b6c25f97f` ancestry;
+- no app wiring change was required. The existing backend now imports the
+  narrow new `service_post_search_ranking.py` module, which the coordinator
+  must include in the regenerated runtime manifest;
+- product writes are the backend/ranker, search-specific contracts/schema,
+  narrowly allocated HTTP error mapping, MCP search description/test, and
+  search guidance. New tests/fixtures cover ranking, public MCP, and opt-in
+  performance. Existing source/query/answer semantics are not rewritten.
+
+Acceptance evidence:
+
+1. Legacy exact-version chunk vectors and promoted/superseded temporal
+   source-entry vectors are selected only for SQL-filtered, resolved current/
+   all post representatives. Temporal matching also verifies source, partition,
+   URL, and exact retained source text. Query encoding is always built-in
+   `local-hash-v1` with 256 dimensions; it cannot inherit an external provider.
+   No corpus embedding is created or written. Missing, mismatched, invalid,
+   and zero vectors remain explicit per-family coverage states.
+2. `post-rrf-v1` fuses positive lexical and semantic ranks with constant 60.
+   Raw scores, component ranks, and stored-vector locator/digest reproduce the
+   fused score, which Python validates. Semantic-only and dual-channel results,
+   ties, degradation, filtering, stale current replicas, and explicit all-mode
+   historical evidence have deterministic fixtures.
+3. Search heads bind the selected vector input digests and ranking version.
+   Retained cursor pages and coverage survive embedding changes/publication;
+   copied public dictionaries cannot mutate the retained head. Existing
+   mismatch, expiry, restart, eviction, access, and sort fixtures still pass.
+4. The backend fits the entire serialized UTF-8 page, coverage, and cursor to
+   131,072 bytes. Multibyte pages shorter than the requested page size traverse
+   every result exactly once; even initially final-sized requests retain a
+   snapshot when byte limits create pagination. Indivisible provenance fails
+   with bounded HTTP 413 `post_search_response_too_large`, without dropping refs.
+   Malformed `/v1/query` still returns its existing invalid-contract response.
+5. A fresh Go MCP process crosses an in-process Python fixture HTTP server and
+   returns the same semantic-only post pages as the typed client. Tests use
+   temporary synthetic databases and ephemeral fixture sockets; no service
+   runtime is provisioned or installed. The MCP child is terminated/waited and
+   the fixture server closed. Before/after database readbacks are unchanged.
+6. The final primary 10,000-post sample passes every frozen gate:
+
+   | Measure | Baseline | Frozen maximum | Final |
+   | --- | ---: | ---: | ---: |
+   | First page seconds | 0.468072 | 5.0 | 1.380568 |
+   | Retained cursor seconds | 0.008679 | 0.1 | 0.009973 |
+   | Peak process RSS KiB | 88,348 | 262,144 | 118,372 |
+   | First response UTF-8 bytes | 18,888 | 131,072 | 26,167 |
+
+   Both families have exactly 5,000 available stored-vector posts. The final
+   database SHA-256 is
+   `47426a386d1d83dea73af521b4a2ba19763a8a161a2423d63c75acb1645c383b`.
+   Raw database hashes identify each run, not cross-run corpus equality:
+   schema bootstrap stamps `access_partitions.created_at` with `datetime('now')`.
+   The same fixed source-row/vector fixture generated both samples; its final
+   formatted source SHA-256 is
+   `4dedebf32f1d93ee6c5db89522de6e308c24c2116505669202fd217122ef8b73`.
+   The final sample ran while focused compatibility tests also ran on the host;
+   results are absolute single-sample gates, not a controlled relative-speed
+   or percentile claim. No diagnostic benchmark rerun was used.
+7. This plan and source acceptance are committed/published to the exact owned
+   fork branch, followed by clean worktree and local/upstream/remote equality
+   readback. The publication SHA is reported by Git, not embedded into itself.
+
+Validation receipts (performed by this lane owner):
+
+- TDD red/green: semantic-only search first returned no hits; multibyte pages
+  first exceeded the transport budget (364,831 bytes); corrupted RRF rank
+  first escaped contract validation; the indivisible-provenance HTTP test
+  first returned generic `invalid_contract`. Each exact reproducer passed
+  after its bounded implementation;
+- focused compatibility selection: **147 passed in 13.48 seconds**:
+  `uv run pytest tests/test_service_post_search.py
+  tests/test_service_post_search_ranking.py tests/test_service_post_search_mcp.py
+  tests/test_service_contracts.py tests/test_service_app.py
+  tests/test_service_http.py tests/test_service_retrieval.py
+  tests/test_service_question_evidence.py tests/test_service_question_contracts.py
+  tests/test_skill_service_first_contract.py tests/test_service_supervisor.py
+  tests/test_service_intelligence_contracts.py tests/test_service_product.py
+  tests/test_source_log_visibility.py --override-ini addopts='' -q`;
+- opt-in measurement command above: **1 passed in 2.36 seconds**. Ordinary
+  test runs skip this synthetic performance test unless explicitly enabled;
+- `go test ./... -skip TestGeneratedPostSearchCatalogIsCurrent` and
+  `go vet ./...` passed under `mcp/`. Full `go test ./...` confirmed only the
+  expected generated-search-catalog failure. The stale digest is
+  `ac42d96af99bef3518af89f9a56522ee178ac71afb975df4f35bf368df23d26e`;
+  required digest is
+  `d0d5bb58fdb31bcb5b52c8e31129e7f5a857528886827215b5b50b2fcafc827e`;
+- focused Ruff F checks on backend/ranker and new Python fixtures/tests passed;
+  formatting used a locally cached formatter. `git diff --check` and the
+  plan-authority audit passed with zero findings;
+- one implementation attempt and one self-review pass used; no children or
+  independent review were represented as run. The coordinator owns the
+  remaining broad review and generated-artifact join.
+
+Residual limits and stop:
+
+- local hash vectors establish deterministic channel/contract behavior, not
+  broad semantic quality. WI-008 remains the quality-evaluation consumer;
+- semantic admission is bounded to 20,000 stored vector rows per family and
+  bounded vector payloads. Corpus row/retention limits remain 10,000 candidate
+  revisions and 32 MiB serialized snapshots; no general process-memory promise
+  follows beyond the recorded short-text fixture;
+- cursors remain process-local and expire on TTL/eviction/restart. Packet 4
+  isolated-runtime closeout, broader quality work, and release/version changes
+  are not performed;
+- stop at source publication. Coordinator regenerates catalogs and runtime
+  manifest once after joining lanes, reviews and validates the exact result,
+  and owns any PR/integration. Do not begin Packet 4 or open a PR here.
+
+Graphiti write status: `not_written`; current repository evidence is the
+durable authority and the assignment excludes memory/provider effects.

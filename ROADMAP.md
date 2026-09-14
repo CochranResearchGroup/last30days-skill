@@ -2616,8 +2616,8 @@ Current State:
   reviewed PR 79 at canonical `fae31198` after joined independent acceptance;
   Packet 1 closed and integrated through PR 36 as
   `75e7771e006f52847e8e47c1059b2b2000fb8ac7`;
-- Plan 0111 is activated at remote-equal checkpoint `f1f5f4dd`; implementation
-  begins only after canonical custody reconciliation;
+- Plan 0111 source acceptance `971f9ea9` is joined at Wave 2 integration head
+  `aa59b42c`; independent review found no remaining search blocker;
 - the selected seam is additive `POST /v1/posts/search` plus MCP
   `search_posts`, leaving `/v1/query` unchanged for the dependent WI-003 lane;
 - provider-free vertical packets cover both storage families, filters, stable
@@ -2641,9 +2641,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- register and activate Plan 0111 for Packet 3 semantic/RRF, response-budget,
-  coverage, and measured 10,000-post work. P36 and P40 may continue consuming
-  Packet 1's stable search/evidence contract.
+- integrate the reviewed Wave 2 head, close Plan 0111, and plan Packet 4's
+  isolated-runtime/client product closeout separately. P36 and P40 may
+  continue consuming the stable search/evidence contract.
 
 ## P34 | Isolated Development Runtime
 
@@ -2700,8 +2700,9 @@ Current State:
   remediation integrated through reviewed PR 79 at canonical `fae31198`;
   Packet 1 is
   integrated through PR 68 at canonical `87858934`;
-- Plan 0112 is activated at remote-equal checkpoint `69bf4d36`; implementation
-  begins only after canonical custody reconciliation;
+- Plan 0112 source acceptance `a10604e9` is joined at Wave 2 integration head
+  `aa59b42c`; coordinator remediation binds every frozen collection selector
+  to its exact worker query and independent review found no remaining blocker;
 - the selected seam evolves `CollectionSpec` with purpose, attention,
   lifecycle, canonical typed targets, and immutable acquisition context rather
   than creating a second scheduler;
@@ -2737,8 +2738,8 @@ Dependencies:
 
 Next Bounded Action:
 
-- register and activate Plan 0112 for the final provider-free typed-list,
-  scheduler, lifecycle, MCP, exact-follow search, and documentation closure.
+- integrate the reviewed Wave 2 head and close Plan 0112/WI-004. Its completed
+  provider-free contract then unlocks WI-005 and WI-006 follow composition.
 
 ## P36 | Agent Question Answering MCP Surface
 
@@ -2954,8 +2955,9 @@ Current State:
 - WI-007 is `IN_PROGRESS`; provider-free Packets 1-2 integrated through reviewed PR
   79 at canonical `fae31198`, and the remaining runtime/release drill has no
   provider dependency;
-- Plan 0113 is activated at remote-equal checkpoint `467aca46`; the real
-  hotfix slot remains dormant and implementation awaits catalog reconciliation;
+- Plan 0113 source acceptance `d25f9df4` is joined at Wave 2 integration head
+  `aa59b42c`; its retained receipt digest is
+  `5ee59e1630211c9510bff8279f0d3824a689c267450d978c2c8e6290daf24ae6`;
 - current policy reserves the slot, and builder/installer machinery already
   provides reproducible artifacts, readiness, database snapshots, rollback,
   and failed-upgrade restoration;
@@ -2982,9 +2984,9 @@ Dependencies:
 
 Next Bounded Action:
 
-- register and activate Plan 0113 for a disposable runtime/release and operator
-  closeout drill while retaining the real slot as dormant capacity. A qualified
-  production incident remains separately authorized.
+- integrate the reviewed Wave 2 head and close Plan 0113/WI-007 while retaining
+  the real slot as dormant capacity. A qualified production incident remains
+  separately authorized.
 
 ## P39 | Cross-Service Tailored Follow Product Surface
 
@@ -3341,6 +3343,10 @@ Current State:
 - Wave 1's WI-002 Search Packet 2, WI-004 Tailored Follows Packet 2, and WI-007
   provider-free hotfix control/Git drills integrated through reviewed PR 79 at
   canonical `fae31198` after joined validation and review remediation;
+- Wave 2 joins WI-002 hybrid search `971f9ea9`, WI-004 product closure
+  `a10604e9`, and WI-007 runtime/operator closure `d25f9df4` at reviewed
+  integration head `aa59b42c`; full joined validation and independent review
+  pass with one closed documentation remediation;
 - WI-003, WI-005, WI-006, and WI-008 remain dependency-ordered later waves;
 - at most three one-level implementation agents may run concurrently, and the
   coordinator owns integration plus shared authority projections;
@@ -3352,13 +3358,13 @@ Active Plan:
 
 - `docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`.
 
-Wave 1 Planned Packets:
+Current Wave 2 Plans:
 
-- `docs/dev/plans/0108-2026-09-14-post-search-packet-2.md`;
-- `docs/dev/plans/0109-2026-09-14-tailored-follows-packet-2.md`;
-- `docs/dev/plans/0110-2026-09-14-hotfix-control-and-git-drill.md`.
+- `docs/dev/plans/0111-2026-09-14-post-search-packet-3.md`;
+- `docs/dev/plans/0112-2026-09-14-x-list-and-product-closure.md`;
+- `docs/dev/plans/0113-2026-09-14-hotfix-runtime-and-operator-closure.md`.
 
 Next Bounded Action:
 
-- integrate Plans 0111-0113 registration, publish and reconcile their exact
-  plan-only activations, then run the three independent implementation lanes.
+- publish and merge the reviewed Wave 2 integration head, record canonical
+  closeout receipts, then register the next dependency-ordered wave.
