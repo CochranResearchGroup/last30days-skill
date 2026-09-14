@@ -1,0 +1,643 @@
+{
+  "descriptor": {
+    "artifacts_dir": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/artifacts",
+    "branch": "integration/provider-free-wave4",
+    "browser_policy": "deny",
+    "commit": "f1616a1172f151b85d0adc14f00ba733b09a8a1d",
+    "committed_at": "2026-09-14T15:02:16-05:00",
+    "config_dir": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/config",
+    "created_at": "2026-09-14T15:02:16-05:00",
+    "credential_policy": "deny",
+    "data_dir": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/data",
+    "database_path": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/data/research.db",
+    "descriptor_digest": "ca4a2918bb8527f7d141a9b92163412d03c85cb519e14503aa195a9e74309146",
+    "descriptor_path": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/descriptor.json",
+    "effect_mode": "cache_only",
+    "inherited_environment_policy": "allowlist",
+    "lane_id": "p36-question-packet4",
+    "lock_path": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/run/controller.lock",
+    "log_dir": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/logs",
+    "log_path": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/logs/service.log",
+    "pid_path": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/run/service.pid.json",
+    "plan": "0117",
+    "repository_identity": "github.com/cochranresearchgroup/last30days-skill",
+    "run_dir": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/run",
+    "runtime_id": "l30d-p36-question-packet4-b0f4381fce58",
+    "runtime_kind": "development",
+    "schedule_policy": "deny",
+    "schema_version": 1,
+    "service_name": "last30days-dev-p36-question-packet4-b0f4381fce58",
+    "socket_path": "/tmp/l30d-wave4-runtime.khAtyE/b0f4381fce58/s",
+    "startup_receipt_path": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/receipts/startup.json",
+    "state_root": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58",
+    "status_receipt_path": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/receipts/status.json",
+    "tick_config_digest": "c96ac2a5671c1a7fe8e50aaf3c8d286608d8685c53d261b41d9775678f7ecfbb",
+    "tick_config_path": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/config/tick.json",
+    "updated_at": "2026-09-14T15:02:16-05:00",
+    "work_item": "WI-003",
+    "worktree": "/home/ecochran76/workspace.local/last30days-skill-wave4-integration"
+  },
+  "durable_restart": true,
+  "final_controller_status": {
+    "reasons": [],
+    "schema_version": 1,
+    "state": "absent"
+  },
+  "mcp_binary_sha256": "00aba2f0b6ea4a3e5748019f5aac06c109840e2fce8e92a4bc65c2b1789758ad",
+  "mcp_processes": [
+    {
+      "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+      "cmdline": [
+        "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/question-mcp"
+      ],
+      "executable": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/question-mcp",
+      "pid": 2571614,
+      "start_ticks": 3503019,
+      "uid": 1000
+    },
+    {
+      "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+      "cmdline": [
+        "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/question-mcp"
+      ],
+      "executable": "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/question-mcp",
+      "pid": 2571814,
+      "start_ticks": 3503188,
+      "uid": 1000
+    }
+  ],
+  "owned_process_census": [],
+  "plan": "0117",
+  "provider_free": true,
+  "question": {
+    "case_count": 6,
+    "cases": [
+      {
+        "case": "evidence",
+        "state": "answered",
+        "status_digest": "fa750854bfef1513e574192a937a3d6e308081b3097496716bdace56fc372540"
+      },
+      {
+        "case": "empty",
+        "state": "no_evidence",
+        "status_digest": "f6b9f7a3004398ac8ed8f333dad3efc18eba8a5ed3bc7e7a8fcb4083cd26c2d0"
+      },
+      {
+        "case": "unavailable",
+        "state": "model_unavailable",
+        "status_digest": "a0decef2ea0e4fcfc8652af2aa310b4e96e1befd581f35bbdaadceabddf4aae1"
+      },
+      {
+        "case": "fallback",
+        "state": "answered",
+        "status_digest": "5749d06eda8fc37557d4fc84477b3a9566d8c0ad01605a57c0d5b5775afaa1da"
+      },
+      {
+        "case": "private",
+        "state": "answered",
+        "status_digest": "19e48124eb90be3ce3ba21fb3e5d74f56112859b06133255068ed926747ca734"
+      },
+      {
+        "case": "all_filters",
+        "state": "answered",
+        "status_digest": "21301dd45b1e445ce7fd002424f5484ab0c458729a9e4f7ab68dca9b6b4562f4"
+      }
+    ],
+    "discovery_digest": "65ded1b39164a4e6c12d022ac0af904b53e6527b72e66e51d58e9e4fccdf7897",
+    "non_question_digest": "d17c174072db1e6ea7541581938a4ed85958991b8063fb5350eebe55f226dd9f",
+    "state": "passed"
+  },
+  "runtime_cycles": [
+    {
+      "before_down": {
+        "artifact": {
+          "manifest_sha256": "dff5308dadbabbfaaede591b6f116637397c85be937535ecfabdcd98089f7f59",
+          "path": "/tmp/l30d-wave4-build1.Cq4cIo/last30days-service-0.3.118.tar.gz",
+          "sha256": "f092bef3841320dce47a899323d37fbc1cab6174bf8e038533cb308df3f879b5"
+        },
+        "descriptor_digest": "ca4a2918bb8527f7d141a9b92163412d03c85cb519e14503aa195a9e74309146",
+        "process": {
+          "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+          "cmdline": [
+            "/home/ecochran76/workspace.local/last30days-skill-wave4-integration/.venv/bin/python3",
+            "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/artifacts/f092bef3841320dce47a899323d37fbc1cab6174bf8e038533cb308df3f879b5/last30days-service-0.3.118/scripts/service.py",
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            "/tmp/l30d-wave4-runtime.khAtyE/b0f4381fce58/s",
+            "--db",
+            "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/data/research.db"
+          ],
+          "executable": "/home/ecochran76/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12",
+          "pid": 2571464,
+          "start_ticks": 3502924,
+          "uid": 1000
+        },
+        "reasons": [],
+        "runtime_id": "l30d-p36-question-packet4-b0f4381fce58",
+        "schema_version": 1,
+        "service_info": {
+          "capabilities": [
+            "cache_query",
+            "lexical_search",
+            "post_search",
+            "temporal_query",
+            "profile_history",
+            "event_timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend_query",
+            "coverage_query",
+            "saved_query_views",
+            "follow_capability_discovery"
+          ],
+          "compatibility_state": "mcp_client_not_declared",
+          "contract_schema_version": 1,
+          "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+          "database_schema_version": 18,
+          "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ],
+          "index": {
+            "document_count": 0,
+            "embedding_count": 0,
+            "embedding_model": "local-hash-v1",
+            "relationship_count": 0,
+            "version": "index-c165dbdd59a7436f454ac3db"
+          },
+          "limits": {
+            "default_top_k": 8,
+            "max_chars": 65536,
+            "max_top_k": 100
+          },
+          "mcp_adapter_version": null,
+          "mcp_supported_database_schema_max": null,
+          "mcp_supported_database_schema_min": null,
+          "mcp_supported_service_api_max": null,
+          "mcp_supported_service_api_min": null,
+          "product": "last30days",
+          "response_modes": [
+            "evidence",
+            "brief"
+          ],
+          "runtime_manifest_sha256": "dff5308dadbabbfaaede591b6f116637397c85be937535ecfabdcd98089f7f59",
+          "schema_version": 1,
+          "service_api_version": 1,
+          "service_version": "0.3.118",
+          "sources": {
+            "reddit": {
+              "acquisition_ready": false,
+              "acquisition_status": "cache_only",
+              "configured": false,
+              "indexed_documents": 1,
+              "ready": true
+            }
+          },
+          "status": "ready",
+          "transport": "unix"
+        },
+        "socket_peer": {
+          "gid": 1000,
+          "pid": 2571464,
+          "uid": 1000
+        },
+        "state": "ready"
+      },
+      "down": {
+        "reasons": [],
+        "runtime_id": "l30d-p36-question-packet4-b0f4381fce58",
+        "schema_version": 1,
+        "state": "stopped"
+      },
+      "mcp_service_info": {
+        "capabilities": [
+          "cache_query",
+          "lexical_search",
+          "post_search",
+          "temporal_query",
+          "profile_history",
+          "event_timeline",
+          "entity_dossier",
+          "event_dossier",
+          "trend_query",
+          "coverage_query",
+          "saved_query_views",
+          "follow_capability_discovery"
+        ],
+        "compatibility_state": "compatible",
+        "contract_schema_version": 1,
+        "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+        "database_schema_version": 18,
+        "freshness_policies": [
+          "cache_only",
+          "prefer_cache",
+          "refresh_if_stale",
+          "force_refresh"
+        ],
+        "index": {
+          "document_count": 0,
+          "embedding_count": 0,
+          "embedding_model": "local-hash-v1",
+          "relationship_count": 0,
+          "version": "index-c165dbdd59a7436f454ac3db"
+        },
+        "limits": {
+          "default_top_k": 8,
+          "max_chars": 65536,
+          "max_top_k": 100
+        },
+        "mcp_adapter_version": "4.0.6",
+        "mcp_supported_database_schema_max": 18,
+        "mcp_supported_database_schema_min": 18,
+        "mcp_supported_service_api_max": 1,
+        "mcp_supported_service_api_min": 1,
+        "product": "last30days",
+        "response_modes": [
+          "evidence",
+          "brief"
+        ],
+        "runtime_manifest_sha256": "dff5308dadbabbfaaede591b6f116637397c85be937535ecfabdcd98089f7f59",
+        "schema_version": 1,
+        "service_api_version": 1,
+        "service_version": "0.3.118",
+        "sources": {
+          "reddit": {
+            "acquisition_ready": false,
+            "acquisition_status": "cache_only",
+            "configured": false,
+            "indexed_documents": 1,
+            "ready": true
+          }
+        },
+        "status": "ready",
+        "transport": "unix"
+      },
+      "startup": {
+        "artifact": {
+          "manifest_sha256": "dff5308dadbabbfaaede591b6f116637397c85be937535ecfabdcd98089f7f59",
+          "path": "/tmp/l30d-wave4-build1.Cq4cIo/last30days-service-0.3.118.tar.gz",
+          "sha256": "f092bef3841320dce47a899323d37fbc1cab6174bf8e038533cb308df3f879b5"
+        },
+        "descriptor_digest": "ca4a2918bb8527f7d141a9b92163412d03c85cb519e14503aa195a9e74309146",
+        "process": {
+          "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+          "cmdline": [
+            "/home/ecochran76/workspace.local/last30days-skill-wave4-integration/.venv/bin/python3",
+            "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/artifacts/f092bef3841320dce47a899323d37fbc1cab6174bf8e038533cb308df3f879b5/last30days-service-0.3.118/scripts/service.py",
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            "/tmp/l30d-wave4-runtime.khAtyE/b0f4381fce58/s",
+            "--db",
+            "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/data/research.db"
+          ],
+          "executable": "/home/ecochran76/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12",
+          "pid": 2571464,
+          "start_ticks": 3502924,
+          "uid": 1000
+        },
+        "reasons": [],
+        "runtime_id": "l30d-p36-question-packet4-b0f4381fce58",
+        "schema_version": 1,
+        "service_info": {
+          "capabilities": [
+            "cache_query",
+            "lexical_search",
+            "post_search",
+            "temporal_query",
+            "profile_history",
+            "event_timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend_query",
+            "coverage_query",
+            "saved_query_views",
+            "follow_capability_discovery"
+          ],
+          "compatibility_state": "mcp_client_not_declared",
+          "contract_schema_version": 1,
+          "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+          "database_schema_version": 18,
+          "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ],
+          "index": {
+            "document_count": 0,
+            "embedding_count": 0,
+            "embedding_model": "local-hash-v1",
+            "relationship_count": 0,
+            "version": "index-c165dbdd59a7436f454ac3db"
+          },
+          "limits": {
+            "default_top_k": 8,
+            "max_chars": 65536,
+            "max_top_k": 100
+          },
+          "mcp_adapter_version": null,
+          "mcp_supported_database_schema_max": null,
+          "mcp_supported_database_schema_min": null,
+          "mcp_supported_service_api_max": null,
+          "mcp_supported_service_api_min": null,
+          "product": "last30days",
+          "response_modes": [
+            "evidence",
+            "brief"
+          ],
+          "runtime_manifest_sha256": "dff5308dadbabbfaaede591b6f116637397c85be937535ecfabdcd98089f7f59",
+          "schema_version": 1,
+          "service_api_version": 1,
+          "service_version": "0.3.118",
+          "sources": {},
+          "status": "ready",
+          "transport": "unix"
+        },
+        "socket_peer": {
+          "gid": 1000,
+          "pid": 2571464,
+          "uid": 1000
+        },
+        "state": "ready"
+      }
+    },
+    {
+      "before_down": {
+        "artifact": {
+          "manifest_sha256": "dff5308dadbabbfaaede591b6f116637397c85be937535ecfabdcd98089f7f59",
+          "path": "/tmp/l30d-wave4-build1.Cq4cIo/last30days-service-0.3.118.tar.gz",
+          "sha256": "f092bef3841320dce47a899323d37fbc1cab6174bf8e038533cb308df3f879b5"
+        },
+        "descriptor_digest": "ca4a2918bb8527f7d141a9b92163412d03c85cb519e14503aa195a9e74309146",
+        "process": {
+          "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+          "cmdline": [
+            "/home/ecochran76/workspace.local/last30days-skill-wave4-integration/.venv/bin/python3",
+            "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/artifacts/f092bef3841320dce47a899323d37fbc1cab6174bf8e038533cb308df3f879b5/last30days-service-0.3.118/scripts/service.py",
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            "/tmp/l30d-wave4-runtime.khAtyE/b0f4381fce58/s",
+            "--db",
+            "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/data/research.db"
+          ],
+          "executable": "/home/ecochran76/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12",
+          "pid": 2571808,
+          "start_ticks": 3503167,
+          "uid": 1000
+        },
+        "reasons": [],
+        "runtime_id": "l30d-p36-question-packet4-b0f4381fce58",
+        "schema_version": 1,
+        "service_info": {
+          "capabilities": [
+            "cache_query",
+            "lexical_search",
+            "post_search",
+            "temporal_query",
+            "profile_history",
+            "event_timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend_query",
+            "coverage_query",
+            "saved_query_views",
+            "follow_capability_discovery"
+          ],
+          "compatibility_state": "mcp_client_not_declared",
+          "contract_schema_version": 1,
+          "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+          "database_schema_version": 18,
+          "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ],
+          "index": {
+            "document_count": 1,
+            "embedding_count": 0,
+            "embedding_model": "local-hash-v1",
+            "relationship_count": 0,
+            "version": "index-2b1a2fa5028f256733143238"
+          },
+          "limits": {
+            "default_top_k": 8,
+            "max_chars": 65536,
+            "max_top_k": 100
+          },
+          "mcp_adapter_version": null,
+          "mcp_supported_database_schema_max": null,
+          "mcp_supported_database_schema_min": null,
+          "mcp_supported_service_api_max": null,
+          "mcp_supported_service_api_min": null,
+          "product": "last30days",
+          "response_modes": [
+            "evidence",
+            "brief"
+          ],
+          "runtime_manifest_sha256": "dff5308dadbabbfaaede591b6f116637397c85be937535ecfabdcd98089f7f59",
+          "schema_version": 1,
+          "service_api_version": 1,
+          "service_version": "0.3.118",
+          "sources": {
+            "reddit": {
+              "acquisition_ready": false,
+              "acquisition_status": "cache_only",
+              "configured": false,
+              "indexed_documents": 1,
+              "ready": true
+            }
+          },
+          "status": "ready",
+          "transport": "unix"
+        },
+        "socket_peer": {
+          "gid": 1000,
+          "pid": 2571808,
+          "uid": 1000
+        },
+        "state": "ready"
+      },
+      "down": {
+        "reasons": [],
+        "runtime_id": "l30d-p36-question-packet4-b0f4381fce58",
+        "schema_version": 1,
+        "state": "stopped"
+      },
+      "mcp_service_info": {
+        "capabilities": [
+          "cache_query",
+          "lexical_search",
+          "post_search",
+          "temporal_query",
+          "profile_history",
+          "event_timeline",
+          "entity_dossier",
+          "event_dossier",
+          "trend_query",
+          "coverage_query",
+          "saved_query_views",
+          "follow_capability_discovery"
+        ],
+        "compatibility_state": "compatible",
+        "contract_schema_version": 1,
+        "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+        "database_schema_version": 18,
+        "freshness_policies": [
+          "cache_only",
+          "prefer_cache",
+          "refresh_if_stale",
+          "force_refresh"
+        ],
+        "index": {
+          "document_count": 1,
+          "embedding_count": 0,
+          "embedding_model": "local-hash-v1",
+          "relationship_count": 0,
+          "version": "index-2b1a2fa5028f256733143238"
+        },
+        "limits": {
+          "default_top_k": 8,
+          "max_chars": 65536,
+          "max_top_k": 100
+        },
+        "mcp_adapter_version": "4.0.6",
+        "mcp_supported_database_schema_max": 18,
+        "mcp_supported_database_schema_min": 18,
+        "mcp_supported_service_api_max": 1,
+        "mcp_supported_service_api_min": 1,
+        "product": "last30days",
+        "response_modes": [
+          "evidence",
+          "brief"
+        ],
+        "runtime_manifest_sha256": "dff5308dadbabbfaaede591b6f116637397c85be937535ecfabdcd98089f7f59",
+        "schema_version": 1,
+        "service_api_version": 1,
+        "service_version": "0.3.118",
+        "sources": {
+          "reddit": {
+            "acquisition_ready": false,
+            "acquisition_status": "cache_only",
+            "configured": false,
+            "indexed_documents": 1,
+            "ready": true
+          }
+        },
+        "status": "ready",
+        "transport": "unix"
+      },
+      "startup": {
+        "artifact": {
+          "manifest_sha256": "dff5308dadbabbfaaede591b6f116637397c85be937535ecfabdcd98089f7f59",
+          "path": "/tmp/l30d-wave4-build1.Cq4cIo/last30days-service-0.3.118.tar.gz",
+          "sha256": "f092bef3841320dce47a899323d37fbc1cab6174bf8e038533cb308df3f879b5"
+        },
+        "descriptor_digest": "ca4a2918bb8527f7d141a9b92163412d03c85cb519e14503aa195a9e74309146",
+        "process": {
+          "boot_id": "0ab12eb6-ca7a-4ec7-997e-07ca5fd37e72",
+          "cmdline": [
+            "/home/ecochran76/workspace.local/last30days-skill-wave4-integration/.venv/bin/python3",
+            "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/artifacts/f092bef3841320dce47a899323d37fbc1cab6174bf8e038533cb308df3f879b5/last30days-service-0.3.118/scripts/service.py",
+            "serve",
+            "--effect-mode",
+            "cache_only",
+            "--socket",
+            "/tmp/l30d-wave4-runtime.khAtyE/b0f4381fce58/s",
+            "--db",
+            "/tmp/l30d-wave4-state.PLqpPn/last30days/lanes/l30d-p36-question-packet4-b0f4381fce58/data/research.db"
+          ],
+          "executable": "/home/ecochran76/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12",
+          "pid": 2571808,
+          "start_ticks": 3503167,
+          "uid": 1000
+        },
+        "reasons": [],
+        "runtime_id": "l30d-p36-question-packet4-b0f4381fce58",
+        "schema_version": 1,
+        "service_info": {
+          "capabilities": [
+            "cache_query",
+            "lexical_search",
+            "post_search",
+            "temporal_query",
+            "profile_history",
+            "event_timeline",
+            "entity_dossier",
+            "event_dossier",
+            "trend_query",
+            "coverage_query",
+            "saved_query_views",
+            "follow_capability_discovery"
+          ],
+          "compatibility_state": "mcp_client_not_declared",
+          "contract_schema_version": 1,
+          "contract_sha256": "a4b81886f1f7d86eceaaeeb7236f5005296be9f15b370d57129b0df1490c98c5",
+          "database_schema_version": 18,
+          "freshness_policies": [
+            "cache_only",
+            "prefer_cache",
+            "refresh_if_stale",
+            "force_refresh"
+          ],
+          "index": {
+            "document_count": 1,
+            "embedding_count": 0,
+            "embedding_model": "local-hash-v1",
+            "relationship_count": 0,
+            "version": "index-2b1a2fa5028f256733143238"
+          },
+          "limits": {
+            "default_top_k": 8,
+            "max_chars": 65536,
+            "max_top_k": 100
+          },
+          "mcp_adapter_version": null,
+          "mcp_supported_database_schema_max": null,
+          "mcp_supported_database_schema_min": null,
+          "mcp_supported_service_api_max": null,
+          "mcp_supported_service_api_min": null,
+          "product": "last30days",
+          "response_modes": [
+            "evidence",
+            "brief"
+          ],
+          "runtime_manifest_sha256": "dff5308dadbabbfaaede591b6f116637397c85be937535ecfabdcd98089f7f59",
+          "schema_version": 1,
+          "service_api_version": 1,
+          "service_version": "0.3.118",
+          "sources": {
+            "reddit": {
+              "acquisition_ready": false,
+              "acquisition_status": "cache_only",
+              "configured": false,
+              "indexed_documents": 1,
+              "ready": true
+            }
+          },
+          "status": "ready",
+          "transport": "unix"
+        },
+        "socket_peer": {
+          "gid": 1000,
+          "pid": 2571808,
+          "uid": 1000
+        },
+        "state": "ready"
+      }
+    }
+  ],
+  "schema_version": 1,
+  "source_commit": "f1616a1172f151b85d0adc14f00ba733b09a8a1d",
+  "state": "passed",
+  "synthetic_only": true,
+  "work_item": "WI-003"
+}
