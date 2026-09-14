@@ -8,11 +8,13 @@ lanes:
     branch: docs/p36-packet3-launch-registration
     target: main
     plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
+    custody_state: INTEGRATION_READY
     checkpoint: de99e1b923e1095d7b8ec22ecd006fd40089e789
     remote_ref: refs/remotes/origin/docs/p36-packet3-launch-registration
     integration: merge
     integration_receipt: null
+    validation_status: passed
+    validation_ref: de99e1b923e1095d7b8ec22ecd006fd40089e789
     dependencies: []
     overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
     reconciled_overlaps: [ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-003-agent-question-answering-mcp.md]
