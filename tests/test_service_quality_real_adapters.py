@@ -3,14 +3,15 @@
 from __future__ import annotations
 
 import hashlib
-import sqlite3
 import json
+import sqlite3
 import subprocess
 import sys
 from pathlib import Path
 
 from dev.last30days.quality import (
     EvaluationCaseV1,
+    EvidenceHeadV1,
     QualityEvaluationRequestV1,
     QualityEvaluationSetV1,
     QualityRunnerV1,
@@ -31,6 +32,91 @@ def _digest(path: Path) -> str:
     return "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _json_digest(value: object) -> str:
+    encoded = json.dumps(
+        value,
+        allow_nan=False,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode()
+    return "sha256:" + hashlib.sha256(encoded).hexdigest()
+
+
+def _candidate() -> dict[str, object]:
+    return {
+        "repository_commit": "1" * 40,
+        "service_contract_version": "fixture-v2",
+        "database_schema_version": 0,
+        "index_head": "index:fixture-v2",
+        "embedding_config_digest": "sha256:" + "2" * 64,
+        "ranking_config_digest": "sha256:" + "3" * 64,
+    }
+
+
+def _pin_fixture_contents(conn: sqlite3.Connection) -> None:
+    triggers = conn.execute(
+        "SELECT name, sql FROM sqlite_master WHERE type='trigger' "
+        "AND tbl_name IN ('document_versions','service_source_versions')"
+    ).fetchall()
+    for name, _ in triggers:
+        conn.execute(f'DROP TRIGGER "{name}"')
+    conn.row_factory = sqlite3.Row
+    for row in conn.execute(
+        "SELECT v.version_id, d.source_native_id, d.canonical_url, v.title, "
+        "v.normalized_text, v.author, v.published_at, v.source_metadata_json, "
+        "v.media_json FROM document_versions v "
+        "JOIN documents d ON d.document_id=v.document_id"
+    ).fetchall():
+        payload = {
+            "source_native_id": row["source_native_id"],
+            "url": row["canonical_url"],
+            "title": row["title"],
+            "text": row["normalized_text"],
+            "author": row["author"],
+            "published_at": row["published_at"],
+            "metadata": json.loads(row["source_metadata_json"]),
+        }
+        media = json.loads(row["media_json"])
+        if media:
+            payload["media"] = media
+        conn.execute(
+            "UPDATE document_versions SET content_hash=? WHERE version_id=?",
+            (_json_digest(payload), row["version_id"]),
+        )
+    for row in conn.execute(
+        "SELECT v.version_id, v.title, v.normalized_text, v.author, "
+        "v.published_at, v.metadata_json FROM service_source_versions v"
+    ).fetchall():
+        metadata = json.loads(row["metadata_json"])
+        media = metadata.pop("media", [])
+        payload = {
+            "title": row["title"],
+            "text": row["normalized_text"],
+            "author": row["author"],
+            "published_at": row["published_at"],
+            "metadata": metadata,
+            "media": media,
+        }
+        conn.execute(
+            "UPDATE service_source_versions SET content_hash=? WHERE version_id=?",
+            (_json_digest(payload), row["version_id"]),
+        )
+    for _, sql in triggers:
+        conn.execute(sql)
+    conn.execute(
+        "CREATE TABLE quality_fixture_metadata "
+        "(key TEXT PRIMARY KEY, value TEXT NOT NULL)"
+    )
+    conn.executemany(
+        "INSERT INTO quality_fixture_metadata VALUES (?, ?)",
+        [(key, str(value)) for key, value in _candidate().items()],
+    )
+    conn.commit()
+    conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+    conn.execute("PRAGMA journal_mode=DELETE")
+
+
 def _case(axis: str, fixture: Path, **adapter_input: object) -> EvaluationCaseV1:
     return EvaluationCaseV1.from_dict(
         {
@@ -48,6 +134,7 @@ def _sealed_corpus(tmp_path: Path, *, partial: bool = True) -> Path:
     db_path = tmp_path / "quality-fixture.sqlite"
     _seed_post_corpus(db_path)
     with sqlite3.connect(db_path) as conn:
+        _pin_fixture_contents(conn)
         conn.executemany(
             "INSERT INTO service_query_coverage VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
@@ -220,13 +307,13 @@ def test_real_fixture_runner_and_cli_bind_adapter_and_fixture_digests(tmp_path):
         "schema_version": "quality_evaluation_request.v1", "run_id": "real-fixture-v2",
         "evaluation_set": {"id": evaluation.evaluation_set_id, "digest": evaluation.digest},
         "threshold_policy": {"id": policy.policy_id, "digest": policy.digest},
-        "candidate": {"repository_commit": "1" * 40, "service_contract_version": "fixture-v2", "database_schema_version": 0, "index_head": "index:fixture-v2", "embedding_config_digest": "sha256:" + "2" * 64, "ranking_config_digest": "sha256:" + "3" * 64},
+        "candidate": _candidate(),
         "baseline": None, "evaluator_version": "packet-2-v1", "axes": ["acquisition", "corpus", "retrieval"], "case_ids": [],
         "mode": "provider_free_fixture", "environment": "fixture",
         "limits": {"max_cases": 20, "max_wall_seconds": 10, "max_output_bytes": 100000, "per_case_limit": 20},
     }
     request = QualityEvaluationRequestV1.from_dict(request_payload)
-    report = QualityRunnerV1(real_fixture_adapters({"sealed-corpus": db_path})).run(request, evaluation, policy)
+    report = QualityRunnerV1(real_fixture_adapters({"sealed-corpus": db_path}, candidate=request.candidate)).run(request, evaluation, policy)
 
     assert report.state == "passed"
     assert render_report_json(report) == render_report_json(report)
@@ -246,3 +333,64 @@ def test_real_fixture_runner_and_cli_bind_adapter_and_fixture_digests(tmp_path):
     second = subprocess.run(command, capture_output=True, text=True, check=False)
     assert first.returncode == second.returncode == 0
     assert first.stdout == second.stdout
+
+
+def test_corpus_integrity_recomputes_hashes_and_checks_version_owners(tmp_path):
+    db_path = _sealed_corpus(tmp_path)
+    with sqlite3.connect(db_path) as conn:
+        trigger = conn.execute("SELECT sql FROM sqlite_master WHERE name='document_versions_no_update'").fetchone()[0]
+        conn.execute("DROP TRIGGER document_versions_no_update")
+        conn.execute("UPDATE document_versions SET content_hash='sha256:garbage' WHERE version_id='version-legacy-current'")
+        conn.execute(trigger)
+    outcome = CorpusIntegrityAdapter(FixtureCatalog({"sealed-corpus": db_path})).evaluate(_case("corpus", db_path), result_limit=20)
+    assert outcome.state == "failed"
+    assert next(metric for metric in outcome.metrics if metric.name == "content_digest_validity").numerator < 4
+
+    owner_dir = tmp_path / "owner"
+    owner_dir.mkdir()
+    db_path = _sealed_corpus(owner_dir)
+    with sqlite3.connect(db_path) as conn:
+        trigger = conn.execute("SELECT sql FROM sqlite_master WHERE name='document_versions_no_update'").fetchone()[0]
+        conn.execute("DROP TRIGGER document_versions_no_update")
+        conn.execute("UPDATE document_versions SET document_id='absent-parent' WHERE version_id='version-legacy-current'")
+        conn.execute(trigger)
+    outcome = CorpusIntegrityAdapter(FixtureCatalog({"sealed-corpus": db_path})).evaluate(_case("corpus", db_path), result_limit=20)
+    assert outcome.state == "failed"
+    assert next(metric for metric in outcome.metrics if metric.name == "current_revision_closure").numerator < 6
+
+
+def test_fixture_with_unpinned_wal_is_rejected(tmp_path):
+    db_path = _sealed_corpus(tmp_path)
+    writer = sqlite3.connect(db_path)
+    try:
+        writer.execute("PRAGMA journal_mode=WAL")
+        writer.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        case = _case("corpus", db_path)
+        writer.execute("CREATE TABLE unreviewed(value TEXT)")
+        writer.commit()
+        outcome = CorpusIntegrityAdapter(FixtureCatalog({"sealed-corpus": db_path})).evaluate(case, result_limit=20)
+        assert outcome.state == "incomplete"
+        assert outcome.failure_codes == ("fixture_not_sealed",)
+    finally:
+        writer.close()
+
+
+def test_real_adapter_candidate_must_match_sealed_fixture_metadata(tmp_path):
+    db_path = _sealed_corpus(tmp_path, partial=False)
+    evaluation_payload, policy_payload = _real_payloads(db_path)
+    wrong = EvidenceHeadV1.from_dict({**_candidate(), "index_head": "index:does-not-exist"}, "candidate")
+    request_payload = {
+        "schema_version": "quality_evaluation_request.v1", "run_id": "wrong-head",
+        "evaluation_set": {"id": evaluation_payload["evaluation_set_id"], "digest": QualityEvaluationSetV1.from_dict(evaluation_payload).digest},
+        "threshold_policy": {"id": policy_payload["policy_id"], "digest": QualityThresholdPolicyV1.from_dict(policy_payload).digest},
+        "candidate": wrong.to_dict(), "baseline": None, "evaluator_version": "packet-2-v1",
+        "axes": ["retrieval"], "case_ids": [], "mode": "provider_free_fixture", "environment": "fixture",
+        "limits": {"max_cases": 20, "max_wall_seconds": 10, "max_output_bytes": 100000, "per_case_limit": 20},
+    }
+    request = QualityEvaluationRequestV1.from_dict(request_payload)
+    report = QualityRunnerV1(real_fixture_adapters({"sealed-corpus": db_path}, candidate=wrong)).run(
+        request, QualityEvaluationSetV1.from_dict(evaluation_payload), QualityThresholdPolicyV1.from_dict(policy_payload)
+    )
+    assert report.state == "incomplete"
+    assert report.blocking_decision == "do_not_pass"
+    assert report.case_results[0].failure_codes == ("fixture_candidate_mismatch",)

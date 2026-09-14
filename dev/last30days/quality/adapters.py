@@ -8,6 +8,7 @@ network/model/browser request.
 from __future__ import annotations
 
 import hashlib
+import json
 import sqlite3
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -15,11 +16,65 @@ from typing import Mapping, Sequence
 from lib import service_contracts as service_contracts
 from lib.service_post_search import PostSearchBackend
 
-from .contracts import ContractValidationError, EvaluationCaseV1, FakeOutcomeV1, MetricInputV1
+from .contracts import (
+    ContractValidationError,
+    EvaluationCaseV1,
+    EvidenceHeadV1,
+    FakeOutcomeV1,
+    MetricInputV1,
+)
 
 
 def _digest(path: Path) -> str:
     return "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _digest_json(value: object) -> str:
+    encoded = json.dumps(
+        value,
+        allow_nan=False,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+    return "sha256:" + hashlib.sha256(encoded).hexdigest()
+
+
+def _stored_version_digest(row: sqlite3.Row) -> str | None:
+    try:
+        metadata = json.loads(row["metadata_json"])
+        if not isinstance(metadata, dict):
+            return None
+        if row["family"] == "legacy":
+            payload = {
+                "source_native_id": row["source_native_id"],
+                "url": row["canonical_url"],
+                "title": row["title"],
+                "text": row["normalized_text"],
+                "author": row["author"],
+                "published_at": row["published_at"],
+                "metadata": metadata,
+            }
+            media = json.loads(row["media_json"])
+            if not isinstance(media, list):
+                return None
+            if media:
+                payload["media"] = media
+        else:
+            media = metadata.pop("media", [])
+            if not isinstance(media, list):
+                return None
+            payload = {
+                "title": row["title"],
+                "text": row["normalized_text"],
+                "author": row["author"],
+                "published_at": row["published_at"],
+                "metadata": metadata,
+                "media": media,
+            }
+        return _digest_json(payload)
+    except (TypeError, ValueError):
+        return None
 
 
 def _outcome(
@@ -41,8 +96,14 @@ def _outcome(
 class FixtureCatalog:
     """Maps reviewed fixture identities to local read-only files."""
 
-    def __init__(self, fixtures: Mapping[str, Path]) -> None:
+    def __init__(
+        self,
+        fixtures: Mapping[str, Path],
+        *,
+        candidate: EvidenceHeadV1 | None = None,
+    ) -> None:
         self._fixtures = {fixture_id: Path(path) for fixture_id, path in fixtures.items()}
+        self._candidate = candidate
 
     def resolve(self, case: EvaluationCaseV1) -> Path:
         if case.fixture is None:
@@ -54,6 +115,26 @@ class FixtureCatalog:
             raise ContractValidationError("fixture is unavailable")
         if _digest(path) != case.fixture.digest:
             raise ContractValidationError("fixture_digest_mismatch")
+        for suffix in ("-wal", "-journal"):
+            companion = Path(str(path) + suffix)
+            if companion.is_file() and companion.stat().st_size:
+                raise ContractValidationError("fixture_not_sealed")
+        if self._candidate is not None:
+            try:
+                with sqlite3.connect(
+                    path.resolve().as_uri() + "?mode=ro&immutable=1", uri=True
+                ) as conn:
+                    rows = conn.execute(
+                        "SELECT key, value FROM quality_fixture_metadata"
+                    ).fetchall()
+            except sqlite3.Error as exc:
+                raise ContractValidationError("fixture_candidate_unverified") from exc
+            metadata = {str(key): str(value) for key, value in rows}
+            expected = {
+                key: str(value) for key, value in self._candidate.to_dict().items()
+            }
+            if metadata != expected:
+                raise ContractValidationError("fixture_candidate_mismatch")
         return path
 
 
@@ -63,28 +144,35 @@ class _ReadOnlyAdapter:
     def __init__(self, catalog: FixtureCatalog) -> None:
         self._catalog = catalog
 
-    def _path(self, case: EvaluationCaseV1) -> Path | None:
+    def _path(self, case: EvaluationCaseV1) -> tuple[Path | None, str | None]:
         if case.axis != self.axis:
             raise ContractValidationError("adapter received a case for another axis")
         try:
-            return self._catalog.resolve(case)
+            return self._catalog.resolve(case), None
         except ContractValidationError as exc:
-            if str(exc) == "fixture_digest_mismatch":
-                return None
+            if str(exc) in {
+                "fixture_digest_mismatch",
+                "fixture_not_sealed",
+                "fixture_candidate_unverified",
+                "fixture_candidate_mismatch",
+            }:
+                return None, str(exc)
             raise
 
     @staticmethod
     def _connect(path: Path) -> sqlite3.Connection:
-        conn = sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True)
+        conn = sqlite3.connect(
+            path.resolve().as_uri() + "?mode=ro&immutable=1", uri=True
+        )
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA query_only=ON")
         return conn
 
-    def _mismatch(self, case: EvaluationCaseV1) -> FakeOutcomeV1:
+    def _mismatch(self, case: EvaluationCaseV1, code: str) -> FakeOutcomeV1:
         return _outcome(
             state="incomplete",
-            metrics=(MetricInputV1("fixture_available", 0, 1, 0),),
-            failure_codes=("fixture_digest_mismatch",),
+            metrics=(),
+            failure_codes=(code,),
             observed_refs=(f"fixture:{case.fixture.fixture_id}",),  # type: ignore[union-attr]
         )
 
@@ -93,20 +181,30 @@ class CorpusIntegrityAdapter(_ReadOnlyAdapter):
     axis = "corpus"
 
     def evaluate(self, case: EvaluationCaseV1, *, result_limit: int) -> FakeOutcomeV1:
-        path = self._path(case)
+        path, failure = self._path(case)
         if path is None:
-            return self._mismatch(case)
+            return self._mismatch(case, failure or "fixture_unavailable")
         try:
             with self._connect(path) as conn:
                 versions = conn.execute(
-                    "SELECT content_hash FROM document_versions "
-                    "UNION ALL SELECT content_hash FROM service_source_versions"
+                    "SELECT 'legacy' family, v.content_hash, d.source_native_id, "
+                    "d.canonical_url, v.title, v.normalized_text, v.author, "
+                    "v.published_at, v.source_metadata_json metadata_json, v.media_json "
+                    "FROM document_versions v LEFT JOIN documents d "
+                    "ON d.document_id=v.document_id "
+                    "UNION ALL SELECT 'temporal' family, v.content_hash, r.source_native_id, "
+                    "r.canonical_url, v.title, v.normalized_text, v.author, "
+                    "v.published_at, v.metadata_json, NULL media_json "
+                    "FROM service_source_versions v LEFT JOIN service_source_records r "
+                    "ON r.record_id=v.record_id"
                 ).fetchall()
                 current = conn.execute(
                     "SELECT COUNT(*) FROM documents d JOIN document_versions v "
                     "ON v.version_id=d.current_version_id "
+                    "AND v.document_id=d.document_id "
                     "UNION ALL SELECT COUNT(*) FROM service_source_records r "
-                    "JOIN service_source_versions v ON v.version_id=r.current_version_id"
+                    "JOIN service_source_versions v ON v.version_id=r.current_version_id "
+                    "AND v.record_id=r.record_id"
                 ).fetchall()
                 origins = conn.execute(
                     "SELECT source, canonical_url FROM documents "
@@ -114,11 +212,13 @@ class CorpusIntegrityAdapter(_ReadOnlyAdapter):
                 ).fetchall()
                 partition_rows = conn.execute(
                     "SELECT d.access_partition_id origin_partition, v.access_partition_id version_partition "
-                    "FROM documents d JOIN document_versions v ON v.version_id=d.current_version_id "
+                    "FROM document_versions v LEFT JOIN documents d "
+                    "ON d.document_id=v.document_id "
                     "UNION ALL SELECT r.access_partition_id origin_partition, v.access_partition_id version_partition "
-                    "FROM service_source_records r JOIN service_source_versions v ON v.version_id=r.current_version_id"
+                    "FROM service_source_versions v LEFT JOIN service_source_records r "
+                    "ON r.record_id=v.record_id"
                 ).fetchall()
-        except sqlite3.Error:
+        except (sqlite3.Error, TypeError, ValueError):
             return _outcome(
                 state="incomplete",
                 metrics=(MetricInputV1("fixture_available", 0, 1, 0),),
@@ -127,15 +227,18 @@ class CorpusIntegrityAdapter(_ReadOnlyAdapter):
             )
         version_total = len(versions)
         origin_total = len(origins)
-        digest_valid = sum(
-            isinstance(row["content_hash"], str) and row["content_hash"].startswith("sha256:")
-            for row in versions
-        )
+        digest_valid = 0
+        owner_valid = 0
+        for row in versions:
+            if row["canonical_url"] is None:
+                continue
+            owner_valid += 1
+            digest_valid += _stored_version_digest(row) == row["content_hash"]
         provenance_valid = sum(
             bool(row["source"]) and bool(row["canonical_url"]) for row in origins
         )
         unique_origins = len({(row["source"], row["canonical_url"]) for row in origins})
-        current_valid = sum(int(row[0]) for row in current)
+        current_valid = sum(int(row[0]) for row in current) + owner_valid
         partition_valid = sum(
             row["origin_partition"] == row["version_partition"] for row in partition_rows
         )
@@ -143,7 +246,12 @@ class CorpusIntegrityAdapter(_ReadOnlyAdapter):
             MetricInputV1("access_partition_closure", partition_valid, len(partition_rows) or None, 0),
             MetricInputV1("canonical_identity_uniqueness", unique_origins, origin_total or None, 0),
             MetricInputV1("content_digest_validity", digest_valid, version_total or None, 0),
-            MetricInputV1("current_revision_closure", current_valid, origin_total or None, 0),
+            MetricInputV1(
+                "current_revision_closure",
+                current_valid,
+                (origin_total + version_total) or None,
+                0,
+            ),
             MetricInputV1("provenance_completeness", provenance_valid, origin_total or None, 0),
         )
         passed = all(metric.denominator and metric.numerator == metric.denominator for metric in metrics)
@@ -159,9 +267,9 @@ class AcquisitionCoverageAdapter(_ReadOnlyAdapter):
     axis = "acquisition"
 
     def evaluate(self, case: EvaluationCaseV1, *, result_limit: int) -> FakeOutcomeV1:
-        path = self._path(case)
+        path, failure = self._path(case)
         if path is None:
-            return self._mismatch(case)
+            return self._mismatch(case, failure or "fixture_unavailable")
         values = case.adapter_input or {}
         sources = values.get("sources")
         if not isinstance(sources, list) or not sources:
@@ -218,9 +326,9 @@ class PostSearchQualityAdapter(_ReadOnlyAdapter):
     axis = "retrieval"
 
     def evaluate(self, case: EvaluationCaseV1, *, result_limit: int) -> FakeOutcomeV1:
-        path = self._path(case)
+        path, failure = self._path(case)
         if path is None:
-            return self._mismatch(case)
+            return self._mismatch(case, failure or "fixture_unavailable")
         values = case.adapter_input or {}
         required = {"query", "profile_id", "access_partitions", "expected_revision_ids", "page_size", "filters"}
         if set(values) != required:
@@ -287,12 +395,14 @@ class PostSearchQualityAdapter(_ReadOnlyAdapter):
         )
 
 
-def real_fixture_adapters(fixtures: Mapping[str, Path]):
+def real_fixture_adapters(
+    fixtures: Mapping[str, Path], *, candidate: EvidenceHeadV1
+):
     """Return Packet 2 adapters while retaining the deferred fake grounding axis."""
 
     from .runner import default_fake_adapters
 
-    catalog = FixtureCatalog(fixtures)
+    catalog = FixtureCatalog(fixtures, candidate=candidate)
     adapters = default_fake_adapters()
     adapters.update(
         {

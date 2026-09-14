@@ -512,6 +512,26 @@ def test_reddit_pagination_is_bounded_and_never_retries_a_cycle():
     assert "after=t3_fixture001" in calls[1]
 
 
+def test_reddit_does_not_invoke_transport_after_reported_budget_is_exhausted():
+    request = _native_request(network_request_limit=2)
+    fixture = json.loads(
+        (Path(__file__).parent / "fixtures/follow_reddit_packet2.json").read_text()
+    )
+    fixture["network_request_count"] = 2
+    fixture["payload"]["data"]["after"] = "t3_fixture001"
+    budgets = []
+
+    def transport(route, **kwargs):
+        budgets.append(kwargs["network_request_limit"])
+        return fixture
+
+    result = execute_work(
+        request, {}, follow_transports={"reddit_community_posts": transport}
+    )
+    assert result.safe_error_code == "network_budget_exhausted"
+    assert budgets == [2]
+
+
 @pytest.mark.parametrize("source", ["reddit", "youtube"])
 def test_native_timeout_and_zero_budget_do_not_fall_back(source):
     request = (

@@ -12,7 +12,7 @@
     },
     {
       "path": "schemas/question-contracts-v1.json",
-      "sha256": "63e0314be2618b0d353deba7ad20a28aee44d1cf1aa8b06c9bf3dc17319693a4",
+      "sha256": "abfb9fff2853cfaa295005cfb5a78b81c60da9fe745b56432a92f2d541c5848f",
       "source": "skills/last30days/schemas/question-contracts-v1.json"
     },
     {
@@ -317,7 +317,7 @@
     },
     {
       "path": "scripts/lib/service_client.py",
-      "sha256": "b89cdba575627564db91b8b4a46f8774405dfabd2e1475a733d8c4c1527cc49d",
+      "sha256": "dc64d5fb88e821558db09391a3e6d6989e6a38913199300d591ecd923d748ca0",
       "source": "skills/last30days/scripts/lib/service_client.py"
     },
     {
@@ -347,7 +347,7 @@
     },
     {
       "path": "scripts/lib/service_follow_reddit.py",
-      "sha256": "b6844b1eebc5393aed96477d9a3ce66f8829d5358d13eb35ccb1ea956cef9692",
+      "sha256": "23dc4554a8d0dd306dc9aa56a31e4fe8546dce154c8156919ae876a53103ccd1",
       "source": "skills/last30days/scripts/lib/service_follow_reddit.py"
     },
     {

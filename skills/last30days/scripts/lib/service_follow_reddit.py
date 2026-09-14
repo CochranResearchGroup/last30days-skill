@@ -43,6 +43,8 @@ def collect(request, config, *, transport=None, monotonic_clock=time.monotonic):
         cursors = set()
         seen = set()
         for page in range(min(10, request.network_request_limit)):
+            if requests >= request.network_request_limit:
+                return result("network_budget_exhausted")
             if monotonic_clock() >= deadline:
                 return result("wall_time_budget_exhausted")
             params = {"limit": request.item_limit - len(items)}

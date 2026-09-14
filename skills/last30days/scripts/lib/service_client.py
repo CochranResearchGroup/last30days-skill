@@ -40,8 +40,12 @@ class ServiceClient:
         method: str,
         path: str,
         payload: dict[str, Any] | None = None,
+        *,
+        timeout: float | None = None,
     ) -> dict[str, Any]:
-        connection = _UnixHTTPConnection(self.socket_path, self.timeout)
+        connection = _UnixHTTPConnection(
+            self.socket_path, self.timeout if timeout is None else timeout
+        )
         body = None
         headers = {"Accept": "application/json"}
         if payload is not None:
@@ -107,8 +111,11 @@ class ServiceClient:
     def ask_question(
         self, request: question_contracts.QuestionRequestV1
     ) -> question_contracts.QuestionStatusV1:
+        timeout = max(self.timeout, request.limits.wait_ms / 1000 + 5.0)
         return question_contracts.QuestionStatusV1.from_dict(
-            self._request("POST", "/v1/questions", request.to_dict())
+            self._request(
+                "POST", "/v1/questions", request.to_dict(), timeout=timeout
+            )
         )
 
     def question_status(

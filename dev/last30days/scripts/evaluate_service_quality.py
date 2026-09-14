@@ -93,7 +93,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             if not separator or not fixture_id or not fixture_path or fixture_id in fixtures:
                 raise ContractValidationError("--fixture must be unique ID=PATH")
             fixtures[fixture_id] = Path(fixture_path)
-        adapters = real_fixture_adapters(fixtures) if fixtures else default_fake_adapters()
+        adapters = (
+            real_fixture_adapters(fixtures, candidate=request.candidate)
+            if fixtures
+            else default_fake_adapters()
+        )
         report = QualityRunnerV1(adapters).run(
             request, evaluation_set, threshold_policy
         )
