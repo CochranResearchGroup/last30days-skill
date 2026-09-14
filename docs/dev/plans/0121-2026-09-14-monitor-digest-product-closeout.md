@@ -208,3 +208,109 @@ bounded to 64 KiB input and 124 KiB output; captures freeze at 32 KiB evidence,
 Next action: publish this source checkpoint for coordinator CLI/HTTP/MCP joins;
 finish probe integrity tests and source regression checks. No WI-006 DONE or
 packaged-runtime claim is made from this source checkpoint.
+
+### Checkpoint P0121-C05 | 2026-09-14
+
+Plan version: 1
+
+State transition: `product_source_green -> probe_ready_for_shared_join`.
+
+Progress classification: `outcome_progress`; the repo-only monitor probe now
+checks real query/follow workflows, strict HTTP/MCP parity and denial cases,
+restart CLI readback, frozen intent replay, exact runtime/manifest/process
+identity, teardown and a whole non-monitor database mutation census.
+
+Authority classification:
+
+- `inherited_authority` for lane source/tests/probe, this append-only plan,
+  safe local validation and branch publication;
+- `human_gate` remains for providers/models/browsers, installed/live data,
+  schedules, real delivery, release/deployment and issue mutation.
+
+Execution owner: `/root/wave4_wi003_plan`; one implementation attempt, no
+children. Effective runtime model/effort remain unknown. No independent
+review has been launched from this lane.
+
+Validation evidence:
+
+- focused monitor/search/collection suite at source checkpoint C04: 122
+  passed in 17.20 seconds;
+- explicit synthetic stored tombstone rendering cites prior immutable
+  evidence, and partial capture/render failure cannot advance the baseline;
+  these three digest tests pass in 1.31 seconds;
+- probe integrity/fixture suite: 3 passed, 1 skipped in 0.24 seconds. The skip
+  explicitly identifies the absent coordinator monitor transport join;
+- one broad diagnostic Python run completed: 3,082 passed, 8 skipped,
+  14 subtests passed, 13 failed in 194.06 seconds. Eleven failures are the
+  unchanged shared runtime-manifest/package/lifecycle gate; one hotfix fixture
+  expects service 0.3.117 while the current base reports 0.3.118; one plan
+  audit failure was this lane's inline C04 authority label. This C05 uses
+  the auditor-required list form and will be validated before publication;
+- probe source was authored during that broad diagnostic run, so it is not
+  immutable-head final acceptance. No full-suite pass is claimed; the
+  coordinator must repeat it on the joined, regenerated source;
+- no packaged development runtime was started, no runtime receipt is invented,
+  and no installed runtime/database or provider was touched by the probe.
+
+Exact joins: existing constructor and COMMAND_FIELDS at C04 remain frozen.
+CLI is `service.py monitor --socket S --profile P --input FILE`, HTTP is
+`POST /v1/monitor`, client is `monitor(command, *, profile_id="default")`,
+MCP tool is `monitor` with exact `{profile_id, command}`. Source/configuration
+reader needs only get_spec/get_spec_revision, never collection issuance.
+
+Remaining acceptance criteria: coordinator shared joins/discovery, manifest
+and version reconciliation, fresh public/runtime proof, independent joined
+review, full suite/package/reproducibility checks and canonical integration.
+The probe is ready, not an executed runtime proof. WI-006 remains unfinished.
+
+Next action: validate and publish this clean checkpoint, then hand the exact
+probe/source contract to coordinator integration. Do not manufacture a passing
+receipt or edit shared transports to remove the guarded skip from this lane.
+
+### Checkpoint P0121-C06 | 2026-09-14
+
+Plan version: 1
+
+State transition: `probe_ready_for_shared_join -> lane_source_accepted`;
+Plan 0121 remains OPEN for joined acceptance, not independently CLOSED.
+
+Progress classification: `outcome_progress`; registered lane source and the
+reproducible probe are ready for coordinator joins and independent review.
+
+Authority classification:
+
+- `inherited_authority` for provider-free source/test verification and clean
+  owned-fork branch publication;
+- `human_gate` for all excluded effects; no deployment, provider/model/browser,
+  installed/live state, scheduler or external delivery authority is inferred.
+
+Validation evidence:
+
+- final focused monitor/probe/search/collection tier before the last census
+  regression: 127 passed, 1 guarded transport skip in 15.59 seconds;
+- added RED/GREEN census regression proving undeclared `service_monitor_*`
+  tables are not silently ignored. The probe now allows exactly eleven named
+  monitor ledgers; its final isolated suite is 4 passed, 1 guarded skip in
+  0.24 seconds;
+- Go `test ./...` and `vet ./...` passed against the unchanged lane-base Go
+  adapter, not the still-pending new monitor transport;
+- Ruff checks/formatting, repo-native plan authority audit and diff hygiene
+  pass. C04's owned plan-format defect is resolved by C05/C06 list syntax;
+- C05 retains all thirteen broad diagnostic failures. Shared manifest,
+  hotfix-version expectation and joined full-suite checks remain coordinator
+  responsibilities. No packaged runtime proof or passing receipt is claimed.
+
+Subagent status and reconciliation: one existing campaign worker, no children;
+requested gpt-6-astra/high, effective model/effort runtime-unknown. One
+incremental implementation attempt; independent joined review and any accepted
+closed-world remediation remain coordinator-owned.
+
+Remaining acceptance criteria: public app/client/HTTP/CLI/MCP and discovery
+joins, current generated manifest/versions, fresh packaged runtime probe and
+exact-owner teardown, reviewed full-suite/reproducibility acceptance and
+canonical integration. WI-006 is acceptance-eligible once these prove all
+criteria; it is not DONE from this lane-source checkpoint alone.
+
+Next action: commit/push the exact source checkpoint, verify remote equality
+and cleanliness, and return concrete shared join requirements plus probe
+locator. Preserve the lane worktree/ref; no cleanup or forge issue action.

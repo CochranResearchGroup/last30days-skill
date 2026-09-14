@@ -2,6 +2,10 @@
 
 import sqlite3
 
+import pytest
+from lib import service_monitor_contracts as c
+from lib.service_monitors import MonitorKernelError
+
 from tests.test_service_monitor_application import command, composition, create
 
 
@@ -58,3 +62,69 @@ def test_digest_retains_prior_evidence_across_absent_views_and_later_revision(tm
     assert {
         ref["version_id"] for ref in revised["digest"]["entries"][0]["evidence_refs"]
     } == {"follow-version-1", "follow-version-2"}
+
+
+def test_explicit_frozen_tombstone_digest_cites_prior_evidence_not_absence(tmp_path):
+    app, _, ref = composition(tmp_path)
+    create(app, ref)
+    command(app, "activate", monitor_id="monitor-fixture")
+    first = evaluate(app, "baseline")
+    command(app, "accept", run_id=first["run"]["run_id"])
+    original = app.repository.capture_receipt(first["run"]["snapshot_id"])
+    snapshot = {
+        **original["snapshot"],
+        "snapshot_id": "explicit-fixture-tombstone",
+        "evidence": [{**original["snapshot"]["evidence"][0], "tombstoned": True}],
+    }
+    # Explicit synthetic storage fact, not a provider-empty response or search absence.
+    app.repository.begin_capture(snapshot["snapshot_id"], "explicit-fixture-tombstone")
+    app.repository.put_snapshot(c.SavedQueryViewSnapshotV1.from_dict(snapshot))
+    app.repository.finish_capture(
+        snapshot["snapshot_id"],
+        receipt={**original, "snapshot": snapshot, "evidence_refs": []},
+    )
+    removed = command(
+        app,
+        "evaluate",
+        monitor_id="monitor-fixture",
+        snapshot_id=snapshot["snapshot_id"],
+    )
+    assert removed["digest"]["counts"]["removed"] == 1
+    assert (
+        removed["digest"]["entries"][0]["evidence_refs"][0]["version_id"]
+        == "follow-version-1"
+    )
+    assert removed["digest"]["entries"][0]["current_version_id"] is None
+
+
+def test_partial_capture_and_failed_renderer_cannot_advance_baseline(
+    tmp_path, monkeypatch
+):
+    app, _, ref = composition(tmp_path)
+    create(app, ref)
+    command(app, "activate", monitor_id="monitor-fixture")
+    app.follows.max_bytes = 1
+    partial = evaluate(app, "partial")
+    assert partial["digest"]["coverage"]["status"] == "partial"
+    with pytest.raises(MonitorKernelError):
+        command(app, "accept", run_id=partial["run"]["run_id"])
+    app.follows.max_bytes = 32768
+    snap = command(
+        app, "capture", monitor_id="monitor-fixture", capture_id="render-failure"
+    )
+    import lib.service_monitor_application as module
+
+    def failed(*args, **kwargs):
+        raise MonitorKernelError(
+            c.MonitorErrorCode.VIEW_UNAVAILABLE, "fixture renderer failure"
+        )
+
+    monkeypatch.setattr(module, "prepare_digest", failed)
+    with pytest.raises(MonitorKernelError):
+        command(
+            app,
+            "evaluate",
+            monitor_id="monitor-fixture",
+            snapshot_id=snap["snapshot_id"],
+        )
+    assert command(app, "baseline", monitor_id="monitor-fixture") == {"baseline": None}
