@@ -161,3 +161,35 @@ coordinator-owned gate, not authorization to alter the runtime drill.
 
 Next action: review this isolated branch with the recorded non-lane full-suite
 gate, then integrate only after the coordinator's joined acceptance.
+
+### Checkpoint P0122-C04 | 2026-09-14
+
+Plan version: 1
+
+State transition: `ready_for_independent_review -> reviewed_accepted`.
+
+Progress classification: `joined_acceptance`; the grounding adapter is present
+at joined head `5c6fa0210b7d3d18b82a10ab7c5e4377a21cbce6`, and the independent
+review's durable-correlation and resolver-boundary findings are closed.
+
+Authority classification:
+
+- `inherited_authority` covered only provider-free fixture, adapter, test, and
+  integration work;
+- every provider, model, browser, live-data, installed-runtime, release,
+  deployment, delivery, and issue-mutation boundary remained held.
+
+Acceptance evidence:
+
+- repeated citations resolve once and score per occurrence; more than twenty
+  unique citations resolve in bounded batches;
+- stored request, retrieval, task, and answer identities and digests are
+  correlated with decoded immutable records;
+- the independent joined re-review passed all four remediation probes and `59`
+  focused tests without rerunning either packaged dogfood acceptance.
+
+Subagent status and reconciliation: `joined`; the implementation owner and
+independent reviewer are complete, with no children or excluded effects.
+
+Next action: pass the corrected full suite, merge the reviewed integration PR,
+then reconcile WI-008 and this plan to terminal state.
