@@ -30911,3 +30911,82 @@ Next Bounded Action:
 
 - stop; the campaign objective is satisfied. Plan 0046/P22 remains operator-
   paused and requires separate explicit resumption.
+
+## Turn 497 | 2026-09-14
+
+Focus: design controlled provider acceptance after provider-free productization
+closure.
+
+Plan authority:
+`docs/dev/plans/0123-2026-09-14-provider-acceptance-architecture-and-lane-handoff.md`;
+WI-010 and P53.
+
+Authority Consulted:
+
+- the operator's request to design provider tests and use parallel agents;
+- current planning, documentation, validation, branch/integration, work-item,
+  multi-session, model-selection, forge, and collaborative-workflow policies;
+- current acquisition contracts, adapter registry, source policy, tests, and
+  retained provider-canary evidence.
+
+Decisions And Changes:
+
+- reconciled three independent read-only designs into a sealed
+  `prepare -> execute -> verify` campaign with one maintainer CLI;
+- separated catalog/static, replay, owned-transport, isolated-join, readiness,
+  and live-canary evidence instead of using one provider-test label;
+- kept HTTP, subprocess and Agent Browser transports distinct behind internal
+  ports while centralizing grants, budgets, redaction, receipts and teardown;
+- bounded Packet 1 to Reddit loopback HTTP and fake YouTube yt-dlp after shared
+  contracts freeze;
+- registered repo-local WI-010 and P53 without publishing a GitHub issue.
+
+Validation Evidence:
+
+- the architecture note and JSON companion parse and agree on the selected
+  interface, evidence tiers, first tracers, held effects, and next packet;
+- `git diff --check` passed;
+- the first authority audit correctly rejected this turn before all mandatory
+  runbook headings were present; after correction, the authority audit passed
+  with one active paused plan, zero campaign plans, and zero issues, and its ten
+  focused tests passed;
+- independent conformance and objective-correctness review was requested after
+  the complete draft rather than treating the design agents as reviewers;
+- that review returned four blocking candidates: missing invalidation mapping,
+  premature closure wording, contradictory WI parentage, and incomplete
+  explicit adapter coverage. All were accepted and remediated. Closed-world
+  verification found two projection residuals; both received exact mechanical
+  corrections and primary consistency verification.
+
+Authority And Effects:
+
+- repository inspection, documentation, validation, review and normal PR
+  integration were in scope;
+- zero provider calls, browser actions, credential resolutions, remote probes,
+  installed-runtime changes, schedules, releases, deployments, issue mutations,
+  or Graphiti writes occurred.
+
+State Movement:
+
+- Plan 0123 `unplanned -> CLOSED` for architecture only;
+- WI-010 `unregistered -> READY` and P53 `unregistered -> PLANNED`;
+- Plan 0046/P22 remains the sole active paused lane.
+
+Subagent Status And Reconciliation:
+
+- `joined`; three read-only design agents completed and were synthesized;
+- one independent review completed with four accepted blocking findings;
+  closed-world verification passed two corrections and found two exact
+  projection residuals. The primary agent corrected those residuals and
+  verified plan/note/JSON/runbook consistency without another review loop.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized. Read-only discovery was
+  advisory and current repository artifacts remain authoritative.
+
+Next Bounded Action:
+
+- integrate this architecture, then register one provider-free WI-010 Packet 1
+  plan from current canonical main. P4 readiness and P5 canaries require new,
+  exact operator authority.
