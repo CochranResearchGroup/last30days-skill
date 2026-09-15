@@ -84,7 +84,8 @@ claim exact upstream accounting where the adapter cannot observe it.
 ## Next Owner Action
 
 Plan 0124's provider-free P0-P3 packet is accepted at
-`bcaceb96144764f2a17ec62aa8fafeaf03255de2` and published through PR #102.
-Merge only after the published head, diff, checks, and review threads are read
-back clean. Keep WI-010 `IN_PROGRESS` because readiness and live-canary P4/P5
-evidence remain separately unauthorized and incomplete.
+`bcaceb96144764f2a17ec62aa8fafeaf03255de2` and integrated through PR #102 at
+merge commit `72f1c7440a20cfac00d0478edb8413bcfe4dc4b4`. Keep WI-010 `IN_PROGRESS`
+because readiness and live-canary P4/P5 evidence remain separately
+unauthorized and incomplete. The next action is to stop unless the operator
+separately authorizes a bounded P4 readiness plan.

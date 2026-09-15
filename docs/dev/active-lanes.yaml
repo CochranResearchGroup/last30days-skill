@@ -8,17 +8,18 @@ lanes:
     branch: feat/provider-acceptance-p0-p3-v1
     target: main
     plan_state: CLOSED
-    custody_state: INTEGRATION_READY
-    checkpoint: 6c68d4af21a0b3674564752771550690ad984b80
+    custody_state: INTEGRATED
+    checkpoint: 749aa4fb6449f869b19a360a06bf61e63201d72d
     remote_ref: refs/remotes/origin/feat/provider-acceptance-p0-p3-v1
     pull_request: https://github.com/CochranResearchGroup/last30days-skill/pull/102
     integration: merge
-    validation_status: accepted_provider_free_p0_p3
-    validation_ref: bcaceb96144764f2a17ec62aa8fafeaf03255de2
+    integration_receipt: 72f1c7440a20cfac00d0478edb8413bcfe4dc4b4
+    validation_status: passed
+    validation_ref: 72f1c7440a20cfac00d0478edb8413bcfe4dc4b4
     session_owner: /root
     dependencies: []
     overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_acceptance.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]
-    reconciled_overlaps: []
+    reconciled_overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_acceptance.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]
     updated_at: 2026-09-15
   - id: P51
     objective: Build a deterministic development artifact and prove one isolated runtime through provider-free dogfood
