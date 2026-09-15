@@ -1,0 +1,26 @@
+{
+  "case_id": "reddit-scrapecreators-http",
+  "items": [
+    {
+      "date": "2026-09-14",
+      "engagement": {
+        "num_comments": 7,
+        "score": 21
+      },
+      "id": "wi010-scrapecreators-1",
+      "selftext": "Sanitized provider-free API substitute fixture.",
+      "subreddit": "providerfree",
+      "title": "ScrapeCreators Reddit transport fixture",
+      "url": "https://www.reddit.com/r/providerfree/comments/wi010_scrapecreators/fixture/"
+    }
+  ],
+  "request": {
+    "host": "127.0.0.1",
+    "method": "GET",
+    "path": "/reddit/scrapecreators/search",
+    "query": {
+      "q": "provider acceptance"
+    }
+  },
+  "schema_version": 1
+}

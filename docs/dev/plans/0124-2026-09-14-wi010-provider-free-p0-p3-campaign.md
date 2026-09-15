@@ -129,3 +129,35 @@ the eight registered acquisition adapters.
 
 Freeze the shared contract and catalog, then launch the three bounded transport
 tracers in parallel.
+
+### Checkpoint P0124-C01 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> OPEN`.
+
+Progress classification: `implementation_complete`; the shared harness, three
+transport tracers, eight fixtures, isolated P3 join, CLI, and offline verifier
+produced 32 accepted adapter-tier samples. Comprehensive validation and
+independent review remain before plan closure.
+
+Authority classification:
+
+- `inherited_authority`
+
+Subagent status and reconciliation: `joined`; HTTP tracer `/root/http_tracer`
+reported 5 focused passes, command tracer `/root/command_tracer` reported 5,
+and browser tracer `/root/browser_tracer` reported 8. `/root` assembled the
+disjoint files and independently ran the combined provider-acceptance suite.
+
+Validation: provider-acceptance suite 22 passed; campaign run and separate CLI
+verification each accepted 32/32 samples. The first comprehensive suite run
+preserved one authority-audit failure caused by an incorrect P02 roadmap state
+introduced during lane registration; 3,146 tests passed and 8 skipped. The
+projection defect is corrected before the no-retry comprehensive rerun.
+
+Effect boundary: zero credentials, external provider calls, real browser
+actions, and installed-runtime mutations. P4/P5 remain held.
+
+Next action: run the corrected comprehensive gate, commit the exact candidate,
+and obtain one fresh independent review.

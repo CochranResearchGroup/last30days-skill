@@ -202,3 +202,42 @@ def verify(receipt: AcceptanceReceipt, *, plan: SealedPlan) -> AcceptanceVerdict
             reasons.append("sample_not_accepted")
             break
     return AcceptanceVerdict(not reasons, tuple(dict.fromkeys(reasons)), len(observed & expected), len(expected))
+
+
+def receipt_from_dict(payload: Mapping[str, Any]) -> AcceptanceReceipt:
+    """Decode the exact public receipt schema for offline verification."""
+    expected = {
+        "schema_version", "campaign_id", "plan_sha256", "catalog_sha256",
+        "source_sha256", "effect_class", "grant_sha256", "samples",
+        "first_failure", "observed_budgets", "effect_census", "receipt_sha256",
+    }
+    if set(payload) != expected or payload.get("schema_version") != SCHEMA_VERSION:
+        raise ContractError("receipt_schema_mismatch")
+    raw_samples = payload.get("samples")
+    if not isinstance(raw_samples, list):
+        raise ContractError("receipt_samples_must_be_array")
+    sample_fields = {
+        "case_id", "adapter_id", "source", "tier", "fixture_sha256",
+        "outcome", "transport_success", "content_yield", "item_count",
+        "request_count", "accounting_confidence", "safe_reason_code",
+        "redaction", "teardown", "evidence",
+    }
+    samples = []
+    for raw in raw_samples:
+        if not isinstance(raw, Mapping) or set(raw) != sample_fields:
+            raise ContractError("receipt_sample_schema_mismatch")
+        samples.append(SampleReceipt(**raw))
+    return AcceptanceReceipt(
+        schema_version=payload["schema_version"],
+        campaign_id=payload["campaign_id"],
+        plan_sha256=payload["plan_sha256"],
+        catalog_sha256=payload["catalog_sha256"],
+        source_sha256=payload["source_sha256"],
+        effect_class=payload["effect_class"],
+        grant_sha256=payload["grant_sha256"],
+        samples=tuple(samples),
+        first_failure=payload["first_failure"],
+        observed_budgets=payload["observed_budgets"],
+        effect_census=payload["effect_census"],
+        receipt_sha256=payload["receipt_sha256"],
+    )

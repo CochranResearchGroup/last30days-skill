@@ -1,0 +1,881 @@
+{
+  "campaign_id": "wi010-provider-free-p0-p3",
+  "catalog_sha256": "sha256:a4f490c900d9b2eb82f69e71dda3ef975af9f7c5bb663997038d7a6cb9423574",
+  "effect_census": {
+    "credential_resolutions": 0,
+    "external_provider_calls": 0,
+    "installed_runtime_mutations": 0,
+    "real_browser_actions": 0
+  },
+  "effect_class": "provider_free",
+  "first_failure": null,
+  "grant_sha256": "sha256:f57014ca9a5c3981445343231c7f3df71a51743355aa376796df1388b4230812",
+  "observed_budgets": {
+    "items": 24,
+    "requests": 16
+  },
+  "plan_sha256": "sha256:26bef42251f1f25af9a3cfc636999a6c66f64099e04c48514be73925c598294a",
+  "receipt_sha256": "sha256:57dc222b5f4e3d35ae3d566647f696744a98e56609d0ad9bb9ed745d9dd73d01",
+  "samples": [
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "x_agent_browser",
+      "case_id": "x-browser",
+      "content_yield": false,
+      "evidence": {
+        "catalog_sealed": true,
+        "raw_safe_sha256": "sha256:86774bcfad07e12e7684ed17ae6b7ad1bb39e50bede7c0096b79cd5aa287922a"
+      },
+      "fixture_sha256": "sha256:538aac60c038ac9ab720df8e93d1fa76622e213855f67e9b95343a28b4e815fa",
+      "item_count": 0,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "x",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P0",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "x_agent_browser",
+      "case_id": "x-browser",
+      "content_yield": true,
+      "evidence": {
+        "fixture_replay": true,
+        "raw_safe_sha256": "sha256:476fc80366d37f7a178bd8d443682c07528ead07e014eb3553b706733ab689ee"
+      },
+      "fixture_sha256": "sha256:538aac60c038ac9ab720df8e93d1fa76622e213855f67e9b95343a28b4e815fa",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "x",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P1",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "opaque_request_equivalent",
+      "adapter_id": "x_agent_browser",
+      "case_id": "x-browser",
+      "content_yield": true,
+      "evidence": {
+        "exact_owner_teardown": true,
+        "normalized_result_sha256": "sha256:36d44c1b6c19a06e0d07e8d999b6bcb888449a3671d4bc2ae0fb57b89fa702a9",
+        "owner_census": 0,
+        "owner_sha256": "sha256:0a988edb13913611ecbac8d65aacfe5fdf8f36def779f7a86eb2d98a9ecf38cc",
+        "protocol": "in_memory_browser_v1",
+        "raw_safe_sha256": "sha256:36d44c1b6c19a06e0d07e8d999b6bcb888449a3671d4bc2ae0fb57b89fa702a9",
+        "route_sha256": "sha256:576da24039b4faff2272264029d87bdb201f3fb94d5164227214c04b6e7c2a89"
+      },
+      "fixture_sha256": "sha256:538aac60c038ac9ab720df8e93d1fa76622e213855f67e9b95343a28b4e815fa",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "x",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P2",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "opaque_request_equivalent",
+      "adapter_id": "x_agent_browser",
+      "case_id": "x-browser",
+      "content_yield": true,
+      "evidence": {
+        "exact_owner_teardown": true,
+        "normalized_result_sha256": "sha256:36d44c1b6c19a06e0d07e8d999b6bcb888449a3671d4bc2ae0fb57b89fa702a9",
+        "owner_census": 0,
+        "owner_sha256": "sha256:0a988edb13913611ecbac8d65aacfe5fdf8f36def779f7a86eb2d98a9ecf38cc",
+        "protocol": "in_memory_browser_v1",
+        "raw_safe_sha256": "sha256:36d44c1b6c19a06e0d07e8d999b6bcb888449a3671d4bc2ae0fb57b89fa702a9",
+        "route_sha256": "sha256:576da24039b4faff2272264029d87bdb201f3fb94d5164227214c04b6e7c2a89"
+      },
+      "fixture_sha256": "sha256:538aac60c038ac9ab720df8e93d1fa76622e213855f67e9b95343a28b4e815fa",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "x",
+      "teardown": {
+        "complete": true,
+        "database_committed": true,
+        "owner_census": 0,
+        "service_identity": "wi010-732e19bdd64d",
+        "socket_closed": true,
+        "socket_kind": "loopback_tcp"
+      },
+      "tier": "P3",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "facebook_agent_browser",
+      "case_id": "facebook-browser",
+      "content_yield": false,
+      "evidence": {
+        "catalog_sealed": true,
+        "raw_safe_sha256": "sha256:a2efc9f9ff7c53f4d01d9fea4d3a24a60c1b07ec70ad59072e09a14695378892"
+      },
+      "fixture_sha256": "sha256:c3049fef5b274e287b64e68235fe922e7bc72d9bdaa4c9b993ece346feca2355",
+      "item_count": 0,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "facebook",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P0",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "facebook_agent_browser",
+      "case_id": "facebook-browser",
+      "content_yield": true,
+      "evidence": {
+        "fixture_replay": true,
+        "raw_safe_sha256": "sha256:29d04f1eaa8028c52455390daf713010a4fc13b556d4ab7fd1b6f628ef67d05b"
+      },
+      "fixture_sha256": "sha256:c3049fef5b274e287b64e68235fe922e7bc72d9bdaa4c9b993ece346feca2355",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "facebook",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P1",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "opaque_request_equivalent",
+      "adapter_id": "facebook_agent_browser",
+      "case_id": "facebook-browser",
+      "content_yield": true,
+      "evidence": {
+        "exact_owner_teardown": true,
+        "normalized_result_sha256": "sha256:234e0d028bc431c244fdd1986777b34a9cea3bb2ea8f36d3b98379a94190c8de",
+        "owner_census": 0,
+        "owner_sha256": "sha256:2adf43b06008f2436a00231f87043eb961cc5a072a46d78c864a9f4bd0208d6b",
+        "protocol": "in_memory_browser_v1",
+        "raw_safe_sha256": "sha256:234e0d028bc431c244fdd1986777b34a9cea3bb2ea8f36d3b98379a94190c8de",
+        "route_sha256": "sha256:434c4b6272af02384b56cc58ab83af81ccb31b27e6ac23773aca2243fb9d10f1"
+      },
+      "fixture_sha256": "sha256:c3049fef5b274e287b64e68235fe922e7bc72d9bdaa4c9b993ece346feca2355",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "facebook",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P2",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "opaque_request_equivalent",
+      "adapter_id": "facebook_agent_browser",
+      "case_id": "facebook-browser",
+      "content_yield": true,
+      "evidence": {
+        "exact_owner_teardown": true,
+        "normalized_result_sha256": "sha256:234e0d028bc431c244fdd1986777b34a9cea3bb2ea8f36d3b98379a94190c8de",
+        "owner_census": 0,
+        "owner_sha256": "sha256:2adf43b06008f2436a00231f87043eb961cc5a072a46d78c864a9f4bd0208d6b",
+        "protocol": "in_memory_browser_v1",
+        "raw_safe_sha256": "sha256:234e0d028bc431c244fdd1986777b34a9cea3bb2ea8f36d3b98379a94190c8de",
+        "route_sha256": "sha256:434c4b6272af02384b56cc58ab83af81ccb31b27e6ac23773aca2243fb9d10f1"
+      },
+      "fixture_sha256": "sha256:c3049fef5b274e287b64e68235fe922e7bc72d9bdaa4c9b993ece346feca2355",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "facebook",
+      "teardown": {
+        "complete": true,
+        "database_committed": true,
+        "owner_census": 0,
+        "service_identity": "wi010-e10c77f73d86",
+        "socket_closed": true,
+        "socket_kind": "loopback_tcp"
+      },
+      "tier": "P3",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "linkedin_agent_browser",
+      "case_id": "linkedin-post-browser",
+      "content_yield": false,
+      "evidence": {
+        "catalog_sealed": true,
+        "raw_safe_sha256": "sha256:bc2f548497ea32e97abc80971d923ed4e2c5bbd04b1128cfc590f211e76c04b9"
+      },
+      "fixture_sha256": "sha256:d795ec1e419b232b92243a1ec42dbe5789f02ac7a6dcd09503e7854c60e2ee21",
+      "item_count": 0,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "linkedin",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P0",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "linkedin_agent_browser",
+      "case_id": "linkedin-post-browser",
+      "content_yield": true,
+      "evidence": {
+        "fixture_replay": true,
+        "raw_safe_sha256": "sha256:2441a10dc7508655fd5f8d9f040050b76ef99724be9c124dfddc3ade8709db4a"
+      },
+      "fixture_sha256": "sha256:d795ec1e419b232b92243a1ec42dbe5789f02ac7a6dcd09503e7854c60e2ee21",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "linkedin",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P1",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "opaque_request_equivalent",
+      "adapter_id": "linkedin_agent_browser",
+      "case_id": "linkedin-post-browser",
+      "content_yield": true,
+      "evidence": {
+        "exact_owner_teardown": true,
+        "normalized_result_sha256": "sha256:c7c97a5f3f45dc854de54f7997e105f8aeceaa78dd244f44310a8944257719a3",
+        "owner_census": 0,
+        "owner_sha256": "sha256:6c570d3ecd7b79fe4919cf5d229f63375a13a2e87c55b9a6416eb1c59b8b9ffe",
+        "protocol": "in_memory_browser_v1",
+        "raw_safe_sha256": "sha256:c7c97a5f3f45dc854de54f7997e105f8aeceaa78dd244f44310a8944257719a3",
+        "route_sha256": "sha256:8f7af3058a00c78cb761e23bbf5c5d0fd07af9ae9b73da38ae3d4156bf511810"
+      },
+      "fixture_sha256": "sha256:d795ec1e419b232b92243a1ec42dbe5789f02ac7a6dcd09503e7854c60e2ee21",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "linkedin",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P2",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "opaque_request_equivalent",
+      "adapter_id": "linkedin_agent_browser",
+      "case_id": "linkedin-post-browser",
+      "content_yield": true,
+      "evidence": {
+        "exact_owner_teardown": true,
+        "normalized_result_sha256": "sha256:c7c97a5f3f45dc854de54f7997e105f8aeceaa78dd244f44310a8944257719a3",
+        "owner_census": 0,
+        "owner_sha256": "sha256:6c570d3ecd7b79fe4919cf5d229f63375a13a2e87c55b9a6416eb1c59b8b9ffe",
+        "protocol": "in_memory_browser_v1",
+        "raw_safe_sha256": "sha256:c7c97a5f3f45dc854de54f7997e105f8aeceaa78dd244f44310a8944257719a3",
+        "route_sha256": "sha256:8f7af3058a00c78cb761e23bbf5c5d0fd07af9ae9b73da38ae3d4156bf511810"
+      },
+      "fixture_sha256": "sha256:d795ec1e419b232b92243a1ec42dbe5789f02ac7a6dcd09503e7854c60e2ee21",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "linkedin",
+      "teardown": {
+        "complete": true,
+        "database_committed": true,
+        "owner_census": 0,
+        "service_identity": "wi010-ed76d04077ea",
+        "socket_closed": true,
+        "socket_kind": "loopback_tcp"
+      },
+      "tier": "P3",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "linkedin_profile_agent_browser",
+      "case_id": "linkedin-profile-browser",
+      "content_yield": false,
+      "evidence": {
+        "catalog_sealed": true,
+        "raw_safe_sha256": "sha256:fa67104562742d46e2a6620860b0ff84c2494ddaf5773e237d9b76875b002853"
+      },
+      "fixture_sha256": "sha256:5b628220f21b903dd2b18261e6d119b85f6a0772558728b2af6ae2866083c613",
+      "item_count": 0,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "linkedin",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P0",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "linkedin_profile_agent_browser",
+      "case_id": "linkedin-profile-browser",
+      "content_yield": true,
+      "evidence": {
+        "fixture_replay": true,
+        "raw_safe_sha256": "sha256:109da89b7ef3e8f9a854dcd9fb6e6f45dee0d024ad9cb19974aed79caf6e9cfb"
+      },
+      "fixture_sha256": "sha256:5b628220f21b903dd2b18261e6d119b85f6a0772558728b2af6ae2866083c613",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "linkedin",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P1",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "opaque_request_equivalent",
+      "adapter_id": "linkedin_profile_agent_browser",
+      "case_id": "linkedin-profile-browser",
+      "content_yield": true,
+      "evidence": {
+        "exact_owner_teardown": true,
+        "normalized_result_sha256": "sha256:79975c32ecb7aaa5d6d18a8275661a8ff993593187d939b5c747c061b233c1be",
+        "owner_census": 0,
+        "owner_sha256": "sha256:18ea86b9b1c15653bbbcd0bd5b82634eb6bdb6d9a3805ac3c09c8e0fd12d0831",
+        "protocol": "in_memory_browser_v1",
+        "raw_safe_sha256": "sha256:79975c32ecb7aaa5d6d18a8275661a8ff993593187d939b5c747c061b233c1be",
+        "route_sha256": "sha256:6ab834df2398e01eca2df9cee726142922018bac4f06495ae891ccce48add200"
+      },
+      "fixture_sha256": "sha256:5b628220f21b903dd2b18261e6d119b85f6a0772558728b2af6ae2866083c613",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "linkedin",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P2",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "opaque_request_equivalent",
+      "adapter_id": "linkedin_profile_agent_browser",
+      "case_id": "linkedin-profile-browser",
+      "content_yield": true,
+      "evidence": {
+        "exact_owner_teardown": true,
+        "normalized_result_sha256": "sha256:79975c32ecb7aaa5d6d18a8275661a8ff993593187d939b5c747c061b233c1be",
+        "owner_census": 0,
+        "owner_sha256": "sha256:18ea86b9b1c15653bbbcd0bd5b82634eb6bdb6d9a3805ac3c09c8e0fd12d0831",
+        "protocol": "in_memory_browser_v1",
+        "raw_safe_sha256": "sha256:79975c32ecb7aaa5d6d18a8275661a8ff993593187d939b5c747c061b233c1be",
+        "route_sha256": "sha256:6ab834df2398e01eca2df9cee726142922018bac4f06495ae891ccce48add200"
+      },
+      "fixture_sha256": "sha256:5b628220f21b903dd2b18261e6d119b85f6a0772558728b2af6ae2866083c613",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "linkedin",
+      "teardown": {
+        "complete": true,
+        "database_committed": true,
+        "owner_census": 0,
+        "service_identity": "wi010-c8989dee92df",
+        "socket_closed": true,
+        "socket_kind": "loopback_tcp"
+      },
+      "tier": "P3",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "youtube_ytdlp",
+      "case_id": "youtube-command",
+      "content_yield": false,
+      "evidence": {
+        "catalog_sealed": true,
+        "raw_safe_sha256": "sha256:45934750725023592936c0a507744be085d5d120df980b8e397d54e40b984015"
+      },
+      "fixture_sha256": "sha256:4f7ad852f01557b09a82e2865cffec787954e92dbea0943dcc1c3afe34af48ec",
+      "item_count": 0,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "youtube",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P0",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "youtube_ytdlp",
+      "case_id": "youtube-command",
+      "content_yield": true,
+      "evidence": {
+        "fixture_replay": true,
+        "raw_safe_sha256": "sha256:ace8ea042153419709f07fc9ec7f391d020f8469ef5f064b4dccf6224baf789b"
+      },
+      "fixture_sha256": "sha256:4f7ad852f01557b09a82e2865cffec787954e92dbea0943dcc1c3afe34af48ec",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "youtube",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P1",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "opaque_request_equivalent",
+      "adapter_id": "youtube_ytdlp",
+      "case_id": "youtube-command",
+      "content_yield": true,
+      "evidence": {
+        "command_argv_sha256": "sha256:4bb8e7c7cf10627cab011221019e1d1f3d4a968d725f83ce0dd63c39606bcbad",
+        "exact_owner_cleanup": true,
+        "executable_sha256": "sha256:a3d423021fa336ce2bf0ee3a661daf8c9bef23ca00247258c1d551b4bfe9c39e",
+        "invocation_count": 1,
+        "normalization_seam": "service_acquisition_worker.execute_work",
+        "normalized_result_sha256": "sha256:166f072f1eb3a937bb2b30d62d100c58131e3c6add96cc12c15b6c5abb4ba4b0",
+        "owner_census": 0,
+        "raw_safe_sha256": "sha256:166f072f1eb3a937bb2b30d62d100c58131e3c6add96cc12c15b6c5abb4ba4b0",
+        "stdout_bytes": 431,
+        "stdout_sha256": "sha256:f8ad440848d63256439e7a995177f961594e9f4cf283599baf4bc22330fb3770"
+      },
+      "fixture_sha256": "sha256:4f7ad852f01557b09a82e2865cffec787954e92dbea0943dcc1c3afe34af48ec",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "youtube",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P2",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "opaque_request_equivalent",
+      "adapter_id": "youtube_ytdlp",
+      "case_id": "youtube-command",
+      "content_yield": true,
+      "evidence": {
+        "command_argv_sha256": "sha256:4bb8e7c7cf10627cab011221019e1d1f3d4a968d725f83ce0dd63c39606bcbad",
+        "exact_owner_cleanup": true,
+        "executable_sha256": "sha256:a3d423021fa336ce2bf0ee3a661daf8c9bef23ca00247258c1d551b4bfe9c39e",
+        "invocation_count": 1,
+        "normalization_seam": "service_acquisition_worker.execute_work",
+        "normalized_result_sha256": "sha256:166f072f1eb3a937bb2b30d62d100c58131e3c6add96cc12c15b6c5abb4ba4b0",
+        "owner_census": 0,
+        "raw_safe_sha256": "sha256:166f072f1eb3a937bb2b30d62d100c58131e3c6add96cc12c15b6c5abb4ba4b0",
+        "stdout_bytes": 431,
+        "stdout_sha256": "sha256:f8ad440848d63256439e7a995177f961594e9f4cf283599baf4bc22330fb3770"
+      },
+      "fixture_sha256": "sha256:4f7ad852f01557b09a82e2865cffec787954e92dbea0943dcc1c3afe34af48ec",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "youtube",
+      "teardown": {
+        "complete": true,
+        "database_committed": true,
+        "owner_census": 0,
+        "service_identity": "wi010-1da41320cded",
+        "socket_closed": true,
+        "socket_kind": "loopback_tcp"
+      },
+      "tier": "P3",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "reddit_keyless",
+      "case_id": "reddit-keyless-http",
+      "content_yield": false,
+      "evidence": {
+        "catalog_sealed": true,
+        "raw_safe_sha256": "sha256:d38f6e9acae5aa07f68339f0b95ed7258e0d585ac00e885283e8b462580d64c2"
+      },
+      "fixture_sha256": "sha256:21dd8c677d413490e0a53491d37e823f2ec2b64daeaa540a2db9d615270e9007",
+      "item_count": 0,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "reddit",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P0",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "reddit_keyless",
+      "case_id": "reddit-keyless-http",
+      "content_yield": true,
+      "evidence": {
+        "fixture_replay": true,
+        "raw_safe_sha256": "sha256:e662c693b8586566210daa777fb91334b9eca623e0778f5fbb75ae8a13b794c1"
+      },
+      "fixture_sha256": "sha256:21dd8c677d413490e0a53491d37e823f2ec2b64daeaa540a2db9d615270e9007",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "reddit",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P1",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "reddit_keyless",
+      "case_id": "reddit-keyless-http",
+      "content_yield": true,
+      "evidence": {
+        "adapter_variant": "reddit_keyless",
+        "loopback": true,
+        "normalization_seam": "service_acquisition_worker.execute_work",
+        "owned_server": true,
+        "raw_safe_sha256": "sha256:e78f23b53ae7e3b3c7b99ad4e179fae4cdb30ee4b2158d10c2d58c9f5c437195",
+        "request_method": "GET",
+        "request_target_sha256": "sha256:00f49bc48875c8e98bad193ca8df547723fc76f7e8b60b4f1fbcf80bebce9fa8",
+        "server_request_count": 1
+      },
+      "fixture_sha256": "sha256:21dd8c677d413490e0a53491d37e823f2ec2b64daeaa540a2db9d615270e9007",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "reddit",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P2",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "reddit_keyless",
+      "case_id": "reddit-keyless-http",
+      "content_yield": true,
+      "evidence": {
+        "adapter_variant": "reddit_keyless",
+        "loopback": true,
+        "normalization_seam": "service_acquisition_worker.execute_work",
+        "owned_server": true,
+        "raw_safe_sha256": "sha256:e78f23b53ae7e3b3c7b99ad4e179fae4cdb30ee4b2158d10c2d58c9f5c437195",
+        "request_method": "GET",
+        "request_target_sha256": "sha256:00f49bc48875c8e98bad193ca8df547723fc76f7e8b60b4f1fbcf80bebce9fa8",
+        "server_request_count": 1
+      },
+      "fixture_sha256": "sha256:21dd8c677d413490e0a53491d37e823f2ec2b64daeaa540a2db9d615270e9007",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "reddit",
+      "teardown": {
+        "complete": true,
+        "database_committed": true,
+        "owner_census": 0,
+        "service_identity": "wi010-e4f6cd64125e",
+        "socket_closed": true,
+        "socket_kind": "loopback_tcp"
+      },
+      "tier": "P3",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "reddit_agent_browser",
+      "case_id": "reddit-browser",
+      "content_yield": false,
+      "evidence": {
+        "catalog_sealed": true,
+        "raw_safe_sha256": "sha256:5285501b83745ae440f749938ec81e2c7a16096c879d871fc595128196f66468"
+      },
+      "fixture_sha256": "sha256:6e6113672a144c0cf919fd946917423990d4f6b46be94924f0cc460fa1248e41",
+      "item_count": 0,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "reddit",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P0",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "reddit_agent_browser",
+      "case_id": "reddit-browser",
+      "content_yield": true,
+      "evidence": {
+        "fixture_replay": true,
+        "raw_safe_sha256": "sha256:e58ced86187055bcfa48b4e3cbc6c7c778a68a300b1ef71424f7d779fcc24dc8"
+      },
+      "fixture_sha256": "sha256:6e6113672a144c0cf919fd946917423990d4f6b46be94924f0cc460fa1248e41",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "reddit",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P1",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "opaque_request_equivalent",
+      "adapter_id": "reddit_agent_browser",
+      "case_id": "reddit-browser",
+      "content_yield": true,
+      "evidence": {
+        "exact_owner_teardown": true,
+        "normalized_result_sha256": "sha256:b64f9338fac5f3158640650d2a4747e963a03f7bd17f220f730155e26699473e",
+        "owner_census": 0,
+        "owner_sha256": "sha256:b7ee8bf089fba982b86f8fbde8c626b410cd81b809e671a1c78186173ab8eef7",
+        "protocol": "in_memory_browser_v1",
+        "raw_safe_sha256": "sha256:b64f9338fac5f3158640650d2a4747e963a03f7bd17f220f730155e26699473e",
+        "route_sha256": "sha256:ca94d4ead019757807fbc1a127002aad3aa5788e8df473790e8e0891664d9058"
+      },
+      "fixture_sha256": "sha256:6e6113672a144c0cf919fd946917423990d4f6b46be94924f0cc460fa1248e41",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "reddit",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P2",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "opaque_request_equivalent",
+      "adapter_id": "reddit_agent_browser",
+      "case_id": "reddit-browser",
+      "content_yield": true,
+      "evidence": {
+        "exact_owner_teardown": true,
+        "normalized_result_sha256": "sha256:b64f9338fac5f3158640650d2a4747e963a03f7bd17f220f730155e26699473e",
+        "owner_census": 0,
+        "owner_sha256": "sha256:b7ee8bf089fba982b86f8fbde8c626b410cd81b809e671a1c78186173ab8eef7",
+        "protocol": "in_memory_browser_v1",
+        "raw_safe_sha256": "sha256:b64f9338fac5f3158640650d2a4747e963a03f7bd17f220f730155e26699473e",
+        "route_sha256": "sha256:ca94d4ead019757807fbc1a127002aad3aa5788e8df473790e8e0891664d9058"
+      },
+      "fixture_sha256": "sha256:6e6113672a144c0cf919fd946917423990d4f6b46be94924f0cc460fa1248e41",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "reddit",
+      "teardown": {
+        "complete": true,
+        "database_committed": true,
+        "owner_census": 0,
+        "service_identity": "wi010-ad3eeb6cb5df",
+        "socket_closed": true,
+        "socket_kind": "loopback_tcp"
+      },
+      "tier": "P3",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "reddit_scrapecreators",
+      "case_id": "reddit-scrapecreators-http",
+      "content_yield": false,
+      "evidence": {
+        "catalog_sealed": true,
+        "raw_safe_sha256": "sha256:1b410b6d8bedcde947f8c0eb0441b272f7ef04d77288643e0652f4f017c5c207"
+      },
+      "fixture_sha256": "sha256:5617606d3ae2b98b587f79b32cbf9548a5ea1180226b83205c53cf3e25138a30",
+      "item_count": 0,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "reddit",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P0",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "reddit_scrapecreators",
+      "case_id": "reddit-scrapecreators-http",
+      "content_yield": true,
+      "evidence": {
+        "fixture_replay": true,
+        "raw_safe_sha256": "sha256:59ed2858eea6d5cb430a3b91e46ade2f2055006099c3bfeb90d51e197a0be803"
+      },
+      "fixture_sha256": "sha256:5617606d3ae2b98b587f79b32cbf9548a5ea1180226b83205c53cf3e25138a30",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 0,
+      "safe_reason_code": null,
+      "source": "reddit",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P1",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "reddit_scrapecreators",
+      "case_id": "reddit-scrapecreators-http",
+      "content_yield": true,
+      "evidence": {
+        "adapter_variant": "reddit_scrapecreators",
+        "loopback": true,
+        "normalization_seam": "service_acquisition_worker.execute_work",
+        "owned_server": true,
+        "raw_safe_sha256": "sha256:3a3bf2cdf76377574ae3cb8a6beadc398f1d6f6790e66d5f9c6a7c30c0bce87e",
+        "request_method": "GET",
+        "request_target_sha256": "sha256:fee0b16414150d10ccd04ff56104a12ca0f568586d4ad0aacab928bd317f043b",
+        "server_request_count": 1
+      },
+      "fixture_sha256": "sha256:5617606d3ae2b98b587f79b32cbf9548a5ea1180226b83205c53cf3e25138a30",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "reddit",
+      "teardown": {
+        "complete": true,
+        "owner_census": 0
+      },
+      "tier": "P2",
+      "transport_success": true
+    },
+    {
+      "accounting_confidence": "exact",
+      "adapter_id": "reddit_scrapecreators",
+      "case_id": "reddit-scrapecreators-http",
+      "content_yield": true,
+      "evidence": {
+        "adapter_variant": "reddit_scrapecreators",
+        "loopback": true,
+        "normalization_seam": "service_acquisition_worker.execute_work",
+        "owned_server": true,
+        "raw_safe_sha256": "sha256:3a3bf2cdf76377574ae3cb8a6beadc398f1d6f6790e66d5f9c6a7c30c0bce87e",
+        "request_method": "GET",
+        "request_target_sha256": "sha256:fee0b16414150d10ccd04ff56104a12ca0f568586d4ad0aacab928bd317f043b",
+        "server_request_count": 1
+      },
+      "fixture_sha256": "sha256:5617606d3ae2b98b587f79b32cbf9548a5ea1180226b83205c53cf3e25138a30",
+      "item_count": 1,
+      "outcome": "success",
+      "redaction": "safe",
+      "request_count": 1,
+      "safe_reason_code": null,
+      "source": "reddit",
+      "teardown": {
+        "complete": true,
+        "database_committed": true,
+        "owner_census": 0,
+        "service_identity": "wi010-0e8b8e78ad53",
+        "socket_closed": true,
+        "socket_kind": "loopback_tcp"
+      },
+      "tier": "P3",
+      "transport_success": true
+    }
+  ],
+  "schema_version": 1,
+  "source_sha256": "sha256:67bb9d6b98eeeb05ab2e8da257eecaf0943ea1417a52b5c610c569d4cb08c6fb"
+}

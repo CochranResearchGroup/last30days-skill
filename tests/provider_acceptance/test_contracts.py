@@ -46,10 +46,12 @@ def test_grant_is_checked_before_dependency_resolution(tmp_path):
 
 def test_independent_verifier_detects_tampering(tmp_path):
     from dev.last30days.provider_acceptance.campaign import execute
+    from dev.last30days.provider_acceptance.campaign import receipt_from_dict
 
     catalog = _fixtures(tmp_path)
     plan = prepare(CampaignSpec("wi010", (catalog.cases[0].case_id,), tiers=(EvidenceTier.P0, EvidenceTier.P1)), catalog=catalog, repo_root=tmp_path)
     deps = AcceptanceDependencies({}, lambda *_args, **_kwargs: None)
     receipt = execute(plan, grant=ExecutionGrant.for_plan(plan), deps=deps, repo_root=tmp_path)
     assert verify(receipt, plan=plan).accepted
+    assert verify(receipt_from_dict(receipt.to_dict()), plan=plan).accepted
     assert not verify(replace(receipt, source_sha256="sha256:tampered"), plan=plan).accepted

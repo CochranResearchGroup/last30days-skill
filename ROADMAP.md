@@ -329,7 +329,7 @@ Active Plan:
 
 ## P02 | Recurring Acquisition And Coverage
 
-State: OPEN
+State: PLANNED
 
 Objective: run governed timers that collect bounded recent feed items and
 optional topic, poster, channel, or account targets without losing cursor,
@@ -3439,12 +3439,17 @@ Terminal Result:
 
 ## P53 | Controlled Provider Acceptance
 
-State: PLANNED
+State: OPEN
 
 Objective: build a common, truthful provider-acceptance system that separates
 sealed replay, owned transport, isolated service join, readiness and live-
 canary evidence while preserving exact authority, budgets, redaction, receipts,
 and teardown.
+
+Current State:
+
+- Plan 0124 has frozen the shared contracts and joined all three provider-free
+  transport tracers; acceptance validation and independent review remain.
 
 Architecture:
 

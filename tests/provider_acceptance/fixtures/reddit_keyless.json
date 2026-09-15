@@ -1,0 +1,26 @@
+{
+  "case_id": "reddit-keyless-http",
+  "items": [
+    {
+      "date": "2026-09-14",
+      "engagement": {
+        "num_comments": 4,
+        "score": 12
+      },
+      "id": "wi010-keyless-1",
+      "selftext": "Sanitized provider-free loopback fixture.",
+      "subreddit": "providerfree",
+      "title": "Keyless Reddit transport fixture",
+      "url": "https://www.reddit.com/r/providerfree/comments/wi010_keyless/fixture/"
+    }
+  ],
+  "request": {
+    "host": "127.0.0.1",
+    "method": "GET",
+    "path": "/reddit/keyless/search",
+    "query": {
+      "q": "provider acceptance"
+    }
+  },
+  "schema_version": 1
+}
