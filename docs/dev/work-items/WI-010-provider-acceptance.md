@@ -1,13 +1,14 @@
 <!-- last30days-work-item:WI-010 -->
 # Build controlled provider acceptance
 
-State: READY
+State: IN_PROGRESS
 Priority: P0
 Lane: Provider Acceptance
 Parent: none
 GitHub issue: not published; issue mutation was not authorized
 Blocked by: none for provider-free implementation; readiness and live canaries require separate exact operator authority
 Architecture plan: docs/dev/plans/0123-2026-09-14-provider-acceptance-architecture-and-lane-handoff.md
+Execution plan: docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md
 
 ## Problem
 
@@ -81,6 +82,6 @@ claim exact upstream accounting where the adapter cannot observe it.
 
 ## Next Owner Action
 
-Register a bounded Packet 1 implementation plan from current `origin/main`,
-with one owner for the shared contract and at most two independent transport
-tracers. Keep every external effect held.
+Execute Plan 0124's provider-free P0-P3 campaign across all eight adapters,
+then reconcile the independent transport receipts and verifier evidence. Keep
+every P4/P5 and external effect held.

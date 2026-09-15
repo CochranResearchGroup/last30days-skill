@@ -30990,3 +30990,60 @@ Next Bounded Action:
 - integrate this architecture, then register one provider-free WI-010 Packet 1
   plan from current canonical main. P4 readiness and P5 canaries require new,
   exact operator authority.
+
+## Turn 498 | 2026-09-14
+
+Focus: activate WI-010's full provider-free P0-P3 campaign across all eight
+acquisition adapters.
+
+Plan authority:
+`docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md`;
+WI-010 and P53.
+
+Authority Consulted:
+
+- the operator's exact request to implement and accept P0-P3 using parallel
+  transport tracers without credentials or external providers;
+- current planning, work-item, active-lane, multi-session, delegation, testing,
+  validation, documentation, branch, integration, and closeout policies;
+- Plan 0123's frozen architecture, invalidation map, and held P4/P5 boundary.
+
+Decisions And Changes:
+
+- expanded the implementation packet from the earlier two-tracer handoff to
+  the operator-authorized full eight-adapter P0-P3 campaign;
+- registered Plan 0124 on `feat/provider-acceptance-p0-p3-v1` with `/root` as
+  shared-contract and integration owner;
+- bounded three one-level parallel tracers to disjoint HTTP, command, and
+  browser-simulator modules after the shared contract freeze.
+
+Validation Evidence:
+
+- pending implementation and acceptance.
+
+Authority And Effects:
+
+- repository implementation, local loopback transports, fake executables,
+  in-memory browser simulation, temporary isolated service state, tests, and
+  local Git custody are in scope;
+- credentials, non-loopback network, real browsers, providers, installed
+  runtime, schedules, releases, deployments, issue mutations, and P4/P5 remain
+  held.
+
+State Movement:
+
+- WI-010 `READY -> IN_PROGRESS`;
+- P53 `PLANNED -> OPEN` under Plan 0124.
+
+Subagent Status And Reconciliation:
+
+- `not_started`; shared contracts must freeze before transport fan-out.
+
+Graphiti Write Status:
+
+- `not_written`; discovery returned no useful WI-010 recall and repository
+  artifacts remain authoritative.
+
+Next Bounded Action:
+
+- freeze shared contracts and launch the three provider-free tracers.

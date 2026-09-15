@@ -329,7 +329,7 @@ Active Plan:
 
 ## P02 | Recurring Acquisition And Coverage
 
-State: PLANNED
+State: OPEN
 
 Objective: run governed timers that collect bounded recent feed items and
 optional topic, poster, channel, or account targets without losing cursor,
@@ -3449,14 +3449,17 @@ and teardown.
 Architecture:
 
 - Plan 0123 is closed with the selected `prepare -> execute -> verify` contract;
-- WI-010 is `READY` and its first packet covers only contracts, receipts,
-  Reddit loopback HTTP and a fake YouTube yt-dlp executable;
-- Agent Browser simulation and isolated service join follow only after shared
-  contracts are frozen;
+- Plan 0124 (`docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md`)
+  owns current implementation and acceptance;
+- WI-010 is `IN_PROGRESS` under Plan 0124 for the full provider-free P0-P3
+  campaign across all eight acquisition adapters;
+- HTTP, command, and Agent Browser simulators fan out only after shared
+  contracts are frozen, then join through an isolated provider-free service;
 - readiness and live canaries remain serialized, one-attempt, separately
   authorized effects. This lane itself grants none.
 
 Next Bounded Action:
 
-- register WI-010 Packet 1 from current canonical main and keep all provider,
-  browser, credential, remote, installed-runtime and tracker effects held.
+- freeze Plan 0124's shared contracts, run three provider-free transport
+  tracers in parallel, and join independently verifiable P0-P3 receipts while
+  keeping all P4/P5 and external effects held.
