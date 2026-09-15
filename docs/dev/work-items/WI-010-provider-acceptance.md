@@ -6,6 +6,7 @@ Priority: P0
 Lane: Provider Acceptance
 Parent: none
 GitHub issue: not published; issue mutation was not authorized
+Pull request: https://github.com/CochranResearchGroup/last30days-skill/pull/102
 Blocked by: none for provider-free implementation; readiness and live canaries require separate exact operator authority
 Architecture plan: docs/dev/plans/0123-2026-09-14-provider-acceptance-architecture-and-lane-handoff.md
 Execution plan: docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md
@@ -83,6 +84,7 @@ claim exact upstream accounting where the adapter cannot observe it.
 ## Next Owner Action
 
 Plan 0124's provider-free P0-P3 packet is accepted at
-`bcaceb96144764f2a17ec62aa8fafeaf03255de2`. Integrate that topic branch only
-under separate forge authority. Keep WI-010 `IN_PROGRESS` because readiness
-and live-canary P4/P5 evidence remain separately unauthorized and incomplete.
+`bcaceb96144764f2a17ec62aa8fafeaf03255de2` and published through PR #102.
+Merge only after the published head, diff, checks, and review threads are read
+back clean. Keep WI-010 `IN_PROGRESS` because readiness and live-canary P4/P5
+evidence remain separately unauthorized and incomplete.
