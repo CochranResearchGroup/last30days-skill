@@ -18,6 +18,7 @@ allowed; other issue and Project actions remain separately gated.
 | WI-007 | [#61](https://github.com/CochranResearchGroup/last30days-skill/issues/61) |
 | WI-008 | [#60](https://github.com/CochranResearchGroup/last30days-skill/issues/60) |
 | WI-009 | [#55](https://github.com/CochranResearchGroup/last30days-skill/issues/55) |
+| WI-010 | not published; issue mutation not authorized |
 
 ## Proposed Dependency Graph
 
@@ -33,10 +34,15 @@ WI-000 Productization program
 │   ├── WI-003 Agent Q&A MCP
 │   ├── WI-006 Saved monitors and digests ── depends also on WI-004
 │   └── WI-008 Corpus quality evaluation
-└── all lanes share governed schemas through coordinator review
+└── all productization lanes share governed schemas through coordinator review
+
+WI-010 Controlled provider acceptance (independent top-level work item)
+├── replay and owned-transport packets are provider-free
+└── readiness and live canaries require separate exact authority
 ```
 
 The first recommended feature portfolio is WI-001, WI-002, and WI-004, with
 the hotfix slot reserved by WI-007. WI-003 begins after WI-002 exposes the
 evidence-preserving query contract. This keeps the WIP limit at three feature
-lanes and minimizes shared-surface collisions.
+lanes and minimizes shared-surface collisions. WI-000 through WI-009 are now
+complete in repo-local authority; WI-010 is the next `READY` work item.

@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "task_type": "architecture",
+  "path_type": "local git repository",
+  "persistence_mode": "stable-path",
+  "work_item": "WI-010",
+  "plan": "0123",
+  "repository_checkpoint": "c6cbbb023d47e63fdaff2534eeec7e73f87c77d2",
+  "decision": "Use a sealed prepare-execute-verify provider acceptance campaign with a closed provider catalog, distinct HTTP-command-browser ports, tiered evidence, exact grants, append-only receipts, and independent verification.",
+  "public_interface": [
+    "prepare(spec, catalog) -> SealedPlan",
+    "execute(plan, grant, deps) -> AcceptanceReceipt",
+    "verify(receipt, plan) -> AcceptanceVerdict"
+  ],
+  "evidence_tiers": {
+    "P0": "catalog and static contract",
+    "P1": "sealed replay",
+    "P2": "owned transport substitute",
+    "P3": "isolated provider-free service join",
+    "P4": "separately authorized remote readiness",
+    "P5": "separately authorized single live canary"
+  },
+  "initial_provider_free_tracers": [
+    "reddit_keyless_loopback_http",
+    "youtube_fake_ytdlp"
+  ],
+  "later_tracers": [
+    "agent_browser_protocol_simulator_for_x_facebook_linkedin_post_linkedin_profile_and_reddit",
+    "reddit_scrapecreators_loopback_api",
+    "isolated_service_join",
+    "authorized_readiness",
+    "authorized_single_live_canary"
+  ],
+  "external_rules": {
+    "concurrency": 1,
+    "default_attempts": 1,
+    "automatic_retries": 0,
+    "broad_external_selection": false,
+    "environment_is_authority": false,
+    "uncertain_effect_blocks_retry": true
+  },
+  "accounting_confidence": [
+    "exact",
+    "opaque_request_equivalent"
+  ],
+  "hard_stops": [
+    "secret or credential resolution without exact grant",
+    "non-loopback or real browser effect in provider-free packets",
+    "auth challenge, rate limit, profile, route or lease mismatch",
+    "accounting uncertainty, timeout, redaction or teardown failure",
+    "private raw fixture proposed for Git",
+    "installed-runtime, schedule, production, release, deployment or issue mutation"
+  ],
+  "invalidation_map": {
+    "authority_mismatch": "selected case and whole-campaign verdict invalid; no transport sample; prior finalized cases preserved",
+    "transport_failure": "case transport and yield verdicts invalid; admission, consumed budget, safe failure and prior cases preserved",
+    "parser_or_normalization_failure": "normalized and yield claims invalid; transport and accounting observations preserved",
+    "accounting_uncertain": "exact budget compliance and overall acceptance invalid; opaque labeled observations preserved",
+    "timeout_or_uncertain_effect": "retry eligibility and terminal acceptance invalid; attempts and uncertainty preserved",
+    "redaction_failure": "unsafe receipt publication and dependent claims invalid; prior safe receipts preserved",
+    "teardown_failure": "lifecycle safety and overall acceptance invalid; completed observations preserved as teardown-incomplete"
+  },
+  "first_packet": {
+    "scope": "contracts, catalog, replay, effect ledger, redaction, receipts, verifier, CLI, Reddit loopback HTTP, and YouTube fake yt-dlp",
+    "excluded": [
+      "Agent Browser",
+      "isolated service join",
+      "credentials",
+      "remote readiness",
+      "live canaries"
+    ],
+    "topology": "one coordinator freezes shared contracts, then at most two parallel non-overlapping transport tracers"
+  },
+  "issue_publication": "not authorized",
+  "effect_receipt": {
+    "provider_calls": 0,
+    "browser_actions": 0,
+    "credential_resolutions": 0,
+    "remote_probes": 0,
+    "installed_runtime_mutations": 0,
+    "github_issue_mutations": 0
+  },
+  "state_location": "docs/dev/notes/0128-2026-09-14-provider-acceptance-architecture.md"
+}

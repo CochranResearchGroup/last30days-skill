@@ -79,6 +79,11 @@ P51 Productization Readiness Prerequisites
   ├──> dogfoods the integrated product surfaces and publishes governed issues
   └──> blocks new WI-001 through WI-006 and WI-008 feature packets until closed;
        WI-007 production hotfixes remain exempt
+
+P53 Controlled Provider Acceptance
+  ├──> seals deterministic replay and owned-transport evidence first
+  ├──> joins adapters through an isolated provider-free service runtime
+  └──> gates readiness and one live canary behind separate exact authority
 ```
 
 P03 discovery and bounded source experiments may proceed alongside P01, but
@@ -3431,3 +3436,27 @@ Terminal Result:
 - WI-002 through WI-008 and WI-000 are `DONE` in repo-local authority. GitHub
   issue states and every provider/browser/live/schedule/installed/staging/
   production/release/deployment/delivery gate remain unchanged.
+
+## P53 | Controlled Provider Acceptance
+
+State: PLANNED
+
+Objective: build a common, truthful provider-acceptance system that separates
+sealed replay, owned transport, isolated service join, readiness and live-
+canary evidence while preserving exact authority, budgets, redaction, receipts,
+and teardown.
+
+Architecture:
+
+- Plan 0123 is closed with the selected `prepare -> execute -> verify` contract;
+- WI-010 is `READY` and its first packet covers only contracts, receipts,
+  Reddit loopback HTTP and a fake YouTube yt-dlp executable;
+- Agent Browser simulation and isolated service join follow only after shared
+  contracts are frozen;
+- readiness and live canaries remain serialized, one-attempt, separately
+  authorized effects. This lane itself grants none.
+
+Next Bounded Action:
+
+- register WI-010 Packet 1 from current canonical main and keep all provider,
+  browser, credential, remote, installed-runtime and tracker effects held.
