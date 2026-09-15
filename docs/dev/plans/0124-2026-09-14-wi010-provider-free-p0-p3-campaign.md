@@ -252,3 +252,56 @@ Next action:
 
 - stop at the accepted topic-branch boundary; do not exercise a forge,
   credentials, external providers, real browsers, readiness, or live canaries.
+
+### Checkpoint P0124-C04 | 2026-09-15
+
+Plan version: 1
+
+State transition: `CLOSED -> CLOSED`.
+
+Progress classification: `integrated`; PR #102 merged the accepted P0-P3
+packet into canonical `main` at
+`72f1c7440a20cfac00d0478edb8413bcfe4dc4b4`.
+
+Authority classification:
+
+- `explicit_operator_authority`
+
+Owned changes:
+
+- published final topic-branch checkpoint
+  `749aa4fb6449f869b19a360a06bf61e63201d72d` to the owned public fork;
+- merged only through PR #102 with an exact-head guard;
+- reconciled P53 custody and the WI-010/roadmap projections to the verified
+  merge receipt.
+
+Validation evidence:
+
+- pre-merge GitHub readback reported PR #102 `MERGEABLE` / `CLEAN`, exact head
+  `749aa4fb6449f869b19a360a06bf61e63201d72d`, no review threads, reviews, or
+  conversation comments, and no failing required checks;
+- post-merge GitHub readback reported state `MERGED`, actor `ecochran76`, and
+  merge commit `72f1c7440a20cfac00d0478edb8413bcfe4dc4b4`;
+- canonical local `main` fast-forwarded to and matched current `origin/main`;
+- from merged `main`, the offline receipt verifier accepted 64/64 and 46
+  provider-acceptance plus authority tests passed;
+- the deterministic authority audit passed with zero issues.
+
+Subagent status and reconciliation:
+
+- `joined`; no integration worker was required and all original tracer/review
+  results remain reconciled.
+
+Graphiti write status:
+
+- `not_written`; no memory write was authorized.
+
+Remaining acceptance criteria:
+
+- none for provider-free P0-P3 implementation, acceptance, publication, or
+  integration. P4/P5 remain outside Plan 0124.
+
+Next action:
+
+- stop. A new bounded plan and exact operator authority are required before
+  credential readiness or live-provider evidence.

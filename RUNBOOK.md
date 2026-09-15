@@ -31176,3 +31176,58 @@ Next Bounded Action:
 
 - push this publication receipt, re-read PR head/checks/threads, then merge PR
   #102 and reconcile the exact integration receipt on canonical `main`.
+
+## Turn 501 | 2026-09-15
+
+Focus: integrate WI-010 P0-P3 and reconcile canonical custody.
+
+Plan authority:
+`docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md`;
+WI-010, P53, and merged PR #102.
+
+Authority Consulted:
+
+- the operator's explicit instruction to publish and integrate WI-010 through
+  a pull request;
+- current validation, work-item, active-lane, branch/integration, and
+  collaborative-development policies;
+- exact GitHub PR, remote-ref, and canonical-worktree readbacks.
+
+Decisions And Changes:
+
+- merged PR #102 with exact expected head
+  `749aa4fb6449f869b19a360a06bf61e63201d72d`;
+- accepted GitHub's merge receipt
+  `72f1c7440a20cfac00d0478edb8413bcfe4dc4b4` and fast-forwarded the canonical
+  `main` worktree to the matching `origin/main`;
+- reconciled P53 custody to `INTEGRATED` while leaving WI-010 `IN_PROGRESS`
+  solely for separately authorized P4/P5 work.
+
+Validation Evidence:
+
+- final pre-merge readback: `MERGEABLE` / `CLEAN`, no unresolved threads,
+  reviews, conversation comments, or failing required checks;
+- post-merge PR readback: `MERGED` at 2026-09-15T17:45:54Z by `ecochran76`;
+- merged-main receipt verification: 64/64 accepted;
+- merged-main focused validation: 46 passed;
+- merged-main authority audit: passed with zero issues.
+
+State Movement:
+
+- PR #102 `OPEN -> MERGED`;
+- P53 custody `INTEGRATION_READY -> INTEGRATED`;
+- Plan 0124 remains `CLOSED` and WI-010 remains `IN_PROGRESS` for P4/P5 only.
+
+Subagent Status And Reconciliation:
+
+- `joined`; no new integration subagent was required.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Stop Reason:
+
+- provider-free P0-P3 is implemented, accepted, published, and integrated.
+  Credentials, acquisition providers, real browsers, installed runtimes,
+  deployments, releases, schedules, tracker mutation, P4, and P5 remain held.
