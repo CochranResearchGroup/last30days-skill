@@ -30990,3 +30990,189 @@ Next Bounded Action:
 - integrate this architecture, then register one provider-free WI-010 Packet 1
   plan from current canonical main. P4 readiness and P5 canaries require new,
   exact operator authority.
+
+## Turn 498 | 2026-09-14
+
+Focus: activate WI-010's full provider-free P0-P3 campaign across all eight
+acquisition adapters.
+
+Plan authority:
+`docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md`;
+WI-010 and P53.
+
+Authority Consulted:
+
+- the operator's exact request to implement and accept P0-P3 using parallel
+  transport tracers without credentials or external providers;
+- current planning, work-item, active-lane, multi-session, delegation, testing,
+  validation, documentation, branch, integration, and closeout policies;
+- Plan 0123's frozen architecture, invalidation map, and held P4/P5 boundary.
+
+Decisions And Changes:
+
+- expanded the implementation packet from the earlier two-tracer handoff to
+  the operator-authorized full eight-adapter P0-P3 campaign;
+- registered Plan 0124 on `feat/provider-acceptance-p0-p3-v1` with `/root` as
+  shared-contract and integration owner;
+- bounded three one-level parallel tracers to disjoint HTTP, command, and
+  browser-simulator modules after the shared contract freeze.
+
+Validation Evidence:
+
+- the initial provider-acceptance suite passed 22 tests and the first receipt
+  accepted 32/32 coarse tier samples;
+- a fresh reviewer rejected candidate `c5271380` with eight accepted blockers;
+- one bounded remediation expanded P1 to five scenarios per adapter and the
+  exact receipt to 64/64 independently verified samples;
+- 34 focused tests now pass, and duplicate receipt creation stops before
+  dependency resolution without changing the artifact;
+- comprehensive rerun and closed-world review remain pending.
+
+Authority And Effects:
+
+- repository implementation, local loopback transports, fake executables,
+  in-memory browser simulation, temporary isolated service state, tests, and
+  local Git custody are in scope;
+- credentials, non-loopback network, real browsers, providers, installed
+  runtime, schedules, releases, deployments, issue mutations, and P4/P5 remain
+  held.
+
+State Movement:
+
+- WI-010 `READY -> IN_PROGRESS`;
+- P53 `PLANNED -> OPEN` under Plan 0124.
+
+Subagent Status And Reconciliation:
+
+- `joined`; HTTP, command, and browser tracers completed, then each moved its
+  substitute beneath the real production adapter during bounded remediation;
+- fresh independent review `/root/independent_review` returned eight blocking
+  findings; all were accepted and remediated once, with closed-world
+  verification pending.
+
+Graphiti Write Status:
+
+- `not_written`; discovery returned no useful WI-010 recall and repository
+  artifacts remain authoritative.
+
+Next Bounded Action:
+
+- commit the remediated candidate, run comprehensive validation and closed-
+  world verification, then close WI-010 P0-P3 only if both pass.
+
+## Turn 499 | 2026-09-14
+
+Focus: accept and close Plan 0124's provider-free P0-P3 campaign.
+
+Plan authority:
+`docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md`;
+WI-010 and P53.
+
+Authority Consulted:
+
+- the operator's exact provider-free P0-P3 request and held credential/provider
+  boundary;
+- current validation, closeout, documentation, work-item, active-lane,
+  integration, and collaborative-development policies;
+- Plan 0124's frozen acceptance criteria and bounded review contract.
+
+Decisions And Changes:
+
+- accepted candidate `bcaceb96144764f2a17ec62aa8fafeaf03255de2`
+  after binding every retained evidence and teardown field to sealed,
+  independently recomputable claims;
+- closed Plan 0124 while retaining WI-010 and P53 for separately authorized
+  integration and any later P4/P5 work;
+- left canonical `main`, remotes, providers, credentials, and installed
+  runtimes unchanged.
+
+Validation Evidence:
+
+- primary provider-acceptance suite: 36 passed;
+- primary comprehensive suite: 3,161 passed, 8 skipped, and 14 subtests passed
+  in 225.52 seconds;
+- primary campaign execution and offline verification: 64/64 accepted;
+- durable receipt file SHA-256:
+  `9e336d61fd184ebaff91283128e81a834915c86f26392e8c6e7d04f932ed97d8`;
+- independent closed-world review: ACCEPT, with nine of nine recomputed-hash
+  tampering attempts rejected, 36 focused tests passed, and 64/64 verified.
+
+State Movement:
+
+- Plan 0124 `OPEN -> CLOSED`;
+- P53 custody `ACTIVE_WORKTREE -> INTEGRATION_READY` and roadmap state
+  `OPEN -> PLANNED` pending separate authority;
+- WI-010 remains `IN_PROGRESS`; P4/P5 and forge integration are incomplete and
+  were not authorized.
+
+Subagent Status And Reconciliation:
+
+- `joined`; HTTP, command, browser, and independent-review workers completed;
+  `/root` independently ran the joined and comprehensive validations.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Stop Reason:
+
+- the requested P0-P3 campaign is accepted at the topic-branch boundary. No
+  credential, external-provider, real-browser, forge, installed-runtime,
+  schedule, release, deployment, tracker, P4, or P5 effect is authorized.
+
+## Turn 500 | 2026-09-15
+
+Focus: publish Plan 0124 and enter PR-governed integration.
+
+Plan authority:
+`docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md`;
+WI-010, P53, and PR #102.
+
+Authority Consulted:
+
+- the operator's explicit instruction to publish and integrate WI-010 through
+  a pull request;
+- current multi-session, branch, push-cadence, active-lane, forge-target, and
+  collaborative-development policies;
+- the public-fork target registry and current authenticated forge readback.
+
+Decisions And Changes:
+
+- verified `origin` resolves to the owned public fork and `upstream` remains
+  push-disabled;
+- fetched current `origin/main` at
+  `756ccee1b2b3b76496e722ed5387a8554638af89`, with the accepted branch zero
+  commits behind and six ahead before publication;
+- published `feat/provider-acceptance-p0-p3-v1` at
+  `6c68d4af21a0b3674564752771550690ad984b80` and opened PR #102 against
+  `main` without creating or mutating an issue.
+
+Validation Evidence:
+
+- GitHub readback resolved the repository as
+  `CochranResearchGroup/last30days-skill`, viewer permission `ADMIN`, default
+  branch `main`, and parent `mvanhorn/last30days-skill`;
+- remote branch readback matched `6c68d4af21a0b3674564752771550690ad984b80`;
+- PR #102 was `MERGEABLE` / `CLEAN`, with the exact six commits and 29-file
+  published diff, no unresolved review threads, no reviews or conversation
+  comments, and only one skipped advisory `[code]smith` check.
+
+State Movement:
+
+- P53 custody remains `INTEGRATION_READY`, now with verified remote ref and PR
+  locator;
+- WI-010 remains `IN_PROGRESS` pending PR merge and main readback;
+- Plan 0124 remains `CLOSED`; P4/P5 remain held.
+
+Subagent Status And Reconciliation:
+
+- `joined`; no new subagent was required for the publication step.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Next Bounded Action:
+
+- push this publication receipt, re-read PR head/checks/threads, then merge PR
+  #102 and reconcile the exact integration receipt on canonical `main`.

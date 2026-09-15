@@ -1,5 +1,25 @@
 schema_version: 1
 lanes:
+  - id: P53
+    objective: Accept provider-free P0-P3 evidence across all eight acquisition adapters
+    work_items: [docs/dev/work-items/WI-010-provider-acceptance.md]
+    plan: docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md
+    plan_ref: refs/heads/feat/provider-acceptance-p0-p3-v1
+    branch: feat/provider-acceptance-p0-p3-v1
+    target: main
+    plan_state: CLOSED
+    custody_state: INTEGRATION_READY
+    checkpoint: 6c68d4af21a0b3674564752771550690ad984b80
+    remote_ref: refs/remotes/origin/feat/provider-acceptance-p0-p3-v1
+    pull_request: https://github.com/CochranResearchGroup/last30days-skill/pull/102
+    integration: merge
+    validation_status: accepted_provider_free_p0_p3
+    validation_ref: bcaceb96144764f2a17ec62aa8fafeaf03255de2
+    session_owner: /root
+    dependencies: []
+    overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_acceptance.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]
+    reconciled_overlaps: []
+    updated_at: 2026-09-15
   - id: P51
     objective: Build a deterministic development artifact and prove one isolated runtime through provider-free dogfood
     work_items: [docs/dev/work-items/WI-009-productization-readiness-remediation.md]

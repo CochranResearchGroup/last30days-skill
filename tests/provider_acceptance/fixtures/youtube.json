@@ -1,0 +1,48 @@
+{
+  "items": [
+    {
+      "video_id": "wi010yt001",
+      "title": "Provider-free acquisition boundaries",
+      "url": "https://www.youtube.com/watch?v=wi010yt001",
+      "channel_name": "Fixture Research Lab",
+      "date": "2026-09-10",
+      "engagement": {
+        "views": 120,
+        "likes": 12,
+        "comments": 3
+      },
+      "duration": 180,
+      "thumbnail": null,
+      "relevance": 0.94,
+      "why_relevant": "Fixture evidence for provider-free command acceptance",
+      "description": "A sanitized fixture describing bounded acquisition transport."
+    }
+  ],
+  "transport": {
+    "query": "provider free acquisition boundaries",
+    "from_date": "2026-08-15",
+    "to_date": "2026-09-14",
+    "expected_argv": [
+      "--ignore-config",
+      "--no-cookies-from-browser",
+      "ytsearch8:provider free acquisition boundaries",
+      "--flat-playlist",
+      "--dump-json",
+      "--no-warnings",
+      "--no-download"
+    ],
+    "stdout_items": [
+      {
+        "id": "wi010yt001",
+        "title": "Provider-free acquisition boundaries",
+        "channel": "Fixture Research Lab",
+        "upload_date": "20260910",
+        "view_count": 120,
+        "like_count": 12,
+        "comment_count": 3,
+        "duration": 180,
+        "description": "A sanitized fixture describing bounded acquisition transport."
+      }
+    ]
+  }
+}

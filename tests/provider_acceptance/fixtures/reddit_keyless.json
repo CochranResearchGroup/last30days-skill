@@ -1,0 +1,51 @@
+{
+  "case_id": "reddit-keyless-http",
+  "items": [
+    {
+      "date": "2026-09-14",
+      "engagement": {
+        "num_comments": 4,
+        "score": 12
+      },
+      "id": "wi010-keyless-1",
+      "selftext": "Sanitized provider-free loopback fixture.",
+      "subreddit": "providerfree",
+      "title": "Keyless Reddit transport fixture",
+      "url": "https://www.reddit.com/r/providerfree/comments/wi010_keyless/fixture/"
+    }
+  ],
+  "request": {
+    "host": "127.0.0.1",
+    "logical_host": "www.reddit.com",
+    "method": "GET",
+    "path": "/search.json",
+    "query": {
+      "q": "provider acceptance",
+      "sort": "relevance",
+      "t": "month",
+      "limit": "10",
+      "raw_json": "1"
+    }
+  },
+  "schema_version": 1,
+  "transport_response": {
+    "data": {
+      "children": [
+        {
+          "data": {
+            "author": "fixture_author",
+            "created_utc": 1789387200,
+            "num_comments": 4,
+            "permalink": "/r/providerfree/comments/wi010keyless/fixture/",
+            "score": 12,
+            "selftext": "Sanitized provider-free loopback fixture.",
+            "subreddit": "providerfree",
+            "title": "Keyless Reddit transport fixture",
+            "upvote_ratio": 0.9
+          },
+          "kind": "t3"
+        }
+      ]
+    }
+  }
+}
