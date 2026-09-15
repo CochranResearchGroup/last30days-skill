@@ -30823,3 +30823,91 @@ Graphiti Write Status:
 Next Bounded Action:
 
 - validate and integrate activation, then resume all three owners concurrently.
+
+## Turn 496 | 2026-09-14
+
+Focus: close the provider-free productization campaign after the operator-
+authorized final isolated runtime succeeded.
+
+Plan authority:
+`docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`;
+Plans 0120-0122 and WI-000/WI-005/WI-006/WI-008.
+
+Authority Consulted:
+
+- the operator's explicit authorization for one additional bounded
+  provider-free isolated development runtime attempt;
+- current planning, validation, branch/integration, work-item traceability,
+  multi-session, model-selection and closeout policies;
+- canonical PRs 95-99 and exact retained runtime receipts.
+
+Decisions And Changes:
+
+- retained failed ordering, WAL-lock and data-root-guard attempts without
+  rewriting their dispositions;
+- accepted runtime `l30d-p52-final-448d0797-780e7d7a89a1` on source
+  `448d07975269d3ee4966607c07e6898e37fed7ad` after all three joined phases
+  passed and exact-owner teardown completed;
+- closed Plans 0107/0120/0121/0122, lanes P37/P39/P40/P52 and work items
+  WI-000/WI-005/WI-006/WI-008 in repo-local authority;
+- kept GitHub issue states and all provider, browser, live-data, schedule,
+  installed-runtime, staging, production, release, deployment and delivery
+  gates unchanged.
+
+Validation Evidence:
+
+- Wave 5 implementation joined through reviewed PR 95; aggregate runtime
+  driver and bounded corrections joined through reviewed PRs 96-99;
+- service `0.3.119`, MCP `4.0.7`, schema 18, manifest SHA-256
+  `ef8a00185910f398c0d73b03c879a3c035dc50b68c2c14eb183672f2d833547b`;
+- two artifacts were byte-identical at SHA-256
+  `2ebc0096bae81ed4432a92b976f6def4c4482d450545eaacce136a3d6111f625`;
+- exact runtime receipt SHA-256
+  `e8a4be06dd93f9fd5f868e2e7d976f3052a53db68e8cbe59185df23e888e3aa2`;
+- 19 search cases, 6 question cases, structural grounding, 7 authorized
+  collections, 8 follow searches, 6 denied operations and 5 monitor cases
+  passed; delivery remained disabled;
+- each phase reached ready, stopped its exact owner, and ended controller-
+  absent with no socket or owned process;
+- full Python, focused, Go test/vet/generate, Ruff, package, reproducibility,
+  authority and diff validation passed across the integration sequence.
+- the first exact-closeout full Python run found one reproducible false
+  raw-byte assertion in the fresh-MCP hybrid-search test (`3124` passed, `8`
+  skipped otherwise). Instrumentation proved a WAL checkpoint, not a logical
+  write; the query-only logical-dump regression passed three times and all 52
+  adjacent search tests passed before the final comprehensive rerun.
+
+Production Readback:
+
+- installed service identity remained PID 1428/start ticks 4893, version
+  `0.3.116`, schema 17 with unchanged manifest/unit/config identities;
+- its active database bytes changed naturally during the campaign. It was not
+  a campaign target, and no byte-identical database claim is made.
+
+State Movement:
+
+- Plans 0107/0120/0121/0122 `OPEN -> CLOSED`;
+- P37/P39/P40/P52 `OPEN -> CLOSED` and implementation custody `ACTIVE ->
+  INTEGRATED`;
+- WI-000/WI-005/WI-006/WI-008 `IN_PROGRESS -> DONE`;
+- Plan 0046/P22 remains the sole active plan/lane and remains paused.
+
+Subagent Status And Reconciliation:
+
+- `joined`; three Wave 5 implementers and independent joined review completed;
+  coordinator reconciled all accepted checkpoints and shared projections.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized, and current repository/Git/
+  runtime receipts are authoritative.
+
+Terminal Result:
+
+- provider-free productization objective met; no further campaign packet or
+  external effect is authorized by this closure.
+
+Next Bounded Action:
+
+- stop; the campaign objective is satisfied. Plan 0046/P22 remains operator-
+  paused and requires separate explicit resumption.

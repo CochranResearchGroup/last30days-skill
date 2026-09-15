@@ -1,18 +1,18 @@
 <!-- last30days-work-item:WI-008 -->
 # Measure corpus and retrieval quality continuously
 
-State: IN_PROGRESS
+State: DONE
 Priority: P2
 Lane: Quality
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/60
-Blocked by: none for the provider-free grounding/quality closeout packet
+Blocked by: none
 Architecture: docs/dev/notes/0121-2026-09-13-corpus-retrieval-and-grounding-quality-architecture.md
 Implementation plan seed: docs/dev/plans/0080-2026-09-13-corpus-retrieval-and-grounding-quality-architecture-and-lane-handoff.md
-Last closed plan: docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md
-Current plan: docs/dev/plans/0122-2026-09-14-service-quality-grounding-closeout.md
-Branch: feat/service-quality-grounding-closeout-v1
-Owner: /root/wave4_wi008_plan
+Last completed plan: docs/dev/plans/0122-2026-09-14-service-quality-grounding-closeout.md
+Current plan: none
+Branch: main
+Owner: /root
 
 ## Problem
 
@@ -56,3 +56,10 @@ Digest-pinned immutable fixtures now drive real acquisition, corpus and
 PostSearch adapters with candidate-head, content, owner, partition and WAL
 closure. WI-008 returns to `READY`; answer-grounding is now dependency-ready
 because WI-003 is `DONE`, but requires a separately bounded packet.
+
+Plan 0122 closed after reviewed Wave 5 integration through PR 95 and final
+joined Plan 0107 runtime acceptance on canonical source `448d0797`. All four
+real read-only quality axes pass with durable request/retrieval/answer/citation
+correlation and zero model, provider, browser or database-write effects. The
+accepted grounding claim is structural only; it is not semantic entailment or
+production-quality proof. WI-008 is `DONE`.

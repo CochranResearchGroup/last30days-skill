@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "plan": "0107",
+  "work_item": "WI-000",
+  "result": "passed",
+  "authority": "one operator-authorized provider-free isolated development runtime attempt",
+  "source": {
+    "commit": "448d07975269d3ee4966607c07e6898e37fed7ad",
+    "branch": "runtime/plan0107-final-448d0797",
+    "worktree": "/home/ecochran76/workspace.local/last30days-skill-plan0107-runtime-source",
+    "service_version": "0.3.119",
+    "mcp_version": "4.0.7",
+    "database_schema": 18,
+    "runtime_manifest_sha256": "ef8a00185910f398c0d73b03c879a3c035dc50b68c2c14eb183672f2d833547b"
+  },
+  "artifact": {
+    "sha256": "2ebc0096bae81ed4432a92b976f6def4c4482d450545eaacce136a3d6111f625",
+    "byte_identical_builds": true,
+    "paths": [
+      "/home/ecochran76/.local/state/last30days-development-builds/plan0107-448d0797/build-a/last30days-service-0.3.119.tar.gz",
+      "/home/ecochran76/.local/state/last30days-development-builds/plan0107-448d0797/build-b/last30days-service-0.3.119.tar.gz"
+    ]
+  },
+  "runtime": {
+    "id": "l30d-p52-final-448d0797-780e7d7a89a1",
+    "exact_receipt_path": "/home/ecochran76/.local/state/last30days-development/last30days/lanes/l30d-p52-final-448d0797-780e7d7a89a1/receipts/plan0107-final-runtime.json",
+    "exact_receipt_sha256": "e8a4be06dd93f9fd5f868e2e7d976f3052a53db68e8cbe59185df23e888e3aa2",
+    "doctor_ok": true,
+    "phase_runtime_identity_equal": true,
+    "final_controller_state": "absent",
+    "socket_absent": true,
+    "owned_process_census_empty": true
+  },
+  "phases": {
+    "search_question_quality": {
+      "result": "passed",
+      "search_cases": 19,
+      "question_cases": 6,
+      "grounding": "structural",
+      "fixture_sha256": "ec9db571b1fd0adf21081d2888037fa05eee981d00a7791110a038e5a0271f45",
+      "network_requests": 0,
+      "model_calls": 0,
+      "browser_actions": 0,
+      "database_writes": 0,
+      "runtime_mutations": 0
+    },
+    "follows": {
+      "result": "passed",
+      "authorized_collections": 7,
+      "search_cases": 8,
+      "denied_operations": 6,
+      "cli_passed": true,
+      "fixture_sha256": "93ff9ea606e363333a26d0340d072cb72fbfd78eb90d9acf2400331e265c8cd3"
+    },
+    "monitors": {
+      "result": "passed",
+      "cases": 5,
+      "delivery_intent_mode": "disabled",
+      "cli_digest_present": true,
+      "fixture_sha256": "7eb2814e43fef3409a57a6e91700c30fa2dbde7bb3f5baffd4b819226a37ec40"
+    }
+  },
+  "retained_failed_attempts": [
+    {
+      "source_commit": "b44fda013e814be74cc30a1c1d159dcf20453ee6",
+      "reason": "question/search ordering",
+      "receipt_sha256": "26ba9542c0dfb6904a468d4e92b4dc91257ba9449f965711a3d356bfe8049daa"
+    },
+    {
+      "source_commit": "d1282409e6970595527cb45e869ecd2e37d383c3",
+      "reason": "SQLite database locked while changing journal mode",
+      "receipt_sha256": "eefc37b1f7391fbfe5fcefbfeebdba37d2a4c9a48f7544d319ccc7c574705119"
+    },
+    {
+      "source_commit": "f0baee32bfe7dcae9316a2a5dcd21578e0e7a469",
+      "reason": "incorrect controller-owned data-root guard",
+      "receipt_path": "/home/ecochran76/.local/state/last30days-development/last30days/lanes/l30d-p52-final-f0baee32-927ab335a2f1/receipts/plan0107-final-runtime.json",
+      "receipt_sha256": "af664e2d4d148787301614a3feb4ddde86832a7e1e74a5e5d4245c2ef6825f56"
+    }
+  ],
+  "production_readback": {
+    "service_version": "0.3.116",
+    "database_schema": 17,
+    "pid": 1428,
+    "process_start_ticks": 4893,
+    "installed_manifest_sha256": "19707a469eb58c21ca4c5b43a0bfbfb6cac4b0f5a5310480b01b1a3f652429e8",
+    "unit_sha256": "3089c36c482610575f358ec70664bcfe3980b64e6ee080b5eb035761644de1ea",
+    "config_sha256": "69c5590e31dc71a4d5197a14e9f88225768e0bebcdc233ccd18093f22d3ee9fc",
+    "service_state": "active/running",
+    "campaign_targeted_or_mutated_production": false,
+    "database_byte_identity_claim": false
+  },
+  "forbidden_effects_used": []
+}

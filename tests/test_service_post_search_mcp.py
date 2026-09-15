@@ -3,21 +3,29 @@
 import json
 import os
 import shutil
+import sqlite3
 import subprocess
 import threading
 from pathlib import Path
 
 import pytest
-
 from lib.service_app import initialize_application
-from lib.service_contracts import PostSearchRequest, PostSearchResponse
 from lib.service_client import ServiceClient
+from lib.service_contracts import PostSearchRequest, PostSearchResponse
 from lib.service_http import UnixServiceServer
+
 from tests.post_search_fixtures import add_vectors
 from tests.test_mcp_service_integration import _call
 from tests.test_service_post_search import _request_payload, _seed_post_corpus
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _logical_database_dump(db: Path) -> tuple[str, ...]:
+    """Compare committed SQLite contents independently of WAL checkpointing."""
+    with sqlite3.connect(f"{db.resolve().as_uri()}?mode=ro", uri=True) as connection:
+        connection.execute("PRAGMA query_only=ON")
+        return tuple(connection.iterdump())
 
 
 @pytest.mark.skipif(shutil.which("go") is None, reason="Go toolchain unavailable")
@@ -51,7 +59,7 @@ def test_fresh_mcp_client_preserves_hybrid_pages_and_python_http_contract(tmp_pa
     server = UnixServiceServer(tmp_path / "runtime/service.sock", app)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
-    before = db.read_bytes()
+    before = _logical_database_dump(db)
     process = subprocess.Popen(
         [str(binary)],
         stdin=subprocess.PIPE,
@@ -107,7 +115,7 @@ def test_fresh_mcp_client_preserves_hybrid_pages_and_python_http_contract(tmp_pa
             == fixture["semantic_only_families"]
         )
         assert second_page.next_cursor is None
-        assert db.read_bytes() == before
+        assert _logical_database_dump(db) == before
     finally:
         process.terminate()
         process.wait(timeout=5)

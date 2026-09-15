@@ -1,13 +1,13 @@
 # Plan 0107 | Provider-Free Productization Completion Campaign
 
-State: OPEN
+State: CLOSED
 Lane: P52
 Work item: WI-000
 Branch: docs/provider-free-productization-campaign
 Target: main
 Integration: merge
 Roadmap: P52
-Plan version: 3
+Plan version: 4
 Date: 2026-09-14
 Session owner: Codex thread 01a09f76-8024-7960-a7c5-c0469cf99153
 Runtime model: GPT-5 family primary; effective runtime identity not reported
@@ -849,6 +849,72 @@ Next action or stop reason: stop after reviewed integration and current
 validation. Ask the operator whether to authorize one additional bounded
 isolated-runtime attempt under a new Plan 0107 version; do not infer that
 authority from the original goal or repeat the runtime autonomously.
+
+### Checkpoint P0107-C19 | 2026-09-14
+
+Plan version: 4
+
+State transition: `awaiting_human_gate -> CLOSED`.
+
+Progress classification: `outcome_progress`; the operator authorized one
+additional bounded provider-free runtime attempt, and the exact canonical
+successor proved the complete joined product before exact-owner teardown.
+
+Authority classification:
+
+- `human_authority` covered only this one additional isolated development
+  runtime attempt;
+- `inherited_authority` covered receipt retention, repo-local closeout,
+  validation and reviewed integration;
+- no provider, browser, live-data, schedule, installed-runtime mutation,
+  staging, production mutation, release, deployment, delivery or tracker
+  effect was authorized or used.
+
+Acceptance evidence:
+
+- canonical source `448d07975269d3ee4966607c07e6898e37fed7ad`, service
+  `0.3.119`, MCP `4.0.7`, schema `18`, and runtime-manifest SHA-256
+  `ef8a00185910f398c0d73b03c879a3c035dc50b68c2c14eb183672f2d833547b`
+  produced byte-identical artifacts at SHA-256
+  `2ebc0096bae81ed4432a92b976f6def4c4482d450545eaacce136a3d6111f625`;
+- runtime `l30d-p52-final-448d0797-780e7d7a89a1` passed all three phases:
+  19 search cases plus 6 question cases and structural grounding, 7
+  authorized follow collections plus 8 search cases and 6 denied operations,
+  and 5 monitor cases with delivery disabled;
+- exact receipt
+  `/home/ecochran76/.local/state/last30days-development/last30days/lanes/l30d-p52-final-448d0797-780e7d7a89a1/receipts/plan0107-final-runtime.json`
+  has SHA-256
+  `e8a4be06dd93f9fd5f868e2e7d976f3052a53db68e8cbe59185df23e888e3aa2`;
+  the compact repository locator is
+  `dev/last30days/receipts/plan0107-final-runtime.json`;
+- every phase used the same runtime ID, reached ready state, stopped cleanly,
+  ended controller-absent with an absent socket, and left an empty owned
+  process census;
+- failed receipts from the ordering, WAL-lock and data-root-guard attempts
+  remain retained and attributable. They were not rewritten as successes;
+- exact-head closeout validation exposed a false raw-file immutability
+  assertion in the fresh-MCP hybrid-search test: already-committed WAL pages
+  checkpointed into the main SQLite file during the cursor call while the
+  logical database stayed unchanged. The test now compares a query-only
+  logical dump at the same public seam; the original repro failed three times,
+  the corrected repro passed three times, and 52 adjacent search tests passed;
+- WI-005, WI-006 and WI-008 implementation joined through reviewed PR 95;
+  the aggregate driver and its bounded corrections joined through PRs 96-99.
+
+Production readback: the installed service remained version `0.3.116`, schema
+`17`, PID `1428` with start ticks `4893`, and retained the same installed
+manifest, unit and configuration identities. Its live database bytes changed
+naturally while that service remained active; the campaign did not target or
+mutate it and makes no byte-identity claim about that database.
+
+Subagent status and reconciliation: `joined`; all implementation and review
+agents completed, their accepted checkpoints were reconciled through the
+coordinator-owned integration path, and no child retains implementation
+custody.
+
+Terminal result: WI-002 through WI-008 and parent WI-000 are `DONE` in
+repo-local authority. GitHub issue states are unchanged. Plan 0046/P22 and all
+external-effect gates remain untouched.
 
 ## Stop Rules
 

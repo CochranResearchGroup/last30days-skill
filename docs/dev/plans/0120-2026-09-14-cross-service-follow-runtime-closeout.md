@@ -1,6 +1,6 @@
 # Plan 0120 | Cross-Service Follow Runtime Closeout
 
-State: OPEN
+State: CLOSED
 Lane: P39
 Work item: WI-005
 Branch: feat/cross-service-follow-runtime-closeout-v1
@@ -348,3 +348,28 @@ Next action: publish the evidence-only closeout checkpoint, verify clean
 HEAD/upstream/live-remote equality, then integrate through the coordinator's
 reviewed PR. WI-005 is eligible for `DONE` only after that accepted canonical
 integration; no additional runtime, provider or installed acceptance is claimed.
+
+### Checkpoint P0120-C06 | 2026-09-14
+
+Plan version: 1
+
+State transition: `acceptance_met_pending_integration -> CLOSED`.
+
+Progress classification: `outcome_progress`; reviewed Wave 5 implementation
+joined through PR 95 at canonical merge `ffb561df79e0bb457dac46012a01a11757d5d307`,
+and the final joined Plan 0107 runtime independently repeated the follow
+product acceptance on canonical source `448d0797`.
+
+Authority classification:
+
+- `inherited_authority` covered review, canonical integration and repo-local
+  closure;
+- provider, live locator, browser, installed-runtime, scheduling and tracker
+  effects remained prohibited and unused.
+
+Acceptance disposition: the retained Plan 0120 receipt remains authoritative
+for its two-cycle packet, while Plan 0107 runtime
+`l30d-p52-final-448d0797-780e7d7a89a1` proved 7 authorized collections, 8
+search cases and 6 denied operations in the joined product. Final controller
+state was absent, socket absent and owned-process census empty. WI-005 is
+`DONE`; active plan is none and custody returns to canonical `main`.

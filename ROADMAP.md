@@ -2910,7 +2910,7 @@ Next Bounded Action:
 
 ## P37 | Corpus, Retrieval, And Grounding Quality
 
-State: OPEN
+State: CLOSED
 
 Objective: give maintainers one replayable, denominator-aware view of
 acquisition coverage, corpus integrity, retrieval quality, and answer grounding
@@ -2918,11 +2918,10 @@ without conflating fixture success with production quality.
 
 Current State:
 
-- WI-008 is `READY`; its real grounding packet is now dependency-ready after
-  WI-003 closed;
+- WI-008 is `DONE`; all four real read-only quality axes are accepted;
 - current evaluators share a versioned set, thresholds, reports, denominators,
   artifact/effect contracts, and real read-only acquisition/corpus/retrieval
-  adapters; the remaining axis is real answer grounding;
+  adapters plus the accepted structural answer-grounding adapter;
 - the selected seam is a repo-only deterministic harness with four separate
   axes, canonical JSON plus Markdown projection, and explicit blocking versus
   observation tiers;
@@ -2948,10 +2947,11 @@ Last Closed Implementation Plan:
   `feat/service-quality-real-adapters-v1`; activation `24614a18` is published
   and integrated through reviewed PR 91 as canonical merge `f413458b`.
 
-Planned Closeout:
+Closed Grounding Closeout:
 
 - `docs/dev/plans/0122-2026-09-14-service-quality-grounding-closeout.md` on
-  `feat/service-quality-grounding-closeout-v1`; custody is not yet published.
+  `main`; reviewed implementation joined through PR 95 and final structural
+  grounding passed in the Plan 0107 joined runtime on `448d0797`.
 
 Dependencies:
 
@@ -2959,10 +2959,10 @@ Dependencies:
   grounding integration/acceptance joins WI-003. Shared contract/catalog and
   CI overlaps remain coordinator-owned.
 
-Next Bounded Action:
+Terminal Boundary:
 
-- register one bounded provider-free answer-grounding and quality-closeout
-  packet; do not infer model/judge or production-sample authority.
+- structural grounding is closed; semantic entailment, judge/model calls and
+  production-quality claims remain outside this lane.
 
 ## P38 | Reserved Production Hotfix Path
 
@@ -2975,9 +2975,9 @@ lane reconciliation.
 
 Current State:
 
-- WI-007 is `IN_PROGRESS`; provider-free Packets 1-2 integrated through reviewed PR
-  79 at canonical `fae31198`, and the remaining runtime/release drill has no
-  provider dependency;
+- WI-007 is `DONE`; provider-free Packets 1-2 integrated through reviewed PR
+  79 at canonical `fae31198`, and the provider-free runtime/release drill is
+  closed while the real incident slot remains dormant;
 - Plan 0113 source acceptance `d25f9df4` is joined at Wave 2 integration head
   `aa59b42c`; its retained receipt digest is
   `5ee59e1630211c9510bff8279f0d3824a689c267450d978c2c8e6290daf24ae6`;
@@ -2991,7 +2991,7 @@ Current State:
   remediation closes the fixture-containment escape. No real incident,
   release, runtime mutation, staging, or production action has begun.
 
-Active Plan:
+Closed Implementation Plan:
 
 - `docs/dev/plans/0113-2026-09-14-hotfix-runtime-and-operator-closure.md`.
 
@@ -3005,15 +3005,14 @@ Dependencies:
   joins WI-001, and every real deployment/rollback requires exact incident-
   specific operator authority.
 
-Next Bounded Action:
+Terminal Boundary:
 
-- integrate the reviewed Wave 2 head and close Plan 0113/WI-007 while retaining
-  the real slot as dormant capacity. A qualified production incident remains
-  separately authorized.
+- retain the real slot as dormant capacity. A qualified production incident,
+  staging action, deployment or rollback remains separately authorized.
 
 ## P39 | Cross-Service Tailored Follow Product Surface
 
-State: OPEN
+State: CLOSED
 
 Objective: extend tailored follows beyond X through provider-native target
 identity and capability discovery without duplicating collection scheduling or
@@ -3021,7 +3020,7 @@ flattening distinct service semantics.
 
 Current State:
 
-- WI-005 is `READY`; WI-004 is `DONE` and its exact dependency is satisfied;
+- WI-005 and WI-004 are `DONE`;
 - current global surface validation and coarse adapter capability declarations
   cannot prove that a source-target-operation combination is supported;
 - the selected seam adds a closed provider capability registry and
@@ -3044,10 +3043,11 @@ Last Closed Implementation Plan:
   `feat/cross-service-follow-tracers-v1`; activation `f7ba978d` is published
   and integrated through reviewed PR 91 as canonical merge `f413458b`.
 
-Planned Closeout:
+Closed Runtime Closeout:
 
 - `docs/dev/plans/0120-2026-09-14-cross-service-follow-runtime-closeout.md` on
-  `feat/cross-service-follow-runtime-closeout-v1`; custody is not yet published.
+  `main`; reviewed implementation joined through PR 95 and the final joined
+  runtime passed on canonical source `448d0797`.
 
 Closed Architecture Plan:
 
@@ -3055,18 +3055,18 @@ Closed Architecture Plan:
 
 Dependencies:
 
-- WI-004 is closed, so Packet 1 has no remaining implementation dependency;
-  fresh isolated-runtime acceptance remains a later WI-005 closeout gate.
-  Shared contract/search/MCP joins remain coordinator-owned.
+- all provider-free implementation and isolated-runtime dependencies are
+  closed. Any future provider/live-locator expansion requires separate
+  authority.
 
-Next Bounded Action:
+Terminal Boundary:
 
-- register one bounded provider-free fresh isolated-runtime closeout. Do not
-  use providers or live locators.
+- provider-free follow product acceptance is closed; providers, live locators,
+  schedules and installed-runtime effects remain separately gated.
 
 ## P40 | Saved Monitors And Evidence Digests
 
-State: OPEN
+State: CLOSED
 
 Objective: let users save query/follow views, detect evidence-backed changes
 from an accepted baseline, and prepare reviewable digests without rescraping or
@@ -3074,10 +3074,10 @@ duplicate delivery.
 
 Current State:
 
-- WI-006 is `READY`; Packet 2 is closed and integrated;
+- WI-006 is `DONE`; monitor/digest composition is closed and integrated;
 - current immutable retrieval heads, document versions, collection sightings,
-  and notification receipts provide seams, but no durable monitor/baseline/
-  digest authority exists;
+  and notification receipts now back durable monitor, baseline and digest
+  authority;
 - the selected seam is a cache-only versioned view subscription with explicit
   baseline acceptance and separately gated delivery intents;
 - independent Codex thread `01a09cf4-c89e-7660-9caf-66a78f34ded0`
@@ -3094,10 +3094,11 @@ Last Closed Plan:
 
 - `docs/dev/plans/0116-2026-09-14-saved-query-composition.md`.
 
-Planned Closeout:
+Closed Product Closeout:
 
 - `docs/dev/plans/0121-2026-09-14-monitor-digest-product-closeout.md` on
-  `feat/monitor-digest-product-closeout-v1`; custody is not yet published.
+  `main`; reviewed implementation joined through PR 95 and the final joined
+  runtime passed with delivery disabled on canonical source `448d0797`.
 
 Closed Architecture Plan:
 
@@ -3113,10 +3114,10 @@ Dependencies:
 - WI-002, WI-001, and WI-004 are `DONE`, so follow composition and later digest
   preparation are unblocked. WI-003 synthesis remains excluded from P40.
 
-Next Bounded Action:
+Terminal Boundary:
 
-- integrate Plan 0121 registration, publish exact custody, then execute the
-  combined provider-free follow-composition, digest and runtime closeout.
+- provider-free monitor/digest acceptance is closed; schedules and live
+  delivery remain disabled and require separate authority.
 
 ## P41 | Implementation Lane Launch Registration
 
@@ -3381,7 +3382,7 @@ Next Bounded Action:
 
 ## P52 | Provider-Free Productization Completion Campaign
 
-State: OPEN
+State: CLOSED
 
 Objective: complete WI-002 through WI-008 in dependency-ordered waves, prove
 their joined provider-free product behavior in isolated development runtimes,
@@ -3398,28 +3399,35 @@ Current State:
   `a10604e9`, and WI-007 runtime/operator closure `d25f9df4` at reviewed
   integration head `aa59b42c`; full joined validation and independent review
   pass with one closed documentation remediation;
-- WI-005, WI-006, and WI-008 remain as dependency-ready closeout work;
+- Wave 5 WI-005, WI-006 and WI-008 implementation joined through reviewed PR
+  95 as canonical merge `ffb561df`;
 - Wave 4 integrated through reviewed PR 91 as canonical merge `f413458b`:
-  WI-003 is `DONE`, while WI-005 and WI-008 are `READY` for their final bounded
-  packets; all six reproduced joined-review findings were closed;
+  WI-003 closed and all six reproduced joined-review findings were resolved;
 - at most three one-level implementation agents may run concurrently, and the
   coordinator owns integration plus shared authority projections;
 - all providers, browsers, live data, schedules, installed service, staging,
   production, releases, deployments, rollbacks, and issue mutations remain
   outside authority.
 
-Active Plan:
+Closed Campaign Plan:
 
 - `docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md`.
 
-Last Completed Wave 4 Plans:
+Completed Closeout Plans:
 
+- `docs/dev/plans/0120-2026-09-14-cross-service-follow-runtime-closeout.md`;
+- `docs/dev/plans/0121-2026-09-14-monitor-digest-product-closeout.md`;
+- `docs/dev/plans/0122-2026-09-14-service-quality-grounding-closeout.md`;
 - `docs/dev/plans/0117-2026-09-14-question-public-runtime-closeout.md`;
 - `docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md`;
 - `docs/dev/plans/0119-2026-09-14-service-quality-real-adapters.md`.
 
-Next Bounded Action:
+Terminal Result:
 
-- register the next full-capacity provider-free wave: WI-005 fresh-runtime
-  closeout, WI-006 monitor/digest composition closeout, and WI-008 real
-  grounding/quality closeout.
+- aggregate driver and bounded corrections joined through PRs 96-99. Runtime
+  `l30d-p52-final-448d0797-780e7d7a89a1` passed search/question/quality,
+  follows and monitors on canonical source `448d0797`, then ended
+  controller-absent with no socket or owned processes;
+- WI-002 through WI-008 and WI-000 are `DONE` in repo-local authority. GitHub
+  issue states and every provider/browser/live/schedule/installed/staging/
+  production/release/deployment/delivery gate remain unchanged.

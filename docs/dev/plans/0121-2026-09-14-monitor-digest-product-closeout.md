@@ -1,6 +1,6 @@
 # Plan 0121 | Monitor And Digest Product Closeout
 
-State: OPEN
+State: CLOSED
 Lane: P40
 Work item: WI-006
 Branch: feat/monitor-digest-product-closeout-v1
@@ -422,3 +422,28 @@ Next action: publish this evidence-only checkpoint clean and remote-equal;
 coordinator reviews and merges exact custody, then marks WI-006 DONE only if
 all acceptance criteria remain satisfied. Preserve this branch/worktree and
 all runtime evidence; no cleanup or external-effect authority is implied.
+
+### Checkpoint P0121-C09 | 2026-09-14
+
+Plan version: 1
+
+State transition: `acceptance_eligible -> CLOSED`.
+
+Progress classification: `outcome_progress`; reviewed Wave 5 implementation
+joined through PR 95 at canonical merge `ffb561df79e0bb457dac46012a01a11757d5d307`,
+and the final Plan 0107 runtime proved the joined monitor surface on canonical
+source `448d0797`.
+
+Authority classification:
+
+- `inherited_authority` covered review, canonical integration and repo-local
+  closure;
+- provider/model/browser, live/installed state, schedules, real delivery,
+  releases, deployments and tracker effects remained prohibited and unused.
+
+Acceptance disposition: the retained C08 receipt remains authoritative for
+the dedicated two-cycle packet. Final runtime
+`l30d-p52-final-448d0797-780e7d7a89a1` passed 5 joined monitor cases, emitted
+the CLI digest, kept delivery intent disabled, stopped its exact owner and
+ended controller-absent with no socket or owned processes. WI-006 is `DONE`;
+active plan is none and delivery/scheduling remain disabled.
