@@ -5,7 +5,6 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 AUDITOR_PATH = ROOT / "dev" / "last30days" / "scripts" / "audit_plan_authority.py"
 
@@ -178,13 +177,9 @@ def test_current_repository_authority_passes() -> None:
 
     assert report["status"] == "passed", report
     assert report["issues"] == []
-    assert report["active_plan_count"] == 5
+    assert report["active_plan_count"] == 1
     assert report["active_plans"] == [
         "docs/dev/plans/0046-2026-08-11-facebook-retained-browser-runtime-recovery.md",
-        "docs/dev/plans/0107-2026-09-14-provider-free-productization-completion-campaign.md",
-        "docs/dev/plans/0120-2026-09-14-cross-service-follow-runtime-closeout.md",
-        "docs/dev/plans/0121-2026-09-14-monitor-digest-product-closeout.md",
-        "docs/dev/plans/0122-2026-09-14-service-quality-grounding-closeout.md",
     ]
     assert report["campaign_plan_count"] == 0
 

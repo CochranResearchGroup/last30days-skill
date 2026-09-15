@@ -1,16 +1,16 @@
 <!-- last30days-work-item:WI-005 -->
 # Extend tailored follows across supported services
 
-State: IN_PROGRESS
+State: DONE
 Priority: P2
 Lane: Follows
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/58
-Blocked by: none for the provider-free runtime-closeout packet
-Last completed plan: docs/dev/plans/0118-2026-09-14-cross-service-follow-tracers.md
-Active plan: docs/dev/plans/0120-2026-09-14-cross-service-follow-runtime-closeout.md
-Branch: feat/cross-service-follow-runtime-closeout-v1
-Owner: /root/wave4_wi005_plan
+Blocked by: none
+Last completed plan: docs/dev/plans/0120-2026-09-14-cross-service-follow-runtime-closeout.md
+Active plan: none
+Branch: main
+Owner: /root
 
 ## Problem
 
@@ -77,3 +77,9 @@ Provider-free native Reddit community/user and YouTube channel tracers now
 cross collection, publication, provenance and authorized query surfaces with
 truthful capability discovery. WI-005 returns to `READY` for its separately
 bounded fresh-runtime closeout; no live provider or locator was used.
+
+Plan 0120 closed after reviewed Wave 5 integration through PR 95 and final
+joined Plan 0107 runtime acceptance on canonical source `448d0797`. Seven
+authorized collections, eight search cases, six denied operations, restart
+durability and exact-owner teardown passed. No provider, live locator,
+schedule or installed-runtime effect occurred. WI-005 is `DONE`.

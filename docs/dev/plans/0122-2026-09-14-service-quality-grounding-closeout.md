@@ -1,6 +1,6 @@
 # Plan 0122 | Service Quality Grounding Closeout
 
-State: OPEN
+State: CLOSED
 Lane: P37
 Work item: WI-008
 Branch: feat/service-quality-grounding-closeout-v1
@@ -193,3 +193,29 @@ independent reviewer are complete, with no children or excluded effects.
 
 Next action: pass the corrected full suite, merge the reviewed integration PR,
 then reconcile WI-008 and this plan to terminal state.
+
+### Checkpoint P0122-C05 | 2026-09-14
+
+Plan version: 1
+
+State transition: `reviewed_accepted -> CLOSED`.
+
+Progress classification: `outcome_progress`; the corrected grounding adapter
+joined through reviewed PR 95 at canonical merge
+`ffb561df79e0bb457dac46012a01a11757d5d307`, the corrected full suite passed,
+and Plan 0107 repeated structural-grounding acceptance on canonical source
+`448d0797`.
+
+Authority classification:
+
+- `inherited_authority` covered review, validation, canonical integration and
+  repo-local closure;
+- model/judge, provider, production-sample, installed-runtime and tracker
+  effects remained prohibited and unused.
+
+Acceptance disposition: all four real read-only axes pass; the final joined
+quality phase reported zero network, model, browser, database-write or runtime
+mutation effects and fixture SHA-256
+`ec9db571b1fd0adf21081d2888037fa05eee981d00a7791110a038e5a0271f45`.
+This is structural evidence correlation and citation closure, not semantic
+entailment or production-quality proof. WI-008 is `DONE`; active plan is none.

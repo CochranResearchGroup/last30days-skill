@@ -1,7 +1,7 @@
 <!-- last30days-work-item:WI-000 -->
 # Productize the temporal intelligence service
 
-State: IN_PROGRESS
+State: DONE
 Priority: P1
 Lane: Program
 Parent: none
@@ -30,17 +30,25 @@ priority hotfix path, and measurable corpus quality.
 - WI-009 is complete before any new WI-001 through WI-006 or WI-008 feature
   packet starts; WI-007 remains reserved for production hotfixes.
 
-## Current Readiness
+## Completion Disposition
 
-WI-009 is `DONE` through the accepted P51 artifact, isolated-runtime, dogfood,
-production-readback, and governance receipts. Child work may now be selected,
-but each packet still needs its own plan and action-specific authority.
+WI-001 through WI-009 are `DONE` in repo-local authority. Plan 0107 completed
+the dependency-ordered provider-free campaign, joined Wave 5 implementation
+through reviewed PR 95, joined the aggregate runtime driver and bounded fixes
+through PRs 96-99, and passed the final isolated runtime on canonical source
+`448d07975269d3ee4966607c07e6898e37fed7ad`.
 
-Plan 0107 is the active provider-free completion campaign. Wave 1 registers
-WI-002 Packet 2, WI-004 Packet 2, and WI-007 provider-free Packets 1-2; later
-waves remain dependency-gated. No provider, browser, live-data, schedule,
-installed-runtime, staging, production, release, deployment, or GitHub issue
-mutation is authorized.
+The final receipt is located by
+`dev/last30days/receipts/plan0107-final-runtime.json`: search/question/quality,
+cross-service follows, and monitor/digest phases all passed on one runtime,
+followed by exact-owner teardown, absent controller/socket, and an empty owned
+process census. The reserved hotfix path remains dormant and independently
+available.
+
+This is repo-local work-item closure only. The linked GitHub issue was not
+mutated, and no provider, browser, live-data, schedule, installed-runtime,
+staging, production, release, deployment or delivery authority follows from
+this state.
 
 ## Non-Goals
 

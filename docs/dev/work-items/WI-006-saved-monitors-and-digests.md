@@ -1,16 +1,16 @@
 <!-- last30days-work-item:WI-006 -->
 # Turn searches and follows into saved monitors and digests
 
-State: IN_PROGRESS
+State: DONE
 Priority: P2
 Lane: MCP
 Parent: WI-000
 GitHub issue: https://github.com/CochranResearchGroup/last30days-skill/issues/59
-Blocked by: none for the next provider-free packet
-Last closed plan: docs/dev/plans/0116-2026-09-14-saved-query-composition.md
-Active plan: docs/dev/plans/0121-2026-09-14-monitor-digest-product-closeout.md
-Branch: feat/monitor-digest-product-closeout-v1
-Owner: /root/wave4_wi003_plan
+Blocked by: none
+Last completed plan: docs/dev/plans/0121-2026-09-14-monitor-digest-product-closeout.md
+Active plan: none
+Branch: main
+Owner: /root
 
 ## Problem
 
@@ -73,3 +73,9 @@ views through strict local CLI/HTTP/MCP parity, with explicit baseline
 acceptance and no schedule or delivery side effect. WI-002 is `DONE`; WI-006
 returns to `READY` for separately planned follow composition and deterministic
 digest/delivery-intent packets.
+
+Plan 0121 closed after reviewed Wave 5 integration through PR 95 and final
+joined Plan 0107 runtime acceptance on canonical source `448d0797`. The joined
+monitor state, five cases and CLI digest passed; delivery intent and scheduling
+remain disabled. No live delivery or installed-runtime effect occurred.
+WI-006 is `DONE`.
