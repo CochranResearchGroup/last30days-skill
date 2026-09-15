@@ -1,6 +1,6 @@
 # Plan 0124 | WI-010 Provider-Free P0-P3 Campaign
 
-State: OPEN
+State: CLOSED
 Lane: P53
 Work item: WI-010
 Branch: feat/provider-acceptance-p0-p3-v1
@@ -127,8 +127,8 @@ the eight registered acquisition adapters.
 
 ## Next Action
 
-Freeze the shared contract and catalog, then launch the three bounded transport
-tracers in parallel.
+Stop. The provider-free P0-P3 packet is accepted on its topic branch. Main
+integration and every P4/P5 effect require a separate authorized action.
 
 ### Checkpoint P0124-C01 | 2026-09-14
 
@@ -197,3 +197,58 @@ resolution with exit 2 and left the receipt digest unchanged.
 Next action: commit the remediated candidate, run the comprehensive suite and
 closed-world verification limited to these eight findings, then close only if
 both pass.
+
+### Checkpoint P0124-C03 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`.
+
+Progress classification: `accepted`; exact candidate
+`bcaceb96144764f2a17ec62aa8fafeaf03255de2` satisfies the bounded P0-P3
+objective across all eight acquisition adapters.
+
+Authority classification:
+
+- `inherited_authority`
+
+Owned changes:
+
+- retained the three parallel production-adapter transport tracers beneath
+  provider-free HTTP, fake-command, and browser-protocol substitutes;
+- bound receipt evidence and lifecycle claims to sealed inputs and exact
+  independently recomputable schemas;
+- preserved one immutable 64-sample campaign receipt at
+  `dev/last30days/receipts/wi010-provider-free-p0-p3.json`.
+
+Validation evidence:
+
+- primary focused validation: 36 provider-acceptance tests passed;
+- primary comprehensive validation: 3,161 passed, 8 skipped, and 14 subtests
+  passed in 225.52 seconds;
+- primary run plus transport-free verification each accepted 64/64 samples;
+- independent closed-world review accepted the candidate after nine of nine
+  recomputed-hash evidence and teardown mutations were rejected; its focused
+  suite passed 36 tests and its offline verifier accepted 64/64;
+- the final receipt records 16 owned local request or request-equivalents,
+  eight isolated joins, 32 normalized item observations, no first failure,
+  and zero held effects.
+
+Subagent status and reconciliation:
+
+- `joined`; all three tracers and the independent reviewer completed with no
+  retained process or service, and `/root` reconciled their evidence.
+
+Graphiti write status:
+
+- `not_written`; no memory write was authorized.
+
+Remaining acceptance criteria:
+
+- none for Plan 0124. Main integration and P4/P5 are outside this plan and
+  remain held.
+
+Next action:
+
+- stop at the accepted topic-branch boundary; do not exercise a forge,
+  credentials, external providers, real browsers, readiness, or live canaries.

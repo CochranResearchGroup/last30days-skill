@@ -82,6 +82,7 @@ claim exact upstream accounting where the adapter cannot observe it.
 
 ## Next Owner Action
 
-Execute Plan 0124's provider-free P0-P3 campaign across all eight adapters,
-then reconcile the independent transport receipts and verifier evidence. Keep
-every P4/P5 and external effect held.
+Plan 0124's provider-free P0-P3 packet is accepted at
+`bcaceb96144764f2a17ec62aa8fafeaf03255de2`. Integrate that topic branch only
+under separate forge authority. Keep WI-010 `IN_PROGRESS` because readiness
+and live-canary P4/P5 evidence remain separately unauthorized and incomplete.

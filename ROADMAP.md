@@ -3439,7 +3439,7 @@ Terminal Result:
 
 ## P53 | Controlled Provider Acceptance
 
-State: OPEN
+State: PLANNED
 
 Objective: build a common, truthful provider-acceptance system that separates
 sealed replay, owned transport, isolated service join, readiness and live-
@@ -3448,16 +3448,18 @@ and teardown.
 
 Current State:
 
-- Plan 0124 has frozen the shared contracts and joined all three provider-free
-  transport tracers; acceptance validation and independent review remain.
+- Plan 0124 is closed and its topic-branch candidate `bcaceb96` is accepted:
+  all eight adapters passed provider-free P0-P3 with a 64/64 offline-verifiable
+  receipt, a clean comprehensive suite, and independent closed-world review;
+- the accepted packet is not integrated or published, and P4/P5 remain held.
 
 Architecture:
 
 - Plan 0123 is closed with the selected `prepare -> execute -> verify` contract;
 - Plan 0124 (`docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md`)
-  owns current implementation and acceptance;
-- WI-010 is `IN_PROGRESS` under Plan 0124 for the full provider-free P0-P3
-  campaign across all eight acquisition adapters;
+  is closed with accepted provider-free P0-P3 evidence;
+- WI-010 remains `IN_PROGRESS` only for separately authorized integration and
+  any later P4 readiness or P5 live-canary packets;
 - HTTP, command, and Agent Browser simulators fan out only after shared
   contracts are frozen, then join through an isolated provider-free service;
 - readiness and live canaries remain serialized, one-attempt, separately
@@ -3465,6 +3467,5 @@ Architecture:
 
 Next Bounded Action:
 
-- freeze Plan 0124's shared contracts, run three provider-free transport
-  tracers in parallel, and join independently verifiable P0-P3 receipts while
-  keeping all P4/P5 and external effects held.
+- stop at the accepted topic-branch boundary. Integrate only under separate
+  forge authority; keep all P4/P5 and external effects held.

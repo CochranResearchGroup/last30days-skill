@@ -7,13 +7,13 @@ lanes:
     plan_ref: refs/heads/feat/provider-acceptance-p0-p3-v1
     branch: feat/provider-acceptance-p0-p3-v1
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
+    plan_state: CLOSED
+    custody_state: INTEGRATION_READY
     checkpoint: 756ccee1b2b3b76496e722ed5387a8554638af89
     remote_ref: null
     integration: merge
-    validation_status: pending
-    validation_ref: null
+    validation_status: accepted_provider_free_p0_p3
+    validation_ref: bcaceb96144764f2a17ec62aa8fafeaf03255de2
     session_owner: /root
     dependencies: []
     overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_acceptance.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]

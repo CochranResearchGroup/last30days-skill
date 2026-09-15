@@ -31059,3 +31059,63 @@ Next Bounded Action:
 
 - commit the remediated candidate, run comprehensive validation and closed-
   world verification, then close WI-010 P0-P3 only if both pass.
+
+## Turn 499 | 2026-09-14
+
+Focus: accept and close Plan 0124's provider-free P0-P3 campaign.
+
+Plan authority:
+`docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md`;
+WI-010 and P53.
+
+Authority Consulted:
+
+- the operator's exact provider-free P0-P3 request and held credential/provider
+  boundary;
+- current validation, closeout, documentation, work-item, active-lane,
+  integration, and collaborative-development policies;
+- Plan 0124's frozen acceptance criteria and bounded review contract.
+
+Decisions And Changes:
+
+- accepted candidate `bcaceb96144764f2a17ec62aa8fafeaf03255de2`
+  after binding every retained evidence and teardown field to sealed,
+  independently recomputable claims;
+- closed Plan 0124 while retaining WI-010 and P53 for separately authorized
+  integration and any later P4/P5 work;
+- left canonical `main`, remotes, providers, credentials, and installed
+  runtimes unchanged.
+
+Validation Evidence:
+
+- primary provider-acceptance suite: 36 passed;
+- primary comprehensive suite: 3,161 passed, 8 skipped, and 14 subtests passed
+  in 225.52 seconds;
+- primary campaign execution and offline verification: 64/64 accepted;
+- durable receipt file SHA-256:
+  `9e336d61fd184ebaff91283128e81a834915c86f26392e8c6e7d04f932ed97d8`;
+- independent closed-world review: ACCEPT, with nine of nine recomputed-hash
+  tampering attempts rejected, 36 focused tests passed, and 64/64 verified.
+
+State Movement:
+
+- Plan 0124 `OPEN -> CLOSED`;
+- P53 custody `ACTIVE_WORKTREE -> INTEGRATION_READY` and roadmap state
+  `OPEN -> PLANNED` pending separate authority;
+- WI-010 remains `IN_PROGRESS`; P4/P5 and forge integration are incomplete and
+  were not authorized.
+
+Subagent Status And Reconciliation:
+
+- `joined`; HTTP, command, browser, and independent-review workers completed;
+  `/root` independently ran the joined and comprehensive validations.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Stop Reason:
+
+- the requested P0-P3 campaign is accepted at the topic-branch boundary. No
+  credential, external-provider, real-browser, forge, installed-runtime,
+  schedule, release, deployment, tracker, P4, or P5 effect is authorized.
