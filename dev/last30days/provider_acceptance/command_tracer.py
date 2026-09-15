@@ -7,11 +7,11 @@ import json
 import os
 import shutil
 import stat
-import subprocess
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 from lib import service_acquisition_worker, service_contracts
 
@@ -21,6 +21,7 @@ from .contracts import ContractError, SealedCase, TransportObservation
 _MAX_STDOUT_BYTES = 65_536
 _FIXED_OBSERVED_AT = datetime(2026, 9, 14, 12, 0, tzinfo=timezone.utc)
 _FAKE_YTDLP = r'''#!/usr/bin/python3
+import hashlib
 import json
 import os
 import sys
@@ -29,18 +30,29 @@ fixture_path = os.environ["WI010_FIXTURE_PATH"]
 invocation_path = os.environ["WI010_INVOCATION_PATH"]
 maximum = int(os.environ["WI010_MAX_STDOUT_BYTES"])
 
-descriptor = os.open(invocation_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-with os.fdopen(descriptor, "w", encoding="utf-8") as invocation:
-    json.dump(sys.argv[1:], invocation, ensure_ascii=True, separators=(",", ":"))
-
 with open(fixture_path, encoding="utf-8") as fixture_file:
     fixture = json.load(fixture_file)
-lines = [json.dumps(item, ensure_ascii=True, separators=(",", ":")) for item in fixture["items"]]
+lines = [
+    json.dumps(item, ensure_ascii=True, separators=(",", ":"))
+    for item in fixture["transport"]["stdout_items"]
+]
 payload = ("\n".join(lines) + ("\n" if lines else "")).encode("utf-8")
-if len(payload) > maximum:
+bounded = len(payload) <= maximum
+emitted = payload if bounded else b""
+record = {
+    "argv": sys.argv[1:],
+    "invocation_count": 1,
+    "returncode": 0 if bounded else 73,
+    "stdout_bytes": len(emitted),
+    "stdout_sha256": "sha256:" + hashlib.sha256(emitted).hexdigest(),
+}
+descriptor = os.open(invocation_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+with os.fdopen(descriptor, "w", encoding="utf-8") as invocation:
+    json.dump(record, invocation, ensure_ascii=True, separators=(",", ":"))
+if not bounded:
     sys.stderr.write("bounded_output_exceeded\n")
     raise SystemExit(73)
-sys.stdout.buffer.write(payload)
+sys.stdout.buffer.write(emitted)
 '''
 
 
@@ -103,17 +115,13 @@ class CommandTracer:
             isinstance(value, str) for value in expected_argv
         ):
             raise ContractError("command fixture expected argv is malformed")
+        if not isinstance(transport.get("stdout_items"), list):
+            raise ContractError("command fixture stdout items are malformed")
 
-        state: dict[str, Any] = {
-            "invocations": 0,
-            "stdout": b"",
-            "returncode": None,
-            "argv": None,
-            "executable_sha256": None,
-        }
         owner_path: Path | None = None
         result = None
-        invocation_record: list[str] | None = None
+        invocation_record: dict[str, Any] | None = None
+        executable_sha256: str | None = None
 
         with tempfile.TemporaryDirectory(prefix="wi010-youtube-") as owner_dir:
             owner_path = Path(owner_dir)
@@ -132,80 +140,7 @@ class CommandTracer:
             resolved = shutil.which("yt-dlp", path=isolated_path)
             if resolved is None or Path(resolved).resolve() != executable.resolve():
                 raise ContractError("fake executable resolution is not exact")
-            state["executable_sha256"] = _digest_bytes(executable.read_bytes())
-
-            command = [
-                "yt-dlp",
-                "--ignore-config",
-                "--no-cookies-from-browser",
-                f"ytsearch8:{query}",
-                "--flat-playlist",
-                "--dump-json",
-                "--no-warnings",
-                "--no-download",
-            ]
-
-            def fake_command_adapter(
-                _request: service_contracts.AcquisitionWorkRequest,
-                _config: dict[str, str],
-            ) -> dict[str, Any]:
-                if state["invocations"] != 0:
-                    raise RuntimeError("command invocation budget exhausted")
-                state["invocations"] = 1
-                completed = subprocess.run(
-                    command,
-                    cwd=owner_path,
-                    env={
-                        "PATH": isolated_path,
-                        "LC_ALL": "C",
-                        "PYTHONIOENCODING": "utf-8",
-                        "WI010_FIXTURE_PATH": str(fixture_path),
-                        "WI010_INVOCATION_PATH": str(invocation_path),
-                        "WI010_MAX_STDOUT_BYTES": str(_MAX_STDOUT_BYTES),
-                    },
-                    stdin=subprocess.DEVNULL,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    timeout=5,
-                    check=False,
-                )
-                state["returncode"] = completed.returncode
-                state["stdout"] = completed.stdout
-                state["argv"] = command[1:]
-                if len(completed.stdout) > _MAX_STDOUT_BYTES:
-                    return {
-                        "items": [],
-                        "error_type": "bounded_output_exceeded",
-                        "diagnostics": {"failure_stage": "command_stdout"},
-                        "_network_request_count": 1,
-                    }
-                if completed.returncode != 0:
-                    reason = (
-                        "bounded_output_exceeded"
-                        if completed.returncode == 73
-                        else "command_failed"
-                    )
-                    return {
-                        "items": [],
-                        "error_type": reason,
-                        "diagnostics": {"failure_stage": "command_execution"},
-                        "_network_request_count": 1,
-                    }
-                items: list[dict[str, Any]] = []
-                try:
-                    for line in completed.stdout.splitlines():
-                        parsed = json.loads(line)
-                        if not isinstance(parsed, dict):
-                            raise ValueError("yt-dlp item is not an object")
-                        items.append(parsed)
-                except (UnicodeDecodeError, json.JSONDecodeError, ValueError):
-                    return {
-                        "items": [],
-                        "error_type": "parser_drift",
-                        "diagnostics": {"failure_stage": "command_parse"},
-                        "_network_request_count": 1,
-                    }
-                return {"items": items, "_network_request_count": 1}
+            executable_sha256 = _digest_bytes(executable.read_bytes())
 
             request = service_contracts.AcquisitionWorkRequest.from_dict(
                 {
@@ -228,55 +163,87 @@ class CommandTracer:
                     "cost_budget_cents": 0,
                 }
             )
-            result = service_acquisition_worker.execute_work(
-                request,
-                {},
-                adapters={"youtube_ytdlp": fake_command_adapter},
-                clock=lambda: _FIXED_OBSERVED_AT,
-            )
+            isolated_environment = {
+                "PATH": isolated_path,
+                "LC_ALL": "C",
+                "PYTHONIOENCODING": "utf-8",
+                "WI010_FIXTURE_PATH": str(fixture_path),
+                "WI010_INVOCATION_PATH": str(invocation_path),
+                "WI010_MAX_STDOUT_BYTES": str(_MAX_STDOUT_BYTES),
+            }
+            with patch.dict(os.environ, isolated_environment, clear=True):
+                result = service_acquisition_worker.execute_work(
+                    request,
+                    {},
+                    adapters={
+                        "youtube_ytdlp": service_acquisition_worker._youtube_adapter
+                    },
+                    clock=lambda: _FIXED_OBSERVED_AT,
+                )
             if invocation_path.is_file():
                 raw_record = json.loads(invocation_path.read_text(encoding="utf-8"))
-                if isinstance(raw_record, list) and all(
-                    isinstance(value, str) for value in raw_record
-                ):
+                if isinstance(raw_record, dict):
                     invocation_record = raw_record
 
         cleanup_complete = owner_path is not None and not owner_path.exists()
         if result is None:
             raise ContractError("command normalization did not produce a result")
         invocation_valid = (
-            state["invocations"] == 1
-            and invocation_record == state["argv"]
-            and invocation_record == expected_argv
-            and state["returncode"] is not None
+            invocation_record is not None
+            and invocation_record.get("invocation_count") == 1
+            and invocation_record.get("argv") == expected_argv
+            and isinstance(invocation_record.get("returncode"), int)
+            and isinstance(invocation_record.get("stdout_bytes"), int)
+            and 0 <= invocation_record["stdout_bytes"] <= _MAX_STDOUT_BYTES
+            and isinstance(invocation_record.get("stdout_sha256"), str)
+            and invocation_record["stdout_sha256"].startswith("sha256:")
         )
-        success = result.safe_error_code is None and invocation_valid and cleanup_complete
+        returncode = invocation_record.get("returncode") if invocation_record else None
+        success = (
+            result.safe_error_code is None
+            and invocation_valid
+            and returncode == 0
+            and cleanup_complete
+        )
         reason = None
         if not invocation_valid:
             reason = "command_invocation_mismatch"
         elif not cleanup_complete:
             reason = "command_teardown_failed"
+        elif returncode == 73:
+            reason = "bounded_output_exceeded"
+        elif returncode != 0:
+            reason = "command_failed"
         elif result.safe_error_code is not None:
             reason = result.safe_error_code
 
-        stdout = state["stdout"]
-        assert isinstance(stdout, bytes)
+        invocation_count = (
+            invocation_record.get("invocation_count", 0) if invocation_record else 0
+        )
+        stdout_bytes = invocation_record.get("stdout_bytes", 0) if invocation_record else 0
+        stdout_sha256 = (
+            invocation_record.get("stdout_sha256", _digest_bytes(b""))
+            if invocation_record
+            else _digest_bytes(b"")
+        )
         details = {
             "normalization_seam": "service_acquisition_worker.execute_work",
-            "command_argv_sha256": _digest_json(state["argv"]),
-            "executable_sha256": state["executable_sha256"],
-            "stdout_bytes": len(stdout),
-            "stdout_sha256": _digest_bytes(stdout),
+            "adapter_seam": "service_acquisition_worker._youtube_adapter",
+            "production_adapter_invoked": invocation_count == 1,
+            "command_argv_sha256": _digest_json(expected_argv),
+            "executable_sha256": executable_sha256,
+            "stdout_bytes": stdout_bytes,
+            "stdout_sha256": stdout_sha256,
             "normalized_result_sha256": _digest_json(result.to_dict()),
-            "invocation_count": state["invocations"],
+            "invocation_count": invocation_count,
             "exact_owner_cleanup": cleanup_complete,
             "owner_census": 0 if cleanup_complete else 1,
         }
         return TransportObservation(
             outcome="success" if success else (reason or "command_failed"),
-            transport_success=bool(state["returncode"] == 0 and invocation_valid),
+            transport_success=bool(returncode == 0 and invocation_valid),
             item_count=result.item_count,
-            request_count=result.network_request_count or state["invocations"],
+            request_count=result.network_request_count or invocation_count,
             safe_reason_code=reason,
             accounting_confidence=adapter.accounting_confidence,
             raw_safe_sha256=_digest_json(result.to_dict()),

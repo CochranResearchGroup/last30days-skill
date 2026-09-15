@@ -16,7 +16,9 @@ from dev.last30days.provider_acceptance import (
 )
 from dev.last30days.provider_acceptance.catalog import default_catalog
 from dev.last30days.provider_acceptance.contracts import AdapterCase, SealedCase
+from dev.last30days.provider_acceptance import http_tracer as http_tracer_module
 from dev.last30days.provider_acceptance.http_tracer import HttpTracer
+from skills.last30days.scripts.lib import service_acquisition_worker
 
 
 HTTP_CASE_IDS = ("reddit-keyless-http", "reddit-scrapecreators-http")
@@ -37,7 +39,12 @@ def test_http_tracer_uses_one_owned_loopback_request_and_real_normalization(
     repo_root = __file__.rsplit("/tests/", 1)[0]
     case = next(item for item in _http_plan(repo_root).cases if item.case.case_id == case_id)
     connections = []
+    production_calls = []
     original_connect = socket.create_connection
+    production_adapter = service_acquisition_worker._DEFAULT_ADAPTERS[
+        case.case.adapter_id
+    ]
+    original_execute = http_tracer_module.service_acquisition_worker.execute_work
 
     def loopback_only(address, *args, **kwargs):
         connections.append(address)
@@ -45,6 +52,25 @@ def test_http_tracer_uses_one_owned_loopback_request_and_real_normalization(
         return original_connect(address, *args, **kwargs)
 
     monkeypatch.setattr(socket, "create_connection", loopback_only)
+
+    def production_spy(request, config):
+        production_calls.append(request.adapter)
+        return production_adapter(request, config)
+
+    def reject_adapter_replacement(request, config, **kwargs):
+        assert "adapters" not in kwargs
+        return original_execute(request, config, **kwargs)
+
+    monkeypatch.setitem(
+        service_acquisition_worker._DEFAULT_ADAPTERS,
+        case.case.adapter_id,
+        production_spy,
+    )
+    monkeypatch.setattr(
+        http_tracer_module.service_acquisition_worker,
+        "execute_work",
+        reject_adapter_replacement,
+    )
 
     observation = HttpTracer(repo_root)(case, item_limit=3)
 
@@ -57,14 +83,18 @@ def test_http_tracer_uses_one_owned_loopback_request_and_real_normalization(
     assert observation.raw_safe_sha256.startswith("sha256:")
     assert observation.details == {
         "adapter_variant": case.case.adapter_id,
+        "exact_owner_cleanup": True,
         "loopback": True,
         "normalization_seam": "service_acquisition_worker.execute_work",
         "owned_server": True,
+        "production_adapter_invoked": True,
         "request_method": "GET",
         "request_target_sha256": observation.details["request_target_sha256"],
         "server_request_count": 1,
+        "owner_census": 0,
     }
     assert connections and all(address[0] == "127.0.0.1" for address in connections)
+    assert production_calls == [case.case.adapter_id]
     assert "Sanitized provider-free" not in str(observation.details)
 
 
@@ -93,10 +123,12 @@ def test_http_tracer_rejects_non_loopback_route_before_server_or_request(tmp_pat
         "items": [],
         "request": {
             "host": "provider.example",
+            "logical_host": "www.reddit.com",
             "method": "GET",
             "path": "/unsafe",
             "query": {},
         },
+        "transport_response": {},
     }
     path = tmp_path / "unsafe.json"
     path.write_text(json.dumps(fixture), encoding="utf-8")

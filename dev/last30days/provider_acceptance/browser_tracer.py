@@ -14,8 +14,15 @@ _SKILL_SCRIPTS = Path(__file__).resolve().parents[3] / "skills/last30days/script
 if str(_SKILL_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(_SKILL_SCRIPTS))
 
-from lib import service_contracts
-from lib.service_acquisition_worker import execute_work
+from lib import (
+    facebook,
+    linkedin,
+    reddit_browser,
+    service_acquisition_worker,
+    service_contracts,
+    service_source_policy,
+    x_browser,
+)
 
 from .contracts import ContractError, SealedCase, TransportObservation
 
@@ -27,6 +34,8 @@ class _BrowserRoute:
     route: str
     surface_kind: str
     fixture_path: str
+    module: Any
+    callable_name: str
 
 
 _BROWSER_ROUTES = {
@@ -36,6 +45,8 @@ _BROWSER_ROUTES = {
         "browser://x/topic-search",
         "topic",
         "tests/provider_acceptance/fixtures/x.json",
+        x_browser,
+        "search_x_browser",
     ),
     "facebook_agent_browser": _BrowserRoute(
         "facebook-browser",
@@ -43,6 +54,8 @@ _BROWSER_ROUTES = {
         "browser://facebook/topic-search",
         "topic",
         "tests/provider_acceptance/fixtures/facebook.json",
+        facebook,
+        "search_facebook",
     ),
     "linkedin_agent_browser": _BrowserRoute(
         "linkedin-post-browser",
@@ -50,6 +63,8 @@ _BROWSER_ROUTES = {
         "browser://linkedin/post-search",
         "topic",
         "tests/provider_acceptance/fixtures/linkedin_post.json",
+        linkedin,
+        "search_linkedin",
     ),
     "linkedin_profile_agent_browser": _BrowserRoute(
         "linkedin-profile-browser",
@@ -57,6 +72,8 @@ _BROWSER_ROUTES = {
         "browser://linkedin/profile",
         "profile",
         "tests/provider_acceptance/fixtures/linkedin_profile.json",
+        linkedin,
+        "acquire_linkedin_profile",
     ),
     "reddit_agent_browser": _BrowserRoute(
         "reddit-browser",
@@ -64,6 +81,8 @@ _BROWSER_ROUTES = {
         "browser://reddit/topic-search",
         "topic",
         "tests/provider_acceptance/fixtures/reddit_browser.json",
+        reddit_browser,
+        "search_reddit_browser",
     ),
 }
 
@@ -120,7 +139,7 @@ class BrowserProtocolSimulator:
 
 
 class BrowserTracer:
-    """Replay one sealed browser fixture through the production normalization seam."""
+    """Replay one sealed fixture through a production browser adapter and normalizer."""
 
     def __init__(self, repo_root: Path | str = ".") -> None:
         self._repo_root = Path(repo_root).resolve()
@@ -167,17 +186,58 @@ class BrowserTracer:
         )
         simulator.acquire(owner=owner, adapter_id=case.case.adapter_id)
         request_count = 0
+        transport_calls = 0
+        original_transport = getattr(definition.module, definition.callable_name)
+        original_which = service_source_policy.shutil.which
         try:
-            def adapter(_request, _config):
-                nonlocal request_count
-                raw = simulator.request(
+            def simulated_transport(*args, **kwargs):
+                nonlocal request_count, transport_calls
+                transport_calls += 1
+                expected_args = (
+                    ("provider acceptance fixture",)
+                    if definition.surface_kind == "profile"
+                    else (
+                        "provider acceptance fixture",
+                        "2026-09-01",
+                        "2026-09-30",
+                    )
+                )
+                if args != expected_args:
+                    raise ContractError("browser_protocol_arguments_mismatch")
+                config = kwargs.get("config")
+                if not isinstance(config, dict):
+                    raise ContractError("browser_protocol_config_mismatch")
+                if definition.surface_kind != "profile":
+                    expected_depth = (
+                        "quick"
+                        if case.case.adapter_id == "reddit_agent_browser"
+                        and item_limit <= 3
+                        else "default"
+                    )
+                    if kwargs.get("depth") != expected_depth:
+                        raise ContractError("browser_protocol_depth_mismatch")
+                    if case.case.adapter_id == "facebook_agent_browser":
+                        if config.get("LAST30DAYS_FACEBOOK_MAX_RESULTS") != str(
+                            item_limit
+                        ):
+                            raise ContractError("browser_protocol_limit_mismatch")
+                    elif kwargs.get("limit") != item_limit:
+                        raise ContractError("browser_protocol_limit_mismatch")
+                response = simulator.request(
                     owner=owner,
                     adapter_id=case.case.adapter_id,
                     route=definition.route,
                 )
                 request_count += 1
-                raw["_network_request_count"] = 1
-                return raw
+                return response
+
+            setattr(definition.module, definition.callable_name, simulated_transport)
+            if case.case.adapter_id == "reddit_agent_browser":
+                service_source_policy.shutil.which = lambda command: (
+                    "/provider-free/agent-browser"
+                    if command == "agent-browser"
+                    else None
+                )
 
             request = service_contracts.AcquisitionWorkRequest.from_dict(
                 {
@@ -202,19 +262,26 @@ class BrowserTracer:
                 }
             )
             frozen_time = datetime(2026, 9, 14, 12, 0, tzinfo=timezone.utc)
-            result = execute_work(
+            result = service_acquisition_worker.execute_work(
                 request,
                 {},
-                adapters={case.case.adapter_id: adapter},
                 clock=lambda: frozen_time,
             )
             safe_result = result.to_dict()
         finally:
+            setattr(definition.module, definition.callable_name, original_transport)
+            service_source_policy.shutil.which = original_which
             simulator.release(owner=owner)
         owner_census = simulator.owner_census(owner=owner)
         if owner_census != 0:
             raise ContractError("browser_teardown_failed")
         success = result.safe_error_code is None
+        if (
+            transport_calls != 1
+            or request_count != 1
+            or result.network_request_count != 1
+        ):
+            raise ContractError("browser_request_accounting_mismatch")
         return TransportObservation(
             outcome="success" if success else "parser_drift",
             transport_success=True,
@@ -225,6 +292,7 @@ class BrowserTracer:
             raw_safe_sha256=_canonical_digest(safe_result),
             details={
                 "protocol": "in_memory_browser_v1",
+                "production_adapter_invoked": True,
                 "route_sha256": _canonical_digest(definition.route),
                 "normalized_result_sha256": _canonical_digest(safe_result),
                 "owner_sha256": _canonical_digest(owner),

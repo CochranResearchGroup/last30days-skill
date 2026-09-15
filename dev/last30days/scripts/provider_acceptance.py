@@ -9,8 +9,10 @@ from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[3]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+SKILL_SCRIPTS = ROOT / "skills" / "last30days" / "scripts"
+for path in (ROOT, SKILL_SCRIPTS):
+    if str(path) not in sys.path:
+        sys.path.insert(0, str(path))
 
 from dev.last30days.provider_acceptance import (  # noqa: E402
     AcceptanceDependencies,
@@ -55,10 +57,17 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     plan = _plan()
     if args.command == "run":
+        if args.output.exists():
+            parser.error(f"receipt already exists: {args.output}")
         receipt = execute(plan, grant=ExecutionGrant.for_plan(plan), deps=_dependencies(), repo_root=ROOT)
         verdict = verify(receipt, plan=plan)
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(json.dumps(receipt.to_dict(), indent=2, sort_keys=True) + "\n")
+        try:
+            with args.output.open("x", encoding="utf-8") as output:
+                json.dump(receipt.to_dict(), output, indent=2, sort_keys=True)
+                output.write("\n")
+        except FileExistsError:
+            parser.error(f"receipt already exists: {args.output}")
     else:
         receipt = receipt_from_dict(json.loads(args.receipt.read_text()))
         verdict = verify(receipt, plan=plan)

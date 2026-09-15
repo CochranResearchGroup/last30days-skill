@@ -8,6 +8,7 @@ from dev.last30days.provider_acceptance.browser_tracer import (
     BrowserTracer,
     _BROWSER_ROUTES,
 )
+from lib import service_acquisition_worker
 from dev.last30days.provider_acceptance.catalog import default_catalog
 from dev.last30days.provider_acceptance.contracts import ContractError, SealedCase
 
@@ -44,6 +45,7 @@ def test_browser_tracer_normalizes_all_five_adapters_without_external_effects(ca
     assert observation.raw_safe_sha256 != case.fixture_sha256
     assert set(observation.details) == {
         "protocol",
+        "production_adapter_invoked",
         "route_sha256",
         "normalized_result_sha256",
         "owner_sha256",
@@ -52,6 +54,7 @@ def test_browser_tracer_normalizes_all_five_adapters_without_external_effects(ca
     }
     assert observation.details["owner_census"] == 0
     assert observation.details["exact_owner_teardown"] is True
+    assert observation.details["production_adapter_invoked"] is True
     assert "browser://" not in str(observation.details)
 
 
@@ -87,6 +90,31 @@ def test_browser_protocol_rejects_non_owner_and_adapter_mismatch():
             owner="owner-one", adapter_id="x_agent_browser", route=route
         )
     simulator.release(owner="owner-one")
+
+
+@pytest.mark.parametrize(
+    "case",
+    list(_sealed_browser_cases()),
+    ids=lambda value: value.case.case_id,
+)
+def test_browser_tracer_invokes_the_production_adapter_boundary(monkeypatch, case):
+    calls = []
+    original = service_acquisition_worker._DEFAULT_ADAPTERS[case.case.adapter_id]
+
+    def spy(request, config):
+        calls.append((request.adapter, request.source))
+        return original(request, config)
+
+    monkeypatch.setitem(
+        service_acquisition_worker._DEFAULT_ADAPTERS,
+        case.case.adapter_id,
+        spy,
+    )
+
+    observation = BrowserTracer(ROOT)(case, item_limit=3)
+
+    assert observation.outcome == "success"
+    assert calls == [(case.case.adapter_id, case.case.source)]
 
 
 def test_browser_tracer_rejects_tampered_fixture_before_protocol_invocation(tmp_path):

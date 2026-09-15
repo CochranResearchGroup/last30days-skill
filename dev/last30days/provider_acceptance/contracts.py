@@ -77,8 +77,8 @@ class CampaignSpec:
     campaign_id: str
     case_ids: tuple[str, ...]
     tiers: tuple[EvidenceTier, ...] = tuple(EvidenceTier)
-    max_requests_per_case: int = 1
-    max_items_per_case: int = 3
+    max_requests_per_case: int = 2
+    max_items_per_case: int = 4
     wall_timeout_seconds: int = 30
     effect_class: str = "provider_free"
 
@@ -176,9 +176,27 @@ class AcceptanceDependencies:
         if self.resolution_probe is not None:
             self.resolution_probe(transport)
         try:
-            return self.tracers[transport]
+            tracer = self.tracers[transport]
         except KeyError as exc:
             raise ContractError(f"missing tracer: {transport}") from exc
+        from .browser_tracer import BrowserTracer
+        from .command_tracer import CommandTracer
+        from .http_tracer import HttpTracer
+
+        expected = {
+            "browser": BrowserTracer,
+            "command": CommandTracer,
+            "http": HttpTracer,
+        }.get(transport)
+        if expected is None or type(tracer) is not expected:
+            raise ContractError(f"unowned tracer: {transport}")
+        return tracer
+
+    def validate_join_runner(self) -> None:
+        from .isolated_join import IsolatedServiceJoin
+
+        if type(self.join_runner) is not IsolatedServiceJoin:
+            raise ContractError("unowned isolated join runner")
 
 
 @dataclass(frozen=True)
@@ -187,8 +205,10 @@ class SampleReceipt:
     adapter_id: str
     source: str
     tier: str
+    scenario: str
     fixture_sha256: str
     outcome: str
+    claim_accepted: bool
     transport_success: bool
     content_yield: bool
     item_count: int
@@ -209,6 +229,9 @@ class AcceptanceReceipt:
     source_sha256: str
     effect_class: str
     grant_sha256: str
+    started_at: str
+    finished_at: str
+    planned_budgets: Mapping[str, int]
     samples: tuple[SampleReceipt, ...]
     first_failure: Mapping[str, str] | None
     observed_budgets: Mapping[str, int]

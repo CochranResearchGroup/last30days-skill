@@ -16,11 +16,36 @@
   ],
   "request": {
     "host": "127.0.0.1",
+    "logical_host": "www.reddit.com",
     "method": "GET",
-    "path": "/reddit/keyless/search",
+    "path": "/search.json",
     "query": {
-      "q": "provider acceptance"
+      "q": "provider acceptance",
+      "sort": "relevance",
+      "t": "month",
+      "limit": "10",
+      "raw_json": "1"
     }
   },
-  "schema_version": 1
+  "schema_version": 1,
+  "transport_response": {
+    "data": {
+      "children": [
+        {
+          "data": {
+            "author": "fixture_author",
+            "created_utc": 1789387200,
+            "num_comments": 4,
+            "permalink": "/r/providerfree/comments/wi010keyless/fixture/",
+            "score": 12,
+            "selftext": "Sanitized provider-free loopback fixture.",
+            "subreddit": "providerfree",
+            "title": "Keyless Reddit transport fixture",
+            "upvote_ratio": 0.9
+          },
+          "kind": "t3"
+        }
+      ]
+    }
+  }
 }

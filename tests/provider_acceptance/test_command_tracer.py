@@ -1,4 +1,5 @@
 import hashlib
+import json
 from dataclasses import replace
 from pathlib import Path
 
@@ -16,6 +17,7 @@ from dev.last30days.provider_acceptance.contracts import (
     EvidenceTier,
     ExecutionGrant,
 )
+from lib import service_acquisition_worker
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -47,6 +49,9 @@ def test_command_tracer_uses_one_owned_fake_executable_and_worker_normalization(
     assert observation.details["normalization_seam"] == (
         "service_acquisition_worker.execute_work"
     )
+    assert observation.details["adapter_seam"] == (
+        "service_acquisition_worker._youtube_adapter"
+    )
     assert observation.details["invocation_count"] == 1
     assert observation.details["stdout_bytes"] <= 65_536
     assert observation.details["exact_owner_cleanup"] is True
@@ -59,6 +64,50 @@ def test_command_tracer_uses_one_owned_fake_executable_and_worker_normalization(
     ):
         assert observation.details[field].startswith("sha256:")
     assert "provider free acquisition boundaries" not in str(observation.details)
+
+
+def test_command_tracer_calls_production_adapter_with_exact_argv_and_ignores_poison_path(
+    tmp_path, monkeypatch
+):
+    poison_dir = tmp_path / "poison-bin"
+    poison_dir.mkdir()
+    poison_marker = tmp_path / "poison-ran"
+    poison = poison_dir / "yt-dlp"
+    poison.write_text(
+        f"#!/bin/sh\nprintf poisoned > {poison_marker}\n",
+        encoding="utf-8",
+    )
+    poison.chmod(0o700)
+    monkeypatch.setenv("PATH", str(poison_dir))
+    monkeypatch.setenv("LAST30DAYS_YOUTUBE_SSH_HOST", "poison-host")
+
+    calls = []
+    production_adapter = service_acquisition_worker._youtube_adapter
+
+    def spy(request, config):
+        calls.append((request.adapter, request.source))
+        return production_adapter(request, config)
+
+    monkeypatch.setattr(service_acquisition_worker, "_youtube_adapter", spy)
+    observation = CommandTracer(REPO_ROOT)(_youtube_case(), item_limit=1)
+
+    fixture = json.loads(
+        (REPO_ROOT / "tests/provider_acceptance/fixtures/youtube.json").read_text()
+    )
+    encoded_argv = json.dumps(
+        fixture["transport"]["expected_argv"],
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    ).encode()
+    assert calls == [("youtube_ytdlp", "youtube")]
+    assert not poison_marker.exists()
+    assert observation.transport_success
+    assert observation.details["invocation_count"] == 1
+    assert observation.details["command_argv_sha256"] == (
+        "sha256:" + hashlib.sha256(encoded_argv).hexdigest()
+    )
 
 
 def test_command_tracer_produces_an_independently_verifiable_p2_receipt():
@@ -124,7 +173,9 @@ def test_command_tracer_fails_closed_on_bounded_stdout(tmp_path):
         '"transport":{"query":"bounded","from_date":"2026-08-15",'
         '"to_date":"2026-09-14","expected_argv":['
         '"--ignore-config","--no-cookies-from-browser","ytsearch8:bounded",'
-        '"--flat-playlist","--dump-json","--no-warnings","--no-download"]}}',
+        '"--flat-playlist","--dump-json","--no-warnings","--no-download"],'
+        '"stdout_items":[{"id":"id","title":"' + ("x" * 66_000)
+        + '","url":"https://www.youtube.com/watch?v=id"}]}}',
         encoding="utf-8",
     )
     digest = "sha256:" + hashlib.sha256(fixture.read_bytes()).hexdigest()

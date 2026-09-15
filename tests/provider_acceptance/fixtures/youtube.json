@@ -30,6 +30,19 @@
       "--dump-json",
       "--no-warnings",
       "--no-download"
+    ],
+    "stdout_items": [
+      {
+        "id": "wi010yt001",
+        "title": "Provider-free acquisition boundaries",
+        "channel": "Fixture Research Lab",
+        "upload_date": "20260910",
+        "view_count": 120,
+        "like_count": 12,
+        "comment_count": 3,
+        "duration": 180,
+        "description": "A sanitized fixture describing bounded acquisition transport."
+      }
     ]
   }
 }

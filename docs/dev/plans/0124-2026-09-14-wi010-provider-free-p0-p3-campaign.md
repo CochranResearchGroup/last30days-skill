@@ -161,3 +161,39 @@ actions, and installed-runtime mutations. P4/P5 remain held.
 
 Next action: run the corrected comprehensive gate, commit the exact candidate,
 and obtain one fresh independent review.
+
+### Checkpoint P0124-C02 | 2026-09-14
+
+Plan version: 1
+
+State transition: `OPEN -> OPEN`.
+
+Progress classification: `blocking_review_remediated`; fresh review of
+`c5271380` rejected the first candidate with eight accepted blockers covering
+asserted redaction, unclosed dependencies/effect census, incomplete P1 replay,
+replacement rather than production adapters, recomputable receipt forgeries,
+per-tier rather than cumulative budgets, exception evidence loss, and
+overwriteable receipt output.
+
+Authority classification:
+
+- `inherited_authority`
+
+Finding disposition: all eight were `blocking`. One bounded remediation pass
+added schema-enforced evidence redaction, exact-class dependency admission and
+ledger reconciliation, five P1 scenarios per adapter, production-adapter
+transport injection, source/timestamp/planned-budget bindings, semantic
+verification, cumulative pre-invocation budgets, first-failure receipts, and
+exclusive pre-execution receipt creation.
+
+Validation: 34 provider-acceptance tests pass. The regenerated canonical
+receipt accepts 64/64 samples across eight adapters and P0-P3, records 16 owned
+local request or request-equivalents, eight isolated joins, 32 normalized item
+observations, no first failure, and zero credentials/external providers/non-
+loopback calls/real browsers/installed runtime/schedule/release/deployment/
+tracker effects. A duplicate output attempt stopped before dependency
+resolution with exit 2 and left the receipt digest unchanged.
+
+Next action: commit the remediated candidate, run the comprehensive suite and
+closed-world verification limited to these eight findings, then close only if
+both pass.

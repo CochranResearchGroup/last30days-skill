@@ -31019,7 +31019,14 @@ Decisions And Changes:
 
 Validation Evidence:
 
-- pending implementation and acceptance.
+- the initial provider-acceptance suite passed 22 tests and the first receipt
+  accepted 32/32 coarse tier samples;
+- a fresh reviewer rejected candidate `c5271380` with eight accepted blockers;
+- one bounded remediation expanded P1 to five scenarios per adapter and the
+  exact receipt to 64/64 independently verified samples;
+- 34 focused tests now pass, and duplicate receipt creation stops before
+  dependency resolution without changing the artifact;
+- comprehensive rerun and closed-world review remain pending.
 
 Authority And Effects:
 
@@ -31037,7 +31044,11 @@ State Movement:
 
 Subagent Status And Reconciliation:
 
-- `not_started`; shared contracts must freeze before transport fan-out.
+- `joined`; HTTP, command, and browser tracers completed, then each moved its
+  substitute beneath the real production adapter during bounded remediation;
+- fresh independent review `/root/independent_review` returned eight blocking
+  findings; all were accepted and remediated once, with closed-world
+  verification pending.
 
 Graphiti Write Status:
 
@@ -31046,4 +31057,5 @@ Graphiti Write Status:
 
 Next Bounded Action:
 
-- freeze shared contracts and launch the three provider-free tracers.
+- commit the remediated candidate, run comprehensive validation and closed-
+  world verification, then close WI-010 P0-P3 only if both pass.
