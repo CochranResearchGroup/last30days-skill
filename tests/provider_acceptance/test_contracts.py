@@ -81,6 +81,45 @@ def test_recomputed_campaign_and_grant_forgery_is_rejected(tmp_path):
     assert not verify(receipt_from_dict(forged), plan=plan).accepted
 
 
+def test_recomputed_evidence_digest_forgery_is_rejected(tmp_path):
+    from dev.last30days.provider_acceptance.campaign import _digest, execute, receipt_from_dict
+
+    catalog = _fixtures(tmp_path)
+    plan = prepare(CampaignSpec("wi010", (catalog.cases[0].case_id,), tiers=(EvidenceTier.P0,)), catalog=catalog, repo_root=tmp_path)
+    receipt = execute(plan, grant=ExecutionGrant.for_plan(plan), deps=AcceptanceDependencies({}, lambda *_args, **_kwargs: None), repo_root=tmp_path)
+    forged = receipt.to_dict()
+    forged["samples"][0]["evidence"]["raw_safe_sha256"] = "sha256:" + "0" * 64
+    forged["receipt_sha256"] = ""
+    forged["receipt_sha256"] = _digest(forged)
+    assert not verify(receipt_from_dict(forged), plan=plan).accepted
+
+
+def test_recomputed_p3_teardown_forgery_is_rejected(monkeypatch):
+    from dev.last30days.provider_acceptance.browser_tracer import BrowserTracer
+    from dev.last30days.provider_acceptance.campaign import _digest, execute, receipt_from_dict
+    from dev.last30days.provider_acceptance.isolated_join import IsolatedServiceJoin
+
+    catalog = default_catalog()
+    case = next(case for case in catalog.cases if case.transport == "browser")
+    plan = prepare(CampaignSpec("wi010", (case.case_id,), tiers=(EvidenceTier.P3,)), catalog=catalog, repo_root=ROOT)
+    observation = TransportObservation("success", True, case.expected_item_count, 1, None, case.accounting_confidence, "sha256:" + "4" * 64, {"exact_owner_teardown": True, "owner_census": 0})
+    monkeypatch.setattr(BrowserTracer, "__call__", lambda *_args, **_kwargs: observation)
+    receipt = execute(plan, grant=ExecutionGrant.for_plan(plan), deps=AcceptanceDependencies({"browser": BrowserTracer(ROOT)}, IsolatedServiceJoin()), repo_root=ROOT)
+    assert verify(receipt, plan=plan).accepted
+    forged = receipt.to_dict()
+    forged["samples"][0]["teardown"]["owner_sha256"] = "sha256:" + "0" * 64
+    forged["receipt_sha256"] = ""
+    forged["receipt_sha256"] = _digest(forged)
+    assert not verify(receipt_from_dict(forged), plan=plan).accepted
+
+    forged = receipt.to_dict()
+    forged["samples"][0]["teardown"]["socket_closed"] = False
+    forged["samples"][0]["teardown"]["teardown_sha256"] = _digest({key: value for key, value in forged["samples"][0]["teardown"].items() if key != "teardown_sha256"})
+    forged["receipt_sha256"] = ""
+    forged["receipt_sha256"] = _digest(forged)
+    assert not verify(receipt_from_dict(forged), plan=plan).accepted
+
+
 def test_unowned_dependency_fails_closed_without_invocation():
     from dev.last30days.provider_acceptance.campaign import execute
     from dev.last30days.provider_acceptance.isolated_join import IsolatedServiceJoin

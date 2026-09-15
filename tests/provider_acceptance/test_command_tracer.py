@@ -134,7 +134,8 @@ def test_command_tracer_produces_an_independently_verifiable_p2_receipt():
     assert verdict.accepted
     assert verdict.verified_samples == verdict.expected_samples == 1
     assert receipt.samples[0].request_count == 1
-    assert receipt.samples[0].evidence["invocation_count"] == 1
+    assert receipt.samples[0].evidence["production_adapter_invoked"] is True
+    assert receipt.samples[0].evidence["source_fixture_sha256"] == plan.cases[0].fixture_sha256
 
 
 def test_command_tracer_rejects_non_owned_transport_before_invocation():

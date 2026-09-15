@@ -41,6 +41,7 @@ _ALLOWED_EVIDENCE_KEYS = frozenset(
         "command_argv_sha256", "executable_sha256", "stdout_bytes", "stdout_sha256",
         "invocation_count", "protocol", "route_sha256", "owner_sha256",
         "failure_class", "failure_stage", "production_adapter_invoked", "adapter_seam",
+        "claim_sha256", "source_fixture_sha256",
     }
 )
 _PROHIBITED_FRAGMENTS = (
@@ -106,6 +107,10 @@ def _valid_timestamp(value: object) -> bool:
     except ValueError:
         return False
     return True
+
+
+def _parse_timestamp(value: str) -> datetime:
+    return datetime.fromisoformat(value[:-1] + "+00:00")
 
 
 def _safe_evidence(details: Mapping[str, Any], raw_safe_sha256: str) -> tuple[dict[str, Any], bool]:
@@ -258,8 +263,65 @@ def _replay_samples(case: SealedCase, repo_root: Path, item_limit: int) -> list[
     return outputs
 
 
+def _bound_evidence(
+    case: SealedCase,
+    tier: str,
+    scenario: str,
+    observation: TransportObservation,
+) -> dict[str, Any]:
+    claim = {
+        "case_id": case.case.case_id,
+        "adapter_id": case.case.adapter_id,
+        "source": case.case.source,
+        "tier": tier,
+        "scenario": scenario,
+        "fixture_sha256": case.fixture_sha256,
+        "outcome": observation.outcome,
+        "item_count": max(0, observation.item_count),
+        "request_count": max(0, observation.request_count),
+        "accounting_confidence": observation.accounting_confidence,
+    }
+    evidence: dict[str, Any] = {
+        "raw_safe_sha256": case.fixture_sha256,
+        "source_fixture_sha256": case.fixture_sha256,
+        "claim_sha256": _digest(claim),
+    }
+    if tier == "P0":
+        evidence["catalog_sealed"] = True
+    elif tier == "P1":
+        evidence["fixture_replay"] = True
+        if scenario == "provenance":
+            evidence["provenance_complete"] = True
+        if scenario == "malformed":
+            evidence["expected_safe_error_code"] = "malformed_output"
+        if scenario == "bounded_error":
+            evidence["expected_safe_error_code"] = "rate_limited"
+    else:
+        evidence["production_adapter_invoked"] = True
+    return evidence
+
+
+def _bound_teardown(
+    case: SealedCase,
+    tier: str,
+    raw: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    value = dict(raw or {"complete": True, "owner_census": 0})
+    result: dict[str, Any] = {
+        "complete": value.get("complete") is True,
+        "owner_census": value.get("owner_census") if isinstance(value.get("owner_census"), int) else -1,
+        "kind": "isolated_service" if tier == "P3" else (case.case.transport if tier == "P2" else "none"),
+        "owner_sha256": _digest({"case_id": case.case.case_id, "tier": tier}),
+    }
+    if tier == "P3":
+        result["database_committed"] = value.get("database_committed") is True
+        result["socket_closed"] = value.get("socket_closed") is True
+    result["teardown_sha256"] = _digest(result)
+    return result
+
+
 def _sample(case: SealedCase, tier: str, scenario: str, observation: TransportObservation, *, claim_accepted: bool, teardown: Mapping[str, Any] | None = None) -> SampleReceipt:
-    evidence, redaction_safe = _safe_evidence(observation.details, observation.raw_safe_sha256)
+    _, redaction_safe = _safe_evidence(observation.details, observation.raw_safe_sha256)
     if observation.item_count < 0 or observation.request_count < 0:
         claim_accepted = False
     if not redaction_safe:
@@ -280,8 +342,8 @@ def _sample(case: SealedCase, tier: str, scenario: str, observation: TransportOb
         accounting_confidence=observation.accounting_confidence,
         safe_reason_code=observation.safe_reason_code if redaction_safe else "redaction_failed",
         redaction="safe" if redaction_safe else "failed",
-        teardown=dict(teardown or {"complete": True, "owner_census": 0}),
-        evidence=evidence,
+        teardown=_bound_teardown(case, tier, teardown),
+        evidence=_bound_evidence(case, tier, scenario, observation),
     )
 
 
@@ -357,6 +419,8 @@ def execute(plan: SealedPlan, *, grant: ExecutionGrant, deps: AcceptanceDependen
     owned = sum(sample.request_count for sample in samples if sample.tier in {"P2", "P3"})
     joins = sum(1 for sample in samples if sample.tier == "P3")
     finished_at = _timestamp()
+    if _parse_timestamp(finished_at) < _parse_timestamp(started_at):
+        finished_at = started_at
     unsigned = {
         "schema_version": SCHEMA_VERSION,
         "campaign_id": plan.campaign_id,
@@ -389,7 +453,15 @@ def verify(receipt: AcceptanceReceipt, *, plan: SealedPlan) -> AcceptanceVerdict
     expected_budgets = {"requests_per_case": plan.max_requests_per_case, "items_per_case": plan.max_items_per_case, "wall_timeout_seconds": plan.wall_timeout_seconds}
     if dict(receipt.planned_budgets) != expected_budgets:
         reasons.append("planned_budget_mismatch")
-    if not _valid_timestamp(receipt.started_at) or not _valid_timestamp(receipt.finished_at) or receipt.finished_at < receipt.started_at:
+    if (
+        not _valid_timestamp(receipt.started_at)
+        or not _valid_timestamp(receipt.finished_at)
+        or (
+            _valid_timestamp(receipt.started_at)
+            and _valid_timestamp(receipt.finished_at)
+            and _parse_timestamp(receipt.finished_at) < _parse_timestamp(receipt.started_at)
+        )
+    ):
         reasons.append("timestamp_invalid")
     expected = _expected_sample_keys(plan)
     observed = {(sample.case_id, sample.tier, sample.scenario) for sample in receipt.samples}
@@ -420,13 +492,24 @@ def verify(receipt: AcceptanceReceipt, *, plan: SealedPlan) -> AcceptanceVerdict
             reasons.append("sample_identity_mismatch")
             break
         confidence = sealed.case.accounting_confidence if sample.tier in {"P2", "P3"} else "exact"
-        evidence, safe = _safe_evidence(sample.evidence, sample.evidence.get("raw_safe_sha256", ""))
+        observed_for_binding = TransportObservation(sample.outcome, sample.transport_success, sample.item_count, sample.request_count, sample.safe_reason_code, sample.accounting_confidence, sealed.fixture_sha256)
+        expected_evidence = _bound_evidence(sealed, sample.tier, sample.scenario, observed_for_binding)
+        expected_teardown = _bound_teardown(
+            sealed,
+            sample.tier,
+            {
+                "complete": True,
+                "owner_census": 0,
+                "database_committed": sample.tier == "P3",
+                "socket_closed": sample.tier == "P3",
+            },
+        )
         expected_count = (
             0
             if sample.scenario in {"catalog", "zero_yield", "malformed", "bounded_error"}
             else sealed.case.expected_item_count
         )
-        if not sample.claim_accepted or sample.outcome != expected_outcomes.get(sample.scenario) or sample.accounting_confidence != confidence or not sample.transport_success or sample.safe_reason_code is not None or sample.item_count != expected_count or sample.content_yield != (sample.item_count > 0) or sample.redaction != "safe" or not safe or evidence != dict(sample.evidence):
+        if not sample.claim_accepted or sample.outcome != expected_outcomes.get(sample.scenario) or sample.accounting_confidence != confidence or not sample.transport_success or sample.safe_reason_code is not None or sample.item_count != expected_count or sample.content_yield != (sample.item_count > 0) or sample.redaction != "safe" or dict(sample.evidence) != expected_evidence:
             reasons.append("sample_semantics_mismatch")
             break
         if sample.scenario == "provenance" and sample.evidence.get("provenance_complete") is not True:
@@ -435,7 +518,7 @@ def verify(receipt: AcceptanceReceipt, *, plan: SealedPlan) -> AcceptanceVerdict
         if sample.scenario in {"owned_transport", "isolated_join"} and sample.evidence.get("production_adapter_invoked") is not True:
             reasons.append("production_adapter_evidence_mismatch")
             break
-        if not sample.teardown.get("complete") or sample.teardown.get("owner_census") != 0:
+        if dict(sample.teardown) != expected_teardown or not sample.teardown.get("complete") or sample.teardown.get("owner_census") != 0:
             reasons.append("unsafe_lifecycle_evidence")
             break
         if sample.tier in {"P0", "P1"} and sample.request_count != 0:
