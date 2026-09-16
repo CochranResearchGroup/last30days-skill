@@ -1,25 +1,23 @@
 schema_version: 1
 lanes:
   - id: P53
-    objective: Audit and seal a provider-free P4 readiness preflight across all eight acquisition adapters
+    objective: Execute one bounded X P4 readiness probe on the already-authenticated profile
     work_items: [docs/dev/work-items/WI-010-provider-acceptance.md]
-    plan: docs/dev/plans/0125-2026-09-15-wi010-p4-readiness-capability-audit.md
-    plan_ref: refs/heads/feat/wi010-p4-readiness-preflight-v1
-    branch: feat/wi010-p4-readiness-preflight-v1
+    plan: docs/dev/plans/0126-2026-09-15-wi010-x-p4-readiness-probe.md
+    plan_ref: refs/heads/feat/wi010-x-p4-readiness-v1
+    branch: feat/wi010-x-p4-readiness-v1
     target: main
-    plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: fb62b81b76ad7de49dbd76f6d2eee74c27acc099
-    remote_ref: refs/remotes/origin/feat/wi010-p4-readiness-preflight-v1
-    pull_request: https://github.com/CochranResearchGroup/last30days-skill/pull/104
+    plan_state: OPEN
+    custody_state: ACTIVE_WORKTREE
+    checkpoint: 2d628311940bbe018766198b33fb7957157ec9a4
+    remote_ref: null
     integration: merge
-    integration_receipt: 8ecf221c540fd07071bfdfebc6e09ab1d9b42ebf
-    validation_status: passed
-    validation_ref: 8ecf221c540fd07071bfdfebc6e09ab1d9b42ebf
+    validation_status: pending
+    validation_ref: null
     session_owner: /root
     dependencies: []
     overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_readiness.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]
-    reconciled_overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_readiness.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]
+    reconciled_overlaps: []
     updated_at: 2026-09-15
   - id: P51
     objective: Build a deterministic development artifact and prove one isolated runtime through provider-free dogfood

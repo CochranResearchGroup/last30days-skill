@@ -3439,7 +3439,7 @@ Terminal Result:
 
 ## P53 | Controlled Provider Acceptance
 
-State: PLANNED
+State: OPEN
 
 Objective: build a common, truthful provider-acceptance system that separates
 sealed replay, owned transport, isolated service join, readiness and live-
@@ -3457,6 +3457,8 @@ Current State:
   eight adapters are classified, five browser-auth seams are conditionally
   eligible, three content-fetch-only paths are ineligible, and every external-
   effect counter is zero. No P4 readiness verdict was emitted.
+- Plan 0126 is open for exactly one X auth-readiness probe using the existing
+  authenticated X profile. It permits no search, content retrieval, or retry.
 
 Architecture:
 
@@ -3465,15 +3467,17 @@ Architecture:
   is closed with accepted provider-free P0-P3 evidence;
 - Plan 0125 (`docs/dev/plans/0125-2026-09-15-wi010-p4-readiness-capability-audit.md`)
   is closed with the accepted effect-free P4 preflight packet;
+- Plan 0126 (`docs/dev/plans/0126-2026-09-15-wi010-x-p4-readiness-probe.md`)
+  owns the serialized X-only P4 probe;
 - WI-010 remains `IN_PROGRESS` only for any later separately authorized P4
   readiness or P5 live-canary packets;
 - HTTP, command, and Agent Browser simulators fan out only after shared
   contracts are frozen, then join through an isolated provider-free service;
 - readiness and live canaries remain serialized, one-attempt, separately
-  authorized effects. This lane itself grants none.
+  authorized effects. Plan 0126 grants only the exact X P4 probe; P5 remains
+  held.
 
 Next Bounded Action:
 
-- stop until an exact opaque profile reference plus separate authority are
-  supplied for one eligible P4 browser-auth probe. PR #104 integrated the
-  provider-free audit at `8ecf221c540fd07071bfdfebc6e09ab1d9b42ebf`.
+- implement and merge the X-only executor provider-free, then resolve the
+  already-authenticated X profile and perform exactly one P4 auth probe.
