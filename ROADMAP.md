@@ -3464,7 +3464,8 @@ Current State:
 - Plan 0127 is closed after one operator-authorized successor attempt against
   the same stable profile. The repaired allocator was ready, but installed
   runtime-host admission stopped the request before job admission or browser
-  launch; P4 readiness remains unestablished and P5 remains held.
+  launch; PR #109 integrated the verified terminal evidence at `ed588807`.
+  P4 readiness remains unestablished and P5 remains held.
 
 Architecture:
 
