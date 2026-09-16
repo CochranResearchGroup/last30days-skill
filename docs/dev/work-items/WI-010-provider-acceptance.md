@@ -11,6 +11,7 @@ Blocked by: none for provider-free implementation; readiness and live canaries r
 Architecture plan: docs/dev/plans/0123-2026-09-14-provider-acceptance-architecture-and-lane-handoff.md
 Execution plan: docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md
 Readiness plan: docs/dev/plans/0125-2026-09-15-wi010-p4-readiness-capability-audit.md
+X P4 plan: docs/dev/plans/0126-2026-09-15-wi010-x-p4-readiness-probe.md
 
 ## Problem
 
@@ -91,7 +92,9 @@ because readiness and live-canary P4/P5 evidence remain separately
 unauthorized and incomplete. Plan 0125's provider-free audit is accepted with
 eight adapters classified, five conditionally eligible browser-auth seams,
 three content-fetch-only blockers, and zero external effects. PR #104 merged
-that packet at `8ecf221c540fd07071bfdfebc6e09ab1d9b42ebf`. Stop until an exact opaque
-profile reference and separate P4 authority are supplied. Do not resolve a
-profile, credential, browser, executable, or remote provider dependency under
-existing authority.
+that packet at `8ecf221c540fd07071bfdfebc6e09ab1d9b42ebf`. Plan 0126 now authorizes
+resolving the existing stable X profile binding and performing one X
+auth-readiness probe after its tested executor is merged. Do not use an
+alternate profile, retry, search for content, or enter P5. The executor is
+provider-free accepted at `21645a97`; publish and merge that exact candidate
+before resolving the live profile binding.
