@@ -6,7 +6,7 @@ Priority: P0
 Lane: Provider Acceptance
 Parent: none
 GitHub issue: not published; issue mutation was not authorized
-Pull request: https://github.com/CochranResearchGroup/last30days-skill/pull/104 (P4 audit); https://github.com/CochranResearchGroup/last30days-skill/pull/102 (P0-P3)
+Pull request: https://github.com/CochranResearchGroup/last30days-skill/pull/107 (X P4 terminal receipt); https://github.com/CochranResearchGroup/last30days-skill/pull/106 (X P4 executor); https://github.com/CochranResearchGroup/last30days-skill/pull/104 (P4 audit); https://github.com/CochranResearchGroup/last30days-skill/pull/102 (P0-P3)
 Blocked by: none for provider-free implementation; readiness and live canaries require separate exact operator authority
 Architecture plan: docs/dev/plans/0123-2026-09-14-provider-acceptance-architecture-and-lane-handoff.md
 Execution plan: docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md
@@ -92,13 +92,12 @@ because readiness and live-canary P4/P5 evidence remain separately
 unauthorized and incomplete. Plan 0125's provider-free audit is accepted with
 eight adapters classified, five conditionally eligible browser-auth seams,
 three content-fetch-only blockers, and zero external effects. PR #104 merged
-that packet at `8ecf221c540fd07071bfdfebc6e09ab1d9b42ebf`. Plan 0126 now authorizes
-resolving the existing stable X profile binding and performing one X
-auth-readiness probe after its tested executor is merged. Do not use an
-alternate profile, retry, search for content, or enter P5. The executor is
-provider-free accepted at `21645a97`; publish and merge that exact candidate
-before resolving the live profile binding. PR #106 merged the executor at
-`cd462785`; the one grant then failed before browser launch because all 40
-configured display numbers were active or reserved. The verified receipt has
-zero browser actions and complete teardown. Publish that terminal evidence and
-do not retry or remove active reservations without new authority.
+that packet at `8ecf221c540fd07071bfdfebc6e09ab1d9b42ebf`. PR #106 merged the
+provider-free X P4 executor at `cd462785d18be621ea353547643b5544bc446743`.
+Plan 0126 then consumed its one grant against the explicit stable
+`last30days-facebook` profile binding and failed before browser launch because
+all 40 configured display numbers were active or reserved. The verified
+receipt has zero browser actions and complete teardown; PR #107 integrated it
+at `4588c044c4d0041bba04b7c99da776feed66271d`. Stop. Do not retry, remove
+active reservations, use another profile, search for content, or enter P5
+without new exact authority.
