@@ -2086,7 +2086,7 @@ Closeout:
 
 ## P22 | Facebook Retained Browser Runtime Recovery
 
-State: OPEN
+State: PLANNED
 
 Objective: after explicit operator authority, perform one controlled restart
 of the retained Facebook browser on its existing profile/current build, prove
@@ -3461,6 +3461,10 @@ Current State:
   explicit stable `last30days-facebook` profile binding. Display capacity was
   exhausted before browser launch, so X readiness was not established; PR
   #107 integrated the verified terminal receipt at `4588c044`.
+- Plan 0127 is closed after one operator-authorized successor attempt against
+  the same stable profile. The repaired allocator was ready, but installed
+  runtime-host admission stopped the request before job admission or browser
+  launch; P4 readiness remains unestablished and P5 remains held.
 
 Architecture:
 
@@ -3471,6 +3475,8 @@ Architecture:
   is closed with the accepted effect-free P4 preflight packet;
 - Plan 0126 (`docs/dev/plans/0126-2026-09-15-wi010-x-p4-readiness-probe.md`)
   is closed with a verified terminal pre-browser failure receipt;
+- Plan 0127 (`docs/dev/plans/0127-2026-09-16-wi010-x-p4-readiness-successor.md`)
+  is closed with a verified terminal pre-browser admission failure receipt;
 - WI-010 remains `IN_PROGRESS` only for any later separately authorized P4
   readiness or P5 live-canary packets;
 - HTTP, command, and Agent Browser simulators fan out only after shared
@@ -3480,5 +3486,6 @@ Architecture:
 
 Next Bounded Action:
 
-- stop. Any display-capacity remediation or new P4 attempt requires separate
-  exact authority; P5 remains held.
+- stop after publishing Plan 0127's terminal evidence. Any installed-runtime
+  admission repair or third P4 attempt requires a new bounded plan and exact
+  authority; P5 remains held.

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "campaign_id": "wi010-x-p4-successor-postrun-census-v1",
+  "observed_at": "2026-09-16T18:53:29.807928903Z",
+  "state": "terminal_failed_before_browser_launch",
+  "safe_reason_code": "runtime_host_admission_required",
+  "service_job_id": null,
+  "profile_ref": "profile:last30days-facebook",
+  "allocator": {
+    "display_min": 90,
+    "display_max": 129,
+    "allocator_ready": true,
+    "active_count": 0,
+    "free_count": 38,
+    "stale_lock_count": 2,
+    "unknown_count": 0
+  },
+  "postrun": {
+    "profile_lease_state": "available",
+    "profile_holder_count": 0,
+    "profile_waiting_job_count": 0,
+    "queue_depth": 0,
+    "active_job_count": 0,
+    "active_matching_job_count": 0,
+    "active_challenge_count": 0,
+    "matching_session_count": 0,
+    "matching_browser_count": 0,
+    "matching_process_count": 0
+  },
+  "provider_contact_evidence": "browser_launch_not_reached_and_no_service_job_admitted",
+  "cleanup_action": "none_required_and_no_runtime_or_allocator_state_mutated",
+  "receipt_sha256": "sha256:919703c82567679177e86869b04ecbcdc84cf40bafffd22b20042657c5c8e6b9"
+}
