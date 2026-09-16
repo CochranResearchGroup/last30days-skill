@@ -3474,5 +3474,6 @@ Architecture:
 
 Next Bounded Action:
 
-- publish and integrate Plan 0125 through a pull request, then require an exact
-  opaque profile reference plus separate authority before any P4 effect.
+- stop until an exact opaque profile reference plus separate authority are
+  supplied for one eligible P4 browser-auth probe. PR #104 integrated the
+  provider-free audit at `8ecf221c540fd07071bfdfebc6e09ab1d9b42ebf`.

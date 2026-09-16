@@ -6,7 +6,7 @@ Priority: P0
 Lane: Provider Acceptance
 Parent: none
 GitHub issue: not published; issue mutation was not authorized
-Pull request: https://github.com/CochranResearchGroup/last30days-skill/pull/102
+Pull request: https://github.com/CochranResearchGroup/last30days-skill/pull/104 (P4 audit); https://github.com/CochranResearchGroup/last30days-skill/pull/102 (P0-P3)
 Blocked by: none for provider-free implementation; readiness and live canaries require separate exact operator authority
 Architecture plan: docs/dev/plans/0123-2026-09-14-provider-acceptance-architecture-and-lane-handoff.md
 Execution plan: docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md
@@ -90,7 +90,8 @@ merge commit `72f1c7440a20cfac00d0478edb8413bcfe4dc4b4`. Keep WI-010 `IN_PROGRES
 because readiness and live-canary P4/P5 evidence remain separately
 unauthorized and incomplete. Plan 0125's provider-free audit is accepted with
 eight adapters classified, five conditionally eligible browser-auth seams,
-three content-fetch-only blockers, and zero external effects. Publish and
-integrate that packet, then stop until an exact opaque profile reference and
-separate P4 authority are supplied. Do not resolve a profile, credential,
-browser, executable, or remote provider dependency under existing authority.
+three content-fetch-only blockers, and zero external effects. PR #104 merged
+that packet at `8ecf221c540fd07071bfdfebc6e09ab1d9b42ebf`. Stop until an exact opaque
+profile reference and separate P4 authority are supplied. Do not resolve a
+profile, credential, browser, executable, or remote provider dependency under
+existing authority.
