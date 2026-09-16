@@ -97,4 +97,8 @@ resolving the existing stable X profile binding and performing one X
 auth-readiness probe after its tested executor is merged. Do not use an
 alternate profile, retry, search for content, or enter P5. The executor is
 provider-free accepted at `21645a97`; publish and merge that exact candidate
-before resolving the live profile binding.
+before resolving the live profile binding. PR #106 merged the executor at
+`cd462785`; the one grant then failed before browser launch because all 40
+configured display numbers were active or reserved. The verified receipt has
+zero browser actions and complete teardown. Publish that terminal evidence and
+do not retry or remove active reservations without new authority.

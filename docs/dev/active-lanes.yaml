@@ -4,16 +4,16 @@ lanes:
     objective: Execute one bounded X P4 readiness probe on the already-authenticated profile
     work_items: [docs/dev/work-items/WI-010-provider-acceptance.md]
     plan: docs/dev/plans/0126-2026-09-15-wi010-x-p4-readiness-probe.md
-    plan_ref: refs/heads/feat/wi010-x-p4-readiness-v1
-    branch: feat/wi010-x-p4-readiness-v1
+    plan_ref: refs/heads/docs/wi010-x-p4-receipt-v1
+    branch: docs/wi010-x-p4-receipt-v1
     target: main
-    plan_state: OPEN
+    plan_state: CLOSED
     custody_state: INTEGRATION_READY
-    checkpoint: 21645a976a080f231e80cdda1397df917b5d3d00
+    checkpoint: 7e7ce37d908eb67ca8a199a85632ed9ed0fd70e1
     remote_ref: null
     integration: merge
-    validation_status: accepted_provider_free_executor
-    validation_ref: 21645a976a080f231e80cdda1397df917b5d3d00
+    validation_status: terminal_failed_before_browser_launch
+    validation_ref: sha256:888f22bee8921d9e859077ea12911c8d3643e1fd98be926469e5e96bf9e116bf
     session_owner: /root
     dependencies: []
     overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_readiness.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]
