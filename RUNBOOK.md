@@ -31462,3 +31462,56 @@ Next Bounded Action:
 
 - implement and merge the executor provider-free, then resolve and probe the
   selected X profile exactly once.
+
+## Turn 506 | 2026-09-15
+
+Focus: accept the provider-free X P4 executor before live profile resolution.
+
+Plan authority:
+`docs/dev/plans/0126-2026-09-15-wi010-x-p4-readiness-probe.md`; WI-010 and P53.
+
+Authority Consulted:
+
+- Plan 0126's exact pre-effect contract and current testing, validation,
+  integration, active-lane, and closeout policy;
+- the current X production client, Agent Browser routing, and attributed-tab
+  release behavior.
+
+Decisions And Changes:
+
+- implemented a source-bound prepare/execute/verify flow that validates the
+  packet, grant, exact stable profile binding, expiry, and budgets before
+  dynamically importing or constructing the real client;
+- limited runtime entrypoints to acquisition, auth inspection, and attributed-
+  handle release, with no search module entrypoint callable from the executor;
+- overrode auth tab preparation to forbid duplicate-tab consolidation and
+  preserve all pre-existing X tabs;
+- retained zero retry and safe receipts for every terminal outcome.
+
+Validation Evidence:
+
+- candidate `21645a976a080f231e80cdda1397df917b5d3d00`;
+- X P4 executor: 20 passed; provider acceptance plus authority: 88 passed;
+- partitioned comprehensive validation: 3,182 passed, 8 skipped, plus 21/21
+  hotfix runtime drill tests separately;
+- authority audit and `git diff --check` passed.
+
+State Movement:
+
+- Plan 0126 remains `OPEN` pending the one live P4 attempt;
+- P53 custody `ACTIVE_WORKTREE -> INTEGRATION_READY`;
+- no profile, credential, browser, network, or provider dependency was
+  resolved during executor implementation and acceptance.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no delegation was requested.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Next Bounded Action:
+
+- publish and merge the executor, verify canonical main, then prepare and
+  consume one short-lived X P4 grant against the stable authenticated profile.

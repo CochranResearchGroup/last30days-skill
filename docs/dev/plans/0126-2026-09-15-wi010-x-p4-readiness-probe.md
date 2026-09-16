@@ -160,3 +160,56 @@ Next action:
 
 - implement and merge the executor without provider access, then perform the
   single authorized P4 attempt from canonical main.
+
+### Checkpoint P0126-C02 | 2026-09-15
+
+Plan version: 1
+
+State transition: `OPEN -> OPEN`.
+
+Progress classification: `outcome_progress`; the one-shot executor is
+implemented and provider-free accepted at
+`21645a976a080f231e80cdda1397df917b5d3d00`.
+
+Authority classification:
+
+- `inherited_authority`; this checkpoint implements the pre-effect controls
+  under the exact human-gated X P4 grant without resolving the live profile.
+
+Owned changes:
+
+- added source-bound packet preparation, strict pre-effect plan/grant/profile
+  verification, one-attempt auth inspection, conservative budget accounting,
+  safe receipts, offline verification, and a three-command CLI;
+- constrained X tab preparation to selection-only so the readiness probe
+  cannot consolidate or close pre-existing X tabs;
+- retained safe failure evidence for dependency, acquisition, auth, budget,
+  and teardown failures without recording raw provider or capability data.
+
+Validation evidence:
+
+- focused P4 executor tests: 20 passed;
+- provider-acceptance plus authority tests: 88 passed;
+- partitioned comprehensive validation: 3,182 non-drill tests passed, 8
+  skipped, and the 21 hotfix runtime drill tests passed separately;
+- deterministic authority audit and `git diff --check` passed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; no delegation was requested and live-provider execution is
+  serialized.
+
+Graphiti write status:
+
+- `not_written`; no memory write was authorized.
+
+Remaining acceptance criteria:
+
+- publish and integrate the executor, then resolve, seal, and consume exactly
+  one short-lived grant against the current stable X profile;
+- retain and verify the receipt plus fresh post-run runtime census.
+
+Next action:
+
+- publish and merge the executor through a pull request. Only canonical merged
+  source may prepare and execute the authorized one-shot P4 probe.

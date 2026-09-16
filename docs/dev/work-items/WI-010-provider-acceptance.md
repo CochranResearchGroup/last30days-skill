@@ -95,4 +95,6 @@ three content-fetch-only blockers, and zero external effects. PR #104 merged
 that packet at `8ecf221c540fd07071bfdfebc6e09ab1d9b42ebf`. Plan 0126 now authorizes
 resolving the existing stable X profile binding and performing one X
 auth-readiness probe after its tested executor is merged. Do not use an
-alternate profile, retry, search for content, or enter P5.
+alternate profile, retry, search for content, or enter P5. The executor is
+provider-free accepted at `21645a97`; publish and merge that exact candidate
+before resolving the live profile binding.
