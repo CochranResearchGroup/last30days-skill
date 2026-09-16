@@ -1,0 +1,32 @@
+{
+  "accounting_confidence": "opaque_request_equivalent",
+  "adapter_id": "x_agent_browser",
+  "attempt_count": 1,
+  "authenticated": false,
+  "browser_actions": 0,
+  "campaign_id": "wi010-x-p4-readiness-receipt-v1",
+  "case_id": "x-browser",
+  "checkpoint": false,
+  "external_concurrency": 1,
+  "finished_at": "2026-09-16T18:51:54.647583Z",
+  "grant_sha256": "sha256:9275c4660f141c44eec2021180cab277d52e299c272518cb23c47d434b223512",
+  "login_form": false,
+  "operations": [
+    "service:ok",
+    "service_request_tab_new:failed"
+  ],
+  "owned_handle_remaining": false,
+  "plan_sha256": "sha256:5d60c6f59bda0ccf470c93c5d2a339b0c4e80634ac8417a2b58328288ba99598",
+  "profile_ref": "profile:last30days-facebook",
+  "provider": "x",
+  "receipt_sha256": "sha256:a2dfa43ade012c3e0af8c2c41bcc36036b65354b30dcb156d9eb52252230ce86",
+  "request_equivalents": 1,
+  "restricted": false,
+  "safe_reason_code": "agent_browser_error",
+  "schema_version": 1,
+  "source_sha256": "sha256:f3fc10be912f64bfe94470bdf99fe962514b8fd368b339d3e8eb435d974268a3",
+  "started_at": "2026-09-16T18:51:52.115173Z",
+  "state": "FAILED",
+  "target_config_sha256": "sha256:27431a21a1a2134bf893b45448719255c754fcda1ba2058b5e4da479c9c8cf57",
+  "teardown_completed": true
+}

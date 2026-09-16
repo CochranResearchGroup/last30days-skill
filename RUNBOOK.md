@@ -31693,3 +31693,64 @@ Next Bounded Action:
 
 - publish the authority checkpoint, then complete the exact read-only
   preflight and consume one successor P4 grant. P5 remains held.
+
+## Turn 510 | 2026-09-16
+
+Focus: execute and close the one WI-010 X P4 successor attempt.
+
+Plan authority:
+`docs/dev/plans/0127-2026-09-16-wi010-x-p4-readiness-successor.md`; WI-010 and
+P53; exactly one successor attempt, with P5 and content access held.
+
+Authority Consulted:
+
+- the operator's explicit `try again` instruction;
+- Plan 0127's one-attempt grant, stop rules, and no-runtime-mutation boundary;
+- current runtime access-plan, profile, allocator, lease, and physical census.
+
+Decisions And Changes:
+
+- remotely checkpointed Plan 0127 at `35b82fc7` before effect;
+- prepared and consumed exactly one short-lived grant against the same stable
+  `last30days-facebook` profile;
+- stopped after the first terminal result and retained the packet, safe receipt,
+  and post-run census;
+- made no retry, allocator cleanup, installed-runtime repair, service restart,
+  alternate-profile selection, provider content request, or P5 call.
+
+Validation Evidence:
+
+- broker access was allowed, the exact profile had zero active leases, and the
+  allocator reported ready with 38 free displays, zero active displays, two
+  stale-lock entries, and zero unknown entries;
+- execution receipt independently verified: `FAILED / agent_browser_error`,
+  attempt one, request-equivalent one, browser actions zero, teardown complete,
+  owned handle remaining false; digest
+  `sha256:a2dfa43ade012c3e0af8c2c41bcc36036b65354b30dcb156d9eb52252230ce86`;
+- no service job or browser launch was admitted. Adjacent read-only calls
+  returned `runtime_host_admission_required`, distinguishing this failure from
+  Plan 0126's allocator symptom;
+- post-run census shows the profile available with zero holders/waiters, queue
+  depth and active jobs/challenges zero, and no matching session, browser, or X
+  process; digest
+  `sha256:919703c82567679177e86869b04ecbcdc84cf40bafffd22b20042657c5c8e6b9`.
+
+State Movement:
+
+- Plan 0127 `OPEN -> CLOSED`;
+- P53 `OPEN -> PLANNED`; WI-010 remains `IN_PROGRESS` because P4 readiness and
+  P5 evidence remain unestablished.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the singleton external attempt remained serialized.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Stop Reason:
+
+- Plan 0127's only successor attempt is consumed. Publish and integrate its
+  terminal evidence, but do not repair runtime admission or attempt P4 again
+  without a new bounded plan and exact authority. P5 remains held.

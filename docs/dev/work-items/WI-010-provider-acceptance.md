@@ -102,4 +102,8 @@ receipt has zero browser actions and complete teardown; PR #107 integrated it
 at `4588c044c4d0041bba04b7c99da776feed66271d`. The operator subsequently
 supplied exact authority for one successor attempt through Plan 0127. Use the
 same profile, do not alter allocator/runtime state, preserve the first
-successor result, and do not search for content or enter P5.
+successor result, and do not search for content or enter P5. That attempt is
+now consumed: allocator readiness passed, but installed runtime-host admission
+failed before a service job or browser launched. The safe receipt verified
+with zero browser actions and complete teardown. Stop pending a separately
+authorized runtime-admission repair or later P4 packet; P5 remains held.
