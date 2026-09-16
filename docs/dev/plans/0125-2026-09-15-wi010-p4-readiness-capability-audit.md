@@ -1,6 +1,6 @@
 # Plan 0125 | WI-010 P4 Readiness Capability Audit
 
-State: OPEN
+State: CLOSED
 Lane: P53
 Work item: WI-010
 Branch: feat/wi010-p4-readiness-preflight-v1
@@ -75,7 +75,8 @@ release, deployment, issue mutation, or Graphiti write.
    default, filesystem, URL, secret-like, or multi-profile references.
 4. The grant binds the sealed plan digest, provider, adapter, case ID, opaque
    profile reference, expiration, attempt count one, external concurrency one,
-   and explicit action/request/time/cost ceilings.
+   and explicit action/request-equivalent/time/cost ceilings. Browser network
+   accounting remains explicitly opaque rather than claiming exact requests.
 5. This packet emits `AUDITED_NOT_RUN`; neither preparation nor receipt
    verification can emit a P4 readiness verdict.
 6. Every unsupported or not-yet-authorized case retains its exact blocker.
@@ -107,8 +108,9 @@ the source does not support a readiness-only claim without content retrieval.
 
 ## Next Action
 
-Implement the pure capability catalog, plan/grant sealer, effect-free audit
-receipt, verifier, CLI, and tests. Execute only that provider-free audit.
+Await a separately authorized exact-profile P4 packet. Do not resolve a
+profile, credential, browser, executable, or provider dependency under this
+closed plan.
 
 ### Checkpoint P0125-C01 | 2026-09-15
 
@@ -152,3 +154,60 @@ Remaining acceptance criteria:
 Next action:
 
 - implement the frozen contract and stop before any P4 external effect.
+
+### Checkpoint P0125-C02 | 2026-09-15
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`.
+
+Progress classification: `outcome_progress`; the provider-free capability
+audit and sealed-preflight contract are implemented and accepted.
+
+Authority classification:
+
+- `inherited_authority`; execution remained within the operator-authorized
+  provider-free packet and never entered P4.
+
+Owned changes:
+
+- added the exact eight-adapter catalog, source-bound audit and verifier,
+  fail-closed plan/grant sealing, strict receipt decoder, CLI, tests, and
+  `dev/last30days/receipts/wi010-p4-capability-audit.json`;
+- classified five browser-auth seams as conditionally eligible and three
+  content-fetch-only entrypoints as ineligible for readiness-only execution.
+
+Validation evidence:
+
+- durable receipt verified with eight capabilities, five eligible cases,
+  `selected_case_id: null`, state `AUDITED_NOT_RUN`, and all 14 effect counters
+  zero; receipt digest
+  `sha256:987b3f0f79de1c1aa0f8f6d0e954c56da2bf39c50be9ea6bfb891b36aa03e3c2`;
+- 22 focused readiness tests and 68 combined provider-acceptance/authority
+  tests passed;
+- clean partitioned comprehensive validation passed: 3,162 non-drill tests
+  passed with 8 skipped, and the hotfix runtime drill passed 21/21 separately;
+- the existing hotfix runtime drill passed 21/21 in isolation. Two complete-
+  suite attempts exposed non-deterministic failures in that unrelated drill
+  during its initial fixture install; the failing cases each passed outside
+  the complete-suite process and no WI-010 failure occurred;
+- `git diff --check` passed.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the operator did not request delegation for this serialized
+  packet.
+
+Graphiti write status:
+
+- `not_written`; no memory write was authorized.
+
+Remaining acceptance criteria:
+
+- none for this provider-free packet. No P4 readiness verdict exists.
+
+Next action:
+
+- publish and integrate this closed packet through a pull request, then stop
+  until an exact opaque profile reference and separate external P4 authority
+  are both supplied.

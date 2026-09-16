@@ -88,7 +88,9 @@ Plan 0124's provider-free P0-P3 packet is accepted at
 `bcaceb96144764f2a17ec62aa8fafeaf03255de2` and integrated through PR #102 at
 merge commit `72f1c7440a20cfac00d0478edb8413bcfe4dc4b4`. Keep WI-010 `IN_PROGRESS`
 because readiness and live-canary P4/P5 evidence remain separately
-unauthorized and incomplete. Plan 0125 is authorized to execute the
-provider-free P4 capability audit and sealed preflight only. It must stop
-before resolving an exact profile, credential, browser, executable, or remote
-provider dependency.
+unauthorized and incomplete. Plan 0125's provider-free audit is accepted with
+eight adapters classified, five conditionally eligible browser-auth seams,
+three content-fetch-only blockers, and zero external effects. Publish and
+integrate that packet, then stop until an exact opaque profile reference and
+separate P4 authority are supplied. Do not resolve a profile, credential,
+browser, executable, or remote provider dependency under existing authority.

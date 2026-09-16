@@ -7,13 +7,13 @@ lanes:
     plan_ref: refs/heads/feat/wi010-p4-readiness-preflight-v1
     branch: feat/wi010-p4-readiness-preflight-v1
     target: main
-    plan_state: OPEN
-    custody_state: ACTIVE_WORKTREE
+    plan_state: CLOSED
+    custody_state: INTEGRATION_READY
     checkpoint: c315eaca9699f308eb8ed059225382010cecadf7
     remote_ref: null
     integration: merge
-    validation_status: pending
-    validation_ref: null
+    validation_status: accepted_provider_free
+    validation_ref: sha256:987b3f0f79de1c1aa0f8f6d0e954c56da2bf39c50be9ea6bfb891b36aa03e3c2
     session_owner: /root
     dependencies: []
     overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_readiness.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]
