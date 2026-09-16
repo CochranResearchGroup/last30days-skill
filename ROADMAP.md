@@ -3439,7 +3439,7 @@ Terminal Result:
 
 ## P53 | Controlled Provider Acceptance
 
-State: OPEN
+State: PLANNED
 
 Objective: build a common, truthful provider-acceptance system that separates
 sealed replay, owned transport, isolated service join, readiness and live-
@@ -3458,7 +3458,9 @@ Current State:
   eligible, three content-fetch-only paths are ineligible, and every external-
   effect counter is zero. No P4 readiness verdict was emitted.
 - Plan 0126 is open for exactly one X auth-readiness probe using the existing
-  authenticated X profile. It permits no search, content retrieval, or retry.
+  authenticated X profile. Its one attempt is terminal: display capacity was
+  exhausted before browser launch, so X readiness was not established and no
+  retry is authorized.
 
 Architecture:
 
@@ -3468,16 +3470,15 @@ Architecture:
 - Plan 0125 (`docs/dev/plans/0125-2026-09-15-wi010-p4-readiness-capability-audit.md`)
   is closed with the accepted effect-free P4 preflight packet;
 - Plan 0126 (`docs/dev/plans/0126-2026-09-15-wi010-x-p4-readiness-probe.md`)
-  owns the serialized X-only P4 probe;
+  is closed with a verified terminal pre-browser failure receipt;
 - WI-010 remains `IN_PROGRESS` only for any later separately authorized P4
   readiness or P5 live-canary packets;
 - HTTP, command, and Agent Browser simulators fan out only after shared
   contracts are frozen, then join through an isolated provider-free service;
 - readiness and live canaries remain serialized, one-attempt, separately
-  authorized effects. Plan 0126 grants only the exact X P4 probe; P5 remains
-  held.
+  authorized effects. Plan 0126's grant is consumed; P5 remains held.
 
 Next Bounded Action:
 
-- implement and merge the X-only executor provider-free, then resolve the
-  already-authenticated X profile and perform exactly one P4 auth probe.
+- publish and integrate Plan 0126's terminal receipts, then stop. Any display-
+  capacity remediation or new P4 attempt requires separate authority.

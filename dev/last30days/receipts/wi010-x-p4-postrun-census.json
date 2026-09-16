@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "campaign_id": "wi010-x-p4-postrun-census-v1",
+  "observed_at": "2026-09-16T01:33:57.958330305Z",
+  "state": "terminal_failed_before_browser_launch",
+  "safe_reason_code": "display_capacity_exhausted",
+  "service_job_id": "mcp-service-request-tab_new-bf135c6a-a407-4b7c-9aa3-ca61f22d9e44",
+  "profile_ref": "profile:last30days-facebook",
+  "allocator": {
+    "display_min": 90,
+    "display_max": 129,
+    "internal_attempts": 3,
+    "active_or_reserved": 40,
+    "stale_lock_count": 0,
+    "unknown_count": 0
+  },
+  "postrun": {
+    "profile_lease_state": "available",
+    "profile_holder_count": 0,
+    "profile_waiting_job_count": 0,
+    "queue_depth": 0,
+    "active_job_count": 0,
+    "active_challenge_count": 0,
+    "matching_session_count": 0,
+    "matching_resource_count": 0,
+    "matching_process_count": 0
+  },
+  "provider_contact_evidence": "browser_launch_not_reached",
+  "cleanup_action": "none_required_and_no_active_reservations_touched",
+  "receipt_sha256": "sha256:e4cba652c8835dfbe232deb17058584ef8ffcdafc8a8b2dd477f9d518b056d48"
+}

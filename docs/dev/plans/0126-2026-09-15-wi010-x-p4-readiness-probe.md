@@ -1,6 +1,6 @@
 # Plan 0126 | WI-010 X P4 Readiness Probe
 
-State: OPEN
+State: CLOSED
 Lane: P53
 Work item: WI-010
 Branch: feat/wi010-x-p4-readiness-v1
@@ -117,8 +117,8 @@ be guaranteed. After invocation, preserve the first outcome and never retry.
 
 ## Next Action
 
-Implement and provider-free test the P4 executor. Merge it through a pull
-request before resolving and probing the current X profile.
+Publish and integrate the terminal receipt. Do not retry. Any display-capacity
+remediation or successor X P4 probe requires a new bounded plan and human gate.
 
 ### Checkpoint P0126-C01 | 2026-09-15
 
@@ -213,3 +213,63 @@ Next action:
 
 - publish and merge the executor through a pull request. Only canonical merged
   source may prepare and execute the authorized one-shot P4 probe.
+
+### Checkpoint P0126-C03 | 2026-09-15
+
+Plan version: 1
+
+State transition: `OPEN -> CLOSED`.
+
+Progress classification: `outcome_progress`; the exact authorized P4 attempt
+was consumed once and retained as a verified terminal failure.
+
+Authority classification:
+
+- `human_gate`; the one X P4 grant was consumed. No authority remains for a
+  retry, capacity repair, alternate profile, content request, or P5 canary.
+
+Owned changes:
+
+- resolved the stable X target to the explicit shared profile
+  `profile:last30days-facebook` and sealed a ten-minute source-bound packet;
+- consumed one service request. It failed during remote-headed display
+  allocation before browser launch, auth inspection, or provider content;
+- retained the packet, safe execution receipt, and post-run census with no raw
+  capability, cookie, page content, or credential data.
+
+Validation evidence:
+
+- executor PR #106 merged as canonical commit
+  `cd462785d18be621ea353547643b5544bc446743` before packet preparation;
+- packet digest
+  `sha256:bbbc42b5b62a2fd8c1b26dd8fdadfc3c4b8ca8e169903bde168ba4efcb29733c`;
+- execution receipt verified with state `FAILED`, reason
+  `agent_browser_error`, attempt one, request-equivalent one, browser actions
+  zero, teardown complete, and no owned handle remaining; receipt digest
+  `sha256:888f22bee8921d9e859077ea12911c8d3643e1fd98be926469e5e96bf9e116bf`;
+- service job evidence narrowed the safe cause to
+  `display_capacity_exhausted`: displays `:90-:129` had 40 active/reserved,
+  zero stale locks, and zero unknown locks. Its three allocator attempts were
+  internal to the single admitted service request;
+- fresh census: profile lease available, zero holders/waiters, queue depth
+  zero, active jobs/challenges zero, and no matching session, resource, or OS
+  process. Census digest
+  `sha256:e4cba652c8835dfbe232deb17058584ef8ffcdafc8a8b2dd477f9d518b056d48`.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; the authenticated-provider singleton remained serialized.
+
+Graphiti write status:
+
+- `not_written`; no memory write was authorized.
+
+Remaining acceptance criteria:
+
+- the packet and lifecycle receipt criteria are complete;
+- X auth readiness was not established because browser launch was not reached.
+
+Next action:
+
+- publish and integrate these terminal receipts, then stop. Do not remove any
+  display reservation: the census found no stale or unknown allocator lock.

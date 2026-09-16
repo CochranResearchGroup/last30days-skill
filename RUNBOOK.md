@@ -31515,3 +31515,71 @@ Next Bounded Action:
 
 - publish and merge the executor, verify canonical main, then prepare and
   consume one short-lived X P4 grant against the stable authenticated profile.
+
+## Turn 507 | 2026-09-15
+
+Focus: consume the single X P4 grant and retain the terminal evidence.
+
+Plan authority:
+`docs/dev/plans/0126-2026-09-15-wi010-x-p4-readiness-probe.md`; WI-010, P53,
+and merged executor PR #106.
+
+Authority Consulted:
+
+- the operator's explicit selection of the already-authenticated X profile;
+- Plan 0126's one-attempt grant, stop rules, invalidation map, and no-retry
+  boundary;
+- exact canonical-main, Agent Browser lease/job, and post-run process readback.
+
+Decisions And Changes:
+
+- merged the executor through PR #106 at `cd462785`, then resolved the stable X
+  target binding to explicit shared profile `last30days-facebook`;
+- sealed one ten-minute packet and verified the profile was available with no
+  holders, waiters, active jobs, or active challenge task;
+- an initial CLI call used a worktree-relative packet path and stopped at local
+  `FileNotFoundError` before packet decoding, client construction, capability
+  resolution, or effect. The same still-valid packet was then consumed once by
+  absolute path; no new grant or retry was created;
+- the admitted service request failed during display allocation. No browser
+  action, auth DOM evaluation, search, content retrieval, or P5 call occurred;
+- preserved the first terminal outcome and performed no retry or allocator
+  cleanup because all 40 display slots were active/reserved and none were stale
+  or unknown.
+
+Validation Evidence:
+
+- packet digest
+  `sha256:bbbc42b5b62a2fd8c1b26dd8fdadfc3c4b8ca8e169903bde168ba4efcb29733c`;
+- verified execution receipt: `FAILED / agent_browser_error`, attempt one,
+  request-equivalent one, browser actions zero, teardown complete, owned handle
+  remaining false; digest
+  `sha256:888f22bee8921d9e859077ea12911c8d3643e1fd98be926469e5e96bf9e116bf`;
+- service job `mcp-service-request-tab_new-bf135c6a-a407-4b7c-9aa3-ca61f22d9e44`
+  reports three internal allocator attempts, each stopped because displays
+  `:90-:129` were fully active/reserved (`40`), with zero stale/unknown locks;
+- fresh post-run census: selected profile available with zero holders/waiters,
+  queue depth and active jobs/challenges zero, no matching session/resource/OS
+  process; digest
+  `sha256:e4cba652c8835dfbe232deb17058584ef8ffcdafc8a8b2dd477f9d518b056d48`.
+
+State Movement:
+
+- PR #106 `OPEN -> MERGED`;
+- Plan 0126 `OPEN -> CLOSED` with a terminal pre-browser failure;
+- P53 `OPEN -> PLANNED`; WI-010 remains `IN_PROGRESS` because P4 readiness and
+  P5 evidence are not established.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the singleton external attempt remained serialized.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Stop Reason:
+
+- the only authorized P4 attempt is consumed. A display-capacity repair or
+  successor probe would be a new external-effect packet and requires new
+  operator authority.
