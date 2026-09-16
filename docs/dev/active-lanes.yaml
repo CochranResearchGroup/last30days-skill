@@ -1,25 +1,23 @@
 schema_version: 1
 lanes:
   - id: P53
-    objective: Accept provider-free P0-P3 evidence across all eight acquisition adapters
+    objective: Audit and seal a provider-free P4 readiness preflight across all eight acquisition adapters
     work_items: [docs/dev/work-items/WI-010-provider-acceptance.md]
-    plan: docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md
-    plan_ref: refs/heads/feat/provider-acceptance-p0-p3-v1
-    branch: feat/provider-acceptance-p0-p3-v1
+    plan: docs/dev/plans/0125-2026-09-15-wi010-p4-readiness-capability-audit.md
+    plan_ref: refs/heads/feat/wi010-p4-readiness-preflight-v1
+    branch: feat/wi010-p4-readiness-preflight-v1
     target: main
     plan_state: CLOSED
-    custody_state: INTEGRATED
-    checkpoint: 749aa4fb6449f869b19a360a06bf61e63201d72d
-    remote_ref: refs/remotes/origin/feat/provider-acceptance-p0-p3-v1
-    pull_request: https://github.com/CochranResearchGroup/last30days-skill/pull/102
+    custody_state: INTEGRATION_READY
+    checkpoint: c315eaca9699f308eb8ed059225382010cecadf7
+    remote_ref: null
     integration: merge
-    integration_receipt: 72f1c7440a20cfac00d0478edb8413bcfe4dc4b4
-    validation_status: passed
-    validation_ref: 72f1c7440a20cfac00d0478edb8413bcfe4dc4b4
+    validation_status: accepted_provider_free
+    validation_ref: sha256:987b3f0f79de1c1aa0f8f6d0e954c56da2bf39c50be9ea6bfb891b36aa03e3c2
     session_owner: /root
     dependencies: []
-    overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_acceptance.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]
-    reconciled_overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_acceptance.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]
+    overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_readiness.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]
+    reconciled_overlaps: []
     updated_at: 2026-09-15
   - id: P51
     objective: Build a deterministic development artifact and prove one isolated runtime through provider-free dogfood

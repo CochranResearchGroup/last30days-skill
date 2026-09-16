@@ -1,0 +1,124 @@
+{
+  "campaign_id": "wi010-p4-capability-audit-v1",
+  "capabilities": [
+    {
+      "adapter_id": "x_agent_browser",
+      "case_id": "x-browser",
+      "dependency_class": "real_browser_profile",
+      "next_gate": "exact_profile_reference_and_external_p4_authority_required",
+      "provider": "x",
+      "rationale_code": "auth_inspection_precedes_content_search",
+      "readiness_only": true,
+      "seam_symbol": "CliAgentBrowserClient.inspect_auth",
+      "source_path": "skills/last30days/scripts/lib/x_browser.py"
+    },
+    {
+      "adapter_id": "facebook_agent_browser",
+      "case_id": "facebook-browser",
+      "dependency_class": "real_browser_profile",
+      "next_gate": "exact_profile_reference_and_external_p4_authority_required",
+      "provider": "facebook",
+      "rationale_code": "bounded_auth_inspection_precedes_content_search",
+      "readiness_only": true,
+      "seam_symbol": "CliAgentBrowserClient.inspect_auth",
+      "source_path": "skills/last30days/scripts/lib/facebook.py"
+    },
+    {
+      "adapter_id": "linkedin_agent_browser",
+      "case_id": "linkedin-post-browser",
+      "dependency_class": "real_browser_profile",
+      "next_gate": "exact_profile_reference_and_external_p4_authority_required",
+      "provider": "linkedin",
+      "rationale_code": "auth_inspection_precedes_post_search",
+      "readiness_only": true,
+      "seam_symbol": "CliAgentBrowserClient.inspect_auth",
+      "source_path": "skills/last30days/scripts/lib/linkedin.py"
+    },
+    {
+      "adapter_id": "linkedin_profile_agent_browser",
+      "case_id": "linkedin-profile-browser",
+      "dependency_class": "real_browser_profile",
+      "next_gate": "exact_profile_reference_and_external_p4_authority_required",
+      "provider": "linkedin",
+      "rationale_code": "shared_auth_inspection_precedes_profile_acquisition",
+      "readiness_only": true,
+      "seam_symbol": "CliAgentBrowserClient.inspect_auth",
+      "source_path": "skills/last30days/scripts/lib/linkedin.py"
+    },
+    {
+      "adapter_id": "youtube_ytdlp",
+      "case_id": "youtube-command",
+      "dependency_class": "provider_subprocess",
+      "next_gate": "no_readiness_only_seam_requires_separate_p5_design",
+      "provider": "youtube",
+      "rationale_code": "entrypoint_immediately_executes_content_search",
+      "readiness_only": false,
+      "seam_symbol": "search_youtube",
+      "source_path": "skills/last30days/scripts/lib/youtube_yt.py"
+    },
+    {
+      "adapter_id": "reddit_keyless",
+      "case_id": "reddit-keyless-http",
+      "dependency_class": "public_http",
+      "next_gate": "no_readiness_only_seam_requires_separate_p5_design",
+      "provider": "reddit",
+      "rationale_code": "entrypoint_immediately_fetches_content",
+      "readiness_only": false,
+      "seam_symbol": "search_reddit_public",
+      "source_path": "skills/last30days/scripts/lib/reddit_public.py"
+    },
+    {
+      "adapter_id": "reddit_agent_browser",
+      "case_id": "reddit-browser",
+      "dependency_class": "real_browser_profile",
+      "next_gate": "exact_profile_reference_and_external_p4_authority_required",
+      "provider": "reddit",
+      "rationale_code": "auth_inspection_precedes_content_search",
+      "readiness_only": true,
+      "seam_symbol": "CliAgentBrowserClient.inspect_auth",
+      "source_path": "skills/last30days/scripts/lib/reddit_browser.py"
+    },
+    {
+      "adapter_id": "reddit_scrapecreators",
+      "case_id": "reddit-scrapecreators-http",
+      "dependency_class": "credentialed_paid_http",
+      "next_gate": "no_readiness_only_seam_requires_separate_p5_design",
+      "provider": "reddit",
+      "rationale_code": "key_presence_is_not_auth_readiness_and_request_fetches_content",
+      "readiness_only": false,
+      "seam_symbol": "search_reddit",
+      "source_path": "skills/last30days/scripts/lib/reddit.py"
+    }
+  ],
+  "catalog_sha256": "sha256:c149694cfc1c79d1a007c07964bc4fff10539f89b95dae1f85f7648462b34833",
+  "created_at": "2026-09-16T00:25:25.136740Z",
+  "effect_census": {
+    "browser_actions": 0,
+    "browser_workspace_acquisitions": 0,
+    "credential_resolutions": 0,
+    "dns_queries": 0,
+    "environment_reads": 0,
+    "executable_resolutions": 0,
+    "external_provider_calls": 0,
+    "http_requests": 0,
+    "installed_runtime_mutations": 0,
+    "release_or_deployment_mutations": 0,
+    "schedule_mutations": 0,
+    "socket_connections": 0,
+    "subprocesses": 0,
+    "tracker_mutations": 0
+  },
+  "eligible_case_ids": [
+    "facebook-browser",
+    "linkedin-post-browser",
+    "linkedin-profile-browser",
+    "reddit-browser",
+    "x-browser"
+  ],
+  "next_gate": "exact_profile_reference_and_external_p4_authority_required",
+  "receipt_sha256": "sha256:987b3f0f79de1c1aa0f8f6d0e954c56da2bf39c50be9ea6bfb891b36aa03e3c2",
+  "schema_version": 1,
+  "selected_case_id": null,
+  "source_sha256": "sha256:425956096b45f1ebf89bcf565f901c3aba4e2455d2920c93ca59f7a56cbd5851",
+  "state": "AUDITED_NOT_RUN"
+}

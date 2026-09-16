@@ -31231,3 +31231,123 @@ Stop Reason:
 - provider-free P0-P3 is implemented, accepted, published, and integrated.
   Credentials, acquisition providers, real browsers, installed runtimes,
   deployments, releases, schedules, tracker mutation, P4, and P5 remain held.
+
+## Turn 502 | 2026-09-15
+
+Focus: activate WI-010's provider-free P4 capability audit and preflight.
+
+Plan authority:
+`docs/dev/plans/0125-2026-09-15-wi010-p4-readiness-capability-audit.md`;
+WI-010 and P53.
+
+Authority Consulted:
+
+- the operator's instruction to plan and execute the recommended next packet;
+- current planning, work-item, multi-session, model-selection, active-lane,
+  testing, validation, and collaborative-development policies;
+- Plan 0123's P4/P5 authority contract and merged Plan 0124 evidence.
+
+Decisions And Changes:
+
+- bounded execution to a provider-free capability audit, plan/grant sealer,
+  durable audit receipt, and independent verifier;
+- classified browser auth inspection as the only existing separable readiness
+  seam, subject to an exact opaque profile reference;
+- retained YouTube, Reddit keyless, and Reddit ScrapeCreators behind P5 because
+  their current production seams enter content retrieval immediately;
+- prohibited credential/profile resolution and all real browser/network/
+  provider execution in Plan 0125.
+
+Validation Evidence:
+
+- CodeGraph traced all eight production adapter entries and browser auth seams
+  from current canonical `main`;
+- the current X fallback profile aliases `last30days-facebook`, proving that a
+  default must not be silently promoted into an exact P4 profile reference;
+- canonical `main` was clean and equal to `origin/main` at
+  `c315eaca9699f308eb8ed059225382010cecadf7` before lane creation.
+
+State Movement:
+
+- Plan 0125 `unplanned -> OPEN`;
+- P53 `PLANNED -> OPEN` with `ACTIVE_WORKTREE` custody;
+- WI-010 remains `IN_PROGRESS`; no P4 or P5 effect is authorized.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the packet is serialized and its structural audit used the
+  repository CodeGraph directly.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Next Bounded Action:
+
+- implement and execute the pure capability audit, then stop at the exact
+  profile/external-grant gate.
+
+## Turn 503 | 2026-09-15
+
+Focus: execute and accept WI-010's provider-free P4 capability audit and
+sealed preflight.
+
+Plan authority:
+`docs/dev/plans/0125-2026-09-15-wi010-p4-readiness-capability-audit.md`;
+WI-010 and P53.
+
+Authority Consulted:
+
+- the operator's instruction to plan and execute the recommended next packet;
+- Plan 0125's frozen contract and exact provider-free stop rules;
+- current testing, validation, closeout, work-item, documentation, Git, and
+  collaborative-development policies.
+
+Decisions And Changes:
+
+- implemented a pure eight-adapter capability catalog without importing any
+  production adapter during audit or verification;
+- implemented source-bound audit receipts, strict offline verification, and a
+  fail-closed one-case plan/grant sealer with one attempt, concurrency one,
+  bounded actions, opaque request equivalents, time, expiry, and zero cost;
+- emitted `wi010-p4-capability-audit.json` as `AUDITED_NOT_RUN`, selecting no
+  case and retaining the exact profile/authority next gate;
+- classified X, Facebook, LinkedIn post, LinkedIn profile, and Reddit browser
+  auth seams as conditionally eligible; YouTube yt-dlp, Reddit keyless, and
+  Reddit ScrapeCreators remain content-fetch-only and ineligible for P4.
+
+Validation Evidence:
+
+- durable receipt verification accepted all eight capabilities and five
+  eligible cases with all 14 external-effect counters zero; receipt digest
+  `sha256:987b3f0f79de1c1aa0f8f6d0e954c56da2bf39c50be9ea6bfb891b36aa03e3c2`;
+- readiness tests: 22 passed; combined provider-acceptance and authority tests:
+  68 passed; existing hotfix runtime drill: 21 passed in isolation;
+- clean partitioned comprehensive validation passed with 3,162 non-drill tests
+  passed, 8 skipped, and the 21 drill tests passed separately;
+- two complete-suite attempts reached all 3,191 collected tests but exposed
+  one and then two non-deterministic failures in the unrelated hotfix drill's
+  initial fixture install. Each implicated case passed outside the complete-
+  suite process; no WI-010 test failed;
+- `git diff --check` passed.
+
+State Movement:
+
+- Plan 0125 `OPEN -> CLOSED`;
+- P53 `OPEN -> PLANNED`, custody `ACTIVE_WORKTREE -> INTEGRATION_READY`;
+- WI-010 remains `IN_PROGRESS`; no P4 or P5 effect has been run or authorized.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; the operator did not request delegation for this serialized
+  packet.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Next Bounded Action:
+
+- publish and integrate Plan 0125 through a pull request. After integration,
+  stop until the operator supplies both an exact opaque profile reference and
+  separate external P4 authority.
