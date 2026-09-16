@@ -31430,7 +31430,7 @@ Authority Consulted:
 Decisions And Changes:
 
 - selected exactly X and the current stable authenticated X target profile;
-- bounded P4 to one attempt, concurrency one, four browser actions, two opaque
+- bounded P4 to one attempt, concurrency one, four browser actions, three opaque
   provider-request equivalents, 120 seconds, zero cost, and zero retry;
 - required executor integration before the effect and prohibited every search,
   content, P5, alternate-profile, login, and runtime-mutation path.

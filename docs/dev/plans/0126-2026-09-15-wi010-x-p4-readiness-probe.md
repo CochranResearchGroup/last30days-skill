@@ -64,7 +64,7 @@ schedule, release, deployment, or tracker mutation.
 2. The stable profile ID is read once as non-secret routing metadata and bound
    as an opaque `profile:<id>` reference before the client is constructed.
 3. The grant expires within 15 minutes and binds attempt count one, external
-   concurrency one, at most four browser actions, two opaque external request
+   concurrency one, at most four browser actions, three opaque external request
    equivalents, 120 seconds, and zero cost.
 4. Dependency/profile-capability resolution occurs only after plan and grant
    verification. Capability material is never emitted or persisted.
