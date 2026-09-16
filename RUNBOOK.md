@@ -31583,3 +31583,6 @@ Stop Reason:
 - the only authorized P4 attempt is consumed. A display-capacity repair or
   successor probe would be a new external-effect packet and requires new
   operator authority.
+
+Receipt candidate: `7e7ce37d908eb67ca8a199a85632ed9ed0fd70e1`;
+P53 custody is `INTEGRATION_READY` for terminal-evidence publication only.

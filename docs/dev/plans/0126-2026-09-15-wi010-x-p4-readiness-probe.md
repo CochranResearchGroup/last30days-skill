@@ -273,3 +273,5 @@ Next action:
 
 - publish and integrate these terminal receipts, then stop. Do not remove any
   display reservation: the census found no stale or unknown allocator lock.
+
+Receipt candidate: `7e7ce37d908eb67ca8a199a85632ed9ed0fd70e1`.

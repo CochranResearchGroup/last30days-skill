@@ -8,8 +8,8 @@ lanes:
     branch: docs/wi010-x-p4-receipt-v1
     target: main
     plan_state: CLOSED
-    custody_state: ACTIVE_WORKTREE
-    checkpoint: cd462785d18be621ea353547643b5544bc446743
+    custody_state: INTEGRATION_READY
+    checkpoint: 7e7ce37d908eb67ca8a199a85632ed9ed0fd70e1
     remote_ref: null
     integration: merge
     validation_status: terminal_failed_before_browser_launch
