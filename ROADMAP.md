@@ -3457,10 +3457,10 @@ Current State:
   eight adapters are classified, five browser-auth seams are conditionally
   eligible, three content-fetch-only paths are ineligible, and every external-
   effect counter is zero. No P4 readiness verdict was emitted.
-- Plan 0126 is open for exactly one X auth-readiness probe using the existing
-  authenticated X profile. Its one attempt is terminal: display capacity was
-  exhausted before browser launch, so X readiness was not established and no
-  retry is authorized.
+- Plan 0126 is closed after exactly one X auth-readiness probe using the
+  explicit stable `last30days-facebook` profile binding. Display capacity was
+  exhausted before browser launch, so X readiness was not established; PR
+  #107 integrated the verified terminal receipt at `4588c044`.
 
 Architecture:
 
@@ -3480,5 +3480,5 @@ Architecture:
 
 Next Bounded Action:
 
-- publish and integrate Plan 0126's terminal receipts, then stop. Any display-
-  capacity remediation or new P4 attempt requires separate authority.
+- stop. Any display-capacity remediation or new P4 attempt requires separate
+  exact authority; P5 remains held.

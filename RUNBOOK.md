@@ -31586,3 +31586,58 @@ Stop Reason:
 
 Receipt candidate: `7e7ce37d908eb67ca8a199a85632ed9ed0fd70e1`;
 P53 custody is `INTEGRATION_READY` for terminal-evidence publication only.
+
+## Turn 508 | 2026-09-15
+
+Focus: integrate and reconcile Plan 0126's terminal X P4 receipt.
+
+Plan authority:
+`docs/dev/plans/0126-2026-09-15-wi010-x-p4-readiness-probe.md`; WI-010 and
+P53; terminal-evidence publication authorized by the operator.
+
+Authority Consulted:
+
+- the operator's instruction to publish and integrate WI-010 through a PR;
+- Plan 0126's terminal no-retry boundary and the repository's branch,
+  integration, validation, and closeout policies;
+- GitHub readback for PR #107's exact head, mergeability, review threads, and
+  merge commit.
+
+Decisions And Changes:
+
+- published the retained packet, verified execution receipt, and post-run
+  census through PR #107 without exposing credentials or provider content;
+- verified the PR was mergeable with no reviews, comments, or unresolved
+  threads, then merged exact head
+  `51a83cc6103a840591fc38deb124b9affa09db1b`;
+- reconciled P53 custody to `INTEGRATED` at merge commit
+  `4588c044c4d0041bba04b7c99da776feed66271d`;
+- made no retry, allocator cleanup, profile switch, search, P5 call, or other
+  external effect.
+
+Validation Evidence:
+
+- PR #107: `MERGED`, exact merge head and merge commit read back from GitHub;
+- canonical `main` fast-forwarded cleanly to `4588c044`;
+- receipt verifier and authority audit remain the acceptance evidence recorded
+  in Turn 507; this reconciliation changes only durable state locators.
+
+State Movement:
+
+- P53 custody `INTEGRATION_READY -> INTEGRATED`;
+- WI-010 remains `IN_PROGRESS`; X P4 readiness is not established and P5
+  remains held.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no delegation was requested.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Stop Reason:
+
+- Plan 0126's only authorized attempt is consumed and its terminal evidence is
+  integrated. Any capacity remediation or successor P4 probe requires new
+  exact authority.

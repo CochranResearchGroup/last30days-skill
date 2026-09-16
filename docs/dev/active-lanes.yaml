@@ -8,16 +8,17 @@ lanes:
     branch: docs/wi010-x-p4-receipt-v1
     target: main
     plan_state: CLOSED
-    custody_state: INTEGRATION_READY
-    checkpoint: 7e7ce37d908eb67ca8a199a85632ed9ed0fd70e1
-    remote_ref: null
+    custody_state: INTEGRATED
+    checkpoint: 51a83cc6103a840591fc38deb124b9affa09db1b
+    remote_ref: refs/remotes/origin/docs/wi010-x-p4-receipt-v1
     integration: merge
+    integration_receipt: 4588c044c4d0041bba04b7c99da776feed66271d
     validation_status: terminal_failed_before_browser_launch
     validation_ref: sha256:888f22bee8921d9e859077ea12911c8d3643e1fd98be926469e5e96bf9e116bf
     session_owner: /root
     dependencies: []
     overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_readiness.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]
-    reconciled_overlaps: []
+    reconciled_overlaps: [dev/last30days/provider_acceptance, dev/last30days/scripts/provider_readiness.py, tests/provider_acceptance, ROADMAP.md, RUNBOOK.md, docs/dev/active-lanes.yaml, docs/dev/work-items/WI-010-provider-acceptance.md]
     updated_at: 2026-09-15
   - id: P51
     objective: Build a deterministic development artifact and prove one isolated runtime through provider-free dogfood
