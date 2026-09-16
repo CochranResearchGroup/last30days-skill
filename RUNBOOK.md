@@ -31351,3 +31351,63 @@ Next Bounded Action:
 - publish and integrate Plan 0125 through a pull request. After integration,
   stop until the operator supplies both an exact opaque profile reference and
   separate external P4 authority.
+
+## Turn 504 | 2026-09-15
+
+Focus: integrate WI-010's provider-free P4 audit and reconcile canonical
+custody.
+
+Plan authority:
+`docs/dev/plans/0125-2026-09-15-wi010-p4-readiness-capability-audit.md`;
+WI-010, P53, and merged PR #104.
+
+Authority Consulted:
+
+- the operator's instruction to publish and integrate WI-010 through a pull
+  request;
+- current branch, integration, validation, work-item, active-lane, forge, and
+  collaborative-development policies;
+- exact GitHub PR, remote-ref, and canonical-worktree readbacks.
+
+Decisions And Changes:
+
+- published exact head `fb62b81b76ad7de49dbd76f6d2eee74c27acc099`
+  to the owned public fork and opened PR #104 against that fork's `main`;
+- merged only after GitHub reported `MERGEABLE` / `CLEAN`, the remote head
+  matched, and review-thread readback returned no threads;
+- accepted GitHub's merge receipt
+  `8ecf221c540fd07071bfdfebc6e09ab1d9b42ebf`, fast-forwarded canonical
+  `main` to the matching `origin/main`, and reconciled P53 to `INTEGRATED`.
+
+Validation Evidence:
+
+- post-merge PR readback: `MERGED` at 2026-09-16T00:43:00Z by `ecochran76`;
+- no reviews, conversation comments, or unresolved review threads; the only
+  check was the completed/skipped advisory `[code]smith` check;
+- merged-main capability receipt verification accepted 8/8 capabilities with
+  five conditionally eligible cases, no selected case, and zero effects;
+- merged-main provider-acceptance/authority validation: 68 passed;
+- merged-main authority audit: passed with zero issues and one pre-existing
+  active paused plan; canonical `main` was clean and equal to `origin/main`.
+
+State Movement:
+
+- PR #104 `OPEN -> MERGED`;
+- P53 custody `INTEGRATION_READY -> INTEGRATED`;
+- Plan 0125 remains `CLOSED`; WI-010 remains `IN_PROGRESS` for separately
+  authorized P4/P5 only.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no integration subagent was requested or needed.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Stop Reason:
+
+- the provider-free P4 capability audit is implemented, accepted, published,
+  and integrated. No P4 readiness verdict exists. Credentials, profiles, real
+  browsers, provider access, installed-runtime mutation, P5, releases,
+  deployments, schedules, and tracker mutation remain held.
