@@ -3439,7 +3439,7 @@ Terminal Result:
 
 ## P53 | Controlled Provider Acceptance
 
-State: PLANNED
+State: OPEN
 
 Objective: build a common, truthful provider-acceptance system that separates
 sealed replay, owned transport, isolated service join, readiness and live-
@@ -3453,12 +3453,16 @@ Current State:
   receipt, a clean comprehensive suite, and independent closed-world review;
 - PR #102 merged the accepted packet into canonical `main` at
   `72f1c7440a20cfac00d0478edb8413bcfe4dc4b4`; P4/P5 remain held.
+- Plan 0125 is executing a provider-free P4 capability audit and sealed
+  preflight; it grants no credential, browser, network, or provider effect.
 
 Architecture:
 
 - Plan 0123 is closed with the selected `prepare -> execute -> verify` contract;
 - Plan 0124 (`docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md`)
   is closed with accepted provider-free P0-P3 evidence;
+- Plan 0125 (`docs/dev/plans/0125-2026-09-15-wi010-p4-readiness-capability-audit.md`)
+  owns the current effect-free P4 preflight packet;
 - WI-010 remains `IN_PROGRESS` only for any later separately authorized P4
   readiness or P5 live-canary packets;
 - HTTP, command, and Agent Browser simulators fan out only after shared
@@ -3468,5 +3472,5 @@ Architecture:
 
 Next Bounded Action:
 
-- stop at the integrated provider-free P0-P3 boundary. Keep all P4/P5 and
-  acquisition-provider effects held pending separate exact authority.
+- execute Plan 0125's capability audit and preflight, then stop before exact
+  profile resolution or any P4/P5 acquisition-provider effect.
