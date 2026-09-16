@@ -12,6 +12,7 @@ Architecture plan: docs/dev/plans/0123-2026-09-14-provider-acceptance-architectu
 Execution plan: docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md
 Readiness plan: docs/dev/plans/0125-2026-09-15-wi010-p4-readiness-capability-audit.md
 X P4 plan: docs/dev/plans/0126-2026-09-15-wi010-x-p4-readiness-probe.md
+X P4 successor: docs/dev/plans/0127-2026-09-16-wi010-x-p4-readiness-successor.md
 
 ## Problem
 
@@ -98,6 +99,7 @@ Plan 0126 then consumed its one grant against the explicit stable
 `last30days-facebook` profile binding and failed before browser launch because
 all 40 configured display numbers were active or reserved. The verified
 receipt has zero browser actions and complete teardown; PR #107 integrated it
-at `4588c044c4d0041bba04b7c99da776feed66271d`. Stop. Do not retry, remove
-active reservations, use another profile, search for content, or enter P5
-without new exact authority.
+at `4588c044c4d0041bba04b7c99da776feed66271d`. The operator subsequently
+supplied exact authority for one successor attempt through Plan 0127. Use the
+same profile, do not alter allocator/runtime state, preserve the first
+successor result, and do not search for content or enter P5.

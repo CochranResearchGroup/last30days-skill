@@ -31641,3 +31641,55 @@ Stop Reason:
 - Plan 0126's only authorized attempt is consumed and its terminal evidence is
   integrated. Any capacity remediation or successor P4 probe requires new
   exact authority.
+
+## Turn 509 | 2026-09-16
+
+Focus: register one WI-010 X P4 readiness successor attempt.
+
+Plan authority:
+`docs/dev/plans/0127-2026-09-16-wi010-x-p4-readiness-successor.md`; WI-010 and
+P53; one successor attempt explicitly authorized by the operator.
+
+Authority Consulted:
+
+- the operator's `try again` instruction;
+- Plan 0126's terminal receipt and successor-gate boundary;
+- current planning, work-item, multi-session, branch, validation, and closeout
+  policies.
+
+Decisions And Changes:
+
+- retained Plan 0126's evidence unchanged and opened Plan 0127 for one new
+  short-lived grant against the same `last30days-facebook` profile;
+- confirmed Agent Browser issue #159 is closed through repair PR #166 and
+  closeout PR #167;
+- observed no physical X socket, abstract socket, lock, or X server in
+  `:90-:129`; made no allocator cleanup, restart, profile switch, provider
+  content request, or P5 call.
+
+Validation Evidence:
+
+- canonical `main` and `origin/main` matched at `64409e7f` before the isolated
+  successor worktree was created;
+- issue #159 reports exact repair and closeout merges, and the current physical
+  census found the configured allocator range clear;
+- plan-authority audit and diff validation are required before checkpointing.
+
+State Movement:
+
+- Plan 0127 `unplanned -> OPEN`;
+- P53 `PLANNED -> OPEN`; WI-010 remains `IN_PROGRESS`.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no delegation was requested and the live attempt is
+  serialized.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Next Bounded Action:
+
+- publish the authority checkpoint, then complete the exact read-only
+  preflight and consume one successor P4 grant. P5 remains held.
