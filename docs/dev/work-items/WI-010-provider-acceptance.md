@@ -6,7 +6,7 @@ Priority: P0
 Lane: Provider Acceptance
 Parent: none
 GitHub issue: not published; issue mutation was not authorized
-Pull request: https://github.com/CochranResearchGroup/last30days-skill/pull/107 (X P4 terminal receipt); https://github.com/CochranResearchGroup/last30days-skill/pull/106 (X P4 executor); https://github.com/CochranResearchGroup/last30days-skill/pull/104 (P4 audit); https://github.com/CochranResearchGroup/last30days-skill/pull/102 (P0-P3)
+Pull request: https://github.com/CochranResearchGroup/last30days-skill/pull/109 (X P4 successor terminal receipt); https://github.com/CochranResearchGroup/last30days-skill/pull/107 (X P4 terminal receipt); https://github.com/CochranResearchGroup/last30days-skill/pull/106 (X P4 executor); https://github.com/CochranResearchGroup/last30days-skill/pull/104 (P4 audit); https://github.com/CochranResearchGroup/last30days-skill/pull/102 (P0-P3)
 Blocked by: none for provider-free implementation; readiness and live canaries require separate exact operator authority
 Architecture plan: docs/dev/plans/0123-2026-09-14-provider-acceptance-architecture-and-lane-handoff.md
 Execution plan: docs/dev/plans/0124-2026-09-14-wi010-provider-free-p0-p3-campaign.md
@@ -105,5 +105,7 @@ same profile, do not alter allocator/runtime state, preserve the first
 successor result, and do not search for content or enter P5. That attempt is
 now consumed: allocator readiness passed, but installed runtime-host admission
 failed before a service job or browser launched. The safe receipt verified
-with zero browser actions and complete teardown. Stop pending a separately
-authorized runtime-admission repair or later P4 packet; P5 remains held.
+with zero browser actions and complete teardown; PR #109 integrated that
+evidence at `ed588807ab1b91e205557e4c255e4a5fa4a81341`. Stop pending a
+separately authorized runtime-admission repair or later P4 packet; P5 remains
+held.

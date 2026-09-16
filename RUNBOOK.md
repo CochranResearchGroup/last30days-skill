@@ -31754,3 +31754,57 @@ Stop Reason:
 - Plan 0127's only successor attempt is consumed. Publish and integrate its
   terminal evidence, but do not repair runtime admission or attempt P4 again
   without a new bounded plan and exact authority. P5 remains held.
+
+## Turn 511 | 2026-09-16
+
+Focus: integrate and reconcile Plan 0127's terminal X P4 successor receipt.
+
+Plan authority:
+`docs/dev/plans/0127-2026-09-16-wi010-x-p4-readiness-successor.md`; WI-010 and
+P53; terminal-evidence integration under the operator's standing PR direction.
+
+Authority Consulted:
+
+- the operator's instruction to publish and integrate WI-010 through a PR;
+- Plan 0127's terminal no-retry and no-runtime-mutation boundaries;
+- GitHub readback for PR #109's exact head, mergeability, checks, discussion,
+  and merge commit.
+
+Decisions And Changes:
+
+- published Plan 0127's packet, verified execution receipt, and post-run
+  census through PR #109 without credentials or provider content;
+- verified exact head `940cbfed`, a clean merge state, no reviews, comments,
+  or unresolved discussion, and the skipped advisory check;
+- merged PR #109 and fast-forwarded canonical `main` to matching
+  `origin/main` at `ed588807`;
+- made no retry, runtime-host admission repair, allocator cleanup, profile
+  switch, content request, or P5 call.
+
+Validation Evidence:
+
+- PR #109: `MERGED` at 2026-09-16T18:55:58Z, exact merge head and merge commit
+  read back from GitHub;
+- canonical `main == origin/main == ed588807ab1b91e205557e4c255e4a5fa4a81341`;
+- the receipt verifier, focused 20-test suite, authority audit, diff check, and
+  census digest verification passed before merge.
+
+State Movement:
+
+- P53 custody `INTEGRATION_READY -> INTEGRATED`;
+- Plan 0127 remains `CLOSED`; WI-010 remains `IN_PROGRESS`, X P4 readiness is
+  not established, and P5 remains held.
+
+Subagent Status And Reconciliation:
+
+- `not_spawned`; no delegation was requested.
+
+Graphiti Write Status:
+
+- `not_written`; no memory write was authorized.
+
+Stop Reason:
+
+- Plan 0127's only successor attempt is consumed and integrated. Any
+  runtime-admission repair or later P4 attempt requires a new bounded plan and
+  exact authority.

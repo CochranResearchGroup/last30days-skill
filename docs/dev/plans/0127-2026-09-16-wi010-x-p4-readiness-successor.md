@@ -79,8 +79,9 @@ and do not retry. P5 remains held regardless of the outcome.
 
 ## Next Action
 
-Publish and integrate the terminal successor evidence. Do not retry or mutate
-the installed Agent Browser runtime under this plan.
+Stop. PR #109 integrated the terminal successor evidence at merge commit
+`ed588807ab1b91e205557e4c255e4a5fa4a81341`. Do not retry or mutate the
+installed Agent Browser runtime under this plan.
 
 ### Checkpoint P0127-C01 | 2026-09-16
 
@@ -180,3 +181,40 @@ Next action:
 - publish and integrate these terminal receipts through one pull request, then
   stop. Any installed-runtime admission repair or third P4 attempt requires a
   new bounded plan and exact authority.
+
+### Checkpoint P0127-C03 | 2026-09-16
+
+Plan version: 1
+
+State transition: `CLOSED -> CLOSED`; custody `INTEGRATION_READY -> INTEGRATED`.
+
+Progress classification: `outcome_progress`; the exact terminal successor
+packet is now part of canonical `main`.
+
+Authority classification:
+
+- `inherited_authority` from the operator's standing instruction to publish
+  and integrate WI-010 through a pull request.
+
+Validation evidence:
+
+- PR #109 merged exact head
+  `940cbfed47eb4a94a1d05e2303f9e18e80c7410e` at merge commit
+  `ed588807ab1b91e205557e4c255e4a5fa4a81341`;
+- canonical `main` fast-forwarded cleanly and equals `origin/main` at that
+  merge commit;
+- no retry, provider content request, runtime repair, or P5 action occurred
+  during integration.
+
+Subagent status and reconciliation:
+
+- `not_spawned`; no delegation was requested.
+
+Graphiti write status:
+
+- `not_written`; no memory write was authorized.
+
+Stop reason:
+
+- Plan 0127 is closed and integrated. X P4 readiness remains unestablished;
+  any runtime-admission repair or later P4 attempt requires new exact authority.
