@@ -89,46 +89,6 @@ def split_roadmap_sections(roadmap_text: str) -> dict[str, str]:
     return sections
 
 
-def active_lane_plan_projections(catalog_text: str) -> dict[str, dict[str, str]]:
-    """Return actionable branch-local plan projections from the lane catalog.
-
-    The active-lane auditor owns ref and metadata verification. This planning
-    audit only needs enough YAML awareness to recognize that an OPEN roadmap
-    lane is intentionally backed by a plan stored on another ref.
-    """
-    projections: dict[str, dict[str, str]] = {}
-    current: dict[str, str] | None = None
-    for line in catalog_text.splitlines():
-        lane_match = re.match(r"^\s*-\s+id:\s*(\S+)\s*$", line)
-        if lane_match:
-            if current is not None:
-                lane_id = current.get("id", "").upper()
-                if lane_id:
-                    projections[lane_id] = current
-            current = {"id": lane_match.group(1).strip("'\"")}
-            continue
-        if current is None:
-            continue
-        field_match = re.match(
-            r"^\s+(plan|plan_ref|plan_state):\s*(.*?)\s*$", line
-        )
-        if field_match:
-            current[field_match.group(1)] = field_match.group(2).strip("'\"")
-    if current is not None:
-        lane_id = current.get("id", "").upper()
-        if lane_id:
-            projections[lane_id] = current
-
-    actionable_states = {"PLANNED", "OPEN", "BLOCKED"}
-    return {
-        lane_id: projection
-        for lane_id, projection in projections.items()
-        if projection.get("plan_state", "").upper() in actionable_states
-        and projection.get("plan", "").startswith("docs/dev/plans/")
-        and projection.get("plan_ref", "") not in {"", "null", "~"}
-    }
-
-
 def audit_goal_execution_contract(root: Path) -> dict:
     policy_dir = root / "docs" / "dev" / "policies"
     policy_paths = sorted(policy_dir.glob("*goal-execution-governance.md")) if policy_dir.exists() else []
@@ -294,10 +254,6 @@ def audit_repo(
         if re.search(r"(?im)^(?:state|status)\s*:\s*OPEN\s*$", section)
     ]
     report["open_roadmap_lanes"] = open_roadmap_lanes
-    catalog_projections = active_lane_plan_projections(
-        read_text(root / default_dev_root / "active-lanes.yaml")
-    )
-    report["catalog_actionable_plan_lanes"] = sorted(catalog_projections)
     for lane_id in open_roadmap_lanes if roadmap_applicable else []:
         section = roadmap_sections[lane_id]
         if not CURRENT_STATE_RE.search(section):
@@ -370,12 +326,11 @@ def audit_repo(
         assert isinstance(plans, list)
         actionable_states = {"PLANNED", "OPEN", "BLOCKED"}
         for lane_id in open_roadmap_lanes if roadmap_applicable else []:
-            has_local_plan = any(
+            if not any(
                 plan.get("lane_id") == lane_id and plan.get("state") in actionable_states
                 for plan in plans
                 if isinstance(plan, dict)
-            )
-            if not has_local_plan and lane_id not in catalog_projections:
+            ):
                 problems.append(f"OPEN roadmap lane missing actionable plan coverage: {lane_id}")
 
     baseline_path = root / default_dev_root / "planning-audit-baseline.json"
